@@ -100,8 +100,8 @@ export const moveMap = (mapObject, coordinates: GeoJSON.Position) => {
  * @returns A GeoJSON Feature for LineString object with an empty features array
  */
 
-export const getBaseGeoJsonFeatureLineString = (): GeoJSON.Feature => {
-	return { geometry: { coordinates: [], type: 'LineString' }, properties: {}, type: 'Feature' };
+export const getBaseGeoJsonFeatureLineString = (): GeoJSON.Feature<GeoJSON.LineString> => {
+	return Object.assign({ geometry: { coordinates: [], type: 'LineString' }, properties: {}, type: 'Feature' });
 };
 
 /**
@@ -109,6 +109,6 @@ export const getBaseGeoJsonFeatureLineString = (): GeoJSON.Feature => {
  * @returns A GeoJSON FeatureCollection object with an empty features array
  */
 
-export const getBaseGeoJsonFeatureCollection = (): GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> => {
-	return { features: [], type: 'FeatureCollection' };
+export const getBaseGeoJsonFeatureCollection = (): GeoJSON.FeatureCollection<GeoJSON.LineString | GeoJSON.Point, GeoJSON.GeoJsonProperties> => {
+	return Object.assign({ features: [], type: 'FeatureCollection' });
 };

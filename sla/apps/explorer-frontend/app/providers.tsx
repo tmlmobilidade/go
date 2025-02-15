@@ -4,6 +4,7 @@
 
 import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { RidesContextProvider } from '@/contexts/Rides.context';
+import { MapProvider } from '@vis.gl/react-maplibre';
 import { PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
@@ -42,7 +43,9 @@ export default function Providers({ children }: PropsWithChildren) {
 		<SWRConfig value={swrSettings}>
 			<RidesContextProvider>
 				<MapOptionsContextProvider>
-					{children}
+					<MapProvider>
+						{children}
+					</MapProvider>
 				</MapOptionsContextProvider>
 			</RidesContextProvider>
 		</SWRConfig>

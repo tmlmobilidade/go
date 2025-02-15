@@ -2,6 +2,9 @@
 
 /* * */
 
+import { apexT11Endpoint } from '@/endpoints/apex-t11.endpoint.js';
+import { hashedShapeEndpoint } from '@/endpoints/hashed-shape.endpoint.js';
+import { hashedTripEndpoint } from '@/endpoints/hashed-trip.endpoint.js';
 import { ridesWebsocket } from '@/endpoints/rides.websocket.js';
 import { vehicleEventsEndpoint } from '@/endpoints/vehicle-events.endpoint.js';
 import fastifyWs from '@fastify/websocket';
@@ -18,9 +21,9 @@ FastifyInstance.register(fastifyWs);
 FastifyInstance.register(ridesWebsocket);
 
 FastifyInstance.get('/rides/:ride_id/vehicle-events', vehicleEventsEndpoint);
-// FastifyInstance.get('/rides/:ride_id/apex-t11', apexT11Endpoint);
-// FastifyInstance.get('/rides/:ride_id/hashed-trip', hashedTripEndpoint);
-// FastifyInstance.get('/rides/:ride_id/hashed-shape', hashedShapeEndpoint);
+FastifyInstance.get('/rides/:ride_id/apex-t11', apexT11Endpoint);
+FastifyInstance.get('/rides/:ride_id/hashed-trip', hashedTripEndpoint);
+FastifyInstance.get('/rides/:ride_id/hashed-shape', hashedShapeEndpoint);
 
 /* * */
 

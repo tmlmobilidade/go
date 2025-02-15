@@ -62,7 +62,7 @@ export function MapView({
 	interactiveLayerIds = [],
 	mapStyle,
 	navigation = true,
-	onCenterMap,
+	// onCenterMap,
 	onClick,
 	onMouseEnter,
 	onMouseLeave,
@@ -72,7 +72,7 @@ export function MapView({
 	onMoveStart,
 	scale = false,
 	scrollZoom = true,
-	toolbar = true,
+	// toolbar = true,
 }: Props) {
 	//
 	// A. Setup variables

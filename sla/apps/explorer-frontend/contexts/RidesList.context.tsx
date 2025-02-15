@@ -9,6 +9,10 @@ import { ViewportListRef } from 'react-viewport-list';
 
 /* * */
 
+const DEFAULT_SCROLL_OFFSET = -250;
+
+/* * */
+
 interface RidesListContextState {
 	actions: {
 		setLockStatus: (value: number) => void
@@ -47,7 +51,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const dataListRef = useRef<null | ViewportListRef>(null);
 	const [dataLockIndexState, setDataLockIndexState] = useState<number>(0);
-	const [dataLockOffsetState, setDataLockOffsetState] = useState<number>(-150);
+	const [dataLockOffsetState, setDataLockOffsetState] = useState<number>(DEFAULT_SCROLL_OFFSET);
 	const [dataIsLockedState, setDataIsLockedState] = useState<boolean>(true);
 	const [dataIsUserScrollingState, setDataIsUserScrollingState] = useState<boolean>(false);
 
@@ -88,7 +92,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			// Clear the timeout if the user is still scrolling
 			if (scrollTimeout.current)clearTimeout(scrollTimeout.current);
 			// Set a timeout to clear the flag if the user stops scrolling
-			scrollTimeout.current = setTimeout(() => setDataIsUserScrollingState(false), 200);
+			scrollTimeout.current = setTimeout(() => setDataIsUserScrollingState(false), 100);
 		};
 		window.addEventListener('wheel', handleUserScroll, { passive: true });
 		window.addEventListener('touchmove', handleUserScroll, { passive: true });
@@ -107,7 +111,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			if (!dataIsUserScrollingState) return;
 			// Check if the user scrolled more than 150px
 			const scrolledDistance = Math.abs(window.scrollY - initialScrollY);
-			if (scrolledDistance > 150) {
+			if (scrolledDistance > 300) {
 				setDataIsLockedState(false);
 			}
 		};
@@ -117,8 +121,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		};
 	}, [dataIsLockedState, dataIsUserScrollingState]);
 
-	const setLockStatus = (offset: number) => {
-		setDataLockOffsetState(offset);
+	const setLockStatus = (offset?: number) => {
+		setDataLockOffsetState(offset || DEFAULT_SCROLL_OFFSET);
 		setDataIsLockedState(prev => !prev);
 	};
 

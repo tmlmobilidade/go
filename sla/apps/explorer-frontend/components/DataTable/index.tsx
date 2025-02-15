@@ -56,7 +56,7 @@ export function DataTable() {
 		<div className={styles.wrapper}>
 
 			<div className={styles.header}>
-				<div onClick={() => ridesListContext.actions.setLockStatus(-100)} style={{ display: 'flex', zIndex: 100 }}>
+				<div onClick={() => ridesListContext.actions.setLockStatus()} style={{ display: 'flex', zIndex: 100 }}>
 					{ridesListContext.data.is_locked ? 'Locked' : 'Unlocked'}
 					| {ridesListContext.data.is_user_scrolling ? 'IsScrollingUser-true' : 'IsScrollingUser-false'}
 				</div>

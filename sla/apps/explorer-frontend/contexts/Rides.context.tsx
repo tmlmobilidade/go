@@ -68,7 +68,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		//
 		// Initialize WebSocket connection
 		if (!webSocketRef.current) {
-			webSocketRef.current = new WebSocket('ws://localhost:5050');
+			webSocketRef.current = new WebSocket('ws://localhost:5050/rides');
 		}
 		// Request initial data
 		webSocketRef.current.addEventListener('open', () => {
