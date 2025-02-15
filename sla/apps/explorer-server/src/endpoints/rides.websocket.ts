@@ -1,8 +1,11 @@
 /* * */
 
+// import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import { sendInitalRidesDataset } from '@/services/send-inital-rides-dataset.js';
 import { watchRides } from '@/services/watch-rides.js';
 import LOGGER from '@helperkits/logger';
+// import { Permissions } from '@tmlmobilidade/core/lib';
+// import { Ride } from '@tmlmobilidade/core/types';
 import { type WebSocketMessage } from '@tmlmobilidade/core/types';
 import { WebSocket } from 'ws';
 
@@ -12,8 +15,14 @@ import { WebSocket } from 'ws';
  * It is required to start the watch service before sending the initial dataset
  * to avoid missing any changes; the client will then sort the data and apply the changes.
 */
-export const ridesWs = async function (fastify) {
-	fastify.get('/', { websocket: true }, (socket: WebSocket) => {
+export const ridesWebsocket = async function (fastify) {
+	fastify.get('/', {
+		// preHandler: authorizationMiddleware<Ride>(
+		// 	Permissions.rides.scope,
+		// 	Permissions.rides.actions.list,
+		// ),
+		websocket: true,
+	}, (socket: WebSocket) => {
 		socket.on('message', async (message) => {
 			//
 

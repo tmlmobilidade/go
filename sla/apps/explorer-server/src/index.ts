@@ -2,7 +2,8 @@
 
 /* * */
 
-import { ridesWs } from '@/endpoints/rides-ws.js';
+import { ridesWebsocket } from '@/endpoints/rides.websocket.js';
+import { vehicleEventsEndpoint } from '@/endpoints/vehicle-events.endpoint.js';
 import fastifyWs from '@fastify/websocket';
 import LOGGER from '@helperkits/logger';
 import fastifyModule from 'fastify';
@@ -14,7 +15,9 @@ const FastifyInstance = fastifyModule();
 /* * */
 
 FastifyInstance.register(fastifyWs);
-FastifyInstance.register(ridesWs);
+FastifyInstance.register(ridesWebsocket);
+
+FastifyInstance.get('/vehicle-events/:ride_id', vehicleEventsEndpoint);
 
 /* * */
 

@@ -1,19 +1,44 @@
 'use client';
 
+import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 /* * */
 
 import { RidesContextProvider } from '@/contexts/Rides.context';
 import { RidesListContextProvider } from '@/contexts/RidesList.context';
 import { PropsWithChildren } from 'react';
+import { SWRConfig, type SWRConfiguration } from 'swr';
 
 /* * */
 
 export default function Providers({ children }: PropsWithChildren) {
+	const swrSettings: SWRConfiguration = {
+		async fetcher(...args: Parameters<typeof fetch>) {
+			const res = await fetch(...args);
+			if (!res.ok) {
+				const errorDetails = await res.json();
+				const error = new Error(errorDetails.message || 'An error occurred while fetching data.');
+				const customError = {
+					...error,
+					description: errorDetails.description || 'No additional information was provided by the API.',
+					status: res.status,
+				};
+				throw customError;
+			}
+			return res.json();
+		},
+		refreshInterval: 900000, // 15 minutes
+		revalidateOnFocus: true,
+		revalidateOnMount: true,
+	};
 	return (
-		<RidesContextProvider>
-			<RidesListContextProvider>
-				{children}
-			</RidesListContextProvider>
-		</RidesContextProvider>
+		<SWRConfig value={swrSettings}>
+			<RidesContextProvider>
+				<RidesListContextProvider>
+					<MapOptionsContextProvider>
+						{children}
+					</MapOptionsContextProvider>
+				</RidesListContextProvider>
+			</RidesContextProvider>
+		</SWRConfig>
 	);
 }
