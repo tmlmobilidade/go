@@ -17,7 +17,10 @@ const FastifyInstance = fastifyModule();
 FastifyInstance.register(fastifyWs);
 FastifyInstance.register(ridesWebsocket);
 
-FastifyInstance.get('/vehicle-events/:ride_id', vehicleEventsEndpoint);
+FastifyInstance.get('/rides/:ride_id/vehicle-events', vehicleEventsEndpoint);
+// FastifyInstance.get('/rides/:ride_id/apex-t11', apexT11Endpoint);
+// FastifyInstance.get('/rides/:ride_id/hashed-trip', hashedTripEndpoint);
+// FastifyInstance.get('/rides/:ride_id/hashed-shape', hashedShapeEndpoint);
 
 /* * */
 

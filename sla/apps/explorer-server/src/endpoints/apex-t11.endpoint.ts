@@ -1,11 +1,11 @@
 /* * */
 
-import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
+import { apexT11, rides } from '@tmlmobilidade/core/interfaces';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 
 /* * */
 
-export const vehicleEventsEndpoint = async (request: FastifyRequest, reply: FastifyReply) => {
+export const apexT11Endpoint = async (request: FastifyRequest, reply: FastifyReply) => {
 	//
 
 	//
@@ -30,12 +30,12 @@ export const vehicleEventsEndpoint = async (request: FastifyRequest, reply: Fast
 	}
 
 	//
-	// Fetch the corresponding vehicle events data
+	// Fetch the corresponding Apex T11 data
 	// and send it back to the client
 
-	const vehicleEventsCollection = await vehicleEvents.getCollection();
+	const apexT11Collection = await apexT11.getCollection();
 
-	const vehicleEventsData = await vehicleEventsCollection
+	const apexT11Data = await apexT11Collection
 		.find({
 			extra_trip_id: null,
 			operational_date: rideData.operational_date,
@@ -43,7 +43,7 @@ export const vehicleEventsEndpoint = async (request: FastifyRequest, reply: Fast
 		})
 		.toArray();
 
-	reply.send(vehicleEventsData || []);
+	reply.send(apexT11Data || []);
 
 	//
 };

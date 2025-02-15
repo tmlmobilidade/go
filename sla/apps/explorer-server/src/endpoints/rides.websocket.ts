@@ -9,14 +9,10 @@ import LOGGER from '@helperkits/logger';
 import { type WebSocketMessage } from '@tmlmobilidade/core/types';
 import { WebSocket } from 'ws';
 
-/**
- * Handle the 'init' connection event.
- * Start the database watch service and then send the initial dataset.
- * It is required to start the watch service before sending the initial dataset
- * to avoid missing any changes; the client will then sort the data and apply the changes.
-*/
+/* * */
+
 export const ridesWebsocket = async function (fastify) {
-	fastify.get('/', {
+	fastify.get('/rides', {
 		// preHandler: authorizationMiddleware<Ride>(
 		// 	Permissions.rides.scope,
 		// 	Permissions.rides.actions.list,
@@ -25,6 +21,12 @@ export const ridesWebsocket = async function (fastify) {
 	}, (socket: WebSocket) => {
 		socket.on('message', async (message) => {
 			//
+
+			//
+			// Handle the 'init' connection event.
+			// Start the database watch service and then send the initial dataset.
+			// It is required to start the watch service before sending the initial dataset
+			// to avoid missing any changes; the client will then sort the data and apply the changes.
 
 			const messageString = message.toString();
 			const messageData: WebSocketMessage = JSON.parse(messageString);

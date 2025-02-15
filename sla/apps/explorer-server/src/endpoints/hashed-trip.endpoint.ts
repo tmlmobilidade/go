@@ -1,11 +1,11 @@
 /* * */
 
-import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
+import { hashedTrips, rides } from '@tmlmobilidade/core/interfaces';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 
 /* * */
 
-export const vehicleEventsEndpoint = async (request: FastifyRequest, reply: FastifyReply) => {
+export const hashedTripEndpoint = async (request: FastifyRequest, reply: FastifyReply) => {
 	//
 
 	//
@@ -30,20 +30,12 @@ export const vehicleEventsEndpoint = async (request: FastifyRequest, reply: Fast
 	}
 
 	//
-	// Fetch the corresponding vehicle events data
+	// Fetch the corresponding hashed trip data
 	// and send it back to the client
 
-	const vehicleEventsCollection = await vehicleEvents.getCollection();
+	const hashedTripData = await hashedTrips.findById(rideData.hashed_trip_id);
 
-	const vehicleEventsData = await vehicleEventsCollection
-		.find({
-			extra_trip_id: null,
-			operational_date: rideData.operational_date,
-			trip_id: rideData.trip_id,
-		})
-		.toArray();
-
-	reply.send(vehicleEventsData || []);
+	reply.send(hashedTripData);
 
 	//
 };
