@@ -121,7 +121,7 @@ export function DataTableRow({ index, item }: DataTableRowProps) {
 	const ridesListContext = useRidesListContext();
 
 	const handleOpenRide = (rideId: string) => {
-		router.push(`/${rideId}`);
+		router.push(`/list/${rideId}`);
 	};
 
 	//

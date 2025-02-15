@@ -8,7 +8,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { Work_Sans } from 'next/font/google';
 import { cookies as nextCookies } from 'next/headers';
-import { redirect, RedirectType } from 'next/navigation';
+// import { redirect, RedirectType } from 'next/navigation';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren } from 'react';
 

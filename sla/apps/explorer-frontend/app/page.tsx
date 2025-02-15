@@ -2,10 +2,10 @@
 
 /* * */
 
-import { DataTable } from '@/components/DataTable';
+import { redirect, RedirectType } from 'next/navigation';
 
 /* * */
 
 export default function Page() {
-	return <DataTable />;
+	redirect('/list', RedirectType.replace);
 }

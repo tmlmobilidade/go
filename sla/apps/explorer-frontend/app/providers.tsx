@@ -1,16 +1,20 @@
 'use client';
 
-import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 /* * */
 
+import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { RidesContextProvider } from '@/contexts/Rides.context';
-import { RidesListContextProvider } from '@/contexts/RidesList.context';
 import { PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
 /* * */
 
 export default function Providers({ children }: PropsWithChildren) {
+	//
+
+	//
+	// A. Setup variables
+
 	const swrSettings: SWRConfiguration = {
 		async fetcher(...args: Parameters<typeof fetch>) {
 			const res = await fetch(...args);
@@ -30,15 +34,19 @@ export default function Providers({ children }: PropsWithChildren) {
 		revalidateOnFocus: true,
 		revalidateOnMount: true,
 	};
+
+	//
+	// B. Render components
+
 	return (
 		<SWRConfig value={swrSettings}>
 			<RidesContextProvider>
-				<RidesListContextProvider>
-					<MapOptionsContextProvider>
-						{children}
-					</MapOptionsContextProvider>
-				</RidesListContextProvider>
+				<MapOptionsContextProvider>
+					{children}
+				</MapOptionsContextProvider>
 			</RidesContextProvider>
 		</SWRConfig>
 	);
+
+	//
 }
