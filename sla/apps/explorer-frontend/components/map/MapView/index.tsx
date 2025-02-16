@@ -39,13 +39,14 @@ interface Props {
 	navigation?: boolean
 	onCenterMap?: () => void
 	onClick?: (arg0) => void
+	onDrag?: (arg0) => void
+	onDragEnd?: (arg0) => void
+	onDragStart?: (arg0) => void
+	onMouseDrag?: (arg0) => void
 	onMouseEnter?: (arg0) => void // When the mouse enters the interactive layer
 	onMouseLeave?: (arg0) => void // When the mouse leaves the interactive layer
 	onMouseOut?: (arg0) => void // When the mouse enters the map
 	onMouseOver?: (arg0) => void // When the mouse leaves the map
-	onMove?: (arg0) => void
-	onMoveEnd?: (arg0) => void
-	onMoveStart?: (arg0) => void
 	primarySourceId?: string
 	scale?: boolean
 	scrollZoom?: boolean
@@ -64,12 +65,12 @@ export function MapView({
 	navigation = true,
 	// onCenterMap,
 	onClick,
+	onDragEnd,
+	onDragStart,
 	onMouseEnter,
 	onMouseLeave,
 	onMouseOut,
 	onMouseOver,
-	onMoveEnd,
-	onMoveStart,
 	scale = false,
 	scrollZoom = true,
 	// toolbar = true,
@@ -114,19 +115,19 @@ export function MapView({
 		}
 	}, []);
 
-	const handleOnMoveStart = useCallback((event) => {
+	const handleOnDragStart = useCallback((event) => {
 		setCursor('grab');
 
-		if (onMoveStart) {
-			onMoveStart(event);
+		if (onDragStart) {
+			onDragStart(event);
 		}
 	}, []);
 
-	const handleOnMoveEnd = useCallback((event) => {
+	const handleOnDragEnd = useCallback((event) => {
 		setCursor('auto');
 
-		if (onMoveEnd) {
-			onMoveEnd(event);
+		if (onDragEnd) {
+			onDragEnd(event);
 		}
 	}, []);
 
@@ -146,13 +147,13 @@ export function MapView({
 				maxZoom={mapDefaultConfig.maxZoom}
 				minZoom={mapDefaultConfig.minZoom}
 				onClick={onClick}
+				onDrag={handleOnDragStart}
+				onDragEnd={handleOnDragEnd}
+				onDragStart={handleOnDragStart}
 				onMouseEnter={handleOnMouseEnter}
 				onMouseLeave={handleOnMouseLeave}
 				onMouseOut={onMouseOut}
 				onMouseOver={onMouseOver}
-				onMove={handleOnMoveStart}
-				onMoveEnd={handleOnMoveEnd}
-				onMoveStart={handleOnMoveStart}
 				scrollZoom={scrollZoom}
 				style={{ height: '100%', width: '100%' }}
 			>
