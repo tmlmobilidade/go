@@ -34,22 +34,39 @@ async function parseServiceAlert(alert: Alert): Promise<ServiceAlertResponse> {
 				break;
 			case 'route':
 				alert.references.forEach((reference) => {
-					reference.child_ids.forEach((child_id) => {
-						informed_entity.push({
+					if (reference.child_ids.length === 0) {
+						const entity = {
 							route_id: reference.parent_id,
-							stop_id: child_id,
+						};
+						informed_entity.push(entity);
+					}
+					else {
+						reference.child_ids.forEach((child_id) => {
+							const entity = {
+								route_id: reference.parent_id,
+								stop_id: child_id,
+							};
+							informed_entity.push(entity);
 						});
-					});
+					}
 				});
 				break;
 			case 'stop':
 				alert.references.forEach((reference) => {
-					reference.child_ids.forEach((child_id) => {
+					if (reference.child_ids.length === 0) {
 						informed_entity.push({
-							route_id: child_id,
+							route_id: reference.parent_id,
 							stop_id: reference.parent_id,
 						});
-					});
+					}
+					else {
+						reference.child_ids.forEach((child_id) => {
+							informed_entity.push({
+								route_id: child_id,
+								stop_id: reference.parent_id,
+							});
+						});
+					}
 				});
 				break;
 		}
