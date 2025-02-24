@@ -36,8 +36,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       '@tmlmobilidade/core':
-        specifier: ^20250218.1543.25
-        version: 20250218.1543.25
+        specifier: ^20250224.1619.39
+        version: 20250224.1619.39
       fastify:
         specifier: ^5.1.0
         version: 5.2.1
@@ -85,8 +85,8 @@ importers:
         specifier: ^3.29.0
         version: 3.30.0(react@19.0.0)
       '@tmlmobilidade/core-types':
-        specifier: ^20250218.1541.53
-        version: 20250218.1541.53
+        specifier: ^20250224.1618.13
+        version: 20250224.1618.13
       '@tmlmobilidade/ui':
         specifier: ^20250211.2350.30
         version: 20250211.2350.30(@types/react@19.0.8)(dayjs@1.11.13)(react-dom@19.0.0)(react@19.0.0)(rollup@4.34.8)
@@ -4127,8 +4127,8 @@ packages:
       - socks
     dev: false
 
-  /@tmlmobilidade/core-types@20250218.1541.53:
-    resolution: {integrity: sha512-Kem0I84yssJpHxQt5YeL3ViLb9wXqxfjmF2njCVTrTGiDGbHgDBwRXCqZNK5Oc8y2pOqBUeknxG50dGb3zyxKw==}
+  /@tmlmobilidade/core-types@20250224.1618.13:
+    resolution: {integrity: sha512-umrVsIOUHdPm6GXLsiDspUOvuGYnVhnvPEXwm/AVc3DTGxjIHraVr8X44Kr8C98J3qh60d5Wn+AbhpwZRZC86w==}
     dependencies:
       '@aws-sdk/client-s3': 3.744.0
       '@aws-sdk/s3-request-presigner': 3.744.0
@@ -4157,8 +4157,8 @@ packages:
       - socks
     dev: false
 
-  /@tmlmobilidade/core@20250218.1543.25:
-    resolution: {integrity: sha512-RF092QBULOiX6fliTSLQv1PUtmERzwGdgLDQWhi4ucH4OGJaTd14daMQfMoPn4mXv00OIChjYymfpPua+J4jcg==}
+  /@tmlmobilidade/core@20250224.1619.39:
+    resolution: {integrity: sha512-Qe5qf1Kqtb4I+YTd8yKz7K2MdsAPRajuGA+0vDf3o2hI34iceFc84QOQfRmbhn7dt/VcVZJG3utmlYPC2NZ9pg==}
     dependencies:
       '@aws-sdk/client-s3': 3.744.0
       '@aws-sdk/s3-request-presigner': 3.744.0
@@ -4842,8 +4842,8 @@ packages:
       node-int64: 0.4.0
     dev: true
 
-  /bson@6.10.2:
-    resolution: {integrity: sha512-5afhLTjqDSA3akH56E+/2J6kTDuSIlBxyXPdQslj9hcIgOUE378xdOfZvC/9q3LifJNI6KR/juZ+d0NRNYBwXg==}
+  /bson@6.10.3:
+    resolution: {integrity: sha512-MTxGsqgYTwfshYWTRdmZRC+M7FnG1b4y7RO7p2k3X24Wq0yv1m77Wsj0BzlPzd/IowgESfsruQCUToa7vbOpPQ==}
     engines: {node: '>=16.20.1'}
     dev: false
 
@@ -5022,7 +5022,7 @@ packages:
     requiresBuild: true
     dependencies:
       buildcheck: 0.0.6
-      nan: 2.22.0
+      nan: 2.22.1
     dev: false
     optional: true
 
@@ -5578,7 +5578,7 @@ packages:
     resolution: {integrity: sha512-xkjOecfnKGkSsOwtZ5Pz7Us/T6mrbPQrq0nh+aCO5V9nk5NLWmasAHumTKjiPJPWANe+kAZ84Jc8ooJkzZ88Sw==}
     hasBin: true
     dependencies:
-      strnum: 1.0.5
+      strnum: 1.1.1
     dev: false
 
   /fastest-levenshtein@1.0.16:
@@ -6811,7 +6811,7 @@ packages:
         optional: true
     dependencies:
       '@mongodb-js/saslprep': 1.2.0
-      bson: 6.10.2
+      bson: 6.10.3
       mongodb-connection-string-url: 3.0.2
     dev: false
 
@@ -6843,7 +6843,7 @@ packages:
         optional: true
     dependencies:
       '@mongodb-js/saslprep': 1.2.0
-      bson: 6.10.2
+      bson: 6.10.3
       mongodb-connection-string-url: 3.0.2
     dev: false
 
@@ -6851,8 +6851,8 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
-  /nan@2.22.0:
-    resolution: {integrity: sha512-nbajikzWTMwsW+eSsNm3QwlOs7het9gGJU5dDZzRTQGk03vyBOauxgI4VakDzE0PtsGTmXPsXTbbjVhRwR5mpw==}
+  /nan@2.22.1:
+    resolution: {integrity: sha512-pfRR4ZcNTSm2ZFHaztuvbICf+hyiG6ecA06SfAxoPmuHjvMu0KUIae7Y8GyVkbBqeEIidsmXeYooWIX9+qjfRQ==}
     requiresBuild: true
     dev: false
     optional: true
@@ -7741,7 +7741,7 @@ packages:
       bcrypt-pbkdf: 1.0.2
     optionalDependencies:
       cpu-features: 0.0.10
-      nan: 2.22.0
+      nan: 2.22.1
     dev: false
 
   /stack-utils@2.0.6:
@@ -7799,8 +7799,8 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  /strnum@1.0.5:
-    resolution: {integrity: sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==}
+  /strnum@1.1.1:
+    resolution: {integrity: sha512-O7aCHfYCamLCctjAiaucmE+fHf2DYHkus2OKCn4Wv03sykfFtgeECn505X6K4mPl8CRNd/qurC9guq+ynoN4pw==}
     dev: false
 
   /styled-jsx@5.1.6(react@19.0.0):

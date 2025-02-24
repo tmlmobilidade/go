@@ -49,6 +49,7 @@ const emptyAlert: Alert = {
 	reference_type: 'stop',
 	references: [],
 	title: '',
+	type: 'PLANNED',
 };
 
 const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
