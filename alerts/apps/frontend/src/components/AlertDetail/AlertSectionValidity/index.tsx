@@ -8,8 +8,11 @@ import styles from './styles.module.css';
 export default function AlertSectionValidity() {
 	const { data: alertDetailData } = useAlertDetailContext();
 
-	const startDate = new Date(alertDetailData.form.getValues().active_period_start_date);
-	const endDate = new Date(alertDetailData.form.getValues().active_period_end_date);
+	const startDateValue = alertDetailData.form.getValues().active_period_start_date;
+	const endDateValue = alertDetailData.form.getValues().active_period_end_date;
+
+	const startDate = new Date(startDateValue);
+	const endDate = endDateValue ? new Date(endDateValue) : null;
 
 	return (
 		<Section
@@ -28,6 +31,7 @@ export default function AlertSectionValidity() {
 					className={styles.datePicker}
 					description="Data de fim do alerta"
 					label="Data de Fim"
+					clearable
 					{...alertDetailData.form.getInputProps('active_period_end_date')}
 					value={endDate}
 				/>
