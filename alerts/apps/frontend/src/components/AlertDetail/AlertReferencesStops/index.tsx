@@ -122,12 +122,7 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 				clearable
 				fullWidth
 				searchable
-				{...(() => {
-					const { value, ...inputProps } = alertDetailsData.form.getInputProps(
-						`references.${index}.parent_id`,
-					);
-					return inputProps;
-				})()}
+				{...alertDetailsData.form.getInputProps(`references.${index}.parent_id`)}
 			/>
 			<div className={styles.childrenWrapper}>
 				<IconCornerDownRight className={styles.icon} size={28} />
