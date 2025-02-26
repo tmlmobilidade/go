@@ -1,11 +1,11 @@
 import { Alert } from '@tmlmobilidade/core-types';
 
 export function getAvailableLines(alert: Alert) {
-	if (alert.reference_type === 'route') {
+	if (alert.reference_type === 'ROUTE') {
 		return alert.references.map(reference => reference.parent_id);
 	}
 
-	if (alert.reference_type === 'stop') {
+	if (alert.reference_type === 'STOP') {
 		return alert.references.flatMap(reference => reference.child_ids);
 	}
 
@@ -13,11 +13,11 @@ export function getAvailableLines(alert: Alert) {
 }
 
 export function getAvailableStops(alert: Alert) {
-	if (alert.reference_type === 'route') {
+	if (alert.reference_type === 'ROUTE') {
 		return alert.references.flatMap(reference => reference.child_ids);
 	}
 
-	if (alert.reference_type === 'stop') {
+	if (alert.reference_type === 'STOP') {
 		return alert.references.map(reference => reference.parent_id);
 	}
 
