@@ -64,7 +64,29 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 
 	const allMunicipalitiesData = useMemo(() => {
 		if (fetchedMunicipalitiesData?.status !== 'success') return [];
-		return fetchedMunicipalitiesData.data;
+
+		const AML = [
+			'Alcochete',
+			'Almada',
+			'Amadora',
+			'Barreiro',
+			'Cascais',
+			'Lisboa',
+			'Loures',
+			'Mafra',
+			'Moita',
+			'Montijo',
+			'Odivelas',
+			'Oeiras',
+			'Palmela',
+			'Seixal',
+			'Sesimbra',
+			'Setúbal',
+			'Sintra',
+			'Vila Franca de Xira',
+		];
+
+		return fetchedMunicipalitiesData.data.filter(municipality => AML.includes(municipality.name)).sort((a, b) => a.name.localeCompare(b.name));
 	}, [fetchedMunicipalitiesData]);
 
 	const allParishesData = useMemo(() => {
