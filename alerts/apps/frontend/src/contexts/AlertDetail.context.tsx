@@ -2,7 +2,7 @@
 
 import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, convertObject, UpdateAlertSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema, causeSchema, convertObject, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -37,16 +37,16 @@ const emptyAlert: Alert = {
 	_id: '',
 	active_period_end_date: new Date(),
 	active_period_start_date: new Date(),
-	cause: 'ACCIDENT',
+	cause: Object.values(causeSchema.Enum)[0],
 	created_by: 'temp',
 	description: '',
-	effect: 'ACCESSIBILITY_ISSUE',
+	effect: Object.values(effectSchema.Enum)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
 	publish_end_date: new Date(),
 	publish_start_date: new Date(),
 	publish_status: 'DRAFT',
-	reference_type: 'stop',
+	reference_type: Object.values(referenceTypeSchema.Enum)[0],
 	references: [],
 	title: '',
 	type: 'PLANNED',
@@ -92,7 +92,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setLoading(true);
 
 		if (!alert.reference_type) {
-			alert.reference_type = 'route';
+			alert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
 			alert.references = [];
 		}
 

@@ -5,7 +5,7 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconCornerDownRight, IconPlus, IconTrash } from '@tabler/icons-react';
 import { Button, Combobox, Surface } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -45,14 +45,29 @@ export default function AlertReferencesStops() {
 
 function AlertReferencesStopsItem({ index }: { index: number }) {
 	//
+
+	//
 	// A. Setup variables
 	const { data: linesData } = useLinesContext();
 	const { data: stopsData } = useStopsContext();
 	const { actions, data: alertDetailsData } = useAlertDetailContext();
 
+	const [stopSearch, setStopSearch] = useState(
+		'hello',
+	);
+
+	//
+	// B. Transform data
 	const availableStops = useMemo(() => {
 		if (!stopsData.stops) return [];
 		if (!alertDetailsData.form.values.municipality_ids) return [];
+
+		// if (alertDetailsData.form.values.municipality_ids.length === 0) {
+		// 	return stopsData.stops.map(stop => ({
+		// 		label: `[${stop.id}] ${stop.long_name}`,
+		// 		value: stop.id,
+		// 	}));
+		// }
 
 		return stopsData.stops
 			.filter(stop =>
@@ -91,6 +106,13 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 		alertDetailsData.form.values.references[index].parent_id,
 	]);
 
+	useEffect(() => {
+		console.log('Form Values', alertDetailsData.form.values);
+	}, [alertDetailsData.form.values]);
+
+	//
+	// C. Render Components
+
 	return (
 		<Surface borderRadius="sm" classNames={styles} gap="md" padding="sm">
 			<Combobox
@@ -100,37 +122,37 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 				clearable
 				fullWidth
 				searchable
-				{...alertDetailsData.form.getInputProps(
-					`references.${index}.parent_id`,
-				)}
+				{...(() => {
+					const { value, ...inputProps } = alertDetailsData.form.getInputProps(
+						`references.${index}.parent_id`,
+					);
+					return inputProps;
+				})()}
 			/>
 			<div className={styles.childrenWrapper}>
 				<IconCornerDownRight className={styles.icon} size={28} />
-				<div className={styles.comboboxWrapper}>
-					<Combobox
-						aria-label="Linhas Afetadas"
-						data={availableRoutes}
-						description="Selecione as linhas que serão afetadas pelo alerta"
-						label="Rotas Afetadas"
-						clearable
-						fullWidth
-						multiple
-						searchable
-						{...alertDetailsData.form.getInputProps(
-							`references.${index}.child_ids`,
-						)}
-					/>
-				</div>
+				<Combobox
+					aria-label="Linhas Afetadas"
+					data={availableRoutes}
+					description="Selecione as linhas que serão afetadas pelo alerta"
+					label="Rotas Afetadas"
+					clearable
+					fullWidth
+					multiple
+					searchable
+					{...alertDetailsData.form.getInputProps(
+						`references.${index}.child_ids`,
+					)}
+				/>
 			</div>
 			<div className={styles.buttonContainer}>
 				<Button
 					className={styles.button}
+					icon={<IconTrash size={18} />}
+					label="Eliminar"
 					onClick={() => actions.removeReference(index)}
 					variant="danger"
-				>
-					<IconTrash size={18} />
-					<div>Eliminar</div>
-				</Button>
+				/>
 			</div>
 		</Surface>
 	);

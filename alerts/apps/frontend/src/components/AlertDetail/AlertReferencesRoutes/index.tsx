@@ -100,9 +100,12 @@ function AlertReferencesRoutesItem({ index }: { index: number }) {
 				clearable
 				fullWidth
 				searchable
-				{...alertDetailsData.form.getInputProps(
-					`references.${index}.parent_id`,
-				)}
+				{...(() => {
+					const { value, ...inputProps } = alertDetailsData.form.getInputProps(
+						`references.${index}.parent_id`,
+					);
+					return inputProps;
+				})()}
 			/>
 			<div className={styles.childrenWrapper}>
 				<IconCornerDownRight className={styles.icon} size={28} />
