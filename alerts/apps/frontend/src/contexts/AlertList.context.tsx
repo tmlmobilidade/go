@@ -70,7 +70,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Fetch data
 	const { data: { municipalities } } = useLocationsContext();
-	const { data: { routes } } = useLinesContext();
+	const { data: { lines } } = useLinesContext();
 	const { data: { stops } } = useStopsContext();
 
 	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>(`${Routes.ALERTS_API}/alerts`, swrFetcher);
@@ -107,10 +107,10 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		const options = new Set<string>();
 
 		rawAlerts.forEach((alert) => {
-			getAvailableLines(alert).forEach((route_id) => {
-				const route = routes.find(r => r.id === route_id);
-				if (route) {
-					options.add(route.id);
+			getAvailableLines(alert).forEach((line_id) => {
+				const line = lines.find(l => l.id === line_id);
+				if (line) {
+					options.add(line.id);
 				}
 			});
 		});
@@ -157,14 +157,14 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 			});
 
 			// Check if any line name matches the query
-			const lineMatch = getAvailableLines(alert).some((route_id) => {
-				const route = routes.find(r => r.id === route_id);
-				return route?.long_name.toLowerCase().includes(query);
+			const lineMatch = getAvailableLines(alert).some((line_id) => {
+				const line = lines.find(l => l.id === line_id);
+				return line?.id.toLowerCase().includes(query);
 			});
 
-			const lineIdMatch = getAvailableLines(alert).some((route_id) => {
-				const route = routes.find(r => r.id === route_id);
-				return route?.id.toLowerCase().includes(query);
+			const lineIdMatch = getAvailableLines(alert).some((line_id) => {
+				const line = lines.find(l => l.id === line_id);
+				return line?.id.toLowerCase().includes(query);
 			});
 
 			return municipalityMatch || stopMatch || stopIdMatch || lineMatch || lineIdMatch;
@@ -195,7 +195,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		// 7. Filter by publish date
 		filtered = filterPublishDateStart || filterPublishDateEnd ? filtered.filter((alert) => {
 			const alertPublishStartDate = DateTime.fromISO(alert.publish_start_date.toString()).toMillis();
-			const alertPublishEndDate = DateTime.fromISO(alert.publish_end_date.toString()).toMillis();
+			const alertPublishEndDate = DateTime.fromISO(alert.publish_end_date?.toString() || '').toMillis();
 			const filterPublishStartDate = filterPublishDateStart ? DateTime.fromJSDate(filterPublishDateStart).toMillis() : null;
 			const filterPublishEndDate = filterPublishDateEnd ? DateTime.fromJSDate(filterPublishDateEnd).toMillis() : null;
 
@@ -215,7 +215,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		// 8. Filter by validity date
 		filtered = filterValidityDateStart || filterValidityDateEnd ? filtered.filter((alert) => {
 			const alertValidityStartDate = DateTime.fromISO(alert.active_period_start_date.toString()).toMillis();
-			const alertValidityEndDate = DateTime.fromISO(alert.active_period_end_date.toString()).toMillis();
+			const alertValidityEndDate = DateTime.fromISO(alert.active_period_end_date?.toString() || '').toMillis();
 			const filterValidityStartDate = filterValidityDateStart ? DateTime.fromJSDate(filterValidityDateStart).toMillis() : null;
 			const filterValidityEndDate = filterValidityDateEnd ? DateTime.fromJSDate(filterValidityDateEnd).toMillis() : null;
 
