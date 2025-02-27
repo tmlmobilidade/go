@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchData, swrFetcher } from '@/lib/http';
+import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { Alert, AlertSchema, causeSchema, convertObject, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
@@ -17,12 +17,15 @@ interface AlertDetailContextState {
 	actions: {
 		addReference: () => void
 		deleteAlert: () => void
+		deleteImage: () => void
+		fileChanged: (file: File) => void
 		removeReference: (index: number) => void
 		saveAlert: () => void
 	}
 	data: {
 		form: UseFormReturnType<Alert>
 		id: string | undefined
+		imageUrl: string | undefined
 	}
 	flags: {
 		canSave: boolean
@@ -68,10 +71,17 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly, setIsReadOnly] = useState(false);
+	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
+	const [image, setImage] = useState<File | null>(null);
 
 	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new' ? null : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
+		alertId === 'new'
+			? undefined
+			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
+		swrFetcher,
+	);
 
 	//
 	// B. Define form
@@ -135,14 +145,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const saveAlert = async () => {
 		setIsSaving(true);
 
-		// Handle Image Upload
+		// Handle Save Alert
 		const saveAlert: Alert = { ...form.values, publish_status: 'PUBLISHED' };
 
 		const method = alertId === 'new' ? 'POST' : 'PUT';
 		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
 		const body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
 
-		const response = await fetchData<Alert>(url, method, body);
+		const response = await fetchData<unknown>(url, method, body);
 
 		if (response.error) {
 			const errors = JSON.parse(response.error);
@@ -154,6 +164,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			}
 
 			return;
+		}
+
+		const insertedId = alertId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : alertId;
+		if (insertedId) {
+			await uploadImage(insertedId);
+		}
+
+		// If the alert is new, redirect to the detail page
+		if (insertedId && alertId === 'new') {
+			router.replace(Routes.ALERT_DETAIL(insertedId));
 		}
 
 		useToast.success({
@@ -187,24 +207,72 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		router.replace(Routes.ALERT_LIST);
 	};
 
+	const deleteImage = async () => {
+		if (alertId === 'new') return;
+
+		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
+		if (response.error) {
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({
+					message: error.message,
+					title: 'Erro ao apagar imagem',
+				});
+			}
+			return;
+		}
+
+		useToast.success({
+			message: 'Imagem apagada com sucesso',
+			title: 'Sucesso',
+		});
+	};
+
+	const uploadImage = async (alert_id: string) => {
+		if (alert_id === 'new' || !image) return;
+
+		const response = await uploadFile(
+			Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id),
+			image,
+		);
+
+		console.log('IMAGE RESPONSE', response);
+
+		if (response.error) {
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao carregar imagem',
+			});
+			return;
+		}
+
+		useToast.success({
+			message: 'A imagem foi carregada com sucesso',
+			title: 'Imagem carregada com sucesso',
+		});
+	};
+
 	//
 	// E. Define context value
 	const contextValue: AlertDetailContextState = {
 		actions: {
 			addReference,
 			deleteAlert,
+			deleteImage,
+			fileChanged: (file: File) => setImage(file),
 			removeReference,
 			saveAlert,
 		},
 		data: {
 			form,
 			id: alertId === 'new' ? undefined : alertId,
+			imageUrl: imageUrl?.data,
 		},
 		flags: {
 			canSave,
 			isReadOnly,
 			isSaving,
-			loading: isLoading || loading,
+			loading: isLoading || loading || imageUrlLoading,
 			mode: alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT,
 		},
 	};

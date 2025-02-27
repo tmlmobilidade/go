@@ -1,8 +1,19 @@
+
 .container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	min-height: fit-content;
+	margin-bottom: var(--size-spacing-md);
+}
+
+
+.imageContainer {
 	position: relative;
 	aspect-ratio: 4/3;
 	max-width: 400px;
 	max-height: 300px;
+	padding: var(--size-spacing-sm);
 	
 	& .image {
 		width: 100%;
@@ -14,5 +25,5 @@
 .deleteContainer {
 	position: absolute;
 	top: 5px;
-	right: 20px;
+	right: 5px;
 }
