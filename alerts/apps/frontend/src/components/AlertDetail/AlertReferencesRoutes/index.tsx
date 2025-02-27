@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-export default function AlertReferencesRoutes() {
+export default function AlertReferencesLines() {
 	//
 	// A. Get Data
 	const alertDetailContext = useAlertDetailContext();
@@ -27,7 +27,7 @@ export default function AlertReferencesRoutes() {
 				<Surface padding="md">Não há referências disponíveis.</Surface>
 			) : (
 				references.map((reference, index) => (
-					<AlertReferencesRoutesItem key={index} index={index} />
+					<AlertReferencesLinesItem key={index} index={index} />
 				))
 			)}
 			<Button
@@ -41,35 +41,35 @@ export default function AlertReferencesRoutes() {
 	);
 }
 
-function AlertReferencesRoutesItem({ index }: { index: number }) {
+function AlertReferencesLinesItem({ index }: { index: number }) {
 	//
 	// A. Setup variables
 	const { data: linesData } = useLinesContext();
 	const { data: stopsData } = useStopsContext();
 	const { actions, data: alertDetailsData } = useAlertDetailContext();
 
-	const availableRoutes = useMemo(() => {
-		if (!linesData.routes) return [];
+	const availableLines = useMemo(() => {
+		if (!linesData.lines) return [];
 
 		if (alertDetailsData.form.values.municipality_ids.length === 0)
-			return linesData.routes.map(route => ({
-				label: `[${route.id}] ${route.long_name}`,
-				value: route.id,
+			return linesData.lines.map(line => ({
+				label: `[${line.id}] ${line.long_name}`,
+				value: line.id,
 			}));
 
-		return linesData.routes
-			.filter(route =>
-				route.municipality_ids.some((municipality: string) =>
+		return linesData.lines
+			.filter(line =>
+				line.municipality_ids.some((municipality: string) =>
 					alertDetailsData.form.values.municipality_ids.includes(
 						municipality,
 					),
 				),
 			)
-			.map(route => ({
-				label: `[${route.id}] ${route.long_name}`,
-				value: route.id,
+			.map(line => ({
+				label: `[${line.id}] ${line.long_name}`,
+				value: line.id,
 			}));
-	}, [linesData.routes, alertDetailsData.form.values.municipality_ids]);
+	}, [linesData.lines, alertDetailsData.form.values.municipality_ids]);
 
 	const availableStops = useMemo(() => {
 		if (!stopsData.stops) return [];
@@ -95,14 +95,12 @@ function AlertReferencesRoutesItem({ index }: { index: number }) {
 		<Surface borderRadius="sm" classNames={styles} gap="md" padding="sm">
 			<Combobox
 				aria-label="Linha Afetada"
-				data={availableRoutes}
+				data={availableLines}
 				label="Linha Afetada"
 				clearable
 				fullWidth
 				searchable
-				{...alertDetailsData.form.getInputProps(
-					`references.${index}.parent_id`,
-				)}
+				{...alertDetailsData.form.getInputProps(`references.${index}.parent_id`)}
 			/>
 			<div className={styles.childrenWrapper}>
 				<IconCornerDownRight className={styles.icon} size={28} />

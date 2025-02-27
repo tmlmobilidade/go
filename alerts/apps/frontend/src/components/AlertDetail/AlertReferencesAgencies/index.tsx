@@ -12,7 +12,10 @@ export default function AlertReferencesAgencies() {
 	// A. Get Data
 	const alertDetailContext = useAlertDetailContext();
 
-	const references = useMemo(() => alertDetailContext.data.form.values.references, [alertDetailContext.data.form.values.references]);
+	const references = useMemo(
+		() => alertDetailContext.data.form.values.references,
+		[alertDetailContext.data.form.values.references],
+	);
 
 	//
 	// C. Render Components
@@ -25,10 +28,13 @@ export default function AlertReferencesAgencies() {
 					<AlertReferencesAgenciesItem key={index} index={index} />
 				))
 			)}
-			<Button className={styles.button} onClick={alertDetailContext.actions.addReference} variant="primary">
-				<IconPlus size={18} />
-				<div>Adicionar Rota</div>
-			</Button>
+			<Button
+				className={styles.button}
+				icon={<IconPlus size={18} />}
+				label="Adicionar Rota"
+				onClick={alertDetailContext.actions.addReference}
+				variant="primary"
+			/>
 		</div>
 	);
 }
@@ -50,9 +56,9 @@ function AlertReferencesAgenciesItem({ index }: { index: number }) {
 				label="Agência Afetada"
 				clearable
 				fullWidth
-				searchable
-
-				{...alertDetailsData.form.getInputProps(`references.${index}.parent_id`)}
+				{...alertDetailsData.form.getInputProps(
+					`references.${index}.parent_id`,
+				)}
 			/>
 			<div className={styles.deleteButtonWrapper}>
 				<Button

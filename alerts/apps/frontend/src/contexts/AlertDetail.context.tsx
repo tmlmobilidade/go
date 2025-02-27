@@ -1,8 +1,8 @@
 'use client';
 
-import { fetchData, swrFetcher } from '@/lib/http';
+import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, convertObject, UpdateAlertSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema, causeSchema, convertObject, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -17,12 +17,15 @@ interface AlertDetailContextState {
 	actions: {
 		addReference: () => void
 		deleteAlert: () => void
+		deleteImage: () => void
+		fileChanged: (file: File) => void
 		removeReference: (index: number) => void
 		saveAlert: () => void
 	}
 	data: {
 		form: UseFormReturnType<Alert>
 		id: string | undefined
+		imageUrl: string | undefined
 	}
 	flags: {
 		canSave: boolean
@@ -37,16 +40,16 @@ const emptyAlert: Alert = {
 	_id: '',
 	active_period_end_date: new Date(),
 	active_period_start_date: new Date(),
-	cause: 'ACCIDENT',
+	cause: Object.values(causeSchema.Enum)[0],
 	created_by: 'temp',
 	description: '',
-	effect: 'ACCESSIBILITY_ISSUE',
+	effect: Object.values(effectSchema.Enum)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
 	publish_end_date: new Date(),
 	publish_start_date: new Date(),
 	publish_status: 'DRAFT',
-	reference_type: 'stop',
+	reference_type: Object.values(referenceTypeSchema.Enum)[0],
 	references: [],
 	title: '',
 	type: 'PLANNED',
@@ -68,10 +71,17 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly, setIsReadOnly] = useState(false);
+	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
+	const [image, setImage] = useState<File | null>(null);
 
 	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new' ? null : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
+		alertId === 'new'
+			? undefined
+			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
+		swrFetcher,
+	);
 
 	//
 	// B. Define form
@@ -92,7 +102,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setLoading(true);
 
 		if (!alert.reference_type) {
-			alert.reference_type = 'route';
+			alert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
 			alert.references = [];
 		}
 
@@ -135,14 +145,19 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const saveAlert = async () => {
 		setIsSaving(true);
 
-		// Handle Image Upload
-		const saveAlert: Alert = { ...form.values, publish_status: 'PUBLISHED' };
+		// Handle Save Alert
+		const active_period_end_date = form.getValues().active_period_end_date ?? null;
+		const publish_end_date = form.getValues().publish_end_date ?? null;
+
+		const saveAlert: Alert = { ...form.values, active_period_end_date, publish_end_date, publish_status: 'PUBLISHED' };
 
 		const method = alertId === 'new' ? 'POST' : 'PUT';
 		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
-		const body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
+		let body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
 
-		const response = await fetchData<Alert>(url, method, body);
+		body = { ...body, active_period_end_date, publish_end_date };
+
+		const response = await fetchData<unknown>(url, method, body);
 
 		if (response.error) {
 			const errors = JSON.parse(response.error);
@@ -154,6 +169,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			}
 
 			return;
+		}
+
+		const insertedId = alertId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : alertId;
+		if (insertedId) {
+			await uploadImage(insertedId);
+		}
+
+		// If the alert is new, redirect to the detail page
+		if (insertedId && alertId === 'new') {
+			router.replace(Routes.ALERT_DETAIL(insertedId));
 		}
 
 		useToast.success({
@@ -187,24 +212,70 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		router.replace(Routes.ALERT_LIST);
 	};
 
+	const deleteImage = async () => {
+		if (alertId === 'new') return;
+
+		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
+		if (response.error) {
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({
+					message: error.message,
+					title: 'Erro ao apagar imagem',
+				});
+			}
+			return;
+		}
+
+		useToast.success({
+			message: 'Imagem apagada com sucesso',
+			title: 'Sucesso',
+		});
+	};
+
+	const uploadImage = async (alert_id: string) => {
+		if (alert_id === 'new' || !image) return;
+
+		const response = await uploadFile(
+			Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id),
+			image,
+		);
+
+		if (response.error) {
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao carregar imagem',
+			});
+			return;
+		}
+
+		useToast.success({
+			message: 'A imagem foi carregada com sucesso',
+			title: 'Imagem carregada com sucesso',
+		});
+	};
+
 	//
 	// E. Define context value
 	const contextValue: AlertDetailContextState = {
 		actions: {
 			addReference,
 			deleteAlert,
+			deleteImage,
+			fileChanged: (file: File) => setImage(file),
 			removeReference,
 			saveAlert,
 		},
 		data: {
 			form,
 			id: alertId === 'new' ? undefined : alertId,
+			imageUrl: imageUrl?.data,
 		},
 		flags: {
 			canSave,
 			isReadOnly,
 			isSaving,
-			loading: isLoading || loading,
+			loading: isLoading || loading || imageUrlLoading,
 			mode: alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT,
 		},
 	};

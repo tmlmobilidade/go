@@ -29,7 +29,7 @@ export default function Header() {
 			</div>
 			<div className={styles.headerContainer}>
 				<Button
-					disabled={!flags.canSave}
+					disabled={!flags.canSave || flags.isSaving}
 					icon={<IconUpload size={28} />}
 					loading={flags.isSaving}
 					onClick={actions.saveAlert}
@@ -42,6 +42,7 @@ export default function Header() {
 				/>
 				{flags.mode === AlertDetailMode.EDIT && (
 					<Button
+						disabled={flags.isSaving}
 						icon={<IconTrash size={28} />}
 						label="Apagar"
 						onClick={actions.deleteAlert}

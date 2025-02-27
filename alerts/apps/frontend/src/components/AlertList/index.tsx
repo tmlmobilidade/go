@@ -52,6 +52,7 @@ export default function AlertList() {
 				return <StopCell stop_ids={getAvailableStops(alert)} />;
 			},
 			title: 'Paragens',
+			width: 300,
 		},
 	];
 
@@ -67,7 +68,7 @@ export default function AlertList() {
 	return (
 		<div className={styles.container}>
 			<Header />
-			{/* <Filters /> */}
+			<Filters />
 			<DataTable
 				classnames={{ root: styles.table, row: styles.row }}
 				columns={columns}

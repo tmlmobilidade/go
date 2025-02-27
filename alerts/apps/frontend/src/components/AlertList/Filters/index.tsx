@@ -17,8 +17,8 @@ export default function Filters() {
 				<CauseFilter />
 				<EffectFilter />
 				<MunicipalityFilter />
-				<LineFilter />
-				<StopFilter />
+				{/* <LineFilter />
+				<StopFilter /> */}
 				<PublishDateFilter />
 				<ValidityDateFilter />
 			</div>

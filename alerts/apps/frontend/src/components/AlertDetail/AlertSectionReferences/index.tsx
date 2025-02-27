@@ -4,7 +4,7 @@
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Alert, AlertSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/core-types';
 import {
 	Combobox,
 	openConfirmModal,
@@ -15,7 +15,7 @@ import {
 import { useMemo } from 'react';
 
 import AlertReferencesAgencies from '../AlertReferencesAgencies';
-import AlertReferencesRoutes from '../AlertReferencesRoutes';
+import AlertReferencesLines from '../AlertReferencesRoutes';
 import AlertReferencesStops from '../AlertReferencesStops';
 
 export default function AlertSectionReferences() {
@@ -43,12 +43,14 @@ export default function AlertSectionReferences() {
 	// C. Handle Actions
 	const parseOptionsLabel = (value: Alert['reference_type']) => {
 		switch (value) {
-			case 'agency':
+			case 'AGENCY':
 				return { label: 'Agências', value };
-			case 'route':
+			case 'LINE':
 				return { label: 'Linhas', value };
-			case 'stop':
+			case 'STOP':
 				return { label: 'Paragens', value };
+			case 'TRIP':
+				return { label: 'Viagens', value };
 		}
 	};
 
@@ -97,15 +99,15 @@ export default function AlertSectionReferences() {
 				/>
 
 				<SegmentedControl
-					data={AlertSchema.shape.reference_type.options.map(parseOptionsLabel)}
+					data={AlertSchema.shape.reference_type.options.map(parseOptionsLabel).filter(option => option.value !== referenceTypeSchema.Values.TRIP)}
 					onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
 					value={alertDetailData.form.values.reference_type}
 					fullWidth
 				/>
 
-				{alertDetailData.form.values.reference_type === 'route' && <AlertReferencesRoutes />}
-				{alertDetailData.form.values.reference_type === 'stop' && <AlertReferencesStops />}
-				{alertDetailData.form.values.reference_type === 'agency' && <AlertReferencesAgencies />}
+				{alertDetailData.form.values.reference_type === 'LINE' && <AlertReferencesLines />}
+				{alertDetailData.form.values.reference_type === 'STOP' && <AlertReferencesStops />}
+				{alertDetailData.form.values.reference_type === 'AGENCY' && <AlertReferencesAgencies />}
 
 			</Surface>
 		</Section>

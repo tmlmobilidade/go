@@ -1,14 +1,19 @@
 'use client';
 
+import { UploadImage } from '@/components/common/UploadImage';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { Section, Surface, TextArea, TextInput } from '@tmlmobilidade/ui';
 
-import AlertImage from '../AlertImage';
-
 export default function AlertSectionTitle() {
-	const { data: alertDetailData } = useAlertDetailContext();
+	//
 
+	//
+	// A. Setup Variables
+	const { actions, data: alertDetailData } = useAlertDetailContext();
+
+	//
+	// C. Render Components
 	return (
 		<Section
 			description="Breve descrição do que motivou a criação do alerta"
@@ -33,7 +38,12 @@ export default function AlertSectionTitle() {
 					withAsterisk
 					{...alertDetailData.form.getInputProps('description')}
 				/>
-				<AlertImage />
+				<UploadImage
+					imageUrl={alertDetailData.imageUrl}
+					label="Imagem"
+					onDelete={actions.deleteImage}
+					onFileChange={actions.fileChanged}
+				/>
 				<TextInput
 					description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"
 					label="Link Adicional"
