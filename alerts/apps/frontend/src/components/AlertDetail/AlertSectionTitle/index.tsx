@@ -12,8 +12,6 @@ export default function AlertSectionTitle() {
 	// A. Setup Variables
 	const { actions, data: alertDetailData } = useAlertDetailContext();
 
-	console.log('ALERT DETAIL DATA', alertDetailData);
-
 	//
 	// C. Render Components
 	return (

@@ -236,8 +236,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			image,
 		);
 
-		console.log('IMAGE RESPONSE', response);
-
 		if (response.error) {
 			useToast.error({
 				message: response.error,

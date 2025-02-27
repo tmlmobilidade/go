@@ -5,7 +5,7 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconCornerDownRight, IconPlus, IconTrash } from '@tabler/icons-react';
 import { Button, Combobox, Surface } from '@tmlmobilidade/ui';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
@@ -51,10 +51,6 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 	const { data: linesData } = useLinesContext();
 	const { data: stopsData } = useStopsContext();
 	const { actions, data: alertDetailsData } = useAlertDetailContext();
-
-	const [stopSearch, setStopSearch] = useState(
-		'hello',
-	);
 
 	//
 	// B. Transform data
@@ -105,10 +101,6 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 		alertDetailsData.form.values.municipality_ids,
 		alertDetailsData.form.values.references[index].parent_id,
 	]);
-
-	useEffect(() => {
-		console.log('Form Values', alertDetailsData.form.values);
-	}, [alertDetailsData.form.values]);
 
 	//
 	// C. Render Components
