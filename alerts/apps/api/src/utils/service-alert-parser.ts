@@ -1,3 +1,4 @@
+import { Line } from '@carrismetropolitana/api-types/network';
 import { files } from '@tmlmobilidade/core/interfaces';
 import { Alert } from '@tmlmobilidade/core/types';
 import { EntitySelector, Alert as ServiceAlert } from 'gtfs-types';
@@ -20,38 +21,41 @@ interface ServiceAlertResponse {
 	id: string
 }
 
-async function parseServiceAlert(alert: Alert): Promise<ServiceAlertResponse> {
+async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAlertResponse> {
 	const informed_entity = (): EntitySelector[] => {
 		const informed_entity: EntitySelector[] = [];
 
 		switch (alert.reference_type) {
-			case 'agency':
+			case 'AGENCY':
 				alert.references.forEach((reference) => {
 					informed_entity.push({
 						agency_id: reference.parent_id,
 					});
 				});
 				break;
-			case 'route':
+			case 'LINE':
 				alert.references.forEach((reference) => {
-					if (reference.child_ids.length === 0) {
-						const entity = {
-							route_id: reference.parent_id,
-						};
-						informed_entity.push(entity);
-					}
-					else {
-						reference.child_ids.forEach((child_id) => {
+					const line = lines.find(line => line.id === reference.parent_id);
+					for (const route_id of line?.route_ids ?? []) {
+						if (reference.child_ids.length === 0) {
 							const entity = {
-								route_id: reference.parent_id,
-								stop_id: child_id,
+								route_id: route_id,
 							};
 							informed_entity.push(entity);
-						});
+						}
+						else {
+							reference.child_ids.forEach((child_id) => {
+								const entity = {
+									route_id: route_id,
+									stop_id: child_id,
+								};
+								informed_entity.push(entity);
+							});
+						}
 					}
 				});
 				break;
-			case 'stop':
+			case 'STOP':
 				alert.references.forEach((reference) => {
 					if (reference.child_ids.length === 0) {
 						informed_entity.push({
@@ -75,11 +79,18 @@ async function parseServiceAlert(alert: Alert): Promise<ServiceAlertResponse> {
 	};
 
 	const file = await files.findById(alert.file_id);
+	let fileUrl = '';
+	try {
+		fileUrl = await files.getFileUrl({ file_id: alert.file_id });
+	}
+	catch (error) {
+		console.error(error);
+	}
 
 	return {
 		alert: {
 			active_period: {
-				end: alert.active_period_end_date.getTime() / 1000,
+				end: alert.active_period_end_date ? alert.active_period_end_date.getTime() / 1000 : undefined,
 				start: alert.active_period_start_date.getTime() / 1000,
 			},
 			cause: alert.cause,
@@ -105,7 +116,7 @@ async function parseServiceAlert(alert: Alert): Promise<ServiceAlertResponse> {
 					{
 						language: 'pt-PT',
 						media_type: file.type ?? 'image/png',
-						url: await files.getFileUrl({ file_id: alert.file_id }),
+						url: fileUrl,
 					},
 				],
 			},

@@ -1,3 +1,4 @@
+import { fetchLines } from '@/utils/lines';
 import { parseServiceAlert } from '@/utils/service-alert-parser';
 import { alerts, files } from '@tmlmobilidade/core/interfaces';
 import { HttpStatus } from '@tmlmobilidade/core/lib';
@@ -106,14 +107,20 @@ export class AlertsController {
 			const result = await alerts.findMany({
 				$and: [
 					{
-						publish_end_date: { $gte: new Date() },
+						$or: [
+							{ publish_end_date: { $gte: new Date() } },
+							{ publish_end_date: null },
+							{ publish_end_date: undefined },
+							{ publish_end_date: { $exists: false } },
+						],
 						publish_start_date: { $lte: new Date() },
 						publish_status: 'PUBLISHED',
 					},
 				],
 			}, undefined, undefined, { created_at: -1 });
 
-			const serviceAlerts = await Promise.all(result.map(async alert => await parseServiceAlert(alert)));
+			const lines = await fetchLines();
+			const serviceAlerts = await Promise.all(result.map(async alert => await parseServiceAlert(alert, lines)));
 
 			reply.send({
 				entity: serviceAlerts,

@@ -36,8 +36,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       '@tmlmobilidade/core':
-        specifier: ^20250226.1546.5
-        version: 20250226.1546.5
+        specifier: ^20250227.1639.57
+        version: 20250227.1639.57
       fastify:
         specifier: ^5.1.0
         version: 5.2.1
@@ -54,6 +54,9 @@ importers:
         specifier: ^5.0.2
         version: 5.0.3
     devDependencies:
+      '@carrismetropolitana/api-types':
+        specifier: ^20250125.142.37
+        version: 20250125.142.37
       '@dotenv-run/cli':
         specifier: ^1.3.6
         version: 1.3.6
@@ -85,8 +88,8 @@ importers:
         specifier: ^3.29.0
         version: 3.30.0(react@19.0.0)
       '@tmlmobilidade/core-types':
-        specifier: ^20250226.1544.20
-        version: 20250226.1544.20
+        specifier: ^20250227.1638.40
+        version: 20250227.1638.40
       '@tmlmobilidade/ui':
         specifier: ^20250226.1436.26
         version: 20250226.1436.26(@types/react@19.0.8)(dayjs@1.11.13)(react-dom@19.0.0)(react@19.0.0)(rollup@4.34.8)
@@ -3095,8 +3098,8 @@ packages:
       - socks
     dev: false
 
-  /@tmlmobilidade/core-types@20250226.1544.20:
-    resolution: {integrity: sha512-EcGUy4W7qSpnH9FpfyRU6mZQPynKwWBzZP48WoZMqMoIXPqsIAvMDaTR23DC0LcJwXyFyIV0mbI5YFR7r6Z8Yw==}
+  /@tmlmobilidade/core-types@20250227.1638.40:
+    resolution: {integrity: sha512-BAQEHJaKwQkrCadAtgPM5yfBxAAyDV0FTCvSNZCVK6RumR7gGZhoviewbzIReAQkPm2LlFgTd83toEBjVxAXDA==}
     dependencies:
       '@aws-sdk/client-s3': 3.744.0
       '@aws-sdk/s3-request-presigner': 3.744.0
@@ -3125,8 +3128,8 @@ packages:
       - socks
     dev: false
 
-  /@tmlmobilidade/core@20250226.1546.5:
-    resolution: {integrity: sha512-ZV5XUjA3OZZvTbnmpkIfDbbByKD2EGtqCM11NtZ86wfn8eFkCj6ilpKzzyv5VKGs5WxKsuEiZdkhsokvChtKjg==}
+  /@tmlmobilidade/core@20250227.1639.57:
+    resolution: {integrity: sha512-HMG9Z9KawtRa+f0F6S4TWL7/ivHfbcBYIa+e5/+2sCGzpiY3lZJDAg8mZ0gDe15Y8TAaP+4eNI66zV/+69l+OA==}
     dependencies:
       '@aws-sdk/client-s3': 3.744.0
       '@aws-sdk/s3-request-presigner': 3.744.0

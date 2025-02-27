@@ -146,11 +146,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setIsSaving(true);
 
 		// Handle Save Alert
-		const saveAlert: Alert = { ...form.values, publish_status: 'PUBLISHED' };
+		const active_period_end_date = form.getValues().active_period_end_date ?? null;
+		const publish_end_date = form.getValues().publish_end_date ?? null;
+
+		const saveAlert: Alert = { ...form.values, active_period_end_date, publish_end_date, publish_status: 'PUBLISHED' };
 
 		const method = alertId === 'new' ? 'POST' : 'PUT';
 		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
-		const body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
+		let body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
+
+		body = { ...body, active_period_end_date, publish_end_date };
 
 		const response = await fetchData<unknown>(url, method, body);
 

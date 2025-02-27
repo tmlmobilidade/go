@@ -15,7 +15,7 @@ import {
 import { useMemo } from 'react';
 
 import AlertReferencesAgencies from '../AlertReferencesAgencies';
-import AlertReferencesRoutes from '../AlertReferencesRoutes';
+import AlertReferencesLines from '../AlertReferencesRoutes';
 import AlertReferencesStops from '../AlertReferencesStops';
 
 export default function AlertSectionReferences() {
@@ -45,7 +45,7 @@ export default function AlertSectionReferences() {
 		switch (value) {
 			case 'AGENCY':
 				return { label: 'Agências', value };
-			case 'ROUTE':
+			case 'LINE':
 				return { label: 'Linhas', value };
 			case 'STOP':
 				return { label: 'Paragens', value };
@@ -105,7 +105,7 @@ export default function AlertSectionReferences() {
 					fullWidth
 				/>
 
-				{alertDetailData.form.values.reference_type === 'ROUTE' && <AlertReferencesRoutes />}
+				{alertDetailData.form.values.reference_type === 'LINE' && <AlertReferencesLines />}
 				{alertDetailData.form.values.reference_type === 'STOP' && <AlertReferencesStops />}
 				{alertDetailData.form.values.reference_type === 'AGENCY' && <AlertReferencesAgencies />}
 
