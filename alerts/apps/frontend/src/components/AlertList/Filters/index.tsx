@@ -139,11 +139,11 @@ function MunicipalityFilter() {
 
 function LineFilter() {
 	const { actions, filters } = useAlertListContext();
-	const { data: { lines, routes } } = useLinesContext();
+	const { data: { lines } } = useLinesContext();
 
-	const parseLine = (route_id: string) => {
-		const route = routes.find(r => r.id === route_id);
-		return `[${route?.line_id}] - ${lines.find(l => l.id === route?.line_id)?.long_name ?? ''}`;
+	const parseLine = (line_id: string) => {
+		const line = lines.find(l => l.id === line_id);
+		return `[${line?.id}] - ${line?.long_name ?? ''}`;
 	};
 
 	const hasChanged = filters.line.length !== filters.lineOptions.length;
