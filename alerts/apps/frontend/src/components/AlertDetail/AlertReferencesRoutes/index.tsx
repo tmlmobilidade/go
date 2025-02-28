@@ -78,7 +78,7 @@ function AlertReferencesLinesItem({ index }: { index: number }) {
 
 		return stopsData.stops
 			.filter(stop =>
-				stop.route_ids.includes(
+				stop.line_ids.includes(
 					alertDetailsData.form.values.references[index].parent_id,
 				),
 			)

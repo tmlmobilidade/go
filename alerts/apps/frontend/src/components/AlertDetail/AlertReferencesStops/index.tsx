@@ -58,13 +58,6 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 		if (!stopsData.stops) return [];
 		if (!alertDetailsData.form.values.municipality_ids) return [];
 
-		// if (alertDetailsData.form.values.municipality_ids.length === 0) {
-		// 	return stopsData.stops.map(stop => ({
-		// 		label: `[${stop.id}] ${stop.long_name}`,
-		// 		value: stop.id,
-		// 	}));
-		// }
-
 		return stopsData.stops
 			.filter(stop =>
 				alertDetailsData.form.values.municipality_ids.includes(
@@ -78,7 +71,7 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 	}, [stopsData.stops, alertDetailsData.form.values.municipality_ids]);
 
 	const availableRoutes = useMemo(() => {
-		if (!linesData.routes) return [];
+		if (!linesData.lines) return [];
 		if (!alertDetailsData.form.values.references[index].parent_id)
 			return [];
 
@@ -88,16 +81,16 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 				=== alertDetailsData.form.values.references[index].parent_id,
 		);
 		return (
-			selectedStop?.route_ids.map(routeId => ({
-				label: `[${routeId}] ${
-					linesData.routes.find(route => route.id === routeId)
+			selectedStop?.line_ids.map(lineId => ({
+				label: `[${lineId}] ${
+					linesData.lines.find(line => line.id === lineId)
 						?.long_name
 				}`,
-				value: routeId,
+				value: lineId,
 			})) || []
 		);
 	}, [
-		linesData.routes,
+		linesData.lines,
 		alertDetailsData.form.values.municipality_ids,
 		alertDetailsData.form.values.references[index].parent_id,
 	]);
@@ -111,6 +104,9 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 				aria-label="Paragem Afetada"
 				data={availableStops}
 				label="Paragem Afetada"
+
+				// @ts-expect-error - Fix in UI Library
+				placeholder={alertDetailsData.form.values.municipality_ids.length === 0 ? 'Selecione os Municípios' : 'Selecione a Paragem'}
 				clearable
 				fullWidth
 				searchable
@@ -122,7 +118,7 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 					aria-label="Linhas Afetadas"
 					data={availableRoutes}
 					description="Selecione as linhas que serão afetadas pelo alerta"
-					label="Rotas Afetadas"
+					label="Linhas Afetadas"
 					clearable
 					fullWidth
 					multiple
