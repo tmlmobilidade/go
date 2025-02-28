@@ -7,6 +7,7 @@ import { Alert } from '@tmlmobilidade/core-types';
 import { DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
+import DateCell from './DateCell';
 import Filters from './Filters';
 import Header from './Header';
 import LineCell from './LineCell';
@@ -53,6 +54,18 @@ export default function AlertList() {
 			},
 			title: 'Paragens',
 			width: 300,
+		},
+		{
+			accessor: 'publish_start_date',
+			render: ({ publish_end_date, publish_start_date }) => <DateCell date={publish_start_date} endDate={publish_end_date} />,
+			title: 'Data de início',
+			width: 150,
+		},
+		{
+			accessor: 'publish_end_date',
+			render: ({ publish_end_date }) => <DateCell date={publish_end_date} endDate={publish_end_date} />,
+			title: 'Data de fim',
+			width: 150,
 		},
 	];
 
