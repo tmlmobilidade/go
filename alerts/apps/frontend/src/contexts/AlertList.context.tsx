@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { toggleArray } from '@/lib/utils';
+import { Municipality } from '@carrismetropolitana/api-types/locations';
+import { Line, Stop } from '@carrismetropolitana/api-types/network';
 import { Alert, AlertSchema } from '@tmlmobilidade/core-types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
@@ -135,104 +138,233 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		return Array.from(options);
 	}, [rawAlerts]);
 
+	//
+	// C. Filtering
+
+	/**
+	 * Precomputes and normalizes data for alerts, municipalities, stops, and lines.
+	 *
+	 * @param {Alert[]} records - The list of alert records to be normalized.
+	 * @param {Municipality[]} municipalities - The list of municipalities to create a lookup map.
+	 * @param {Stop[]} stops - The list of stops to create a lookup map.
+	 * @param {Line[]} lines - The list of lines to create a lookup map.
+	 * @returns {Object} An object containing normalized records and lookup maps for municipalities, stops, and lines.
+	 */
+	function precomputeData(records: Alert[], municipalities: Municipality[], stops: Stop[], lines: Line[]) {
+		// Normalize record fields
+		const normalizedRecords = records.map((record: Alert) => {
+			const normalized: Alert = { ...record };
+			(['title', 'description', 'cause', 'effect'] as (keyof Alert)[]).forEach((field) => {
+				if (record[field]) {
+					// @ts-expect-error - TODO: fix this
+					normalized[field] = record[field]
+						.toString()
+						.toLowerCase()
+						.normalize('NFD')
+						.replace(/[\u0300-\u036f]/g, '');
+				}
+			});
+			return normalized;
+		});
+
+		// Create lookup maps for related data
+		const municipalityMap = new Map(
+			municipalities.map((m: Municipality) => [
+				m.id,
+				m.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+			]),
+		);
+
+		const stopMap = new Map(
+			stops.map((s: Stop) => [
+				s.id,
+				{
+					id: s.id.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+					name: s.long_name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+				},
+			]),
+		);
+
+		const lineMap = new Map(
+			lines.map((l: Line) => [
+				l.id,
+				{
+					id: l.id.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+					name: l.long_name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+				},
+			]),
+		);
+
+		return { lineMap, municipalityMap, normalizedRecords, stopMap };
+	}
+
+	const { lineMap, municipalityMap, normalizedRecords, stopMap } = useMemo(
+		() => precomputeData(rawAlerts, municipalities as Municipality[], stops as Stop[], lines as Line[]),
+		[rawAlerts, municipalities, stops, lines],
+	);
+
+	/**
+	 * Custom search function that checks if any of the alert's related data matches the query.
+	 * @param {Alert} alert - The alert object to search within.
+	 * @param {string} query - The search query string.
+	 * @returns {boolean} True if any related data matches the query, false otherwise.
+	 */
+	const customSearch = (alert: Alert, query: string) => {
+		// === Municipality ===
+		// Search by name
+		const municipalityMatch = alert.municipality_ids.some((id) => {
+			const normalizedName = municipalityMap.get(id);
+			return normalizedName && normalizedName.includes(query);
+		});
+
+		// === Stop ===
+		// Search by name
+		const stopMatch = getAvailableStops(alert).some((stop_id) => {
+			const stop = stopMap.get(stop_id);
+			return stop && stop.name.includes(query);
+		});
+		// Search by id
+		const stopIdMatch = getAvailableStops(alert).some((stop_id) => {
+			const stop = stopMap.get(stop_id);
+			return stop && stop.id.includes(query);
+		});
+
+		// === Line ===
+		// Search by name
+		const lineMatch = getAvailableLines(alert).some((line_id) => {
+			const line = lineMap.get(line_id);
+			return line && line.name.includes(query);
+		});
+		// Search by id
+		const lineIdMatch = getAvailableLines(alert).some((line_id) => {
+			const line = lineMap.get(line_id);
+			return line && line.id.includes(query);
+		});
+		return municipalityMatch || stopMatch || stopIdMatch || lineMatch || lineIdMatch;
+	};
+
 	// Use the useSearchQuery hook
-	const { filteredData: searchFilteredAlerts, searchQuery, setSearchQuery } = useSearchQuery(rawAlerts, {
+	const { filteredData: searchFilteredAlerts, searchQuery, setSearchQuery } = useSearchQuery<any>(normalizedRecords, {
 		accessors: ['title', 'description', 'cause', 'effect', 'municipality_ids'],
-		customSearch: (alert, query) => {
-			// Check if any municipality name matches the query
-			const municipalityMatch = alert.municipality_ids.some((id) => {
-				const municipality = municipalities.find(m => m.id === id);
-				return municipality?.name.toLowerCase().includes(query);
-			});
-
-			// Check if any stop name matches the query
-			const stopMatch = getAvailableStops(alert).some((stop_id) => {
-				const stop = stops.find(s => s.id === stop_id);
-				return stop?.long_name.toLowerCase().includes(query);
-			});
-
-			const stopIdMatch = getAvailableStops(alert).some((stop_id) => {
-				const stop = stops.find(s => s.id === stop_id);
-				return stop?.id.toLowerCase().includes(query);
-			});
-
-			// Check if any line name matches the query
-			const lineMatch = getAvailableLines(alert).some((line_id) => {
-				const line = lines.find(l => l.id === line_id);
-				return line?.id.toLowerCase().includes(query);
-			});
-
-			const lineIdMatch = getAvailableLines(alert).some((line_id) => {
-				const line = lines.find(l => l.id === line_id);
-				return line?.id.toLowerCase().includes(query);
-			});
-
-			return municipalityMatch || stopMatch || stopIdMatch || lineMatch || lineIdMatch;
-		},
+		customSearch,
+		debounce: 500,
 	});
 
 	const filteredAlerts = useMemo(() => {
-		let filtered = searchFilteredAlerts;
+		// Quick exits if there's no data
+		if (!searchFilteredAlerts?.length) {
+			return [];
+		}
 
-		// 1. Filter by publish status
-		filtered = filterPublishStatus.length !== AlertSchema.shape.publish_status.options.length ? filtered.filter(alert => filterPublishStatus.includes(alert.publish_status)) : filtered;
+		// 1. Convert filter arrays to sets for O(1) membership checks
+		const publishStatusSet = new Set(filterPublishStatus);
+		const causeSet = new Set(filterCause);
+		const effectSet = new Set(filterEffect);
+		const municipalitySet = new Set(filterMunicipality);
+		const lineSet = new Set(filterLine);
+		const stopSet = new Set(filterStop);
 
-		// 2. Filter by cause
-		filtered = filterCause.length !== AlertSchema.shape.cause.options.length ? filtered.filter(alert => filterCause.includes(alert.cause)) : filtered;
+		// 2. Create date boundaries if needed
+		const fromPublishStart = filterPublishDateStart ? DateTime.fromJSDate(filterPublishDateStart).toMillis() : null;
+		const fromPublishEnd = filterPublishDateEnd ? DateTime.fromJSDate(filterPublishDateEnd).toMillis() : null;
 
-		// 3. Filter by effect
-		filtered = filterEffect.length !== AlertSchema.shape.effect.options.length ? filtered.filter(alert => filterEffect.includes(alert.effect)) : filtered;
+		const fromValidityStart = filterValidityDateStart ? DateTime.fromJSDate(filterValidityDateStart).toMillis() : null;
+		const fromValidityEnd = filterValidityDateEnd ? DateTime.fromJSDate(filterValidityDateEnd).toMillis() : null;
 
-		// 4. Filter by municipality
-		filtered = filterMunicipality.length !== municipalityOptions.length ? filtered.filter(alert => filterMunicipality.some(municipality => alert.municipality_ids.includes(municipality))) : filtered;
+		// 3. Booleans to see if all possible options are chosen (meaning we skip that filter entirely)
+		const allPublishStatuses = filterPublishStatus.length === AlertSchema.shape.publish_status.options.length;
+		const allCauses = filterCause.length === AlertSchema.shape.cause.options.length;
+		const allEffects = filterEffect.length === AlertSchema.shape.effect.options.length;
+		const allMunicipalities = filterMunicipality.length === municipalityOptions.length;
+		const allLines = filterLine.length === lineOptions.length;
+		const allStops = filterStop.length === stopOptions.length;
 
-		// // 5. Filter by line
-		filtered = filterLine.length !== lineOptions.length ? filtered.filter(alert => filterLine.some(line => getAvailableLines(alert).includes(line))) : filtered;
-
-		// // 6. Filter by stop
-		filtered = filterStop.length !== stopOptions.length ? filtered.filter(alert => filterStop.some(stop => getAvailableStops(alert).includes(stop))) : filtered;
-
-		// 7. Filter by publish date
-		filtered = filterPublishDateStart || filterPublishDateEnd ? filtered.filter((alert) => {
-			const alertPublishStartDate = DateTime.fromISO(alert.publish_start_date.toString()).toMillis();
-			const alertPublishEndDate = DateTime.fromISO(alert.publish_end_date?.toString() || '').toMillis();
-			const filterPublishStartDate = filterPublishDateStart ? DateTime.fromJSDate(filterPublishDateStart).toMillis() : null;
-			const filterPublishEndDate = filterPublishDateEnd ? DateTime.fromJSDate(filterPublishDateEnd).toMillis() : null;
-
-			if (filterPublishStartDate && filterPublishEndDate) {
-				return alertPublishStartDate >= filterPublishStartDate && alertPublishEndDate <= filterPublishEndDate;
+		// 4. Single-pass filter
+		return searchFilteredAlerts.filter((alert) => {
+			// 4.1 Publish status
+			if (!allPublishStatuses && !publishStatusSet.has(alert.publish_status)) {
+				return false;
 			}
-			else if (filterPublishStartDate) {
-				return alertPublishStartDate >= filterPublishStartDate;
+
+			// 4.2 Cause
+			if (!allCauses && !causeSet.has(alert.cause)) {
+				return false;
 			}
-			else if (filterPublishEndDate) {
-				return alertPublishEndDate <= filterPublishEndDate;
+
+			// 4.3 Effect
+			if (!allEffects && !effectSet.has(alert.effect)) {
+				return false;
+			}
+
+			// 4.4 Municipality
+			if (!allMunicipalities) {
+				// Check if there's any overlap between the alert's municipality_ids and our municipalitySet
+				const hasAnyMunicipality = alert.municipality_ids.some((mId: string) => municipalitySet.has(mId));
+				if (!hasAnyMunicipality) {
+					return false;
+				}
+			}
+
+			// 4.5 Lines
+			if (!allLines) {
+				// Pre-fetch line IDs for this alert once
+				const alertLineIds = getAvailableLines(alert);
+				const intersectsLine = alertLineIds.some(lId => lineSet.has(lId));
+				if (!intersectsLine) {
+					return false;
+				}
+			}
+
+			// 4.6 Stops
+			if (!allStops) {
+				// Pre-fetch stop IDs for this alert once
+				const alertStopIds = getAvailableStops(alert);
+				const intersectsStop = alertStopIds.some(sId => stopSet.has(sId));
+				if (!intersectsStop) {
+					return false;
+				}
+			}
+
+			// 4.7 Publish date
+			if (fromPublishStart || fromPublishEnd) {
+				const alertPublishStart = DateTime.fromISO(alert.publish_start_date.toString()).toMillis();
+				const alertPublishEnd = DateTime.fromISO(alert.publish_end_date?.toString() || '').toMillis();
+
+				// If both start and end are defined
+				if (fromPublishStart && fromPublishEnd) {
+					if (alertPublishStart < fromPublishStart || alertPublishEnd > fromPublishEnd) {
+						return false;
+					}
+				}
+				else if (fromPublishStart && alertPublishStart < fromPublishStart) {
+					return false;
+				}
+				else if (fromPublishEnd && alertPublishEnd > fromPublishEnd) {
+					return false;
+				}
+			}
+
+			// 4.8 Validity date
+			if (fromValidityStart || fromValidityEnd) {
+				const alertValidityStart = DateTime.fromISO(alert.active_period_start_date.toString()).toMillis();
+				const alertValidityEnd = DateTime.fromISO(alert.active_period_end_date?.toString() || '').toMillis();
+
+				// If both start and end are defined
+				if (fromValidityStart && fromValidityEnd) {
+					if (alertValidityStart < fromValidityStart || alertValidityEnd > fromValidityEnd) {
+						return false;
+					}
+				}
+				else if (fromValidityStart && alertValidityStart < fromValidityStart) {
+					return false;
+				}
+				else if (fromValidityEnd && alertValidityEnd > fromValidityEnd) {
+					return false;
+				}
 			}
 
 			return true;
-		}) : filtered;
-
-		// 8. Filter by validity date
-		filtered = filterValidityDateStart || filterValidityDateEnd ? filtered.filter((alert) => {
-			const alertValidityStartDate = DateTime.fromISO(alert.active_period_start_date.toString()).toMillis();
-			const alertValidityEndDate = DateTime.fromISO(alert.active_period_end_date?.toString() || '').toMillis();
-			const filterValidityStartDate = filterValidityDateStart ? DateTime.fromJSDate(filterValidityDateStart).toMillis() : null;
-			const filterValidityEndDate = filterValidityDateEnd ? DateTime.fromJSDate(filterValidityDateEnd).toMillis() : null;
-
-			if (filterValidityStartDate && filterValidityEndDate) {
-				return alertValidityStartDate >= filterValidityStartDate && alertValidityEndDate <= filterValidityEndDate;
-			}
-			else if (filterValidityStartDate) {
-				return alertValidityStartDate >= filterValidityStartDate;
-			}
-			else if (filterValidityEndDate) {
-				return alertValidityEndDate <= filterValidityEndDate;
-			}
-
-			return true;
-		}) : filtered;
-
-		return filtered;
+		});
 	}, [
 		searchFilteredAlerts,
 		filterPublishStatus,
@@ -245,10 +377,13 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		filterValidityDateEnd,
 		filterPublishDateStart,
 		filterPublishDateEnd,
+		municipalityOptions,
+		lineOptions,
+		stopOptions,
 	]);
 
 	//
-	// C. Handle Actions
+	// D. Handle Actions
 
 	function handleTogglePublishStatus(status: string) {
 		setFilterPublishStatus(toggleArray(filterPublishStatus, status));
@@ -291,7 +426,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	}
 
 	//
-	// D. Define context value
+	// E. Define context value
 
 	const contextValue: AlertListContextState = useMemo(() => ({
 		actions: {
@@ -354,7 +489,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	]);
 
 	//
-	// E. Render components
+	// F. Render components
 
 	return (
 		<AlertListContext.Provider value={contextValue}>
