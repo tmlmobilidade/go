@@ -38,7 +38,7 @@ interface AlertDetailContextState {
 
 const emptyAlert: Alert = {
 	_id: '',
-	active_period_end_date: new Date(),
+	active_period_end_date: undefined,
 	active_period_start_date: new Date(),
 	cause: Object.values(causeSchema.Enum)[0],
 	created_by: 'temp',
@@ -46,7 +46,7 @@ const emptyAlert: Alert = {
 	effect: Object.values(effectSchema.Enum)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
-	publish_end_date: new Date(),
+	publish_end_date: undefined,
 	publish_start_date: new Date(),
 	publish_status: 'DRAFT',
 	reference_type: Object.values(referenceTypeSchema.Enum)[0],
