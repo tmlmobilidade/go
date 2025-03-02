@@ -74,7 +74,7 @@ export async function syncVehicleEvents() {
 						modifiedCount += result.modifiedCount;
 					}
 					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${modifiedCount} Rides as 'pending' due to new apex_t11 data (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush: Marked ${modifiedCount} Rides as 'pending' due to new vehicle_events data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
