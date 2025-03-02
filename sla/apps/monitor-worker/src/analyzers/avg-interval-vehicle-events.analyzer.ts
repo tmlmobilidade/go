@@ -1,16 +1,15 @@
 /* * */
 
-import { AnalysisData } from '@/types/analysis-data.type.js';
-import { sortByDate } from '@/utils/sort-by-date.util.js';
-import { RideAnalysis } from '@tmlmobilidade/core/types';
-import { DateTime } from 'luxon';
+import { type AnalysisData } from '@/types/analysis-data.type.js';
+import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
+import { type RideAnalysis } from '@tmlmobilidade/core/types';
 
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
 	_id: 'AVG_INTERVAL_VEHICLE_EVENTS'
 	reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS' | 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS' | 'NO_VEHICLE_EVENTS_FOUND'
-	unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS'
+	unit: 'AVG_INTERVAL_VEHICLE_EVENTS_SECONDS'
 };
 
 /**
@@ -41,24 +40,22 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 		//
 		// Sort vehicle events by created_at timestamp
 
-		const sortedVehicleEvents = sortByDate(analysisData.vehicle_events, 'created_at', 'asc');
+		const sortedVehicleEvents = sortByTimestamp(analysisData.vehicle_events, 'created_at', 'asc');
 
 		//
 		// Evaluate each vehicle event
 
 		let totalIntervalBetweenEvents = 0;
 
-		let previousEventTimestamp = DateTime.fromJSDate(sortedVehicleEvents[0].created_at);
+		let previousEventTimestamp = sortedVehicleEvents[0].created_at;
 
 		for (const vehicleEvent of sortedVehicleEvents) {
 			//
-			const vehicleTimestamp = DateTime.fromJSDate(vehicleEvent.created_at);
+			const delayInSeconds = vehicleEvent.created_at - previousEventTimestamp;
 			//
-			const delayInMilliseconds = vehicleTimestamp.toMillis() - previousEventTimestamp.toMillis();
+			totalIntervalBetweenEvents += delayInSeconds;
 			//
-			totalIntervalBetweenEvents += delayInMilliseconds;
-			//
-			previousEventTimestamp = vehicleTimestamp;
+			previousEventTimestamp = vehicleEvent.created_at;
 			//
 		}
 
@@ -73,7 +70,7 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 				grade: 'pass',
 				message: 'Average interval between events is within limits.',
 				reason: 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS',
-				unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS',
+				unit: 'AVG_INTERVAL_VEHICLE_EVENTS_SECONDS',
 				value: avgIntervalBetweenEvents,
 			};
 		}
@@ -83,7 +80,7 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 			grade: 'fail',
 			message: 'Average interval between events is higher than limit.',
 			reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS',
-			unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS',
+			unit: 'AVG_INTERVAL_VEHICLE_EVENTS_SECONDS',
 			value: avgIntervalBetweenEvents,
 		};
 

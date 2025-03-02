@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-sla-pckg-constants",
+	"name": "@tmlmobilidade/sae-sla-pckg-utils",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
@@ -9,9 +9,13 @@
 		"build": "npm run clean && tsc && resolve-tspaths",
 		"clean": "rm -rf dist"
 	},
+	"dependencies": {
+		"@tmlmobilidade/core": "20250301.2202.14",
+		"luxon": "3.5.0"
+	},
 	"devDependencies": {
-		"@types/node": "22.13.4",
+		"@types/node": "22.13.8",
 		"resolve-tspaths": "0.8.23",
-		"typescript": "5.7.3"
+		"typescript": "5.8.2"
 	}
 }

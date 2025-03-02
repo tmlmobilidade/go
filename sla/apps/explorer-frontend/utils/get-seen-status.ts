@@ -20,9 +20,8 @@ export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): RideDisplay['s
 	}
 
 	const nowInUnixSeconds = DateTime.now().toUnixInteger();
-	const lastSeenAtInUnixSeconds = DateTime.fromJSDate(new Date(seenLastAt)).toUnixInteger();
 
-	const secondsFromLastSeenToNow = nowInUnixSeconds - lastSeenAtInUnixSeconds;
+	const secondsFromLastSeenToNow = nowInUnixSeconds - seenLastAt;
 
 	if (secondsFromLastSeenToNow <= 30) {
 		return 'seen';

@@ -4,7 +4,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/core/interfaces';
-import { CreateHashedShapeDto, CreateHashedTripDto, createOperationalDate, CreateRideDto, HashedShapePoint, HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, OperationalDate } from '@tmlmobilidade/core/types';
+import { CreateHashedShapeDto, CreateHashedTripDto, createOperationalDate, CreateRideDto, HashedShapePoint, HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, OperationalDate, UnixTimestamp } from '@tmlmobilidade/core/types';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -563,10 +563,10 @@ export async function createRidesFromGtfs() {
 							const extensionScheduledInMeters = convertMetersOrKilometersToMeters(hashedTripData.path[hashedTripData.path.length - 1].shape_dist_traveled, hashedTripData.path[hashedTripData.path.length - 1].shape_dist_traveled);
 							//
 							const startTimeScheduled = hashedTripData.path[0].arrival_time;
-							const startTimeScheduledDate = convertOperationTimeStringAndOperationalDateToJsDate(startTimeScheduled, calendarDate);
+							const startTimeScheduledDate = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(startTimeScheduled, calendarDate);
 							//
 							const endTimeScheduledString = hashedTripData.path[hashedTripData.path.length - 1].arrival_time;
-							const endTimeScheduledDate = convertOperationTimeStringAndOperationalDateToJsDate(endTimeScheduledString, calendarDate);
+							const endTimeScheduledDate = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(endTimeScheduledString, calendarDate);
 							//
 							const rideData: CreateRideDto = {
 								_id: `${planData._id}-${routeData.agency_id}-${calendarDate}-${tripData.trip_id}`,
@@ -828,14 +828,14 @@ const convertMetersOrKilometersToMeters = (value: number | string, ballpark: num
 
 /* * */
 
-const convertOperationTimeStringAndOperationalDateToJsDate = (timeString: string, operationalDate: OperationalDate): Date => {
+const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: string, operationalDate: OperationalDate): UnixTimestamp => {
 	//
 
 	// Return early if no time string is provided
-	if (!timeString || !operationalDate) return new Date(0);
+	if (!timeString || !operationalDate) throw new Error(`✖︎ No time string or operational date provided. timeString: ${timeString}, operationalDate: ${operationalDate}`);
 
 	// Check if the timestring is in the format HH:MM:SS
-	if (!/^\d{2}:\d{2}:\d{2}$/.test(timeString)) return new Date(0);
+	if (!/^\d{2}:\d{2}:\d{2}$/.test(timeString)) throw new Error(`✖︎ Invalid time string format. timeString: ${timeString}`);
 
 	// Extract the individual components of the time string (HH:MM:SS)
 	const [hoursOperation, minutesOperation, secondsOperation] = timeString.split(':').map(Number);
@@ -844,7 +844,7 @@ const convertOperationTimeStringAndOperationalDateToJsDate = (timeString: string
 		.fromFormat(operationalDate, OPERATIONAL_DATE_FORMAT)
 		.setZone('Europe/Lisbon')
 		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-		.toJSDate();
+		.toUnixInteger() as UnixTimestamp;
 
 	//
 };

@@ -2,7 +2,7 @@
 
 import { createGeofence } from '@/utils/create-geofence.util.js';
 import { isInsideGeofence } from '@/utils/is-inside-geofence.util.js';
-import { sortByDate } from '@/utils/sort-by-date.util.js';
+import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
 import { HashedTripWaypoint, VehicleEvent } from '@tmlmobilidade/core/types';
 
 /**
@@ -34,7 +34,7 @@ export function detectStartEvent(hashedTripWaypointsData: HashedTripWaypoint[], 
 	//
 	// Sort vehicle events by vehicle timestamp
 
-	const sortedVehicleEvents = sortByDate(vehicleEventsData, 'created_at');
+	const sortedVehicleEvents = sortByTimestamp(vehicleEventsData, 'created_at');
 
 	//
 	// Detect the first event that is inside the geofence of the second stop.

@@ -4,14 +4,14 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { MongoDbWriter } from '@helperkits/writer';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 
 /* * */
 
 interface SyncDocumentsOptions<T> {
-	dbWriter: MongoDbWriter
+	dbWriter: MongoDbWriter<T>
 	docParser: (pcgiDoc: any) => T
-	flushCallback: (data?: any[]) => Promise<void>
+	flushCallback: (data?: MongoDBWriterWriteOps<T>[]) => Promise<void>
 	pcgiCollection: any
 	pcgiIdKey: string
 	pcgiQuery: any

@@ -15,7 +15,7 @@ const DEFAULT_SCROLL_OFFSET = -250;
 
 interface RidesListContextState {
 	actions: {
-		setLockStatus: (value: number) => void
+		setLockStatus: (offset?: number) => void
 		updateLockIndex: () => void
 	}
 	data: {
@@ -61,10 +61,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Handle actions
 
 	useEffect(() => {
-		const nowMillis = DateTime.now().toMillis();
+		const nowMillis = DateTime.now().toUnixInteger();
 		for (const [rideIndex, rideData] of ridesContext.data.rides_display.entries()) {
-			const rideMillis = DateTime.fromJSDate(new Date(rideData.start_time_scheduled)).toMillis();
-			if (nowMillis - rideMillis <= 0) {
+			if (nowMillis - rideData.start_time_scheduled <= 0) {
 				setDataLockIndexState(rideIndex);
 				return;
 			}

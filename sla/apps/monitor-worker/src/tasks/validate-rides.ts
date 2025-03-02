@@ -3,11 +3,11 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { apexT11, apexT19, hashedShapes, hashedTrips, rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
-import { ALLOWED_VALIDATION_STATUSES, RideAnalysis } from '@tmlmobilidade/core/types';
+import { ALLOWED_VALIDATION_STATUSES, type RideAnalysis } from '@tmlmobilidade/core/types';
 
 /* * */
 
-import { AnalysisData } from '@/types/analysis-data.type.js';
+import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { detectEndEvent } from '@/utils/detect-end-event.util.js';
 import { detectFirstEvent } from '@/utils/detect-first-event.util.js';
 import { detectLastEvent } from '@/utils/detect-last-event.util.js';
@@ -27,6 +27,7 @@ import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
 import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simpleOneValidationTransaction.analyzer.js';
 import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simpleOneVehicleEventOrValidationTransaction.analyzer.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simpleThreeVehicleEvents.analyzer.js';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
 
 /* * */
 
@@ -116,35 +117,17 @@ export async function validateRides() {
 
 				const fetchAnalysisDataTimer = new TIMETRACKER();
 
+				const standardWindowInterval = getStandardWindowInterval(rideData.start_time_scheduled);
+
 				const hashedShapePromise = hashedShapes.findById(rideData.hashed_shape_id);
 				const hashedTripPromise = hashedTrips.findById(rideData.hashed_trip_id);
-				const apexT11Promise = apexT11.findMany({ operational_date: rideData.operational_date, trip_id: rideData.trip_id });
-				const apexT19Promise = apexT19.findMany({ operational_date: rideData.operational_date, trip_id: rideData.trip_id });
-				const vehicleEventsPromise = vehicleEvents.findMany({ extra_trip_id: null, operational_date: rideData.operational_date, trip_id: rideData.trip_id });
+				const apexT11Promise = apexT11.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
+				const apexT19Promise = apexT19.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
+				const vehicleEventsPromise = vehicleEvents.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, extra_trip_id: null, trip_id: rideData.trip_id });
 
 				const [hashedShapeData, hashedTripData, apexT11Data, apexT19Data, vehicleEventsData] = await Promise.all([hashedShapePromise, hashedTripPromise, apexT11Promise, apexT19Promise, vehicleEventsPromise]);
 
 				const fetchAnalysisDataTime = fetchAnalysisDataTimer.get();
-
-				// const fetchHashedShapeDataTimer = new TIMETRACKER();
-				// const hashedShapeData = await hashedShapes.findById(rideData.hashed_shape_id);
-				// const fetchHashedShapeDataTime = fetchHashedShapeDataTimer.get();
-
-				// const fetchHashedTripDataTimer = new TIMETRACKER();
-				// const hashedTripData = await hashedTrips.findById(rideData.hashed_trip_id);
-				// const fetchHashedTripDataTime = fetchHashedTripDataTimer.get();
-
-				// const fetchApexT11DataTimer = new TIMETRACKER();
-				// const apexT11Data = await apexT11.findMany({ operational_date: rideData.operational_date, trip_id: rideData.trip_id });
-				// const fetchApexT11DataTime = fetchApexT11DataTimer.get();
-
-				// const fetchApexT19DataTimer = new TIMETRACKER();
-				// const apexT19Data = await apexT19.findMany({ operational_date: rideData.operational_date, trip_id: rideData.trip_id });
-				// const fetchApexT19DataTime = fetchApexT19DataTimer.get();
-
-				// const fetchVehicleEventsDataTimer = new TIMETRACKER();
-				// const vehicleEventsData = await vehicleEvents.findMany({ operational_date: rideData.operational_date, trip_id: rideData.trip_id });
-				// const fetchVehicleEventsDataTime = fetchVehicleEventsDataTimer.get();
 
 				//
 				// Augment the current Ride with additional information retrieved

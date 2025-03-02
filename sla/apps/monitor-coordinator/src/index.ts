@@ -3,10 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { rides } from '@tmlmobilidade/core/interfaces';
-import { getOperationalDate } from '@tmlmobilidade/core/utils';
-import { CHUNK_LOG_DATE_FORMAT } from '@tmlmobilidade/sae-sla-pckg-constants';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
 import Fastify from 'fastify';
-import { DateTime } from 'luxon';
 
 /* * */
 
@@ -50,13 +48,12 @@ import { DateTime } from 'luxon';
 		// sorted in descending order to prioritize the most recent rides.
 
 		const batchSize = 750;
-		const currentTime = DateTime.now().setZone('Europe/Lisbon');
-		const currentOperationalDate = getOperationalDate();
+		const standardWindowInterval = getStandardWindowInterval();
 
 		const fetchTimer = new TIMETRACKER();
 
 		const latestPendingRides = await ridesCollection
-			.find({ operational_date: { $lte: currentOperationalDate }, system_status: 'pending' })
+			.find({ start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'pending' })
 			.sort({ start_time_scheduled: -1 })
 			.limit(batchSize)
 			.toArray();
@@ -66,7 +63,7 @@ import { DateTime } from 'luxon';
 		const fetchTimerResult = fetchTimer.get();
 
 		if (latestPendingRidesIds.length === 0) {
-			LOGGER.info(`No rides to process | operational_date: ${currentOperationalDate} | start_time_scheduled: ${currentTime.toFormat(CHUNK_LOG_DATE_FORMAT)} (fetch: ${fetchTimerResult})`);
+			LOGGER.info(`No rides to process | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})`);
 			isBusy = false;
 			return [];
 		}
@@ -79,7 +76,7 @@ import { DateTime } from 'luxon';
 
 		await ridesCollection.updateMany({ _id: { $in: latestPendingRidesIds } }, { $set: { system_status: 'processing' } });
 
-		LOGGER.info(`New batch: Qty ${latestPendingRidesIds.length} | operational_date: ${currentOperationalDate} | start_time_scheduled: ${currentTime.toFormat(CHUNK_LOG_DATE_FORMAT)} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+		LOGGER.info(`New batch: Qty ${latestPendingRidesIds.length} | start_time_scheduled: ${latestPendingRides.pop().start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
 		isBusy = false;
 

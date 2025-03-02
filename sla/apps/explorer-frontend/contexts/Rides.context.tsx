@@ -6,14 +6,16 @@ import { getDelayStatus } from '@/utils/get-delay-status';
 import { getOperationalStatus } from '@/utils/get-operational-status';
 import { getSeenStatus } from '@/utils/get-seen-status';
 import { getStartTime } from '@/utils/get-start-time';
-import { type Ride, RideAnalysis, type RideDisplay, type WebSocketMessage } from '@tmlmobilidade/core/types';
+import { type Ride, type RideAnalysis, type WebSocketMessage } from '@tmlmobilidade/core/types';
 import { getOperationalDate } from '@tmlmobilidade/core/utils';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */
 
-export interface ExtendedRideDisplay extends RideDisplay {
+export interface ExtendedRideDisplay extends Ride {
 	delay_status: 'delayed' | 'early' | 'ontime' | null
+	operational_status: 'ended' | 'missed' | 'running' | 'scheduled'
+	seen_status: 'gone' | 'seen' | 'unseen'
 	simple_three_vehicle_events_grade: RideAnalysis['grade']
 	start_time_observed_display: null | string
 	start_time_scheduled_display: string

@@ -14,19 +14,20 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
+		"@fastify/cookie": "11.0.2",
 		"@fastify/websocket": "11.0.2",
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/core": "20250212.2306.38",
+		"@tmlmobilidade/core": "20250301.2202.14",
 		"fastify": "5.2.1",
 		"luxon": "3.5.0"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.4.2",
-		"@types/node": "22.13.4",
+		"@types/node": "22.13.8",
 		"@types/ws": "8.5.14",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.19.2",
-		"typescript": "5.7.3"
+		"tsx": "4.19.3",
+		"typescript": "5.8.2"
 	}
 }

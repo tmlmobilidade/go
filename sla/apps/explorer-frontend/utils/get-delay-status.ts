@@ -1,6 +1,6 @@
 /* * */
 
-import { ExtendedRideDisplay } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { type Ride } from '@tmlmobilidade/core/types';
 import { DateTime } from 'luxon';
 
@@ -16,8 +16,8 @@ export function getDelayStatus(startTimeScheduled: Ride['start_time_scheduled'],
 		return null;
 	}
 
-	const scheduledTime = DateTime.fromJSDate(new Date(startTimeScheduled));
-	const observedTime = DateTime.fromJSDate(new Date(startTimeObserved));
+	const scheduledTime = DateTime.fromSeconds(startTimeScheduled);
+	const observedTime = DateTime.fromSeconds(startTimeObserved);
 
 	const difference = observedTime.diff(scheduledTime, 'minutes').minutes;
 
