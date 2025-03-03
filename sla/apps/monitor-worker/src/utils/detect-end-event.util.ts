@@ -3,7 +3,7 @@
 import { createGeofence } from '@/utils/create-geofence.util.js';
 import { isInsideGeofence } from '@/utils/is-inside-geofence.util.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { HashedTripWaypoint, VehicleEvent } from '@tmlmobilidade/core/types';
+import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/core/types';
 
 /**
  * The trip end time is the time of the first event inside the geofence of the last stop
