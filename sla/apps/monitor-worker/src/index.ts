@@ -4,7 +4,7 @@ import { validateRides } from '@/tasks/validate-rides.js';
 
 /* * */
 
-const MAX_RUN_INTERVAL = 1000; // 100 milliseconds
+const MAX_RUN_INTERVAL = 1000; // 1 second
 
 /* * */
 

@@ -22,7 +22,7 @@
 		"lint": "turbo lint"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250128.1601.13",
+		"@carrismetropolitana/eslint": "20250303.1614.21",
 		"@tmlmobilidade/tsconfig": "20241213.1919.54",
 		"turbo": "2.4.4",
 		"typescript": "5.8.2"
