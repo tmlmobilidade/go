@@ -79,7 +79,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 					properties: {
 						color: colorThemePrimary,
 						text_color: colorThemeContrast,
-						timestamp: DateTime.fromSeconds(vehicleEvent.created_at).toISO(),
+						timestamp: DateTime.fromMillis(vehicleEvent.created_at).toISO(),
 					},
 					type: 'Feature',
 				};

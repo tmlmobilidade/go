@@ -2,7 +2,6 @@
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { type RideAnalysis } from '@tmlmobilidade/core/types';
-import { DateTime } from 'luxon';
 
 /* * */
 
@@ -32,10 +31,7 @@ export function highestVehicleEventDelayAnalyzer(analysisData: AnalysisData): Ex
 
 		for (const vehicleEvent of analysisData.vehicle_events) {
 			//
-			const insertTimestamp = DateTime.fromSeconds(vehicleEvent.received_at).toMillis();
-			const vehicleTimestamp = DateTime.fromSeconds(vehicleEvent.created_at).toMillis();
-			//
-			const delayInMilliseconds = insertTimestamp - vehicleTimestamp;
+			const delayInMilliseconds = vehicleEvent.received_at - vehicleEvent.created_at;
 			//
 			if (delayInMilliseconds > highestEventDelaySoFar) {
 				highestEventDelaySoFar = delayInMilliseconds;

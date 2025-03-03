@@ -16,8 +16,8 @@ export function getDelayStatus(startTimeScheduled: Ride['start_time_scheduled'],
 		return null;
 	}
 
-	const scheduledTime = DateTime.fromSeconds(startTimeScheduled);
-	const observedTime = DateTime.fromSeconds(startTimeObserved);
+	const scheduledTime = DateTime.fromMillis(startTimeScheduled);
+	const observedTime = DateTime.fromMillis(startTimeObserved);
 
 	const difference = observedTime.diff(scheduledTime, 'minutes').minutes;
 

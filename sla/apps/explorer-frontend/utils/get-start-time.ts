@@ -11,7 +11,7 @@ import { DateTime } from 'luxon';
 export function getStartTime(timestamp: Ride['start_time_observed'] | Ride['start_time_scheduled']): string {
 	//
 
-	return DateTime.fromSeconds(timestamp).toFormat('HH:mm');
+	return DateTime.fromMillis(timestamp).toFormat('HH:mm');
 
 	//
 }

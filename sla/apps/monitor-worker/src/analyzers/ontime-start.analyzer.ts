@@ -54,8 +54,8 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 		// Calculate the delay in minutes
 
 		const delayInMinutes = DateTime
-			.fromSeconds(analysisData.ride.start_time_observed)
-			.diff(DateTime.fromSeconds(analysisData.ride.start_time_scheduled))
+			.fromMillis(analysisData.ride.start_time_observed)
+			.diff(DateTime.fromMillis(analysisData.ride.start_time_scheduled))
 			.as('minutes');
 
 		//

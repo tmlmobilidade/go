@@ -20,7 +20,7 @@ const STANDARD_WINDOW_HOURS = 10;
  */
 export function getStandardWindowInterval(timestamp?: UnixTimestamp): { end: UnixTimestamp, start: UnixTimestamp } {
 	// If no timestamp is provided, use the current time
-	const dateObject = timestamp ? DateTime.fromSeconds(timestamp) : DateTime.now();
+	const dateObject = timestamp ? DateTime.fromMillis(timestamp) : DateTime.now();
 	// Return the start and end of the standard window interval
 	return {
 		end: dateObject.plus({ hours: STANDARD_WINDOW_HOURS }).toMillis() as UnixTimestamp,
