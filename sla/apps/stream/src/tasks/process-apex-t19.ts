@@ -53,15 +53,18 @@ export async function processApexT19(databaseOperation) {
 	const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexT19>[]) => {
 		try {
 			const invalidationTimer = new TIMETRACKER();
-			let modifiedCount = 0;
-			// For each flushed document, mark the corresponding rides as 'pending' in the database
-			for await (const writeOp of flushedData) {
+			// Map the flushed data to the query that will be used to invalidate the rides
+			const updates = flushedData.map((writeOp) => {
 				const standardWindowInterval = getStandardWindowInterval(writeOp.data.created_at);
-				const result = await rides.updateOne({ start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: writeOp.data.trip_id }, { system_status: 'pending' });
-				modifiedCount += result.modifiedCount;
-			}
+				return {
+					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+					trip_id: writeOp.data.trip_id,
+				};
+			});
+			// Invalidate all rides that are affected
+			const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
 			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [apex_t19]: Marked ${modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
+			LOGGER.info(`Flush [apex_t19]: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);
