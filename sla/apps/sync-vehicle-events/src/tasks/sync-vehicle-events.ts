@@ -5,7 +5,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
-import { type VehicleEvent } from '@tmlmobilidade/core/types';
+import { UnixTimestamp, type VehicleEvent } from '@tmlmobilidade/core/types';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-sla-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-sla-pckg-sync';
 import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
@@ -43,7 +43,7 @@ export async function syncVehicleEvents() {
 		const allTimestampChunks = Interval
 			.fromDateTimes(earliestDataNeeded, thirtySecondsAgo)
 			.splitBy({ hour: 3 })
-			.sort((a, b) => b.start.toMillis() - a.start.toMillis());
+			.sort((a, b) => b.start.toUnixInteger() - a.start.toUnixInteger());
 
 		//
 		// Iterate over each timestamp chunk and sync the documents.
@@ -66,16 +66,19 @@ export async function syncVehicleEvents() {
 			const flushCallback = async (flushedData: MongoDBWriterWriteOps<VehicleEvent>[]) => {
 				try {
 					const invalidationTimer = new TIMETRACKER();
-					// Map the flushed data to the query that will be used to invalidate the rides
-					const updates = flushedData.map((writeOp) => {
-						const standardWindowInterval = getStandardWindowInterval(writeOp.data.created_at);
-						return {
-							start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
-							trip_id: writeOp.data.trip_id,
-						};
-					});
+					// Extract the unique trip_ids from the flushed data
+					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
+					// Get the earliest and latest timestamps from the flushed data
+					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
+					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
+					// Create a standard window interval based on the earliest and latest timestamps
+					const earliestStandardWindowInterval = getStandardWindowInterval(earliestTimestamp);
+					const latestStandardWindowInterval = getStandardWindowInterval(latestTimestamp);
 					// Invalidate all rides that are affected
-					const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
+					const result = await rides.updateMany(
+						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
+						{ system_status: 'pending' },
+					);
 					// Log the number of rides that were marked as 'pending'
 					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new vehicle_events data (${invalidationTimer.get()})`);
 				}

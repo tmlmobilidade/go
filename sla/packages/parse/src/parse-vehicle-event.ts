@@ -11,6 +11,8 @@ export function parseVehicleEvent(pcgiDoc: any): VehicleEvent {
 
 	const vehicleTimestamp = DateTime.fromSeconds(pcgiDoc.content.entity[0].vehicle.timestamp);
 
+	console.log('millis vs int', pcgiDoc.millis, DateTime.fromMillis(pcgiDoc.millis).toUnixInteger());
+
 	return {
 		_id: pcgiDoc._id,
 		agency_id: pcgiDoc.content.entity[0].vehicle.agencyId,
