@@ -61,7 +61,7 @@ export async function processApexT19(databaseOperation) {
 				modifiedCount += result.modifiedCount;
 			}
 			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [apex_t11]: Marked ${modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
+			LOGGER.info(`Flush [apex_t19]: Marked ${modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);
