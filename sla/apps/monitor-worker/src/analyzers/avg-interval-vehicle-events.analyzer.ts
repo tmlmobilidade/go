@@ -9,7 +9,7 @@ import { type RideAnalysis } from '@tmlmobilidade/core/types';
 interface ExplicitRideAnalysis extends RideAnalysis {
 	_id: 'AVG_INTERVAL_VEHICLE_EVENTS'
 	reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS' | 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS' | 'NO_VEHICLE_EVENTS_FOUND'
-	unit: 'AVG_INTERVAL_VEHICLE_EVENTS_SECONDS'
+	unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS'
 };
 
 /**
@@ -70,7 +70,7 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 				grade: 'pass',
 				message: 'Average interval between events is within limits.',
 				reason: 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS',
-				unit: 'AVG_INTERVAL_VEHICLE_EVENTS_SECONDS',
+				unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS',
 				value: avgIntervalBetweenEvents,
 			};
 		}
@@ -80,7 +80,7 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 			grade: 'fail',
 			message: 'Average interval between events is higher than limit.',
 			reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS',
-			unit: 'AVG_INTERVAL_VEHICLE_EVENTS_SECONDS',
+			unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS',
 			value: avgIntervalBetweenEvents,
 		};
 
