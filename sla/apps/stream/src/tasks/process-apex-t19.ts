@@ -13,6 +13,7 @@ import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
 
 const apexT19DbWritter = new MongoDbWriter<ApexT19>({
 	batch_size: 250,
+	batch_timeout: 10000,
 	collection: await apexT19.getCollection(),
 	idle_timeout: 10000,
 });
