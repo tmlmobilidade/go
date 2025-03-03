@@ -27,7 +27,7 @@ export async function syncVehicleEvents() {
 		await PCGIDB.connect();
 
 		const vehicleEventsCollection = await vehicleEvents.getCollection();
-		const vehicleEventsDbWritter = new MongoDbWriter('vehicle_events', vehicleEventsCollection, { batch_size: 100000 });
+		const vehicleEventsDbWritter = new MongoDbWriter<VehicleEvent>({ batch_size: 100000, collection: vehicleEventsCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,

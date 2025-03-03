@@ -1,13 +1,13 @@
 /* * */
 
+import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
-import { type RideDisplay } from '@tmlmobilidade/core/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface Props {
-	value?: RideDisplay['operational_status']
+	value?: ExtendedRideDisplay['operational_status']
 }
 
 /* * */

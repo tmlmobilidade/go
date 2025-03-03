@@ -1,7 +1,7 @@
 /* * */
 
-import { type RideDisplay } from '@tmlmobilidade/core/types';
-import { Ride } from '@tmlmobilidade/core/types';
+import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
+import { type Ride } from '@tmlmobilidade/core/types';
 import { DateTime } from 'luxon';
 
 /**
@@ -12,7 +12,7 @@ import { DateTime } from 'luxon';
  * @param seenLastAt
  * @returns
  */
-export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): RideDisplay['seen_status'] {
+export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): ExtendedRideDisplay['seen_status'] {
 	//
 
 	if (!seenLastAt) {

@@ -27,7 +27,7 @@ export async function syncApexT19() {
 		await PCGIDB.connect();
 
 		const apexT19Collection = await apexT19.getCollection();
-		const apexT19DbWritter = new MongoDbWriter('apex_t19', apexT19Collection, { batch_size: 100000 });
+		const apexT19DbWritter = new MongoDbWriter<ApexT19>({ batch_size: 100000, collection: apexT19Collection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,

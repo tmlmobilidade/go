@@ -27,7 +27,7 @@ export async function syncApexT11() {
 		await PCGIDB.connect();
 
 		const apexT11Collection = await apexT11.getCollection();
-		const apexT11DbWritter = new MongoDbWriter<ApexT11>('apex_t11', apexT11Collection, { batch_size: 100000 });
+		const apexT11DbWritter = new MongoDbWriter<ApexT11>({ batch_size: 100000, collection: apexT11Collection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,

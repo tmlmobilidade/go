@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { MongoDbWriter } from '@helperkits/writer';
+import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/core/interfaces';
 import { CreateHashedShapeDto, CreateHashedTripDto, createOperationalDate, CreateRideDto, HashedShapePoint, HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, OperationalDate, UnixTimestamp } from '@tmlmobilidade/core/types';
 import crypto from 'crypto';
@@ -28,9 +28,9 @@ export async function createRidesFromGtfs() {
 		const hashedTripsCollection = await hashedTrips.getCollection();
 		const ridesCollection = await rides.getCollection();
 
-		const hashedShapesDbWritter = new MongoDbWriter('hashed_shapes', hashedShapesCollection, { batch_size: 1000 });
-		const hashedTripsDbWritter = new MongoDbWriter('hashed_trips', hashedTripsCollection, { batch_size: 1000 });
-		const ridesDbWritter = new MongoDbWriter('rides', ridesCollection, { batch_size: 10000 });
+		const hashedShapesDbWritter = new MongoDbWriter<CreateHashedShapeDto>({ batch_size: 1000, collection: hashedShapesCollection });
+		const hashedTripsDbWritter = new MongoDbWriter<CreateHashedTripDto>({ batch_size: 1000, collection: hashedTripsCollection });
+		const ridesDbWritter = new MongoDbWriter<CreateRideDto>({ batch_size: 10000, collection: ridesCollection });
 
 		//
 		// Get all Plans and iterate on each one
@@ -597,7 +597,7 @@ export async function createRidesFromGtfs() {
 								vehicle_ids: [],
 							};
 							//
-							const ridesOptions = {
+							const ridesOptions: MongoDbWriterWriteOptions = {
 								filter: {
 									_id: rideData._id,
 								},

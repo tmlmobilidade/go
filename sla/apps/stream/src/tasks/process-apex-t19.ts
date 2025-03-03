@@ -5,13 +5,17 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { apexT19, rides } from '@tmlmobilidade/core/interfaces';
 import { emailProvider } from '@tmlmobilidade/core/providers';
-import { type ApexT11 } from '@tmlmobilidade/core/types';
+import { type ApexT19 } from '@tmlmobilidade/core/types';
 import { parseApexT19 } from '@tmlmobilidade/sae-sla-pckg-parse';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
 
 /* * */
 
-const apexT19DbWritter = new MongoDbWriter('apex_t19', await apexT19.getCollection(), { batch_size: 250, timeout: 10000 });
+const apexT19DbWritter = new MongoDbWriter<ApexT19>({
+	batch_size: 250,
+	collection: await apexT19.getCollection(),
+	idle_timeout: 10000,
+});
 
 /* * */
 
@@ -45,7 +49,7 @@ export async function processApexT19(databaseOperation) {
 	// Setup the callback function that will be called on the DB Writer flush operation
 	// to invalidate all the rides that are affected by the new data.
 
-	const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexT11>[]) => {
+	const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexT19>[]) => {
 		try {
 			const invalidationTimer = new TIMETRACKER();
 			let modifiedCount = 0;

@@ -11,7 +11,11 @@ import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
 
 /* * */
 
-const vehicleEventsDbWritter = new MongoDbWriter('vehicle_events', await vehicleEvents.getCollection(), { batch_size: 500, timeout: 10000 });
+const vehicleEventsDbWritter = new MongoDbWriter<VehicleEvent>({
+	batch_size: 500,
+	collection: await vehicleEvents.getCollection(),
+	idle_timeout: 10000,
+});
 
 /* * */
 

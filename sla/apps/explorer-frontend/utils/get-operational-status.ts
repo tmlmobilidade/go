@@ -1,6 +1,7 @@
 /* * */
 
-import { type Ride, type RideDisplay } from '@tmlmobilidade/core/types';
+import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
+import { type Ride } from '@tmlmobilidade/core/types';
 import { DateTime } from 'luxon';
 
 /**
@@ -14,7 +15,7 @@ import { DateTime } from 'luxon';
  * @param seenLastAt The timestamp of the most recent Vehicle Event for the Ride.
  * @returns The operational status for the Ride.
  */
-export function getOperationalStatus(startTimeScheduled: Ride['start_time_scheduled'], seenLastAt: Ride['seen_last_at']): RideDisplay['operational_status'] {
+export function getOperationalStatus(startTimeScheduled: Ride['start_time_scheduled'], seenLastAt: Ride['seen_last_at']): ExtendedRideDisplay['operational_status'] {
 	//
 
 	//

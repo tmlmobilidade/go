@@ -1,13 +1,13 @@
 /* * */
 
-import { type RideDisplay } from '@tmlmobilidade/core/types';
+import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface Props {
-	value?: RideDisplay['seen_status']
+	value?: ExtendedRideDisplay['seen_status']
 }
 
 /* * */
