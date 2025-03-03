@@ -18,17 +18,17 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/core": "20250303.1616.50",
+		"@tmlmobilidade/core": "20250303.2021.59",
 		"@tmlmobilidade/sae-sla-pckg-parse": "*",
 		"@tmlmobilidade/sae-sla-pckg-sync": "*",
 		"@tmlmobilidade/sae-sla-pckg-utils": "*",
 		"luxon": "3.5.0",
-		"mongodb": "6.14.0",
+		"mongodb": "6.14.1",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.4.2",
-		"@types/node": "22.13.8",
+		"@types/node": "22.13.9",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.2"
 	}

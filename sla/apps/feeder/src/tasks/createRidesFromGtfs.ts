@@ -4,7 +4,8 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/core/interfaces';
-import { createOperationalDate, HashedShape, HashedShapePoint, HashedTrip, HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, OperationalDate, Ride, UnixTimestamp } from '@tmlmobilidade/core/types';
+import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp } from '@tmlmobilidade/core/types';
+import { getUnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/core/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -146,7 +147,7 @@ export async function createRidesFromGtfs() {
 						let currentOperationalDate: OperationalDate;
 
 						try {
-							currentOperationalDate = createOperationalDate(data.date);
+							currentOperationalDate = validateOperationalDate(data.date);
 						}
 						catch (error) {
 							LOGGER.error(`Error creating operational date "${data.date}" for service_id "${data.service_id}" of plan ${planData._id}`, error);
@@ -519,8 +520,8 @@ export async function createRidesFromGtfs() {
 						const hashedTripData: HashedTrip = {
 							...hashableHashedTripData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedTripData)).digest('hex'),
-							created_at: DateTime.now().toMillis() as UnixTimestamp,
-							updated_at: DateTime.now().toMillis() as UnixTimestamp,
+							created_at: getUnixTimestamp(),
+							updated_at: getUnixTimestamp(),
 						};
 
 						const currentHashedTripAlreadyExists = await hashedTrips.findById(hashedTripData._id);
@@ -544,8 +545,8 @@ export async function createRidesFromGtfs() {
 						const hashedShapeData: HashedShape = {
 							...hashableHashedShapeData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedShapeData)).digest('hex'),
-							created_at: DateTime.now().toMillis() as UnixTimestamp,
-							updated_at: DateTime.now().toMillis() as UnixTimestamp,
+							created_at: getUnixTimestamp(),
+							updated_at: getUnixTimestamp(),
 						};
 
 						const currentHashedShapeAlreadyExists = await hashedShapes.findById(hashedShapeData._id);
@@ -576,7 +577,7 @@ export async function createRidesFromGtfs() {
 								_id: `${planData._id}-${routeData.agency_id}-${calendarDate}-${tripData.trip_id}`,
 								agency_id: routeData.agency_id,
 								analysis: [],
-								created_at: DateTime.now().toMillis() as UnixTimestamp,
+								created_at: getUnixTimestamp(),
 								driver_ids: [],
 								end_time_observed: null,
 								end_time_scheduled: endTimeScheduledDate,
@@ -598,7 +599,7 @@ export async function createRidesFromGtfs() {
 								start_time_scheduled: startTimeScheduledDate,
 								system_status: 'pending',
 								trip_id: tripData.trip_id,
-								updated_at: DateTime.now().toMillis() as UnixTimestamp,
+								updated_at: getUnixTimestamp(),
 								validations_count: null,
 								vehicle_ids: [],
 							};
@@ -846,11 +847,13 @@ const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: stri
 	// Extract the individual components of the time string (HH:MM:SS)
 	const [hoursOperation, minutesOperation, secondsOperation] = timeString.split(':').map(Number);
 
-	return DateTime
-		.fromFormat(operationalDate, OPERATIONAL_DATE_FORMAT)
-		.setZone('Europe/Lisbon')
-		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-		.toMillis() as UnixTimestamp;
+	return validateUnixTimestamp(
+		DateTime
+			.fromFormat(operationalDate, OPERATIONAL_DATE_FORMAT)
+			.setZone('Europe/Lisbon')
+			.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
+			.toMillis(),
+	);
 
 	//
 };

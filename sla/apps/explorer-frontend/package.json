@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.30.0",
-		"@tmlmobilidade/core": "20250303.1616.50",
+		"@tmlmobilidade/core": "20250303.2021.59",
 		"@tmlmobilidade/ui": "20250227.1959.42",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.1",
@@ -32,7 +32,7 @@
 		"@types/geojson": "7946.0.16",
 		"@types/lodash": "4.17.16",
 		"@types/luxon": "3.4.2",
-		"@types/node": "22.13.8",
+		"@types/node": "22.13.9",
 		"@types/react": "19.0.10",
 		"@types/react-dom": "19.0.4",
 		"typescript": "5.8.2"
