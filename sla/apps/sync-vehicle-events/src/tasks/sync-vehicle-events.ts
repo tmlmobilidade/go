@@ -94,8 +94,8 @@ export async function syncVehicleEvents() {
 
 			const slaQuery = {
 				received_at: {
-					$gte: chunkData.start.toJSDate(),
-					$lte: chunkData.end.toJSDate(),
+					$gte: chunkData.start.toUnixInteger(),
+					$lte: chunkData.end.toUnixInteger(),
 				},
 			};
 

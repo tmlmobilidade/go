@@ -94,8 +94,8 @@ export async function syncApexT19() {
 
 			const slaQuery = {
 				created_at: {
-					$gte: chunkData.start.toJSDate(),
-					$lte: chunkData.end.toJSDate(),
+					$gte: chunkData.start.toUnixInteger(),
+					$lte: chunkData.end.toUnixInteger(),
 				},
 			};
 
