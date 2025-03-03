@@ -4,7 +4,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/core/interfaces';
-import { CreateHashedShapeDto, CreateHashedTripDto, createOperationalDate, CreateRideDto, HashedShapePoint, HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, OperationalDate, UnixTimestamp } from '@tmlmobilidade/core/types';
+import { createOperationalDate, HashedShape, HashedShapePoint, HashedTrip, HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, OperationalDate, Ride, UnixTimestamp } from '@tmlmobilidade/core/types';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -28,9 +28,9 @@ export async function createRidesFromGtfs() {
 		const hashedTripsCollection = await hashedTrips.getCollection();
 		const ridesCollection = await rides.getCollection();
 
-		const hashedShapesDbWritter = new MongoDbWriter<CreateHashedShapeDto>({ batch_size: 1000, collection: hashedShapesCollection });
-		const hashedTripsDbWritter = new MongoDbWriter<CreateHashedTripDto>({ batch_size: 1000, collection: hashedTripsCollection });
-		const ridesDbWritter = new MongoDbWriter<CreateRideDto>({ batch_size: 10000, collection: ridesCollection });
+		const hashedShapesDbWritter = new MongoDbWriter<HashedShape>({ batch_size: 1000, collection: hashedShapesCollection });
+		const hashedTripsDbWritter = new MongoDbWriter<HashedTrip>({ batch_size: 1000, collection: hashedTripsCollection });
+		const ridesDbWritter = new MongoDbWriter<Ride>({ batch_size: 10000, collection: ridesCollection });
 
 		//
 		// Get all Plans and iterate on each one
@@ -491,7 +491,7 @@ export async function createRidesFromGtfs() {
 						//
 						// Setup the hashed trip data
 
-						const hashableHashedTripData: Omit<CreateHashedTripDto, '_id'> = {
+						const hashableHashedTripData: Omit<HashedTrip, '_id' | 'created_at' | 'updated_at'> = {
 							//
 							agency_id: routeData.agency_id,
 							//
@@ -516,9 +516,11 @@ export async function createRidesFromGtfs() {
 						// Hash the hashed trip contents to prevent duplicates
 						// Check if this hashed trip already exists. If it does not exist, save it to the database.
 
-						const hashedTripData: CreateHashedTripDto = {
+						const hashedTripData: HashedTrip = {
 							...hashableHashedTripData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedTripData)).digest('hex'),
+							created_at: DateTime.now().toMillis() as UnixTimestamp,
+							updated_at: DateTime.now().toMillis() as UnixTimestamp,
 						};
 
 						const currentHashedTripAlreadyExists = await hashedTrips.findById(hashedTripData._id);
@@ -530,7 +532,7 @@ export async function createRidesFromGtfs() {
 						//
 						// Setup the hashed shape data
 
-						const hashableHashedShapeData: Omit<CreateHashedShapeDto, '_id'> = {
+						const hashableHashedShapeData: Omit<HashedShape, '_id' | 'created_at' | 'updated_at'> = {
 							agency_id: routeData.agency_id,
 							points: shapeData?.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence),
 						};
@@ -539,9 +541,11 @@ export async function createRidesFromGtfs() {
 						// Hash the hashed shape contents to prevent duplicates
 						// Check if this hashed shape already exists. If it does not exist, save it to the database.
 
-						const hashedShapeData: CreateHashedShapeDto = {
+						const hashedShapeData: HashedShape = {
 							...hashableHashedShapeData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedShapeData)).digest('hex'),
+							created_at: DateTime.now().toMillis() as UnixTimestamp,
+							updated_at: DateTime.now().toMillis() as UnixTimestamp,
 						};
 
 						const currentHashedShapeAlreadyExists = await hashedShapes.findById(hashedShapeData._id);
@@ -568,10 +572,11 @@ export async function createRidesFromGtfs() {
 							const endTimeScheduledString = hashedTripData.path[hashedTripData.path.length - 1].arrival_time;
 							const endTimeScheduledDate = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(endTimeScheduledString, calendarDate);
 							//
-							const rideData: CreateRideDto = {
+							const rideData: Ride = {
 								_id: `${planData._id}-${routeData.agency_id}-${calendarDate}-${tripData.trip_id}`,
 								agency_id: routeData.agency_id,
 								analysis: [],
+								created_at: DateTime.now().toMillis() as UnixTimestamp,
 								driver_ids: [],
 								end_time_observed: null,
 								end_time_scheduled: endTimeScheduledDate,
@@ -593,6 +598,7 @@ export async function createRidesFromGtfs() {
 								start_time_scheduled: startTimeScheduledDate,
 								system_status: 'pending',
 								trip_id: tripData.trip_id,
+								updated_at: DateTime.now().toMillis() as UnixTimestamp,
 								validations_count: null,
 								vehicle_ids: [],
 							};
