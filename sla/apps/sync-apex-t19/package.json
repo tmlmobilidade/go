@@ -18,11 +18,12 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.42.7",
-		"@tmlmobilidade/sae-sla-pckg-utils": "*",
+		"@tmlmobilidade/core": "20250303.24.32",
 		"@tmlmobilidade/sae-sla-pckg-parse": "*",
 		"@tmlmobilidade/sae-sla-pckg-sync": "*",
-		"@tmlmobilidade/core": "20250303.24.32",
+		"@tmlmobilidade/sae-sla-pckg-utils": "*",
 		"luxon": "3.5.0",
+		"mongodb": "6.14.0",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {

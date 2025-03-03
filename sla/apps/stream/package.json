@@ -21,6 +21,7 @@
 		"@tmlmobilidade/core": "20250303.24.32",
 		"@tmlmobilidade/sae-sla-pckg-parse": "*",
 		"@tmlmobilidade/sae-sla-pckg-utils": "*",
+		"mongodb": "6.14.0",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
