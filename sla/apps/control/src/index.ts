@@ -7,6 +7,12 @@ import { apexT11, apexT19, hashedShapes, hashedTrips, rides, vehicleEvents } fro
 (async function init() {
 	//
 
+	if (process.env.NODE_ENV !== 'development') {
+		throw new Error('This script should only be run in development mode');
+	}
+
+	return;
+
 	const apexT11Collection = await apexT11.getCollection();
 	const apexT19Collection = await apexT19.getCollection();
 	const ridesCollection = await rides.getCollection();
