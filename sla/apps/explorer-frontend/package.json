@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.30.0",
-		"@tmlmobilidade/core": "20250303.24.32",
+		"@tmlmobilidade/core": "20250303.1014.1",
 		"@tmlmobilidade/ui": "20250227.1959.42",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.1",

@@ -21,9 +21,9 @@ export function getOperationalStatus(startTimeScheduled: Ride['start_time_schedu
 	//
 	// Check if the ride start time is in the future.
 
-	const nowInUnixSeconds = DateTime.now().toUnixInteger();
+	const nowInUnixMilliseconds = DateTime.now().toMillis();
 
-	const secondsFromRideStartToNow = nowInUnixSeconds - startTimeScheduled;
+	const secondsFromRideStartToNow = nowInUnixMilliseconds - startTimeScheduled;
 
 	//
 	// If the ride start time is less than or equal to 10 minutes ago, or in the future,
@@ -45,7 +45,7 @@ export function getOperationalStatus(startTimeScheduled: Ride['start_time_schedu
 	// If there is seen_last_at for the ride, and the most recent one was received less than or exactly at 10 minutes ago,
 	// then the ride is considered 'running'. Else it is considered 'ended'.
 
-	const secondsFromMostRecentVehicleEventToNow = nowInUnixSeconds - seenLastAt;
+	const secondsFromMostRecentVehicleEventToNow = nowInUnixMilliseconds - seenLastAt;
 
 	if (secondsFromMostRecentVehicleEventToNow <= 600) {
 		return 'running';

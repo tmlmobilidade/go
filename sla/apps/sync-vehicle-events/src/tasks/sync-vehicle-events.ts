@@ -43,7 +43,7 @@ export async function syncVehicleEvents() {
 		const allTimestampChunks = Interval
 			.fromDateTimes(earliestDataNeeded, thirtySecondsAgo)
 			.splitBy({ hour: 3 })
-			.sort((a, b) => b.start.toUnixInteger() - a.start.toUnixInteger());
+			.sort((a, b) => b.start.toMillis() - a.start.toMillis());
 
 		//
 		// Iterate over each timestamp chunk and sync the documents.
@@ -100,8 +100,8 @@ export async function syncVehicleEvents() {
 
 			const slaQuery = {
 				received_at: {
-					$gte: chunkData.start.toUnixInteger(),
-					$lte: chunkData.end.toUnixInteger(),
+					$gte: chunkData.start.toMillis(),
+					$lte: chunkData.end.toMillis(),
 				},
 			};
 

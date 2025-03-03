@@ -19,9 +19,9 @@ export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): ExtendedRideDi
 		return 'unseen';
 	}
 
-	const nowInUnixSeconds = DateTime.now().toUnixInteger();
+	const nowInUnixMilliseconds = DateTime.now().toMillis();
 
-	const secondsFromLastSeenToNow = nowInUnixSeconds - seenLastAt;
+	const secondsFromLastSeenToNow = nowInUnixMilliseconds - seenLastAt;
 
 	if (secondsFromLastSeenToNow <= 30) {
 		return 'seen';

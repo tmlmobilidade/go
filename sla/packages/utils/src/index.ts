@@ -23,7 +23,7 @@ export function getStandardWindowInterval(timestamp?: UnixTimestamp): { end: Uni
 	const dateObject = timestamp ? DateTime.fromSeconds(timestamp) : DateTime.now();
 	// Return the start and end of the standard window interval
 	return {
-		end: dateObject.plus({ hours: STANDARD_WINDOW_HOURS }).toUnixInteger() as UnixTimestamp,
-		start: dateObject.minus({ hours: STANDARD_WINDOW_HOURS }).toUnixInteger() as UnixTimestamp,
+		end: dateObject.plus({ hours: STANDARD_WINDOW_HOURS }).toMillis() as UnixTimestamp,
+		start: dateObject.minus({ hours: STANDARD_WINDOW_HOURS }).toMillis() as UnixTimestamp,
 	};
 }

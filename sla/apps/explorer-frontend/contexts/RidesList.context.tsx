@@ -61,7 +61,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Handle actions
 
 	useEffect(() => {
-		const nowMillis = DateTime.now().toUnixInteger();
+		const nowMillis = DateTime.now().toMillis();
 		for (const [rideIndex, rideData] of ridesContext.data.rides_display.entries()) {
 			if (nowMillis - rideData.start_time_scheduled <= 0) {
 				setDataLockIndexState(rideIndex);
