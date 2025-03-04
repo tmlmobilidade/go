@@ -3,6 +3,7 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
+import { nprogress } from '@mantine/nprogress';
 import { DateTime } from 'luxon';
 import { createContext, type PropsWithChildren, type RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ViewportListRef } from 'react-viewport-list';
@@ -59,6 +60,16 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// B. Handle actions
+
+	useEffect(() => {
+		if (ridesContext.flags.is_loading) {
+			const currentProgress = ridesContext.counters.current_items / ridesContext.counters.total_items * 100;
+			nprogress.set(currentProgress);
+		}
+		else {
+			nprogress.complete();
+		}
+	}, [ridesContext.flags.is_loading, ridesContext.counters.current_items, ridesContext.counters.total_items]);
 
 	useEffect(() => {
 		const nowMillis = DateTime.now().toMillis();

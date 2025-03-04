@@ -35,6 +35,14 @@
 	box-shadow: 0 0 5px 0 rgb(0 0 0 / 10%);
 }
 
+.preHeader {
+	display: flex;
+	flex-direction: column;
+	gap:15px;
+	align-items: flex-start;
+	justify-content: flex-start
+}
+
 /* * */
 /* BODY */
 

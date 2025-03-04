@@ -9,11 +9,13 @@ import { getLocale, getMessages } from 'next-intl/server';
 import { Work_Sans } from 'next/font/google';
 import { cookies as nextCookies } from 'next/headers';
 // import { redirect, RedirectType } from 'next/navigation';
+import { NavigationProgress } from '@mantine/nprogress';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren } from 'react';
 
 /* * */
 
+import '@mantine/nprogress/styles.css';
 import '@tmlmobilidade/ui/dist/styles.css';
 import '@/styles/default.css';
 
@@ -72,6 +74,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					<NuqsAdapter>
 						<ThemeProvider fontFamilyStyle={workSans.style.fontFamily}>
 							<Providers>
+								<NavigationProgress size={5} zIndex={10} />
 								{children}
 							</Providers>
 						</ThemeProvider>

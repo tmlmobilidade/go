@@ -1,0 +1,5 @@
+/* * */
+
+.details, .details * {
+	user-select: text;
+}

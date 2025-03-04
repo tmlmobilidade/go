@@ -1,6 +1,7 @@
 /* * */
 
 import { apexT11, rides } from '@tmlmobilidade/core/interfaces';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 
 /* * */
@@ -33,15 +34,13 @@ export const apexT11Endpoint = async (request: FastifyRequest, reply: FastifyRep
 	// Fetch the corresponding Apex T11 data
 	// and send it back to the client
 
-	const apexT11Collection = await apexT11.getCollection();
+	const standardWindowInterval = getStandardWindowInterval(rideData.start_time_scheduled);
 
-	const apexT11Data = await apexT11Collection
-		.find({
-			extra_trip_id: null,
-			operational_date: rideData.operational_date,
-			trip_id: rideData.trip_id,
-		})
-		.toArray();
+	const apexT11Data = await apexT11.findMany({
+		created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+		extra_trip_id: null,
+		trip_id: rideData.trip_id,
+	});
 
 	reply.send(apexT11Data || []);
 

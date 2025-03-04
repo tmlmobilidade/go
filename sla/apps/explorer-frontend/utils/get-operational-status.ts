@@ -2,7 +2,7 @@
 
 import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { type Ride } from '@tmlmobilidade/core/types';
-import { DateTime } from 'luxon';
+import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
 
 /**
  * This function returns the correct operational status for a given Ride, base on its 'scheduled_start_time' and 'seen_last_at' values.
@@ -21,15 +21,15 @@ export function getOperationalStatus(startTimeScheduled: Ride['start_time_schedu
 	//
 	// Check if the ride start time is in the future.
 
-	const nowInUnixMilliseconds = DateTime.now().toMillis();
+	const nowInUnixMilliseconds = getUnixTimestamp();
 
-	const secondsFromRideStartToNow = nowInUnixMilliseconds - startTimeScheduled;
+	const millisecondsFromRideStartToNow = nowInUnixMilliseconds - startTimeScheduled;
 
 	//
 	// If the ride start time is less than or equal to 10 minutes ago, or in the future,
 	// and there are no VehicleEvents for it, then the ride is considered 'scheduled'.
 
-	if (secondsFromRideStartToNow <= 600 && !seenLastAt) {
+	if (millisecondsFromRideStartToNow <= 600000 && !seenLastAt) {
 		return 'scheduled';
 	}
 
@@ -37,7 +37,7 @@ export function getOperationalStatus(startTimeScheduled: Ride['start_time_schedu
 	// If the ride start time is at least 10 minutes ago, and there are no VehicleEvents for it,
 	// then the ride is considered 'missed' and no further analysis is needed.
 
-	if (secondsFromRideStartToNow > 600 && !seenLastAt) {
+	if (millisecondsFromRideStartToNow > 600000 && !seenLastAt) {
 		return 'missed';
 	}
 
@@ -45,9 +45,9 @@ export function getOperationalStatus(startTimeScheduled: Ride['start_time_schedu
 	// If there is seen_last_at for the ride, and the most recent one was received less than or exactly at 10 minutes ago,
 	// then the ride is considered 'running'. Else it is considered 'ended'.
 
-	const secondsFromMostRecentVehicleEventToNow = nowInUnixMilliseconds - seenLastAt;
+	const millisecondsFromMostRecentVehicleEventToNow = nowInUnixMilliseconds - seenLastAt;
 
-	if (secondsFromMostRecentVehicleEventToNow <= 600) {
+	if (millisecondsFromMostRecentVehicleEventToNow <= 600000) {
 		return 'running';
 	}
 

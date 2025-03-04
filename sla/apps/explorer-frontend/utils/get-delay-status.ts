@@ -2,7 +2,6 @@
 
 import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { type Ride } from '@tmlmobilidade/core/types';
-import { DateTime } from 'luxon';
 
 /**
  * This function extract the hour and minute components from a date string.
@@ -16,16 +15,15 @@ export function getDelayStatus(startTimeScheduled: Ride['start_time_scheduled'],
 		return null;
 	}
 
-	const scheduledTime = DateTime.fromMillis(startTimeScheduled);
-	const observedTime = DateTime.fromMillis(startTimeObserved);
+	const difference = startTimeObserved - startTimeScheduled;
 
-	const difference = observedTime.diff(scheduledTime, 'minutes').minutes;
-
-	if (difference > 5) {
+	// 5 minutes late
+	if (difference > 300000) {
 		return 'delayed';
 	}
 
-	if (difference < -1) {
+	// 1 minute early
+	if (difference < -60000) {
 		return 'early';
 	}
 

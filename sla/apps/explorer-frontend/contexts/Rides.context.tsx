@@ -2,12 +2,14 @@
 
 /* * */
 
+import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { getDelayStatus } from '@/utils/get-delay-status';
 import { getOperationalStatus } from '@/utils/get-operational-status';
 import { getSeenStatus } from '@/utils/get-seen-status';
 import { getStartTime } from '@/utils/get-start-time';
-import { type Ride, type RideAnalysis, type WebSocketMessage } from '@tmlmobilidade/core/types';
-import { getOperationalDate } from '@tmlmobilidade/core/utils';
+import { type Ride, type RideAnalysis } from '@tmlmobilidade/core/types';
+import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-sla-pckg-utils';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */
@@ -24,6 +26,10 @@ export interface ExtendedRideDisplay extends Ride {
 interface RidesContextState {
 	actions: {
 		getRideById: (rideId: string) => Ride | undefined
+	}
+	counters: {
+		current_items: number
+		total_items: number
 	}
 	data: {
 		rides_display: ExtendedRideDisplay[]
@@ -54,68 +60,101 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
+	const operationalDateContext = useOperationalDateContext();
+
 	const webSocketRef = useRef<null | WebSocket>(null);
 
 	const dataRidesStoreState = useRef<Map<string, Ride>>(new Map());
 	const [dataRidesDisplayState, setDataRidesDisplayState] = useState<ExtendedRideDisplay[]>([]);
 
-	const flagIsLoadingRef = useRef<boolean>(true);
-
-	const currentOperationalDate = getOperationalDate();
+	const [counterTotalItems, setCounterTotalItems] = useState<number>(0);
 
 	//
 	// B. Fetch data
 
 	useEffect(() => {
-		//
-		// Initialize WebSocket connection
-		if (!webSocketRef.current) {
-			webSocketRef.current = new WebSocket('ws://localhost:5050/rides');
-		}
-		// Request initial data
-		webSocketRef.current.addEventListener('open', () => {
-			handleSendMessage({
-				action: 'init',
-				module: 'sla-explorer',
-				status: 'request',
-			});
-		});
-		// Handle incoming messages
-		webSocketRef.current.addEventListener('message', handleIncomingMessage);
-
+		// This effect runs everytime there is a change in the websocket reference,
+		// as the goal is to always maintain an open connection. If the connection is
+		// already open, there is no need to open a new one, so return early.
+		// If the connection is not open, then try to open a new one.
+		if (webSocketRef.current) return;
+		// Open a new WebSocket connection
+		console.log('Opening WebSocket connection...');
+		webSocketRef.current = new WebSocket('ws://localhost:5050/rides');
+		webSocketRef.current.addEventListener('open', handleConfigChangeRequest);
+		// Cleanup on unmount
 		return () => {
+			webSocketRef.current.removeEventListener('open', handleConfigChangeRequest);
+			webSocketRef.current.close();
+			webSocketRef.current = null;
+		};
+	}, []);
+
+	useEffect(() => {
+		// This effect runs everytime there is a change in the operational date context,
+		// as the goal is to always send a new configuration message to the server when
+		// the operational date changes. This is done to ensure that the server is always
+		// aware of the client's current operational date.
+		handleConfigChangeRequest();
+		webSocketRef.current.addEventListener('message', handleIncomingMessage);
+		return () => {
+			dataRidesStoreState.current.clear();
+			setDataRidesDisplayState([]);
 			if (!webSocketRef.current) return;
 			webSocketRef.current.removeEventListener('message', handleIncomingMessage);
-			webSocketRef.current.close();
 		};
-		//
-	}, []);
+	}, [operationalDateContext.data.selected_date, webSocketRef.current?.readyState]);
 
 	//
 	// C. Handle actions
 
-	const handleSendMessage = (message: WebSocketMessage) => {
+	const handleSendMessage = (message: RidesExplorerWebSocketMessage<RidesExplorerWebSocketMessageConfig>) => {
 		if (!webSocketRef.current) return;
+		if (webSocketRef.current.readyState !== webSocketRef.current.OPEN) return;
 		webSocketRef.current.send(JSON.stringify(message));
 	};
 
-	const handleIncomingMessage = async (event: MessageEvent) => {
-		// Parse incoming message
-		const messageData: WebSocketMessage = JSON.parse(event.data);
-		// Handle new change message
-		if (messageData.action === 'change' && messageData.status === 'response' && messageData.data) {
-			const rideDocument: Ride = JSON.parse(messageData.data);
-			if (rideDocument.operational_date !== currentOperationalDate) return;
-			dataRidesStoreState.current.set(rideDocument._id, rideDocument);
+	const handleConfigChangeRequest = () => {
+		handleSendMessage({
+			action: 'config',
+			operational_date: operationalDateContext.data.selected_date,
+			sender: 'client',
+			timestamp: getUnixTimestamp(),
+		});
+	};
+
+	const handleIncomingMessage = (event: MessageEvent) => {
+		//
+
+		//
+		// Before any specific action,
+		// try to decode and validate the message.
+
+		const messageData: RidesExplorerWebSocketMessage = JSON.parse(event.data);
+
+		//
+		// Handle the 'config' response message
+
+		if (messageData.action === 'config') {
+			const configMessageData = messageData.data as RidesExplorerWebSocketMessageConfig;
+			setCounterTotalItems(configMessageData.total_items);
 			return;
 		}
-		// Handle complete message
-		if (messageData.action === 'init' && messageData.status === 'complete') {
-			console.log('complete');
-			flagIsLoadingRef.current = false;
+
+		//
+		// Handle the 'data' response message
+
+		if (messageData.action === 'data') {
+			const rideData = messageData.data as Ride;
+			if (rideData.operational_date !== operationalDateContext.data.selected_date) return;
+			console.log(operationalDateContext.data.selected_date);
+			dataRidesStoreState.current.set(rideData._id, rideData);
 			return;
 		}
+
 		console.log('Unknown message:', messageData);
+
+		//
 	};
 
 	useEffect(() => {
@@ -141,7 +180,8 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 	}, [dataRidesStoreState.current]);
 
 	const getRideById = (rideId: string): Ride | undefined => {
-		return dataRidesStoreState.current?.get(rideId);
+		console.log('dataRidesStoreState.current.size', dataRidesStoreState.current.size);
+		return dataRidesStoreState.current.get(rideId);
 	};
 
 	//
@@ -151,14 +191,18 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		actions: {
 			getRideById,
 		},
+		counters: {
+			current_items: dataRidesDisplayState.length,
+			total_items: counterTotalItems,
+		},
 		data: {
 			rides_display: dataRidesDisplayState,
 			rides_store: dataRidesStoreState.current,
 		},
 		flags: {
-			is_loading: flagIsLoadingRef.current,
+			is_loading: dataRidesStoreState.current.size !== counterTotalItems,
 		},
-	}), [dataRidesDisplayState, dataRidesStoreState.current, flagIsLoadingRef.current]);
+	}), [dataRidesDisplayState, counterTotalItems, dataRidesStoreState.current]);
 
 	//
 	// E. Render components

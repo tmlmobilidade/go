@@ -1,6 +1,7 @@
 /* * */
 
 import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 
 /* * */
@@ -33,15 +34,13 @@ export const vehicleEventsEndpoint = async (request: FastifyRequest, reply: Fast
 	// Fetch the corresponding vehicle events data
 	// and send it back to the client
 
-	const vehicleEventsCollection = await vehicleEvents.getCollection();
+	const standardWindowInterval = getStandardWindowInterval(rideData.start_time_scheduled);
 
-	const vehicleEventsData = await vehicleEventsCollection
-		.find({
-			extra_trip_id: null,
-			operational_date: rideData.operational_date,
-			trip_id: rideData.trip_id,
-		})
-		.toArray();
+	const vehicleEventsData = await vehicleEvents.findMany({
+		created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+		extra_trip_id: null,
+		trip_id: rideData.trip_id,
+	});
 
 	reply.send(vehicleEventsData || []);
 

@@ -4,6 +4,7 @@
 
 import { Label } from '@/components/Label';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
+import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { type ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { IconChevronRight, IconCreditCardPay } from '@tabler/icons-react';
@@ -27,6 +28,7 @@ export function DataTable() {
 
 	const ridesContext = useRidesContext();
 	const ridesListContext = useRidesListContext();
+	const operationalDateContext = useOperationalDateContext();
 
 	//
 	// A. Setup variables
@@ -44,25 +46,22 @@ export function DataTable() {
 	//
 	// B. Render components
 
-	if (ridesContext.flags.is_loading) {
-		return (
-			<div className={styles.loading}>
-				<Label size="md" caps>Loading {ridesContext.data.rides_display.length} Rides...</Label>
-			</div>
-		);
-	}
-
 	return (
 		<div className={styles.wrapper}>
 
 			<div className={styles.header}>
-				<div onClick={() => ridesListContext.actions.setLockStatus()} style={{ display: 'flex', zIndex: 100 }}>
-					{ridesListContext.data.is_locked ? 'Locked' : 'Unlocked'}
-					| {ridesListContext.data.is_user_scrolling ? 'IsScrollingUser-true' : 'IsScrollingUser-false'}
+
+				<div className={styles.preHeader}>
+					<div>current operational_date: {operationalDateContext.data.selected_date} <span onClick={operationalDateContext.actions.updateSelectedDateToLessOneDay}>prev</span> <span onClick={operationalDateContext.actions.updateSelectedDateToPlusOneDay}>next</span></div>
+					<div onClick={() => ridesListContext.actions.setLockStatus()} style={{ display: 'flex', zIndex: 100 }}>
+						{ridesListContext.data.is_locked ? 'Locked' : 'Unlocked'}
+						| {ridesListContext.data.is_user_scrolling ? 'IsScrollingUser-true' : 'IsScrollingUser-false'}
+					</div>
+					<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
+						lock index {ridesListContext.data.lock_index} | lock offset {ridesListContext.data.lock_offset}
+					</div>
 				</div>
-				<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
-					lock index {ridesListContext.data.lock_index} | lock offset {ridesListContext.data.lock_offset}
-				</div>
+
 				<div className={styles.row}>
 					<div className={styles.cell} />
 					<div className={styles.cell}>
@@ -90,13 +89,21 @@ export function DataTable() {
 				</div>
 			</div>
 
-			<div className={styles.body}>
-				<ViewportList ref={ridesListContext.data.list_ref} itemMargin={0} items={ridesContext.data.rides_display}>
-					{(item, index) => (
-						<DataTableRow key={item._id} index={index} item={item} />
-					)}
-				</ViewportList>
-			</div>
+			{ridesContext.flags.is_loading && (
+				<div className={styles.loading}>
+					<Label size="md" caps>Loading {ridesContext.data.rides_display.length} Rides...</Label>
+				</div>
+			)}
+
+			{!ridesContext.flags.is_loading && (
+				<div className={styles.body}>
+					<ViewportList ref={ridesListContext.data.list_ref} itemMargin={0} items={ridesContext.data.rides_display}>
+						{(item, index) => (
+							<DataTableRow key={item._id} index={index} item={item} />
+						)}
+					</ViewportList>
+				</div>
+			)}
 
 		</div>
 	);

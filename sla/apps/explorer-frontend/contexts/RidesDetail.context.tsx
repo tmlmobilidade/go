@@ -1,9 +1,10 @@
 'use client';
 
-import { getCssVariableValue } from '@/utils/get-css-variable-value';
-import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
 /* * */
 
+import { useRidesContext } from '@/contexts/Rides.context';
+import { getCssVariableValue } from '@/utils/get-css-variable-value';
+import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
 import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/core/types';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
@@ -13,10 +14,11 @@ import useSWR from 'swr';
 
 interface RidesDetailContextState {
 	data: {
-		active_ride_id: Ride['_id'] | undefined
 		apex_t11: ApexT11[]
 		hashed_shape: HashedShape
 		hashed_trip: HashedTrip
+		ride: Ride
+		ride_id: Ride['_id']
 		vehicle_events: VehicleEvent[]
 	}
 	geojson: {
@@ -47,6 +49,8 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// A. Setup variables
 
+	const ridesContext = useRidesContext();
+
 	//
 	// B. Fetch data
 
@@ -59,6 +63,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	// console.log('apexT11Data', apexT11Data);
 	// console.log('hashedTripData', hashedTripData);
 	// console.log('hashedShapeData', hashedShapeData);
+
+	const currentRideData: Ride = useMemo(() => {
+		return ridesContext.actions.getRideById(rideId);
+	}, [rideId, ridesContext.data.rides_display]);
 
 	//
 	// C. Transform data
@@ -138,10 +146,11 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 
 	const contextValue: RidesDetailContextState = useMemo(() => ({
 		data: {
-			active_ride_id: rideId,
 			apex_t11: apexT11Data || [],
 			hashed_shape: hashedShapeData,
 			hashed_trip: hashedTripData,
+			ride: currentRideData,
+			ride_id: rideId,
 			vehicle_events: vehicleEventsData || [],
 		},
 		geojson: {
@@ -150,7 +159,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			scheduled_path: scheduledPathFC,
 			scheduled_shape: scheduledShapeFC,
 		},
-	}), [rideId, vehicleEventsData, apexT11Data, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
+	}), [rideId, vehicleEventsData, currentRideData, apexT11Data, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
 
 	//
 	// D. Render components
