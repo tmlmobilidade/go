@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@mantine/nprogress": "7.17.1",
-		"@tabler/icons-react": "3.30.0",
+		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/core": "20250304.1505.14",
 		"@tmlmobilidade/sae-sla-pckg-utils": "*",
 		"@tmlmobilidade/ui": "20250227.1959.42",
