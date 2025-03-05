@@ -7,17 +7,14 @@ import { rides } from '@tmlmobilidade/core/interfaces';
 import { Ride } from '@tmlmobilidade/core/types';
 import { getOperationalDate } from '@tmlmobilidade/core/utils';
 import { DateTime } from 'luxon';
-import util from 'util';
 
 /* * */
 
 async function createTableFromExample(rideDataParsed) {
 	const createTableQuery = `
         CREATE TABLE IF NOT EXISTS rides (
-            ${Object.entries(rideDataParsed).map(([key, value]) => {
-				let type = 'text';
-				if (util.types.isDate(value)) type = 'timestamptz';
-				return `${key} ${type}`;
+            ${Object.entries(rideDataParsed).map(([key]) => {
+				return `${key} text`;
 			}).join(',')}
         );
     `;
@@ -36,12 +33,15 @@ function parseRide(rideData: Ride) {
 	const parsed = {
 		_id: rideData._id,
 		agency_id: rideData.agency_id,
+		end_time_observed: rideData.start_time_observed,
+		end_time_scheduled: rideData.end_time_scheduled,
 		extension_scheduled: rideData.extension_scheduled,
 		line_id: rideData.line_id,
 		operational_date: rideData.operational_date,
 		pattern_id: rideData.pattern_id,
 		plan_id: rideData.plan_id,
 		route_id: rideData.route_id,
+		start_time_observed: rideData.start_time_observed,
 		start_time_scheduled: rideData.start_time_scheduled,
 		trip_id: rideData.trip_id,
 		validations_count: rideData.validations_count,
