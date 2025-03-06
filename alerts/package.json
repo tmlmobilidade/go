@@ -20,13 +20,13 @@
 		"lint": "turbo lint"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250103.1610.23",
+		"@carrismetropolitana/eslint": "20250303.2009.45",
 		"dotenv-cli": "^8.0.0",
-		"prettier": "^3.2.5",
-		"turbo": "^2.3.0",
-		"typescript": "5.5.4"
+		"prettier": "^3.5.3",
+		"turbo": "^2.4.4",
+		"typescript": "5.8.2"
 	},
-	"packageManager": "pnpm@8.15.6",
+	"packageManager": "pnpm@10.6.0",
 	"engines": {
 		"node": ">=18"
 	}

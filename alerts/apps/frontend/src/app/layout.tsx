@@ -1,7 +1,6 @@
 /* * */
 
 import '@tmlmobilidade/ui/dist/styles.css';
-import AppWrapper from '@/components/AppWrapper';
 import { ConfigProviders } from '@/components/providers/config-providers';
 import { DataProviders } from '@/components/providers/data-providers';
 import { Routes } from '@/lib/routes';
@@ -39,9 +38,7 @@ export default async function Layout({
 				<ThemeProvider fontFamilyStyle={workSans.style.fontFamily} initialTheme="ocean">
 					<ConfigProviders>
 						<DataProviders>
-							<AppWrapper>
-								{children}
-							</AppWrapper>
+							{children}
 						</DataProviders>
 					</ConfigProviders>
 				</ThemeProvider>
