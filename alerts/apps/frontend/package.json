@@ -5,14 +5,14 @@
 	"scripts": {
 		"build": "next build",
 		"clean": "rm -rf dist",
-		"dev": "next dev --turbopack",
+		"dev": "next dev --turbopack -p 51001",
 		"lint": "next lint",
 		"start": "next start"
 	},
 	"dependencies": {
 		"@tabler/icons-react": "^3.29.0",
 		"@tmlmobilidade/core-types": "^20250227.1638.40",
-		"@tmlmobilidade/ui": "^20250227.1959.42",
+		"@tmlmobilidade/ui": "^20250306.1700.23",
 		"clsx": "^2.1.1",
 		"luxon": "^3.5.0",
 		"next": "15.1.6",
