@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "^3.29.0",
 		"@tmlmobilidade/core-types": "^20250227.1638.40",
-		"@tmlmobilidade/ui": "^20250306.1750.41",
+		"@tmlmobilidade/ui": "^20250307.1723.25",
 		"clsx": "^2.1.1",
 		"luxon": "^3.5.0",
 		"next": "15.1.6",
