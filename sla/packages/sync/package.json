@@ -1,6 +1,7 @@
 {
 	"name": "@tmlmobilidade/sae-sla-pckg-sync",
 	"version": "1.0.0",
+	"type": "module",
 	"files": ["dist"],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
