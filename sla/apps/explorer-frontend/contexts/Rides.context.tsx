@@ -147,7 +147,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		if (messageData.action === 'data') {
 			const rideData = messageData.data as Ride;
 			if (rideData.operational_date !== operationalDateContext.data.selected_date) return;
-			// console.log(operationalDateContext.data.selected_date);
+			console.log(operationalDateContext.data.selected_date);
 			dataRidesStoreState.current.set(rideData._id, rideData);
 			return;
 		}
