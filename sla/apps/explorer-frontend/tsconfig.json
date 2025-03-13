@@ -1,5 +1,4 @@
 {
-	"extends": "@tmlmobilidade/tsconfig/base.json",
 	"compilerOptions": {
 		"allowJs": true,
 		"esModuleInterop": true,
@@ -20,7 +19,7 @@
 		],
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
-		"strict": false,
+		"strict": true,
 		"target": "ES2017"
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

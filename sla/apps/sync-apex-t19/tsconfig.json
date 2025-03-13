@@ -1,13 +1,14 @@
 {
 	"extends": "@tmlmobilidade/tsconfig/base.json",
 	"compilerOptions": {
-		"baseUrl": ".",
-		"outDir": "dist",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"outDir": "./dist",
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"rootDir": "src"
+		"rootDir": "./src",
+		"target": "ES2017"
 	},
-	"include": ["src"],
-	"exclude": ["node_modules", "dist"]
+	"include": ["src/**/*.ts"]
 }
