@@ -1,9 +1,9 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/core/interfaces';
-// import authorizationMiddleware from '@/middleware/authorization.middleware.js';
+import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import LOGGER from '@helperkits/logger';
-// import { Permissions } from '@tmlmobilidade/core/lib';
+import { rides } from '@tmlmobilidade/core/interfaces';
+import { Permissions } from '@tmlmobilidade/core/lib';
 import { type Ride } from '@tmlmobilidade/core/types';
 import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
 import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-sla-pckg-utils';
@@ -13,10 +13,10 @@ import { WebSocket } from 'ws';
 
 export const ridesWebsocket = async function (fastify) {
 	fastify.get('/rides', {
-		// preHandler: authorizationMiddleware<Ride>(
-		// 	Permissions.rides.scope,
-		// 	Permissions.rides.actions.list,
-		// ),
+		preHandler: authorizationMiddleware<Ride>(
+			Permissions.rides.scope,
+			Permissions.rides.actions.list,
+		),
 		websocket: true,
 	}, (socket: WebSocket) => {
 		socket.on('message', async (message) => {

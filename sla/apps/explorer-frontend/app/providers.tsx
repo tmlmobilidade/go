@@ -3,6 +3,7 @@
 /* * */
 
 import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
+import { MeContextProvider } from '@/contexts/Me.context';
 import { OperationalDateContextProvider } from '@/contexts/OperationalDate.context';
 import { RidesContextProvider } from '@/contexts/Rides.context';
 import { MapProvider } from '@vis.gl/react-maplibre';
@@ -42,15 +43,17 @@ export default function Providers({ children }: PropsWithChildren) {
 
 	return (
 		<SWRConfig value={swrSettings}>
-			<OperationalDateContextProvider>
-				<RidesContextProvider>
-					<MapOptionsContextProvider>
-						<MapProvider>
-							{children}
-						</MapProvider>
-					</MapOptionsContextProvider>
-				</RidesContextProvider>
-			</OperationalDateContextProvider>
+			<MeContextProvider>
+				<OperationalDateContextProvider>
+					<RidesContextProvider>
+						<MapOptionsContextProvider>
+							<MapProvider>
+								{children}
+							</MapProvider>
+						</MapOptionsContextProvider>
+					</RidesContextProvider>
+				</OperationalDateContextProvider>
+			</MeContextProvider>
 		</SWRConfig>
 	);
 

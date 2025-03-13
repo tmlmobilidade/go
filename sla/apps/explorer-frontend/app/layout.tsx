@@ -2,14 +2,14 @@
 
 import Providers from '@/app/providers';
 import { availableFormats } from '@/i18n/config';
+import { NavigationProgress } from '@mantine/nprogress';
 import { ThemeProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { Work_Sans } from 'next/font/google';
 import { cookies as nextCookies } from 'next/headers';
-// import { redirect, RedirectType } from 'next/navigation';
-import { NavigationProgress } from '@mantine/nprogress';
+import { redirect, RedirectType } from 'next/navigation';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren } from 'react';
 
@@ -18,6 +18,7 @@ import { type PropsWithChildren } from 'react';
 import '@mantine/nprogress/styles.css';
 import '@tmlmobilidade/ui/dist/styles.css';
 import '@/styles/default.css';
+import { Routes } from '@/lib/routes';
 
 /* * */
 
@@ -54,7 +55,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const sessionToken = cookies.get('session_token')?.value;
 
 	if (!sessionToken) {
-		// redirect(`${process.env.NEXT_PUBLIC_AUTH_API_URL ?? 'http://localhost:3001'}/login?redirect=${encodeURI('http://localhost:3004')}`, RedirectType.replace);
+		redirect(
+			`${Routes.AUTH_API}/login?redirect=${encodeURI(Routes.URL)}`,
+			RedirectType.replace,
+		);
 	}
 
 	//
