@@ -1,18 +1,30 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "@tmlmobilidade/tsconfig/nextjs.json",
-	"compilerOptions": {
-		"outDir": "./dist",
-		"paths": {
-			"@/*": ["./*"]
-		},
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"rootDir": "."
-	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-	"exclude": ["node_modules"]
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@tmlmobilidade/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "rootDir": ".",
+    "noEmit": true,
+    "incremental": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
