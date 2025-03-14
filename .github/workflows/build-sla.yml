@@ -162,6 +162,35 @@ jobs:
           file: ./sla/apps/explorer-server/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-sla-explorer-server:${{ github.ref_name }}
 
+  # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # #
+
+  sla-explorer-server-nginx:
+    name: sla-explorer-server-nginx (nginx)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@master
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@master
+        with:
+          push: true
+          context: ./sla/apps/explorer-server-nginx
+          file: ./sla/apps/explorer-server-nginx/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-sla-explorer-server-nginx:${{ github.ref_name }}
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
