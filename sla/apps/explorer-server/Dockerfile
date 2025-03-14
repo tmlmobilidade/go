@@ -1,26 +1,29 @@
-###########################
-# Define the base image
-###########################
-FROM node:20.16-alpine AS base
+# # #
+# DEFINE THE BASE IMAGE
 
+FROM node:alpine AS base
+
+ENV SCOPE=sla
 ENV PROJECT=explorer-server
 
 RUN npm install -g turbo@^2
 
-###########################
-# Builder stage
-###########################
+
+# # #
+# BUILDER STAGE
+
 FROM base AS pruner
 
 WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@carrismetropolitana/api-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/sae-${SCOPE}-${PROJECT} --docker
 
-###########################
-# Installer stage
-###########################
+
+# # #
+# INSTALLER STAGE
+
 FROM base AS builder
 
 WORKDIR /app
@@ -31,12 +34,12 @@ RUN npm install
 
 # Build the project
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@carrismetropolitana/api-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/sae-${SCOPE}-${PROJECT}
 
 
-# ###########################
-# # Runner stage
-# ###########################
+# # #
+# RUNNER STAGE
+
 FROM base AS runner
 
 WORKDIR /app
