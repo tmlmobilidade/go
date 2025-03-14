@@ -2,6 +2,7 @@
 
 /* * */
 
+import { normalizeChar } from '@/utils/normalize-char';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -14,16 +15,16 @@ interface Props {
 
 /* * */
 
-export function Flap({ char }: Props) {
+export function Flap({ char = ' ' }: Props) {
 	//
 
 	//
 	// A. Setup variables
 
-	const animationDuration = 200; // milliseconds
+	const animationDuration = 10; // milliseconds
 
-	const currChar = useRef(' ');
-	const nextChar = useRef(' ');
+	const currChar = useRef(normalizeChar(char));
+	const nextChar = useRef(normalizeChar(char));
 
 	const [isFlipping, setIsFlipping] = useState(false);
 
@@ -31,13 +32,7 @@ export function Flap({ char }: Props) {
 	// B. Handle actions
 
 	const normalizedChar = useMemo(() => {
-		// Transform char to remove diacritics, uppercase,
-		// and only allow spaces, letters, numbers, dashes and parentheses
-		return char
-			?.normalize('NFKD')
-			.replace(/[\u0300-\u036f]/g, '')
-			.toUpperCase()
-			.replace(/[^A-Z0-9\s().:|-]/g, '') ?? ' ';
+		return normalizeChar(char);
 	}, [char]);
 
 	const isAllowedChar = (code: number) => {

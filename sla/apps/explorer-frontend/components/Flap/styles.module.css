@@ -10,7 +10,7 @@
 	line-height: 1;
 	color: white;
 	text-align: center;
-	background-color: black;
+	background-color: rgb(0 0 0);
 	border-radius: 2px;
 	box-shadow: 0 0 3px 0 rgb(0 0 0 / 50%);
 }
@@ -38,19 +38,19 @@
 	width: 100%;
 	height: 2px;
 	background-color: white;
-	opacity: 0.5;
+	opacity: 0.3;
 }
 
 .flipOne {
 	background-color: black;
 	animation: flip1 linear forwards 1;
-	animation-duration: 200ms;
+	animation-duration: 400ms;
 }
 
 .flipTwo {
 	background-color: black;
 	animation: flip2 linear forwards 1;
-	animation-duration: 200ms;
+	animation-duration: 400ms;
 }
 
 @keyframes flip1 {

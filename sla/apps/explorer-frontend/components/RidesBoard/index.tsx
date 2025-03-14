@@ -7,7 +7,7 @@ import { Label } from '@/components/Label';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
 import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { useRidesBoardContext } from '@/contexts/RidesBoard.context';
-import { ViewportList } from 'react-viewport-list';
+import { useEffect } from 'react';
 
 import styles from './styles.module.css';
 
@@ -23,6 +23,18 @@ export function RidesBoard() {
 
 	//
 	// B. Render components
+
+	useEffect(() => {
+		// Measure the height of the viewport
+		const viewportHeight = window.innerHeight;
+		const usableHeight = viewportHeight - 100;
+		const rowHeight = 60;
+		const rowsCount = Math.floor(usableHeight / rowHeight);
+		ridesBoardContext.actions.handleSetSlotsCount(rowsCount);
+	}, []);
+
+	//
+	// C. Render components
 
 	return (
 		<div className={styles.wrapper}>
@@ -47,11 +59,9 @@ export function RidesBoard() {
 			</div>
 
 			<div className={styles.body}>
-				<ViewportList ref={ridesBoardContext.data.board_ref} itemMargin={0} items={ridesBoardContext.data.rides}>
-					{(item, index) => (
-						<RidesBoardRow key={item._id} index={index} item={item} />
-					)}
-				</ViewportList>
+				{ridesBoardContext.data.slots.map(slot => (
+					<RidesBoardRow key={slot._id} index={slot.index} item={slot.ride} slotId={slot._id} />
+				))}
 			</div>
 
 		</div>
@@ -64,7 +74,8 @@ export function RidesBoard() {
 
 interface RidesBoardRowProps {
 	index: number
-	item: ExtendedRideDisplay
+	item: ExtendedRideDisplay | null
+	slotId: string
 }
 
 export function RidesBoardRow({ item }: RidesBoardRowProps) {
@@ -74,23 +85,22 @@ export function RidesBoardRow({ item }: RidesBoardRowProps) {
 	// A. Render components
 
 	return (
-
-		<div key={item._id} className={styles.rowWrapper}>
-			<div key={item._id} className={styles.row}>
+		<div className={styles.rowWrapper}>
+			<div className={styles.row}>
 				<div className={styles.cell}>
-					<SeenStatusTag value={item.seen_status} />
+					<SeenStatusTag value={item?.seen_status || 'unseen'} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={5} string={item.start_time_scheduled_display} />
+					<FlapLine count={5} string={item?.start_time_scheduled_display} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={4} string={item.line_id} />
+					<FlapLine count={4} string={item?.line_id} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={21} string={item.headsign} />
+					<FlapLine count={40} string={item?.headsign} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={7} string={item.operational_status} />
+					<FlapLine count={10} string={`${item?.delay_status || ''}`} />
 				</div>
 			</div>
 		</div>

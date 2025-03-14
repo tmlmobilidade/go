@@ -4,15 +4,24 @@
 
 import { ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
 import { DateTime } from 'luxon';
-import { createContext, type PropsWithChildren, type RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { type ViewportListRef } from 'react-viewport-list';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
+/* * */
+
+interface BoardSlot {
+	_id: string
+	index: number
+	ride: ExtendedRideDisplay | null
+}
 
 /* * */
 
 interface RidesBoardContextState {
+	actions: {
+		handleSetSlotsCount: (count: number) => void
+	}
 	data: {
-		board_ref: RefObject<ViewportListRef>
-		rides: ExtendedRideDisplay[]
+		slots: BoardSlot[]
 	}
 }
 
@@ -38,42 +47,74 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 
 	const ridesContext = useRidesContext();
 
-	const dataBoardRef = useRef<null | ViewportListRef>(null);
-	const [dataRidesDisplayState, setDataRidesDisplayState] = useState<ExtendedRideDisplay[]>([]);
+	const UPDATE_DELAY = 1000;
+
+	const isUpdating = useRef(false);
+
+	const [dataSlotsCountState, setDataSlotsCountState] = useState<number>(10);
+	const [dataSlotsState, setDataSlotsState] = useState<RidesBoardContextState['data']['slots']>([]);
 
 	//
 	// B. Transform data
 
 	useEffect(() => {
-		const refreshList = () => {
-			const allRidesDisplay: ExtendedRideDisplay[] = Array
+		const refreshList = async () => {
+			if (isUpdating.current) return;
+			console.log('ridesContext.data.rides.size', ridesContext.data.rides.size);
+			if (ridesContext.data.rides.size < 18000) return;
+			isUpdating.current = true;
+			const filteredRidesData: ExtendedRideDisplay[] = Array
 				.from(ridesContext.data.rides.values())
 				.filter((ride) => {
 					const startTime = ride.start_time_observed || ride.start_time_scheduled;
-					const startTimeIsInFuture = startTime > DateTime.now().toMillis();
-					const hasStartTimeObserved = ride.start_time_observed;
+					const startTimeIsInFuture = startTime > DateTime.now().minus({ minutes: 30 }).toMillis();
+					// const hasStartTimeObserved = ride.start_time_observed;
 					return startTimeIsInFuture;
 				})
 				.sort((a, b) => {
 					const timeA = a.start_time_observed || a.start_time_scheduled;
 					const timeB = b.start_time_observed || b.start_time_scheduled;
 					return timeA - timeB;
+				})
+				.slice(0, dataSlotsCountState);
+			console.log('here2', dataSlotsCountState, filteredRidesData);
+			for (const [index, rideData] of filteredRidesData.entries()) {
+				console.log('here2', index, rideData._id);
+				setDataSlotsState((prevSlots) => {
+					const newSlots = [...prevSlots];
+					newSlots[index] = { _id: `slot-${index}`, index: index, ride: rideData };
+					return newSlots;
 				});
-			setDataRidesDisplayState(allRidesDisplay);
+				console.log('Updated slot', index, rideData._id);
+				// Await for 200 milliseconds before updating the next slot
+				await new Promise(resolve => setTimeout(resolve, UPDATE_DELAY));
+			}
+			isUpdating.current = false;
+			// await refreshList();
 		};
+		refreshList();
 		const interval = setInterval(refreshList, 1000);
 		return () => clearInterval(interval);
-	}, [ridesContext.data.rides]);
+	}, [ridesContext.data.rides, dataSlotsCountState]);
+
+	//
+	// C. Define context value
+
+	const handleSetSlotsCount = (count: number) => {
+		setDataSlotsCountState(count);
+	};
 
 	//
 	// C. Define context value
 
 	const contextValue: RidesBoardContextState = useMemo(() => ({
-		data: {
-			board_ref: dataBoardRef,
-			rides: dataRidesDisplayState,
+		actions: {
+			handleSetSlotsCount,
 		},
-	}), [dataRidesDisplayState]);
+		data: {
+			slots: dataSlotsState,
+		},
+	}), [dataSlotsState]);
 
 	//
 	// D. Render components
