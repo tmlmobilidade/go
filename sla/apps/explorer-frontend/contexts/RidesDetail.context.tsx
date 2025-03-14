@@ -66,7 +66,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 
 	const currentRideData: Ride = useMemo(() => {
 		return ridesContext.actions.getRideById(rideId);
-	}, [rideId, ridesContext.data.rides_display]);
+	}, [rideId, ridesContext.data.rides]);
 
 	//
 	// C. Transform data

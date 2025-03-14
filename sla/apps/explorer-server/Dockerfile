@@ -3,7 +3,7 @@
 ###########################
 FROM node:20.16-alpine AS base
 
-ENV PROJECT=server
+ENV PROJECT=explorer-server
 
 RUN npm install -g turbo@^2
 
