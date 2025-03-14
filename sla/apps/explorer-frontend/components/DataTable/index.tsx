@@ -5,7 +5,7 @@
 import { Label } from '@/components/Label';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { type ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { IconChevronRight, IconCreditCardPay } from '@tabler/icons-react';
 import { Tag } from '@tmlmobilidade/ui';
@@ -26,7 +26,6 @@ export function DataTable() {
 	//
 	// A. Setup variables
 
-	const ridesContext = useRidesContext();
 	const ridesListContext = useRidesListContext();
 	const operationalDateContext = useOperationalDateContext();
 
@@ -89,15 +88,15 @@ export function DataTable() {
 				</div>
 			</div>
 
-			{ridesContext.flags.is_loading && (
+			{ridesListContext.flags.is_loading && (
 				<div className={styles.loading}>
-					<Label size="md" caps>Loading {ridesContext.data.rides_display.length} Rides...</Label>
+					<Label size="md" caps>Loading {ridesListContext.data.rides_display.length} Rides...</Label>
 				</div>
 			)}
 
-			{!ridesContext.flags.is_loading && (
+			{!ridesListContext.flags.is_loading && (
 				<div className={styles.body}>
-					<ViewportList ref={ridesListContext.data.list_ref} itemMargin={0} items={ridesContext.data.rides_display}>
+					<ViewportList ref={ridesListContext.data.list_ref} itemMargin={0} items={ridesListContext.data.rides_display}>
 						{(item, index) => (
 							<DataTableRow key={item._id} index={index} item={item} />
 						)}

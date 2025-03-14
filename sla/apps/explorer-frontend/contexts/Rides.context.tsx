@@ -25,18 +25,11 @@ export interface ExtendedRideDisplay extends Ride {
 
 interface RidesContextState {
 	actions: {
-		getRideById: (rideId: string) => Ride | undefined
-	}
-	counters: {
-		current_items: number
-		total_items: number
+		getRideById: (rideId: string) => ExtendedRideDisplay | undefined
 	}
 	data: {
-		rides_display: ExtendedRideDisplay[]
-		rides_store: Map<string, Ride>
-	}
-	flags: {
-		is_loading: boolean
+		expected_items: number
+		rides: Map<string, ExtendedRideDisplay>
 	}
 }
 
@@ -64,10 +57,9 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 
 	const webSocketRef = useRef<null | WebSocket>(null);
 
-	const dataRidesStoreState = useRef<Map<string, Ride>>(new Map());
-	const [dataRidesDisplayState, setDataRidesDisplayState] = useState<ExtendedRideDisplay[]>([]);
+	const dataRidesRef = useRef<Map<string, ExtendedRideDisplay>>(new Map());
 
-	const [counterTotalItems, setCounterTotalItems] = useState<number>(0);
+	const [counterExpectedItems, setCounterExpectedItems] = useState<number>(0);
 
 	//
 	// B. Fetch data
@@ -98,8 +90,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		handleConfigChangeRequest();
 		webSocketRef.current.addEventListener('message', handleIncomingMessage);
 		return () => {
-			dataRidesStoreState.current.clear();
-			setDataRidesDisplayState([]);
+			dataRidesRef.current.clear();
 			if (!webSocketRef.current) return;
 			webSocketRef.current.removeEventListener('message', handleIncomingMessage);
 		};
@@ -137,7 +128,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 
 		if (messageData.action === 'config') {
 			const configMessageData = messageData.data as RidesExplorerWebSocketMessageConfig;
-			setCounterTotalItems(configMessageData.total_items);
+			setCounterExpectedItems(configMessageData.total_items);
 			return;
 		}
 
@@ -147,8 +138,15 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		if (messageData.action === 'data') {
 			const rideData = messageData.data as Ride;
 			if (rideData.operational_date !== operationalDateContext.data.selected_date) return;
-			console.log(operationalDateContext.data.selected_date);
-			dataRidesStoreState.current.set(rideData._id, rideData);
+			dataRidesRef.current.set(rideData._id, {
+				...rideData,
+				delay_status: getDelayStatus(rideData.start_time_scheduled, rideData.start_time_observed),
+				operational_status: getOperationalStatus(rideData.start_time_scheduled, rideData.seen_last_at),
+				seen_status: getSeenStatus(rideData.seen_last_at),
+				simple_three_vehicle_events_grade: rideData.analysis.find(analysis => analysis._id === 'SIMPLE_THREE_VEHICLE_EVENTS')?.grade || null,
+				start_time_observed_display: rideData.start_time_observed ? getStartTime(rideData.start_time_observed) : null,
+				start_time_scheduled_display: getStartTime(rideData.start_time_scheduled),
+			});
 			return;
 		}
 
@@ -157,31 +155,8 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		//
 	};
 
-	useEffect(() => {
-		const refreshList = () => {
-			const allRidesDisplay: ExtendedRideDisplay[] = Array
-				.from(dataRidesStoreState.current.values())
-				.sort((a, b) => String(a.start_time_scheduled).localeCompare(String(b.start_time_scheduled)))
-				.map((item) => {
-					return {
-						...item,
-						delay_status: getDelayStatus(item.start_time_scheduled, item.start_time_observed),
-						operational_status: getOperationalStatus(item.start_time_scheduled, item.seen_last_at),
-						seen_status: getSeenStatus(item.seen_last_at),
-						simple_three_vehicle_events_grade: item.analysis.find(analysis => analysis._id === 'SIMPLE_THREE_VEHICLE_EVENTS')?.grade || null,
-						start_time_observed_display: item.start_time_observed ? getStartTime(item.start_time_observed) : null,
-						start_time_scheduled_display: getStartTime(item.start_time_scheduled),
-					};
-				});
-			setDataRidesDisplayState(allRidesDisplay);
-		};
-		const interval = setInterval(refreshList, 1000);
-		return () => clearInterval(interval);
-	}, [dataRidesStoreState.current]);
-
-	const getRideById = (rideId: string): Ride | undefined => {
-		console.log('dataRidesStoreState.current.size', dataRidesStoreState.current.size);
-		return dataRidesStoreState.current.get(rideId);
+	const getRideById = (rideId: string): ExtendedRideDisplay | undefined => {
+		return dataRidesRef.current.get(rideId);
 	};
 
 	//
@@ -191,18 +166,11 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		actions: {
 			getRideById,
 		},
-		counters: {
-			current_items: dataRidesDisplayState.length,
-			total_items: counterTotalItems,
-		},
 		data: {
-			rides_display: dataRidesDisplayState,
-			rides_store: dataRidesStoreState.current,
+			expected_items: counterExpectedItems,
+			rides: dataRidesRef.current,
 		},
-		flags: {
-			is_loading: dataRidesStoreState.current.size !== counterTotalItems,
-		},
-	}), [dataRidesDisplayState, counterTotalItems, dataRidesStoreState.current]);
+	}), [counterExpectedItems, dataRidesRef.current]);
 
 	//
 	// E. Render components

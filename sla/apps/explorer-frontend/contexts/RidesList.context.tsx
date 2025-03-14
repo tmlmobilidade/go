@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRidesContext } from '@/contexts/Rides.context';
+import { ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
 import { nprogress } from '@mantine/nprogress';
 import { DateTime } from 'luxon';
 import { createContext, type PropsWithChildren, type RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -25,6 +25,10 @@ interface RidesListContextState {
 		list_ref: RefObject<ViewportListRef>
 		lock_index: number
 		lock_offset: number
+		rides_display: ExtendedRideDisplay[]
+	}
+	flags: {
+		is_loading: boolean
 	}
 }
 
@@ -56,30 +60,46 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [dataIsLockedState, setDataIsLockedState] = useState<boolean>(true);
 	const [dataIsUserScrollingState, setDataIsUserScrollingState] = useState<boolean>(false);
 
+	const [dataRidesDisplayState, setDataRidesDisplayState] = useState<ExtendedRideDisplay[]>([]);
+
 	const scrollTimeout = useRef(null);
+
+	//
+	// B. Transform data
+
+	useEffect(() => {
+		const refreshList = () => {
+			const allRidesDisplay: ExtendedRideDisplay[] = Array
+				.from(ridesContext.data.rides.values())
+				.sort((a, b) => String(a.start_time_scheduled).localeCompare(String(b.start_time_scheduled)));
+			setDataRidesDisplayState(allRidesDisplay);
+		};
+		const interval = setInterval(refreshList, 1000);
+		return () => clearInterval(interval);
+	}, [ridesContext.data.rides]);
 
 	//
 	// B. Handle actions
 
 	useEffect(() => {
-		if (ridesContext.flags.is_loading) {
-			const currentProgress = ridesContext.counters.current_items / ridesContext.counters.total_items * 100;
+		if (dataRidesDisplayState.length !== ridesContext.data.expected_items) {
+			const currentProgress = dataRidesDisplayState.length / ridesContext.data.expected_items * 100;
 			nprogress.set(currentProgress);
 		}
 		else {
 			nprogress.complete();
 		}
-	}, [ridesContext.flags.is_loading, ridesContext.counters.current_items, ridesContext.counters.total_items]);
+	}, [dataRidesDisplayState.length, ridesContext.data.expected_items]);
 
 	useEffect(() => {
 		const nowMillis = DateTime.now().toMillis();
-		for (const [rideIndex, rideData] of ridesContext.data.rides_display.entries()) {
+		for (const [rideIndex, rideData] of dataRidesDisplayState.entries()) {
 			if (nowMillis - rideData.start_time_scheduled <= 0) {
 				setDataLockIndexState(rideIndex);
 				return;
 			}
 		}
-	}, [ridesContext.data.rides_display]);
+	}, [dataRidesDisplayState]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -154,8 +174,12 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			list_ref: dataListRef,
 			lock_index: dataLockIndexState,
 			lock_offset: dataLockOffsetState,
+			rides_display: dataRidesDisplayState,
 		},
-	}), [dataListRef.current, dataLockIndexState, dataLockOffsetState, dataIsLockedState, dataIsUserScrollingState]);
+		flags: {
+			is_loading: dataRidesDisplayState.length !== ridesContext.data.expected_items,
+		},
+	}), [dataListRef.current, dataRidesDisplayState, dataLockIndexState, dataLockOffsetState, dataIsLockedState, ridesContext.data.expected_items, dataIsUserScrollingState]);
 
 	//
 	// D. Render components
