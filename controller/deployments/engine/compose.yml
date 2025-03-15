@@ -74,6 +74,27 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
+  examiner:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-examiner:production
+    deploy:
+      mode: replicated
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
   feeder:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-feeder:production
     deploy:
@@ -173,24 +194,3 @@ services:
       - ./secrets/.env
     secrets:
       - pcgidbkey
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  worker:
-    image: ghcr.io/tmlmobilidade/sae-controller-engine-worker:production
-    deploy:
-      mode: replicated
-      replicas: 4
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
