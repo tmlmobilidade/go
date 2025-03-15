@@ -3,7 +3,7 @@
 
 FROM node:alpine AS base
 
-ENV SCOPE=sla
+ENV SCOPE=controller-engine
 ENV PROJECT=bridge
 
 RUN npm install -g turbo@^2

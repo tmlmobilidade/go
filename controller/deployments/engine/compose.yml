@@ -1,10 +1,10 @@
 # # #
 
-name: sae-sla
+name: sae-controller-engine
 
 secrets:
   pcgidbkey:
-    file: ./secrets/production/PCGIDB.key
+    file: ./secrets/PCGIDB.key
 
 services:
 
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    image: ghcr.io/tmlmobilidade/sae-controller-cleaner:production
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-cleaner:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -50,32 +50,13 @@ services:
         max-size: '1m'
         max-file: '1'
     env_file:
-      - ./secrets/production/.env
+      - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  feeder:
-    image: ghcr.io/tmlmobilidade/sae-controller-feeder:production
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/production/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  monitor-coordinator:
-    image: ghcr.io/tmlmobilidade/sae-controller-monitor-coordinator:production
+  coordinator:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-coordinator:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -88,13 +69,116 @@ services:
         max-size: '1m'
         max-file: '1'
     env_file:
-      - ./secrets/production/.env
+      - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  monitor-worker:
-    image: ghcr.io/tmlmobilidade/sae-controller-monitor-worker:production
+  feeder:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-feeder:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  stream:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-stream:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-apex-t11:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-sync-apex-t11:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-apex-t19:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-sync-apex-t19:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-vehicle-events:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-sync-vehicle-events:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  worker:
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-worker:production
     deploy:
       mode: replicated
       replicas: 4
@@ -109,88 +193,4 @@ services:
         max-size: '1m'
         max-file: '1'
     env_file:
-      - ./secrets/production/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-apex-t11:
-    image: ghcr.io/tmlmobilidade/sae-controller-sync-apex-t11:production
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/production/.env
-    secrets:
-      - pcgidbkey
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-apex-t19:
-    image: ghcr.io/tmlmobilidade/sae-controller-sync-apex-t19:production
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/production/.env
-    secrets:
-      - pcgidbkey
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/sae-controller-sync-vehicle-events:production
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/production/.env
-    secrets:
-      - pcgidbkey
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  stream:
-    image: ghcr.io/tmlmobilidade/sae-controller-stream:production
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/production/.env
-    secrets:
-      - pcgidbkey
+      - ./secrets/.env

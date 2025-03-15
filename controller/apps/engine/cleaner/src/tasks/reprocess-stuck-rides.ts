@@ -33,7 +33,7 @@ export async function reprocessStuckRides() {
 
 		//
 		// It is unlikely for a Ride to be in the processing state for more than 3 minutes.
-		// If it takes longer than that, then something happened (like a restart of the monitor-worker
+		// If it takes longer than that, then something happened (like a restart of the examiner
 		// responsible for that ride) and the ride is considered stuck.
 		// It should be marked as 'pending' to be reprocessed.
 
