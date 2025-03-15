@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-sla-monitor-worker",
+	"name": "@tmlmobilidade/sae-controller-engine-stream",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "npm run clean && tsc && resolve-tspaths",
 		"clean": "rm -rf dist",
-		"dev": "dotenv-run -f ./secrets/development/.env.development -- tsx watch ./src/index.ts",
+		"dev": "dotenv-run -f ../secrets/development/.env.development -- tsx watch ./src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"start": "node dist/index.js"
@@ -17,10 +17,12 @@
 		"@dotenv-run/cli": "1.3.6",
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
+		"@helperkits/writer": "20250303.1058.31",
 		"@tmlmobilidade/core": "20250305.1138.52",
+		"@tmlmobilidade/sae-sla-pckg-parse": "*",
 		"@tmlmobilidade/sae-sla-pckg-utils": "*",
-		"@turf/turf": "7.2.0",
-		"luxon": "3.5.0"
+		"mongodb": "6.14.2",
+		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.4.2",
