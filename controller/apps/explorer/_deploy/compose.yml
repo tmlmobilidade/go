@@ -65,8 +65,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  explorer-server:
-    image: ghcr.io/tmlmobilidade/sae-controller-explorer-server:production
+  api:
+    image: ghcr.io/tmlmobilidade/sae-controller-explorer-api:production
     deploy:
       restart_policy:
         condition: on-failure

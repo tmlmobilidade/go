@@ -10,7 +10,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/nprogress": "7.17.1",
+		"@mantine/nprogress": "7.17.2",
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/core": "20250305.1138.52",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
@@ -20,21 +20,21 @@
 		"lodash": "4.17.21",
 		"luxon": "3.5.0",
 		"maplibre-gl": "5.2.0",
-		"next": "15.2.1",
-		"next-intl": "3.26.5",
-		"nuqs": "2.4.0",
+		"next": "15.2.2",
+		"next-intl": "4.0.2",
+		"nuqs": "2.4.1",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"react-viewport-list": "7.1.2",
 		"recharts": "2.15.1",
 		"sharp": "0.33.5",
-		"swr": "2.3.2"
+		"swr": "2.3.3"
 	},
 	"devDependencies": {
 		"@types/geojson": "7946.0.16",
 		"@types/lodash": "4.17.16",
 		"@types/luxon": "3.4.2",
-		"@types/node": "22.13.9",
+		"@types/node": "22.13.10",
 		"@types/react": "19.0.10",
 		"@types/react-dom": "19.0.4",
 		"typescript": "5.8.2"

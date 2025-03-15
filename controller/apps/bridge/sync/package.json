@@ -20,11 +20,11 @@
 		"@helperkits/writer": "20250303.1058.31",
 		"@tmlmobilidade/core": "20250305.1138.52",
 		"luxon": "3.5.0",
-		"pg": "8.13.3"
+		"pg": "8.14.0"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.4.2",
-		"@types/node": "22.13.9",
+		"@types/node": "22.13.10",
 		"@types/pg": "8.11.11",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.2"
