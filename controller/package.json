@@ -16,9 +16,7 @@
 		"typescript": "5.8.2"
 	},
 	"workspaces": [
-		"apps/bridge/*",
-		"apps/engine/*",
-		"apps/explorer/*",
+		"apps/*",
 		"packages/*"
 	],
 	"packageManager": "npm@11.1.0",
