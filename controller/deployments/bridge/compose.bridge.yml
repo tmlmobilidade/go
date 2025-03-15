@@ -58,7 +58,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   bridge:
-    image: ghcr.io/tmlmobilidade/sae-sla-bridge:production
+    image: ghcr.io/tmlmobilidade/sae-controller-bridge:production
     deploy:
       restart_policy:
         condition: on-failure

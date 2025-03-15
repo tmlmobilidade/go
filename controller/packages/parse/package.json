@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-sla-pckg-parse",
+	"name": "@tmlmobilidade/sae-controller-pckg-parse",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],

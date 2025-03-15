@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    image: ghcr.io/tmlmobilidade/sae-sla-cleaner:production
+    image: ghcr.io/tmlmobilidade/sae-controller-cleaner:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -56,7 +56,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   feeder:
-    image: ghcr.io/tmlmobilidade/sae-sla-feeder:production
+    image: ghcr.io/tmlmobilidade/sae-controller-feeder:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -75,7 +75,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   monitor-coordinator:
-    image: ghcr.io/tmlmobilidade/sae-sla-monitor-coordinator:production
+    image: ghcr.io/tmlmobilidade/sae-controller-monitor-coordinator:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -94,7 +94,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   monitor-worker:
-    image: ghcr.io/tmlmobilidade/sae-sla-monitor-worker:production
+    image: ghcr.io/tmlmobilidade/sae-controller-monitor-worker:production
     deploy:
       mode: replicated
       replicas: 4
@@ -115,7 +115,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-t11:
-    image: ghcr.io/tmlmobilidade/sae-sla-sync-apex-t11:production
+    image: ghcr.io/tmlmobilidade/sae-controller-sync-apex-t11:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -136,7 +136,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-t19:
-    image: ghcr.io/tmlmobilidade/sae-sla-sync-apex-t19:production
+    image: ghcr.io/tmlmobilidade/sae-controller-sync-apex-t19:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -157,7 +157,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/sae-sla-sync-vehicle-events:production
+    image: ghcr.io/tmlmobilidade/sae-controller-sync-vehicle-events:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -178,7 +178,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   stream:
-    image: ghcr.io/tmlmobilidade/sae-sla-stream:production
+    image: ghcr.io/tmlmobilidade/sae-controller-stream:production
     deploy:
       restart_policy:
         condition: on-failure

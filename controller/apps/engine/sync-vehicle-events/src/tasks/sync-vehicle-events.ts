@@ -6,8 +6,8 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
 import { type UnixTimestamp, type VehicleEvent } from '@tmlmobilidade/core/types';
-import { parseVehicleEvent } from '@tmlmobilidade/sae-sla-pckg-parse';
-import { syncDocuments } from '@tmlmobilidade/sae-sla-pckg-sync';
+import { parseVehicleEvent } from '@tmlmobilidade/sae-controller-pckg-parse';
+import { syncDocuments } from '@tmlmobilidade/sae-controller-pckg-sync';
 import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { DateTime, Interval } from 'luxon';
 
