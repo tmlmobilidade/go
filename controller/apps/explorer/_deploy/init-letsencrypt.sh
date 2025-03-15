@@ -5,7 +5,7 @@
 # SETTINGS
 
 email="carrismetropolitana@gmail.com"
-staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
+staging=1 # Set to 1 if you're testing your setup to avoid hitting request limits
 
 primary_domain=controller.sae.carrismetropolitana.pt
 
