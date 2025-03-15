@@ -1,7 +1,7 @@
 /* * */
 
 import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 
 /* * */

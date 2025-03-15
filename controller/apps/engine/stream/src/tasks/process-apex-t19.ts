@@ -7,7 +7,7 @@ import { apexT19, rides } from '@tmlmobilidade/core/interfaces';
 import { emailProvider } from '@tmlmobilidade/core/providers';
 import { type ApexT19 } from '@tmlmobilidade/core/types';
 import { parseApexT19 } from '@tmlmobilidade/sae-sla-pckg-parse';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
 

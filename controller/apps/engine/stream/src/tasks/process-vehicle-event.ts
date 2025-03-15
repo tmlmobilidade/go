@@ -7,7 +7,7 @@ import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
 import { emailProvider } from '@tmlmobilidade/core/providers';
 import { type VehicleEvent } from '@tmlmobilidade/core/types';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-sla-pckg-parse';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
 

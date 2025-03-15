@@ -27,7 +27,7 @@ import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
 import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simpleOneValidationTransaction.analyzer.js';
 import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simpleOneVehicleEventOrValidationTransaction.analyzer.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simpleThreeVehicleEvents.analyzer.js';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
 

@@ -13,7 +13,7 @@
 		"@mantine/nprogress": "7.17.1",
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/core": "20250305.1138.52",
-		"@tmlmobilidade/sae-sla-pckg-utils": "*",
+		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"@tmlmobilidade/ui": "20250227.1959.42",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.1",

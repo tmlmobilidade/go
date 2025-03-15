@@ -6,7 +6,7 @@ import LOGGER from '@helperkits/logger';
 // import { Permissions } from '@tmlmobilidade/core/lib';
 import { type Ride } from '@tmlmobilidade/core/types';
 import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
-import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-sla-pckg-utils';
+import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { WebSocket } from 'ws';
 
 /* * */

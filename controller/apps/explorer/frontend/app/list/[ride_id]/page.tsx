@@ -6,7 +6,7 @@ import { MapView } from '@/components/map/MapView';
 import { MapViewStylePath } from '@/components/map/MapViewStylePath';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { centerMap } from '@/utils/map.utils';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-sla-pckg-utils';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useState } from 'react';
 

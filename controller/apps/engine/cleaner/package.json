@@ -18,7 +18,7 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/core": "20250305.1138.52",
-		"@tmlmobilidade/sae-sla-pckg-utils": "*",
+		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"luxon": "3.5.0"
 	},
 	"devDependencies": {

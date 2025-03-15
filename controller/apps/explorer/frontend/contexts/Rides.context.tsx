@@ -9,7 +9,7 @@ import { getSeenStatus } from '@/utils/get-seen-status';
 import { getStartTime } from '@/utils/get-start-time';
 import { type Ride, type RideAnalysis } from '@tmlmobilidade/core/types';
 import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
-import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-sla-pckg-utils';
+import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */

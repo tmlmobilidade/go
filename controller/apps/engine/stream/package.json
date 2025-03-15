@@ -20,7 +20,7 @@
 		"@helperkits/writer": "20250303.1058.31",
 		"@tmlmobilidade/core": "20250305.1138.52",
 		"@tmlmobilidade/sae-sla-pckg-parse": "*",
-		"@tmlmobilidade/sae-sla-pckg-utils": "*",
+		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"mongodb": "6.14.2",
 		"tunnel-ssh": "5.2.0"
 	},
