@@ -86,7 +86,7 @@ export async function validateRides() {
 
 		const fetchCoordinatorTimer = new TIMETRACKER();
 
-		const rideIdsBatchResponse = await fetch(process.env.MONITOR_COORDINATOR_URL);
+		const rideIdsBatchResponse = await fetch(process.env.COORDINATOR_URL);
 		const rideIdsBatch = await rideIdsBatchResponse.json();
 
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();

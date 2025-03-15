@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sla-explorer-server
+name: tmlmobilidade-sla-controller-explorer
 
 services:
   #

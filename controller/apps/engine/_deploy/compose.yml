@@ -1,6 +1,6 @@
 # # #
 
-name: sae-controller-engine
+name: tmlmobilidade-sla-controller-engine
 
 secrets:
   pcgidbkey:
