@@ -34,17 +34,21 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: nginx:alpine-slim
-    restart: unless-stopped
-    mem_limit: 2g
+    image: ghcr.io/tmlmobilidade/sae-controller-explorer-nginx:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
     logging:
       options:
         max-size: '1m'
         max-file: '1'
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./letsencrypt:/etc/letsencrypt
-      - certbotdata:/var/www/certbot
+      - ./letsencrypt:/etc/letsencrypt:ro
+      - certbotdata:/var/www/certbot:ro
     ports:
       - 80:80
       - 443:443
