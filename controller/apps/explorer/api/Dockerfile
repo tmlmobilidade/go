@@ -1,5 +1,4 @@
-# # #
-# DEFINE THE BASE IMAGE
+# # # # # # # # #
 
 FROM node:alpine AS base
 
@@ -8,6 +7,8 @@ ENV SCOPE=explorer
 ENV PROJECT=api
 
 RUN npm install -g turbo@^2
+
+# # # # # # # # #
 
 
 # # #

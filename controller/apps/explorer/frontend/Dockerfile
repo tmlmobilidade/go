@@ -2,22 +2,29 @@
 
 FROM node:22.6-alpine3.20 AS base
 
+ENV MODULE=controller
+ENV SCOPE=explorer
+ENV PROJECT=frontend
+
+RUN npm install -g turbo@^2
+
 # # # # # # # # #
 
 
-# PHASE 1
-# Install dependencies only when needed.
+# # #
+# PRUNER STAGE
 
-FROM base AS dependencies
+FROM base AS pruner
 
 RUN apk add --no-cache libc6-compat
+RUN apk update
 
 WORKDIR /app
 
 COPY package.json ./
+COPY . .
 
-RUN npm install --omit-dev --force \
-    && npm cache clean --force
+RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${SCOPE}-${PROJECT} --docker
 
 
 # # # # # # # # #
