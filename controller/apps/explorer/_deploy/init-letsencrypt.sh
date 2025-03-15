@@ -7,7 +7,7 @@
 email="carrismetropolitana@gmail.com"
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
-primary_domain=api.carrismetropolitana.pt
+primary_domain=controller.sae.carrismetropolitana.pt
 
 
 # # #
@@ -33,7 +33,7 @@ echo
 
 
 # # #
-# API SERVER
+# PRIMARY DOMAIN
 
 echo ">>> Preparing for "$primary_domain"..."
 
