@@ -48,7 +48,7 @@ services:
         max-size: '1m'
         max-file: '1'
     env_file:
-      - ./.env
+      - ./secrets/.env
     environment:
       - POSTGRES_DB=$BRIDGEDB_DB
       - POSTGRES_USER=$BRIDGEDB_USER
@@ -58,7 +58,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   bridge:
-    image: ghcr.io/tmlmobilidade/sae-controller-bridge:production
+    image: ghcr.io/tmlmobilidade/sae-controller-bridge-sync:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -71,4 +71,4 @@ services:
         max-size: '1m'
         max-file: '1'
     env_file:
-      - .env
+      - ./secrets/.env
