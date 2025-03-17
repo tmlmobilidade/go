@@ -69,4 +69,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/$PROJECT/.next/stan
 COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/$PROJECT/.next/static ./apps/${SCOPE}/$PROJECT/.next/static
 # COPY --from=builder --chown=nextjs:nodejs /app/apps/$PROJECT/public ./apps/$PROJECT/public
 
-CMD node apps/${SCOPE}/$PROJECT/server.js
+CMD node /app/apps/${SCOPE}/$PROJECT/server.js

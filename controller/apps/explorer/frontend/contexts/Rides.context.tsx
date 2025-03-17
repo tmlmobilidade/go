@@ -72,7 +72,8 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		if (webSocketRef.current) return;
 		// Open a new WebSocket connection
 		console.log('Opening WebSocket connection...');
-		webSocketRef.current = new WebSocket('ws://localhost:5050/rides');
+		// webSocketRef.current = new WebSocket('ws://localhost:5050/rides');
+		webSocketRef.current = new WebSocket('ws://controller.sae.carrismetropolitana.pt/rides');
 		webSocketRef.current.addEventListener('open', handleConfigChangeRequest);
 		// Cleanup on unmount
 		return () => {
