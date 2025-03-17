@@ -4,6 +4,7 @@
 
 import { useFlapsContext } from '@/contexts/Flaps.context';
 import { normalizeChar } from '@/utils/normalize-char';
+import { GlobalTickManager } from '@/utils/TickManager';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -65,6 +66,10 @@ export function Flap({ char = ' ', characterSets = ['alphabet', 'numeric', 'spec
 	};
 
 	const updateChar = () => {
+		// Skip if already flipping
+		if (isFlipping) return;
+		// Skip if normalized char is the same
+		if (currChar.current.charCodeAt(0) === normalizedChar.charCodeAt(0)) return;
 		setIsFlipping(true);
 		nextChar.current = incrementChar(currChar.current);
 
@@ -90,15 +95,20 @@ export function Flap({ char = ' ', characterSets = ['alphabet', 'numeric', 'spec
 		frameId = requestAnimationFrame(animateFlip);
 	};
 
+	// useEffect(() => {
+	// 	// Skip if already flipping
+	// 	if (isFlipping) return;
+	// 	// Skip if normalized char is the same
+	// 	if (currChar.current.charCodeAt(0) === normalizedChar.charCodeAt(0)) return;
+	// 	// Update char
+	// 	updateChar();
+	// 	//
+	// }, [flapsContext.data.tick]);
+
 	useEffect(() => {
-		// Skip if already flipping
-		if (isFlipping) return;
-		// Skip if normalized char is the same
-		if (currChar.current.charCodeAt(0) === normalizedChar.charCodeAt(0)) return;
-		// Update char
-		updateChar();
-		//
-	}, [flapsContext.data.tick]);
+		GlobalTickManager.subscribe(updateChar);
+		return () => GlobalTickManager.unsubscribe(updateChar);
+	}, [updateChar]);
 
 	//
 	// C. Render components

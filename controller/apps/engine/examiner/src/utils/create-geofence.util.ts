@@ -3,13 +3,13 @@
 import { buffer, point } from '@turf/turf';
 
 /**
- * Create a geofence around a given point with a given radius in meters (default is 50 meters).
+ * Create a geofence around a given point with a given radius in meters (default is 100 meters).
  * @param latitude
  * @param longitude
- * @param radius (default is 50 meters)
+ * @param radius (default is 100 meters)
  * @returns The GeoJSON Feature of a Polygon.
  */
-export function createGeofence(longitude: number, latitude: number, radius = 50): GeoJSON.Feature<GeoJSON.Polygon> {
+export function createGeofence(longitude: number, latitude: number, radius = 100): GeoJSON.Feature<GeoJSON.Polygon> {
 	const firstStopTurfPoint = point([longitude, latitude]);
 	return buffer(firstStopTurfPoint, radius, { units: 'meters' }) as GeoJSON.Feature<GeoJSON.Polygon>;
 }

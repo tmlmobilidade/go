@@ -71,6 +71,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		const refreshList = () => {
 			const allRidesDisplay: ExtendedRideDisplay[] = Array
 				.from(ridesContext.data.rides.values())
+				// .filter(rideData => rideData.trip_id === '4720_0_1|700|2030')
 				.sort((a, b) => String(a.start_time_scheduled).localeCompare(String(b.start_time_scheduled)));
 			setDataRidesDisplayState(allRidesDisplay);
 		};
