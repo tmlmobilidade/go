@@ -48,10 +48,6 @@ RUN npm install
 COPY --from=pruner /app/out/full/ .
 RUN turbo run build --filter=@tmlmobilidade/sae-${MODULE}-${SCOPE}-${PROJECT}
 
-RUN ls -la /app
-
-RUN ls -la /app/apps
-
 
 # # # # # # # # #
 
