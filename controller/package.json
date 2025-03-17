@@ -6,6 +6,8 @@
 		"clean": "sh cleanup.sh",
 		"dev:bridge": "turbo dev --filter=@tmlmobilidade/sae-controller-bridge-*",
 		"dev:engine": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-*",
+		"dev:engine-coordinator": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-coordinator",
+		"dev:engine-examiner": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-examiner",
 		"dev:explorer": "turbo dev --filter=@tmlmobilidade/sae-controller-explorer-*",
 		"lint": "turbo lint"
 	},
