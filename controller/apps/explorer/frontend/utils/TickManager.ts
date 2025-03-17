@@ -45,6 +45,7 @@ class TickManager {
 
 	private estimateFPS(): Promise<number> {
 		return new Promise((resolve) => {
+			if (typeof requestAnimationFrame !== 'function') resolve(60);
 			let frames = 0;
 			const start = performance.now();
 			const sampleDuration = 1000; // 1 second sample
@@ -81,6 +82,7 @@ class TickManager {
 	}
 
 	private startLoop() {
+		if (typeof requestAnimationFrame !== 'function') return;
 		const loop = () => {
 			this.frameCounter++;
 

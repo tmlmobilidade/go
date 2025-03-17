@@ -2,7 +2,9 @@
 	"name": "@tmlmobilidade/sae-controller",
 	"private": true,
 	"scripts": {
-		"build": "turbo build",
+		"build:bridge": "turbo build --filter=@tmlmobilidade/sae-controller-bridge-*",
+		"build:engine": "turbo build --filter=@tmlmobilidade/sae-controller-engine-*",
+		"build:explorer": "turbo build --filter=@tmlmobilidade/sae-controller-explorer-*",
 		"clean": "sh cleanup.sh",
 		"dev:bridge": "turbo dev --filter=@tmlmobilidade/sae-controller-bridge-*",
 		"dev:engine": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-*",

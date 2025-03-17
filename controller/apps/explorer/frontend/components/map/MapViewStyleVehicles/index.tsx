@@ -4,7 +4,7 @@
 
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { Layer, Source } from '@vis.gl/react-maplibre';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 
 /* * */
 
@@ -25,13 +25,13 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 /* * */
 
-export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
+export function MapViewStyleVehicles({ presentBeforeId, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
 	//
 
 	//
 	// A. Setup variables
 
-	const t = useTranslations('map.MapViewStyleVehicles');
+	// const t = useTranslations('map.MapViewStyleVehicles');
 
 	//
 	// B. Render components

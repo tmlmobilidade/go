@@ -95,16 +95,6 @@ export function Flap({ char = ' ', characterSets = ['alphabet', 'numeric', 'spec
 		frameId = requestAnimationFrame(animateFlip);
 	};
 
-	// useEffect(() => {
-	// 	// Skip if already flipping
-	// 	if (isFlipping) return;
-	// 	// Skip if normalized char is the same
-	// 	if (currChar.current.charCodeAt(0) === normalizedChar.charCodeAt(0)) return;
-	// 	// Update char
-	// 	updateChar();
-	// 	//
-	// }, [flapsContext.data.tick]);
-
 	useEffect(() => {
 		const unsubscribe = GlobalTickManager.subscribe(updateChar);
 		return unsubscribe;
