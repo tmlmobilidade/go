@@ -2,6 +2,7 @@
 
 /* * */
 
+import { useFlapsContext } from '@/contexts/Flaps.context';
 import { normalizeChar } from '@/utils/normalize-char';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -9,41 +10,47 @@ import styles from './styles.module.css';
 
 /* * */
 
+export const CHARACTER_SETS = {
+	alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
+	numeric: '0123456789',
+	special: '()-|.',
+	time: '0123456789:',
+};
+
+/* * */
 interface Props {
 	char?: string
+	characterSets?: (keyof typeof CHARACTER_SETS)[]
 }
 
 /* * */
 
-export function Flap({ char = ' ' }: Props) {
+export function Flap({ char = ' ', characterSets = ['alphabet', 'numeric', 'special'] }: Props) {
 	//
 
 	//
 	// A. Setup variables
-
-	const animationDuration = 10; // milliseconds
 
 	const currChar = useRef(normalizeChar(char));
 	const nextChar = useRef(normalizeChar(char));
 
 	const [isFlipping, setIsFlipping] = useState(false);
 
+	const flapsContext = useFlapsContext();
+
 	//
-	// B. Handle actions
+	// B. Transform data
 
 	const normalizedChar = useMemo(() => {
 		return normalizeChar(char);
 	}, [char]);
 
-	const isAllowedChar = (code: number) => {
-		if (code <= 31) return false;
-		if (code >= 33 && code <= 39) return false;
-		if (code >= 42 && code <= 44) return false;
-		if (code === 47) return false;
-		if (code >= 59 && code <= 64) return false;
-		if (code >= 91 && code <= 123) return false;
-		if (code >= 124) return false;
-		return true;
+	//
+	// C. Handle actions
+
+	const isAllowedChar = (code: number): boolean => {
+		// Check if code is in any of the allowed character sets
+		return characterSets.some(set => CHARACTER_SETS[set].includes(String.fromCharCode(code)));
 	};
 
 	const incrementChar = (c: string) => {
@@ -58,24 +65,40 @@ export function Flap({ char = ' ' }: Props) {
 	};
 
 	const updateChar = () => {
+		setIsFlipping(true);
+		nextChar.current = incrementChar(currChar.current);
+
+		let startTime: null | number = null;
+		let frameId: number;
+
+		const animateFlip = (timestamp: number) => {
+			if (!startTime) startTime = timestamp;
+
+			const elapsed = timestamp - startTime;
+
+			if (elapsed >= flapsContext.constants.animation_duration) {
+				currChar.current = nextChar.current;
+				nextChar.current = currChar.current;
+				setIsFlipping(false);
+				cancelAnimationFrame(frameId);
+			}
+			else {
+				frameId = requestAnimationFrame(animateFlip);
+			}
+		};
+
+		frameId = requestAnimationFrame(animateFlip);
+	};
+
+	useEffect(() => {
 		// Skip if already flipping
 		if (isFlipping) return;
 		// Skip if normalized char is the same
 		if (currChar.current.charCodeAt(0) === normalizedChar.charCodeAt(0)) return;
 		// Update char
-		setIsFlipping(true);
-		nextChar.current = incrementChar(currChar.current);
-		setTimeout(() => {
-			currChar.current = nextChar.current;
-			nextChar.current = currChar.current;
-			setIsFlipping(false);
-		}, animationDuration); // Match CSS animation duration
-	};
-
-	useEffect(() => {
-		const interval = setInterval(updateChar, animationDuration + 100);
-		return () => clearInterval(interval);
-	}, [char]);
+		updateChar();
+		//
+	}, [flapsContext.data.tick]);
 
 	//
 	// C. Render components

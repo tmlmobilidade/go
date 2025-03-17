@@ -91,16 +91,16 @@ export function RidesBoardRow({ item }: RidesBoardRowProps) {
 					<SeenStatusTag value={item?.seen_status || 'unseen'} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={5} string={item?.start_time_scheduled_display} />
+					<FlapLine characterSets={['time']} count={5} string={item?.start_time_scheduled_display} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={4} string={item?.line_id} />
+					<FlapLine characterSets={['numeric']} count={4} string={item?.line_id} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={40} string={item?.headsign} />
+					<FlapLine characterSets={['alphabet', 'special']} count={40} string={item?.headsign} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine count={10} string={`${item?.delay_status || ''}`} />
+					<FlapLine characterSets={['alphabet']} count={10} string={`${item?.delay_status || ''}`} />
 				</div>
 			</div>
 		</div>

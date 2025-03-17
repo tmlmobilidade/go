@@ -51,7 +51,7 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 
 	const isUpdating = useRef(false);
 
-	const [dataSlotsCountState, setDataSlotsCountState] = useState<number>(10);
+	const [dataSlotsCountState, setDataSlotsCountState] = useState<number>(2);
 	const [dataSlotsState, setDataSlotsState] = useState<RidesBoardContextState['data']['slots']>([]);
 
 	//
@@ -60,8 +60,8 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		const refreshList = async () => {
 			if (isUpdating.current) return;
-			console.log('ridesContext.data.rides.size', ridesContext.data.rides.size);
-			if (ridesContext.data.rides.size < 18000) return;
+			// console.log('ridesContext.data.rides.size', ridesContext.data.rides.size);
+			// if (ridesContext.data.rides.size < 18000) return;
 			isUpdating.current = true;
 			const filteredRidesData: ExtendedRideDisplay[] = Array
 				.from(ridesContext.data.rides.values())
@@ -77,15 +77,15 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 					return timeA - timeB;
 				})
 				.slice(0, dataSlotsCountState);
-			console.log('here2', dataSlotsCountState, filteredRidesData);
+			// console.log('here2', dataSlotsCountState, filteredRidesData);
 			for (const [index, rideData] of filteredRidesData.entries()) {
-				console.log('here2', index, rideData._id);
+				// console.log('here2', index, rideData._id);
 				setDataSlotsState((prevSlots) => {
 					const newSlots = [...prevSlots];
 					newSlots[index] = { _id: `slot-${index}`, index: index, ride: rideData };
 					return newSlots;
 				});
-				console.log('Updated slot', index, rideData._id);
+				// console.log('Updated slot', index, rideData._id);
 				// Await for 200 milliseconds before updating the next slot
 				await new Promise(resolve => setTimeout(resolve, UPDATE_DELAY));
 			}
@@ -98,7 +98,7 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 	}, [ridesContext.data.rides, dataSlotsCountState]);
 
 	//
-	// C. Define context value
+	// C. Handle actions
 
 	const handleSetSlotsCount = (count: number) => {
 		setDataSlotsCountState(count);
