@@ -1,47 +1,116 @@
-// TickManager.ts
+// utils/TickManager.ts
 type TickCallback = () => void;
 
 class TickManager {
-	public static get instance(): TickManager {
-		if (!this._instance) this._instance = new TickManager();
-		return this._instance;
-	}
+	private static instance: TickManager;
 
-	private static _instance: TickManager;
+	private fps = 60;
+	private fpsEstimateInterval = 300000; // Recalculate every 5 minutes
+
+	private frameCounter = 0;
 	private frameId: null | number = null;
-	private lastTime = 0;
-	private loopStarted = false;
-	private subscribers = new Set<TickCallback>();
 
-	private tickInterval = 100; // ms
+	private framesPerTick = 1;
+	private lastFpsEstimateTime = 0;
 
-	public stopLoop() {
-		if (this.frameId) cancelAnimationFrame(this.frameId);
+	private targetFPS = 60;
+	private tickCallbacks = new Set<TickCallback>();
+
+	private constructor() {
+		this.start();
 	}
 
-	public subscribe(callback: TickCallback) {
-		this.subscribers.add(callback);
-		if (typeof window !== 'undefined' && !this.loopStarted) {
-			this.loopStarted = true;
-			this.lastTime = performance.now();
-			this.startLoop();
+	// Singleton getter
+	public static getInstance(): TickManager {
+		if (!TickManager.instance) {
+			TickManager.instance = new TickManager();
 		}
+		return TickManager.instance;
 	}
 
-	public unsubscribe(callback: TickCallback) {
-		this.subscribers.delete(callback);
+	public stop() {
+		if (this.frameId !== null) {
+			cancelAnimationFrame(this.frameId);
+			this.frameId = null;
+		}
+		this.tickCallbacks.clear();
+	}
+
+	public subscribe(callback: TickCallback): () => void {
+		this.tickCallbacks.add(callback);
+		return () => {
+			this.tickCallbacks.delete(callback);
+		};
+	}
+
+	private estimateFPS(): Promise<number> {
+		return new Promise((resolve) => {
+			let frames = 0;
+			const start = performance.now();
+			const sampleDuration = 1000; // 1 second sample
+
+			const measure = (now: number) => {
+				frames++;
+				if (now - start >= sampleDuration) {
+					const fps = (frames * 1000) / (now - start);
+					console.log('Estimated FPS:', Math.round(fps));
+					resolve(Math.round(fps));
+				}
+				else {
+					requestAnimationFrame(measure);
+				}
+			};
+
+			requestAnimationFrame(measure);
+		});
+	}
+
+	private smoothFPSUpdate() {
+		// Damped average: slowly adjust actual FPS toward target
+		this.fps = Math.round(this.fps * 0.8 + this.targetFPS * 0.2);
+		this.updateFramesPerTick();
+	}
+
+	private start() {
+		this.estimateFPS().then((fps) => {
+			this.fps = fps;
+			this.targetFPS = fps;
+			this.updateFramesPerTick();
+			this.startLoop();
+		});
 	}
 
 	private startLoop() {
-		const loop = (time: number) => {
-			if (time - this.lastTime >= this.tickInterval) {
-				this.lastTime = time;
-				this.subscribers.forEach(cb => cb());
+		const loop = () => {
+			this.frameCounter++;
+
+			if (this.frameCounter >= this.framesPerTick) {
+				this.frameCounter = 0;
+				this.tickCallbacks.forEach(cb => cb());
 			}
+
+			// Check if it’s time to re-estimate FPS
+			const now = Date.now();
+			if (now - this.lastFpsEstimateTime >= this.fpsEstimateInterval) {
+				this.lastFpsEstimateTime = now;
+				this.estimateFPS().then((fps) => {
+					this.targetFPS = fps;
+					this.smoothFPSUpdate();
+				});
+			}
+
 			this.frameId = requestAnimationFrame(loop);
 		};
+
 		this.frameId = requestAnimationFrame(loop);
+	}
+
+	private updateFramesPerTick() {
+		// Assuming you want 10 ticks/sec
+		const desiredTickRate = 10;
+		this.framesPerTick = Math.max(1, Math.round(this.targetFPS / desiredTickRate));
+		console.log('Frames per tick:', this.framesPerTick);
 	}
 }
 
-export const GlobalTickManager = TickManager.instance;
+export const GlobalTickManager = TickManager.getInstance();

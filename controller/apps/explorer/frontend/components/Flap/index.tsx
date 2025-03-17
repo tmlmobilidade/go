@@ -106,8 +106,8 @@ export function Flap({ char = ' ', characterSets = ['alphabet', 'numeric', 'spec
 	// }, [flapsContext.data.tick]);
 
 	useEffect(() => {
-		GlobalTickManager.subscribe(updateChar);
-		return () => GlobalTickManager.unsubscribe(updateChar);
+		const unsubscribe = GlobalTickManager.subscribe(updateChar);
+		return unsubscribe;
 	}, [updateChar]);
 
 	//

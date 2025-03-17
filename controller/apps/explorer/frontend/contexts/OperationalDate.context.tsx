@@ -47,8 +47,8 @@ export const OperationalDateContextProvider = ({ children }) => {
 	//
 	// A. Setup variables
 
-	// const [selectedDate, setSelectedDate] = useState(getOperationalDate());
-	const [selectedDate, setSelectedDate] = useState('20250307' as OperationalDate);
+	const [selectedDate, setSelectedDate] = useState(getOperationalDate());
+	// const [selectedDate, setSelectedDate] = useState('20250307' as OperationalDate);
 
 	//
 	// C. Handle actions

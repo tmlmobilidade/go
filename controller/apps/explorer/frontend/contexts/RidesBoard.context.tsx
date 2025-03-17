@@ -47,7 +47,7 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 
 	const ridesContext = useRidesContext();
 
-	const UPDATE_DELAY = 1000;
+	const UPDATE_DELAY = 1500;
 
 	const isUpdating = useRef(false);
 
