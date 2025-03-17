@@ -49,15 +49,11 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    environment:
-      - POSTGRES_DB=$BRIDGEDB_DB
-      - POSTGRES_USER=$BRIDGEDB_USER
-      - POSTGRES_PASSWORD=$BRIDGEDB_PASSWORD
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  bridge:
+  sync:
     image: ghcr.io/tmlmobilidade/sae-controller-bridge-sync:production
     deploy:
       restart_policy:
