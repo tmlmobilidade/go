@@ -54,10 +54,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// B. Fetch data
 
-	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`http://localhost:5050/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
-	const { data: apexT11Data } = useSWR<ApexT11[]>(`http://localhost:5050/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
-	const { data: hashedTripData } = useSWR<HashedTrip>(`http://localhost:5050/rides/${rideId}/hashed-trip`);
-	const { data: hashedShapeData } = useSWR<HashedShape>(`http://localhost:5050/rides/${rideId}/hashed-shape`);
+	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
+	const { data: apexT11Data } = useSWR<ApexT11[]>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
+	const { data: hashedTripData } = useSWR<HashedTrip>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/hashed-trip`);
+	const { data: hashedShapeData } = useSWR<HashedShape>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/hashed-shape`);
 
 	// console.log('vehicleEventsData', vehicleEventsData);
 	// console.log('apexT11Data', apexT11Data);
