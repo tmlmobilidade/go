@@ -62,7 +62,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 	const dataRidesRef = useRef<Map<string, ExtendedRideDisplay>>(new Map());
 
 	const [dataExpectedItemsState, setDataExpectedItemsState] = useState<number>();
-	const [dataLastUpdateState, setDataLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 1000);
+	const [dataLastUpdateState, setDataLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	//
 	// B. Fetch data
