@@ -7,7 +7,6 @@ import { Label } from '@/components/Label';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
 import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { useRidesBoardContext } from '@/contexts/RidesBoard.context';
-import { useEffect } from 'react';
 
 import styles from './styles.module.css';
 
@@ -24,18 +23,6 @@ export function RidesBoard() {
 	//
 	// B. Render components
 
-	useEffect(() => {
-		// Measure the height of the viewport
-		const viewportHeight = window.innerHeight;
-		const usableHeight = viewportHeight - 100;
-		const rowHeight = 60;
-		const rowsCount = Math.floor(usableHeight / rowHeight);
-		ridesBoardContext.actions.handleSetSlotsCount(rowsCount);
-	}, []);
-
-	//
-	// C. Render components
-
 	return (
 		<div className={styles.wrapper}>
 
@@ -51,6 +38,9 @@ export function RidesBoard() {
 					</div>
 					<div className={styles.cell}>
 						<Label size="sm" caps>To</Label>
+					</div>
+					<div className={styles.cell}>
+						<Label size="sm" caps>Validations</Label>
 					</div>
 					<div className={styles.cell}>
 						<Label size="sm" caps>Status</Label>
@@ -97,10 +87,13 @@ export function RidesBoardRow({ item }: RidesBoardRowProps) {
 					<FlapLine characterSets={['numeric']} count={4} string={item?.line_id} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine characterSets={['alphabet', 'special']} count={40} string={item?.headsign} />
+					<FlapLine characterSets={['alphabet', 'numeric', 'special']} count={40} string={item?.headsign} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine characterSets={['alphabet']} count={10} string={`${item?.delay_status || ''}`} />
+					<FlapLine characterSets={['numeric']} count={3} string={`${item?.validations_count ?? ''}`} />
+				</div>
+				<div className={styles.cell}>
+					<FlapLine characterSets={['alphabet']} count={10} string={item?.operational_status} />
 				</div>
 			</div>
 		</div>

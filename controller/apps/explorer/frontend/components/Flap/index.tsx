@@ -2,9 +2,8 @@
 
 /* * */
 
-import { useFlapsContext } from '@/contexts/Flaps.context';
 import { normalizeChar } from '@/utils/normalize-char';
-import { GlobalTickManager } from '@/utils/TickManager';
+import { FLAP_ANIMATION_DURATION, GlobalTickManager } from '@/utils/TickManager';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -13,9 +12,9 @@ import styles from './styles.module.css';
 
 export const CHARACTER_SETS = {
 	alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
-	numeric: '0123456789',
-	special: '()-|.',
-	time: '0123456789:',
+	numeric: '0123456789 ',
+	special: '()-|. ',
+	time: '0123456789: ',
 };
 
 /* * */
@@ -36,8 +35,6 @@ export function Flap({ char = ' ', characterSets = ['alphabet', 'numeric', 'spec
 	const nextChar = useRef(normalizeChar(char));
 
 	const [isFlipping, setIsFlipping] = useState(false);
-
-	const flapsContext = useFlapsContext();
 
 	//
 	// B. Transform data
@@ -81,7 +78,7 @@ export function Flap({ char = ' ', characterSets = ['alphabet', 'numeric', 'spec
 
 			const elapsed = timestamp - startTime;
 
-			if (elapsed >= flapsContext.constants.animation_duration) {
+			if (elapsed >= FLAP_ANIMATION_DURATION) {
 				currChar.current = nextChar.current;
 				nextChar.current = currChar.current;
 				setIsFlipping(false);

@@ -1,6 +1,8 @@
 // utils/TickManager.ts
 type TickCallback = () => void;
 
+export const FLAP_ANIMATION_DURATION = 100; // milliseconds
+
 class TickManager {
 	private static instance: TickManager;
 
@@ -111,7 +113,7 @@ class TickManager {
 		// Assuming you want 10 ticks/sec
 		const desiredTickRate = 10;
 		this.framesPerTick = Math.max(1, Math.round(this.targetFPS / desiredTickRate));
-		console.log('Frames per tick:', this.framesPerTick);
+		// console.log('Frames per tick:', this.framesPerTick);
 	}
 }
 
