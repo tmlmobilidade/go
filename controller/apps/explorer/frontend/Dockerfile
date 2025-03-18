@@ -67,6 +67,6 @@ USER nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/${PROJECT}/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/${PROJECT}/.next/static ./apps/${SCOPE}/${PROJECT}/.next/static
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/public ./apps/${PROJECT}/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/${PROJECT}/public ./apps/${SCOPE}/${PROJECT}/public
 
 CMD node /app/apps/${SCOPE}/${PROJECT}/server.js
