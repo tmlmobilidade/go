@@ -5,11 +5,13 @@
 import { Label } from '@/components/Label';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { IconChevronRight, IconCreditCardPay } from '@tabler/icons-react';
 import { Tag } from '@tmlmobilidade/ui';
+import { DateTime } from 'luxon';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { ViewportList } from 'react-viewport-list';
 
 import { AnalysisStatusTag } from '../AnalysisStatusTag';
@@ -26,21 +28,30 @@ export function DataTable() {
 	//
 	// A. Setup variables
 
+	const ridesContext = useRidesContext();
 	const ridesListContext = useRidesListContext();
 	const operationalDateContext = useOperationalDateContext();
 
-	//
-	// A. Setup variables
+	const [lastUpdatedAtString, setLastUpdatedAtString] = useState<string>('---');
 
-	// useEffect(() => {
-	// 	const interval = setInterval(() => {
-	// 		ridesListContext.data.list_ref.current.scrollToIndex({
-	// 			index: ridesContext.data.clock_index.current,
-	// 			offset: -100,
-	// 		});
-	// 	}, 1000);
-	// 	return () => clearInterval(interval);
-	// }, [ridesContext.data.clock_lock.current, ridesContext.data.clock_ref.current]);
+	//
+	// B. Transform data
+
+	useEffect(() => {
+		console.log('ridesContext.data.last_update', ridesContext.data.last_update);
+		const updateString = () => {
+			console.log('ridesContext.data.last_update', ridesContext.data.last_update);
+			const diff = DateTime.now().toMillis() - ridesContext.data.last_update; // milliseconds
+			if (diff < 1000) return setLastUpdatedAtString('just now');
+			if (diff < 60 * 1000) return setLastUpdatedAtString(`${Math.floor(diff / 1000)} seconds ago`);
+			if (diff < 60 * 60 * 1000) return setLastUpdatedAtString(`${Math.floor(diff / 1000 / 60)} minutes ago`);
+			if (diff < 24 * 60 * 60 * 1000) return setLastUpdatedAtString(`${Math.floor(diff / 1000 / 60 / 60)} hours ago`);
+			return setLastUpdatedAtString(`${Math.floor(diff / 1000 / 60 / 60 / 24)} days ago`);
+		};
+		updateString();
+		const interval = setInterval(updateString, 1000);
+		return () => clearInterval(interval);
+	}, [ridesContext.data.last_update]);
 
 	//
 	// B. Render components
@@ -58,6 +69,9 @@ export function DataTable() {
 					</div>
 					<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
 						lock index {ridesListContext.data.lock_index} | lock offset {ridesListContext.data.lock_offset}
+					</div>
+					<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
+						{lastUpdatedAtString}
 					</div>
 				</div>
 

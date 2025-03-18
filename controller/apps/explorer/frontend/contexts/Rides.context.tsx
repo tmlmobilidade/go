@@ -7,7 +7,8 @@ import { getDelayStatus } from '@/utils/get-delay-status';
 import { getOperationalStatus } from '@/utils/get-operational-status';
 import { getSeenStatus } from '@/utils/get-seen-status';
 import { getStartTime } from '@/utils/get-start-time';
-import { type Ride, type RideAnalysis } from '@tmlmobilidade/core/types';
+import { useDebouncedState } from '@mantine/hooks';
+import { type Ride, type RideAnalysis, UnixTimestamp } from '@tmlmobilidade/core/types';
 import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
 import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -29,6 +30,7 @@ interface RidesContextState {
 	}
 	data: {
 		expected_items: number
+		last_update: UnixTimestamp
 		rides: Map<string, ExtendedRideDisplay>
 	}
 }
@@ -59,7 +61,8 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 
 	const dataRidesRef = useRef<Map<string, ExtendedRideDisplay>>(new Map());
 
-	const [counterExpectedItems, setCounterExpectedItems] = useState<number>(0);
+	const [dataExpectedItemsState, setDataExpectedItemsState] = useState<number>();
+	const [dataLastUpdateState, setDataLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 1000);
 
 	//
 	// B. Fetch data
@@ -129,7 +132,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 
 		if (messageData.action === 'config') {
 			const configMessageData = messageData.data as RidesExplorerWebSocketMessageConfig;
-			setCounterExpectedItems(configMessageData.total_items);
+			setDataExpectedItemsState(configMessageData.total_items);
 			return;
 		}
 
@@ -148,6 +151,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 				start_time_observed_display: rideData.start_time_observed ? getStartTime(rideData.start_time_observed) : null,
 				start_time_scheduled_display: getStartTime(rideData.start_time_scheduled),
 			});
+			setDataLastUpdateState(getUnixTimestamp());
 			return;
 		}
 
@@ -168,10 +172,11 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 			getRideById,
 		},
 		data: {
-			expected_items: counterExpectedItems,
+			expected_items: dataExpectedItemsState,
+			last_update: dataLastUpdateState,
 			rides: dataRidesRef.current,
 		},
-	}), [counterExpectedItems, dataRidesRef.current]);
+	}), [dataExpectedItemsState, dataLastUpdateState, dataRidesRef.current]);
 
 	//
 	// E. Render components
