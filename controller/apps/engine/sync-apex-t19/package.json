@@ -1,6 +1,7 @@
 {
 	"name": "@tmlmobilidade/sae-controller-engine-sync-apex-t19",
 	"version": "1.0.0",
+	"type": "module",
 	"files": ["dist"],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
