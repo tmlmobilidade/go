@@ -1,6 +1,7 @@
 {
 	"name": "@tmlmobilidade/sae-controller-explorer-api",
 	"version": "1.0.0",
+	"type": "module",
 	"files": ["dist"],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -17,7 +18,7 @@
 		"@fastify/websocket": "11.0.2",
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/core": "20250313.1806.36",
+		"@tmlmobilidade/core": "20250305.1138.52",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"fastify": "5.2.1",
 		"luxon": "3.5.0"
