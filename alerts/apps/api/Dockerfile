@@ -1,37 +1,29 @@
-# # #
-# DEFINE THE BASE IMAGE
+# # # # # # # # #
 
 FROM node:alpine AS base
 
-ENV SCOPE=alerts
+ENV MODULE=alerts
 ENV PROJECT=api
 
-# setup pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g turbo@^2
 
-RUN pnpm install -g turbo@^2
-
-
-# # #
-# PRUNER STAGE
-
-FROM base AS pruner
-
-RUN apk add --no-cache libc6-compat
-RUN apk update
-
-WORKDIR /app
-
-COPY package.json ./
-COPY . .
-
-RUN turbo prune --scope=@tmlmobilidade/sae-${SCOPE}-${PROJECT} --docker
+# # # # # # # # #
 
 
 # # #
 # BUILDER STAGE
+
+FROM base AS pruner
+
+WORKDIR /app
+
+COPY . .
+
+RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${PROJECT} --docker
+
+
+# # #
+# INSTALLER STAGE
 
 FROM base AS builder
 
@@ -39,11 +31,11 @@ WORKDIR /app
 
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
-RUN pnpm install
+RUN npm install
 
 # Build the project
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/sae-${SCOPE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/sae-${MODULE}-${PROJECT}
 
 
 # # #
@@ -55,4 +47,4 @@ WORKDIR /app
 
 COPY --from=builder /app .
 
-CMD node apps/$PROJECT/dist/index.js
+CMD node apps/${PROJECT}/dist/index.js

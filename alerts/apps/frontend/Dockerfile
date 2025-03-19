@@ -1,17 +1,13 @@
-# # #
-# DEFINE THE BASE IMAGE
+# # # # # # # # #
 
-FROM node:alpine AS base
+FROM node:22.6-alpine3.20 AS base
 
-ENV SCOPE=alerts
+ENV MODULE=alerts
 ENV PROJECT=frontend
 
-# setup pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g turbo@^2
 
-RUN pnpm install -g turbo@^2
+# # # # # # # # #
 
 
 # # #
@@ -27,11 +23,14 @@ WORKDIR /app
 COPY package.json ./
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/sae-${SCOPE}-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${PROJECT} --docker
 
 
-# # #
-# BUILDER STAGE
+# # # # # # # # #
+
+
+# PHASE 2
+# Rebuild the source code only when needed.
 
 FROM base AS builder
 
@@ -40,31 +39,33 @@ RUN apk update
 
 WORKDIR /app
 
-# First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
-COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
-RUN pnpm install
+COPY --from=pruner /app/out/package-lock.json ./package-lock.json
+RUN npm install
 
 # Build the project
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/sae-${SCOPE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/sae-${MODULE}-${PROJECT}
 
 
-# # #
-# RUNNER STAGE
+# # # # # # # # #
+
+
+# PHASE 3
+# Setup the final Docker image with only the required files.
 
 FROM base AS runner
 
 WORKDIR /app
 
-# Don't run production as root
+ENV NODE_ENV=production
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/apps/$PROJECT/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/$PROJECT/.next/static ./apps/$PROJECT/.next/static
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/$PROJECT/public ./apps/$PROJECT/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/.next/static ./apps/${PROJECT}/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/public ./apps/${PROJECT}/public
 
-CMD node apps/$PROJECT/server.js
+CMD node /app/apps/${PROJECT}/server.js

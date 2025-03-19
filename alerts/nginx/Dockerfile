@@ -8,7 +8,7 @@ WORKDIR /app
 # # #
 # Setup Nginx configuration
 
-COPY ./apps/explorer/nginx/configs /etc/nginx/
+COPY ./nginx/configs /etc/nginx/
 
 
 # # #
