@@ -2,7 +2,7 @@
 
 import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, convertObject, CreateAlertDto, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema, causeSchema, convertObject, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -23,7 +23,7 @@ interface AlertDetailContextState {
 		saveAlert: () => void
 	}
 	data: {
-		form: UseFormReturnType<Alert>
+		form: UseFormReturnType<CreateAlertDto>
 		id: string | undefined
 		imageUrl: string | undefined
 	}
@@ -84,9 +84,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	//
 	// B. Define form
-	const form = useForm<Alert>({
+	const form = useForm<CreateAlertDto>({
 		initialValues: alert || emptyAlert,
-		validate: zodResolver(AlertSchema),
+		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -126,6 +126,8 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	useEffect(() => {
 		form.validate();
 		setCanSave(form.isValid());
+
+		console.log(form.errors);
 	}, [form.values]);
 
 	//
@@ -148,7 +150,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		const active_period_end_date = form.getValues().active_period_end_date ?? null;
 		const publish_end_date = form.getValues().publish_end_date ?? null;
 
-		const saveAlert: Alert = { ...form.values, active_period_end_date, publish_end_date, publish_status: 'PUBLISHED' };
+		const saveAlert: CreateAlertDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: 'PUBLISHED' };
 
 		const method = alertId === 'new' ? 'POST' : 'PUT';
 		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
