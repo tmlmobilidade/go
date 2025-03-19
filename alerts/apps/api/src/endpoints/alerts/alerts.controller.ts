@@ -3,6 +3,7 @@ import { parseServiceAlert } from '@/utils/service-alert-parser';
 import { alerts, files } from '@tmlmobilidade/core/interfaces';
 import { HttpStatus } from '@tmlmobilidade/core/lib';
 import { Alert } from '@tmlmobilidade/core/types';
+import { getUnixTimestamp, getUnixTimestampFromJSDate } from '@tmlmobilidade/core/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class AlertsController {
@@ -108,12 +109,12 @@ export class AlertsController {
 				$and: [
 					{
 						$or: [
-							{ publish_end_date: { $gte: new Date() } },
+							{ publish_end_date: { $gte: getUnixTimestamp() } },
 							{ publish_end_date: null },
 							{ publish_end_date: undefined },
 							{ publish_end_date: { $exists: false } },
 						],
-						publish_start_date: { $lte: new Date() },
+						publish_start_date: { $lte: getUnixTimestamp() },
 						publish_status: 'PUBLISHED',
 					},
 				],
@@ -127,7 +128,7 @@ export class AlertsController {
 				header: {
 					gtfs_realtime_version: '2.0',
 					incrementality: 'FULL_DATASET',
-					timestamp: Math.floor(new Date().getTime() / 1000),
+					timestamp: getUnixTimestamp(),
 				},
 			});
 		}
