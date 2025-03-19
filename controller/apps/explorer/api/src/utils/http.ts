@@ -14,7 +14,7 @@ export async function fetchData<T>(
 	url: string,
 	method: 'DELETE' | 'GET' | 'POST' | 'PUT' = 'GET',
 	body?: unknown,
-	headers: Record<string, readonly string[] | string> = {},
+	headers: Record<string, string> = {},
 	options: Omit<RequestInit, 'body' | 'headers' | 'method'> = {},
 ): Promise<HttpResponse<T>> {
 	try {
