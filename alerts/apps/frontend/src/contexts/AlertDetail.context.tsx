@@ -2,7 +2,7 @@
 
 import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, convertObject, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema, causeSchema, convertObject, CreateAlertDto, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -36,8 +36,7 @@ interface AlertDetailContextState {
 	}
 }
 
-const emptyAlert: Alert = {
-	_id: '',
+const emptyAlert: CreateAlertDto = {
 	active_period_end_date: undefined,
 	active_period_start_date: new Date(),
 	cause: Object.values(causeSchema.Enum)[0],
