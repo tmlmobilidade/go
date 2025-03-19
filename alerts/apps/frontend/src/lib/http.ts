@@ -1,5 +1,3 @@
-// "use client";
-
 // Define the HttpResponse type
 export interface HttpResponse<T> {
 	data: null | T
@@ -7,12 +5,16 @@ export interface HttpResponse<T> {
 	status: number
 }
 
+interface ErrorResponse {
+	message: string
+}
+
 // Create the fetchData function
 export async function fetchData<T>(
 	url: string,
 	method: 'DELETE' | 'GET' | 'POST' | 'PUT' = 'GET',
 	body?: unknown,
-	headers: HeadersInit = {},
+	headers: Record<string, string | ReadonlyArray<string>> = {},
 	options: Omit<RequestInit, 'body' | 'headers' | 'method'> = {},
 ): Promise<HttpResponse<T>> {
 	try {
@@ -30,15 +32,16 @@ export async function fetchData<T>(
 		const data = await response.json();
 
 		if (!response.ok) {
+			const errorData = data as ErrorResponse;
 			return {
 				data: null,
-				error: data.message || 'An error occurred',
+				error: errorData.message || 'An error occurred',
 				status: response.status,
 			};
 		}
 
 		return {
-			data,
+			data: data as T,
 			error: null,
 			status: response.status,
 		};
@@ -68,7 +71,7 @@ export async function uploadFile(url: string, file: File) {
 		if (!response.ok) {
 			return {
 				data: null,
-				error: data.message || 'An error occurred',
+				error: (data as ErrorResponse).message || 'An error occurred',
 				status: response.status,
 			};
 		}
@@ -93,7 +96,7 @@ export const swrFetcher = async (url: string) => {
 	const data = await res.json();
 
 	if (!res.ok) {
-		throw new Error(data.message);
+		throw new Error((data as ErrorResponse).message);
 	}
 
 	return data;

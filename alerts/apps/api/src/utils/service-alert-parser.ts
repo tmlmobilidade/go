@@ -89,10 +89,12 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 
 	return {
 		alert: {
-			active_period: {
-				end: alert.active_period_end_date ? alert.active_period_end_date.getTime() / 1000 : undefined,
-				start: alert.active_period_start_date.getTime() / 1000,
-			},
+			active_period: [
+				{
+					end: alert.active_period_end_date ? alert.active_period_end_date.getTime() / 1000 : undefined,
+					start: alert.active_period_start_date.getTime() / 1000,
+				},
+			],
 			cause: alert.cause,
 			description_text: {
 				translation: [

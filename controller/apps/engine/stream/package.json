@@ -18,10 +18,10 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/core": "20250305.1138.52",
+		"@tmlmobilidade/core": "20250319.1435.24",
 		"@tmlmobilidade/sae-controller-pckg-parse": "*",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"mongodb": "6.14.2",
+		"mongodb": "6.15.0",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
