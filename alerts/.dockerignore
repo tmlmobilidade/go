@@ -1,6 +1,4 @@
 Dockerfile
-package-lock.json
-.package-lock.json
 .dockerignore
 node_modules
 npm-debug.log

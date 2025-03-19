@@ -6,8 +6,7 @@
 			"@/*": ["./src/*"]
 		},
 		"rootDir": "./src",
-		"types": ["node"],
-		"lib": ["ES2015", "DOM"]
+		"types": ["node"]
 	},
 	"include": ["src/**/*.ts"]
 }
