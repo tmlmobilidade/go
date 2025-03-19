@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@mantine/nprogress": "7.17.2",
 		"@tabler/icons-react": "3.31.0",
-		"@tmlmobilidade/core": "20250319.1435.24",
+		"@tmlmobilidade/core": "20250319.1707.1",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"@tmlmobilidade/ui": "20250313.1809.31",
 		"@turf/turf": "7.2.0",
