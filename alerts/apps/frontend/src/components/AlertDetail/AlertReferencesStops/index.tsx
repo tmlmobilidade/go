@@ -104,8 +104,6 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 				aria-label="Paragem Afetada"
 				data={availableStops}
 				label="Paragem Afetada"
-
-				// @ts-expect-error - Fix in UI Library
 				placeholder={alertDetailsData.form.values.municipality_ids.length === 0 ? 'Selecione os Municípios' : 'Selecione a Paragem'}
 				clearable
 				fullWidth
