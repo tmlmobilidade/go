@@ -1,42 +1,12 @@
 # # #
 
-name: sae-alerts
+name: tmlmobilidade-sae-alerts
 
 volumes:
   certbotdata:
 
 services:
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  nginx:
-    image: nginx:alpine-slim
-    restart: unless-stopped
-    mem_limit: 2g
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./letsencrypt:/etc/letsencrypt
-      - certbotdata:/var/www/certbot
-    ports:
-      - 80:80
-      - 443:443
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    mem_limit: 2g
-    volumes:
-      - ./letsencrypt:/etc/letsencrypt
-      - certbotdata:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  #
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -66,6 +36,42 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
+  nginx:
+    image: ghcr.io/tmlmobilidade/sae-alerts-nginx:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt:ro
+      - certbotdata:/var/www/certbot:ro
+    ports:
+      - 80:80
+      - 443:443
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    mem_limit: 2g
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt
+      - certbotdata:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
   api:
     image: ghcr.io/tmlmobilidade/sae-alerts-api:production
     deploy:
@@ -80,7 +86,7 @@ services:
         max-size: '1m'
         max-file: '1'
     env_file:
-      - ./secrets/production/.env
+      - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -98,7 +104,5 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
-    depends_on:
-      - api
     env_file:
-      - ./secrets/production/.env
+      - ./secrets/.env
