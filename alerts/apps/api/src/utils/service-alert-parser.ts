@@ -91,8 +91,8 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 		alert: {
 			active_period: [
 				{
-					end: alert.active_period_end_date ? alert.active_period_end_date : undefined,
-					start: alert.active_period_start_date,
+					end: alert.active_period_end_date ? alert.active_period_end_date / 1000 : undefined,
+					start: alert.active_period_start_date / 1000,
 				},
 			],
 			cause: alert.cause,
