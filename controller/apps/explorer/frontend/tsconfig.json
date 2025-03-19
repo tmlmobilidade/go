@@ -1,5 +1,5 @@
 {
-	"extends": "@tmlmobilidade/tsconfig/next.json",
+	"extends": "@tmlmobilidade/tsconfig/base.json",
 	"compilerOptions": {
 		"allowJs": true,
 		"esModuleInterop": true,
