@@ -17,7 +17,7 @@
 		"@fastify/cookie": "^11.0.2",
 		"@fastify/cors": "^11.0.0",
 		"@fastify/multipart": "^9.0.3",
-		"@tmlmobilidade/core": "^20250319.1707.1",
+		"@tmlmobilidade/core": "^20250319.1714.43",
 		"fastify": "^5.2.1",
 		"pino-pretty": "^13.0.0",
 		"resolve-tspaths": "^0.8.23",
