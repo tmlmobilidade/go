@@ -6,7 +6,7 @@
 		"api:dev": "cd apps/api && dotenv -v NODE_ENV=development -- turbo dev",
 		"api:up": "pnpm up --filter=@tmlmobilidade/sae-alerts-api",
 		"build": "turbo build",
-		"clean": "turbo clean",
+		"clean": "sh cleanup.sh",
 		"dev": "dotenv -v NODE_ENV=development -- turbo dev",
 		"docker:dev:down": "docker compose -f docker/compose.dev.yml down",
 		"docker:dev:restart": "docker compose -f docker/compose.dev.yml restart",

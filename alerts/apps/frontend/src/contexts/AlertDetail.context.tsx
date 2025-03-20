@@ -2,7 +2,7 @@
 
 import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, convertObject, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema, causeSchema, convertObject, CreateAlertDto, CreateAlertSchema, effectSchema, getUnixTimestamp, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/core-types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -38,7 +38,7 @@ interface AlertDetailContextState {
 
 const emptyAlert: CreateAlertDto = {
 	active_period_end_date: undefined,
-	active_period_start_date: new Date(),
+	active_period_start_date: getUnixTimestamp(),
 	cause: Object.values(causeSchema.Enum)[0],
 	created_by: 'temp',
 	description: '',
@@ -46,7 +46,7 @@ const emptyAlert: CreateAlertDto = {
 	modified_by: 'temp',
 	municipality_ids: [],
 	publish_end_date: undefined,
-	publish_start_date: new Date(),
+	publish_start_date: getUnixTimestamp(),
 	publish_status: 'DRAFT',
 	reference_type: Object.values(referenceTypeSchema.Enum)[0],
 	references: [],
