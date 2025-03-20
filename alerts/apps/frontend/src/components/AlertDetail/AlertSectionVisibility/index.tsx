@@ -1,6 +1,7 @@
 'use client';
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { getUnixTimestampFromJSDate } from '@tmlmobilidade/core-types';
 import { DateTimePicker, Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -26,6 +27,9 @@ export default function AlertSectionVisibility() {
 					label="Data de Início"
 					{...alertDetailData.form.getInputProps('publish_start_date')}
 					value={startDate}
+					onChange={(date) => {
+						alertDetailData.form.setFieldValue('publish_start_date', getUnixTimestampFromJSDate(date));
+					}}
 				/>
 				<DateTimePicker
 					className={styles.datePicker}
@@ -34,6 +38,9 @@ export default function AlertSectionVisibility() {
 					clearable
 					{...alertDetailData.form.getInputProps('publish_end_date')}
 					value={endDate}
+					onChange={(date) => {
+						alertDetailData.form.setFieldValue('publish_end_date', getUnixTimestampFromJSDate(date));
+					}}
 				/>
 			</Surface>
 		</Section>
