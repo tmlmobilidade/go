@@ -9,7 +9,7 @@ declare module 'fastify' {
 	}
 }
 
-export function authorizationMiddleware<T = unknown>( // Added default type for T
+export default function authorizationMiddleware<T = unknown>( // Added default type for T
 	scope: string,
 	action: string,
 ) {
@@ -46,6 +46,7 @@ export function authorizationMiddleware<T = unknown>( // Added default type for 
 			request.permissions = res.data;
 		}
 		catch (error) {
+			console.log('Hey', error);
 			reply
 				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
 				.send({

@@ -3,7 +3,7 @@
 import Providers from '@/app/providers';
 import { availableFormats } from '@/i18n/config';
 import { NavigationProgress } from '@mantine/nprogress';
-import { ThemeProvider } from '@tmlmobilidade/ui';
+import { AppProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
@@ -72,12 +72,12 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					messages={messages}
 				>
 					<NuqsAdapter>
-						<ThemeProvider fontFamilyStyle={workSans.style.fontFamily}>
+						<AppProvider fontFamilyStyle={workSans.style.fontFamily} meApiUrl={process.env.NEXT_PUBLIC_AUTH_API_URL + '/api/users/me'}>
 							<Providers>
 								<NavigationProgress size={5} zIndex={10} />
 								{children}
 							</Providers>
-						</ThemeProvider>
+						</AppProvider>
 					</NuqsAdapter>
 				</NextIntlClientProvider>
 			</body>

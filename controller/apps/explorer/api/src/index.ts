@@ -7,7 +7,7 @@ import { hashedShapeEndpoint } from '@/endpoints/hashed-shape.endpoint.js';
 import { hashedTripEndpoint } from '@/endpoints/hashed-trip.endpoint.js';
 import { ridesWebsocket } from '@/endpoints/rides.websocket.js';
 import { vehicleEventsEndpoint } from '@/endpoints/vehicle-events.endpoint.js';
-import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
+import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import fastifyCookie from '@fastify/cookie';
 import fastifyWs from '@fastify/websocket';
 import LOGGER from '@helperkits/logger';

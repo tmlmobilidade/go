@@ -1,6 +1,6 @@
 /* * */
 
-import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
+import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import LOGGER from '@helperkits/logger';
 import { rides } from '@tmlmobilidade/core/interfaces';
 import { Permissions } from '@tmlmobilidade/core/lib';
