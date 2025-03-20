@@ -7,9 +7,12 @@ import { hashedShapeEndpoint } from '@/endpoints/hashed-shape.endpoint.js';
 import { hashedTripEndpoint } from '@/endpoints/hashed-trip.endpoint.js';
 import { ridesWebsocket } from '@/endpoints/rides.websocket.js';
 import { vehicleEventsEndpoint } from '@/endpoints/vehicle-events.endpoint.js';
+import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import fastifyCookie from '@fastify/cookie';
 import fastifyWs from '@fastify/websocket';
 import LOGGER from '@helperkits/logger';
+import { Permissions } from '@tmlmobilidade/core/lib';
+import { type Ride } from '@tmlmobilidade/core/types';
 import fastifyModule from 'fastify';
 
 /* * */
@@ -22,10 +25,10 @@ FastifyInstance.register(fastifyWs);
 FastifyInstance.register(fastifyCookie);
 FastifyInstance.register(ridesWebsocket);
 
-FastifyInstance.get('/rides/:ride_id/vehicle-events', vehicleEventsEndpoint);
-FastifyInstance.get('/rides/:ride_id/apex-t11', apexT11Endpoint);
-FastifyInstance.get('/rides/:ride_id/hashed-trip', hashedTripEndpoint);
-FastifyInstance.get('/rides/:ride_id/hashed-shape', hashedShapeEndpoint);
+FastifyInstance.get('/rides/:ride_id/vehicle-events', { preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.list) }, vehicleEventsEndpoint);
+FastifyInstance.get('/rides/:ride_id/apex-t11', { preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.list) }, apexT11Endpoint);
+FastifyInstance.get('/rides/:ride_id/hashed-trip', { preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.list) }, hashedTripEndpoint);
+FastifyInstance.get('/rides/:ride_id/hashed-shape', { preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.list) }, hashedShapeEndpoint);
 
 /* * */
 

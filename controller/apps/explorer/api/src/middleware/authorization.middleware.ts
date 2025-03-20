@@ -9,7 +9,7 @@ declare module 'fastify' {
 	}
 }
 
-export default function authorizationMiddleware<T = unknown>( // Added default type for T
+export function authorizationMiddleware<T = unknown>( // Added default type for T
 	scope: string,
 	action: string,
 ) {
