@@ -10,7 +10,7 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/core": "20250319.1707.1",
+		"@tmlmobilidade/core": "20250320.1206.2",
 		"luxon": "3.5.0"
 	},
 	"devDependencies": {
