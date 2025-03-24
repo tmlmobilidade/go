@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-auth
+name: tmlmobilidade-sae-auth
 
 volumes:
   certbotdata:
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/auth-nginx:production
+    image: ghcr.io/tmlmobilidade/sae-auth-nginx:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -73,7 +73,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/auth-api:production
+    image: ghcr.io/tmlmobilidade/sae-auth-api:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -92,7 +92,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/auth-frontend:production
+    image: ghcr.io/tmlmobilidade/sae-auth-frontend:production
     deploy:
       restart_policy:
         condition: on-failure
