@@ -1,0 +1,126 @@
+/* * */
+
+import { generateSidebar } from '@/lib/sidebar-generator';
+import { users } from '@tmlmobilidade/core/interfaces';
+import { HttpStatus } from '@tmlmobilidade/core/lib';
+import { authProvider } from '@tmlmobilidade/core/providers';
+import { CreateUserDto, UpdateUserDto } from '@tmlmobilidade/core/types';
+import { FastifyReply, FastifyRequest } from 'fastify';
+
+/* * */
+
+const COOKIE_NAME = 'session_token';
+
+/* * */
+
+export class UsersController {
+	/**
+	 * Create a new user - Create a new user in the database
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object
+	 */
+	static async create(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply) {
+		try {
+			await authProvider.register(request.body);
+			reply.send({ message: 'Confirmation email sent' });
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Delete a user - Delete a user from the database
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object
+	 */
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+		try {
+			await users.deleteById(request.params.id);
+			reply.send({ message: 'User deleted successfully' });
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Get all users - Retrieve a list of all users sorted by creation date in descending order
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object
+	 */
+	static async getAll(request: FastifyRequest, reply: FastifyReply) {
+		try {
+			const userList = await users.findMany({}, undefined, undefined, {
+				created_at: -1,
+			});
+			reply.send(userList);
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Get user by ID - Retrieve a user by their unique identifier
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object
+	 */
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+		try {
+			const user = await users.findById(request.params.id);
+
+			if (!user) {
+				reply
+					.status(HttpStatus.NOT_FOUND)
+					.send({ message: 'User not found' });
+				return;
+			}
+
+			reply.send(user);
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Get current user - Get the current user from the session token
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object
+	 */
+	static async getMe(request: FastifyRequest, reply: FastifyReply) {
+		const session_token = request.cookies[COOKIE_NAME];
+		const user = await authProvider.getUser(session_token);
+		const sidebar = generateSidebar(user);
+		return reply.status(HttpStatus.OK).send({ sidebar, user });
+	}
+
+	/**
+	 * Update a user - Update a user in the database
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object
+	 */
+	static async update(request: FastifyRequest<{ Body: UpdateUserDto, Params: { id: string } }>, reply: FastifyReply) {
+		try {
+			const user = await users.updateById(
+				request.params.id,
+				request.body,
+			);
+			reply.send({ data: user, message: 'User updated successfully' });
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+}

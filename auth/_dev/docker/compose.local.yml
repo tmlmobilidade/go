@@ -1,0 +1,77 @@
+# # #
+
+name: auth-local
+
+networks:
+    alerts-network:
+
+services:
+    auth-db:
+        image: mongo:latest
+        ports:
+            - 27001:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: root
+            MONGO_INITDB_DATABASE: production
+        volumes:
+            - ./data/auth.dump:/dump/db.dump
+            - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
+        networks:
+            - alerts-network
+
+    # # # # # # # # # # # # # # # # # # # # #
+    # # # # # # # # # # # # # # # # # # # # #
+
+    api:
+        container_name: auth-api
+        build:
+            context: ../
+            dockerfile: apps/api/Dockerfile
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 30s
+            resources:
+                limits:
+                    memory: 2gb
+        logging:
+            options:
+                max-size: '1m'
+                max-file: '1'
+        ports:
+            - 5051:5051
+        environment:
+            - PORT=5051
+        env_file:
+            - ./.env.local
+        networks:
+            - alerts-network
+
+    # # # # # # # # # # # # # # # # # # # # #
+    # # # # # # # # # # # # # # # # # # # # #
+
+    frontend:
+        container_name: auth-frontend
+        build:
+            context: ../
+            dockerfile: apps/frontend/Dockerfile
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 30s
+            resources:
+                limits:
+                    memory: 2gb
+        logging:
+            options:
+                max-size: '1m'
+                max-file: '1'
+        depends_on:
+            - api
+        ports:
+            - 3000:3000
+        env_file:
+            - ./.env.local
+        networks:
+            - alerts-network
