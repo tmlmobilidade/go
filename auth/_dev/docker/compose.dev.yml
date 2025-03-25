@@ -1,14 +1,14 @@
-name: auth-dev
+name: tml-sae-auth-db
 
 services:
     auth-db:
         image: mongo:latest
         ports:
-            - 37005:27017
+            - 37000:27017
         environment:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: root
             MONGO_INITDB_DATABASE: production
         volumes:
-            - ./data/auth.dump:/dump/db.dump
+            - ./mock.dump:/dump/db.dump
             - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
