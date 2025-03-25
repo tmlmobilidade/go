@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/core/types';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 
 /* * */
