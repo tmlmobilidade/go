@@ -2,7 +2,7 @@
 
 import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { User } from '@tmlmobilidade/core-types';
+import { User } from '@tmlmobilidade/types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';

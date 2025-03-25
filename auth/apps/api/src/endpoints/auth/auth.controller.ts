@@ -1,10 +1,9 @@
 /* * */
 
-import { users, verificationTokens } from '@tmlmobilidade/core/interfaces';
-import { HttpStatus } from '@tmlmobilidade/core/lib';
-import { authProvider } from '@tmlmobilidade/core/providers';
-import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
+import { HttpStatus } from '@tmlmobilidade/lib';
+import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/types';
+import { getUnixTimestamp } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /* * */

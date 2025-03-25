@@ -2,7 +2,7 @@
 
 import { useUserListContext } from '@/contexts/UserList.context';
 import { Routes } from '@/lib/routes';
-import { User } from '@tmlmobilidade/core-types';
+import { User } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

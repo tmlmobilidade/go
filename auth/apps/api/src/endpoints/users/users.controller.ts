@@ -1,10 +1,9 @@
 /* * */
 
-import { generateSidebar } from '@/lib/sidebar-generator';
-import { users } from '@tmlmobilidade/core/interfaces';
-import { HttpStatus } from '@tmlmobilidade/core/lib';
-import { authProvider } from '@tmlmobilidade/core/providers';
-import { CreateUserDto, UpdateUserDto } from '@tmlmobilidade/core/types';
+import { generateSidebar } from '@/lib/sidebar-generator.js';
+import { authProvider, users } from '@tmlmobilidade/interfaces';
+import { HttpStatus } from '@tmlmobilidade/lib';
+import { CreateUserDto, UpdateUserDto } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /* * */

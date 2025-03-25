@@ -1,4 +1,4 @@
-import { AlertSchema } from '@tmlmobilidade/core-types';
+import { AlertSchema } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 import { ComponentProps } from 'react';
 

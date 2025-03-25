@@ -1,9 +1,9 @@
 import { fetchLines } from '@/utils/lines';
 import { parseServiceAlert } from '@/utils/service-alert-parser';
-import { alerts, files } from '@tmlmobilidade/core/interfaces';
-import { HttpStatus } from '@tmlmobilidade/core/lib';
-import { Alert } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp, getUnixTimestampFromJSDate } from '@tmlmobilidade/core/utils';
+import { alerts, files } from '@tmlmobilidade/interfaces';
+import { HttpStatus } from '@tmlmobilidade/lib';
+import { Alert } from '@tmlmobilidade/types';
+import { getUnixTimestamp } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class AlertsController {

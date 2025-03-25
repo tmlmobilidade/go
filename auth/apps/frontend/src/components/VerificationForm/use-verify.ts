@@ -1,7 +1,7 @@
 'use client';
 
 import { fetchData, HttpResponse } from '@/lib/http';
-import { Session } from '@tmlmobilidade/core-types';
+import { Session } from '@tmlmobilidade/types';
 import bcrypt from 'bcryptjs';
 import { useState } from 'react';
 

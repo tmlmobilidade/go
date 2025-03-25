@@ -1,14 +1,7 @@
 /* * */
 
 import '@tmlmobilidade/ui/dist/styles.css';
-import { ThemeProvider } from '@tmlmobilidade/ui';
-import { Work_Sans } from 'next/font/google';
-
-/* * */
-
-const workSans = Work_Sans({
-	subsets: ['latin'],
-});
+import { ThemeContextProvider } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,9 +15,9 @@ export default async function Layout({ children }: Props) {
 	return (
 		<html>
 			<body>
-				<ThemeProvider fontFamilyStyle={workSans.style.fontFamily} initialTheme="ocean">
+				<ThemeContextProvider>
 					{children}
-				</ThemeProvider>
+				</ThemeContextProvider>
 			</body>
 		</html>
 	);

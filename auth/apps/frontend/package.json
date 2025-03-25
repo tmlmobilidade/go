@@ -11,10 +11,12 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
-		"@tmlmobilidade/core-types": "20250324.1106.48",
-		"@tmlmobilidade/ui": "20250313.1809.31",
+		"@tmlmobilidade/lib": "^20250325.1852.34",
+		"@tmlmobilidade/types": "^20250325.1731.13",
+		"@tmlmobilidade/ui": "20250325.1731.33",
+		"@tmlmobilidade/utils": "^20250325.1731.20",
 		"clsx": "2.1.1",
-		"next": "15.2.3",
+		"next": "15.2.4",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"swr": "^2.3.3"

@@ -1,6 +1,6 @@
 import { fetchData } from '@/utils/http';
-import { HttpException, HttpStatus } from '@tmlmobilidade/core/lib';
-import { Permission } from '@tmlmobilidade/core/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { Permission } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 declare module 'fastify' {

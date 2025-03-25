@@ -1,8 +1,6 @@
 {
 	"extends": "@tmlmobilidade/tsconfig/nodejs.json",
 	"compilerOptions": {
-		"module": "Preserve",
-		"moduleResolution": "bundler",
 		"outDir": "./dist",
 		"paths": {
 			"@/*": ["./src/*"]

@@ -3,7 +3,7 @@
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { causeSchema, effectSchema } from '@tmlmobilidade/core-types';
+import { causeSchema, effectSchema } from '@tmlmobilidade/types';
 import { Combobox, Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

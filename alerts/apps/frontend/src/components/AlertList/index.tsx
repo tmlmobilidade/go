@@ -3,7 +3,7 @@
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
-import { Alert } from '@tmlmobilidade/core-types';
+import { Alert } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

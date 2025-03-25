@@ -1,7 +1,7 @@
 /* * */
 
-import { AuthController } from '@/endpoints/auth/auth.controller';
-import FastifyService from '@/services/fastify.service';
+import { AuthController } from '@/endpoints/auth/auth.controller.js';
+import FastifyService from '@/services/fastify.service.js';
 import { FastifyInstance } from 'fastify';
 
 /* * */

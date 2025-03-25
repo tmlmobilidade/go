@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus } from '@tmlmobilidade/core/lib';
-import { authProvider } from '@tmlmobilidade/core/providers';
-import { Permission } from '@tmlmobilidade/core/types';
+import { authProvider } from '@tmlmobilidade/interfaces';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { Permission } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 declare module 'fastify' {

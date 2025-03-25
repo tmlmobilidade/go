@@ -1,8 +1,8 @@
 /* * */
 
-import { roles } from '@tmlmobilidade/core/interfaces';
-import { HttpStatus } from '@tmlmobilidade/core/lib';
-import { CreateRoleDto, UpdateRoleDto } from '@tmlmobilidade/core/types';
+import { roles } from '@tmlmobilidade/interfaces';
+import { HttpStatus } from '@tmlmobilidade/lib';
+import { CreateRoleDto, UpdateRoleDto } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /* * */

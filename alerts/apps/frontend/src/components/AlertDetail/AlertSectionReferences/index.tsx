@@ -4,7 +4,7 @@
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/types';
 import {
 	Combobox,
 	openConfirmModal,

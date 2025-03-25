@@ -1,9 +1,9 @@
 /* * */
 
-import { RolesController } from '@/endpoints/roles/roles.controller';
-import authorizationMiddleware from '@/middleware/authorization.middleware';
-import FastifyService from '@/services/fastify.service';
-import { Permissions } from '@tmlmobilidade/core/lib';
+import { RolesController } from '@/endpoints/roles/roles.controller.js';
+import authorizationMiddleware from '@/middleware/authorization.middleware.js';
+import FastifyService from '@/services/fastify.service.js';
+import { Permissions } from '@tmlmobilidade/lib';
 import { FastifyInstance } from 'fastify';
 
 /* * */

@@ -2,7 +2,7 @@
 
 import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { CreateUserSchema } from '@tmlmobilidade/core-types';
+import { CreateUserSchema } from '@tmlmobilidade/types';
 import { Grid, Section, Surface, TextInput } from '@tmlmobilidade/ui';
 export default function BasicInfoSection() {
 	const { data: userDetailData } = useUserDetailContext();

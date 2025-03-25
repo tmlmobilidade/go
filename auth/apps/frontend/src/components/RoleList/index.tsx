@@ -2,7 +2,7 @@
 
 import { useRoleListContext } from '@/contexts/RoleList.context';
 import { Routes } from '@/lib/routes';
-import { Role } from '@tmlmobilidade/core-types';
+import { Role } from '@tmlmobilidade/types';
 import { Badge, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

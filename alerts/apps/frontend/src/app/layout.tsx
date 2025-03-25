@@ -4,16 +4,9 @@ import '@tmlmobilidade/ui/dist/styles.css';
 import { ConfigProviders } from '@/components/providers/config-providers';
 import { DataProviders } from '@/components/providers/data-providers';
 import { Routes } from '@/lib/routes';
-import { ThemeProvider } from '@tmlmobilidade/ui';
-import { Work_Sans } from 'next/font/google';
+import { AppProvider } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
-
-/* * */
-
-const workSans = Work_Sans({
-	subsets: ['latin'],
-});
 
 /* * */
 
@@ -33,15 +26,15 @@ export default async function Layout({
 	}
 
 	return (
-		<html className={workSans.className} lang="en" suppressHydrationWarning>
+		<html lang="en" suppressHydrationWarning>
 			<body>
-				<ThemeProvider fontFamilyStyle={workSans.style.fontFamily} initialTheme="ocean">
+				<AppProvider>
 					<ConfigProviders>
 						<DataProviders>
 							{children}
 						</DataProviders>
 					</ConfigProviders>
-				</ThemeProvider>
+				</AppProvider>
 			</body>
 		</html>
 	);

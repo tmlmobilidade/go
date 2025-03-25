@@ -3,7 +3,7 @@
 /* * */
 
 import { IconArrowRight, IconCheck, IconX } from '@tabler/icons-react';
-import { PasswordRequirementsSchema } from '@tmlmobilidade/core-types';
+import { PasswordRequirementsSchema } from '@tmlmobilidade/types';
 import {
 	Button,
 	Label,

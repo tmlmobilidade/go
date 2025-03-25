@@ -2,8 +2,10 @@
 
 import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { convertObject, CreateRoleDto, Permission, Permissions, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/core-types';
+import { Permissions } from '@tmlmobilidade/lib';
+import { CreateRoleDto, Permission, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';

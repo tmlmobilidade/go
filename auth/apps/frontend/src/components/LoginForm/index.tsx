@@ -4,7 +4,7 @@
 
 import { useLogin } from '@/components/LoginForm/use-login';
 import { IconArrowRight } from '@tabler/icons-react';
-import { createEmail } from '@tmlmobilidade/core-types';
+import { createEmail } from '@tmlmobilidade/types';
 import { Button, Label, PasswordInput, SimpleSurface, TextInput, TMLogoLight, useToast } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

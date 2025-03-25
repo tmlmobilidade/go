@@ -1,8 +1,8 @@
 'use client';
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
-import { getUnixTimestampFromJSDate } from '@tmlmobilidade/core-types';
 import { DateTimePicker, Section, Surface } from '@tmlmobilidade/ui';
+import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
 

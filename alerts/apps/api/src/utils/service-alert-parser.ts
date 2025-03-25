@@ -1,6 +1,6 @@
 import { Line } from '@carrismetropolitana/api-types/network';
-import { files } from '@tmlmobilidade/core/interfaces';
-import { Alert } from '@tmlmobilidade/core/types';
+import { files } from '@tmlmobilidade/interfaces';
+import { Alert } from '@tmlmobilidade/types';
 import { EntitySelector, Alert as ServiceAlert } from 'gtfs-types';
 
 interface ServiceAlertExtended extends Omit<ServiceAlert, 'cause' | 'effect'> {

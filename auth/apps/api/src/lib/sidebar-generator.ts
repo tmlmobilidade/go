@@ -1,8 +1,8 @@
 /* * */
 
-import { Permissions } from '@tmlmobilidade/core/lib';
-import { Permission, User } from '@tmlmobilidade/core/types';
-import { getPermission } from '@tmlmobilidade/core/utils';
+import { Permissions } from '@tmlmobilidade/lib';
+import { Permission, User } from '@tmlmobilidade/types';
+import { getPermission } from '@tmlmobilidade/utils';
 
 /* * */
 
