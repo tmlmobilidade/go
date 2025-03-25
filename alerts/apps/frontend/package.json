@@ -10,25 +10,25 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "^3.31.0",
-		"@tmlmobilidade/types": "^20250325.1731.13",
-		"@tmlmobilidade/ui": "^20250325.1731.33",
-		"@tmlmobilidade/utils": "^20250325.1731.20",
-		"clsx": "^2.1.1",
-		"luxon": "^3.6.0",
+		"@tabler/icons-react": "3.31.0",
+		"@tmlmobilidade/types": "20250325.1856.30",
+		"@tmlmobilidade/ui": "20250325.1856.42",
+		"@tmlmobilidade/utils": "20250325.1856.38",
+		"clsx": "2.1.1",
+		"luxon": "3.6.0",
 		"next": "15.2.4",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
-		"react-viewport-list": "^7.1.2",
-		"swr": "^2.3.3"
+		"react": "19.0.0",
+		"react-dom": "19.0.0",
+		"react-viewport-list": "7.1.2",
+		"swr": "2.3.3"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "^20250325.1534.33",
+		"@carrismetropolitana/api-types": "20250325.1534.33",
 		"@carrismetropolitana/eslint": "20250303.2009.45",
-		"@types/luxon": "^3.4.2",
-		"@types/node": "^22.13.13",
-		"@types/react": "^19",
-		"@types/react-dom": "^19",
-		"typescript": "^5"
+		"@types/luxon": "3.4.2",
+		"@types/node": "22.13.13",
+		"@types/react": "19",
+		"@types/react-dom": "19",
+		"typescript": "5"
 	}
 }
