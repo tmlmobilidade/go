@@ -22,11 +22,6 @@ import { useVerify } from './use-verify';
 
 interface Props {
 	/**
-	 * The URL to be used for the login request.
-	 */
-	authUrl: string
-
-	/**
 	 * The URL to redirect to after successful login.
 	 * @default "/"
 	 */
@@ -38,7 +33,7 @@ interface PasswordValidation {
 	valid: boolean
 }
 
-export function VerificationForm({ authUrl, redirect = '/' }: Props) {
+export function VerificationForm({ redirect = '/' }: Props) {
 	//
 
 	//
@@ -46,7 +41,7 @@ export function VerificationForm({ authUrl, redirect = '/' }: Props) {
 
 	const router = useRouter();
 
-	const { loading, verify } = useVerify(authUrl);
+	const { loading, verify } = useVerify();
 
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');

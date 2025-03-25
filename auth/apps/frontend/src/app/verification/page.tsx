@@ -29,10 +29,6 @@ export default async function Page(props: { searchParams: Promise<{ redirect: st
 		redirect('/');
 	}
 
-	if (!process.env.NEXT_PUBLIC_AUTH_API_URL) {
-		throw new Error('NEXT_PUBLIC_AUTH_API_URL is not set');
-	}
-
 	//
 	// C. Render components
 
@@ -42,7 +38,6 @@ export default async function Page(props: { searchParams: Promise<{ redirect: st
 			<Background2 />
 			{/* <Background3 /> */}
 			<VerificationForm
-				authUrl={process.env.NEXT_PUBLIC_AUTH_API_URL}
 				redirect={
 					searchParams.redirect
 					&& new URL(searchParams.redirect).toString()

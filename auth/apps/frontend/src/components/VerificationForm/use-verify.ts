@@ -10,16 +10,16 @@ interface UseLoginReturn {
 	verify: (token: string, password: string, confirmPassword: string) => Promise<HttpResponse<Session>>
 }
 
-export function useVerify(authUrl: string): UseLoginReturn {
+export function useVerify(): UseLoginReturn {
 	const [loading, setLoading] = useState<boolean>(false);
 
-	const verify = async (token: string, password: string, confirmPassword: string) => {
+	const verify = async (token: string, password: string) => {
 		setLoading(true);
 
 		const password_hash = bcrypt.hashSync(password);
 
 		const response = await fetchData<Session>(
-			`${authUrl}/verify`,
+			`/api/verify`,
 			'POST',
 			{ password_hash, token },
 		);

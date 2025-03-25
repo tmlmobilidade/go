@@ -9,16 +9,16 @@ interface UseLoginReturn {
 	login: (credentials: LoginDto) => Promise<HttpResponse<Session>>
 }
 
-export function useLogin(authUrl: string): UseLoginReturn {
+export function useLogin(): UseLoginReturn {
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const login = async (credentials: LoginDto) => {
 		setLoading(true);
 
-		console.log(`${authUrl}/login`);
+		console.log(`/api/login`);
 
 		const response = await fetchData<Session>(
-			`${authUrl}/login`,
+			`/api/login`,
 			'POST',
 			credentials,
 		);

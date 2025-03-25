@@ -7,16 +7,13 @@ const nextConfig: NextConfig = {
 	},
 	output: 'standalone',
 	reactStrictMode: true,
-	// async rewrites() {
-	// 	return [
-	// 		{
-	// 			destination:
-	// 				process.env.NODE_ENV === 'development'
-	// 					? 'http://localhost:52000/:path*'
-	// 					: 'https://auth.carrismetropolitana.pt/api/:path*',
-	// 			source: '/api/:path*',
-	// 		},
-	// 	];
-	// },
+	async rewrites() {
+		return [
+			{
+				destination: `http://localhost:${process.env.PORT}/api/:path*`,
+				source: '/api/:path*',
+			},
+		];
+	},
 };
 export default nextConfig;

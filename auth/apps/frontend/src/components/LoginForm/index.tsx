@@ -17,11 +17,6 @@ import styles from './styles.module.css';
 interface Props {
 
 	/**
-	 * The URL to be used for the login request.
-	 */
-	authUrl: string
-
-	/**
 	 * The URL to redirect to after successful login.
 	 * @default "/"
 	 */
@@ -29,7 +24,7 @@ interface Props {
 
 }
 
-export function LoginForm({ authUrl, redirect = '/' }: Props) {
+export function LoginForm({ redirect = '/' }: Props) {
 	//
 
 	//
@@ -37,7 +32,7 @@ export function LoginForm({ authUrl, redirect = '/' }: Props) {
 
 	const router = useRouter();
 
-	const { loading, login } = useLogin(authUrl);
+	const { loading, login } = useLogin();
 
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');

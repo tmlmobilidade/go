@@ -28,7 +28,7 @@ export default function authorizationMiddleware<T = unknown>( // Added default t
 
 		try {
 			const res = await fetchData<Permission<T>>(
-				`${process.env.AUTH_API_URL}/permissions?resource=${scope}&action=${action}`,
+				`${process.env.NEXT_PUBLIC_AUTH_URL}/permissions?resource=${scope}&action=${action}`,
 				'GET',
 				undefined,
 				{
