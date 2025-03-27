@@ -1,0 +1,231 @@
+# # #
+
+name: tmlmobilidade-interfaces-dev
+
+volumes:
+  authdbdata:
+  filesdbdata:
+  alertsdbdata:
+  plansdbdata:
+  ridesdbdata:
+  hashedtripsdbdata:
+  hashedshapesdbdata:
+  vehicleeventsdbdata:
+  apext11dbdata:
+  apext19dbdata:
+
+services:
+  #
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  # authdb:
+  #   image: mongo:latest
+  #   ports:
+  #       - 37000:27017
+  #   volumes:
+  #       - ./mock.dump:/dump/db.dump
+  #       - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
+  #   environment:
+  #     - MONGO_INITDB_DATABASE=production
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  filesdb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 37001:27017
+    volumes:
+      - filesdbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  alertsdb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 37004:27017
+    volumes:
+      - alertsdbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  plansdb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 27101:27017
+    volumes:
+      - plansdbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  ridesdb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 27102:27017
+    volumes:
+      - ridesdbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  hashedtripsdb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 27103:27017
+    volumes:
+      - hashedtripsdbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  hashedshapesdb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 27104:27017
+    volumes:
+      - hashedshapesdbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  vehicleeventsdb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 27105:27017
+    volumes:
+      - vehicleeventsdbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  apext11db:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 27106:27017
+    volumes:
+      - apext11dbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  apext19db:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 27107:27017
+    volumes:
+      - apext19dbdata:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=production
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
