@@ -33,7 +33,7 @@
 		"@tmlmobilidade/tsconfig": "20250325.1731.13",
 		"@types/fastify-multipart": "0.7.2",
 		"@types/jest": "29.5.14",
-		"@types/node": "22.13.13",
+		"@types/node": "22.13.14",
 		"gtfs-types": "5.0.0",
 		"jest": "29.7.0",
 		"typescript": "5.8.2"

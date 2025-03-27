@@ -1,6 +1,6 @@
 /* * */
 
-import { MeContextProvider } from '@tmlmobilidade/ui';
+import { AppWrapper, MeContextProvider, useMeContext } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -12,7 +12,7 @@ interface Props {
 
 /* * */
 
-export default async function Layout({ children }: Props) {
+export default async function LayoutContext({ children }: Props) {
 	//
 
 	const cookies = await nextCookies();
@@ -24,7 +24,9 @@ export default async function Layout({ children }: Props) {
 
 	return (
 		<MeContextProvider>
-			{children}
+			<AppWrapper>
+				{children}
+			</AppWrapper>
 		</MeContextProvider>
 	);
 

@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/types": "20250326.1713.30",
-		"@tmlmobilidade/ui": "20250327.110.20",
+		"@tmlmobilidade/ui": "20250327.1140.39",
 		"@tmlmobilidade/utils": "20250326.1713.43",
 		"clsx": "2.1.1",
 		"luxon": "3.6.0",
@@ -26,7 +26,7 @@
 		"@carrismetropolitana/api-types": "20250325.1534.33",
 		"@carrismetropolitana/eslint": "20250325.1926.5",
 		"@types/luxon": "3.4.2",
-		"@types/node": "22.13.13",
+		"@types/node": "22.13.14",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5"
