@@ -4,7 +4,7 @@ import '@tmlmobilidade/ui/styles';
 import { ConfigProviders } from '@/components/providers/config-providers';
 import { DataProviders } from '@/components/providers/data-providers';
 import { Routes } from '@/lib/routes';
-import { AppProvider } from '@tmlmobilidade/ui';
+import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 
@@ -31,7 +31,9 @@ export default async function Layout({
 				<AppProvider>
 					<ConfigProviders>
 						<DataProviders>
-							{children}
+							<AppWrapper>
+								{children}
+							</AppWrapper>
 						</DataProviders>
 					</ConfigProviders>
 				</AppProvider>

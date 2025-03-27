@@ -1,6 +1,5 @@
 /* * */
 
-import { generateSidebar } from '@/lib/sidebar-generator.js';
 import { authProvider, users } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { CreateUserDto, UpdateUserDto } from '@tmlmobilidade/types';
@@ -99,8 +98,7 @@ export class UsersController {
 	static async getMe(request: FastifyRequest, reply: FastifyReply) {
 		const session_token = request.cookies[COOKIE_NAME];
 		const user = await authProvider.getUser(session_token);
-		const sidebar = generateSidebar(user);
-		return reply.status(HttpStatus.OK).send({ sidebar, user });
+		return reply.status(HttpStatus.OK).send(user);
 	}
 
 	/**
