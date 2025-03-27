@@ -1,7 +1,6 @@
 /* * */
 
 import '@tmlmobilidade/ui/styles';
-import { ConfigProviders } from '@/components/providers/config-providers';
 import { DataProviders } from '@/components/providers/data-providers';
 import { Routes } from '@/lib/routes';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
@@ -29,13 +28,11 @@ export default async function Layout({
 		<html lang="en" suppressHydrationWarning>
 			<body>
 				<AppProvider>
-					<ConfigProviders>
-						<DataProviders>
-							<AppWrapper>
-								{children}
-							</AppWrapper>
-						</DataProviders>
-					</ConfigProviders>
+					<DataProviders>
+						<AppWrapper>
+							{children}
+						</AppWrapper>
+					</DataProviders>
 				</AppProvider>
 			</body>
 		</html>
