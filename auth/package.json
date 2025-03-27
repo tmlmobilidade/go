@@ -14,7 +14,7 @@
 		"start": "turbo start"
 	},
 	"dependencies": {
-		"@carrismetropolitana/eslint": "20250303.2009.45",
+		"@carrismetropolitana/eslint": "20250325.1926.5",
 		"turbo": "2.4.4"
 	},
 	"devDependencies": {

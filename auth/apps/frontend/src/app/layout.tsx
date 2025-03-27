@@ -1,6 +1,6 @@
 /* * */
 
-import '@tmlmobilidade/ui/dist/styles.css';
+import '@tmlmobilidade/ui/styles';
 import { ThemeContextProvider } from '@tmlmobilidade/ui';
 
 /* * */
