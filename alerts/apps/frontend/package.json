@@ -5,15 +5,15 @@
 	"scripts": {
 		"build": "next build",
 		"clean": "rm -rf dist",
-		"dev": "next dev --turbopack -p 51001",
+		"dev": "next dev -p 51001",
 		"lint": "eslint . && tsc --noEmit",
 		"start": "next start"
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
-		"@tmlmobilidade/types": "20250325.1941.27",
-		"@tmlmobilidade/ui": "20250325.1932.52",
-		"@tmlmobilidade/utils": "20250325.1941.37",
+		"@tmlmobilidade/types": "20250326.1713.30",
+		"@tmlmobilidade/ui": "20250327.110.20",
+		"@tmlmobilidade/utils": "20250326.1713.43",
 		"clsx": "2.1.1",
 		"luxon": "3.6.0",
 		"next": "15.2.4",

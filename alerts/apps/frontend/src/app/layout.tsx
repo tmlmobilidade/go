@@ -1,6 +1,6 @@
 /* * */
 
-import '@tmlmobilidade/ui/dist/styles.css';
+import '@tmlmobilidade/ui/styles';
 import { ConfigProviders } from '@/components/providers/config-providers';
 import { DataProviders } from '@/components/providers/data-providers';
 import { Routes } from '@/lib/routes';

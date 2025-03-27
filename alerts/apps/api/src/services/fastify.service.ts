@@ -28,7 +28,7 @@ class FastifyService {
 	async start() {
 		const options: FastifyListenOptions = {
 			host: process.env.HOST || '0.0.0.0',
-			port: Number(process.env.PORT) || 5050,
+			port: Number(process.env.API_PORT) || 5050,
 		};
 
 		try {
