@@ -7,12 +7,12 @@ export const PageRoutes = Object.freeze({
 
 export const ApiRoutes = Object.freeze({
 	ALERTS_API: '/api',
-	AUTH_API: process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
-	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
+	AUTH_API: process.env.AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
+	CMET_API: process.env.CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
 });
 
 export const Routes = Object.freeze({
-	URL: process.env.NEXT_PUBLIC_URL ?? 'https://alerts.sae.carrismetropolitana.pt',
+	URL: process.env.PUBLIC_URL ?? 'https://alerts.sae.carrismetropolitana.pt',
 	...PageRoutes,
 	...ApiRoutes,
 });

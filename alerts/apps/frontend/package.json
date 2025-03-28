@@ -11,8 +11,9 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
+		"@tmlmobilidade/lib": "20250327.1631.31",
 		"@tmlmobilidade/types": "20250326.1713.30",
-		"@tmlmobilidade/ui": "20250327.1655.29",
+		"@tmlmobilidade/ui": "20250327.1739.1",
 		"@tmlmobilidade/utils": "20250326.1713.43",
 		"clsx": "2.1.1",
 		"luxon": "3.6.0",
