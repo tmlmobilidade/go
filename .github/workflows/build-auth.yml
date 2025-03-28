@@ -1,6 +1,7 @@
 name: 'Auth | Build & Push'
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'auth/**'

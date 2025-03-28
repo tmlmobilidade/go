@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/auth-frontend",
+	"name": "@tmlmobilidade/sae-auth-frontend",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
