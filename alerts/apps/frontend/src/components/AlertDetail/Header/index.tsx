@@ -29,10 +29,15 @@ export default function Header() {
 			</div>
 			<div className={styles.headerContainer}>
 				<Button
+					label="Salvar como rascunho"
+					onClick={() => actions.saveAlert('draft')}
+					variant="secondary"
+				/>
+				<Button
 					disabled={!flags.canSave || flags.isSaving}
 					icon={<IconUpload size={28} />}
 					loading={flags.isSaving}
-					onClick={actions.saveAlert}
+					onClick={() => actions.saveAlert('publish')}
 					variant="primary"
 					label={
 						flags.mode === AlertDetailMode.CREATE
