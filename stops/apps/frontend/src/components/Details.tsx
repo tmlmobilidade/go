@@ -1,11 +1,11 @@
 interface DetailsProps {
-	_id?: string | undefined,
-	latitude?: number | undefined,
-	longitude?: number | undefined,
-	name?: string | undefined,
+	_id?: string | undefined;
+	latitude?: number | undefined;
+	longitude?: number | undefined;
+	name?: string | undefined;
 	operational_status?: "active" | "inactive" | "provisional" | "seasonal" | "voided" | undefined;
-	short_name?: string | null | undefined,
-	tts_name?: string | null | undefined
+	short_name?: string | null | undefined;
+	tts_name?: string | null | undefined;
 }
 
 export default function Details({
@@ -24,7 +24,6 @@ export default function Details({
 			<div>Informações gerais sobre esta paragem</div>
 		</div>
 
-		{/* _id / lat / lon */}
 		<div>
 			{/* _id */}
 			<div>
@@ -57,7 +56,6 @@ export default function Details({
 			<input type="text" value={name} />
 		</div>
 
-		{/* short_name / tts_name */}
 		<div>
 			{/* short_name */}
 			<div>

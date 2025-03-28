@@ -65,7 +65,12 @@ export default function StopContainer({ stop }: StopContainerProps) {
             short_name={short_name}
             tts_name={tts_name}
         />
-        <AdminInformation />
+        <AdminInformation 
+            jurisdiction={jurisdiction}
+            municipality_id={municipality_id}
+            parish_id={parish_id}
+            locality_id={locality_id}
+        />
         <Affectation />
         <Shelter />
         <Infrasctructure />
