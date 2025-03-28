@@ -1,15 +1,17 @@
-import Accessibility from "./Accessibility";
-import AdminInformation from "./AdminInformation";
-import Affectation from "./Affectation";
-import Comments from "./Comments";
-import Connections from "./Connections";
-import Details from "./Details";
-import Equipments from "./Equipments";
-import Infrasctructure from "./Infrastructure";
-import Map from "./Map";
-import Media from "./Media";
-import PublicInformation from "./PublicInformation";
-import Shelter from "./Shelter";
+'use client';
+
+import Accessibility from "../Accessibility";
+import AdminInformation from "../AdminInformation";
+import Affectation from "../Affectation";
+import Comments from "../Comments";
+import Connections from "../Connections";
+import Details from "../Details";
+import Equipments from "../Equipments";
+import Infrasctructure from "../Infrasctructure";
+import Map from "../Map";
+import Media from "../Media/Media";
+import PublicInformation from "../PublicInformation/PublicInformation";
+import Shelter from "../Shelter/Shelter";
 
 import { Stop } from "@tmlmobilidade/types";
 

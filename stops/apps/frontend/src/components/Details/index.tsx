@@ -1,3 +1,5 @@
+'use client';
+
 interface DetailsProps {
 	_id?: string | undefined;
 	latitude?: number | undefined;
