@@ -128,5 +128,5 @@ jobs:
         with:
           push: true
           context: ./alerts/apps/nginx
-          file: ./Dockerfile
+          file: ./alerts/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-alerts-nginx:${{ github.ref_name }}
