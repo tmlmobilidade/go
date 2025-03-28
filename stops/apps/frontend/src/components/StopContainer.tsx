@@ -61,6 +61,7 @@ export default function StopContainer({ stop }: StopContainerProps) {
             latitude={latitude}
             longitude={longitude}
             name={name}
+            operational_status={operational_status}
             short_name={short_name}
             tts_name={tts_name}
         />
