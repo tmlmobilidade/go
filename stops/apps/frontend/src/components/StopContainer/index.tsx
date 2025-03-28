@@ -9,9 +9,9 @@ import Details from "../Details";
 import Equipments from "../Equipments";
 import Infrasctructure from "../Infrasctructure";
 import Map from "../Map";
-import Media from "../Media/Media";
-import PublicInformation from "../PublicInformation/PublicInformation";
-import Shelter from "../Shelter/Shelter";
+import Media from "../Media";
+import PublicInformation from "../PublicInformation";
+import Shelter from "../Shelter";
 
 import { Stop } from "@tmlmobilidade/types";
 
