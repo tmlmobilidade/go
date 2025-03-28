@@ -1,9 +1,18 @@
-export default function StopsList() {
-	return <div>
-		<ul>
-            <div>Stop A</div>
-            <div>Stop B</div>
-            <div>Stop C</div>
-        </ul>
-	</div>;
+import StopsListItem from "./StopsListItem";
+
+interface StopsListProps {
+    stops: String[];
+}
+
+export default function StopsList({ stops }: StopsListProps) {
+    return <div>
+        {/* Search Bar */}
+        <div>
+            <input type="text" placeholder="Pesquisar..." />
+            <button>Settings</button>
+        </div>
+
+        {/* Stops List */}
+        {stops.map((stop) => (<StopsListItem stop={stop} />))}
+    </div>;
 }
