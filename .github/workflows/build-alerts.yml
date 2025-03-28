@@ -1,6 +1,7 @@
 name: 'Alerts | Build & Push'
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'alerts/**'
