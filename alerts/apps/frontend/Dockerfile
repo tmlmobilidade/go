@@ -39,11 +39,6 @@ RUN apk update
 
 WORKDIR /app
 
-ARG NEXT_PUBLIC_URL
-ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
-ARG NEXT_PUBLIC_AUTH_URL
-ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
-
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 RUN npm install
