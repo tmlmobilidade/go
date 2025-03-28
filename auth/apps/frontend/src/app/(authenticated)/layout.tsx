@@ -1,6 +1,6 @@
 /* * */
 
-import { AppWrapper, MeContextProvider, useMeContext } from '@tmlmobilidade/ui';
+import { AppWrapper, MeContextProvider } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
