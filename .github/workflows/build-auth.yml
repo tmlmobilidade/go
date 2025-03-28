@@ -50,8 +50,8 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: .
-          file: ./apps/frontend/Dockerfile
+          context: ./auth
+          file: ./auth/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/auth-frontend:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -88,8 +88,8 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: .
-          file: ./apps/api/Dockerfile
+          context: ./auth
+          file: ./auth/apps/api/Dockerfile
           tags: ghcr.io/tmlmobilidade/auth-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # #
@@ -126,6 +126,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: .
-          file: ./nginx/Dockerfile
+          context: ./auth/apps/nginx
+          file: ./auth/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/auth-nginx:${{ github.ref_name }}
