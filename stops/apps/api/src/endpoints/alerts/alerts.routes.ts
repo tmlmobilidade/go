@@ -3,78 +3,78 @@
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import FastifyService from '@/services/fastify.service.js';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { Stop } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
-import { AlertsController } from './alerts.controller.js';
+import { StopsController } from './stops.controller.js';
 
 /* * */
 
 const server: FastifyInstance = FastifyService.getInstance().server;
-const namespace = '/alerts';
+const namespace = '/stops';
 
 /* * */
 
 server.register(
 	(instance, opts, next) => {
-		// GET /alerts
+		// GET /stops
 		instance.get(
 			'/',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.list,
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.list,
 				),
 			},
-			AlertsController.getAll,
+			StopsController.getAll,
 		);
 
-		// GET /alerts/:id
+		// GET /stops/:id
 		instance.get(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.read,
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.read,
 				),
 			},
-			AlertsController.getById,
+			StopsController.getById,
 		);
 
-		// POST /alerts
+		// POST /stops
 		instance.post(
 			'/',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.create,
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.create,
 				),
 			},
-			AlertsController.create,
+			StopsController.create,
 		);
 
-		// PUT /alerts/:id
+		// PUT /stops/:id
 		instance.put(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.update,
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.update,
 				),
 			},
-			AlertsController.update,
+			StopsController.update,
 		);
 
-		// DELETE /alerts/:id
+		// DELETE /stops/:id
 		instance.delete(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.delete,
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.delete,
 				),
 			},
-			AlertsController.delete,
+			StopsController.delete,
 		);
 
 		next();

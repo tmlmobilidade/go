@@ -1,24 +1,24 @@
-import { alerts } from '@tmlmobilidade/interfaces';
+import { stops } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { Stop } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
- * This is an example controller that is using the alerts interface.
+ * This is an example controller that is using the stops interface.
  */
-export class AlertsController {
+export class StopsController {
 	/**
-	 * Creates a new alert
-	 * @param request Fastify request containing alert data in body
+	 * Creates a new stop
+	 * @param request Fastify request containing stop data in body
 	 * @param reply Fastify reply
 	 */
 	static async create(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			const data = request.body as Alert;
+			const data = request.body as Stop;
 
-			const result = await alerts.insertOne(data);
+			const result = await stops.insertOne(data);
 
-			reply.send({ data: result, message: 'Alert created' });
+			reply.send({ data: result, message: 'Stop created' });
 		}
 		catch (error) {
 			reply
@@ -28,8 +28,8 @@ export class AlertsController {
 	}
 
 	/**
-	 * Deletes an alert by ID
-	 * @param request Fastify request containing alert ID in params
+	 * Deletes an stop by ID
+	 * @param request Fastify request containing stop ID in params
 	 * @param reply Fastify reply
 	 */
 	static async delete(
@@ -38,9 +38,9 @@ export class AlertsController {
 	) {
 		try {
 			const { id } = request.params;
-			await alerts.deleteById(id);
+			await stops.deleteById(id);
 
-			reply.send({ message: `Alert with id: ${id} deleted` });
+			reply.send({ message: `Stop with id: ${id} deleted` });
 		}
 		catch (error) {
 			reply
@@ -50,13 +50,13 @@ export class AlertsController {
 	}
 
 	/**
-	 * Retrieves all alerts, sorted by creation date descending
+	 * Retrieves all stops, sorted by creation date descending
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await alerts.findMany({}, undefined, undefined, { created_at: -1 }));
+			reply.send(await stops.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
@@ -66,8 +66,8 @@ export class AlertsController {
 	}
 
 	/**
-	 * Retrieves a single alert by ID
-	 * @param request Fastify request containing alert ID in params
+	 * Retrieves a single stop by ID
+	 * @param request Fastify request containing stop ID in params
 	 * @param reply Fastify reply
 	 */
 	static async getById(
@@ -77,14 +77,14 @@ export class AlertsController {
 		try {
 			const { id } = request.params;
 
-			const alert = await alerts.findById(id);
+			const stop = await stops.findById(id);
 
-			if (!alert) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
 				return;
 			}
 
-			reply.send(alert);
+			reply.send(stop);
 		}
 		catch (error) {
 			reply
@@ -94,8 +94,8 @@ export class AlertsController {
 	}
 
 	/**
-	 * Updates an existing alert by ID
-	 * @param request Fastify request containing alert ID in params and update data in body
+	 * Updates an existing stop by ID
+	 * @param request Fastify request containing stop ID in params and update data in body
 	 * @param reply Fastify reply
 	 */
 	static async update(
@@ -104,13 +104,13 @@ export class AlertsController {
 	) {
 		try {
 			const { id } = request.params;
-			const alertData = request.body as Partial<Alert>;
+			const stopData = request.body as Partial<Stop>;
 
-			await alerts.updateById(id, alertData);
+			await stops.updateById(id, stopData);
 
 			reply.send({
-				data: alertData,
-				message: `Alert with id: ${id} updated`,
+				data: stopData,
+				message: `Stop with id: ${id} updated`,
 			});
 		}
 		catch (error) {
