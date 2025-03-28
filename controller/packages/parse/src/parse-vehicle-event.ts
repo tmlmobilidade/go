@@ -1,7 +1,6 @@
 /* * */
 
-import { type VehicleEvent } from '@tmlmobilidade/core/types';
-import { validateUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { validateUnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 
 /* * */

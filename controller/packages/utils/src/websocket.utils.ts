@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/core/types';
+import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 

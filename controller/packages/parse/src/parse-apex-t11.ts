@@ -1,7 +1,6 @@
 /* * */
 
-import { type ApexT11 } from '@tmlmobilidade/core/types';
-import { validateUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { type ApexT11, validateUnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 
 /* * */

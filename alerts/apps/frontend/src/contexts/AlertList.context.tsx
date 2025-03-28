@@ -3,12 +3,10 @@
 
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { swrFetcher } from '@/lib/http';
-import { Routes } from '@/lib/routes';
 import { toggleArray } from '@/lib/utils';
 import { Municipality } from '@carrismetropolitana/api-types/locations';
 import { Line, Stop } from '@carrismetropolitana/api-types/network';
-import { Alert } from '@tmlmobilidade/core-types';
-import { AlertSchema } from '@tmlmobilidade/core-types';
+import { Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo, useState } from 'react';
@@ -77,7 +75,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	const { data: { lines } } = useLinesContext();
 	const { data: { stops } } = useStopsContext();
 
-	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>(`${Routes.ALERTS_API}/alerts`, swrFetcher);
+	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>('/api/alerts', swrFetcher);
 	const rawAlerts = useMemo(() => allAlertsData || [], [allAlertsData]);
 
 	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status.options);

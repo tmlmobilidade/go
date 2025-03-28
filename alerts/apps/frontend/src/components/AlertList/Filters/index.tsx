@@ -2,7 +2,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { AlertSchema } from '@tmlmobilidade/core-types';
+import { AlertSchema } from '@tmlmobilidade/types';
 import { Badge, Checkbox, DateTimePicker, Menu, Surface, Text } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';
 

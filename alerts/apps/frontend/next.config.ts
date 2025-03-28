@@ -25,6 +25,14 @@ const nextConfig: NextConfig = {
 			{ destination: Routes.ALERT_LIST, permanent: true, source: '/' },
 		];
 	},
+	async rewrites() {
+		return [
+			{
+				destination: `http://localhost:${process.env.API_PORT}/:path*`,
+				source: '/api/:path*',
+			},
+		];
+	},
 };
 
 export default nextConfig;

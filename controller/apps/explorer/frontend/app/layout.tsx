@@ -32,7 +32,7 @@ const workSans = Work_Sans({
 
 export const metadata: Metadata = {
 	description: 'Horários e Paragens em Tempo Real',
-	metadataBase: process.env.NEXT_PUBLIC_URL ? new URL(process.env.NEXT_PUBLIC_URL) : new URL(`http://localhost:${process.env.PORT || 3000}`),
+	metadataBase: process.env.NEXT_PUBLIC_URL ? new URL(process.env.NEXT_PUBLIC_URL) : new URL(`http://localhost:${process.env.API_PORT || 3000}`),
 	title: 'CMetropolitana',
 };
 
@@ -54,7 +54,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const sessionToken = cookies.get('session_token')?.value;
 
 	if (!sessionToken) {
-		redirect(`${process.env.NEXT_PUBLIC_AUTH_API_URL ?? 'http://localhost:51000'}/login?redirect=${encodeURI(process.env.NEXT_PUBLIC_URL ?? 'http://localhost:51002')}`, RedirectType.replace);
+		redirect(`${process.env.NEXT_PUBLIC_AUTH_URL ?? 'http://localhost:51000'}/login?redirect=${encodeURI(process.env.NEXT_PUBLIC_URL ?? 'http://localhost:51002')}`, RedirectType.replace);
 	}
 
 	//
@@ -72,7 +72,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					messages={messages}
 				>
 					<NuqsAdapter>
-						<AppProvider fontFamilyStyle={workSans.style.fontFamily} meApiUrl={process.env.NEXT_PUBLIC_AUTH_API_URL + '/api/users/me'}>
+						<AppProvider fontFamilyStyle={workSans.style.fontFamily} meApiUrl={process.env.NEXT_PUBLIC_AUTH_URL + '/api/users/me'}>
 							<Providers>
 								<NavigationProgress size={5} zIndex={10} />
 								{children}

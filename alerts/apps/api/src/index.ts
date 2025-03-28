@@ -2,5 +2,3 @@
 
 import './main';
 import './endpoints';
-
-/* * */

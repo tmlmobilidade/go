@@ -5,29 +5,30 @@
 	"scripts": {
 		"build": "next build",
 		"clean": "rm -rf dist",
-		"dev": "next dev --turbopack -p 51001",
+		"dev": "next dev -p 51001",
 		"lint": "eslint . && tsc --noEmit",
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "^3.31.0",
-		"@tmlmobilidade/core-types": "^20250320.1526.10",
-		"@tmlmobilidade/ui": "^20250313.1809.31",
-		"clsx": "^2.1.1",
-		"luxon": "^3.5.0",
-		"next": "15.2.3",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
-		"react-viewport-list": "^7.1.2",
-		"swr": "^2.3.3"
+		"@tabler/icons-react": "3.31.0",
+		"@tmlmobilidade/types": "20250326.1713.30",
+		"@tmlmobilidade/ui": "20250327.1655.29",
+		"@tmlmobilidade/utils": "20250326.1713.43",
+		"clsx": "2.1.1",
+		"luxon": "3.6.0",
+		"next": "15.2.4",
+		"react": "19.0.0",
+		"react-dom": "19.0.0",
+		"react-viewport-list": "7.1.2",
+		"swr": "2.3.3"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "^20250311.1610.37",
-		"@carrismetropolitana/eslint": "20250303.2009.45",
-		"@types/luxon": "^3.4.2",
-		"@types/node": "^22.13.10",
-		"@types/react": "^19",
-		"@types/react-dom": "^19",
-		"typescript": "^5"
+		"@carrismetropolitana/api-types": "20250325.1534.33",
+		"@carrismetropolitana/eslint": "20250325.1926.5",
+		"@types/luxon": "3.4.2",
+		"@types/node": "22.13.14",
+		"@types/react": "19",
+		"@types/react-dom": "19",
+		"typescript": "5"
 	}
 }
