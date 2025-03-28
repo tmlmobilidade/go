@@ -4,8 +4,8 @@ import { Routes } from '@/lib/routes';
 
 const nextConfig: NextConfig = {
 	env: {
-		NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
-		NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
+		NEXT_PUBLIC_AUTH_URL: process.env.NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_AUTH_URL : 'https://auth.carrismetropolitana.pt',
+		NEXT_PUBLIC_URL: process.env.NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_URL : 'https://alerts.carrismetropolitana.pt',
 	},
 	images: {
 		remotePatterns: [
