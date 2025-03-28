@@ -53,6 +53,9 @@
 		"**/components/**/*.css": "${dirname} (${extname})",
 		"**/components/**/*.js": "${dirname} (${extname})",
 		"**/components/**/*.tsx": "${dirname} (${extname})"
-	}
+	},
+	"github-actions.workflows.pinned.workflows": [
+		".github/workflows/build-alerts.yml"
+	]
 
 }
