@@ -3,7 +3,7 @@
 
 export default function Page() {
 	return <div>
-		Test
+		App
 		{/* <StopsList stops={["A", "B", "C"]} />
 		<Map /> */}
 	</div>;
