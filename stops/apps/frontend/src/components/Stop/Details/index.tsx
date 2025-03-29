@@ -4,6 +4,8 @@ import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
+import styles from './styles.module.css';
+
 // interface DetailsProps {
 // 	_id?: string | undefined;
 // 	latitude?: number | undefined;
@@ -24,7 +26,7 @@ import Item from "@/components/common/Row/Item";
 // 	tts_name
 // }: DetailsProps) {
 export default function Details() {
-	return <div>
+	return <div className={styles.container}>
 		<Header
 			title={"Detalhes desta Paragem"}
 			description={"Informações gerais sobre esta paragem"}
@@ -36,9 +38,13 @@ export default function Details() {
 			<Item label={"Longitude"} type={"text"} value={"Sim"} />
 		</Row>
 
-		<Item label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Sim"} />
+		<Row>
+			<Item label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Sim"} />
+		</Row>
 
-		<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={"Sim"} />
+		<Row>
+			<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={"Sim"} />
+		</Row>
 
 		<Row>
 			<Item label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
@@ -50,6 +56,8 @@ export default function Details() {
 			</Item>
 		</Row>
 
-		<Item label={"Estado Operacional"} type={"text"} value={"Sim"} />
+		<Row>
+			<Item label={"Estado Operacional"} type={"text"} value={"Sim"} />
+		</Row>
 	</div>;
 }
