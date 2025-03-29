@@ -1,83 +1,55 @@
 'use client';
 
-interface DetailsProps {
-	_id?: string | undefined;
-	latitude?: number | undefined;
-	longitude?: number | undefined;
-	name?: string | undefined;
-	operational_status?: "active" | "inactive" | "provisional" | "seasonal" | "voided" | undefined;
-	short_name?: string | null | undefined;
-	tts_name?: string | null | undefined;
-}
+import Header from "@/components/common/Header";
+import Row from "@/components/common/Row";
+import Item from "@/components/common/Row/Item";
 
-export default function Details({
-	_id,
-	latitude,
-	longitude,
-	name,
-	operational_status,
-	short_name,
-	tts_name
-}: DetailsProps) {
+// interface DetailsProps {
+// 	_id?: string | undefined;
+// 	latitude?: number | undefined;
+// 	longitude?: number | undefined;
+// 	name?: string | undefined;
+// 	operational_status?: "active" | "inactive" | "provisional" | "seasonal" | "voided" | undefined;
+// 	short_name?: string | null | undefined;
+// 	tts_name?: string | null | undefined;
+// }
+
+// export default function Details({
+// 	_id,
+// 	latitude,
+// 	longitude,
+// 	name,
+// 	operational_status,
+// 	short_name,
+// 	tts_name
+// }: DetailsProps) {
+export default function Details() {
 	return <div>
-		{/* Header */}
-		<div>
-			<div>Detalhes desta Paragem</div>
-			<div>Informações gerais sobre esta paragem</div>
-		</div>
+		<Header
+			title={"Detalhes desta Paragem"}
+			description={"Informações gerais sobre esta paragem"}
+		/>
 
-		<div>
-			{/* _id */}
-			<div>
-				<div>Código Único da Paragem</div>
-				<input type="text" value={_id} />
-			</div>
+		<Row>
+			<Item label={"Código Único da Paragem"} type={"text"} value={"Sim"} />
+			<Item label={"Latitude"} type={"text"} value={"Sim"} />
+			<Item label={"Longitude"} type={"text"} value={"Sim"} />
+		</Row>
 
-			{/* lat */}
-			<div>
-				<div>Latitude</div>
-				<input type="text" value={latitude} />
-			</div>
+		<Item label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Sim"} />
 
-			{/* lon */}
-			<div>
-				<div>Longitude</div>
-				<input type="text" value={longitude} />
-			</div>
-		</div>
+		<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={"Sim"} />
 
-		{/* name (old name) */}
-		<div>
-			<div>Antigo Nome da Paragem (p/ alterar)</div>
-			<input type="text" value={name} disabled />
-		</div>
-
-		{/* name (changeable field) */}
-		<div>
-			<div>Nome da Paragem (depois da correção)</div>
-			<input type="text" value={name} />
-		</div>
-
-		<div>
-			{/* short_name */}
-			<div>
-				<div>Nome Curto (Postalete)</div>
-				<input type="text" value={short_name} />
+		<Row>
+			<Item label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
 				<button>A</button>
-			</div>
+			</Item>
 
-			{/* tts_name */}
-			<div>
-				<div>Nome Falado (Text-to-Speech)</div>
-				<input type="text" value={tts_name} />
-				<button>A</button>
-			</div>
-		</div>
+			<Item label={"Nome Falado (Text-to-Speech)"} type={"text"} value={"Sim"}>
+				<button>B</button>
+			</Item>
+		</Row>
 
-		{/* operational_status */}
-		<div>
-			<div>Estado Operacional</div>
-			<input type="text" value={operational_status} />
-		</div>
+		<Item label={"Estado Operacional"} type={"text"} value={"Sim"} />
 	</div>;
 }
