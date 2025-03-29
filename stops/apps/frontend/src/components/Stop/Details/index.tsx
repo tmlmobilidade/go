@@ -4,7 +4,7 @@ import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
-import styles from './styles.module.css';
+import styles from '../styles.module.css';
 
 // interface DetailsProps {
 // 	_id?: string | undefined;
@@ -26,7 +26,7 @@ import styles from './styles.module.css';
 // 	tts_name
 // }: DetailsProps) {
 export default function Details() {
-	return <div className={styles.container}>
+	return <div className={styles.section}>
 		<Header
 			title={"Detalhes desta Paragem"}
 			description={"Informações gerais sobre esta paragem"}

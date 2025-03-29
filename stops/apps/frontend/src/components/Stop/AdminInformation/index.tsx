@@ -1,47 +1,36 @@
-interface AdminInformationProps {
-    jurisdiction: "unknown" | "ip" | "municipality" | "other";
-    municipality_id: string;
-    parish_id?: string | null | undefined;
-    locality_id?: string | null | undefined;
-}
+import Header from '@/components/common/Header';
+import styles from '../styles.module.css';
+import Row from '@/components/common/Row';
+import Item from '@/components/common/Row/Item';
 
-export default function AdminInformation({
-    jurisdiction,
-    municipality_id,
-    parish_id,
-    locality_id
-}: AdminInformationProps) {
-    return <div>
-        {/* Header */}
-        <div>
-            <div>Informação Administrativa</div>
-            <div>Informações sobre a localização administrativa e responsabilidade de gestão desta paragem</div>
-        </div>
+// interface AdminInformationProps {
+//     jurisdiction: "unknown" | "ip" | "municipality" | "other";
+//     municipality_id: string;
+//     parish_id?: string | null | undefined;
+//     locality_id?: string | null | undefined;
+// }
 
-        <div>
-            {/* municipality_id */}
-            <div>
-                <div>Município</div>
-                <input type="text" value={municipality_id} />
-            </div>
+// export default function AdminInformation({
+//     jurisdiction,
+//     municipality_id,
+//     parish_id,
+//     locality_id
+// }: AdminInformationProps) {
+export default function AdminInformation() {
+    return <div className={styles.section}>
+        <Header
+            title={"Informação Administrativa"}
+            description={"Informações sobre a localização administrativa e responsabilidade de gestão desta paragem"}
+        />
 
-            {/* parish_id */}
-            <div>
-                <div>Freguesia</div>
-                <input type="text" value={parish_id} />
-            </div>
+        <Row>
+            <Item label={"Município"} type={"text"} value={"Sim"} />
+            <Item label={"Freguesia"} type={"text"} value={"Sim"} />
+            <Item label={"Localidade"} type={"text"} value={"Sim"} />
+        </Row>
 
-            {/* locality_id */}
-            <div>
-                <div>Localidade</div>
-                <input type="text" value={locality_id} />
-            </div>
-        </div>
-
-        {/* jurisdiction */}
-        <div>
-            <div>Jurisdição</div>
-            <input type="text" value={jurisdiction} />
-        </div>
+        <Row>
+            <Item label={"Jurisdição"} type={"text"} value={"Sim"} />
+        </Row>
     </div>;
 }

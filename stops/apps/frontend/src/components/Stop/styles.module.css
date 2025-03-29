@@ -5,3 +5,11 @@
     gap: var(--mantine-spacing-lg);
     width: 100%;
 }
+
+.section {
+    display: flex;
+    flex-direction: column;
+    padding: var(--mantine-spacing-lg);
+    gap: var(--mantine-spacing-lg);
+    width: 100%;
+}

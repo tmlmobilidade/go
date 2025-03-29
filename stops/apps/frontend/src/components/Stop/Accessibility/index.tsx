@@ -2,10 +2,10 @@ import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
-import styles from './styles.module.css';
+import styles from '../styles.module.css';
 
 export default function Accessibility() {
-    return <div className={styles.container}>
+    return <div className={styles.section}>
         <Header
             title={"Acessibilidade"}
             description={"Informações sobre a acessibilidade da paragem e sua envolvente."}

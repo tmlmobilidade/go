@@ -75,19 +75,19 @@ export default function Stop() {
             locality_id={locality_id}
         /> */}
         <Details
-            _id={"_id"}
-            latitude={10}
-            longitude={10}
-            name={"name"}
-            operational_status={"active"}
-            short_name={"short_name"}
-            tts_name={"tts_name"}
+            // _id={"_id"}
+            // latitude={10}
+            // longitude={10}
+            // name={"name"}
+            // operational_status={"active"}
+            // short_name={"short_name"}
+            // tts_name={"tts_name"}
         />
         <AdminInformation 
-            jurisdiction={"ip"}
-            municipality_id={"municipality_id"}
-            parish_id={"parish_id"}
-            locality_id={"locality_id"}
+            // jurisdiction={"ip"}
+            // municipality_id={"municipality_id"}
+            // parish_id={"parish_id"}
+            // locality_id={"locality_id"}
         />
         <Affectation />
         <Shelter />
