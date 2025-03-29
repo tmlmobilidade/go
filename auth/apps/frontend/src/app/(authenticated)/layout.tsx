@@ -12,7 +12,7 @@ interface Props {
 
 /* * */
 
-export default async function LayoutContext({ children }: Props) {
+export default async function Layout({ children }: Props) {
 	//
 
 	const cookies = await nextCookies();

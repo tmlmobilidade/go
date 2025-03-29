@@ -20,7 +20,7 @@
 		"@tmlmobilidade/interfaces": "20250327.1229.10",
 		"@tmlmobilidade/lib": "20250327.1631.31",
 		"@tmlmobilidade/types": "20250326.1713.30",
-		"@tmlmobilidade/utils": "20250326.1713.43",
+		"@tmlmobilidade/utils": "20250328.1807.3",
 		"fastify": "5.2.2",
 		"pino-pretty": "13.0.0",
 		"resolve-tspaths": "0.8.23",

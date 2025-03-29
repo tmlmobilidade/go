@@ -1,5 +1,7 @@
 'use client';
 
+/* * */
+
 import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { User } from '@tmlmobilidade/types';
@@ -7,7 +9,9 @@ import { useSearchQuery } from '@tmlmobilidade/ui';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-interface UserListContextState {
+/* * */
+
+interface UsersListContextState {
 	actions: {
 		changeSearchQuery: (query: string) => void
 	}
@@ -16,7 +20,7 @@ interface UserListContextState {
 		raw: User[]
 	}
 	filters: {
-		searchQuery: string
+		search_query: string
 	}
 	flags: {
 		error: Error | undefined
@@ -24,26 +28,32 @@ interface UserListContextState {
 	}
 }
 
-const UserListContext = createContext<undefined | UserListContextState>(undefined);
+/* * */
 
-export const useUserListContext = () => {
-	const context = useContext(UserListContext);
+const UsersListContext = createContext<undefined | UsersListContextState>(undefined);
+
+export const useUsersListContext = () => {
+	const context = useContext(UsersListContext);
 	if (!context) {
-		throw new Error('useUserListContext must be used within an UserListContextProvider');
+		throw new Error('useUsersListContext must be used within an UsersListContextProvider');
 	}
 	return context;
 };
 
-export const UserListContextProvider = ({ children }: { children: React.ReactNode }) => {
+/* * */
+
+export const UsersListContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 
 	//
 	// A. Setup Variables
+
 	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(Routes.AUTH_API + Routes.USERS, swrFetcher);
 	const rawUsers = useMemo(() => allUsersData || [], [allUsersData]);
 
 	//
-	// B. Transform Data
+	// B. Transform data
+
 	const { filteredData: searchFilteredUsers, searchQuery, setSearchQuery } = useSearchQuery(rawUsers, {
 		accessors: ['first_name', 'last_name', 'email'],
 	});
@@ -53,11 +63,9 @@ export const UserListContextProvider = ({ children }: { children: React.ReactNod
 	}, [searchFilteredUsers, rawUsers]);
 
 	//
-	// C. Handle Actions
-
-	//
 	// D. Define context value
-	const contextValue: UserListContextState = useMemo(() => ({
+
+	const contextValue: UsersListContextState = useMemo(() => ({
 		actions: {
 			changeSearchQuery: setSearchQuery,
 		},
@@ -66,7 +74,7 @@ export const UserListContextProvider = ({ children }: { children: React.ReactNod
 			raw: rawUsers,
 		},
 		filters: {
-			searchQuery: searchQuery ?? '',
+			search_query: searchQuery ?? '',
 		},
 		flags: {
 			error: allUsersError ?? undefined,
@@ -74,10 +82,14 @@ export const UserListContextProvider = ({ children }: { children: React.ReactNod
 		},
 	}), [allUsersData, allUsersError, allUsersLoading, filteredUsers, rawUsers, searchQuery]);
 
-	//	E. Render Component
+	//
+	//	E. Render components
+
 	return (
-		<UserListContext.Provider value={contextValue}>
+		<UsersListContext.Provider value={contextValue}>
 			{children}
-		</UserListContext.Provider>
+		</UsersListContext.Provider>
 	);
+
+	//
 };
