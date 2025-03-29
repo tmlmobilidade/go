@@ -1,7 +1,7 @@
 // import AlertForm from '@/components/AlertDetail/AlertForm';
 // import { AlertDetailContextProvider } from '@/contexts/AlertDetail.context';
 
-import StopContainer from "@/components/StopContainer/StopContainer";
+import StopContainer from "@/components/StopContainer";
 import StopsList from "@/components/StopsList";
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
