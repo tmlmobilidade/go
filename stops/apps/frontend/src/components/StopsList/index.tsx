@@ -1,4 +1,5 @@
-import StopsListItem from "../StopsListItem";
+import Item from "./Item";
+import SearchBar from "./SearchBar";
 
 interface StopsListProps {
     stops: String[];
@@ -6,13 +7,9 @@ interface StopsListProps {
 
 export default function StopsList({ stops }: StopsListProps) {
     return <div>
-        {/* Search Bar */}
+        <SearchBar />
         <div>
-            <input type="text" placeholder="Pesquisar..." />
-            <button>Settings</button>
+            {stops.map((stop, index) => (<Item key={index} stop={stop} />))}
         </div>
-
-        {/* Stops List */}
-        {stops.map((stop, index) => (<StopsListItem key={index} stop={stop} />))}
     </div>;
 }

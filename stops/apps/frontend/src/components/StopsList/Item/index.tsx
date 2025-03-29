@@ -1,8 +1,8 @@
-interface StopsListItemProps {
+interface ItemProps {
     stop: String;
 }
 
-export default function StopsList(props: StopsListItemProps) {
+export default function Item(props: ItemProps) {
     return <div>
         {/* Left Side */}
         <div>
