@@ -7,6 +7,6 @@ interface ItemProps {
 export default function Item({ label, type, value }: ItemProps) {
     return <div>
         <div>{label}</div>
-        <input type={type} value={value} />
+        <input type={type} value={value} readOnly />
     </div>;
 }

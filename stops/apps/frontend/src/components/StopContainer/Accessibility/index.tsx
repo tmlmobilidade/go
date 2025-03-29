@@ -1,66 +1,35 @@
+import Header from "@/components/common/Header";
+import InputsContainer from "@/components/common/InputsContainer";
+import Item from "@/components/common/InputsContainer/Item";
+
 export default function Accessibility() {
-    return <div>
-        {/*  */}
-        <div>
-            <div>
-                <div>Tem Passeio?</div>
-                <input type="text" />
-            </div>
+    return <>
+        <Header
+            title={"Acessibilidade"}
+            description={"Informações sobre a acessibilidade da paragem e sua envolvente."}
+        />
 
-            <div>
-                <div>Tipo de Passeio</div>
-                <input type="text" />
-            </div>
-        </div>
+        <InputsContainer>
+            <Item label={"Tem Passeio?"} type={"text"} value={"Sim"} />
+            <Item label={"Tipo de Passeio"} type={"text"} value={"Sim"} />
+        </InputsContainer>
+
+        <InputsContainer>
+            <Item label={"Tem Passadeira?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Acesso Rebaixado/Contínuo?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Acesso Largo?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Pavimento Tátil?"} type={"text"} value={"Sim"} />
+        </InputsContainer>
 
 
-        {/*  */}
-        <div>
-            <div>
-                <div>Tem Passadeira?</div>
-                <input type="text" />
-            </div>
+        <InputsContainer>
+            <Item label={"Tem Estacionamento Abusivo?"} type={"text"} value={"Sim"} />
+            <Item label={"Permite Embarque de PMR?"} type={"text"} value={"Sim"} />
+        </InputsContainer>
 
-            <div>
-                <div>Tem Acesso Rebaixado/Contínuo?</div>
-                <input type="text" />
-            </div>
-
-            <div>
-                <div>Tem Acesso Largo?</div>
-                <input type="text" />
-            </div>
-
-            <div>
-                <div>Tem Pavimento Tátil?</div>
-                <input type="text" />
-            </div>
-        </div>
-
-        {/*  */}
-        <div>
-            <div>
-                <div>Tem Estacionamento Abusivo?</div>
-                <input type="text" />
-            </div>
-
-            <div>
-                <div>Permite Embarque de PMR?</div>
-                <input type="text" />
-            </div>
-        </div>
-
-        {/*  */}
-        <div>
-            <div>
-                <div>Última Manutenção da Acessibilidade</div>
-                <input type="text" />
-            </div>
-
-            <div>
-                <div>Última Verificação da Acessibilidade</div>
-                <input type="text" />
-            </div>
-        </div>
-    </div>;
+        <InputsContainer>
+            <Item label={"Última Manutenção da Acessibilidade"} type={"text"} value={"Sim"} />
+            <Item label={"Última Verificação da Acessibilidade"} type={"text"} value={"Sim"} />
+        </InputsContainer>
+    </>;
 }
