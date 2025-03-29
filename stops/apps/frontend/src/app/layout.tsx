@@ -24,15 +24,27 @@ export default async function Layout({
 		);
 	}
 
+	// return (
+	// 	<html lang="en" suppressHydrationWarning>
+	// 		<body>
+	// 			<AppProvider>
+	// 				<DataProviders>
+	// 					<AppWrapper>
+	// 						{children}
+	// 					</AppWrapper>
+	// 				</DataProviders>
+	// 			</AppProvider>
+	// 		</body>
+	// 	</html>
+	// );
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body>
 				<AppProvider>
-					{/* <DataProviders> */}
-						<AppWrapper>
-							{children}
-						</AppWrapper>
-					{/* </DataProviders> */}
+					{/* <AppWrapper> */}
+						{children}
+					{/* </AppWrapper> */}
 				</AppProvider>
 			</body>
 		</html>

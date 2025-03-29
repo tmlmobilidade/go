@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     return (
         <div>
             <StopsList stops={["A", "B", "C"]} />
-            <StopContainer />
+            {/* <StopContainer /> */}
         </div>
         // <AlertDetailContextProvider alertId={id}>
         //     <AlertForm />
