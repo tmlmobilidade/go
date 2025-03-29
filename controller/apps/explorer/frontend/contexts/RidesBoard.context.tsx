@@ -96,7 +96,9 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 			.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled)
 			.slice(0, 100);
 		// Update queue state
-		queue.current = [...queue.current, ...freshRidesData];
+		queue.current = Array
+			.from([...queue.current, ...freshRidesData])
+			.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled);
 	};
 
 	const displayQueue = async () => {

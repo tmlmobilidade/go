@@ -93,7 +93,7 @@ export function RidesBoardRow({ item }: RidesBoardRowProps) {
 					<FlapLine characterSets={['numeric']} count={3} string={`${item?.validations_count ?? ''}`} />
 				</div>
 				<div className={styles.cell}>
-					<FlapLine characterSets={['alphabet']} count={10} string={item?.operational_status} />
+					<FlapLine characterSets={['alphabet']} count={10} string={item?.delay_status} />
 				</div>
 			</div>
 		</div>
