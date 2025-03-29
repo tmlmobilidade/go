@@ -1,4 +1,4 @@
-import StopsListItem from "./StopsListItem";
+import StopsListItem from "../StopsListItem";
 
 interface StopsListProps {
     stops: String[];
@@ -13,6 +13,6 @@ export default function StopsList({ stops }: StopsListProps) {
         </div>
 
         {/* Stops List */}
-        {stops.map((stop) => (<StopsListItem stop={stop} />))}
+        {stops.map((stop, index) => (<StopsListItem key={index} stop={stop} />))}
     </div>;
 }
