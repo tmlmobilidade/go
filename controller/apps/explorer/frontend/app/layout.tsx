@@ -7,7 +7,7 @@ import { AppProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import { cookies as nextCookies } from 'next/headers';
+import { headers, cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren } from 'react';
@@ -35,6 +35,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
 	const messages = await getMessages();
 
+	const headersList = await headers();
+	const currentUrlHref = headersList.get('x-href');
+
 	//
 	// B. Render components
 
@@ -42,7 +45,8 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const sessionToken = cookies.get('session_token')?.value;
 
 	if (!sessionToken) {
-		redirect(`${process.env.NEXT_PUBLIC_AUTH_URL ?? 'http://localhost:51000'}/login?redirect=${encodeURI(process.env.NEXT_PUBLIC_URL ?? 'http://localhost:51002')}`, RedirectType.replace);
+		const currentUrl = encodeURI(currentUrlHref);
+		redirect(`${process.env.NEXT_PUBLIC_AUTH_URL}/login?redirect=${currentUrl}`, RedirectType.replace);
 	}
 
 	//

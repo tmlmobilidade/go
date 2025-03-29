@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"dev": "dotenv-run -f ./apps/explorer/_dev/.env.development -- next dev -p 51002",
+		"dev": "dotenv-run -f ./apps/explorer/_dev/.env -- next dev -p 51002",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"start": "next start"
