@@ -2,8 +2,10 @@ import Header from "@/components/common/Header";
 import InputsRow from "@/components/common/InputsRow";
 import Item from "@/components/common/InputsRow/Item";
 
+import styles from './styles.module.css';
+
 export default function Accessibility() {
-    return <>
+    return <div className={styles.container}>
         <Header
             title={"Acessibilidade"}
             description={"Informações sobre a acessibilidade da paragem e sua envolvente."}
@@ -30,5 +32,5 @@ export default function Accessibility() {
             <Item label={"Última Manutenção da Acessibilidade"} type={"text"} value={"Sim"} />
             <Item label={"Última Verificação da Acessibilidade"} type={"text"} value={"Sim"} />
         </InputsRow>
-    </>;
+    </div>;
 }
