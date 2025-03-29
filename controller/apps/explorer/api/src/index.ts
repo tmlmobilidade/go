@@ -34,7 +34,7 @@ FastifyInstance.get('/rides/:ride_id/hashed-shape', { preHandler: authorizationM
 
 const connectionOptions = {
 	host: process.env.FASTIFY_HOST || '0.0.0.0',
-	port: Number(process.env.FASTIFY_PORT) || 5050,
+	port: Number(process.env.API_PORT) || 5050,
 };
 
 const connectionHandler = (error: Error | null, address: string) => {

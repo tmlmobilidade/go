@@ -7,7 +7,6 @@ import { AppProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import { Work_Sans } from 'next/font/google';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -16,24 +15,13 @@ import { type PropsWithChildren } from 'react';
 /* * */
 
 import '@mantine/nprogress/styles.css';
-import '@tmlmobilidade/ui/dist/styles.css';
+import '@tmlmobilidade/ui/styles';
 import '@/styles/default.css';
 
 /* * */
 
-const workSans = Work_Sans({
-	display: 'swap',
-	subsets: ['latin'],
-	variable: '--font-work-sans',
-	weight: ['600', '700', '800'],
-});
-
-/* * */
-
 export const metadata: Metadata = {
-	description: 'Horários e Paragens em Tempo Real',
-	metadataBase: process.env.NEXT_PUBLIC_URL ? new URL(process.env.NEXT_PUBLIC_URL) : new URL(`http://localhost:${process.env.API_PORT || 3000}`),
-	title: 'CMetropolitana',
+	title: 'GO | Controller',
 };
 
 /* * */
@@ -61,7 +49,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	// C. Render components
 
 	return (
-		<html className={workSans.variable} lang={locale}>
+		<html lang={locale}>
 			<head>
 				<meta content="transparent" name="theme-color" />
 			</head>
@@ -72,7 +60,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					messages={messages}
 				>
 					<NuqsAdapter>
-						<AppProvider fontFamilyStyle={workSans.style.fontFamily} meApiUrl={process.env.NEXT_PUBLIC_AUTH_URL + '/api/users/me'}>
+						<AppProvider>
 							<Providers>
 								<NavigationProgress size={5} zIndex={10} />
 								{children}
