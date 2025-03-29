@@ -1,8 +1,9 @@
 /* * */
 
 // import { Background1 } from '@/components/Background1';
-import { Background2 } from '@/components/Background2';
+// import { Background2 } from '@/components/Background2';
 // import { Background3 } from '@/components/Background3';
+import { Background4 } from '@/components/Background4';
 import { LoginForm } from '@/components/LoginForm';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -36,14 +37,10 @@ export default async function Page(props: { searchParams: Promise<{ redirect: st
 	return (
 		<div className={styles.root}>
 			{/* <Background1 /> */}
-			<Background2 />
+			{/* <Background2 /> */}
 			{/* <Background3 /> */}
-			<LoginForm
-				redirect={
-					searchParams.redirect
-					&& new URL(searchParams.redirect).toString()
-				}
-			/>
+			<Background4 />
+			<LoginForm redirect={searchParams.redirect && new URL(searchParams.redirect).toString()} />
 		</div>
 	);
 

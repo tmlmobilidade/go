@@ -5,7 +5,7 @@
 import { useLogin } from '@/components/LoginForm/use-login';
 import { IconArrowRight } from '@tabler/icons-react';
 import { createEmail } from '@tmlmobilidade/types';
-import { Button, Label, PasswordInput, SimpleSurface, TextInput, TMLogoLight, useToast } from '@tmlmobilidade/ui';
+import { Button, Label, PasswordInput, SimpleSurface, TextInput, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -60,8 +60,6 @@ export function LoginForm({ redirect = '/' }: Props) {
 			title: 'Login successful',
 		});
 
-		console.log('redirect', redirect);
-
 		router.replace(redirect);
 	};
 
@@ -74,11 +72,11 @@ export function LoginForm({ redirect = '/' }: Props) {
 
 				<div className={styles.header}>
 					<div className={styles.headerContent}>
-						<Label size="lg">Welcome back</Label>
-						<Label>Trabalhamos todos os dias para o bom funcionamento deste programa.</Label>
+						<Label size="lg">Login no GO+</Label>
+						<Label>Procuramos simplificar a gestão dos transportes públicos com boas ferramentas digitais.</Label>
 					</div>
 					<div className={styles.headerLogo}>
-						<TMLogoLight />
+						<Themer dark={<TMLogoDark />} light={<TMLogoLight />} />
 					</div>
 				</div>
 
