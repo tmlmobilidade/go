@@ -2,6 +2,8 @@
     flex: 1 1 0px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    cursor: default;
 }
 
 .label {
