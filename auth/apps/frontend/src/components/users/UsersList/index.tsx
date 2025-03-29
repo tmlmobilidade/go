@@ -6,7 +6,7 @@ import { UsersListHeader } from '@/components/users/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
 import { User } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -46,10 +46,13 @@ export function UsersList() {
 	}
 
 	return (
-		<>
-			<UsersListHeader />
-			<DataTable columns={columns} onRowClick={handleRowClick} records={usersListContext.data.filtered} />
-		</>
+		<Pane header={<UsersListHeader />}>
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={usersListContext.data.filtered}
+			/>
+		</Pane>
 	);
 
 	//
