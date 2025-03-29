@@ -1,5 +1,7 @@
 'use client';
 
+/* * */
+
 import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { Permissions } from '@tmlmobilidade/lib';
@@ -10,7 +12,9 @@ import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
-export enum UserDetailMode {
+/* * */
+
+export enum UsersDetailMode {
 	CREATE = 'create',
 	EDIT = 'edit',
 }
@@ -24,7 +28,7 @@ export const availablePermissions = Object.entries(Permissions).map(([scope, val
 	value: scope,
 }));
 
-interface UserDetailContextState {
+interface UsersDetailContextState {
 	actions: {
 		deleteUser: () => void
 		handlePermissionChange: (permission_id: string) => void
@@ -39,7 +43,7 @@ interface UserDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: UserDetailMode
+		mode: UsersDetailMode
 	}
 }
 
@@ -55,29 +59,40 @@ const emptyUser: CreateUserDto = {
 	verification_token_ids: [],
 };
 
-const UserDetailContext = createContext<undefined | UserDetailContextState>(undefined);
+/* * */
 
-export function useUserDetailContext() {
-	const context = useContext(UserDetailContext);
+const UsersDetailContext = createContext<undefined | UsersDetailContextState>(undefined);
+
+export function useUsersDetailContext() {
+	const context = useContext(UsersDetailContext);
 	if (!context) {
-		throw new Error('useUserDetailContext must be used within a UserDetailContextProvider');
+		throw new Error('useUsersDetailContext must be used within a UsersDetailContextProvider');
 	}
 	return context;
 }
 
-export const UserDetailContextProvider = ({ children, user_id }: { children: React.ReactNode, user_id: string }) => {
+/* * */
+
+export const UsersDetailContextProvider = ({ children, user_id }: { children: React.ReactNode, user_id: string }) => {
+	//
+
 	//
 	// A. Setup variables
+
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 
+	//
+	// B. Fetch data
+
 	const { data: user, isLoading } = useSWR<User>(user_id === 'new' ? null : Routes.AUTH_API + Routes.USER_DETAIL(user_id), swrFetcher);
 
 	//
-	// B. Define form
+	// C. Initialize form
+
 	const form = useForm<CreateUserDto>({
 		initialValues: emptyUser,
 		validate: zodResolver(CreateUserSchema),
@@ -85,7 +100,6 @@ export const UserDetailContextProvider = ({ children, user_id }: { children: Rea
 		validateInputOnChange: true,
 	});
 
-	// Update form
 	useEffect(() => {
 		if (!user) return;
 
@@ -98,6 +112,7 @@ export const UserDetailContextProvider = ({ children, user_id }: { children: Rea
 
 	//
 	// C. Transform Data
+
 	// Validate form on change
 	useEffect(() => {
 		form.validate();
@@ -107,6 +122,7 @@ export const UserDetailContextProvider = ({ children, user_id }: { children: Rea
 
 	//
 	// D. Handle Actions
+
 	const handleSaveUser = async () => {
 		setIsSaving(true);
 		const method = user_id === 'new' ? 'POST' : 'PUT';
@@ -226,7 +242,8 @@ export const UserDetailContextProvider = ({ children, user_id }: { children: Rea
 
 	//
 	// E. Define context value
-	const contextValue: UserDetailContextState = {
+
+	const contextValue: UsersDetailContextState = {
 		actions: {
 			deleteUser: handleDeleteUser,
 			handlePermissionChange,
@@ -241,15 +258,18 @@ export const UserDetailContextProvider = ({ children, user_id }: { children: Rea
 			isReadOnly,
 			isSaving,
 			loading: isLoading || loading,
-			mode: user_id === 'new' ? UserDetailMode.CREATE : UserDetailMode.EDIT,
+			mode: user_id === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
 		},
 	};
 
 	//
 	// F. Render components
+
 	return (
-		<UserDetailContext.Provider value={contextValue}>
+		<UsersDetailContext.Provider value={contextValue}>
 			{children}
-		</UserDetailContext.Provider>
+		</UsersDetailContext.Provider>
 	);
+
+	//
 };

@@ -1,6 +1,6 @@
 /* * */
 
-import { UsersList } from '@/components/UsersList';
+import { UsersList } from '@/components/users/UsersList';
 import { UsersListContextProvider } from '@/contexts/UsersList.context';
 
 /* * */

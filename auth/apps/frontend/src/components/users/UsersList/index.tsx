@@ -2,7 +2,7 @@
 
 /* * */
 
-import { UsersListHeader } from '@/components/UsersListHeader';
+import { UsersListHeader } from '@/components/users/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
 import { User } from '@tmlmobilidade/types';
