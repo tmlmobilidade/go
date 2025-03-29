@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c1c2c5;
+    padding: var(--mantine-spacing-sm);
+    border-top: 1px solid #2f343d;
+    cursor: default;
+}
