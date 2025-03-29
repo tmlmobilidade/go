@@ -1,5 +1,8 @@
 export default function Media() {
     return <div>
-        Media
+        <div>
+            <div>Imagens & Vídeos</div>
+            <div>Suportes visuais.</div>
+        </div>
     </div>;
 }
