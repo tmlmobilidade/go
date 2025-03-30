@@ -89,7 +89,7 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 		// Filter rides to display
 		const freshRidesData: ExtendedRideDisplay[] = Array
 			.from(ridesContext.data.rides.values())
-			.filter(ride => ride.start_time_scheduled < DateTime.now().toMillis())
+			// .filter(ride => ride.start_time_scheduled < DateTime.now().toMillis())
 			.filter(ride => ride.start_time_scheduled > DateTime.now().minus({ minutes: 2 }).toMillis())
 			// .filter(ride => ride.operational_status === 'running')
 			.filter(ride => !queueRideIds.has(ride._id))
