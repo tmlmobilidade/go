@@ -7,11 +7,11 @@ on:
       - 'auth/**'
     branches:
       - production
-  pull_request:
-    paths:
-      - 'auth/**'
-    branches:
-      - production
+#   pull_request:
+#     paths:
+#       - 'auth/**'
+#     branches:
+#       - production
 
 # # #
 
