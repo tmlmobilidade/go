@@ -10,8 +10,8 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20250328.2358.14",
-		"luxon": "3.6.0"
+		"@tmlmobilidade/types": "20250331.1829.18",
+		"luxon": "3.6.1"
 	},
 	"devDependencies": {
 		"@types/node": "22.13.14",

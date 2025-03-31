@@ -19,7 +19,7 @@
 		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/core": "20250324.1106.22",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"luxon": "3.6.0"
+		"luxon": "3.6.1"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.4.2",

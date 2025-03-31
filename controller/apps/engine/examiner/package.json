@@ -20,7 +20,7 @@
 		"@tmlmobilidade/core": "20250324.1106.22",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"@turf/turf": "7.2.0",
-		"luxon": "3.6.0"
+		"luxon": "3.6.1"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.4.2",

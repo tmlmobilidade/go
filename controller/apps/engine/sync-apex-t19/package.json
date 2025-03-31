@@ -22,7 +22,7 @@
 		"@tmlmobilidade/sae-controller-pckg-parse": "*",
 		"@tmlmobilidade/sae-controller-pckg-sync": "*",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"luxon": "3.6.0",
+		"luxon": "3.6.1",
 		"mongodb": "6.15.0",
 		"tunnel-ssh": "5.2.0"
 	},
