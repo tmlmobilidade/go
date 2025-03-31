@@ -6,65 +6,28 @@ import styles from '../styles.module.css';
 
 export default function Equipments() {
     return <div className={styles.section}>
-        <Header 
+        <Header
             title={"Equipamentos Servidos"}
             description={"Quais são os equipamentos que esta paragem serve."}
         />
 
-        {/* <Row>
-            <Item label={""} type={""} value={""} />
-        </Row> */}
-        {/*  */}
-        <div>
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Clínica</div>
-            </div>
-            
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Hospital</div>
-            </div>
+        <Row>
+            <Item label={"Clínica"} value={true} />
+            <Item label={"Hospital"} value={true} />
+            <Item label={"Universidade"} value={false} />
+            <Item label={"Escola"} value={true} />
+        </Row>
 
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Universidade</div>
-            </div>
+        <Row>
+            <Item label={"Esquadra"} value={false} />
+            <Item label={"Bombeiros"} value={true} />
+            <Item label={"Zona Comercial"} value={true} />
+            <Item label={"Edifício Histórico"} value={false} />
+        </Row>
 
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Escola</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Esquadra</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Bombeiros</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Zona Comercial</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Edifício Histórico</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Espaço navegante®</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Praia</div>
-            </div>
-        </div>
-    </div>;
+        <Row>
+            <Item label={"Espaço navegante®"} value={true} />
+            <Item label={"Praia"} value={true} />
+        </Row>
+    </div >;
 }
