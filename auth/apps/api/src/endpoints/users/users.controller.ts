@@ -56,7 +56,7 @@ export class UsersController {
 			const userList = await users.findMany({}, undefined, undefined, {
 				created_at: -1,
 			});
-			reply.send(userList);
+			reply.send([...userList, ...userList, ...userList, ...userList, ...userList, ...userList, ...userList, ...userList, ...userList]);
 		}
 		catch (error) {
 			reply
