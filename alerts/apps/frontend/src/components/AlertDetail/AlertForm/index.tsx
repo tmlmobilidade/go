@@ -1,5 +1,7 @@
 'use client';
 
+import { Pane } from '@tmlmobilidade/ui';
+
 import AlertSectionCauseEffect from '../AlertSectionCauseEffect';
 import AlertSectionReferences from '../AlertSectionReferences';
 import AlertSectionTitle from '../AlertSectionTitle';
@@ -9,9 +11,7 @@ import Header from '../Header';
 
 export default function AlertForm() {
 	return (
-		<>
-			{/* Header */}
-			<Header />
+		<Pane header={<Header />}>
 			{/* Title & Description */}
 			<AlertSectionTitle />
 			{/* Visibility Scheduling */}
@@ -22,6 +22,6 @@ export default function AlertForm() {
 			<AlertSectionCauseEffect />
 			{/* References */}
 			<AlertSectionReferences />
-		</>
+		</Pane>
 	);
 }
