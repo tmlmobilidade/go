@@ -1,8 +1,9 @@
 import Header from '@/components/common/Header';
 
-import { TextArea } from '@tmlmobilidade/ui';
+// import { Tag, TextArea } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
+import { TextArea } from '@tmlmobilidade/ui';
 
 export default function Comments() {
     return <div className={styles.section}>
@@ -11,6 +12,8 @@ export default function Comments() {
             description={"Texto livre para informações adicionais."}
         />
 
+        <TextArea />
+        {/* <Tag label={"XPTO 123 !"}></Tag> */}
         {/* <TextArea
             className={styles.padding_sm}
             maxRows={10}

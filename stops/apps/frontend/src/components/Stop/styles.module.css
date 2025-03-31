@@ -1,7 +1,6 @@
 .container {
     display: flex;
     flex-direction: column;
-    /* padding: var(--mantine-spacing-lg); */
     gap: var(--mantine-spacing-lg);
     width: 100%;
     background-color: #22272e;
@@ -16,4 +15,8 @@
     gap: var(--mantine-spacing-lg);
     width: 100%;
     border-bottom: 1px solid #424242;
+}
+
+.grid {
+    gap: var(--mantine-spacing-lg) !important;
 }

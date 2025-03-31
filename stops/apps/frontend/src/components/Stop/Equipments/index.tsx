@@ -1,3 +1,5 @@
+import { Grid } from '@tmlmobilidade/ui';
+
 import Header from '@/components/common/Header';
 import Item from '@/components/common/Row/Item';
 import Row from '@/components/common/Row';
@@ -11,23 +13,19 @@ export default function Equipments() {
             description={"Quais são os equipamentos que esta paragem serve."}
         />
 
-        <Row>
+        <Grid className={styles.grid} columns={"abcd"}>
             <Item label={"Clínica"} value={true} />
             <Item label={"Hospital"} value={true} />
             <Item label={"Universidade"} value={false} />
             <Item label={"Escola"} value={true} />
-        </Row>
 
-        <Row>
             <Item label={"Esquadra"} value={false} />
             <Item label={"Bombeiros"} value={true} />
             <Item label={"Zona Comercial"} value={true} />
             <Item label={"Edifício Histórico"} value={false} />
-        </Row>
 
-        <Row>
             <Item label={"Espaço navegante®"} value={true} />
             <Item label={"Praia"} value={true} />
-        </Row>
+        </Grid>
     </div >;
 }

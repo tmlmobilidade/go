@@ -5,6 +5,7 @@ import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
 import styles from '../styles.module.css';
+import { Button } from "@tmlmobilidade/ui";
 
 // interface DetailsProps {
 // 	_id?: string | undefined;
@@ -52,7 +53,8 @@ export default function Details() {
 			</Item>
 
 			<Item label={"Nome Falado (Text-to-Speech)"} type={"text"} value={"Sim"}>
-				<button>B</button>
+				{/* <button>B</button> */}
+				<Button></Button>
 			</Item>
 		</Row>
 

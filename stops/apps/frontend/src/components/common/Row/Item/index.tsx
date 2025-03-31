@@ -1,4 +1,6 @@
 import { ReactNode } from 'react';
+import { Checkbox, Tag, TextInput } from '@tmlmobilidade/ui';
+
 import styles from './styles.module.css';
 
 interface ItemProps {
@@ -27,7 +29,16 @@ export default function Item({ label, type, value, placeholder, children }: Item
                 readOnly
             />
         }
+        {/* <TextInput
+            description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
+            label="Título Curto"
+            maxLength={255}
+            placeholder="..."
+            withAsterisk
+            // {...alertDetailData.form.getInputProps('title')}
+        /> */}
         {/* Checkbox */}
+
         {
             typeof value === "boolean" &&
             <input
