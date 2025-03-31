@@ -2,8 +2,10 @@ import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
+import styles from '../styles.module.css';
+
 export default function Affectation() {
-    return <div>
+    return <div className={styles.section}>
         <Header
             title={"Afetação"}
             description={"Configuração dos passes aceites por esta paragem. É possível alterar estas definições para cada pattern."}
