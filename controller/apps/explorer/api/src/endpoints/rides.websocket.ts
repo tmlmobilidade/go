@@ -99,6 +99,8 @@ export const ridesWebsocket = async function (fastify) {
 					.find({ operational_date: messageData.operational_date })
 					.stream();
 
+				let sentCount = 0;
+
 				for await (const rideData of allRidesData) {
 					const message: RidesExplorerWebSocketMessage<Ride> = {
 						action: 'data',
@@ -108,9 +110,10 @@ export const ridesWebsocket = async function (fastify) {
 						timestamp: getUnixTimestamp(),
 					};
 					socket.send(JSON.stringify(message));
+					sentCount++;
 				}
 
-				LOGGER.info('[config] [3.2] Full dataset sent.');
+				LOGGER.info(`[config] [3.2] Full dataset sent: ${sentCount} items.`);
 
 				//
 			}
