@@ -1,54 +1,29 @@
+
+import Header from '@/components/common/Header';
+import Item from '@/components/common/Row/Item';
+import Row from '@/components/common/Row';
+
+import styles from '../styles.module.css';
+
 export default function Connections() {
-    return <div>
-        {/*  */}
-        <div>
-            <div>
-                <div>Ligações Intermodais</div>
-                <div>Quais são os outros modos de transporte, para além do autocarro, que esteja paragem serve.</div>
-            </div>
-        </div>
+    return <div className={styles.section}>
+        <Header
+            title={"Ligações Intermodais"}
+            description={"Quais são os outros modos de transporte, para além do autocarro, que esteja paragem serve."}
+        />
 
-        {/*  */}
-        <div>
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Metro</div>
-            </div>
-            
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Metro de Superfície</div>
-            </div>
+        <Row>
+            <Item label={"Metro"} value={true} />
+            <Item label={"Metro de Superfície"} value={true} />
+            <Item label={"Comboio"} value={true} />
+            <Item label={"Barco"} value={true} />
+        </Row>
 
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Comboio</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Barco</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Aeroporto</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Partilha de Bicicletas</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Estacionamento de Bicicletas</div>
-            </div>
-
-            <div>
-                <input type="checkbox" name="" id="" />
-                <div>Estacionamento Automóvel</div>
-            </div>
-        </div>
+        <Row>
+            <Item label={"Aeroporto"} value={true} />
+            <Item label={"Partilha de Bicicletas"} value={true} />
+            <Item label={"Estacionamento de Bicicletas"} value={true} />
+            <Item label={"Estacionamento Automóvel"} value={true} />
+        </Row>
     </div>;
 }

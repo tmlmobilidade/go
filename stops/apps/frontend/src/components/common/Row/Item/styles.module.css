@@ -1,9 +1,25 @@
-.container {
+.input_text_container {
     flex: 1 1 0px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     cursor: default;
+}
+
+.input_checkbox_container {
+    flex: 1 1 0px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    cursor: default;
+    justify-content: start;
+    align-items: center;
+    gap: 15px;
+    border-radius: 5px;
+    padding: var(--mantine-spacing-md);
+    border: 1px solid #2f343d;
+    background-color: #171b21;
+    width: 100%;
 }
 
 .label {
@@ -12,7 +28,13 @@
     /* width: 100%; */
 }
 
-.input {
+.input_text {
+    /* flex-grow: 1; */
+    /* min-width: 100%; */
+    /* width: 100%; */
+}
+
+.input_checkbox {
     /* flex-grow: 1; */
     /* min-width: 100%; */
     /* width: 100%; */

@@ -11,7 +11,7 @@ export default function Comments() {
             description={"Texto livre para informações adicionais."}
         />
 
-        <TextArea
+        {/* <TextArea
             className={styles.padding_sm}
             maxRows={10}
             minRows={4}
@@ -19,6 +19,6 @@ export default function Comments() {
             autosize
         // withAsterisk
         // {...alertDetailData.form.getInputProps('description')}
-        />
+        /> */}
     </div>;
 }

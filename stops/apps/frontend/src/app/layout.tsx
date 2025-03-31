@@ -41,11 +41,11 @@ export default async function Layout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body>
-				<AppProvider>
+				{/* <AppProvider> */}
 					{/* <AppWrapper> */}
 						{children}
 					{/* </AppWrapper> */}
-				</AppProvider>
+				{/* </AppProvider> */}
 			</body>
 		</html>
 	);
