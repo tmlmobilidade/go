@@ -5,13 +5,14 @@ interface ItemProps {
     label: string;
     type: string;
     value: string;
-    children?: ReactNode
+    placeholder?: string;
+    children?: ReactNode;
 }
 
-export default function Item({ label, type, value, children }: ItemProps) {
+export default function Item({ label, type, value, placeholder, children }: ItemProps) {
     return <div className={styles.container}>
         <div className={styles.label}>{label}</div>
-        <input className={styles.input} type={type} value={value} readOnly />
+        <input className={styles.input} type={type} value={value} placeholder={placeholder} readOnly />
         {children}
     </div>;
 }
