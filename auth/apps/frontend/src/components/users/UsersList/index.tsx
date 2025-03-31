@@ -9,6 +9,8 @@ import { User } from '@tmlmobilidade/types';
 import { DataTable, type DataTableColumn, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
+import styles from './styles.module.css';
+
 /* * */
 
 export function UsersList() {
@@ -21,9 +23,9 @@ export function UsersList() {
 	const usersListContext = useUsersListContext();
 
 	const columns: DataTableColumn<User>[] = [
-		{ accessor: '_id', title: 'ID' },
-		{ accessor: 'first_name', title: 'Primeiro Nome' },
-		{ accessor: 'last_name', title: 'Último Nome' },
+		{ accessor: '_id', title: 'ID', width: 250 },
+		{ accessor: 'first_name', title: 'Primeiro Nome', width: 250 },
+		{ accessor: 'last_name', title: 'Último Nome', width: 250 },
 		{ accessor: 'email', title: 'Email' },
 	];
 
@@ -48,6 +50,7 @@ export function UsersList() {
 	return (
 		<Pane header={<UsersListHeader />}>
 			<DataTable
+				classnames={{ root: styles.table, row: styles.row }}
 				columns={columns}
 				onRowClick={handleRowClick}
 				records={usersListContext.data.filtered}
