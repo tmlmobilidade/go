@@ -1,26 +1,31 @@
 'use client';
 
+/* * */
+
+import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
 import { Alert } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
-import DateCell from './DateCell';
-import Filters from './Filters';
-import Header from './Header';
-import LineCell from './LineCell';
-import MunicipalityCell from './MunicipalityCell';
-import StatusCell from './StatusCell';
-import StopCell from './StopCell';
+import DateCell from '../DateCell';
+import Filters from '../Filters';
+import LineCell from '../LineCell';
+import MunicipalityCell from '../MunicipalityCell';
+import StatusCell from '../StatusCell';
+import StopCell from '../StopCell';
 import styles from './styles.module.css';
 
-export default function AlertList() {
+/* * */
+
+export function AlertList() {
 	//
 
 	//
 	// A. Setup Variables
+
 	const router = useRouter();
 	const { data, flags } = useAlertListContext();
 
@@ -71,6 +76,7 @@ export default function AlertList() {
 
 	//
 	// B. Render
+
 	if (flags.isLoading) {
 		return <div>Loading...</div>;
 	}
@@ -79,8 +85,7 @@ export default function AlertList() {
 	}
 
 	return (
-		<div className={styles.container}>
-			<Header />
+		<Pane header={<AlertsListHeader />}>
 			<Filters />
 			<DataTable
 				classnames={{ root: styles.table, row: styles.row }}
@@ -91,6 +96,8 @@ export default function AlertList() {
 					router.push(Routes.ALERT_DETAIL(alert._id));
 				}}
 			/>
-		</div>
+		</Pane>
 	);
+
+	//
 }

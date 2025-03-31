@@ -11,16 +11,16 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
-		"@tmlmobilidade/lib": "20250327.1631.31",
-		"@tmlmobilidade/types": "20250326.1713.30",
-		"@tmlmobilidade/ui": "20250327.1739.1",
-		"@tmlmobilidade/utils": "20250326.1713.43",
-		"bcryptjs": "^3.0.2",
+		"@tmlmobilidade/lib": "20250328.2358.18",
+		"@tmlmobilidade/types": "20250328.2358.14",
+		"@tmlmobilidade/ui": "20250331.1203.4",
+		"@tmlmobilidade/utils": "20250328.2358.22",
+		"bcryptjs": "3.0.2",
 		"clsx": "2.1.1",
 		"next": "15.2.4",
-		"react": "19.0.0",
-		"react-dom": "19.0.0",
-		"swr": "^2.3.3"
+		"react": "19.1.0",
+		"react-dom": "19.1.0",
+		"swr": "2.3.3"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250325.1926.5",

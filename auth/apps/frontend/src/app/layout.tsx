@@ -1,17 +1,15 @@
 /* * */
 
 import '@tmlmobilidade/ui/styles';
+
+/* * */
+
 import { ThemeContextProvider } from '@tmlmobilidade/ui';
+import { PropsWithChildren } from 'react';
 
 /* * */
 
-interface Props {
-	children: React.ReactNode
-}
-
-/* * */
-
-export default async function Layout({ children }: Props) {
+export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html>
 			<body>

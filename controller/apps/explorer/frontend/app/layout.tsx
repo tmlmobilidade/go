@@ -2,7 +2,6 @@
 
 import Providers from '@/app/providers';
 import { availableFormats } from '@/i18n/config';
-import { NavigationProgress } from '@mantine/nprogress';
 import { AppProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
@@ -63,7 +62,6 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					<NuqsAdapter>
 						<AppProvider>
 							<Providers>
-								<NavigationProgress size={5} zIndex={10} />
 								{children}
 							</Providers>
 						</AppProvider>

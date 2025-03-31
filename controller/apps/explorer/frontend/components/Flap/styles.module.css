@@ -5,8 +5,10 @@
 	width: 30px;
 	height: 30px;
 	overflow: hidden;
-	font-family: monospace;
+
+	/* font-family: monospace; */
 	font-size: 30px;
+	font-weight: 700;
 	line-height: 1;
 	color: white;
 	text-align: center;

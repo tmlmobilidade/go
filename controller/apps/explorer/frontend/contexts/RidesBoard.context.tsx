@@ -40,7 +40,7 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const UPDATE_DELAY = 1500;
+	const UPDATE_DELAY = 1000;
 
 	const ridesContext = useRidesContext();
 
