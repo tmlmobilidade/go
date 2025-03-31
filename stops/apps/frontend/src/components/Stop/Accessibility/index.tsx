@@ -3,6 +3,7 @@ import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
 import styles from '../styles.module.css';
+import { Grid } from "@tmlmobilidade/ui";
 
 export default function Accessibility() {
     return <div className={styles.section}>

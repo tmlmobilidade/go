@@ -22,5 +22,8 @@
 	},
 	"workspaces": [
 		"apps/*"
-	]
+	],
+	"dependencies": {
+		"maplibre-gl": "^5.3.0"
+	}
 }

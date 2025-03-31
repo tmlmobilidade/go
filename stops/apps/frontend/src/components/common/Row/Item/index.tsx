@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Checkbox, Tag, TextInput } from '@tmlmobilidade/ui';
+import { Checkbox, TextInput } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -7,47 +7,34 @@ interface ItemProps {
     label: string;
     type?: string;
     value: string | boolean;
+    description?: string;
     placeholder?: string;
     children?: ReactNode;
 }
 
-export default function Item({ label, type, value, placeholder, children }: ItemProps) {
+export default function Item({ label, description, value, placeholder, children }: ItemProps) {
     return <div className={
         typeof value === "boolean" ?
             styles.input_checkbox_container :
             styles.input_text_container
     }>
-        <div className={styles.label}>{label}</div>
-        {/* Text */}
+        {/* Text Input */}
         {
             typeof value === "string" &&
-            <input
+            <TextInput
                 className={styles.input_text}
-                type={"text"}
-                value={value}
-                placeholder={placeholder || ""}
-                readOnly
+                description={description}
+                label={label}
+                maxLength={255}
+                placeholder={placeholder}
+                disabled
+            // {...alertDetailData.form.getInputProps('title')}
             />
         }
-        {/* <TextInput
-            description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
-            label="Título Curto"
-            maxLength={255}
-            placeholder="..."
-            withAsterisk
-            // {...alertDetailData.form.getInputProps('title')}
-        /> */}
         {/* Checkbox */}
-
         {
             typeof value === "boolean" &&
-            <input
-                className={styles.input_checkbox}
-                type={"checkbox"}
-                checked={value}
-                placeholder={placeholder || ""}
-                readOnly
-            />
+            <Checkbox label={label} checked={value} disabled />
         }
         {children}
     </div>;

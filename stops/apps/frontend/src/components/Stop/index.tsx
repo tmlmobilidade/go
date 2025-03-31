@@ -8,7 +8,7 @@ import Connections from "./Connections";
 import Details from "./Details";
 import Equipments from "./Equipments";
 import Infrasctructure from "./Infrasctructure";
-import Map from "./Map";
+import MapContainer from "./MapContainer";
 import Media from "./Media";
 import PublicInformation from "./PublicInformation";
 import Shelter from "./Shelter";
@@ -60,7 +60,7 @@ export default function Stop() {
     //         comments } = stop;
 
     return <div className={styles.container}>
-        <Map />
+        <MapContainer />
         {/* <Details
             _id={_id}
             latitude={latitude}

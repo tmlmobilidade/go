@@ -6,6 +6,9 @@
     background-color: #22272e;
     border: 1px solid #2f343d;
     border-radius: 5px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 89vh;
 }
 
 .section {
@@ -19,4 +22,13 @@
 
 .grid {
     gap: var(--mantine-spacing-lg) !important;
+}
+
+.text_area {
+    /* background-color: red; */
+}
+
+.text_area>div>textarea {
+    height: 10vh;
+    padding: 7px 15px;
 }

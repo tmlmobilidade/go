@@ -1,0 +1,12 @@
+.container {
+    width: 100%;
+    height: 300px;
+}
+
+/* .container>.maplibregl-control-container {
+    display: none;
+}
+
+.container>.maplibregl-canvas-container {
+    display: none;
+} */
