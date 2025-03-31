@@ -76,6 +76,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		// Open a new WebSocket connection
 		console.log('Opening WebSocket connection...');
 		webSocketRef.current = new WebSocket(process.env.NODE_ENV === 'development' ? 'ws://localhost:52002/rides' : 'wss://controller.sae.carrismetropolitana.pt/api/rides');
+		// webSocketRef.current = new WebSocket('wss://controller.sae.carrismetropolitana.pt/api/rides');
 		webSocketRef.current.addEventListener('open', handleConfigChangeRequest);
 		// Cleanup on unmount
 		return () => {

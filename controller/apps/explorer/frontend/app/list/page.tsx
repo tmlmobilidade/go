@@ -2,10 +2,10 @@
 
 /* * */
 
-import { DataTable } from '@/components/DataTable';
+import { RidesList } from '@/components/RidesList';
 
 /* * */
 
 export default function Page() {
-	return <DataTable />;
+	return <RidesList />;
 }
