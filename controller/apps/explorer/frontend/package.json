@@ -14,7 +14,7 @@
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/core": "20250324.1106.22",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"@tmlmobilidade/ui": "20250331.1902.14",
+		"@tmlmobilidade/ui": "20250331.2114.23",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.2",
 		"lodash": "4.17.21",
