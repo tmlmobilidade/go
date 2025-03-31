@@ -20,7 +20,7 @@ import '@/styles/default.css';
 /* * */
 
 export const metadata: Metadata = {
-	title: 'GO | Partidas',
+	title: 'GO | Controller',
 };
 
 /* * */
@@ -41,7 +41,8 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const sessionToken = cookies.get('session_token')?.value;
 
 	if (!sessionToken) {
-		redirect(`${process.env.NEXT_PUBLIC_AUTH_URL ?? 'http://localhost:51000'}/login?redirect=${encodeURI(process.env.NEXT_PUBLIC_URL ?? 'http://localhost:51002')}`, RedirectType.replace);
+		const currentUrl = encodeURI(process.env.NEXT_PUBLIC_URL);
+		redirect(`${process.env.NEXT_PUBLIC_AUTH_URL}/login?redirect=${currentUrl}`, RedirectType.replace);
 	}
 
 	//

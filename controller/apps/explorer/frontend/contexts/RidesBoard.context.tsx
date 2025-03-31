@@ -14,8 +14,6 @@ interface BoardSlot {
 	ride: ExtendedRideDisplay | null
 }
 
-/* * */
-
 interface RidesBoardContextState {
 	data: {
 		slots: BoardSlot[]
@@ -49,6 +47,12 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 	const isUpdating = useRef(false);
 
 	const slotsCountRef = useRef(0);
+
+	const currentSlotIndex = useRef(0);
+	const currentQueueIndex = useRef(0);
+
+	const queue = useRef<ExtendedRideDisplay[]>([]);
+
 	const [dataSlotsState, setDataSlotsState] = useState<RidesBoardContextState['data']['slots']>([]);
 
 	//
@@ -59,7 +63,7 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 		if (typeof window === 'undefined') return;
 		// Measure the height of the viewport
 		const rowHeight = 60;
-		const usableHeight = window.innerHeight - 50;
+		const usableHeight = window.innerHeight - rowHeight;
 		slotsCountRef.current = Math.floor(usableHeight / rowHeight);
 		// Update slots state
 		setDataSlotsState((prev) => {
@@ -79,35 +83,73 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 		});
 	};
 
-	const refreshList = async () => {
-		// Skip if no slots available
-		if (!slotsCountRef.current) return;
+	const fillQueueWithNewRides = () => {
+		// Get the IDs of rides already in the queue
+		const queueRideIds = new Set(queue.current.map(ride => ride._id));
+		// Filter rides to display
+		const freshRidesData: ExtendedRideDisplay[] = Array
+			.from(ridesContext.data.rides.values())
+			// .filter(ride => ride.start_time_scheduled < DateTime.now().toMillis())
+			.filter(ride => ride.start_time_scheduled > DateTime.now().minus({ minutes: 2 }).toMillis())
+			// .filter(ride => ride.operational_status === 'running')
+			.filter(ride => !queueRideIds.has(ride._id))
+			.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled)
+			.slice(0, 100);
+		// Update queue state
+		queue.current = Array
+			.from([...queue.current, ...freshRidesData])
+			.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled);
+	};
+
+	const displayQueue = async () => {
+		console.log('isUpdating.current', isUpdating.current);
+		console.log('currentSlotIndex.current', currentSlotIndex.current);
+		console.log('currentQueueIndex.current', currentQueueIndex.current);
 		// Skip if already updating
 		if (isUpdating.current) return;
+
+		// Check if index is within bounds
+		if (currentSlotIndex.current >= slotsCountRef.current) {
+			currentSlotIndex.current = 0;
+		}
+		if (currentQueueIndex.current >= queue.current.length) {
+			return;
+		}
+		console.log('after checks');
 		// Set updating flag
 		isUpdating.current = true;
-		// Filter rides that are in the future
-		// and sort them by start time
-		const filteredRidesData: ExtendedRideDisplay[] = Array
-			.from(ridesContext.data.rides.values())
-			.filter(ride => ride.start_time_scheduled > DateTime.now().minus({ minutes: 10 }).toMillis())
-			// .filter(ride => ride.operational_status === 'running')
-			.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled)
-			.slice(0, slotsCountRef.current);
+		// Update slots with rides
+		setDataSlotsState((prev) => {
+			const slots = [...prev];
+			slots[currentSlotIndex.current] = { ...slots[currentSlotIndex.current], ride: queue.current[currentQueueIndex.current] || null };
+			// Return the updated slots
+			return slots;
+		});
+		// Increment the slot index
+		currentSlotIndex.current++;
+		// Increment the queue index
+		currentQueueIndex.current++;
+		// Await for 200 milliseconds before updating the next slot
+		// await new Promise(resolve => setTimeout(resolve, UPDATE_DELAY));
 		// Update slots with filtered rides
-		for (const [index] of dataSlotsState.entries()) {
-			setDataSlotsState((prev) => {
-				const slots = [...prev];
-				slots[index] = { ...slots[index], ride: filteredRidesData[index] || null };
-				return slots;
-			});
-			// Await for 200 milliseconds before updating the next slot
-			if (filteredRidesData[index]) {
-				await new Promise(resolve => setTimeout(resolve, UPDATE_DELAY));
-			}
-		}
+		// for (const [index] of dataSlotsState.entries()) {
+		// 	setDataSlotsState((prev) => {
+		// 		const slots = [...prev];
+		// 		slots[index] = { ...slots[index], ride: filteredRidesData[index] || null };
+		// 		return slots;
+		// 	});
+		// 	// Await for 200 milliseconds before updating the next slot
+		// 	if (filteredRidesData[index]) {
+		await new Promise(resolve => setTimeout(resolve, UPDATE_DELAY));
+		// 	}
+		// }
 		// Unset flag
 		isUpdating.current = false;
+	};
+
+	const refreshList = async () => {
+		fillQueueWithNewRides();
+		await displayQueue();
 	};
 
 	//

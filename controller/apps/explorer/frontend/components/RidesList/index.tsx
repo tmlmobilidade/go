@@ -2,62 +2,38 @@
 
 /* * */
 
-import { Label } from '@/components/Label';
+import { RidesListClock } from '@/components/RidesListClock';
+import { RidesListHeader } from '@/components/RidesListHeader';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { type ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { IconChevronRight, IconCreditCardPay } from '@tabler/icons-react';
-import { Tag } from '@tmlmobilidade/ui';
-import { DateTime } from 'luxon';
+import { Label, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { ViewportList } from 'react-viewport-list';
 
 import { AnalysisStatusTag } from '../AnalysisStatusTag';
 import { OperationalStatusTag } from '../OperationalStatusTag';
-import { RidesListClock } from '../RidesListClock';
 import { StartTimeStatusTag } from '../StartTimeStatusTag';
 import styles from './styles.module.css';
 
 /* * */
 
-export function DataTable() {
+export function RidesList() {
 	//
 
 	//
 	// A. Setup variables
 
-	const ridesContext = useRidesContext();
 	const ridesListContext = useRidesListContext();
 	const operationalDateContext = useOperationalDateContext();
-
-	const [lastUpdatedAtString, setLastUpdatedAtString] = useState<string>('---');
-
-	//
-	// B. Transform data
-
-	useEffect(() => {
-		console.log('ridesContext.data.last_update', ridesContext.data.last_update);
-		const updateString = () => {
-			console.log('ridesContext.data.last_update', ridesContext.data.last_update);
-			const diff = DateTime.now().toMillis() - ridesContext.data.last_update; // milliseconds
-			if (diff < 1000) return setLastUpdatedAtString('just now');
-			if (diff < 60 * 1000) return setLastUpdatedAtString(`${Math.floor(diff / 1000)} seconds ago`);
-			if (diff < 60 * 60 * 1000) return setLastUpdatedAtString(`${Math.floor(diff / 1000 / 60)} minutes ago`);
-			if (diff < 24 * 60 * 60 * 1000) return setLastUpdatedAtString(`${Math.floor(diff / 1000 / 60 / 60)} hours ago`);
-			return setLastUpdatedAtString(`${Math.floor(diff / 1000 / 60 / 60 / 24)} days ago`);
-		};
-		updateString();
-		const interval = setInterval(updateString, 1000);
-		return () => clearInterval(interval);
-	}, [ridesContext.data.last_update]);
 
 	//
 	// B. Render components
 
 	return (
-		<div className={styles.wrapper}>
+		<Pane header={<RidesListHeader />}>
 
 			<div className={styles.header}>
 
@@ -69,9 +45,6 @@ export function DataTable() {
 					</div>
 					<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
 						lock index {ridesListContext.data.lock_index} | lock offset {ridesListContext.data.lock_offset}
-					</div>
-					<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
-						{lastUpdatedAtString}
 					</div>
 				</div>
 
@@ -112,13 +85,13 @@ export function DataTable() {
 				<div className={styles.body}>
 					<ViewportList ref={ridesListContext.data.list_ref} itemMargin={0} items={ridesListContext.data.rides_display}>
 						{(item, index) => (
-							<DataTableRow key={item._id} index={index} item={item} />
+							<RidesListRow key={item._id} index={index} item={item} />
 						)}
 					</ViewportList>
 				</div>
 			)}
 
-		</div>
+		</Pane>
 	);
 
 	//
@@ -126,12 +99,12 @@ export function DataTable() {
 
 /* * */
 
-interface DataTableRowProps {
+interface RidesListRowProps {
 	index: number
 	item: ExtendedRideDisplay
 }
 
-export function DataTableRow({ index, item }: DataTableRowProps) {
+export function RidesListRow({ index, item }: RidesListRowProps) {
 	//
 
 	//
@@ -162,7 +135,7 @@ export function DataTableRow({ index, item }: DataTableRowProps) {
 				</div>
 				<div className={styles.cell}>
 					<Tag label={item.pattern_id} variant="secondary" />
-					<Label lines={1} size="md">{item.headsign}</Label>
+					<Label size="md" singleLine>{item.headsign}</Label>
 				</div>
 				<div className={styles.cell}>
 					<Tag label={item.start_time_scheduled_display} variant="primary" />
