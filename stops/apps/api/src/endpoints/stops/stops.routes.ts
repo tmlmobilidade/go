@@ -20,60 +20,60 @@ server.register(
 		// GET /stops
 		instance.get(
 			'/',
-			{
-				preHandler: authorizationMiddleware<Stop>(
-					Permissions.stops.scope,
-					Permissions.stops.actions.list,
-				),
-			},
+			// {
+			// 	preHandler: authorizationMiddleware<Stop>(
+			// 		Permissions.stops.scope,
+			// 		Permissions.stops.actions.list,
+			// 	),
+			// },
 			StopsController.getAll,
 		);
 
 		// GET /stops/:id
 		instance.get(
 			'/:id',
-			{
-				preHandler: authorizationMiddleware<Stop>(
-					Permissions.stops.scope,
-					Permissions.stops.actions.read,
-				),
-			},
+			// {
+			// 	preHandler: authorizationMiddleware<Stop>(
+			// 		Permissions.stops.scope,
+			// 		Permissions.stops.actions.read,
+			// 	),
+			// },
 			StopsController.getById,
 		);
 
 		// POST /stops
 		instance.post(
 			'/',
-			{
-				preHandler: authorizationMiddleware<Stop>(
-					Permissions.stops.scope,
-					Permissions.stops.actions.create,
-				),
-			},
+			// {
+			// 	preHandler: authorizationMiddleware<Stop>(
+			// 		Permissions.stops.scope,
+			// 		Permissions.stops.actions.create,
+			// 	),
+			// },
 			StopsController.create,
 		);
 
 		// PUT /stops/:id
 		instance.put(
 			'/:id',
-			{
-				preHandler: authorizationMiddleware<Stop>(
-					Permissions.stops.scope,
-					Permissions.stops.actions.update,
-				),
-			},
+			// {
+			// 	preHandler: authorizationMiddleware<Stop>(
+			// 		Permissions.stops.scope,
+			// 		Permissions.stops.actions.update,
+			// 	),
+			// },
 			StopsController.update,
 		);
 
 		// DELETE /stops/:id
 		instance.delete(
 			'/:id',
-			{
-				preHandler: authorizationMiddleware<Stop>(
-					Permissions.stops.scope,
-					Permissions.stops.actions.delete,
-				),
-			},
+			// {
+			// 	preHandler: authorizationMiddleware<Stop>(
+			// 		Permissions.stops.scope,
+			// 		Permissions.stops.actions.delete,
+			// 	),
+			// },
 			StopsController.delete,
 		);
 

@@ -13,3 +13,12 @@
     gap: var(--mantine-spacing-lg);
     width: 100%;
 }
+/* 
+.padding_sm {
+    padding: 6px;
+    
+    .mantine-Textarea-input {
+        background-color: red !important;
+    }
+} */
+ /* padding: var(--mantine-spacing-sm); */
