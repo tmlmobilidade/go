@@ -1,13 +1,19 @@
-export default function Equipments() {
-    return <div>
-        {/*  */}
-        <div>
-            <div>
-                <div>Equipamentos Servidos</div>
-                <div>Quais são os equipamentos que esta paragem serve.</div>
-            </div>
-        </div>
+import Header from '@/components/common/Header';
+import Item from '@/components/common/Row/Item';
+import Row from '@/components/common/Row';
 
+import styles from '../styles.module.css';
+
+export default function Equipments() {
+    return <div className={styles.section}>
+        <Header 
+            title={"Equipamentos Servidos"}
+            description={"Quais são os equipamentos que esta paragem serve."}
+        />
+
+        {/* <Row>
+            <Item label={""} type={""} value={""} />
+        </Row> */}
         {/*  */}
         <div>
             <div>
