@@ -1,10 +1,10 @@
 import styles from './styles.module.css';
 import Header from './Header';
-import Map from './Map';
+import Mapper from './Mapper';
 
 export default function MapContainer() {
     return <div className={styles.container}>
         <Header />
-        <Map />
+        <Mapper />
     </div>;
 }
