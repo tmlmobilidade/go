@@ -31,19 +31,19 @@ export function RidesBoard() {
 				<div className={styles.row}>
 					<div className={styles.cell} />
 					<div className={styles.cell}>
-						<Label size="sm" caps>Time</Label>
+						<Label size="lg" caps>Hora</Label>
 					</div>
 					<div className={styles.cell}>
-						<Label size="sm" caps>Line</Label>
+						<Label size="lg" caps>Linha</Label>
 					</div>
 					<div className={styles.cell}>
-						<Label size="sm" caps>To</Label>
+						<Label size="lg" caps>Destino</Label>
 					</div>
 					<div className={styles.cell}>
-						<Label size="sm" caps>Validations</Label>
+						<Label size="lg" caps>Passageiros</Label>
 					</div>
 					<div className={styles.cell}>
-						<Label size="sm" caps>Status</Label>
+						<Label size="lg" caps>Estado</Label>
 					</div>
 				</div>
 			</div>

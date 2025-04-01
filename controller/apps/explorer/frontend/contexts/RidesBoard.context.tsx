@@ -102,9 +102,9 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const displayQueue = async () => {
-		console.log('isUpdating.current', isUpdating.current);
-		console.log('currentSlotIndex.current', currentSlotIndex.current);
-		console.log('currentQueueIndex.current', currentQueueIndex.current);
+		// console.log('isUpdating.current', isUpdating.current);
+		// console.log('currentSlotIndex.current', currentSlotIndex.current);
+		// console.log('currentQueueIndex.current', currentQueueIndex.current);
 		// Skip if already updating
 		if (isUpdating.current) return;
 
@@ -115,7 +115,6 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 		if (currentQueueIndex.current >= queue.current.length) {
 			return;
 		}
-		console.log('after checks');
 		// Set updating flag
 		isUpdating.current = true;
 		// Update slots with rides
