@@ -12,7 +12,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function UsersDetail() {
 	return (
-		<Pane header={<UsersDetailHeader />}>
+		<Pane header={[<UsersDetailHeader />]}>
 			<UsersDetailBasicInfo />
 			<UsersDetailRoles />
 			<UsersDetailPermissions />

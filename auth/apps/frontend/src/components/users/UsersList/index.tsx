@@ -48,7 +48,7 @@ export function UsersList() {
 	}
 
 	return (
-		<Pane header={<UsersListHeader />}>
+		<Pane header={[<UsersListHeader />]}>
 			<DataTable
 				classnames={{ root: styles.table, row: styles.row }}
 				columns={columns}
