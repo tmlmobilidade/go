@@ -1,30 +1,34 @@
+/* * */
+
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { AlertSchema } from '@tmlmobilidade/types';
-import { Badge, Checkbox, DateTimePicker, Menu, Surface, Text } from '@tmlmobilidade/ui';
+import { Badge, Checkbox, DateTimePicker, Label, Menu, Text } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';
 
-export default function Filters() {
+/* * */
+
+export function AlertsListFilters() {
 	return (
-		<Surface alignItems="center" classNames={styles} flexDirection="row" gap="lg" padding="sm">
-			<Text className={styles.title} size="sm" weight="medium">Filtrar por:</Text>
-			<div className={styles.filters}>
-				<StateFilter />
-				<CauseFilter />
-				<EffectFilter />
-				<MunicipalityFilter />
-				{/* <LineFilter />
-				<StopFilter /> */}
-				<PublishDateFilter />
-				<ValidityDateFilter />
-			</div>
-		</Surface>
+		<>
+			<Label size="sm" caps singleLine>Filtrar por</Label>
+			<StateFilter />
+			<CauseFilter />
+			<EffectFilter />
+			<MunicipalityFilter />
+			{/* <LineFilter /> */}
+			{/* <StopFilter /> */}
+			<PublishDateFilter />
+			<ValidityDateFilter />
+		</>
 	);
 }
+
+/* * */
 
 function StateFilter() {
 	const { actions, filters } = useAlertListContext();
@@ -51,6 +55,8 @@ function StateFilter() {
 	);
 }
 
+/* * */
+
 function CauseFilter() {
 	const { actions, filters } = useAlertListContext();
 	const hasChanged = AlertSchema.shape.cause.options.length !== filters.cause.length;
@@ -75,6 +81,8 @@ function CauseFilter() {
 		</Menu>
 	);
 }
+
+/* * */
 
 function EffectFilter() {
 	const { actions, filters } = useAlertListContext();
@@ -102,6 +110,8 @@ function EffectFilter() {
 		</Menu>
 	);
 }
+
+/* * */
 
 function MunicipalityFilter() {
 	const { actions, filters } = useAlertListContext();
@@ -136,6 +146,8 @@ function MunicipalityFilter() {
 		</Menu>
 	);
 }
+
+/* * */
 
 function LineFilter() {
 	const { actions, filters } = useAlertListContext();
@@ -173,6 +185,8 @@ function LineFilter() {
 	);
 }
 
+/* * */
+
 function StopFilter() {
 	const { actions, filters } = useAlertListContext();
 	const { data: { stops } } = useStopsContext();
@@ -209,6 +223,8 @@ function StopFilter() {
 	);
 }
 
+/* * */
+
 function PublishDateFilter() {
 	const { actions, filters } = useAlertListContext();
 
@@ -231,6 +247,8 @@ function PublishDateFilter() {
 		</Menu>
 	);
 }
+
+/* * */
 
 function ValidityDateFilter() {
 	const { actions, filters } = useAlertListContext();

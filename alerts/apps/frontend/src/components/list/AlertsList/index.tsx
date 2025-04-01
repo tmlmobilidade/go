@@ -2,6 +2,7 @@
 
 /* * */
 
+import { AlertsListFilters } from '@/components/list/AlertsListFilters';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
@@ -11,12 +12,10 @@ import { DataTable, DataTableColumn, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import DateCell from '../DateCell';
-import Filters from '../Filters';
 import LineCell from '../LineCell';
 import MunicipalityCell from '../MunicipalityCell';
 import StatusCell from '../StatusCell';
 import StopCell from '../StopCell';
-// import styles from './styles.module.css';
 
 /* * */
 
@@ -75,7 +74,7 @@ export function AlertList() {
 	];
 
 	//
-	// B. Render
+	// B. Render components
 
 	if (flags.isLoading) {
 		return <div>Loading...</div>;
@@ -85,10 +84,12 @@ export function AlertList() {
 	}
 
 	return (
-		<Pane header={<AlertsListHeader />}>
-			<Filters />
+		<Pane header={[
+			<AlertsListHeader />,
+			<AlertsListFilters />,
+		]}
+		>
 			<DataTable
-				// classnames={{ root: styles.table, row: styles.row }}
 				columns={columns}
 				records={data.filtered}
 				rowIdAccessor="_id"

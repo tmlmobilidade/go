@@ -11,7 +11,7 @@ import Header from '../Header';
 
 export default function AlertForm() {
 	return (
-		<Pane header={<Header />}>
+		<Pane header={[<Header />]}>
 			{/* Title & Description */}
 			<AlertSectionTitle />
 			{/* Visibility Scheduling */}
