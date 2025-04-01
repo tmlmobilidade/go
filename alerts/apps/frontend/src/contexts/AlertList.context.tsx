@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
+/* * */
+
+import { useLinesContext } from '@/contexts/Lines.context';
+import { useLocationsContext } from '@/contexts/Locations.context';
+import { useStopsContext } from '@/contexts/Stops.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { swrFetcher } from '@/lib/http';
 import { toggleArray } from '@/lib/utils';
-import { Municipality } from '@carrismetropolitana/api-types/locations';
-import { Line, Stop } from '@carrismetropolitana/api-types/network';
-import { Alert, AlertSchema } from '@tmlmobilidade/types';
+import { type Municipality } from '@carrismetropolitana/api-types/locations';
+import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
+import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-import { useLinesContext } from './Lines.context';
-import { useLocationsContext } from './Locations.context';
-import { useStopsContext } from './Stops.context';
+/* * */
 
 interface AlertListContextState {
 	actions: {
@@ -56,6 +59,8 @@ interface AlertListContextState {
 	}
 }
 
+/* * */
+
 const AlertListContext = createContext<AlertListContextState | undefined>(undefined);
 
 export const useAlertListContext = () => {
@@ -66,17 +71,17 @@ export const useAlertListContext = () => {
 	return context;
 };
 
+/* * */
+
 export const AlertListContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 
 	//
-	// A. Fetch data
-	const { data: { municipalities } } = useLocationsContext();
-	const { data: { lines } } = useLinesContext();
-	const { data: { stops } } = useStopsContext();
+	// A. Setup variables
 
-	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>('/api/alerts', swrFetcher);
-	const rawAlerts = useMemo(() => allAlertsData || [], [allAlertsData]);
+	const locationsContext = useLocationsContext();
+	const linesContext = useLinesContext();
+	const stopsContext = useStopsContext();
 
 	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status.options);
 	const [filterCause, setFilterCause] = useState<string[]>(AlertSchema.shape.cause.options);
@@ -90,12 +95,22 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	const [filterPublishDateEnd, setFilterPublishDateEnd] = useState<Date | null>(null);
 
 	//
-	// B. Transform data
+	// B. Fetch data
+
+	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>('/api/alerts', swrFetcher);
+
+	//
+	// C. Transform data
+
+	const rawAlerts = useMemo(() => {
+		return allAlertsData || [];
+	}, [allAlertsData]);
+
 	const municipalityOptions = useMemo(() => {
 		const options = new Set<string>();
 		rawAlerts.forEach((alert) => {
 			alert.municipality_ids.forEach((id) => {
-				const municipality = municipalities.find(m => m.id === id);
+				const municipality = locationsContext.data.municipalities.find(m => m.id === id);
 				if (municipality) {
 					options.add(municipality.id);
 				}
@@ -107,38 +122,31 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 
 	const lineOptions = useMemo(() => {
 		const options = new Set<string>();
-
 		rawAlerts.forEach((alert) => {
 			getAvailableLines(alert).forEach((line_id) => {
-				const line = lines.find(l => l.id === line_id);
+				const line = linesContext.data.lines.find(l => l.id === line_id);
 				if (line) {
 					options.add(line.id);
 				}
 			});
 		});
-
 		setFilterLine(Array.from(options));
 		return Array.from(options);
 	}, [rawAlerts]);
 
 	const stopOptions = useMemo(() => {
 		const options = new Set<string>();
-
 		rawAlerts.forEach((alert) => {
 			getAvailableStops(alert).forEach((stop_id) => {
-				const stop = stops.find(s => s.id === stop_id);
+				const stop = stopsContext.data.stops.find(s => s.id === stop_id);
 				if (stop) {
 					options.add(stop.id);
 				}
 			});
 		});
-
 		setFilterStop(Array.from(options));
 		return Array.from(options);
 	}, [rawAlerts]);
-
-	//
-	// C. Filtering
 
 	/**
 	 * Precomputes and normalizes data for alerts, municipalities, stops, and lines.
@@ -198,8 +206,8 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	}
 
 	const { lineMap, municipalityMap, normalizedRecords, stopMap } = useMemo(
-		() => precomputeData(rawAlerts, municipalities as Municipality[], stops as Stop[], lines as Line[]),
-		[rawAlerts, municipalities, stops, lines],
+		() => precomputeData(rawAlerts, locationsContext.data.municipalities as Municipality[], stopsContext.data.stops as Stop[], linesContext.data.lines as Line[]),
+		[rawAlerts, locationsContext.data.municipalities, stopsContext.data.stops, linesContext.data.lines],
 	);
 
 	/**

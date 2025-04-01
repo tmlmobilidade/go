@@ -16,7 +16,7 @@ import LineCell from '../LineCell';
 import MunicipalityCell from '../MunicipalityCell';
 import StatusCell from '../StatusCell';
 import StopCell from '../StopCell';
-import styles from './styles.module.css';
+// import styles from './styles.module.css';
 
 /* * */
 
@@ -88,7 +88,7 @@ export function AlertList() {
 		<Pane header={<AlertsListHeader />}>
 			<Filters />
 			<DataTable
-				classnames={{ root: styles.table, row: styles.row }}
+				// classnames={{ root: styles.table, row: styles.row }}
 				columns={columns}
 				records={data.filtered}
 				rowIdAccessor="_id"
