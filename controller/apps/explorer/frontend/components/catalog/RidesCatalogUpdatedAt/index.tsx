@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 
 /* * */
 
-export function RidesListUpdatedAt() {
+export function RidesCatalogUpdatedAt() {
 	//
 
 	//

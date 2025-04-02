@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRidesListContext } from '@/contexts/RidesList.context';
+import { useRidesCatalogContext } from '@/contexts/RidesCatalog.context';
 import { IconPlayerPlayFilled } from '@tabler/icons-react';
 import { DateTime } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
@@ -11,13 +11,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RidesListClock() {
+export function RidesCatalogClock() {
 	//
 
 	//
 	// A. Setup variables
 
-	const ridesListContext = useRidesListContext();
+	const ridesListContext = useRidesCatalogContext();
 
 	const elementRef = useRef(null);
 

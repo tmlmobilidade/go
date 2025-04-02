@@ -14,7 +14,7 @@ const DEFAULT_SCROLL_OFFSET = -250;
 
 /* * */
 
-interface RidesListContextState {
+interface RidesCatalogContextState {
 	actions: {
 		setLockStatus: (offset?: number) => void
 		updateLockIndex: () => void
@@ -34,19 +34,19 @@ interface RidesListContextState {
 
 /* * */
 
-const RidesListContext = createContext<RidesListContextState | undefined>(undefined);
+const RidesCatalogContext = createContext<RidesCatalogContextState | undefined>(undefined);
 
-export function useRidesListContext() {
-	const context = useContext(RidesListContext);
+export function useRidesCatalogContext() {
+	const context = useContext(RidesCatalogContext);
 	if (!context) {
-		throw new Error('useRidesListContext must be used within a RidesListContextProvider');
+		throw new Error('useRidesCatalogContext must be used within a RidesCatalogContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
+export const RidesCatalogContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -54,7 +54,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const ridesContext = useRidesContext();
 
-	const dataListRef = useRef<null | ViewportListRef>(null);
+	const dataCatalogRef = useRef<null | ViewportListRef>(null);
 	const [dataLockIndexState, setDataLockIndexState] = useState<number>(0);
 	const [dataLockOffsetState, setDataLockOffsetState] = useState<number>(DEFAULT_SCROLL_OFFSET);
 	const [dataIsLockedState, setDataIsLockedState] = useState<boolean>(true);
@@ -68,14 +68,14 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Transform data
 
 	useEffect(() => {
-		const refreshList = () => {
+		const refreshCatalog = () => {
 			const allRidesDisplay: ExtendedRideDisplay[] = Array
 				.from(ridesContext.data.rides.values())
 				// .filter(rideData => rideData.trip_id === '4720_0_1|700|2030')
 				.sort((a, b) => String(a.start_time_scheduled).localeCompare(String(b.start_time_scheduled)));
 			setDataRidesDisplayState(allRidesDisplay);
 		};
-		const interval = setInterval(refreshList, 1000);
+		const interval = setInterval(refreshCatalog, 1000);
 		return () => clearInterval(interval);
 	}, [ridesContext.data.rides]);
 
@@ -105,8 +105,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		const interval = setInterval(() => {
 			// Check if the clock is locked and the user is not scrolling
-			if (dataListRef.current && dataIsLockedState && !dataIsUserScrollingState) {
-				dataListRef.current.scrollToIndex({
+			if (dataCatalogRef.current && dataIsLockedState && !dataIsUserScrollingState) {
+				dataCatalogRef.current.scrollToIndex({
 					index: dataLockIndexState,
 					offset: dataLockOffsetState,
 				});
@@ -164,7 +164,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Define context value
 
-	const contextValue: RidesListContextState = useMemo(() => ({
+	const contextValue: RidesCatalogContextState = useMemo(() => ({
 		actions: {
 			setLockStatus,
 			updateLockIndex,
@@ -172,7 +172,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		data: {
 			is_locked: dataIsLockedState,
 			is_user_scrolling: dataIsUserScrollingState,
-			list_ref: dataListRef,
+			list_ref: dataCatalogRef,
 			lock_index: dataLockIndexState,
 			lock_offset: dataLockOffsetState,
 			rides_display: dataRidesDisplayState,
@@ -180,15 +180,15 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		flags: {
 			is_loading: dataRidesDisplayState.length !== ridesContext.data.expected_items,
 		},
-	}), [dataListRef.current, dataRidesDisplayState, dataLockIndexState, dataLockOffsetState, dataIsLockedState, ridesContext.data.expected_items, dataIsUserScrollingState]);
+	}), [dataCatalogRef.current, dataRidesDisplayState, dataLockIndexState, dataLockOffsetState, dataIsLockedState, ridesContext.data.expected_items, dataIsUserScrollingState]);
 
 	//
 	// D. Render components
 
 	return (
-		<RidesListContext.Provider value={contextValue}>
+		<RidesCatalogContext.Provider value={contextValue}>
 			{children}
-		</RidesListContext.Provider>
+		</RidesCatalogContext.Provider>
 	);
 
 	//

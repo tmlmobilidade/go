@@ -2,51 +2,36 @@
 
 /* * */
 
-import { RidesListClock } from '@/components/RidesListClock';
-import { RidesListHeader } from '@/components/RidesListHeader';
+import { AnalysisStatusTag } from '@/components/AnalysisStatusTag';
+import { RidesCatalogClock } from '@/components/catalog/RidesCatalogClock';
+import { RidesCatalogHeader } from '@/components/catalog/RidesCatalogHeader';
+import { OperationalStatusTag } from '@/components/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { StartTimeStatusTag } from '@/components/StartTimeStatusTag';
 import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
-import { useRidesListContext } from '@/contexts/RidesList.context';
+import { useRidesCatalogContext } from '@/contexts/RidesCatalog.context';
 import { IconChevronRight, IconCreditCardPay } from '@tabler/icons-react';
 import { Label, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { ViewportList } from 'react-viewport-list';
 
-import { AnalysisStatusTag } from '../AnalysisStatusTag';
-import { OperationalStatusTag } from '../OperationalStatusTag';
-import { StartTimeStatusTag } from '../StartTimeStatusTag';
 import styles from './styles.module.css';
 
 /* * */
 
-export function RidesList() {
+export function RidesCatalog() {
 	//
 
 	//
 	// A. Setup variables
 
-	const ridesListContext = useRidesListContext();
-	const operationalDateContext = useOperationalDateContext();
+	const ridesListContext = useRidesCatalogContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Pane header={[
-			<RidesListHeader />,
-			<div className={styles.preHeader}>
-				<div>current operational_date: {operationalDateContext.data.selected_date} <span onClick={operationalDateContext.actions.updateSelectedDateToLessOneDay}>prev</span> <span onClick={operationalDateContext.actions.updateSelectedDateToPlusOneDay}>next</span></div>
-				<div onClick={() => ridesListContext.actions.setLockStatus()} style={{ display: 'flex', zIndex: 100 }}>
-					{ridesListContext.data.is_locked ? 'Locked' : 'Unlocked'}
-					| {ridesListContext.data.is_user_scrolling ? 'IsScrollingUser-true' : 'IsScrollingUser-false'}
-				</div>
-				<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
-					lock index {ridesListContext.data.lock_index} | lock offset {ridesListContext.data.lock_offset}
-				</div>
-			</div>,
-		]}
-		>
+		<Pane header={[<RidesCatalogHeader />]}>
 
 			<div className={styles.header}>
 
@@ -87,7 +72,7 @@ export function RidesList() {
 				<div className={styles.body}>
 					<ViewportList ref={ridesListContext.data.list_ref} itemMargin={0} items={ridesListContext.data.rides_display}>
 						{(item, index) => (
-							<RidesListRow key={item._id} index={index} item={item} />
+							<RidesCatalogRow key={item._id} index={index} item={item} />
 						)}
 					</ViewportList>
 				</div>
@@ -101,19 +86,19 @@ export function RidesList() {
 
 /* * */
 
-interface RidesListRowProps {
+interface RidesCatalogRowProps {
 	index: number
 	item: ExtendedRideDisplay
 }
 
-export function RidesListRow({ index, item }: RidesListRowProps) {
+export function RidesCatalogRow({ index, item }: RidesCatalogRowProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const ridesListContext = useRidesListContext();
+	const ridesListContext = useRidesCatalogContext();
 
 	const handleOpenRide = (rideId: string) => {
 		router.push(`/list/${rideId}`);
@@ -126,7 +111,7 @@ export function RidesListRow({ index, item }: RidesListRowProps) {
 
 		<div key={item._id} className={styles.rowWrapper}>
 			{index === ridesListContext.data.lock_index && (
-				<RidesListClock />
+				<RidesCatalogClock />
 			)}
 			<div key={item._id} className={styles.row} onClick={() => handleOpenRide(item._id)}>
 				<div className={styles.cell}>
