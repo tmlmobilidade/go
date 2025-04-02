@@ -7,6 +7,7 @@ import { MapViewStylePath } from '@/components/map/MapViewStylePath';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { centerMap } from '@/utils/map.utils';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { Pane } from '@tmlmobilidade/ui';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -51,7 +52,7 @@ export default function Page() {
 	// C. Render components
 
 	return (
-		<div style={{ height: '75vh', width: '100vw' }}>
+		<Pane>
 			<div className={styles.details}>
 				{/* <pre>Ride ID: {ridesDetailContext.data.ride_id}</pre> */}
 				<pre>{JSON.stringify(ridesDetailContext.data.ride, null, 2)}</pre>
@@ -63,7 +64,7 @@ export default function Page() {
 				<MapViewStylePath shapeData={ridesDetailContext.geojson.scheduled_shape} viewId="scheduled" waypointsData={ridesDetailContext.geojson.scheduled_path} />
 				<MapViewStylePath shapeData={ridesDetailContext.geojson.observed_shape} viewId="observed" waypointsData={ridesDetailContext.geojson.observed_events} />
 			</MapView>
-		</div>
+		</Pane>
 	);
 
 	//

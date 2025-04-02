@@ -33,20 +33,22 @@ export function RidesList() {
 	// B. Render components
 
 	return (
-		<Pane header={[<RidesListHeader />]}>
+		<Pane header={[
+			<RidesListHeader />,
+			<div className={styles.preHeader}>
+				<div>current operational_date: {operationalDateContext.data.selected_date} <span onClick={operationalDateContext.actions.updateSelectedDateToLessOneDay}>prev</span> <span onClick={operationalDateContext.actions.updateSelectedDateToPlusOneDay}>next</span></div>
+				<div onClick={() => ridesListContext.actions.setLockStatus()} style={{ display: 'flex', zIndex: 100 }}>
+					{ridesListContext.data.is_locked ? 'Locked' : 'Unlocked'}
+					| {ridesListContext.data.is_user_scrolling ? 'IsScrollingUser-true' : 'IsScrollingUser-false'}
+				</div>
+				<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
+					lock index {ridesListContext.data.lock_index} | lock offset {ridesListContext.data.lock_offset}
+				</div>
+			</div>,
+		]}
+		>
 
 			<div className={styles.header}>
-
-				<div className={styles.preHeader}>
-					<div>current operational_date: {operationalDateContext.data.selected_date} <span onClick={operationalDateContext.actions.updateSelectedDateToLessOneDay}>prev</span> <span onClick={operationalDateContext.actions.updateSelectedDateToPlusOneDay}>next</span></div>
-					<div onClick={() => ridesListContext.actions.setLockStatus()} style={{ display: 'flex', zIndex: 100 }}>
-						{ridesListContext.data.is_locked ? 'Locked' : 'Unlocked'}
-						| {ridesListContext.data.is_user_scrolling ? 'IsScrollingUser-true' : 'IsScrollingUser-false'}
-					</div>
-					<div onClick={() => ridesListContext.actions.updateLockIndex()} style={{ display: 'flex', zIndex: 100 }}>
-						lock index {ridesListContext.data.lock_index} | lock offset {ridesListContext.data.lock_offset}
-					</div>
-				</div>
 
 				<div className={styles.row}>
 					<div className={styles.cell} />
