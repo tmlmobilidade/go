@@ -1,16 +1,10 @@
 import { Button, Tooltip } from '@tmlmobilidade/ui';
+import { IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
-import { IconDots, IconX } from '@tabler/icons-react';
 
 export default function Header() {
     return <div className={styles.header}>
-        {/* Settings Button */}
-        {/* <div className={styles.icon} onClick={() => setIsOpen((isOpen: boolean) => !isOpen)}>
-            <IconDots />
-            {isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>}
-        </div> */}
-
         {/* Close Button */}
         <Tooltip label={"Fechar"} position={"bottom"}>
             <div className={styles.icon}>
@@ -21,9 +15,19 @@ export default function Header() {
         {/* Label */}
         <h3>Rua Carlos Manuel Rodrigues Francisco (Escola)</h3>
 
-        <Button></Button>
+        {/* Patterns Butoon */}
+        <Tooltip label={"Ver Patterns Associados"} position={"bottom"}>
+            <div className={styles.icon}>
+                <IconEye />
+            </div>
+        </Tooltip>
 
-        <Button></Button>
+        {/* Stop Button */}
+        <Tooltip label={"Ver esta paragem no Site"} position={"bottom"}>
+            <div className={styles.icon}>
+                <IconWorldUpload />
+            </div>
+        </Tooltip>
     </div>;
 }
 
