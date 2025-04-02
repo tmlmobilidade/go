@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 import { Checkbox, TextInput } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
-import React from 'react';
 
 interface ItemProps {
+    color?: "green" | "purple";
     label: string;
     type?: string;
     value: string | boolean;
@@ -13,33 +13,7 @@ interface ItemProps {
     children?: ReactNode;
 }
 
-export default function Item({ label, description, value, placeholder, children }: ItemProps) {
-    // const [textUUID, setTextUUID] = React.useState("");
-
-    // const generateUUID = () => {
-    //     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    //         const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 15) >> (c === 'x' ? 0 : 4);
-    //         return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-    //     });
-    // }
-
-    // const createIconElement = () => <div className={styles.icon_blue}>
-    //     {children}
-    // </div>;
-
-    // const iconElement = React.createElement(createIconElement); // Create an element from the component
-
-
-    // const appendIconToTextInput = () => {
-    //     const textInput = document.getElementById(textUUID);
-    //     textInput.appendChild(iconElement);
-
-    // }
-
-    // React.useEffect(() => {
-    //     setTextUUID(generateUUID());
-    // }, []);
-
+export default function Item({ color, label, description, value, placeholder, children }: ItemProps) {
     return <div className={
         typeof value === "boolean" ?
             styles.input_checkbox_container :
@@ -51,7 +25,7 @@ export default function Item({ label, description, value, placeholder, children 
             typeof value === "string" && children &&
             <>
                 <TextInput
-                    className={styles.input_text}
+                    className={color === "purple" ? styles.input_text_purple : styles.input_text}
                     description={description}
                     label={label}
                     maxLength={255}
@@ -59,7 +33,13 @@ export default function Item({ label, description, value, placeholder, children 
                     disabled
                 // {...alertDetailData.form.getInputProps('title')}
                 />
-                <div className={styles.icon_blue}>
+                <div className={
+                    color === "green" ?
+                        styles.icon_green :
+                        color === "purple" ?
+                            styles.icon_purple :
+                            styles.icon_blue}
+                >
                     {children}
                 </div>
             </>
@@ -75,6 +55,7 @@ export default function Item({ label, description, value, placeholder, children 
                 maxLength={255}
                 placeholder={placeholder}
                 disabled
+                value={value}
             // {...alertDetailData.form.getInputProps('title')}
             />
 

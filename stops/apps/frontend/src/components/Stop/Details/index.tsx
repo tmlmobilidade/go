@@ -3,10 +3,11 @@
 import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
-import { Button } from "@tmlmobilidade/ui";
+import { Button, Tooltip } from "@tmlmobilidade/ui";
 
 import styles from '../styles.module.css';
-import { IconAlertHexagon, IconVolume } from "@tabler/icons-react";
+import { IconAlertHexagon, IconAlertHexagonOff, IconVolume } from "@tabler/icons-react";
+import React from "react";
 
 // interface DetailsProps {
 // 	_id?: string | undefined;
@@ -28,6 +29,7 @@ import { IconAlertHexagon, IconVolume } from "@tabler/icons-react";
 // 	tts_name
 // }: DetailsProps) {
 export default function Details() {
+	const [isManual, setIsManual] = React.useState(true);
 	return <div className={styles.section}>
 		<Header
 			title={"Detalhes desta Paragem"}
@@ -41,17 +43,28 @@ export default function Details() {
 		</Row>
 
 		<Row>
-			<Item label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Sim"} />
+			<Item label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Rua Carlos Manuel Rodrigues Francisco (Escola)"} />
 		</Row>
 
 		<Row>
 			<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={"Sim"} />
 		</Row>
 
-		{/* <Row style={{ margin-bottom: "-24px"}}> */}
 		<Row hasIcons={true}>
-			<Item label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
-				<IconAlertHexagon />
+			<Item color={isManual ? "green" : "purple"} label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
+				{isManual ?
+					<Tooltip label={"Modo Automático Ativado"} position={"bottom"}>
+						<IconAlertHexagonOff
+							onClick={() => setIsManual((isManual) => !isManual)}
+						/>
+					</Tooltip>
+					:
+					<Tooltip label={"Modo Manual Ativado"} position={"bottom"}>
+						<IconAlertHexagon
+							onClick={() => setIsManual((isManual) => !isManual)}
+						/>
+					</Tooltip>
+				}
 			</Item>
 
 			<Item label={"Nome Falado (Text-to-Speech)"} type={"text"} value={"Sim"}>

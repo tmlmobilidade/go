@@ -8,14 +8,7 @@
     width: 100%;
 }
 
-.section_left {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--mantine-spacing-sm);
-}
-
-.section_right {
+.section {
     display: flex;
     flex-direction: row;
     align-items: center;

@@ -51,6 +51,18 @@
     min-width: 0px !important;
 }
 
+.input_text_purple {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-width: 0px !important;
+}
+
+.input_text_purple>div>input {
+    border-color: #BD4ADB;
+}
+
 .input_text>div {
     min-width: 0px !important;
 }
@@ -101,4 +113,56 @@
 
 .icon_blue:hover {
     background-color: #253B53;
+}
+
+.icon_green {
+    /* position: absolute; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 4px;
+    top: -32px;
+    left: calc(100% - 32px);
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    aspect-ratio: 1 / 1;
+
+    position: relative;
+}
+
+.icon_green>svg {
+    stroke: #8CE999;
+}
+
+.icon_green:hover {
+    background-color: #344B37;
+}
+
+.icon_purple {
+    /* position: absolute; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 4px;
+    top: -32px;
+    left: calc(100% - 32px);
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    aspect-ratio: 1 / 1;
+
+    position: relative;
+}
+
+.icon_purple>svg {
+    stroke: #E598F6;
+}
+
+.icon_purple:hover {
+    background-color: #4B3451;
 }

@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 
 export default function Header() {
     return <div className={styles.header}>
-        <div className={styles.section_left}>
+        <div className={styles.section}>
             {/* Close Button */}
             <Tooltip label={"Fechar"} position={"bottom"}>
                 <div className={styles.icon}>
@@ -17,7 +17,7 @@ export default function Header() {
             <h3>Rua Carlos Manuel Rodrigues Francisco (Escola)</h3>
         </div>
 
-        <div className={styles.section_right}>
+        <div className={styles.section}>
             {/* Patterns Butoon */}
             <Tooltip label={"Ver Patterns Associados"} position={"bottom"}>
                 <div className={styles.icon_blue} color={"blue"}>
