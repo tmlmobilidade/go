@@ -28,6 +28,26 @@
     background-color: #363C42;
 }
 
-/* .label {
-    font-weight: 600;
-} */
+.icon_blue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* background-color: var(--mantine-color-gray-light); */
+
+    padding: 0px 4px;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    aspect-ratio: 1 / 1;
+
+    position: relative;
+}
+
+.icon_blue>svg {
+    stroke: #74c0fc;
+}
+
+.icon_blue:hover {
+    background-color: #253B53;
+}

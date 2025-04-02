@@ -17,14 +17,14 @@ export default function Header() {
 
         {/* Patterns Butoon */}
         <Tooltip label={"Ver Patterns Associados"} position={"bottom"}>
-            <div className={styles.icon}>
+            <div className={styles.icon_blue} color={"blue"}>
                 <IconEye />
             </div>
         </Tooltip>
 
         {/* Stop Button */}
         <Tooltip label={"Ver esta paragem no Site"} position={"bottom"}>
-            <div className={styles.icon}>
+            <div className={styles.icon_blue}>
                 <IconWorldUpload />
             </div>
         </Tooltip>
