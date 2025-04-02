@@ -10,4 +10,5 @@
     width: 100%;
     grid-template-columns: 350px 1fr;
     padding: var(--mantine-spacing-sm);
+    /* font-family: var(--mantine-font-family) !important; */
 }

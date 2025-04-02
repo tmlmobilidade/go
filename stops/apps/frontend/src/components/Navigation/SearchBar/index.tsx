@@ -1,25 +1,25 @@
 "use client"
 
+import { useState } from 'react';
+
 import { TextInput } from '@tmlmobilidade/ui';
 import { IconDots } from '@tabler/icons-react';
+import { Breadcrumbs, Anchor } from '@mantine/core';
 
 import styles from './styles.module.css';
 
-import { Breadcrumbs, Anchor } from '@mantine/core';
-import React from 'react';
-
-const items = [
-    { title: 'Mantine', href: '#' },
-    { title: 'Mantine hooks', href: '#' },
-    { title: 'use-id', href: '#' },
-].map((item, index) => (
-    <Anchor href={item.href} key={index}>
-        {item.title}
-    </Anchor>
-));
-
 export default function SearchBar() {
-    const [isOpen, setIsOpen] = React.useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const items = [
+        { title: 'Mantine', href: '#' },
+        { title: 'Mantine hooks', href: '#' },
+        { title: 'use-id', href: '#' },
+    ].map((item, index) => (
+        <Anchor href={item.href} key={index}>
+            {item.title}
+        </Anchor>
+    ));
 
     return <div className={styles.container}>
         {/* Search Bar */}
@@ -36,7 +36,5 @@ export default function SearchBar() {
             <IconDots />
             {isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>}
         </div>
-
-
     </div>;
 }
