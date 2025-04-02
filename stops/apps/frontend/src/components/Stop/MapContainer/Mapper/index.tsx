@@ -1,9 +1,5 @@
 import * as React from 'react';
-// import { useEffect } from "react";
 
-// import Map, { Layer, Source, NavigationControl } from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
-// import { CircleLayerSpecification } from "mapbox-gl";
 import type { FeatureCollection } from 'geojson';
 
 import styles from './styles.module.css';
@@ -11,34 +7,6 @@ import { MapView, MapViewStyleStops, Surface, useMap, MapViewStyleStopsInteracti
 import { useRouter } from 'next/navigation';
 
 export default function Mapper() {
-
-    // const geojson: FeatureCollection = {
-    //     type: 'FeatureCollection',
-    //     features: [
-    //         {
-    //             type: 'Feature',
-    //             geometry: {
-    //                 type: 'Point',
-    //                 coordinates: [-8.9595566, 38.7542436]
-    //             },
-    //             properties: { title: '915 Front Street, San Francisco, California' }
-    //         }
-    //     ]
-    // };
-
-    // const layerStyle: CircleLayerSpecification = {
-    //     id: 'point',
-    //     type: 'circle',
-    //     paint: {
-    //         'circle-radius': 5,
-    //         'circle-color': '#ffdc00',
-    //         "circle-stroke-width": 3,
-    //         "circle-stroke-color": "#000",
-    //     },
-    //     source: "my-data"
-    // };
-    //
-
     //
     // A. Setup variables
 
@@ -134,24 +102,6 @@ export default function Mapper() {
                 </MapView>
             </div>
         </Surface>
-
-        {/* <Map
-            mapboxAccessToken={"process.env.REACT_APP_TOKEN"}
-            initialViewState={{
-                longitude: -8.9595566,
-                latitude: 38.7542436,
-                zoom: 14
-            }}
-            style={{ height: 300 }}
-            mapStyle="mapbox://styles/mapbox/streets-v9"
-            zoomEnabled={true}
-
-        >
-            <Source id="my-data" type="geojson" data={geojson}>
-                <Layer {...layerStyle} />
-            </Source>
-            <NavigationControl />
-        </Map> */}
     </div >;
 }
 
