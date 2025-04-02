@@ -1,36 +1,42 @@
-import { Button, TextInput } from '@tmlmobilidade/ui';
+"use client"
+
+import { TextInput } from '@tmlmobilidade/ui';
 import { IconDots } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
 
-// import { IconLink } from '@tabler/icons-react';
+import { Breadcrumbs, Anchor } from '@mantine/core';
+import React from 'react';
+
+const items = [
+    { title: 'Mantine', href: '#' },
+    { title: 'Mantine hooks', href: '#' },
+    { title: 'use-id', href: '#' },
+].map((item, index) => (
+    <Anchor href={item.href} key={index}>
+        {item.title}
+    </Anchor>
+));
 
 export default function SearchBar() {
+    const [isOpen, setIsOpen] = React.useState(false);
+
     return <div className={styles.container}>
-        {/* <input className={styles.input} type="text" placeholder="Pesquisar..." /> */}
+        {/* Search Bar */}
         <TextInput
             className={styles.input_text}
             maxLength={255}
             placeholder={"Pesquisar..."}
-        // leftSection={<IconLink size={18} />}
         // disabled
         // {...alertDetailData.form.getInputProps('title')}
         />
 
-        {/* <Button className={styles.button} leftSection={<IconDots size={14} />}></Button> */}
-
-        <div className={styles.icon}>
+        {/* Settings Button */}
+        <div className={styles.icon} onClick={() => setIsOpen((isOpen: boolean) => !isOpen)}>
             <IconDots />
+            {isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>}
         </div>
 
 
-        {/* <button className={styles.settings}></button> */}
-        {/* <TextInput
-            description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"
-            label="Link Adicional"
-            leftSection={<IconLink size={18} />}
-            // placeholder="https://www.cm-setubal.com/..."
-            // {...alertDetailData.form.getInputProps('link')}
-        /> */}
     </div>;
 }
