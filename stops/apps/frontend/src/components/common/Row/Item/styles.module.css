@@ -1,15 +1,21 @@
 .input_text_container {
+    position: relative;
     flex: 1 1 0px;
-    /* flex: 1 1 25%;
-    max-width: 25%; */
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     cursor: default;
 }
 
-
+.input_text_container_with_icon {
+    position: relative;
+    flex: 1 1 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: default;
+    height: calc(100% - 24px);
+}
 
 .input_checkbox_container {
     flex: 1 1 0px;
@@ -65,4 +71,34 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: inherit;
+}
+
+/* .inner_container {
+    position: relative;
+} */
+
+.icon_blue {
+    /* position: absolute; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 4px;
+    top: -32px;
+    left: calc(100% - 32px);
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    aspect-ratio: 1 / 1;
+
+    position: relative;
+}
+
+.icon_blue>svg {
+    stroke: #74c0fc;
+}
+
+.icon_blue:hover {
+    background-color: #253B53;
 }

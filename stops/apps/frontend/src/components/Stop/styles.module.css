@@ -33,3 +33,11 @@
     height: 10vh;
     padding: 7px 15px;
 }
+
+.inner_button {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    height: 20px;
+    width: 20px;
+}

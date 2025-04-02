@@ -3,9 +3,10 @@
 import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
+import { Button } from "@tmlmobilidade/ui";
 
 import styles from '../styles.module.css';
-import { Button } from "@tmlmobilidade/ui";
+import { IconAlertHexagon, IconVolume } from "@tabler/icons-react";
 
 // interface DetailsProps {
 // 	_id?: string | undefined;
@@ -47,19 +48,19 @@ export default function Details() {
 			<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={"Sim"} />
 		</Row>
 
-		<Row>
+		{/* <Row style={{ margin-bottom: "-24px"}}> */}
+		<Row hasIcons={true}>
 			<Item label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
-				<button>A</button>
+				<IconAlertHexagon />
 			</Item>
 
 			<Item label={"Nome Falado (Text-to-Speech)"} type={"text"} value={"Sim"}>
-				{/* <button>B</button> */}
-				<Button></Button>
+				<IconVolume />
 			</Item>
 		</Row>
 
 		<Row>
 			<Item label={"Estado Operacional"} type={"text"} value={"Sim"} />
 		</Row>
-	</div>;
+	</div >;
 }
