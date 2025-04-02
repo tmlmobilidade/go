@@ -51,6 +51,19 @@
     min-width: 0px !important;
 }
 
+.input_text_green {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-width: 0px !important;
+}
+
+.input_text_green>div>input {
+    border-color: #008001;
+    color: #008001;
+}
+
 .input_text_purple {
     display: flex;
     flex-direction: column;

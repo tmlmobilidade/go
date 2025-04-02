@@ -49,7 +49,7 @@ export default function Item({ color, label, description, value, placeholder, ch
             typeof value === "string" && !children &&
 
             <TextInput
-                className={styles.input_text}
+                className={color === "green" ? styles.input_text_green : styles.input_text}
                 description={description}
                 label={label}
                 maxLength={255}

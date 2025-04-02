@@ -43,7 +43,7 @@ export default function Details() {
 		</Row>
 
 		<Row>
-			<Item label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Rua Carlos Manuel Rodrigues Francisco (Escola)"} />
+			<Item color={"green"} label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Rua Carlos Manuel Rodrigues Francisco (Escola)"} />
 		</Row>
 
 		<Row>
