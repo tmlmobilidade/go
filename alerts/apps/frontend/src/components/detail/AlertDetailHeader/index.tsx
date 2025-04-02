@@ -1,0 +1,59 @@
+'use client';
+
+/* * */
+
+import BackButton from '@/components/common/BackButton';
+import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+
+/* * */
+
+export function AlertDetailHeader() {
+	//
+
+	//
+	// A. Setup variables
+
+	const alertDetailContext = useAlertDetailContext();
+
+	//
+	// B. Render components
+
+	return (
+		<>
+			<BackButton />
+			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
+			<Label size="lg" caps>{alertDetailContext.data.form.getValues()._id}</Label>
+			<Spacer />
+			<Button
+				label="Salvar como rascunho"
+				onClick={() => alertDetailContext.actions.saveAlert('draft')}
+				variant="secondary"
+			/>
+			<Button
+				disabled={!alertDetailContext.flags.canSave || alertDetailContext.flags.isSaving}
+				icon={<IconUpload size={28} />}
+				loading={alertDetailContext.flags.isSaving}
+				onClick={() => alertDetailContext.actions.saveAlert('publish')}
+				variant="primary"
+				label={
+					alertDetailContext.flags.mode === AlertDetailMode.CREATE
+						? 'Publicar'
+						: 'Salvar'
+				}
+			/>
+			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
+				<Button
+					disabled={alertDetailContext.flags.isSaving}
+					icon={<IconTrash size={28} />}
+					label="Apagar"
+					onClick={alertDetailContext.actions.deleteAlert}
+					variant="danger"
+				/>
+			)}
+		</>
+	);
+
+	//
+}

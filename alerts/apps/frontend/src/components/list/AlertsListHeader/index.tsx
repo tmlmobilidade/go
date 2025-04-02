@@ -12,7 +12,7 @@ export function AlertsListHeader() {
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 
 	const alertsListContext = useAlertListContext();
 

@@ -9,7 +9,7 @@ export default function DateCell({ date, endDate }: { date: DateType, endDate: D
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	const parsedDate = date ? DateTime.fromMillis(date) : null;
 	const parsedEndDate = endDate ? DateTime.fromMillis(endDate) : null;
 	//

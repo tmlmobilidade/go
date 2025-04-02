@@ -23,7 +23,7 @@ export default function RoleList() {
 	};
 
 	//
-	// C. Render Components
+	// C. Render components
 	if (flags.error) {
 		return <div>Error: {flags.error.message}</div>;
 	}

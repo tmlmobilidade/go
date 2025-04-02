@@ -27,7 +27,7 @@ export function UploadImage({
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
 
 	useEffect(() => {
@@ -58,7 +58,7 @@ export function UploadImage({
 	};
 
 	//
-	// C. Render Components
+	// C. Render components
 	return (
 		<div className={styles.container} style={{ maxHeight, maxWidth }}>
 			{label && <Label>{label}</Label>}

@@ -390,7 +390,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	]);
 
 	//
-	// D. Handle Actions
+	// D. Handle actions
 
 	function handleTogglePublishStatus(status: string) {
 		setFilterPublishStatus(toggleArray(filterPublishStatus, status));

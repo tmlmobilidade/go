@@ -7,7 +7,7 @@ import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
-import { Alert } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -23,7 +23,7 @@ export function AlertList() {
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 
 	const router = useRouter();
 	const { data, flags } = useAlertListContext();

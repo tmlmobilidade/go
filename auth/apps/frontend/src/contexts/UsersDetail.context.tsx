@@ -121,7 +121,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	}, [form.values]);
 
 	//
-	// D. Handle Actions
+	// D. Handle actions
 
 	const handleSaveUser = async () => {
 		setIsSaving(true);

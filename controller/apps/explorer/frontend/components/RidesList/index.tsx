@@ -33,7 +33,7 @@ export function RidesList() {
 	// B. Render components
 
 	return (
-		<Pane header={<RidesListHeader />}>
+		<Pane header={[<RidesListHeader />]}>
 
 			<div className={styles.header}>
 

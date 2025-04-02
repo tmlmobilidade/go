@@ -1,32 +1,38 @@
 'use client';
 
+/* * */
+
 import { UploadImage } from '@/components/common/UploadImage';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
-import { Section, Surface, TextArea, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Section, TextArea, TextInput } from '@tmlmobilidade/ui';
 
-export default function AlertSectionTitle() {
+/* * */
+
+export function AlertDetailSectionTitle() {
 	//
 
 	//
-	// A. Setup Variables
-	const { actions, data: alertDetailData } = useAlertDetailContext();
+	// A. Setup variables
+
+	const alertDetailContext = useAlertDetailContext();
 
 	//
-	// C. Render Components
+	// B. Render components
+
 	return (
-		<Section
+		<Collapsible
 			description="Breve descrição do que motivou a criação do alerta"
 			title="Título e Descrição"
 		>
-			<Surface gap="md" padding="sm">
+			<Section gap="md">
 				<TextInput
 					description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
 					label="Título Curto"
 					maxLength={255}
 					placeholder="..."
 					withAsterisk
-					{...alertDetailData.form.getInputProps('title')}
+					{...alertDetailContext.data.form.getInputProps('title')}
 				/>
 				<TextArea
 					description="Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação."
@@ -36,22 +42,24 @@ export default function AlertSectionTitle() {
 					placeholder="..."
 					autosize
 					withAsterisk
-					{...alertDetailData.form.getInputProps('description')}
+					{...alertDetailContext.data.form.getInputProps('description')}
 				/>
 				<UploadImage
-					imageUrl={alertDetailData.imageUrl}
+					imageUrl={alertDetailContext.data.imageUrl}
 					label="Imagem"
-					onDelete={actions.deleteImage}
-					onFileChange={actions.fileChanged}
+					onDelete={alertDetailContext.actions.deleteImage}
+					onFileChange={alertDetailContext.actions.fileChanged}
 				/>
 				<TextInput
 					description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"
 					label="Link Adicional"
 					leftSection={<IconLink size={18} />}
 					placeholder="https://www.cm-setubal.com/..."
-					{...alertDetailData.form.getInputProps('link')}
+					{...alertDetailContext.data.form.getInputProps('link')}
 				/>
-			</Surface>
-		</Section>
+			</Section>
+		</Collapsible>
 	);
+
+	//
 }

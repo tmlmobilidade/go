@@ -2,45 +2,45 @@
 
 /* * */
 
+import { AlertReferencesAgencies } from '@/components/detail/AlertReferencesAgencies';
+import { AlertReferencesLines } from '@/components/detail/AlertReferencesRoutes';
+import { AlertReferencesStops } from '@/components/detail/AlertReferencesStops';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/types';
-import {
-	Combobox,
-	openConfirmModal,
-	Section,
-	SegmentedControl,
-	Surface,
-} from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import AlertReferencesAgencies from '../AlertReferencesAgencies';
-import AlertReferencesLines from '../AlertReferencesRoutes';
-import AlertReferencesStops from '../AlertReferencesStops';
+/* * */
 
-export default function AlertSectionReferences() {
+export function AlertDetailSectionReferences() {
+	//
+
 	//
 	// A. Setup variables
-	const { data: locationsData } = useLocationsContext();
-	const { data: alertDetailData } = useAlertDetailContext();
+
+	const locationsContext = useLocationsContext();
+	const alertDetailContext = useAlertDetailContext();
 
 	//
 	// B. Transform data
-	const municipalitiesOptions = useMemo(() => {
-		if (!locationsData.municipalities) return [];
 
-		return locationsData.municipalities.map(municipality => ({
+	const municipalitiesOptions = useMemo(() => {
+		if (!locationsContext.data.municipalities) return [];
+
+		return locationsContext.data.municipalities.map(municipality => ({
 			label: municipality.name,
 			value: municipality.id,
 		}));
-	}, [locationsData.municipalities]);
+	}, [locationsContext.data.municipalities]);
 
-	const references = useMemo(() => alertDetailData.form.values.references, [
-		alertDetailData.form.values.references,
+	const references = useMemo(() => alertDetailContext.data.form.values.references, [
+		alertDetailContext.data.form.values.references,
 	]);
 
 	//
-	// C. Handle Actions
+	// C. Handle actions
+
 	const parseOptionsLabel = (value: Alert['reference_type']) => {
 		switch (value) {
 			case 'AGENCY':
@@ -66,14 +66,14 @@ export default function AlertSectionReferences() {
 				closeOnClickOutside: true,
 				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
 				onConfirm: () => {
-					alertDetailData.form.setFieldValue('reference_type', value);
-					alertDetailData.form.setFieldValue('references', []);
+					alertDetailContext.data.form.setFieldValue('reference_type', value);
+					alertDetailContext.data.form.setFieldValue('references', []);
 				},
 				title: 'Tem certeza que deseja mudar a referência?',
 			});
 		}
 		else {
-			alertDetailData.form.setFieldValue('reference_type', value);
+			alertDetailContext.data.form.setFieldValue('reference_type', value);
 		}
 	};
 
@@ -81,13 +81,14 @@ export default function AlertSectionReferences() {
 	// D. Render components
 
 	return (
-		<Section
+		<Collapsible
 			description="As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste alerta."
 			title="Referências"
 		>
-			<Surface gap="md" padding="sm">
+			<Section gap="md">
+
 				<Combobox
-					key={alertDetailData.form.key('municipality_ids')}
+					key={alertDetailContext.data.form.key('municipality_ids')}
 					data={municipalitiesOptions}
 					description="Selecione os munícios que serão afetados pelo alerta"
 					label="Municípios Afetados"
@@ -95,21 +96,21 @@ export default function AlertSectionReferences() {
 					fullWidth
 					multiple
 					searchable
-					{...alertDetailData.form.getInputProps('municipality_ids')}
+					{...alertDetailContext.data.form.getInputProps('municipality_ids')}
 				/>
 
 				<SegmentedControl
 					data={AlertSchema.shape.reference_type.options.map(parseOptionsLabel).filter(option => option.value !== referenceTypeSchema.Values.TRIP)}
 					onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
-					value={alertDetailData.form.values.reference_type}
+					value={alertDetailContext.data.form.values.reference_type}
 					fullWidth
 				/>
 
-				{alertDetailData.form.values.reference_type === 'LINE' && <AlertReferencesLines />}
-				{alertDetailData.form.values.reference_type === 'STOP' && <AlertReferencesStops />}
-				{alertDetailData.form.values.reference_type === 'AGENCY' && <AlertReferencesAgencies />}
+				{alertDetailContext.data.form.values.reference_type === 'LINE' && <AlertReferencesLines />}
+				{alertDetailContext.data.form.values.reference_type === 'STOP' && <AlertReferencesStops />}
+				{alertDetailContext.data.form.values.reference_type === 'AGENCY' && <AlertReferencesAgencies />}
 
-			</Surface>
-		</Section>
+			</Section>
+		</Collapsible>
 	);
 }

@@ -7,7 +7,7 @@ export default function LineCell({ line_ids }: { line_ids: string[] }) {
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	const { data: { lines } } = useLinesContext();
 
 	//

@@ -7,7 +7,7 @@ export default function StopCell({ stop_ids }: { stop_ids: string[] }) {
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	const { data: { stops } } = useStopsContext();
 
 	//

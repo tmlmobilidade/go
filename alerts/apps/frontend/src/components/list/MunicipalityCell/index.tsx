@@ -7,7 +7,7 @@ export default function MunicipalityCell({ municipality_ids }: { municipality_id
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	const { data: { municipalities } } = useLocationsContext();
 
 	//

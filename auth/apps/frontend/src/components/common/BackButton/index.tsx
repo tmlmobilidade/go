@@ -10,7 +10,7 @@ interface BackButtonProps {
 
 export default function BackButton({ href }: BackButtonProps) {
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	const router = useRouter();
 
 	//

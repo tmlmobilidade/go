@@ -8,7 +8,7 @@ export default function StatusCell({ status }: { status: typeof AlertSchema.shap
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	let variant: ComponentProps<typeof Tag>['variant'] = 'muted';
 
 	switch (status) {
