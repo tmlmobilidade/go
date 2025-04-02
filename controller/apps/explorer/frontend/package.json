@@ -14,7 +14,7 @@
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/core": "20250324.1106.22",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"@tmlmobilidade/ui": "20250402.158.45",
+		"@tmlmobilidade/ui": "20250402.935.34",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.2",
 		"lodash": "4.17.21",
@@ -35,8 +35,8 @@
 		"@types/lodash": "4.17.16",
 		"@types/luxon": "3.6.0",
 		"@types/node": "22.13.17",
-		"@types/react": "19.0.12",
-		"@types/react-dom": "19.0.4",
+		"@types/react": "19.1.0",
+		"@types/react-dom": "19.1.1",
 		"typescript": "5.8.2"
 	},
 	"overrides": {
