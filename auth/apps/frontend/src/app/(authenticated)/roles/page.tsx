@@ -1,5 +1,9 @@
-import RoleList from '@/components/RoleList';
+/* * */
+
+import { RoleList } from '@/components/roles/RoleList';
 import { RoleListContextProvider } from '@/contexts/RoleList.context';
+
+/* * */
 
 export default function RoleListPage() {
 	return (

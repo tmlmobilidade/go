@@ -2,20 +2,20 @@
 
 /* * */
 
-import { Section, Surface } from '@tmlmobilidade/ui';
+import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function UsersDetailRoles() {
 	return (
-		<Section
+		<Collapsible
 			description="O conjunto de permissões que o utilizador tem atribuído no sistema."
 			title="Roles"
 		>
-			<Surface gap="md" padding="sm">
+			<Section gap="md">
 				ROLE MANAGEMENT
-			</Surface>
-		</Section>
+			</Section>
+		</Collapsible>
 	);
 
 	//

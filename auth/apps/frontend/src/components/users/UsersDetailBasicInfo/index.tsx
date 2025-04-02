@@ -5,7 +5,7 @@
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';
-import { Grid, Section, Surface, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,11 +21,11 @@ export function UsersDetailBasicInfo() {
 	// B. Render components
 
 	return (
-		<Section
+		<Collapsible
 			description="Informação básica do utilizador"
 			title="Informação Básica"
 		>
-			<Surface gap="md" padding="md">
+			<Section gap="md">
 				<Grid columns="ab" gap="xl">
 					<TextInput
 						label="Primeiro Nome"
@@ -56,8 +56,8 @@ export function UsersDetailBasicInfo() {
 						{...usersDetailContext.data.form.getInputProps('phone')}
 					/>
 				</Grid>
-			</Surface>
-		</Section>
+			</Section>
+		</Collapsible>
 	);
 
 	//

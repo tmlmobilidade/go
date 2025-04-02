@@ -12,7 +12,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default async function Page(props: { searchParams: Promise<{ redirect: string | undefined }> }) {
+interface Props {
+	searchParams: Promise<{ redirectTo: string | undefined }>
+}
+
+/* * */
+
+export default async function Page({ searchParams }: Props) {
 	//
 
 	//
@@ -20,7 +26,7 @@ export default async function Page(props: { searchParams: Promise<{ redirect: st
 
 	const cookies = await nextCookies();
 	const session = cookies.get('session_token');
-	const searchParams = await props.searchParams;
+	const { redirectTo } = await searchParams;
 
 	//
 	// B. Handle actions
@@ -40,7 +46,7 @@ export default async function Page(props: { searchParams: Promise<{ redirect: st
 			{/* <Background2 /> */}
 			{/* <Background3 /> */}
 			<Background4 />
-			<LoginForm redirect={searchParams.redirect && new URL(searchParams.redirect).toString()} />
+			<LoginForm redirect={redirectTo && new URL(redirectTo).toString()} />
 		</div>
 	);
 

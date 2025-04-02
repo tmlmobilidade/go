@@ -26,7 +26,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	// B. Handle actions
 
 	if (!sessionToken) {
-		redirect(`${Routes.AUTH_API}/login?redirect=${encodeURI(Routes.URL)}`, RedirectType.replace);
+		redirect(`${Routes.AUTH_API}/login?redirectTo=${encodeURI(Routes.URL)}`, RedirectType.replace);
 	}
 
 	//

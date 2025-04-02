@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 
 	if (!sessionToken) {
 		const currentUrl = encodeURI(process.env.NEXT_PUBLIC_URL);
-		redirect(`${process.env.NEXT_PUBLIC_AUTH_URL}/login?redirect=${currentUrl}`, RedirectType.replace);
+		redirect(`${process.env.NEXT_PUBLIC_AUTH_URL}/login?redirectTo=${currentUrl}`, RedirectType.replace);
 	}
 
 	//
