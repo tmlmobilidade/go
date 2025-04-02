@@ -34,7 +34,7 @@ export default function Item({ label, description, value, placeholder, children 
         {/* Checkbox */}
         {
             typeof value === "boolean" &&
-            <Checkbox label={label} checked={value} disabled />
+            <Checkbox className={styles.input_checkbox} label={label} checked={value} disabled />
         }
         {children}
     </div>;
