@@ -8,7 +8,7 @@ import { MapViewStylePath } from '@/components/map/MapViewStylePath';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { centerMap } from '@/utils/map.utils';
 import { IconCrosshair, IconPlayerPlayFilled } from '@tabler/icons-react';
-import { Button, Collapsible, Divider, Section, SegmentedControl, Slider, Spacer, Switch } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Divider, Label, Section, SegmentedControl, Slider, Spacer, Switch } from '@tmlmobilidade/ui';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useState } from 'react';
 
@@ -42,7 +42,6 @@ export function RidesDetailMap() {
 	}, [ridesDetailContext.geojson, centerMapAutomatically]);
 
 	const handleCenterMap = () => {
-		console.log('handleCenterMap');
 		centerMap(
 			ridesDetailMap,
 			[
@@ -59,7 +58,7 @@ export function RidesDetailMap() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Eventos dos veículos mapeados" title="Visão Geográfica">
+		<Collapsible description="Eventos dos veículos mapeados" title="Visão Geográfica" defaultOpen>
 			<div className={styles.mapWrapper}>
 				<MapView id="ridesDetailMap" onDragEnd={() => setCenterMapAutomatically(false)} scrollZoom={isZoomEnabled}>
 					{showScheduledPath && <MapViewStylePath shapeData={ridesDetailContext.geojson.scheduled_shape} viewId="scheduled" waypointsData={ridesDetailContext.geojson.scheduled_path} />}
@@ -80,7 +79,15 @@ export function RidesDetailMap() {
 			<Section alignItems="center" flexDirection="row" gap="md">
 				<Button icon={<IconPlayerPlayFilled />} label="Play" />
 				<Slider />
-				<SegmentedControl data={[{ label: 'Mapa', value: 'map' }, { label: 'Satélite', value: 'satelite' }]} />
+				<Label size="sm" caps singleLine>Ordenar eventos por</Label>
+				<SegmentedControl
+					value="created_at"
+					data={[
+						{ label: 'Receção', value: 'received_at' },
+						{ label: 'Operador', value: 'updated_at' },
+						{ label: 'Veículo', value: 'created_at' },
+					]}
+				/>
 			</Section>
 		</Collapsible>
 	);

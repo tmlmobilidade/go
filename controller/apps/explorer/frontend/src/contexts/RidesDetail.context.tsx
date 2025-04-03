@@ -2,7 +2,6 @@
 
 /* * */
 
-import { useRidesContext } from '@/contexts/Rides.context';
 import { createGeofence } from '@/utils/create-geofence.util';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
@@ -52,19 +51,14 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// A. Setup variables
 
-	const ridesContext = useRidesContext();
-
 	//
 	// B. Fetch data
 
+	const { data: rideData } = useSWR<Ride>(`http://localhost:52002/rides/${rideId}/ride`, { refreshInterval: 1000 });
 	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`http://localhost:52002/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
 	const { data: apexT11Data } = useSWR<ApexT11[]>(`http://localhost:52002/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
 	const { data: hashedTripData } = useSWR<HashedTrip>(`http://localhost:52002/rides/${rideId}/hashed-trip`);
 	const { data: hashedShapeData } = useSWR<HashedShape>(`http://localhost:52002/rides/${rideId}/hashed-shape`);
-
-	const currentRideData: Ride = useMemo(() => {
-		return ridesContext.actions.getRideById(rideId);
-	}, [rideId, ridesContext.data.rides]);
 
 	//
 	// C. Transform data
@@ -165,7 +159,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			apex_t11: apexT11Data || [],
 			hashed_shape: hashedShapeData,
 			hashed_trip: hashedTripData,
-			ride: currentRideData,
+			ride: rideData,
 			ride_id: rideId,
 			vehicle_events: vehicleEventsData || [],
 		},
@@ -176,7 +170,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			scheduled_path_geofences: scheduledPathGeofencesFC,
 			scheduled_shape: scheduledShapeFC,
 		},
-	}), [rideId, vehicleEventsData, currentRideData, apexT11Data, scheduledPathGeofencesFC, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
+	}), [rideId, vehicleEventsData, rideData, apexT11Data, scheduledPathGeofencesFC, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
 
 	//
 	// D. Render components

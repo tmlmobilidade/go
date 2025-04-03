@@ -18,14 +18,14 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/interfaces": "20250403.1340.14",
-		"@tmlmobilidade/types": "20250403.1004.40",
-		"@tmlmobilidade/utils": "20250403.1004.32",
+		"@tmlmobilidade/interfaces": "20250403.1846.15",
+		"@tmlmobilidade/types": "20250403.1846.14",
+		"@tmlmobilidade/utils": "20250403.1846.27",
 		"luxon": "3.6.1",
 		"pg": "8.14.1"
 	},
 	"devDependencies": {
-		"@types/luxon": "3.6.0",
+		"@types/luxon": "3.6.1",
 		"@types/node": "22.14.0",
 		"@types/pg": "8.11.11",
 		"resolve-tspaths": "0.8.23",
