@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext } from "react";
+import type { Stop } from '@carrismetropolitana/api-types/network';
 
 import Accessibility from "./Accessibility";
 import AdminInformation from "./AdminInformation";
@@ -18,8 +18,15 @@ import Shelter from "./Shelter";
 import { ManualContextProvider } from "@/contexts/Manual.context";
 
 import styles from './styles.module.css';
+import { useStopsContext } from "@/contexts/Stops.context";
 
 export default function Stop() {
+    const { actions } = useStopsContext();
+
+    const stop: Stop = actions.getStopById("010001");
+
+    console.log("--> stop", stop)
+
     return (
         <ManualContextProvider>
             <div className={styles.container}>

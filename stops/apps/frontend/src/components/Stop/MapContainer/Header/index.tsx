@@ -1,11 +1,9 @@
 "use client";
 
-import { useContext } from 'react';
+import { useManualContext } from '@/contexts/Manual.context';
 
 import { Tooltip } from '@tmlmobilidade/ui';
 import { IconDeviceFloppy, IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
-
-import { useManualContext } from '@/contexts/Manual.context';
 
 import styles from './styles.module.css';
 
