@@ -1,7 +1,10 @@
+"use client";
+
 import Header from '@/components/common/Header';
-import styles from '../styles.module.css';
 import Row from '@/components/common/Row';
 import Item from '@/components/common/Row/Item';
+
+import styles from '../styles.module.css';
 
 export default function AdminInformation() {
     return <div className={styles.section}>

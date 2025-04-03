@@ -1,11 +1,14 @@
+"use client";
+
+import { useState } from 'react';
+
 import { Tooltip } from '@tmlmobilidade/ui';
 import { IconDeviceFloppy, IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
-import { useState } from 'react';
 
 export default function Header() {
-    const [isManual, setIsManual] = useState(false);
+    const [isManual, _setIsManual] = useState(false);
 
     return <div className={styles.header}>
         <div className={styles.section}>

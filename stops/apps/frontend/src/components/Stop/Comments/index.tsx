@@ -1,3 +1,5 @@
+"use client";
+
 import { TextArea } from '@tmlmobilidade/ui';
 
 import Header from '@/components/common/Header';

@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
 import { useState } from "react";
+
+import { Tooltip } from "@tmlmobilidade/ui";
+import { IconAlertHexagon, IconAlertHexagonOff, IconVolume } from "@tabler/icons-react";
 
 import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
-import { Tooltip } from "@tmlmobilidade/ui";
-import { IconAlertHexagon, IconAlertHexagonOff, IconVolume } from "@tabler/icons-react";
 
 import styles from '../styles.module.css';
 

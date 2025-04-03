@@ -1,4 +1,7 @@
+"use client";
+
 import { ReactNode } from 'react';
+
 import { Checkbox, TextInput } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

@@ -1,3 +1,5 @@
+"use client";
+
 import Header from '@/components/common/Header';
 import Item from '@/components/common/Row/Item';
 import Row from '@/components/common/Row';

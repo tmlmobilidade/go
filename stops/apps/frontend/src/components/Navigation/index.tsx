@@ -1,3 +1,5 @@
+"use client";
+
 import List from "./List";
 import SearchBar from "./SearchBar";
 import Footer from "./Footer";

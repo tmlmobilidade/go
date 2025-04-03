@@ -1,3 +1,5 @@
+"use client";
+
 import styles from './styles.module.css';
 import Header from './Header';
 import Mapper from './Mapper';

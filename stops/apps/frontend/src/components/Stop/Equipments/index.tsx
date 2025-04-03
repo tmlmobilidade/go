@@ -1,3 +1,5 @@
+"use client";
+
 import { Grid } from '@tmlmobilidade/ui';
 
 import Header from '@/components/common/Header';

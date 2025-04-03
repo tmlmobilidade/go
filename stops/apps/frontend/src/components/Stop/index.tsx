@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Accessibility from "./Accessibility";
 import AdminInformation from "./AdminInformation";
