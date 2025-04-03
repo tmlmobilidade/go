@@ -6,7 +6,14 @@ import Item from '@/components/common/Row/Item';
 
 import styles from '../styles.module.css';
 
-export default function AdminInformation() {
+interface AdminInformationProps {
+    municipality_id: string;
+    parish: string;
+    locality_id: string;
+    jurisdication: string;
+}
+
+export default function AdminInformation({ municipality_id, parish, locality_id, jurisdication }: AdminInformationProps) {
     return <div className={styles.section}>
         <Header
             title={"Informação Administrativa"}
@@ -14,13 +21,13 @@ export default function AdminInformation() {
         />
 
         <Row>
-            <Item label={"Município"} type={"text"} value={"Sim"} />
-            <Item label={"Freguesia"} type={"text"} value={"Sim"} />
-            <Item label={"Localidade"} type={"text"} value={"Sim"} />
+            <Item label={"Município"} type={"text"} value={municipality_id} />
+            <Item label={"Freguesia"} type={"text"} value={parish} />
+            <Item label={"Localidade"} type={"text"} value={locality_id} />
         </Row>
 
         <Row>
-            <Item label={"Jurisdição"} type={"text"} value={"Sim"} />
+            <Item label={"Jurisdição"} type={"text"} value={jurisdication} />
         </Row>
     </div>;
 }

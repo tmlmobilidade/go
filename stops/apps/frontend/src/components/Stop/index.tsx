@@ -41,7 +41,12 @@ export default function Stop() {
                     tts_name={stop?.tts_name || ""}
                     operational_status={stop?.operational_status || "voided"}
                 />
-                <AdminInformation />
+                <AdminInformation
+                    municipality_id={stop?.municipality_id || ""}
+                    parish={"TODO"}
+                    locality_id={stop?.locality_id || ""}
+                    jurisdication={"TODO"}
+                />
                 <Affectation />
                 <Shelter />
                 <Infrasctructure />
