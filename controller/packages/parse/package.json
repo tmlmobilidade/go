@@ -19,7 +19,7 @@
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
-		"@types/luxon": "3.6.1",
+		"@types/luxon": "3.6.2",
 		"@types/node": "22.14.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.2"
