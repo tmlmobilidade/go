@@ -2,8 +2,8 @@
 
 /* * */
 
-import { normalizeChar } from '@//utils/normalize-char';
-import { FLAP_ANIMATION_DURATION, GlobalTickManager } from '@//utils/TickManager';
+import { normalizeChar } from '@/utils/normalize-char';
+import { FLAP_ANIMATION_DURATION, GlobalTickManager } from '@/utils/TickManager';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';

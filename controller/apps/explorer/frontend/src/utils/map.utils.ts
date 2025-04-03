@@ -1,6 +1,6 @@
 /* * */
 
-import { mapDefaultValues } from '@//settings/map.settings';
+import { mapDefaultValues } from '@/settings/map.settings';
 import * as turf from '@turf/turf';
 
 /* * */
@@ -36,10 +36,10 @@ export const centerMap = (mapObject, features: GeoJSON.Feature<GeoJSON.Geometry,
 	// Validate if the envelope is valid
 
 	if (featureCollectionEnvelope.bbox.length < 4) return;
-	if (featureCollectionEnvelope.bbox[0] < 90 || featureCollectionEnvelope.bbox[0] > 90) return;
-	if (featureCollectionEnvelope.bbox[1] < 180 || featureCollectionEnvelope.bbox[1] > 180) return;
-	if (featureCollectionEnvelope.bbox[2] < 90 || featureCollectionEnvelope.bbox[2] > 90) return;
-	if (featureCollectionEnvelope.bbox[3] < 180 || featureCollectionEnvelope.bbox[3] > 180) return;
+	if (featureCollectionEnvelope.bbox[0] < -90 || featureCollectionEnvelope.bbox[0] > 90) return;
+	if (featureCollectionEnvelope.bbox[1] < -180 || featureCollectionEnvelope.bbox[1] > 180) return;
+	if (featureCollectionEnvelope.bbox[2] < -90 || featureCollectionEnvelope.bbox[2] > 90) return;
+	if (featureCollectionEnvelope.bbox[3] < -180 || featureCollectionEnvelope.bbox[3] > 180) return;
 
 	//
 	// Center the map on the envelope
@@ -118,6 +118,6 @@ export const getBaseGeoJsonFeatureLineString = (): GeoJSON.Feature<GeoJSON.LineS
  * @returns A GeoJSON FeatureCollection object with an empty features array
  */
 
-export const getBaseGeoJsonFeatureCollection = (): GeoJSON.FeatureCollection<GeoJSON.LineString | GeoJSON.Point, GeoJSON.GeoJsonProperties> => {
+export const getBaseGeoJsonFeatureCollection = (): GeoJSON.FeatureCollection<GeoJSON.LineString | GeoJSON.Point | GeoJSON.Polygon, GeoJSON.GeoJsonProperties> => {
 	return Object.assign({ features: [], type: 'FeatureCollection' });
 };

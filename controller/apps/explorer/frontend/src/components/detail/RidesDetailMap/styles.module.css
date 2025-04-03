@@ -1,0 +1,12 @@
+/* * */
+/* MAP WRAPPER */
+
+.mapWrapper {
+	height: 420px;
+}
+
+/* * */
+
+.details, .details * {
+	user-select: text;
+}

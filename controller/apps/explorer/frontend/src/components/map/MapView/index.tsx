@@ -3,8 +3,8 @@
 /* * */
 
 import { useMapOptionsContext } from '@/contexts/MapOptions.context';
-import { IconsMap } from '@//settings/assets.settings';
-import { mapDefaultConfig } from '@//settings/map.settings';
+import { IconsMap } from '@/settings/assets.settings';
+import { mapDefaultConfig } from '@/settings/map.settings';
 import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
 import { useCallback, useEffect, useState } from 'react';
 

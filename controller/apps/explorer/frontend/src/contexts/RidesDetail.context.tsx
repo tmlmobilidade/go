@@ -3,9 +3,11 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
-import { getCssVariableValue } from '@//utils/get-css-variable-value';
-import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@//utils/map.utils';
+import { createGeofence } from '@/utils/create-geofence.util';
+import { getCssVariableValue } from '@/utils/get-css-variable-value';
+import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
 import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/core/types';
+import { } from '@turf/turf';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -25,6 +27,7 @@ interface RidesDetailContextState {
 		observed_events: GeoJSON.FeatureCollection
 		observed_shape: GeoJSON.FeatureCollection
 		scheduled_path: GeoJSON.FeatureCollection
+		scheduled_path_geofences: GeoJSON.FeatureCollection
 		scheduled_shape: GeoJSON.FeatureCollection
 	}
 }
@@ -54,15 +57,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// B. Fetch data
 
-	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
-	const { data: apexT11Data } = useSWR<ApexT11[]>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
-	const { data: hashedTripData } = useSWR<HashedTrip>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/hashed-trip`);
-	const { data: hashedShapeData } = useSWR<HashedShape>(`https://controller.sae.carrismetropolitana.pt/api/rides/${rideId}/hashed-shape`);
-
-	// console.log('vehicleEventsData', vehicleEventsData);
-	// console.log('apexT11Data', apexT11Data);
-	// console.log('hashedTripData', hashedTripData);
-	// console.log('hashedShapeData', hashedShapeData);
+	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`http://localhost:52002/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
+	const { data: apexT11Data } = useSWR<ApexT11[]>(`http://localhost:52002/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
+	const { data: hashedTripData } = useSWR<HashedTrip>(`http://localhost:52002/rides/${rideId}/hashed-trip`);
+	const { data: hashedShapeData } = useSWR<HashedShape>(`http://localhost:52002/rides/${rideId}/hashed-shape`);
 
 	const currentRideData: Ride = useMemo(() => {
 		return ridesContext.actions.getRideById(rideId);
@@ -129,6 +127,23 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return fc;
 	}, [hashedTripData]);
 
+	const scheduledPathGeofencesFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
+		if (!hashedTripData?.path) return;
+		const fc = getBaseGeoJsonFeatureCollection();
+		fc.features = hashedTripData.path
+			.sort((a, b) => a.stop_sequence - b.stop_sequence)
+			.map((waypoint) => {
+				const geofenceData = createGeofence(Number(waypoint.stop_lon), Number(waypoint.stop_lat));
+				geofenceData.properties = {
+					color: `#${hashedTripData.route_color}`,
+					sequence: waypoint.stop_sequence,
+					text_color: `#${hashedTripData.route_text_color}`,
+				};
+				return geofenceData;
+			});
+		return fc;
+	}, [hashedTripData]);
+
 	const scheduledShapeFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
 		if (!hashedShapeData?.points) return;
 		const fc = getBaseGeoJsonFeatureCollection();
@@ -138,6 +153,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			.map(shapePoint => [Number(shapePoint.shape_pt_lon), Number(shapePoint.shape_pt_lat)]);
 		lineString.properties['color'] = `#${hashedTripData?.route_color}`;
 		fc.features = [lineString];
+		console.log('shape changed');
 		return fc;
 	}, [hashedShapeData, hashedTripData]);
 
@@ -157,9 +173,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			observed_events: observedEventsFC,
 			observed_shape: observedShapeFC,
 			scheduled_path: scheduledPathFC,
+			scheduled_path_geofences: scheduledPathGeofencesFC,
 			scheduled_shape: scheduledShapeFC,
 		},
-	}), [rideId, vehicleEventsData, currentRideData, apexT11Data, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
+	}), [rideId, vehicleEventsData, currentRideData, apexT11Data, scheduledPathGeofencesFC, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
 
 	//
 	// D. Render components

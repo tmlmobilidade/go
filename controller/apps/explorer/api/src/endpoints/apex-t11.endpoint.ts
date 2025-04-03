@@ -12,7 +12,8 @@ export const apexT11Endpoint = async (request: FastifyRequest, reply: FastifyRep
 	//
 	// Set default headers
 
-	reply.header('Access-Control-Allow-Origin', '*');
+	reply.header('Access-Control-Allow-Origin', request.headers.origin);
+	reply.header('Access-Control-Allow-Credentials', true);
 
 	//
 	// Validate the request parameters

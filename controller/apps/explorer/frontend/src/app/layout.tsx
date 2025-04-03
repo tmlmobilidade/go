@@ -1,6 +1,6 @@
 /* * */
 
-import { Providers } from '@//app/providers';
+import { Providers } from '@/app/providers';
 import { RidesCatalogContextProvider } from '@/contexts/RidesCatalog.context';
 import { availableFormats } from '@/i18n/config';
 import { NavigationProgress } from '@mantine/nprogress';
