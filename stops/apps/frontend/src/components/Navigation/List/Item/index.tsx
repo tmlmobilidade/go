@@ -3,6 +3,7 @@
 import type { Stop } from '@carrismetropolitana/api-types/network';
 
 import styles from './styles.module.css';
+import { IconChevronRight } from '@tabler/icons-react';
 
 interface ItemProps {
     stop: Stop;
@@ -21,7 +22,7 @@ export default function Item({ stop }: ItemProps) {
 
         {/* Right Side */}
         <div className={styles.icon_container}>
-            Icon
+            <IconChevronRight />
         </div>
     </div>;
 }

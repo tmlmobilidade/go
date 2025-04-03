@@ -6,9 +6,11 @@ import Item from "./Item";
 import styles from './styles.module.css';
 
 export default function List() {
-    const { data } = useStopsContext();
+    const { data, flags } = useStopsContext();
 
     return <div className={styles.container}>
-        {data.stops.map((stop, index) => (<Item key={index} stop={stop} />))}
+        {
+            flags.is_loading ? <div>Loading...</div> : data.stops.map((stop, index) => (<Item key={index} stop={stop} />))
+        }
     </div>;
 }
