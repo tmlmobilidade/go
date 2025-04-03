@@ -5,7 +5,7 @@
 import { MapView } from '@/components/map/MapView';
 import { MapViewStylePath } from '@/components/map/MapViewStylePath';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { centerMap } from '@/utils/map.utils';
+import { centerMap } from '@//utils/map.utils';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { Pane } from '@tmlmobilidade/ui';
 import { useMap } from '@vis.gl/react-maplibre';

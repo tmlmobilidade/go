@@ -3,10 +3,10 @@
 /* * */
 
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { getDelayStatus } from '@/utils/get-delay-status';
-import { getOperationalStatus } from '@/utils/get-operational-status';
-import { getSeenStatus } from '@/utils/get-seen-status';
-import { getStartTime } from '@/utils/get-start-time';
+import { getDelayStatus } from '@//utils/get-delay-status';
+import { getOperationalStatus } from '@//utils/get-operational-status';
+import { getSeenStatus } from '@//utils/get-seen-status';
+import { getStartTime } from '@//utils/get-start-time';
 import { useDebouncedState } from '@mantine/hooks';
 import { type Ride, type RideAnalysis, UnixTimestamp } from '@tmlmobilidade/core/types';
 import { getUnixTimestamp } from '@tmlmobilidade/core/utils';

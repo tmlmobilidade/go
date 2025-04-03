@@ -11,7 +11,7 @@ import { SWRConfig, type SWRConfiguration } from 'swr';
 
 /* * */
 
-export default function Providers({ children }: PropsWithChildren) {
+export function Providers({ children }: PropsWithChildren) {
 	//
 
 	//

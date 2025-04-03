@@ -1,8 +1,10 @@
 /* * */
 
-import Providers from '@/app/providers';
+import { Providers } from '@//app/providers';
+import { RidesCatalogContextProvider } from '@/contexts/RidesCatalog.context';
 import { availableFormats } from '@/i18n/config';
-import { AppProvider } from '@tmlmobilidade/ui';
+import { NavigationProgress } from '@mantine/nprogress';
+import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
@@ -62,7 +64,14 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					<NuqsAdapter>
 						<AppProvider>
 							<Providers>
-								{children}
+
+								<AppWrapper>
+									<RidesCatalogContextProvider>
+										<NavigationProgress size={5} zIndex={100} />
+										{children}
+									</RidesCatalogContextProvider>
+								</AppWrapper>
+
 							</Providers>
 						</AppProvider>
 					</NuqsAdapter>

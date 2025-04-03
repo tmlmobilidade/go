@@ -3,8 +3,8 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
-import { getCssVariableValue } from '@/utils/get-css-variable-value';
-import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
+import { getCssVariableValue } from '@//utils/get-css-variable-value';
+import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@//utils/map.utils';
 import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/core/types';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';

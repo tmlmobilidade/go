@@ -19,7 +19,7 @@ export default getRequestConfig(async () => {
 	//
 	// Get messages for the given locale
 
-	const translationMessages = (await import(`/i18n/translations/${locale}.json`)).default;
+	const translationMessages = (await import(`/src/i18n/translations/${locale}.json`)).default;
 
 	//
 	// Return the request configuration

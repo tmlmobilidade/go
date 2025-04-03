@@ -101,7 +101,7 @@ export function RidesCatalogRow({ index, item }: RidesCatalogRowProps) {
 	const ridesListContext = useRidesCatalogContext();
 
 	const handleOpenRide = (rideId: string) => {
-		router.push(`/list/${rideId}`);
+		router.push(`/${rideId}`);
 	};
 
 	//
