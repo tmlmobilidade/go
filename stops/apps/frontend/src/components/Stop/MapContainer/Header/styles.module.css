@@ -52,3 +52,24 @@
 .icon_blue:hover {
     background-color: #253B53;
 }
+
+.icon_green {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 4px;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    aspect-ratio: 1 / 1;
+}
+
+.icon_green>svg {
+    stroke: #8CE999;
+}
+
+.icon_green:hover {
+    background-color: #344B37;
+}

@@ -1,17 +1,28 @@
 import { Tooltip } from '@tmlmobilidade/ui';
-import { IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
+import { useState } from 'react';
 
 export default function Header() {
+    const [isManual, setIsManual] = useState(false);
+
     return <div className={styles.header}>
         <div className={styles.section}>
-            {/* Close Button */}
-            <Tooltip label={"Fechar"} position={"bottom"}>
-                <div className={styles.icon}>
-                    <IconX />
-                </div>
-            </Tooltip>
+            {/* Automatic -> Close Button */}
+            {/* Manual -> Save Button */}
+            {isManual ?
+                <Tooltip label={"Fechar"} position={"bottom"}>
+                    <div className={styles.icon}>
+                        <IconX />
+                    </div>
+                </Tooltip> :
+                <Tooltip label={"Guardar Alterações"} position={"bottom"}>
+                    <div className={styles.icon_green}>
+                        <IconDeviceFloppy />
+                    </div>
+                </Tooltip>
+            }
 
             {/* Label */}
             <h3>Rua Carlos Manuel Rodrigues Francisco (Escola)</h3>
@@ -32,7 +43,7 @@ export default function Header() {
                 </div>
             </Tooltip>
         </div>
-    </div>;
+    </div >;
 }
 
 
