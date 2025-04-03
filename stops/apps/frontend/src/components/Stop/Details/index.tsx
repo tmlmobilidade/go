@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext } from "react";
 
 import { Tooltip } from "@tmlmobilidade/ui";
 import { IconAlertHexagon, IconAlertHexagonOff, IconVolume } from "@tabler/icons-react";
@@ -9,10 +9,13 @@ import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
+import { ManualContext } from "@/contexts/Manual.context";
+
 import styles from '../styles.module.css';
 
 export default function Details() {
-	const [isManual, setIsManual] = useState(true);
+	const { isManual, setIsManual } = useContext(ManualContext);
+
 	return <div className={styles.section}>
 		<Header
 			title={"Detalhes desta Paragem"}
@@ -34,19 +37,20 @@ export default function Details() {
 		</Row>
 
 		<Row hasIcons={true}>
-			<Item color={isManual ? "green" : "purple"} label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
+			<Item color={isManual ? "purple" : "green"} label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
 				{isManual ?
-					<Tooltip label={"Modo Automático Ativado"} position={"bottom"}>
-						<IconAlertHexagonOff
-							onClick={() => setIsManual((isManual) => !isManual)}
-						/>
-					</Tooltip>
-					:
 					<Tooltip label={"Modo Manual Ativado"} position={"bottom"}>
 						<IconAlertHexagon
 							onClick={() => setIsManual((isManual) => !isManual)}
 						/>
 					</Tooltip>
+					:
+					<Tooltip label={"Modo Automático Ativado"} position={"bottom"}>
+						<IconAlertHexagonOff
+							onClick={() => setIsManual((isManual) => !isManual)}
+						/>
+					</Tooltip>
+
 				}
 			</Item>
 

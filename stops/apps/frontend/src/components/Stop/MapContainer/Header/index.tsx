@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from 'react';
+import { useContext } from 'react';
 
 import { Tooltip } from '@tmlmobilidade/ui';
 import { IconDeviceFloppy, IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
 
+import { ManualContext } from '@/contexts/Manual.context';
+
 import styles from './styles.module.css';
 
 export default function Header() {
-    const [isManual, _setIsManual] = useState(false);
+    const { isManual } = useContext(ManualContext);
 
     return <div className={styles.header}>
         <div className={styles.section}>

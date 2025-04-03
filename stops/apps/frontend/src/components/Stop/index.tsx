@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useContext } from "react";
+
 import Accessibility from "./Accessibility";
 import AdminInformation from "./AdminInformation";
 import Affectation from "./Affectation";
@@ -13,21 +15,29 @@ import Media from "./Media";
 import PublicInformation from "./PublicInformation";
 import Shelter from "./Shelter";
 
+import { ManualContext } from "@/contexts/Manual.context";
+
 import styles from './styles.module.css';
 
 export default function Stop() {
-    return <div className={styles.container}>
-        <MapContainer />
-        <Details />
-        <AdminInformation />
-        <Affectation />
-        <Shelter />
-        <Infrasctructure />
-        <PublicInformation />
-        <Accessibility />
-        <Equipments />
-        <Connections />
-        <Media />
-        <Comments />
-    </div>;
+    const [isManual, setIsManual] = useState(false);
+
+    return (
+        <ManualContext.Provider value={{ isManual, setIsManual }}>
+            <div className={styles.container}>
+                <MapContainer />
+                <Details />
+                <AdminInformation />
+                <Affectation />
+                <Shelter />
+                <Infrasctructure />
+                <PublicInformation />
+                <Accessibility />
+                <Equipments />
+                <Connections />
+                <Media />
+                <Comments />
+            </div>
+        </ManualContext.Provider>
+    );
 }
