@@ -9,12 +9,12 @@ import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
 
-import { ManualContext } from "@/contexts/Manual.context";
+import { useManualContext } from "@/contexts/Manual.context";
 
 import styles from '../styles.module.css';
 
 export default function Details() {
-	const { isManual, setIsManual } = useContext(ManualContext);
+	const { isManual, setIsManual } = useManualContext();
 
 	return <div className={styles.section}>
 		<Header

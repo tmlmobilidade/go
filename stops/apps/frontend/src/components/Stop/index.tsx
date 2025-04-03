@@ -15,15 +15,13 @@ import Media from "./Media";
 import PublicInformation from "./PublicInformation";
 import Shelter from "./Shelter";
 
-import { ManualContext } from "@/contexts/Manual.context";
+import { ManualContextProvider } from "@/contexts/Manual.context";
 
 import styles from './styles.module.css';
 
 export default function Stop() {
-    const [isManual, setIsManual] = useState(false);
-
     return (
-        <ManualContext.Provider value={{ isManual, setIsManual }}>
+        <ManualContextProvider>
             <div className={styles.container}>
                 <MapContainer />
                 <Details />
@@ -38,6 +36,6 @@ export default function Stop() {
                 <Media />
                 <Comments />
             </div>
-        </ManualContext.Provider>
+        </ManualContextProvider>
     );
 }
