@@ -98,12 +98,7 @@
     max-width: inherit;
 }
 
-/* .inner_container {
-    position: relative;
-} */
-
 .icon_blue {
-    /* position: absolute; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -129,7 +124,7 @@
 }
 
 .icon_green {
-    /* position: absolute; */
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -142,8 +137,6 @@
     cursor: pointer;
     border-radius: 0.25rem;
     aspect-ratio: 1 / 1;
-
-    position: relative;
 }
 
 .icon_green>svg {
@@ -155,7 +148,7 @@
 }
 
 .icon_purple {
-    /* position: absolute; */
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -168,8 +161,6 @@
     cursor: pointer;
     border-radius: 0.25rem;
     aspect-ratio: 1 / 1;
-
-    position: relative;
 }
 
 .icon_purple>svg {

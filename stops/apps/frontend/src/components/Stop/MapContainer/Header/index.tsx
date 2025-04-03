@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@tmlmobilidade/ui';
+import { Tooltip } from '@tmlmobilidade/ui';
 import { IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
 
 import styles from './styles.module.css';

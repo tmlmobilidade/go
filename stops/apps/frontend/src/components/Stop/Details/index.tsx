@@ -1,35 +1,17 @@
 'use client';
 
+import { useState } from "react";
+
 import Header from "@/components/common/Header";
 import Row from "@/components/common/Row";
 import Item from "@/components/common/Row/Item";
-import { Button, Tooltip } from "@tmlmobilidade/ui";
+import { Tooltip } from "@tmlmobilidade/ui";
+import { IconAlertHexagon, IconAlertHexagonOff, IconVolume } from "@tabler/icons-react";
 
 import styles from '../styles.module.css';
-import { IconAlertHexagon, IconAlertHexagonOff, IconVolume } from "@tabler/icons-react";
-import React from "react";
 
-// interface DetailsProps {
-// 	_id?: string | undefined;
-// 	latitude?: number | undefined;
-// 	longitude?: number | undefined;
-// 	name?: string | undefined;
-// 	operational_status?: "active" | "inactive" | "provisional" | "seasonal" | "voided" | undefined;
-// 	short_name?: string | null | undefined;
-// 	tts_name?: string | null | undefined;
-// }
-
-// export default function Details({
-// 	_id,
-// 	latitude,
-// 	longitude,
-// 	name,
-// 	operational_status,
-// 	short_name,
-// 	tts_name
-// }: DetailsProps) {
 export default function Details() {
-	const [isManual, setIsManual] = React.useState(true);
+	const [isManual, setIsManual] = useState(true);
 	return <div className={styles.section}>
 		<Header
 			title={"Detalhes desta Paragem"}

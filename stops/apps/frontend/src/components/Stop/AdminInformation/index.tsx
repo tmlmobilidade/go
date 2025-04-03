@@ -3,19 +3,6 @@ import styles from '../styles.module.css';
 import Row from '@/components/common/Row';
 import Item from '@/components/common/Row/Item';
 
-// interface AdminInformationProps {
-//     jurisdiction: "unknown" | "ip" | "municipality" | "other";
-//     municipality_id: string;
-//     parish_id?: string | null | undefined;
-//     locality_id?: string | null | undefined;
-// }
-
-// export default function AdminInformation({
-//     jurisdiction,
-//     municipality_id,
-//     parish_id,
-//     locality_id
-// }: AdminInformationProps) {
 export default function AdminInformation() {
     return <div className={styles.section}>
         <Header
