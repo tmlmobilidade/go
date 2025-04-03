@@ -39,15 +39,17 @@ export default function Stop() {
                     long_name={stop?.long_name || ""}
                     short_name={stop?.short_name || ""}
                     tts_name={stop?.tts_name || ""}
-                    operational_status={stop?.operational_status || "voided"}
+                    operational_status={stop?.operational_status || "voided"}   // TODO: Check corresponding strings, example: active -> "Paragem Activa"
                 />
                 <AdminInformation
-                    municipality_id={stop?.municipality_id || ""}
-                    parish={"TODO"}
-                    locality_id={stop?.locality_id || ""}
-                    jurisdication={"TODO"}
+                    municipality_id={stop?.municipality_id || ""}   // TODO: Use name instead of id
+                    parish={"TODO"} // TODO: Check where to get this data
+                    locality_id={stop?.locality_id || ""}   // TODO: Use name instead of id
+                    jurisdication={"TODO"}  // TODO: Check where to get this data
                 />
-                <Affectation />
+                <Affectation 
+                    // TODO: Check where to get this data
+                />
                 <Shelter />
                 <Infrasctructure />
                 <PublicInformation />
