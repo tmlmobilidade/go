@@ -9,17 +9,17 @@ export default function Header() {
 
     return <div className={styles.header}>
         <div className={styles.section}>
-            {/* Automatic -> Close Button */}
             {/* Manual -> Save Button */}
+            {/* Automatic -> Close Button */}
             {isManual ?
-                <Tooltip label={"Fechar"} position={"bottom"}>
-                    <div className={styles.icon}>
-                        <IconX />
-                    </div>
-                </Tooltip> :
                 <Tooltip label={"Guardar Alterações"} position={"bottom"}>
                     <div className={styles.icon_green}>
                         <IconDeviceFloppy />
+                    </div>
+                </Tooltip> :
+                <Tooltip label={"Fechar"} position={"bottom"}>
+                    <div className={styles.icon}>
+                        <IconX />
                     </div>
                 </Tooltip>
             }
