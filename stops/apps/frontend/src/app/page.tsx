@@ -11,7 +11,7 @@ export default function Page() {
 	console.log("-> StopsData:", stopsData);
 
 	return <div className={styles.container}>
-		<Navigation stops={["A", "B", "C", "D", "E", "F", "G", "H"]} />
+		<Navigation />
 		<Stop />
 	</div>;
 }

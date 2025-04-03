@@ -6,14 +6,10 @@ import Footer from "./Footer";
 
 import styles from './styles.module.css';
 
-interface NavigationProps {
-    stops: String[];
-}
-
-export default function Navigation({ stops }: NavigationProps) {
+export default function Navigation() {
     return <div className={styles.container}>
         <SearchBar />
-        <List stops={stops} />
+        <List />
         <Footer />
     </div>;
 }
