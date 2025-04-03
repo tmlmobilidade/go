@@ -31,7 +31,16 @@ export default function Stop() {
         <ManualContextProvider>
             <div className={styles.container}>
                 <MapContainer />
-                <Details />
+                <Details
+                    id={stop?.id || ""}
+                    lat={stop?.lat || 0}
+                    lon={stop?.lon || 0}
+                    old_long_name={stop?.long_name || ""}
+                    long_name={stop?.long_name || ""}
+                    short_name={stop?.short_name || ""}
+                    tts_name={stop?.tts_name || ""}
+                    operational_status={stop?.operational_status || "voided"}
+                />
                 <AdminInformation />
                 <Affectation />
                 <Shelter />

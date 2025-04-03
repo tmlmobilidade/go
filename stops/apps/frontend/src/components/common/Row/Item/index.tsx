@@ -28,11 +28,12 @@ export default function Item({ color, label, description, value, placeholder, ch
             typeof value === "string" && children &&
             <>
                 <TextInput
-                    className={color === "purple" ? styles.input_text_purple : styles.input_text}
+                    className={color === "purple" ? styles.input_text_purple_with_icon : styles.input_text_with_icon}
                     description={description}
                     label={label}
                     maxLength={255}
                     placeholder={placeholder}
+                    value={value}
                     disabled
                 // {...alertDetailData.form.getInputProps('title')}
                 />
@@ -57,8 +58,8 @@ export default function Item({ color, label, description, value, placeholder, ch
                 label={label}
                 maxLength={255}
                 placeholder={placeholder}
-                disabled
                 value={value}
+                disabled
             // {...alertDetailData.form.getInputProps('title')}
             />
 

@@ -1,5 +1,7 @@
 "use client";
 
+import type { StopOperationalStatus } from '@carrismetropolitana/api-types/network';
+
 import { useManualContext } from "@/contexts/Manual.context";
 
 import { Tooltip } from "@tmlmobilidade/ui";
@@ -11,7 +13,17 @@ import Item from "@/components/common/Row/Item";
 
 import styles from '../styles.module.css';
 
-export default function Details() {
+interface DetailsProps {
+	id: string;
+	lat: number;
+	lon: number;
+	old_long_name: string;
+	long_name: string;
+	short_name: string;
+	tts_name: string;
+	operational_status: StopOperationalStatus | "voided";
+}
+export default function Details({ id, lat, lon, old_long_name, long_name, short_name, tts_name, operational_status }: DetailsProps) {
 	const { isManual, setIsManual } = useManualContext();
 
 	return <div className={styles.section}>
@@ -21,21 +33,21 @@ export default function Details() {
 		/>
 
 		<Row>
-			<Item label={"Código Único da Paragem"} type={"text"} value={"Sim"} />
-			<Item label={"Latitude"} type={"text"} value={"Sim"} />
-			<Item label={"Longitude"} type={"text"} value={"Sim"} />
+			<Item label={"Código Único da Paragem"} type={"text"} value={id} />
+			<Item label={"Latitude"} type={"text"} value={lat.toString()} />
+			<Item label={"Longitude"} type={"text"} value={lon.toString()} />
 		</Row>
 
 		<Row>
-			<Item color={"green"} label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={"Rua Carlos Manuel Rodrigues Francisco (Escola)"} />
+			<Item color={"green"} label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={old_long_name} />
 		</Row>
 
 		<Row>
-			<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={"Sim"} />
+			<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={long_name} />
 		</Row>
 
 		<Row hasIcons={true}>
-			<Item color={isManual ? "purple" : "green"} label={"Nome Curto (Postalete)"} type={"text"} value={"Sim"}>
+			<Item color={isManual ? "purple" : "green"} label={"Nome Curto (Postalete)"} type={"text"} value={short_name}>
 				{isManual ?
 					<Tooltip label={"Modo Manual Ativado"} position={"bottom"}>
 						<IconAlertHexagon
@@ -52,13 +64,13 @@ export default function Details() {
 				}
 			</Item>
 
-			<Item label={"Nome Falado (Text-to-Speech)"} type={"text"} value={"Sim"}>
+			<Item label={"Nome Falado (Text-to-Speech)"} type={"text"} value={tts_name}>
 				<IconVolume />
 			</Item>
 		</Row>
 
 		<Row>
-			<Item label={"Estado Operacional"} type={"text"} value={"Sim"} />
+			<Item label={"Estado Operacional"} type={"text"} value={operational_status} />
 		</Row>
 	</div >;
 }

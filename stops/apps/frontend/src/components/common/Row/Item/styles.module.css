@@ -51,6 +51,10 @@
     min-width: 0px !important;
 }
 
+.input_text>div {
+    min-width: 0px !important;
+}
+
 .input_text_green {
     display: flex;
     flex-direction: column;
@@ -64,7 +68,7 @@
     color: #008001;
 }
 
-.input_text_purple {
+.input_text_purple_with_icon {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -72,12 +76,16 @@
     min-width: 0px !important;
 }
 
-.input_text_purple>div>input {
+.input_text_purple_with_icon>div>input {
     border-color: #BD4ADB;
+    padding: 0px 37px 0px 15px;
 }
 
-.input_text>div {
+.input_text_with_icon>div {
     min-width: 0px !important;
+}
+.input_text_with_icon>div>input {
+    padding: 0px 37px 0px 15px;
 }
 
 .input_checkbox {
