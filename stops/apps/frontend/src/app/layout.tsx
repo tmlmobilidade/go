@@ -6,6 +6,7 @@ import { Routes } from '@/lib/routes';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+import { StopsContextProvider } from '@/contexts/Stops.context';
 
 /* * */
 
@@ -29,7 +30,9 @@ export default async function Layout({
 			<body>
 				<AppProvider>
 					<AppWrapper>
-						{children}
+						<StopsContextProvider>
+							{children}
+						</StopsContextProvider>
 					</AppWrapper>
 				</AppProvider>
 			</body>

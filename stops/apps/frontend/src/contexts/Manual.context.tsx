@@ -24,7 +24,7 @@ export function useManualContext() {
 /* Context Provider */
 
 export const ManualContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [isManual, setIsManual] = useState(false);
+    const [isManual, setIsManual] = useState<boolean>(false);
 
     return (
         <ManualContext.Provider value={{ isManual, setIsManual }}>
