@@ -14,8 +14,6 @@ interface RightProps {
 }
 
 export default function Right({ toggleValue, setToggleValue }: RightProps) {
-    // const [toggleValue, setToggleValue] = useToggle(['Mapa', 'Satélite'] as const);
-
     return <div className={styles.section}>
         {/* Patterns Butoon */}
         <Button className={styles.button} onClick={() => setToggleValue()}>

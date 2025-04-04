@@ -1,26 +1,27 @@
-"use client";
+'use client';
 
 import type { Stop } from '@carrismetropolitana/api-types/network';
 
-import { ManualContextProvider } from "@/contexts/Manual.context";
-import { useStopsContext } from "@/contexts/Stops.context";
+import { ManualContextProvider } from '@/contexts/Manual.context';
+import { useStopsContext } from '@/contexts/Stops.context';
 
-import SpecificStop from './SpecificStop';
 import GenericStop from './GenericStop';
+import SpecificStop from './SpecificStop';
 
 export default function Stop() {
-    const { actions } = useStopsContext();
+	const { actions } = useStopsContext();
 
-    const stopId: string = null;
-    const stop: Stop = actions.getStopById(stopId);
+	// const stopId: string = null;
+	const stopId = '010001';
+	const stop: Stop = actions.getStopById(stopId);
 
-    console.log("--> stop", stop);
+	console.log('--> stop', stop);
 
-    return (
-        <ManualContextProvider>
-            {
-                stopId ? <SpecificStop stop={stop} /> : <GenericStop />
-            }
-        </ManualContextProvider>
-    );
+	return (
+		<ManualContextProvider>
+			{
+				stopId ? <SpecificStop stop={stop} /> : <GenericStop />
+			}
+		</ManualContextProvider>
+	);
 }
