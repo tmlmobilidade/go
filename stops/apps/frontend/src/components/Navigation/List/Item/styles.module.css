@@ -2,60 +2,12 @@
     display: flex;
     flex-direction: row;
     gap: var(--mantine-spacing-md);
-    padding: var(--mantine-spacing-md);
     justify-content: space-between;
-    border-bottom: 1px solid #2f343d;
+    padding: var(--mantine-spacing-md);
     cursor: pointer;
+    border-bottom: 1px solid #2f343d;
 }
 
 .container:hover {
     background-color: #171b21;
-}
-
-.container_info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--mantine-spacing-sm);
-}
-
-.name {
-    /* font-size: 16px;
-    font-weight: 600; */
-}
-
-.details {
-    display: flex;
-    flex-direction: row;
-    gap: var(--mantine-spacing-md);
-}
-
-.id {
-    font-family: Courier New, Courier, monospace;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    line-height: 1;
-    color: #c1c2c5;
-    border: 1px solid #5c5f66;
-    padding: 3px 6px 2px;
-    border-radius: var(--mantine-spacing-xs);
-}
-
-.coords {
-    font-family: Courier New, Courier, monospace;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    line-height: 1;
-    color: #c1c2c5;
-    border: 1px solid #5c5f66;
-    padding: 3px 6px 2px;
-    border-radius: var(--mantine-spacing-xs);
-}
-
-.container_icon {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
 }

@@ -6,10 +6,8 @@ import type { Stop } from '@carrismetropolitana/api-types/network';
 
 /* * */
 
-import { IconChevronRight } from '@tabler/icons-react';
-
-/* * */
-
+import Left from './Left';
+import Right from './Right';
 import styles from './styles.module.css';
 
 /* * */
@@ -28,19 +26,8 @@ export default function Item({ stop }: ItemProps) {
 
 	return (
 		<div className={styles.container}>
-			{/* Left Side */}
-			<div className={styles.container_info}>
-				<p className={styles.name}>{stop.long_name}</p>
-				<div className={styles.details}>
-					<div className={styles.id}>{stop.id}</div>
-					<div className={styles.coords}>{stop.lat} {stop.lon}</div>
-				</div>
-			</div>
-
-			{/* Right Side */}
-			<div className={styles.container_icon}>
-				<IconChevronRight />
-			</div>
+			<Left id={stop.id} lat={stop.lat} lon={stop.lon} long_name={stop.long_name} />
+			<Right />
 		</div>
 	);
 }
