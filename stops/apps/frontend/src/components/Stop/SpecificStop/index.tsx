@@ -15,7 +15,7 @@ import Media from "../Media";
 import PublicInformation from "../PublicInformation";
 import Shelter from "../Shelter";
 
-import styles from './styles.module.css';
+import styles from '../styles.module.css';
 
 interface SpecificStopProps {
     stop: Stop;

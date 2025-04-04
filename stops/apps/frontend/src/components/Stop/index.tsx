@@ -3,8 +3,8 @@
 import type { Stop } from '@carrismetropolitana/api-types/network';
 
 import { ManualContextProvider } from "@/contexts/Manual.context";
-
 import { useStopsContext } from "@/contexts/Stops.context";
+
 import SpecificStop from './SpecificStop';
 import GenericStop from './GenericStop';
 
