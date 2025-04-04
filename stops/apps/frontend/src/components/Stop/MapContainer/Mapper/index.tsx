@@ -94,19 +94,15 @@ export default function Mapper({ generic }: MapperProps) {
 
 
     // const MapViewStyleStopsInteractiveLayerId = "6476b094424adb51586dfcee";
-    return <div className={styles.container}>
-        <Surface>
-            <div style={{ width: "100%", height: 400 }}>
-                <MapView
-                    id="stopsListMap"
-                    interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
-                    onClick={handleLayerClick}
-                >
-                    <MapViewStyleStops stopsData={myFeatureCollection} />
-                    {/* <MapViewStyleStops stopsData={stopsListContext.data.filtered_fc} /> */}
-                </MapView>
-            </div>
-        </Surface>
+    return <div className={generic ? styles.container_generic : styles.container_specific}>
+        <MapView
+            id="stopsListMap"
+            interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
+            onClick={handleLayerClick}
+        >
+            <MapViewStyleStops stopsData={myFeatureCollection} />
+            {/* <MapViewStyleStops stopsData={stopsListContext.data.filtered_fc} /> */}
+        </MapView>
     </div >;
 }
 

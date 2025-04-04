@@ -11,7 +11,7 @@ export default function Header({ generic }: HeaderProps) {
     return <>
         {
             generic === true ? <GenericHeader /> : <SpecificHeader />
-        };
+        }
     </>
 }
 

@@ -9,7 +9,6 @@ interface MapContainerProps {
 }
 
 export default function MapContainer({ generic }: MapContainerProps) {
-    console.log("--> generic", generic)
     return <div className={styles.container}>
         <Header generic={generic} />
         <Mapper generic={generic} />

@@ -11,7 +11,7 @@ import GenericStop from './GenericStop';
 export default function Stop() {
     const { actions } = useStopsContext();
 
-    const stopId: string = "010001";
+    const stopId: string = null;
     const stop: Stop = actions.getStopById(stopId);
 
     console.log("--> stop", stop);
