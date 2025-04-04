@@ -1,9 +1,8 @@
 "use client";
 
-import type { Stop } from '@carrismetropolitana/api-types/network';
+import { IconChevronRight } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
-import { IconChevronRight } from '@tabler/icons-react';
 
 interface ItemProps {
     id: string;

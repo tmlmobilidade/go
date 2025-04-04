@@ -59,7 +59,7 @@ export default function Header() {
 
             {/* Stop Button */}
             <Tooltip label={"Ver esta paragem no Site"} position={"bottom"}>
-                <div className={styles.icon_blue}>
+                <div className={styles.icon_blue} onClick={() => window.open("https://www.carrismetropolitana.pt/stops/010001", "_blank")}>
                     <IconWorldUpload />
                 </div>
             </Tooltip>
