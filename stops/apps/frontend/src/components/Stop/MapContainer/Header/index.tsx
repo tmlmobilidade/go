@@ -14,6 +14,8 @@ import { IconDeviceFloppy, IconEye, IconWorldUpload, IconX } from '@tabler/icons
 import PatternsModal from './PatternsModal';
 
 import styles from './styles.module.css';
+import List from './List';
+import Item from './List/Item';
 
 export default function Header() {
     // Contexts
@@ -65,7 +67,9 @@ export default function Header() {
 
         <PatternsModal opened={opened} onClose={close} title={"Patterns associados a esta paragem"} patternIds={["x", "y"]}>
             {/* Modal content */}
-            {stop?.pattern_ids.map((id) => <div key={id}>{id}</div>)}
+            <List>
+                {stop?.pattern_ids.map((id) => <Item key={id} id={id} />)}
+            </List>
         </PatternsModal>
     </div >;
 }

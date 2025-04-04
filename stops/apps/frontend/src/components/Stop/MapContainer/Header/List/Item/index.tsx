@@ -6,17 +6,17 @@ import styles from './styles.module.css';
 import { IconChevronRight } from '@tabler/icons-react';
 
 interface ItemProps {
-    stop: Stop;
+    id: string;
 }
 
-export default function Item({ stop }: ItemProps) {
+export default function Item({ id }: ItemProps) {
     return <div className={styles.container}>
         {/* Left Side */}
         <div className={styles.container_info}>
-            <p className={styles.name}>{stop.long_name}</p>
             <div className={styles.details}>
-                <div className={styles.id}>{stop.id}</div>
-                <div className={styles.coords}>{stop.lat} {stop.lon}</div>
+                <div className={styles.id}>{id}</div>
+                {/* TODO: Get Pattern Name from ID */}
+                <div className={styles.name}>Alcochete | Circular</div>
             </div>
         </div>
 
