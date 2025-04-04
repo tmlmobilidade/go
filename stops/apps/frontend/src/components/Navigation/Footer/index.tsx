@@ -1,9 +1,20 @@
-"use client";
+'use client';
+
+/* * */
 
 import styles from './styles.module.css';
 
+/* * */
+
 export default function Footer() {
-    return <div className={styles.container}>
-        Encontradas 12527 paragens
-    </div>;
+	//
+
+	//
+	// A. Render components
+
+	return (
+		<div className={styles.container}>
+			Encontradas 12527 paragens
+		</div>
+	);
 }

@@ -1,40 +1,58 @@
-"use client";
+'use client';
 
+/* * */
+
+import { Anchor, Breadcrumbs } from '@mantine/core';
+import { IconDots } from '@tabler/icons-react';
+import { TextInput } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
-import { TextInput } from '@tmlmobilidade/ui';
-import { IconDots } from '@tabler/icons-react';
-import { Breadcrumbs, Anchor } from '@mantine/core';
+/* * */
 
 import styles from './styles.module.css';
 
+/* * */
+
 export default function SearchBar() {
-    const [isOpen, setIsOpen] = useState(false);
+	//
 
-    const items = [
-        { title: 'Mantine', href: '#' },
-        { title: 'Mantine hooks', href: '#' },
-        { title: 'use-id', href: '#' },
-    ].map((item, index) => (
-        <Anchor href={item.href} key={index}>
-            {item.title}
-        </Anchor>
-    ));
+	//
+	// A. Render components
 
-    return <div className={styles.container}>
-        {/* Search Bar */}
-        <TextInput
-            className={styles.input_text}
-            maxLength={255}
-            placeholder={"Pesquisar..."}
-        // disabled
-        // {...alertDetailData.form.getInputProps('title')}
-        />
+	const [isOpen, setIsOpen] = useState(false);
 
-        {/* Settings Button */}
-        <div className={styles.icon} onClick={() => setIsOpen((isOpen: boolean) => !isOpen)}>
-            <IconDots />
-            {isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>}
-        </div>
-    </div>;
+	//
+	// B. Transform data
+
+	const items = [
+		{ href: '#', title: 'Mantine' },
+		{ href: '#', title: 'Mantine hooks' },
+		{ href: '#', title: 'use-id' },
+	].map((item, index) => (
+		<Anchor key={index} href={item.href}>
+			{item.title}
+		</Anchor>
+	));
+
+	//
+	// C. Render components
+
+	return (
+		<div className={styles.container}>
+			{/* Search Bar */}
+			<TextInput
+				className={styles.input_text}
+				maxLength={255}
+				placeholder="Pesquisar..."
+				// disabled
+				// {...alertDetailData.form.getInputProps('title')}
+			/>
+
+			{/* Settings Button */}
+			<div className={styles.icon} onClick={() => setIsOpen((isOpen: boolean) => !isOpen)}>
+				<IconDots />
+				{isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>}
+			</div>
+		</div>
+	);
 }

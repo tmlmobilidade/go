@@ -1,15 +1,25 @@
-"use client";
+'use client';
 
-import List from "./List";
-import SearchBar from "./SearchBar";
-import Footer from "./Footer";
+/* * */
 
+import Footer from './Footer';
+import List from './List';
+import SearchBar from './SearchBar';
 import styles from './styles.module.css';
 
+/* * */
+
 export default function Navigation() {
-    return <div className={styles.container}>
-        <SearchBar />
-        <List />
-        <Footer />
-    </div>;
+	//
+
+	//
+	// A. Render components
+
+	return (
+		<div className={styles.container}>
+			<SearchBar />
+			<List />
+			<Footer />
+		</div>
+	);
 }

@@ -1,16 +1,24 @@
-"use client";
+'use client';
 
-import styles from './styles.module.css';
+/* * */
+
 import Header from './Header';
 import Mapper from './Mapper';
+import styles from './styles.module.css';
+
+/* * */
 
 interface MapContainerProps {
-    generic: boolean;
+	generic: boolean
 }
 
+/* * */
+
 export default function MapContainer({ generic }: MapContainerProps) {
-    return <div className={styles.container}>
-        <Header generic={generic} />
-        <Mapper generic={generic} />
-    </div>;
+	return (
+		<div className={styles.container}>
+			<Header generic={generic} />
+			<Mapper generic={generic} />
+		</div>
+	);
 }

@@ -2,11 +2,11 @@
 
 import '@tmlmobilidade/ui/styles';
 // import { DataProviders } from '@/components/providers/data-providers';
+import { StopsContextProvider } from '@/contexts/Stops.context';
 import { Routes } from '@/lib/routes';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
-import { StopsContextProvider } from '@/contexts/Stops.context';
 
 /* * */
 
