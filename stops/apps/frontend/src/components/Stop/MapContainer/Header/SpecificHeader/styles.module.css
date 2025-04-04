@@ -32,44 +32,13 @@
     background-color: #363C42;
 }
 
-.icon_blue {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0px 4px;
-    height: 100%;
-    cursor: pointer;
-    border-radius: 0.25rem;
-    aspect-ratio: 1 / 1;
+.button {
+    color: #fff;
+    background-color: #343a40;
+    border: 0.0625rem solid transparent;
+    box-shadow: 0 1px 3px 0 transparent;
 }
 
-.icon_blue>svg {
-    stroke: #74c0fc;
-}
-
-.icon_blue:hover {
-    background-color: #253B53;
-}
-
-.icon_green {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0px 4px;
-    height: 100%;
-    cursor: pointer;
-    border-radius: 0.25rem;
-    aspect-ratio: 1 / 1;
-}
-
-.icon_green>svg {
-    stroke: #8CE999;
-}
-
-.icon_green:hover {
-    background-color: #344B37;
+.button:hover {
+    background-color: #212529;
 }

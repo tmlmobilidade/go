@@ -31,7 +31,7 @@ export default function Stop() {
     return (
         <ManualContextProvider>
             <div className={styles.container}>
-                {!stopId ? <MapContainer generic={true} /> :
+                {stopId ? <MapContainer generic={false} /> :
                     <>
                         <MapContainer />
                         <Details
