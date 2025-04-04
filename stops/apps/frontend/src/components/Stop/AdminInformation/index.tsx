@@ -21,13 +21,13 @@ export default function AdminInformation({ municipality_id, parish, locality_id,
         />
 
         <Row>
-            <Item label={"Município"} type={"text"} value={municipality_id} />
-            <Item label={"Freguesia"} type={"text"} value={parish} />
-            <Item label={"Localidade"} type={"text"} value={locality_id} />
+            <Item label={"Município"} placeholder={"Escolha uma opção..."} value={municipality_id} />
+            <Item label={"Freguesia"} placeholder={"Maçãs"} value={parish} />
+            <Item label={"Localidade"} placeholder={"Bairro das Maçãs"} value={locality_id} />
         </Row>
 
         <Row>
-            <Item label={"Jurisdição"} type={"text"} value={jurisdication} />
+            <Item label={"Jurisdição"} placeholder={"CM Moita"} value={jurisdication} />
         </Row>
     </div>;
 }
