@@ -33,21 +33,31 @@ export default function Details({ id, lat, lon, old_long_name, long_name, short_
 		/>
 
 		<Row>
-			<Item label={"Código Único da Paragem"} type={"text"} value={id} />
-			<Item label={"Latitude"} type={"text"} value={lat.toString()} />
-			<Item label={"Longitude"} type={"text"} value={lon.toString()} />
+			<Item label={"Código Único da Paragem"} placeholder={"012345"} value={id} />
+			<Item label={"Latitude"} value={lat.toString()} />
+			<Item label={"Longitude"} value={lon.toString()} />
 		</Row>
 
 		<Row>
-			<Item color={"green"} label={"Antigo Nome da Paragem (p/ alterar)"} type={"text"} value={old_long_name} />
+			<Item 
+				color={"green"} 
+				label={"Antigo Nome da Paragem (p/ alterar)"}  
+				placeholder={"Rua Marquês de Pombal 8"} 
+				value={old_long_name} 
+			/>
 		</Row>
 
 		<Row>
-			<Item label={"Nome da Paragem (depois da correção)"} type={"text"} value={long_name} />
+			<Item label={"Nome da Paragem (depois da correção)"} placeholder={"Rua Marquês de Pombal 8"} value={long_name} />
 		</Row>
 
 		<Row hasIcons={true}>
-			<Item color={isManual ? "purple" : "green"} label={"Nome Curto (Postalete)"} type={"text"} value={short_name}>
+			<Item 
+				color={isManual ? "purple" : "green"} 
+				label={"Nome Curto (Postalete)"} 
+				placeholder={"R. Mrq. de Pombal 8"} 
+				value={short_name}
+			>
 				{isManual ?
 					<Tooltip label={"Modo Manual Ativado"} position={"bottom"}>
 						<IconAlertHexagon
@@ -64,13 +74,13 @@ export default function Details({ id, lat, lon, old_long_name, long_name, short_
 				}
 			</Item>
 
-			<Item label={"Nome Falado (Text-to-Speech)"} type={"text"} value={tts_name}>
+			<Item label={"Nome Falado (Text-to-Speech)"} placeholder={"Rua Marquês de Pombal Porta Oito"} value={tts_name}>
 				<IconVolume />
 			</Item>
 		</Row>
 
 		<Row>
-			<Item label={"Estado Operacional"} type={"text"} value={operational_status} />
+			<Item label={"Estado Operacional"} value={operational_status || "active"} />
 		</Row>
 	</div >;
 }

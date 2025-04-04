@@ -48,7 +48,7 @@ export default function Header() {
             }
 
             {/* Label */}
-            <h3>Rua Carlos Manuel Rodrigues Francisco (Escola)</h3>
+            <h3>{stop?.long_name || <i>Paragem sem Título</i>}</h3>
         </div>
 
         <div className={styles.section}>

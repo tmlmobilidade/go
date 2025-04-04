@@ -9,7 +9,6 @@ import styles from './styles.module.css';
 interface ItemProps {
     color?: "green" | "purple";
     label: string;
-    type?: string;
     value: string | boolean;
     description?: string;
     placeholder?: string;
