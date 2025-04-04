@@ -8,7 +8,6 @@ interface HeaderProps {
 }
 
 export default function Header({ generic }: HeaderProps) {
-    console.log("->generic", generic)
     return <>
         {
             generic === true ? <GenericHeader /> : <SpecificHeader />

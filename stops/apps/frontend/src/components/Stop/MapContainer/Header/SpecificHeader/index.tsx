@@ -25,7 +25,7 @@ export default function SpecificHeader() {
     const [opened, { open, close }] = useDisclosure(false);
 
     const stopId: string = "010001";
-    console.log("Generic")
+
     // Stop
     const stop: Stop = actions.getStopById(stopId);
 
