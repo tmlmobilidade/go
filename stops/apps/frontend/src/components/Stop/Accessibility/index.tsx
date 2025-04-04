@@ -14,25 +14,25 @@ export default function Accessibility() {
         />
 
         <Row>
-            <Item label={"Tem Passeio?"} type={"text"} value={"Sim"} />
-            <Item label={"Tipo de Passeio"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Passeio?"} value={"Desconhecido"} />
+            <Item label={"Tipo de Passeio"} placeholder={"Calçada Portuguesa, Betão"} value={"Sim"} />
         </Row>
 
         <Row>
-            <Item label={"Tem Passadeira?"} type={"text"} value={"Sim"} />
-            <Item label={"Tem Acesso Rebaixado/Contínuo?"} type={"text"} value={"Sim"} />
-            <Item label={"Tem Acesso Largo?"} type={"text"} value={"Sim"} />
-            <Item label={"Tem Pavimento Tátil?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Passadeira?"} value={"Desconhecido"} />
+            <Item label={"Tem Acesso Rebaixado/Contínuo?"} value={"Desconhecido"} />
+            <Item label={"Tem Acesso Largo?"} value={"Desconhecido"} />
+            <Item label={"Tem Pavimento Tátil?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Tem Estacionamento Abusivo?"} type={"text"} value={"Sim"} />
-            <Item label={"Permite Embarque de PMR?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Estacionamento Abusivo?"} value={"Desconhecido"} />
+            <Item label={"Permite Embarque de PMR?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Última Manutenção da Acessibilidade"} type={"text"} value={"Sim"} />
-            <Item label={"Última Verificação da Acessibilidade"} type={"text"} value={"Sim"} />
+            <Item label={"Última Manutenção da Acessibilidade"} placeholder={"2023-02-10"} value={"Sim"} />
+            <Item label={"Última Verificação da Acessibilidade"} placeholder={"2023-02-10"} value={"Sim"} />
         </Row>
     </div>;
 }
