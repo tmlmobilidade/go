@@ -23,41 +23,46 @@ import { useStopsContext } from "@/contexts/Stops.context";
 export default function Stop() {
     const { actions } = useStopsContext();
 
-    const stop: Stop = actions.getStopById("010001");
+    const stopId: string = "010001";
+    const stop: Stop = actions.getStopById(stopId);
 
     console.log("--> stop", stop)
 
     return (
         <ManualContextProvider>
             <div className={styles.container}>
-                <MapContainer />
-                <Details
-                    id={stop?.id || ""}
-                    lat={stop?.lat || 0}
-                    lon={stop?.lon || 0}
-                    old_long_name={stop?.long_name || ""}
-                    long_name={stop?.long_name || ""}
-                    short_name={stop?.short_name || ""}
-                    tts_name={stop?.tts_name || ""}
-                    operational_status={stop?.operational_status || "voided"}   // TODO: Check corresponding strings, example: active -> "Paragem Activa"
-                />
-                <AdminInformation
-                    municipality_id={stop?.municipality_id || ""}   // TODO: Use name instead of id
-                    parish={"TODO"} // TODO: Check where to get this data
-                    locality_id={stop?.locality_id || ""}   // TODO: Use name instead of id
-                    jurisdication={"TODO"}  // TODO: Check where to get this data
-                />
-                <Affectation 
-                    // TODO: Check where to get this data
-                />
-                <Shelter />
-                <Infrasctructure />
-                <PublicInformation />
-                <Accessibility />
-                <Equipments />
-                <Connections />
-                <Media />
-                <Comments />
+                {!stopId ? <MapContainer generic={true} /> :
+                    <>
+                        <MapContainer />
+                        <Details
+                            id={stop?.id || ""}
+                            lat={stop?.lat || 0}
+                            lon={stop?.lon || 0}
+                            old_long_name={stop?.long_name || ""}
+                            long_name={stop?.long_name || ""}
+                            short_name={stop?.short_name || ""}
+                            tts_name={stop?.tts_name || ""}
+                            operational_status={stop?.operational_status || "voided"}   // TODO: Check corresponding strings, example: active -> "Paragem Activa"
+                        />
+                        <AdminInformation
+                            municipality_id={stop?.municipality_id || ""}   // TODO: Use name instead of id
+                            parish={"TODO"} // TODO: Check where to get this data
+                            locality_id={stop?.locality_id || ""}   // TODO: Use name instead of id
+                            jurisdication={"TODO"}  // TODO: Check where to get this data
+                        />
+                        <Affectation
+                        // TODO: Check where to get this data
+                        />
+                        <Shelter />
+                        <Infrasctructure />
+                        <PublicInformation />
+                        <Accessibility />
+                        <Equipments />
+                        <Connections />
+                        <Media />
+                        <Comments />
+                    </>
+                }
             </div>
         </ManualContextProvider>
     );
