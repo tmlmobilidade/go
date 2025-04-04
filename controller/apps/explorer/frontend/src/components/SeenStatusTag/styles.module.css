@@ -32,7 +32,7 @@
 /* SEEN */
 
 .container[data-status="seen"] .indicator {
-	background-color: var(--color-theme-primary);
+	background-color: var(--color-primary);
 }
 
 /* * */

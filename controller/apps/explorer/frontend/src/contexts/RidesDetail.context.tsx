@@ -66,8 +66,8 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	const observedEventsFC: GeoJSON.FeatureCollection = useMemo(() => {
 		const fc = getBaseGeoJsonFeatureCollection();
 		if (!vehicleEventsData) return fc;
-		const colorThemePrimary = getCssVariableValue('--color-theme-primary');
-		const colorThemeContrast = getCssVariableValue('--color-theme-contrast');
+		const colorThemePrimary = getCssVariableValue('--color-primary');
+		const colorThemeContrast = getCssVariableValue('--color-contrast');
 		fc.features = vehicleEventsData
 			.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
 			.map((vehicleEvent) => {
@@ -94,7 +94,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		lineString.geometry.coordinates = vehicleEventsData
 			.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
 			.map(vehicleEvent => [vehicleEvent.longitude, vehicleEvent.latitude]);
-		lineString.properties['color'] = getCssVariableValue('--color-theme-primary');
+		lineString.properties['color'] = getCssVariableValue('--color-primary');
 		fc.features = [lineString];
 		return fc;
 	}, [vehicleEventsData]);

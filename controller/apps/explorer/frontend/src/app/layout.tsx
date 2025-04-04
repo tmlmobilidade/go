@@ -17,7 +17,6 @@ import { type PropsWithChildren } from 'react';
 
 import '@mantine/nprogress/styles.css';
 import '@tmlmobilidade/ui/styles';
-import '@/styles/default.css';
 
 /* * */
 
