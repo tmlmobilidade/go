@@ -1,18 +1,30 @@
 "use client";
 
+// import { useRouter } from 'next/router'
+
 import { useManualContext } from '@/contexts/Manual.context';
+import { useStopsContext } from '@/contexts/Stops.context';
+
+import { Stop } from '@carrismetropolitana/api-types/network';
 
 import { useDisclosure } from '@mantine/hooks';
 import { Tooltip } from '@tmlmobilidade/ui';
 import { IconDeviceFloppy, IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
 
-import styles from './styles.module.css';
 import PatternsModal from './PatternsModal';
 
-export default function Header() {
-    const { isManual } = useManualContext();
+import styles from './styles.module.css';
 
+export default function Header() {
+    // Contexts
+    const { isManual } = useManualContext();
+    const { actions } = useStopsContext();
+
+    // Hooks
     const [opened, { open, close }] = useDisclosure(false);
+
+    // Stop
+    const stop: Stop = actions.getStopById("010001");
 
     return <div className={styles.header}>
         <div className={styles.section}>
@@ -53,6 +65,7 @@ export default function Header() {
 
         <PatternsModal opened={opened} onClose={close} title={"Patterns associados a esta paragem"} patternIds={["x", "y"]}>
             {/* Modal content */}
+            {stop?.pattern_ids.map((id) => <div key={id}>{id}</div>)}
         </PatternsModal>
     </div >;
 }

@@ -1,7 +1,9 @@
 "use client";
 
-import { useDisclosure } from '@mantine/hooks';
+import { ReactNode } from 'react';
+
 import { Modal } from '@mantine/core';
+
 import styles from './styles.module.css';
 
 interface PatternsModalProps {
@@ -9,13 +11,15 @@ interface PatternsModalProps {
     patternIds: string[];
     opened: boolean;
     onClose: () => void;
+    children: ReactNode
 }
 
-export default function Header({ title, patternIds, opened, onClose }: PatternsModalProps) {
+export default function Header({ title, patternIds, opened, onClose, children }: PatternsModalProps) {
     console.log("--> patternIds", patternIds);
 
     return (<Modal opened={opened} onClose={onClose} title={title}>
         {/* Modal content */}
+        {children}
     </Modal>);
 }
 
