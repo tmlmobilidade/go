@@ -6,7 +6,6 @@ import { Modal } from '@mantine/core';
 
 interface PatternsModalProps {
     title: string;
-    patternIds: string[];
     opened: boolean;
     onClose: () => void;
     children: ReactNode

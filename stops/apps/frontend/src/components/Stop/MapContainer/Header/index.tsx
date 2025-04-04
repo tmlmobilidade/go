@@ -25,8 +25,10 @@ export default function Header() {
     // Hooks
     const [opened, { open, close }] = useDisclosure(false);
 
+    const stopId: string = "010001";
+
     // Stop
-    const stop: Stop = actions.getStopById("010001");
+    const stop: Stop = actions.getStopById(stopId);
 
     return <div className={styles.header}>
         <div className={styles.section}>
@@ -59,13 +61,16 @@ export default function Header() {
 
             {/* Stop Button */}
             <Tooltip label={"Ver esta paragem no Site"} position={"bottom"}>
-                <div className={styles.icon_blue} onClick={() => window.open("https://www.carrismetropolitana.pt/stops/010001", "_blank")}>
+                <div
+                    className={styles.icon_blue}
+                    onClick={() => window.open(`https://www.carrismetropolitana.pt/stops/${stopId}`, "_blank")}
+                >
                     <IconWorldUpload />
                 </div>
             </Tooltip>
         </div>
 
-        <PatternsModal opened={opened} onClose={close} title={"Patterns associados a esta paragem"} patternIds={["x", "y"]}>
+        <PatternsModal opened={opened} onClose={close} title={"Patterns associados a esta paragem"}>
             {/* Modal content */}
             <List>
                 {stop?.pattern_ids.map((id) => <Item key={id} id={id} />)}
