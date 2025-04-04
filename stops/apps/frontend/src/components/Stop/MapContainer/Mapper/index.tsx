@@ -8,7 +8,10 @@ import styles from './styles.module.css';
 import { MapView, MapViewStyleStops, Surface, useMap, MapViewStyleStopsInteractiveLayerId } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
-export default function Mapper() {
+interface MapperProps {
+    generic?: boolean;
+}
+export default function Mapper({ generic }: MapperProps) {
     //
     // A. Setup variables
 

@@ -23,7 +23,7 @@ interface SpecificStopProps {
 export default function Stop({ stop }: SpecificStopProps) {
     return (
         <div className={styles.container}>
-            <MapContainer />
+            <MapContainer generic={false} />
             <Details
                 id={stop?.id || ""}
                 lat={stop?.lat || 0}

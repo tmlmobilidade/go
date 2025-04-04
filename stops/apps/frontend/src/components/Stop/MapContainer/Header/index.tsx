@@ -4,13 +4,14 @@ import GenericHeader from './GenericHeader';
 import SpecificHeader from './SpecificHeader';
 
 interface HeaderProps {
-    generic?: boolean;
+    generic: boolean;
 }
 
 export default function Header({ generic }: HeaderProps) {
+    console.log("->generic", generic)
     return <>
         {
-            generic ? <GenericHeader /> : <SpecificHeader />
+            generic === true ? <GenericHeader /> : <SpecificHeader />
         };
     </>
 }

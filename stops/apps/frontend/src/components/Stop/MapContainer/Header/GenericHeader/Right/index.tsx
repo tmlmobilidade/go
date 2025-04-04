@@ -1,31 +1,37 @@
 "use client";
 
-import { Tooltip } from '@tmlmobilidade/ui';
-import { IconEye, IconWorldUpload } from '@tabler/icons-react';
+import { SetStateAction } from 'react';
 
-import styles from '../styles.module.css';
+import { Tooltip } from '@tmlmobilidade/ui';
+import { IconMapPinFilled } from '@tabler/icons-react';
+import { Button } from '@mantine/core';
+
+import styles from './styles.module.css';
 
 interface RightProps {
-    stopId: string;
-    open: () => void;
+    toggleValue: "Mapa" | "Satélite";
+    setToggleValue: (value?: SetStateAction<"Mapa" | "Satélite">) => void;
 }
-export default function Right({ stopId, open }: RightProps) {
+
+export default function Right({ toggleValue, setToggleValue }: RightProps) {
+    // const [toggleValue, setToggleValue] = useToggle(['Mapa', 'Satélite'] as const);
+
     return <div className={styles.section}>
         {/* Patterns Butoon */}
-        <Tooltip label={"Ver Patterns Associados"} position={"bottom"}>
-            <div className={styles.icon_blue} onClick={open} color={"blue"}>
-                <IconEye />
-            </div>
-        </Tooltip>
+        <Button className={styles.button} onClick={() => setToggleValue()}>
+            {toggleValue}
+        </Button>
 
         {/* Stop Button */}
-        <Tooltip label={"Ver esta paragem no Site"} position={"bottom"}>
+        <Tooltip label={"Open in Google Maps"} position={"bottom"}>
             <div
-                className={styles.icon_blue}
-                onClick={() => window.open(`https://www.carrismetropolitana.pt/stops/${stopId}`, "_blank")}
+                className={styles.icon}
+                onClick={() => window.open(`https://www.google.com/maps/@38.6512317,-8.8813723,10z`, "_blank")}
             >
-                <IconWorldUpload />
+                <IconMapPinFilled />
             </div>
         </Tooltip>
     </div>;
 }
+
+
