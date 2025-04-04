@@ -1,12 +1,23 @@
 'use client';
 
+/* * */
+
 import Header from '@/components/common/Header';
 import Row from '@/components/common/Row';
 import Item from '@/components/common/Row/Item';
 
+/* * */
+
 import styles from '../styles.module.css';
 
+/* * */
+
 export default function PublicInformation() {
+	//
+
+	//
+	// A. Render components
+
 	return (
 		<div className={styles.section}>
 			<Header

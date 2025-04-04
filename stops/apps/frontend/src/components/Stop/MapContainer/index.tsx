@@ -15,6 +15,11 @@ interface MapContainerProps {
 /* * */
 
 export default function MapContainer({ generic }: MapContainerProps) {
+	//
+
+	//
+	// A. Render components
+
 	return (
 		<div className={styles.container}>
 			<Header generic={generic} />

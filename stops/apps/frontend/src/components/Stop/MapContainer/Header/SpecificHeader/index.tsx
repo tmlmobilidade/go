@@ -1,44 +1,53 @@
-"use client";
+'use client';
+
+/* * */
 
 import { useManualContext } from '@/contexts/Manual.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-
 import { Stop } from '@carrismetropolitana/api-types/network';
-
 import { useDisclosure } from '@mantine/hooks';
+
+/* * */
 
 import List from '../List';
 import Item from '../List/Item';
-import Right from './Right';
-import Left from './Left';
-
 import PatternsModal from '../PatternsModal';
-
+import Left from './Left';
+import Right from './Right';
 import styles from './styles.module.css';
 
+/* * */
+
 export default function SpecificHeader() {
-    // Contexts
-    const { isManual } = useManualContext();
-    const { actions } = useStopsContext();
+	//
 
-    // Hooks
-    const [opened, { open, close }] = useDisclosure(false);
+	//
+	// A. Setup variables
 
-    const stopId: string = "010001";
+	// Contexts
+	const { isManual } = useManualContext();
+	const { actions } = useStopsContext();
 
-    // Stop
-    const stop: Stop = actions.getStopById(stopId);
+	// Hooks
+	const [opened, { close, open }] = useDisclosure(false);
 
-    return <div className={styles.header}>
-        <Left isManual={isManual} long_name={stop?.long_name} />
+	const stopId = '010001';
+	const stop: Stop = actions.getStopById(stopId);
 
-        <Right stopId={stopId} open={open} />
+	//
+	// B. Render components
 
-        <PatternsModal opened={opened} onClose={close} title={"Patterns associados a esta paragem"}>
-            {/* Modal content */}
-            <List>
-                {stop?.pattern_ids.map((id) => <Item key={id} id={id} />)}
-            </List>
-        </PatternsModal>
-    </div >;
+	return (
+		<div className={styles.header}>
+			<Left isManual={isManual} long_name={stop?.long_name} />
+
+			<Right open={open} stopId={stopId} />
+
+			<PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
+				<List>
+					{stop?.pattern_ids.map(id => <Item key={id} id={id} />)}
+				</List>
+			</PatternsModal>
+		</div>
+	);
 }

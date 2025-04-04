@@ -1,15 +1,30 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
+/* * */
+
+import { ReactNode } from 'react';
+
+/* * */
 
 import styles from './styles.module.css';
 
+/* * */
+
 interface ItemInterface {
-    children: ReactNode;
+	children: ReactNode
 }
 
+/* * */
+
 export default function List({ children }: ItemInterface) {
-    return <div className={styles.container}>
-        {children}
-    </div>;
+	//
+
+	//
+	// A. Render components
+
+	return (
+		<div className={styles.container}>
+			{children}
+		</div>
+	);
 }

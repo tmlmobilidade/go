@@ -1,20 +1,30 @@
-"use client";
+'use client';
 
-import { ReactNode } from 'react';
+/* * */
 
 import { Modal } from '@mantine/core';
+import { ReactNode } from 'react';
+
+/* * */
 
 interface PatternsModalProps {
-    title: string;
-    opened: boolean;
-    onClose: () => void;
-    children: ReactNode
+	children: ReactNode
+	onClose: () => void
+	opened: boolean
+	title: string
 }
 
-export default function Header({ title, opened, onClose, children }: PatternsModalProps) {
-    return (<Modal opened={opened} onClose={onClose} title={title}>
-        {children}
-    </Modal>);
+/* * */
+
+export default function Header({ children, onClose, opened, title }: PatternsModalProps) {
+	//
+
+	//
+	// A. Render components
+
+	return (
+		<Modal onClose={onClose} opened={opened} title={title}>
+			{children}
+		</Modal>
+	);
 }
-
-
