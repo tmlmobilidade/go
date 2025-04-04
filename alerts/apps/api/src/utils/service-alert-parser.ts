@@ -59,16 +59,17 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				alert.references.forEach((reference) => {
 					if (reference.child_ids.length === 0) {
 						informed_entity.push({
-							route_id: reference.parent_id,
 							stop_id: reference.parent_id,
 						});
 					}
 					else {
 						reference.child_ids.forEach((child_id) => {
-							informed_entity.push({
-								route_id: child_id,
-								stop_id: reference.parent_id,
-							});
+							for (const route_id of lines.find(line => line.id === child_id)?.route_ids ?? []) {
+								informed_entity.push({
+									route_id: route_id,
+									stop_id: reference.parent_id,
+								});
+							}
 						});
 					}
 				});
