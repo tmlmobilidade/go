@@ -54,11 +54,11 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// B. Fetch data
 
-	const { data: rideData } = useSWR<Ride>(`http://localhost:52002/rides/${rideId}/ride`, { refreshInterval: 1000 });
-	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`http://localhost:52002/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
-	const { data: apexT11Data } = useSWR<ApexT11[]>(`http://localhost:52002/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
-	const { data: hashedTripData } = useSWR<HashedTrip>(`http://localhost:52002/rides/${rideId}/hashed-trip`);
-	const { data: hashedShapeData } = useSWR<HashedShape>(`http://localhost:52002/rides/${rideId}/hashed-shape`);
+	const { data: rideData } = useSWR<Ride>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
+	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
+	const { data: apexT11Data } = useSWR<ApexT11[]>(`/api/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
+	const { data: hashedTripData } = useSWR<HashedTrip>(`/api/rides/${rideId}/hashed-trip`);
+	const { data: hashedShapeData } = useSWR<HashedShape>(`/api/rides/${rideId}/hashed-shape`);
 
 	//
 	// C. Transform data
