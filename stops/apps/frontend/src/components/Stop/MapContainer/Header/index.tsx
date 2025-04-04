@@ -2,13 +2,17 @@
 
 import { useManualContext } from '@/contexts/Manual.context';
 
+import { useDisclosure } from '@mantine/hooks';
 import { Tooltip } from '@tmlmobilidade/ui';
 import { IconDeviceFloppy, IconEye, IconWorldUpload, IconX } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
+import PatternsModal from './PatternsModal';
 
 export default function Header() {
     const { isManual } = useManualContext();
+
+    const [opened, { open, close }] = useDisclosure(false);
 
     return <div className={styles.header}>
         <div className={styles.section}>
@@ -34,7 +38,7 @@ export default function Header() {
         <div className={styles.section}>
             {/* Patterns Butoon */}
             <Tooltip label={"Ver Patterns Associados"} position={"bottom"}>
-                <div className={styles.icon_blue} color={"blue"}>
+                <div className={styles.icon_blue} onClick={open} color={"blue"}>
                     <IconEye />
                 </div>
             </Tooltip>
@@ -46,6 +50,10 @@ export default function Header() {
                 </div>
             </Tooltip>
         </div>
+
+        <PatternsModal opened={opened} onClose={close} title={"Patterns associados a esta paragem"} patternIds={["x", "y"]}>
+            {/* Modal content */}
+        </PatternsModal>
     </div >;
 }
 
