@@ -18,39 +18,17 @@
     gap: var(--mantine-spacing-sm);
 }
 
-.name {
-    /* font-size: 16px;
-    font-weight: 600; */
-}
-
 .details {
     display: flex;
-    flex-direction: row;
-    gap: var(--mantine-spacing-md);
+    flex-direction: column;
 }
 
 .id {
-    font-family: Courier New, Courier, monospace;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    line-height: 1;
-    color: #c1c2c5;
-    border: 1px solid #5c5f66;
-    padding: 3px 6px 2px;
-    border-radius: var(--mantine-spacing-xs);
+    color: #768390;
 }
 
-.coords {
-    font-family: Courier New, Courier, monospace;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    line-height: 1;
-    color: #c1c2c5;
-    border: 1px solid #5c5f66;
-    padding: 3px 6px 2px;
-    border-radius: var(--mantine-spacing-xs);
+.name {
+    color: #fff;
 }
 
 .container_icon {
