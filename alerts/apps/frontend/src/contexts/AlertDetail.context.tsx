@@ -169,7 +169,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 					title: 'Erro ao salvar alerta',
 				});
 			}
-
+			setIsSaving(false);
 			return;
 		}
 
