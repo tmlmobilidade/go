@@ -15,28 +15,28 @@ export default function Infrasctructure() {
         />
 
         <Row>
-            <Item label={"Existe Poste?"} type={"text"} value={"Sim"} />
-            <Item label={"Existe Cobertura?"} type={"text"} value={"Sim"} />
+            <Item label={"Existe Poste?"} value={"Desconhecido"} />
+            <Item label={"Existe Cobertura?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Existe Mupi?"} type={"text"} value={"Sim"} />
-            <Item label={"Existe Banco?"} type={"text"} value={"Sim"} />
-            <Item label={"Existe Papeleira?"} type={"text"} value={"Sim"} />
+            <Item label={"Existe Mupi?"} value={"Desconhecido"} />
+            <Item label={"Existe Banco?"} value={"Desconhecido"} />
+            <Item label={"Existe Papeleira?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Existe Iluminação?"} type={"text"} value={"Sim"} />
-            <Item label={"Existe Ligação Elétrica?"} type={"text"} value={"Sim"} />
+            <Item label={"Existe Iluminação?"} value={"Desconhecido"} />
+            <Item label={"Existe Ligação Elétrica?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Tipo de Relação com a Via"} type={"text"} value={"Sim"} />
+            <Item label={"Tipo de Relação com a Via"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Última Manutenção da Infraestrutura"} type={"text"} value={"Sim"} />
-            <Item label={"Última Verificação da Infraestrutura"} type={"text"} value={"Sim"} />
+            <Item label={"Última Manutenção da Infraestrutura"} placeholder={"2023-02-10"} value={"Sim"} />
+            <Item label={"Última Verificação da Infraestrutura"} placeholder={"2023-02-10"} value={"Sim"} />
         </Row>
     </div >;
 }
