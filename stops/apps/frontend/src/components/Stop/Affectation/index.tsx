@@ -14,7 +14,7 @@ export default function Affectation() {
         />
 
         <Row>
-            <Item label={"Aceitação de Passes pré-definida"} type={"text"} value={"Sim"} placeholder={"Escolha uma opção..."} />
+            <Item label={"Aceitação de Passes pré-definida"} placeholder={"Escolha uma opção..."} value={"Sim"} />
         </Row>
     </div>;
 }
