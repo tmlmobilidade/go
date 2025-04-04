@@ -1,0 +1,34 @@
+.section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--mantine-spacing-sm);
+}
+
+.button {
+    color: #fff;
+    background-color: #343a40;
+    border: 0.0625rem solid transparent;
+    box-shadow: 0 1px 3px 0 transparent;
+}
+
+.button:hover {
+    background-color: #212529;
+}
+
+.icon {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 4px;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    aspect-ratio: 1 / 1;
+}
+
+.icon:hover {
+    background-color: #363C42;
+}
