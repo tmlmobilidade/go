@@ -14,45 +14,45 @@ export default function PublicInformation() {
         />
 
         <Row>
-            <Item label={"Tem Postalete"} type={"text"} value={"Sim"} />
-            <Item label={"Entidade Gestora do Postalete"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Postalete"} value={"Desconhecido"} />
+            <Item label={"Entidade Gestora do Postalete"} placeholder={"Alsa Todi"} value={"Sim"} />
         </Row>
 
         <Row>
-            <Item label={"Tem Moldura?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Moldura?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Tem PIP Áudio?"} type={"text"} value={"Sim"} />
-            <Item label={"Código do PIP Áudio"} type={"text"} value={"Sim"} />
+            <Item label={"Tem PIP Áudio?"} value={"Desconhecido"} />
+        </Row>
+        <Item label={"Código do PIP Áudio"} placeholder={"PIPA372"} value={"Sim"} />
+
+        <Row>
+            <Item label={"Tem PIP Realtime?"} value={"Desconhecido"} />
+            <Item label={"Código do PIP Realtime"} placeholder={"PIPRT372"} value={"Sim"} />
         </Row>
 
         <Row>
-            <Item label={"Tem PIP Realtime?"} type={"text"} value={"Sim"} />
-            <Item label={"Código do PIP Realtime"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Sinalização H2OA?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Tem Sinalização H2OA?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Horários?"} value={"Desconhecido"} />
+            <Item label={"Tem Horários Táteis?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Tem Horários?"} type={"text"} value={"Sim"} />
-            <Item label={"Tem Horários Táteis?"} type={"text"} value={"Sim"} />
+            <Item label={"Tem Mapa da Rede?"} value={"Desconhecido"} />
         </Row>
 
         <Row>
-            <Item label={"Tem Mapa da Rede?"} type={"text"} value={"Sim"} />
+            <Item label={"Última Manutenção dos Horários"} placeholder={"2023-02-10"} value={"Sim"} />
+            <Item label={"Última Verificação dos Horários"} placeholder={"2023-02-10"} value={"Sim"} />
         </Row>
 
         <Row>
-            <Item label={"Última Manutenção dos Horários"} type={"text"} value={"Sim"} />
-            <Item label={"Última Verificação dos Horários"} type={"text"} value={"Sim"} />
-        </Row>
-
-        <Row>
-            <Item label={"Última Manutenção do Postalete"} type={"text"} value={"Sim"} />
-            <Item label={"Última Verificação dos Postalete"} type={"text"} value={"Sim"} />
+            <Item label={"Última Manutenção do Postalete"} placeholder={"2023-02-10"} value={"Sim"} />
+            <Item label={"Última Verificação dos Postalete"} placeholder={"2023-02-10"} value={"Sim"} />
         </Row>
     </div>;
 }
