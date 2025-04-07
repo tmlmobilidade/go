@@ -1,19 +1,15 @@
 'use client';
 
-/* * */
-
 import type { StopOperationalStatus } from '@carrismetropolitana/api-types/network';
-
-/* * */
 
 import Header from '@/components/common/Header';
 import Row from '@/components/common/Row';
 import Item from '@/components/common/Row/Item';
 import { useManualContext } from '@/contexts/Manual.context';
-import { IconAlertHexagon, IconAlertHexagonOff, IconVolume } from '@tabler/icons-react';
+import { audioTtsUrl } from '@/settings/url.settings';
+import { IconAlertHexagon, IconAlertHexagonOff, IconPlayerPause, IconVolume } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
-
-/* * */
+import { useEffect, useRef, useState } from 'react';
 
 import styles from '../styles.module.css';
 
@@ -40,8 +36,47 @@ export default function Details({ id, lat, lon, long_name, old_long_name, operat
 
 	const { isManual, setIsManual } = useManualContext();
 
+	const [isPlaying, setIsPlaying] = useState(false);
+	const audioPlayer = useRef<HTMLAudioElement | null>(null);
+
 	//
-	// B. Render components
+	// B. Transform data
+
+	useEffect(() => {
+		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${id}.mp3`);
+	}, [id]);
+
+	useEffect(() => {
+		if (audioPlayer.current) {
+			audioPlayer.current.onplaying = () => setIsPlaying(true);
+			audioPlayer.current.onpause = () => setIsPlaying(false);
+			audioPlayer.current.onabort = () => setIsPlaying(false);
+		}
+		return () => {
+			if (audioPlayer.current) {
+				audioPlayer.current.onplaying = null;
+				audioPlayer.current.onpause = null;
+				audioPlayer.current.onabort = null;
+			}
+		};
+	}, [id]);
+
+	//
+	// C. Handle actions
+
+	const handleToogleAudio = () => {
+		if (isPlaying) {
+			audioPlayer.current?.pause();
+		}
+		else {
+			audioPlayer.current?.load();
+			audioPlayer.current?.play();
+		}
+		// analyticsContext.actions.capture(ampli => ampli.stopAudioPlayed({ audio_played: 'true', stop_id: stopId || '' }));
+	};
+
+	//
+	// D. Render components
 
 	return (
 		<div className={styles.section}>
@@ -94,7 +129,11 @@ export default function Details({ id, lat, lon, long_name, old_long_name, operat
 				</Item>
 
 				<Item label="Nome Falado (Text-to-Speech)" placeholder="Rua Marquês de Pombal Porta Oito" value={tts_name}>
-					<IconVolume />
+					{audioPlayer && (
+						isPlaying
+							? <IconPlayerPause onClick={() => handleToogleAudio()} />
+							: <IconVolume onClick={() => handleToogleAudio()} />
+					)}
 				</Item>
 			</Row>
 
