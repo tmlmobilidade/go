@@ -21,7 +21,7 @@ interface AlertDetailContextState {
 		deleteImage: () => void
 		fileChanged: (file: File) => void
 		removeReference: (index: number) => void
-		saveAlert: () => void
+		saveAlert: (type: 'draft' | 'publish') => void
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
@@ -144,14 +144,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
 	};
 
-	const saveAlert = async () => {
+	const saveAlert = async (type: 'draft' | 'publish') => {
 		setIsSaving(true);
 
 		// Handle Save Alert
 		const active_period_end_date = form.getValues().active_period_end_date ?? null;
 		const publish_end_date = form.getValues().publish_end_date ?? null;
 
-		const saveAlert: CreateAlertDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: 'PUBLISHED' };
+		const saveAlert: CreateAlertDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 
 		const method = alertId === 'new' ? 'POST' : 'PUT';
 		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
@@ -169,7 +169,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 					title: 'Erro ao salvar alerta',
 				});
 			}
-
+			setIsSaving(false);
 			return;
 		}
 
@@ -266,7 +266,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			deleteImage,
 			fileChanged: (file: File) => setImage(file),
 			removeReference,
-			saveAlert,
+			saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
 		},
 		data: {
 			form,

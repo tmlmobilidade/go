@@ -4,14 +4,7 @@
 
 import { IconArrowRight, IconCheck, IconX } from '@tabler/icons-react';
 import { PasswordRequirementsSchema } from '@tmlmobilidade/types';
-import {
-	Button,
-	Label,
-	PasswordInput,
-	SimpleSurface,
-	TMLogoLight,
-	useToast,
-} from '@tmlmobilidade/ui';
+import { Button, Label, PasswordInput, Section, Surface, TMLogoLight, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -99,54 +92,58 @@ export function VerificationForm({ redirect = '/' }: Props) {
 
 	return (
 		<div className={styles.root}>
-			<SimpleSurface padding="md">
-				<div className={styles.header}>
-					<div className={styles.headerContent}>
-						<Label size="lg">Welcome to TML</Label>
-						<Label>Vamos começar a trabalhar juntos!</Label>
-					</div>
-					<div className={styles.headerLogo}>
-						<TMLogoLight />
-					</div>
-				</div>
+			<Surface>
+				<Section>
 
-				<form className={styles.form} onSubmit={handleSubmit}>
-					<PasswordInput
-						disabled={loading}
-						onChange={e => setPassword(e.target.value)}
-						placeholder="Password"
-						value={password}
-					/>
-					<PasswordInput
-						disabled={loading}
-						onChange={e => setConfirmPassword(e.target.value)}
-						placeholder="Confirm password"
-						value={confirmPassword}
-					/>
-					<div className={styles.passwordRequirements}>
-						{errors.map((error, index) => (
-							<div key={index} className={styles.passwordRequirementValue} data-valid={error.valid}>
-								{error.valid ? <IconCheck /> : <IconX />}
-								{error.message}
-							</div>
-						))}
+					<div className={styles.header}>
+						<div className={styles.headerContent}>
+							<Label size="lg">Welcome to TML</Label>
+							<Label>Vamos começar a trabalhar juntos!</Label>
+						</div>
+						<div className={styles.headerLogo}>
+							<TMLogoLight />
+						</div>
 					</div>
-					<div className={styles.formFooter}>
-						<Button
-							icon={<IconArrowRight />}
-							label="Submit"
-							loading={loading}
-							type="submit"
-							variant="primary"
-							disabled={
-								password.length === 0
-								|| confirmPassword.length === 0
-								|| password !== confirmPassword
-							}
+
+					<form className={styles.form} onSubmit={handleSubmit}>
+						<PasswordInput
+							disabled={loading}
+							onChange={e => setPassword(e.target.value)}
+							placeholder="Password"
+							value={password}
 						/>
-					</div>
-				</form>
-			</SimpleSurface>
+						<PasswordInput
+							disabled={loading}
+							onChange={e => setConfirmPassword(e.target.value)}
+							placeholder="Confirm password"
+							value={confirmPassword}
+						/>
+						<div className={styles.passwordRequirements}>
+							{errors.map((error, index) => (
+								<div key={index} className={styles.passwordRequirementValue} data-valid={error.valid}>
+									{error.valid ? <IconCheck /> : <IconX />}
+									{error.message}
+								</div>
+							))}
+						</div>
+						<div className={styles.formFooter}>
+							<Button
+								icon={<IconArrowRight />}
+								label="Submit"
+								loading={loading}
+								type="submit"
+								variant="primary"
+								disabled={
+									password.length === 0
+									|| confirmPassword.length === 0
+									|| password !== confirmPassword
+								}
+							/>
+						</div>
+					</form>
+
+				</Section>
+			</Surface>
 		</div>
 	);
 

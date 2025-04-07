@@ -1,26 +1,30 @@
 /* * */
 
-import { AppWrapper, MeContextProvider, useMeContext } from '@tmlmobilidade/ui';
+import { AppWrapper, MeContextProvider } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { PropsWithChildren } from 'react';
 
 /* * */
 
-interface Props {
-	children: React.ReactNode
-}
-
-/* * */
-
-export default async function LayoutContext({ children }: Props) {
+export default async function Layout({ children }: PropsWithChildren) {
 	//
+
+	//
+	// A. Setup variables
 
 	const cookies = await nextCookies();
 	const session = cookies.get('session_token');
 
+	//
+	// B. Handle actions
+
 	if (!session) {
 		redirect('/login');
 	}
+
+	//
+	// C. Render components
 
 	return (
 		<MeContextProvider>

@@ -1,16 +1,17 @@
 name: 'Auth | Build & Push'
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'auth/**'
     branches:
       - production
-  pull_request:
-    paths:
-      - 'auth/**'
-    branches:
-      - production
+#   pull_request:
+#     paths:
+#       - 'auth/**'
+#     branches:
+#       - production
 
 # # #
 
@@ -50,9 +51,9 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: .
-          file: ./apps/frontend/Dockerfile
-          tags: ghcr.io/tmlmobilidade/auth-frontend:${{ github.ref_name }}
+          context: ./auth
+          file: ./auth/apps/frontend/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-auth-frontend:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -88,9 +89,9 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: .
-          file: ./apps/api/Dockerfile
-          tags: ghcr.io/tmlmobilidade/auth-api:${{ github.ref_name }}
+          context: ./auth
+          file: ./auth/apps/api/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-auth-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # #
@@ -126,6 +127,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: .
-          file: ./nginx/Dockerfile
-          tags: ghcr.io/tmlmobilidade/auth-nginx:${{ github.ref_name }}
+          context: ./auth/apps/nginx
+          file: ./auth/apps/nginx/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-auth-nginx:${{ github.ref_name }}

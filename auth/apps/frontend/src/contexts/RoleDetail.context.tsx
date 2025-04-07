@@ -98,7 +98,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 	}, [form.values]);
 
 	//
-	// D. Handle Actions
+	// D. Handle actions
 	const handleSaveRole = async () => {
 		setIsSaving(true);
 		const method = role_id === 'new' ? 'POST' : 'PUT';

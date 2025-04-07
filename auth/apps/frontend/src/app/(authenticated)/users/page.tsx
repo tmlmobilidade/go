@@ -1,10 +1,14 @@
-import UserList from '@/components/UserList';
-import { UserListContextProvider } from '@/contexts/UserList.context';
+/* * */
 
-export default function UserListPage() {
+import { UsersList } from '@/components/users/UsersList';
+import { UsersListContextProvider } from '@/contexts/UsersList.context';
+
+/* * */
+
+export default function Page() {
 	return (
-		<UserListContextProvider>
-			<UserList />
-		</UserListContextProvider>
+		<UsersListContextProvider>
+			<UsersList />
+		</UsersListContextProvider>
 	);
 }

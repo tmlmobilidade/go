@@ -38,7 +38,7 @@ export const RoleListContextProvider = ({ children }: { children: React.ReactNod
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 	const { data: allRolesData, error: allRolesError, isLoading: allRolesLoading } = useSWR<Role[], Error>(Routes.AUTH_API + Routes.ROLES, swrFetcher);
 	const rawRoles = useMemo(() => allRolesData || [], [allRolesData]);
 
@@ -53,7 +53,7 @@ export const RoleListContextProvider = ({ children }: { children: React.ReactNod
 	}, [searchFilteredRoles, rawRoles]);
 
 	//
-	// C. Handle Actions
+	// C. Handle actions
 
 	//
 	// D. Define context value

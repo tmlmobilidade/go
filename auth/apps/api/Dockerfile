@@ -2,7 +2,7 @@
 
 FROM node:alpine AS base
 
-ENV MODULE=sae
+ENV MODULE=sae-auth
 ENV PROJECT=api
 
 RUN npm install -g turbo@^2
@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/${MODULE}-${PROJECT} --docker
 
 
 # # #
@@ -35,7 +35,7 @@ RUN npm install
 
 # Build the project
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/sae-${MODULE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${PROJECT}
 
 
 # # #
