@@ -5,6 +5,7 @@
 		"build:bridge": "turbo build --filter=@tmlmobilidade/sae-controller-bridge-*",
 		"build:engine": "turbo build --filter=@tmlmobilidade/sae-controller-engine-*",
 		"build:explorer": "turbo build --filter=@tmlmobilidade/sae-controller-explorer-*",
+		"build:packages": "turbo build --filter=@tmlmobilidade/sae-controller-pckg-*",
 		"clean": "sh cleanup.sh",
 		"dev:bridge": "turbo dev --filter=@tmlmobilidade/sae-controller-bridge-*",
 		"dev:engine": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-*",
