@@ -1,6 +1,25 @@
 /* * */
 
-import { booleanPointInPolygon, buffer, length, lineChunk, lineSliceAlong, lineSplit, lineString, nearestPointOnLine, point } from '@turf/turf';
+import * as turf from '@turf/turf';
+
+/* * */
+
+export function getGeoJsonPointFromAny(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position): GeoJSON.Feature<GeoJSON.Point> {
+	// If the point is a Position
+	if (Array.isArray(point) && point.length === 2) {
+		return turf.point(point) as GeoJSON.Feature<GeoJSON.Point>;
+	}
+	// If the point is a GeoJSON.Point
+	if (!Array.isArray(point) && point.type === 'Point') {
+		return turf.feature(point);
+	}
+	// If the point is a GeoJSON.Feature<GeoJSON.Point>
+	if (!Array.isArray(point) && point.type === 'Feature' && point.geometry.type === 'Point') {
+		return point;
+	}
+	// Throw if invalid point type
+	throw new Error('Invalid point type');
+}
 
 /* * */
 
@@ -10,8 +29,8 @@ import { booleanPointInPolygon, buffer, length, lineChunk, lineSliceAlong, lineS
  * @param geofence A GeoJSON.Polygon representation of the geofence.
  * @returns A boolean indicating if the point is inside the geofence.
  */
-export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point, geofence: GeoJSON.Feature<GeoJSON.Polygon>): boolean {
-	return booleanPointInPolygon(point, geofence);
+export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, geofence: GeoJSON.Feature<GeoJSON.Polygon>): boolean {
+	return turf.booleanPointInPolygon(point, geofence);
 }
 
 /* * */
@@ -23,22 +42,13 @@ export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON
  * @param radius (default is 50 meters)
  * @returns The GeoJSON Feature of a Polygon.
  */
-export function createGeofenceOnPoint(longitude: number, latitude: number, radius = 50): GeoJSON.Feature<GeoJSON.Polygon> {
+export function createGeofenceOnPoint(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, radius = 50): GeoJSON.Feature<GeoJSON.Polygon> {
 	//
 
-	//
-	// Create a point from the given latitude and longitude.
+	const centerPoint = getGeoJsonPointFromAny(point);
 
-	const centerPoint = point([longitude, latitude]);
+	const geofence = turf.buffer(centerPoint, radius, { units: 'meters' });
 
-	if (!centerPoint) {
-		throw new Error('Error creating center point');
-	}
-
-	//
-	// Create a buffer around the point with the given radius.
-
-	const geofence = buffer(centerPoint, radius, { units: 'meters' });
 	if (!geofence || geofence.geometry.type !== 'Polygon') {
 		throw new Error('Error creating geofence');
 	}
@@ -91,7 +101,7 @@ interface CalculateGeofenceOnPathOptions {
  * @param options.chunk_precision The precision used to calculate the nearest point on the path to the given point.
  * @returns A GeoJSON.Polygon feature representation of the geofence.
  */
-export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString> | GeoJSON.LineString, point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point, options: CalculateGeofenceOnPathOptions): GeoJSON.Feature<GeoJSON.Polygon> {
+export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString> | GeoJSON.LineString, point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, options: CalculateGeofenceOnPathOptions): GeoJSON.Feature<GeoJSON.Polygon> {
 	//
 
 	//
@@ -113,7 +123,7 @@ export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString
 	// a number of points equal to the distance between the points in the original LineString.
 	// Then, it is necessary to merge all the points into a single LineString again.
 
-	const chunkedLineFC = lineChunk(path, configurationValues.chunk_precision || 10, { units: 'meters' });
+	const chunkedLineFC = turf.lineChunk(path, configurationValues.chunk_precision || 10, { units: 'meters' });
 
 	if (!chunkedLineFC.features || chunkedLineFC.features.length === 0) {
 		throw new Error('Error chunking path');
@@ -122,7 +132,7 @@ export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString
 	const coordinates: GeoJSON.Position[] = [];
 	chunkedLineFC.features.forEach(feature => coordinates.push(...feature.geometry.coordinates));
 
-	const chunkedLine = lineString(coordinates);
+	const chunkedLine = turf.lineString(coordinates);
 
 	if (!chunkedLine) {
 		throw new Error('Error creating chunked line');
@@ -132,7 +142,7 @@ export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString
 	// With the equally spaced points, we can calculate the nearest point
 	// on the path to the given point. This is the starting point of the geofence.
 
-	const startingPoint = nearestPointOnLine(chunkedLine, point);
+	const startingPoint = turf.nearestPointOnLine(chunkedLine, point);
 
 	if (!startingPoint) {
 		throw new Error('Error calculating nearest point on path');
@@ -144,7 +154,7 @@ export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString
 	// 1. The first one is the path from the start of the path to the starting point.
 	// 2. The second one is the path from the starting point to the end of the path.
 
-	const splitPath = lineSplit(chunkedLine, startingPoint);
+	const splitPath = turf.lineSplit(chunkedLine, startingPoint);
 
 	if (!splitPath.features || splitPath.features.length < 2) {
 		throw new Error('Error splitting path');
@@ -157,15 +167,15 @@ export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString
 	// the starting point is the total length of the part minus the distance,
 	// effectively going backwards.
 
-	const backwardDistance = length(splitPath.features[0], { units: 'meters' });
-	const backwardSplit = lineSliceAlong(splitPath.features[0], backwardDistance - configurationValues.meters_backward, backwardDistance, { units: 'meters' });
+	const backwardDistance = turf.length(splitPath.features[0], { units: 'meters' });
+	const backwardSplit = turf.lineSliceAlong(splitPath.features[0], backwardDistance - configurationValues.meters_backward, backwardDistance, { units: 'meters' });
 
-	const forwardSplit = lineSliceAlong(splitPath.features[1], 0, configurationValues.meters_forward, { units: 'meters' });
+	const forwardSplit = turf.lineSliceAlong(splitPath.features[1], 0, configurationValues.meters_forward, { units: 'meters' });
 
 	//
 	// With both parts cut, we can merge them into a single LineString
 
-	const mergedParts = lineString([...backwardSplit.geometry.coordinates, ...forwardSplit.geometry.coordinates]);
+	const mergedParts = turf.lineString([...backwardSplit.geometry.coordinates, ...forwardSplit.geometry.coordinates]);
 
 	if (!mergedParts) {
 		throw new Error('Error merging path');
@@ -174,7 +184,7 @@ export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString
 	//
 	// Finally, we can create a buffer around the merged path. This will be the geofence.
 
-	const geofence = buffer(mergedParts, 20, { units: 'meters' });
+	const geofence = turf.buffer(mergedParts, 20, { units: 'meters' });
 
 	if (!geofence || geofence.geometry.type !== 'Polygon') {
 		throw new Error('Error creating geofence');

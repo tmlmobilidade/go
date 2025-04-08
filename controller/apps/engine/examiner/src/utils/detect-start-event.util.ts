@@ -1,9 +1,8 @@
 /* * */
 
-import { createGeofence } from '@/utils/create-geofence.util.js';
-import { isInsideGeofence } from '@/utils/is-inside-geofence.util.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
 import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/core/types';
+import { createGeofenceOnPoint, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /**
  * The trip start time is the time of the last event inside the geofence of the first stop
@@ -28,8 +27,8 @@ export function detectStartEvent(hashedTripWaypointsData: HashedTripWaypoint[], 
 		return null;
 	}
 
-	const firstStopGeofence = createGeofence(Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat));
-	const secondStopGeofence = createGeofence(Number(sortedWaypoints[1].stop_lon), Number(sortedWaypoints[1].stop_lat));
+	const firstStopGeofence = createGeofenceOnPoint([Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat)]);
+	const secondStopGeofence = createGeofenceOnPoint([Number(sortedWaypoints[1].stop_lon), Number(sortedWaypoints[1].stop_lat)]);
 
 	//
 	// Sort vehicle events by vehicle timestamp
@@ -42,7 +41,7 @@ export function detectStartEvent(hashedTripWaypointsData: HashedTripWaypoint[], 
 	let firstEventInsideSecondStop: null | VehicleEvent = null;
 
 	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfSecondStop = isInsideGeofence(vehicleEventData.longitude, vehicleEventData.latitude, secondStopGeofence);
+		const vehicleEventIsInsideGeofenceOfSecondStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], secondStopGeofence);
 		if (vehicleEventIsInsideGeofenceOfSecondStop) {
 			firstEventInsideSecondStop = vehicleEventData;
 			break;
@@ -61,7 +60,7 @@ export function detectStartEvent(hashedTripWaypointsData: HashedTripWaypoint[], 
 	let lastEventInsideFirstStop: null | VehicleEvent = null;
 
 	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfFirstStop = isInsideGeofence(vehicleEventData.longitude, vehicleEventData.latitude, firstStopGeofence);
+		const vehicleEventIsInsideGeofenceOfFirstStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], firstStopGeofence);
 		if (vehicleEventIsInsideGeofenceOfFirstStop) {
 			// Check if the event is before the first event found inside the geofence of the second stop
 			if (vehicleEventData.created_at < firstEventInsideSecondStop.created_at) {
