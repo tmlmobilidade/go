@@ -18,9 +18,9 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/interfaces": "20250404.1411.31",
-		"@tmlmobilidade/types": "20250403.1846.14",
-		"@tmlmobilidade/utils": "20250403.1846.27",
+		"@tmlmobilidade/interfaces": "20250408.2323.41",
+		"@tmlmobilidade/types": "20250408.2323.40",
+		"@tmlmobilidade/utils": "20250408.2323.42",
 		"luxon": "3.6.1",
 		"pg": "8.14.1"
 	},
