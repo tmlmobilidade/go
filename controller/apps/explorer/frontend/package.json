@@ -10,7 +10,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/nprogress": "7.17.3",
+		"@mantine/nprogress": "7.17.4",
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/core": "20250324.1106.22",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
@@ -27,7 +27,7 @@
 		"react-dom": "19.1.0",
 		"react-viewport-list": "7.1.2",
 		"recharts": "2.15.2",
-		"sharp": "0.33.5",
+		"sharp": "0.34.1",
 		"swr": "2.3.3"
 	},
 	"devDependencies": {
@@ -37,7 +37,7 @@
 		"@types/node": "22.14.0",
 		"@types/react": "19.1.0",
 		"@types/react-dom": "19.1.1",
-		"typescript": "5.8.2"
+		"typescript": "5.8.3"
 	},
 	"overrides": {
 		"react": "19.1.0",

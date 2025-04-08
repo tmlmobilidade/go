@@ -20,6 +20,6 @@
 		"@types/luxon": "3.6.2",
 		"@types/node": "22.14.0",
 		"resolve-tspaths": "0.8.23",
-		"typescript": "5.8.2"
+		"typescript": "5.8.3"
 	}
 }

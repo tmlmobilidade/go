@@ -17,7 +17,7 @@
 		"@carrismetropolitana/eslint": "20250325.1926.5",
 		"@tmlmobilidade/tsconfig": "20250325.1731.13",
 		"turbo": "2.5.0",
-		"typescript": "5.8.2"
+		"typescript": "5.8.3"
 	},
 	"workspaces": [
 		"apps/bridge/*",

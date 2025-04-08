@@ -17,7 +17,7 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
-		"@tmlmobilidade/interfaces": "20250403.2035.40",
+		"@tmlmobilidade/interfaces": "20250404.1411.31",
 		"@tmlmobilidade/lib": "20250403.1219.51",
 		"@tmlmobilidade/types": "20250403.1846.14",
 		"@tmlmobilidade/utils": "20250403.1846.27",
@@ -33,6 +33,6 @@
 		"@types/jest": "29.5.14",
 		"@types/node": "22.14.0",
 		"jest": "29.7.0",
-		"typescript": "5.8.2"
+		"typescript": "5.8.3"
 	}
 }
