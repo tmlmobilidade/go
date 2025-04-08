@@ -1,6 +1,18 @@
 /* * */
 
-import { buffer, length, lineChunk, lineSliceAlong, lineSplit, lineString, nearestPointOnLine, point } from '@turf/turf';
+import { booleanPointInPolygon, buffer, length, lineChunk, lineSliceAlong, lineSplit, lineString, nearestPointOnLine, point } from '@turf/turf';
+
+/* * */
+
+/**
+ * Check if a given point is inside a given geofence.
+ * @param point A GeoJSON.Point representation of the point to check.
+ * @param geofence A GeoJSON.Polygon representation of the geofence.
+ * @returns A boolean indicating if the point is inside the geofence.
+ */
+export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point, geofence: GeoJSON.Feature<GeoJSON.Polygon>): boolean {
+	return booleanPointInPolygon(point, geofence);
+}
 
 /* * */
 
