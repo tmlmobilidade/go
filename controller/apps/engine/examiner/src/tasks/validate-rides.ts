@@ -11,7 +11,8 @@ import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { detectEndEvent } from '@/utils/detect-end-event.util.js';
 import { detectFirstEvent } from '@/utils/detect-first-event.util.js';
 import { detectLastEvent } from '@/utils/detect-last-event.util.js';
-// import { detectStartEvent } from '@/utils/detect-start-event.util.js';
+import { detectStartEventAlt } from '@/utils/detect-start-event-alt.util.js';
+import { detectStartEvent } from '@/utils/detect-start-event.util.js';
 import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
 
 /* * */
@@ -27,7 +28,6 @@ import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
 import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simpleOneValidationTransaction.analyzer.js';
 import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simpleOneVehicleEventOrValidationTransaction.analyzer.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simpleThreeVehicleEvents.analyzer.js';
-import { detectStartEventAlt } from '@/utils/detect-start-event-alt.util.js';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
@@ -152,8 +152,8 @@ export async function validateRides() {
 				rideData.seen_first_at = detectedFirstEvent?.created_at || null;
 				rideData.seen_last_at = detectedLastEvent?.created_at || null;
 
-				// const detectedStartEvent = detectStartEvent(hashedTripData.path, vehicleEventsData);
-				const detectedStartEvent = detectStartEventAlt(analysisData);
+				const detectedStartEvent = detectStartEvent(hashedTripData.path, vehicleEventsData);
+				// const detectedStartEvent = detectStartEventAlt(analysisData);
 				const detectedEndEvent = detectEndEvent(hashedTripData.path, vehicleEventsData);
 
 				rideData.start_time_observed = detectedStartEvent?.created_at || null;
