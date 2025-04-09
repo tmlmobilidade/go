@@ -42,7 +42,7 @@ export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON
  * @param radius (default is 50 meters)
  * @returns The GeoJSON Feature of a Polygon.
  */
-export function createGeofenceOnPoint(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, radius = 50): GeoJSON.Feature<GeoJSON.Polygon> {
+export function getGeofenceOnPoint(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, radius = 50): GeoJSON.Feature<GeoJSON.Polygon> {
 	//
 
 	const centerPoint = getGeoJsonPointFromAny(point);
@@ -66,25 +66,25 @@ interface CalculateGeofenceOnPathOptions {
 	 * Precision used to calculate the nearest point on the path to the given point, in meters.
 	 * @default 10 meters
 	 */
-	chunk_precision: number
+	chunk_precision?: number
 
 	/**
 	 * The distance in meters to calculate the geofence radius.
 	 * @default 50 meters
 	 */
-	geofence_radius: number
+	geofence_radius?: number
 
 	/**
 	 * The distance in meters to calculate the geofence backwards from the stop point.
 	 * @default 50 meters
 	 */
-	meters_backward: number
+	meters_backward?: number
 
 	/**
 	 * The distance in meters to calculate the geofence forwards from the stop point.
 	 * @default 50 meters
 	 */
-	meters_forward: number
+	meters_forward?: number
 
 }
 
@@ -101,17 +101,17 @@ interface CalculateGeofenceOnPathOptions {
  * @param options.chunk_precision The precision used to calculate the nearest point on the path to the given point.
  * @returns A GeoJSON.Polygon feature representation of the geofence.
  */
-export function calculateGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString> | GeoJSON.LineString, point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, options: CalculateGeofenceOnPathOptions): GeoJSON.Feature<GeoJSON.Polygon> {
+export function getGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString> | GeoJSON.LineString, point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, options?: CalculateGeofenceOnPathOptions): GeoJSON.Feature<GeoJSON.Polygon> {
 	//
 
 	//
 	// Setup the configuration values for the geofence calculation.
 
-	const configurationValues: CalculateGeofenceOnPathOptions = {
-		chunk_precision: options.chunk_precision || 10,
-		geofence_radius: options.geofence_radius || 50,
-		meters_backward: options.meters_backward || 50,
-		meters_forward: options.meters_forward || 50,
+	const configurationValues = {
+		chunk_precision: options?.chunk_precision || 10,
+		geofence_radius: options?.geofence_radius || 50,
+		meters_backward: options?.meters_backward || 50,
+		meters_forward: options?.meters_forward || 50,
 	};
 
 	//

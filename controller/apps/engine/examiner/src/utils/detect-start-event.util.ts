@@ -2,7 +2,7 @@
 
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
 import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/core/types';
-import { createGeofenceOnPoint, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { getGeofenceOnPoint, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /**
  * The trip start time is the time of the last event inside the geofence of the first stop
@@ -27,8 +27,8 @@ export function detectStartEvent(hashedTripWaypointsData: HashedTripWaypoint[], 
 		return null;
 	}
 
-	const firstStopGeofence = createGeofenceOnPoint([Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat)]);
-	const secondStopGeofence = createGeofenceOnPoint([Number(sortedWaypoints[1].stop_lon), Number(sortedWaypoints[1].stop_lat)]);
+	const firstStopGeofence = getGeofenceOnPoint([Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat)]);
+	const secondStopGeofence = getGeofenceOnPoint([Number(sortedWaypoints[1].stop_lon), Number(sortedWaypoints[1].stop_lat)]);
 
 	//
 	// Sort vehicle events by vehicle timestamp

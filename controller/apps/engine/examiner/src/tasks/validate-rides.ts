@@ -11,7 +11,7 @@ import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { detectEndEvent } from '@/utils/detect-end-event.util.js';
 import { detectFirstEvent } from '@/utils/detect-first-event.util.js';
 import { detectLastEvent } from '@/utils/detect-last-event.util.js';
-import { detectStartEvent } from '@/utils/detect-start-event.util.js';
+// import { detectStartEvent } from '@/utils/detect-start-event.util.js';
 import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
 
 /* * */
@@ -27,6 +27,7 @@ import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
 import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simpleOneValidationTransaction.analyzer.js';
 import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simpleOneVehicleEventOrValidationTransaction.analyzer.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simpleThreeVehicleEvents.analyzer.js';
+import { detectStartEventAlt } from '@/utils/detect-start-event-alt.util.js';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
@@ -130,6 +131,18 @@ export async function validateRides() {
 				const fetchAnalysisDataTime = fetchAnalysisDataTimer.get();
 
 				//
+				// Build the analysis data object to be passed to the analyzers.
+
+				const analysisData: AnalysisData = {
+					apex_t11: apexT11Data,
+					apex_t19: apexT19Data,
+					hashed_shape: hashedShapeData,
+					hashed_trip: hashedTripData,
+					ride: rideData,
+					vehicle_events: vehicleEventsData,
+				};
+
+				//
 				// Augment the current Ride with additional information retrieved
 				// from the fetched dynamic data. Some of this data will be used by the analyzers.
 
@@ -139,7 +152,8 @@ export async function validateRides() {
 				rideData.seen_first_at = detectedFirstEvent?.created_at || null;
 				rideData.seen_last_at = detectedLastEvent?.created_at || null;
 
-				const detectedStartEvent = detectStartEvent(hashedTripData.path, vehicleEventsData);
+				// const detectedStartEvent = detectStartEvent(hashedTripData.path, vehicleEventsData);
+				const detectedStartEvent = detectStartEventAlt(analysisData);
 				const detectedEndEvent = detectEndEvent(hashedTripData.path, vehicleEventsData);
 
 				rideData.start_time_observed = detectedStartEvent?.created_at || null;
@@ -155,14 +169,7 @@ export async function validateRides() {
 				// Run the analyzers and count how many passed,
 				// how many failed and how many errored.
 
-				rideData.analysis = runAnalyzers({
-					apex_t11: apexT11Data,
-					apex_t19: apexT19Data,
-					hashed_shape: hashedShapeData,
-					hashed_trip: hashedTripData,
-					ride: rideData,
-					vehicle_events: vehicleEventsData,
-				});
+				rideData.analysis = runAnalyzers(analysisData);
 
 				const passAnalysisCount = rideData.analysis.filter(item => item.grade === 'pass');
 				const failAnalysisCount = rideData.analysis.filter(item => item.grade === 'fail');
