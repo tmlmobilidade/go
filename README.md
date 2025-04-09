@@ -12,7 +12,7 @@ Here's what a typical SAE application folder structure looks like:
 │   ├── secrets/
 │   │   ├── .env
 |   |   └── private-key.pem
-│   ├── docker-compose.yaml
+│   ├── compose.yaml
 │   ├── nginx
 │   └── .gitignore
 ├── _dev/
