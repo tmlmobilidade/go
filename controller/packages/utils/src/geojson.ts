@@ -1,8 +1,12 @@
 /* * */
 
+import { HashedShape } from '@tmlmobilidade/types';
 import * as turf from '@turf/turf';
-import { type Feature, type Point, type Polygon } from 'geojson';
-import jsts from 'jsts';
+import { type Feature, type LineString, type Point, type Polygon } from 'geojson';
+
+/* * */
+
+const EARTH_RADIUS = 6371000; // Earth's radius in meters
 
 /* * */
 
@@ -69,46 +73,33 @@ export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON
 
 /**
  * Create a geofence around a given point with a given radius in meters (default is 50 meters).
- * @param point A GeoJSON.Point representation of the point to create the geofence around.
+ * @param point A GeoJSON Point representation of the point to create the geofence around.
  * @param radius The distance in meters to calculate the geofence radius. Default is 50 meters.
+ * @param steps The number of steps to use for the buffer. Default is 16.
  * @returns The GeoJSON Feature of a Polygon.
  */
-export function getGeofenceOnPoint(point: Feature<GeoJSON.Point>, radius = 50): Feature<Polygon> {
-	//
-
-	const reader = new jsts.io.GeoJSONReader();
-	const writer = new jsts.io.GeoJSONWriter();
-
-	// Project to planar coordinates (Web Mercator)
-	const projected = turf.toMercator(point);
-
-	// Convert to JSTS geometry
-	const jstsGeom = reader.read(projected.geometry);
-
-	// Perform buffer in meters (since we're in Mercator)
-	const buffered = jstsGeom.buffer(radius);
-
-	// Convert JSTS geometry back to GeoJSON
-	const bufferedGeoJSON = writer.write(buffered);
-
-	// Wrap in a Turf Feature and reproject to WGS84
-	return turf.toWgs84(bufferedGeoJSON) as Feature<Polygon>;
-
-	//
-	//
-	//
-	//
-
-	// const centerPoint = getGeoJsonPointFromAny(point);
-
-	// const geofence = turf.buffer(centerPoint, radius, { units: 'meters' });
-
-	// if (!geofence || geofence.geometry.type !== 'Polygon') {
-	// 	throw new Error('Error creating geofence');
-	// }
-
-	// return geofence as GeoJSON.Feature<GeoJSON.Polygon>;
-
+export function getGeofenceOnPoint(point: Feature<Point>, radius = 50, steps = 16): Feature<Polygon> {
+	// Extract the center coordinates from the point
+	const [centerLon, centerLat] = point.geometry.coordinates;
+	// Set the angle size based on the number of steps
+	const angleStep = (2 * Math.PI) / steps;
+	// Set an empty array to hold the coordinates of the polygon vertices
+	const coords: [number, number][] = [];
+	// Calculate the coordinates of the polygon vertices
+	for (let i = 0; i < steps; i++) {
+		const angle = i * angleStep;
+		const dx = radius * Math.cos(angle);
+		const dy = radius * Math.sin(angle);
+		const newLat = centerLat + (dy / EARTH_RADIUS) * (180 / Math.PI);
+		const newLng = centerLon + (dx / (EARTH_RADIUS * Math.cos((centerLat * Math.PI) / 180))) * (180 / Math.PI);
+		coords.push([newLng, newLat]);
+	}
+	// Close the polygon by adding the first coordinate to the end
+	coords.push(coords[0]);
+	// Create the GeoJSON Polygon feature
+	const polygon = turf.polygon([coords]);
+	// Return the polygon feature
+	return polygon;
 	//
 }
 
@@ -234,4 +225,85 @@ export function getGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString>, poi
 	return geofence as GeoJSON.Feature<GeoJSON.Polygon>;
 
 	//
+}
+
+/**
+ * Converts a list of GTFS shape points into a GeoJSON LineString feature.
+ * @param points Array of GTFS shape points
+ * @returns GeoJSON LineString feature
+ */
+export function gtfsShapeToLineString(points: HashedShape['points']): Feature<LineString> {
+	if (!points.length) {
+		throw new Error('GTFS shape is empty');
+	}
+
+	const sortedPoints = [...points].sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
+
+	const coordinates = sortedPoints.map(p => [Number(p.shape_pt_lon), Number(p.shape_pt_lat)] as [number, number]);
+
+	return {
+		geometry: {
+			coordinates,
+			type: 'LineString',
+		},
+		properties: {},
+		type: 'Feature',
+	};
+}
+
+export function bufferLineFast(
+	line: Feature<GeoJSON.LineString>,
+	radiusMeters: number,
+): Feature<Polygon> {
+	const coords = line.geometry.coordinates;
+	if (coords.length < 2) {
+		throw new Error('LineString must have at least 2 points');
+	}
+
+	const leftSide: [number, number][] = [];
+	const rightSide: [number, number][] = [];
+
+	for (let i = 0; i < coords.length - 1; i++) {
+		const [lng1, lat1] = coords[i];
+		const [lng2, lat2] = coords[i + 1];
+
+		const dx = lng2 - lng1;
+		const dy = lat2 - lat1;
+
+		// Approximate distance in degrees per meter (not perfectly accurate but fast)
+		const avgLat = (lat1 + lat2) / 2;
+		const latDegPerMeter = 1 / (111320); // ≈ 1 deg lat = 111.32 km
+		const lngDegPerMeter = 1 / (111320 * Math.cos((avgLat * Math.PI) / 180));
+
+		// Normal vector (perpendicular to the segment)
+		const length = Math.sqrt(dx * dx + dy * dy);
+		const nx = -dy / length;
+		const ny = dx / length;
+
+		const offsetLng = nx * radiusMeters * lngDegPerMeter;
+		const offsetLat = ny * radiusMeters * latDegPerMeter;
+
+		// Push offset points on both sides
+		leftSide.push([lng1 + offsetLng, lat1 + offsetLat]);
+		if (i === coords.length - 2) {
+			leftSide.push([lng2 + offsetLng, lat2 + offsetLat]);
+		}
+
+		rightSide.push([lng1 - offsetLng, lat1 - offsetLat]);
+		if (i === coords.length - 2) {
+			rightSide.push([lng2 - offsetLng, lat2 - offsetLat]);
+		}
+	}
+
+	// Combine both sides (left + reversed right) to form the polygon
+	const ring = [...leftSide, ...rightSide.reverse(), leftSide[0]];
+
+	return {
+		geometry: {
+			coordinates: [ring],
+			type: 'Polygon',
+		},
+		properties: {},
+		type: 'Feature',
+	};
 }

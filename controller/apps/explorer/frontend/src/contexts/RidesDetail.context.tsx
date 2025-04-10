@@ -2,10 +2,10 @@
 
 /* * */
 
-import { createGeofence } from '@/utils/create-geofence.util';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
 import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/core/types';
+import { bufferLineFast, getGeofenceOnPoint, getGeoJsonPointFromAny, gtfsShapeToLineString } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { } from '@turf/turf';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
@@ -127,7 +127,9 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		fc.features = hashedTripData.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
-				const geofenceData = createGeofence(Number(waypoint.stop_lon), Number(waypoint.stop_lat));
+				// const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
+				const lineStringFromShape = gtfsShapeToLineString(hashedShapeData?.points ?? []);
+				const geofenceData = bufferLineFast(lineStringFromShape, 50);
 				geofenceData.properties = {
 					color: `#${hashedTripData.route_color}`,
 					sequence: waypoint.stop_sequence,
@@ -136,7 +138,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 				return geofenceData;
 			});
 		return fc;
-	}, [hashedTripData]);
+	}, [hashedTripData, hashedShapeData]);
 
 	const scheduledShapeFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
 		if (!hashedShapeData?.points) return;
