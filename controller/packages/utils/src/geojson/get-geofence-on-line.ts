@@ -1,10 +1,8 @@
 /* * */
 
 import { METERS_PER_DEGREE } from '@/geojson/constants.js';
-import { polygon } from '@turf/helpers';
+import { getPolygon } from '@/geojson/get-polygon.js';
 import { type Feature, type LineString, type Polygon } from 'geojson';
-
-import { getPolygon } from './get-polygon.js';
 
 /**
  * Creates a fast approximate buffer around a LineString by offsetting segments to both sides.
@@ -60,5 +58,5 @@ export function getGeofenceOnLine(line: Feature<LineString>, radius = 50): Featu
 		leftOffsetPoints[0], // close the ring
 	];
 	// Return the polygon feature
-	return polygon([polygonRing]);
+	return getPolygon([polygonRing]);
 }
