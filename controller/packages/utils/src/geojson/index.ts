@@ -5,6 +5,8 @@ export * from '@/geojson/get-geofence-on-line.js';
 export * from '@/geojson/get-geofence-on-point.js';
 export * from '@/geojson/get-geojson-point-from-any.js';
 export * from '@/geojson/get-line-string-from-gtfs-shape.js';
+export * from '@/geojson/get-line-string.js';
+export * from '@/geojson/get-polygon.js';
 export * from '@/geojson/interpolate-coords.js';
 export * from '@/geojson/is-point-in-polygon.js';
 export * from '@/geojson/nearest-point-on-line.js';

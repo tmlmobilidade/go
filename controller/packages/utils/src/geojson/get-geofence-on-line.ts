@@ -4,6 +4,8 @@ import { METERS_PER_DEGREE } from '@/geojson/constants.js';
 import { polygon } from '@turf/helpers';
 import { type Feature, type LineString, type Polygon } from 'geojson';
 
+import { getPolygon } from './get-polygon.js';
+
 /**
  * Creates a fast approximate buffer around a LineString by offsetting segments to both sides.
  * This is a simplified approach, not suitable for high-precision or large-scale coordinates.
@@ -15,7 +17,7 @@ export function getGeofenceOnLine(line: Feature<LineString>, radius = 50): Featu
 	// Extract the coordinates from the LineString
 	const lineCoordinates = line.geometry.coordinates;
 	// Exit if the line has less than 2 points
-	if (lineCoordinates.length < 2) throw new Error('LineString must have at least 2 points.');
+	if (lineCoordinates.length < 2) return getPolygon();
 	// Initialize arrays to hold the offset points
 	const leftOffsetPoints: [number, number][] = [];
 	const rightOffsetPoints: [number, number][] = [];
