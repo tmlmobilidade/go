@@ -6,7 +6,8 @@ import { type Feature, type LineString, type Point, type Polygon } from 'geojson
 
 /* * */
 
-const EARTH_RADIUS = 6371000; // Earth's radius in meters
+const EARTH_RADIUS = 6_371_000; // Earth's radius in meters
+const METERS_PER_DEGREE = 111_320; // Approximate meters per degree
 
 /* * */
 
@@ -25,6 +26,26 @@ export function getGeoJsonPointFromAny(point: GeoJSON.Feature<GeoJSON.Point> | G
 	}
 	// Throw if invalid point type
 	throw new Error('Invalid point type');
+}
+
+/* * */
+
+/**
+ * Converts a list of GTFS shape points into a GeoJSON LineString feature.
+ * @param points Array of GTFS shape points
+ * @returns GeoJSON LineString feature
+ */
+export function getLineStringFromGtfsShape(points: HashedShape['points']): Feature<LineString> {
+	// Exit if no points are provided
+	if (!points.length) throw new Error('GTFS shape is empty');
+	// Sort points by shape_pt_sequence
+	const sortedPoints = [...points].sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
+	// Create a LineString feature
+	const coordinates = sortedPoints.map(p => [Number(p.shape_pt_lon), Number(p.shape_pt_lat)] as [number, number]);
+	// Create the GeoJSON LineString feature
+	const lineString = turf.lineString(coordinates);
+	// Return the LineString feature
+	return lineString;
 }
 
 /* * */
@@ -102,6 +123,78 @@ export function getGeofenceOnPoint(point: Feature<Point>, radius = 50, steps = 1
 	return polygon;
 }
 
+/* * */
+
+/**
+ * Creates a fast approximate buffer around a LineString by offsetting segments to both sides.
+ * This is a simplified approach, not suitable for high-precision or large-scale coordinates.
+ * @param line A GeoJSON LineString feature representing the path.
+ * @param radius The buffer distance in meters. Default is 50 meters.
+ * @returns A GeoJSON Polygon feature representing the tube-like buffer around the line.
+ */
+export function getGeofenceOnLine(line: Feature<LineString>, radius = 50): Feature<Polygon> {
+	// Extract the coordinates from the LineString
+	const lineCoordinates = line.geometry.coordinates;
+	// Exit if the line has less than 2 points
+	if (lineCoordinates.length < 2) throw new Error('LineString must have at least 2 points.');
+	// Initialize arrays to hold the offset points
+	const leftOffsetPoints: [number, number][] = [];
+	const rightOffsetPoints: [number, number][] = [];
+	// Loop through each segment of the line
+	// to calculate offset points for both sides
+	for (let i = 0; i < lineCoordinates.length - 1; i++) {
+		// Get the coordinates of the current and next point
+		const [lngStart, latStart] = lineCoordinates[i];
+		const [lngEnd, latEnd] = lineCoordinates[i + 1];
+		// Calculate the differences in longitude and latitude between the two points
+		const deltaLng = lngEnd - lngStart;
+		const deltaLat = latEnd - latStart;
+		// Calculate the average latitude and convert degrees to radians
+		// to get the meters per degree for longitude
+		const averageLatitude = (latStart + latEnd) / 2;
+		const metersPerDegreeLng = METERS_PER_DEGREE * Math.cos((averageLatitude * Math.PI) / 180);
+		const metersPerDegreeLat = METERS_PER_DEGREE;
+		// Calculate the perpendicular (normal) vector to the segment
+		const segmentLength = Math.sqrt(deltaLng * deltaLng + deltaLat * deltaLat);
+		const unitNormalX = -deltaLat / segmentLength;
+		const unitNormalY = deltaLng / segmentLength;
+		// Calculate the offsets in longitude and latitude using
+		// the meters per degree conversion and the radius of the buffer
+		const offsetLng = (unitNormalX * radius) / metersPerDegreeLng;
+		const offsetLat = (unitNormalY * radius) / metersPerDegreeLat;
+		// Push offset coordinates for left and right sides of the line
+		leftOffsetPoints.push([lngStart + offsetLng, latStart + offsetLat]);
+		rightOffsetPoints.push([lngStart - offsetLng, latStart - offsetLat]);
+		// For the last segment (last 2 points),
+		// add the end point with the same offsets
+		if (i === lineCoordinates.length - 2) {
+			leftOffsetPoints.push([lngEnd + offsetLng, latEnd + offsetLat]);
+			rightOffsetPoints.push([lngEnd - offsetLng, latEnd - offsetLat]);
+		}
+	}
+	// Close the polygon ring by combining left and reversed right side
+	const polygonRing: [number, number][] = [
+		...leftOffsetPoints,
+		...rightOffsetPoints.reverse(),
+		leftOffsetPoints[0], // close the ring
+	];
+	// Create the GeoJSON Polygon feature
+	const polygon = turf.polygon([polygonRing]);
+	// Return the polygon feature
+	return polygon;
+}
+
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
 /* * */
 
 interface CalculateGeofenceOnPathOptions {
@@ -224,81 +317,4 @@ export function getGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString>, poi
 	return geofence as GeoJSON.Feature<GeoJSON.Polygon>;
 
 	//
-}
-
-/**
- * Converts a list of GTFS shape points into a GeoJSON LineString feature.
- * @param points Array of GTFS shape points
- * @returns GeoJSON LineString feature
- */
-export function getLineStringFromGtfsShape(points: HashedShape['points']): Feature<LineString> {
-	// Exit if no points are provided
-	if (!points.length) throw new Error('GTFS shape is empty');
-	// Sort points by shape_pt_sequence
-	const sortedPoints = [...points].sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
-	// Create a LineString feature
-	const coordinates = sortedPoints.map(p => [Number(p.shape_pt_lon), Number(p.shape_pt_lat)] as [number, number]);
-	// Create the GeoJSON LineString feature
-	const lineString = turf.lineString(coordinates);
-	// Return the LineString feature
-	return lineString;
-}
-
-/* * */
-
-export function bufferLineFast(
-	line: Feature<GeoJSON.LineString>,
-	radiusMeters: number,
-): Feature<Polygon> {
-	const coords = line.geometry.coordinates;
-	if (coords.length < 2) {
-		throw new Error('LineString must have at least 2 points');
-	}
-
-	const leftSide: [number, number][] = [];
-	const rightSide: [number, number][] = [];
-
-	for (let i = 0; i < coords.length - 1; i++) {
-		const [lng1, lat1] = coords[i];
-		const [lng2, lat2] = coords[i + 1];
-
-		const dx = lng2 - lng1;
-		const dy = lat2 - lat1;
-
-		// Approximate distance in degrees per meter (not perfectly accurate but fast)
-		const avgLat = (lat1 + lat2) / 2;
-		const latDegPerMeter = 1 / (111320); // ≈ 1 deg lat = 111.32 km
-		const lngDegPerMeter = 1 / (111320 * Math.cos((avgLat * Math.PI) / 180));
-
-		// Normal vector (perpendicular to the segment)
-		const length = Math.sqrt(dx * dx + dy * dy);
-		const nx = -dy / length;
-		const ny = dx / length;
-
-		const offsetLng = nx * radiusMeters * lngDegPerMeter;
-		const offsetLat = ny * radiusMeters * latDegPerMeter;
-
-		// Push offset points on both sides
-		leftSide.push([lng1 + offsetLng, lat1 + offsetLat]);
-		if (i === coords.length - 2) {
-			leftSide.push([lng2 + offsetLng, lat2 + offsetLat]);
-		}
-
-		rightSide.push([lng1 - offsetLng, lat1 - offsetLat]);
-		if (i === coords.length - 2) {
-			rightSide.push([lng2 - offsetLng, lat2 - offsetLat]);
-		}
-	}
-
-	// Combine both sides (left + reversed right) to form the polygon
-	const ring = [...leftSide, ...rightSide.reverse(), leftSide[0]];
-
-	return {
-		geometry: {
-			coordinates: [ring],
-			type: 'Polygon',
-		},
-		properties: {},
-		type: 'Feature',
-	};
 }
