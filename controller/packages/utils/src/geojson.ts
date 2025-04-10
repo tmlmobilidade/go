@@ -100,7 +100,6 @@ export function getGeofenceOnPoint(point: Feature<Point>, radius = 50, steps = 1
 	const polygon = turf.polygon([coords]);
 	// Return the polygon feature
 	return polygon;
-	//
 }
 
 /* * */
@@ -232,24 +231,20 @@ export function getGeofenceOnPath(path: GeoJSON.Feature<GeoJSON.LineString>, poi
  * @param points Array of GTFS shape points
  * @returns GeoJSON LineString feature
  */
-export function gtfsShapeToLineString(points: HashedShape['points']): Feature<LineString> {
-	if (!points.length) {
-		throw new Error('GTFS shape is empty');
-	}
-
+export function getLineStringFromGtfsShape(points: HashedShape['points']): Feature<LineString> {
+	// Exit if no points are provided
+	if (!points.length) throw new Error('GTFS shape is empty');
+	// Sort points by shape_pt_sequence
 	const sortedPoints = [...points].sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
-
+	// Create a LineString feature
 	const coordinates = sortedPoints.map(p => [Number(p.shape_pt_lon), Number(p.shape_pt_lat)] as [number, number]);
-
-	return {
-		geometry: {
-			coordinates,
-			type: 'LineString',
-		},
-		properties: {},
-		type: 'Feature',
-	};
+	// Create the GeoJSON LineString feature
+	const lineString = turf.lineString(coordinates);
+	// Return the LineString feature
+	return lineString;
 }
+
+/* * */
 
 export function bufferLineFast(
 	line: Feature<GeoJSON.LineString>,
