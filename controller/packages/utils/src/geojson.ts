@@ -1,6 +1,8 @@
 /* * */
 
 import * as turf from '@turf/turf';
+import { type Feature, type Point, type Polygon } from 'geojson';
+import jsts from 'jsts';
 
 /* * */
 
@@ -67,23 +69,45 @@ export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON
 
 /**
  * Create a geofence around a given point with a given radius in meters (default is 50 meters).
- * @param latitude
- * @param longitude
- * @param radius (default is 50 meters)
+ * @param point A GeoJSON.Point representation of the point to create the geofence around.
+ * @param radius The distance in meters to calculate the geofence radius. Default is 50 meters.
  * @returns The GeoJSON Feature of a Polygon.
  */
-export function getGeofenceOnPoint(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, radius = 50): GeoJSON.Feature<GeoJSON.Polygon> {
+export function getGeofenceOnPoint(point: Feature<GeoJSON.Point>, radius = 50): Feature<Polygon> {
 	//
 
-	const centerPoint = getGeoJsonPointFromAny(point);
+	const reader = new jsts.io.GeoJSONReader();
+	const writer = new jsts.io.GeoJSONWriter();
 
-	const geofence = turf.buffer(centerPoint, radius, { units: 'meters' });
+	// Project to planar coordinates (Web Mercator)
+	const projected = turf.toMercator(point);
 
-	if (!geofence || geofence.geometry.type !== 'Polygon') {
-		throw new Error('Error creating geofence');
-	}
+	// Convert to JSTS geometry
+	const jstsGeom = reader.read(projected.geometry);
 
-	return geofence as GeoJSON.Feature<GeoJSON.Polygon>;
+	// Perform buffer in meters (since we're in Mercator)
+	const buffered = jstsGeom.buffer(radius);
+
+	// Convert JSTS geometry back to GeoJSON
+	const bufferedGeoJSON = writer.write(buffered);
+
+	// Wrap in a Turf Feature and reproject to WGS84
+	return turf.toWgs84(bufferedGeoJSON) as Feature<Polygon>;
+
+	//
+	//
+	//
+	//
+
+	// const centerPoint = getGeoJsonPointFromAny(point);
+
+	// const geofence = turf.buffer(centerPoint, radius, { units: 'meters' });
+
+	// if (!geofence || geofence.geometry.type !== 'Polygon') {
+	// 	throw new Error('Error creating geofence');
+	// }
+
+	// return geofence as GeoJSON.Feature<GeoJSON.Polygon>;
 
 	//
 }
