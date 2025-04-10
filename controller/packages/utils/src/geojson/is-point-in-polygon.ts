@@ -8,7 +8,7 @@ import { type Feature, type Point, type Polygon, type Position } from 'geojson';
  * @param geofence A GeoJSON.Polygon representation of the geofence.
  * @returns A boolean indicating if the point is inside the geofence.
  */
-export function isPointInPolygon(point: Feature<Point>, polygon: Feature<Polygon>): boolean {
+export function isPointInPolygon(point: Feature<Point> | Position, polygon: Feature<Polygon>): boolean {
 	//
 
 	const pt: Position = Array.isArray(point) ? point : point.geometry.coordinates;

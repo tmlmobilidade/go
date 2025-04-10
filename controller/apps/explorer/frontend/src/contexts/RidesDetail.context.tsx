@@ -5,7 +5,8 @@
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
 import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/core/types';
-import { getGeofenceOnLine, getGeofenceOnPoint, getGeoJsonPointFromAny, getLineStringFromGtfsShape } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { generateBufferPolygon, getGeofenceOnLine, getGeofenceOnPoint, getGeoJsonPointFromAny, getLineStringFromGtfsShape, getPolygon } from '@tmlmobilidade/sae-controller-pckg-utils';
+import * as turf from '@turf/turf';
 import { } from '@turf/turf';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
@@ -123,19 +124,25 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 
 	const scheduledPathGeofencesFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
 		if (!hashedTripData?.path) return;
+		if (!hashedShapeData?.points?.length) return;
 		const fc = getBaseGeoJsonFeatureCollection();
 		fc.features = hashedTripData.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
 				// const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
 				const lineStringFromShape = getLineStringFromGtfsShape(hashedShapeData?.points ?? []);
-				const geofenceData = getGeofenceOnLine(lineStringFromShape, 50);
+				// const geofenceData = getPolygon([generateBufferPolygon(lineStringFromShape.geometry.coordinates, 1)]);
+				const geofenceData = turf.buffer(lineStringFromShape, 50, { units: 'meters' });
+				// const geofenceData = getGeofenceOnLine(lineStringFromShape, 50, 0);
 				geofenceData.properties = {
 					color: `#${hashedTripData.route_color}`,
 					sequence: waypoint.stop_sequence,
 					text_color: `#${hashedTripData.route_text_color}`,
 				};
-				return geofenceData;
+				return geofenceData as GeoJSON.Feature<GeoJSON.Polygon>;
+				const geofenceDataSimple = turf.unkinkPolygon(geofenceData);
+				console.log(geofenceData);
+				return geofenceDataSimple.features[0] as GeoJSON.Feature<GeoJSON.Polygon>;
 			});
 		return fc;
 	}, [hashedTripData, hashedShapeData]);
