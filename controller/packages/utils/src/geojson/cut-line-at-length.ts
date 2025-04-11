@@ -1,7 +1,7 @@
 /* * */
 
 import { toLineStringFromPositions } from '@/geojson/conversions.js';
-import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
+import { getDistanceBetweenPositions, interpolatePositions } from '@/geojson/measurements.js';
 import { type LineString, type Position } from 'geojson';
 
 /**
@@ -32,7 +32,7 @@ export function cutLineStringAtLength(line: LineString, length: number): LineStr
 		if (cumulativeLength + segmentLength >= length) {
 			const remainingLength = length - cumulativeLength;
 			const relativePositionOnSegment = remainingLength / segmentLength;
-			const interpolated = interpolatePosition(coordA, coordB, relativePositionOnSegment);
+			const interpolated = interpolatePositions(coordA, coordB, relativePositionOnSegment);
 			newLinePositions.push(coordA, interpolated);
 			return toLineStringFromPositions(newLinePositions);
 		}
@@ -49,18 +49,4 @@ export function cutLineStringAtLength(line: LineString, length: number): LineStr
 	// If the entire line is shorter than the target length
 	newLinePositions.push(line.coordinates[line.coordinates.length - 1]);
 	return toLineStringFromPositions(newLinePositions);
-}
-
-/**
- * Linearly interpolates between two positions at a given ratio (0..1).
- */
-function interpolatePosition(a: Position, b: Position, t: number): Position {
-	const lng = a[0] + (b[0] - a[0]) * t;
-	const lat = a[1] + (b[1] - a[1]) * t;
-	// Preserve elevation if present
-	if (a.length > 2 && b.length > 2) {
-		const alt = a[2] + (b[2] - a[2]) * t;
-		return [lng, lat, alt];
-	}
-	return [lng, lat];
 }

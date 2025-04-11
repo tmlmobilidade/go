@@ -1,7 +1,7 @@
 /* * */
 
-import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
-import { interpolateCoords } from '@/geojson/interpolate-coords.js';
+import { getDistanceBetweenPositions } from '@/geojson/measurements.js';
+import { interpolatePositions } from '@/geojson/measurements.js';
 import { projectPointToSegment } from '@/geojson/project-point-to-segment.js';
 import { type Feature, type LineString, type Point, type Position } from 'geojson';
 
@@ -48,7 +48,7 @@ export function splitLineAroundPoint(line: Feature<LineString>, point: Feature<P
 		const step = forward ? 1 : -1;
 		let i = startIndex;
 
-		const start = interpolateCoords(
+		const start = interpolatePositions(
 			coords[i],
 			coords[i + 1],
 			projectionRatio,
@@ -65,7 +65,7 @@ export function splitLineAroundPoint(line: Feature<LineString>, point: Feature<P
 			if (distanceWalked + segLength > targetDistance) {
 				const remaining = targetDistance - distanceWalked;
 				const ratio = remaining / segLength;
-				const interpolated = interpolateCoords(current, next, forward ? ratio : 1 - ratio);
+				const interpolated = interpolatePositions(current, next, forward ? ratio : 1 - ratio);
 				output.push(interpolated);
 				break;
 			}

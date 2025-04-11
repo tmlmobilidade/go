@@ -4,6 +4,8 @@ import { EARTH_RADIUS } from '@/geojson/constants.js';
 import { polygon } from '@turf/helpers';
 import { type Feature, type Point, type Polygon } from 'geojson';
 
+import { toFeatureFromObject, toPointFromPositions } from './conversions.js';
+
 /**
  * Create a geofence around a given point with a given radius in meters (default is 50 meters).
  * @param point A GeoJSON Point representation of the point to create the geofence around.
@@ -31,4 +33,12 @@ export function getGeofenceOnPoint(point: Feature<Point>, radius = 50, steps = 1
 	coords.push(coords[0]);
 	// Return the polygon feature
 	return polygon([coords]);
+}
+
+export function getGeofenceOnPosition(position: [number, number], radius = 50, steps = 16): Feature<Polygon> {
+	// Create a point feature from the coordinates
+	const newPoint = toPointFromPositions(position);
+	const newFeature = toFeatureFromObject(newPoint);
+	// Call the getGeofenceOnPoint function to create the geofence
+	return getGeofenceOnPoint(newFeature, radius, steps);
 }

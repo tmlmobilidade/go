@@ -1,6 +1,6 @@
 /* * */
 
-import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
+import { getDistanceBetweenPositions } from '@/geojson/measurements.js';
 import { projectPointToSegment } from '@/geojson/project-point-to-segment.js';
 import { type Feature, type LineString, type Point, type Position } from 'geojson';
 

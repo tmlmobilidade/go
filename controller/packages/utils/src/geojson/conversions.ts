@@ -32,12 +32,24 @@ export function toLineStringFromPositions(positions: Position[] = []): LineStrin
 }
 
 /**
+ * Creates a new Point from the given coordinates.
+ * @param position A coordinate position for the Point. Defaults to an empty array.
+ * @returns A GeoJSON Point with the specified coordinates.
+ */
+export function toPointFromPositions(position: Position = []): Point {
+	return {
+		coordinates: position,
+		type: 'Point',
+	};
+}
+
+/**
  * Creates a new Feature from the given object and properties.
  * @param object The object to convert to a Feature. Can be a LineString, Point, or Polygon.
  * @param properties Optional properties to attach to the Feature. Defaults to an empty object.
  * @returns A GeoJSON Feature with the specified object and properties.
  */
-export function toFeatureFromObject(object: LineString | Point | Polygon, properties?: GeoJsonProperties): Feature<LineString | Point | Polygon> {
+export function toFeatureFromObject<T extends LineString | Point | Polygon>(object: T, properties?: GeoJsonProperties): Feature<T> {
 	return {
 		geometry: object,
 		properties: properties || {},

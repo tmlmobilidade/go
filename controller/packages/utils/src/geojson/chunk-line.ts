@@ -1,8 +1,8 @@
 /* * */
 
 import { toLineStringFromPositions } from '@/geojson/conversions.js';
-import { interpolateCoords } from '@/geojson/interpolate-coords.js';
-import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
+import { interpolatePositions } from '@/geojson/measurements.js';
+import { getDistanceBetweenPositions } from '@/geojson/measurements.js';
 import { type LineString, type Position } from 'geojson';
 
 /**
@@ -40,7 +40,7 @@ export function chunkLineByDistance(line: LineString, segmentLength: number): Li
 				// Calculate the ratio of the segment
 				const ratio = remainingDist / chunkedSegmentLength;
 				// Interpolate the coordinates of the segment
-				const interpolated = interpolateCoords([lngA, latA], [lngB, latB], ratio);
+				const interpolated = interpolatePositions([lngA, latA], [lngB, latB], ratio);
 				// Add the interpolated coordinates to the chunked line
 				chunkedLineCoordinates.push(interpolated);
 				// Update the remaining distance to be filled

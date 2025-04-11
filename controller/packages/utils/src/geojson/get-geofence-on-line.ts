@@ -2,7 +2,7 @@
 /* * */
 
 import { METERS_PER_DEGREE } from '@/geojson/constants.js';
-import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
+import { getDistanceBetweenPositions } from '@/geojson/measurements.js';
 import { getPolygon } from '@/geojson/get-polygon.js';
 import { type Feature, type LineString, type Polygon, Position } from 'geojson';
 

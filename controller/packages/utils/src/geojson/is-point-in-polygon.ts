@@ -34,3 +34,8 @@ export function isPointInPolygon(point: Feature<Point> | Position, polygon: Feat
 
 	return inside;
 }
+
+export function isInsideGeofence(point: Position, geofence: Feature<Polygon>): boolean {
+	// Check if the point is inside the polygon
+	return isPointInPolygon(point, geofence);
+}

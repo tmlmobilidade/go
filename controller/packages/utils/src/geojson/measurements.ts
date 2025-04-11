@@ -1,6 +1,7 @@
 /* * */
 
 import { METERS_PER_DEGREE } from '@/geojson/constants.js';
+import { toPointFromPositions } from '@/geojson/conversions.js';
 import { type Point, type Position } from 'geojson';
 
 /**
@@ -36,4 +37,41 @@ export function getDistanceBetweenPositions(positionA: Position, positionB: Posi
 	const dy = (latB - latA) * METERS_PER_DEGREE;
 	// Calculate the distance using the Pythagorean theorem
 	return Math.sqrt(dx * dx + dy * dy);
+}
+
+/**
+ * Interpolates between two points at a given ratio (0..1).
+ * This is a wrapper function around the `interpolatePosition` function.
+ * @param pointA The first point.
+ * @param pointB The second point.
+ * @param ratio The ratio at which to interpolate (0 = pointA, 1 = pointB).
+ * @returns The interpolated point.
+ */
+export function interpolatePoints(pointA: Point, pointB: Point, ratio: number): Point {
+	const result = interpolatePositions(pointA.coordinates, pointB.coordinates, ratio);
+	return toPointFromPositions(result);
+}
+
+/**
+ * Linearly interpolates between two positions at a given ratio (0..1).
+ * This function is useful for calculating intermediate points
+ * along a line segment defined by two positions.
+ * @param positionA The first position.
+ * @param positionB The second position.
+ * @param ratio The ratio at which to interpolate (0 = positionA, 1 = positionB).
+ *              A ratio of 0.5 would give the midpoint between the two positions.
+ *              A ratio of 0.25 would give a point closer to positionA.
+ * @returns The interpolated position.
+ */
+export function interpolatePositions(positionA: Position, positionB: Position, ratio: number): Position {
+	// Extract coordinates from the points
+	const lng = positionA[0] + (positionB[0] - positionA[0]) * ratio;
+	const lat = positionA[1] + (positionB[1] - positionA[1]) * ratio;
+	// Preserve elevation if present
+	if (positionA.length > 2 && positionB.length > 2) {
+		const alt = positionA[2] + (positionB[2] - positionA[2]) * ratio;
+		return [lng, lat, alt];
+	}
+	// Return the interpolated position
+	return [lng, lat];
 }
