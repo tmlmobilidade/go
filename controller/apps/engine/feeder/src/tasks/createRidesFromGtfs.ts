@@ -4,8 +4,8 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
-import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
-import { getUnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/utils';
+import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { getUnixTimestamp } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -587,6 +587,7 @@ export async function createRidesFromGtfs() {
 								hashed_shape_id: hashedShapeData._id,
 								hashed_trip_id: hashedTripData._id,
 								headsign: tripData.trip_headsign,
+								is_locked: false,
 								line_id: routeData.line_id,
 								operational_date: calendarDate,
 								passengers_estimated: null,
