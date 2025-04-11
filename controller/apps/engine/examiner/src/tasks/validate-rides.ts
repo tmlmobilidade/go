@@ -114,6 +114,11 @@ export async function validateRides() {
 				const rideAnalysisTimer = new TIMETRACKER();
 
 				//
+				// Skip if the Ride is lockd
+
+				if (rideData.is_locked) continue;
+
+				//
 				// For this ride, fetch all the necessary data for analysis.
 				// This includes static data, like hashed shapes and trips, and dynamic data,
 				// like vehicle events and apex transactions. Request all data in parallel.

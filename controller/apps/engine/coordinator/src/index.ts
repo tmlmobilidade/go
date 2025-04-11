@@ -53,7 +53,7 @@ import Fastify from 'fastify';
 		const fetchTimer = new TIMETRACKER();
 
 		const latestPendingRides = await ridesCollection
-			.find({ start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'pending' })
+			.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'pending' })
 			.sort({ start_time_scheduled: -1 })
 			.limit(batchSize)
 			.toArray();
