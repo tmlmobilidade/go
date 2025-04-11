@@ -58,6 +58,12 @@ import Fastify from 'fastify';
 			.limit(batchSize)
 			.toArray();
 
+		/* === FOR TESTING === */
+		// const latestPendingRides = await ridesCollection
+		// 	.find({ _id: 'MCU14-41-20250402-1519_0_1_0730_0759_0_1' })
+		// 	.toArray();
+		/* === FOR TESTING === */
+
 		const latestPendingRidesIds = latestPendingRides.map(ride => ride._id);
 
 		const fetchTimerResult = fetchTimer.get();

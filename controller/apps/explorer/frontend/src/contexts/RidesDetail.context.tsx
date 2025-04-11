@@ -130,10 +130,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		fc.features = hashedTripData.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
-				// const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
+				const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
 				const lineStringFromShape = toLineStringFromHashedShape(hashedShapeData);
 				// const geofenceData = getPolygon([generateBufferPolygon(lineStringFromShape.geometry.coordinates, 1)]);
-				const geofenceData = turf.buffer(lineStringFromShape, 50, { units: 'meters' });
+				// const geofenceData = turf.buffer(lineStringFromShape, 50, { units: 'meters' });
 				// const geofenceData = getGeofenceOnLine(lineStringFromShape, 50, 0);
 				geofenceData.properties = {
 					color: `#${hashedTripData.route_color}`,
