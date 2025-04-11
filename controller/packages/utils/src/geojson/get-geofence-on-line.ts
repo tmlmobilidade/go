@@ -2,7 +2,7 @@
 /* * */
 
 import { METERS_PER_DEGREE } from '@/geojson/constants.js';
-import { distanceBetweenCoords } from '@/geojson/distance-between-coords.js';
+import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
 import { getPolygon } from '@/geojson/get-polygon.js';
 import { type Feature, type LineString, type Polygon, Position } from 'geojson';
 
@@ -47,7 +47,7 @@ export function getGeofenceOnLine(line: Feature<LineString>, radius = 50, tolera
 		// Skip unnecessary points based on tolerance
 		// if (i > 0) {
 		// 	const prevPoint = lineCoordinates[i - 1];
-		// 	const dist = distanceBetweenCoords(prevPoint, [lngStart, latStart]);
+		// 	const dist = getDistanceBetweenPositions(prevPoint, [lngStart, latStart]);
 		// 	if (dist <= tolerance) continue; // Skip if the point is too close to the previous one
 		// }
 		// Push offset coordinates for left and right sides of the line

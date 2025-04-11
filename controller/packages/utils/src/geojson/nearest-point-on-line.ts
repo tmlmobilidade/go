@@ -1,6 +1,6 @@
 /* * */
 
-import { distanceBetweenCoords } from '@/geojson/distance-between-coords.js';
+import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
 import { projectPointToSegment } from '@/geojson/project-point-to-segment.js';
 import { type Feature, type LineString, type Point, type Position } from 'geojson';
 
@@ -17,7 +17,7 @@ export function nearestPointOnLine(line: Feature<LineString>, point: Feature<Poi
 		const a = coords[i];
 		const b = coords[i + 1];
 		const candidate = projectPointToSegment(a, b, [px, py]);
-		const dist = distanceBetweenCoords(candidate, [px, py]);
+		const dist = getDistanceBetweenPositions(candidate, [px, py]);
 
 		if (dist < minDistance) {
 			minDistance = dist;

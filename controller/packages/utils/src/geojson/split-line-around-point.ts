@@ -1,6 +1,6 @@
 /* * */
 
-import { distanceBetweenCoords } from '@/geojson/distance-between-coords.js';
+import { getDistanceBetweenPositions } from '@/geojson/measure-distances.js';
 import { interpolateCoords } from '@/geojson/interpolate-coords.js';
 import { projectPointToSegment } from '@/geojson/project-point-to-segment.js';
 import { type Feature, type LineString, type Point, type Position } from 'geojson';
@@ -18,14 +18,14 @@ export function splitLineAroundPoint(line: Feature<LineString>, point: Feature<P
 		const a = coords[i];
 		const b = coords[i + 1];
 
-		const segmentLength = distanceBetweenCoords(a, b);
+		const segmentLength = getDistanceBetweenPositions(a, b);
 		const projection = projectPointToSegment(a, b, pointCoords);
-		const d1 = distanceBetweenCoords(a, projection);
-		const d2 = distanceBetweenCoords(projection, b);
+		const d1 = getDistanceBetweenPositions(a, projection);
+		const d2 = getDistanceBetweenPositions(projection, b);
 
 		// Check if projection lies between a and b (within a meter tolerance)
 		const isOnSegment
-      = Math.abs(distanceBetweenCoords(a, b) - (d1 + d2)) < 1;
+      = Math.abs(getDistanceBetweenPositions(a, b) - (d1 + d2)) < 1;
 
 		if (isOnSegment) {
 			foundIndex = i;
@@ -60,7 +60,7 @@ export function splitLineAroundPoint(line: Feature<LineString>, point: Feature<P
 			const next = coords[i + step];
 			if (!next) break;
 
-			const segLength = distanceBetweenCoords(current, next);
+			const segLength = getDistanceBetweenPositions(current, next);
 
 			if (distanceWalked + segLength > targetDistance) {
 				const remaining = targetDistance - distanceWalked;

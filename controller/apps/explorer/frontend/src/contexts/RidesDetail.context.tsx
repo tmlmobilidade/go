@@ -5,7 +5,8 @@
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
 import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/core/types';
-import { generateBufferPolygon, getGeofenceOnLine, getGeofenceOnPoint, getGeoJsonPointFromAny, getLineStringFromGtfsShape, getPolygon } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { chunkLineByDistance, cutLineStringAtLength, generateBufferPolygon, getGeofenceOnLine, getGeofenceOnPoint, getGeoJsonPointFromAny, getLineString, getPolygon } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils/src/geojson/conversions';
 import * as turf from '@turf/turf';
 import { } from '@turf/turf';
 import { DateTime } from 'luxon';
@@ -130,7 +131,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
 				// const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
-				const lineStringFromShape = getLineStringFromGtfsShape(hashedShapeData?.points ?? []);
+				const lineStringFromShape = toLineStringFromHashedShape(hashedShapeData);
 				// const geofenceData = getPolygon([generateBufferPolygon(lineStringFromShape.geometry.coordinates, 1)]);
 				const geofenceData = turf.buffer(lineStringFromShape, 50, { units: 'meters' });
 				// const geofenceData = getGeofenceOnLine(lineStringFromShape, 50, 0);
@@ -155,7 +156,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
 			.map(shapePoint => [Number(shapePoint.shape_pt_lon), Number(shapePoint.shape_pt_lat)]);
 		lineString.properties['color'] = `#${hashedTripData?.route_color}`;
-		fc.features = [lineString];
+		const lineStringChunk = cutLineStringAtLength(lineString.geometry, 250);
+		const lineStringChunkLength = turf.length(turf.feature(lineStringChunk), { units: 'meters' });
+		console.log('lineStringChunkLength', lineStringChunkLength);
+		fc.features = [turf.feature(lineStringChunk)];
 		console.log('shape changed');
 		return fc;
 	}, [hashedShapeData, hashedTripData]);
