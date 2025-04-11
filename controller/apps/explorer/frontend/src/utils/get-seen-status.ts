@@ -1,8 +1,8 @@
 /* * */
 
 import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
-import { type Ride } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { type Ride } from '@tmlmobilidade/types';
+import { getUnixTimestamp } from '@tmlmobilidade/utils';
 
 /**
  * This function returns the seen status of a ride based on the timestamp of its most recent event.

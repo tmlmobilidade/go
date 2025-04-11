@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type VehicleEvent } from '@tmlmobilidade/core/types';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */

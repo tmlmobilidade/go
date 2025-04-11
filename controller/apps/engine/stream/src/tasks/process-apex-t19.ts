@@ -3,9 +3,9 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { apexT19, rides } from '@tmlmobilidade/core/interfaces';
-import { emailProvider } from '@tmlmobilidade/core/providers';
-import { type ApexT19 } from '@tmlmobilidade/core/types';
+import { apexT19, rides } from '@tmlmobilidade/interfaces';
+import { emailProvider } from '@tmlmobilidade/interfaces';
+import { type ApexT19 } from '@tmlmobilidade/types';
 import { parseApexT19 } from '@tmlmobilidade/sae-controller-pckg-parse';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 

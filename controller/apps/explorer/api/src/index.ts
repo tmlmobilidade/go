@@ -13,7 +13,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyWs from '@fastify/websocket';
 import LOGGER from '@helperkits/logger';
 import { Permissions } from '@tmlmobilidade/core/lib';
-import { type Ride } from '@tmlmobilidade/core/types';
+import { type Ride } from '@tmlmobilidade/types';
 import fastifyModule from 'fastify';
 
 /* * */

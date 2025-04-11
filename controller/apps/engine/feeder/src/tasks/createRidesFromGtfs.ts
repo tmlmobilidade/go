@@ -3,9 +3,9 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
-import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/core/interfaces';
-import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
+import { getUnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';

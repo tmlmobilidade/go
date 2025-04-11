@@ -1,6 +1,6 @@
 /* * */
 
-import { apexT11, rides } from '@tmlmobilidade/core/interfaces';
+import { apexT11, rides } from '@tmlmobilidade/interfaces';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 

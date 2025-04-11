@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { rides } from '@tmlmobilidade/core/interfaces';
+import { rides } from '@tmlmobilidade/interfaces';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 import Fastify from 'fastify';
 

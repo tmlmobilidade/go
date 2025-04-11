@@ -1,7 +1,7 @@
 /* * */
 
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/core/types';
+import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/types';
 import { getGeofenceOnPosition, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /**

@@ -8,8 +8,8 @@ import { getOperationalStatus } from '@/utils/get-operational-status';
 import { getSeenStatus } from '@/utils/get-seen-status';
 import { getStartTime } from '@/utils/get-start-time';
 import { useDebouncedState } from '@mantine/hooks';
-import { type Ride, type RideAnalysis, UnixTimestamp } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { type Ride, type RideAnalysis, UnixTimestamp } from '@tmlmobilidade/types';
+import { getUnixTimestamp } from '@tmlmobilidade/utils';
 import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/core/interfaces';
+import { rides } from '@tmlmobilidade/interfaces';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 
 /* * */

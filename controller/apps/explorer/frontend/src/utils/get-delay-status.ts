@@ -1,7 +1,7 @@
 /* * */
 
 import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
-import { type Ride } from '@tmlmobilidade/core/types';
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This function extract the hour and minute components from a date string.
