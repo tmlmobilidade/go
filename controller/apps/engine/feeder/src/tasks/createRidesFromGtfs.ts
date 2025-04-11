@@ -323,9 +323,9 @@ export async function createRidesFromGtfs() {
 						if (!referencedShapeIds.has(data.shape_id)) return;
 
 						const thisShapeRowPoint: HashedShapePoint = {
-							shape_dist_traveled: data.shape_dist_traveled,
-							shape_pt_lat: data.shape_pt_lat,
-							shape_pt_lon: data.shape_pt_lon,
+							shape_dist_traveled: Number(data.shape_dist_traveled),
+							shape_pt_lat: Number(data.shape_pt_lat),
+							shape_pt_lon: Number(data.shape_pt_lon),
 							shape_pt_sequence: Number(data.shape_pt_sequence),
 						};
 
@@ -377,8 +377,8 @@ export async function createRidesFromGtfs() {
 						//
 						const parsedRowData = {
 							stop_id: data.stop_id,
-							stop_lat: data.stop_lat,
-							stop_lon: data.stop_lon,
+							stop_lat: Number(data.stop_lat),
+							stop_lon: Number(data.stop_lon),
 							stop_name: data.stop_name,
 						};
 						//
@@ -434,7 +434,7 @@ export async function createRidesFromGtfs() {
 							departure_time: data.departure_time,
 							drop_off_type: data.drop_off_type,
 							pickup_type: data.pickup_type,
-							shape_dist_traveled: data.shape_dist_traveled,
+							shape_dist_traveled: Number(data.shape_dist_traveled),
 							stop_id: data.stop_id,
 							stop_lat: stopData.stop_lat,
 							stop_lon: stopData.stop_lon,
