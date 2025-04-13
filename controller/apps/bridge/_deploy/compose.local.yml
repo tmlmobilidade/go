@@ -12,7 +12,7 @@ services:
     image: postgres:alpine
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
     ports:
       - 5432:5432

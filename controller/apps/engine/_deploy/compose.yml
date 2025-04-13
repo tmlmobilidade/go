@@ -15,7 +15,7 @@ services:
     image: containrrr/watchtower
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -40,7 +40,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-cleaner:production
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -59,7 +59,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-coordinator:production
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -80,7 +80,7 @@ services:
       mode: replicated
       replicas: 4
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -99,7 +99,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-feeder:production
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -118,7 +118,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-stream:production
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -139,7 +139,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-sync-apex-t11:production
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -160,7 +160,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-sync-apex-t19:production
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -181,7 +181,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-engine-sync-vehicle-events:production
     deploy:
       restart_policy:
-        condition: unless-stopped
+        condition: any
         delay: 30s
       resources:
         limits:
