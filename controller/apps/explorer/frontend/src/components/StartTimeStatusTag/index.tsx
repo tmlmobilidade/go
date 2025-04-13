@@ -1,6 +1,6 @@
 /* * */
 
-import { ExtendedRideDisplay } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
