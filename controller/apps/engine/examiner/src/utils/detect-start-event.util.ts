@@ -2,8 +2,8 @@
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type VehicleEvent } from '@tmlmobilidade/types';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -34,7 +34,7 @@ export function detectStartEvent(analysisData: AnalysisData): null | VehicleEven
 	//
 	// Ensure that the hashed trip is not empty.
 
-	if (!analysisData.hashed_trip.path.length) {
+	if (!analysisData.hashed_trip?.path.length) {
 		// throw new Error('Hashed Trip is empty.');
 		return null;
 	}
