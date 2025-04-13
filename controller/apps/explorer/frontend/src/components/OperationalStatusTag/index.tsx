@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
 import { Tag } from '@tmlmobilidade/ui';
 

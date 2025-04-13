@@ -17,7 +17,7 @@ export function RidesCatalogClock() {
 	//
 	// A. Setup variables
 
-	const ridesListContext = useRidesCatalogContext();
+	const ridesCatalogContext = useRidesCatalogContext();
 
 	const elementRef = useRef(null);
 
@@ -63,7 +63,7 @@ export function RidesCatalogClock() {
 		if (elementRef.current) {
 			// Set the current position of the clock relative to the viewport
 			const rect = elementRef.current.getBoundingClientRect();
-			ridesListContext.actions.setLockStatus(-rect.top);
+			ridesCatalogContext.actions.setLockStatus(-rect.top);
 		}
 	};
 
@@ -71,7 +71,7 @@ export function RidesCatalogClock() {
 	// D. Render components
 
 	return (
-		<div ref={elementRef} className={styles.root} data-locked={ridesListContext.data.is_locked}>
+		<div ref={elementRef} className={styles.root} data-locked={ridesCatalogContext.data.is_locked}>
 			<div className={styles.handle} onClick={handleToggleLock}>
 				<IconPlayerPlayFilled className={styles.icon} size={10} />
 				<span className={styles.time}>

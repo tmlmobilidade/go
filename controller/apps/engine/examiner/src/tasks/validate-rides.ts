@@ -2,8 +2,8 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { apexT11, apexT19, hashedShapes, hashedTrips, rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
-import { ALLOWED_VALIDATION_STATUSES, type RideAnalysis } from '@tmlmobilidade/core/types';
+import { apexT11, apexT19, hashedShapes, hashedTrips, rides, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { ALLOWED_VALIDATION_STATUSES, type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -11,12 +11,12 @@ import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { detectEndEvent } from '@/utils/detect-end-event.util.js';
 import { detectFirstEvent } from '@/utils/detect-first-event.util.js';
 import { detectLastEvent } from '@/utils/detect-last-event.util.js';
-import { detectStartEventAlt } from '@/utils/detect-start-event-alt.util.js';
 import { detectStartEvent } from '@/utils/detect-start-event.util.js';
 import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
 
 /* * */
 
+import { atLeastOneEventOnFirstStop } from '@/analyzers/at-least-one-event-on-first-stop.js';
 import { atMostTwoDriverIdsAnalyzer } from '@/analyzers/at-most-two-driver-ids.analyzer.js';
 import { atMostTwoVehicleIdsAnalyzer } from '@/analyzers/at-most-two-vehicle-ids.analyzer.js';
 import { avgIntervalVehicleEvents } from '@/analyzers/avg-interval-vehicle-events.analyzer.js';
@@ -67,6 +67,8 @@ function runAnalyzers(analysisData: AnalysisData): RideAnalysis[] {
 
 		simpleThreeVehicleEventsAnalyzer(analysisData),
 
+		atLeastOneEventOnFirstStop(analysisData),
+
 		/* * * * */
 
 	];
@@ -112,6 +114,11 @@ export async function validateRides() {
 				const rideAnalysisTimer = new TIMETRACKER();
 
 				//
+				// Skip if the Ride is lockd
+
+				if (rideData.is_locked) continue;
+
+				//
 				// For this ride, fetch all the necessary data for analysis.
 				// This includes static data, like hashed shapes and trips, and dynamic data,
 				// like vehicle events and apex transactions. Request all data in parallel.
@@ -152,8 +159,7 @@ export async function validateRides() {
 				rideData.seen_first_at = detectedFirstEvent?.created_at || null;
 				rideData.seen_last_at = detectedLastEvent?.created_at || null;
 
-				const detectedStartEvent = detectStartEvent(hashedTripData.path, vehicleEventsData);
-				// const detectedStartEvent = detectStartEventAlt(analysisData);
+				const detectedStartEvent = detectStartEvent(analysisData);
 				const detectedEndEvent = detectEndEvent(hashedTripData.path, vehicleEventsData);
 
 				rideData.start_time_observed = detectedStartEvent?.created_at || null;

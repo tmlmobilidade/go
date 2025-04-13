@@ -2,11 +2,11 @@
 
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import LOGGER from '@helperkits/logger';
-import { rides } from '@tmlmobilidade/core/interfaces';
-import { Permissions } from '@tmlmobilidade/core/lib';
-import { type Ride } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { rides } from '@tmlmobilidade/interfaces';
+import { Permissions } from '@tmlmobilidade/lib';
 import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type Ride } from '@tmlmobilidade/types';
+import { getUnixTimestamp } from '@tmlmobilidade/utils';
 import { WebSocket } from 'ws';
 
 /* * */

@@ -18,16 +18,16 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/interfaces": "20250408.2323.41",
-		"@tmlmobilidade/types": "20250408.2323.40",
+		"@tmlmobilidade/interfaces": "20250411.1802.31",
+		"@tmlmobilidade/types": "20250411.1826.37",
 		"@tmlmobilidade/utils": "20250408.2323.42",
 		"luxon": "3.6.1",
 		"pg": "8.14.1"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.14.0",
-		"@types/pg": "8.11.11",
+		"@types/node": "22.14.1",
+		"@types/pg": "8.11.12",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
 	}

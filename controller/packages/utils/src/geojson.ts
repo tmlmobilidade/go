@@ -2,24 +2,7 @@
 
 import * as turf from '@turf/turf';
 
-/* * */
-
-export function getGeoJsonPointFromAny(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position): GeoJSON.Feature<GeoJSON.Point> {
-	// If the point is a Position
-	if (Array.isArray(point) && point.length === 2) {
-		return turf.point(point) as GeoJSON.Feature<GeoJSON.Point>;
-	}
-	// If the point is a GeoJSON.Point
-	if (!Array.isArray(point) && point.type === 'Point') {
-		return turf.feature(point);
-	}
-	// If the point is a GeoJSON.Feature<GeoJSON.Point>
-	if (!Array.isArray(point) && point.type === 'Feature' && point.geometry.type === 'Point') {
-		return point;
-	}
-	// Throw if invalid point type
-	throw new Error('Invalid point type');
-}
+import { getGeoJsonPointFromAny } from './geojson/get-geojson-point-from-any.js';
 
 /* * */
 
@@ -52,42 +35,16 @@ export function getLineSplitIntoEqualChunks(line: GeoJSON.Feature<GeoJSON.LineSt
 }
 
 /* * */
-
-/**
- * Check if a given point is inside a given geofence.
- * @param point A GeoJSON.Point representation of the point to check.
- * @param geofence A GeoJSON.Polygon representation of the geofence.
- * @returns A boolean indicating if the point is inside the geofence.
- */
-export function isInsideGeofence(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, geofence: GeoJSON.Feature<GeoJSON.Polygon>): boolean {
-	return turf.booleanPointInPolygon(point, geofence);
-}
-
 /* * */
-
-/**
- * Create a geofence around a given point with a given radius in meters (default is 50 meters).
- * @param latitude
- * @param longitude
- * @param radius (default is 50 meters)
- * @returns The GeoJSON Feature of a Polygon.
- */
-export function getGeofenceOnPoint(point: GeoJSON.Feature<GeoJSON.Point> | GeoJSON.Point | GeoJSON.Position, radius = 50): GeoJSON.Feature<GeoJSON.Polygon> {
-	//
-
-	const centerPoint = getGeoJsonPointFromAny(point);
-
-	const geofence = turf.buffer(centerPoint, radius, { units: 'meters' });
-
-	if (!geofence || geofence.geometry.type !== 'Polygon') {
-		throw new Error('Error creating geofence');
-	}
-
-	return geofence as GeoJSON.Feature<GeoJSON.Polygon>;
-
-	//
-}
-
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
+/* * */
 /* * */
 
 interface CalculateGeofenceOnPathOptions {

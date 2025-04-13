@@ -18,14 +18,15 @@
 		"@fastify/websocket": "11.0.2",
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/core": "20250324.1106.22",
+		"@tmlmobilidade/interfaces": "20250411.1802.31",
+		"@tmlmobilidade/lib": "20250408.2323.46",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"fastify": "5.2.2",
+		"fastify": "5.3.0",
 		"luxon": "3.6.1"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.14.0",
+		"@types/node": "22.14.1",
 		"@types/ws": "8.18.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.3",

@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type RideAnalysis } from '@tmlmobilidade/core/types';
+import { type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 

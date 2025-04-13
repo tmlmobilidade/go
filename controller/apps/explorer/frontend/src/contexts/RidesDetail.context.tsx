@@ -2,10 +2,12 @@
 
 /* * */
 
-import { createGeofence } from '@/utils/create-geofence.util';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
-import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/core/types';
+import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/types';
+import { chunkLineByDistance, cutLineStringAtLength, generateBufferPolygon, getGeofenceOnLine, getGeofenceOnPoint, getGeoJsonPointFromAny, getLineString, getPolygon } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils/src/geojson/conversions';
+import * as turf from '@turf/turf';
 import { } from '@turf/turf';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
@@ -123,20 +125,28 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 
 	const scheduledPathGeofencesFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
 		if (!hashedTripData?.path) return;
+		if (!hashedShapeData?.points?.length) return;
 		const fc = getBaseGeoJsonFeatureCollection();
 		fc.features = hashedTripData.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
-				const geofenceData = createGeofence(Number(waypoint.stop_lon), Number(waypoint.stop_lat));
+				const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
+				const lineStringFromShape = toLineStringFromHashedShape(hashedShapeData);
+				// const geofenceData = getPolygon([generateBufferPolygon(lineStringFromShape.geometry.coordinates, 1)]);
+				// const geofenceData = turf.buffer(lineStringFromShape, 50, { units: 'meters' });
+				// const geofenceData = getGeofenceOnLine(lineStringFromShape, 50, 0);
 				geofenceData.properties = {
 					color: `#${hashedTripData.route_color}`,
 					sequence: waypoint.stop_sequence,
 					text_color: `#${hashedTripData.route_text_color}`,
 				};
-				return geofenceData;
+				return geofenceData as GeoJSON.Feature<GeoJSON.Polygon>;
+				const geofenceDataSimple = turf.unkinkPolygon(geofenceData);
+				console.log(geofenceData);
+				return geofenceDataSimple.features[0] as GeoJSON.Feature<GeoJSON.Polygon>;
 			});
 		return fc;
-	}, [hashedTripData]);
+	}, [hashedTripData, hashedShapeData]);
 
 	const scheduledShapeFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
 		if (!hashedShapeData?.points) return;
@@ -146,7 +156,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
 			.map(shapePoint => [Number(shapePoint.shape_pt_lon), Number(shapePoint.shape_pt_lat)]);
 		lineString.properties['color'] = `#${hashedTripData?.route_color}`;
-		fc.features = [lineString];
+		const lineStringChunk = cutLineStringAtLength(lineString.geometry, 250);
+		const lineStringChunkLength = turf.length(turf.feature(lineStringChunk), { units: 'meters' });
+		console.log('lineStringChunkLength', lineStringChunkLength);
+		fc.features = [turf.feature(lineStringChunk)];
 		console.log('shape changed');
 		return fc;
 	}, [hashedShapeData, hashedTripData]);

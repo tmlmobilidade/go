@@ -3,9 +3,9 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
-import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/core/interfaces';
-import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { getUnixTimestamp } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -323,9 +323,9 @@ export async function createRidesFromGtfs() {
 						if (!referencedShapeIds.has(data.shape_id)) return;
 
 						const thisShapeRowPoint: HashedShapePoint = {
-							shape_dist_traveled: data.shape_dist_traveled,
-							shape_pt_lat: data.shape_pt_lat,
-							shape_pt_lon: data.shape_pt_lon,
+							shape_dist_traveled: Number(data.shape_dist_traveled),
+							shape_pt_lat: Number(data.shape_pt_lat),
+							shape_pt_lon: Number(data.shape_pt_lon),
 							shape_pt_sequence: Number(data.shape_pt_sequence),
 						};
 
@@ -377,8 +377,8 @@ export async function createRidesFromGtfs() {
 						//
 						const parsedRowData = {
 							stop_id: data.stop_id,
-							stop_lat: data.stop_lat,
-							stop_lon: data.stop_lon,
+							stop_lat: Number(data.stop_lat),
+							stop_lon: Number(data.stop_lon),
 							stop_name: data.stop_name,
 						};
 						//
@@ -434,7 +434,7 @@ export async function createRidesFromGtfs() {
 							departure_time: data.departure_time,
 							drop_off_type: data.drop_off_type,
 							pickup_type: data.pickup_type,
-							shape_dist_traveled: data.shape_dist_traveled,
+							shape_dist_traveled: Number(data.shape_dist_traveled),
 							stop_id: data.stop_id,
 							stop_lat: stopData.stop_lat,
 							stop_lon: stopData.stop_lon,
@@ -587,6 +587,7 @@ export async function createRidesFromGtfs() {
 								hashed_shape_id: hashedShapeData._id,
 								hashed_trip_id: hashedTripData._id,
 								headsign: tripData.trip_headsign,
+								is_locked: false,
 								line_id: routeData.line_id,
 								operational_date: calendarDate,
 								passengers_estimated: null,

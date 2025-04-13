@@ -1,83 +1,124 @@
 /* * */
 
+import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/core/types';
-import { getGeofenceOnPoint, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type VehicleEvent } from '@tmlmobilidade/types';
+import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils';
+
+/* * */
+
+const BUFFER_RADIUS = 50; // meters
+const INITIAL_SEGMENT_LENGTH = 500; // meters
+const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
 
 /**
- * The trip start time is the time of the last event inside the geofence of the first stop
- * that is before the first event inside the geofence of the second stop.
- * @param hashedTripWaypointsData
- * @param vehicleEventsData
+ * The ride start time is the time of the last event inside the geofence of the first stop
+ * that is before the last event inside the geofence of the initial segment of the shape.
+ * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(hashedTripWaypointsData: HashedTripWaypoint[], vehicleEventsData: VehicleEvent[]): null | VehicleEvent {
+export function detectStartEvent(analysisData: AnalysisData): null | VehicleEvent {
 	//
 
 	//
-	// Sort the path by stop_sequence and build a geofence
-	// of 30 meters around the first and second stops of the trip.
+	// Ensure that there are at least two vehicle events.
+	// Sort them by vehicle timestamp.
 
-	const sortedWaypoints = hashedTripWaypointsData.sort((a, b) => {
-		return a.stop_sequence - b.stop_sequence;
-	});
-
-	if (sortedWaypoints.length < 2) {
-		// throw new Error('Hashed Trip must have at least two stops.');
+	if (analysisData.vehicle_events.length < 2) {
+		// throw new Error('There must be at least two Vehicle Events.');
 		return null;
 	}
 
-	const firstStopGeofence = getGeofenceOnPoint([Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat)]);
-	const secondStopGeofence = getGeofenceOnPoint([Number(sortedWaypoints[1].stop_lon), Number(sortedWaypoints[1].stop_lat)]);
+	const sortedVehicleEvents = sortByTimestamp(analysisData.vehicle_events, 'created_at');
 
 	//
-	// Sort vehicle events by vehicle timestamp
+	// Ensure that the hashed trip is not empty.
 
-	const sortedVehicleEvents = sortByTimestamp(vehicleEventsData, 'created_at');
+	if (!analysisData.hashed_trip.path.length) {
+		// throw new Error('Hashed Trip is empty.');
+		return null;
+	}
+
+	const sortedWaypoints = analysisData.hashed_trip.path.sort((a, b) => {
+		return a.stop_sequence - b.stop_sequence;
+	});
+
+	const firstStopPosition = [Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat)];
 
 	//
-	// Detect the first event that is inside the geofence of the second stop.
+	// Ensure that the hashed shape has at least two points.
+	// Transform the GTFS shape points into a GeoJSON LineString
+	// and cut it at 500 meters.
 
-	let firstEventInsideSecondStop: null | VehicleEvent = null;
+	if (analysisData.hashed_shape.points.length < 2) {
+		// throw new Error('Hashed Shape must have at least two points.');
+		return null;
+	}
 
-	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfSecondStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], secondStopGeofence);
-		if (vehicleEventIsInsideGeofenceOfSecondStop) {
-			firstEventInsideSecondStop = vehicleEventData;
+	const shapeAsLineString = toLineStringFromHashedShape(analysisData.hashed_shape);
+
+	const initialSegmentOfShape = cutLineStringAtLength(shapeAsLineString, INITIAL_SEGMENT_LENGTH);
+
+	const initialSegmentOfShapeNormalized = chunkLineByDistance(initialSegmentOfShape, INITIAL_SEGMENT_CHUNK_LENGTH);
+
+	//
+	// Detect the last event that is inside
+	// the geofence of the initial segment of the shape.
+
+	let lastEventInsideInitialSegment: null | VehicleEvent = null;
+	let firstEventInsideInitialSegment: null | VehicleEvent = null;
+	let lastEventInsideFirstStop: null | VehicleEvent = null;
+
+	for (const vehicleEvent of sortedVehicleEvents) {
+		//
+		// Check if the current vehicle event has any point that is
+		// less than or equal to 50 meters away from any point of the initial segment.
+		const vehicleEventIsInsideInitialSegment = initialSegmentOfShapeNormalized.coordinates.some((positionOfInitialSegment) => {
+			const distance = getDistanceBetweenPositions(positionOfInitialSegment, [vehicleEvent.longitude, vehicleEvent.latitude]);
+			return distance <= BUFFER_RADIUS;
+		});
+
+		// Check if the current event is inside the buffer of the first stop.
+		const distanceToFirstStop = getDistanceBetweenPositions(firstStopPosition, [vehicleEvent.longitude, vehicleEvent.latitude]);
+		if (distanceToFirstStop <= BUFFER_RADIUS) lastEventInsideFirstStop = vehicleEvent;
+
+		// If no event was yet found inside the geofence of the initial segment,
+		// and the current event is inside the geofence of the initial segment,
+		// set that variable to the current event.
+		if (vehicleEventIsInsideInitialSegment && !firstEventInsideInitialSegment) {
+			firstEventInsideInitialSegment = vehicleEvent;
+		}
+
+		// If the event is inside the geofence of the initial segment,
+		// set the last event inside the initial segment to the current event.
+		if (vehicleEventIsInsideInitialSegment && !lastEventInsideInitialSegment) {
+			lastEventInsideInitialSegment = vehicleEvent;
+		}
+
+		// If the event is NOT inside the geofence of the initial segment,
+		// and an event was already found, then this means that the current event
+		// is the last event inside the geofence of the initial segment.
+		if (!vehicleEventIsInsideInitialSegment && lastEventInsideInitialSegment) {
+			lastEventInsideInitialSegment = vehicleEvent;
 			break;
 		}
 	}
 
-	if (firstEventInsideSecondStop === null) {
-		// throw new Error('No vehicle event was found inside the geofence of the second stop.');
+	//
+	// With all calculations done, the start event is the first event
+	// inside the initial segment that is before the last event
+	// of the first stop. Falback to the first event inside the
+	// initial segment if no event was found inside the first stop.
+
+	if (!lastEventInsideInitialSegment || !firstEventInsideInitialSegment) {
+		// throw new Error('No vehicle event was found inside the geofence of the initial segment.');
 		return null;
 	}
 
-	//
-	// Now detect the last event that is inside the geofence of the first stop,
-	// and that is before one of the events found inside the geofence of the second or third stops.
-
-	let lastEventInsideFirstStop: null | VehicleEvent = null;
-
-	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfFirstStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], firstStopGeofence);
-		if (vehicleEventIsInsideGeofenceOfFirstStop) {
-			// Check if the event is before the first event found inside the geofence of the second stop
-			if (vehicleEventData.created_at < firstEventInsideSecondStop.created_at) {
-				lastEventInsideFirstStop = vehicleEventData;
-			}
-			else break;
-		}
-	}
-
-	if (lastEventInsideFirstStop === null) {
-		// throw new Error('No vehicle event was found inside the geofence of the first stop.');
+	if (!lastEventInsideFirstStop) {
 		return null;
+		// return firstEventInsideInitialSegment;
 	}
-
-	//
-	// Return the timestamp of the last event found inside the geofence of the first stop.
-	// This will be used as the start time of the trip.
 
 	return lastEventInsideFirstStop;
 

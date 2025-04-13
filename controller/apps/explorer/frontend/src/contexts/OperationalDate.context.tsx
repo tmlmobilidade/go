@@ -2,8 +2,8 @@
 
 /* * */
 
-import { OPERATIONAL_DATE_FORMAT, type OperationalDate } from '@tmlmobilidade/core/types';
-import { getOperationalDate } from '@tmlmobilidade/core/utils';
+import { OPERATIONAL_DATE_FORMAT, type OperationalDate } from '@tmlmobilidade/types';
+import { getOperationalDate } from '@tmlmobilidade/utils';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo, useState } from 'react';
 
