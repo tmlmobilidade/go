@@ -2,7 +2,12 @@
 
 /* * */
 
-import { ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
+import { useRidesContext } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
+import { getDelayStatus } from '@/utils/get-delay-status';
+import { getOperationalStatus } from '@/utils/get-operational-status';
+import { getSeenStatus } from '@/utils/get-seen-status';
+import { getStartTime } from '@/utils/get-start-time';
 import { DateTime } from 'luxon';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -94,7 +99,16 @@ export const RidesBoardContextProvider = ({ children }: PropsWithChildren) => {
 			// .filter(ride => ride.operational_status === 'running')
 			.filter(ride => !queueRideIds.has(ride._id))
 			.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled)
-			.slice(0, 100);
+			.slice(0, 100)
+			.map(rideData => ({
+				...rideData,
+				delay_status: getDelayStatus(rideData.start_time_scheduled, rideData.start_time_observed),
+				operational_status: getOperationalStatus(rideData.start_time_scheduled, rideData.seen_last_at),
+				seen_status: getSeenStatus(rideData.seen_last_at),
+				simple_three_vehicle_events_grade: rideData.analysis.find(analysis => analysis._id === 'SIMPLE_THREE_VEHICLE_EVENTS')?.grade || null,
+				start_time_observed_display: rideData.start_time_observed ? getStartTime(rideData.start_time_observed) : null,
+				start_time_scheduled_display: getStartTime(rideData.start_time_scheduled),
+			}));
 		// Update queue state
 		queue.current = Array
 			.from([...queue.current, ...freshRidesData])
