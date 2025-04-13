@@ -12,7 +12,7 @@ import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import fastifyCookie from '@fastify/cookie';
 import fastifyWs from '@fastify/websocket';
 import LOGGER from '@helperkits/logger';
-import { Permissions } from '@tmlmobilidade/core/lib';
+import { Permissions } from '@tmlmobilidade/lib';
 import { type Ride } from '@tmlmobilidade/types';
 import fastifyModule from 'fastify';
 

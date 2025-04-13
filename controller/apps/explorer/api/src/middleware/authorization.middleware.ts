@@ -1,5 +1,5 @@
 import { fetchData } from '@/utils/http.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/core/lib';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { Permission } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 

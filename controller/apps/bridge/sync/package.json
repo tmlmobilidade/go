@@ -26,8 +26,8 @@
 	},
 	"devDependencies": {
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.14.0",
-		"@types/pg": "8.11.11",
+		"@types/node": "22.14.1",
+		"@types/pg": "8.11.12",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
 	}

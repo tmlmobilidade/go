@@ -3,10 +3,10 @@
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import LOGGER from '@helperkits/logger';
 import { rides } from '@tmlmobilidade/interfaces';
-import { Permissions } from '@tmlmobilidade/core/lib';
+import { Permissions } from '@tmlmobilidade/lib';
+import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type Ride } from '@tmlmobilidade/types';
 import { getUnixTimestamp } from '@tmlmobilidade/utils';
-import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { WebSocket } from 'ws';
 
 /* * */
