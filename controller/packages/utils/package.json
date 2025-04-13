@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/types": "20250411.1826.37",
+		"@turf/turf": "7.2.0",
 		"luxon": "3.6.1"
 	},
 	"devDependencies": {
