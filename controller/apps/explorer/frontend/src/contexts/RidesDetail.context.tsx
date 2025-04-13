@@ -4,11 +4,11 @@
 
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
-import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/types';
-import { chunkLineByDistance, cutLineStringAtLength, generateBufferPolygon, getGeofenceOnLine, getGeofenceOnPoint, getGeoJsonPointFromAny, getLineString, getPolygon } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { cutLineStringAtLength, getGeofenceOnPoint, getGeoJsonPointFromAny } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils/src/geojson/conversions';
+import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/types';
 import * as turf from '@turf/turf';
-import { } from '@turf/turf';
+import { type Feature, type FeatureCollection, type Polygon } from 'geojson';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -25,11 +25,11 @@ interface RidesDetailContextState {
 		vehicle_events: VehicleEvent[]
 	}
 	geojson: {
-		observed_events: GeoJSON.FeatureCollection
-		observed_shape: GeoJSON.FeatureCollection
-		scheduled_path: GeoJSON.FeatureCollection
-		scheduled_path_geofences: GeoJSON.FeatureCollection
-		scheduled_shape: GeoJSON.FeatureCollection
+		observed_events: FeatureCollection
+		observed_shape: FeatureCollection
+		scheduled_path: FeatureCollection
+		scheduled_path_geofences: FeatureCollection
+		scheduled_shape: FeatureCollection
 	}
 }
 
@@ -65,7 +65,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// C. Transform data
 
-	const observedEventsFC: GeoJSON.FeatureCollection = useMemo(() => {
+	const observedEventsFC: FeatureCollection = useMemo(() => {
 		const fc = getBaseGeoJsonFeatureCollection();
 		if (!vehicleEventsData) return fc;
 		const colorThemePrimary = getCssVariableValue('--color-primary');
@@ -89,7 +89,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return fc;
 	}, [vehicleEventsData]);
 
-	const observedShapeFC: GeoJSON.FeatureCollection = useMemo(() => {
+	const observedShapeFC: FeatureCollection = useMemo(() => {
 		const fc = getBaseGeoJsonFeatureCollection();
 		if (!vehicleEventsData) return fc;
 		const lineString = getBaseGeoJsonFeatureLineString();
@@ -101,7 +101,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return fc;
 	}, [vehicleEventsData]);
 
-	const scheduledPathFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
+	const scheduledPathFC: FeatureCollection | undefined = useMemo(() => {
 		if (!hashedTripData?.path) return;
 		const fc = getBaseGeoJsonFeatureCollection();
 		fc.features = hashedTripData.path
@@ -123,7 +123,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return fc;
 	}, [hashedTripData]);
 
-	const scheduledPathGeofencesFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
+	const scheduledPathGeofencesFC: FeatureCollection | undefined = useMemo(() => {
 		if (!hashedTripData?.path) return;
 		if (!hashedShapeData?.points?.length) return;
 		const fc = getBaseGeoJsonFeatureCollection();
@@ -140,15 +140,15 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 					sequence: waypoint.stop_sequence,
 					text_color: `#${hashedTripData.route_text_color}`,
 				};
-				return geofenceData as GeoJSON.Feature<GeoJSON.Polygon>;
+				return geofenceData as Feature<Polygon>;
 				const geofenceDataSimple = turf.unkinkPolygon(geofenceData);
 				console.log(geofenceData);
-				return geofenceDataSimple.features[0] as GeoJSON.Feature<GeoJSON.Polygon>;
+				return geofenceDataSimple.features[0] as Feature<Polygon>;
 			});
 		return fc;
 	}, [hashedTripData, hashedShapeData]);
 
-	const scheduledShapeFC: GeoJSON.FeatureCollection | undefined = useMemo(() => {
+	const scheduledShapeFC: FeatureCollection | undefined = useMemo(() => {
 		if (!hashedShapeData?.points) return;
 		const fc = getBaseGeoJsonFeatureCollection();
 		const lineString = getBaseGeoJsonFeatureLineString();

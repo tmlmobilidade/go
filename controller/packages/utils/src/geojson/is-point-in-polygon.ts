@@ -4,8 +4,8 @@ import { type Feature, type Point, type Polygon, type Position } from 'geojson';
 
 /**
  * Check if a given point is inside a given geofence.
- * @param point A GeoJSON.Point representation of the point to check.
- * @param geofence A GeoJSON.Polygon representation of the geofence.
+ * @param point A GeoJSON Point representation of the point to check.
+ * @param geofence A GeoJSON Polygon representation of the geofence.
  * @returns A boolean indicating if the point is inside the geofence.
  */
 export function isPointInPolygon(point: Feature<Point> | Position, polygon: Feature<Polygon>): boolean {
