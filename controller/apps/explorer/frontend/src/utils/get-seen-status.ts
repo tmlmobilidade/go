@@ -9,8 +9,8 @@ import { getUnixTimestamp } from '@tmlmobilidade/utils';
  * A ride is considered 'seen' if its most recent event is less than 30 seconds old;
  * 'gone' if its most recent event is more than 30 seconds old;
  * and 'unseen' if the ride has no events.
- * @param seenLastAt
- * @returns
+ * @param seenLastAt The timestamp of the most recent event of the ride.
+ * @returns The seen status of the ride.
  */
 export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): ExtendedRideDisplay['seen_status'] {
 	//
@@ -23,7 +23,7 @@ export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): ExtendedRideDi
 
 	const millisecondsFromLastSeenToNow = nowInUnixMilliseconds - seenLastAt;
 
-	if (millisecondsFromLastSeenToNow <= 30000) {
+	if (millisecondsFromLastSeenToNow <= 30_000) {
 		return 'seen';
 	}
 
