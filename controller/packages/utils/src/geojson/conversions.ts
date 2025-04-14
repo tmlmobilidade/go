@@ -10,7 +10,7 @@ import { type Feature, type GeoJsonProperties, type LineString, type Point, type
  */
 export function toLineStringFromHashedShape(hashedShape: HashedShape): LineString {
 	// Exit if no points are provided
-	if (!hashedShape.points.length) return toLineStringFromPositions([]);
+	if (!hashedShape.points?.length) return toLineStringFromPositions([]);
 	// Sort points by shape_pt_sequence
 	const sortedPoints = [...hashedShape.points].sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
 	// Create a LineString feature
