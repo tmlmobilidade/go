@@ -160,7 +160,7 @@ export async function validateRides() {
 				rideData.seen_last_at = detectedLastEvent?.created_at || null;
 
 				const detectedStartEvent = detectStartEvent(analysisData);
-				const detectedEndEvent = detectEndEvent(hashedTripData.path, vehicleEventsData);
+				const detectedEndEvent = detectEndEvent(hashedTripData?.path, vehicleEventsData);
 
 				rideData.start_time_observed = detectedStartEvent?.created_at || null;
 				rideData.end_time_observed = detectedEndEvent?.created_at || null;

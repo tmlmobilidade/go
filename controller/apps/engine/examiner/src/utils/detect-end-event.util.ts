@@ -1,8 +1,8 @@
 /* * */
 
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/types';
 import { getGeofenceOnPosition, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * The trip end time is the time of the first event inside the geofence of the last stop
@@ -13,6 +13,11 @@ import { getGeofenceOnPosition, isInsideGeofence } from '@tmlmobilidade/sae-cont
  */
 export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], vehicleEventsData: VehicleEvent[]): null | VehicleEvent {
 	//
+
+	if (!hashedTripWaypointsData || !vehicleEventsData) {
+		// throw new Error('Hashed Trip Waypoints Data and Vehicle Events Data are required.');
+		return null;
+	}
 
 	//
 	// Sort the path by stop_sequence and build a geofence
