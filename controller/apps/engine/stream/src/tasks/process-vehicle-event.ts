@@ -4,10 +4,10 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
-import { emailProvider } from '@tmlmobilidade/interfaces';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+// import { emailProvider } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-controller-pckg-parse';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -29,15 +29,15 @@ export async function processVehicleEvent(databaseOperation) {
 
 	if (databaseOperation.operationType !== 'insert') {
 		LOGGER.error('MAJOR ERROR: processVehicleEvent called with operationType different than "insert".');
-		await emailProvider.send({
-			subject: 'SLA ERROR',
-			text: `
-				<h4>processVehicleEvent called with operationType different than "insert".</h4>
-				<pre>${JSON.stringify(databaseOperation)}</pre>
-			`,
-			to: process.env.EMERGENCY_CONTACT,
-		});
-		return;
+		// await emailProvider.send({
+		// 	subject: 'SLA ERROR',
+		// 	text: `
+		// 		<h4>processVehicleEvent called with operationType different than "insert".</h4>
+		// 		<pre>${JSON.stringify(databaseOperation)}</pre>
+		// 	`,
+		// 	to: process.env.EMERGENCY_CONTACT,
+		// });
+		// return;
 	}
 
 	//

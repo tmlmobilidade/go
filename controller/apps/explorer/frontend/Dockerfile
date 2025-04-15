@@ -1,6 +1,6 @@
 # # # # # # # # #
 
-FROM node:22.6-alpine3.20 AS base
+FROM node:slim AS base
 
 ENV MODULE=controller
 ENV SCOPE=explorer
@@ -15,9 +15,6 @@ RUN npm install -g turbo@^2
 # PRUNER STAGE
 
 FROM base AS pruner
-
-RUN apk add --no-cache libc6-compat
-RUN apk update
 
 WORKDIR /app
 
@@ -34,9 +31,6 @@ RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${SCOPE}-${PROJECT} --docke
 # Rebuild the source code only when needed.
 
 FROM base AS builder
-
-RUN apk add --no-cache libc6-compat
-RUN apk update
 
 WORKDIR /app
 

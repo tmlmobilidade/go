@@ -4,10 +4,10 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { apexT19, rides } from '@tmlmobilidade/interfaces';
-import { emailProvider } from '@tmlmobilidade/interfaces';
-import { type ApexT19 } from '@tmlmobilidade/types';
+// import { emailProvider } from '@tmlmobilidade/interfaces';
 import { parseApexT19 } from '@tmlmobilidade/sae-controller-pckg-parse';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type ApexT19 } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -29,15 +29,15 @@ export async function processApexT19(databaseOperation) {
 
 	if (databaseOperation.operationType !== 'insert') {
 		LOGGER.error('MAJOR ERROR: processApexT19 called with operationType different than "insert".');
-		await emailProvider.send({
-			subject: 'SLA ERROR',
-			text: `
-				<h4>processApexT19 called with operationType different than "insert".</h4>
-				<pre>${JSON.stringify(databaseOperation)}</pre>
-			`,
-			to: process.env.EMERGENCY_CONTACT,
-		});
-		return;
+		// await emailProvider.send({
+		// 	subject: 'SLA ERROR',
+		// 	text: `
+		// 		<h4>processApexT19 called with operationType different than "insert".</h4>
+		// 		<pre>${JSON.stringify(databaseOperation)}</pre>
+		// 	`,
+		// 	to: process.env.EMERGENCY_CONTACT,
+		// });
+		// return;
 	}
 
 	//
