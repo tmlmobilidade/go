@@ -8,6 +8,9 @@ import { useStopsContext } from '@/contexts/Stops.context';
 
 /* * */
 
+import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
+import { StopListContextProvider } from '@/contexts/StopList.context';
+
 import styles from './styles.module.css';
 
 /* * */
@@ -26,8 +29,12 @@ export default function Page() {
 
 	return (
 		<div className={styles.container}>
-			<Navigation />
-			<Stop />
+			<StopListContextProvider>
+				<Navigation />
+			</StopListContextProvider>
+			<StopDetailContextProvider stopId="010001">
+				<Stop />
+			</StopDetailContextProvider>
 		</div>
 	);
 }
