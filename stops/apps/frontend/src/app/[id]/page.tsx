@@ -1,19 +1,22 @@
-// import AlertForm from '@/components/AlertDetail/AlertForm';
-// import { AlertDetailContextProvider } from '@/contexts/AlertDetail.context';
+import Navigation from '@/components/Navigation';
+import Stop from '@/components/Stop';
+import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
+import { StopListContextProvider } from '@/contexts/StopList.context';
 
-// import StopContainer from "@/components/StopContainer";
-// import StopsList from "@/components/StopsList";
+import styles from './styles.module.css';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-    return (
-        <div>
-            ID
-            {/* <StopsList stops={["A", "B", "C"]} /> */}
-            {/* <StopContainer /> */}
-        </div>
-        // <AlertDetailContextProvider alertId={id}>
-        //     <AlertForm />
-        // </AlertDetailContextProvider>
-    );
+	const { id } = await params;
+
+	console.log('id', id);
+	return (
+		<div className={styles.container}>
+			<StopListContextProvider>
+				<Navigation />
+			</StopListContextProvider>
+			<StopDetailContextProvider stopId={id}>
+				<Stop />
+			</StopDetailContextProvider>
+		</div>
+	);
 }
