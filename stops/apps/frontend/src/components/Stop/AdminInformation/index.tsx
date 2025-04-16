@@ -16,12 +16,12 @@ interface AdminInformationProps {
 	jurisdication: string
 	locality_id: string
 	municipality_id: string
-	parish: string
+	parish_id: string
 }
 
 /* * */
 
-export default function AdminInformation({ jurisdication, locality_id, municipality_id, parish }: AdminInformationProps) {
+export default function AdminInformation({ jurisdication, locality_id, municipality_id, parish_id }: AdminInformationProps) {
 	//
 
 	//
@@ -36,7 +36,7 @@ export default function AdminInformation({ jurisdication, locality_id, municipal
 
 			<Row>
 				<Item label="Município" placeholder="Escolha uma opção..." value={municipality_id} />
-				<Item label="Freguesia" placeholder="Maçãs" value={parish} />
+				<Item label="Freguesia" placeholder="Maçãs" value={parish_id} />
 				<Item label="Localidade" placeholder="Bairro das Maçãs" value={locality_id} />
 			</Row>
 

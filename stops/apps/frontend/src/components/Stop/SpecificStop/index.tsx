@@ -6,6 +6,8 @@ import type { Stop } from '@tmlmobilidade/types';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+
 import Accessibility from '../Accessibility';
 import AdminInformation from '../AdminInformation';
 import Affectation from '../Affectation';
@@ -28,7 +30,12 @@ interface SpecificStopProps {
 
 /* * */
 
-export default function Stop({ stop }: SpecificStopProps) {
+// export default function Stop({ stop }: SpecificStopProps) {
+export default function Stop() {
+	const stopDetailContext = useStopDetailContext();
+	console.log('??? stopDetailContext', stopDetailContext);
+
+	const { data: stop } = stopDetailContext;
 	//
 
 	//
@@ -48,10 +55,10 @@ export default function Stop({ stop }: SpecificStopProps) {
 				tts_name={stop?.tts_name || ''}
 			/>
 			<AdminInformation
-				jurisdication="TODO" // TODO: Check where to get this data
+				jurisdication={stop?.jurisdiction || ''} // TODO: Check where to get this data
 				locality_id={stop?.locality_id || ''} // TODO: Use name instead of id
 				municipality_id={stop?.municipality_id || ''} // TODO: Use name instead of id
-				parish="TODO" // TODO: Check where to get this data
+				parish_id={stop?.parish_id || ''} // TODO: Check where to get this data
 			/>
 			<Affectation
 				// TODO: Check where to get this data

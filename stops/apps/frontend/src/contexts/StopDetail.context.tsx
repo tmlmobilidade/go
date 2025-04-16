@@ -2,7 +2,21 @@
 
 import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UpdateAlertSchema, UpdateStopSchema } from '@tmlmobilidade/types';
+import { ShelterStatus } from '@tmlmobilidade/types';
+import { SidewalkType } from '@tmlmobilidade/types';
+import { RoadType } from '@tmlmobilidade/types';
+import { PavementType } from '@tmlmobilidade/types';
+import { LightningStatus } from '@tmlmobilidade/types';
+import { FlagStatus } from '@tmlmobilidade/types';
+import { ElectricityStatus } from '@tmlmobilidade/types';
+import { Connections } from '@tmlmobilidade/types';
+import { Comment } from '@tmlmobilidade/types';
+import { DockingBayType } from '@tmlmobilidade/types';
+import { Facilities } from '@tmlmobilidade/types';
+import { Jurisdiction } from '@tmlmobilidade/types';
+import { OperationalStatus } from '@tmlmobilidade/types';
+import { PoleStatus } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateAlertSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, getUnixTimestamp } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -25,9 +39,49 @@ interface StopDetailContextState {
 		saveStop: () => void
 	}
 	data: {
+		_id: string | undefined
+		bench_status: 'unknown'
+		comments: Comment
+		connections: Connections
+		created_at: UnixTimestamp
+		district_id: string
+		docking_bay_type: DockingBayType
+		electricity_status: ElectricityStatus
+		facilities: Facilities
+		file_ids: string[]
+		flag_status: FlagStatus
 		form: UseFormReturnType<CreateStopDto>
-		id: string | undefined
-		imageUrl: string | undefined
+		image_ids: string[]
+		// imageUrl: string | undefined
+		is_archived: boolean
+		is_locked: boolean
+		jurisdiction: Jurisdiction
+		last_infrastructure_check: UnixTimestamp
+		last_infrastructure_maintenance: UnixTimestamp
+		last_schedules_check: UnixTimestamp
+		last_schedules_maintenance: UnixTimestamp
+		latitude: number
+		lighting_status: LightningStatus
+		locality_id: string
+		longitude: number
+		municipality_id: string
+		name: string
+		new_name: string
+		observations: string
+		operational_status: OperationalStatus
+		parish_id: string
+		pavement_type: PavementType
+		pole_status: PoleStatus
+		road_type: RoadType
+		shelter_code: string
+		shelter_maintainer: string
+		shelter_make: string
+		shelter_model: string
+		shelter_status: ShelterStatus
+		short_name: string
+		sidewalk_type: SidewalkType
+		tts_name: string
+		updated_at: UnixTimestamp
 	}
 	flags: {
 		canSave: boolean
@@ -72,9 +126,9 @@ const emptyStop: CreateStopDto = {
 	pole_status: 'unknown',
 	road_type: 'unknown',
 	shelter_code: 'temp',
-	shelter_maintainer: 'unknown',
-	shelter_make: 'unknown',
-	shelter_model: 'unknown',
+	shelter_maintainer: 'temp',
+	shelter_make: 'temp',
+	shelter_model: 'temp',
 	shelter_status: 'unknown',
 	short_name: 'temp',
 	sidewalk_type: 'unknown',
@@ -104,6 +158,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	const [file, setFile] = useState<File | null>(null);
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
+	console.log('==> stop', stop);
 	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 		stopId === 'new'
 			? undefined
@@ -302,16 +357,58 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			// addReference,
 			// deleteAlert,
 			deleteImage,
+			deleteStop,
 			imageChanged: (image: File) => setImage(image),
 			// removeReference,
 			// saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
 			saveStop,
 		},
 		data: {
-			// fileUrl: fileUrl?.data,
+			_id: stopId === 'new' ? undefined : stopId,
 			form,
-			id: stopId === 'new' ? undefined : stopId,
-			imageUrl: imageUrl?.data,
+			// fileUrl: fileUrl?.data,
+			// imageUrl: imageUrl?.data,
+			bench_status: stop?.bench_status,
+			comments: stop?.comments,
+			connections: stop?.connections,
+			created_at: stop?.created_at,
+			district_id: stop?.district_id,
+			docking_bay_type: stop?.docking_bay_type,
+			electricity_status: stop?.electricity_status,
+			facilities: stop?.facilities,
+			file_ids: stop?.file_ids,
+			flag_status: stop?.flag_status,
+			image_ids: stop?.image_ids,
+			// imageUrl: string | undefined
+			is_archived: stop?.is_archived,
+			is_locked: stop?.is_locked,
+			jurisdiction: stop?.jurisdiction,
+			last_infrastructure_check: stop?.last_infrastructure_check,
+			last_infrastructure_maintenance: stop?.last_infrastructure_maintenance,
+			last_schedules_check: stop?.last_schedules_check,
+			last_schedules_maintenance: stop?.last_schedules_maintenance,
+			latitude: stop?.latitude,
+			lighting_status: stop?.lighting_status,
+			locality_id: stop?.locality_id,
+			longitude: stop?.longitude,
+			municipality_id: stop?.municipality_id,
+			name: stop?.name,
+			new_name: stop?.new_name,
+			observations: stop?.observations,
+			operational_status: stop?.operational_status,
+			parish_id: stop?.parish_id,
+			pavement_type: stop?.pavement_type,
+			pole_status: stop?.pole_status,
+			road_type: stop?.road_type,
+			shelter_code: stop?.shelter_code,
+			shelter_maintainer: stop?.shelter_maintainer,
+			shelter_make: stop?.shelter_make,
+			shelter_model: stop?.shelter_model,
+			shelter_status: stop?.shelter_status,
+			short_name: stop?.short_name,
+			sidewalk_type: stop?.sidewalk_type,
+			tts_name: stop?.tts_name,
+			updated_at: stop?.updated_at,
 		},
 		flags: {
 			canSave,
