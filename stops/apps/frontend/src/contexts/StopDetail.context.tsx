@@ -2,29 +2,30 @@
 
 import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UpdateAlertSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, getUnixTimestamp } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
-export enum AlertDetailMode {
+export enum StopDetailMode {
 	CREATE = 'create',
 	EDIT = 'edit',
 }
 
-interface AlertDetailContextState {
+interface StopDetailContextState {
 	actions: {
-		addReference: () => void
-		deleteAlert: () => void
+		// addReference: () => void
 		deleteImage: () => void
-		fileChanged: (file: File) => void
-		removeReference: (index: number) => void
-		saveAlert: (type: 'draft' | 'publish') => void
+		deleteStop: () => void
+		imageChanged: (file: File) => void
+		// removeReference: (index: number) => void
+		// saveAlert: (type: 'draft' | 'publish') => void
+		saveStop: () => void
 	}
 	data: {
-		form: UseFormReturnType<CreateAlertDto>
+		form: UseFormReturnType<CreateStopDto>
 		id: string | undefined
 		imageUrl: string | undefined
 	}
@@ -33,39 +34,65 @@ interface AlertDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: AlertDetailMode
+		mode: StopDetailMode
 	}
 }
 
-const emptyAlert: CreateAlertDto = {
-	active_period_end_date: undefined,
-	active_period_start_date: getUnixTimestamp(),
-	cause: Object.values(causeSchema.Enum)[0],
-	created_by: 'temp',
-	description: '',
-	effect: Object.values(effectSchema.Enum)[0],
-	modified_by: 'temp',
-	municipality_ids: [],
-	publish_end_date: undefined,
-	publish_start_date: getUnixTimestamp(),
-	publish_status: 'DRAFT',
-	reference_type: Object.values(referenceTypeSchema.Enum)[0],
-	references: [],
-	title: '',
-	type: 'PLANNED',
+const emptyStop: CreateStopDto = {
+	_id: 'temp',
+	bench_status: 'unknown',
+	comments: [],
+	connections: [],
+	created_at: getUnixTimestamp(),
+	district_id: 'temp',
+	docking_bay_type: undefined,
+	electricity_status: 'unknown',
+	facilities: [],
+	file_ids: [],
+	flag_status: 'unknown',
+	image_ids: [],
+	is_archived: false,
+	is_locked: false,
+	jurisdiction: 'unknown',
+	last_infrastructure_check: getUnixTimestamp(),
+	last_infrastructure_maintenance: getUnixTimestamp(),
+	last_schedules_check: getUnixTimestamp(),
+	last_schedules_maintenance: getUnixTimestamp(),
+	latitude: 0,
+	lighting_status: 'unknown',
+	locality_id: 'temp',
+	longitude: 0,
+	municipality_id: 'temp',
+	name: 'temp',
+	new_name: 'temp',
+	observations: 'concrete',
+	operational_status: undefined,
+	parish_id: 'temp',
+	pavement_type: 'unknown',
+	pole_status: 'unknown',
+	road_type: 'unknown',
+	shelter_code: 'temp',
+	shelter_maintainer: 'unknown',
+	shelter_make: 'unknown',
+	shelter_model: 'unknown',
+	shelter_status: 'unknown',
+	short_name: 'temp',
+	sidewalk_type: 'unknown',
+	tts_name: 'temp',
+	updated_at: getUnixTimestamp(),
 };
 
-const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
+const StopDetailContext = createContext<StopDetailContextState | undefined>(undefined);
 
-export function useAlertDetailContext() {
-	const context = useContext(AlertDetailContext);
+export function useStopDetailContext() {
+	const context = useContext(StopDetailContext);
 	if (!context) {
-		throw new Error('useAlertDetailContext must be used within a AlertDetailContextProvider');
+		throw new Error('useStopDetailContext must be used within a StopDetailContextProvider');
 	}
 	return context;
 }
 
-export const AlertDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
+export const StopDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
 	//
 	// A. Setup variables
 	const router = useRouter();
@@ -74,20 +101,27 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
+	const [file, setFile] = useState<File | null>(null);
 
-	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new' ? null : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
 	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-		alertId === 'new'
+		stopId === 'new'
 			? undefined
-			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
+			: Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
+		swrFetcher,
+	);
+	const { data: fileUrl, isLoading: fileUrlLoading } = useSWR<undefined | { data: string, message: string }>(
+		stopId === 'new'
+			? undefined
+			: Routes.STOPS_API + Routes.STOP_FILE(stopId),
 		swrFetcher,
 	);
 
 	//
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
-		initialValues: alert || emptyAlert,
-		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema),
+		initialValues: stop || emptyStop,
+		validate: zodResolver(stop ? StopSchema : CreateStopSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -97,14 +131,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	// Update form
 	useEffect(() => {
-		if (!alert) return;
+		if (!stop) return;
 
 		setLoading(true);
 
-		if (!alert.reference_type) {
-			alert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
-			alert.references = [];
-		}
+		// if (!stop.reference_type) {
+		// 	stop.reference_type = Object.values(referenceTypeSchema.Enum)[0];
+		// 	stop.references = [];
+		// }
 
 		form.reset();
 		form.setValues(alert);
@@ -117,9 +151,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		if (error) {
 			useToast.error({
 				message: error.message,
-				title: 'Erro ao carregar alerta',
+				title: 'Erro ao carregar paragem',
 			});
-			router.replace(Routes.ALERT_LIST);
+			router.replace(Routes.STOP_LIST);
 		}
 	}, [error]);
 
@@ -133,31 +167,35 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	//
 	// D. Define actions
-	const addReference = () => {
-		const currentReferences = form.values.references || [];
-		currentReferences.push({ child_ids: [], parent_id: '' });
-		form.setFieldValue('references', currentReferences);
-	};
+	// const addReference = () => {
+	// 	const currentReferences = form.values.references || [];
+	// 	currentReferences.push({ child_ids: [], parent_id: '' });
+	// 	form.setFieldValue('references', currentReferences);
+	// };
 
-	const removeReference = (index: number) => {
-		const currentReferences = form.values.references || [];
-		form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
-	};
+	// const removeReference = (index: number) => {
+	// 	const currentReferences = form.values.references || [];
+	// 	form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
+	// };
 
-	const saveAlert = async (type: 'draft' | 'publish') => {
+	// const saveStop = async (type: 'draft' | 'publish') => {
+	const saveStop = async () => {
 		setIsSaving(true);
 
 		// Handle Save Alert
-		const active_period_end_date = form.getValues().active_period_end_date ?? null;
-		const publish_end_date = form.getValues().publish_end_date ?? null;
+		// const active_period_end_date = form.getValues().active_period_end_date ?? null;
+		// const publish_end_date = form.getValues().publish_end_date ?? null;
 
-		const saveAlert: CreateAlertDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
+		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
+		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date };
+		const saveStop: CreateStopDto = { ...form.values };
 
-		const method = alertId === 'new' ? 'POST' : 'PUT';
-		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
-		let body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
+		const method = stopId === 'new' ? 'POST' : 'PUT';
+		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);
+		let body = stopId === 'new' ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
-		body = { ...body, active_period_end_date, publish_end_date };
+		// body = { ...body, active_period_end_date, publish_end_date };
+		body = { ...body };
 
 		const response = await fetchData<unknown>(url, method, body);
 
@@ -166,58 +204,58 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			for (const error of errors) {
 				useToast.error({
 					message: error.message,
-					title: 'Erro ao salvar alerta',
+					title: 'Erro ao salvar paragem',
 				});
 			}
 			setIsSaving(false);
 			return;
 		}
 
-		const insertedId = alertId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : alertId;
+		const insertedId = stopId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : stopId;
 		if (insertedId) {
 			await uploadImage(insertedId);
 		}
 
 		// If the alert is new, redirect to the detail page
-		if (insertedId && alertId === 'new') {
-			router.replace(Routes.ALERT_DETAIL(insertedId));
+		if (insertedId && stopId === 'new') {
+			router.replace(Routes.STOP_DETAIL(insertedId));
 		}
 
 		useToast.success({
-			message: 'Alerta salvo com sucesso',
+			message: 'Paragem salvo com sucesso',
 			title: 'Sucesso',
 		});
 
 		setIsSaving(false);
 	};
 
-	const deleteAlert = async () => {
-		if (alertId === 'new') return;
+	const deleteStop = async () => {
+		if (stopId === 'new') return;
 
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), 'DELETE', alert);
+		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'DELETE', stop);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
 				useToast.error({
 					message: error.message,
-					title: 'Erro ao salvar alerta',
+					title: 'Erro ao salvar paragem',
 				});
 			}
 			return;
 		}
 
 		useToast.success({
-			message: 'Alerta apagado com sucesso',
+			message: 'Paragem apagada com sucesso',
 			title: 'Sucesso',
 		});
 
-		router.replace(Routes.ALERT_LIST);
+		router.replace(Routes.STOP_LIST);
 	};
 
 	const deleteImage = async () => {
-		if (alertId === 'new') return;
+		if (stopId === 'new') return;
 
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
+		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_IMAGE(stopId), 'DELETE', stop);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -235,11 +273,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		});
 	};
 
-	const uploadImage = async (alert_id: string) => {
-		if (alert_id === 'new' || !image) return;
+	const uploadImage = async (stopId: string) => {
+		if (stopId === 'new' || !image) return;
 
 		const response = await uploadFile(
-			Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id),
+			Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
 			image,
 		);
 
@@ -259,18 +297,20 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	//
 	// E. Define context value
-	const contextValue: AlertDetailContextState = {
+	const contextValue: StopDetailContextState = {
 		actions: {
-			addReference,
-			deleteAlert,
+			// addReference,
+			// deleteAlert,
 			deleteImage,
-			fileChanged: (file: File) => setImage(file),
-			removeReference,
-			saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
+			imageChanged: (image: File) => setImage(image),
+			// removeReference,
+			// saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
+			saveStop,
 		},
 		data: {
+			// fileUrl: fileUrl?.data,
 			form,
-			id: alertId === 'new' ? undefined : alertId,
+			id: stopId === 'new' ? undefined : stopId,
 			imageUrl: imageUrl?.data,
 		},
 		flags: {
@@ -278,15 +318,15 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			isReadOnly,
 			isSaving,
 			loading: isLoading || loading || imageUrlLoading,
-			mode: alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT,
+			mode: stopId === 'new' ? StopDetailMode.CREATE : StopDetailMode.EDIT,
 		},
 	};
 
 	//
 	// F. Render components
 	return (
-		<AlertDetailContext.Provider value={contextValue}>
+		<StopDetailContext.Provider value={contextValue}>
 			{children}
-		</AlertDetailContext.Provider>
+		</StopDetailContext.Provider>
 	);
 };

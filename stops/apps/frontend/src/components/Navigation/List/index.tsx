@@ -25,7 +25,9 @@ export default function List() {
 	return (
 		<div className={styles.container}>
 			{
-				flags.is_loading ? <div>Loading...</div> : data.stops.map((stop, index) => (<Item key={index} stop={stop} />))
+				flags.is_loading
+					? <div>Loading...</div>
+					: data.stops.map((stop, index) => (<Item key={index} stop={stop} />))
 			}
 		</div>
 	);
