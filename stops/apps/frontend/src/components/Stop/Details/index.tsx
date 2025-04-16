@@ -1,6 +1,6 @@
 'use client';
 
-import type { StopOperationalStatus } from '@carrismetropolitana/api-types/network';
+import type { operationalStatusSchema } from '@tmlmobilidade/types';
 
 import Header from '@/components/common/Header';
 import Row from '@/components/common/Row';
@@ -16,19 +16,19 @@ import styles from '../styles.module.css';
 /* * */
 
 interface DetailsProps {
-	id: string
-	lat: number
-	lon: number
-	long_name: string
-	old_long_name: string
-	operational_status: 'voided' | StopOperationalStatus
+	_id: string
+	latitude: number
+	longitude: number
+	name: string
+	new_name: string
+	operational_status: operationalStatusSchema
 	short_name: string
 	tts_name: string
 }
 
 /* * */
 
-export default function Details({ id, lat, lon, long_name, old_long_name, operational_status, short_name, tts_name }: DetailsProps) {
+export default function Details({ _id, latitude, longitude, name, new_name, operational_status, short_name, tts_name }: DetailsProps) {
 	//
 
 	//
@@ -43,8 +43,8 @@ export default function Details({ id, lat, lon, long_name, old_long_name, operat
 	// B. Transform data
 
 	useEffect(() => {
-		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${id}.mp3`);
-	}, [id]);
+		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${_id}.mp3`);
+	}, [_id]);
 
 	useEffect(() => {
 		if (audioPlayer.current) {
@@ -59,7 +59,7 @@ export default function Details({ id, lat, lon, long_name, old_long_name, operat
 				audioPlayer.current.onabort = null;
 			}
 		};
-	}, [id]);
+	}, [_id]);
 
 	//
 	// C. Handle actions
@@ -86,9 +86,9 @@ export default function Details({ id, lat, lon, long_name, old_long_name, operat
 			/>
 
 			<Row>
-				<Item label="Código Único da Paragem" placeholder="012345" value={id} />
-				<Item label="Latitude" value={lat.toString()} />
-				<Item label="Longitude" value={lon.toString()} />
+				<Item label="Código Único da Paragem" placeholder="012345" value={_id} />
+				<Item label="Latitude" value={latitude.toString()} />
+				<Item label="Longitude" value={longitude.toString()} />
 			</Row>
 
 			<Row>
@@ -96,12 +96,12 @@ export default function Details({ id, lat, lon, long_name, old_long_name, operat
 					color="green"
 					label="Antigo Nome da Paragem (p/ alterar)"
 					placeholder="Rua Marquês de Pombal 8"
-					value={old_long_name}
+					value={name}
 				/>
 			</Row>
 
 			<Row>
-				<Item label="Nome da Paragem (depois da correção)" placeholder="Rua Marquês de Pombal 8" value={long_name} />
+				<Item label="Nome da Paragem (depois da correção)" placeholder="Rua Marquês de Pombal 8" value={new_name} />
 			</Row>
 
 			<Row hasIcons={true}>

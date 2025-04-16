@@ -7,15 +7,15 @@ import styles from './styles.module.css';
 /* * */
 
 interface LeftProps {
-	id: string
-	lat: number
-	lon: number
-	long_name: string
+	_id: string
+	latitude: number
+	longitude: number
+	name: string
 }
 
 /* * */
 
-export default function Left({ id, lat, lon, long_name }: LeftProps) {
+export default function Left({ _id, latitude, longitude, name }: LeftProps) {
 	//
 
 	//
@@ -23,10 +23,10 @@ export default function Left({ id, lat, lon, long_name }: LeftProps) {
 
 	return (
 		<div className={styles.section}>
-			<p>{long_name}</p>
+			<p>{name}</p>
 			<div className={styles.details}>
-				<div className={styles.id}>{id}</div>
-				<div className={styles.coords}>{lat} {lon}</div>
+				<div className={styles.id}>{_id}</div>
+				<div className={styles.coords}>{latitude} {longitude}</div>
 			</div>
 		</div>
 	);

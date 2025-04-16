@@ -2,8 +2,10 @@
 
 /* * */
 
-import type { Stop } from '@carrismetropolitana/api-types/network';
+// import type { Stop } from '@carrismetropolitana/api-types/network';
+import type { Stop } from '@tmlmobilidade/types';
 
+import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
@@ -42,13 +44,14 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${Routes.CMET_API}/stops`);
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`/api/stops`, swrFetcher);
+	// const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${Routes.CMET_API}/stops`);
 
 	//
 	// B. Handle actions
 
 	const getStopById = (stopId: string): Stop | undefined => {
-		return allStopsData?.find(stop => stop.id === stopId);
+		return allStopsData?.find(stop => stop._id === stopId);
 	};
 
 	//
@@ -83,15 +86,15 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 export function transformStopDataIntoGeoJsonFeature(stopData: Stop): GeoJSON.Feature<GeoJSON.Point> {
 	return {
 		geometry: {
-			coordinates: [stopData.lon, stopData.lat],
+			coordinates: [stopData.longitude, stopData.latitude],
 			type: 'Point',
 		},
 		properties: {
 			current_status: stopData.operational_status,
-			id: stopData.id,
-			lat: stopData.lat,
-			lon: stopData.lon,
-			long_name: stopData.long_name,
+			id: stopData._id,
+			lat: stopData.latitude,
+			lon: stopData.longitude,
+			long_name: stopData.name,
 		},
 		type: 'Feature',
 	};

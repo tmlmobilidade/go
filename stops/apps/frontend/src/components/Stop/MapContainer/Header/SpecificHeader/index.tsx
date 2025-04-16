@@ -4,7 +4,8 @@
 
 import { useManualContext } from '@/contexts/Manual.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { Stop } from '@carrismetropolitana/api-types/network';
+import { Stop } from '@tmlmobilidade/types';
+// import { Stop } from '@carrismetropolitana/api-types/network';
 import { useDisclosure } from '@mantine/hooks';
 
 /* * */
@@ -39,15 +40,15 @@ export default function SpecificHeader() {
 
 	return (
 		<div className={styles.header}>
-			<Left isManual={isManual} long_name={stop?.long_name} />
+			<Left isManual={isManual} long_name={stop?.name} />
 
 			<Right open={open} stopId={stopId} />
 
-			<PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
+			{/* <PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
 				<List>
-					{stop?.pattern_ids.map(id => <Item key={id} id={id} />)}
+					{stop?.pattern_ids?.map(id => <Item key={id} id={id} />)}
 				</List>
-			</PatternsModal>
+			</PatternsModal> */}
 		</div>
 	);
 }

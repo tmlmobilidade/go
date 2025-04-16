@@ -2,7 +2,8 @@
 
 /* * */
 
-import type { Stop } from '@carrismetropolitana/api-types/network';
+// import type { Stop } from '@carrismetropolitana/api-types/network';
+import type { Stop } from '@tmlmobilidade/types';
 
 /* * */
 

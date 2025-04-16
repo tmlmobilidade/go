@@ -2,7 +2,7 @@
 
 /* * */
 
-import type { Stop } from '@carrismetropolitana/api-types/network';
+import type { Stop } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -38,11 +38,11 @@ export default function Stop({ stop }: SpecificStopProps) {
 		<div className={styles.container}>
 			<MapContainer generic={false} />
 			<Details
-				id={stop?.id || ''}
-				lat={stop?.lat || 0}
-				lon={stop?.lon || 0}
-				long_name={stop?.long_name || ''}
-				old_long_name={stop?.long_name || ''}
+				_id={stop?._id || ''}
+				latitude={stop?.latitude || 0}
+				longitude={stop?.longitude || 0}
+				name={stop?.name || ''}
+				new_name={stop?.new_name || ''}
 				operational_status={stop?.operational_status || 'voided'} // TODO: Check corresponding strings, example: active -> "Paragem Activa"
 				short_name={stop?.short_name || ''}
 				tts_name={stop?.tts_name || ''}

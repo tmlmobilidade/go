@@ -2,7 +2,8 @@
 
 /* * */
 
-import type { Stop } from '@carrismetropolitana/api-types/network';
+// import type { Stop } from '@carrismetropolitana/api-types/network';
+import type { Stop } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -26,7 +27,12 @@ export default function Item({ stop }: ItemProps) {
 
 	return (
 		<div className={styles.container}>
-			<Left id={stop.id} lat={stop.lat} lon={stop.lon} long_name={stop.long_name} />
+			<Left
+				_id={stop?._id}
+				latitude={stop?.latitude}
+				longitude={stop.longitude}
+				name={stop.name}
+			/>
 			<Right />
 		</div>
 	);
