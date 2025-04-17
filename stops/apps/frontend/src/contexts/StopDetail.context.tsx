@@ -16,11 +16,12 @@ import { Facilities } from '@tmlmobilidade/types';
 import { Jurisdiction } from '@tmlmobilidade/types';
 import { OperationalStatus } from '@tmlmobilidade/types';
 import { PoleStatus } from '@tmlmobilidade/types';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateAlertSchema, UpdateStopSchema } from '@tmlmobilidade/types';
+import { causeSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, getUnixTimestamp } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
+import React from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 export enum StopDetailMode {
@@ -35,7 +36,7 @@ interface StopDetailContextState {
 		deleteStop: () => void
 		imageChanged: (file: File) => void
 		// removeReference: (index: number) => void
-		// saveAlert: (type: 'draft' | 'publish') => void
+		// saveStop: (type: 'draft' | 'publish') => void
 		saveStop: () => void
 	}
 	data: {
@@ -175,7 +176,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	//
 	// B. Define form
-	const form = useForm<CreateAlertDto>({
+	const form = useForm<CreateStopDto>({
 		initialValues: stop || emptyStop,
 		validate: zodResolver(stop ? StopSchema : CreateStopSchema),
 		validateInputOnBlur: true,
@@ -197,11 +198,11 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		// }
 
 		form.reset();
-		form.setValues(alert);
+		form.setValues(stop);
 		form.resetDirty();
 
 		setLoading(false);
-	}, [alert]);
+	}, [stop]);
 
 	useEffect(() => {
 		if (error) {
@@ -238,7 +239,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	const saveStop = async () => {
 		setIsSaving(true);
 
-		// Handle Save Alert
+		// Handle Save Stop
 		// const active_period_end_date = form.getValues().active_period_end_date ?? null;
 		// const publish_end_date = form.getValues().publish_end_date ?? null;
 
@@ -272,7 +273,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			await uploadImage(insertedId);
 		}
 
-		// If the alert is new, redirect to the detail page
+		// If the Stop is new, redirect to the detail page
 		if (insertedId && stopId === 'new') {
 			router.replace(Routes.STOP_DETAIL(insertedId));
 		}
@@ -353,15 +354,14 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	//
 	// E. Define context value
-	const contextValue: StopDetailContextState = {
+	const contextValue: StopDetailContextState = React.useMemo(() => ({
 		actions: {
 			// addReference,
-			// deleteAlert,
 			deleteImage,
 			deleteStop,
 			imageChanged: (image: File) => setImage(image),
 			// removeReference,
-			// saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
+			// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 			saveStop,
 		},
 		data: {
@@ -418,7 +418,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			loading: isLoading || loading || imageUrlLoading,
 			mode: stopId === 'new' ? StopDetailMode.CREATE : StopDetailMode.EDIT,
 		},
-	};
+	}), [stopId, form, stop, isLoading, loading, imageUrlLoading, isSaving, canSave, isReadOnly, image]);
 
 	//
 	// F. Render components
