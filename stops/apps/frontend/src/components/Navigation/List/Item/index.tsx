@@ -1,5 +1,7 @@
 'use client';
 
+import { redirect, RedirectType } from 'next/navigation';
+
 /* * */
 
 import type { Stop } from '@tmlmobilidade/types';
@@ -25,7 +27,7 @@ export default function Item({ stop }: ItemProps) {
 	// A. Render components
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} onClick={() => redirect(stop._id, RedirectType.replace)}>
 			<Left
 				_id={stop?._id}
 				latitude={stop?.latitude}

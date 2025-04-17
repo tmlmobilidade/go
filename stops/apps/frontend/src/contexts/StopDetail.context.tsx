@@ -40,48 +40,48 @@ interface StopDetailContextState {
 	}
 	data: {
 		_id: string | undefined
-		bench_status: 'unknown'
-		comments: Comment
-		connections: Connections
-		created_at: UnixTimestamp
-		district_id: string
-		docking_bay_type: DockingBayType
-		electricity_status: ElectricityStatus
-		facilities: Facilities
-		file_ids: string[]
-		flag_status: FlagStatus
+		// bench_status: 'unknown'
+		// comments: Comment
+		// connections: Connections
+		// created_at: UnixTimestamp
+		// district_id: string
+		// docking_bay_type: DockingBayType
+		// electricity_status: ElectricityStatus
+		// facilities: Facilities
+		// file_ids: string[]
+		// flag_status: FlagStatus
 		form: UseFormReturnType<CreateStopDto>
-		image_ids: string[]
-		// imageUrl: string | undefined
-		is_archived: boolean
-		is_locked: boolean
-		jurisdiction: Jurisdiction
-		last_infrastructure_check: UnixTimestamp
-		last_infrastructure_maintenance: UnixTimestamp
-		last_schedules_check: UnixTimestamp
-		last_schedules_maintenance: UnixTimestamp
-		latitude: number
-		lighting_status: LightningStatus
-		locality_id: string
-		longitude: number
-		municipality_id: string
-		name: string
-		new_name: string
-		observations: string
-		operational_status: OperationalStatus
-		parish_id: string
-		pavement_type: PavementType
-		pole_status: PoleStatus
-		road_type: RoadType
-		shelter_code: string
-		shelter_maintainer: string
-		shelter_make: string
-		shelter_model: string
-		shelter_status: ShelterStatus
-		short_name: string
-		sidewalk_type: SidewalkType
-		tts_name: string
-		updated_at: UnixTimestamp
+		// image_ids: string[]
+		// // imageUrl: string | undefined
+		// is_archived: boolean
+		// is_locked: boolean
+		// jurisdiction: Jurisdiction
+		// last_infrastructure_check: UnixTimestamp
+		// last_infrastructure_maintenance: UnixTimestamp
+		// last_schedules_check: UnixTimestamp
+		// last_schedules_maintenance: UnixTimestamp
+		// latitude: number
+		// lighting_status: LightningStatus
+		// locality_id: string
+		// longitude: number
+		// municipality_id: string
+		// name: string
+		// new_name: string
+		// observations: string
+		// operational_status: OperationalStatus
+		// parish_id: string
+		// pavement_type: PavementType
+		// pole_status: PoleStatus
+		// road_type: RoadType
+		// shelter_code: string
+		// shelter_maintainer: string
+		// shelter_make: string
+		// shelter_model: string
+		// shelter_status: ShelterStatus
+		// short_name: string
+		// sidewalk_type: SidewalkType
+		// tts_name: string
+		// updated_at: UnixTimestamp
 	}
 	flags: {
 		canSave: boolean
@@ -112,6 +112,7 @@ const emptyStop: CreateStopDto = {
 	last_infrastructure_maintenance: getUnixTimestamp(),
 	last_schedules_check: getUnixTimestamp(),
 	last_schedules_maintenance: getUnixTimestamp(),
+	last_shelter_installation: getUnixTimestamp(),
 	latitude: 0,
 	lighting_status: 'unknown',
 	locality_id: 'temp',
@@ -368,47 +369,47 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			form,
 			// fileUrl: fileUrl?.data,
 			// imageUrl: imageUrl?.data,
-			bench_status: stop?.bench_status,
-			comments: stop?.comments,
-			connections: stop?.connections,
-			created_at: stop?.created_at,
-			district_id: stop?.district_id,
-			docking_bay_type: stop?.docking_bay_type,
-			electricity_status: stop?.electricity_status,
-			facilities: stop?.facilities,
-			file_ids: stop?.file_ids,
-			flag_status: stop?.flag_status,
-			image_ids: stop?.image_ids,
-			// imageUrl: string | undefined
-			is_archived: stop?.is_archived,
-			is_locked: stop?.is_locked,
-			jurisdiction: stop?.jurisdiction,
-			last_infrastructure_check: stop?.last_infrastructure_check,
-			last_infrastructure_maintenance: stop?.last_infrastructure_maintenance,
-			last_schedules_check: stop?.last_schedules_check,
-			last_schedules_maintenance: stop?.last_schedules_maintenance,
-			latitude: stop?.latitude,
-			lighting_status: stop?.lighting_status,
-			locality_id: stop?.locality_id,
-			longitude: stop?.longitude,
-			municipality_id: stop?.municipality_id,
-			name: stop?.name,
-			new_name: stop?.new_name,
-			observations: stop?.observations,
-			operational_status: stop?.operational_status,
-			parish_id: stop?.parish_id,
-			pavement_type: stop?.pavement_type,
-			pole_status: stop?.pole_status,
-			road_type: stop?.road_type,
-			shelter_code: stop?.shelter_code,
-			shelter_maintainer: stop?.shelter_maintainer,
-			shelter_make: stop?.shelter_make,
-			shelter_model: stop?.shelter_model,
-			shelter_status: stop?.shelter_status,
-			short_name: stop?.short_name,
-			sidewalk_type: stop?.sidewalk_type,
-			tts_name: stop?.tts_name,
-			updated_at: stop?.updated_at,
+			// bench_status: stop?.bench_status,
+			// comments: stop?.comments,
+			// connections: stop?.connections,
+			// created_at: stop?.created_at,
+			// district_id: stop?.district_id,
+			// docking_bay_type: stop?.docking_bay_type,
+			// electricity_status: stop?.electricity_status,
+			// facilities: stop?.facilities,
+			// file_ids: stop?.file_ids,
+			// flag_status: stop?.flag_status,
+			// image_ids: stop?.image_ids,
+			// // imageUrl: string | undefined
+			// is_archived: stop?.is_archived,
+			// is_locked: stop?.is_locked,
+			// jurisdiction: stop?.jurisdiction,
+			// last_infrastructure_check: stop?.last_infrastructure_check,
+			// last_infrastructure_maintenance: stop?.last_infrastructure_maintenance,
+			// last_schedules_check: stop?.last_schedules_check,
+			// last_schedules_maintenance: stop?.last_schedules_maintenance,
+			// latitude: stop?.latitude,
+			// lighting_status: stop?.lighting_status,
+			// locality_id: stop?.locality_id,
+			// longitude: stop?.longitude,
+			// municipality_id: stop?.municipality_id,
+			// name: stop?.name,
+			// new_name: stop?.new_name,
+			// observations: stop?.observations,
+			// operational_status: stop?.operational_status,
+			// parish_id: stop?.parish_id,
+			// pavement_type: stop?.pavement_type,
+			// pole_status: stop?.pole_status,
+			// road_type: stop?.road_type,
+			// shelter_code: stop?.shelter_code,
+			// shelter_maintainer: stop?.shelter_maintainer,
+			// shelter_make: stop?.shelter_make,
+			// shelter_model: stop?.shelter_model,
+			// shelter_status: stop?.shelter_status,
+			// short_name: stop?.short_name,
+			// sidewalk_type: stop?.sidewalk_type,
+			// tts_name: stop?.tts_name,
+			// updated_at: stop?.updated_at,
 		},
 		flags: {
 			canSave,
