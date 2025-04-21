@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { OperationalDate } from '@tmlmobilidade/types';
-import { DateTime } from 'luxon';
+import { operationalDateToJsDate } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
 
@@ -9,14 +9,14 @@ export default function DateCell({ date, endDate }: { date: OperationalDate, end
 
 	//
 	// A. Setup variables
-	const parsedDate = date ? DateTime.fromMillis(date) : null;
-	const parsedEndDate = endDate ? DateTime.fromMillis(endDate) : null;
+	const parsedDate = date ? operationalDateToJsDate(date) : null;
+	const parsedEndDate = endDate ? operationalDateToJsDate(endDate) : null;
 	//
 	// B. Render
 	return (
 		<div className={styles.wrapper}>
-			<div className={cn(parsedEndDate && parsedEndDate < DateTime.now() && styles.expired)}>
-				{parsedDate ? parsedDate.toLocaleString(DateTime.DATETIME_MED) : 'N/A'}
+			<div className={cn(parsedEndDate && parsedEndDate < new Date() && styles.expired)}>
+				{parsedDate ? parsedDate.toLocaleDateString() : 'N/A'}
 			</div>
 		</div>
 	);

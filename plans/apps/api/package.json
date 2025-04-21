@@ -18,7 +18,7 @@
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
 		"@tmlmobilidade/interfaces": "20250417.1235.11",
-		"@tmlmobilidade/lib": "20250421.1104.40",
+		"@tmlmobilidade/lib": "20250421.1334.31",
 		"@tmlmobilidade/types": "20250417.1234.52",
 		"@tmlmobilidade/utils": "20250421.1244.57",
 		"fastify": "5.3.2",
