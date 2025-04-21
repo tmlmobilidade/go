@@ -6,6 +6,8 @@ import { useStopsContext } from '@/contexts/Stops.context';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+
 import Item from './Item';
 import styles from './styles.module.css';
 

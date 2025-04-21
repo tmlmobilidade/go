@@ -1,26 +1,26 @@
 'use client';
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { IconEye, IconTrash, IconWorldUpload, IconX } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconEye, IconTrash, IconWorldUpload } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
 
 interface RightProps {
 	open: () => void
-	stopId: string
 }
 export default function Right({ open }: RightProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const stopDetailContext = useStopDetailContext();
 
 	const { actions, data: stop } = stopDetailContext;
 
 	//
-
-	//
-
-	//
-	// A. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.section}>
@@ -41,6 +41,16 @@ export default function Right({ open }: RightProps) {
 				</div>
 			</Tooltip>
 
+			{/* Save Button */}
+			<Tooltip label="Criar Paragem" position="bottom">
+				<div
+					className={styles.icon_blue}
+					onClick={() => actions.saveStop()}
+				>
+					<IconDeviceFloppy />
+				</div>
+			</Tooltip>
+
 			{/* Delete Button */}
 			<Tooltip label="Apagar Paragem" position="bottom">
 				<div
@@ -50,6 +60,7 @@ export default function Right({ open }: RightProps) {
 					<IconTrash />
 				</div>
 			</Tooltip>
+
 		</div>
 	);
 }

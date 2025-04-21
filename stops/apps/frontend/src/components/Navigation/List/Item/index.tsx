@@ -27,7 +27,7 @@ export default function Item({ stop }: ItemProps) {
 	// A. Render components
 
 	return (
-		<div className={styles.container} onClick={() => redirect(stop._id, RedirectType.replace)}>
+		<div className={styles.container} onClick={() => redirect(`/stops/${stop._id}`, RedirectType.replace)}>
 			<Left
 				_id={stop?._id}
 				latitude={stop?.latitude}

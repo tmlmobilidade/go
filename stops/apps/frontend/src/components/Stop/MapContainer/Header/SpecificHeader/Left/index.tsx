@@ -21,15 +21,17 @@ interface LeftProps {
 /* * */
 
 export default function Left({ isManual }: LeftProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const stopDetailContext = useStopDetailContext();
 
 	const { data: stop } = stopDetailContext;
-	// console.log('=> latitude', stop.form.getValues().name);
 
 	//
-
-	//
-	// A. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.section}>

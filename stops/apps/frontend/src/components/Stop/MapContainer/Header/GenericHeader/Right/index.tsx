@@ -3,11 +3,13 @@
 /* * */
 
 import { Button } from '@mantine/core';
-import { IconMapPinFilled } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconMapPinFilled } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 import { SetStateAction } from 'react';
 
 /* * */
+
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
 
 import styles from './styles.module.css';
 
@@ -24,7 +26,14 @@ export default function Right({ setToggleValue, toggleValue }: RightProps) {
 	//
 
 	//
-	// A. Render components
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	const { actions } = stopDetailContext;
+
+	//
+	// B. Render components
 
 	return (
 		<div className={styles.section}>
@@ -40,6 +49,16 @@ export default function Right({ setToggleValue, toggleValue }: RightProps) {
 					onClick={() => window.open(`https://www.google.com/maps/@38.6512317,-8.8813723,10z`, '_blank')}
 				>
 					<IconMapPinFilled />
+				</div>
+			</Tooltip>
+
+			{/* Save Button */}
+			<Tooltip label="Criar Paragem" position="bottom">
+				<div
+					className={styles.icon_blue}
+					onClick={() => actions.saveStop()}
+				>
+					<IconDeviceFloppy />
 				</div>
 			</Tooltip>
 		</div>

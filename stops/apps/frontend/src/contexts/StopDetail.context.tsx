@@ -256,7 +256,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		body = { ...body };
 
 		const response = await fetchData<unknown>(url, method, body);
-
+		console.log('==> response', response);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
