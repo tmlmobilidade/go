@@ -7,11 +7,17 @@ import { TextArea } from '@tmlmobilidade/ui';
 
 /* * */
 
+import { Comment } from '@tmlmobilidade/types';
+
 import styles from '../styles.module.css';
 
 /* * */
 
-export default function Comments() {
+interface CommentsProps {
+	comments: Comment
+}
+
+export default function Comments({ comments }: CommentsProps) {
 	//
 
 	//
@@ -24,13 +30,15 @@ export default function Comments() {
 				title="Notas e Comentários"
 			/>
 
-			<TextArea
-				className={styles.text_area}
-				maxRows={10}
-				minRows={4}
-				placeholder="Construção planeada a..."
-				// {...alertDetailData.form.getInputProps('description')}
-			/>
+			{comments.map((comment) => {
+				return (
+					<div key={comment._id}>
+						<div>ID: {comment._id}</div>
+						<div>USER ID: {comment.user_id}</div>
+						<div>TEXT: {comment.text}</div>
+					</div>
+				);
+			})}
 		</div>
 	);
 }

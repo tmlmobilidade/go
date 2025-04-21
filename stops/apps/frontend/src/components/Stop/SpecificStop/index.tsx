@@ -102,7 +102,12 @@ export default function Stop() {
 				file_ids={stop.form.getValues().file_ids || ['']}
 				image_ids={stop.form.getValues().image_ids || ['']}
 			/>
-			<Comments />
+			<Comments
+				comments={stop.form.getValues().comments || ['']}
+			/>
+			<Observations
+				observations={stop.form.getValues().observations || ['']}
+			/>
 		</div>
 	);
 }
