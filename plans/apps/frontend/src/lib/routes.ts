@@ -1,8 +1,10 @@
 export const PageRoutes = Object.freeze({
 	HOME: '/',
+	PLAN_DETAIL: (id: string) => `/plans/${id}`,
+	PLAN_LIST: '/plans',
 
-	// Alerts
-	// Example: ALERT_DETAIL: (id: string) => `/alerts/${id}`,
+	// Plans
+	// Example: PLAN_DETAIL: (id: string) => `/plans/${id}`,
 });
 
 export const ApiRoutes = Object.freeze({
@@ -10,8 +12,8 @@ export const ApiRoutes = Object.freeze({
 	AUTH_API: (process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt') + '/api',
 	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
 
-	// Page routes
-	// Example: ALERT_DETAIL_API: (id: string) => `/api/alerts/${id}`,
+	// APP
+	API: (path: string) => `/api${path}`,
 });
 
 export const Routes = Object.freeze({

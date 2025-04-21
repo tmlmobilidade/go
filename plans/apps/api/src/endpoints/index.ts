@@ -1,1 +1,1 @@
-import './alerts/alerts.routes';
+import './plans/plans.routes';

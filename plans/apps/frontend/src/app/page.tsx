@@ -1,3 +1,10 @@
+import { PlanList } from '@/components/list/PlansList';
+import { PlanListContextProvider } from '@/contexts/PlanList.context';
+
 export default function Page() {
-	return <div>Hello World</div>;
+	return (
+		<PlanListContextProvider>
+			<PlanList />
+		</PlanListContextProvider>
+	);
 }
