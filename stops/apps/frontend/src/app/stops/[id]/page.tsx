@@ -15,7 +15,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 				<Navigation />
 			</StopListContextProvider>
 			<StopDetailContextProvider stopId={id}>
-				<Stop />
+				<Stop paramId={id} />
 			</StopDetailContextProvider>
 		</div>
 	);

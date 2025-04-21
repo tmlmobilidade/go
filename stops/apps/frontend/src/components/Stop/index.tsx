@@ -17,7 +17,11 @@ import SpecificStop from './SpecificStop';
 
 /* * */
 
-export default function Stop() {
+interface StopProps {
+	paramId: string
+}
+
+export default function Stop({ paramId }: StopProps) {
 	//
 
 	//
@@ -34,7 +38,7 @@ export default function Stop() {
 	return (
 		<ManualContextProvider>
 			{
-				data?._id ? <SpecificStop /> : <GenericStop />
+				data?._id || paramId === 'new' ? <SpecificStop /> : <GenericStop />
 			}
 		</ManualContextProvider>
 	);

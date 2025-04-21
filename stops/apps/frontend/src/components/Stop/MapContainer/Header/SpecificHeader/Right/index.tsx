@@ -1,8 +1,10 @@
 'use client';
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { Routes } from '@/lib/routes';
 import { IconDeviceFloppy, IconEye, IconTrash, IconWorldUpload } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
+import { redirect, RedirectType } from 'next/navigation';
 
 import styles from '../styles.module.css';
 
@@ -45,7 +47,8 @@ export default function Right({ open }: RightProps) {
 			<Tooltip label="Criar Paragem" position="bottom">
 				<div
 					className={styles.icon_blue}
-					onClick={() => actions.saveStop()}
+					onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
+					// onClick={() => actions.saveStop()}
 				>
 					<IconDeviceFloppy />
 				</div>
