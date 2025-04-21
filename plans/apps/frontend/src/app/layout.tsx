@@ -3,8 +3,15 @@
 import '@tmlmobilidade/ui/styles';
 import { Routes } from '@/lib/routes';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
+import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+/* * */
+
+export const metadata: Metadata = {
+	description: 'Plano de Exploração',
+	title: 'SAE - PLANOS',
+};
 
 /* * */
 
