@@ -8,11 +8,18 @@ import Item from '@/components/common/Row/Item';
 
 /* * */
 
+import { UnixTimestamp } from '@tmlmobilidade/types';
+
 import styles from '../styles.module.css';
 
 /* * */
 
-export default function Infrasctructure() {
+interface InfrasctructureProps {
+	last_infrastructure_check: UnixTimestamp
+	last_infrastructure_maintenance: UnixTimestamp
+}
+
+export default function Infrasctructure({ last_infrastructure_check, last_infrastructure_maintenance }: InfrasctructureProps) {
 	//
 
 	//
@@ -26,7 +33,7 @@ export default function Infrasctructure() {
 				title="Infraestrutura"
 			/>
 
-			<Row>
+			{/* <Row>
 				<Item label="Existe Poste?" value="Desconhecido" />
 				<Item label="Existe Cobertura?" value="Desconhecido" />
 			</Row>
@@ -44,7 +51,7 @@ export default function Infrasctructure() {
 
 			<Row>
 				<Item label="Tipo de Relação com a Via" value="Desconhecido" />
-			</Row>
+			</Row> */}
 
 			<Row>
 				<Item label="Última Manutenção da Infraestrutura" placeholder="2023-02-10" value="Sim" />

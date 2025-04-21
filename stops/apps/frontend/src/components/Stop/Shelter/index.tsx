@@ -14,6 +14,14 @@ import styles from '../styles.module.css';
 
 /* * */
 
+enum ShelterStatusValues {
+	is_damaged = 'Abrigo Danificado',
+	is_missing = 'Abrigo em Falta',
+	is_ok = 'Abrigo Operacional',
+	not_applicable = 'Não Aplicável',
+	unknown = 'Abrigo Desconhecido',
+}
+
 interface ShelterProps {
 	last_shelter_installation: UnixTimestamp
 	shelter_code: string
@@ -37,7 +45,7 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 			/>
 
 			<Row>
-				<Item label="Existe Abrigo?" value={shelter_status} />
+				<Item label="Existe Abrigo?" value={ShelterStatusValues[shelter_status]} />
 				<Item label="Código do Abrigo" placeholder="SH1234" value={shelter_code} />
 				<Item label="Entidade Gestora do Abrigo" placeholder="JC Decaux" value={shelter_maintainer} />
 			</Row>
@@ -46,10 +54,10 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 				<Item label="Modelo do Abrigo" value={shelter_model} />
 				<Item label="Fabricante do Abrigo" value={shelter_make} />
 			</Row>
-			<Row>
-				{/* <Item label="Última verificação do estado do abrigo" placeholder="2024-09-12" value="Sim" /> */}
+			{/* <Item label="Última verificação do estado do abrigo" placeholder="2024-09-12" value="Sim" /> */}
+			{/* <Row>
 				<Item label="Data de Instalação do Abrigo" placeholder="2024-09" value={last_shelter_installation} />
-			</Row>
+			</Row> */}
 		</div>
 	);
 }
