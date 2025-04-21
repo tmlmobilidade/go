@@ -34,9 +34,8 @@ interface SpecificStopProps {
 export default function Stop() {
 	const stopDetailContext = useStopDetailContext();
 
-	// console.log('??? stopDetailContext', stopDetailContext);
 	const { data: stop } = stopDetailContext;
-	console.log('??? stop?.form.getValues().latitude', stop.form.getValues().latitude);
+	console.log('=> latitude', stop.form.getValues().latitude);
 	// data.form.getValues();
 	//
 
@@ -52,18 +51,18 @@ export default function Stop() {
 				longitude={stop.form.getValues().longitude || 0}
 				name={stop.form.getValues().name || ''}
 				new_name={stop.form.getValues().new_name || ''}
-				operational_status={stop.form.getValues().operational_status || 'voided'} // TODO: Check corresponding strings, example: active -> "Paragem Activa"
+				operational_status={stop.form.getValues().operational_status || 'voided'}
 				short_name={stop.form.getValues().short_name || ''}
 				tts_name={stop.form.getValues().tts_name || ''}
 			/>
 			<AdminInformation
-				jurisdication={stop.form.getValues().jurisdiction || ''} // TODO: Check where to get this data
-				locality_id={stop.form.getValues().locality_id || ''} // TODO: Use name instead of id
-				municipality_id={stop.form.getValues().municipality_id || ''} // TODO: Use name instead of id
-				parish_id={stop.form.getValues().parish_id || ''} // TODO: Check where to get this data
+				jurisdication={stop.form.getValues().jurisdiction || ''}
+				locality_id={stop.form.getValues().locality_id || ''}
+				municipality_id={stop.form.getValues().municipality_id || ''}
+				parish_id={stop.form.getValues().parish_id || ''}
 			/>
 			<Affectation
-				affectation={stop.form.getValues().affectation || ['']} // TODO: Check where to get this data
+				affectation={stop.form.getValues().affectation || ['']}
 			/>
 			<Shelter
 				// last_shelter_installation={stop.form.getValues().last_shelter_installation || getUnixTimestamp()}
@@ -94,12 +93,15 @@ export default function Stop() {
 				sidewalk_type={stop.form.getValues().sidewalk_type || 'unknown'}
 			/>
 			<Equipments
-				facilities={stop.form.getValues().facilities || ['']} // TODO: Check where to get this data
+				facilities={stop.form.getValues().facilities || ['']}
 			/>
 			<Connections
-				connections={stop.form.getValues().connections || ['']} // TODO: Check where to get this data
+				connections={stop.form.getValues().connections || ['']}
 			/>
-			<Media />
+			<Media
+				file_ids={stop.form.getValues().file_ids || ['']}
+				image_ids={stop.form.getValues().image_ids || ['']}
+			/>
 			<Comments />
 		</div>
 	);
