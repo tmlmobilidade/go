@@ -117,37 +117,22 @@ export default function Accessibility({ bench_status, docking_bay_type, electric
 
 			<Row>
 				<Item label="Tem Passeio?" value={SidewalkTypeValues[sidewalk_type]} />
-			</Row>
-
-			<Row>
 				<Item label="Estado do Banco" value={BenchStatusValues[bench_status]} />
 			</Row>
 
 			<Row>
 				<Item label="Tipo de Doca" value={DockingBayTypeValues[docking_bay_type]} />
-			</Row>
-
-			<Row>
 				<Item label="Estado da Electricidade" value={ElectricityStatusValues[electricity_status]} />
 			</Row>
 
 			<Row>
 				<Item label="Estado da Bandeira" value={FlagStatusValues[flag_status]} />
-			</Row>
-
-			<Row>
 				<Item label="Estado da Luz" value={LightningStatusValues[lighting_status]} />
 			</Row>
 
 			<Row>
 				<Item label="Tipo de Pavimento" value={PavementTypeValues[pavement_type]} />
-			</Row>
-
-			<Row>
 				<Item label="Estado do Poste" value={PoleStatusValues[pole_status]} />
-			</Row>
-
-			<Row>
 				<Item label="Tipo de Estrada" value={RoadTypeValues[road_type]} />
 			</Row>
 

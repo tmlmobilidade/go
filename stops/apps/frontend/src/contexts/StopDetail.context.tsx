@@ -95,6 +95,7 @@ interface StopDetailContextState {
 
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
+	affectation: [],
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],

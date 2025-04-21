@@ -44,10 +44,10 @@ export default function Stop() {
 	// A. Render components
 
 	return (
-		<div className={styles.section}>
+		<div className={styles.container}>
 			<MapContainer generic={false} />
 			<Details
-				_id={stop?._id || ''}
+				_id={stop?._id || 'temp'}
 				latitude={stop.form.getValues().latitude || 0}
 				longitude={stop.form.getValues().longitude || 0}
 				name={stop.form.getValues().name || ''}

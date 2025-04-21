@@ -7,18 +7,25 @@ import { Tooltip } from '@tmlmobilidade/ui';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+
 import styles from './styles.module.css';
 
 /* * */
 
 interface LeftProps {
 	isManual: boolean
-	long_name?: string
+	// long_name?: string
 }
 
 /* * */
 
-export default function Left({ isManual, long_name }: LeftProps) {
+export default function Left({ isManual }: LeftProps) {
+	const stopDetailContext = useStopDetailContext();
+
+	const { data: stop } = stopDetailContext;
+	// console.log('=> latitude', stop.form.getValues().name);
+
 	//
 
 	//
@@ -45,7 +52,7 @@ export default function Left({ isManual, long_name }: LeftProps) {
 				)}
 
 			{/* Label */}
-			<h3>{long_name || <i>Paragem sem Título</i>}</h3>
+			<h3>{stop.form.getValues().name || <i>Paragem sem Título</i>}</h3>
 		</div>
 	);
 }

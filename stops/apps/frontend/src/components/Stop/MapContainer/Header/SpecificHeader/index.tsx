@@ -32,17 +32,18 @@ export default function SpecificHeader() {
 	// Hooks
 	const [opened, { close, open }] = useDisclosure(false);
 
-	const stopId = '010001';
-	const stop: Stop = actions.getStopById(stopId);
+	// const stopDetailContext = useStopDetailContext();
 
+	// const { data: stop } = stopDetailContext;
+	// console.log('=> latitude', stop.form.getValues().latitude);
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.header}>
-			<Left isManual={isManual} long_name={stop?.name} />
+			<Left isManual={isManual} />
 
-			<Right open={open} stopId={stopId} />
+			<Right open={open} />
 
 			{/* <PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
 				<List>

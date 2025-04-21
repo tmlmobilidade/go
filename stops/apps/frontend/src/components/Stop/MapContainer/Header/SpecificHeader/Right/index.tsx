@@ -1,6 +1,7 @@
 'use client';
 
-import { IconEye, IconWorldUpload } from '@tabler/icons-react';
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { IconEye, IconTrash, IconWorldUpload, IconX } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
@@ -9,7 +10,13 @@ interface RightProps {
 	open: () => void
 	stopId: string
 }
-export default function Right({ open, stopId }: RightProps) {
+export default function Right({ open }: RightProps) {
+	const stopDetailContext = useStopDetailContext();
+
+	const { actions, data: stop } = stopDetailContext;
+
+	//
+
 	//
 
 	//
@@ -28,9 +35,19 @@ export default function Right({ open, stopId }: RightProps) {
 			<Tooltip label="Ver esta paragem no Site" position="bottom">
 				<div
 					className={styles.icon_blue}
-					onClick={() => window.open(`https://www.carrismetropolitana.pt/stops/${stopId}`, '_blank')}
+					onClick={() => window.open(`https://www.carrismetropolitana.pt/stops/${stop._id}`, '_blank')}
 				>
 					<IconWorldUpload />
+				</div>
+			</Tooltip>
+
+			{/* Delete Button */}
+			<Tooltip label="Apagar Paragem" position="bottom">
+				<div
+					className={styles.icon_blue}
+					onClick={() => actions.deleteStop()}
+				>
+					<IconTrash />
 				</div>
 			</Tooltip>
 		</div>

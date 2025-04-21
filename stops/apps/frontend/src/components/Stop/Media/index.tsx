@@ -28,9 +28,9 @@ export default function Media({ file_ids, image_ids }: MediaProps) {
 				title="Imagens & Vídeos"
 			/>
 
-			{file_ids.map(file_id => <div key={file_id}>{file_id}</div>)};
+			{file_ids.map(file_id => <div key={file_id}>{file_id}</div>)}
 
-			{image_ids.map(image_id => <div key={image_id}>{image_id}</div>)};
+			{image_ids.map(image_id => <div key={image_id}>{image_id}</div>)}
 		</div>
 	);
 }
