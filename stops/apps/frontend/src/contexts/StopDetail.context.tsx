@@ -160,7 +160,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	const [file, setFile] = useState<File | null>(null);
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
-	console.log('==> stop', stop);
+	// console.log('==> stop', stop);
 	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 		stopId === 'new'
 			? undefined

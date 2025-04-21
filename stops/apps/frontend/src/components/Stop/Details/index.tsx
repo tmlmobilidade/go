@@ -1,6 +1,6 @@
 'use client';
 
-import type { operationalStatusSchema } from '@tmlmobilidade/types';
+import type { OperationalStatus, operationalStatusSchema } from '@tmlmobilidade/types';
 
 import Header from '@/components/common/Header';
 import Row from '@/components/common/Row';
@@ -15,13 +15,21 @@ import styles from '../styles.module.css';
 
 /* * */
 
+enum OperationalStatusValues {
+	active = 'Paragem Activa',,
+	closed = 'Paragem Fechada',
+	provisional = 'Paragem Provisória',
+	seasonal = 'Paragem Sazonal',
+	voided = 'Vazio',
+}
+
 interface DetailsProps {
 	_id: string
 	latitude: number
 	longitude: number
 	name: string
 	new_name: string
-	operational_status: operationalStatusSchema
+	operational_status: OperationalStatus
 	short_name: string
 	tts_name: string
 }
@@ -138,7 +146,7 @@ export default function Details({ _id, latitude, longitude, name, new_name, oper
 			</Row>
 
 			<Row>
-				<Item label="Estado Operacional" value={operational_status || 'active'} />
+				<Item label="Estado Operacional" value={OperationalStatusValues[operational_status] || 'Vazio'} />
 			</Row>
 		</div>
 	);

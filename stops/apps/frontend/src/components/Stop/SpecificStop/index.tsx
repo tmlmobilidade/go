@@ -33,9 +33,11 @@ interface SpecificStopProps {
 // export default function Stop({ stop }: SpecificStopProps) {
 export default function Stop() {
 	const stopDetailContext = useStopDetailContext();
-	console.log('??? stopDetailContext', stopDetailContext);
 
+	// console.log('??? stopDetailContext', stopDetailContext);
 	const { data: stop } = stopDetailContext;
+	console.log('??? stop?.form.getValues().latitude', stop.form.getValues().latitude);
+	// data.form.getValues();
 	//
 
 	//
@@ -46,19 +48,19 @@ export default function Stop() {
 			<MapContainer generic={false} />
 			<Details
 				_id={stop?._id || ''}
-				latitude={stop?.latitude || 0}
-				longitude={stop?.longitude || 0}
-				name={stop?.name || ''}
-				new_name={stop?.new_name || ''}
-				operational_status={stop?.operational_status || 'voided'} // TODO: Check corresponding strings, example: active -> "Paragem Activa"
-				short_name={stop?.short_name || ''}
-				tts_name={stop?.tts_name || ''}
+				latitude={stop.form.getValues().latitude || 0}
+				longitude={stop.form.getValues().longitude || 0}
+				name={stop.form.getValues().name || ''}
+				new_name={stop.form.getValues().new_name || ''}
+				operational_status={stop.form.getValues().operational_status || 'voided'} // TODO: Check corresponding strings, example: active -> "Paragem Activa"
+				short_name={stop.form.getValues().short_name || ''}
+				tts_name={stop.form.getValues().tts_name || ''}
 			/>
 			<AdminInformation
-				jurisdication={stop?.jurisdiction || ''} // TODO: Check where to get this data
-				locality_id={stop?.locality_id || ''} // TODO: Use name instead of id
-				municipality_id={stop?.municipality_id || ''} // TODO: Use name instead of id
-				parish_id={stop?.parish_id || ''} // TODO: Check where to get this data
+				jurisdication={stop.form.getValues().jurisdiction || ''} // TODO: Check where to get this data
+				locality_id={stop.form.getValues().locality_id || ''} // TODO: Use name instead of id
+				municipality_id={stop.form.getValues().municipality_id || ''} // TODO: Use name instead of id
+				parish_id={stop.form.getValues().parish_id || ''} // TODO: Check where to get this data
 			/>
 			<Affectation
 				// TODO: Check where to get this data

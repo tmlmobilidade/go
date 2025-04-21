@@ -25,8 +25,8 @@ export default function Stop() {
 
 	const stopDetailContext = useStopDetailContext();
 	const { data } = stopDetailContext;
-	console.log('=> data', data);
-	console.log('=> data.flag_status', data.form.getValues().flag_status);
+	// console.log('=> data', data);
+	// console.log('=> data.flag_status', data.form.getValues().flag_status);
 
 	//
 	// B. Render components
