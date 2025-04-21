@@ -12,7 +12,7 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export default function Affectation() {
+export default function Affectation({ affectation }: { affectation: string[] }) {
 	//
 
 	//
@@ -26,7 +26,7 @@ export default function Affectation() {
 			/>
 
 			<Row>
-				<Item label="Aceitação de Passes pré-definida" placeholder="Escolha uma opção..." value="Sim" />
+				<Item label="Aceitação de Passes pré-definida" placeholder="Escolha uma opção..." value={affectation.toString()} />
 			</Row>
 		</div>
 	);

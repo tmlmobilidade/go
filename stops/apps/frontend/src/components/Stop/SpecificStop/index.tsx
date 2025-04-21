@@ -20,7 +20,6 @@ import MapContainer from '../MapContainer';
 import Media from '../Media';
 import PublicInformation from '../PublicInformation';
 import Shelter from '../Shelter';
-import styles from '../styles.module.css';
 
 /* * */
 
@@ -63,9 +62,15 @@ export default function Stop() {
 				parish_id={stop.form.getValues().parish_id || ''} // TODO: Check where to get this data
 			/>
 			<Affectation
-				// TODO: Check where to get this data
+				affectation={stop.form.getValues().affectation || ['']} // TODO: Check where to get this data
 			/>
-			<Shelter />
+			<Shelter
+				shelter_code={stop.form.getValues().shelter_code || ''}
+				shelter_maintainer={stop.form.getValues().shelter_maintainer || ''}
+				shelter_make={stop.form.getValues().shelter_make || ''}
+				shelter_model={stop.form.getValues().shelter_model || ''}
+				shelter_status={stop.form.getValues().shelter_status || ''}
+			/>
 			<Infrasctructure />
 			<PublicInformation />
 			<Accessibility />

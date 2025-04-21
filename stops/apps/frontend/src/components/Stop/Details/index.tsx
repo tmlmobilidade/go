@@ -16,7 +16,7 @@ import styles from '../styles.module.css';
 /* * */
 
 enum OperationalStatusValues {
-	active = 'Paragem Activa',,
+	active = 'Paragem Activa',
 	closed = 'Paragem Fechada',
 	provisional = 'Paragem Provisória',
 	seasonal = 'Paragem Sazonal',

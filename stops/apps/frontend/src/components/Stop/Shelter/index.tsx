@@ -8,11 +8,22 @@ import Item from '@/components/common/Row/Item';
 
 /* * */
 
+import { ShelterStatus, UnixTimestamp } from '@tmlmobilidade/types';
+
 import styles from '../styles.module.css';
 
 /* * */
 
-export default function Shelter() {
+interface ShelterProps {
+	last_shelter_installation: UnixTimestamp
+	shelter_code: string
+	shelter_maintainer: string
+	shelter_make: string
+	shelter_model: string
+	shelter_status: ShelterStatus
+}
+
+export default function Shelter({ last_shelter_installation, shelter_code, shelter_maintainer, shelter_make, shelter_model, shelter_status }: ShelterProps) {
 	//
 
 	//
@@ -26,14 +37,18 @@ export default function Shelter() {
 			/>
 
 			<Row>
-				<Item label="Existe Abrigo?" value="Desconhecido" />
-				<Item label="Código do Abrigo" placeholder="SH1234" value="Sim" />
-				<Item label="Entidade Gestora do Abrigo" placeholder="JC Decaux" value="Sim" />
+				<Item label="Existe Abrigo?" value={shelter_status} />
+				<Item label="Código do Abrigo" placeholder="SH1234" value={shelter_code} />
+				<Item label="Entidade Gestora do Abrigo" placeholder="JC Decaux" value={shelter_maintainer} />
 			</Row>
 
 			<Row>
-				<Item label="Última verificação do estado do abrigo" placeholder="2024-09-12" value="Sim" />
-				<Item label="Data de Instalação do Abrigo" placeholder="2024-09" value="Sim" />
+				<Item label="Modelo do Abrigo" value={shelter_model} />
+				<Item label="Fabricante do Abrigo" value={shelter_make} />
+			</Row>
+			<Row>
+				{/* <Item label="Última verificação do estado do abrigo" placeholder="2024-09-12" value="Sim" /> */}
+				<Item label="Data de Instalação do Abrigo" placeholder="2024-09" value={last_shelter_installation} />
 			</Row>
 		</div>
 	);
