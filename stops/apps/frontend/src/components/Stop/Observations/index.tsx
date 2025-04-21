@@ -15,7 +15,7 @@ interface ObservationsProps {
 	observations: string
 }
 
-export default function Observations() {
+export default function Observations({ observations }: ObservationsProps) {
 	//
 
 	//
@@ -33,6 +33,7 @@ export default function Observations() {
 				maxRows={10}
 				minRows={4}
 				placeholder="Construção planeada a..."
+				value={observations}
 				// {...alertDetailData.form.getInputProps('description')}
 			/>
 		</div>

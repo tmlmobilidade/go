@@ -19,6 +19,7 @@ import Equipments from '../Equipments';
 import Infrasctructure from '../Infrasctructure';
 import MapContainer from '../MapContainer';
 import Media from '../Media';
+import Observations from '../Observations';
 import PublicInformation from '../PublicInformation';
 import Shelter from '../Shelter';
 import styles from '../styles.module.css';
