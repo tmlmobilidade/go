@@ -36,7 +36,9 @@ export default function Stop() {
 	const stopDetailContext = useStopDetailContext();
 
 	const { data: stop } = stopDetailContext;
-	console.log('=> latitude', stop.form.getValues().latitude);
+	// const all = stopDetailContext;
+	console.log('=> stop', stop);
+	// console.log('=> latitude', stop.form.getValues().latitude);
 	// data.form.getValues();
 	//
 
@@ -47,16 +49,16 @@ export default function Stop() {
 		<div className={styles.container}>
 			<MapContainer generic={false} />
 			<Details
-				_id={stop?._id || 'temp'}
-				latitude={stop.form.getValues().latitude || 0}
-				longitude={stop.form.getValues().longitude || 0}
-				name={stop.form.getValues().name || ''}
-				new_name={stop.form.getValues().new_name || ''}
-				operational_status={stop.form.getValues().operational_status || 'voided'}
-				short_name={stop.form.getValues().short_name || ''}
-				tts_name={stop.form.getValues().tts_name || ''}
+				_id={stop.form.getInputProps('_id')}
+				latitude={stop.form.getInputProps('latitude')}
+				longitude={stop.form.getInputProps('longitude')}
+				name={stop.form.getInputProps('name')}
+				new_name={stop.form.getInputProps('new_name')}
+				operational_status={stop.form.getInputProps('operational_status')}
+				short_name={stop.form.getInputProps('short_name')}
+				tts_name={stop.form.getInputProps('tts_name')}
 			/>
-			<AdminInformation
+			{/* <AdminInformation
 				jurisdication={stop.form.getValues().jurisdiction || ''}
 				locality_id={stop.form.getValues().locality_id || ''}
 				municipality_id={stop.form.getValues().municipality_id || ''}
@@ -108,7 +110,7 @@ export default function Stop() {
 			/>
 			<Observations
 				observations={stop.form.getValues().observations || ['']}
-			/>
+			/> */}
 		</div>
 	);
 }

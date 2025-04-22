@@ -24,11 +24,18 @@ enum OperationalStatusValues {
 }
 
 interface DetailsProps {
-	_id: string
-	latitude: number
-	longitude: number
-	name: string
-	new_name: string
+	_id: object
+	// inputProps: object
+	latitude: object
+	longitude: object
+	// _id: string
+	// // inputProps: object
+	// latitude: number
+	// longitude: number
+	name: object
+	// name: string
+	new_name: object
+	// new_name: string
 	operational_status: OperationalStatus
 	short_name: string
 	tts_name: string
@@ -94,24 +101,38 @@ export default function Details({ _id, latitude, longitude, name, new_name, oper
 			/>
 
 			<Row>
-				<Item label="Código Único da Paragem" placeholder="012345" value={_id} />
-				<Item label="Latitude" value={latitude.toString()} />
-				<Item label="Longitude" value={longitude.toString()} />
+				<Item
+					inputProps={_id}
+					label="Código Único da Paragem"
+					placeholder="012345"
+				/>
+				<Item
+					inputProps={latitude}
+					label="Latitude"
+				/>
+				<Item
+					inputProps={longitude}
+					label="Longitude"
+				/>
 			</Row>
 
 			<Row>
 				<Item
 					color="green"
+					inputProps={name}
 					label="Antigo Nome da Paragem (p/ alterar)"
 					placeholder="Rua Marquês de Pombal 8"
-					value={name}
 				/>
 			</Row>
 
 			<Row>
-				<Item label="Nome da Paragem (depois da correção)" placeholder="Rua Marquês de Pombal 8" value={new_name} />
+				<Item
+					inputProps={new_name}
+					label="Nome da Paragem (depois da correção)"
+					placeholder="Rua Marquês de Pombal 8"
+				/>
 			</Row>
-
+			{/*
 			<Row hasIcons={true}>
 				<Item
 					color={isManual ? 'purple' : 'green'}
@@ -147,7 +168,7 @@ export default function Details({ _id, latitude, longitude, name, new_name, oper
 
 			<Row>
 				<Item label="Estado Operacional" value={OperationalStatusValues[operational_status] || 'Vazio'} />
-			</Row>
+			</Row> */}
 		</div>
 	);
 }

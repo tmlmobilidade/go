@@ -30,7 +30,7 @@ export default function Stop({ paramId }: StopProps) {
 	const stopDetailContext = useStopDetailContext();
 	const { data } = stopDetailContext;
 	// console.log('=> data', data);
-	// console.log('=> data.flag_status', data.form.getValues().flag_status);
+	console.log('=> new_name', data.form.getValues().new_name);
 
 	//
 	// B. Render components

@@ -15,14 +15,15 @@ interface ItemProps {
 	children?: ReactNode
 	color?: 'green' | 'purple'
 	description?: string
+	inputProps: object
+	isBoolean?: boolean
 	label: string
 	placeholder?: string
-	value: boolean | string
 }
 
 /* * */
 
-export default function Item({ children, color, description, label, placeholder, value }: ItemProps) {
+export default function Item({ children, color, description, inputProps, isBoolean, label, placeholder }: ItemProps) {
 	//
 
 	//
@@ -30,7 +31,7 @@ export default function Item({ children, color, description, label, placeholder,
 
 	return (
 		<div className={
-			typeof value === 'boolean'
+			isBoolean
 				? styles.input_checkbox_container
 				: children ? styles.input_text_container_with_icon
 					: styles.input_text_container
@@ -38,7 +39,7 @@ export default function Item({ children, color, description, label, placeholder,
 		>
 			{/* Text Input with Icon */}
 			{
-				typeof value === 'string' && children
+				!isBoolean && children
 				&& (
 					<>
 						<TextInput
@@ -47,8 +48,9 @@ export default function Item({ children, color, description, label, placeholder,
 							label={label}
 							maxLength={255}
 							placeholder={placeholder}
-							value={value}
-							disabled
+							// value={value}
+							// disabled
+							{...inputProps}
 							// {...alertDetailData.form.getInputProps('title')}
 						/>
 						<div className={
@@ -66,7 +68,7 @@ export default function Item({ children, color, description, label, placeholder,
 			}
 			{/* Text Input */}
 			{
-				typeof value === 'string' && !children
+				!isBoolean && !children
 
 				&& (
 					<TextInput
@@ -75,18 +77,19 @@ export default function Item({ children, color, description, label, placeholder,
 						label={label}
 						maxLength={255}
 						placeholder={placeholder}
-						value={value}
-						disabled
+						// value={value}
+						// disabled
+						{...inputProps}
 						// {...alertDetailData.form.getInputProps('title')}
 					/>
 				)
 
 			}
 			{/* Checkbox */}
-			{
-				typeof value === 'boolean'
+			{/* {
+				isBoolean
 				&& <Checkbox checked={value} className={styles.input_checkbox} label={label} disabled />
-			}
+			} */}
 		</div>
 	);
 }
