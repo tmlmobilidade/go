@@ -13,10 +13,10 @@ import styles from '../styles.module.css';
 /* * */
 
 interface AdminInformationProps {
-	jurisdication: string
-	locality_id: string
-	municipality_id: string
-	parish_id: string
+	jurisdication: object
+	locality_id: object
+	municipality_id: object
+	parish_id: object
 }
 
 /* * */
@@ -35,13 +35,29 @@ export default function AdminInformation({ jurisdication, locality_id, municipal
 			/>
 
 			<Row>
-				<Item label="Município" placeholder="Escolha uma opção..." value={municipality_id} />
-				<Item label="Freguesia" placeholder="Maçãs" value={parish_id} />
-				<Item label="Localidade" placeholder="Bairro das Maçãs" value={locality_id} />
+				<Item
+					inputProps={municipality_id}
+					label="Município"
+					placeholder="Escolha uma opção..."
+				/>
+				<Item
+					inputProps={parish_id}
+					label="Freguesia"
+					placeholder="Maçãs"
+				/>
+				<Item
+					inputProps={locality_id}
+					label="Localidade"
+					placeholder="Bairro das Maçãs"
+				/>
 			</Row>
 
 			<Row>
-				<Item label="Jurisdição" placeholder="CM Moita" value={jurisdication} />
+				<Item
+					inputProps={jurisdication}
+					label="Jurisdição"
+					placeholder="CM Moita"
+				/>
 			</Row>
 		</div>
 	);
