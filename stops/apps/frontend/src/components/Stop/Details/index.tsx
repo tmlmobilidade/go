@@ -25,20 +25,14 @@ enum OperationalStatusValues {
 
 interface DetailsProps {
 	_id: object
-	// inputProps: object
 	latitude: object
 	longitude: object
 	// _id: string
-	// // inputProps: object
-	// latitude: number
-	// longitude: number
 	name: object
-	// name: string
 	new_name: object
-	// new_name: string
 	operational_status: OperationalStatus
-	short_name: string
-	tts_name: string
+	short_name: object
+	tts_name: object
 }
 
 /* * */
@@ -132,13 +126,13 @@ export default function Details({ _id, latitude, longitude, name, new_name, oper
 					placeholder="Rua Marquês de Pombal 8"
 				/>
 			</Row>
-			{/*
+
 			<Row hasIcons={true}>
 				<Item
 					color={isManual ? 'purple' : 'green'}
+					inputProps={short_name}
 					label="Nome Curto (Postalete)"
 					placeholder="R. Mrq. de Pombal 8"
-					value={short_name}
 				>
 					{isManual
 						? (
@@ -157,7 +151,11 @@ export default function Details({ _id, latitude, longitude, name, new_name, oper
 						)}
 				</Item>
 
-				<Item label="Nome Falado (Text-to-Speech)" placeholder="Rua Marquês de Pombal Porta Oito" value={tts_name}>
+				<Item
+					inputProps={tts_name}
+					label="Nome Falado (Text-to-Speech)"
+					placeholder="Rua Marquês de Pombal Porta Oito"
+				>
 					{audioPlayer && (
 						isPlaying
 							? <IconPlayerPause onClick={() => handleToogleAudio()} />
@@ -166,7 +164,7 @@ export default function Details({ _id, latitude, longitude, name, new_name, oper
 				</Item>
 			</Row>
 
-			<Row>
+			{/* <Row>
 				<Item label="Estado Operacional" value={OperationalStatusValues[operational_status] || 'Vazio'} />
 			</Row> */}
 		</div>
