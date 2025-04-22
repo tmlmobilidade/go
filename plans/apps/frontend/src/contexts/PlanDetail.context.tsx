@@ -1,3 +1,7 @@
+'use client';
+
+/* * */
+
 import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
@@ -6,6 +10,8 @@ import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidad
 import router from 'next/router';
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
+
+/* * */
 
 export enum PlanDetailMode {
 	EDIT = 'edit',
