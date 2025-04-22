@@ -1,5 +1,9 @@
 'use client';
 
+import { Pane } from '@tmlmobilidade/ui';
+
+import { PlanDetailHeader } from '../PlanDetailHeader';
+
 /* * */
 
 export function PlanDetail() {
@@ -7,5 +11,7 @@ export function PlanDetail() {
 
 	//
 	// A. Render components
-	return <div>PlanDetail</div>;
+	return (
+		<Pane header={[<PlanDetailHeader />]} />
+	);
 }

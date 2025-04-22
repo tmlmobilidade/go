@@ -21,6 +21,7 @@ export enum PlanDetailMode {
 interface PlanDetailContextState {
 	actions: {
 		createPlan: () => void
+		toggleLock: () => void
 	}
 	data: {
 		agencies: { label: string, value: string }[]
@@ -29,6 +30,9 @@ interface PlanDetailContextState {
 	flags: {
 		canSave: boolean
 		isReadOnly: boolean
+		isSaving: boolean
+		loading: boolean
+		mode: PlanDetailMode
 	}
 }
 
@@ -95,6 +99,12 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 	}, []);
 
 	//
+	// D. Define actions
+	const toggleLock = () => {
+		form.setFieldValue('is_locked', !form.getValues().is_locked);
+	};
+
+	//
 	// E. Define context value
 	const contextValue: PlanDetailContextState = useMemo(() => {
 		return {
@@ -102,6 +112,7 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 				createPlan: () => {
 					console.log('createPlan');
 				},
+				toggleLock,
 			},
 			data: {
 				agencies: availableAgencies,
@@ -116,7 +127,7 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 				mode: planId === PlanDetailMode.NEW ? PlanDetailMode.NEW : PlanDetailMode.EDIT,
 			},
 		};
-	}, []);
+	}, [availableAgencies, form, isLoading, planId]);
 
 	// F. Render Components
 	return (
