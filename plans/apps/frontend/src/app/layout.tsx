@@ -10,7 +10,7 @@ import { redirect, RedirectType } from 'next/navigation';
 
 export const metadata: Metadata = {
 	description: 'Plano de Exploração',
-	title: 'SAE - PLANOS',
+	title: 'PLANOS | SAE | TML',
 };
 
 /* * */
