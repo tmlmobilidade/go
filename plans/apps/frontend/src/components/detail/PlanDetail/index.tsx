@@ -3,7 +3,9 @@
 import { Pane } from '@tmlmobilidade/ui';
 
 import { PlanDetailHeader } from '../PlanDetailHeader';
+import { PlanDetailSectionFiles } from '../PlanDetailSectionFiles';
 import { PlanDetailSectionInfo } from '../PlanDetailSectionInfo';
+
 /* * */
 
 export function PlanDetail() {
@@ -14,6 +16,7 @@ export function PlanDetail() {
 	return (
 		<Pane header={[<PlanDetailHeader />]}>
 			<PlanDetailSectionInfo />
+			<PlanDetailSectionFiles />
 		</Pane>
 	);
 }
