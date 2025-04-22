@@ -58,13 +58,13 @@ export default function Stop() {
 				short_name={stop.form.getInputProps('short_name')}
 				tts_name={stop.form.getInputProps('tts_name')}
 			/>
-			{/* <AdminInformation
-				jurisdication={stop.form.getValues().jurisdiction || ''}
-				locality_id={stop.form.getValues().locality_id || ''}
-				municipality_id={stop.form.getValues().municipality_id || ''}
-				parish_id={stop.form.getValues().parish_id || ''}
+			<AdminInformation
+				jurisdication={stop.form.getInputProps('jurisdiction')}
+				locality_id={stop.form.getInputProps('locality_id')}
+				municipality_id={stop.form.getInputProps('municipality_id')}
+				parish_id={stop.form.getInputProps('parish_id')}
 			/>
-			<Affectation
+			{/* <Affectation
 				affectation={stop.form.getValues().affectation || ['']}
 			/>
 			<Shelter
