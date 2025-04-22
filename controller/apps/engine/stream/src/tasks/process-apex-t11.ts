@@ -3,7 +3,6 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-// import { emailProvider } from '@tmlmobilidade/interfaces';
 import { apexT11, rides } from '@tmlmobilidade/interfaces';
 import { parseApexT11 } from '@tmlmobilidade/sae-controller-pckg-parse';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
@@ -28,16 +27,7 @@ export async function processApexT11(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		LOGGER.error('MAJOR ERROR: processApexT11 called with operationType different than "insert".');
-		// await emailProvider.send({
-		// 	subject: 'SLA ERROR',
-		// 	text: `
-		// 		<h4>processApexT11 called with operationType different than "insert".</h4>
-		// 		<pre>${JSON.stringify(databaseOperation)}</pre>
-		// 	`,
-		// 	to: process.env.EMERGENCY_CONTACT,
-		// });
-		// return;
+		LOGGER.error(`WARNING: processApexT11 called with operationType different than "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] ${databaseOperation.fullDocument.transaction.transactionId}`);
 	}
 
 	//
