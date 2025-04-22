@@ -27,7 +27,7 @@ export async function processApexT19(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		LOGGER.error(`WARNING: processApexT19 with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" ${databaseOperation.fullDocument.transaction.transactionId}`);
+		LOGGER.error(`WARNING: processApexT19 with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
 	}
 
 	//
