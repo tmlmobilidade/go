@@ -23,12 +23,18 @@ enum ShelterStatusValues {
 }
 
 interface ShelterProps {
-	last_shelter_installation: UnixTimestamp
-	shelter_code: string
-	shelter_maintainer: string
-	shelter_make: string
-	shelter_model: string
-	shelter_status: ShelterStatus
+	last_shelter_installation: object
+	shelter_code: object
+	shelter_maintainer: object
+	shelter_make: object
+	shelter_model: object
+	shelter_status: object
+	// last_shelter_installation: UnixTimestamp
+	// shelter_code: string
+	// shelter_maintainer: string
+	// shelter_make: string
+	// shelter_model: string
+	// shelter_status: ShelterStatus
 }
 
 export default function Shelter({ last_shelter_installation, shelter_code, shelter_maintainer, shelter_make, shelter_model, shelter_status }: ShelterProps) {
@@ -45,14 +51,31 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 			/>
 
 			<Row>
-				<Item label="Existe Abrigo?" value={ShelterStatusValues[shelter_status]} />
-				<Item label="Código do Abrigo" placeholder="SH1234" value={shelter_code} />
-				<Item label="Entidade Gestora do Abrigo" placeholder="JC Decaux" value={shelter_maintainer} />
+				{/* <Item
+					label="Existe Abrigo?"
+					value={ShelterStatusValues[shelter_status]}
+				/> */}
+				<Item
+					inputProps={shelter_code}
+					label="Código do Abrigo"
+					placeholder="SH1234"
+				/>
+				<Item
+					inputProps={shelter_maintainer}
+					label="Entidade Gestora do Abrigo"
+					placeholder="JC Decaux"
+				/>
 			</Row>
 
 			<Row>
-				<Item label="Modelo do Abrigo" value={shelter_model} />
-				<Item label="Fabricante do Abrigo" value={shelter_make} />
+				<Item
+					inputProps={shelter_model}
+					label="Modelo do Abrigo"
+				/>
+				<Item
+					inputProps={shelter_make}
+					label="Fabricante do Abrigo"
+				/>
 			</Row>
 			{/* <Item label="Última verificação do estado do abrigo" placeholder="2024-09-12" value="Sim" /> */}
 			{/* <Row>

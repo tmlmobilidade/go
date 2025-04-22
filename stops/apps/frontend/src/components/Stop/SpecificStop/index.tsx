@@ -66,16 +66,18 @@ export default function Stop() {
 			/>
 			{/* <Affectation
 				affectation={stop.form.getValues().affectation || ['']}
-			/>
+			/> */}
+
 			<Shelter
 				// last_shelter_installation={stop.form.getValues().last_shelter_installation || getUnixTimestamp()}
-				last_shelter_installation={stop.form.getValues().last_shelter_installation}
-				shelter_code={stop.form.getValues().shelter_code || ''}
-				shelter_maintainer={stop.form.getValues().shelter_maintainer || ''}
-				shelter_make={stop.form.getValues().shelter_make || ''}
-				shelter_model={stop.form.getValues().shelter_model || ''}
-				shelter_status={stop.form.getValues().shelter_status || 'unknown'}
+				last_shelter_installation={stop.form.getInputProps('last_shelter_installation')}
+				shelter_code={stop.form.getInputProps('shelter_code')}
+				shelter_maintainer={stop.form.getInputProps('shelter_maintainer')}
+				shelter_make={stop.form.getInputProps('shelter_make')}
+				shelter_model={stop.form.getInputProps('shelter_model')}
+				shelter_status={stop.form.getInputProps('shelter_status')}
 			/>
+			{/*
 			<Infrasctructure
 				last_infrastructure_check={stop.form.getValues().last_infrastructure_check}
 				last_infrastructure_maintenance={stop.form.getValues().last_infrastructure_maintenance}
