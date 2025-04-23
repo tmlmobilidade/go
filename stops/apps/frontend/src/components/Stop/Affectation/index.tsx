@@ -8,6 +8,9 @@ import Item from '@/components/common/Row/Item';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
+
 import styles from '../styles.module.css';
 
 /* * */
@@ -20,29 +23,35 @@ interface AffectationProps {
 	affectation: object
 }
 
-export default function Affectation({ affectation }: AffectationProps) {
+// export default function Affectation({ affectation }: AffectationProps) {
+export default function Affectation() {
 	//
 
 	//
-	// A. Render components
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	//
+	// B. Render components
 
 	return (
-		<div className={styles.section}>
-			<Header
-				description="Configuração dos passes aceites por esta paragem. É possível alterar estas definições para cada pattern."
-				title="Afetação"
-			/>
+		<Collapsible
+			description="Configuração dos passes aceites por esta paragem. É possível alterar estas definições para cada pattern."
+			title="Afetação"
+		>
+			<Section gap="md">
+				<Grid gap="md">
+					<Combobox
+						data={comboBoxValues}
+						label="Aceitação de Passes pré-definida"
+						multiple={true}
+						placeholder="Escolha uma opção..."
+						{...stopDetailContext.data.form.getInputProps('affectation')}
+					/>
+				</Grid>
+			</Section>
+		</Collapsible>
 
-			<Row>
-				<Item
-					comboBoxValues={comboBoxValues}
-					hasMultiple={true}
-					inputProps={affectation}
-					isComboBox={true}
-					label="Aceitação de Passes pré-definida"
-					placeholder="Escolha uma opção..."
-				/>
-			</Row>
-		</div>
 	);
 }

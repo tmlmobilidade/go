@@ -77,9 +77,7 @@ export default function Stop() {
 			<StopDetails />
 			<StopAdminInformation />
 
-			<Affectation
-				affectation={stop.form.getInputProps('affectation')}
-			/>
+			<Affectation />
 
 			<Shelter
 				last_shelter_installation={stop.form.getInputProps('last_shelter_installation')}
