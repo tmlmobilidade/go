@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Checkbox, Combobox, TextInput } from '@tmlmobilidade/ui';
+import { Checkbox, Combobox, DataItem, TextInput } from '@tmlmobilidade/ui';
 import { ReactNode } from 'react';
 
 /* * */
@@ -14,7 +14,7 @@ import styles from './styles.module.css';
 interface ItemProps {
 	children?: ReactNode
 	color?: 'green' | 'purple'
-	comboBoxValues?: string[]
+	comboBoxValues?: DataItem[] | string[]
 	description?: string
 	inputProps: object
 	isBoolean?: boolean

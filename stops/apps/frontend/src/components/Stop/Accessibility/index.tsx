@@ -8,7 +8,7 @@ import Item from '@/components/common/Row/Item';
 
 /* * */
 
-import { BenchStatus, DockingBayType, ElectricityStatus, FlagStatus, LightningStatus, PavementType, PoleStatus, RoadType, SidewalkType } from '@tmlmobilidade/types';
+import { BenchStatus, benchStatusSchema, DockingBayType, ElectricityStatus, FlagStatus, LightningStatus, PavementType, PoleStatus, RoadType, SidewalkType } from '@tmlmobilidade/types';
 
 import styles from '../styles.module.css';
 
@@ -191,11 +191,50 @@ export default function Accessibility({ bench_status, docking_bay_type, electric
 	//
 	// A. Transform data
 
-	// const causeItems = causeSchema.options.map(cause => ({
-	// 	icon: CauseIcons[cause],
-	// 	label: Translations.CAUSE[cause],
-	// 	value: cause,
-	// }));
+	const sidewalkTypeItems = sidewalkTypeValues.map(el => ({
+		label: SidewalkTypeValues[el],
+		value: el,
+	}));
+
+	const benchStatusItems = benchStatusValues.map(el => ({
+		label: BenchStatusValues[el],
+		value: el,
+	}));
+
+	const dockingBayTypeItems = dockingBayTypeValues.map(el => ({
+		label: DockingBayTypeValues[el],
+		value: el,
+	}));
+
+	const electricityStatusItems = electricityStatusValues.map(el => ({
+		label: ElectricityStatusValues[el],
+		value: el,
+	}));
+
+	const flagStatusItems = flagStatusValues.map(el => ({
+		label: FlagStatusValues[el],
+		value: el,
+	}));
+
+	const lightningStatusItems = lightningStatusValues.map(el => ({
+		label: LightningStatusValues[el],
+		value: el,
+	}));
+
+	const pavementTypeItems = pavementTypeValues.map(el => ({
+		label: PavementTypeValues[el],
+		value: el,
+	}));
+
+	const poleStatusItems = poleStatusValues.map(el => ({
+		label: PoleStatusValues[el],
+		value: el,
+	}));
+
+	const roadTypeItems = roadTypeValues.map(el => ({
+		label: RoadTypeValues[el],
+		value: el,
+	}));
 
 	//
 
@@ -211,13 +250,13 @@ export default function Accessibility({ bench_status, docking_bay_type, electric
 
 			<Row>
 				<Item
-					comboBoxValues={sidewalkTypeValues}
+					comboBoxValues={sidewalkTypeItems}
 					inputProps={sidewalk_type}
 					isComboBox={true}
 					label="Tem Passeio?"
 				/>
 				<Item
-					comboBoxValues={benchStatusValues}
+					comboBoxValues={benchStatusItems}
 					inputProps={bench_status}
 					isComboBox={true}
 					label="Estado do Banco"
@@ -226,13 +265,13 @@ export default function Accessibility({ bench_status, docking_bay_type, electric
 
 			<Row>
 				<Item
-					comboBoxValues={dockingBayTypeValues}
+					comboBoxValues={dockingBayTypeItems}
 					inputProps={docking_bay_type}
 					isComboBox={true}
 					label="Tipo de Doca"
 				/>
 				<Item
-					comboBoxValues={electricityStatusValues}
+					comboBoxValues={electricityStatusItems}
 					inputProps={electricity_status}
 					isComboBox={true}
 					label="Estado da Electricidade"
@@ -241,13 +280,13 @@ export default function Accessibility({ bench_status, docking_bay_type, electric
 
 			<Row>
 				<Item
-					comboBoxValues={flagStatusValues}
+					comboBoxValues={flagStatusItems}
 					inputProps={flag_status}
 					isComboBox={true}
 					label="Estado da Bandeira"
 				/>
 				<Item
-					comboBoxValues={lightningStatusValues}
+					comboBoxValues={lightningStatusItems}
 					inputProps={lighting_status}
 					isComboBox={true}
 					label="Estado da Luz"
@@ -256,19 +295,19 @@ export default function Accessibility({ bench_status, docking_bay_type, electric
 
 			<Row>
 				<Item
-					comboBoxValues={pavementTypeValues}
+					comboBoxValues={pavementTypeItems}
 					inputProps={pavement_type}
 					isComboBox={true}
 					label="Tipo de Pavimento"
 				/>
 				<Item
-					comboBoxValues={poleStatusValues}
+					comboBoxValues={poleStatusItems}
 					inputProps={pole_status}
 					isComboBox={true}
 					label="Estado do Poste"
 				/>
 				<Item
-					comboBoxValues={roadTypeValues}
+					comboBoxValues={roadTypeItems}
 					inputProps={road_type}
 					isComboBox={true}
 					label="Tipo de Estrada"
