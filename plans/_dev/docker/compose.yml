@@ -20,13 +20,22 @@ services:
         max-file: '1'
     ports:
       - 37001:27017
-    # volumes:
+    volumes:
     #   - ./files.dump:/dump/db.dump
-    #   - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
+      - ./replica.key:/data/replica.key
+      - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
     environment:
       - MONGO_INITDB_DATABASE=production
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=root
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        chmod 400 /data/replica.key
+        chown 999:999 /data/replica.key
+        exec docker-entrypoint.sh $$@
+    command: mongod --bind_ip_all --auth --replSet rs0 --keyFile /data/replica.key --port 27017
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -44,9 +53,14 @@ services:
     ports:
       - 37004:27017
     volumes:
+      - ./replica.key:/data/replica.key
       - ./plans.dump:/dump/db.dump
       - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
-    environment:
-      - MONGO_INITDB_DATABASE=production
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        chmod 400 /data/replica.key
+        chown 999:999 /data/replica.key
+        exec docker-entrypoint.sh $$@
+    command: mongod --bind_ip_all --auth --replSet rs0 --keyFile /data/replica.key --port 27017
