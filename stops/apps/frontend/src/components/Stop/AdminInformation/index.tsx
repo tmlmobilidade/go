@@ -9,7 +9,7 @@ import Item from '@/components/common/Row/Item';
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
 
@@ -43,28 +43,34 @@ export default function AdminInformation() {
 		>
 			<Section gap="md">
 				<Grid columns="abc" gap="md">
-					<Item
-						inputProps={stopDetailContext.data.form.getInputProps('municipality_id')}
+					<TextInput
 						label="Município"
+						maxLength={255}
 						placeholder="Escolha uma opção..."
+						{...stopDetailContext.data.form.getInputProps('municipality_id')}
 					/>
-					<Item
-						inputProps={stopDetailContext.data.form.getInputProps('parish_id')}
+
+					<TextInput
 						label="Freguesia"
+						maxLength={255}
 						placeholder="Maçãs"
+						{...stopDetailContext.data.form.getInputProps('parish_id')}
 					/>
-					<Item
-						inputProps={stopDetailContext.data.form.getInputProps('locality_id')}
+
+					<TextInput
 						label="Localidade"
+						maxLength={255}
 						placeholder="Bairro das Maçãs"
+						{...stopDetailContext.data.form.getInputProps('locality_id')}
 					/>
 				</Grid>
 
 				<Grid gap="md">
-					<Item
-						inputProps={stopDetailContext.data.form.getInputProps('jurisdiction')}
+					<TextInput
 						label="Jurisdição"
+						maxLength={255}
 						placeholder="CM Moita"
+						{...stopDetailContext.data.form.getInputProps('jurisdiction')}
 					/>
 				</Grid>
 			</Section>
