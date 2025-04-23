@@ -8,6 +8,9 @@ import Item from '@/components/common/Row/Item';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+
 import styles from '../styles.module.css';
 
 /* * */
@@ -21,44 +24,50 @@ interface AdminInformationProps {
 
 /* * */
 
-export default function AdminInformation({ jurisdication, locality_id, municipality_id, parish_id }: AdminInformationProps) {
+// export default function AdminInformation({ jurisdication, locality_id, municipality_id, parish_id }: AdminInformationProps) {
+export default function AdminInformation() {
 	//
 
 	//
-	// A. Render components
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	//
+	// B. Render components
 
 	return (
-		<div className={styles.section}>
-			<Header
-				description="Informações sobre a localização administrativa e responsabilidade de gestão desta paragem"
-				title="Informação Administrativa"
-			/>
+		<Collapsible
+			description="Informações sobre a localização administrativa e responsabilidade de gestão desta paragem"
+			title="Informação Administrativa"
+		>
+			<Section gap="md">
+				<Grid columns="abc" gap="md">
+					<Item
+						inputProps={stopDetailContext.data.form.getInputProps('municipality_id')}
+						label="Município"
+						placeholder="Escolha uma opção..."
+					/>
+					<Item
+						inputProps={stopDetailContext.data.form.getInputProps('parish_id')}
+						label="Freguesia"
+						placeholder="Maçãs"
+					/>
+					<Item
+						inputProps={stopDetailContext.data.form.getInputProps('locality_id')}
+						label="Localidade"
+						placeholder="Bairro das Maçãs"
+					/>
+				</Grid>
 
-			<Row>
-				<Item
-					inputProps={municipality_id}
-					label="Município"
-					placeholder="Escolha uma opção..."
-				/>
-				<Item
-					inputProps={parish_id}
-					label="Freguesia"
-					placeholder="Maçãs"
-				/>
-				<Item
-					inputProps={locality_id}
-					label="Localidade"
-					placeholder="Bairro das Maçãs"
-				/>
-			</Row>
-
-			<Row>
-				<Item
-					inputProps={jurisdication}
-					label="Jurisdição"
-					placeholder="CM Moita"
-				/>
-			</Row>
-		</div>
+				<Grid gap="md">
+					<Item
+						inputProps={stopDetailContext.data.form.getInputProps('jurisdiction')}
+						label="Jurisdição"
+						placeholder="CM Moita"
+					/>
+				</Grid>
+			</Section>
+		</Collapsible>
 	);
 }

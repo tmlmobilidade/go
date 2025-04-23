@@ -40,7 +40,7 @@ enum OperationalStatusValues {
 /* * */
 
 // export default function Details({ _id, latitude, longitude, name, new_name, operational_status, short_name, tts_name }: DetailsProps) {
-export default function Details() {
+export default function StopDetails() {
 	//
 
 	//

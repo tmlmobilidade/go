@@ -16,7 +16,6 @@ import AdminInformation from '../AdminInformation';
 import Affectation from '../Affectation';
 import Comments from '../Comments';
 import Connections from '../Connections';
-import Details from '../Details';
 import Equipments from '../Equipments';
 import Infrasctructure from '../Infrasctructure';
 import MapContainer from '../MapContainer';
@@ -24,6 +23,7 @@ import Media from '../Media';
 import Observations from '../Observations';
 import PublicInformation from '../PublicInformation';
 import Shelter from '../Shelter';
+import StopDetails from '../StopDetails';
 import styles from '../styles.module.css';
 /* * */
 
@@ -75,14 +75,9 @@ export default function Stop() {
 		<div className={styles.container}>
 			<MapContainer generic={false} />
 
-			<Details />
+			<StopDetails />
 
-			<AdminInformation
-				jurisdication={stop.form.getInputProps('jurisdiction')}
-				locality_id={stop.form.getInputProps('locality_id')}
-				municipality_id={stop.form.getInputProps('municipality_id')}
-				parish_id={stop.form.getInputProps('parish_id')}
-			/>
+			<AdminInformation />
 
 			<Affectation
 				affectation={stop.form.getInputProps('affectation')}
