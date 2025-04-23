@@ -5,6 +5,7 @@
 import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { OperationalDate, Plan } from '@tmlmobilidade/types';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { getOperationalDate } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
