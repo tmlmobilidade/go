@@ -55,6 +55,40 @@ export async function fetchData<T>(
 	}
 }
 
+// Multipart form data upload
+export async function multipartFetch(url: string, formData: FormData) {
+	try {
+		const response = await fetch(url, {
+			body: formData,
+			credentials: 'include',
+			method: 'POST',
+		});
+
+		const data = await response.json();
+
+		if (!response.ok) {
+			return {
+				data: null,
+				error: (data as ErrorResponse).message || 'An error occurred',
+				status: response.status,
+			};
+		}
+
+		return {
+			data,
+			error: null,
+			status: response.status,
+		};
+	}
+	catch (error) {
+		return {
+			data: null,
+			error: error instanceof Error ? error.message : 'Network error',
+			status: 500,
+		};
+	}
+}
+
 export async function uploadFile(url: string, file: File) {
 	try {
 		const formData = new FormData();
