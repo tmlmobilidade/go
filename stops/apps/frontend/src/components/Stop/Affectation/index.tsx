@@ -26,7 +26,11 @@ export default function Affectation({ affectation }: { affectation: string[] }) 
 			/>
 
 			<Row>
-				<Item label="Aceitação de Passes pré-definida" placeholder="Escolha uma opção..." value={affectation.toString()} />
+				<Item
+					label="Aceitação de Passes pré-definida"
+					placeholder="Escolha uma opção..."
+					value={affectation.toString()}
+				/>
 			</Row>
 		</div>
 	);

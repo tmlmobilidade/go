@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Checkbox, Combobox, DataItem, TextInput } from '@tmlmobilidade/ui';
+import { Checkbox, Combobox, DataItem, DateTimePicker, TextInput } from '@tmlmobilidade/ui';
 import { ReactNode } from 'react';
 
 /* * */
@@ -15,17 +15,20 @@ interface ItemProps {
 	children?: ReactNode
 	color?: 'green' | 'purple'
 	comboBoxValues?: DataItem[] | string[]
+	date?: Date
+	dateSetter?: (date: Date) => void
 	description?: string
 	inputProps: object
 	isBoolean?: boolean
 	isComboBox?: boolean
+	isDatePicker?: boolean
 	label: string
 	placeholder?: string
 }
 
 /* * */
 
-export default function Item({ children, color, comboBoxValues, description, inputProps, isBoolean, isComboBox, label, placeholder }: ItemProps) {
+export default function Item({ children, color, comboBoxValues, date, dateSetter, description, inputProps, isBoolean, isComboBox, isDatePicker, label, placeholder }: ItemProps) {
 	//
 
 	//
@@ -41,7 +44,7 @@ export default function Item({ children, color, comboBoxValues, description, inp
 		>
 			{/* Text Input with Icon */}
 			{
-				!isBoolean && !isComboBox && children
+				!isBoolean && !isComboBox && !isDatePicker && children
 				&& (
 					<>
 						<TextInput
@@ -50,10 +53,7 @@ export default function Item({ children, color, comboBoxValues, description, inp
 							label={label}
 							maxLength={255}
 							placeholder={placeholder}
-							// value={value}
-							// disabled
 							{...inputProps}
-							// {...alertDetailData.form.getInputProps('title')}
 						/>
 						<div className={
 							color === 'green'
@@ -70,7 +70,7 @@ export default function Item({ children, color, comboBoxValues, description, inp
 			}
 			{/* Text Input */}
 			{
-				!isBoolean && !isComboBox && !children
+				!isBoolean && !isComboBox && !isDatePicker && !children
 
 				&& (
 					<TextInput
@@ -79,10 +79,7 @@ export default function Item({ children, color, comboBoxValues, description, inp
 						label={label}
 						maxLength={255}
 						placeholder={placeholder}
-						// value={value}
-						// disabled
 						{...inputProps}
-						// {...alertDetailData.form.getInputProps('title')}
 					/>
 				)
 
@@ -99,7 +96,21 @@ export default function Item({ children, color, comboBoxValues, description, inp
 					/>
 				)
 			}
-
+			{/* Date Picker */}
+			{
+				isDatePicker && !!date && !!dateSetter
+				&& (
+					<DateTimePicker
+						description={description}
+						label={label}
+						{...inputProps}
+						value={date}
+						onChange={(date) => {
+							dateSetter(date);
+						}}
+					/>
+				)
+			}
 			{/* Children */}
 			{/* Checkbox */}
 			{/* {

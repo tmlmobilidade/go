@@ -32,6 +32,8 @@ const shelterStatusValues = [
 
 interface ShelterProps {
 	last_shelter_installation: object
+	last_shelter_installation_getter: Date | number | string
+	last_shelter_installation_setter: (date: Date) => void
 	shelter_code: object
 	shelter_maintainer: object
 	shelter_make: object
@@ -45,7 +47,16 @@ interface ShelterProps {
 	// shelter_status: ShelterStatus
 }
 
-export default function Shelter({ last_shelter_installation, shelter_code, shelter_maintainer, shelter_make, shelter_model, shelter_status }: ShelterProps) {
+export default function Shelter({
+	last_shelter_installation,
+	last_shelter_installation_getter,
+	last_shelter_installation_setter,
+	shelter_code,
+	shelter_maintainer,
+	shelter_make,
+	shelter_model,
+	shelter_status,
+}: ShelterProps) {
 	//
 
 	//
@@ -55,6 +66,8 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 		label: ShelterStatusValues[el],
 		value: el,
 	}));
+
+	const last_shelter_installation_date = new Date(last_shelter_installation_getter);
 
 	//
 	// B. Render components
@@ -96,9 +109,16 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 				/>
 			</Row>
 
-			{/* <Row>
-				<Item label="Data de Instalação do Abrigo" placeholder="2024-09" value={last_shelter_installation} />
-			</Row> */}
+			<Row>
+				<Item
+					date={last_shelter_installation_date}
+					dateSetter={last_shelter_installation_setter}
+					inputProps={last_shelter_installation}
+					isDatePicker={true}
+					label="Data de Instalação do Abrigo"
+					placeholder="2024-09"
+				/>
+			</Row>
 		</div>
 	);
 }

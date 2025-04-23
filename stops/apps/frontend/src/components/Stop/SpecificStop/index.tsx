@@ -9,6 +9,8 @@ import type { Stop } from '@tmlmobilidade/types';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 // import { getUnixTimestamp } from '@tmlmobilidade/utils';
 
+import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
+
 import Accessibility from '../Accessibility';
 import AdminInformation from '../AdminInformation';
 import Affectation from '../Affectation';
@@ -36,14 +38,27 @@ export default function Stop() {
 	const stopDetailContext = useStopDetailContext();
 
 	const { data: stop } = stopDetailContext;
-	// const all = stopDetailContext;
 	console.log('=> stop', stop);
-	// console.log('=> latitude', stop.form.getValues().latitude);
-	// data.form.getValues();
+
 	//
 
 	//
-	// A. Render components
+	// B. Transform data
+
+	const last_shelter_installation_setter = (date: Date) => {
+		stop.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
+	};
+
+	const last_infrastructure_check_setter = (date: Date) => {
+		stop.form.setFieldValue('last_infrastructure_check', getUnixTimestampFromJSDate(date));
+	};
+
+	const last_infrastructure_maintenance_setter = (date: Date) => {
+		stop.form.setFieldValue('last_infrastructure_maintenance', getUnixTimestampFromJSDate(date));
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<div className={styles.container}>
@@ -65,23 +80,29 @@ export default function Stop() {
 				parish_id={stop.form.getInputProps('parish_id')}
 			/>
 			{/* <Affectation
-				affectation={stop.form.getValues().affectation || ['']}
+				affectation={stop.form.getInputProps('affectation')}
 			/> */}
 
 			<Shelter
 				// last_shelter_installation={stop.form.getValues().last_shelter_installation || getUnixTimestamp()}
 				last_shelter_installation={stop.form.getInputProps('last_shelter_installation')}
+				last_shelter_installation_getter={stop.form.getValues().last_shelter_installation}
+				last_shelter_installation_setter={last_shelter_installation_setter}
 				shelter_code={stop.form.getInputProps('shelter_code')}
 				shelter_maintainer={stop.form.getInputProps('shelter_maintainer')}
 				shelter_make={stop.form.getInputProps('shelter_make')}
 				shelter_model={stop.form.getInputProps('shelter_model')}
 				shelter_status={stop.form.getInputProps('shelter_status')}
 			/>
-			{/* <Infrasctructure
+			<Infrasctructure
 				last_infrastructure_check={stop.form.getValues().last_infrastructure_check}
+				last_infrastructure_check_getter={stop.form.getValues().last_infrastructure_check}
+				last_infrastructure_check_setter={last_infrastructure_check_setter}
 				last_infrastructure_maintenance={stop.form.getValues().last_infrastructure_maintenance}
+				last_infrastructure_maintenance_getter={stop.form.getValues().last_infrastructure_maintenance}
+				last_infrastructure_maintenance_setter={last_infrastructure_maintenance_setter}
 			/>
-			<PublicInformation
+			{/* <PublicInformation
 				last_schedules_check={stop.form.getValues().last_schedules_check}
 				last_schedules_maintenance={stop.form.getValues().last_schedules_maintenance}
 			/> */}
@@ -98,10 +119,11 @@ export default function Stop() {
 				sidewalk_type={stop.form.getInputProps('sidewalk_type')}
 			/>
 
-			<Equipments
-				facilities={stop.form.getValues().facilities || ['']}
-			/>
 			{/*
+			<Equipments
+				facilities={stop.form.getInputProps('facilities')}
+			/>
+
 			<Connections
 				connections={stop.form.getValues().connections || ['']}
 			/>
