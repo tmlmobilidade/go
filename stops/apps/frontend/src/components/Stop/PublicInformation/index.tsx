@@ -16,14 +16,32 @@ import styles from '../styles.module.css';
 
 interface PublicInformationProps {
 	last_schedules_check: UnixTimestamp
+	last_schedules_check_getter: Date | number | string
+	last_schedules_check_setter: (date: Date) => void
 	last_schedules_maintenance: UnixTimestamp
+	last_schedules_maintenance_getter: Date | number | string
+	last_schedules_maintenance_setter: (date: Date) => void
 }
 
-export default function PublicInformation({ last_schedules_check, last_schedules_maintenance }: PublicInformationProps) {
+export default function PublicInformation({
+	last_schedules_check,
+	last_schedules_check_getter,
+	last_schedules_check_setter,
+	last_schedules_maintenance,
+	last_schedules_maintenance_getter,
+	last_schedules_maintenance_setter,
+}: PublicInformationProps) {
 	//
 
 	//
-	// A. Render components
+	// A. Transform data
+
+	const last_schedules_check_date = new Date(last_schedules_check_getter);
+
+	const last_schedules_maintenance_date = new Date(last_schedules_maintenance_getter);
+
+	//
+	// B. Render components
 
 	return (
 		<div className={styles.section}>
@@ -65,8 +83,23 @@ export default function PublicInformation({ last_schedules_check, last_schedules
 			</Row> */}
 
 			<Row>
-				<Item label="Última Manutenção dos Horários" placeholder="2023-02-10" value="Sim" />
-				<Item label="Última Verificação dos Horários" placeholder="2023-02-10" value="Sim" />
+				<Item
+					date={last_schedules_check_date}
+					dateSetter={last_schedules_check_setter}
+					inputProps={last_schedules_check}
+					isDatePicker={true}
+					label="Última Manutenção dos Horários"
+					placeholder="2023-02-10"
+				/>
+
+				<Item
+					date={last_schedules_maintenance_date}
+					dateSetter={last_schedules_maintenance_setter}
+					inputProps={last_schedules_maintenance}
+					isDatePicker={true}
+					label="Última Verificação dos Horários"
+					placeholder="2023-02-10"
+				/>
 			</Row>
 
 			{/* <Row>

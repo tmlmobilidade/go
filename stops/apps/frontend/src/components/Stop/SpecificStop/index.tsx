@@ -57,6 +57,14 @@ export default function Stop() {
 		stop.form.setFieldValue('last_infrastructure_maintenance', getUnixTimestampFromJSDate(date));
 	};
 
+	const last_schedules_check_setter = (date: Date) => {
+		stop.form.setFieldValue('last_schedules_check', getUnixTimestampFromJSDate(date));
+	};
+
+	const last_schedules_maintenance_setter = (date: Date) => {
+		stop.form.setFieldValue('last_schedules_maintenance', getUnixTimestampFromJSDate(date));
+	};
+
 	//
 	// C. Render components
 
@@ -94,6 +102,7 @@ export default function Stop() {
 				shelter_model={stop.form.getInputProps('shelter_model')}
 				shelter_status={stop.form.getInputProps('shelter_status')}
 			/>
+
 			<Infrasctructure
 				last_infrastructure_check={stop.form.getValues().last_infrastructure_check}
 				last_infrastructure_check_getter={stop.form.getValues().last_infrastructure_check}
@@ -102,10 +111,15 @@ export default function Stop() {
 				last_infrastructure_maintenance_getter={stop.form.getValues().last_infrastructure_maintenance}
 				last_infrastructure_maintenance_setter={last_infrastructure_maintenance_setter}
 			/>
-			{/* <PublicInformation
+
+			<PublicInformation
 				last_schedules_check={stop.form.getValues().last_schedules_check}
+				last_schedules_check_getter={stop.form.getValues().last_schedules_check}
+				last_schedules_check_setter={last_schedules_check_setter}
 				last_schedules_maintenance={stop.form.getValues().last_schedules_maintenance}
-			/> */}
+				last_schedules_maintenance_getter={stop.form.getValues().last_schedules_maintenance}
+				last_schedules_maintenance_setter={last_schedules_maintenance_setter}
+			/>
 
 			<Accessibility
 				bench_status={stop.form.getInputProps('bench_status')}
