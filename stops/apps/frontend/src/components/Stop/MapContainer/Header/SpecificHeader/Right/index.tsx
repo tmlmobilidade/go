@@ -48,7 +48,6 @@ export default function Right({ open }: RightProps) {
 				<div
 					className={styles.icon_blue}
 					onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
-					// onClick={() => actions.saveStop()}
 				>
 					<IconPlus />
 				</div>
@@ -69,7 +68,10 @@ export default function Right({ open }: RightProps) {
 			<Tooltip label="Apagar Paragem" position="bottom">
 				<div
 					className={styles.icon_blue}
-					onClick={() => actions.deleteStop()}
+					onClick={() => {
+						actions.deleteStop();
+						redirect('/stops', RedirectType.replace);
+					}}
 				>
 					<IconTrash />
 				</div>

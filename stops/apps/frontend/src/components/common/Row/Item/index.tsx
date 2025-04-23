@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Checkbox, TextInput } from '@tmlmobilidade/ui';
+import { Checkbox, Combobox, TextInput } from '@tmlmobilidade/ui';
 import { ReactNode } from 'react';
 
 /* * */
@@ -14,16 +14,18 @@ import styles from './styles.module.css';
 interface ItemProps {
 	children?: ReactNode
 	color?: 'green' | 'purple'
+	comboBoxValues?: string[]
 	description?: string
 	inputProps: object
 	isBoolean?: boolean
+	isComboBox?: boolean
 	label: string
 	placeholder?: string
 }
 
 /* * */
 
-export default function Item({ children, color, description, inputProps, isBoolean, label, placeholder }: ItemProps) {
+export default function Item({ children, color, comboBoxValues, description, inputProps, isBoolean, isComboBox, label, placeholder }: ItemProps) {
 	//
 
 	//
@@ -39,7 +41,7 @@ export default function Item({ children, color, description, inputProps, isBoole
 		>
 			{/* Text Input with Icon */}
 			{
-				!isBoolean && children
+				!isBoolean && !isComboBox && children
 				&& (
 					<>
 						<TextInput
@@ -68,7 +70,7 @@ export default function Item({ children, color, description, inputProps, isBoole
 			}
 			{/* Text Input */}
 			{
-				!isBoolean && !children
+				!isBoolean && !isComboBox && !children
 
 				&& (
 					<TextInput
@@ -85,6 +87,20 @@ export default function Item({ children, color, description, inputProps, isBoole
 				)
 
 			}
+			{/* ComboBox */}
+			{
+				isComboBox && !!comboBoxValues
+				&& (
+					<Combobox
+						data={comboBoxValues}
+						description={description}
+						label={label}
+						{...inputProps}
+					/>
+				)
+			}
+
+			{/* Children */}
 			{/* Checkbox */}
 			{/* {
 				isBoolean

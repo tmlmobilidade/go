@@ -3,7 +3,7 @@
 /* * */
 
 import { Button } from '@mantine/core';
-import { IconDeviceFloppy, IconMapPinFilled } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconMapPinFilled, IconPlus } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 import { SetStateAction } from 'react';
 
@@ -59,9 +59,8 @@ export default function Right({ setToggleValue, toggleValue }: RightProps) {
 				<div
 					className={styles.icon}
 					onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
-					// onClick={() => actions.saveStop()}
 				>
-					<IconDeviceFloppy />
+					<IconPlus />
 				</div>
 			</Tooltip>
 		</div>

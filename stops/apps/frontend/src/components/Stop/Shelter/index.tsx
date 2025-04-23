@@ -22,6 +22,14 @@ enum ShelterStatusValues {
 	unknown = 'Abrigo Desconhecido',
 }
 
+const shelterStatusValues = [
+	'is_damaged',
+	'is_missing',
+	'is_ok',
+	'not_applicable',
+	'unknown',
+];
+
 interface ShelterProps {
 	last_shelter_installation: object
 	shelter_code: object
@@ -51,10 +59,12 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 			/>
 
 			<Row>
-				{/* <Item
+				<Item
+					comboBoxValues={shelterStatusValues}
+					inputProps={shelter_status}
+					isComboBox={true}
 					label="Existe Abrigo?"
-					value={ShelterStatusValues[shelter_status]}
-				/> */}
+				/>
 				<Item
 					inputProps={shelter_code}
 					label="Código do Abrigo"

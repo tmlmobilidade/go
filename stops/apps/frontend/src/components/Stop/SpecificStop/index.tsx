@@ -77,26 +77,27 @@ export default function Stop() {
 				shelter_model={stop.form.getInputProps('shelter_model')}
 				shelter_status={stop.form.getInputProps('shelter_status')}
 			/>
-			{/*
-			<Infrasctructure
+			{/* <Infrasctructure
 				last_infrastructure_check={stop.form.getValues().last_infrastructure_check}
 				last_infrastructure_maintenance={stop.form.getValues().last_infrastructure_maintenance}
 			/>
 			<PublicInformation
 				last_schedules_check={stop.form.getValues().last_schedules_check}
 				last_schedules_maintenance={stop.form.getValues().last_schedules_maintenance}
-			/>
-			<Accessibility
-				bench_status={stop.form.getValues().bench_status || 'unknown'}
-				docking_bay_type={stop.form.getValues().docking_bay_type || 'unknown'}
-				electricity_status={stop.form.getValues().electricity_status || 'unknown'}
-				flag_status={stop.form.getValues().flag_status || 'unknown'}
-				lighting_status={stop.form.getValues().lighting_status || 'unknown'}
-				pavement_type={stop.form.getValues().pavement_type || 'unknown'}
-				pole_status={stop.form.getValues().pole_status || 'unknown'}
-				road_type={stop.form.getValues().road_type || 'unknown'}
-				sidewalk_type={stop.form.getValues().sidewalk_type || 'unknown'}
-			/>
+			/> */}
+
+			{/* <Accessibility
+				bench_status={stop.form.getInputProps('bench_status')}
+				docking_bay_type={stop.form.getInputProps('docking_bay_type')}
+				electricity_status={stop.form.getInputProps('electricity_status')}
+				flag_status={stop.form.getInputProps('flag_status')}
+				lighting_status={stop.form.getInputProps('lighting_status')}
+				pavement_type={stop.form.getInputProps('pavement_type')}
+				pole_status={stop.form.getInputProps('pole_status')}
+				road_type={stop.form.getInputProps('road_type')}
+				sidewalk_type={stop.form.getInputProps('sidewalk_type')}
+			/> */}
+			{/*
 			<Equipments
 				facilities={stop.form.getValues().facilities || ['']}
 			/>
