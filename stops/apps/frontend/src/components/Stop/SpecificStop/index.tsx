@@ -86,7 +86,7 @@ export default function Stop() {
 				last_schedules_maintenance={stop.form.getValues().last_schedules_maintenance}
 			/> */}
 
-			{/* <Accessibility
+			<Accessibility
 				bench_status={stop.form.getInputProps('bench_status')}
 				docking_bay_type={stop.form.getInputProps('docking_bay_type')}
 				electricity_status={stop.form.getInputProps('electricity_status')}
@@ -96,7 +96,7 @@ export default function Stop() {
 				pole_status={stop.form.getInputProps('pole_status')}
 				road_type={stop.form.getInputProps('road_type')}
 				sidewalk_type={stop.form.getInputProps('sidewalk_type')}
-			/> */}
+			/>
 			{/*
 			<Equipments
 				facilities={stop.form.getValues().facilities || ['']}
