@@ -8,7 +8,7 @@ import { FastifyServerOptions } from 'fastify';
 
 /* * */
 
-const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
+const MAX_BODY_SIZE = 1024 * 1024 * 1024 * 2; // 2GB
 
 const options: FastifyServerOptions = {
 	bodyLimit: MAX_BODY_SIZE,
