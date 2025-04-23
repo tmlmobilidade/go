@@ -1,67 +1,12 @@
 'use client';
 
-/* * */
-
-import Header from '@/components/common/Header';
-import Row from '@/components/common/Row';
-import Item from '@/components/common/Row/Item';
-
-/* * */
-
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { ShelterStatus, UnixTimestamp } from '@tmlmobilidade/types';
-import { Collapsible, DateTimePicker, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, DateTimePicker, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
-import styles from '../styles.module.css';
-
 /* * */
 
-enum ShelterStatusValues {
-	is_damaged = 'Abrigo Danificado',
-	is_missing = 'Abrigo em Falta',
-	is_ok = 'Abrigo Operacional',
-	not_applicable = 'Não Aplicável',
-	unknown = 'Abrigo Desconhecido',
-}
-
-const shelterStatusValues = [
-	'is_damaged',
-	'is_missing',
-	'is_ok',
-	'not_applicable',
-	'unknown',
-];
-
-interface ShelterProps {
-	last_shelter_installation: object
-	last_shelter_installation_getter: Date | number | string
-	last_shelter_installation_setter: (date: Date) => void
-	shelter_code: object
-	shelter_maintainer: object
-	shelter_make: object
-	shelter_model: object
-	shelter_status: object
-	// last_shelter_installation: UnixTimestamp
-	// shelter_code: string
-	// shelter_maintainer: string
-	// shelter_make: string
-	// shelter_model: string
-	// shelter_status: ShelterStatus
-}
-
 export default function Shelter() {
-// export default function Shelter({
-// 	last_shelter_installation,
-// 	last_shelter_installation_getter,
-// 	last_shelter_installation_setter,
-// 	shelter_code,
-// 	shelter_maintainer,
-// 	shelter_make,
-// 	shelter_model,
-// 	shelter_status,
-// }: ShelterProps) {
-
 	//
 
 	//
@@ -69,11 +14,22 @@ export default function Shelter() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const shelter_code = stopDetailContext.data.form.getInputProps('shelter_code');
-	const shelter_maintainer = stopDetailContext.data.form.getInputProps('shelter_maintainer');
-	const shelter_make = stopDetailContext.data.form.getInputProps('shelter_make');
-	const shelter_model = stopDetailContext.data.form.getInputProps('shelter_model');
-	const shelter_status = stopDetailContext.data.form.getInputProps('shelter_status');
+	enum ShelterStatusValues {
+		is_damaged = 'Abrigo Danificado',
+		is_missing = 'Abrigo em Falta',
+		is_ok = 'Abrigo Operacional',
+		not_applicable = 'Não Aplicável',
+		unknown = 'Abrigo Desconhecido',
+	}
+
+	const shelterStatusValues = [
+		'is_damaged',
+		'is_missing',
+		'is_ok',
+		'not_applicable',
+		'unknown',
+	];
+
 	//
 	// A. Transform data
 
@@ -92,32 +48,38 @@ export default function Shelter() {
 		>
 			<Section gap="md">
 				<Grid columns="abc" gap="md">
-					<Item
-						comboBoxValues={shelterStatusItems}
-						inputProps={shelter_status}
-						isComboBox={true}
+					<Combobox
+						data={shelterStatusItems}
 						label="Existe Abrigo?"
+						{...stopDetailContext.data.form.getInputProps('shelter_status')}
 					/>
-					<Item
-						inputProps={shelter_code}
+
+					<TextInput
 						label="Código do Abrigo"
+						maxLength={255}
 						placeholder="SH1234"
+						{...stopDetailContext.data.form.getInputProps('shelter_code')}
 					/>
-					<Item
-						inputProps={shelter_maintainer}
+
+					<TextInput
 						label="Entidade Gestora do Abrigo"
+						maxLength={255}
 						placeholder="JC Decaux"
+						{...stopDetailContext.data.form.getInputProps('shelter_maintainer')}
 					/>
 				</Grid>
 
 				<Grid columns="ab" gap="md">
-					<Item
-						inputProps={shelter_model}
+					<TextInput
 						label="Modelo do Abrigo"
+						maxLength={255}
+						{...stopDetailContext.data.form.getInputProps('shelter_model')}
 					/>
-					<Item
-						inputProps={shelter_make}
+
+					<TextInput
 						label="Fabricante do Abrigo"
+						maxLength={255}
+						{...stopDetailContext.data.form.getInputProps('shelter_make')}
 					/>
 				</Grid>
 
