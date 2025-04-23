@@ -25,7 +25,7 @@ interface AdminInformationProps {
 /* * */
 
 // export default function AdminInformation({ jurisdication, locality_id, municipality_id, parish_id }: AdminInformationProps) {
-export default function AdminInformation() {
+export default function StopAdminInformation() {
 	//
 
 	//

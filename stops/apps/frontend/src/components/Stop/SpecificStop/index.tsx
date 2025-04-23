@@ -12,7 +12,6 @@ import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 import Accessibility from '../Accessibility';
-import AdminInformation from '../AdminInformation';
 import Affectation from '../Affectation';
 import Comments from '../Comments';
 import Connections from '../Connections';
@@ -23,6 +22,7 @@ import Media from '../Media';
 import Observations from '../Observations';
 import PublicInformation from '../PublicInformation';
 import Shelter from '../Shelter';
+import StopAdminInformation from '../StopAdminInformation';
 import StopDetails from '../StopDetails';
 import styles from '../styles.module.css';
 /* * */
@@ -74,10 +74,8 @@ export default function Stop() {
 	return (
 		<div className={styles.container}>
 			<MapContainer generic={false} />
-
 			<StopDetails />
-
-			<AdminInformation />
+			<StopAdminInformation />
 
 			<Affectation
 				affectation={stop.form.getInputProps('affectation')}
