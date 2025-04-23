@@ -97,10 +97,11 @@ export default function Stop() {
 				road_type={stop.form.getInputProps('road_type')}
 				sidewalk_type={stop.form.getInputProps('sidewalk_type')}
 			/>
-			{/*
+
 			<Equipments
 				facilities={stop.form.getValues().facilities || ['']}
 			/>
+			{/*
 			<Connections
 				connections={stop.form.getValues().connections || ['']}
 			/>

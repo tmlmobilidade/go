@@ -49,7 +49,15 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 	//
 
 	//
-	// A. Render components
+	// A. Transform data
+
+	const shelterStatusItems = shelterStatusValues.map(el => ({
+		label: ShelterStatusValues[el],
+		value: el,
+	}));
+
+	//
+	// B. Render components
 
 	return (
 		<div className={styles.section}>
@@ -60,7 +68,7 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 
 			<Row>
 				<Item
-					comboBoxValues={shelterStatusValues}
+					comboBoxValues={shelterStatusItems}
 					inputProps={shelter_status}
 					isComboBox={true}
 					label="Existe Abrigo?"
@@ -87,7 +95,7 @@ export default function Shelter({ last_shelter_installation, shelter_code, shelt
 					label="Fabricante do Abrigo"
 				/>
 			</Row>
-			{/* <Item label="Última verificação do estado do abrigo" placeholder="2024-09-12" value="Sim" /> */}
+
 			{/* <Row>
 				<Item label="Data de Instalação do Abrigo" placeholder="2024-09" value={last_shelter_installation} />
 			</Row> */}
