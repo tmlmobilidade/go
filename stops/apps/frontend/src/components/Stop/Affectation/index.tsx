@@ -12,7 +12,15 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export default function Affectation({ affectation }: { affectation: string[] }) {
+const comboBoxValues = ['AML', 'Alcochete'];
+
+/* * */
+
+interface AffectationProps {
+	affectation: object
+}
+
+export default function Affectation({ affectation }: AffectationProps) {
 	//
 
 	//
@@ -27,9 +35,12 @@ export default function Affectation({ affectation }: { affectation: string[] }) 
 
 			<Row>
 				<Item
+					comboBoxValues={comboBoxValues}
+					hasMultiple={true}
+					inputProps={affectation}
+					isComboBox={true}
 					label="Aceitação de Passes pré-definida"
 					placeholder="Escolha uma opção..."
-					value={affectation.toString()}
 				/>
 			</Row>
 		</div>

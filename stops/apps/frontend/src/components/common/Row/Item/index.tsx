@@ -18,6 +18,7 @@ interface ItemProps {
 	date?: Date
 	dateSetter?: (date: Date) => void
 	description?: string
+	hasMultiple?: boolean
 	inputProps: object
 	isBoolean?: boolean
 	isComboBox?: boolean
@@ -28,7 +29,7 @@ interface ItemProps {
 
 /* * */
 
-export default function Item({ children, color, comboBoxValues, date, dateSetter, description, inputProps, isBoolean, isComboBox, isDatePicker, label, placeholder }: ItemProps) {
+export default function Item({ children, color, comboBoxValues, date, dateSetter, description, hasMultiple, inputProps, isBoolean, isComboBox, isDatePicker, label, placeholder }: ItemProps) {
 	//
 
 	//
@@ -92,6 +93,7 @@ export default function Item({ children, color, comboBoxValues, date, dateSetter
 						data={comboBoxValues}
 						description={description}
 						label={label}
+						multiple={!!hasMultiple}
 						{...inputProps}
 					/>
 				)
