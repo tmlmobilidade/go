@@ -6,7 +6,7 @@ import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 /* * */
 
-export default function Infrasctructure() {
+export default function StopInfrasctructure() {
 	//
 
 	//
@@ -18,7 +18,6 @@ export default function Infrasctructure() {
 	// B. Render components
 
 	return (
-
 		<Collapsible
 			description="Informações relacionadas com os equipamentos da paragem e envolvente."
 			title="Infraestrutura"

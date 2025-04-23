@@ -15,7 +15,6 @@ import Accessibility from '../Accessibility';
 import Comments from '../Comments';
 import Connections from '../Connections';
 import Equipments from '../Equipments';
-import Infrasctructure from '../Infrasctructure';
 import MapContainer from '../MapContainer';
 import Media from '../Media';
 import Observations from '../Observations';
@@ -23,6 +22,7 @@ import PublicInformation from '../PublicInformation';
 import StopAdminInformation from '../StopAdminInformation';
 import StopAffectation from '../StopAffectation';
 import StopDetails from '../StopDetails';
+import StopInfrasctructure from '../StopInfrasctructure';
 import StopShelter from '../StopShelter';
 import styles from '../styles.module.css';
 
@@ -61,8 +61,7 @@ export default function Stop() {
 			<StopAdminInformation />
 			<StopAffectation />
 			<StopShelter />
-
-			<Infrasctructure />
+			<StopInfrasctructure />
 
 			<PublicInformation
 				last_schedules_check={stop.form.getValues().last_schedules_check}
