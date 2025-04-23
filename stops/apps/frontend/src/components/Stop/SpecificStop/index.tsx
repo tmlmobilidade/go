@@ -104,6 +104,7 @@ export default function Stop() {
 			<Equipments
 				facilities={stop.form.getInputProps('facilities')}
 			/>
+
 			{/*
 			<Connections
 				connections={stop.form.getValues().connections || ['']}

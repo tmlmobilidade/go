@@ -10,6 +10,7 @@ import Item from '@/components/common/Row/Item';
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { ShelterStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { DateTimePicker } from '@tmlmobilidade/ui';
 import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 import styles from '../styles.module.css';
@@ -68,8 +69,6 @@ export default function Shelter() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const last_shelter_installation = stopDetailContext.data.form.getInputProps('last_shelter_installation');
-	const last_shelter_installation_getter = stopDetailContext.data.form.getValues().last_shelter_installation;
 	const shelter_code = stopDetailContext.data.form.getInputProps('shelter_code');
 	const shelter_maintainer = stopDetailContext.data.form.getInputProps('shelter_maintainer');
 	const shelter_make = stopDetailContext.data.form.getInputProps('shelter_make');
@@ -82,12 +81,6 @@ export default function Shelter() {
 		label: ShelterStatusValues[el],
 		value: el,
 	}));
-
-	const last_shelter_installation_setter = (date: Date) => {
-		stopDetailContext.data.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
-	};
-
-	const last_shelter_installation_date = new Date(last_shelter_installation_getter);
 
 	//
 	// B. Render components
@@ -130,13 +123,14 @@ export default function Shelter() {
 			</Row>
 
 			<Row>
-				<Item
-					date={last_shelter_installation_date}
-					dateSetter={last_shelter_installation_setter}
-					inputProps={last_shelter_installation}
-					isDatePicker={true}
+				<DateTimePicker
 					label="Data de Instalação do Abrigo"
 					placeholder="2024-09"
+					{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
+					value={new Date(stopDetailContext.data.form.getValues().last_shelter_installation)}
+					onChange={(date) => {
+						stopDetailContext.data.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
+					}}
 				/>
 			</Row>
 		</div>
