@@ -47,27 +47,18 @@ export default function Details() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-
+	// console.log('=> stopDetailContext', stopDetailContext);
 	const { isManual, setIsManual } = useManualContext();
 
 	const [isPlaying, setIsPlaying] = useState(false);
 	const audioPlayer = useRef<HTMLAudioElement | null>(null);
 
-	const _id = stopDetailContext.data.form.getInputProps('_id');
-	const latitude = stopDetailContext.data.form.getInputProps('latitude');
-	const longitude = stopDetailContext.data.form.getInputProps('longitude');
-	const name = stopDetailContext.data.form.getInputProps('name');
-	const new_name = stopDetailContext.data.form.getInputProps('new_name');
-	const operational_status = stopDetailContext.data.form.getInputProps('operational_status');
-	const short_name = stopDetailContext.data.form.getInputProps('short_name');
-	const tts_name = stopDetailContext.data.form.getInputProps('tts_name');
-
 	//
 	// B. Transform data
 
 	useEffect(() => {
-		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${_id}.mp3`);
-	}, [_id]);
+		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${stopDetailContext.data._id}.mp3`);
+	}, []);
 
 	useEffect(() => {
 		if (audioPlayer.current) {
@@ -82,7 +73,7 @@ export default function Details() {
 				audioPlayer.current.onabort = null;
 			}
 		};
-	}, [_id]);
+	}, []);
 
 	//
 	// C. Handle actions
@@ -112,19 +103,19 @@ export default function Details() {
 						label="Código Único da Paragem"
 						maxLength={255}
 						placeholder="012345"
-						{..._id}
+						{...stopDetailContext.data.form.getInputProps('_id')}
 					/>
 
 					<TextInput
 						label="Latitude"
 						maxLength={255}
-						{...latitude}
+						{...stopDetailContext.data.form.getInputProps('latitude')}
 					/>
 
-					<Item
-						{...longitude}
+					<TextInput
 						label="Longitude"
 						maxLength={255}
+						{...stopDetailContext.data.form.getInputProps('longitude')}
 					/>
 				</Grid>
 
@@ -134,7 +125,7 @@ export default function Details() {
 						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
 						disabled
-						{...name}
+						{...stopDetailContext.data.form.getInputProps('name')}
 					/>
 				</Grid>
 
@@ -143,7 +134,7 @@ export default function Details() {
 						label="Nome da Paragem (depois da correção)"
 						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
-						{...new_name}
+						{...stopDetailContext.data.form.getInputProps('new_name')}
 					/>
 				</Grid>
 
@@ -153,7 +144,7 @@ export default function Details() {
 							label="Nome Curto (Postalete)"
 							maxLength={255}
 							placeholder="R. Mrq. de Pombal 8"
-							{...short_name}
+							{...stopDetailContext.data.form.getInputProps('short_name')}
 						/>
 						{isManual
 							? (
@@ -177,7 +168,7 @@ export default function Details() {
 							label="Nome Falado (Text-to-Speech)"
 							maxLength={255}
 							placeholder="Rua Marquês de Pombal Porta Oito"
-							{...short_name}
+							{...stopDetailContext.data.form.getInputProps('tts_name')}
 						/>
 
 						<Tooltip label="Text to Speech" position="bottom">
@@ -191,7 +182,7 @@ export default function Details() {
 				</Grid>
 
 				{/* <Grid gap="md">
-				<Item label="Estado Operacional" value={OperationalStatusValues[operational_status] || 'Vazio'} />
+				<Item label="Estado Operacional" {...stopDetailContext.data.form.getInputProps('operational_status')} />
 			</Grid> */}
 			</Section>
 		</Collapsible>
