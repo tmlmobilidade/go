@@ -2,18 +2,12 @@
 
 import type { OperationalStatus, operationalStatusSchema } from '@tmlmobilidade/types';
 
-import Header from '@/components/common/Header';
-import Row from '@/components/common/Row';
-import Item from '@/components/common/Row/Item';
 import { useManualContext } from '@/contexts/Manual.context';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { audioTtsUrl } from '@/settings/url.settings';
 import { IconAlertHexagon, IconAlertHexagonOff, IconPlayerPause, IconVolume } from '@tabler/icons-react';
 import { Collapsible, Grid, Section, TextArea, TextInput, Tooltip } from '@tmlmobilidade/ui';
-// import { Tooltip } from '@tmlmobilidade/ui';
 import { useEffect, useRef, useState } from 'react';
-
-import styles from '../styles.module.css';
 
 /* * */
 
@@ -25,21 +19,6 @@ enum OperationalStatusValues {
 	voided = 'Vazio',
 }
 
-// interface DetailsProps {
-// 	_id: object
-// 	latitude: object
-// 	longitude: object
-// 	// _id: string
-// 	name: object
-// 	new_name: object
-// 	operational_status: OperationalStatus
-// 	short_name: object
-// 	tts_name: object
-// }
-
-/* * */
-
-// export default function Details({ _id, latitude, longitude, name, new_name, operational_status, short_name, tts_name }: DetailsProps) {
 export default function StopDetails() {
 	//
 

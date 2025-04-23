@@ -8,7 +8,9 @@ import Item from '@/components/common/Row/Item';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { ShelterStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 import styles from '../styles.module.css';
 
@@ -47,18 +49,32 @@ interface ShelterProps {
 	// shelter_status: ShelterStatus
 }
 
-export default function Shelter({
-	last_shelter_installation,
-	last_shelter_installation_getter,
-	last_shelter_installation_setter,
-	shelter_code,
-	shelter_maintainer,
-	shelter_make,
-	shelter_model,
-	shelter_status,
-}: ShelterProps) {
+export default function Shelter() {
+// export default function Shelter({
+// 	last_shelter_installation,
+// 	last_shelter_installation_getter,
+// 	last_shelter_installation_setter,
+// 	shelter_code,
+// 	shelter_maintainer,
+// 	shelter_make,
+// 	shelter_model,
+// 	shelter_status,
+// }: ShelterProps) {
+
 	//
 
+	//
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	const last_shelter_installation = stopDetailContext.data.form.getInputProps('last_shelter_installation');
+	const last_shelter_installation_getter = stopDetailContext.data.form.getValues().last_shelter_installation;
+	const shelter_code = stopDetailContext.data.form.getInputProps('shelter_code');
+	const shelter_maintainer = stopDetailContext.data.form.getInputProps('shelter_maintainer');
+	const shelter_make = stopDetailContext.data.form.getInputProps('shelter_make');
+	const shelter_model = stopDetailContext.data.form.getInputProps('shelter_model');
+	const shelter_status = stopDetailContext.data.form.getInputProps('shelter_status');
 	//
 	// A. Transform data
 
@@ -66,6 +82,10 @@ export default function Shelter({
 		label: ShelterStatusValues[el],
 		value: el,
 	}));
+
+	const last_shelter_installation_setter = (date: Date) => {
+		stopDetailContext.data.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
+	};
 
 	const last_shelter_installation_date = new Date(last_shelter_installation_getter);
 

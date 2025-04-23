@@ -1,17 +1,7 @@
 'use client';
 
-/* * */
-
-import Header from '@/components/common/Header';
-import Row from '@/components/common/Row';
-import Item from '@/components/common/Row/Item';
-
-/* * */
-
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
-
-import styles from '../styles.module.css';
 
 /* * */
 
@@ -19,12 +9,7 @@ const comboBoxValues = ['AML', 'Alcochete'];
 
 /* * */
 
-interface AffectationProps {
-	affectation: object
-}
-
-// export default function Affectation({ affectation }: AffectationProps) {
-export default function Affectation() {
+export default function StopAffectation() {
 	//
 
 	//

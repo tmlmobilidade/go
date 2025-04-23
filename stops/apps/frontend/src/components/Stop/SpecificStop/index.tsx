@@ -12,7 +12,6 @@ import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 import Accessibility from '../Accessibility';
-import Affectation from '../Affectation';
 import Comments from '../Comments';
 import Connections from '../Connections';
 import Equipments from '../Equipments';
@@ -23,13 +22,9 @@ import Observations from '../Observations';
 import PublicInformation from '../PublicInformation';
 import Shelter from '../Shelter';
 import StopAdminInformation from '../StopAdminInformation';
+import StopAffectation from '../StopAffectation';
 import StopDetails from '../StopDetails';
 import styles from '../styles.module.css';
-/* * */
-
-interface SpecificStopProps {
-	stop: Stop
-}
 
 /* * */
 
@@ -47,10 +42,6 @@ export default function Stop() {
 
 	//
 	// B. Transform data
-
-	const last_shelter_installation_setter = (date: Date) => {
-		stop.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
-	};
 
 	const last_infrastructure_check_setter = (date: Date) => {
 		stop.form.setFieldValue('last_infrastructure_check', getUnixTimestampFromJSDate(date));
@@ -76,19 +67,9 @@ export default function Stop() {
 			<MapContainer generic={false} />
 			<StopDetails />
 			<StopAdminInformation />
+			<StopAffectation />
 
-			<Affectation />
-
-			<Shelter
-				last_shelter_installation={stop.form.getInputProps('last_shelter_installation')}
-				last_shelter_installation_getter={stop.form.getValues().last_shelter_installation}
-				last_shelter_installation_setter={last_shelter_installation_setter}
-				shelter_code={stop.form.getInputProps('shelter_code')}
-				shelter_maintainer={stop.form.getInputProps('shelter_maintainer')}
-				shelter_make={stop.form.getInputProps('shelter_make')}
-				shelter_model={stop.form.getInputProps('shelter_model')}
-				shelter_status={stop.form.getInputProps('shelter_status')}
-			/>
+			<Shelter />
 
 			<Infrasctructure
 				last_infrastructure_check={stop.form.getValues().last_infrastructure_check}
