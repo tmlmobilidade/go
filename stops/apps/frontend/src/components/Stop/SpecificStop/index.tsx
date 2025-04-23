@@ -75,16 +75,7 @@ export default function Stop() {
 		<div className={styles.container}>
 			<MapContainer generic={false} />
 
-			<Details
-				_id={stop.form.getInputProps('_id')}
-				latitude={stop.form.getInputProps('latitude')}
-				longitude={stop.form.getInputProps('longitude')}
-				name={stop.form.getInputProps('name')}
-				new_name={stop.form.getInputProps('new_name')}
-				operational_status={stop.form.getInputProps('operational_status')}
-				short_name={stop.form.getInputProps('short_name')}
-				tts_name={stop.form.getInputProps('tts_name')}
-			/>
+			<Details />
 
 			<AdminInformation
 				jurisdication={stop.form.getInputProps('jurisdiction')}
@@ -138,9 +129,9 @@ export default function Stop() {
 				sidewalk_type={stop.form.getInputProps('sidewalk_type')}
 			/>
 
-			{/* <Equipments
+			<Equipments
 				facilities={stop.form.getInputProps('facilities')}
-			/> */}
+			/>
 			{/*
 			<Connections
 				connections={stop.form.getValues().connections || ['']}

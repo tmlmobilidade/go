@@ -8,7 +8,7 @@ import { Grid } from '@tmlmobilidade/ui';
 
 /* * */
 
-import { Facilities } from '@tmlmobilidade/types';
+import { Facilities, facilitiesSchema, StopSchema } from '@tmlmobilidade/types';
 
 import styles from '../styles.module.css';
 
@@ -37,6 +37,18 @@ enum FacilitiesValues {
 	transit_office = 'Espaço navegante®',
 	university = 'Universidade',
 }
+
+// const facilitiesValues = facilitiesSchema.array.map;
+
+// facilitiesValues.values;
+
+// .map((facility: string) => {
+// 	return {
+// 		label: FacilitiesValues[facility],
+// 		value: facility,
+// 	};
+// }
+
 interface EquipmentsProps {
 	facilities: object
 }
