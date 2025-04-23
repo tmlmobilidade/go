@@ -108,45 +108,53 @@ export default function Details() {
 		>
 			<Section gap="md">
 				<Grid columns="abc" gap="md">
-					<Item
-						inputProps={_id}
+					<TextInput
 						label="Código Único da Paragem"
+						maxLength={255}
 						placeholder="012345"
+						{..._id}
 					/>
-					<Item
-						inputProps={latitude}
+
+					<TextInput
 						label="Latitude"
+						maxLength={255}
+						{...latitude}
 					/>
+
 					<Item
-						inputProps={longitude}
+						{...longitude}
 						label="Longitude"
+						maxLength={255}
 					/>
 				</Grid>
 
 				<Grid gap="md">
-					<Item
-						color="green"
-						inputProps={name}
+					<TextInput
 						label="Antigo Nome da Paragem (p/ alterar)"
+						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
+						disabled
+						{...name}
 					/>
 				</Grid>
 
 				<Grid gap="md">
-					<Item
-						inputProps={new_name}
+					<TextInput
 						label="Nome da Paragem (depois da correção)"
+						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
+						{...new_name}
 					/>
 				</Grid>
 
 				<Grid columns="ab" gap="md">
-					<Item
-						color={isManual ? 'purple' : 'green'}
-						inputProps={short_name}
-						label="Nome Curto (Postalete)"
-						placeholder="R. Mrq. de Pombal 8"
-					>
+					<Grid columns="ab" gap="md">
+						<TextInput
+							label="Nome Curto (Postalete)"
+							maxLength={255}
+							placeholder="R. Mrq. de Pombal 8"
+							{...short_name}
+						/>
 						{isManual
 							? (
 								<Tooltip label="Modo Manual Ativado" position="bottom">
@@ -162,22 +170,27 @@ export default function Details() {
 									/>
 								</Tooltip>
 							)}
-					</Item>
+					</Grid>
 
-					<Item
-						inputProps={tts_name}
-						label="Nome Falado (Text-to-Speech)"
-						placeholder="Rua Marquês de Pombal Porta Oito"
-					>
-						{audioPlayer && (
-							isPlaying
-								? <IconPlayerPause onClick={() => handleToogleAudio()} />
-								: <IconVolume onClick={() => handleToogleAudio()} />
-						)}
-					</Item>
+					<Grid columns="ab" gap="md">
+						<TextInput
+							label="Nome Falado (Text-to-Speech)"
+							maxLength={255}
+							placeholder="Rua Marquês de Pombal Porta Oito"
+							{...short_name}
+						/>
+
+						<Tooltip label="Text to Speech" position="bottom">
+							{audioPlayer && (
+								isPlaying
+									? <IconPlayerPause onClick={() => handleToogleAudio()} />
+									: <IconVolume onClick={() => handleToogleAudio()} />
+							)}
+						</Tooltip>
+					</Grid>
 				</Grid>
 
-				{/* <Grid>
+				{/* <Grid gap="md">
 				<Item label="Estado Operacional" value={OperationalStatusValues[operational_status] || 'Vazio'} />
 			</Grid> */}
 			</Section>
