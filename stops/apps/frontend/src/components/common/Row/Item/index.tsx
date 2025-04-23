@@ -21,6 +21,7 @@ interface ItemProps {
 	hasMultiple?: boolean
 	inputProps: object
 	isBoolean?: boolean
+	isCheckbox?: boolean
 	isComboBox?: boolean
 	isDatePicker?: boolean
 	label: string
@@ -29,7 +30,7 @@ interface ItemProps {
 
 /* * */
 
-export default function Item({ children, color, comboBoxValues, date, dateSetter, description, hasMultiple, inputProps, isBoolean, isComboBox, isDatePicker, label, placeholder }: ItemProps) {
+export default function Item({ children, color, comboBoxValues, date, dateSetter, description, hasMultiple, inputProps, isBoolean, isCheckbox, isComboBox, isDatePicker, label, placeholder }: ItemProps) {
 	//
 
 	//
@@ -45,7 +46,7 @@ export default function Item({ children, color, comboBoxValues, date, dateSetter
 		>
 			{/* Text Input with Icon */}
 			{
-				!isBoolean && !isComboBox && !isDatePicker && children
+				!isBoolean && !isComboBox && !isDatePicker && !isCheckbox && children
 				&& (
 					<>
 						<TextInput
@@ -71,7 +72,7 @@ export default function Item({ children, color, comboBoxValues, date, dateSetter
 			}
 			{/* Text Input */}
 			{
-				!isBoolean && !isComboBox && !isDatePicker && !children
+				!isBoolean && !isComboBox && !isDatePicker && !isCheckbox && !children
 
 				&& (
 					<TextInput
@@ -115,10 +116,17 @@ export default function Item({ children, color, comboBoxValues, date, dateSetter
 			}
 			{/* Children */}
 			{/* Checkbox */}
-			{/* {
+			{
 				isBoolean
-				&& <Checkbox checked={value} className={styles.input_checkbox} label={label} disabled />
-			} */}
+				&& (
+					<Checkbox
+						// checked={value}
+						className={styles.input_checkbox}
+						label={label}
+						{...inputProps}
+					/>
+				)
+			}
 		</div>
 	);
 }

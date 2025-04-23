@@ -38,7 +38,7 @@ enum FacilitiesValues {
 	university = 'Universidade',
 }
 interface EquipmentsProps {
-	facilities: Facilities
+	facilities: object
 }
 export default function Equipments({ facilities }: EquipmentsProps) {
 	//
@@ -54,9 +54,19 @@ export default function Equipments({ facilities }: EquipmentsProps) {
 			/>
 
 			<Grid className={styles.grid} columns="abcd">
-				<Item label={FacilitiesValues[HEALTH_CLINIC]} value={facilities.includes(HEALTH_CLINIC)} />
-				<Item label={FacilitiesValues[HOSPITAL]} value={facilities.includes(HOSPITAL)} />
-				<Item label={FacilitiesValues[UNIVERSITY]} value={facilities.includes(UNIVERSITY)} />
+				{/* <Item
+					inputProps={facilities}
+					isBoolean={true}
+					label={FacilitiesValues[HEALTH_CLINIC]}
+				/> */}
+				{/* value={facilities.includes(HEALTH_CLINIC)} */}
+				{/* <Item
+					inputProps={facilities}
+					isBoolean={true}
+					label={FacilitiesValues[HOSPITAL]}
+				/> */}
+				{/* value={facilities.includes(HOSPITAL)} */}
+				{/* <Item label={FacilitiesValues[UNIVERSITY]} value={facilities.includes(UNIVERSITY)} />
 				<Item label={FacilitiesValues[SCHOOL]} value={facilities.includes(SCHOOL)} />
 
 				<Item label={FacilitiesValues[POLICE_STATION]} value={facilities.includes(POLICE_STATION)} />
@@ -65,7 +75,7 @@ export default function Equipments({ facilities }: EquipmentsProps) {
 				<Item label={FacilitiesValues[HISTORIC_BUILDING]} value={facilities.includes(HISTORIC_BUILDING)} />
 
 				<Item label={FacilitiesValues[TRANSIT_OFFICE]} value={facilities.includes(TRANSIT_OFFICE)} />
-				<Item label={FacilitiesValues[PIP]} value={facilities.includes(PIP)} />
+				<Item label={FacilitiesValues[PIP]} value={facilities.includes(PIP)} /> */}
 			</Grid>
 		</div>
 	);

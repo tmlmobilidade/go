@@ -98,7 +98,6 @@ export default function Stop() {
 			/>
 
 			<Shelter
-				// last_shelter_installation={stop.form.getValues().last_shelter_installation || getUnixTimestamp()}
 				last_shelter_installation={stop.form.getInputProps('last_shelter_installation')}
 				last_shelter_installation_getter={stop.form.getValues().last_shelter_installation}
 				last_shelter_installation_setter={last_shelter_installation_setter}
@@ -139,11 +138,10 @@ export default function Stop() {
 				sidewalk_type={stop.form.getInputProps('sidewalk_type')}
 			/>
 
-			{/*
-			<Equipments
+			{/* <Equipments
 				facilities={stop.form.getInputProps('facilities')}
-			/>
-
+			/> */}
+			{/*
 			<Connections
 				connections={stop.form.getValues().connections || ['']}
 			/>
