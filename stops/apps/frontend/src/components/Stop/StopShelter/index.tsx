@@ -6,7 +6,7 @@ import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 /* * */
 
-export default function Shelter() {
+export default function StopShelter() {
 	//
 
 	//

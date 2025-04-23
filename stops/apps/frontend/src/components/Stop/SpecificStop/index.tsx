@@ -20,10 +20,10 @@ import MapContainer from '../MapContainer';
 import Media from '../Media';
 import Observations from '../Observations';
 import PublicInformation from '../PublicInformation';
-import Shelter from '../Shelter';
 import StopAdminInformation from '../StopAdminInformation';
 import StopAffectation from '../StopAffectation';
 import StopDetails from '../StopDetails';
+import StopShelter from '../StopShelter';
 import styles from '../styles.module.css';
 
 /* * */
@@ -43,14 +43,6 @@ export default function Stop() {
 	//
 	// B. Transform data
 
-	const last_infrastructure_check_setter = (date: Date) => {
-		stop.form.setFieldValue('last_infrastructure_check', getUnixTimestampFromJSDate(date));
-	};
-
-	const last_infrastructure_maintenance_setter = (date: Date) => {
-		stop.form.setFieldValue('last_infrastructure_maintenance', getUnixTimestampFromJSDate(date));
-	};
-
 	const last_schedules_check_setter = (date: Date) => {
 		stop.form.setFieldValue('last_schedules_check', getUnixTimestampFromJSDate(date));
 	};
@@ -68,17 +60,9 @@ export default function Stop() {
 			<StopDetails />
 			<StopAdminInformation />
 			<StopAffectation />
+			<StopShelter />
 
-			<Shelter />
-
-			<Infrasctructure
-				last_infrastructure_check={stop.form.getValues().last_infrastructure_check}
-				last_infrastructure_check_getter={stop.form.getValues().last_infrastructure_check}
-				last_infrastructure_check_setter={last_infrastructure_check_setter}
-				last_infrastructure_maintenance={stop.form.getValues().last_infrastructure_maintenance}
-				last_infrastructure_maintenance_getter={stop.form.getValues().last_infrastructure_maintenance}
-				last_infrastructure_maintenance_setter={last_infrastructure_maintenance_setter}
-			/>
+			<Infrasctructure />
 
 			<PublicInformation
 				last_schedules_check={stop.form.getValues().last_schedules_check}
