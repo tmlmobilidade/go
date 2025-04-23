@@ -10,7 +10,7 @@ import Item from '@/components/common/Row/Item';
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { ShelterStatus, UnixTimestamp } from '@tmlmobilidade/types';
-import { DateTimePicker } from '@tmlmobilidade/ui';
+import { Collapsible, DateTimePicker, Grid, Section } from '@tmlmobilidade/ui';
 import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 import styles from '../styles.module.css';
@@ -86,53 +86,53 @@ export default function Shelter() {
 	// B. Render components
 
 	return (
-		<div className={styles.section}>
-			<Header
-				description="Informações relacionadas com o abrigo."
-				title="Abrigo"
-			/>
+		<Collapsible
+			description="Informações relacionadas com o abrigo."
+			title="Abrigo"
+		>
+			<Section gap="md">
+				<Grid columns="abc" gap="md">
+					<Item
+						comboBoxValues={shelterStatusItems}
+						inputProps={shelter_status}
+						isComboBox={true}
+						label="Existe Abrigo?"
+					/>
+					<Item
+						inputProps={shelter_code}
+						label="Código do Abrigo"
+						placeholder="SH1234"
+					/>
+					<Item
+						inputProps={shelter_maintainer}
+						label="Entidade Gestora do Abrigo"
+						placeholder="JC Decaux"
+					/>
+				</Grid>
 
-			<Row>
-				<Item
-					comboBoxValues={shelterStatusItems}
-					inputProps={shelter_status}
-					isComboBox={true}
-					label="Existe Abrigo?"
-				/>
-				<Item
-					inputProps={shelter_code}
-					label="Código do Abrigo"
-					placeholder="SH1234"
-				/>
-				<Item
-					inputProps={shelter_maintainer}
-					label="Entidade Gestora do Abrigo"
-					placeholder="JC Decaux"
-				/>
-			</Row>
+				<Grid columns="ab" gap="md">
+					<Item
+						inputProps={shelter_model}
+						label="Modelo do Abrigo"
+					/>
+					<Item
+						inputProps={shelter_make}
+						label="Fabricante do Abrigo"
+					/>
+				</Grid>
 
-			<Row>
-				<Item
-					inputProps={shelter_model}
-					label="Modelo do Abrigo"
-				/>
-				<Item
-					inputProps={shelter_make}
-					label="Fabricante do Abrigo"
-				/>
-			</Row>
-
-			<Row>
-				<DateTimePicker
-					label="Data de Instalação do Abrigo"
-					placeholder="2024-09"
-					{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
-					value={new Date(stopDetailContext.data.form.getValues().last_shelter_installation)}
-					onChange={(date) => {
-						stopDetailContext.data.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
-					}}
-				/>
-			</Row>
-		</div>
+				<Grid gap="md">
+					<DateTimePicker
+						label="Data de Instalação do Abrigo"
+						placeholder="2024-09"
+						{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
+						value={new Date(stopDetailContext.data.form.getValues().last_shelter_installation)}
+						onChange={(date) => {
+							stopDetailContext.data.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
+						}}
+					/>
+				</Grid>
+			</Section>
+		</Collapsible>
 	);
 }
