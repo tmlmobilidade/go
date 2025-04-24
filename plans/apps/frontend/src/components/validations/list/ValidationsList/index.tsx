@@ -85,7 +85,7 @@ export function ValidationList() {
 				records={data.filtered}
 				rowIdAccessor="_id"
 				onRowClick={(validation) => {
-					router.push(Routes.PLAN_DETAIL(validation._id));
+					router.push(Routes.VALIDATION_DETAIL(validation._id));
 				}}
 			/>
 		</Pane>
