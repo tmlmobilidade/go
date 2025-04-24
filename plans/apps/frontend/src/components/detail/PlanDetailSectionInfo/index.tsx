@@ -1,9 +1,8 @@
 /* * */
 
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { Collapsible, Combobox, DatePicker, Grid, Section } from '@tmlmobilidade/ui';
-import { getOperationalDate, operationalDateToJsDate } from '@tmlmobilidade/utils';
-import { DateTime } from 'luxon';
+import { Collapsible, Combobox, DatePicker, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 
 /* * */
@@ -20,12 +19,12 @@ export function PlanDetailSectionInfo() {
 	// B. Transform data
 	const validFrom = useMemo(() => {
 		if (!planDetailContext.data.form.values.valid_from) return null;
-		return operationalDateToJsDate(planDetailContext.data.form.values.valid_from);
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from).jsDate;
 	}, [planDetailContext.data.form.values.valid_from]);
 
 	const validUntil = useMemo(() => {
 		if (!planDetailContext.data.form.values.valid_until) return null;
-		return operationalDateToJsDate(planDetailContext.data.form.values.valid_until);
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until).jsDate;
 	}, [planDetailContext.data.form.values.valid_until]);
 
 	//
@@ -53,7 +52,7 @@ export function PlanDetailSectionInfo() {
 						value={validFrom}
 						onChange={(date) => {
 							planDetailContext.data.form.setValues({
-								valid_from: getOperationalDate(DateTime.fromJSDate(date)),
+								valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
 							});
 						}}
 						withAsterisk
@@ -67,7 +66,7 @@ export function PlanDetailSectionInfo() {
 						onChange={(date) => {
 							console.log('date', date);
 							planDetailContext.data.form.setValues({
-								valid_until: getOperationalDate(DateTime.fromJSDate(date, { zone: 'Europe/Lisbon' })),
+								valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
 							});
 						}}
 					/>

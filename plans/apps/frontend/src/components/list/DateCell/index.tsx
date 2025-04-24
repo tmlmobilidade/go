@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { OperationalDate } from '@tmlmobilidade/types';
-import { operationalDateToJsDate } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
 
@@ -9,8 +9,8 @@ export default function DateCell({ date, endDate }: { date: OperationalDate, end
 
 	//
 	// A. Setup variables
-	const parsedDate = date ? operationalDateToJsDate(date) : null;
-	const parsedEndDate = endDate ? operationalDateToJsDate(endDate) : null;
+	const parsedDate = date ? Dates.fromOperationalDate(date).jsDate : null;
+	const parsedEndDate = endDate ? Dates.fromOperationalDate(endDate).jsDate : null;
 	//
 	// B. Render
 	return (

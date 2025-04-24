@@ -51,7 +51,7 @@ export function PlanDetailHeader() {
 		<>
 			<BackButton />
 			<Tag label={planDetailContext.data.form.getValues().feeder_status} variant={variant} />
-			<Label size="lg" caps>{planDetailContext.data.form.getValues()._id}</Label>
+			<Label size="lg" caps>{planDetailContext.data.id}</Label>
 			<Spacer />
 			{lockButton}
 			<Button

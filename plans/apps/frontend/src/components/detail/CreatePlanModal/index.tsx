@@ -1,6 +1,9 @@
 import { UploadFile } from '@/components/common/UploadFile';
 import { PlanDetailContextProvider, PlanDetailMode, usePlanDetailContext } from '@/contexts/PlanDetail.context';
 import { Button, closeModal, Combobox, DatePicker, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
+import { DateTime } from 'luxon';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
@@ -27,6 +30,18 @@ export default function CreatePlanModal() {
 	// A. State Management
 	const planDetailContext = usePlanDetailContext();
 
+	//
+	// B. Transform data
+	const validFrom = useMemo(() => {
+		if (!planDetailContext.data.form.values.valid_from) return null;
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from).jsDate;
+	}, [planDetailContext.data.form.values.valid_from]);
+
+	const validUntil = useMemo(() => {
+		if (!planDetailContext.data.form.values.valid_until) return null;
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until).jsDate;
+	}, [planDetailContext.data.form.values.valid_until]);
+
 	// D. Render Components
 	const renderModalHeader = () => (
 		<Section gap="sm" padding="none">
@@ -44,8 +59,7 @@ export default function CreatePlanModal() {
 				data={planDetailContext.data.agencies}
 				description="Selecione o operador ao qual este plano pertence"
 				label="Operador"
-				onChange={planDetailContext.data.form.setFieldValue('agency_id')}
-				value={planDetailContext.data.form.getValues().agency_id}
+				{...planDetailContext.data.form.getInputProps('agency_id')}
 				fullWidth
 			/>
 		</Section>
@@ -58,15 +72,26 @@ export default function CreatePlanModal() {
 					description="Data de início da vigência do plano"
 					flex={1}
 					label="Data de início"
-					withAsterisk
 					{...planDetailContext.data.form.getInputProps('valid_from')}
+					value={validFrom}
+					onChange={(date) => {
+						planDetailContext.data.form.setValues({
+							valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+						});
+					}}
+					withAsterisk
 				/>
 				<DatePicker
 					description="Data de fim da vigência do plano"
-					flex={1}
 					label="Data de fim"
-					withAsterisk
+					clearable
 					{...planDetailContext.data.form.getInputProps('valid_until')}
+					value={validUntil}
+					onChange={(date) => {
+						planDetailContext.data.form.setValues({
+							valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+						});
+					}}
 				/>
 			</Grid>
 		</Section>
@@ -75,8 +100,12 @@ export default function CreatePlanModal() {
 	const renderFileUploadSection = () => (
 		<Section gap="sm" padding="none">
 			<UploadFile
-				label="Arquivo"
+				label="Plano de Referencia (GO)"
 				maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
+				onFileChange={planDetailContext.actions.setOperationPlanFile}
+			/>
+			<UploadFile
+				label="Plano de Operação (Operador)"
 			/>
 		</Section>
 	);
@@ -84,7 +113,13 @@ export default function CreatePlanModal() {
 	const renderActionButtons = () => (
 		<Grid columns="ab" gap="md">
 			<Button label="Cancelar" onClick={() => closeModal(MODAL_ID)} variant="danger" fullWidth />
-			<Button label="Criar plano" onClick={planDetailContext.actions.createPlan} variant="primary" fullWidth />
+			<Button
+				disabled={!planDetailContext.flags.canSave}
+				label="Criar plano"
+				onClick={planDetailContext.actions.savePlan}
+				variant="primary"
+				fullWidth
+			/>
 		</Grid>
 	);
 

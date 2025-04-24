@@ -15,7 +15,7 @@
 		"@tmlmobilidade/lib": "20250423.938.25",
 		"@tmlmobilidade/types": "^20250417.1234.52",
 		"@tmlmobilidade/ui": "20250422.1006.3",
-		"@tmlmobilidade/utils": "20250423.951.20",
+		"@tmlmobilidade/utils": "20250424.1633.10",
 		"clsx": "2.1.1",
 		"next": "15.3.1",
 		"react": "19.1.0",

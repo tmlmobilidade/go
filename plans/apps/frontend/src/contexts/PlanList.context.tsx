@@ -2,11 +2,10 @@
 
 /* * */
 
-import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { OperationalDate, Plan } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
-import { getOperationalDate } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -73,11 +72,11 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 	//
 	// D. Handle actionsn
 	function handleChangeValidFrom(date: Date | null) {
-		setFilterValidFrom(date ? getOperationalDate(date) : null);
+		setFilterValidFrom(date ? Dates.fromJSDate(date).operationalDate : null);
 	}
 
 	function handleChangeValidUntil(date: Date | null) {
-		setFilterValidUntil(date ? getOperationalDate(date) : null);
+		setFilterValidUntil(date ? Dates.fromJSDate(date).operationalDate : null);
 	}
 
 	//
