@@ -54,7 +54,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 
 	//
 	// B. Fetch data
-	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<Validation[], Error>(Routes.API(Routes.PLAN_LIST), swrFetcher);
+	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<Validation[], Error>(Routes.API(Routes.VALIDATION_LIST), swrFetcher);
 
 	//
 	// C. Transform data

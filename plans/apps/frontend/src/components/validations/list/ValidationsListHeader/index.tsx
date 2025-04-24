@@ -12,9 +12,9 @@ export function ValidationsListHeader() {
 
 	return (
 		<>
-			<Label size="lg" caps>Validationos</Label>
+			<Label size="lg" caps>Validações</Label>
 			<Spacer />
-			<Button label="Novo validationo" leftSection={<IconPlus size={20} />} onClick={OpenCreateValidationModal} />
+			<Button label="Nova validação" leftSection={<IconPlus size={20} />} onClick={OpenCreateValidationModal} />
 		</>
 	);
 

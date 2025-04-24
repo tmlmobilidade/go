@@ -2,6 +2,8 @@ export const PageRoutes = Object.freeze({
 	HOME: '/',
 	PLAN_DETAIL: (id: string) => `/plans/${id}`,
 	PLAN_LIST: '/plans',
+	VALIDATION_DETAIL: (id: string) => `/validations/${id}`,
+	VALIDATION_LIST: '/validations',
 
 	// Plans
 	// Example: PLAN_DETAIL: (id: string) => `/plans/${id}`,

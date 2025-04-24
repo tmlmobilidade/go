@@ -2,11 +2,11 @@
 
 /* * */
 
-import { ValidationsListFilters } from '@/components/plans/list/ValidationsListFilters';
-import { ValidationsListHeader } from '@/components/plans/list/ValidationsListHeader';
+import { ValidationsListFilters } from '@/components/validations/list/ValidationsListFilters';
+import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { useValidationListContext } from '@/contexts/ValidationList.context';
 import { Routes } from '@/lib/routes';
-import { IconCheck, IconLock, IconLockOff, IconX } from '@tabler/icons-react';
+import { IconLock, IconLockOff } from '@tabler/icons-react';
 import { type Validation } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -49,15 +49,6 @@ export function ValidationList() {
 			},
 			title: 'Bloqueado',
 			width: 100,
-		},
-		{
-			accessor: 'is_approved',
-			center: true,
-			render: ({ is_approved }) => {
-				return is_approved ? <Tag icon={<IconCheck />} variant="success" /> : <Tag icon={<IconX />} variant="danger" />;
-			},
-			title: 'Aprovado',
-			width: 200,
 		},
 		{
 			accessor: 'valid_from',

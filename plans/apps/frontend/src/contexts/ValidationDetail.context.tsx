@@ -21,8 +21,7 @@ export enum ValidationDetailMode {
 interface ValidationDetailContextState {
 	actions: {
 		saveValidation: () => void
-		setOperationValidationFile: (file: File) => void
-		setReferenceValidationFile: (file: File) => void
+		setValidationFile: (file: File) => void
 		toggleLock: () => void
 	}
 	data: {
@@ -64,10 +63,9 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [canSave, setCanSave] = useState(false);
-	const [operationValidationFile, setOperationValidationFile] = useState<File | null>(null);
-	const [referenceValidationFile, setReferenceValidationFile] = useState<File | null>(null);
+	const [validationFile, setValidationFile] = useState<File | null>(null);
 
-	const { data: validation, error, isLoading } = useSWR<Validation>(validationId === 'new' ? null : Routes.API(Routes.PLAN_DETAIL(validationId)), swrFetcher);
+	const { data: validation, error, isLoading } = useSWR<Validation>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)), swrFetcher);
 	// const { data: agencies, error: agenciesError, isLoading: agenciesLoading } = useSWR<Agency[]>(Routes.API(Routes.AGENCIES), swrFetcher);
 
 	//
@@ -97,7 +95,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 			title: 'Erro ao carregar validationo',
 		});
 
-		router.replace(Routes.PLAN_LIST);
+		router.replace(Routes.VALIDATION_LIST);
 	}, [error]);
 
 	// Validate form on change
@@ -131,9 +129,9 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		uploadFormData.append('is_locked', form.getValues().is_locked.toString());
 		uploadFormData.append('valid_from', form.getValues().valid_from);
 		uploadFormData.append('valid_until', form.getValues().valid_until);
-		uploadFormData.append('operation_validation', operationValidationFile);
+		uploadFormData.append('operation_validation', validationFile);
 
-		const response = await multipartFetch(Routes.API(Routes.PLAN_LIST), uploadFormData);
+		const response = await multipartFetch(Routes.API(Routes.VALIDATION_LIST), uploadFormData);
 
 		if (response.error) {
 			useToast.error({
@@ -146,7 +144,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		const { data: { insertedId } } = response.data as { data: { insertedId: string } };
 
 		if (insertedId) {
-			router.push(Routes.PLAN_DETAIL(insertedId));
+			router.push(Routes.VALIDATION_DETAIL(insertedId));
 		}
 
 		useToast.success({
@@ -177,8 +175,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		return {
 			actions: {
 				saveValidation,
-				setOperationValidationFile,
-				setReferenceValidationFile,
+				setValidationFile,
 				toggleLock,
 			},
 			data: {
