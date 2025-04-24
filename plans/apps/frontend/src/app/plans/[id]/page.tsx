@@ -1,6 +1,6 @@
 /* * */
 
-import { PlanDetail } from '@/components/detail/PlanDetail';
+import { PlanDetail } from '@/components/plans/detail/PlanDetail';
 import { PlanDetailContextProvider } from '@/contexts/PlanDetail.context';
 
 /* * */

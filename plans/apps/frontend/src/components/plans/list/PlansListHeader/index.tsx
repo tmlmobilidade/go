@@ -1,6 +1,6 @@
 /* * */
 
-import { OpenCreatePlanModal } from '@/components/detail/CreatePlanModal';
+import { OpenCreatePlanModal } from '@/components/plans/detail/CreatePlanModal';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, Spacer } from '@tmlmobilidade/ui';
 

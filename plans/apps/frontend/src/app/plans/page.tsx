@@ -1,4 +1,4 @@
-import { PlanList } from '@/components/list/PlansList';
+import { PlanList } from '@/components/plans/list/PlansList';
 import { PlanListContextProvider } from '@/contexts/PlanList.context';
 
 export default function Page() {

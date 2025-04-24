@@ -2,12 +2,12 @@
 
 /* * */
 
-import { PlansListFilters } from '@/components/plans/list/PlansListFilters';
-import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
-import { usePlanListContext } from '@/contexts/PlanList.context';
+import { ValidationsListFilters } from '@/components/plans/list/ValidationsListFilters';
+import { ValidationsListHeader } from '@/components/plans/list/ValidationsListHeader';
+import { useValidationListContext } from '@/contexts/ValidationList.context';
 import { Routes } from '@/lib/routes';
 import { IconCheck, IconLock, IconLockOff, IconX } from '@tabler/icons-react';
-import { type Plan } from '@tmlmobilidade/types';
+import { type Validation } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -17,16 +17,16 @@ import StatusCell from '../StatusCell';
 
 /* * */
 
-export function PlanList() {
+export function ValidationList() {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data, flags } = usePlanListContext();
+	const { data, flags } = useValidationListContext();
 
-	const columns: DataTableColumn<Plan>[] = [
+	const columns: DataTableColumn<Validation>[] = [
 		{
 			accessor: 'feeder_status',
 			render: ({ feeder_status }) => <StatusCell status={feeder_status} />,
@@ -85,16 +85,16 @@ export function PlanList() {
 
 	return (
 		<Pane header={[
-			<PlansListHeader />,
-			<PlansListFilters />,
+			<ValidationsListHeader />,
+			<ValidationsListFilters />,
 		]}
 		>
 			<DataTable
 				columns={columns}
 				records={data.filtered}
 				rowIdAccessor="_id"
-				onRowClick={(plan) => {
-					router.push(Routes.PLAN_DETAIL(plan._id));
+				onRowClick={(validation) => {
+					router.push(Routes.PLAN_DETAIL(validation._id));
 				}}
 			/>
 		</Pane>
