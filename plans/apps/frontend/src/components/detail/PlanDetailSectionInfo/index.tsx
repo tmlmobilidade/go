@@ -1,7 +1,7 @@
 /* * */
 
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { Collapsible, Combobox, DatePicker, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, DatePicker, Grid, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 
