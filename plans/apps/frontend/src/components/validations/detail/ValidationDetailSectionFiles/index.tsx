@@ -19,16 +19,16 @@ export function ValidationDetailSectionFiles() {
 
 	return (
 		<Collapsible
-			description="Ficheiros GTFS para o validationo. O ficheiro deve ser um arquivo zip com os ficheiros GTFS."
+			description="Ficheiros GTFS para o validação. O ficheiro deve ser um arquivo zip com os ficheiros GTFS."
 			title="Ficheiros GTFS"
 		>
 			<Section gap="md">
 				<Grid columns="ab" gap="md">
 					<UploadFile
-						label="Validationo de Referencia (GO)"
+						label="Validação de Referencia (GO)"
 					/>
 					<UploadFile
-						label="Validationo de Operação (Operador)"
+						label="Validação de Operação (Operador)"
 					/>
 				</Grid>
 			</Section>

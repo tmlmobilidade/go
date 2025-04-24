@@ -2,7 +2,6 @@ import { UploadFile } from '@/components/common/UploadFile';
 import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
 import { Button, closeModal, Combobox, DatePicker, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { DateTime } from 'luxon';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -45,9 +44,9 @@ export default function CreateValidationModal() {
 	// D. Render Components
 	const renderModalHeader = () => (
 		<Section gap="sm" padding="none">
-			<Label size="lg">Criar validationo GTFS</Label>
+			<Label size="lg">Criar validação GTFS</Label>
 			<Description>
-				Carregue um arquivo GTFS para criar um novo validationo. Este será validado
+				Carregue um arquivo GTFS para criar um novo validação. Este será validado
 				automaticamente.
 			</Description>
 		</Section>
@@ -57,7 +56,7 @@ export default function CreateValidationModal() {
 		<Section gap="sm" padding="none">
 			<Combobox
 				data={validationDetailContext.data.agencies}
-				description="Selecione o operador ao qual este validationo pertence"
+				description="Selecione o operador ao qual este validação pertence"
 				label="Operador"
 				{...validationDetailContext.data.form.getInputProps('agency_id')}
 				fullWidth
@@ -69,7 +68,7 @@ export default function CreateValidationModal() {
 		<Section padding="none">
 			<Grid className={styles.datePickerGrid} columns="ab" gap="md">
 				<DatePicker
-					description="Data de início da vigência do validationo"
+					description="Data de início da vigência do validação"
 					flex={1}
 					label="Data de início"
 					{...validationDetailContext.data.form.getInputProps('valid_from')}
@@ -82,7 +81,7 @@ export default function CreateValidationModal() {
 					withAsterisk
 				/>
 				<DatePicker
-					description="Data de fim da vigência do validationo"
+					description="Data de fim da vigência do validação"
 					label="Data de fim"
 					clearable
 					{...validationDetailContext.data.form.getInputProps('valid_until')}
@@ -100,12 +99,9 @@ export default function CreateValidationModal() {
 	const renderFileUploadSection = () => (
 		<Section gap="sm" padding="none">
 			<UploadFile
-				label="Validationo de Referencia (GO)"
+				label="Validação de Referencia (GO)"
 				maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
-				onFileChange={validationDetailContext.actions.setOperationValidationFile}
-			/>
-			<UploadFile
-				label="Validationo de Operação (Operador)"
+				onFileChange={validationDetailContext.actions.setValidationFile}
 			/>
 		</Section>
 	);
@@ -115,7 +111,7 @@ export default function CreateValidationModal() {
 			<Button label="Cancelar" onClick={() => closeModal(MODAL_ID)} variant="danger" fullWidth />
 			<Button
 				disabled={!validationDetailContext.flags.canSave}
-				label="Criar validationo"
+				label="Criar validação"
 				onClick={validationDetailContext.actions.saveValidation}
 				variant="primary"
 				fullWidth

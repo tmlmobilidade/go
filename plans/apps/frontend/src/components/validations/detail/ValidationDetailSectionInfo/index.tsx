@@ -32,8 +32,8 @@ export function ValidationDetailSectionInfo() {
 
 	return (
 		<Collapsible
-			description="Informações gerais sobre o validationo, como operador, data de vigência, etc."
-			title="Informação do validationo"
+			description="Informações gerais sobre o validação, como operador, data de vigência, etc."
+			title="Informação do validação"
 		>
 			<Section gap="md">
 				<Combobox
@@ -45,7 +45,7 @@ export function ValidationDetailSectionInfo() {
 				/>
 				<Grid columns="ab" gap="md">
 					<DatePicker
-						description="Data de início da vigência do validationo"
+						description="Data de início da vigência do validação"
 						flex={1}
 						label="Data de início"
 						{...validationDetailContext.data.form.getInputProps('valid_from')}
@@ -58,7 +58,7 @@ export function ValidationDetailSectionInfo() {
 						withAsterisk
 					/>
 					<DatePicker
-						description="Data de fim da vigência do validationo"
+						description="Data de fim da vigência do validação"
 						label="Data de fim"
 						clearable
 						{...validationDetailContext.data.form.getInputProps('valid_until')}

@@ -92,7 +92,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 
 		useToast.error({
 			message: error.message,
-			title: 'Erro ao carregar validationo',
+			title: 'Erro ao carregar validação',
 		});
 
 		router.replace(Routes.VALIDATION_LIST);
@@ -136,7 +136,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		if (response.error) {
 			useToast.error({
 				message: response.error,
-				title: 'Erro ao criar validationo',
+				title: 'Erro ao criar validação',
 			});
 			return;
 		}
@@ -148,7 +148,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		}
 
 		useToast.success({
-			message: 'Validationo criado com sucesso',
+			message: 'Validação criado com sucesso',
 			title: 'Sucesso',
 		});
 

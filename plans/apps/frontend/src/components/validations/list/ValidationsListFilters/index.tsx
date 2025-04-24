@@ -32,10 +32,10 @@ function ValidityDateFilter() {
 				</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
-				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o validationo é válido</Text>
+				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o validação é válido</Text>
 				<div className={styles.filterItem}>
-					<DatePicker description="Data de início da vigência do validationo" flex={1} label="Data de início" onChange={actions.changeValidFrom} value={filters.validFrom ? Dates.fromOperationalDate(filters.validFrom).js_date : null} clearable />
-					<DatePicker description="Data de fim da vigência do validationo" flex={1} label="Data de fim" onChange={actions.changeValidUntil} value={filters.validUntil ? Dates.fromOperationalDate(filters.validUntil).js_date : null} clearable />
+					<DatePicker description="Data de início da vigência do validação" flex={1} label="Data de início" onChange={actions.changeValidFrom} value={filters.validFrom ? Dates.fromOperationalDate(filters.validFrom).js_date : null} clearable />
+					<DatePicker description="Data de fim da vigência do validação" flex={1} label="Data de fim" onChange={actions.changeValidUntil} value={filters.validUntil ? Dates.fromOperationalDate(filters.validUntil).js_date : null} clearable />
 				</div>
 			</Menu.Dropdown>
 		</Menu>
