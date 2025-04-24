@@ -54,7 +54,7 @@ export class ValidationsController {
 					created_by: 'system', // TODO: Change to user id
 					name: data.filename,
 					resource_id: ValidationResult.insertedId.toString(),
-					scope: 'Validations',
+					scope: 'validations',
 					size: size,
 					type: data.mimetype,
 					updated_by: 'system', // TODO: Change to user id
@@ -62,7 +62,7 @@ export class ValidationsController {
 
 				// 3. Update the Validation with the file reference
 				await validationsCollection.updateById(ValidationResult.insertedId.toString(), {
-					operation_file: fileResult.insertedId.toString(),
+					file: fileResult.insertedId.toString(),
 				} as Partial<Validation>, { session: validationsTransaction.getSession() });
 
 				return {

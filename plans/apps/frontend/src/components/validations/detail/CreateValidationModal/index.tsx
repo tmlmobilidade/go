@@ -46,8 +46,7 @@ export default function CreateValidationModal() {
 		<Section gap="sm" padding="none">
 			<Label size="lg">Criar validação GTFS</Label>
 			<Description>
-				Carregue um arquivo GTFS para criar um novo validação. Este será validado
-				automaticamente.
+				Carregue um arquivo GTFS para efetuar a validação do mesmo.
 			</Description>
 		</Section>
 	);
