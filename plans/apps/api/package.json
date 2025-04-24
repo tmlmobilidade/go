@@ -16,10 +16,10 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
-		"@tmlmobilidade/interfaces": "20250424.1633.12",
+		"@tmlmobilidade/interfaces": "20250424.1724.7",
 		"@tmlmobilidade/lib": "20250423.938.25",
-		"@tmlmobilidade/types": "20250417.1234.52",
-		"@tmlmobilidade/utils": "20250424.1633.10",
+		"@tmlmobilidade/types": "20250424.1720.36",
+		"@tmlmobilidade/utils": "20250424.1717.21",
 		"fastify": "5.3.2",
 		"pino-pretty": "13.0.0",
 		"resolve-tspaths": "0.8.23",

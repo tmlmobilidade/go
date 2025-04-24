@@ -19,12 +19,12 @@ export function ValidationDetailSectionInfo() {
 	// B. Transform data
 	const validFrom = useMemo(() => {
 		if (!validationDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_from).jsDate;
+		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_from).js_date;
 	}, [validationDetailContext.data.form.values.valid_from]);
 
 	const validUntil = useMemo(() => {
 		if (!validationDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_until).jsDate;
+		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_until).js_date;
 	}, [validationDetailContext.data.form.values.valid_until]);
 
 	//
@@ -52,7 +52,7 @@ export function ValidationDetailSectionInfo() {
 						value={validFrom}
 						onChange={(date) => {
 							validationDetailContext.data.form.setValues({
-								valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+								valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
 							});
 						}}
 						withAsterisk
@@ -66,7 +66,7 @@ export function ValidationDetailSectionInfo() {
 						onChange={(date) => {
 							console.log('date', date);
 							validationDetailContext.data.form.setValues({
-								valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+								valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
 							});
 						}}
 					/>

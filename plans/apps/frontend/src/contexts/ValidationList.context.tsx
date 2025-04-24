@@ -3,7 +3,7 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { OperationalDate, Plan } from '@tmlmobilidade/types';
+import { OperationalDate, Validation } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { Dates } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
@@ -11,14 +11,14 @@ import useSWR from 'swr';
 
 /* * */
 
-interface PlanListContextState {
+interface ValidationListContextState {
 	actions: {
 		changeValidFrom: (date: Date | null) => void
 		changeValidUntil: (date: Date | null) => void
 	}
 	data: {
-		filtered: Plan[]
-		raw: Plan[]
+		filtered: Validation[]
+		raw: Validation[]
 	}
 	filters: {
 		validFrom: null | OperationalDate
@@ -32,19 +32,19 @@ interface PlanListContextState {
 
 /* * */
 
-const PlanListContext = createContext<PlanListContextState | undefined>(undefined);
+const ValidationListContext = createContext<undefined | ValidationListContextState>(undefined);
 
-export const usePlanListContext = () => {
-	const context = useContext(PlanListContext);
+export const useValidationListContext = () => {
+	const context = useContext(ValidationListContext);
 	if (!context) {
-		throw new Error('usePlanListContext must be used within a PlanListContextProvider');
+		throw new Error('useValidationListContext must be used within a ValidationListContextProvider');
 	}
 	return context;
 };
 
 /* * */
 
-export const PlanListContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const ValidationListContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 
 	//
@@ -54,20 +54,20 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 
 	//
 	// B. Fetch data
-	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(Routes.API(Routes.PLAN_LIST), swrFetcher);
+	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<Validation[], Error>(Routes.API(Routes.PLAN_LIST), swrFetcher);
 
 	//
 	// C. Transform data
 
-	const rawPlans = useMemo(() => {
-		return allPlansData || [];
-	}, [allPlansData]);
+	const rawValidations = useMemo(() => {
+		return allValidationsData || [];
+	}, [allValidationsData]);
 
-	const filteredPlans = useMemo(() => {
-		const plans = rawPlans;
+	const filteredValidations = useMemo(() => {
+		const validations = rawValidations;
 
-		return plans;
-	}, [rawPlans]);
+		return validations;
+	}, [rawValidations]);
 
 	//
 	// D. Handle actionsn
@@ -82,28 +82,28 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 	//
 	// E. Define context value
 
-	const contextValue: PlanListContextState = useMemo(() => ({
+	const contextValue: ValidationListContextState = useMemo(() => ({
 		actions: {
 			changeValidFrom: handleChangeValidFrom,
 			changeValidUntil: handleChangeValidUntil,
 		},
 		data: {
-			filtered: filteredPlans,
-			raw: rawPlans,
+			filtered: filteredValidations,
+			raw: rawValidations,
 		},
 		filters: {
 			validFrom: filterValidFrom,
 			validUntil: filterValidUntil,
 		},
 		flags: {
-			error: allPlansError,
-			isLoading: allPlansLoading,
+			error: allValidationsError,
+			isLoading: allValidationsLoading,
 		},
 	}), [
-		filteredPlans,
-		rawPlans,
-		allPlansError,
-		allPlansLoading,
+		filteredValidations,
+		rawValidations,
+		allValidationsError,
+		allValidationsLoading,
 		filterValidFrom,
 		filterValidUntil,
 	]);
@@ -112,9 +112,9 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 	// F. Render components
 
 	return (
-		<PlanListContext.Provider value={contextValue}>
+		<ValidationListContext.Provider value={contextValue}>
 			{children}
-		</PlanListContext.Provider>
+		</ValidationListContext.Provider>
 	);
 
 	//

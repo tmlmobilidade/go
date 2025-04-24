@@ -1,6 +1,6 @@
 /* * */
 
-import { ValidationDetail } from '@/components/plans/detail/ValidationDetail';
+import { ValidationDetail } from '@/components/validations/detail/ValidationDetail';
 import { ValidationDetailContextProvider } from '@/contexts/ValidationDetail.context';
 
 /* * */

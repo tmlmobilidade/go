@@ -33,12 +33,12 @@ export default function CreatePlanModal() {
 	// B. Transform data
 	const validFrom = useMemo(() => {
 		if (!planDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from).jsDate;
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from).js_date;
 	}, [planDetailContext.data.form.values.valid_from]);
 
 	const validUntil = useMemo(() => {
 		if (!planDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until).jsDate;
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until).js_date;
 	}, [planDetailContext.data.form.values.valid_until]);
 
 	// D. Render Components
@@ -75,7 +75,7 @@ export default function CreatePlanModal() {
 					value={validFrom}
 					onChange={(date) => {
 						planDetailContext.data.form.setValues({
-							valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+							valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 					withAsterisk
@@ -88,7 +88,7 @@ export default function CreatePlanModal() {
 					value={validUntil}
 					onChange={(date) => {
 						planDetailContext.data.form.setValues({
-							valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+							valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 				/>

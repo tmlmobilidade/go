@@ -1,5 +1,5 @@
 import { UploadFile } from '@/components/common/UploadFile';
-import { ValidationDetailContextProvider, ValidationDetailMode, useValidationDetailContext } from '@/contexts/ValidationDetail.context';
+import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
 import { Button, closeModal, Combobox, DatePicker, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { DateTime } from 'luxon';
@@ -34,12 +34,12 @@ export default function CreateValidationModal() {
 	// B. Transform data
 	const validFrom = useMemo(() => {
 		if (!validationDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_from).jsDate;
+		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_from).js_date;
 	}, [validationDetailContext.data.form.values.valid_from]);
 
 	const validUntil = useMemo(() => {
 		if (!validationDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_until).jsDate;
+		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_until).js_date;
 	}, [validationDetailContext.data.form.values.valid_until]);
 
 	// D. Render Components
@@ -76,7 +76,7 @@ export default function CreateValidationModal() {
 					value={validFrom}
 					onChange={(date) => {
 						validationDetailContext.data.form.setValues({
-							valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+							valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 					withAsterisk
@@ -89,7 +89,7 @@ export default function CreateValidationModal() {
 					value={validUntil}
 					onChange={(date) => {
 						validationDetailContext.data.form.setValues({
-							valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operationalDate,
+							valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 				/>
