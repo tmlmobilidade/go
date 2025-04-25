@@ -2,7 +2,7 @@
 
 import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
 import { type Ride } from '@tmlmobilidade/types';
-import { getUnixTimestamp } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 
 /**
  * This function returns the seen status of a ride based on the timestamp of its most recent event.
@@ -19,7 +19,7 @@ export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): ExtendedRideDi
 		return 'unseen';
 	}
 
-	const nowInUnixMilliseconds = getUnixTimestamp();
+	const nowInUnixMilliseconds = Dates.now().unix_timestamp;
 
 	const millisecondsFromLastSeenToNow = nowInUnixMilliseconds - seenLastAt;
 
