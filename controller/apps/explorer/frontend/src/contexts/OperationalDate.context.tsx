@@ -3,7 +3,7 @@
 /* * */
 
 import { OPERATIONAL_DATE_FORMAT, type OperationalDate } from '@tmlmobilidade/types';
-import { getOperationalDate } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo, useState } from 'react';
 
@@ -47,7 +47,7 @@ export const OperationalDateContextProvider = ({ children }) => {
 	//
 	// A. Setup variables
 
-	const [selectedDate, setSelectedDate] = useState(getOperationalDate());
+	const [selectedDate, setSelectedDate] = useState(Dates.now().operational_date);
 	// const [selectedDate, setSelectedDate] = useState('20250307' as OperationalDate);
 
 	//
@@ -63,16 +63,12 @@ export const OperationalDateContextProvider = ({ children }) => {
 	};
 
 	const updateSelectedDateToToday = () => {
-		const todayOperationalDate = getOperationalDate();
+		const todayOperationalDate = Dates.now().operational_date;
 		setSelectedDate(todayOperationalDate);
 	};
 
 	const updateSelectedDateToTomorrow = () => {
-		const todayOperationalDate = getOperationalDate();
-		const tomorrowOperationalDate = DateTime
-			.fromFormat(todayOperationalDate, OPERATIONAL_DATE_FORMAT)
-			.plus({ days: 1 })
-			.toFormat(OPERATIONAL_DATE_FORMAT) as OperationalDate;
+		const tomorrowOperationalDate = Dates.now().plus({ days: 1 }).operational_date;
 		setSelectedDate(tomorrowOperationalDate);
 	};
 

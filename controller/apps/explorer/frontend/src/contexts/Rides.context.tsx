@@ -6,7 +6,7 @@ import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useDebouncedState } from '@mantine/hooks';
 import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type Ride, UnixTimestamp } from '@tmlmobilidade/types';
-import { getUnixTimestamp } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */
@@ -101,7 +101,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 			action: 'config',
 			operational_date: operationalDateContext.data.selected_date,
 			sender: 'client',
-			timestamp: getUnixTimestamp(),
+			timestamp: Dates.now().unix_timestamp,
 		});
 	};
 
@@ -130,7 +130,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 			const rideData = messageData.data as Ride;
 			if (rideData.operational_date !== operationalDateContext.data.selected_date) return;
 			dataRidesRef.current.set(rideData._id, rideData);
-			setDataLastUpdateState(getUnixTimestamp());
+			setDataLastUpdateState(Dates.now().unix_timestamp);
 			return;
 		}
 

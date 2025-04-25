@@ -6,7 +6,7 @@ import { rides } from '@tmlmobilidade/interfaces';
 import { Permissions } from '@tmlmobilidade/lib';
 import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type Ride } from '@tmlmobilidade/types';
-import { getUnixTimestamp } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 import { WebSocket } from 'ws';
 
 /* * */
@@ -58,7 +58,7 @@ export const ridesWebsocket = async function (fastify) {
 					},
 					operational_date: messageData.operational_date,
 					sender: 'server',
-					timestamp: getUnixTimestamp(),
+					timestamp: Dates.now().unix_timestamp,
 				};
 
 				socket.send(JSON.stringify(totalItemsFoundResponse));
@@ -83,7 +83,7 @@ export const ridesWebsocket = async function (fastify) {
 							data: rideData,
 							operational_date: rideData.operational_date,
 							sender: 'server',
-							timestamp: getUnixTimestamp(),
+							timestamp: Dates.now().unix_timestamp,
 						};
 						socket.send(JSON.stringify(message));
 					});
@@ -107,7 +107,7 @@ export const ridesWebsocket = async function (fastify) {
 						data: rideData,
 						operational_date: rideData.operational_date,
 						sender: 'server',
-						timestamp: getUnixTimestamp(),
+						timestamp: Dates.now().unix_timestamp,
 					};
 					socket.send(JSON.stringify(message));
 					sentCount++;

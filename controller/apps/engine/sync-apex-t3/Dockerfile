@@ -5,7 +5,7 @@ FROM node:alpine AS base
 
 ENV MODULE=controller
 ENV SCOPE=engine
-ENV PROJECT=sync-apex-t11
+ENV PROJECT=sync-apex-t3
 
 RUN npm install -g turbo@^2
 
