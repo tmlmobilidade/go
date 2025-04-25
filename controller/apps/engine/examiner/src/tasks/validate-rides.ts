@@ -28,6 +28,7 @@ import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
 import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simple-one-validation-transaction.analyzer.js';
 import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-validation-transaction.analyzer.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.analyzer.js';
+import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.analyzer.js';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
@@ -36,6 +37,10 @@ function runAnalyzers(analysisData: AnalysisData): RideAnalysis[] {
 	return [
 
 		/* * * * */
+
+		transactionSequentialityAnalyzer(analysisData),
+
+		//
 
 		atMostTwoDriverIdsAnalyzer(analysisData),
 
@@ -126,6 +131,8 @@ export async function validateRides() {
 				const fetchAnalysisDataTimer = new TIMETRACKER();
 
 				const standardWindowInterval = getStandardWindowInterval(rideData.start_time_scheduled);
+
+				console.log('standardWindowInterval', standardWindowInterval);
 
 				const hashedShapePromise = hashedShapes.findById(rideData.hashed_shape_id);
 				const hashedTripPromise = hashedTrips.findById(rideData.hashed_trip_id);
