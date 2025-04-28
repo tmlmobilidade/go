@@ -52,16 +52,16 @@ import Fastify from 'fastify';
 
 		const fetchTimer = new TIMETRACKER();
 
-		// const latestPendingRides = await ridesCollection
-		// 	.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'pending' })
-		// 	.sort({ start_time_scheduled: -1 })
-		// 	.limit(batchSize)
-		// 	.toArray();
+		const latestPendingRides = await ridesCollection
+			.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'pending' })
+			.sort({ start_time_scheduled: -1 })
+			.limit(batchSize)
+			.toArray();
 
 		/* === FOR TESTING === */
-		const latestPendingRides = await ridesCollection
-			.find({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
-			.toArray();
+		// const latestPendingRides = await ridesCollection
+		// 	.find({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
+		// 	.toArray();
 		/* === FOR TESTING === */
 
 		const latestPendingRidesIds = latestPendingRides.map(ride => ride._id);

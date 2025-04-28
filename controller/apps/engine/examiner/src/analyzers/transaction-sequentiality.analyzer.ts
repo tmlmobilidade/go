@@ -38,7 +38,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			}
 		}
 
-		console.log('analysisData.apex_t19.length', analysisData.apex_t19.length);
+		// console.log('analysisData.apex_t19.length', analysisData.apex_t19.length);
 
 		for (const transaction of analysisData.apex_t19) {
 			if (transaction.mac_sam_serial_number) {
@@ -52,7 +52,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			}
 		}
 
-		console.log('transactionsBySamSerialNumber', transactionsBySamSerialNumber);
+		// console.log('transactionsBySamSerialNumber', transactionsBySamSerialNumber);
 
 		// 2.
 		// With the transactions organized by their SAM Serial Number,
@@ -79,9 +79,9 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			// If there are gaps, add them to the missingTransactions map
 			if (gaps.length > 0) missingTransactions.set(samSerialNumber, gaps);
 		}
-		console.log('missingTransactions', missingTransactions);
+		// console.log('missingTransactions', missingTransactions);
 
-		process.exit(0);
+		// process.exit(0);
 
 		// return {
 		// 	_id: 'TRANSACTION_SEQUENTIALITY',
