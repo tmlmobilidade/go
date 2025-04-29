@@ -64,17 +64,7 @@ export default function Stop() {
 			<StopInfrasctructure />
 			<StopPublicInformation />
 
-			<Accessibility
-				bench_status={stop.form.getInputProps('bench_status')}
-				docking_bay_type={stop.form.getInputProps('docking_bay_type')}
-				electricity_status={stop.form.getInputProps('electricity_status')}
-				flag_status={stop.form.getInputProps('flag_status')}
-				lighting_status={stop.form.getInputProps('lighting_status')}
-				pavement_type={stop.form.getInputProps('pavement_type')}
-				pole_status={stop.form.getInputProps('pole_status')}
-				road_type={stop.form.getInputProps('road_type')}
-				sidewalk_type={stop.form.getInputProps('sidewalk_type')}
-			/>
+			<Accessibility />
 
 			<Equipments
 				facilities={stop.form.getInputProps('facilities')}
