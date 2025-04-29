@@ -1,6 +1,5 @@
 'use client';
 
-import Item from '@/components/common/Row/Item';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
@@ -40,12 +39,8 @@ export default function Equipments() {
 		university = 'Universidade',
 	}
 
-	const facilities = stopDetailContext.data.form.getInputProps('facilities');
-	console.log('=> facilities', facilities);
 	//
-
-	//
-	// A. Render components
+	// B. Render components
 
 	return (
 		<Collapsible
@@ -56,94 +51,94 @@ export default function Equipments() {
 				<Grid columns="abcd" gap="md">
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
-							checked={facilities.value.includes(HEALTH_CLINIC)}
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(HEALTH_CLINIC)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[HEALTH_CLINIC]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 
 					<div className={styles.input_checkbox_container}>
-						<Item
-							checked={facilities.value.includes(HOSPITAL)}
+						<Checkbox
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(HOSPITAL)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[HOSPITAL]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 
 					<div className={styles.input_checkbox_container}>
-						<Item
-							checked={facilities.value.includes(UNIVERSITY)}
+						<Checkbox
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(UNIVERSITY)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[UNIVERSITY]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 
 					<div className={styles.input_checkbox_container}>
-						<Item
-							checked={facilities.value.includes(SCHOOL)}
+						<Checkbox
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(SCHOOL)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[SCHOOL]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 				</Grid>
 				<Grid columns="abcd" gap="md">
 					<div className={styles.input_checkbox_container}>
-						<Item
-							checked={facilities.value.includes(POLICE_STATION)}
+						<Checkbox
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(POLICE_STATION)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[POLICE_STATION]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 
 					<div className={styles.input_checkbox_container}>
-						<Item
-							checked={facilities.value.includes(FIRE_STATION)}
+						<Checkbox
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(FIRE_STATION)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[FIRE_STATION]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 
 					<div className={styles.input_checkbox_container}>
-						<Item
-							checked={facilities.value.includes(SHOPPING)}
+						<Checkbox
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(SHOPPING)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[SHOPPING]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 
 					<div className={styles.input_checkbox_container}>
-						<Item
-							checked={facilities.value.includes(HISTORIC_BUILDING)}
+						<Checkbox
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(HISTORIC_BUILDING)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[HISTORIC_BUILDING]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 				</Grid>
 
-				<Grid columns="ab" gap="md">
+				<Grid columns="abcd" gap="md">
 					<div className={styles.input_checkbox_container}>
-						<Item
+						<Checkbox
 							checked={facilities.value.includes(TRANSIT_OFFICE)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[TRANSIT_OFFICE]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 
 					<div className={styles.input_checkbox_container}>
-						<Item
+						<Checkbox
 							checked={facilities.value.includes(PIP)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[PIP]}
-							{...facilities}
+							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
 				</Grid>
