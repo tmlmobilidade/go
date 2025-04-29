@@ -2,11 +2,8 @@
 
 import type { Stop } from '@tmlmobilidade/types';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
-
 import Comments from '../Comments';
 import MapContainer from '../MapContainer';
-import Media from '../Media';
 import Observations from '../Observations';
 import StopAccessibility from '../StopAccessibility';
 import StopAdminInformation from '../StopAdminInformation';
@@ -15,6 +12,7 @@ import StopConnections from '../StopConnections';
 import StopDetails from '../StopDetails';
 import StopEquipments from '../StopEquipments';
 import StopInfrasctructure from '../StopInfrasctructure';
+import StopMedia from '../StopMedia';
 import StopPublicInformation from '../StopPublicInformation';
 import StopShelter from '../StopShelter';
 import styles from '../styles.module.css';
@@ -39,7 +37,7 @@ export default function Stop() {
 			<StopAccessibility />
 			<StopEquipments />
 			<StopConnections />
-			<Media />
+			<StopMedia />
 
 			{/*
 			<Comments
