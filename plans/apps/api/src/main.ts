@@ -25,8 +25,9 @@ const options: FastifyServerOptions = {
 };
 
 async function main() {
-	// Start Fastify server
 	const fastifyService = FastifyService.getInstance(options);
+
+	// Start Fastify server
 	await fastifyService.server.register(fastifyMultipart, {
 		limits: {
 			fileSize: MAX_BODY_SIZE,
