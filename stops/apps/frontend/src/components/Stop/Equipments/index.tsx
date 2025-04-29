@@ -4,14 +4,14 @@
 
 import Header from '@/components/common/Header';
 import Item from '@/components/common/Row/Item';
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Facilities, facilitiesSchema, StopSchema } from '@tmlmobilidade/types';
 
-import styles from '../styles.module.css';
+import styles from './styles.module.css';
 
 /* * */
 
@@ -76,16 +76,20 @@ export default function Equipments() {
 		>
 			<Section gap="md">
 				<Grid columns="abcd" gap="md">
-					<Item
-						inputProps={facilities}
-						isBoolean={true}
-						label={FacilitiesValues[HEALTH_CLINIC]}
-					/>
-					{/* value={facilities.includes(HEALTH_CLINIC)} */}
+					<div className={styles.input_checkbox_container}>
+						<Checkbox
+							checked={facilities.includes(HEALTH_CLINIC)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[HEALTH_CLINIC]}
+							{...facilities}
+						/>
+					</div>
+
 					<Item
 						inputProps={facilities}
 						isBoolean={true}
 						label={FacilitiesValues[HOSPITAL]}
+						// value={facilities.includes(HOSPITAL)}
 					/>
 					{/* value={facilities.includes(HOSPITAL)} */}
 					{/* <Item
@@ -100,7 +104,7 @@ export default function Equipments() {
 					/> */}
 
 				</Grid>
-				<Grid columns="abcd" gap="md">
+				{/* <Grid columns="abcd" gap="md">
 					<Item label={FacilitiesValues[POLICE_STATION]} value={facilities.includes(POLICE_STATION)} />
 					<Item label={FacilitiesValues[FIRE_STATION]} value={facilities.includes(FIRE_STATION)} />
 					<Item label={FacilitiesValues[SHOPPING]} value={facilities.includes(SHOPPING)} />
@@ -109,7 +113,7 @@ export default function Equipments() {
 				<Grid columns="ab" gap="md">
 					<Item label={FacilitiesValues[TRANSIT_OFFICE]} value={facilities.includes(TRANSIT_OFFICE)} />
 					<Item label={FacilitiesValues[PIP]} value={facilities.includes(PIP)} />
-				</Grid>
+				</Grid> */}
 			</Section>
 		</Collapsible>
 	);
