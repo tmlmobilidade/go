@@ -39,12 +39,9 @@ export default function Stop() {
 			<StopAccessibility />
 			<StopEquipments />
 			<StopConnections />
-			{/*
-			<Media
-				file_ids={stop.form.getValues().file_ids || ['']}
-				image_ids={stop.form.getValues().image_ids || ['']}
-			/>
+			<Media />
 
+			{/*
 			<Comments
 				comments={stop.form.getValues().comments || ['']}
 			/>

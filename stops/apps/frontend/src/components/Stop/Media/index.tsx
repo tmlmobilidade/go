@@ -1,36 +1,33 @@
 'use client';
 
-/* * */
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
-import Header from '@/components/common/Header';
-
-/* * */
-
-import styles from '../styles.module.css';
-
-/* * */
-
-interface MediaProps {
-	file_ids: string[]
-	image_ids: string[]
-}
-
-export default function Media({ file_ids, image_ids }: MediaProps) {
+export default function Media() {
 	//
 
 	//
-	// A. Render components
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	//
+	// B. Render components
 
 	return (
-		<div className={styles.section}>
-			<Header
-				description="Suportes visuais."
-				title="Imagens & Vídeos"
-			/>
+		<Collapsible
+			description="Suportes visuais."
+			title="Imagens & Vídeos"
+		>
+			<Section gap="md">
+				<Grid columns="abcd" gap="md">
+					{stopDetailContext.data.form.getValues().file_ids.map(file_id => <div key={file_id}>{file_id}</div>)}
+				</Grid>
 
-			{file_ids.map(file_id => <div key={file_id}>{file_id}</div>)}
-
-			{image_ids.map(image_id => <div key={image_id}>{image_id}</div>)}
-		</div>
+				<Grid columns="abcd" gap="md">
+					{stopDetailContext.data.form.getValues().image_ids.map(image_id => <div key={image_id}>{image_id}</div>)}
+				</Grid>
+			</Section>
+		</Collapsible>
 	);
 }
