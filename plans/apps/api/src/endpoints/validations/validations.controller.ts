@@ -1,4 +1,5 @@
 import { MultipartValue } from '@fastify/multipart';
+import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { CreateValidationDto, OperationalDate, Validation } from '@tmlmobilidade/types';
@@ -62,8 +63,17 @@ export class ValidationsController {
 
 				// 3. Update the Validation with the file reference
 				await validationsCollection.updateById(ValidationResult.insertedId.toString(), {
-					file: fileResult.insertedId.toString(),
+					file_id: fileResult.insertedId.toString(),
 				} as Partial<Validation>, { session: validationsTransaction.getSession() });
+
+				await rabbitMQ.publish(
+					'gtfs-validation',
+					JSON.stringify({
+						file_id: fileResult.insertedId.toString(),
+						validation_id: ValidationResult.insertedId.toString(),
+					}),
+					{ persistent: true },
+				);
 
 				return {
 					...ValidationResult,
