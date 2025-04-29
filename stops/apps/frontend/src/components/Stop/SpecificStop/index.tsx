@@ -63,14 +63,7 @@ export default function Stop() {
 			<StopShelter />
 			<StopInfrasctructure />
 
-			<PublicInformation
-				last_schedules_check={stop.form.getValues().last_schedules_check}
-				last_schedules_check_getter={stop.form.getValues().last_schedules_check}
-				last_schedules_check_setter={last_schedules_check_setter}
-				last_schedules_maintenance={stop.form.getValues().last_schedules_maintenance}
-				last_schedules_maintenance_getter={stop.form.getValues().last_schedules_maintenance}
-				last_schedules_maintenance_setter={last_schedules_maintenance_setter}
-			/>
+			<PublicInformation />
 
 			<Accessibility
 				bench_status={stop.form.getInputProps('bench_status')}
