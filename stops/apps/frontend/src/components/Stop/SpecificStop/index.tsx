@@ -11,13 +11,13 @@ import { useStopDetailContext } from '@/contexts/StopDetail.context';
 
 import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
-import Accessibility from '../Accessibility';
 import Comments from '../Comments';
 import Connections from '../Connections';
 import Equipments from '../Equipments';
 import MapContainer from '../MapContainer';
 import Media from '../Media';
 import Observations from '../Observations';
+import StopAccessibility from '../StopAccessibility';
 import StopAdminInformation from '../StopAdminInformation';
 import StopAffectation from '../StopAffectation';
 import StopDetails from '../StopDetails';
@@ -63,8 +63,7 @@ export default function Stop() {
 			<StopShelter />
 			<StopInfrasctructure />
 			<StopPublicInformation />
-
-			<Accessibility />
+			<StopAccessibility />
 
 			<Equipments
 				facilities={stop.form.getInputProps('facilities')}
