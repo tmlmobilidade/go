@@ -59,3 +59,12 @@ services:
         chown 999:999 /data/replica.key
         exec docker-entrypoint.sh $$@
     command: mongod --bind_ip_all --auth --replSet rs0 --keyFile /data/replica.key --port 27017
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672 # amqp
+      - 15672:15672 # management
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
