@@ -46,7 +46,7 @@ export default function Connections() {
 			title="Ligações Intermodais"
 		>
 			<Section gap="md">
-				<Grid className={styles.grid} columns="abcd">
+				<Grid columns="abcd" gap="md">
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
 							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(SUBWAY)}
@@ -82,9 +82,7 @@ export default function Connections() {
 							{...stopDetailContext.data.form.getInputProps('connections')}
 						/>
 					</div>
-				</Grid>
 
-				<Grid className={styles.grid} columns="abcd">
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
 							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(BIKE_SHARING)}
@@ -120,9 +118,7 @@ export default function Connections() {
 							{...stopDetailContext.data.form.getInputProps('connections')}
 						/>
 					</div>
-				</Grid>
 
-				<Grid className={styles.grid} columns="abcd">
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
 							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(FERRY)}

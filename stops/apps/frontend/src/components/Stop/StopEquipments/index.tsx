@@ -84,8 +84,7 @@ export default function StopEquipments() {
 							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
-				</Grid>
-				<Grid columns="abcd" gap="md">
+
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
 							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(POLICE_STATION)}
@@ -121,9 +120,7 @@ export default function StopEquipments() {
 							{...stopDetailContext.data.form.getInputProps('facilities')}
 						/>
 					</div>
-				</Grid>
 
-				<Grid columns="abcd" gap="md">
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
 							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(TRANSIT_OFFICE)}
