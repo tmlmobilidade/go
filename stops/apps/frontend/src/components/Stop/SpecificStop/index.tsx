@@ -65,9 +65,7 @@ export default function Stop() {
 			<StopPublicInformation />
 			<StopAccessibility />
 
-			<Equipments
-				facilities={stop.form.getInputProps('facilities')}
-			/>
+			<Equipments />
 
 			{/*
 			<Connections

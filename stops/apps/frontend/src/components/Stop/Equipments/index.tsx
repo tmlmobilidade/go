@@ -4,10 +4,11 @@
 
 import Header from '@/components/common/Header';
 import Item from '@/components/common/Row/Item';
-import { Grid } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Facilities, facilitiesSchema, StopSchema } from '@tmlmobilidade/types';
 
 import styles from '../styles.module.css';
@@ -49,36 +50,45 @@ enum FacilitiesValues {
 // 	};
 // }
 
-interface EquipmentsProps {
-	facilities: object
-}
-export default function Equipments({ facilities }: EquipmentsProps) {
+// interface EquipmentsProps {
+// 	facilities: object
+// }
+// export default function Equipments({ facilities }: EquipmentsProps) {
+export default function Equipments() {
+	//
+
+	//
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	const facilities = stopDetailContext.data.form.getInputProps('facilities');
+
 	//
 
 	//
 	// A. Render components
 
 	return (
-		<div className={styles.section}>
-			<Header
-				description="Quais são os equipamentos que esta paragem serve."
-				title="Equipamentos Servidos"
-			/>
-
-			<Grid className={styles.grid} columns="abcd">
-				{/* <Item
+		<Collapsible
+			description="Quais são os equipamentos que esta paragem serve."
+			title="Equipamentos Servidos"
+		>
+			<Section gap="md">
+				<Grid columns="ab" gap="md">
+					{/* <Item
 					inputProps={facilities}
 					isBoolean={true}
 					label={FacilitiesValues[HEALTH_CLINIC]}
 				/> */}
-				{/* value={facilities.includes(HEALTH_CLINIC)} */}
-				{/* <Item
+					{/* value={facilities.includes(HEALTH_CLINIC)} */}
+					{/* <Item
 					inputProps={facilities}
 					isBoolean={true}
 					label={FacilitiesValues[HOSPITAL]}
 				/> */}
-				{/* value={facilities.includes(HOSPITAL)} */}
-				{/* <Item label={FacilitiesValues[UNIVERSITY]} value={facilities.includes(UNIVERSITY)} />
+					{/* value={facilities.includes(HOSPITAL)} */}
+					{/* <Item label={FacilitiesValues[UNIVERSITY]} value={facilities.includes(UNIVERSITY)} />
 				<Item label={FacilitiesValues[SCHOOL]} value={facilities.includes(SCHOOL)} />
 
 				<Item label={FacilitiesValues[POLICE_STATION]} value={facilities.includes(POLICE_STATION)} />
@@ -88,7 +98,8 @@ export default function Equipments({ facilities }: EquipmentsProps) {
 
 				<Item label={FacilitiesValues[TRANSIT_OFFICE]} value={facilities.includes(TRANSIT_OFFICE)} />
 				<Item label={FacilitiesValues[PIP]} value={facilities.includes(PIP)} /> */}
-			</Grid>
-		</div>
+				</Grid>
+			</Section>
+		</Collapsible>
 	);
 }
