@@ -8,39 +8,44 @@ import { Grid } from '@tmlmobilidade/ui';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Connections as ConnectionsType } from '@tmlmobilidade/types';
 
 import styles from '../styles.module.css';
 
 /* * */
 
-const AIRPORT = 'airport';
-const BIKE_PARKING = 'bike_parking';
-const BIKE_SHARING = 'bike_sharing';
-const BOAT = 'boat';
-const CAR_PARKING = 'car_parking';
-const FERRY = 'ferry';
-const LIGHT_RAIL = 'light_rail';
-const SUBWAY = 'subway';
-const TRAIN = 'train';
+export default function Connections() {
+	//
 
-enum ConnectionsValues {
-	airport = 'Aeroporto',
-	bike_parking = 'Estacionamento de Bicicletas',
-	bike_sharing = 'Partilha de Bicicletas',
-	boat = 'Barco',
-	car_parking = 'Parque Automóvel',
-	ferry = 'Ferróvia',
-	light_rail = 'Metro de Superfície',
-	subway = 'Metro',
-	train = 'Comboio',
-}
+	//
+	// A. Setup variables
 
-interface ConnectionsProps {
-	connections: ConnectionsType
-}
+	const stopDetailContext = useStopDetailContext();
 
-export default function Connections({ connections }: ConnectionsProps) {
+	const connections = stopDetailContext.data.form.getValues().connections || [''];
+
+	const AIRPORT = 'airport';
+	const BIKE_PARKING = 'bike_parking';
+	const BIKE_SHARING = 'bike_sharing';
+	const BOAT = 'boat';
+	const CAR_PARKING = 'car_parking';
+	const FERRY = 'ferry';
+	const LIGHT_RAIL = 'light_rail';
+	const SUBWAY = 'subway';
+	const TRAIN = 'train';
+
+	enum ConnectionsValues {
+		airport = 'Aeroporto',
+		bike_parking = 'Estacionamento de Bicicletas',
+		bike_sharing = 'Partilha de Bicicletas',
+		boat = 'Barco',
+		car_parking = 'Parque Automóvel',
+		ferry = 'Ferróvia',
+		light_rail = 'Metro de Superfície',
+		subway = 'Metro',
+		train = 'Comboio',
+	}
 	//
 
 	//
