@@ -18,11 +18,11 @@ import Equipments from '../Equipments';
 import MapContainer from '../MapContainer';
 import Media from '../Media';
 import Observations from '../Observations';
-import PublicInformation from '../PublicInformation';
 import StopAdminInformation from '../StopAdminInformation';
 import StopAffectation from '../StopAffectation';
 import StopDetails from '../StopDetails';
 import StopInfrasctructure from '../StopInfrasctructure';
+import StopPublicInformation from '../StopPublicInformation';
 import StopShelter from '../StopShelter';
 import styles from '../styles.module.css';
 
@@ -62,8 +62,7 @@ export default function Stop() {
 			<StopAffectation />
 			<StopShelter />
 			<StopInfrasctructure />
-
-			<PublicInformation />
+			<StopPublicInformation />
 
 			<Accessibility
 				bench_status={stop.form.getInputProps('bench_status')}
