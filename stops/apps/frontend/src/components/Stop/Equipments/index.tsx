@@ -75,29 +75,40 @@ export default function Equipments() {
 			title="Equipamentos Servidos"
 		>
 			<Section gap="md">
-				<Grid columns="ab" gap="md">
-					{/* <Item
-					inputProps={facilities}
-					isBoolean={true}
-					label={FacilitiesValues[HEALTH_CLINIC]}
-				/> */}
+				<Grid columns="abcd" gap="md">
+					<Item
+						inputProps={facilities}
+						isBoolean={true}
+						label={FacilitiesValues[HEALTH_CLINIC]}
+					/>
 					{/* value={facilities.includes(HEALTH_CLINIC)} */}
-					{/* <Item
-					inputProps={facilities}
-					isBoolean={true}
-					label={FacilitiesValues[HOSPITAL]}
-				/> */}
+					<Item
+						inputProps={facilities}
+						isBoolean={true}
+						label={FacilitiesValues[HOSPITAL]}
+					/>
 					{/* value={facilities.includes(HOSPITAL)} */}
-					{/* <Item label={FacilitiesValues[UNIVERSITY]} value={facilities.includes(UNIVERSITY)} />
-				<Item label={FacilitiesValues[SCHOOL]} value={facilities.includes(SCHOOL)} />
+					{/* <Item
+						isBoolean={true}
+						label={FacilitiesValues[UNIVERSITY]}
+						value={facilities.includes(UNIVERSITY)}
+					/>
+					<Item
+						isBoolean={true}
+						label={FacilitiesValues[SCHOOL]}
+						value={facilities.includes(SCHOOL)}
+					/> */}
 
-				<Item label={FacilitiesValues[POLICE_STATION]} value={facilities.includes(POLICE_STATION)} />
-				<Item label={FacilitiesValues[FIRE_STATION]} value={facilities.includes(FIRE_STATION)} />
-				<Item label={FacilitiesValues[SHOPPING]} value={facilities.includes(SHOPPING)} />
-				<Item label={FacilitiesValues[HISTORIC_BUILDING]} value={facilities.includes(HISTORIC_BUILDING)} />
-
-				<Item label={FacilitiesValues[TRANSIT_OFFICE]} value={facilities.includes(TRANSIT_OFFICE)} />
-				<Item label={FacilitiesValues[PIP]} value={facilities.includes(PIP)} /> */}
+				</Grid>
+				<Grid columns="abcd" gap="md">
+					<Item label={FacilitiesValues[POLICE_STATION]} value={facilities.includes(POLICE_STATION)} />
+					<Item label={FacilitiesValues[FIRE_STATION]} value={facilities.includes(FIRE_STATION)} />
+					<Item label={FacilitiesValues[SHOPPING]} value={facilities.includes(SHOPPING)} />
+					<Item label={FacilitiesValues[HISTORIC_BUILDING]} value={facilities.includes(HISTORIC_BUILDING)} />
+				</Grid>
+				<Grid columns="ab" gap="md">
+					<Item label={FacilitiesValues[TRANSIT_OFFICE]} value={facilities.includes(TRANSIT_OFFICE)} />
+					<Item label={FacilitiesValues[PIP]} value={facilities.includes(PIP)} />
 				</Grid>
 			</Section>
 		</Collapsible>
