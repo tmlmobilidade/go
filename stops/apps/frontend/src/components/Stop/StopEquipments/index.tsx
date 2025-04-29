@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function Equipments() {
+export default function StopEquipments() {
 	//
 
 	//
@@ -126,7 +126,7 @@ export default function Equipments() {
 				<Grid columns="abcd" gap="md">
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
-							checked={facilities.value.includes(TRANSIT_OFFICE)}
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(TRANSIT_OFFICE)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[TRANSIT_OFFICE]}
 							{...stopDetailContext.data.form.getInputProps('facilities')}
@@ -135,7 +135,7 @@ export default function Equipments() {
 
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
-							checked={facilities.value.includes(PIP)}
+							checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(PIP)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[PIP]}
 							{...stopDetailContext.data.form.getInputProps('facilities')}

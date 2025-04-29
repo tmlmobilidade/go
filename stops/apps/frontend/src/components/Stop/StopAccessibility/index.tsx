@@ -3,7 +3,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
 
-export default function Accessibility() {
+export default function StopAccessibility() {
 	//
 
 	//

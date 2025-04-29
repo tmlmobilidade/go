@@ -13,7 +13,6 @@ import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
 
 import Comments from '../Comments';
 import Connections from '../Connections';
-import Equipments from '../Equipments';
 import MapContainer from '../MapContainer';
 import Media from '../Media';
 import Observations from '../Observations';
@@ -21,6 +20,7 @@ import StopAccessibility from '../StopAccessibility';
 import StopAdminInformation from '../StopAdminInformation';
 import StopAffectation from '../StopAffectation';
 import StopDetails from '../StopDetails';
+import StopEquipments from '../StopEquipments';
 import StopInfrasctructure from '../StopInfrasctructure';
 import StopPublicInformation from '../StopPublicInformation';
 import StopShelter from '../StopShelter';
@@ -64,8 +64,7 @@ export default function Stop() {
 			<StopInfrasctructure />
 			<StopPublicInformation />
 			<StopAccessibility />
-
-			<Equipments />
+			<StopEquipments />
 
 			{/*
 			<Connections
