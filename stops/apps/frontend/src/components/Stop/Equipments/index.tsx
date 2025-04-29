@@ -1,59 +1,13 @@
 'use client';
 
-/* * */
-
-import Header from '@/components/common/Header';
 import Item from '@/components/common/Row/Item';
-import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
-
-/* * */
-
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { Facilities, facilitiesSchema, StopSchema } from '@tmlmobilidade/types';
+import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-const FIRE_STATION = 'fire_station';
-const HEALTH_CLINIC = 'health_clinic';
-const HISTORIC_BUILDING = 'historic_building';
-const HOSPITAL = 'hospital';
-const PIP = 'pip';
-const POLICE_STATION = 'police_station';
-const SCHOOL = 'school';
-const SHOPPING = 'shopping';
-const TRANSIT_OFFICE = 'transit_office';
-const UNIVERSITY = 'university';
-
-enum FacilitiesValues {
-	fire_station = 'Bombeiros',
-	health_clinic = 'Clínica',
-	historic_building = 'Edifício Histórico',
-	hospital = 'Hospital',
-	pip = 'Praia',
-	police_station = 'Esquadra',
-	school = 'Escola',
-	shopping = 'Zona Comercial',
-	transit_office = 'Espaço navegante®',
-	university = 'Universidade',
-}
-
-// const facilitiesValues = facilitiesSchema.array.map;
-
-// facilitiesValues.values;
-
-// .map((facility: string) => {
-// 	return {
-// 		label: FacilitiesValues[facility],
-// 		value: facility,
-// 	};
-// }
-
-// interface EquipmentsProps {
-// 	facilities: object
-// }
-// export default function Equipments({ facilities }: EquipmentsProps) {
 export default function Equipments() {
 	//
 
@@ -62,8 +16,32 @@ export default function Equipments() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const facilities = stopDetailContext.data.form.getInputProps('facilities');
+	const FIRE_STATION = 'fire_station';
+	const HEALTH_CLINIC = 'health_clinic';
+	const HISTORIC_BUILDING = 'historic_building';
+	const HOSPITAL = 'hospital';
+	const PIP = 'pip';
+	const POLICE_STATION = 'police_station';
+	const SCHOOL = 'school';
+	const SHOPPING = 'shopping';
+	const TRANSIT_OFFICE = 'transit_office';
+	const UNIVERSITY = 'university';
 
+	enum FacilitiesValues {
+		fire_station = 'Bombeiros',
+		health_clinic = 'Clínica',
+		historic_building = 'Edifício Histórico',
+		hospital = 'Hospital',
+		pip = 'Praia',
+		police_station = 'Esquadra',
+		school = 'Escola',
+		shopping = 'Zona Comercial',
+		transit_office = 'Espaço navegante®',
+		university = 'Universidade',
+	}
+
+	const facilities = stopDetailContext.data.form.getInputProps('facilities');
+	console.log('=> facilities', facilities);
 	//
 
 	//
@@ -78,20 +56,22 @@ export default function Equipments() {
 				<Grid columns="abcd" gap="md">
 					<div className={styles.input_checkbox_container}>
 						<Checkbox
-							checked={facilities.includes(HEALTH_CLINIC)}
+							checked={facilities.value.includes(HEALTH_CLINIC)}
 							className={styles.input_checkbox}
 							label={FacilitiesValues[HEALTH_CLINIC]}
 							{...facilities}
 						/>
 					</div>
 
-					<Item
-						inputProps={facilities}
-						isBoolean={true}
-						label={FacilitiesValues[HOSPITAL]}
-						// value={facilities.includes(HOSPITAL)}
-					/>
-					{/* value={facilities.includes(HOSPITAL)} */}
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(HOSPITAL)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[HOSPITAL]}
+							{...facilities}
+						/>
+					</div>
+
 					{/* <Item
 						isBoolean={true}
 						label={FacilitiesValues[UNIVERSITY]}
