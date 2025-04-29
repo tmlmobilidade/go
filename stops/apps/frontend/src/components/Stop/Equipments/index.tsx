@@ -72,28 +72,81 @@ export default function Equipments() {
 						/>
 					</div>
 
-					{/* <Item
-						isBoolean={true}
-						label={FacilitiesValues[UNIVERSITY]}
-						value={facilities.includes(UNIVERSITY)}
-					/>
-					<Item
-						isBoolean={true}
-						label={FacilitiesValues[SCHOOL]}
-						value={facilities.includes(SCHOOL)}
-					/> */}
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(UNIVERSITY)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[UNIVERSITY]}
+							{...facilities}
+						/>
+					</div>
 
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(SCHOOL)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[SCHOOL]}
+							{...facilities}
+						/>
+					</div>
 				</Grid>
-				{/* <Grid columns="abcd" gap="md">
-					<Item label={FacilitiesValues[POLICE_STATION]} value={facilities.includes(POLICE_STATION)} />
-					<Item label={FacilitiesValues[FIRE_STATION]} value={facilities.includes(FIRE_STATION)} />
-					<Item label={FacilitiesValues[SHOPPING]} value={facilities.includes(SHOPPING)} />
-					<Item label={FacilitiesValues[HISTORIC_BUILDING]} value={facilities.includes(HISTORIC_BUILDING)} />
+				<Grid columns="abcd" gap="md">
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(POLICE_STATION)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[POLICE_STATION]}
+							{...facilities}
+						/>
+					</div>
+
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(FIRE_STATION)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[FIRE_STATION]}
+							{...facilities}
+						/>
+					</div>
+
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(SHOPPING)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[SHOPPING]}
+							{...facilities}
+						/>
+					</div>
+
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(HISTORIC_BUILDING)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[HISTORIC_BUILDING]}
+							{...facilities}
+						/>
+					</div>
 				</Grid>
+
 				<Grid columns="ab" gap="md">
-					<Item label={FacilitiesValues[TRANSIT_OFFICE]} value={facilities.includes(TRANSIT_OFFICE)} />
-					<Item label={FacilitiesValues[PIP]} value={facilities.includes(PIP)} />
-				</Grid> */}
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(TRANSIT_OFFICE)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[TRANSIT_OFFICE]}
+							{...facilities}
+						/>
+					</div>
+
+					<div className={styles.input_checkbox_container}>
+						<Item
+							checked={facilities.value.includes(PIP)}
+							className={styles.input_checkbox}
+							label={FacilitiesValues[PIP]}
+							{...facilities}
+						/>
+					</div>
+				</Grid>
 			</Section>
 		</Collapsible>
 	);
