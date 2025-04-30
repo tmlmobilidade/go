@@ -54,9 +54,10 @@ export function ValidationDetailSectionSummary() {
 		{
 			accessor: 'message',
 			render: ({ message }) => {
-				return <div>{message}</div>;
+				return <>{message}</>;
 			},
 			title: 'Mensagem',
+			width: 500,
 		},
 	];
 
