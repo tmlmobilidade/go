@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import GenericHeader from './GenericHeader';
 import SpecificHeader from './SpecificHeader';
 

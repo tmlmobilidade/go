@@ -53,10 +53,10 @@ export default function StopEquipments() {
 				<Grid columns="abcd" gap="md">
 					{facilities.map((facility) => {
 						return (
-							<div className={styles.input_checkbox_container}>
+							<div className={styles.inputCheckboxContainer}>
 								<Checkbox
 									checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(facility)}
-									className={styles.input_checkbox}
+									className={styles.inputCheckbox}
 									label={FacilitiesValues[facility]}
 									onChange={(_) => {
 										stopDetailContext.actions.handleFacilitiesChange(facility);

@@ -28,7 +28,7 @@ export default function Right({ open }: RightProps) {
 		<div className={styles.section}>
 			{/* Patterns Butoon */}
 			<Tooltip label="Ver Patterns Associados" position="bottom">
-				<div className={styles.icon_blue} color="blue" onClick={open}>
+				<div className={styles.iconBlue} color="blue" onClick={open}>
 					<IconEye />
 				</div>
 			</Tooltip>
@@ -36,7 +36,7 @@ export default function Right({ open }: RightProps) {
 			{/* Stop Button */}
 			<Tooltip label="Ver esta paragem no Site" position="bottom">
 				<div
-					className={styles.icon_blue}
+					className={styles.iconBlue}
 					onClick={() => window.open(`https://www.carrismetropolitana.pt/stops/${stop._id}`, '_blank')}
 				>
 					<IconWorldUpload />
@@ -46,7 +46,7 @@ export default function Right({ open }: RightProps) {
 			{/* Create New Button */}
 			<Tooltip label="Criar Paragem" position="bottom">
 				<div
-					className={styles.icon_blue}
+					className={styles.iconBlue}
 					onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
 				>
 					<IconPlus />
@@ -56,7 +56,7 @@ export default function Right({ open }: RightProps) {
 			{/* Save Button */}
 			<Tooltip label="Salvar Paragem" position="bottom">
 				<div
-					className={styles.icon_blue}
+					className={styles.iconBlue}
 					// onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
 					onClick={() => actions.saveStop()}
 				>
@@ -67,7 +67,7 @@ export default function Right({ open }: RightProps) {
 			{/* Delete Button */}
 			<Tooltip label="Apagar Paragem" position="bottom">
 				<div
-					className={styles.icon_blue}
+					className={styles.iconBlue}
 					onClick={() => {
 						actions.deleteStop();
 						redirect('/stops', RedirectType.replace);

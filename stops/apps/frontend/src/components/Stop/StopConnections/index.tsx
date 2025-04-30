@@ -51,10 +51,10 @@ export default function Connections() {
 				<Grid columns="abcd" gap="md">
 					{connections.map((connection) => {
 						return (
-							<div className={styles.input_checkbox_container}>
+							<div className={styles.inputCheckboxContainer}>
 								<Checkbox
 									checked={stopDetailContext.data.form.getInputProps('connections').value.includes(connection)}
-									className={styles.input_checkbox}
+									className={styles.inputCheckbox}
 									label={ConnectionsValues[connection]}
 									onChange={(_) => {
 										stopDetailContext.actions.handleConnectionsChange(connection);

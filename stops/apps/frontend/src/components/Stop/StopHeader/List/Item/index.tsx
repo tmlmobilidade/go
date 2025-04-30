@@ -25,7 +25,7 @@ export default function Item({ id }: ItemProps) {
 	return (
 		<div className={styles.container}>
 			{/* Left Side */}
-			<div className={styles.container_info}>
+			<div className={styles.containerInfo}>
 				<div className={styles.details}>
 					<div className={styles.id}>{id}</div>
 					{/* TODO: Get Pattern Name from ID */}
@@ -34,7 +34,7 @@ export default function Item({ id }: ItemProps) {
 			</div>
 
 			{/* Right Side */}
-			<div className={styles.container_icon}>
+			<div className={styles.containerIcon}>
 				<IconChevronRight />
 			</div>
 		</div>

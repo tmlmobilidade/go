@@ -107,7 +107,7 @@ export default function Mapper({ generic }: MapperProps) {
 
 	// const MapViewStyleStopsInteractiveLayerId = "6476b094424adb51586dfcee";
 	return (
-		<div className={generic ? styles.container_generic : styles.container_specific}>
+		<div className={generic ? styles.containerGeneric : styles.containerSpecific}>
 			<MapView
 				id="stopsListMap"
 				interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}

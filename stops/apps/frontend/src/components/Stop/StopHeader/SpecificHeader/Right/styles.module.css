@@ -1,18 +1,18 @@
 .header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
     gap: var(--mantine-spacing-sm);
-    padding: var(--mantine-spacing-sm);
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
+    padding: var(--mantine-spacing-sm);
 }
 
 .section {
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: var(--mantine-spacing-sm);
+    align-items: center;
 }
 
 .icon {
@@ -21,55 +21,55 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
     height: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 0 4px;
     cursor: pointer;
     border-radius: 0.25rem;
-    aspect-ratio: 1 / 1;
 }
 
 .icon:hover {
     background-color: #363C42;
 }
 
-.icon_blue {
+.iconBlue {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
     height: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 0 4px;
     cursor: pointer;
     border-radius: 0.25rem;
-    aspect-ratio: 1 / 1;
 }
 
-.icon_blue>svg {
+.iconBlue>svg {
     stroke: #74c0fc;
 }
 
-.icon_blue:hover {
+.iconBlue:hover {
     background-color: #253B53;
 }
 
-.icon_green {
+.iconGreen {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
     height: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 0 4px;
     cursor: pointer;
     border-radius: 0.25rem;
-    aspect-ratio: 1 / 1;
 }
 
-.icon_green>svg {
+.iconGreen>svg {
     stroke: #8CE999;
 }
 
-.icon_green:hover {
+.iconGreen:hover {
     background-color: #344B37;
 }

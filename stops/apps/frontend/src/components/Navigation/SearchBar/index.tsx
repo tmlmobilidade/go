@@ -41,7 +41,7 @@ export default function SearchBar() {
 		<div className={styles.container}>
 			{/* Search Bar */}
 			<TextInput
-				className={styles.input_text}
+				className={styles.inputText}
 				maxLength={255}
 				placeholder="Pesquisar..."
 				// disabled

@@ -40,7 +40,7 @@ export default function Left({ isManual }: LeftProps) {
 			{isManual
 				? (
 					<Tooltip label="Guardar Alterações" position="bottom">
-						<div className={styles.icon_green}>
+						<div className={styles.iconGreen}>
 							<IconDeviceFloppy />
 						</div>
 					</Tooltip>
