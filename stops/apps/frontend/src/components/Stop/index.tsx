@@ -5,7 +5,6 @@ import type { Stop } from '@tmlmobilidade/types';
 import { ManualContextProvider } from '@/contexts/Manual.context';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 
-import MapContainer from './MapContainer';
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
 import StopAffectation from './StopAffectation';
@@ -14,6 +13,7 @@ import StopConnections from './StopConnections';
 import StopDetails from './StopDetails';
 import StopEquipments from './StopEquipments';
 import StopInfrasctructure from './StopInfrasctructure';
+import StopMap from './StopMap';
 import StopMedia from './StopMedia';
 import StopObservations from './StopObservations';
 import StopPublicInformation from './StopPublicInformation';
@@ -48,7 +48,7 @@ export default function Stop({ paramId }: StopProps) {
 				data?._id || paramId === 'new'
 					? (
 						<div className={styles.container}>
-							<MapContainer generic={false} />
+							<StopMap generic={false} />
 							<StopDetails />
 							<StopAdminInformation />
 							<StopAffectation />
@@ -64,7 +64,7 @@ export default function Stop({ paramId }: StopProps) {
 						</div>
 					) : (
 						<div className={styles.container}>
-							<MapContainer generic={true} />
+							<StopMap generic={true} />
 						</div>
 					)
 			}

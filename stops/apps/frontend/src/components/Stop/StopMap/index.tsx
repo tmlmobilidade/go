@@ -14,7 +14,7 @@ interface MapContainerProps {
 
 /* * */
 
-export default function MapContainer({ generic }: MapContainerProps) {
+export default function StopMap({ generic }: MapContainerProps) {
 	//
 
 	//
