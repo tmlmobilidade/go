@@ -154,3 +154,7 @@ next-env.d.ts
 # Nginx secrets
 uptime.conf
 .htpasswd
+
+# Yalc
+.yalc
+yalc.*
