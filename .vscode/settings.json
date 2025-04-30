@@ -4,7 +4,7 @@
 		"editor.codeActionsOnSave": {
 			"source.fixAll.stylelint": "explicit"
 		},
-		"editor.defaultFormatter": "stylelint.vscode-stylelint"
+		"editor.defaultFormatter": "vscode.css-language-features"
 	},
 
 	"[typescriptreact]": {
