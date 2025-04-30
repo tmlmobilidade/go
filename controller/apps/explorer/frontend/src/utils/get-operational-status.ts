@@ -1,8 +1,8 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
-import { type Ride } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
+import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
+import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 
 /**
  * This function returns the correct operational status for a given Ride, base on its 'scheduled_start_time' and 'seen_last_at' values.
@@ -21,7 +21,7 @@ export function getOperationalStatus(startTimeScheduled: Ride['start_time_schedu
 	//
 	// Check if the ride start time is in the future.
 
-	const nowInUnixMilliseconds = getUnixTimestamp();
+	const nowInUnixMilliseconds = Dates.now().unix_timestamp;
 
 	const millisecondsFromRideStartToNow = nowInUnixMilliseconds - startTimeScheduled;
 

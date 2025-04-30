@@ -26,12 +26,12 @@ export function RidesDetailMap() {
 
 	const ridesDetailContext = useRidesDetailContext();
 
-	const [isZoomEnabled, setIsZoomEnabled] = useState(false);
+	const [isZoomEnabled, setIsZoomEnabled] = useState(true);
 	const [centerMapAutomatically, setCenterMapAutomatically] = useState(true);
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
-	const [showObservedPath, setShowObservedPath] = useState(true);
-	const [showGeofences, setShowGeofences] = useState(false);
+	const [showObservedPath, setShowObservedPath] = useState(false);
+	const [showGeofences, setShowGeofences] = useState(true);
 
 	//
 	// B. Handle actions
@@ -69,7 +69,7 @@ export function RidesDetailMap() {
 			<Section alignItems="center" flexDirection="row" gap="md">
 				<Switch checked={showScheduledPath} label="Percurso Planeado" onChange={() => setShowScheduledPath(prev => !prev)} />
 				<Switch checked={showObservedPath} label="Percurso Observado" onChange={() => setShowObservedPath(prev => !prev)} />
-				<Switch checked={showGeofences} label="Geofenses" onChange={() => setShowGeofences(prev => !prev)} />
+				<Switch checked={showGeofences} label="Geofences" onChange={() => setShowGeofences(prev => !prev)} />
 				<Spacer />
 				<Switch checked={isZoomEnabled} label="Permitir Zoom" onChange={() => setIsZoomEnabled(prev => !prev)} />
 				<Button icon={<IconCrosshair />} label="Centrar" onClick={handleCenterMap} />

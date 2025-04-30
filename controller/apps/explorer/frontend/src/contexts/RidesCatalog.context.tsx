@@ -2,8 +2,13 @@
 
 /* * */
 
-import { ExtendedRideDisplay, useRidesContext } from '@/contexts/Rides.context';
+import { useRidesContext } from '@/contexts/Rides.context';
+import { getDelayStatus } from '@/utils/get-delay-status';
+import { getOperationalStatus } from '@/utils/get-operational-status';
+import { getSeenStatus } from '@/utils/get-seen-status';
+import { getStartTime } from '@/utils/get-start-time';
 import { nprogress } from '@mantine/nprogress';
+import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import { createContext, type PropsWithChildren, type RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ViewportListRef } from 'react-viewport-list';
@@ -13,6 +18,15 @@ import { ViewportListRef } from 'react-viewport-list';
 const DEFAULT_SCROLL_OFFSET = -250;
 
 /* * */
+
+export interface ExtendedRideDisplay extends Ride {
+	delay_status: 'delayed' | 'early' | 'ontime' | null
+	operational_status: 'ended' | 'missed' | 'running' | 'scheduled'
+	seen_status: 'gone' | 'seen' | 'unseen'
+	simple_three_vehicle_events_grade: RideAnalysis['grade']
+	start_time_observed_display: null | string
+	start_time_scheduled_display: string
+}
 
 interface RidesCatalogContextState {
 	actions: {
@@ -71,8 +85,17 @@ export const RidesCatalogContextProvider = ({ children }: PropsWithChildren) => 
 		const refreshCatalog = () => {
 			const allRidesDisplay: ExtendedRideDisplay[] = Array
 				.from(ridesContext.data.rides.values())
-				// .filter(rideData => rideData.trip_id === '4720_0_1|700|2030')
-				.sort((a, b) => String(a.start_time_scheduled).localeCompare(String(b.start_time_scheduled)));
+				// .filter(rideData => rideData.pattern_id === '4720_0_1')
+				.sort((a, b) => String(a.start_time_scheduled).localeCompare(String(b.start_time_scheduled)))
+				.map(rideData => ({
+					...rideData,
+					delay_status: getDelayStatus(rideData.start_time_scheduled, rideData.start_time_observed),
+					operational_status: getOperationalStatus(rideData.start_time_scheduled, rideData.seen_last_at),
+					seen_status: getSeenStatus(rideData.seen_last_at),
+					simple_three_vehicle_events_grade: rideData.analysis.find(analysis => analysis._id === 'SIMPLE_THREE_VEHICLE_EVENTS')?.grade || null,
+					start_time_observed_display: rideData.start_time_observed ? getStartTime(rideData.start_time_observed) : null,
+					start_time_scheduled_display: getStartTime(rideData.start_time_scheduled),
+				}));
 			setDataRidesDisplayState(allRidesDisplay);
 		};
 		const interval = setInterval(refreshCatalog, 1000);
@@ -83,14 +106,14 @@ export const RidesCatalogContextProvider = ({ children }: PropsWithChildren) => 
 	// B. Handle actions
 
 	useEffect(() => {
-		if (dataRidesDisplayState.length !== ridesContext.data.expected_items) {
-			const currentProgress = dataRidesDisplayState.length / ridesContext.data.expected_items * 100;
+		if (ridesContext.data.rides.size !== ridesContext.data.expected_items) {
+			const currentProgress = ridesContext.data.rides.size / ridesContext.data.expected_items * 100;
 			nprogress.set(currentProgress);
 		}
 		else {
 			nprogress.complete();
 		}
-	}, [dataRidesDisplayState.length, ridesContext.data.expected_items]);
+	}, [ridesContext.data.rides.size, ridesContext.data.expected_items]);
 
 	useEffect(() => {
 		const nowMillis = DateTime.now().toMillis();
@@ -178,9 +201,9 @@ export const RidesCatalogContextProvider = ({ children }: PropsWithChildren) => 
 			rides_display: dataRidesDisplayState,
 		},
 		flags: {
-			is_loading: dataRidesDisplayState.length !== ridesContext.data.expected_items,
+			is_loading: ridesContext.data.rides.size !== ridesContext.data.expected_items,
 		},
-	}), [dataCatalogRef.current, dataRidesDisplayState, dataLockIndexState, dataLockOffsetState, dataIsLockedState, ridesContext.data.expected_items, dataIsUserScrollingState]);
+	}), [dataCatalogRef.current, dataRidesDisplayState, dataLockIndexState, dataLockOffsetState, dataIsLockedState, ridesContext.data.rides.size, ridesContext.data.expected_items, dataIsUserScrollingState]);
 
 	//
 	// D. Render components

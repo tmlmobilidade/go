@@ -5,6 +5,7 @@
 		"build:bridge": "turbo build --filter=@tmlmobilidade/sae-controller-bridge-*",
 		"build:engine": "turbo build --filter=@tmlmobilidade/sae-controller-engine-*",
 		"build:explorer": "turbo build --filter=@tmlmobilidade/sae-controller-explorer-*",
+		"build:packages": "turbo build --filter=@tmlmobilidade/sae-controller-pckg-*",
 		"clean": "sh cleanup.sh",
 		"dev:bridge": "turbo dev --filter=@tmlmobilidade/sae-controller-bridge-*",
 		"dev:engine": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-*",
@@ -14,10 +15,10 @@
 		"lint": "turbo lint"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250325.1926.5",
+		"@carrismetropolitana/eslint": "20250418.42.41",
 		"@tmlmobilidade/tsconfig": "20250325.1731.13",
-		"turbo": "2.5.0",
-		"typescript": "5.8.2"
+		"turbo": "2.5.1",
+		"typescript": "5.8.3"
 	},
 	"workspaces": [
 		"apps/bridge/*",
@@ -25,7 +26,7 @@
 		"apps/explorer/*",
 		"packages/*"
 	],
-	"packageManager": "npm@11.2.0",
+	"packageManager": "npm@11.3.0",
 	"engines": {
 		"node": ">=18"
 	}

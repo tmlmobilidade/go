@@ -2,6 +2,7 @@
 
 import { mapDefaultValues } from '@/settings/map.settings';
 import * as turf from '@turf/turf';
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString, Point, Polygon, Position } from 'geojson';
 
 /* * */
 
@@ -15,7 +16,7 @@ interface CenterMapOptions {
  * @param features The features to center the map on
  * @param options Optional settings to customize the centering
  */
-export const centerMap = (mapObject, features: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>[], options?: CenterMapOptions) => {
+export const centerMap = (mapObject, features: Feature<Geometry, GeoJsonProperties>[], options?: CenterMapOptions) => {
 	//
 
 	//
@@ -65,7 +66,7 @@ export const centerMap = (mapObject, features: GeoJSON.Feature<GeoJSON.Geometry,
  * @param coordinates The destination coordinates to move the map to
  * @param options Optional settings to customize the movement
  */
-export const moveMap = (mapObject, coordinates: GeoJSON.Position) => {
+export const moveMap = (mapObject, coordinates: Position) => {
 	//
 
 	//
@@ -109,7 +110,7 @@ export const moveMap = (mapObject, coordinates: GeoJSON.Position) => {
  * @returns A GeoJSON Feature for LineString object with an empty features array
  */
 
-export const getBaseGeoJsonFeatureLineString = (): GeoJSON.Feature<GeoJSON.LineString> => {
+export const getBaseGeoJsonFeatureLineString = (): Feature<LineString> => {
 	return Object.assign({ geometry: { coordinates: [], type: 'LineString' }, properties: {}, type: 'Feature' });
 };
 
@@ -118,6 +119,6 @@ export const getBaseGeoJsonFeatureLineString = (): GeoJSON.Feature<GeoJSON.LineS
  * @returns A GeoJSON FeatureCollection object with an empty features array
  */
 
-export const getBaseGeoJsonFeatureCollection = (): GeoJSON.FeatureCollection<GeoJSON.LineString | GeoJSON.Point | GeoJSON.Polygon, GeoJSON.GeoJsonProperties> => {
+export const getBaseGeoJsonFeatureCollection = (): FeatureCollection<LineString | Point | Polygon, GeoJsonProperties> => {
 	return Object.assign({ features: [], type: 'FeatureCollection' });
 };

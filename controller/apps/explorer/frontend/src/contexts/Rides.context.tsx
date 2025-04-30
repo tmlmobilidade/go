@@ -3,35 +3,22 @@
 /* * */
 
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { getDelayStatus } from '@/utils/get-delay-status';
-import { getOperationalStatus } from '@/utils/get-operational-status';
-import { getSeenStatus } from '@/utils/get-seen-status';
-import { getStartTime } from '@/utils/get-start-time';
 import { useDebouncedState } from '@mantine/hooks';
-import { type Ride, type RideAnalysis, UnixTimestamp } from '@tmlmobilidade/core/types';
-import { getUnixTimestamp } from '@tmlmobilidade/core/utils';
 import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type Ride, UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */
 
-export interface ExtendedRideDisplay extends Ride {
-	delay_status: 'delayed' | 'early' | 'ontime' | null
-	operational_status: 'ended' | 'missed' | 'running' | 'scheduled'
-	seen_status: 'gone' | 'seen' | 'unseen'
-	simple_three_vehicle_events_grade: RideAnalysis['grade']
-	start_time_observed_display: null | string
-	start_time_scheduled_display: string
-}
-
 interface RidesContextState {
 	actions: {
-		getRideById: (rideId: string) => ExtendedRideDisplay | undefined
+		getRideById: (rideId: string) => Ride | undefined
 	}
 	data: {
 		expected_items: number
 		last_update: UnixTimestamp
-		rides: Map<string, ExtendedRideDisplay>
+		rides: Map<string, Ride>
 	}
 }
 
@@ -59,7 +46,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 
 	const webSocketRef = useRef<null | WebSocket>(null);
 
-	const dataRidesRef = useRef<Map<string, ExtendedRideDisplay>>(new Map());
+	const dataRidesRef = useRef<Map<string, Ride>>(new Map());
 
 	const [dataExpectedItemsState, setDataExpectedItemsState] = useState<number>();
 	const [dataLastUpdateState, setDataLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
@@ -114,7 +101,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 			action: 'config',
 			operational_date: operationalDateContext.data.selected_date,
 			sender: 'client',
-			timestamp: getUnixTimestamp(),
+			timestamp: Dates.now().unix_timestamp,
 		});
 	};
 
@@ -142,16 +129,8 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		if (messageData.action === 'data') {
 			const rideData = messageData.data as Ride;
 			if (rideData.operational_date !== operationalDateContext.data.selected_date) return;
-			dataRidesRef.current.set(rideData._id, {
-				...rideData,
-				delay_status: getDelayStatus(rideData.start_time_scheduled, rideData.start_time_observed),
-				operational_status: getOperationalStatus(rideData.start_time_scheduled, rideData.seen_last_at),
-				seen_status: getSeenStatus(rideData.seen_last_at),
-				simple_three_vehicle_events_grade: rideData.analysis.find(analysis => analysis._id === 'SIMPLE_THREE_VEHICLE_EVENTS')?.grade || null,
-				start_time_observed_display: rideData.start_time_observed ? getStartTime(rideData.start_time_observed) : null,
-				start_time_scheduled_display: getStartTime(rideData.start_time_scheduled),
-			});
-			setDataLastUpdateState(getUnixTimestamp());
+			dataRidesRef.current.set(rideData._id, rideData);
+			setDataLastUpdateState(Dates.now().unix_timestamp);
 			return;
 		}
 
@@ -160,7 +139,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		//
 	};
 
-	const getRideById = (rideId: string): ExtendedRideDisplay | undefined => {
+	const getRideById = (rideId: string): Ride | undefined => {
 		return dataRidesRef.current.get(rideId);
 	};
 

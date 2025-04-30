@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type RideAnalysis } from '@tmlmobilidade/core/types';
+import { type RideAnalysis } from '@tmlmobilidade/types';
 import { Label, Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
 
 /* * */
