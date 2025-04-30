@@ -1,0 +1,155 @@
+/* * */
+
+import PCGIDB from '@/services/PCGIDB.js';
+import LOGGER from '@helperkits/logger';
+import TIMETRACKER from '@helperkits/timer';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { apexT3, rides } from '@tmlmobilidade/interfaces';
+import { parseApexT3 } from '@tmlmobilidade/sae-controller-pckg-parse';
+import { syncDocuments } from '@tmlmobilidade/sae-controller-pckg-sync';
+import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type ApexT3, type UnixTimestamp } from '@tmlmobilidade/types';
+import { DateTime, Interval } from 'luxon';
+
+/* * */
+
+export async function syncApexT3() {
+	try {
+		//
+
+		LOGGER.init();
+
+		const globalTimer = new TIMETRACKER();
+
+		//
+		// Connect to databases and setup DB writers
+
+		await PCGIDB.connect();
+
+		const apexT3Collection = await apexT3.getCollection();
+		const apexT3DbWritter = new MongoDbWriter<ApexT3>({ batch_size: 100000, collection: apexT3Collection });
+
+		//
+		// In order to sync both collections in a manageable way, due to the high volume of data,
+		// it is necessary to divide the process into smaller blocks. Instead of syncing all documents at once,
+		// divide the process by timestamps chunks and iterate over each one, getting all document IDs from both databases.
+		// Like this we can more easily compare the IDs in memory and sync only the missing documents.
+		// More recent data is more important than older data, so we start syncing the most recent data first.
+		// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
+
+		const thirtySecondsAgo = DateTime.now().minus({ seconds: 30 });
+		const earliestDataNeeded = DateTime.fromFormat(process.env.SYNC_EARLIEST_DATE, 'yyyyMMdd').set({ hour: 4, minute: 0, second: 0 });
+
+		const allTimestampChunks = Interval
+			.fromDateTimes(earliestDataNeeded, thirtySecondsAgo)
+			.splitBy({ hour: 3 })
+			.sort((a, b) => b.start.toMillis() - a.start.toMillis());
+
+		//
+		// Iterate over each timestamp chunk and sync the documents.
+		// Timestamp chunks are sorted in descending order, so that more recent data is processed first.
+		// Timestamp chunks are in the format { start: day1, end: day2 }, so end is always greater than start.
+		// This might be confusing as the array of chunks itself is sorted in descending order, but the chunks individually are not.
+
+		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
+			//
+
+			const chunkTimer = new TIMETRACKER();
+
+			LOGGER.spacer(1);
+			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkData.end.toFormat(CHUNK_LOG_DATE_FORMAT)} › ${chunkData.start.toFormat(CHUNK_LOG_DATE_FORMAT)}`, 100);
+
+			//
+			// Setup the callback function that will be called on the DB Writer flush operation
+			// to invalidate all the rides that are affected by the new data.
+
+			const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexT3>[]) => {
+				try {
+					const invalidationTimer = new TIMETRACKER();
+					// Extract the unique trip_ids from the flushed data
+					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
+					// Get the earliest and latest timestamps from the flushed data
+					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
+					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
+					// Create a standard window interval based on the earliest and latest timestamps
+					const earliestStandardWindowInterval = getStandardWindowInterval(earliestTimestamp);
+					const latestStandardWindowInterval = getStandardWindowInterval(latestTimestamp);
+					// Invalidate all rides that are affected
+					const result = await rides.updateMany(
+						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
+						{ system_status: 'pending' },
+					);
+					// Log the number of rides that were marked as 'pending'
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t3 data (${invalidationTimer.get()})`);
+				}
+				catch (error) {
+					LOGGER.error('Error in flushCallback', error);
+				}
+			};
+
+			//
+			// Prepare the queries to compare documents from each database
+			// in the current timestamp chunk.
+
+			const pcgiQuery = {
+				'transaction.transactionDate': {
+					$gte: chunkData.start.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
+					$lte: chunkData.end.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
+				},
+			};
+
+			const slaQuery = {
+				created_at: {
+					$gte: chunkData.start.toMillis(),
+					$lte: chunkData.end.toMillis(),
+				},
+			};
+
+			//
+			// Sync the documents
+
+			await syncDocuments<ApexT3>({
+
+				dbWriter: apexT3DbWritter,
+
+				docParser: parseApexT3,
+
+				flushCallback: flushCallback,
+
+				pcgiCollection: PCGIDB.ValidationEntity,
+
+				pcgiIdKey: 'transaction.transactionId',
+
+				pcgiQuery: pcgiQuery,
+
+				slaCollection: apexT3Collection,
+
+				slaIdKey: '_id',
+
+				slaQuery: slaQuery,
+
+			});
+
+			//
+
+			LOGGER.success(`Chunk sync complete (${chunkTimer.get()})`);
+
+			//
+		}
+
+		//
+
+		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+
+		//
+	}
+	catch (err) {
+		console.log('An error occurred. Halting execution.', err);
+		console.log('Retrying in 10 seconds...');
+		setTimeout(() => {
+			process.exit(0); // End process
+		}, 10000); // after 10 seconds
+	}
+
+	//
+};

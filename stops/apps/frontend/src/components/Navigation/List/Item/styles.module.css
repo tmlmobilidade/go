@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: var(--mantine-spacing-md);
+    justify-content: space-between;
+    padding: var(--mantine-spacing-md);
+    cursor: pointer;
+    border-bottom: 1px solid #2f343d;
+}
+
+.container:hover {
+    background-color: #171b21;
+}

@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: var(--mantine-spacing-md);
+    padding: var(--mantine-spacing-md);
+    justify-content: space-between;
+    border-bottom: 1px solid #2f343d;
+    cursor: pointer;
+}
+
+.container:hover {
+    background-color: #171b21;
+}
+
+.container_info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-sm);
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+}
+
+.id {
+    color: #768390;
+}
+
+.name {
+    color: #fff;
+}
+
+.container_icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}

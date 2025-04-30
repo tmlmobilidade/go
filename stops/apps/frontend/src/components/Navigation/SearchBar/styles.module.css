@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mantine-spacing-sm);
+    padding: var(--mantine-spacing-sm);
+    border-bottom: 1px solid #2f343d;
+}
+
+.input_text {
+    width: 100%;
+}
+
+.settings {
+    min-width: 34px;
+    min-height: 34px;
+    background-color: aqua;
+    cursor: pointer;
+}
+
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--mantine-color-gray-light);
+
+    padding: 0px 4px;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    aspect-ratio: 1 / 1;
+
+    position: relative;
+}
+
+.icon:hover {
+    background-color: #363C42;
+}
+
+.breadcrumbs {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+}

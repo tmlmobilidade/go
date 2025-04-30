@@ -1,0 +1,72 @@
+'use client';
+
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+
+import styles from './styles.module.css';
+
+/* * */
+
+export default function StopEquipments() {
+	//
+
+	//
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	const facilities = [
+		'fire_station',
+		'health_clinic',
+		'historic_building',
+		'hospital',
+		'pip',
+		'police_station',
+		'school',
+		'shopping',
+		'transit_office',
+		'university',
+	];
+
+	enum FacilitiesValues {
+		fire_station = 'Bombeiros',
+		health_clinic = 'Clínica',
+		historic_building = 'Edifício Histórico',
+		hospital = 'Hospital',
+		pip = 'Praia',
+		police_station = 'Esquadra',
+		school = 'Escola',
+		shopping = 'Zona Comercial',
+		transit_office = 'Espaço navegante®',
+		university = 'Universidade',
+	}
+
+	//
+	// B. Render components
+
+	return (
+		<Collapsible
+			description="Quais são os equipamentos que esta paragem serve."
+			title="Equipamentos Servidos"
+		>
+			<Section gap="md">
+				<Grid columns="abcd" gap="md">
+					{facilities.map((facility) => {
+						return (
+							<div className={styles.input_checkbox_container}>
+								<Checkbox
+									checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(facility)}
+									className={styles.input_checkbox}
+									label={FacilitiesValues[facility]}
+									onChange={(_) => {
+										stopDetailContext.actions.handleFacilitiesChange(facility);
+									}}
+								/>
+							</div>
+						);
+					})}
+				</Grid>
+			</Section>
+		</Collapsible>
+	);
+}

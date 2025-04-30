@@ -5,7 +5,7 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/types';
-import { getUnixTimestamp } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -520,8 +520,8 @@ export async function createRidesFromGtfs() {
 						const hashedTripData: HashedTrip = {
 							...hashableHashedTripData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedTripData)).digest('hex'),
-							created_at: getUnixTimestamp(),
-							updated_at: getUnixTimestamp(),
+							created_at: Dates.now().unix_timestamp,
+							updated_at: Dates.now().unix_timestamp,
 						};
 
 						const currentHashedTripAlreadyExists = await hashedTrips.findById(hashedTripData._id);
@@ -545,8 +545,8 @@ export async function createRidesFromGtfs() {
 						const hashedShapeData: HashedShape = {
 							...hashableHashedShapeData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedShapeData)).digest('hex'),
-							created_at: getUnixTimestamp(),
-							updated_at: getUnixTimestamp(),
+							created_at: Dates.now().unix_timestamp,
+							updated_at: Dates.now().unix_timestamp,
 						};
 
 						const currentHashedShapeAlreadyExists = await hashedShapes.findById(hashedShapeData._id);
@@ -577,7 +577,7 @@ export async function createRidesFromGtfs() {
 								_id: `${planData._id}-${routeData.agency_id}-${calendarDate}-${tripData.trip_id}`,
 								agency_id: routeData.agency_id,
 								analysis: [],
-								created_at: getUnixTimestamp(),
+								created_at: Dates.now().unix_timestamp,
 								driver_ids: [],
 								end_time_observed: null,
 								end_time_scheduled: endTimeScheduledDate,
@@ -600,7 +600,7 @@ export async function createRidesFromGtfs() {
 								start_time_scheduled: startTimeScheduledDate,
 								system_status: 'pending',
 								trip_id: tripData.trip_id,
-								updated_at: getUnixTimestamp(),
+								updated_at: Dates.now().unix_timestamp,
 								validations_count: null,
 								vehicle_ids: [],
 							};

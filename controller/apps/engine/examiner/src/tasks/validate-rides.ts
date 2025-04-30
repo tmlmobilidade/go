@@ -20,14 +20,15 @@ import { atLeastOneEventOnFirstStop } from '@/analyzers/at-least-one-event-on-fi
 import { atMostTwoDriverIdsAnalyzer } from '@/analyzers/at-most-two-driver-ids.analyzer.js';
 import { atMostTwoVehicleIdsAnalyzer } from '@/analyzers/at-most-two-vehicle-ids.analyzer.js';
 import { avgIntervalVehicleEvents } from '@/analyzers/avg-interval-vehicle-events.analyzer.js';
-import { excessiveVehicleEventDelayAnalyzer } from '@/analyzers/excessiveVehicleEventDelay.analyzer.js';
-import { highestVehicleEventDelayAnalyzer } from '@/analyzers/highestVehicleEventDelay.analyzer.js';
-import { lessThanTenVehicleEventsAnalyzer } from '@/analyzers/lessThanTenVehicleEvents.analyzer.js';
-import { matchingLocationTransactionsAnalyzer } from '@/analyzers/matchingLocationTransactions.analyzer.js';
+import { excessiveVehicleEventDelayAnalyzer } from '@/analyzers/excessive-vehicle-event-delay.analyzer.js';
+import { highestVehicleEventDelayAnalyzer } from '@/analyzers/highest-vehicle-event-delay.analyzer.js';
+import { lessThanTenVehicleEventsAnalyzer } from '@/analyzers/less-than-ten-vehicle-events.analyzer.js';
+import { matchingLocationTransactionsAnalyzer } from '@/analyzers/matching-location-transactions.analyzer.js';
 import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
-import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simpleOneValidationTransaction.analyzer.js';
-import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simpleOneVehicleEventOrValidationTransaction.analyzer.js';
-import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simpleThreeVehicleEvents.analyzer.js';
+import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simple-one-validation-transaction.analyzer.js';
+import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-validation-transaction.analyzer.js';
+import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.analyzer.js';
+// import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.analyzer.js';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
@@ -36,6 +37,10 @@ function runAnalyzers(analysisData: AnalysisData): RideAnalysis[] {
 	return [
 
 		/* * * * */
+
+		// transactionSequentialityAnalyzer(analysisData),
+
+		//
 
 		atMostTwoDriverIdsAnalyzer(analysisData),
 
