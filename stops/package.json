@@ -13,7 +13,7 @@
 		"@tmlmobilidade/tsconfig": "20250325.1731.13",
 		"dotenv-cli": "8.0.0",
 		"prettier": "3.5.3",
-		"turbo": "2.5.0",
+		"turbo": "2.5.2",
 		"typescript": "5.8.3"
 	},
 	"packageManager": "npm@11.3.0",
@@ -22,11 +22,5 @@
 	},
 	"workspaces": [
 		"apps/*"
-	],
-	"dependencies": {
-		"@types/mapbox-gl": "^3.4.1",
-		"mapbox-gl": "^3.11.0",
-		"maplibre-gl": "^5.4.0",
-		"react-map-gl": "^8.0.4"
-	}
+	]
 }
