@@ -15,15 +15,17 @@ export default function Connections() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const AIRPORT = 'airport';
-	const BIKE_PARKING = 'bike_parking';
-	const BIKE_SHARING = 'bike_sharing';
-	const BOAT = 'boat';
-	const CAR_PARKING = 'car_parking';
-	const FERRY = 'ferry';
-	const LIGHT_RAIL = 'light_rail';
-	const SUBWAY = 'subway';
-	const TRAIN = 'train';
+	const connections = [
+		'airport',
+		'bike_parking',
+		'bike_sharing',
+		'boat',
+		'car_parking',
+		'ferry',
+		'light_rail',
+		'subway',
+		'train',
+	];
 
 	enum ConnectionsValues {
 		airport = 'Aeroporto',
@@ -47,88 +49,20 @@ export default function Connections() {
 		>
 			<Section gap="md">
 				<Grid columns="abcd" gap="md">
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(SUBWAY)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[SUBWAY]}
-							onChange={(e) => {
-								stopDetailContext.actions.handleConnectionsChange(SUBWAY);
-							}}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(LIGHT_RAIL)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[LIGHT_RAIL]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(TRAIN)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[TRAIN]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(BOAT)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[BOAT]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(BIKE_SHARING)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[BIKE_SHARING]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(AIRPORT)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[AIRPORT]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(BIKE_PARKING)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[BIKE_PARKING]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(CAR_PARKING)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[CAR_PARKING]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
-
-					<div className={styles.input_checkbox_container}>
-						<Checkbox
-							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(FERRY)}
-							className={styles.input_checkbox}
-							label={ConnectionsValues[FERRY]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
-						/>
-					</div>
+					{connections.map((connection) => {
+						return (
+							<div className={styles.input_checkbox_container}>
+								<Checkbox
+									checked={stopDetailContext.data.form.getInputProps('connections').value.includes(connection)}
+									className={styles.input_checkbox}
+									label={ConnectionsValues[connection]}
+									onChange={(_) => {
+										stopDetailContext.actions.handleConnectionsChange(connection);
+									}}
+								/>
+							</div>
+						);
+					})}
 				</Grid>
 			</Section>
 		</Collapsible>
