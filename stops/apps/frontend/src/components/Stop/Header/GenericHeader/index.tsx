@@ -19,7 +19,6 @@ export default function GenericHeader() {
 	// A. Setup variables
 
 	const [toggleValue, setToggleValue] = useToggle(['Mapa', 'Satélite'] as const);
-	console.log('Specific');
 
 	//
 	// B. Render components

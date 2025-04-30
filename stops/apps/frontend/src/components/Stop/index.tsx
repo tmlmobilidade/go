@@ -4,7 +4,9 @@ import type { Stop } from '@tmlmobilidade/types';
 
 import { ManualContextProvider } from '@/contexts/Manual.context';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { Pane } from '@tmlmobilidade/ui';
 
+import Header from './Header';
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
 import StopAffectation from './StopAffectation';
@@ -35,9 +37,6 @@ export default function Stop({ paramId }: StopProps) {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	const { data } = stopDetailContext;
-	// console.log('=> data', data);
-	console.log('=> new_name', data.form.getValues().new_name);
 
 	//
 	// B. Render components
@@ -45,9 +44,9 @@ export default function Stop({ paramId }: StopProps) {
 	return (
 		<ManualContextProvider>
 			{
-				data?._id || paramId === 'new'
+				stopDetailContext.data?._id || paramId === 'new'
 					? (
-						<div className={styles.container}>
+						<Pane header={[<Header generic={false} />]}>
 							<StopMap generic={false} />
 							<StopDetails />
 							<StopAdminInformation />
@@ -61,11 +60,12 @@ export default function Stop({ paramId }: StopProps) {
 							<StopMedia />
 							<StopComments />
 							<StopObservations />
-						</div>
+						</Pane>
+						// </div>
 					) : (
-						<div className={styles.container}>
+						<Pane header={[<Header generic={false} />]}>
 							<StopMap generic={true} />
-						</div>
+						</Pane>
 					)
 			}
 		</ManualContextProvider>

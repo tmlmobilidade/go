@@ -2,7 +2,7 @@
 
 /* * */
 
-import Header from './Header';
+import Header from '../Header';
 import Mapper from './Mapper';
 import styles from './styles.module.css';
 
@@ -22,7 +22,7 @@ export default function StopMap({ generic }: MapContainerProps) {
 
 	return (
 		<div className={styles.container}>
-			<Header generic={generic} />
+			{/* <Header generic={generic} /> */}
 			<Mapper generic={generic} />
 		</div>
 	);
