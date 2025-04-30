@@ -18,7 +18,7 @@ import { OperationalStatus } from '@tmlmobilidade/types';
 import { PoleStatus } from '@tmlmobilidade/types';
 import { causeSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { convertObject, getUnixTimestamp } from '@tmlmobilidade/utils';
+import { convertObject, Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -60,7 +60,6 @@ const emptyStop: CreateStopDto = {
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],
-	created_at: getUnixTimestamp(),
 	district_id: 'temp',
 	docking_bay_type: undefined,
 	electricity_status: 'unknown',
@@ -71,11 +70,11 @@ const emptyStop: CreateStopDto = {
 	is_archived: false,
 	is_locked: false,
 	jurisdiction: 'unknown',
-	last_infrastructure_check: getUnixTimestamp(),
-	last_infrastructure_maintenance: getUnixTimestamp(),
-	last_schedules_check: getUnixTimestamp(),
-	last_schedules_maintenance: getUnixTimestamp(),
-	last_shelter_installation: getUnixTimestamp(),
+	last_infrastructure_check: null,
+	last_infrastructure_maintenance: null,
+	last_schedules_check: null,
+	last_schedules_maintenance: null,
+	last_shelter_installation: null,
 	latitude: 0,
 	lighting_status: 'unknown',
 	locality_id: 'temp',
@@ -97,7 +96,6 @@ const emptyStop: CreateStopDto = {
 	short_name: 'temp',
 	sidewalk_type: 'unknown',
 	tts_name: 'temp',
-	updated_at: getUnixTimestamp(),
 };
 
 const StopDetailContext = createContext<StopDetailContextState | undefined>(undefined);
