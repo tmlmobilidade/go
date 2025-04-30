@@ -109,7 +109,7 @@ export default function CreateValidationModal() {
 		<Grid columns="ab" gap="md">
 			<Button label="Cancelar" onClick={() => closeModal(MODAL_ID)} variant="danger" fullWidth />
 			<Button
-				disabled={!validationDetailContext.flags.canSave}
+				disabled={!validationDetailContext.flags.canSave || validationDetailContext.flags.isSaving}
 				label="Criar validação"
 				onClick={validationDetailContext.actions.saveValidation}
 				variant="primary"
