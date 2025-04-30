@@ -2,7 +2,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, Combobox, DateTimePicker, Grid, Section, TextInput } from '@tmlmobilidade/ui';
-import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -90,7 +90,7 @@ export default function StopShelter() {
 						{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
 						value={new Date(stopDetailContext.data.form.getValues().last_shelter_installation)}
 						onChange={(date) => {
-							stopDetailContext.data.form.setFieldValue('last_shelter_installation', getUnixTimestampFromJSDate(date));
+							stopDetailContext.data.form.setFieldValue('last_shelter_installation', Dates.fromJSDate(date).unix_timestamp);
 						}}
 					/>
 				</Grid>

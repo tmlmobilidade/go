@@ -2,7 +2,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, DateTimePicker, Grid, Section } from '@tmlmobilidade/ui';
-import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -30,7 +30,7 @@ export default function PublicInformation() {
 						{...stopDetailContext.data.form.getInputProps('last_schedules_maintenance')}
 						value={new Date(stopDetailContext.data.form.getValues().last_schedules_maintenance)}
 						onChange={(date) => {
-							stopDetailContext.data.form.setFieldValue('last_schedules_maintenance', getUnixTimestampFromJSDate(date));
+							stopDetailContext.data.form.setFieldValue('last_schedules_maintenance', Dates.fromJSDate(date).unix_timestamp);
 						}}
 					/>
 
@@ -40,7 +40,7 @@ export default function PublicInformation() {
 						{...stopDetailContext.data.form.getInputProps('last_schedules_check')}
 						value={new Date(stopDetailContext.data.form.getValues().last_schedules_check)}
 						onChange={(date) => {
-							stopDetailContext.data.form.setFieldValue('last_schedules_check', getUnixTimestampFromJSDate(date));
+							stopDetailContext.data.form.setFieldValue('last_schedules_check', Dates.fromJSDate(date).unix_timestamp);
 						}}
 					/>
 				</Grid>
