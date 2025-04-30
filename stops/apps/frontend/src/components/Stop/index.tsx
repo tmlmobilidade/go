@@ -6,7 +6,6 @@ import { ManualContextProvider } from '@/contexts/Manual.context';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Pane } from '@tmlmobilidade/ui';
 
-import Header from './Header';
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
 import StopAffectation from './StopAffectation';
@@ -14,13 +13,13 @@ import StopComments from './StopComments';
 import StopConnections from './StopConnections';
 import StopDetails from './StopDetails';
 import StopEquipments from './StopEquipments';
+import StopHeader from './StopHeader';
 import StopInfrasctructure from './StopInfrasctructure';
 import StopMap from './StopMap';
 import StopMedia from './StopMedia';
 import StopObservations from './StopObservations';
 import StopPublicInformation from './StopPublicInformation';
 import StopShelter from './StopShelter';
-import styles from './styles.module.css';
 
 /* * */
 
@@ -46,7 +45,7 @@ export default function Stop({ paramId }: StopProps) {
 			{
 				stopDetailContext.data?._id || paramId === 'new'
 					? (
-						<Pane header={[<Header generic={false} />]}>
+						<Pane header={[<StopHeader generic={false} />]}>
 							<StopMap generic={false} />
 							<StopDetails />
 							<StopAdminInformation />
@@ -63,7 +62,7 @@ export default function Stop({ paramId }: StopProps) {
 						</Pane>
 						// </div>
 					) : (
-						<Pane header={[<Header generic={false} />]}>
+						<Pane header={[<StopHeader generic={false} />]}>
 							<StopMap generic={true} />
 						</Pane>
 					)

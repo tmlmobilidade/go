@@ -2,7 +2,7 @@
 
 /* * */
 
-import Header from '../Header';
+import Header from '../StopHeader';
 import Mapper from './Mapper';
 import styles from './styles.module.css';
 

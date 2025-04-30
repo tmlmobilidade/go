@@ -19,7 +19,7 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts"
-, "src/components/Stop/Header", "src/components/Stop/StopMap/Mapper"	],
+, "src/components/Stop/StopHeader", "src/components/Stop/StopMap/Mapper"	],
 	"exclude": [
 		"node_modules"
 	]

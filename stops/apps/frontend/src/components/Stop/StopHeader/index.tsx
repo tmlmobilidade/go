@@ -13,7 +13,7 @@ interface HeaderProps {
 
 /* * */
 
-export default function Header({ generic }: HeaderProps) {
+export default function StopHeader({ generic }: HeaderProps) {
 	//
 
 	//
