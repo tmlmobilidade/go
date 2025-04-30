@@ -5,7 +5,7 @@ import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export default function Comments() {
+export default function StopComments() {
 	//
 
 	//

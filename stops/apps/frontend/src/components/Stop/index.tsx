@@ -9,6 +9,7 @@ import MapContainer from './MapContainer';
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
 import StopAffectation from './StopAffectation';
+import StopComments from './StopComments';
 import StopConnections from './StopConnections';
 import StopDetails from './StopDetails';
 import StopEquipments from './StopEquipments';
@@ -58,7 +59,7 @@ export default function Stop({ paramId }: StopProps) {
 							<StopEquipments />
 							<StopConnections />
 							<StopMedia />
-							<Comments />
+							<StopComments />
 							<StopObservations />
 						</div>
 					) : (
