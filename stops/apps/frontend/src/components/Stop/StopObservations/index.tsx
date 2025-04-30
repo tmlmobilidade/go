@@ -3,11 +3,11 @@
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, Grid, Section, TextArea } from '@tmlmobilidade/ui';
 
-import styles from '../styles.module.css';
+// import styles from '../styles.module.css';
 
 /* * */
 
-export default function Observations() {
+export default function StopObservations() {
 	//
 
 	//
