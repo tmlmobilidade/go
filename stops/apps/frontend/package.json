@@ -1,6 +1,6 @@
 {
 	"name": "@tmlmobilidade/sae-stops-frontend",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 		"build": "next build",
@@ -10,7 +10,6 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@carrismetropolitana/api-types": "20250430.1046.57",
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/lib": "20250429.2257.58",
 		"@tmlmobilidade/types": "20250430.1422.42",
@@ -23,6 +22,7 @@
 		"swr": "2.3.3"
 	},
 	"devDependencies": {
+		"@carrismetropolitana/api-types": "20250430.1046.57",
 		"@carrismetropolitana/eslint": "20250418.42.41",
 		"@tmlmobilidade/tsconfig": "20250325.1731.13",
 		"@types/node": "22",
