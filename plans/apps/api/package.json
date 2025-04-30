@@ -16,9 +16,9 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
-		"@tmlmobilidade/interfaces": "20250429.2328.58",
+		"@tmlmobilidade/interfaces": "20250430.1350.40",
 		"@tmlmobilidade/lib": "20250429.2257.58",
-		"@tmlmobilidade/types": "20250429.2327.49",
+		"@tmlmobilidade/types": "20250430.1422.42",
 		"@tmlmobilidade/utils": "20250424.2144.24",
 		"fastify": "5.3.2",
 		"pino-pretty": "13.0.0",

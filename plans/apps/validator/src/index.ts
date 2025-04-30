@@ -62,12 +62,9 @@ async function main() {
 		console.log(validationMessage);
 		await processValidation(validationMessage);
 	});
-
 	console.log('🚀 GTFS Validator service started');
 }
 
-main().catch((error) => {
-	console.error('Fatal error:', error);
-	process.exit(1);
-});
+main();
+
 /* * */
