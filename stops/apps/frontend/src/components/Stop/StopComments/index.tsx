@@ -14,9 +14,7 @@ export default function StopComments() {
 	const stopDetailContext = useStopDetailContext();
 
 	//
-
-	//
-	// A. Render components
+	// B. Render components
 
 	return (
 		<Collapsible
