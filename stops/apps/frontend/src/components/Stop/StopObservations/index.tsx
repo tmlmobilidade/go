@@ -3,7 +3,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, Grid, Section, TextArea } from '@tmlmobilidade/ui';
 
-// import styles from '../styles.module.css';
+import styles from './styles.module.css';
 
 /* * */
 
@@ -26,7 +26,7 @@ export default function StopObservations() {
 			<Section gap="md">
 				<Grid columns="a" gap="md">
 					<TextArea
-						// className={styles.text_area}
+						className={styles.text_area}
 						maxRows={10}
 						minRows={4}
 						placeholder="Construção planeada a..."

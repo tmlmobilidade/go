@@ -12,8 +12,8 @@ import { ManualContextProvider } from '@/contexts/Manual.context';
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 
-import GenericStop from './GenericStop';
-import SpecificStop from './SpecificStop';
+import GenericContainer from './GenericContainer';
+import SpecificContainer from './SpecificStop';
 
 /* * */
 
@@ -38,7 +38,7 @@ export default function Stop({ paramId }: StopProps) {
 	return (
 		<ManualContextProvider>
 			{
-				data?._id || paramId === 'new' ? <SpecificStop /> : <GenericStop />
+				data?._id || paramId === 'new' ? <SpecificContainer /> : <GenericContainer />
 			}
 		</ManualContextProvider>
 	);
