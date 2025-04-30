@@ -73,7 +73,26 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/...scope...-api:production
+    image: ghcr.io/tmlmobilidade/sae-plans-api:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+  
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  validator:
+    image: ghcr.io/tmlmobilidade/sae-plans-validator:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -92,7 +111,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/...scope...-frontend:production
+    image: ghcr.io/tmlmobilidade/sae-plans-frontend:production
     deploy:
       restart_policy:
         condition: on-failure
