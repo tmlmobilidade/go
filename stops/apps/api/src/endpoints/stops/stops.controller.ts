@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+
 import { files, stops } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { Stop } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
+
 /**
  * This is an example controller that is using the stops interface.
  */
