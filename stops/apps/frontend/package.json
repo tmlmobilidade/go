@@ -10,6 +10,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"@carrismetropolitana/api-types": "20250430.1046.57",
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/lib": "20250429.2257.58",
 		"@tmlmobilidade/types": "20250430.1422.42",
@@ -19,7 +20,7 @@
 		"next": "15.3.1",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
-		"swr": "^2.3.3"
+		"swr": "2.3.3"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
