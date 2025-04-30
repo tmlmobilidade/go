@@ -34,6 +34,8 @@ interface StopDetailContextState {
 		// addReference: () => void
 		deleteImage: () => void
 		deleteStop: () => void
+		handleConnectionsChange: (connections: string) => void
+		handleFacilitiesChange: (facilities: string) => void
 		imageChanged: (file: File) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
@@ -41,48 +43,7 @@ interface StopDetailContextState {
 	}
 	data: {
 		_id: string | undefined
-		// bench_status: 'unknown'
-		// comments: Comment
-		// connections: Connections
-		// created_at: UnixTimestamp
-		// district_id: string
-		// docking_bay_type: DockingBayType
-		// electricity_status: ElectricityStatus
-		// facilities: Facilities
-		// file_ids: string[]
-		// flag_status: FlagStatus
 		form: UseFormReturnType<CreateStopDto>
-		// image_ids: string[]
-		// // imageUrl: string | undefined
-		// is_archived: boolean
-		// is_locked: boolean
-		// jurisdiction: Jurisdiction
-		// last_infrastructure_check: UnixTimestamp
-		// last_infrastructure_maintenance: UnixTimestamp
-		// last_schedules_check: UnixTimestamp
-		// last_schedules_maintenance: UnixTimestamp
-		// latitude: number
-		// lighting_status: LightningStatus
-		// locality_id: string
-		// longitude: number
-		// municipality_id: string
-		// name: string
-		// new_name: string
-		// observations: string
-		// operational_status: OperationalStatus
-		// parish_id: string
-		// pavement_type: PavementType
-		// pole_status: PoleStatus
-		// road_type: RoadType
-		// shelter_code: string
-		// shelter_maintainer: string
-		// shelter_make: string
-		// shelter_model: string
-		// shelter_status: ShelterStatus
-		// short_name: string
-		// sidewalk_type: SidewalkType
-		// tts_name: string
-		// updated_at: UnixTimestamp
 	}
 	flags: {
 		canSave: boolean
@@ -353,6 +314,16 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		});
 	};
 
+	const handleConnectionsChange = (connections: string) => {
+		const newConnections = form.values.connections.includes(connections) ? form.values.connections.filter(c => c !== connections) : [...form.values.connections, connections];
+		form.setFieldValue('connections', newConnections);
+	};
+
+	const handleFacilitiesChange = (facilities: string) => {
+		const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
+		form.setFieldValue('facilities', newFacilities);
+	};
+
 	//
 	// E. Define context value
 	const contextValue: StopDetailContextState = React.useMemo(() => ({
@@ -363,6 +334,8 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			imageChanged: (image: File) => setImage(image),
 			// removeReference,
 			// saveStop: (type: 'draft' | 'publish') => saveStop(type),
+			handleConnectionsChange,
+			handleFacilitiesChange,
 			saveStop,
 		},
 		data: {

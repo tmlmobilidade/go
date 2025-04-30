@@ -38,7 +38,7 @@ export default function Page() {
 				<Navigation />
 			</StopListContextProvider>
 			<StopDetailContextProvider stopId={null}>
-				<Stop />
+				<Stop paramId={null} />
 			</StopDetailContextProvider>
 		</div>
 	);

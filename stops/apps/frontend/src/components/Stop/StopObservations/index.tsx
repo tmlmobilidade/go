@@ -1,0 +1,39 @@
+'use client';
+
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { Collapsible, Grid, Section, TextArea } from '@tmlmobilidade/ui';
+
+import styles from './styles.module.css';
+
+/* * */
+
+export default function StopObservations() {
+	//
+
+	//
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	//
+	// B. Render components
+
+	return (
+		<Collapsible
+			description="Texto livre para informações adicionais."
+			title="Observações"
+		>
+			<Section gap="md">
+				<Grid columns="a" gap="md">
+					<TextArea
+						className={styles.text_area}
+						maxRows={10}
+						minRows={4}
+						placeholder="Construção planeada a..."
+						{...stopDetailContext.data.form.getInputProps('observations')}
+					/>
+				</Grid>
+			</Section>
+		</Collapsible>
+	);
+}

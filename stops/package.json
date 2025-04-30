@@ -9,14 +9,14 @@
 		"start": "turbo start"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250325.1926.5",
+		"@carrismetropolitana/eslint": "20250418.42.41",
 		"@tmlmobilidade/tsconfig": "20250325.1731.13",
 		"dotenv-cli": "8.0.0",
 		"prettier": "3.5.3",
-		"turbo": "2.4.4",
-		"typescript": "5.8.2"
+		"turbo": "2.5.0",
+		"typescript": "5.8.3"
 	},
-	"packageManager": "npm@11.2.0",
+	"packageManager": "npm@11.3.0",
 	"engines": {
 		"node": ">=18"
 	},
@@ -25,8 +25,8 @@
 	],
 	"dependencies": {
 		"@types/mapbox-gl": "^3.4.1",
-		"mapbox-gl": "^3.10.0",
-		"maplibre-gl": "^5.3.0",
-		"react-map-gl": "^8.0.2"
+		"mapbox-gl": "^3.11.0",
+		"maplibre-gl": "^5.4.0",
+		"react-map-gl": "^8.0.4"
 	}
 }
