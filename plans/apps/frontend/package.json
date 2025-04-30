@@ -14,7 +14,7 @@
 		"@tmlmobilidade/gtfs-validator": "^20250430.1640.50",
 		"@tmlmobilidade/lib": "20250430.1718.14",
 		"@tmlmobilidade/types": "^20250430.1422.42",
-		"@tmlmobilidade/ui": "20250424.2144.44",
+		"@tmlmobilidade/ui": "20250430.1817.32",
 		"@tmlmobilidade/utils": "20250424.2144.24",
 		"clsx": "2.1.1",
 		"next": "15.3.1",
