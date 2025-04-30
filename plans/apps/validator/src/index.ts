@@ -43,6 +43,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// 6. Send validation results to RabbitMQ
 		await rabbitMQ.publish('gtfs-validation-results', JSON.stringify(validationResult));
+		console.log('🚀 Validation Finished Successfully');
 	}
 	catch (error) {
 		console.error('Error processing validation:', error);
