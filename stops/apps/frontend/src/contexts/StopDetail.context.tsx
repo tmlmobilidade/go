@@ -34,6 +34,7 @@ interface StopDetailContextState {
 		// addReference: () => void
 		deleteImage: () => void
 		deleteStop: () => void
+		handleConnectionsChange: (connections: string) => void
 		imageChanged: (file: File) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
@@ -312,6 +313,11 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		});
 	};
 
+	const handleConnectionsChange = (connections: string) => {
+		const newConnections = form.values.connections.includes(connections) ? form.values.connections.filter(c => c !== connections) : [...form.values.connections, connections];
+		form.setFieldValue('connections', newConnections);
+	};
+
 	//
 	// E. Define context value
 	const contextValue: StopDetailContextState = React.useMemo(() => ({
@@ -322,6 +328,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			imageChanged: (image: File) => setImage(image),
 			// removeReference,
 			// saveStop: (type: 'draft' | 'publish') => saveStop(type),
+			handleConnectionsChange,
 			saveStop,
 		},
 		data: {

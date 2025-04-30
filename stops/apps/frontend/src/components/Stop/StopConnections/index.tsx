@@ -52,7 +52,9 @@ export default function Connections() {
 							checked={stopDetailContext.data.form.getInputProps('connections').value.includes(SUBWAY)}
 							className={styles.input_checkbox}
 							label={ConnectionsValues[SUBWAY]}
-							{...stopDetailContext.data.form.getInputProps('connections')}
+							onChange={(e) => {
+								stopDetailContext.actions.handleConnectionsChange(SUBWAY);
+							}}
 						/>
 					</div>
 
