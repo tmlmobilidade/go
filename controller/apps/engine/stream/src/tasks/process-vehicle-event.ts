@@ -3,11 +3,11 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
-import { emailProvider } from '@tmlmobilidade/core/providers';
-import { type VehicleEvent } from '@tmlmobilidade/core/types';
+import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { emailProvider } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-controller-pckg-parse';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 

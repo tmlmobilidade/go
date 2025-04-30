@@ -1,7 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type RideAnalysis } from '@tmlmobilidade/core/types';
+import { type RideAnalysis } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 
 /* * */

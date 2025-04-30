@@ -7,7 +7,7 @@
 email="carrismetropolitana@gmail.com"
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
-primary_domain=THIS_SHOULD_BE_REPLACED.carrismetropolitana.pt
+primary_domain=stops.sae.carrismetropolitana.pt
 
 
 # # #

@@ -8,10 +8,10 @@ import { RidesCatalogHeader } from '@/components/catalog/RidesCatalogHeader';
 import { OperationalStatusTag } from '@/components/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/StartTimeStatusTag';
-import { type ExtendedRideDisplay } from '@/contexts/Rides.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
 import { useRidesCatalogContext } from '@/contexts/RidesCatalog.context';
 import { IconChevronRight, IconCreditCardPay } from '@tabler/icons-react';
-import { Label, Pane, Tag } from '@tmlmobilidade/ui';
+import { Label, Loader, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { ViewportList } from 'react-viewport-list';
 
@@ -25,7 +25,7 @@ export function RidesCatalog() {
 	//
 	// A. Setup variables
 
-	const ridesListContext = useRidesCatalogContext();
+	const ridesCatalogContext = useRidesCatalogContext();
 
 	//
 	// B. Render components
@@ -62,15 +62,20 @@ export function RidesCatalog() {
 				</div>
 			</div>
 
-			{ridesListContext.flags.is_loading && (
+			{/* {ridesCatalogContext.flags.is_loading && (
 				<div className={styles.loading}>
-					<Label size="md" caps>Loading {ridesListContext.data.rides_display.length} Rides...</Label>
+					<Label size="md" caps>Loading {ridesCatalogContext.data.rides_display.length} Rides...</Label>
+				</div>
+			)} */}
+			{ridesCatalogContext.flags.is_loading && (
+				<div className={styles.loading}>
+					<Loader />
 				</div>
 			)}
 
-			{!ridesListContext.flags.is_loading && (
+			{!ridesCatalogContext.flags.is_loading && (
 				<div className={styles.body}>
-					<ViewportList ref={ridesListContext.data.list_ref} itemMargin={0} items={ridesListContext.data.rides_display}>
+					<ViewportList ref={ridesCatalogContext.data.list_ref} itemMargin={0} items={ridesCatalogContext.data.rides_display}>
 						{(item, index) => (
 							<RidesCatalogRow key={item._id} index={index} item={item} />
 						)}
@@ -98,7 +103,7 @@ export function RidesCatalogRow({ index, item }: RidesCatalogRowProps) {
 	// A. Setup variables
 
 	const router = useRouter();
-	const ridesListContext = useRidesCatalogContext();
+	const ridesCatalogContext = useRidesCatalogContext();
 
 	//
 	// B. Handle actions
@@ -113,7 +118,7 @@ export function RidesCatalogRow({ index, item }: RidesCatalogRowProps) {
 	return (
 
 		<div key={item._id} className={styles.rowWrapper}>
-			{index === ridesListContext.data.lock_index && (
+			{index === ridesCatalogContext.data.lock_index && (
 				<RidesCatalogClock />
 			)}
 			<div key={item._id} className={styles.row} onClick={() => handleOpenRide(item._id)}>

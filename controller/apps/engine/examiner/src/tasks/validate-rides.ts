@@ -2,8 +2,8 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { apexT11, apexT19, hashedShapes, hashedTrips, rides, vehicleEvents } from '@tmlmobilidade/core/interfaces';
-import { ALLOWED_VALIDATION_STATUSES, type RideAnalysis } from '@tmlmobilidade/core/types';
+import { apexT11, apexT19, hashedShapes, hashedTrips, rides, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { ALLOWED_VALIDATION_STATUSES, type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,17 +16,19 @@ import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
 
 /* * */
 
+import { atLeastOneEventOnFirstStop } from '@/analyzers/at-least-one-event-on-first-stop.js';
 import { atMostTwoDriverIdsAnalyzer } from '@/analyzers/at-most-two-driver-ids.analyzer.js';
 import { atMostTwoVehicleIdsAnalyzer } from '@/analyzers/at-most-two-vehicle-ids.analyzer.js';
 import { avgIntervalVehicleEvents } from '@/analyzers/avg-interval-vehicle-events.analyzer.js';
-import { excessiveVehicleEventDelayAnalyzer } from '@/analyzers/excessiveVehicleEventDelay.analyzer.js';
-import { highestVehicleEventDelayAnalyzer } from '@/analyzers/highestVehicleEventDelay.analyzer.js';
-import { lessThanTenVehicleEventsAnalyzer } from '@/analyzers/lessThanTenVehicleEvents.analyzer.js';
-import { matchingLocationTransactionsAnalyzer } from '@/analyzers/matchingLocationTransactions.analyzer.js';
+import { excessiveVehicleEventDelayAnalyzer } from '@/analyzers/excessive-vehicle-event-delay.analyzer.js';
+import { highestVehicleEventDelayAnalyzer } from '@/analyzers/highest-vehicle-event-delay.analyzer.js';
+import { lessThanTenVehicleEventsAnalyzer } from '@/analyzers/less-than-ten-vehicle-events.analyzer.js';
+import { matchingLocationTransactionsAnalyzer } from '@/analyzers/matching-location-transactions.analyzer.js';
 import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
-import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simpleOneValidationTransaction.analyzer.js';
-import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simpleOneVehicleEventOrValidationTransaction.analyzer.js';
-import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simpleThreeVehicleEvents.analyzer.js';
+import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simple-one-validation-transaction.analyzer.js';
+import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-validation-transaction.analyzer.js';
+import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.analyzer.js';
+// import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.analyzer.js';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
@@ -35,6 +37,10 @@ function runAnalyzers(analysisData: AnalysisData): RideAnalysis[] {
 	return [
 
 		/* * * * */
+
+		// transactionSequentialityAnalyzer(analysisData),
+
+		//
 
 		atMostTwoDriverIdsAnalyzer(analysisData),
 
@@ -65,6 +71,8 @@ function runAnalyzers(analysisData: AnalysisData): RideAnalysis[] {
 		simpleOneValidationTransactionAnalyzer(analysisData),
 
 		simpleThreeVehicleEventsAnalyzer(analysisData),
+
+		atLeastOneEventOnFirstStop(analysisData),
 
 		/* * * * */
 
@@ -111,6 +119,11 @@ export async function validateRides() {
 				const rideAnalysisTimer = new TIMETRACKER();
 
 				//
+				// Skip if the Ride is lockd
+
+				if (rideData.is_locked) continue;
+
+				//
 				// For this ride, fetch all the necessary data for analysis.
 				// This includes static data, like hashed shapes and trips, and dynamic data,
 				// like vehicle events and apex transactions. Request all data in parallel.
@@ -130,6 +143,18 @@ export async function validateRides() {
 				const fetchAnalysisDataTime = fetchAnalysisDataTimer.get();
 
 				//
+				// Build the analysis data object to be passed to the analyzers.
+
+				const analysisData: AnalysisData = {
+					apex_t11: apexT11Data,
+					apex_t19: apexT19Data,
+					hashed_shape: hashedShapeData,
+					hashed_trip: hashedTripData,
+					ride: rideData,
+					vehicle_events: vehicleEventsData,
+				};
+
+				//
 				// Augment the current Ride with additional information retrieved
 				// from the fetched dynamic data. Some of this data will be used by the analyzers.
 
@@ -139,8 +164,8 @@ export async function validateRides() {
 				rideData.seen_first_at = detectedFirstEvent?.created_at || null;
 				rideData.seen_last_at = detectedLastEvent?.created_at || null;
 
-				const detectedStartEvent = detectStartEvent(hashedTripData.path, vehicleEventsData);
-				const detectedEndEvent = detectEndEvent(hashedTripData.path, vehicleEventsData);
+				const detectedStartEvent = detectStartEvent(analysisData);
+				const detectedEndEvent = detectEndEvent(hashedTripData?.path, vehicleEventsData);
 
 				rideData.start_time_observed = detectedStartEvent?.created_at || null;
 				rideData.end_time_observed = detectedEndEvent?.created_at || null;
@@ -155,14 +180,7 @@ export async function validateRides() {
 				// Run the analyzers and count how many passed,
 				// how many failed and how many errored.
 
-				rideData.analysis = runAnalyzers({
-					apex_t11: apexT11Data,
-					apex_t19: apexT19Data,
-					hashed_shape: hashedShapeData,
-					hashed_trip: hashedTripData,
-					ride: rideData,
-					vehicle_events: vehicleEventsData,
-				});
+				rideData.analysis = runAnalyzers(analysisData);
 
 				const passAnalysisCount = rideData.analysis.filter(item => item.grade === 'pass');
 				const failAnalysisCount = rideData.analysis.filter(item => item.grade === 'fail');

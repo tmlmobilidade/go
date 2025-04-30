@@ -12,7 +12,7 @@ services:
     image: mongo
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
     logging:
       options:
@@ -35,7 +35,7 @@ services:
     image: mongo
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
     logging:
       options:

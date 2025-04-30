@@ -15,7 +15,7 @@ services:
     image: containrrr/watchtower
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -40,7 +40,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-auth-nginx:production
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -76,7 +76,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-auth-api:production
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -95,7 +95,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-auth-frontend:production
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
       resources:
         limits:

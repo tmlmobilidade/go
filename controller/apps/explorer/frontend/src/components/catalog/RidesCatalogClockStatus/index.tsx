@@ -13,16 +13,16 @@ export function RidesCatalogClockStatus() {
 	//
 	// A. Setup variables
 
-	const ridesListContext = useRidesCatalogContext();
+	const ridesCatalogContext = useRidesCatalogContext();
 
 	//
 	// B. Render components
 
 	return (
 		<Button
-			label={ridesListContext.data.is_locked ? 'Agora' : 'Ir para agora'}
-			onClick={() => ridesListContext.actions.setLockStatus()}
-			variant={ridesListContext.data.is_locked ? 'danger' : 'muted'}
+			label={ridesCatalogContext.data.is_locked ? 'Agora' : 'Ir para agora'}
+			onClick={() => ridesCatalogContext.actions.setLockStatus()}
+			variant={ridesCatalogContext.data.is_locked ? 'danger' : 'muted'}
 		/>
 	);
 

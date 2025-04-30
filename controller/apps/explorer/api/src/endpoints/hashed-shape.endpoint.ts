@@ -1,6 +1,6 @@
 /* * */
 
-import { hashedShapes, rides } from '@tmlmobilidade/core/interfaces';
+import { hashedShapes, rides } from '@tmlmobilidade/interfaces';
 import { type FastifyReply, type FastifyRequest } from 'fastify';
 
 /* * */

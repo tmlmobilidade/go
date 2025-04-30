@@ -12,7 +12,7 @@ services:
     image: containrrr/watchtower
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
       resources:
         limits:
@@ -37,7 +37,7 @@ services:
     image: postgres:alpine
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
     ports:
       - 27027:5432
@@ -57,7 +57,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-bridge-sync:production
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 30s
       resources:
         limits:

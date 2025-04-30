@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/core/types';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
 
 /**
  * Sorts an array of objects by date

@@ -1,7 +1,7 @@
 /* * */
 
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type VehicleEvent } from '@tmlmobilidade/core/types';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * Detect the first event in the vehicle events data.

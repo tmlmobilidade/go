@@ -5,7 +5,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Ride } from '@tmlmobilidade/types';
-import { getOperationalDate } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 import { DateTime } from 'luxon';
 
 /* * */
@@ -79,9 +79,9 @@ export async function syncRides() {
 
 		const ridesCollection = await rides.getCollection();
 
-		const todaysOperationalDate = getOperationalDate();
+		const todaysOperationalDate = Dates.now().operational_date;
 
-		const todayMinusOneMonthOperationalDate = getOperationalDate(DateTime.now().minus({ months: 1 }));
+		const todayMinusOneMonthOperationalDate = Dates.fromMillis(DateTime.now().minus({ months: 1 }).toMillis()).operational_date;
 
 		const allRidesStream = ridesCollection
 			.find({ operational_date: { $gte: todayMinusOneMonthOperationalDate, $lte: todaysOperationalDate } })

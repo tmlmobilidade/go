@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride } from '@tmlmobilidade/core/types';
+import { type Ride } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 
 /**

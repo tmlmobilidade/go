@@ -1,9 +1,8 @@
 /* * */
 
-import { createGeofence } from '@/utils/create-geofence.util.js';
-import { isInsideGeofence } from '@/utils/is-inside-geofence.util.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/core/types';
+import { getGeofenceOnPosition, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * The trip end time is the time of the first event inside the geofence of the last stop
@@ -14,6 +13,11 @@ import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/core/
  */
 export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], vehicleEventsData: VehicleEvent[]): null | VehicleEvent {
 	//
+
+	if (!hashedTripWaypointsData || !vehicleEventsData) {
+		// throw new Error('Hashed Trip Waypoints Data and Vehicle Events Data are required.');
+		return null;
+	}
 
 	//
 	// Sort the path by stop_sequence and build a geofence
@@ -28,8 +32,8 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 		return null;
 	}
 
-	const lastStopGeofence = createGeofence(Number(sortedWaypoints[sortedWaypoints.length - 1].stop_lon), Number(sortedWaypoints[sortedWaypoints.length - 1].stop_lat));
-	const lastBeforeLastStopGeofence = createGeofence(Number(sortedWaypoints[sortedWaypoints.length - 2].stop_lon), Number(sortedWaypoints[sortedWaypoints.length - 2].stop_lat));
+	const lastStopGeofence = getGeofenceOnPosition([Number(sortedWaypoints[sortedWaypoints.length - 1].stop_lon), Number(sortedWaypoints[sortedWaypoints.length - 1].stop_lat)]);
+	const lastBeforeLastStopGeofence = getGeofenceOnPosition([Number(sortedWaypoints[sortedWaypoints.length - 2].stop_lon), Number(sortedWaypoints[sortedWaypoints.length - 2].stop_lat)]);
 
 	//
 	// Sort vehicle events by vehicle timestamp
@@ -42,7 +46,7 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 	let lastEventInsideLastBeforeLastStop: null | VehicleEvent = null;
 
 	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfLastBeforeLastStop = isInsideGeofence(vehicleEventData.longitude, vehicleEventData.latitude, lastBeforeLastStopGeofence);
+		const vehicleEventIsInsideGeofenceOfLastBeforeLastStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], lastBeforeLastStopGeofence);
 		if (vehicleEventIsInsideGeofenceOfLastBeforeLastStop) {
 			lastEventInsideLastBeforeLastStop = vehicleEventData;
 			break;
@@ -61,7 +65,7 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 	let firstEventInsideLastStop: null | VehicleEvent = null;
 
 	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfFirstStop = isInsideGeofence(vehicleEventData.longitude, vehicleEventData.latitude, lastStopGeofence);
+		const vehicleEventIsInsideGeofenceOfFirstStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], lastStopGeofence);
 		if (vehicleEventIsInsideGeofenceOfFirstStop) {
 			// Check if the event is after the last event found inside the geofence of the last before last stop
 			if (vehicleEventData.created_at > lastEventInsideLastBeforeLastStop.created_at) {
