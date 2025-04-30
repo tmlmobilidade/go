@@ -1,20 +1,11 @@
 'use client';
 
-/* * */
-
 import type { Stop } from '@tmlmobilidade/types';
 
-/* * */
-
 import { ManualContextProvider } from '@/contexts/Manual.context';
-
-/* * */
-
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 
-import GenericContainer from './GenericContainer';
 import MapContainer from './MapContainer';
-import SpecificContainer from './SpecificContainer';
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
 import StopAffectation from './StopAffectation';
@@ -34,7 +25,9 @@ interface StopProps {
 	paramId: string
 }
 
-export default function StopContainer({ paramId }: StopProps) {
+/* * */
+
+export default function Stop({ paramId }: StopProps) {
 	//
 
 	//
@@ -65,11 +58,7 @@ export default function StopContainer({ paramId }: StopProps) {
 							<StopEquipments />
 							<StopConnections />
 							<StopMedia />
-							{/*
-								<Comments
-									comments={stop.form.getValues().comments || ['']}
-								/>
-								*/}
+							<Comments />
 							<StopObservations />
 						</div>
 					) : (

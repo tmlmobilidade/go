@@ -3,7 +3,7 @@
 /* * */
 
 import Navigation from '@/components/Navigation';
-import StopContainer from '@/components/StopContainer';
+import Stop from '@/components/Stop';
 import { useStopsContext } from '@/contexts/Stops.context';
 // import router, { useRouter } from 'next/router';
 import { useRouter } from 'next/compat/router';
@@ -38,7 +38,7 @@ export default function Page() {
 				<Navigation />
 			</StopListContextProvider>
 			<StopDetailContextProvider stopId={null}>
-				<StopContainer paramId={null} />
+				<Stop paramId={null} />
 			</StopDetailContextProvider>
 		</div>
 	);
