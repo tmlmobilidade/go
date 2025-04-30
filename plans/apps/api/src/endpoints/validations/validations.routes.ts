@@ -77,6 +77,18 @@ server.register(
 			ValidationsController.delete,
 		);
 
+		// GET /validations/:id/file
+		instance.get(
+			'/:id/file',
+			{
+				preHandler: authorizationMiddleware<Validation>(
+					Permissions.plans.scope,
+					Permissions.plans.actions.read,
+				),
+			},
+			ValidationsController.getFile,
+		);
+
 		next();
 	},
 	{ prefix: namespace },

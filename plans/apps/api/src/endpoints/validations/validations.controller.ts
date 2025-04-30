@@ -160,6 +160,37 @@ export class ValidationsController {
 	}
 
 	/**
+	 * Retrieves the file for a Validation by ID
+	 * @param request Fastify request containing Validation ID in params
+	 * @param reply Fastify reply
+	 */
+	static async getFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+		try {
+			const { id } = request.params;
+			const Validation = await validations.findById(id);
+
+			if (!Validation) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Validation not found' });
+				return;
+			}
+
+			const file = await files.findById(Validation.file_id);
+
+			if (!file) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
+				return;
+			}
+
+			reply.send(file);
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
 	 * Updates an existing Validation by ID
 	 * @param request Fastify request containing Validation ID in params and update data in body
 	 * @param reply Fastify reply

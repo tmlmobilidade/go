@@ -4,7 +4,7 @@
 
 import { Routes } from '@/lib/routes';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
-import { CreateValidationDto, CreateValidationSchema, Validation, ValidationSchema } from '@tmlmobilidade/types';
+import { CreateValidationDto, CreateValidationSchema, File as TmlFile, Validation, ValidationSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -26,11 +26,13 @@ interface ValidationDetailContextState {
 	}
 	data: {
 		agencies: { label: string, value: string }[]
+		file: null | TmlFile
 		form: UseFormReturnType<CreateValidationDto>
 		id: string | undefined
 	}
 	flags: {
 		canSave: boolean
+		error: Error | null
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
@@ -66,6 +68,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	const [validationFile, setValidationFile] = useState<File | null>(null);
 
 	const { data: validation, error, isLoading } = useSWR<Validation>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)), swrFetcher);
+	const { data: file, error: fileError, isLoading: fileLoading } = useSWR<TmlFile>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)) + '/file', swrFetcher);
 	// const { data: agencies, error: agenciesError, isLoading: agenciesLoading } = useSWR<Agency[]>(Routes.API(Routes.AGENCIES), swrFetcher);
 
 	//
@@ -180,18 +183,20 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 			},
 			data: {
 				agencies: availableAgencies,
+				file,
 				form,
 				id: validationId === ValidationDetailMode.NEW ? undefined : validationId,
 			},
 			flags: {
 				canSave,
+				error: fileError || error,
 				isReadOnly: false,
 				isSaving,
-				loading: isLoading,
+				loading: isLoading || fileLoading,
 				mode: validationId === ValidationDetailMode.NEW ? ValidationDetailMode.NEW : ValidationDetailMode.EDIT,
 			},
 		};
-	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave]);
+	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave, file, fileError, error]);
 
 	// F. Render Components
 	return (
