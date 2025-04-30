@@ -1,5 +1,5 @@
 import Navigation from '@/components/Navigation';
-import Stop from '@/components/Stop';
+import StopContainer from '@/components/StopContainer';
 import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
 import { StopListContextProvider } from '@/contexts/StopList.context';
 
@@ -15,7 +15,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 				<Navigation />
 			</StopListContextProvider>
 			<StopDetailContextProvider stopId={id}>
-				<Stop paramId={id} />
+				<StopContainer paramId={id} />
 			</StopDetailContextProvider>
 		</div>
 	);
