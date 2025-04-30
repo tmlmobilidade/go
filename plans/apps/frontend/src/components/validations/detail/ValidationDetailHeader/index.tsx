@@ -3,7 +3,7 @@
 /* * */
 
 import BackButton from '@/components/common/BackButton';
-import { ValidationDetailMode, useValidationDetailContext } from '@/contexts/ValidationDetail.context';
+import { useValidationDetailContext, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
 import { IconLock, IconLockOpen, IconTrash, IconUpload } from '@tabler/icons-react';
 import { ValidationSchema } from '@tmlmobilidade/types';
 import { ActionIcon, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
