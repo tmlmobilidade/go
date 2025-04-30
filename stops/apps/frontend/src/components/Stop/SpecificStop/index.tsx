@@ -43,10 +43,9 @@ export default function Stop() {
 			<Comments
 				comments={stop.form.getValues().comments || ['']}
 			/>
+			*/}
 
-			<Observations
-				observations={stop.form.getValues().observations || ['']}
-			/> */}
+			<Observations />
 		</div>
 	);
 }
