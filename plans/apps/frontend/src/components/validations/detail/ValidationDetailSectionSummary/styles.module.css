@@ -4,3 +4,25 @@
 	justify-content: center;
 	gap: var(--size-spacing-sm);
 }
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-md);
+	overflow-x: scroll;
+}
+
+.rowsCell {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+}
+
+.rowsCellMore {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}

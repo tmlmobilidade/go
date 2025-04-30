@@ -1,9 +1,9 @@
 /* * */
 
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
-import { IconAlertCircle, IconAlertTriangle, IconInfoCircle } from '@tabler/icons-react';
+import { IconAlertCircle, IconAlertTriangle, IconInfoCircle, IconPlus } from '@tabler/icons-react';
 import { GTFSValidatorMessage } from '@tmlmobilidade/types';
-import { Badge, Collapsible, DataTable, DataTableColumn, Divider, Label, Section } from '@tmlmobilidade/ui';
+import { Badge, Collapsible, DataTable, DataTableColumn, Description, Divider, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -16,14 +16,6 @@ export function ValidationDetailSectionSummary() {
 
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
-			accessor: 'field',
-			render: ({ field }) => {
-				return <div>{field}</div>;
-			},
-			title: 'Campo',
-			width: 200,
-		},
-		{
 			accessor: 'fileName',
 			render: ({ fileName }) => {
 				return <div>{fileName}</div>;
@@ -32,9 +24,19 @@ export function ValidationDetailSectionSummary() {
 			width: 200,
 		},
 		{
+			accessor: 'field',
+			render: ({ field }) => {
+				return <div>{field}</div>;
+			},
+			title: 'Campo',
+			width: 200,
+		},
+		{
 			accessor: 'severity',
 			render: ({ severity }) => {
-				return <div>{severity}</div>;
+				return (
+					<SeverityBadge severity={severity} />
+				);
 			},
 			title: 'Severidade',
 			width: 200,
@@ -42,10 +44,12 @@ export function ValidationDetailSectionSummary() {
 		{
 			accessor: 'rows',
 			render: ({ rows }) => {
-				return <div>{rows.map(row => row.toString()).join(', ')}</div>;
+				return (
+					<RowsCell rows={rows} />
+				);
 			},
 			title: 'Linhas',
-			width: 200,
+			width: 400,
 		},
 		{
 			accessor: 'message',
@@ -65,33 +69,70 @@ export function ValidationDetailSectionSummary() {
 			description="O resumo da validação mostra o número de erros, avisos e informações encontrados no arquivo GTFS."
 			title="Resumo da validação"
 		>
-			<Section gap="md">
+			<div className={styles.container}>
 				<Section flexDirection="row" gap="xs" padding="none">
-					<Badge variant="danger">
-						<div className={styles.badgeContent}>
-							<IconAlertCircle />
-							{validationDetailContext.data.form.getValues().summary?.total_errors}
-						</div>
-					</Badge>
-					<Badge variant="warning">
-						<div className={styles.badgeContent}>
-							<IconAlertTriangle />
-							{validationDetailContext.data.form.getValues().summary?.total_warnings}
-						</div>
-					</Badge>
-					<Badge variant="info">
-						<div className={styles.badgeContent}>
-							<IconInfoCircle />
-							{validationDetailContext.data.form.getValues().summary?.total_infos}
-						</div>
-					</Badge>
+					<SeverityBadge label={validationDetailContext.data.form.getValues().summary?.total_errors?.toString()} severity="error" />
+					<SeverityBadge label={validationDetailContext.data.form.getValues().summary?.total_warnings?.toString()} severity="warning" />
+					<SeverityBadge label={validationDetailContext.data.form.getValues().summary?.total_infos?.toString()} severity="info" />
 				</Section>
 				<Divider />
 				<DataTable
 					columns={columns}
 					records={validationDetailContext.data.form.getValues().summary?.messages ?? []}
 				/>
-			</Section>
+			</div>
 		</Collapsible>
+	);
+}
+
+interface SeverityConfig {
+	icon: React.ReactNode
+	label: string
+	variant: 'active' | 'danger' | 'disabled' | 'info' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
+}
+
+function SeverityBadge({ label, severity }: { label?: string, severity: 'error' | 'info' | 'warning' }) {
+	const severityConfig: Record<string, SeverityConfig> = {
+		error: {
+			icon: <IconAlertCircle />,
+			label: 'Erro',
+			variant: 'danger',
+		},
+		info: {
+			icon: <IconInfoCircle />,
+			label: 'Informação',
+			variant: 'info',
+		},
+		warning: {
+			icon: <IconAlertTriangle />,
+			label: 'Aviso',
+			variant: 'warning',
+		},
+	};
+
+	return (
+		<Badge variant={severityConfig[severity].variant}>
+			<div className={styles.badgeContent}>{severityConfig[severity].icon}{label ?? severityConfig[severity].label}</div>
+		</Badge>
+	);
+}
+
+function RowsCell({ rows }: { rows: number[] }) {
+	const MAX_ROWS = 10;
+
+	return (
+		<div className={styles.rowsCell}>
+			{rows.slice(0, MAX_ROWS).map((row) => {
+				return <Badge variant="muted">{row}</Badge>;
+			})}
+			{rows.length > MAX_ROWS && (
+				<Description>
+					<div className={styles.rowsCellMore}>
+						<IconPlus size={16} />
+						{rows.length - MAX_ROWS} linhas
+					</div>
+				</Description>
+			)}
+		</div>
 	);
 }
