@@ -1,7 +1,6 @@
 {
 	"name": "@tmlmobilidade/auth",
 	"version": "1.0.0",
-	"description": "",
 	"author": "",
 	"license": "ISC",
 	"keywords": [],
@@ -14,7 +13,7 @@
 		"start": "turbo start"
 	},
 	"dependencies": {
-		"@carrismetropolitana/eslint": "20250325.1926.5",
+		"@carrismetropolitana/eslint": "20250418.42.41",
 		"turbo": "2.5.0"
 	},
 	"devDependencies": {

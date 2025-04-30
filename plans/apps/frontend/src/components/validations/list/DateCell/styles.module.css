@@ -1,0 +1,16 @@
+.wrapper {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-md);
+	flex-wrap: wrap;
+}
+
+.badges {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+}
+
+.expired {
+	color: var(--color-system-text-200);
+}
