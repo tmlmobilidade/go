@@ -7,12 +7,8 @@ on:
       - 'plans/**'
     branches:
       - production
-#   pull_request:
-#     paths:
-#       - 'plans/**'
-#     branches:
-#       - production
-
+      - staging
+      
 # # #
 
 jobs:

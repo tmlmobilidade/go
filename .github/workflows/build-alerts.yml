@@ -7,11 +7,7 @@ on:
       - 'alerts/**'
     branches:
       - production
-#   pull_request:
-#     paths:
-#       - 'alerts/**'
-#     branches:
-#       - production
+      - staging
 
 # # #
 
