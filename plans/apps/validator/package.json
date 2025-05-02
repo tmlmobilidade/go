@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@tmlmobilidade/connectors": "^20250429.2258.0",
 		"@tmlmobilidade/gtfs-validator": "^20250430.1640.50",
-		"@tmlmobilidade/interfaces": "20250430",
+		"@tmlmobilidade/interfaces": "20250502",
 		"tsx": "^4.19.4"
 	},
 	"devDependencies": {
