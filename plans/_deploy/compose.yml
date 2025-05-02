@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-...scope...
+name: tmlmobilidade-sae-plans
 
 volumes:
   certbotdata:
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-alerts-nginx:production
+    image: ghcr.io/tmlmobilidade/sae-plans-nginx:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -87,7 +87,7 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-  
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
