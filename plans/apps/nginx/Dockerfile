@@ -4,6 +4,10 @@ FROM nginx:alpine-slim
 
 WORKDIR /app
 
+# Setup the NGINX_SERVER_NAME variable
+ARG NGINX_SERVER_NAME
+RUN if [ -z "$NGINX_SERVER_NAME" ]; then echo "NGINX_SERVER_NAME is not set" && exit 1; fi
+
 # Install envsubst for variable substitution
 RUN apk add --no-cache gettext
 
@@ -11,15 +15,7 @@ RUN apk add --no-cache gettext
 COPY ./configs/nginx.conf /etc/nginx/nginx.conf.template
 
 # Render the template at build time
-ARG NGINX_SERVER_NAME
-ENV NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
 RUN envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
-
-# # #
-# Setup Nginx configuration
-
-COPY ./configs /etc/nginx/
-
 
 # # #
 # Run Nginx	with auto-reload every 6 hours
