@@ -4,6 +4,15 @@ FROM nginx:alpine-slim
 
 WORKDIR /app
 
+# Install envsubst for variable substitution
+RUN apk add --no-cache gettext
+
+# Copy the template
+COPY ./configs/nginx.conf.template /etc/nginx/nginx.conf.template
+
+# Render the template at build time
+ARG NGINX_SERVER_NAME
+RUN envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # # #
 # Setup Nginx configuration
