@@ -5,6 +5,12 @@ FROM node:22.6-alpine3.20 AS base
 ENV MODULE=sae-plans
 ENV PROJECT=frontend
 
+ARG NEXT_PUBLIC_AUTH_URL
+ARG NEXT_PUBLIC_URL
+
+ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
+ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
+
 RUN npm install -g turbo@^2
 
 # # # # # # # # #
@@ -59,12 +65,6 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-
-ARG NEXT_PUBLIC_AUTH_URL
-ARG NEXT_PUBLIC_URL
-
-ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
-ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
