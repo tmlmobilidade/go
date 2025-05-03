@@ -60,6 +60,12 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+ARG NEXT_PUBLIC_AUTH_URL
+ARG NEXT_PUBLIC_URL
+
+ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
+ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
