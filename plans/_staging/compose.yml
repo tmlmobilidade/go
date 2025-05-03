@@ -38,9 +38,6 @@ services:
 
   nginx:
     image: ghcr.io/tmlmobilidade/sae-plans-nginx:staging
-    build:
-      args:
-        - NGINX_SERVER_NAME=staging.plans.sae.carrismetropolitana.pt
     deploy:
       restart_policy:
         condition: on-failure
