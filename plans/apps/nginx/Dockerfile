@@ -8,7 +8,7 @@ WORKDIR /app
 RUN apk add --no-cache gettext
 
 # Copy the template
-COPY ./configs/nginx.conf.template /etc/nginx/nginx.conf.template
+COPY ./configs/nginx.conf /etc/nginx/nginx.conf.template
 
 # Render the template at build time
 ARG NGINX_SERVER_NAME
