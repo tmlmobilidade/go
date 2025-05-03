@@ -12,6 +12,7 @@ COPY ./configs/nginx.conf /etc/nginx/nginx.conf.template
 
 # Render the template at build time
 ARG NGINX_SERVER_NAME
+ENV NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
 RUN envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # # #
