@@ -15,7 +15,7 @@ RUN apk add --no-cache gettext
 COPY ./configs/nginx.conf /etc/nginx/nginx.conf.template
 
 # Render the template at build time
-RUN envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+RUN envsubst '${NGINX_SERVER_NAME}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # # #
 # Run Nginx	with auto-reload every 6 hours
