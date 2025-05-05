@@ -9,9 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 				<PlanListContextProvider>
 					<PlanList />
 				</PlanListContextProvider>,
-				<>
-					{children}
-				</>,
+				children,
 			]}
 		/>
 	);
