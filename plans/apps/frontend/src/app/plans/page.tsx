@@ -3,8 +3,6 @@ import { PlanListContextProvider } from '@/contexts/PlanList.context';
 
 export default function Page() {
 	return (
-		<PlanListContextProvider>
-			<PlanList />
-		</PlanListContextProvider>
+		<>Selectione um plano</>
 	);
 }
