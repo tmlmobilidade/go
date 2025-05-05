@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/gtfs-validator": "^20250430.1640.50",
-		"@tmlmobilidade/lib": "20250505.1118.29",
+		"@tmlmobilidade/lib": "20250505.1127.7",
 		"@tmlmobilidade/types": "^20250430.1422.42",
 		"@tmlmobilidade/ui": "20250505.1118.49",
 		"@tmlmobilidade/utils": "20250502.700.32",
