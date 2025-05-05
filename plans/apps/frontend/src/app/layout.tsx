@@ -2,7 +2,6 @@
 
 import '@tmlmobilidade/ui/styles';
 import { Routes } from '@/lib/routes';
-import { submenuItems } from '@/lib/sidebar';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
@@ -35,7 +34,7 @@ export default async function Layout({
 		<html lang="en" suppressHydrationWarning>
 			<body>
 				<AppProvider>
-					<AppWrapper submenu={submenuItems}>
+					<AppWrapper>
 						{children}
 					</AppWrapper>
 				</AppProvider>
