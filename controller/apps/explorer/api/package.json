@@ -18,18 +18,18 @@
 		"@fastify/websocket": "11.0.2",
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250424.2144.19",
-		"@tmlmobilidade/lib": "20250424.2144.25",
+		"@tmlmobilidade/interfaces": "20250505.1524.23",
+		"@tmlmobilidade/lib": "20250505.1524.8",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"fastify": "5.3.2",
 		"luxon": "3.6.1"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.15.0",
+		"@types/node": "22.15.3",
 		"@types/ws": "8.18.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.19.3",
+		"tsx": "4.19.4",
 		"typescript": "5.8.3"
 	}
 }
