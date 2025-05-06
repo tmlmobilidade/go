@@ -14,9 +14,9 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "^20250505.1524.12",
+		"@tmlmobilidade/connectors": "^20250506.1603.43",
 		"@tmlmobilidade/gtfs-validator": "^20250430.1640.50",
-		"@tmlmobilidade/interfaces": "20250505",
+		"@tmlmobilidade/interfaces": "20250506",
 		"tsx": "^4.19.4"
 	},
 	"devDependencies": {
