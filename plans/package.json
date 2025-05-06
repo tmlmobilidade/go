@@ -6,7 +6,8 @@
 		"clean": "sh cleanup.sh",
 		"dev": "dotenv-run -f ./_dev/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
-		"start": "turbo start"
+		"start": "turbo start",
+		"yalc:tml": "yalc link @tmlmobilidade/connectors @tmlmobilidade/interfaces @tmlmobilidade/lib @tmlmobilidade/utils @tmlmobilidade/types @tmlmobilidade/ui --no-pure"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
