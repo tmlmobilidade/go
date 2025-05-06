@@ -52,7 +52,7 @@ jobs:
           tags: ghcr.io/tmlmobilidade/sae-plans-frontend:${{ github.ref_name }}
           build-args: |
             NEXT_PUBLIC_AUTH_URL=${{ github.ref_name == 'staging' && 'https://jhgjgh.sae.carrismetropolitana.pt' || 'https://auth.sae.carrismetropolitana.pt' }}
-            NEXT_PUBLIC_URL=${{ github.ref_name == 'staging' && 'https://blabla.plans.sae.carrismetropolitana.pt' || 'https://plans.sae.carrismetropolitana.pt' }}
+            NEXT_PUBLIC_URL=${{ vars.APP_PLANS_URL }}
             NODE_ENV=${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
