@@ -9,6 +9,8 @@ import { useState } from 'react';
 
 /* * */
 
+import { useSearchbarContext } from '@/contexts/Searchbar.context';
+
 import styles from './styles.module.css';
 
 /* * */
@@ -21,6 +23,8 @@ export default function SearchBar() {
 
 	const [isOpen, setIsOpen] = useState(false);
 
+	const searchbarContext = useSearchbarContext();
+	console.log('searchbarContext', searchbarContext);
 	//
 	// B. Transform data
 
@@ -43,12 +47,8 @@ export default function SearchBar() {
 			<TextInput
 				className={styles.inputText}
 				maxLength={255}
+				onChange={e => searchbarContext.setQueryString(e.target.value)}
 				placeholder="Pesquisar..."
-				onChange={(e) => {
-					alert(e.target.value);
-				}}
-				// disabled
-				// {...alertDetailData.form.getInputProps('title')}
 			/>
 
 			{/* Settings Button */}
