@@ -20,8 +20,8 @@ export const ApiRoutes = Object.freeze({
 
 export const Routes = Object.freeze({
 	// Common
-	AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
-	URL: process.env.NEXT_PUBLIC_URL ?? 'https://alerts.sae.carrismetropolitana.pt',
+	AUTH_URL: process.env.ENVIRONMENT === 'production' ? 'https://auth.sae.carrismetropolitana.pt' : process.env.ENVIRONMENT === 'staging' ? 'https://auth.sae.carrismetropolitana.pt' : 'http://localhost:51000',
+	URL: process.env.ENVIRONMENT === 'production' ? 'https://alerts.sae.carrismetropolitana.pt' : process.env.ENVIRONMENT === 'staging' ? 'https://staging.alerts.sae.carrismetropolitana.pt' : 'http://localhost:51004',
 
 	// Other
 	...PageRoutes,
