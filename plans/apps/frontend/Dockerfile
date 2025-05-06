@@ -1,14 +1,19 @@
-# # # # # # # # #
+# # #
+# PRIMER STAGE
 
 FROM node:lts-alpine AS base
+
 
 ENV MODULE=sae-plans
 ENV PROJECT=frontend
 
 ARG ENVIRONMENT
+
 ENV ENVIRONMENT=${ENVIRONMENT}
+ENV NEXT_PUBLIC_ENVIRONMENT=${ENVIRONMENT}
 
 RUN npm install -g turbo@^2
+
 
 # # # # # # # # #
 

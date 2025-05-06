@@ -6,6 +6,8 @@ import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+import { type PropsWithChildren } from 'react';
+
 /* * */
 
 export const metadata: Metadata = {
@@ -15,20 +17,21 @@ export const metadata: Metadata = {
 
 /* * */
 
-export default async function Layout({
-	children,
-}: {
-	children: React.ReactNode
-}) {
+export default async function Layout({ children }: PropsWithChildren) {
+	//
+
+	//
+	// A. Setup variables
+
 	const cookies = await nextCookies();
 	const sessionToken = cookies.get('session_token')?.value;
 
 	if (!sessionToken) {
-		redirect(
-			`${Routes.AUTH_URL}/login?redirect=${encodeURI(Routes.URL)}`,
-			RedirectType.replace,
-		);
+		redirect(`${Routes.AUTH_URL}/login?redirect=${encodeURI(Routes.URL)}`, RedirectType.replace);
 	}
+
+	//
+	// B. Render components
 
 	return (
 		<html lang="en" suppressHydrationWarning>
@@ -41,4 +44,6 @@ export default async function Layout({
 			</body>
 		</html>
 	);
+
+	//
 }
