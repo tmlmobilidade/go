@@ -5,10 +5,14 @@
 import { PlansListFilters } from '@/components/plans/list/PlansListFilters';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlanListContext } from '@/contexts/PlanList.context';
-import { Routes } from '@/lib/routes';
-import { type Plan } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, Pane, Tag } from '@tmlmobilidade/ui';
+import { IconArrowRight, IconLock, IconLockOpen } from '@tabler/icons-react';
+import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
+import { Pane, Section, Tag } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
+
+import styles from './styles.module.css';
+
 /* * */
 
 export function PlanList() {
@@ -19,14 +23,6 @@ export function PlanList() {
 
 	const router = useRouter();
 	const { data, flags } = usePlanListContext();
-
-	const columns: DataTableColumn<Plan>[] = [
-		{
-			accessor: '_id',
-			render: ({ _id }) => <Tag label={_id} variant="muted" />,
-			width: 150,
-		},
-	];
 
 	//
 	// B. Render components
@@ -44,14 +40,28 @@ export function PlanList() {
 			<PlansListFilters />,
 		]}
 		>
-			<DataTable
-				columns={columns}
-				records={data.filtered}
-				rowIdAccessor="_id"
-				onRowClick={(plan) => {
-					router.push(Routes.PLAN_DETAIL(plan._id));
-				}}
-			/>
+			{data.filtered.map(plan => (
+				<div className={styles.root} onClick={() => router.push(`/plans/${plan._id}`)}>
+					<Section key={plan._id} alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
+						<Tag label={plan._id} variant="muted" />
+						<Tag label={AVAILABLE_AGENCIES.find(agency => agency._id === plan.agency_id)?.name} variant="secondary" />
+					</Section>
+					<Section alignItems="center" flexDirection="row" gap="md">
+						<Section alignItems="center" flexDirection="row" gap="sm">
+							<Tag label={Dates.fromOperationalDate(plan.valid_from).toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
+							<IconArrowRight size={16} />
+							<Tag
+								label={Dates.fromOperationalDate(plan.valid_until).toLocaleString(Dates.FORMATS.DATE_SHORT)}
+								variant={
+									Dates.now().operational_date > plan.valid_until ? 'danger' : 'warning'
+								}
+							/>
+						</Section>
+
+						{plan.is_locked ? <IconLock color="var(--color-status-danger-primary)" /> : <IconLockOpen color="var(--color-status-success-primary)" />}
+					</Section>
+				</div>
+			))}
 		</Pane>
 	);
 
