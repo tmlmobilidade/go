@@ -19,6 +19,7 @@ jobs:
   frontend:
     name: frontend (NextJS)
     runs-on: ubuntu-latest
+    environment: staging
     permissions:
       contents: read
       packages: write
