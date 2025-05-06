@@ -8,10 +8,15 @@ ENV PROJECT=frontend
 ARG NEXT_PUBLIC_AUTH_URL
 ARG NEXT_PUBLIC_URL
 ARG NODE_ENV
+ARG ENVIRONMENT
 
 ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
 ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
-ENV NODE_ENV=${NODE_ENV}
+# ENV NODE_ENV=${ENVIRONMENT}
+
+RUN echo "pre1 - NODE_ENV: ${ENVIRONMENT}"
+RUN echo "pre1 - NEXT_PUBLIC_AUTH_URL: ${NEXT_PUBLIC_AUTH_URL}"
+RUN echo "pre1 - NEXT_PUBLIC_URL: ${NEXT_PUBLIC_URL}"
 
 RUN npm install -g turbo@^2
 
@@ -51,15 +56,9 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 RUN npm install
 
-ENV NODE_ENV=${NODE_ENV}
-
-RUN echo "pre2 - NODE_ENV: ${NODE_ENV}"
-
 # Build the project
 COPY --from=pruner /app/out/full/ .
 RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${PROJECT}
-
-RUN echo "pos - NODE_ENV: ${NODE_ENV}"
 
 
 # # # # # # # # #
