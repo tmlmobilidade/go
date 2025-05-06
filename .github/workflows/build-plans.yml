@@ -51,8 +51,8 @@ jobs:
           file: ./plans/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-plans-frontend:${{ github.ref_name }}
           build-args: |
-            NEXT_PUBLIC_AUTH_URL=${{ vars.APP_AUTH_URL }}
-            NEXT_PUBLIC_URL=${{ vars.APP_PLANS_URL }}
+            NEXT_PUBLIC_AUTH_URL=${{ env.APP_AUTH_URL }}
+            NEXT_PUBLIC_URL=${{ env.APP_PLANS_URL }}
             NODE_ENV=${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
