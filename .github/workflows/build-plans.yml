@@ -19,7 +19,7 @@ jobs:
   frontend:
     name: frontend (NextJS)
     runs-on: ubuntu-latest
-    environment: staging
+    environment: ${{ github.ref }}
     permissions:
       contents: read
       packages: write
