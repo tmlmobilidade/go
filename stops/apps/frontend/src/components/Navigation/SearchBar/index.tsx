@@ -44,6 +44,9 @@ export default function SearchBar() {
 				className={styles.inputText}
 				maxLength={255}
 				placeholder="Pesquisar..."
+				onChange={(e) => {
+					alert(e.target.value);
+				}}
 				// disabled
 				// {...alertDetailData.form.getInputProps('title')}
 			/>
