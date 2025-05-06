@@ -39,8 +39,9 @@
 
 .breadcrumbs {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 45px;
+    right: 0;
     display: flex;
     flex-direction: column;
+    background-color: rgb(10 10 20);
 }
