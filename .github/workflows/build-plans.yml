@@ -19,7 +19,7 @@ jobs:
   frontend:
     name: frontend (NextJS)
     runs-on: ubuntu-latest
-    environment: ${{ github.ref }}
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
@@ -52,8 +52,8 @@ jobs:
           file: ./plans/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-plans-frontend:${{ github.ref_name }}
           build-args: |
-            NEXT_PUBLIC_AUTH_URL=${{ github.ref }}
-            NEXT_PUBLIC_URL=${{ github.ref }}
+            NEXT_PUBLIC_AUTH_URL=${{ vars.APP_AUTH_URL }}
+            NEXT_PUBLIC_URL=${{ vars.APP_PLANS_URL }}
             NODE_ENV=${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -62,7 +62,7 @@ jobs:
   api:
     name: api (NodeJS)
     runs-on: ubuntu-latest
-    environment: ${{ github.ref }}
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
@@ -101,7 +101,7 @@ jobs:
   validator:
     name: validator (NodeJS)
     runs-on: ubuntu-latest
-    environment: ${{ github.ref }}
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
@@ -140,7 +140,7 @@ jobs:
   nginx:
     name: nginx
     runs-on: ubuntu-latest
-    environment: ${{ github.ref }}
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
