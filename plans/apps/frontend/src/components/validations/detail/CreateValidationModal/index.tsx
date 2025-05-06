@@ -74,7 +74,7 @@ export default function CreateValidationModal() {
 					value={validFrom}
 					onChange={(date) => {
 						validationDetailContext.data.form.setValues({
-							valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
+							valid_from: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 					withAsterisk
@@ -87,7 +87,7 @@ export default function CreateValidationModal() {
 					value={validUntil}
 					onChange={(date) => {
 						validationDetailContext.data.form.setValues({
-							valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
+							valid_until: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 				/>

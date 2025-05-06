@@ -13,8 +13,8 @@ import useSWR from 'swr';
 
 interface ValidationListContextState {
 	actions: {
-		changeValidFrom: (date: Date | null) => void
-		changeValidUntil: (date: Date | null) => void
+		changeValidFrom: (date: null | string) => void
+		changeValidUntil: (date: null | string) => void
 	}
 	data: {
 		filtered: Validation[]
@@ -71,12 +71,12 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 
 	//
 	// D. Handle actionsn
-	function handleChangeValidFrom(date: Date | null) {
-		setFilterValidFrom(date ? Dates.fromJSDate(date).operational_date : null);
+	function handleChangeValidFrom(date: null | string) {
+		setFilterValidFrom(date ? Dates.fromFormat(date, 'yyyy-MM-dd').operational_date : null);
 	}
 
-	function handleChangeValidUntil(date: Date | null) {
-		setFilterValidUntil(date ? Dates.fromJSDate(date).operational_date : null);
+	function handleChangeValidUntil(date: null | string) {
+		setFilterValidUntil(date ? Dates.fromFormat(date, 'yyyy-MM-dd').operational_date : null);
 	}
 
 	//
