@@ -17,9 +17,9 @@
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
 		"@tmlmobilidade/interfaces": "20250506.1603.52",
-		"@tmlmobilidade/lib": "20250506.1604.9",
+		"@tmlmobilidade/lib": "20250506.1803.34",
 		"@tmlmobilidade/types": "20250506.1603.44",
-		"@tmlmobilidade/utils": "20250506.1603.40",
+		"@tmlmobilidade/utils": "20250506.1624.25",
 		"fastify": "5.3.2",
 		"pino-pretty": "13.0.0",
 		"resolve-tspaths": "0.8.23",
@@ -31,7 +31,7 @@
 		"@fastify/multipart": "^9.0.3",
 		"@tmlmobilidade/tsconfig": "20250506.1031.38",
 		"@types/jest": "29.5.14",
-		"@types/node": "22.15.12",
+		"@types/node": "22.15.14",
 		"jest": "29.7.0",
 		"typescript": "5.8.3"
 	}

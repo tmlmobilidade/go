@@ -12,10 +12,10 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/gtfs-validator": "^20250430.1640.50",
-		"@tmlmobilidade/lib": "20250506.1604.9",
+		"@tmlmobilidade/lib": "20250506.1803.34",
 		"@tmlmobilidade/types": "^20250506.1603.44",
-		"@tmlmobilidade/ui": "20250506.1621.22",
-		"@tmlmobilidade/utils": "20250506.1603.40",
+		"@tmlmobilidade/ui": "20250506.1803.48",
+		"@tmlmobilidade/utils": "20250506.1624.25",
 		"clsx": "2.1.1",
 		"next": "15.3.1",
 		"react": "19.1.0",
