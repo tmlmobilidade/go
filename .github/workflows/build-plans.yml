@@ -8,7 +8,7 @@ on:
     branches:
       - production
       - staging
-      
+
 # # #
 
 jobs:
@@ -52,7 +52,7 @@ jobs:
           tags: ghcr.io/tmlmobilidade/sae-plans-frontend:${{ github.ref_name }}
           build-args: |
             NEXT_PUBLIC_AUTH_URL=${{ github.ref_name == 'staging' && 'https://auth.sae.carrismetropolitana.pt' || 'https://auth.sae.carrismetropolitana.pt' }}
-            NEXT_PUBLIC_URL=${{ github.ref_name == 'staging' && 'https://staging.plans.sae.carrismetropolitana.pt' || 'https://plans.sae.carrismetropolitana.pt' }}
+            NEXT_PUBLIC_URL=${{ github.ref_name == 'staging' && 'https://blabla.plans.sae.carrismetropolitana.pt' || 'https://plans.sae.carrismetropolitana.pt' }}
             NODE_ENV=${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -92,7 +92,7 @@ jobs:
           context: ./plans
           file: ./plans/apps/api/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-plans-api:${{ github.ref_name }}
-  
+
           # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
