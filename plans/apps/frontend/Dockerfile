@@ -13,6 +13,8 @@ ENV NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
 ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
 ENV NODE_ENV=${NODE_ENV}
 
+RUN echo "NODE_ENV: ${NODE_ENV}"
+
 RUN npm install -g turbo@^2
 
 # # # # # # # # #
