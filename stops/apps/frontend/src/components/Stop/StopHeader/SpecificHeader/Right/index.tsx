@@ -28,11 +28,11 @@ export default function Right({ open }: RightProps) {
 	return (
 		<div className={styles.section}>
 			{/* Patterns Butoon */}
-			<Tooltip label="Ver Patterns Associados" position="bottom">
+			{/* <Tooltip label="Ver Patterns Associados" position="bottom">
 				<div className={styles.iconBlue} color="blue" onClick={open}>
 					<IconEye />
 				</div>
-			</Tooltip>
+			</Tooltip> */}
 
 			{/* Stop Button */}
 			<Link href={`https://www.carrismetropolitana.pt/stops/${stop._id}`}>
