@@ -1,38 +1,36 @@
 .container {
     display: flex;
     flex-direction: row;
+    gap: var(--mantine-spacing-sm);
     align-items: center;
     justify-content: space-between;
-    gap: var(--mantine-spacing-sm);
     padding: var(--mantine-spacing-sm);
     border-bottom: 1px solid #2f343d;
 }
 
-.input_text {
+.inputText {
     width: 100%;
 }
 
 .settings {
     min-width: 34px;
     min-height: 34px;
-    background-color: aqua;
     cursor: pointer;
+    background-color: aqua;
 }
 
 .icon {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--mantine-color-gray-light);
-
-    padding: 0px 4px;
     height: 100%;
-    cursor: pointer;
-    border-radius: 0.25rem;
     aspect-ratio: 1 / 1;
-
-    position: relative;
+    padding: 0 4px;
+    cursor: pointer;
+    background-color: var(--mantine-color-gray-light);
+    border-radius: 0.25rem;
 }
 
 .icon:hover {
@@ -41,8 +39,9 @@
 
 .breadcrumbs {
     position: absolute;
-    left: 0;
-    top: 0;
+    top: 45px;
+    right: 0;
     display: flex;
     flex-direction: column;
+    background-color: rgb(10 10 20);
 }

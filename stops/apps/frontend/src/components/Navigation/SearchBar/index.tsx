@@ -9,6 +9,8 @@ import { useState } from 'react';
 
 /* * */
 
+import { useSearchbarContext } from '@/contexts/Searchbar.context';
+
 import styles from './styles.module.css';
 
 /* * */
@@ -21,13 +23,15 @@ export default function SearchBar() {
 
 	const [isOpen, setIsOpen] = useState(false);
 
+	const searchbarContext = useSearchbarContext();
 	//
 	// B. Transform data
 
 	const items = [
-		{ href: '#', title: 'Mantine' },
-		{ href: '#', title: 'Mantine hooks' },
-		{ href: '#', title: 'use-id' },
+		{ href: '#', title: 'Exportar stops.txt' },
+		{ href: '#', title: 'Exportar deleted_stops.txt' },
+		{ href: '#', title: 'Exportar Linhas por Paragem' },
+		{ href: '#', title: 'Exportar para ESRI' },
 	].map((item, index) => (
 		<Anchor key={index} href={item.href}>
 			{item.title}
@@ -41,11 +45,10 @@ export default function SearchBar() {
 		<div className={styles.container}>
 			{/* Search Bar */}
 			<TextInput
-				className={styles.input_text}
+				className={styles.inputText}
 				maxLength={255}
+				onChange={e => searchbarContext.setQueryString(e.target.value)}
 				placeholder="Pesquisar..."
-				// disabled
-				// {...alertDetailData.form.getInputProps('title')}
 			/>
 
 			{/* Settings Button */}

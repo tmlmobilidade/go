@@ -6,6 +6,7 @@ import { useStopsContext } from '@/contexts/Stops.context';
 
 /* * */
 
+import { useSearchbarContext } from '@/contexts/Searchbar.context';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 
 import Item from './Item';
@@ -21,6 +22,9 @@ export default function List() {
 
 	const { data, flags } = useStopsContext();
 
+	const searchbarContext = useSearchbarContext();
+
+	const filteredStops = data.stops.filter(stop => searchbarContext.queryString == null || stop.name.includes(searchbarContext.queryString));
 	//
 	// B. Render components
 
@@ -29,7 +33,7 @@ export default function List() {
 			{
 				flags.is_loading
 					? <div>Loading...</div>
-					: data.stops.map((stop, index) => (<Item key={index} stop={stop} />))
+					: filteredStops.map((stop, index) => (<Item key={index} stop={stop} />))
 			}
 		</div>
 	);

@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
 /* * */
 
 import Footer from './Footer';
@@ -16,10 +17,12 @@ export default function Navigation() {
 	// A. Render components
 
 	return (
-		<div className={styles.container}>
-			<SearchBar />
-			<List />
-			<Footer />
-		</div>
+		<SearchbarContextProvider>
+			<div className={styles.container}>
+				<SearchBar />
+				<List />
+				<Footer />
+			</div>
+		</SearchbarContextProvider>
 	);
 }
