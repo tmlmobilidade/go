@@ -49,9 +49,9 @@ export default function Connections() {
 		>
 			<Section gap="md">
 				<Grid columns="abcd" gap="md">
-					{connections.map((connection) => {
+					{connections.map((connection, index) => {
 						return (
-							<div className={styles.inputCheckboxContainer}>
+							<div key={index} className={styles.inputCheckboxContainer}>
 								<Checkbox
 									checked={stopDetailContext.data.form.getInputProps('connections').value.includes(connection)}
 									className={styles.inputCheckbox}

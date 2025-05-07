@@ -27,7 +27,6 @@ export default function SearchBar() {
 	const searchbarContext = useSearchbarContext();
 
 	const { data } = useStopsContext();
-	console.log('data', JSON.stringify(data, null, 2));
 
 	//
 	// B. Transform data

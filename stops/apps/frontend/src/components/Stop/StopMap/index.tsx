@@ -12,6 +12,8 @@ import * as React from 'react';
 
 /* * */
 
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+
 import styles from './styles.module.css';
 
 /* * */
@@ -30,8 +32,8 @@ export default function Mapper({ generic }: MapperProps) {
 
 	const { stopsListMap } = useMap();
 	const router = useRouter();
-	// const stopsListContext = useStopsListContext();
-
+	const stopDetailContext = useStopDetailContext();
+	console.log('stopDetailContext', stopDetailContext.data.form.values);
 	//
 	// B. Handle actions
 
@@ -78,7 +80,7 @@ export default function Mapper({ generic }: MapperProps) {
 		features: [
 			{
 				geometry: {
-					coordinates: [-8.9595566, 38.7542436],
+					coordinates: [stopDetailContext.data.form.values.longitude, stopDetailContext.data.form.values.latitude],
 					type: 'Point',
 				},
 				properties: {
@@ -89,10 +91,10 @@ export default function Mapper({ generic }: MapperProps) {
 			{
 				geometry: {
 					coordinates: [
-						[-8.9595566, 38.7542436],
-						[103.0, 1.0],
-						[104.0, 0.0],
-						[105.0, 1.0],
+						[stopDetailContext.data.form.values.longitude, stopDetailContext.data.form.values.latitude],
+						// [103.0, 1.0],
+						// [104.0, 0.0],
+						// [105.0, 1.0],
 					],
 					type: 'MultiPoint',
 				},
@@ -118,4 +120,7 @@ export default function Mapper({ generic }: MapperProps) {
 			</MapView>
 		</div>
 	);
+}
+function useStopContext() {
+	throw new Error('Function not implemented.');
 }

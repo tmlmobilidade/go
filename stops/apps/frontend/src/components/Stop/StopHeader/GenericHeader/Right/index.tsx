@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Button } from '@mantine/core';
+import { ActionIcon, Button } from '@mantine/core';
 import { IconDeviceFloppy, IconMapPinFilled, IconPlus } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 import { SetStateAction } from 'react';
@@ -11,6 +11,7 @@ import { SetStateAction } from 'react';
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Routes } from '@/lib/routes';
+import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
 
 import styles from './styles.module.css';
@@ -55,14 +56,16 @@ export default function Right({ setToggleValue, toggleValue }: RightProps) {
 			</Tooltip>
 
 			{/* Save Button */}
-			<Tooltip label="Criar Paragem" position="bottom">
-				<div
-					className={styles.icon}
-					onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
-				>
-					<IconPlus />
-				</div>
-			</Tooltip>
+			<Link href={Routes.STOP_DETAIL('new')}>
+				<Tooltip label="Criar Paragem" position="bottom">
+					<ActionIcon
+						className={styles.icon}
+						variant="primary"
+					>
+						<IconPlus />
+					</ActionIcon>
+				</Tooltip>
+			</Link>
 		</div>
 	);
 }

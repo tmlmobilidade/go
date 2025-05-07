@@ -3,10 +3,11 @@
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Routes } from '@/lib/routes';
 import { IconDeviceFloppy, IconEye, IconPlus, IconTrash, IconWorldUpload } from '@tabler/icons-react';
-import { Tooltip } from '@tmlmobilidade/ui';
+import { ActionIcon, Tooltip } from '@tmlmobilidade/ui';
 import { redirect, RedirectType } from 'next/navigation';
 
 import styles from '../styles.module.css';
+import Link from 'next/link';
 
 interface RightProps {
 	open: () => void
@@ -44,15 +45,16 @@ export default function Right({ open }: RightProps) {
 			</Tooltip>
 
 			{/* Create New Button */}
-			<Tooltip label="Criar Paragem" position="bottom">
-				<div
-					className={styles.iconBlue}
-					onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
-				>
-					<IconPlus />
-				</div>
-			</Tooltip>
-
+			<Link href={Routes.STOP_DETAIL('new')}>
+				<Tooltip label="Criar Paragem" position="bottom">
+					<ActionIcon
+						className={styles.iconBlue}
+						variant="primary"
+					>
+						<IconPlus />
+					</ActionIcon>
+				</Tooltip>
+			</Link>
 			{/* Save Button */}
 			<Tooltip label="Salvar Paragem" position="bottom">
 				<div
