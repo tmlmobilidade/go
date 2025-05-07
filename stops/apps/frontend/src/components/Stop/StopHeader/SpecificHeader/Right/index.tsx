@@ -4,10 +4,10 @@ import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Routes } from '@/lib/routes';
 import { IconDeviceFloppy, IconEye, IconPlus, IconTrash, IconWorldUpload } from '@tabler/icons-react';
 import { ActionIcon, Tooltip } from '@tmlmobilidade/ui';
+import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
 
 import styles from '../styles.module.css';
-import Link from 'next/link';
 
 interface RightProps {
 	open: () => void
@@ -35,14 +35,16 @@ export default function Right({ open }: RightProps) {
 			</Tooltip>
 
 			{/* Stop Button */}
-			<Tooltip label="Ver esta paragem no Site" position="bottom">
-				<div
-					className={styles.iconBlue}
-					onClick={() => window.open(`https://www.carrismetropolitana.pt/stops/${stop._id}`, '_blank')}
-				>
-					<IconWorldUpload />
-				</div>
-			</Tooltip>
+			<Link href={`https://www.carrismetropolitana.pt/stops/${stop._id}`}>
+				<Tooltip label="Ver esta paragem no Site" position="bottom">
+					<ActionIcon
+						className={styles.iconBlue}
+						variant="secondary"
+					>
+						<IconWorldUpload />
+					</ActionIcon>
+				</Tooltip>
+			</Link>
 
 			{/* Create New Button */}
 			<Link href={Routes.STOP_DETAIL('new')}>
@@ -59,7 +61,6 @@ export default function Right({ open }: RightProps) {
 			<Tooltip label="Salvar Paragem" position="bottom">
 				<div
 					className={styles.iconBlue}
-					// onClick={() => redirect(Routes.STOP_DETAIL('new'), RedirectType.replace)}
 					onClick={() => actions.saveStop()}
 				>
 					<IconDeviceFloppy />
@@ -78,7 +79,6 @@ export default function Right({ open }: RightProps) {
 					<IconTrash />
 				</div>
 			</Tooltip>
-
 		</div>
 	);
 }

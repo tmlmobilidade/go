@@ -46,14 +46,17 @@ export default function Right({ setToggleValue, toggleValue }: RightProps) {
 			</Button>
 
 			{/* Stop Button */}
-			<Tooltip label="Open in Google Maps" position="bottom">
-				<div
-					className={styles.icon}
-					onClick={() => window.open(`https://www.google.com/maps/@38.6512317,-8.8813723,10z`, '_blank')}
-				>
-					<IconMapPinFilled />
-				</div>
-			</Tooltip>
+			<Link href="https://www.google.com/maps/@38.6512317,-8.8813723,10z">
+				<Tooltip label="Open in Google Maps" position="bottom">
+					<ActionIcon
+						className={styles.icon}
+						variant="secondary"
+					// onClick={() => window.open(`https://www.google.com/maps/@38.6512317,-8.8813723,10z`, '_blank')}
+					>
+						<IconMapPinFilled />
+					</ActionIcon>
+				</Tooltip>
+			</Link>
 
 			{/* Save Button */}
 			<Link href={Routes.STOP_DETAIL('new')}>
