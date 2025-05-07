@@ -10,6 +10,7 @@ import { useState } from 'react';
 /* * */
 
 import { useSearchbarContext } from '@/contexts/Searchbar.context';
+import { useStopsContext } from '@/contexts/Stops.context';
 
 import styles from './styles.module.css';
 
@@ -24,16 +25,33 @@ export default function SearchBar() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const searchbarContext = useSearchbarContext();
+
+	const { data } = useStopsContext();
+	console.log('data', JSON.stringify(data, null, 2));
+
 	//
 	// B. Transform data
 
+	const downloadJSON = () => {
+		const jsonStr = JSON.stringify(data, null, 2);
+		const blob = new Blob([jsonStr], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'stops.json';
+		link.click();
+
+		URL.revokeObjectURL(url); // Clean up
+	};
+
 	const items = [
-		{ href: '#', title: 'Exportar stops.txt' },
+		{ onClick: () => downloadJSON(), title: 'Exportar stops.json' },
 		// { href: '#', title: 'Exportar deleted_stops.txt' },
 		// { href: '#', title: 'Exportar Linhas por Paragem' },
 		// { href: '#', title: 'Exportar para ESRI' },
 	].map((item, index) => (
-		<Anchor key={index} href={item.href}>
+		<Anchor key={index} onClick={item.onClick}>
 			{item.title}
 		</Anchor>
 	));

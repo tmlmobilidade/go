@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
-import StopAffectation from './StopAffectation';
+// import StopAffectation from './StopAffectation';
 import StopComments from './StopComments';
 import StopConnections from './StopConnections';
 import StopDetails from './StopDetails';
