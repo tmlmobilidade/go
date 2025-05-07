@@ -24,7 +24,6 @@ export default function SearchBar() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const searchbarContext = useSearchbarContext();
-	console.log('searchbarContext', searchbarContext);
 	//
 	// B. Transform data
 
