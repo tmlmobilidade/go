@@ -49,7 +49,7 @@ export default function Stop({ paramId }: StopProps) {
 							<StopMap generic={false} />
 							<StopDetails />
 							<StopAdminInformation />
-							<StopAffectation />
+							{/* <StopAffectation /> */}
 							<StopShelter />
 							<StopInfrasctructure />
 							<StopPublicInformation />

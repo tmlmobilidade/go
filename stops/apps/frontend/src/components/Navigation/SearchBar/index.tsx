@@ -29,9 +29,9 @@ export default function SearchBar() {
 
 	const items = [
 		{ href: '#', title: 'Exportar stops.txt' },
-		{ href: '#', title: 'Exportar deleted_stops.txt' },
-		{ href: '#', title: 'Exportar Linhas por Paragem' },
-		{ href: '#', title: 'Exportar para ESRI' },
+		// { href: '#', title: 'Exportar deleted_stops.txt' },
+		// { href: '#', title: 'Exportar Linhas por Paragem' },
+		// { href: '#', title: 'Exportar para ESRI' },
 	].map((item, index) => (
 		<Anchor key={index} href={item.href}>
 			{item.title}
