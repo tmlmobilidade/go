@@ -12,10 +12,10 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
 		"@tmlmobilidade/gtfs-validator": "20250430.1640.50",
-		"@tmlmobilidade/lib": "20250506.2340.41",
-		"@tmlmobilidade/types": "20250506.2340.41",
-		"@tmlmobilidade/ui": "20250506.2340.41",
-		"@tmlmobilidade/utils": "20250506.2340.41",
+		"@tmlmobilidade/lib": "20250508.1344.22",
+		"@tmlmobilidade/types": "20250508.1344.22",
+		"@tmlmobilidade/ui": "20250508.1344.22",
+		"@tmlmobilidade/utils": "20250508.1344.22",
 		"clsx": "2.1.1",
 		"next": "15.3.2",
 		"react": "19.1.0",
@@ -24,7 +24,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
-		"@tmlmobilidade/tsconfig": "20250506.2340.41",
+		"@tmlmobilidade/tsconfig": "20250508.1344.22",
 		"@types/luxon": "3.6.2",
 		"@types/node": "22",
 		"@types/react": "19",
