@@ -1,6 +1,6 @@
 # # # # # # # # #
 
-FROM node:20-bullseye AS base
+FROM node:20 AS base
 
 ENV MODULE=sae-plans
 ENV PROJECT=validator
