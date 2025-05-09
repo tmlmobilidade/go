@@ -719,15 +719,13 @@ export async function createRidesFromGtfs() {
 		const hashedTripIdsInUse = new Set<string>();
 		const staleHashedTripIds = new Set<string>();
 
-		// Get all hashed shape and hashed trip IDs that are referenced by rides
+		// Get all existing hashed shape and hashed trip IDs
+		// and also only ones that are referenced by rides
 
 		for await (const rideData of allRidesStream) {
 			hashedShapeIdsInUse.add(rideData.hashed_shape_id);
 			hashedTripIdsInUse.add(rideData.hashed_trip_id);
 		}
-
-		// Get all existing hashed shape and trip IDs,
-		// even if they are not referenced by rides
 
 		for await (const hashedShape of allHashedShapesStream) {
 			staleHashedShapeIds.add(hashedShape._id);
@@ -737,13 +735,17 @@ export async function createRidesFromGtfs() {
 			staleHashedTripIds.add(hashedTrip._id);
 		}
 
+		LOGGER.info(`Cleanup progress: HashedShapes in use: ${hashedShapeIdsInUse.size} | Stale HashedShapes: ${staleHashedShapeIds.size} (${staleHashedItemsTimer.get()})`);
+		LOGGER.info(`Cleanup progress: HashedTrips in use: ${hashedTripIdsInUse.size} | Stale HashedTrips: ${staleHashedTripIds.size} (${staleHashedItemsTimer.get()})`);
+
 		// Remove IDs that are referenced by rides
 		// from the list of all hashed shapes and trips
 
 		hashedShapeIdsInUse.forEach(hashedShapeIdInUse => staleHashedShapeIds.delete(hashedShapeIdInUse));
 		hashedTripIdsInUse.forEach(hashedTripIdInUse => staleHashedTripIds.delete(hashedTripIdInUse));
 
-		LOGGER.info(`Cleanup progress: Will delete ${staleHashedShapeIds.size} stale Hashed Shapes and ${staleHashedTripIds.size} stale Hashed Trips. (${staleHashedItemsTimer.get()})`);
+		LOGGER.info(`Cleanup progress: Will delete ${staleHashedShapeIds.size} stale Hashed Shapes. (${staleHashedItemsTimer.get()})`);
+		LOGGER.info(`Cleanup progress: Will delete ${staleHashedTripIds.size} stale Hashed Trips. (${staleHashedItemsTimer.get()})`);
 
 		// From the resulting list of IDs,
 		// remove the ones that are referenced by rides
