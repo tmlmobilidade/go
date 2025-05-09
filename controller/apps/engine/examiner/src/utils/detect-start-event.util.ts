@@ -34,7 +34,7 @@ export function detectStartEvent(analysisData: AnalysisData): null | VehicleEven
 	//
 	// Ensure that the hashed trip is not empty.
 
-	if (!analysisData.hashed_trip?.path.length) {
+	if (!analysisData.hashed_trip?.path?.length) {
 		// throw new Error('Hashed Trip is empty.');
 		return null;
 	}
@@ -50,7 +50,7 @@ export function detectStartEvent(analysisData: AnalysisData): null | VehicleEven
 	// Transform the GTFS shape points into a GeoJSON LineString
 	// and cut it at 500 meters.
 
-	if (analysisData.hashed_shape.points.length < 2) {
+	if (analysisData.hashed_shape?.points?.length < 2) {
 		// throw new Error('Hashed Shape must have at least two points.');
 		return null;
 	}
