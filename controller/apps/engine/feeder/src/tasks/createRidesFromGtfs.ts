@@ -736,6 +736,8 @@ export async function createRidesFromGtfs() {
 
 		const staleHashedTripsTimer = new TIMETRACKER();
 
+		LOGGER.info(`Starting cleanup of stale Hashed Trips...`);
+
 		const hashedTripIdsInUse = new Set<string>();
 		const staleHashedTripIds = new Set<string>();
 
