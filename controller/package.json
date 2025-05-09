@@ -11,13 +11,14 @@
 		"dev:engine": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-*",
 		"dev:engine-coordinator": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-coordinator",
 		"dev:engine-examiner": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-examiner",
+		"dev:engine-feeder": "turbo dev --filter=@tmlmobilidade/sae-controller-engine-feeder",
 		"dev:explorer": "turbo dev --filter=@tmlmobilidade/sae-controller-explorer-*",
 		"lint": "turbo lint"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
-		"@tmlmobilidade/tsconfig": "20250325.1731.13",
-		"turbo": "2.5.1",
+		"@tmlmobilidade/tsconfig": "20250508.1344.22",
+		"turbo": "2.5.3",
 		"typescript": "5.8.3"
 	},
 	"workspaces": [
