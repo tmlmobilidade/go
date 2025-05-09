@@ -700,37 +700,63 @@ export async function createRidesFromGtfs() {
 		LOGGER.info(`Deleted ${deleteStaleRidesResult.deletedCount} stale rides from plans that do not exist anymore. (${staleRidesTimer.get()})`);
 
 		//
-		// Remove all hashed trips and shapes that are not referenced by any ride
+		// Remove all hashed shapes and hashed trips
+		// that are not referenced by any ride.
+		// Start by getting all IDs that are referenced by rides
+		// and then remove them from the list of all hashed shapes and trips.
 
-		const staleHashedShapesTimer = new TIMETRACKER();
+		const staleHashedItemsTimer = new TIMETRACKER();
 
-		const allHashedShapeIds = await hashedShapesCollection.aggregate([{ $group: { _id: '$_id' } }]).toArray();
-		const allHashedShapeIdsUnique = new Set(allHashedShapeIds.map(doc => doc._id));
-		const hashedShapeIdsInUse = await ridesCollection.aggregate([{ $group: { _id: '$hashed_shape_id' } }]).toArray();
-		hashedShapeIdsInUse.forEach(hashedShapeId => allHashedShapeIdsUnique.delete(hashedShapeId._id));
+		LOGGER.info(`Starting cleanup of stale Hashed Shapes and Hashed Trips...`);
 
-		if (allHashedShapeIdsUnique.size > 0) {
-			const deleteUnusedHashedShapesResult = await hashedShapes.deleteMany({ _id: { $in: Array.from(allHashedShapeIdsUnique) } });
-			LOGGER.info(`Deleted ${deleteUnusedHashedShapesResult.deletedCount} unused Hashed Shapes.`);
+		const allRidesStream = ridesCollection.find().stream();
+		const allHashedShapesStream = hashedShapesCollection.find().stream();
+		const allHashedTripsStream = hashedTripsCollection.find().stream();
+
+		const hashedShapeIdsInUse = new Set<string>();
+		const staleHashedShapeIds = new Set<string>();
+
+		const hashedTripIdsInUse = new Set<string>();
+		const staleHashedTripIds = new Set<string>();
+
+		// Get all hashed shape and hashed trip IDs that are referenced by rides
+
+		for await (const rideData of allRidesStream) {
+			hashedShapeIdsInUse.add(rideData.hashed_shape_id);
+			hashedTripIdsInUse.add(rideData.hashed_trip_id);
 		}
 
-		LOGGER.info(`Found ${allHashedShapeIdsUnique.size} unused Hashed Shapes. (${staleHashedShapesTimer.get()})`);
+		// Get all existing hashed shape and trip IDs,
+		// even if they are not referenced by rides
 
-		//
-
-		const staleHashedTripsTimer = new TIMETRACKER();
-
-		const allHashedTripIds = await hashedTripsCollection.aggregate([{ $group: { _id: '$_id' } }]).toArray();
-		const allHashedTripIdsUnique = new Set(allHashedTripIds.map(doc => doc._id));
-		const hashedTripIdsInUse = await ridesCollection.aggregate([{ $group: { _id: '$hashed_trip_id' } }]).toArray();
-		hashedTripIdsInUse.forEach(hashedTripId => allHashedTripIdsUnique.delete(hashedTripId._id));
-
-		if (allHashedTripIdsUnique.size > 0) {
-			const deleteUnusedHashedTripsResult = await hashedTrips.deleteMany({ _id: { $in: Array.from(allHashedTripIdsUnique) } });
-			LOGGER.info(`Deleted ${deleteUnusedHashedTripsResult.deletedCount} unused Hashed Trips.`);
+		for await (const hashedShape of allHashedShapesStream) {
+			staleHashedShapeIds.add(hashedShape._id);
 		}
 
-		LOGGER.info(`Found ${allHashedTripIdsUnique.size} unused Hashed Trips. (${staleHashedTripsTimer.get()})`);
+		for await (const hashedTrip of allHashedTripsStream) {
+			staleHashedTripIds.add(hashedTrip._id);
+		}
+
+		// Remove IDs that are referenced by rides
+		// from the list of all hashed shapes and trips
+
+		hashedShapeIdsInUse.forEach(hashedShapeIdInUse => staleHashedShapeIds.delete(hashedShapeIdInUse));
+		hashedTripIdsInUse.forEach(hashedTripIdInUse => staleHashedTripIds.delete(hashedTripIdInUse));
+
+		// From the resulting list of IDs,
+		// remove the ones that are referenced by rides
+
+		await performInChunks(Array.from(staleHashedShapeIds), async (chunk) => {
+			const result = await hashedShapes.deleteMany({ _id: { $in: chunk } });
+			LOGGER.info(`Deleted ${result.deletedCount} stale Hashed Shapes.`);
+		});
+
+		await performInChunks(Array.from(staleHashedTripIds), async (chunk) => {
+			const result = await hashedTrips.deleteMany({ _id: { $in: chunk } });
+			LOGGER.info(`Deleted ${result.deletedCount} stale Hashed Trips.`);
+		});
+
+		LOGGER.info(`Cleanup complete. Deleted ${staleHashedShapeIds.size} stale Hashed Shapes and ${staleHashedTripIds.size} stale Hashed Trips. (${staleHashedItemsTimer.get()})`);
 
 		//
 
