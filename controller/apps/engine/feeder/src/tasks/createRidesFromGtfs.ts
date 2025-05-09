@@ -743,6 +743,8 @@ export async function createRidesFromGtfs() {
 		hashedShapeIdsInUse.forEach(hashedShapeIdInUse => staleHashedShapeIds.delete(hashedShapeIdInUse));
 		hashedTripIdsInUse.forEach(hashedTripIdInUse => staleHashedTripIds.delete(hashedTripIdInUse));
 
+		LOGGER.info(`Cleanup progress: Will delete ${staleHashedShapeIds.size} stale Hashed Shapes and ${staleHashedTripIds.size} stale Hashed Trips. (${staleHashedItemsTimer.get()})`);
+
 		// From the resulting list of IDs,
 		// remove the ones that are referenced by rides
 
