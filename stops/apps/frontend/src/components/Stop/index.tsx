@@ -9,13 +9,15 @@ import { Pane } from '@tmlmobilidade/ui';
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
 // import StopAffectation from './StopAffectation';
+import { StopsListContextProvider } from '@/contexts/StopsList.context';
+
 import StopComments from './StopComments';
 import StopConnections from './StopConnections';
 import StopDetails from './StopDetails';
 import StopEquipments from './StopEquipments';
 import StopHeader from './StopHeader';
 import StopInfrasctructure from './StopInfrasctructure';
-import StopMap from './StopMap';
+import { StopsListViewMap } from './StopMap/index';
 import StopMedia from './StopMedia';
 import StopObservations from './StopObservations';
 import StopPublicInformation from './StopPublicInformation';
@@ -42,31 +44,35 @@ export default function Stop({ paramId }: StopProps) {
 
 	return (
 		<ManualContextProvider>
-			{
-				stopDetailContext.data?._id || paramId === 'new'
-					? (
-						<Pane header={[<StopHeader generic={false} />]}>
-							<StopMap generic={false} />
-							<StopDetails />
-							<StopAdminInformation />
-							{/* <StopAffectation /> */}
-							<StopShelter />
-							<StopInfrasctructure />
-							<StopPublicInformation />
-							<StopAccessibility />
-							<StopEquipments />
-							<StopConnections />
-							<StopMedia />
-							<StopComments />
-							<StopObservations />
-						</Pane>
+			<StopsListContextProvider>
+				{
+					stopDetailContext.data?._id || paramId === 'new'
+						? (
+							<Pane header={[<StopHeader generic={false} />]}>
+								{/* <StopMap generic={false} /> */}
+								<StopsListViewMap />
+								<StopDetails />
+								<StopAdminInformation />
+								{/* <StopAffectation /> */}
+								<StopShelter />
+								<StopInfrasctructure />
+								<StopPublicInformation />
+								<StopAccessibility />
+								<StopEquipments />
+								<StopConnections />
+								<StopMedia />
+								<StopComments />
+								<StopObservations />
+							</Pane>
 						// </div>
-					) : (
-						<Pane header={[<StopHeader generic={false} />]}>
-							<StopMap generic={true} />
-						</Pane>
-					)
-			}
+						) : (
+							<Pane header={[<StopHeader generic={false} />]}>
+								<StopsListViewMap />
+								{/* <StopMap generic={true} /> */}
+							</Pane>
+						)
+				}
+			</StopsListContextProvider>
 		</ManualContextProvider>
 	);
 }

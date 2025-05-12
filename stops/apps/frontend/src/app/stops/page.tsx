@@ -11,7 +11,7 @@ import { useRouter } from 'next/compat/router';
 /* * */
 
 import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
-import { StopListContextProvider } from '@/contexts/StopList.context';
+import { StopsListContextProvider } from '@/contexts/StopsList.context';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -34,9 +34,9 @@ export default function Page() {
 
 	return (
 		<div className={styles.container}>
-			<StopListContextProvider>
+			<StopsListContextProvider>
 				<Navigation />
-			</StopListContextProvider>
+			</StopsListContextProvider>
 			<StopDetailContextProvider stopId={null}>
 				<Stop paramId={null} />
 			</StopDetailContextProvider>

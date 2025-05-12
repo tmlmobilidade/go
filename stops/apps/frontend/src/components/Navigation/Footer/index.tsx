@@ -1,6 +1,6 @@
 'use client';
 
-import { useStopListContext } from '@/contexts/StopList.context';
+import { useStopsListContext } from '@/contexts/StopsList.context';
 
 import styles from './styles.module.css';
 
@@ -12,14 +12,14 @@ export default function Footer() {
 	//
 	// A. Setup variables
 
-	const stopListContext = useStopListContext();
+	const stopsListContext = useStopsListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.container}>
-			Encontradas {stopListContext.data.raw.length} paragens
+			Encontradas {stopsListContext.data.raw.length} paragens
 		</div>
 	);
 }

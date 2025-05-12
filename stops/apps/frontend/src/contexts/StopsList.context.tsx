@@ -4,21 +4,21 @@
 
 // import { useLinesContext } from '@/contexts/Lines.context';
 // import { useLocationsContext } from '@/contexts/Locations.context';
-import { useStopsContext } from '@/contexts/Stops.context';
+import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 // import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { swrFetcher } from '@/lib/http';
 import { toggleArray } from '@/lib/utils';
 import { type Municipality } from '@carrismetropolitana/api-types/locations';
-import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
-import { type Alert, AlertSchema } from '@tmlmobilidade/types';
-import { useSearchQuery } from '@tmlmobilidade/ui';
+// import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
+import { type Alert, AlertSchema, Stop } from '@tmlmobilidade/types';
+import { getBaseGeoJsonFeatureCollection, useSearchQuery } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface StopListContextState {
+interface StopsListContextState {
 	// actions: {
 	// changePublishDateEnd: (date: Date | null) => void
 	// changePublishDateStart: (date: Date | null) => void
@@ -33,6 +33,7 @@ interface StopListContextState {
 	// toggleStop: (stop: string) => void
 	// }
 	data: {
+		filtered_fc: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>
 		// filtered: Alert[]
 		raw: Stop[]
 	}
@@ -60,19 +61,19 @@ interface StopListContextState {
 
 /* * */
 
-const StopListContext = createContext<StopListContextState | undefined>(undefined);
+const StopsListContext = createContext<StopsListContextState | undefined>(undefined);
 
-export const useStopListContext = () => {
-	const context = useContext(StopListContext);
+export const useStopsListContext = () => {
+	const context = useContext(StopsListContext);
 	if (!context) {
-		throw new Error('useStopListContext must be used within an StopListContextProvider');
+		throw new Error('useStopsListContext must be used within an StopsListContextProvider');
 	}
 	return context;
 };
 
 /* * */
 
-export const StopListContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const StopsListContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 
 	//
@@ -80,7 +81,10 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 
 	// const locationsContext = useLocationsContext();
 	// const linesContext = useLinesContext();
-	// const stopsContext = useStopsContext();
+	const stopsContext = useStopsContext();
+
+	// const [dataFilteredState, setDataFilteredState] = useState<Stop[]>([]);
+	const [dataFilteredGeojsonFCState, setDataFilteredGeojsonFCState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>(getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>);
 
 	// const [filterMunicipality, setFilterMunicipality] = useState<string[]>([]);
 	// const [filterDistrict, setFilterDistrict] = useState<string[]>([]);
@@ -102,6 +106,34 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 
 	const rawStops = useMemo(() => {
 		return allStopsData || [];
+	}, [allStopsData]);
+
+	// useEffect(() => {
+	// 	const filteredData = applyFiltersToData(stopsContext.data.stops);
+	// 	setDataFilteredState(filteredData);
+	// }, [stopsContext.data.stops]);
+
+	const geoStops = useMemo(() => {
+		return dataFilteredGeojsonFCState || (getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>);
+	}, [dataFilteredGeojsonFCState]);
+	// useEffect(() => {
+
+	// }, [dataFilteredGeojsonFCState]);
+
+	useEffect(() => {
+		// Check if all data is available
+		// if (!dataFilteredState) return;
+		if (!allStopsData) return;
+		// Initialize worker if not already initialized
+		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> = getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>;
+		allStopsData.map((stop) => {
+			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
+			// console.log('stopFC', stopFC);
+			if (stopFC) collection.features.push(stopFC);
+		});
+		// Set state value
+		setDataFilteredGeojsonFCState(collection);
+		//
 	}, [allStopsData]);
 
 	// const municipalityOptions = useMemo(() => {
@@ -433,7 +465,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	//
 	// E. Define context value
 
-	const contextValue: StopListContextState = useMemo(() => ({
+	const contextValue: StopsListContextState = useMemo(() => ({
 		actions: {
 			// changePublishDateEnd: handleChangePublishDateEnd,
 			// changePublishDateStart: handleChangePublishDateStart,
@@ -449,6 +481,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		},
 		data: {
 			// filtered: filteredAlerts || [],
+			filtered_fc: geoStops || (getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>),
 			raw: rawStops || [],
 		},
 		filters: {
@@ -473,6 +506,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		},
 	}), [
 		rawStops,
+		geoStops,
 		// filteredAlerts,
 		// allAlertsData,
 		// allAlertsLoading,
@@ -497,9 +531,9 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	// F. Render components
 
 	return (
-		<StopListContext.Provider value={contextValue}>
+		<StopsListContext.Provider value={contextValue}>
 			{children}
-		</StopListContext.Provider>
+		</StopsListContext.Provider>
 	);
 
 	//
