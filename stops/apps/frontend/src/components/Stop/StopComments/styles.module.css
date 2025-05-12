@@ -1,0 +1,17 @@
+.text_area {}
+
+.text_area>div>textarea {
+    height: 10vh;
+    padding: 7px 15px;
+}
+
+.button {
+    color: #fff;
+    background-color: #343a40;
+    border: 0.0625rem solid transparent;
+    box-shadow: 0 1px 3px 0 transparent;
+}
+
+.button:hover {
+    background-color: #212529;
+}

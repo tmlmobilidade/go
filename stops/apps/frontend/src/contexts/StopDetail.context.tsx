@@ -34,6 +34,7 @@ interface StopDetailContextState {
 		// addReference: () => void
 		deleteImage: () => void
 		deleteStop: () => void
+		handleCommentsChange: (userId: string, text: string) => void
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
 		imageChanged: (file: File) => void
@@ -206,14 +207,14 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date };
 		const saveStop: CreateStopDto = { ...form.values };
-
+		console.log('==> saveStop', saveStop);
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);
 		let body = stopId === 'new' ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
 		// body = { ...body, active_period_end_date, publish_end_date };
 		body = { ...body };
-
+		console.log('==> body', body);
 		const response = await fetchData<unknown>(url, method, body);
 		console.log('==> response', response);
 		if (response.error) {
@@ -322,9 +323,16 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		form.setFieldValue('facilities', newFacilities);
 	};
 
-	const handleCommentsChange = (userId: number, text: string) => {
-		// const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
-		// form.setFieldValue('comments', form.values.comments.push({}));
+	const generateRandomId = (length = 6): string => {
+		return Math.random().toString(36).substr(2, length);
+	};
+
+	const handleCommentsChange = (userId: string, text: string) => {
+		form.values.comments.push({
+			_id: generateRandomId(),
+			text: text,
+			user_id: userId });
+		form.setFieldValue('comments', form.values.comments);
 	};
 
 	//
@@ -337,6 +345,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			imageChanged: (image: File) => setImage(image),
 			// removeReference,
 			// saveStop: (type: 'draft' | 'publish') => saveStop(type),
+			handleCommentsChange,
 			handleConnectionsChange,
 			handleFacilitiesChange,
 			saveStop,

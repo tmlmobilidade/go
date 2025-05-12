@@ -61,7 +61,10 @@ export default function Right({ open }: RightProps) {
 			<Tooltip label="Salvar Paragem" position="bottom">
 				<div
 					className={styles.iconBlue}
-					onClick={() => actions.saveStop()}
+					onClick={() => {
+						alert('A paragem foi guardada com sucesso!');
+						actions.saveStop();
+					}}
 				>
 					<IconDeviceFloppy />
 				</div>
