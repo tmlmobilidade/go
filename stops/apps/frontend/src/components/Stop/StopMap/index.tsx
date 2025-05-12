@@ -3,14 +3,16 @@
 // import { Surface } from '@/components/layout/Surface';
 // import { MapView } from '@/components/map/MapView';
 // import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
-// import { useStopsListContext } from '@/contexts/StopsList.context';
-// import { centerMap } from '@/utils/map.utils';
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
-import { centerMap, MapView, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, Surface } from '@tmlmobilidade/ui';
+import { Stop } from '@tmlmobilidade/types';
+import { centerMap, getBaseGeoJsonFeatureCollection, MapView, MapViewStyleActiveStops, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, moveMap } from '@tmlmobilidade/ui';
+// import { centerMap } from '@/utils/map.utils';
 import * as turf from '@turf/turf';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 /* * */
 
@@ -23,10 +25,28 @@ export function StopsListViewMap() {
 	const { stopsListMap } = useMap();
 	const router = useRouter();
 	const stopsListContext = useStopsListContext();
+	const stopDetailContext = useStopDetailContext();
 
-	console.log('stopsListContext', stopsListContext.data);
 	//
 	// B. Handle actions
+
+	const getGeoJsonFC = (stop: Stop): GeoJSON.FeatureCollection | undefined => {
+		if (!stop) return;
+		const collection = getBaseGeoJsonFeatureCollection();
+		const stopFC = transformStopDataIntoGeoJsonFeature(stop);
+		if (stopFC) collection.features.push(stopFC);
+		return collection;
+	};
+
+	const activeStopGeoJson = useMemo(() => {
+		return getGeoJsonFC(stopDetailContext.data.form.values);
+	}, [stopsListContext.data.filtered_fc]);
+
+	useEffect(() => {
+		const geoJsonFC = getGeoJsonFC(stopDetailContext.data.form.values);
+		// moveMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
+		centerMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
+	}, [stopsListContext.data.filtered_fc]);
 
 	useEffect(() => {
 		// Exit early if there are no stops or map
@@ -52,11 +72,8 @@ export function StopsListViewMap() {
 	}, [stopsListContext.data.filtered_fc, stopsListMap]);
 
 	function handleLayerClick(event) {
-		console.log('handleLayerClick', event);
-		console.log('stopsListMap', stopsListMap);
 		if (!stopsListMap) return;
 		const features = stopsListMap.queryRenderedFeatures(event.point);
-		console.log('features', features);
 		if (!features.length) return;
 		for (const feature of features) {
 			if (feature.layer.id === MapViewStyleStopsInteractiveLayerId) {
@@ -71,13 +88,17 @@ export function StopsListViewMap() {
 
 	return (
 		// <Surface variant="persistent" forceOverflow>
-		// <Surface>
 		<div style={{ height: 600, minHeight: 600 }}>
 			<MapView
 				id="stopsListMap"
 				interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
 				onClick={handleLayerClick}
 			>
+				<MapViewStyleActiveStops
+					// presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
+					stopsData={activeStopGeoJson}
+				/>
+
 				<MapViewStyleStops stopsData={stopsListContext.data.filtered_fc} />
 			</MapView>
 		</div>
