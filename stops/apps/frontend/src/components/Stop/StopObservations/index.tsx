@@ -26,7 +26,7 @@ export default function StopObservations() {
 			<Section gap="md">
 				<Grid columns="a" gap="md">
 					<TextArea
-						className={styles.text_area}
+						className={styles.textArea}
 						maxRows={10}
 						minRows={4}
 						placeholder="Construção planeada a..."
