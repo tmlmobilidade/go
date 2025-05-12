@@ -1,13 +1,18 @@
 'use client';
 
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Button, Collapsible, FileButton, Grid, Section, useToast } from '@tmlmobilidade/ui';
+import { useState } from 'react';
+
+import { UploadImage } from './UploadImage';
 
 export default function StopMedia() {
 	//
 
 	//
 	// A. Setup variables
+
+	// const [file, setFile] = useState<File | null>(null);
 
 	const stopDetailContext = useStopDetailContext();
 
@@ -27,6 +32,15 @@ export default function StopMedia() {
 				<Grid columns="abcd" gap="md">
 					{stopDetailContext.data.form.getValues().image_ids.map(image_id => <div key={image_id}>{image_id}</div>)}
 				</Grid>
+
+				<UploadImage
+					// imageUrl={stopDetailContext.data.imageUrl}
+					// imageUrl="image.png"
+					label="Imagem"
+					onDelete={() => alert('Image deleted!')}
+					// onDelete={stopDetailContext.actions.deleteImage}
+					onFileChange={() => alert('File changed!')}
+				/>
 			</Section>
 		</Collapsible>
 	);
