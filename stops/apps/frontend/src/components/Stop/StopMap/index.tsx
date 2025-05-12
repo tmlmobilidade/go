@@ -1,5 +1,3 @@
-/* * */
-
 // import { Surface } from '@/components/layout/Surface';
 // import { MapView } from '@/components/map/MapView';
 // import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
@@ -7,11 +5,12 @@ import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Stop } from '@tmlmobilidade/types';
-import { centerMap, getBaseGeoJsonFeatureCollection, MapView, MapViewStyleActiveStops, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, moveMap } from '@tmlmobilidade/ui';
+import { centerMap, getBaseGeoJsonFeatureCollection, MapView, MapViewStyleActiveStops, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId, moveMap } from '@tmlmobilidade/ui';
 // import { centerMap } from '@/utils/map.utils';
 import * as turf from '@turf/turf';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 import { useEffect, useMemo } from 'react';
 
 /* * */
@@ -26,6 +25,8 @@ export function StopsListViewMap() {
 	const router = useRouter();
 	const stopsListContext = useStopsListContext();
 	const stopDetailContext = useStopDetailContext();
+
+	// const [activeStopGeoJson, setActiveStopGeoJson] = React.useState<GeoJSON.FeatureCollection | undefined>(undefined);
 
 	//
 	// B. Handle actions
@@ -46,6 +47,7 @@ export function StopsListViewMap() {
 		const geoJsonFC = getGeoJsonFC(stopDetailContext.data.form.values);
 		// moveMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
 		centerMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
+		// setActiveStopGeoJson(geoJsonFC);
 	}, [stopsListContext.data.filtered_fc]);
 
 	useEffect(() => {
@@ -88,7 +90,7 @@ export function StopsListViewMap() {
 
 	return (
 		// <Surface variant="persistent" forceOverflow>
-		<div style={{ height: 600, minHeight: 600 }}>
+		<div style={{ height: 400, minHeight: 400 }}>
 			<MapView
 				id="stopsListMap"
 				interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}

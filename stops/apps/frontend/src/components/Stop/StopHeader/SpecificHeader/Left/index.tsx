@@ -37,7 +37,7 @@ export default function Left({ isManual }: LeftProps) {
 		<div className={styles.section}>
 			{/* Manual -> Save Button */}
 			{/* Automatic -> Close Button */}
-			{isManual
+			{/* {isManual
 				? (
 					<Tooltip label="Guardar Alterações" position="bottom">
 						<div className={styles.iconGreen}>
@@ -51,7 +51,7 @@ export default function Left({ isManual }: LeftProps) {
 							<IconX />
 						</div>
 					</Tooltip>
-				)}
+				)} */}
 
 			{/* Label */}
 			<h3>{stop.form.getValues().name || <i>Paragem sem Título</i>}</h3>

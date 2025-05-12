@@ -322,6 +322,11 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		form.setFieldValue('facilities', newFacilities);
 	};
 
+	const handleCommentsChange = (userId: number, text: string) => {
+		// const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
+		// form.setFieldValue('comments', form.values.comments.push({}));
+	};
+
 	//
 	// E. Define context value
 	const contextValue: StopDetailContextState = React.useMemo(() => ({

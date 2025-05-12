@@ -66,7 +66,7 @@ export default function Stop({ paramId }: StopProps) {
 							</Pane>
 						// </div>
 						) : (
-							<Pane header={[<StopHeader generic={false} />]}>
+							<Pane header={[<StopHeader generic={true} />]}>
 								<StopsListViewMap />
 								{/* <StopMap generic={true} /> */}
 							</Pane>
