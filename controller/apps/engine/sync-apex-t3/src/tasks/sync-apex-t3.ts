@@ -116,7 +116,7 @@ export async function syncApexT3() {
 
 				flushCallback: flushCallback,
 
-				pcgiCollection: PCGIDB.ValidationEntity,
+				pcgiCollection: PCGIDB.SalesEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

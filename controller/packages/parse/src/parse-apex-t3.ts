@@ -1,7 +1,7 @@
 /* * */
 
-import { type ApexT3, validateUnixTimestamp } from '@tmlmobilidade/types';
-import { DateTime } from 'luxon';
+import { type ApexT3 } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -14,7 +14,7 @@ export function parseApexT3(pcgiDoc: any): ApexT3 {
 		agency_id: pcgiDoc.transaction.operatorLongID,
 		apex_version: pcgiDoc.transaction.apexVersion,
 		card_serial_number: pcgiDoc.transaction.cardSerialNumber,
-		created_at: validateUnixTimestamp(DateTime.fromISO(pcgiDoc.transaction.transactionDate).toMillis()),
+		created_at: Dates.fromISO(pcgiDoc.transaction.transactionDate).unix_timestamp,
 		device_id: pcgiDoc.transaction.deviceID,
 		invoice_number: pcgiDoc.transaction.invoiceNumber,
 		line_id: pcgiDoc.transaction.lineLongID,
@@ -24,9 +24,9 @@ export function parseApexT3(pcgiDoc: any): ApexT3 {
 		price: pcgiDoc.transaction.price,
 		product_id: pcgiDoc.transaction.productLongID,
 		product_qty: pcgiDoc.transaction.productQuantity,
-		received_at: validateUnixTimestamp(DateTime.fromISO(pcgiDoc.createdAt).toMillis()),
+		received_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 		units_qty: pcgiDoc.transaction.unitsQuantity,
-		updated_at: validateUnixTimestamp(DateTime.fromISO(pcgiDoc.createdAt).toMillis()),
+		updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 		vehicle_id: pcgiDoc.transaction.vehicleID,
 	};
 

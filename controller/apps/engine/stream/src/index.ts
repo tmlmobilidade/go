@@ -3,6 +3,7 @@
 import PCGIDB from '@/services/PCGIDB.js';
 import { processApexT11 } from '@/tasks/process-apex-t11.js';
 import { processApexT19 } from '@/tasks/process-apex-t19.js';
+import { processApexT3 } from '@/tasks/process-apex-t3.js';
 import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
 
 /* * */
@@ -15,6 +16,8 @@ import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
 	//
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
+
+	PCGIDB.SalesEntity.watch().on('change', processApexT3);
 
 	PCGIDB.ValidationEntity.watch().on('change', processApexT11);
 
