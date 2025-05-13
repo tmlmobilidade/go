@@ -1,0 +1,25 @@
+{
+	"name": "@tmlmobilidade/sae-replicator",
+	"private": true,
+	"scripts": {
+		"build": "turbo build",
+		"build:packages": "turbo build --filter=@tmlmobilidade/sae-replicator-pckg-*",
+		"clean": "sh cleanup.sh",
+		"dev:sync-apex-t3": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-t3",
+		"lint": "turbo lint"
+	},
+	"devDependencies": {
+		"@carrismetropolitana/eslint": "20250418.42.41",
+		"@tmlmobilidade/tsconfig": "20250513.1456.29",
+		"turbo": "2.5.3",
+		"typescript": "5.8.3"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"packageManager": "npm@11.3.0",
+	"engines": {
+		"node": ">=18"
+	}
+}
