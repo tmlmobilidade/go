@@ -4,16 +4,16 @@ import PCGIDB from '@/services/PCGIDB.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { apexT3, rides } from '@tmlmobilidade/interfaces';
-import { parseApexT3 } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { apexOnBoardSales, rides } from '@tmlmobilidade/interfaces';
+import { parseApexOnBoardSales } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type ApexT3, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type ApexOnBoardSale, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime, Interval } from 'luxon';
 
 /* * */
 
-export async function syncApexT3() {
+export async function syncApexOnBoardSales() {
 	try {
 		//
 
@@ -26,8 +26,8 @@ export async function syncApexT3() {
 
 		await PCGIDB.connect();
 
-		const apexT3Collection = await apexT3.getCollection();
-		const apexT3DbWritter = new MongoDbWriter<ApexT3>({ batch_size: 100000, collection: apexT3Collection });
+		const apexOnBoardSalesCollection = await apexOnBoardSales.getCollection();
+		const apexOnBoardSalesDbWritter = new MongoDbWriter<ApexOnBoardSale>({ batch_size: 100000, collection: apexOnBoardSalesCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -63,7 +63,7 @@ export async function syncApexT3() {
 			// Setup the callback function that will be called on the DB Writer flush operation
 			// to invalidate all the rides that are affected by the new data.
 
-			const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexT3>[]) => {
+			const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexOnBoardSale>[]) => {
 				try {
 					const invalidationTimer = new TIMETRACKER();
 					// Extract the unique trip_ids from the flushed data
@@ -108,11 +108,11 @@ export async function syncApexT3() {
 			//
 			// Sync the documents
 
-			await syncDocuments<ApexT3>({
+			await syncDocuments<ApexOnBoardSale>({
 
-				dbWriter: apexT3DbWritter,
+				dbWriter: apexOnBoardSalesDbWritter,
 
-				docParser: parseApexT3,
+				docParser: parseApexOnBoardSales,
 
 				flushCallback: flushCallback,
 
@@ -122,7 +122,7 @@ export async function syncApexT3() {
 
 				pcgiQuery: pcgiQuery,
 
-				slaCollection: apexT3Collection,
+				slaCollection: apexOnBoardSalesCollection,
 
 				slaIdKey: '_id',
 
