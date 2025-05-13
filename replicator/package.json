@@ -3,6 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
+		"build:enrich": "turbo build --filter=@tmlmobilidade/sae-replicator-enrich",
 		"build:import-apex-validations": "turbo build --filter=@tmlmobilidade/sae-replicator-import-apex-validations",
 		"build:packages": "turbo build --filter=@tmlmobilidade/sae-replicator-pckg-*",
 		"build:stream": "turbo build --filter=@tmlmobilidade/sae-replicator-stream",
@@ -13,6 +14,7 @@
 		"build:sync-apex-on-board-sales": "turbo build --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
 		"build:sync-vehicle-events": "turbo build --filter=@tmlmobilidade/sae-replicator-sync-vehicle-events",
 		"clean": "sh cleanup.sh",
+		"dev:enrich": "turbo dev --filter=@tmlmobilidade/sae-replicator-enrich",
 		"dev:import-apex-validations": "turbo dev --filter=@tmlmobilidade/sae-replicator-import-apex-validations",
 		"dev:stream": "turbo dev --filter=@tmlmobilidade/sae-replicator-stream",
 		"dev:sync-apex-inspection-decisions": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-inspection-decisions",

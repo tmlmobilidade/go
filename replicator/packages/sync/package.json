@@ -17,6 +17,7 @@
 		"luxon": "3.6.1"
 	},
 	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "20250513.1857.29",
 		"@types/luxon": "3.6.2",
 		"@types/node": "22.15.17",
 		"resolve-tspaths": "0.8.23",
