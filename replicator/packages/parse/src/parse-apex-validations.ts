@@ -1,12 +1,12 @@
 /* * */
 
-import { type ApexOnBoardSale } from '@tmlmobilidade/types';
+import { type ApexValidation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseApexOnBoardSales(pcgiDoc: any): ApexOnBoardSale {
+export function parseApexValidations(pcgiDoc: any): ApexValidation {
 	//
 
 	return {
@@ -26,22 +26,23 @@ export function parseApexOnBoardSales(pcgiDoc: any): ApexOnBoardSale {
 		received_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 		updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 		//
-		line_id: undefined,
-		pattern_id: undefined,
-		stop_id: undefined,
-		trip_id: undefined,
-		vehicle_id: undefined,
+		line_id: pcgiDoc.transaction.lineLongID,
+		pattern_id: pcgiDoc.transaction.patternLongID,
+		stop_id: pcgiDoc.transaction.stopLongID,
+		trip_id: pcgiDoc.transaction.journeyID,
+		vehicle_id: pcgiDoc.transaction.vehicleID,
 		//
 		card_physical_type: pcgiDoc.transaction.cardPhysicalType,
 		card_serial_number: pcgiDoc.transaction.cardSerialNumber,
-		invoice_number: pcgiDoc.transaction.invoiceNumber,
-		payment_method: pcgiDoc.transaction.paymentMethod,
-		price: pcgiDoc.transaction.price,
+		card_type_id: pcgiDoc.transaction.cardTypeID,
+		event_type: pcgiDoc.transaction.eventType,
 		product_id: pcgiDoc.transaction.productLongID,
-		product_qty: pcgiDoc.transaction.productQuantity,
+		product_type: pcgiDoc.transaction.productType,
+		units_qty: pcgiDoc.transaction.productQuantity,
+		validation_status: pcgiDoc.transaction.validationStatus,
 		//
+		on_board_sale_transaction_id: undefined,
 		refund_transaction_id: undefined,
-		validation_transaction_id: undefined,
 		//
 	};
 

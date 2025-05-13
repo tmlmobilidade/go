@@ -1,6 +1,6 @@
 /* * */
 
-import { syncApexT11 } from '@/tasks/sync-apex-t11.js';
+import { syncApexOnBoardSales } from '@/tasks/sync-apex-on-board-sales.js';
 
 /* * */
 
@@ -16,7 +16,7 @@ const RUN_INTERVAL = 1800000; // 30 minutes
 	// by checking the presence of each individual document ID.
 
 	const runOnInterval = async () => {
-		await syncApexT11();
+		await syncApexOnBoardSales();
 		setTimeout(runOnInterval, RUN_INTERVAL);
 	};
 

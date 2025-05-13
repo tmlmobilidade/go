@@ -4,16 +4,16 @@ import PCGIDB from '@/services/PCGIDB.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { apexT11, rides } from '@tmlmobilidade/interfaces';
-import { type ApexT11, type UnixTimestamp } from '@tmlmobilidade/types';
-import { parseApexT11 } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { apexOnBoardSales, rides } from '@tmlmobilidade/interfaces';
+import { parseApexOnBoardSales } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
+import { type ApexOnBoardSale, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime, Interval } from 'luxon';
 
 /* * */
 
-export async function syncApexT11() {
+export async function syncApexOnBoardSales() {
 	try {
 		//
 
@@ -26,8 +26,8 @@ export async function syncApexT11() {
 
 		await PCGIDB.connect();
 
-		const apexT11Collection = await apexT11.getCollection();
-		const apexT11DbWritter = new MongoDbWriter<ApexT11>({ batch_size: 100000, collection: apexT11Collection });
+		const apexOnBoardSalesCollection = await apexOnBoardSales.getCollection();
+		const apexOnBoardSalesDbWritter = new MongoDbWriter<ApexOnBoardSale>({ batch_size: 100000, collection: apexOnBoardSalesCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -63,7 +63,7 @@ export async function syncApexT11() {
 			// Setup the callback function that will be called on the DB Writer flush operation
 			// to invalidate all the rides that are affected by the new data.
 
-			const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexT11>[]) => {
+			const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexOnBoardSale>[]) => {
 				try {
 					const invalidationTimer = new TIMETRACKER();
 					// Extract the unique trip_ids from the flushed data
@@ -80,7 +80,7 @@ export async function syncApexT11() {
 						{ system_status: 'pending' },
 					);
 					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t11 data (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t3 data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
@@ -108,21 +108,21 @@ export async function syncApexT11() {
 			//
 			// Sync the documents
 
-			await syncDocuments<ApexT11>({
+			await syncDocuments<ApexOnBoardSale>({
 
-				dbWriter: apexT11DbWritter,
+				dbWriter: apexOnBoardSalesDbWritter,
 
-				docParser: parseApexT11,
+				docParser: parseApexOnBoardSales,
 
 				flushCallback: flushCallback,
 
-				pcgiCollection: PCGIDB.ValidationEntity,
+				pcgiCollection: PCGIDB.SalesEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 
 				pcgiQuery: pcgiQuery,
 
-				slaCollection: apexT11Collection,
+				slaCollection: apexOnBoardSalesCollection,
 
 				slaIdKey: '_id',
 

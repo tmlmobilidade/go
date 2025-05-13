@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-replicator-stream",
+	"name": "@tmlmobilidade/sae-replicator-import-apex-validations",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
@@ -20,11 +20,15 @@
 		"@helperkits/writer": "20250303.1058.31",
 		"@tmlmobilidade/interfaces": "20250513.1811.53",
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
+		"@tmlmobilidade/sae-replicator-pckg-sync": "*",
+		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
+		"luxon": "3.6.1",
 		"mongodb": "6.16.0",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250513.1811.53",
+		"@types/luxon": "3.6.2",
 		"@types/node": "22.15.17",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
