@@ -5,12 +5,17 @@
 		"build": "turbo build",
 		"build:packages": "turbo build --filter=@tmlmobilidade/sae-replicator-pckg-*",
 		"clean": "sh cleanup.sh",
-		"dev:sync-apex-t3": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-t3",
+		"dev:sync-apex-inspection-decisions": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-inspection-decisions",
+		"dev:sync-apex-inspections": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-inspections",
+		"dev:sync-apex-locations": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-locations",
+		"dev:sync-apex-on-board-refunds": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-refunds",
+		"dev:sync-apex-on-board-sales": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
+		"dev:sync-apex-validations": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-validations",
+		"dev:sync-vehicle-events": "turbo dev --filter=@tmlmobilidade/sae-replicator-sync-vehicle-events",
 		"lint": "turbo lint"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
-		"@tmlmobilidade/tsconfig": "20250513.1456.29",
 		"turbo": "2.5.3",
 		"typescript": "5.8.3"
 	},
