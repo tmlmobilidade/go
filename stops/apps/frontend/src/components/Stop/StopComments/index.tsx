@@ -36,7 +36,6 @@ export default function StopComments() {
 								className={styles.textArea}
 								maxRows={10}
 								minRows={4}
-								placeholder="Construção planeada a..."
 								value={comment.text}
 								disabled
 							/>
@@ -58,6 +57,7 @@ export default function StopComments() {
 						label="Submeter"
 						variant="secondary"
 						onClick={() => {
+							if (value === '') return;
 							stopDetailContext.actions.handleCommentsChange(meContext.data.user._id, value);
 							setValue('');
 						}}

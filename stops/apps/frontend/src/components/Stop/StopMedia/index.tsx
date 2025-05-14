@@ -36,7 +36,7 @@ export default function StopMedia() {
 				<UploadImage
 					// imageUrl={stopDetailContext.data.imageUrl}
 					// imageUrl="image.png"
-					label="Imagem"
+					// label="Imagem"
 					onDelete={() => alert('Image deleted!')}
 					// onDelete={stopDetailContext.actions.deleteImage}
 					onFileChange={() => alert('File changed!')}

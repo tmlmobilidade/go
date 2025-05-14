@@ -71,6 +71,9 @@ export default function StopDetails() {
 	//
 	// D. Render components
 
+	// console.log('_id', stopDetailContext.data.form.getInputProps('_id'));
+	// console.log('latitude', stopDetailContext.data.form.getInputProps('latitude'));
+
 	return (
 		<Collapsible
 			description="Informações gerais sobre esta paragem"
@@ -89,12 +92,30 @@ export default function StopDetails() {
 						label="Latitude"
 						maxLength={255}
 						{...stopDetailContext.data.form.getInputProps('latitude')}
+						onBlur={(e) => {
+							const value = parseFloat(e.target.value);
+							if (!isNaN(value)) {
+								stopDetailContext.data.form.setFieldValue('latitude', value);
+							}
+							else {
+								console.log('Invalid latitude value');
+							}
+						}}
 					/>
 
 					<TextInput
 						label="Longitude"
 						maxLength={255}
 						{...stopDetailContext.data.form.getInputProps('longitude')}
+						onBlur={(e) => {
+							const value = parseFloat(e.target.value);
+							if (!isNaN(value)) {
+								stopDetailContext.data.form.setFieldValue('longitude', value);
+							}
+							else {
+								console.log('Invalid longitude value');
+							}
+						}}
 					/>
 				</Grid>
 

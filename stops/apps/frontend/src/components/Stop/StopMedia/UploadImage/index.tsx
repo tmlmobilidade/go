@@ -30,7 +30,7 @@ export function UploadImage({
 	// A. Setup variables
 	const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
 
-	console.log('imageUrl', imageUrl);
+	// console.log('imageUrl', imageUrl);
 
 	useEffect(() => {
 		setPreview(imageUrl ?? null);
