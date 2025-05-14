@@ -1,12 +1,14 @@
-/* * */
-
 import '@tmlmobilidade/ui/styles';
 // import { DataProviders } from '@/components/providers/data-providers';
-import { StopsContextProvider } from '@/contexts/Stops.context';
+// import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
+// import { StopsContextProvider } from '@/contexts/Stops.context';
 import { Routes } from '@/lib/routes';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
+// import { MapProvider } from '@vis.gl/react-maplibre';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+
+import { Providers } from './providers';
 
 /* * */
 
@@ -29,11 +31,11 @@ export default async function Layout({
 		<html lang="en" suppressHydrationWarning>
 			<body>
 				<AppProvider>
-					<AppWrapper>
-						<StopsContextProvider>
+					<Providers>
+						<AppWrapper>
 							{children}
-						</StopsContextProvider>
-					</AppWrapper>
+						</AppWrapper>
+					</Providers>
 				</AppProvider>
 			</body>
 		</html>

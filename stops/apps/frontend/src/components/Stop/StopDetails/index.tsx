@@ -146,7 +146,7 @@ export default function StopDetails() {
 							placeholder="R. Mrq. de Pombal 8"
 							{...stopDetailContext.data.form.getInputProps('short_name')}
 						/>
-						{isManual
+						{/* {isManual
 							? (
 								<Tooltip label="Modo Manual Ativado" position="bottom">
 									<IconAlertHexagon
@@ -160,7 +160,7 @@ export default function StopDetails() {
 										onClick={() => setIsManual(isManual => !isManual)}
 									/>
 								</Tooltip>
-							)}
+							)} */}
 					</Grid>
 
 					<Grid columns="ab" gap="md">
@@ -169,6 +169,7 @@ export default function StopDetails() {
 							maxLength={255}
 							placeholder="Rua Marquês de Pombal Porta Oito"
 							{...stopDetailContext.data.form.getInputProps('tts_name')}
+							disabled
 						/>
 
 						<Tooltip label="Text to Speech" position="bottom">

@@ -60,7 +60,7 @@ export default function Stop({ paramId }: StopProps) {
 								<StopAccessibility />
 								<StopEquipments />
 								<StopConnections />
-								{/* <StopMedia /> */}
+								<StopMedia />
 								<StopComments />
 								<StopObservations />
 							</Pane>

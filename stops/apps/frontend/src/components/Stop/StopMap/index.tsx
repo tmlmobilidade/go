@@ -1,17 +1,24 @@
 // import { Surface } from '@/components/layout/Surface';
 // import { MapView } from '@/components/map/MapView';
 // import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
+
+import { Stop } from '@tmlmobilidade/types';
+// import { centerMap, getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/ui';
+// import { centerMap, getBaseGeoJsonFeatureCollection, MapView, MapViewStyleActiveStops, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId, moveMap } from '@tmlmobilidade/ui';
+// import { centerMap } from '@/utils/map.utils';
 import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
-import { Stop } from '@tmlmobilidade/types';
-import { centerMap, getBaseGeoJsonFeatureCollection, MapView, MapViewStyleActiveStops, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId, moveMap } from '@tmlmobilidade/ui';
-// import { centerMap } from '@/utils/map.utils';
+import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import * as turf from '@turf/turf';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useEffect, useMemo } from 'react';
+
+import { MapView } from './map/MapView';
+import { MapViewStyleActiveStops } from './map/MapViewStyleActiveStops';
+import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/MapViewStyleStops';
 
 /* * */
 
@@ -26,7 +33,8 @@ export function StopsListViewMap() {
 	const stopsListContext = useStopsListContext();
 	const stopDetailContext = useStopDetailContext();
 
-	// console.log('stopsListMap', stopsListMap);
+	console.log('stopsListMap', stopsListMap);
+
 	// const [activeStopGeoJson, setActiveStopGeoJson] = React.useState<GeoJSON.FeatureCollection | undefined>(undefined);
 
 	//
@@ -90,7 +98,6 @@ export function StopsListViewMap() {
 	// C. Render components
 
 	return (
-		// <Surface variant="persistent" forceOverflow>
 		<div style={{ height: 400, minHeight: 400 }}>
 			<MapView
 				id="stopsListMap"
@@ -98,15 +105,11 @@ export function StopsListViewMap() {
 				onClick={handleLayerClick}
 			>
 				<MapViewStyleActiveStops
-					// presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
 					stopsData={activeStopGeoJson}
 				/>
 
 				<MapViewStyleStops stopsData={stopsListContext.data.filtered_fc} />
 			</MapView>
 		</div>
-		// </Surface>
 	);
-
-	//
 }

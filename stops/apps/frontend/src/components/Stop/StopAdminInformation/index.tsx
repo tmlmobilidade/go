@@ -28,6 +28,7 @@ export default function StopAdminInformation() {
 						maxLength={255}
 						placeholder="Escolha uma opção..."
 						{...stopDetailContext.data.form.getInputProps('municipality_id')}
+						disabled
 					/>
 
 					<TextInput
@@ -35,6 +36,7 @@ export default function StopAdminInformation() {
 						maxLength={255}
 						placeholder="Maçãs"
 						{...stopDetailContext.data.form.getInputProps('parish_id')}
+						disabled
 					/>
 
 					<TextInput
@@ -42,6 +44,7 @@ export default function StopAdminInformation() {
 						maxLength={255}
 						placeholder="Bairro das Maçãs"
 						{...stopDetailContext.data.form.getInputProps('locality_id')}
+						disabled
 					/>
 				</Grid>
 
@@ -51,6 +54,7 @@ export default function StopAdminInformation() {
 						maxLength={255}
 						placeholder="CM Moita"
 						{...stopDetailContext.data.form.getInputProps('jurisdiction')}
+						disabled
 					/>
 				</Grid>
 			</Section>
