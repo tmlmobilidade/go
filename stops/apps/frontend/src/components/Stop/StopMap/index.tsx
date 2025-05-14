@@ -26,7 +26,7 @@ export function StopsListViewMap() {
 	const stopsListContext = useStopsListContext();
 	const stopDetailContext = useStopDetailContext();
 
-	console.log('stopsListMap', stopsListMap);
+	// console.log('stopsListMap', stopsListMap);
 	// const [activeStopGeoJson, setActiveStopGeoJson] = React.useState<GeoJSON.FeatureCollection | undefined>(undefined);
 
 	//
