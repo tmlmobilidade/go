@@ -25,13 +25,13 @@ export default function StopMedia() {
 			title="Imagens & Vídeos"
 		>
 			<Section gap="md">
-				<Grid columns="abcd" gap="md">
+				{/* <Grid columns="abcd" gap="md">
 					{stopDetailContext.data.form.getValues().file_ids.map(file_id => <div key={file_id}>{file_id}</div>)}
 				</Grid>
 
 				<Grid columns="abcd" gap="md">
 					{stopDetailContext.data.form.getValues().image_ids.map(image_id => <div key={image_id}>{image_id}</div>)}
-				</Grid>
+				</Grid> */}
 
 				<UploadImage
 					// imageUrl={stopDetailContext.data.imageUrl}

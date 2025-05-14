@@ -3,10 +3,12 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 // import ComponentWrapper from '../ComponentWrapper';
+import { useStopDetailContext } from '@/contexts/StopDetail.context';
+
 import styles from './styles.module.css';
 
 interface UploadImageProps {
-	imageUrl?: string
+	imageUrl?: string[]
 	label?: string
 	maxFileSize?: number
 	maxHeight?: number
@@ -28,7 +30,9 @@ export function UploadImage({
 
 	//
 	// A. Setup variables
-	const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
+	// const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
+	const [preview, setPreview] = useState<null | string[]>(imageUrl ?? null);
+	const stopDetailContext = useStopDetailContext();
 
 	// console.log('imageUrl', imageUrl);
 
@@ -48,45 +52,69 @@ export function UploadImage({
 		}
 
 		const reader = new FileReader();
-		reader.onload = () => setPreview(reader.result as string);
+		// const files = [...preview];
+		// files.push(reader.result as string);
+		// reader.onload = () => setPreview(files);
+		reader.onload = () => setPreview([...(preview || []), reader.result as string]);
 		reader.readAsDataURL(file);
 
-		console.log('file', file);
-		console.log('reader', reader);
-		onFileChange?.(file);
+		// onFileChange?.(file);
 	};
 
-	const handleDelete = () => {
-		setPreview(null);
-		if (imageUrl && onDelete) onDelete();
+	const handleDelete = (index) => {
+		console.log('index', index);
+		const files = [...preview];
+		console.log('files1', files);
+		files.splice(index, 1);
+		console.log('files2', files);
+		setPreview(files);
+		// setPreview(null);
+		// if (imageUrl && onDelete) onDelete();
 	};
+
+	useEffect(() => {
+		console.log('preview', preview);
+
+		// console.log('file', file);
+		// console.log('reader', reader);
+		console.log('1', stopDetailContext.data.form.getInputProps('image_ids').value);
+		const files = stopDetailContext.data.form.getInputProps('image_ids').value;
+		files.push(preview);
+		// console.log('reader.result', reader.result);
+		stopDetailContext.data.form.setFieldValue('image_ids', files);
+		console.log('2', stopDetailContext.data.form.getInputProps('image_ids').value);
+	}, [preview]);
 
 	//
 	// C. Render components
 	return (
-		<div className={styles.container} style={{ maxHeight, maxWidth }}>
+		// <div className={styles.container} style={{ maxHeight, maxWidth }}>
+		<div className={styles.container}>
 			{label && <Label>{label}</Label>}
-			{preview ? (
-				<div className={styles.imageContainer}>
-					<Image alt="Preview" className={styles.image} height={300} src={preview} width={400} />
-					{onDelete && (
-						<div className={styles.deleteContainer}>
-							<DeleteActionIcon
-								confirmMessage="Tem certeza que deseja apagar a imagem?"
-								confirmTitle="Apagar imagem"
-								onConfirm={handleDelete}
-								showConfirmation
-							/>
-						</div>
-					)}
-				</div>
-			) : (
-				<FileButton
-					accept="image/*"
-					label="Carregar imagem"
-					onFileChange={handleFileChange}
-				/>
-			)}
+			{preview?.map((image_id: string, index: number) => (
+				image_id ? (
+					<div key={index} className={styles.imageContainer}>
+						<Image alt="Preview" className={styles.image} height={300} src={image_id} width={400} />
+						{/* <Image alt="Preview" className={styles.image} height={300} src={preview} width={400} /> */}
+						{onDelete && (
+							<div className={styles.deleteContainer}>
+								<DeleteActionIcon
+									confirmMessage="Tem certeza que deseja apagar a imagem?"
+									confirmTitle="Apagar imagem"
+									onConfirm={() => handleDelete(index)}
+									showConfirmation
+								/>
+							</div>
+						)}
+					</div>
+				) : null
+			))}
+
+			<FileButton
+				accept="image/*"
+				label="Carregar imagem"
+				onFileChange={handleFileChange}
+			/>
 		</div>
 	);
 }
