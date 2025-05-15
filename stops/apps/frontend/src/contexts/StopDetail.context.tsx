@@ -130,19 +130,20 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	const stopsContext = useStopsContext();
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
-	// console.log('-> ==> stop', stop);
-	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-		stopId === 'new'
-			? undefined
-			: Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
-		swrFetcher,
-	);
-	const { data: fileUrl, isLoading: fileUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-		stopId === 'new'
-			? undefined
-			: Routes.STOPS_API + Routes.STOP_FILE(stopId),
-		swrFetcher,
-	);
+	console.log('==> loading', loading);
+	console.log('==> isLoading', isLoading);
+	// const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
+	// 	stopId === 'new'
+	// 		? undefined
+	// 		: Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
+	// 	swrFetcher,
+	// );
+	// const { data: fileUrl, isLoading: fileUrlLoading } = useSWR<undefined | { data: string, message: string }>(
+	// 	stopId === 'new'
+	// 		? undefined
+	// 		: Routes.STOPS_API + Routes.STOP_FILE(stopId),
+	// 	swrFetcher,
+	// );
 
 	//
 	// B. Define form
@@ -186,6 +187,14 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 		setLoading(false);
 	}, [stop]);
+
+	// useEffect(() => {
+	// 	console.log('-> UseEffect 2.1', loading);
+	// }, [loading]);
+
+	// useEffect(() => {
+	// 	console.log('-> UseEffect 2.2', flags);
+	// }, [stopDetailContext.flags]);
 
 	useEffect(() => {
 		console.log('-> UseEffect 3');
@@ -397,7 +406,8 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			canSave,
 			isReadOnly,
 			isSaving,
-			loading: isLoading || loading || imageUrlLoading,
+			loading: isLoading || loading,
+			// loading: isLoading || loading || imageUrlLoading,
 			mode: stopId === 'new' ? StopDetailMode.CREATE : StopDetailMode.EDIT,
 		},
 	};

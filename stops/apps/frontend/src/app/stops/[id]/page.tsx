@@ -1,5 +1,6 @@
 import Navigation from '@/components/Navigation';
 import Stop from '@/components/Stop';
+import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
 import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
@@ -12,7 +13,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 	return (
 		<div className={styles.container}>
 			<StopsListContextProvider>
-				<Navigation />
+				<SearchbarContextProvider>
+					<Navigation />
+				</SearchbarContextProvider>
 			</StopsListContextProvider>
 			<StopDetailContextProvider stopId={id}>
 				<Stop paramId={id} />

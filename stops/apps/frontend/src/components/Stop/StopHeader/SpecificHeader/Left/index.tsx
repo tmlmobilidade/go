@@ -14,22 +14,14 @@ import styles from './styles.module.css';
 /* * */
 
 interface LeftProps {
-	isManual: boolean
 	// long_name?: string
+	data: unknown
+	isManual: boolean
 }
 
 /* * */
 
-export default function Left({ isManual }: LeftProps) {
-	//
-
-	//
-	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
-
-	const { data: stop } = stopDetailContext;
-
+export default function Left({ data, isManual }: LeftProps) {
 	//
 	// B. Render components
 
@@ -54,7 +46,7 @@ export default function Left({ isManual }: LeftProps) {
 				)} */}
 
 			{/* Label */}
-			<h3>{stop.form.getValues().name || <i>Paragem sem Título</i>}</h3>
+			<h3>{data.form.getValues().name || <i>Paragem sem Título</i>}</h3>
 		</div>
 	);
 }

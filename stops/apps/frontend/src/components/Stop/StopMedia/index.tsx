@@ -1,20 +1,17 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Button, Collapsible, FileButton, Grid, Section, useToast } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
 import { UploadImage } from './UploadImage';
 
-export default function StopMedia() {
+export default function StopMedia({ data }) {
 	//
 
 	//
 	// A. Setup variables
 
 	// const [file, setFile] = useState<File | null>(null);
-
-	const stopDetailContext = useStopDetailContext();
 
 	//
 	// B. Render components
@@ -34,6 +31,7 @@ export default function StopMedia() {
 				</Grid> */}
 
 				<UploadImage
+					data={data}
 					// imageUrl={stopDetailContext.data.imageUrl}
 					// imageUrl="image.png"
 					// label="Imagem"

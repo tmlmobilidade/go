@@ -1,6 +1,5 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Button, Collapsible, Grid, Section, TextArea, useMeContext } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
@@ -8,7 +7,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function StopComments() {
+export default function StopComments({ actions, data }) {
 	//
 
 	//
@@ -16,7 +15,6 @@ export default function StopComments() {
 
 	const [value, setValue] = useState<string>('');
 
-	const stopDetailContext = useStopDetailContext();
 	const meContext = useMeContext();
 
 	//
@@ -28,7 +26,7 @@ export default function StopComments() {
 			title="Notas e Comentários"
 		>
 			<Section gap="md">
-				{stopDetailContext.data.form.getValues().comments.map((comment, index: number) => {
+				{data.form.getValues().comments.map((comment, index: number) => {
 					return (
 						<Grid key={index} gap="md">
 							<div>USER ID: {comment.user_id}</div>
@@ -58,7 +56,7 @@ export default function StopComments() {
 						variant="secondary"
 						onClick={() => {
 							if (value === '') return;
-							stopDetailContext.actions.handleCommentsChange(meContext.data.user._id, value);
+							actions.handleCommentsChange(meContext.data.user._id, value);
 							setValue('');
 						}}
 					/>

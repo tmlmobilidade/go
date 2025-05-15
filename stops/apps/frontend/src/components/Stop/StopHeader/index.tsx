@@ -5,13 +5,7 @@ import SpecificHeader from './SpecificHeader';
 
 /* * */
 
-interface HeaderProps {
-	generic: boolean
-}
-
-/* * */
-
-export default function StopHeader({ generic }: HeaderProps) {
+export default function StopHeader({ actions, data, generic }) {
 	//
 
 	//
@@ -20,7 +14,7 @@ export default function StopHeader({ generic }: HeaderProps) {
 	return (
 		<>
 			{
-				generic === true ? <GenericHeader /> : <SpecificHeader />
+				generic === true ? <GenericHeader /> : <SpecificHeader actions={actions} data={data} />
 			}
 		</>
 	);

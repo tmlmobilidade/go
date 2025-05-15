@@ -9,6 +9,7 @@ import { Pane } from '@tmlmobilidade/ui';
 import StopAccessibility from './StopAccessibility';
 import StopAdminInformation from './StopAdminInformation';
 // import StopAffectation from './StopAffectation';
+// import { useStopsContext } from '@/contexts/Stops.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
 import StopComments from './StopComments';
@@ -38,7 +39,11 @@ export default function Stop({ paramId }: StopProps) {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	console.log('stopDetailContext', stopDetailContext);
+	console.log('-> stopDetailContext', stopDetailContext);
+	const { actions, data, flags } = stopDetailContext;
+
+	// const stopsContext = useStopsContext();
+	// console.log('stopsContext', stopsContext);
 
 	//
 	// B. Render components
@@ -47,28 +52,28 @@ export default function Stop({ paramId }: StopProps) {
 		<ManualContextProvider>
 			<StopsListContextProvider>
 				{
-					stopDetailContext.flags.loading === false && (stopDetailContext.data?._id || paramId === 'new')
+					flags.loading === false && (data?._id || paramId === 'new')
 						? (
-							<Pane header={[<StopHeader generic={false} />]}>
+							<Pane header={[<StopHeader actions={actions}data={data} generic={false} />]}>
 								{/* <StopMap generic={false} /> */}
-								<StopsListViewMap />
-								<StopDetails />
-								<StopAdminInformation />
+								<StopsListViewMap data={data} />
+								<StopDetails data={data} />
+								<StopAdminInformation data={data} />
 								{/* <StopAffectation /> */}
-								<StopShelter />
-								<StopInfrasctructure />
-								<StopPublicInformation />
-								<StopAccessibility />
-								<StopEquipments />
-								<StopConnections />
-								<StopMedia />
-								<StopComments />
-								<StopObservations />
+								<StopShelter data={data} />
+								<StopInfrasctructure data={data} />
+								<StopPublicInformation data={data} />
+								<StopAccessibility data={data} />
+								<StopEquipments data={data} />
+								<StopConnections actions={actions} data={data} />
+								<StopMedia data={data} />
+								<StopComments actions={actions} data={data} />
+								<StopObservations data={data} />
 							</Pane>
 						// </div>
 						) : (
-							<Pane header={[<StopHeader generic={true} />]}>
-								{stopDetailContext.flags.loading === false ? <StopsListViewMap /> : <div>Loading...</div>}
+							<Pane header={[<StopHeader actions={actions} data={data} generic={true} />]}>
+								{flags.loading === false ? <StopsListViewMap data={data} /> : <div>Loading...</div>}
 								{/* <StopsListViewMap /> */}
 							</Pane>
 						)

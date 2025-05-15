@@ -2,17 +2,13 @@
 
 /* * */
 
+import { Routes } from '@/lib/routes';
 import { ActionIcon, Button } from '@mantine/core';
 import { IconDeviceFloppy, IconMapPinFilled, IconPlus } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
-import { SetStateAction } from 'react';
-
-/* * */
-
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { Routes } from '@/lib/routes';
 import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
+import { SetStateAction } from 'react';
 
 import styles from './styles.module.css';
 
@@ -29,14 +25,7 @@ export default function Right({ setToggleValue, toggleValue }: RightProps) {
 	//
 
 	//
-	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
-
-	const { actions } = stopDetailContext;
-
-	//
-	// B. Render components
+	// A. Render components
 
 	return (
 		<div className={styles.section}>

@@ -3,8 +3,8 @@
 import type { OperationalStatus, operationalStatusSchema } from '@tmlmobilidade/types';
 
 import { useManualContext } from '@/contexts/Manual.context';
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { audioTtsUrl } from '@/settings/url.settings';
+import { StopOptions } from '@/utils/options.utils';
 import { IconAlertHexagon, IconAlertHexagonOff, IconPlayerPause, IconVolume } from '@tabler/icons-react';
 import { Collapsible, Grid, Section, TextArea, TextInput, Tooltip } from '@tmlmobilidade/ui';
 import { useEffect, useRef, useState } from 'react';
@@ -19,14 +19,12 @@ enum OperationalStatusValues {
 	voided = 'Vazio',
 }
 
-export default function StopDetails() {
+export default function StopDetails({ data }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopDetailContext = useStopDetailContext();
-	// console.log('=> stopDetailContext', stopDetailContext);
 	const { isManual, setIsManual } = useManualContext();
 
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -36,7 +34,7 @@ export default function StopDetails() {
 	// B. Transform data
 
 	useEffect(() => {
-		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${stopDetailContext.data._id}.mp3`);
+		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${data._id}.mp3`);
 	}, []);
 
 	useEffect(() => {
@@ -56,6 +54,22 @@ export default function StopDetails() {
 
 	//
 	// C. Handle actions
+
+	const handleShortName = () => {
+	// Return if stop has no name
+		if (!data.form.values.new_name || !data.form.values.short_name) return;
+		// Copy the name first
+		let shortenedStopName = data.form.values.new_name;
+		// Shorten the stop name
+		StopOptions.name_abbreviations
+			.filter(abbreviation => abbreviation.enabled)
+			.forEach((abbreviation) => {
+				const regexExpression = new RegExp(abbreviation.phrase, 'g');
+				shortenedStopName = shortenedStopName.replace(regexExpression, abbreviation.replacement);
+			});
+		// Save the new name
+		data.form.setFieldValue('short_name', shortenedStopName);
+	};
 
 	const handleToogleAudio = () => {
 		if (isPlaying) {
@@ -85,17 +99,17 @@ export default function StopDetails() {
 						label="Código Único da Paragem"
 						maxLength={255}
 						placeholder="012345"
-						{...stopDetailContext.data.form.getInputProps('_id')}
+						{...data.form.getInputProps('_id')}
 					/>
 
 					<TextInput
 						label="Latitude"
 						maxLength={255}
-						{...stopDetailContext.data.form.getInputProps('latitude')}
+						{...data.form.getInputProps('latitude')}
 						onBlur={(e) => {
 							const value = parseFloat(e.target.value);
 							if (!isNaN(value)) {
-								stopDetailContext.data.form.setFieldValue('latitude', value);
+								data.form.setFieldValue('latitude', value);
 							}
 							else {
 								console.log('Invalid latitude value');
@@ -106,11 +120,11 @@ export default function StopDetails() {
 					<TextInput
 						label="Longitude"
 						maxLength={255}
-						{...stopDetailContext.data.form.getInputProps('longitude')}
+						{...data.form.getInputProps('longitude')}
 						onBlur={(e) => {
 							const value = parseFloat(e.target.value);
 							if (!isNaN(value)) {
-								stopDetailContext.data.form.setFieldValue('longitude', value);
+								data.form.setFieldValue('longitude', value);
 							}
 							else {
 								console.log('Invalid longitude value');
@@ -125,7 +139,7 @@ export default function StopDetails() {
 						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
 						disabled
-						{...stopDetailContext.data.form.getInputProps('name')}
+						{...data.form.getInputProps('name')}
 					/>
 				</Grid>
 
@@ -134,7 +148,7 @@ export default function StopDetails() {
 						label="Nome da Paragem (depois da correção)"
 						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
-						{...stopDetailContext.data.form.getInputProps('new_name')}
+						{...data.form.getInputProps('new_name')}
 					/>
 				</Grid>
 
@@ -144,9 +158,16 @@ export default function StopDetails() {
 							label="Nome Curto (Postalete)"
 							maxLength={255}
 							placeholder="R. Mrq. de Pombal 8"
-							{...stopDetailContext.data.form.getInputProps('short_name')}
+							{...data.form.getInputProps('short_name')}
 						/>
-						{/* {isManual
+
+						<Tooltip label="Gerar Nome Curto" position="bottom">
+							<IconAlertHexagon
+								onClick={() => handleShortName()}
+							/>
+						</Tooltip>
+						{/*
+						{isManual
 							? (
 								<Tooltip label="Modo Manual Ativado" position="bottom">
 									<IconAlertHexagon
@@ -168,7 +189,7 @@ export default function StopDetails() {
 							label="Nome Falado (Text-to-Speech)"
 							maxLength={255}
 							placeholder="Rua Marquês de Pombal Porta Oito"
-							{...stopDetailContext.data.form.getInputProps('tts_name')}
+							{...data.form.getInputProps('tts_name')}
 							disabled
 						/>
 
@@ -183,7 +204,7 @@ export default function StopDetails() {
 				</Grid>
 
 				{/* <Grid gap="md">
-				<Item label="Estado Operacional" {...stopDetailContext.data.form.getInputProps('operational_status')} />
+				<Item label="Estado Operacional" {...data.form.getInputProps('operational_status')} />
 			</Grid> */}
 			</Section>
 		</Collapsible>

@@ -9,19 +9,7 @@ import { redirect, RedirectType } from 'next/navigation';
 
 import styles from '../styles.module.css';
 
-interface RightProps {
-	open: () => void
-}
-export default function Right({ open }: RightProps) {
-	//
-
-	//
-	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
-
-	const { actions, data: stop } = stopDetailContext;
-
+export default function Right({ actions, data, open }) {
 	//
 	// B. Render components
 
@@ -35,7 +23,7 @@ export default function Right({ open }: RightProps) {
 			</Tooltip> */}
 
 			{/* Stop Button */}
-			<Link href={`https://www.carrismetropolitana.pt/stops/${stop._id}`}>
+			<Link href={`https://www.carrismetropolitana.pt/stops/${data._id}`}>
 				<Tooltip label="Ver esta paragem no Site" position="bottom">
 					<ActionIcon
 						className={styles.iconBlue}

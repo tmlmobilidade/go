@@ -3,11 +3,11 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 // import ComponentWrapper from '../ComponentWrapper';
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 
 import styles from './styles.module.css';
 
 interface UploadImageProps {
+	data: unknown
 	imageUrl?: string[]
 	label?: string
 	maxFileSize?: number
@@ -18,6 +18,7 @@ interface UploadImageProps {
 }
 
 export function UploadImage({
+	data,
 	imageUrl,
 	label,
 	maxFileSize = 6 * 1024 * 1024, // 5MB default
@@ -31,7 +32,6 @@ export function UploadImage({
 	//
 	// A. Setup variables
 	const [preview, setPreview] = useState<null | string[]>(imageUrl ?? null);
-	const stopDetailContext = useStopDetailContext();
 
 	//
 	// B. Transform Data
@@ -40,7 +40,7 @@ export function UploadImage({
 	}, [imageUrl]);
 
 	useEffect(() => {
-		stopDetailContext.data.form.setFieldValue('image_ids', preview);
+		data.form.setFieldValue('image_ids', preview);
 	}, [preview]);
 
 	//

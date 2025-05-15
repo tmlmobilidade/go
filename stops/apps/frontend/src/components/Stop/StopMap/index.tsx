@@ -6,7 +6,6 @@ import { Stop } from '@tmlmobilidade/types';
 // import { centerMap, getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/ui';
 // import { centerMap, getBaseGeoJsonFeatureCollection, MapView, MapViewStyleActiveStops, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId, moveMap } from '@tmlmobilidade/ui';
 // import { centerMap } from '@/utils/map.utils';
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
@@ -22,7 +21,7 @@ import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/Ma
 
 /* * */
 
-export function StopsListViewMap() {
+export function StopsListViewMap({ data }) {
 	console.log('StopsListViewMap');
 	//
 
@@ -32,7 +31,6 @@ export function StopsListViewMap() {
 	const { stopsListMap } = useMap();
 	const router = useRouter();
 	const stopsListContext = useStopsListContext();
-	const stopDetailContext = useStopDetailContext();
 
 	// console.log('stopsListMap', stopsListMap);
 
@@ -54,14 +52,14 @@ export function StopsListViewMap() {
 	const activeStopGeoJson = useMemo(() => {
 		// console.log('activeStopGeoJson');
 		// console.log('stopDetailContext.data.form.values', stopDetailContext.data.form.values);
-		return getGeoJsonFC(stopDetailContext.data.form.values);
+		return getGeoJsonFC(data.form.values);
 	// }, [stopDetailContext.data.active_stop_id]);
-	}, [stopsListContext.data.filtered_fc, stopDetailContext.data.active_stop_id]);
+	}, [stopsListContext.data.filtered_fc, data.active_stop_id]);
 
 	useEffect(() => {
 		console.log('UseEffect', stopsListContext.data.filtered_fc);
 		// console.log('stopDetailContext.data.form.values', stopDetailContext.data.form.values);
-		const geoJsonFC = getGeoJsonFC(stopDetailContext.data.form.values);
+		const geoJsonFC = getGeoJsonFC(data.form.values);
 		// moveMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
 		centerMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
 		// setActiveStopGeoJson(geoJsonFC);
@@ -105,7 +103,7 @@ export function StopsListViewMap() {
 
 	//
 	// C. Render components
-
+	console.log('-> activeStopGeoJson', activeStopGeoJson);
 	return (
 		<div style={{ height: 400, minHeight: 400 }}>
 			<MapView

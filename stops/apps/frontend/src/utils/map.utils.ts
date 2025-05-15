@@ -119,6 +119,7 @@ export const getBaseGeoJsonFeatureLineString = (): Feature<LineString> => {
  * @returns A GeoJSON FeatureCollection object with an empty features array
  */
 
-export const getBaseGeoJsonFeatureCollection = (): FeatureCollection<LineString | Point | Polygon, GeoJsonProperties> => {
+// export const getBaseGeoJsonFeatureCollection = (): FeatureCollection<LineString | Point | Polygon, GeoJsonProperties> => {
+export const getBaseGeoJsonFeatureCollection = (): FeatureCollection<Point> => {
 	return Object.assign({ features: [], type: 'FeatureCollection' });
 };

@@ -1,18 +1,10 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export default function StopAdminInformation() {
-	//
-
-	//
-	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
-
+export default function StopAdminInformation({ data }) {
 	//
 	// B. Render components
 
@@ -27,7 +19,7 @@ export default function StopAdminInformation() {
 						label="Município"
 						maxLength={255}
 						placeholder="Escolha uma opção..."
-						{...stopDetailContext.data.form.getInputProps('municipality_id')}
+						{...data.form.getInputProps('municipality_id')}
 						disabled
 					/>
 
@@ -35,7 +27,7 @@ export default function StopAdminInformation() {
 						label="Freguesia"
 						maxLength={255}
 						placeholder="Maçãs"
-						{...stopDetailContext.data.form.getInputProps('parish_id')}
+						{...data.form.getInputProps('parish_id')}
 						disabled
 					/>
 
@@ -43,7 +35,7 @@ export default function StopAdminInformation() {
 						label="Localidade"
 						maxLength={255}
 						placeholder="Bairro das Maçãs"
-						{...stopDetailContext.data.form.getInputProps('locality_id')}
+						{...data.form.getInputProps('locality_id')}
 						disabled
 					/>
 				</Grid>
@@ -53,7 +45,7 @@ export default function StopAdminInformation() {
 						label="Jurisdição"
 						maxLength={255}
 						placeholder="CM Moita"
-						{...stopDetailContext.data.form.getInputProps('jurisdiction')}
+						{...data.form.getInputProps('jurisdiction')}
 						disabled
 					/>
 				</Grid>

@@ -3,7 +3,6 @@
 /* * */
 
 import { useManualContext } from '@/contexts/Manual.context';
-import { useStopsContext } from '@/contexts/Stops.context';
 import { Stop } from '@tmlmobilidade/types';
 // import { Stop } from '@carrismetropolitana/api-types/network';
 import { useDisclosure } from '@mantine/hooks';
@@ -19,7 +18,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function SpecificHeader() {
+export default function SpecificHeader({ actions, data }) {
 	//
 
 	//
@@ -27,23 +26,18 @@ export default function SpecificHeader() {
 
 	// Contexts
 	const { isManual } = useManualContext();
-	const { actions } = useStopsContext();
 
 	// Hooks
 	const [opened, { close, open }] = useDisclosure(false);
 
-	// const stopDetailContext = useStopDetailContext();
-
-	// const { data: stop } = stopDetailContext;
-	// console.log('=> latitude', stop.form.getValues().latitude);
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.header}>
-			<Left isManual={isManual} />
+			<Left data={data} isManual={isManual} />
 
-			<Right open={open} />
+			<Right actions={actions} data={data} open={open} />
 
 			{/* <PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
 				<List>
