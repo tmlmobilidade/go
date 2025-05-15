@@ -38,6 +38,7 @@ export default function Stop({ paramId }: StopProps) {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	console.log('stopDetailContext', stopDetailContext);
 
 	//
 	// B. Render components
@@ -46,7 +47,7 @@ export default function Stop({ paramId }: StopProps) {
 		<ManualContextProvider>
 			<StopsListContextProvider>
 				{
-					stopDetailContext.data?._id || paramId === 'new'
+					stopDetailContext.flags.loading === false && (stopDetailContext.data?._id || paramId === 'new')
 						? (
 							<Pane header={[<StopHeader generic={false} />]}>
 								{/* <StopMap generic={false} /> */}
@@ -67,8 +68,8 @@ export default function Stop({ paramId }: StopProps) {
 						// </div>
 						) : (
 							<Pane header={[<StopHeader generic={true} />]}>
-								<StopsListViewMap />
-								{/* <StopMap generic={true} /> */}
+								{stopDetailContext.flags.loading === false ? <StopsListViewMap /> : <div>Loading...</div>}
+								{/* <StopsListViewMap /> */}
 							</Pane>
 						)
 				}

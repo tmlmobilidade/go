@@ -23,6 +23,7 @@ import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/Ma
 /* * */
 
 export function StopsListViewMap() {
+	console.log('StopsListViewMap');
 	//
 
 	//
@@ -44,20 +45,28 @@ export function StopsListViewMap() {
 		if (!stop) return;
 		const collection = getBaseGeoJsonFeatureCollection();
 		const stopFC = transformStopDataIntoGeoJsonFeature(stop);
+		// console.log('stopFC', stopFC);
 		if (stopFC) collection.features.push(stopFC);
+		// console.log('collection', collection);
 		return collection;
 	};
 
 	const activeStopGeoJson = useMemo(() => {
+		// console.log('activeStopGeoJson');
+		// console.log('stopDetailContext.data.form.values', stopDetailContext.data.form.values);
 		return getGeoJsonFC(stopDetailContext.data.form.values);
-	}, [stopsListContext.data.filtered_fc]);
+	// }, [stopDetailContext.data.active_stop_id]);
+	}, [stopsListContext.data.filtered_fc, stopDetailContext.data.active_stop_id]);
 
 	useEffect(() => {
+		console.log('UseEffect', stopsListContext.data.filtered_fc);
+		// console.log('stopDetailContext.data.form.values', stopDetailContext.data.form.values);
 		const geoJsonFC = getGeoJsonFC(stopDetailContext.data.form.values);
 		// moveMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
 		centerMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
 		// setActiveStopGeoJson(geoJsonFC);
 	}, [stopsListContext.data.filtered_fc]);
+	// }, [stopsListContext.data.filtered_fc, stopDetailContext.data.active_stop_id]);
 
 	useEffect(() => {
 		// Exit early if there are no stops or map
@@ -105,6 +114,7 @@ export function StopsListViewMap() {
 				onClick={handleLayerClick}
 			>
 				<MapViewStyleActiveStops
+					presentBeforeId={MapViewStyleStopsInteractiveLayerId}
 					stopsData={activeStopGeoJson}
 				/>
 
