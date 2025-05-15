@@ -30,11 +30,8 @@ export function UploadImage({
 
 	//
 	// A. Setup variables
-	// const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
 	const [preview, setPreview] = useState<null | string[]>(imageUrl ?? null);
 	const stopDetailContext = useStopDetailContext();
-
-	// console.log('imageUrl', imageUrl);
 
 	useEffect(() => {
 		setPreview(imageUrl ?? null);
@@ -52,37 +49,23 @@ export function UploadImage({
 		}
 
 		const reader = new FileReader();
-		// const files = [...preview];
-		// files.push(reader.result as string);
-		// reader.onload = () => setPreview(files);
+
 		reader.onload = () => setPreview([...(preview || []), reader.result as string]);
+
 		reader.readAsDataURL(file);
 
-		// onFileChange?.(file);
+		onFileChange?.(file);
 	};
 
 	const handleDelete = (index) => {
-		console.log('index', index);
 		const files = [...preview];
-		console.log('files1', files);
 		files.splice(index, 1);
-		console.log('files2', files);
 		setPreview(files);
-		// setPreview(null);
-		// if (imageUrl && onDelete) onDelete();
+		if (imageUrl && onDelete) onDelete();
 	};
 
 	useEffect(() => {
-		console.log('preview', preview);
-
-		// console.log('file', file);
-		// console.log('reader', reader);
-		console.log('1', stopDetailContext.data.form.getInputProps('image_ids').value);
-		const files = stopDetailContext.data.form.getInputProps('image_ids').value;
-		files.push(preview);
-		// console.log('reader.result', reader.result);
-		stopDetailContext.data.form.setFieldValue('image_ids', files);
-		console.log('2', stopDetailContext.data.form.getInputProps('image_ids').value);
+		stopDetailContext.data.form.setFieldValue('image_ids', preview);
 	}, [preview]);
 
 	//
@@ -95,7 +78,6 @@ export function UploadImage({
 				image_id ? (
 					<div key={index} className={styles.imageContainer}>
 						<Image alt="Preview" className={styles.image} height={300} src={image_id} width={400} />
-						{/* <Image alt="Preview" className={styles.image} height={300} src={preview} width={400} /> */}
 						{onDelete && (
 							<div className={styles.deleteContainer}>
 								<DeleteActionIcon
