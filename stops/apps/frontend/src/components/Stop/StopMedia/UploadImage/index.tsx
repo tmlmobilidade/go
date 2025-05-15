@@ -33,12 +33,18 @@ export function UploadImage({
 	const [preview, setPreview] = useState<null | string[]>(imageUrl ?? null);
 	const stopDetailContext = useStopDetailContext();
 
+	//
+	// B. Transform Data
 	useEffect(() => {
 		setPreview(imageUrl ?? null);
 	}, [imageUrl]);
 
+	useEffect(() => {
+		stopDetailContext.data.form.setFieldValue('image_ids', preview);
+	}, [preview]);
+
 	//
-	// B. Handle File Change
+	// C. Handle Actions
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
@@ -64,20 +70,15 @@ export function UploadImage({
 		if (imageUrl && onDelete) onDelete();
 	};
 
-	useEffect(() => {
-		stopDetailContext.data.form.setFieldValue('image_ids', preview);
-	}, [preview]);
-
 	//
-	// C. Render components
+	// D. Render components
 	return (
-		// <div className={styles.container} style={{ maxHeight, maxWidth }}>
 		<div className={styles.container}>
 			{label && <Label>{label}</Label>}
 			{preview?.map((image_id: string, index: number) => (
 				image_id ? (
 					<div key={index} className={styles.imageContainer}>
-						<Image alt="Preview" className={styles.image} height={300} src={image_id} width={400} />
+						<Image alt="Preview" className={styles.image} height={maxHeight} src={image_id} width={maxWidth} />
 						{onDelete && (
 							<div className={styles.deleteContainer}>
 								<DeleteActionIcon

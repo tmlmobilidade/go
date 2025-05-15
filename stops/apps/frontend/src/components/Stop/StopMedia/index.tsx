@@ -37,9 +37,9 @@ export default function StopMedia() {
 					// imageUrl={stopDetailContext.data.imageUrl}
 					// imageUrl="image.png"
 					// label="Imagem"
-					onDelete={() => alert('Image deleted!')}
+					// onDelete={() => alert('Image deleted!')}
 					// onDelete={stopDetailContext.actions.deleteImage}
-					onFileChange={() => alert('File changed!')}
+					// onFileChange={() => alert('File changed!')}
 				/>
 			</Section>
 		</Collapsible>
