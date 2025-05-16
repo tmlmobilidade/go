@@ -11,7 +11,7 @@ const MAX_CONNECTION_RETRIES = 3;
 
 /* * */
 
-class PCGIDB {
+class PCGIDBClass {
 	//
 
 	constructor() {
@@ -93,6 +93,7 @@ class PCGIDB {
 			const salesManagementDatabase = mongoClientInstance.db('SalesManagement');
 			const validationsManagementDatabase = mongoClientInstance.db('ValidationsManagement');
 			const locationManagementDatabase = mongoClientInstance.db('LocationManagement');
+			const fileManagementDatabase = mongoClientInstance.db('FileManagement');
 
 			//
 			// Setup collections
@@ -101,6 +102,7 @@ class PCGIDB {
 			this.SalesEntity = salesManagementDatabase.collection('salesEntity');
 			this.ValidationEntity = validationsManagementDatabase.collection('validationEntity');
 			this.LocationEntity = locationManagementDatabase.collection('locationEntity');
+			this.TransactionEntity = fileManagementDatabase.collection('transactionEntity');
 
 			//
 			// Save the instance in memory
@@ -295,4 +297,4 @@ class PCGIDB {
 
 /* * */
 
-export default new PCGIDB();
+export const PCGIDB = new PCGIDBClass();

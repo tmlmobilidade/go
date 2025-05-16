@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/utils';
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseApexOnBoardSales(pcgiDoc: any): ApexOnBoardSale {
+export function parseApexOnBoardSale(pcgiDoc: any): ApexOnBoardSale {
 	//
 
 	return {

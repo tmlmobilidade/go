@@ -1,19 +1,22 @@
 /* * */
 
-import PCGIDB from '@/services/PCGIDB.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { apexOnBoardSales, rides } from '@tmlmobilidade/interfaces';
 import { parseApexOnBoardSales } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
-import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
+import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type ApexOnBoardSale, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime, Interval } from 'luxon';
 
 /* * */
 
-export async function syncApexOnBoardSales() {
+const RUN_INTERVAL = 1800000; // 30 minutes
+
+/* * */
+
+export async function importApexOnBoardSales() {
 	try {
 		//
 
@@ -80,7 +83,7 @@ export async function syncApexOnBoardSales() {
 						{ system_status: 'pending' },
 					);
 					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t3 data (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new APEX OnBoardSales data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
@@ -116,7 +119,7 @@ export async function syncApexOnBoardSales() {
 
 				flushCallback: flushCallback,
 
-				pcgiCollection: PCGIDB.SalesEntity,
+				pcgiCollection: PCGIDB.OnBoardSaleEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 
@@ -153,3 +156,13 @@ export async function syncApexOnBoardSales() {
 
 	//
 };
+
+/* * */
+
+(async function init() {
+	const runOnInterval = async () => {
+		await importApexOnBoardSales();
+		setTimeout(runOnInterval, RUN_INTERVAL);
+	};
+	runOnInterval();
+})();

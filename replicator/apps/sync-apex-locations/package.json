@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-replicator-sync-apex-locations",
+	"name": "@tmlmobilidade/sae-replicator-import-apex-locations",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
@@ -8,13 +8,12 @@
 	"scripts": {
 		"build": "npm run clean && tsc && resolve-tspaths",
 		"clean": "rm -rf dist",
-		"dev": "dotenv-run -f ../../environments/development/secrets/.env -- tsx watch ./src/index.ts",
+		"dev": "tsx watch src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@dotenv-run/cli": "1.3.6",
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
@@ -22,15 +21,14 @@
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
 		"@tmlmobilidade/sae-replicator-pckg-sync": "*",
 		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
-		"luxon": "3.6.1",
 		"mongodb": "6.16.0",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250513.1857.29",
-		"@types/luxon": "3.6.2",
 		"@types/node": "22.15.17",
 		"resolve-tspaths": "0.8.23",
+		"tsx": "4.19.4",
 		"typescript": "5.8.3"
 	}
 }

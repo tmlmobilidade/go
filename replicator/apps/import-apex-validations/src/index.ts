@@ -1,13 +1,12 @@
 /* * */
 
-import PCGIDB from '@/services/PCGIDB.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { apexValidations, rides } from '@tmlmobilidade/interfaces';
-import { parseApexValidations } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { parseApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
-import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
+import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type ApexValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime, Interval } from 'luxon';
 
@@ -96,10 +95,11 @@ export async function importApexValidations() {
 			// in the current timestamp chunk.
 
 			const pcgiQuery = {
-				'transaction.transactionDate': {
+				transactionDate: {
 					$gte: chunkData.start.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 					$lte: chunkData.end.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 				},
+				transactionType: 11,
 			};
 
 			const slaQuery = {
@@ -116,7 +116,7 @@ export async function importApexValidations() {
 
 				dbWriter: apexValidationsDbWritter,
 
-				docParser: parseApexValidations,
+				docParser: parseApexValidation,
 
 				flushCallback: flushCallback,
 
