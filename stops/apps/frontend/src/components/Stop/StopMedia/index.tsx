@@ -24,12 +24,12 @@ export function StopMedia({ actions, data }) {
 		>
 			<Section gap="md">
 				<UploadImage
-					data={data}
 					actions={actions}
+					data={data}
 					// imageUrl={stopDetailContext.data.imageUrl}
 					// imageUrl="image.png"
 					// label="Imagem"
-					// onDelete={() => alert('Image deleted!')}
+					onDelete={() => alert('Image deleted!')}
 					// onDelete={stopDetailContext.actions.deleteImage}
 					// onFileChange={() => alert('File changed!')}
 				/>

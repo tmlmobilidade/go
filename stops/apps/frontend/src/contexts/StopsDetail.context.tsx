@@ -18,7 +18,7 @@ import { OperationalStatus } from '@tmlmobilidade/types';
 import { PoleStatus } from '@tmlmobilidade/types';
 import { causeSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { convertObject, Dates } from '@tmlmobilidade/utils';
+import { convertObject, Dates, multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -222,7 +222,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const saveStop = async () => {
-		// console.log('-> saveStop');
+		console.log('-> saveStop');
 		setIsSaving(true);
 
 		// Handle Save Stop
@@ -296,6 +296,16 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		router.replace(Routes.STOP_LIST);
 	};
 
+	const handleImageChange = (file: File) => {
+		console.log('-> handleImageChange', file);
+		setImage(file);
+	};
+
+	useEffect(() => {
+		if (!image) return;
+		uploadImage(stopId);
+	}, [image]);
+
 	const deleteImage = async () => {
 		// console.log('-> deleteImage');
 		if (stopId === 'new') return;
@@ -319,13 +329,23 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const uploadImage = async (stopId: string) => {
-		// console.log('-> uploadImage');
 		if (stopId === 'new' || !image) return;
+		console.log('-> uploadImage', stopId);
 
-		const response = await uploadFile(
-			Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
-			image,
-		);
+		setIsSaving(true);
+		const uploadFormData = new FormData();
+
+		// uploadFormData.append('agency_id', form.getValues().agency_id);
+		// uploadFormData.append('feeder_status', form.getValues().feeder_status);
+		// uploadFormData.append('is_approved', form.getValues().is_approved.toString());
+		// uploadFormData.append('is_locked', form.getValues().is_locked.toString());
+		// uploadFormData.append('valid_from', form.getValues().valid_from);
+		// uploadFormData.append('valid_until', form.getValues().valid_until);
+		uploadFormData.append('image', image);
+		console.log('-> ==> uploadFormData', uploadFormData);
+		const response = await multipartFetch(Routes.STOP_IMAGE(stopId), uploadFormData);
+
+		console.log('-> ==> response', response);
 
 		if (response.error) {
 			useToast.error({
@@ -335,10 +355,18 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			return;
 		}
 
+		const { data: { insertedId } } = response.data as { data: { insertedId: string } };
+
+		if (insertedId) {
+			router.push(Routes.STOP_IMAGE(insertedId));
+		}
+
 		useToast.success({
-			message: 'A imagem foi carregada com sucesso',
-			title: 'Imagem carregada com sucesso',
+			message: 'Imagem carregada com sucesso',
+			title: 'Sucesso',
 		});
+
+		setIsSaving(false);
 	};
 
 	const handleConnectionsChange = (connections: string) => {
@@ -375,7 +403,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				// addReference,
 				deleteImage,
 				deleteStop,
-				handleImageChange: (image: File) => setImage(image),
+				handleImageChange,
 				// removeReference,
 				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 				handleCommentsChange,
@@ -398,7 +426,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
 			},
 		};
-	}, [deleteImage, deleteStop, handleCommentsChange, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
+	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
 
 	//
 	// F. Render components

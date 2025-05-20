@@ -73,7 +73,7 @@ export function UploadImage({
 		reader.readAsDataURL(file);
 
 		onFileChange?.(file);
-
+		console.log('actions', actions);
 		actions.handleImageChange(file);
 	};
 

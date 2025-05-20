@@ -24,7 +24,6 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 /* * */
 
 export function MapViewStyleActiveStops({ presentBeforeId, stopsData = baseGeoJsonFeatureCollection }: Props) {
-	console.log('stopsData', stopsData);
 	return (
 		<Source data={stopsData} generateId={true} id="default-source-active-stops" type="geojson">
 
