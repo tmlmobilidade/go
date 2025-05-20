@@ -1,15 +1,9 @@
 'use client';
 
-/* * */
-
 import { Anchor, Breadcrumbs } from '@mantine/core';
 import { IconDots } from '@tabler/icons-react';
 import { TextInput } from '@tmlmobilidade/ui';
 import { useState } from 'react';
-
-/* * */
-
-import { useSearchbarContext } from '@/contexts/Searchbar.context';
 
 import styles from './styles.module.css';
 

@@ -1,12 +1,6 @@
 'use client';
 
-import { redirect, RedirectType } from 'next/navigation';
-
-/* * */
-
 import type { Stop } from '@tmlmobilidade/types';
-
-/* * */
 
 import Link from 'next/link';
 

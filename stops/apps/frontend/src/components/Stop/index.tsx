@@ -3,16 +3,13 @@
 import type { Stop } from '@tmlmobilidade/types';
 
 import { ManualContextProvider } from '@/contexts/Manual.context';
+import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
+import { StopsListContextProvider } from '@/contexts/StopsList.context';
 import { Pane } from '@tmlmobilidade/ui';
 
 import { StopAccessibility } from './StopAccessibility';
 import { StopAdminInformation } from './StopAdminInformation';
-// import StopAffectation from './StopAffectation';
-// import { useStopsContext } from '@/contexts/Stops.context';
-import { useStopsContext } from '@/contexts/Stops.context';
-import { StopsListContextProvider } from '@/contexts/StopsList.context';
-
 import { StopComments } from './StopComments';
 import { StopConnections } from './StopConnections';
 import { StopDetails } from './StopDetails';

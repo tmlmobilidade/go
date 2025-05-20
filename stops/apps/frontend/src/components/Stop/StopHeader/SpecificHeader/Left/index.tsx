@@ -1,12 +1,5 @@
 'use client';
 
-/* * */
-
-import { IconDeviceFloppy, IconX } from '@tabler/icons-react';
-import { Tooltip } from '@tmlmobilidade/ui';
-
-/* * */
-
 import styles from './styles.module.css';
 
 /* * */

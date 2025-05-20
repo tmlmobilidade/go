@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Item } from './Item';
 import styles from './styles.module.css';
 

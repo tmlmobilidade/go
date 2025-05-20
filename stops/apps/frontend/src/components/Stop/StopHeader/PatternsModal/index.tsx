@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Modal } from '@mantine/core';
 import { ReactNode } from 'react';
 

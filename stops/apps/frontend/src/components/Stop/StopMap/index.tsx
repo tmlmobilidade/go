@@ -1,15 +1,6 @@
-// import { Surface } from '@/components/layout/Surface';
-// import { MapView } from '@/components/map/MapView';
-// import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
-
-import { Stop } from '@tmlmobilidade/types';
-// import { centerMap, getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/ui';
-// import { centerMap, getBaseGeoJsonFeatureCollection, MapView, MapViewStyleActiveStops, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId, moveMap } from '@tmlmobilidade/ui';
-// import { centerMap } from '@/utils/map.utils';
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import * as turf from '@turf/turf';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
 import React from 'react';

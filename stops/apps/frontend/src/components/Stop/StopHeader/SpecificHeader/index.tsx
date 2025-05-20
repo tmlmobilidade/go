@@ -1,13 +1,7 @@
 'use client';
 
-/* * */
-
 import { useManualContext } from '@/contexts/Manual.context';
-import { Stop } from '@tmlmobilidade/types';
-// import { Stop } from '@carrismetropolitana/api-types/network';
 import { useDisclosure } from '@mantine/hooks';
-
-/* * */
 
 import { Left } from './Left';
 import { Right } from './Right';

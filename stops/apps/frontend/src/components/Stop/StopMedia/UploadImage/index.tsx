@@ -2,9 +2,9 @@ import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
-// import ComponentWrapper from '../ComponentWrapper';
-
 import styles from './styles.module.css';
+
+/* * */
 
 interface UploadImageProps {
 	data: unknown
@@ -16,6 +16,8 @@ interface UploadImageProps {
 	onDelete?: () => void
 	onFileChange?: (file: File) => void
 }
+
+/* * */
 
 export function UploadImage({
 	data,

@@ -1,10 +1,6 @@
 'use client';
 
-/* * */
-
 import { useToggle } from '@mantine/hooks';
-
-/* * */
 
 import { Left } from './Left';
 import { Right } from './Right';

@@ -1,13 +1,10 @@
 'use client';
 
-/* * */
-
 import { Routes } from '@/lib/routes';
 import { ActionIcon, Button } from '@mantine/core';
-import { IconDeviceFloppy, IconMapPinFilled, IconPlus } from '@tabler/icons-react';
+import { IconMapPinFilled, IconPlus } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
-import { redirect, RedirectType } from 'next/navigation';
 import { SetStateAction } from 'react';
 
 import styles from './styles.module.css';

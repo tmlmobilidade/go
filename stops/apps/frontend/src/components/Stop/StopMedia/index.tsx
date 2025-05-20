@@ -1,8 +1,10 @@
 'use client';
 
-import { Button, Collapsible, FileButton, Grid, Section, useToast } from '@tmlmobilidade/ui';
+import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 import { UploadImage } from './UploadImage';
+
+/* * */
 
 export function StopMedia({ data }) {
 	//

@@ -1,12 +1,10 @@
 'use client';
 
-import type { OperationalStatus, operationalStatusSchema } from '@tmlmobilidade/types';
-
 import { useManualContext } from '@/contexts/Manual.context';
 import { audioTtsUrl } from '@/settings/url.settings';
 import { StopOptions } from '@/utils/options.utils';
-import { IconAlertHexagon, IconAlertHexagonOff, IconPlayerPause, IconVolume } from '@tabler/icons-react';
-import { Collapsible, Grid, Section, TextArea, TextInput, Tooltip } from '@tmlmobilidade/ui';
+import { IconAlertHexagon, IconPlayerPause, IconVolume } from '@tabler/icons-react';
+import { Collapsible, Grid, Section, TextInput, Tooltip } from '@tmlmobilidade/ui';
 import { useEffect, useRef, useState } from 'react';
 
 /* * */

@@ -1,12 +1,7 @@
 'use client';
 
-/* * */
-
 import { Navigation } from '@/components/Navigation';
 import Stop from '@/components/Stop';
-
-/* * */
-
 import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
 import { StopsDetailContextProvider } from '@/contexts/StopsDetail.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';

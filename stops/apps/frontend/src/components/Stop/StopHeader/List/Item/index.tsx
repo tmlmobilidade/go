@@ -1,10 +1,6 @@
 'use client';
 
-/* * */
-
 import { IconChevronRight } from '@tabler/icons-react';
-
-/* * */
 
 import styles from './styles.module.css';
 

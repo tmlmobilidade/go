@@ -1,8 +1,6 @@
 'use client';
 
-import { SearchbarContextProvider, useSearchbarContext } from '@/contexts/Searchbar.context';
-/* * */
-
+import { useSearchbarContext } from '@/contexts/Searchbar.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 
 import { Footer } from './Footer';

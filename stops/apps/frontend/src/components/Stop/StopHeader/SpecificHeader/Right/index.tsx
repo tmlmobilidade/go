@@ -8,9 +8,13 @@ import { redirect, RedirectType } from 'next/navigation';
 
 import styles from '../styles.module.css';
 
+/* * */
+
 export function Right({ actions, data, open }) {
 	//
-	// B. Render components
+
+	//
+	// A. Render components
 
 	return (
 		<div className={styles.section}>
