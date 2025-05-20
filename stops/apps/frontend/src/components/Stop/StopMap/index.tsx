@@ -43,18 +43,13 @@ export function StopsListViewMap({ data, generic = false, getStopById }) {
 		return collection;
 	};
 
-	useEffect(() => {
-		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
-		centerMap(stopsListMap, geoJson ? geoJson.features : []);
-	});
-
 	const activeStopGeoJson = useMemo(() => {
 		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
 		centerMap(stopsListMap, geoJson ? geoJson.features : []);
 		return geoJson;
 	}, [stopsListContext.data.filtered_fc, data.active_stop_id]);
 
-	function handleLayerClick(event) {
+	const handleLayerClick = (event) => {
 		if (!stopsListMap) return;
 		const features = stopsListMap.queryRenderedFeatures(event.point);
 		if (!features.length) return;
@@ -64,13 +59,18 @@ export function StopsListViewMap({ data, generic = false, getStopById }) {
 				return;
 			}
 		}
-	}
+	};
+
+	useEffect(() => {
+		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
+		centerMap(stopsListMap, geoJson ? geoJson.features : []);
+	});
 
 	//
 	// C. Render components
 
 	return (
-		<div style={{ height: generic ? 400 : '90vh', minHeight: 400 }}>
+		<div style={{ height: generic ? '90vh' : 400, minHeight: 400 }}>
 			<MapView
 				id="stopsListMap"
 				interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
