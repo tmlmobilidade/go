@@ -52,6 +52,36 @@ export class StopsController {
 		}
 	}
 
+	static async deleteImage(request: FastifyRequest<{ Params: { file_id: string, id: string } }>, reply: FastifyReply) {
+		try {
+			const { file_id, id } = request.params;
+
+			const stop = await stops.findById(id);
+
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
+
+			if (!stop.image_ids.includes(file_id)) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
+				return;
+			}
+
+			await files.deleteById(file_id);
+			await stops.updateById(id, { image_ids: stop.image_ids.splice(stop.image_ids.indexOf(file_id), 1) });
+
+			reply.send({
+				message: 'Image deleted',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
 	/**
      * Retrieves all stops, sorted by creation date descending
      * @param request Fastify request
@@ -96,65 +126,35 @@ export class StopsController {
 		}
 	}
 
-	// static async getFile(request: FastifyRequest<{ Params: { fileId: string, id: string } }>, reply: FastifyReply) {
-	// 	try {
-	// 		const { fileId, id } = request.params;
+	static async getImage(request: FastifyRequest<{ Params: { id: string, imageId: string } }>, reply: FastifyReply) {
+		try {
+			const { id, imageId } = request.params;
 
-	// 		const stop = await stops.findById(id);
+			const stop = await stops.findById(id);
 
-	// 		if (!stop) {
-	// 			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-	// 			return;
-	// 		}
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
 
-	// 		if (stop.file_ids.indexOf(fileId) == -1) {
-	// 			reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
-	// 			return;
-	// 		}
+			if (stop.image_ids.indexOf(imageId) == -1) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
+				return;
+			}
 
-	// 		const url = await files.getFileUrl({ file_id: fileId });
+			const url = await files.getFileUrl({ file_id: imageId });
 
-	// 		reply.send({
-	// 			data: url,
-	// 			message: 'File retrieved',
-	// 		});
-	// 	}
-	// 	catch (error) {
-	// 		reply
-	// 			.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-	// 			.send(error);
-	// 	}
-	// }
-
-	// static async getImage(request: FastifyRequest<{ Params: { id: string, imageId: string } }>, reply: FastifyReply) {
-	// 	try {
-	// 		const { id, imageId } = request.params;
-
-	// 		const stop = await stops.findById(id);
-
-	// 		if (!stop) {
-	// 			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-	// 			return;
-	// 		}
-
-	// 		if (stop.image_ids.indexOf(imageId) == -1) {
-	// 			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
-	// 			return;
-	// 		}
-
-	// 		const url = await files.getFileUrl({ file_id: imageId });
-
-	// 		reply.send({
-	// 			data: url,
-	// 			message: 'Image retrieved',
-	// 		});
-	// 	}
-	// 	catch (error) {
-	// 		reply
-	// 			.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-	// 			.send(error);
-	// 	}
-	// }
+			reply.send({
+				data: url,
+				message: 'Image retrieved',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
 
 	/**
      * Updates an existing stop by ID
@@ -184,85 +184,44 @@ export class StopsController {
 		}
 	}
 
-	// static async uploadFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-	// 	try {
-	// 		const { id } = request.params;
+	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+		try {
+			const { id } = request.params;
 
-	// 		const stop = await stops.findById(id);
+			const stop = await stops.findById(id);
 
-	// 		if (!stop) {
-	// 			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-	// 			return;
-	// 		}
-	// 		// Parse the file from the request
-	// 		const data = await request.file();
-	// 		const buffer = await data.toBuffer();
-	// 		const size = buffer.buffer.byteLength;
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
+			// Parse the file from the request
+			const data = await request.file();
+			const buffer = await data.toBuffer();
+			const size = buffer.buffer.byteLength;
 
-	// 		const result = await files.upload(buffer, {
-	// 			created_by: 'system', // TODO: Change to user id
-	// 			name: data.filename,
-	// 			resource_id: id,
-	// 			scope: 'stops',
-	// 			size: size,
-	// 			type: data.mimetype,
-	// 			updated_by: 'system', // TODO: Change to user id
-	// 		});
+			const result = await files.upload(buffer, {
+				created_by: 'system', // TODO: Change to user id
+				name: data.filename,
+				resource_id: id,
+				scope: 'stops',
+				size: size,
+				type: data.mimetype,
+				updated_by: 'system', // TODO: Change to user id
+			}, {});
 
-	// 		// File ID to array of File IDs
-	// 		stop.file_ids.push(result.insertedId.toString());
-	// 		await stops.updateById(id, { file_ids: stop.file_ids });
+			// Image ID to array of Image IDs
+			stop.image_ids.push(result.insertedId.toString());
+			await stops.updateById(id, { image_ids: stop.image_ids });
 
-	// 		reply.send({
-	// 			data: result,
-	// 			message: 'File uploaded',
-	// 		});
-	// 	}
-	// 	catch (error) {
-	// 		reply
-	// 			.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-	// 			.send(error);
-	// 	}
-	// }
-
-	// static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-	// 	try {
-	// 		const { id } = request.params;
-
-	// 		const stop = await stops.findById(id);
-
-	// 		if (!stop) {
-	// 			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-	// 			return;
-	// 		}
-	// 		// Parse the file from the request
-	// 		const data = await request.file();
-	// 		const buffer = await data.toBuffer();
-	// 		const size = buffer.buffer.byteLength;
-
-	// 		const result = await files.upload(buffer, {
-	// 			created_by: 'system', // TODO: Change to user id
-	// 			name: data.filename,
-	// 			resource_id: id,
-	// 			scope: 'stops',
-	// 			size: size,
-	// 			type: data.mimetype,
-	// 			updated_by: 'system', // TODO: Change to user id
-	// 		});
-
-	// 		// Image ID to array of Image IDs
-	// 		stop.image_ids.push(result.insertedId.toString());
-	// 		await stops.updateById(id, { image_ids: stop.image_ids });
-
-	// 		reply.send({
-	// 			data: result,
-	// 			message: 'Image uploaded',
-	// 		});
-	// 	}
-	// 	catch (error) {
-	// 		reply
-	// 			.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-	// 			.send(error);
-	// 	}
-	// }
+			reply.send({
+				data: result,
+				message: 'Image uploaded',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
 }
