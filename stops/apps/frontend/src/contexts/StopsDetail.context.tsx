@@ -39,7 +39,7 @@ interface StopsDetailContextState {
 		handleCommentsChange: (userId: string, text: string) => void
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
-		imageChanged: (file: File) => void
+		handleImageChange: (file: File) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
 		saveStop: () => void
@@ -130,20 +130,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const stopsContext = useStopsContext();
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
-	// console.log('==> loading', loading);
-	// console.log('==> isLoading', isLoading);
-	// const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-	// 	stopId === 'new'
-	// 		? undefined
-	// 		: Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
-	// 	swrFetcher,
-	// );
-	// const { data: fileUrl, isLoading: fileUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-	// 	stopId === 'new'
-	// 		? undefined
-	// 		: Routes.STOPS_API + Routes.STOP_FILE(stopId),
-	// 	swrFetcher,
-	// );
 
 	//
 	// B. Define form
@@ -389,7 +375,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				// addReference,
 				deleteImage,
 				deleteStop,
-				imageChanged: (image: File) => setImage(image),
+				handleImageChange: (image: File) => setImage(image),
 				// removeReference,
 				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 				handleCommentsChange,

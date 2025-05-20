@@ -6,8 +6,17 @@ import styles from './styles.module.css';
 
 /* * */
 
+interface FormType {
+	setFieldValue: (field: string, value: any) => void
+}
+
+interface ActionsType {
+	handleImageChange: (file: File) => void
+}
+
 interface UploadImageProps {
-	data: unknown
+	actions: ActionsType
+	data: { form: FormType }
 	imageUrl?: string[]
 	label?: string
 	maxFileSize?: number
@@ -20,6 +29,7 @@ interface UploadImageProps {
 /* * */
 
 export function UploadImage({
+	actions,
 	data,
 	imageUrl,
 	label,
@@ -63,6 +73,8 @@ export function UploadImage({
 		reader.readAsDataURL(file);
 
 		onFileChange?.(file);
+
+		actions.handleImageChange(file);
 	};
 
 	const handleDelete = (index) => {

@@ -6,7 +6,7 @@ import { UploadImage } from './UploadImage';
 
 /* * */
 
-export function StopMedia({ data }) {
+export function StopMedia({ actions, data }) {
 	//
 
 	//
@@ -25,6 +25,7 @@ export function StopMedia({ data }) {
 			<Section gap="md">
 				<UploadImage
 					data={data}
+					actions={actions}
 					// imageUrl={stopDetailContext.data.imageUrl}
 					// imageUrl="image.png"
 					// label="Imagem"

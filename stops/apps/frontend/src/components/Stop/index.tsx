@@ -63,7 +63,7 @@ export default function Stop({ paramId }: StopProps) {
 								<StopAccessibility data={data} />
 								<StopEquipments data={data} />
 								<StopConnections actions={actions} data={data} />
-								<StopMedia data={data} />
+								<StopMedia actions={actions} data={data} />
 								<StopComments actions={actions} data={data} />
 								<StopObservations data={data} />
 							</Pane>
