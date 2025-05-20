@@ -1,6 +1,6 @@
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
-import { centerMap, getBaseGeoJsonFeatureCollection, moveMap } from '@/utils/map.utils';
+import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -36,7 +36,6 @@ export function StopsListViewMap({ data, generic = false, getStopById }) {
 
 	const activeStopGeoJson = useMemo(() => {
 		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
-		console.log('geoJson', geoJson);
 		centerMap(stopsListMap, geoJson ? geoJson.features : []);
 		return geoJson;
 	}, [stopsListContext.data.filtered_fc, data.active_stop_id]);

@@ -34,7 +34,7 @@ export const mapDefaultStyles = Object.freeze({
 				type: 'raster',
 			},
 		],
-		maxZoom: 18,
+		maxZoom: 16,
 		minZoom: 5,
 		sources: {
 			'raster-tiles': {
