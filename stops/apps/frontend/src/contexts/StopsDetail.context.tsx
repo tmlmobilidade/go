@@ -383,34 +383,36 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	//
 	// E. Define context value
-	const contextValue: StopsDetailContextState = {
-		actions: {
-			// addReference,
-			deleteImage,
-			deleteStop,
-			imageChanged: (image: File) => setImage(image),
-			// removeReference,
-			// saveStop: (type: 'draft' | 'publish') => saveStop(type),
-			handleCommentsChange,
-			handleConnectionsChange,
-			handleFacilitiesChange,
-			saveStop,
-			setActiveStopId,
-		},
-		data: {
-			_id: stopId === 'new' ? undefined : stopId,
-			active_stop_id: dataActiveStopIdState,
-			form,
-		},
-		flags: {
-			canSave,
-			isReadOnly,
-			isSaving,
-			loading: isLoading || loading,
-			// loading: isLoading || loading || imageUrlLoading,
-			mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
-		},
-	};
+	const contextValue: StopsDetailContextState = useMemo(() => {
+		return {
+			actions: {
+				// addReference,
+				deleteImage,
+				deleteStop,
+				imageChanged: (image: File) => setImage(image),
+				// removeReference,
+				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
+				handleCommentsChange,
+				handleConnectionsChange,
+				handleFacilitiesChange,
+				saveStop,
+				setActiveStopId,
+			},
+			data: {
+				_id: stopId === 'new' ? undefined : stopId,
+				active_stop_id: dataActiveStopIdState,
+				form,
+			},
+			flags: {
+				canSave,
+				isReadOnly,
+				isSaving,
+				loading: isLoading || loading,
+				// loading: isLoading || loading || imageUrlLoading,
+				mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
+			},
+		};
+	}, [deleteImage, deleteStop, handleCommentsChange, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
 
 	//
 	// F. Render components

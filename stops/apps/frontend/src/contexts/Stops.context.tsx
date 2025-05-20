@@ -8,7 +8,7 @@ import type { Stop } from '@tmlmobilidade/types';
 import { swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -109,19 +109,21 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// C. Define context value
 
-	const contextValue: StopsContextState = {
-		actions: {
-			getStopById,
-			getStopByIdGeoJsonFC,
-		},
-		data: {
-			stops: allStopsData || [],
-			stops_fc: dataStopsFCState,
-		},
-		flags: {
-			is_loading: allStopsLoading,
-		},
-	};
+	const contextValue: StopsContextState = useMemo(() => {
+		return {
+			actions: {
+				getStopById,
+				getStopByIdGeoJsonFC,
+			},
+			data: {
+				stops: allStopsData || [],
+				stops_fc: dataStopsFCState,
+			},
+			flags: {
+				is_loading: allStopsLoading,
+			},
+		};
+	}, [allStopsData, allStopsLoading, dataStopsFCState]);
 
 	//
 	// D. Render components

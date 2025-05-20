@@ -507,6 +507,8 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	}), [
 		rawStops,
 		geoStops,
+		allStopsError,
+		allStopsLoading,
 		// filteredAlerts,
 		// allAlertsData,
 		// allAlertsLoading,
