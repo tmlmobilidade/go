@@ -5,14 +5,14 @@ import { SearchbarContextProvider, useSearchbarContext } from '@/contexts/Search
 
 import { useStopsContext } from '@/contexts/Stops.context';
 
-import Footer from './Footer';
-import List from './List';
-import SearchBar from './SearchBar';
+import { Footer } from './Footer';
+import { List } from './List';
+import { SearchBar } from './SearchBar';
 import styles from './styles.module.css';
 
 /* * */
 
-export default function Navigation() {
+export function Navigation() {
 	//
 
 	//

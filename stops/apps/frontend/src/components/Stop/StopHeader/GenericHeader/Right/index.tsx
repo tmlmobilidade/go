@@ -21,7 +21,7 @@ interface RightProps {
 
 /* * */
 
-export default function Right({ setToggleValue, toggleValue }: RightProps) {
+export function Right({ setToggleValue, toggleValue }: RightProps) {
 	//
 
 	//

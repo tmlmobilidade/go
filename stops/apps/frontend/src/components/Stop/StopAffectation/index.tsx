@@ -8,7 +8,7 @@ const comboBoxValues = ['AML', 'Alcochete'];
 
 /* * */
 
-export default function StopAffectation({ data }) {
+export function StopAffectation({ data }) {
 	//
 	// B. Render components
 

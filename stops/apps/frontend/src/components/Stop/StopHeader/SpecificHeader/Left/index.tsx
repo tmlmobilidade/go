@@ -7,21 +7,23 @@ import { Tooltip } from '@tmlmobilidade/ui';
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
-
 import styles from './styles.module.css';
 
 /* * */
 
 interface LeftProps {
 	// long_name?: string
-	data: unknown
+	data: {
+		form: {
+			getValues: () => { name?: string }
+		}
+	}
 	isManual: boolean
 }
 
 /* * */
 
-export default function Left({ data, isManual }: LeftProps) {
+export function Left({ data, isManual }: LeftProps) {
 	//
 	// B. Render components
 

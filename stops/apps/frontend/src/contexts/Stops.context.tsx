@@ -90,20 +90,6 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 		//
 	}, [dataStopsState]);
 
-	useEffect(() => {
-		// Check if all data is available
-		if (!dataStopsState) return;
-		// Transform data into GeoJSON FeatureCollection
-		const collection = getBaseGeoJsonFeatureCollection();
-		dataStopsState.forEach((stop) => {
-			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
-			if (stopFC) collection.features.push(stopFC);
-		});
-		// Set state value
-		setDataStopsFCState(collection);
-		//
-	}, [dataStopsState]);
-
 	//
 	// B. Handle actions
 

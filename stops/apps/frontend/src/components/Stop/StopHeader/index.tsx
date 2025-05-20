@@ -1,11 +1,11 @@
 'use client';
 
-import GenericHeader from './GenericHeader';
-import SpecificHeader from './SpecificHeader';
+import { GenericHeader } from './GenericHeader';
+import { SpecificHeader } from './SpecificHeader';
 
 /* * */
 
-export default function StopHeader({ actions, data, generic }) {
+export function StopHeader({ actions, data, generic }) {
 	//
 
 	//

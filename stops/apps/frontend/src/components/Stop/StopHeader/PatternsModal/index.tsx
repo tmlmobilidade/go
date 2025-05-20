@@ -16,7 +16,7 @@ interface PatternsModalProps {
 
 /* * */
 
-export default function Header({ children, onClose, opened, title }: PatternsModalProps) {
+export function PatternsModal({ children, onClose, opened, title }: PatternsModalProps) {
 	//
 
 	//

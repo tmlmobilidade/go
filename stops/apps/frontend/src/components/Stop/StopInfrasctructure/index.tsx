@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export default function StopInfrasctructure({ data }) {
+export function StopInfrasctructure({ data }) {
 	//
 
 	//

@@ -6,13 +6,13 @@ import { useToggle } from '@mantine/hooks';
 
 /* * */
 
-import Left from './Left';
-import Right from './Right';
+import { Left } from './Left';
+import { Right } from './Right';
 import styles from './styles.module.css';
 
 /* * */
 
-export default function GenericHeader() {
+export function GenericHeader() {
 	//
 
 	//

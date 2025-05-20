@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export default function PublicInformation({ data }) {
+export function StopPublicInformation({ data }) {
 	//
 	// A. Render components
 

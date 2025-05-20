@@ -26,12 +26,12 @@ import useSWR from 'swr';
 
 import { useStopsContext } from './Stops.context';
 
-export enum StopDetailMode {
+export enum StopsDetailMode {
 	CREATE = 'create',
 	EDIT = 'edit',
 }
 
-interface StopDetailContextState {
+interface StopsDetailContextState {
 	actions: {
 		// addReference: () => void
 		deleteImage: () => void
@@ -55,7 +55,7 @@ interface StopDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: StopDetailMode
+		mode: StopsDetailMode
 	}
 }
 
@@ -103,19 +103,19 @@ const emptyStop: CreateStopDto = {
 	tts_name: 'temp',
 };
 
-const StopDetailContext = createContext<StopDetailContextState | undefined>(undefined);
+const StopsDetailContext = createContext<StopsDetailContextState | undefined>(undefined);
 
-export function useStopDetailContext() {
-	console.log('-> useStopDetailContext');
-	const context = useContext(StopDetailContext);
+export function useStopsDetailContext() {
+	console.log('-> useStopsDetailContext');
+	const context = useContext(StopsDetailContext);
 	if (!context) {
-		throw new Error('useStopDetailContext must be used within a StopDetailContextProvider');
+		throw new Error('useStopsDetailContext must be used within a StopsDetailContextProvider');
 	}
 	return context;
 }
 
-export const StopDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
-	console.log('-> StopDetailContextProvider');
+export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
+	console.log('-> StopsDetailContextProvider');
 	//
 	// A. Setup variables
 	const router = useRouter();
@@ -194,7 +194,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	// useEffect(() => {
 	// 	console.log('-> UseEffect 2.2', flags);
-	// }, [stopDetailContext.flags]);
+	// }, [stopsDetailContext.flags]);
 
 	useEffect(() => {
 		console.log('-> UseEffect 3');
@@ -383,7 +383,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	//
 	// E. Define context value
-	const contextValue: StopDetailContextState = {
+	const contextValue: StopsDetailContextState = {
 		actions: {
 			// addReference,
 			deleteImage,
@@ -408,15 +408,15 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			isSaving,
 			loading: isLoading || loading,
 			// loading: isLoading || loading || imageUrlLoading,
-			mode: stopId === 'new' ? StopDetailMode.CREATE : StopDetailMode.EDIT,
+			mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
 		},
 	};
 
 	//
 	// F. Render components
 	return (
-		<StopDetailContext.Provider value={contextValue}>
+		<StopsDetailContext.Provider value={contextValue}>
 			{children}
-		</StopDetailContext.Provider>
+		</StopsDetailContext.Provider>
 	);
 };

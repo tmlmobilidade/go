@@ -1,15 +1,14 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Routes } from '@/lib/routes';
-import { IconDeviceFloppy, IconEye, IconPlus, IconTrash, IconWorldUpload } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconPlus, IconTrash, IconWorldUpload } from '@tabler/icons-react';
 import { ActionIcon, Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
 
 import styles from '../styles.module.css';
 
-export default function Right({ actions, data, open }) {
+export function Right({ actions, data, open }) {
 	//
 	// B. Render components
 

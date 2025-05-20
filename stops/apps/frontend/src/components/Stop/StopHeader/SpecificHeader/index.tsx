@@ -9,16 +9,13 @@ import { useDisclosure } from '@mantine/hooks';
 
 /* * */
 
-import List from '../List';
-import Item from '../List/Item';
-import PatternsModal from '../PatternsModal';
-import Left from './Left';
-import Right from './Right';
+import { Left } from './Left';
+import { Right } from './Right';
 import styles from './styles.module.css';
 
 /* * */
 
-export default function SpecificHeader({ actions, data }) {
+export function SpecificHeader({ actions, data }) {
 	//
 
 	//

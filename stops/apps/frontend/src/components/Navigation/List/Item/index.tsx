@@ -10,8 +10,8 @@ import type { Stop } from '@tmlmobilidade/types';
 
 import Link from 'next/link';
 
-import Left from './Left';
-import Right from './Right';
+import { Left } from './Left';
+import { Right } from './Right';
 import styles from './styles.module.css';
 
 /* * */
@@ -22,7 +22,7 @@ interface ItemProps {
 
 /* * */
 
-export default function Item({ stop }: ItemProps) {
+export function Item({ stop }: ItemProps) {
 	//
 
 	//

@@ -4,7 +4,7 @@ import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export default function StopAdminInformation({ data }) {
+export function StopAdminInformation({ data }) {
 	//
 	// B. Render components
 

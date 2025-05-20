@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function SearchBar({ data, setQueryString }) {
+export function SearchBar({ data, setQueryString }) {
 	//
 
 	//

@@ -2,14 +2,12 @@
 
 /* * */
 
-import { useSearchbarContext } from '@/contexts/Searchbar.context';
-
-import Item from './Item';
+import { Item } from './Item';
 import styles from './styles.module.css';
 
 /* * */
 
-export default function List({ data, flags, queryString }) {
+export function List({ data, flags, queryString }) {
 	//
 
 	//

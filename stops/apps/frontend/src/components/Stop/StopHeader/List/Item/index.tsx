@@ -16,7 +16,7 @@ interface ItemProps {
 
 /* * */
 
-export default function Item({ id }: ItemProps) {
+export function Item({ id }: ItemProps) {
 	//
 
 	//

@@ -2,7 +2,7 @@
 
 import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
 
-export default function StopAccessibility({ data }) {
+export function StopAccessibility({ data }) {
 	//
 
 	//

@@ -2,16 +2,16 @@
 
 /* * */
 
-import Navigation from '@/components/Navigation';
+import { Navigation } from '@/components/Navigation';
 import Stop from '@/components/Stop';
 
 /* * */
 
-import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
+import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
+import { StopsDetailContextProvider } from '@/contexts/StopsDetail.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
 import styles from './styles.module.css';
-import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
 
 /* * */
 
@@ -29,9 +29,9 @@ export default function Page() {
 					<Navigation />
 				</SearchbarContextProvider>
 			</StopsListContextProvider>
-			<StopDetailContextProvider stopId={null}>
+			<StopsDetailContextProvider stopId={null}>
 				<Stop paramId={null} />
-			</StopDetailContextProvider>
+			</StopsDetailContextProvider>
 		</div>
 	);
 }

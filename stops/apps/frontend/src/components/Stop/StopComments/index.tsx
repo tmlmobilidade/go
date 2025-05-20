@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function StopComments({ actions, data }) {
+export function StopComments({ actions, data }) {
 	//
 
 	//

@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export default function StopShelter({ data }) {
+export function StopShelter({ data }) {
 	//
 
 	//

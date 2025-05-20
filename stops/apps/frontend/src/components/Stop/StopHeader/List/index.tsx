@@ -16,7 +16,7 @@ interface ItemInterface {
 
 /* * */
 
-export default function List({ children }: ItemInterface) {
+export function List({ children }: ItemInterface) {
 	//
 
 	//

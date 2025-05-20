@@ -19,7 +19,7 @@ enum OperationalStatusValues {
 	voided = 'Vazio',
 }
 
-export default function StopDetails({ data }) {
+export function StopDetails({ data }) {
 	//
 
 	//
@@ -84,9 +84,6 @@ export default function StopDetails({ data }) {
 
 	//
 	// D. Render components
-
-	// console.log('_id', stopDetailContext.data.form.getInputProps('_id'));
-	// console.log('latitude', stopDetailContext.data.form.getInputProps('latitude'));
 
 	return (
 		<Collapsible

@@ -1,7 +1,7 @@
-import Navigation from '@/components/Navigation';
+import { Navigation } from '@/components/Navigation';
 import Stop from '@/components/Stop';
 import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
-import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
+import { StopsDetailContextProvider } from '@/contexts/StopsDetail.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
 import styles from './styles.module.css';
@@ -17,9 +17,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 					<Navigation />
 				</SearchbarContextProvider>
 			</StopsListContextProvider>
-			<StopDetailContextProvider stopId={id}>
+			<StopsDetailContextProvider stopId={id}>
 				<Stop paramId={id} />
-			</StopDetailContextProvider>
+			</StopsDetailContextProvider>
 		</div>
 	);
 }

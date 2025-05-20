@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function StopObservations({ data }) {
+export function StopObservations({ data }) {
 	//
 
 	//

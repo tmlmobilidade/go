@@ -16,12 +16,12 @@ import React from 'react';
 import { useEffect, useMemo } from 'react';
 
 import { MapView } from './map/MapView';
-import { MapViewStyleActiveStops } from './map/MapViewStyleActiveStops';
+import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from './map/MapViewStyleActiveStops';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/MapViewStyleStops';
 
 /* * */
 
-export function StopsListViewMap({ data }) {
+export function StopsListViewMap({ data, generic = false }) {
 	console.log('StopsListViewMap');
 	//
 
@@ -50,21 +50,19 @@ export function StopsListViewMap({ data }) {
 	};
 
 	const activeStopGeoJson = useMemo(() => {
-		// console.log('activeStopGeoJson');
-		// console.log('stopDetailContext.data.form.values', stopDetailContext.data.form.values);
-		return getGeoJsonFC(data.form.values);
+		const geoJson = getGeoJsonFC(data.form.values);
+		centerMap(stopsListMap, geoJson ? geoJson.features : []);
+		return geoJson;
 	// }, [stopDetailContext.data.active_stop_id]);
-	}, [stopsListContext.data.filtered_fc, data.active_stop_id]);
-
-	useEffect(() => {
-		console.log('UseEffect', stopsListContext.data.filtered_fc);
-		// console.log('stopDetailContext.data.form.values', stopDetailContext.data.form.values);
-		const geoJsonFC = getGeoJsonFC(data.form.values);
-		// moveMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
-		centerMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
-		// setActiveStopGeoJson(geoJsonFC);
+	// }, [stopsListContext.data.filtered_fc, data.active_stop_id]);
 	}, [stopsListContext.data.filtered_fc]);
-	// }, [stopsListContext.data.filtered_fc, stopDetailContext.data.active_stop_id]);
+
+	// useEffect(() => {
+	// 	console.log('UseEffect', stopsListContext.data.filtered_fc);
+	// 	const geoJsonFC = getGeoJsonFC(data.form.values);
+	// 	// centerMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
+	// }, [stopsListContext.data.filtered_fc]);
+	// // }, [stopsListContext.data.filtered_fc, stopDetailContext.data.active_stop_id]);
 
 	useEffect(() => {
 		// Exit early if there are no stops or map
@@ -85,7 +83,7 @@ export function StopsListViewMap({ data }) {
 		}, {});
 		const clusterId = Object.keys(clusterPointsCount).reduce((a, b) => (clusterPointsCount[a] > clusterPointsCount[b] ? a : b));
 		const filteredClusterPoints = clusterPoints.features.filter(feature => feature.properties.cluster === Number(clusterId));
-		centerMap(stopsListMap, filteredClusterPoints);
+		// centerMap(stopsListMap, filteredClusterPoints);
 		//
 	}, [stopsListContext.data.filtered_fc, stopsListMap]);
 
@@ -105,18 +103,20 @@ export function StopsListViewMap({ data }) {
 	// C. Render components
 	console.log('-> activeStopGeoJson', activeStopGeoJson);
 	return (
-		<div style={{ height: 400, minHeight: 400 }}>
+		<div style={{ height: generic ? 400 : '90vh', minHeight: 400 }}>
 			<MapView
 				id="stopsListMap"
 				interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
 				onClick={handleLayerClick}
 			>
 				<MapViewStyleActiveStops
-					presentBeforeId={MapViewStyleStopsInteractiveLayerId}
 					stopsData={activeStopGeoJson}
 				/>
 
-				<MapViewStyleStops stopsData={stopsListContext.data.filtered_fc} />
+				<MapViewStyleStops
+					presentBeforeId={MapViewStyleActiveStopsPrimaryLayerId}
+					stopsData={stopsListContext.data.filtered_fc}
+				/>
 			</MapView>
 		</div>
 	);
