@@ -10,6 +10,7 @@ import { StopAccessibility } from './StopAccessibility';
 import { StopAdminInformation } from './StopAdminInformation';
 // import StopAffectation from './StopAffectation';
 // import { useStopsContext } from '@/contexts/Stops.context';
+import { useStopsContext } from '@/contexts/Stops.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
 import { StopComments } from './StopComments';
@@ -38,9 +39,8 @@ export default function Stop({ paramId }: StopProps) {
 	//
 	// A. Setup variables
 
-	const stopsDetailContext = useStopsDetailContext();
-	console.log('-> stopDetailContext', stopsDetailContext);
-	const { actions, data, flags } = stopsDetailContext;
+	const { actions: { getStopById } } = useStopsContext();
+	const { actions, data, flags } = useStopsDetailContext();
 
 	// const stopsContext = useStopsContext();
 	// console.log('stopsContext', stopsContext);
@@ -54,9 +54,9 @@ export default function Stop({ paramId }: StopProps) {
 				{
 					flags.loading === false && (data?._id || paramId === 'new')
 						? (
-							<Pane header={[<StopHeader actions={actions}data={data} generic={false} />]}>
+							<Pane header={[<StopHeader actions={actions} data={data} generic={false} />]}>
 								{/* <StopMap generic={false} /> */}
-								<StopsListViewMap data={data} />
+								<StopsListViewMap data={data}getStopById={getStopById} />
 								<StopDetails data={data} />
 								<StopAdminInformation data={data} />
 								{/* <StopAffectation /> */}
@@ -73,7 +73,7 @@ export default function Stop({ paramId }: StopProps) {
 						// </div>
 						) : (
 							<Pane header={[<StopHeader actions={actions} data={data} generic={true} />]}>
-								{flags.loading === false ? <StopsListViewMap data={data} /> : <div>Loading...</div>}
+								{flags.loading === false ? <StopsListViewMap data={data} generic={true} getStopById={getStopById} /> : <div>Loading...</div>}
 								{/* <StopsListViewMap /> */}
 							</Pane>
 						)

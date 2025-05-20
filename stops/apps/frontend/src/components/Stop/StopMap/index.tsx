@@ -21,8 +21,7 @@ import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/Ma
 
 /* * */
 
-export function StopsListViewMap({ data, generic = false }) {
-	console.log('StopsListViewMap');
+export function StopsListViewMap({ data, generic = false, getStopById }) {
 	//
 
 	//
@@ -32,60 +31,28 @@ export function StopsListViewMap({ data, generic = false }) {
 	const router = useRouter();
 	const stopsListContext = useStopsListContext();
 
-	// console.log('stopsListMap', stopsListMap);
-
-	// const [activeStopGeoJson, setActiveStopGeoJson] = React.useState<GeoJSON.FeatureCollection | undefined>(undefined);
-
 	//
 	// B. Handle actions
 
-	const getGeoJsonFC = (stop: Stop): GeoJSON.FeatureCollection | undefined => {
+	const getStopByIdGeoJsonFC = (stopId: string): GeoJSON.FeatureCollection | undefined => {
+		const stop = getStopById(stopId);
 		if (!stop) return;
 		const collection = getBaseGeoJsonFeatureCollection();
 		const stopFC = transformStopDataIntoGeoJsonFeature(stop);
-		// console.log('stopFC', stopFC);
 		if (stopFC) collection.features.push(stopFC);
-		// console.log('collection', collection);
 		return collection;
 	};
 
+	useEffect(() => {
+		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
+		centerMap(stopsListMap, geoJson ? geoJson.features : []);
+	});
+
 	const activeStopGeoJson = useMemo(() => {
-		const geoJson = getGeoJsonFC(data.form.values);
+		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
 		centerMap(stopsListMap, geoJson ? geoJson.features : []);
 		return geoJson;
-	// }, [stopDetailContext.data.active_stop_id]);
-	// }, [stopsListContext.data.filtered_fc, data.active_stop_id]);
-	}, [stopsListContext.data.filtered_fc]);
-
-	// useEffect(() => {
-	// 	console.log('UseEffect', stopsListContext.data.filtered_fc);
-	// 	const geoJsonFC = getGeoJsonFC(data.form.values);
-	// 	// centerMap(stopsListMap, geoJsonFC ? geoJsonFC.features : []);
-	// }, [stopsListContext.data.filtered_fc]);
-	// // }, [stopsListContext.data.filtered_fc, stopDetailContext.data.active_stop_id]);
-
-	useEffect(() => {
-		// Exit early if there are no stops or map
-		if (!stopsListContext.data.filtered_fc || !stopsListContext.data.filtered_fc.features.length || !stopsListMap) return;
-		// When there are no search filters, center the map on all stops
-		// if (!stopsListContext.filters.by_search.length) {
-		// 	centerMap(stopsListMap, stopsListContext.data.filtered_fc.features);
-		// 	return;
-		// }
-		// When there are search filters, center the map on the cluster with the most points
-		const clusterPoints = turf.clustersKmeans(stopsListContext.data.filtered_fc, { mutate: true, numberOfClusters: 2 });
-		const clusterPointsCount = clusterPoints.features.reduce((acc, feature) => {
-			if (typeof feature.properties.cluster !== 'number') return acc;
-			const clusterId = feature.properties.cluster;
-			if (!acc[clusterId]) acc[clusterId] = 0;
-			acc[clusterId]++;
-			return acc;
-		}, {});
-		const clusterId = Object.keys(clusterPointsCount).reduce((a, b) => (clusterPointsCount[a] > clusterPointsCount[b] ? a : b));
-		const filteredClusterPoints = clusterPoints.features.filter(feature => feature.properties.cluster === Number(clusterId));
-		// centerMap(stopsListMap, filteredClusterPoints);
-		//
-	}, [stopsListContext.data.filtered_fc, stopsListMap]);
+	}, [stopsListContext.data.filtered_fc, data.active_stop_id]);
 
 	function handleLayerClick(event) {
 		if (!stopsListMap) return;
@@ -101,7 +68,7 @@ export function StopsListViewMap({ data, generic = false }) {
 
 	//
 	// C. Render components
-	console.log('-> activeStopGeoJson', activeStopGeoJson);
+
 	return (
 		<div style={{ height: generic ? 400 : '90vh', minHeight: 400 }}>
 			<MapView

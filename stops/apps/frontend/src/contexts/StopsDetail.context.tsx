@@ -106,7 +106,7 @@ const emptyStop: CreateStopDto = {
 const StopsDetailContext = createContext<StopsDetailContextState | undefined>(undefined);
 
 export function useStopsDetailContext() {
-	console.log('-> useStopsDetailContext');
+	// console.log('-> useStopsDetailContext');
 	const context = useContext(StopsDetailContext);
 	if (!context) {
 		throw new Error('useStopsDetailContext must be used within a StopsDetailContextProvider');
@@ -115,7 +115,7 @@ export function useStopsDetailContext() {
 }
 
 export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
-	console.log('-> StopsDetailContextProvider');
+	// console.log('-> StopsDetailContextProvider');
 	//
 	// A. Setup variables
 	const router = useRouter();
@@ -130,8 +130,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const stopsContext = useStopsContext();
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
-	console.log('==> loading', loading);
-	console.log('==> isLoading', isLoading);
+	// console.log('==> loading', loading);
+	// console.log('==> isLoading', isLoading);
 	// const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 	// 	stopId === 'new'
 	// 		? undefined
@@ -158,7 +158,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	// C. Transform Data
 
 	useEffect(() => {
-		console.log('-> UseEffect 1');
+		// console.log('-> UseEffect 1');
 		// console.log('-> ==> dataActiveStopIdState', dataActiveStopIdState);
 		// console.log('-> ==> stopsContext.data.stops', stopsContext.data.stops);
 		if (!dataActiveStopIdState || !stopsContext.data.stops || !stopsContext.data.stops.length) return;
@@ -171,7 +171,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// Update form
 	useEffect(() => {
-		console.log('-> UseEffect 2');
+		// console.log('-> UseEffect 2');
 		if (!stop) return;
 
 		setLoading(true);
@@ -197,7 +197,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	// }, [stopsDetailContext.flags]);
 
 	useEffect(() => {
-		console.log('-> UseEffect 3');
+		// console.log('-> UseEffect 3');
 		if (error) {
 			useToast.error({
 				message: error.message,
@@ -209,11 +209,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// Validate form on change
 	useEffect(() => {
-		console.log('-> UseEffect 4');
+		// console.log('-> UseEffect 4');
 		form.validate();
 		setCanSave(form.isValid());
 
-		console.log(form.errors);
+		// console.log(form.errors);
 	}, [form.values]);
 
 	//
@@ -231,12 +231,12 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// const saveStop = async (type: 'draft' | 'publish') => {
 	const setActiveStopId = (stopId: string) => {
-		console.log('-> setActiveStopId');
+		// console.log('-> setActiveStopId');
 		setDataActiveStopIdState(stopId);
 	};
 
 	const saveStop = async () => {
-		console.log('-> saveStop');
+		// console.log('-> saveStop');
 		setIsSaving(true);
 
 		// Handle Save Stop
@@ -246,16 +246,16 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date };
 		const saveStop: CreateStopDto = { ...form.values };
-		console.log('-> ==> saveStop', saveStop);
+		// console.log('-> ==> saveStop', saveStop);
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);
 		let body = stopId === 'new' ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
 		// body = { ...body, active_period_end_date, publish_end_date };
 		body = { ...body };
-		console.log('-> ==> body', body);
+		// console.log('-> ==> body', body);
 		const response = await fetchData<unknown>(url, method, body);
-		console.log('-> ==> response', response);
+		// console.log('-> ==> response', response);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -287,7 +287,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const deleteStop = async () => {
-		console.log('-> deleteStop');
+		// console.log('-> deleteStop');
 		if (stopId === 'new') return;
 
 		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'DELETE', stop);
@@ -311,7 +311,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const deleteImage = async () => {
-		console.log('-> deleteImage');
+		// console.log('-> deleteImage');
 		if (stopId === 'new') return;
 
 		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_IMAGE(stopId), 'DELETE', stop);
@@ -333,7 +333,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const uploadImage = async (stopId: string) => {
-		console.log('-> uploadImage');
+		// console.log('-> uploadImage');
 		if (stopId === 'new' || !image) return;
 
 		const response = await uploadFile(
@@ -356,24 +356,24 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const handleConnectionsChange = (connections: string) => {
-		console.log('-> handleConnectionsChange');
+		// console.log('-> handleConnectionsChange');
 		const newConnections = form.values.connections.includes(connections) ? form.values.connections.filter(c => c !== connections) : [...form.values.connections, connections];
 		form.setFieldValue('connections', newConnections);
 	};
 
 	const handleFacilitiesChange = (facilities: string) => {
-		console.log('-> handleFacilitiesChange');
+		// console.log('-> handleFacilitiesChange');
 		const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
 		form.setFieldValue('facilities', newFacilities);
 	};
 
 	const generateRandomId = (length = 6): string => {
-		console.log('-> generateRandomId');
+		// console.log('-> generateRandomId');
 		return Math.random().toString(36).substr(2, length);
 	};
 
 	const handleCommentsChange = (userId: string, text: string) => {
-		console.log('-> handleCommentsChange');
+		// console.log('-> handleCommentsChange');
 		form.values.comments.push({
 			_id: generateRandomId(),
 			text: text,
