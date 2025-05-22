@@ -91,7 +91,7 @@ server.register(
 
 		// DELETE /stops/:id/image
 		instance.delete(
-			'/:id/image',
+			'/:id/image/:image_id',
 			{
 				preHandler: authorizationMiddleware<Stop>(
 					Permissions.stops.scope,

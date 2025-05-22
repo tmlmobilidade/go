@@ -34,12 +34,12 @@ export enum StopsDetailMode {
 interface StopsDetailContextState {
 	actions: {
 		// addReference: () => void
-		deleteImage: () => void
 		deleteStop: () => void
 		handleCommentsChange: (userId: string, text: string) => void
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
 		handleImageChange: (file: File) => void
+		deleteImage: (imageId: string) => void
 		getImages: (stopId: string) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
@@ -146,11 +146,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	// C. Transform Data
 
 	useEffect(() => {
-		// console.log('-> UseEffect 1');
-		// console.log('-> ==> dataActiveStopIdState', dataActiveStopIdState);
-		// console.log('-> ==> stopsContext.data.stops', stopsContext.data.stops);
 		if (!dataActiveStopIdState || !stopsContext.data.stops || !stopsContext.data.stops.length) return;
-		// console.log('-> HERE');
 		const foundStopData = stopsContext.actions.getStopById(dataActiveStopIdState);
 		if (foundStopData) {
 			window.history.replaceState({}, '', `/stops/${dataActiveStopIdState}` + window.location.search);
@@ -304,12 +300,12 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			console.error('Invalid stopId provided');
 			return;
 		}
-	
+
 		try {
 			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_IMAGES(stopId)}`, {
 				method: 'GET',
 			});
-	
+
 			if (!response.ok) {
 				const errorData = await response.json();
 				useToast.error({
@@ -318,15 +314,15 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				});
 				return;
 			}
-	
+
 			const { data: imageUrls } = await response.json();
 			console.log('Retrieved images:', imageUrls);
-	
+
 			useToast.success({
 				message: 'Imagens carregadas com sucesso',
 				title: 'Sucesso',
 			});
-	
+
 			return imageUrls;
 		} catch (error) {
 			console.error('Error fetching images:', error);
@@ -346,11 +342,12 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		uploadImage(stopId);
 	}, [image]);
 
-	const deleteImage = async () => {
-		// console.log('-> deleteImage');
+	const deleteImage = async (imageId: string) => {
 		if (stopId === 'new') return;
-
-		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_IMAGE(stopId), 'DELETE', stop);
+		
+		console.log('-> deleteImage', imageId);
+		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}/${imageId}`, 'DELETE', stop);
+		console.log('-> ==> response', response);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -376,10 +373,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		const uploadFormData = new FormData();
 
 		uploadFormData.append('File', image);
-	 
+
 		const response = await multipartFetch(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}`, uploadFormData);
 
-		console.log('-> ==> response', response); 
+		console.log('-> ==> response', response);
 
 		if (response.error) {
 			useToast.error({
