@@ -330,22 +330,16 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	const uploadImage = async (stopId: string) => {
 		if (stopId === 'new' || !image) return;
-		console.log('-> uploadImage', stopId);
 
 		setIsSaving(true);
+
 		const uploadFormData = new FormData();
 
-		// uploadFormData.append('agency_id', form.getValues().agency_id);
-		// uploadFormData.append('feeder_status', form.getValues().feeder_status);
-		// uploadFormData.append('is_approved', form.getValues().is_approved.toString());
-		// uploadFormData.append('is_locked', form.getValues().is_locked.toString());
-		// uploadFormData.append('valid_from', form.getValues().valid_from);
-		// uploadFormData.append('valid_until', form.getValues().valid_until);
-		uploadFormData.append('image', image);
-		console.log('-> ==> uploadFormData', uploadFormData);
-		const response = await multipartFetch(Routes.STOP_IMAGE(stopId), uploadFormData);
+		uploadFormData.append('File', image);
+	 
+		const response = await multipartFetch(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}`, uploadFormData);
 
-		console.log('-> ==> response', response);
+		console.log('-> ==> response', response); 
 
 		if (response.error) {
 			useToast.error({
@@ -357,9 +351,9 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		const { data: { insertedId } } = response.data as { data: { insertedId: string } };
 
-		if (insertedId) {
-			router.push(Routes.STOP_IMAGE(insertedId));
-		}
+		// if (insertedId) {
+		// 	router.push(Routes.STOP_IMAGE(insertedId));
+		// }
 
 		useToast.success({
 			message: 'Imagem carregada com sucesso',
@@ -391,7 +385,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		form.values.comments.push({
 			_id: generateRandomId(),
 			text: text,
-			user_id: userId });
+			user_id: userId
+		});
 		form.setFieldValue('comments', form.values.comments);
 	};
 
