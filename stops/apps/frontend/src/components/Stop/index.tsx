@@ -39,9 +39,6 @@ export default function Stop({ paramId }: StopProps) {
 	const { actions: { getStopById } } = useStopsContext();
 	const { actions, data, flags } = useStopsDetailContext();
 
-	// const stopsContext = useStopsContext();
-	// console.log('stopsContext', stopsContext);
-
 	//
 	// B. Render components
 

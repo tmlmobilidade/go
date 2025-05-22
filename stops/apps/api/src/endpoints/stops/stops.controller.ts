@@ -156,6 +156,36 @@ export class StopsController {
 		}
 	}
 
+	static async getImages(request: FastifyRequest<{ Params: { id: string, imageId: string } }>, reply: FastifyReply) {
+		try {
+			const { id, imageId } = request.params;
+
+			const stop = await stops.findById(id);
+
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
+
+			// if (stop.image_ids.indexOf(imageId) == -1) {
+			// 	reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
+			// 	return;
+			// }
+
+			const urls = await Promise.all(stop.image_ids.map(image_id => files.getFileUrl({ file_id: image_id })));
+
+			reply.send({
+				data: urls,
+				message: 'Images retrieved',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
 	/**
      * Updates an existing stop by ID
      * @param request Fastify request containing stop ID in params and update data in body

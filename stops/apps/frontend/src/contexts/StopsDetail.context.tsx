@@ -40,6 +40,7 @@ interface StopsDetailContextState {
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
 		handleImageChange: (file: File) => void
+		getImages: (stopId: string) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
 		saveStop: () => void
@@ -59,6 +60,7 @@ interface StopsDetailContextState {
 	}
 }
 
+// @ts-ignore
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
 	// affectation: [],
@@ -296,8 +298,46 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		router.replace(Routes.STOP_LIST);
 	};
 
+	const getImages = async () => {
+		console.log('-> getImages');
+		if (!stopId || stopId === 'new') {
+			console.error('Invalid stopId provided');
+			return;
+		}
+	
+		try {
+			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_IMAGES(stopId)}`, {
+				method: 'GET',
+			});
+	
+			if (!response.ok) {
+				const errorData = await response.json();
+				useToast.error({
+					message: errorData.message || 'Erro ao carregar imagens',
+					title: 'Erro',
+				});
+				return;
+			}
+	
+			const { data: imageUrls } = await response.json();
+			console.log('Retrieved images:', imageUrls);
+	
+			useToast.success({
+				message: 'Imagens carregadas com sucesso',
+				title: 'Sucesso',
+			});
+	
+			return imageUrls;
+		} catch (error) {
+			console.error('Error fetching images:', error);
+			useToast.error({
+				message: 'Erro ao carregar imagens',
+				title: 'Erro',
+			});
+		}
+	};
+
 	const handleImageChange = (file: File) => {
-		console.log('-> handleImageChange', file);
 		setImage(file);
 	};
 
@@ -399,6 +439,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				deleteImage,
 				deleteStop,
 				handleImageChange,
+				getImages,
 				// removeReference,
 				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 				handleCommentsChange,
@@ -421,7 +462,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
 			},
 		};
-	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
+	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, getImages, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
 
 	//
 	// F. Render components

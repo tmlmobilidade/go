@@ -113,6 +113,18 @@ server.register(
 			StopsController.getImage,
 		);
 
+		// GET /stops/:id/images
+		instance.get(
+			'/:id/images',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.read,
+				),
+			},
+			StopsController.getImages,
+		);
+
 		next();
 	},
 	{ prefix: namespace },

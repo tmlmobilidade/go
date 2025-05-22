@@ -1,5 +1,5 @@
 import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -12,6 +12,7 @@ interface FormType {
 
 interface ActionsType {
 	handleImageChange: (file: File) => void
+	getImages: () => any
 }
 
 interface UploadImageProps {
@@ -43,17 +44,68 @@ export function UploadImage({
 
 	//
 	// A. Setup variables
-	const [preview, setPreview] = useState<null | string[]>(imageUrl ?? null);
+	// const [preview, setPreview] = useState<null | string[]>(imageUrl ?? null);
+	const [preview, setPreview] = useState<string[]>([]);
 
-	//
-	// B. Transform Data
-	useEffect(() => {
-		setPreview(imageUrl ?? null);
-	}, [imageUrl]);
+	// // Fetch the image and convert to Data URL
+	// const fetchImageAsDataUrl = async (url) => {
+	// 	try {
+	// 		console.log("--> URL", url);
+	// 		const response = await fetch(url);
+	// 		console.log("--> RESPONSE", response);
+	// 		const blob = await response.blob();
+	// 		console.log("--> BLOD", blob);
+	// 		const reader = new FileReader();
+
+	// 		return new Promise((resolve, reject) => {
+	// 			reader.onloadend = () => {
+	// 				resolve(reader.result);  // Return the Data URL
+	// 			};
+	// 			reader.onerror = reject;
+	// 			reader.readAsDataURL(blob);  // Convert the Blob to Data URL
+	// 		});
+	// 	} catch (error) {
+	// 		console.error(`Error fetching URL ${url}:`, error);
+	// 		throw error; // Re-throw the error to handle it in the calling function
+	// 	}
+	// };
 
 	useEffect(() => {
-		data.form.setFieldValue('image_ids', preview);
-	}, [preview]);
+		// // Fetch all images and convert to Data URLs
+		// const fetchAllImages = async (urls) => {
+		// 	console.log("HERE");
+		// 	try {
+		// 		const dataUrls = await Promise.all(urls.map(fetchImageAsDataUrl));
+		// 		console.log("dataUrls", dataUrls);
+		// 		setPreview(dataUrls);  // Set the array of Data URLs
+		// 	} catch (err) {
+		// 		console.error('Error fetching images:', err);
+		// 	}
+		// };
+
+
+		actions.getImages()
+			.then((urls: string[]) => {
+				console.log("URLS", urls);
+				setPreview(urls);
+				// fetchAllImages(urls);
+			})
+			.then(res => console.log("RES", res))
+			.catch(err => {
+				console.error('Error fetching or converting files:', err);
+			});
+	}, []);
+
+
+	// //
+	// // B. Transform Data
+	// useEffect(() => {
+	// 	setPreview(imageUrl ?? null);
+	// }, [imageUrl]);
+
+	// useEffect(() => {
+	// 	data.form.setFieldValue('image_ids', preview);
+	// }, [preview]);
 
 	//
 	// C. Handle Actions
@@ -75,6 +127,7 @@ export function UploadImage({
 		onFileChange?.(file);
 		console.log('actions', actions);
 		actions.handleImageChange(file);
+		actions.getImages();
 	};
 
 	const handleDelete = (index) => {
@@ -92,7 +145,7 @@ export function UploadImage({
 			{preview?.map((image_id: string, index: number) => (
 				image_id ? (
 					<div key={index} className={styles.imageContainer}>
-						<Image alt="Preview" className={styles.image} height={maxHeight} src={image_id} width={maxWidth} />
+						<NextImage alt="Preview" className={styles.image} height={maxHeight} src={image_id} width={maxWidth} />
 						{onDelete && (
 							<div className={styles.deleteContainer}>
 								<DeleteActionIcon
