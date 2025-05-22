@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
+import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { ShelterStatus } from '@tmlmobilidade/types';
 import { SidewalkType } from '@tmlmobilidade/types';
@@ -41,6 +41,9 @@ interface StopsDetailContextState {
 		handleImageChange: (file: File) => void
 		deleteImage: (imageId: string) => void
 		getImages: (stopId: string) => void
+		handleFileChange: (file: File) => void
+		deleteFile: (fileId: string) => void
+		getFiles: (stopId: string) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
 		saveStop: () => void
@@ -253,9 +256,9 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		}
 
 		const insertedId = stopId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : stopId;
-		if (insertedId) {
-			await uploadImage(insertedId);
-		}
+		// if (insertedId) {
+		// 	await uploadImage(insertedId);
+		// }
 
 		// If the Stop is new, redirect to the detail page
 		if (insertedId && stopId === 'new') {
@@ -333,6 +336,45 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		}
 	};
 
+	const getFiles = async () => {
+		console.log('-> getFiles');
+		if (!stopId || stopId === 'new') {
+			console.error('Invalid stopId provided');
+			return;
+		}
+
+		try {
+			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_FILES(stopId)}`, {
+				method: 'GET',
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				useToast.error({
+					message: errorData.message || 'Erro ao carregar ficheiros',
+					title: 'Erro',
+				});
+				return;
+			}
+
+			const { data: fileUrls } = await response.json();
+			console.log('Retrieved files:', fileUrls);
+
+			useToast.success({
+				message: 'Ficheiros carregadas com sucesso',
+				title: 'Sucesso',
+			});
+
+			return fileUrls;
+		} catch (error) {
+			console.error('Error fetching ficheiros:', error);
+			useToast.error({
+				message: 'Erro ao carregar ficheiros',
+				title: 'Erro',
+			});
+		}
+	};
+
 	const handleImageChange = (file: File) => {
 		setImage(file);
 	};
@@ -341,6 +383,15 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		if (!image) return;
 		uploadImage(stopId);
 	}, [image]);
+
+	const handleFileChange = (file: File) => {
+		setFile(file);
+	};
+
+	useEffect(() => {
+		if (!file) return;
+		uploadFile(stopId);
+	}, [file]);
 
 	const deleteImage = async (imageId: string) => {
 		if (stopId === 'new') return;
@@ -361,6 +412,29 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		useToast.success({
 			message: 'Imagem apagada com sucesso',
+			title: 'Sucesso',
+		});
+	}
+	;
+	const deleteFile = async (fileId: string) => {
+		if (stopId === 'new') return;
+		
+		console.log('-> deleteFile', fileId);
+		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_FILE(stopId)}/${fileId}`, 'DELETE', stop);
+		console.log('-> ==> response', response);
+		if (response.error) {
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({
+					message: error.message,
+					title: 'Erro ao apagar ficheiro',
+				});
+			}
+			return;
+		}
+
+		useToast.success({
+			message: 'Ficheiro apagado com sucesso',
 			title: 'Sucesso',
 		});
 	};
@@ -386,7 +460,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			return;
 		}
 
-		const { data: { insertedId } } = response.data as { data: { insertedId: string } };
+		// const { data: { insertedId } } = response.data as { data: { insertedId: string } };
 
 		// if (insertedId) {
 		// 	router.push(Routes.STOP_IMAGE(insertedId));
@@ -394,6 +468,41 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		useToast.success({
 			message: 'Imagem carregada com sucesso',
+			title: 'Sucesso',
+		});
+
+		setIsSaving(false);
+	}
+	;
+	const uploadFile = async (stopId: string) => {
+		if (stopId === 'new' || !file) return;
+
+		setIsSaving(true);
+
+		const uploadFormData = new FormData();
+
+		uploadFormData.append('File', file);
+
+		const response = await multipartFetch(`${Routes.STOPS_API}${Routes.STOP_FILE(stopId)}`, uploadFormData);
+
+		console.log('-> ==> response', response);
+
+		if (response.error) {
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao carregar file',
+			});
+			return;
+		}
+
+		// const { data: { insertedId } } = response.data as { data: { insertedId: string } };
+
+		// if (insertedId) {
+		// 	router.push(Routes.STOP_IMAGE(insertedId));
+		// }
+
+		useToast.success({
+			message: 'Ficheiro carregado com sucesso',
 			title: 'Sucesso',
 		});
 
@@ -433,10 +542,13 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		return {
 			actions: {
 				// addReference,
-				deleteImage,
 				deleteStop,
 				handleImageChange,
 				getImages,
+				deleteImage,
+				handleFileChange,
+				getFiles,
+				deleteFile,
 				// removeReference,
 				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 				handleCommentsChange,
@@ -459,7 +571,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
 			},
 		};
-	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, getImages, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
+	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, getImages, deleteImage, handleFileChange, getFiles, deleteFile, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
 
 	//
 	// F. Render components

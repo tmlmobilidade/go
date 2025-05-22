@@ -72,12 +72,47 @@ export class StopsController {
 			}
 
 			stop.image_ids.splice(index, 1)
-			
+
 			await files.deleteById(image_id);
 			await stops.updateById(id, { image_ids: stop.image_ids });
 
 			reply.send({
 				message: 'Image deleted',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	static async deleteFile(request: FastifyRequest<{ Params: { file_id: string, id: string } }>, reply: FastifyReply) {
+		try {
+			console.log("===> request.params", request.params)
+			const { file_id, id } = request.params;
+
+			const stop = await stops.findById(id);
+			console.log("===> stop", stop)
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
+
+			const index = stop.file_ids.findIndex((fileId) => fileId === file_id);
+
+			if (!stop.file_ids.includes(file_id) || index === -1) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
+				return;
+			}
+
+			stop.file_ids.splice(index, 1)
+
+			await files.deleteById(file_id);
+			await stops.updateById(id, { file_ids: stop.file_ids });
+
+			reply.send({
+				message: 'File deleted',
 			});
 		}
 		catch (error) {
@@ -161,9 +196,39 @@ export class StopsController {
 		}
 	}
 
+	static async getFile(request: FastifyRequest<{ Params: { id: string, fileId: string } }>, reply: FastifyReply) {
+		try {
+			const { id, fileId } = request.params;
+
+			const stop = await stops.findById(id);
+
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
+
+			if (stop.file_ids.indexOf(fileId) == -1) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
+				return;
+			}
+
+			const url = await files.getFileUrl({ file_id: fileId });
+
+			reply.send({
+				data: url,
+				message: 'File retrieved',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
 	static async getImages(request: FastifyRequest<{ Params: { id: string, imageId: string } }>, reply: FastifyReply) {
 		try {
-			const { id, imageId } = request.params;
+			const { id } = request.params;
 
 			const stop = await stops.findById(id);
 
@@ -182,6 +247,31 @@ export class StopsController {
 			reply.send({
 				data: urls,
 				message: 'Images retrieved',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	static async getFiles(request: FastifyRequest<{ Params: { id: string, fileId: string } }>, reply: FastifyReply) {
+		try {
+			const { id } = request.params;
+
+			const stop = await stops.findById(id);
+
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
+
+			const urls = await Promise.all(stop.file_ids.map(file_id => files.getFileUrl({ file_id: file_id })));
+
+			reply.send({
+				data: urls,
+				message: 'Files retrieved',
 			});
 		}
 		catch (error) {
@@ -251,6 +341,47 @@ export class StopsController {
 			reply.send({
 				data: result,
 				message: 'Image uploaded',
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	static async uploadFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+		try {
+			const { id } = request.params;
+
+			const stop = await stops.findById(id);
+
+			if (!stop) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
+				return;
+			}
+			// Parse the file from the request
+			const data = await request.file();
+			const buffer = await data.toBuffer();
+			const size = buffer.buffer.byteLength;
+
+			const result = await files.upload(buffer, {
+				created_by: 'system', // TODO: Change to user id
+				name: data.filename,
+				resource_id: id,
+				scope: 'stops',
+				size: size,
+				type: data.mimetype,
+				updated_by: 'system', // TODO: Change to user id
+			}, {});
+
+			// Image ID to array of Image IDs
+			stop.file_ids.push(result.insertedId.toString());
+			await stops.updateById(id, { file_ids: stop.file_ids });
+
+			reply.send({
+				data: result,
+				message: 'File uploaded',
 			});
 		}
 		catch (error) {
