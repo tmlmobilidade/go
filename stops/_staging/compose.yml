@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-stops-nginx:production
+    image: ghcr.io/tmlmobilidade/sae-stops-nginx:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -73,7 +73,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/sae-stops-api:production
+    image: ghcr.io/tmlmobilidade/sae-stops-api:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -92,7 +92,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/sae-stops-frontend:production
+    image: ghcr.io/tmlmobilidade/sae-stops-frontend:staging
     deploy:
       restart_policy:
         condition: on-failure
