@@ -81,6 +81,8 @@ services:
       resources:
         limits:
           memory: 2gb
+    ports:
+      - 5050:5050
     logging:
       options:
         max-size: '1m'
