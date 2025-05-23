@@ -32,7 +32,7 @@ export function Right({ setToggleValue, toggleValue }: RightProps) {
 			</Button>
 
 			{/* Stop Button */}
-			<Link href="https://www.google.com/maps/@38.6512317,-8.8813723,10z">
+			<Link href="https://www.google.com/maps/@38.6512317,-8.8813723,10z" target="_blank">
 				<Tooltip label="Open in Google Maps" position="bottom">
 					<ActionIcon
 						className={styles.icon}

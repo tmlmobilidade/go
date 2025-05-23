@@ -26,7 +26,7 @@ export function Right({ actions, data, open }) {
 			</Tooltip> */}
 
 			{/* Stop Button */}
-			<Link href={`https://www.carrismetropolitana.pt/stops/${data._id}`}>
+			<Link href={`https://www.carrismetropolitana.pt/stops/${data._id}`} target="_blank">
 				<Tooltip label="Ver esta paragem no Site" position="bottom">
 					<ActionIcon
 						className={styles.iconBlue}

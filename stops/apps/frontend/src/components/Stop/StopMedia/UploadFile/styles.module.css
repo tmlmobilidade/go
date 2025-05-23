@@ -11,10 +11,14 @@
 
 .imageContainer {
 	position: relative;
-	max-width: 400px;
-	max-height: 300px;
+	max-width: 200px;
+	min-width: 200px;
+	max-height: 60px;
 	aspect-ratio: 4/3;
 	padding: var(--size-spacing-sm);
+
+	border: 2px solid #2764B9;
+	border-radius: 8px;
 	
 	& .image {
 		width: 100%;

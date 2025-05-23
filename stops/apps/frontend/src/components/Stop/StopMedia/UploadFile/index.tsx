@@ -1,28 +1,30 @@
-import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui';
+import { ActionIcon, DeleteActionIcon, FileButton, Grid, Label, Tooltip, useToast } from '@tmlmobilidade/ui';
 import NextImage from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
+import Link from 'next/link';
+import { IconFile, IconWorldUpload } from '@tabler/icons-react';
 
 /* * */
 
 interface FormType {
 	setFieldValue: (field: string, value: any) => void
 	values: {
-		image_ids: string[]
+		file_ids: string[]
 	}
 }
 
 interface ActionsType {
-	handleImageChange: (file: File) => void
-	getImages: () => any
-	deleteImage: (image_id: string) => void
+	handleFileChange: (file: File) => void
+	getFiles: () => any
+	deleteFile: (file_id: string) => void
 }
 
 interface UploadImageProps {
 	actions: ActionsType
 	data: { form: FormType }
-	imageUrl?: string[]
+	fileUrl?: string[]
 	label?: string
 	maxFileSize?: number
 	maxHeight?: number
@@ -33,10 +35,10 @@ interface UploadImageProps {
 
 /* * */
 
-export function UploadImage({
+export function UploadFile({
 	actions,
 	data,
-	imageUrl,
+	fileUrl,
 	label,
 	maxFileSize = 6 * 1024 * 1024, // 5MB default
 	maxHeight = 300,
@@ -52,7 +54,7 @@ export function UploadImage({
 	const [preview, setPreview] = useState<string[]>([]);
 
 	useEffect(() => {
-		actions.getImages()
+		actions.getFiles()
 			.then((urls: string[]) => {
 				setPreview(urls);
 			})
@@ -62,13 +64,21 @@ export function UploadImage({
 	}, []);
 
 	//
-	// B. Handle Actions
+	// B. Transform Data
 
+	const extractTextBetweenSlashAndQuestionMark = (url) => {
+		const regex = /(?<=\/)([^\/\?]*\.[^\/\?]*)(?=\?)/;
+		const match = url.match(regex);
+		return match ? match[0] : null;
+	}
+
+	//
+	// C. Handle Actions
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
 				message: 'O tamanho do ficheiro excede o limite permitido.',
-				title: 'Erro ao carregar imagem',
+				title: 'Erro ao carregar ficheiro',
 			});
 			return;
 		}
@@ -80,17 +90,17 @@ export function UploadImage({
 		reader.readAsDataURL(file);
 
 		onFileChange?.(file);
-		console.log('actions', actions);
-		actions.handleImageChange(file);
-		actions.getImages();
+
+		actions.handleFileChange(file);
+		actions.getFiles();
 	};
 
 	const handleDelete = (index) => {
-		actions.deleteImage(data.form.values.image_ids[index])
+		actions.deleteFile(data.form.values.file_ids[index])
 		const files = [...preview];
 		files.splice(index, 1);
 		setPreview(files);
-		if (imageUrl && onDelete) onDelete();
+		if (fileUrl && onDelete) onDelete();
 	};
 
 	//
@@ -98,15 +108,26 @@ export function UploadImage({
 	return (
 		<div className={styles.container}>
 			{label && <Label>{label}</Label>}
-			{preview?.map((image_id: string, index: number) => (
-				image_id ? (
+			{preview?.map((file_id: string, index: number) => (
+				file_id ? (
 					<div key={index} className={styles.imageContainer}>
-						<NextImage alt="Preview" className={styles.image} height={maxHeight} src={image_id} width={maxWidth} />
+						{/* <NextImage alt="Preview" className={styles.image} height={maxHeight} src={file_id} width={maxWidth} /> */}
+						<Link href={file_id} target="_blank">
+							<Tooltip label="Descarregar Ficheiro" position="bottom">
+								<ActionIcon
+									className={styles.iconBlue}
+									variant="secondary"
+								>
+									<IconFile />
+									<div>{extractTextBetweenSlashAndQuestionMark(file_id)}</div>
+								</ActionIcon>
+							</Tooltip>
+						</Link>
 						{onDelete && (
 							<div className={styles.deleteContainer}>
 								<DeleteActionIcon
-									confirmMessage="Tem certeza que deseja apagar a imagem?"
-									confirmTitle="Apagar imagem"
+									confirmMessage="Tem certeza que deseja apagar a ficheiro?"
+									confirmTitle="Apagar ficheiro"
 									onConfirm={() => handleDelete(index)}
 									showConfirmation
 								/>
@@ -117,8 +138,8 @@ export function UploadImage({
 			))}
 
 			<FileButton
-				accept="image/*"
-				label="Carregar imagem"
+				// accept="image/*"
+				label="Carregar ficheiro"
 				onFileChange={handleFileChange}
 			/>
 		</div>
