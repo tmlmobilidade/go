@@ -52,27 +52,27 @@ export class StopsController {
 		}
 	}
 
-	static async deleteImage(request: FastifyRequest<{ Params: { image_id: string, id: string } }>, reply: FastifyReply) {
+	static async deleteImage(request: FastifyRequest<{ Params: { id: string, image_id: string } }>, reply: FastifyReply) {
 		try {
-			console.log("===> request.params", request.params)
-			const { image_id, id } = request.params;
+			console.log('===> request.params', request.params);
+			const { id, image_id } = request.params;
 
 			const stop = await stops.findById(id);
-			console.log("===> stop", stop)
+			console.log('===> stop', stop);
 			if (!stop) {
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
 				return;
 			}
 
-			const index = stop.image_ids.findIndex((imageId) => imageId === image_id);
+			const index = stop.image_ids.findIndex(imageId => imageId === image_id);
 
 			if (!stop.image_ids.includes(image_id) || index === -1) {
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
 				return;
 			}
 
-			stop.image_ids.splice(index, 1)
-			
+			stop.image_ids.splice(index, 1);
+
 			await files.deleteById(image_id);
 			await stops.updateById(id, { image_ids: stop.image_ids });
 

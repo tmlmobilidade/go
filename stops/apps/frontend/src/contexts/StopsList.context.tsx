@@ -7,12 +7,9 @@
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 // import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { swrFetcher } from '@/lib/http';
-import { toggleArray } from '@/lib/utils';
-import { type Municipality } from '@carrismetropolitana/api-types/locations';
 // import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
-import { type Alert, AlertSchema, Stop } from '@tmlmobilidade/types';
-import { getBaseGeoJsonFeatureCollection, useSearchQuery } from '@tmlmobilidade/ui';
-import { DateTime } from 'luxon';
+import { Stop } from '@tmlmobilidade/types';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/ui';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 

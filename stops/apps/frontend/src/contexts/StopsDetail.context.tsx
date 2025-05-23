@@ -1,24 +1,10 @@
 'use client';
 
-import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
+import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { ShelterStatus } from '@tmlmobilidade/types';
-import { SidewalkType } from '@tmlmobilidade/types';
-import { RoadType } from '@tmlmobilidade/types';
-import { PavementType } from '@tmlmobilidade/types';
-import { LightningStatus } from '@tmlmobilidade/types';
-import { FlagStatus } from '@tmlmobilidade/types';
-import { ElectricityStatus } from '@tmlmobilidade/types';
-import { Connections } from '@tmlmobilidade/types';
-import { Comment } from '@tmlmobilidade/types';
-import { DockingBayType } from '@tmlmobilidade/types';
-import { Facilities } from '@tmlmobilidade/types';
-import { Jurisdiction } from '@tmlmobilidade/types';
-import { OperationalStatus } from '@tmlmobilidade/types';
-import { PoleStatus } from '@tmlmobilidade/types';
-import { causeSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateStopSchema } from '@tmlmobilidade/types';
+import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { convertObject, Dates, multipartFetch } from '@tmlmobilidade/utils';
+import { convertObject, multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -33,14 +19,14 @@ export enum StopsDetailMode {
 
 interface StopsDetailContextState {
 	actions: {
+		deleteImage: (imageId: string) => void
 		// addReference: () => void
 		deleteStop: () => void
+		getImages: (stopId: string) => void
 		handleCommentsChange: (userId: string, text: string) => void
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
 		handleImageChange: (file: File) => void
-		deleteImage: (imageId: string) => void
-		getImages: (stopId: string) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
 		saveStop: () => void
@@ -60,10 +46,9 @@ interface StopsDetailContextState {
 	}
 }
 
-// @ts-ignore
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
-	// affectation: [],
+	affectation: [],
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],
@@ -324,7 +309,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			});
 
 			return imageUrls;
-		} catch (error) {
+		}
+		catch (error) {
 			console.error('Error fetching images:', error);
 			useToast.error({
 				message: 'Erro ao carregar imagens',
@@ -344,7 +330,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	const deleteImage = async (imageId: string) => {
 		if (stopId === 'new') return;
-		
+
 		console.log('-> deleteImage', imageId);
 		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}/${imageId}`, 'DELETE', stop);
 		console.log('-> ==> response', response);
@@ -422,7 +408,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		form.values.comments.push({
 			_id: generateRandomId(),
 			text: text,
-			user_id: userId
+			user_id: userId,
 		});
 		form.setFieldValue('comments', form.values.comments);
 	};
@@ -435,8 +421,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				// addReference,
 				deleteImage,
 				deleteStop,
-				handleImageChange,
 				getImages,
+				handleImageChange,
 				// removeReference,
 				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 				handleCommentsChange,

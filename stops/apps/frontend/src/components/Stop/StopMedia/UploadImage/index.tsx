@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui';
 import NextImage from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -14,9 +15,9 @@ interface FormType {
 }
 
 interface ActionsType {
-	handleImageChange: (file: File) => void
-	getImages: () => any
 	deleteImage: (image_id: string) => void
+	getImages: () => any
+	handleImageChange: (file: File) => void
 }
 
 interface UploadImageProps {
@@ -87,19 +88,17 @@ export function UploadImage({
 		// 	}
 		// };
 
-
 		actions.getImages()
 			.then((urls: string[]) => {
-				console.log("URLS", urls);
+				console.log('URLS', urls);
 				setPreview(urls);
 				// fetchAllImages(urls);
 			})
-			.then(res => console.log("RES", res))
-			.catch(err => {
+			.then(res => console.log('RES', res))
+			.catch((err) => {
 				console.error('Error fetching or converting files:', err);
 			});
 	}, []);
-
 
 	// //
 	// // B. Transform Data
@@ -135,7 +134,7 @@ export function UploadImage({
 	};
 
 	const handleDelete = (index) => {
-		actions.deleteImage(data.form.values.image_ids[index])
+		actions.deleteImage(data.form.values.image_ids[index]);
 		const files = [...preview];
 		files.splice(index, 1);
 		setPreview(files);

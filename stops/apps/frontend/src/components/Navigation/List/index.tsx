@@ -10,7 +10,7 @@ export function List({ data, flags, queryString }) {
 
 	//
 	// A. Setup variables
-	const filteredStops = data.stops.filter(stop => queryString == null || stop.name.includes(searchbarContext.queryString));
+	const filteredStops = data.stops.filter(stop => queryString == null || stop.name.includes(queryString));
 	//
 	// B. Render components
 
