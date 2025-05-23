@@ -1,21 +1,15 @@
 'use client';
 
-/* * */
-
 import { Anchor, Breadcrumbs } from '@mantine/core';
 import { IconDots } from '@tabler/icons-react';
 import { TextInput } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
-/* * */
-
-import { useSearchbarContext } from '@/contexts/Searchbar.context';
-
 import styles from './styles.module.css';
 
 /* * */
 
-export default function SearchBar() {
+export function SearchBar({ data, setQueryString }) {
 	//
 
 	//
@@ -23,17 +17,29 @@ export default function SearchBar() {
 
 	const [isOpen, setIsOpen] = useState(false);
 
-	const searchbarContext = useSearchbarContext();
 	//
 	// B. Transform data
 
+	const downloadJSON = () => {
+		const jsonStr = JSON.stringify(data, null, 2);
+		const blob = new Blob([jsonStr], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'stops.json';
+		link.click();
+
+		URL.revokeObjectURL(url); // Clean up
+	};
+
 	const items = [
-		{ href: '#', title: 'Exportar stops.txt' },
-		{ href: '#', title: 'Exportar deleted_stops.txt' },
-		{ href: '#', title: 'Exportar Linhas por Paragem' },
-		{ href: '#', title: 'Exportar para ESRI' },
+		{ onClick: () => downloadJSON(), title: 'Exportar stops.json' },
+		// { href: '#', title: 'Exportar deleted_stops.txt' },
+		// { href: '#', title: 'Exportar Linhas por Paragem' },
+		// { href: '#', title: 'Exportar para ESRI' },
 	].map((item, index) => (
-		<Anchor key={index} href={item.href}>
+		<Anchor key={index} onClick={item.onClick}>
 			{item.title}
 		</Anchor>
 	));
@@ -47,7 +53,7 @@ export default function SearchBar() {
 			<TextInput
 				className={styles.inputText}
 				maxLength={255}
-				onChange={e => searchbarContext.setQueryString(e.target.value)}
+				onChange={e => setQueryString(e.target.value)}
 				placeholder="Pesquisar..."
 			/>
 

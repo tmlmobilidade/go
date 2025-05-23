@@ -18,31 +18,37 @@ import { OperationalStatus } from '@tmlmobilidade/types';
 import { PoleStatus } from '@tmlmobilidade/types';
 import { causeSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { convertObject, Dates } from '@tmlmobilidade/utils';
+import { convertObject, Dates, multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-export enum StopDetailMode {
+import { useStopsContext } from './Stops.context';
+
+export enum StopsDetailMode {
 	CREATE = 'create',
 	EDIT = 'edit',
 }
 
-interface StopDetailContextState {
+interface StopsDetailContextState {
 	actions: {
 		// addReference: () => void
-		deleteImage: () => void
 		deleteStop: () => void
+		handleCommentsChange: (userId: string, text: string) => void
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
-		imageChanged: (file: File) => void
+		handleImageChange: (file: File) => void
+		deleteImage: (imageId: string) => void
+		getImages: (stopId: string) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
 		saveStop: () => void
+		setActiveStopId: (stopId: string) => void
 	}
 	data: {
 		_id: string | undefined
+		active_stop_id: string
 		form: UseFormReturnType<CreateStopDto>
 	}
 	flags: {
@@ -50,13 +56,14 @@ interface StopDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: StopDetailMode
+		mode: StopsDetailMode
 	}
 }
 
+// @ts-ignore
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
-	affectation: [],
+	// affectation: [],
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],
@@ -98,17 +105,19 @@ const emptyStop: CreateStopDto = {
 	tts_name: 'temp',
 };
 
-const StopDetailContext = createContext<StopDetailContextState | undefined>(undefined);
+const StopsDetailContext = createContext<StopsDetailContextState | undefined>(undefined);
 
-export function useStopDetailContext() {
-	const context = useContext(StopDetailContext);
+export function useStopsDetailContext() {
+	// console.log('-> useStopsDetailContext');
+	const context = useContext(StopsDetailContext);
 	if (!context) {
-		throw new Error('useStopDetailContext must be used within a StopDetailContextProvider');
+		throw new Error('useStopsDetailContext must be used within a StopsDetailContextProvider');
 	}
 	return context;
 }
 
-export const StopDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
+export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
+	// console.log('-> StopsDetailContextProvider');
 	//
 	// A. Setup variables
 	const router = useRouter();
@@ -118,21 +127,11 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
 	const [file, setFile] = useState<File | null>(null);
+	const [dataActiveStopIdState, setDataActiveStopIdState] = useState<string>(stopId);
+
+	const stopsContext = useStopsContext();
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
-	// console.log('==> stop', stop);
-	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-		stopId === 'new'
-			? undefined
-			: Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
-		swrFetcher,
-	);
-	const { data: fileUrl, isLoading: fileUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-		stopId === 'new'
-			? undefined
-			: Routes.STOPS_API + Routes.STOP_FILE(stopId),
-		swrFetcher,
-	);
 
 	//
 	// B. Define form
@@ -146,8 +145,17 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	//
 	// C. Transform Data
 
+	useEffect(() => {
+		if (!dataActiveStopIdState || !stopsContext.data.stops || !stopsContext.data.stops.length) return;
+		const foundStopData = stopsContext.actions.getStopById(dataActiveStopIdState);
+		if (foundStopData) {
+			window.history.replaceState({}, '', `/stops/${dataActiveStopIdState}` + window.location.search);
+		}
+	}, [stopsContext.data.stops, dataActiveStopIdState]);
+
 	// Update form
 	useEffect(() => {
+		// console.log('-> UseEffect 2');
 		if (!stop) return;
 
 		setLoading(true);
@@ -164,7 +172,16 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		setLoading(false);
 	}, [stop]);
 
+	// useEffect(() => {
+	// 	console.log('-> UseEffect 2.1', loading);
+	// }, [loading]);
+
+	// useEffect(() => {
+	// 	console.log('-> UseEffect 2.2', flags);
+	// }, [stopsDetailContext.flags]);
+
 	useEffect(() => {
+		// console.log('-> UseEffect 3');
 		if (error) {
 			useToast.error({
 				message: error.message,
@@ -176,10 +193,11 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	// Validate form on change
 	useEffect(() => {
+		// console.log('-> UseEffect 4');
 		form.validate();
 		setCanSave(form.isValid());
 
-		console.log(form.errors);
+		// console.log(form.errors);
 	}, [form.values]);
 
 	//
@@ -196,7 +214,13 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	// };
 
 	// const saveStop = async (type: 'draft' | 'publish') => {
+	const setActiveStopId = (stopId: string) => {
+		// console.log('-> setActiveStopId');
+		setDataActiveStopIdState(stopId);
+	};
+
 	const saveStop = async () => {
+		console.log('-> saveStop');
 		setIsSaving(true);
 
 		// Handle Save Stop
@@ -206,16 +230,16 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date };
 		const saveStop: CreateStopDto = { ...form.values };
-
+		// console.log('-> ==> saveStop', saveStop);
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);
 		let body = stopId === 'new' ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
 		// body = { ...body, active_period_end_date, publish_end_date };
 		body = { ...body };
-
+		// console.log('-> ==> body', body);
 		const response = await fetchData<unknown>(url, method, body);
-		console.log('==> response', response);
+		// console.log('-> ==> response', response);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -247,6 +271,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	};
 
 	const deleteStop = async () => {
+		// console.log('-> deleteStop');
 		if (stopId === 'new') return;
 
 		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'DELETE', stop);
@@ -269,10 +294,60 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		router.replace(Routes.STOP_LIST);
 	};
 
-	const deleteImage = async () => {
-		if (stopId === 'new') return;
+	const getImages = async () => {
+		console.log('-> getImages');
+		if (!stopId || stopId === 'new') {
+			console.error('Invalid stopId provided');
+			return;
+		}
 
-		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_IMAGE(stopId), 'DELETE', stop);
+		try {
+			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_IMAGES(stopId)}`, {
+				method: 'GET',
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				useToast.error({
+					message: errorData.message || 'Erro ao carregar imagens',
+					title: 'Erro',
+				});
+				return;
+			}
+
+			const { data: imageUrls } = await response.json();
+			console.log('Retrieved images:', imageUrls);
+
+			useToast.success({
+				message: 'Imagens carregadas com sucesso',
+				title: 'Sucesso',
+			});
+
+			return imageUrls;
+		} catch (error) {
+			console.error('Error fetching images:', error);
+			useToast.error({
+				message: 'Erro ao carregar imagens',
+				title: 'Erro',
+			});
+		}
+	};
+
+	const handleImageChange = (file: File) => {
+		setImage(file);
+	};
+
+	useEffect(() => {
+		if (!image) return;
+		uploadImage(stopId);
+	}, [image]);
+
+	const deleteImage = async (imageId: string) => {
+		if (stopId === 'new') return;
+		
+		console.log('-> deleteImage', imageId);
+		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}/${imageId}`, 'DELETE', stop);
+		console.log('-> ==> response', response);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -293,10 +368,15 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	const uploadImage = async (stopId: string) => {
 		if (stopId === 'new' || !image) return;
 
-		const response = await uploadFile(
-			Routes.STOPS_API + Routes.STOP_IMAGE(stopId),
-			image,
-		);
+		setIsSaving(true);
+
+		const uploadFormData = new FormData();
+
+		uploadFormData.append('File', image);
+
+		const response = await multipartFetch(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}`, uploadFormData);
+
+		console.log('-> ==> response', response);
 
 		if (response.error) {
 			useToast.error({
@@ -306,97 +386,86 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			return;
 		}
 
+		const { data: { insertedId } } = response.data as { data: { insertedId: string } };
+
+		// if (insertedId) {
+		// 	router.push(Routes.STOP_IMAGE(insertedId));
+		// }
+
 		useToast.success({
-			message: 'A imagem foi carregada com sucesso',
-			title: 'Imagem carregada com sucesso',
+			message: 'Imagem carregada com sucesso',
+			title: 'Sucesso',
 		});
+
+		setIsSaving(false);
 	};
 
 	const handleConnectionsChange = (connections: string) => {
+		// console.log('-> handleConnectionsChange');
 		const newConnections = form.values.connections.includes(connections) ? form.values.connections.filter(c => c !== connections) : [...form.values.connections, connections];
 		form.setFieldValue('connections', newConnections);
 	};
 
 	const handleFacilitiesChange = (facilities: string) => {
+		// console.log('-> handleFacilitiesChange');
 		const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
 		form.setFieldValue('facilities', newFacilities);
 	};
 
+	const generateRandomId = (length = 6): string => {
+		// console.log('-> generateRandomId');
+		return Math.random().toString(36).substr(2, length);
+	};
+
+	const handleCommentsChange = (userId: string, text: string) => {
+		// console.log('-> handleCommentsChange');
+		form.values.comments.push({
+			_id: generateRandomId(),
+			text: text,
+			user_id: userId
+		});
+		form.setFieldValue('comments', form.values.comments);
+	};
+
 	//
 	// E. Define context value
-	const contextValue: StopDetailContextState = React.useMemo(() => ({
-		actions: {
-			// addReference,
-			deleteImage,
-			deleteStop,
-			imageChanged: (image: File) => setImage(image),
-			// removeReference,
-			// saveStop: (type: 'draft' | 'publish') => saveStop(type),
-			handleConnectionsChange,
-			handleFacilitiesChange,
-			saveStop,
-		},
-		data: {
-			_id: stopId === 'new' ? undefined : stopId,
-			form,
-			// fileUrl: fileUrl?.data,
-			// imageUrl: imageUrl?.data,
-			// bench_status: stop?.bench_status,
-			// comments: stop?.comments,
-			// connections: stop?.connections,
-			// created_at: stop?.created_at,
-			// district_id: stop?.district_id,
-			// docking_bay_type: stop?.docking_bay_type,
-			// electricity_status: stop?.electricity_status,
-			// facilities: stop?.facilities,
-			// file_ids: stop?.file_ids,
-			// flag_status: stop?.flag_status,
-			// image_ids: stop?.image_ids,
-			// // imageUrl: string | undefined
-			// is_archived: stop?.is_archived,
-			// is_locked: stop?.is_locked,
-			// jurisdiction: stop?.jurisdiction,
-			// last_infrastructure_check: stop?.last_infrastructure_check,
-			// last_infrastructure_maintenance: stop?.last_infrastructure_maintenance,
-			// last_schedules_check: stop?.last_schedules_check,
-			// last_schedules_maintenance: stop?.last_schedules_maintenance,
-			// latitude: stop?.latitude,
-			// lighting_status: stop?.lighting_status,
-			// locality_id: stop?.locality_id,
-			// longitude: stop?.longitude,
-			// municipality_id: stop?.municipality_id,
-			// name: stop?.name,
-			// new_name: stop?.new_name,
-			// observations: stop?.observations,
-			// operational_status: stop?.operational_status,
-			// parish_id: stop?.parish_id,
-			// pavement_type: stop?.pavement_type,
-			// pole_status: stop?.pole_status,
-			// road_type: stop?.road_type,
-			// shelter_code: stop?.shelter_code,
-			// shelter_maintainer: stop?.shelter_maintainer,
-			// shelter_make: stop?.shelter_make,
-			// shelter_model: stop?.shelter_model,
-			// shelter_status: stop?.shelter_status,
-			// short_name: stop?.short_name,
-			// sidewalk_type: stop?.sidewalk_type,
-			// tts_name: stop?.tts_name,
-			// updated_at: stop?.updated_at,
-		},
-		flags: {
-			canSave,
-			isReadOnly,
-			isSaving,
-			loading: isLoading || loading || imageUrlLoading,
-			mode: stopId === 'new' ? StopDetailMode.CREATE : StopDetailMode.EDIT,
-		},
-	}), [stopId, form, stop, isLoading, loading, imageUrlLoading, isSaving, canSave, isReadOnly, image]);
+	const contextValue: StopsDetailContextState = useMemo(() => {
+		return {
+			actions: {
+				// addReference,
+				deleteImage,
+				deleteStop,
+				handleImageChange,
+				getImages,
+				// removeReference,
+				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
+				handleCommentsChange,
+				handleConnectionsChange,
+				handleFacilitiesChange,
+				saveStop,
+				setActiveStopId,
+			},
+			data: {
+				_id: stopId === 'new' ? undefined : stopId,
+				active_stop_id: dataActiveStopIdState,
+				form,
+			},
+			flags: {
+				canSave,
+				isReadOnly,
+				isSaving,
+				loading: isLoading || loading,
+				// loading: isLoading || loading || imageUrlLoading,
+				mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
+			},
+		};
+	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, getImages, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
 
 	//
 	// F. Render components
 	return (
-		<StopDetailContext.Provider value={contextValue}>
+		<StopsDetailContext.Provider value={contextValue}>
 			{children}
-		</StopDetailContext.Provider>
+		</StopsDetailContext.Provider>
 	);
 };

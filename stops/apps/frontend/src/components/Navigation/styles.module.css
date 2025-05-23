@@ -1,9 +1,10 @@
 .container {
     display: flex;
     flex-direction: column;
+
+    /* height: 90vh; */
+    overflow-y: scroll;
+    background-color: #22272e;
     border: 1px solid #2f343d;
     border-radius: 5px;
-    background-color: #22272e;
-    overflow-y: scroll;
-    height: 89vh;
 }

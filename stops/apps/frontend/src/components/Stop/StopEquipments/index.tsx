@@ -1,19 +1,16 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export default function StopEquipments() {
+export function StopEquipments({ data }) {
 	//
 
 	//
 	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
 
 	const facilities = [
 		'fire_station',
@@ -51,15 +48,15 @@ export default function StopEquipments() {
 		>
 			<Section gap="md">
 				<Grid columns="abcd" gap="md">
-					{facilities.map((facility) => {
+					{facilities.map((facility, index) => {
 						return (
-							<div className={styles.inputCheckboxContainer}>
+							<div key={index} className={styles.inputCheckboxContainer}>
 								<Checkbox
-									checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(facility)}
+									checked={data.form.getInputProps('facilities').value.includes(facility)}
 									className={styles.inputCheckbox}
 									label={FacilitiesValues[facility]}
 									onChange={(_) => {
-										stopDetailContext.actions.handleFacilitiesChange(facility);
+										actions.handleFacilitiesChange(facility);
 									}}
 								/>
 							</div>

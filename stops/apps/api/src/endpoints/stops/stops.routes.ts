@@ -77,6 +77,54 @@ server.register(
 			StopsController.delete,
 		);
 
+		// POST /stops/:id/image
+		instance.post(
+			'/:id/image',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.update,
+				),
+			},
+			StopsController.uploadImage,
+		);
+
+		// DELETE /stops/:id/image
+		instance.delete(
+			'/:id/image/:image_id',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.update,
+				),
+			},
+			StopsController.deleteImage,
+		);
+
+		// GET /stops/:id/image
+		instance.get(
+			'/:id/image',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.read,
+				),
+			},
+			StopsController.getImage,
+		);
+
+		// GET /stops/:id/images
+		instance.get(
+			'/:id/images',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.read,
+				),
+			},
+			StopsController.getImages,
+		);
+
 		next();
 	},
 	{ prefix: namespace },

@@ -1,17 +1,21 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Grid, Section, TextArea, useMeContext } from '@tmlmobilidade/ui';
+import { useState } from 'react';
+
+import styles from './styles.module.css';
 
 /* * */
 
-export default function StopComments() {
+export function StopComments({ actions, data }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopDetailContext = useStopDetailContext();
+	const [value, setValue] = useState<string>('');
+
+	const meContext = useMeContext();
 
 	//
 	// B. Render components
@@ -22,16 +26,40 @@ export default function StopComments() {
 			title="Notas e Comentários"
 		>
 			<Section gap="md">
-				<Grid columns="abcd" gap="md">
-					{stopDetailContext.data.form.getValues().comments.map((comment) => {
-						return (
-							<div key={comment._id}>
-								<div>ID: {comment._id}</div>
-								<div>USER ID: {comment.user_id}</div>
-								<div>TEXT: {comment.text}</div>
-							</div>
-						);
-					})}
+				{data.form.getValues().comments.map((comment, index: number) => {
+					return (
+						<Grid key={index} gap="md">
+							<div>USER ID: {comment.user_id}</div>
+							<TextArea
+								className={styles.textArea}
+								maxRows={10}
+								minRows={4}
+								value={comment.text}
+								disabled
+							/>
+						</Grid>
+					);
+				})}
+
+				<Grid gap="md">
+					<TextArea
+						className={styles.textArea}
+						maxRows={10}
+						minRows={4}
+						onChange={e => setValue(e.target.value)}
+						placeholder="Comente aqui..."
+						value={value}
+					/>
+
+					<Button
+						label="Submeter"
+						variant="secondary"
+						onClick={() => {
+							if (value === '') return;
+							actions.handleCommentsChange(meContext.data.user._id, value);
+							setValue('');
+						}}
+					/>
 				</Grid>
 			</Section>
 		</Collapsible>

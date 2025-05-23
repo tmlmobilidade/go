@@ -1,28 +1,28 @@
 'use client';
 
-import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
-/* * */
+import { useSearchbarContext } from '@/contexts/Searchbar.context';
+import { useStopsContext } from '@/contexts/Stops.context';
 
-import Footer from './Footer';
-import List from './List';
-import SearchBar from './SearchBar';
+import { Footer } from './Footer';
+import { List } from './List';
+import { SearchBar } from './SearchBar';
 import styles from './styles.module.css';
 
 /* * */
 
-export default function Navigation() {
+export function Navigation() {
 	//
 
 	//
 	// A. Render components
+	const { data, flags } = useStopsContext();
+	const { queryString, setQueryString } = useSearchbarContext();
 
 	return (
-		<SearchbarContextProvider>
-			<div className={styles.container}>
-				<SearchBar />
-				<List />
-				<Footer />
-			</div>
-		</SearchbarContextProvider>
+		<div className={styles.container}>
+			<SearchBar data={data} setQueryString={setQueryString} />
+			<List data={data} flags={flags} queryString={queryString} />
+			<Footer />
+		</div>
 	);
 }

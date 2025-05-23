@@ -1,7 +1,8 @@
-import Navigation from '@/components/Navigation';
+import { Navigation } from '@/components/Navigation';
 import Stop from '@/components/Stop';
-import { StopDetailContextProvider } from '@/contexts/StopDetail.context';
-import { StopListContextProvider } from '@/contexts/StopList.context';
+import { SearchbarContextProvider } from '@/contexts/Searchbar.context';
+import { StopsDetailContextProvider } from '@/contexts/StopsDetail.context';
+import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
 import styles from './styles.module.css';
 
@@ -11,12 +12,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 	console.log('id', id);
 	return (
 		<div className={styles.container}>
-			<StopListContextProvider>
-				<Navigation />
-			</StopListContextProvider>
-			<StopDetailContextProvider stopId={id}>
+			<StopsListContextProvider>
+				<SearchbarContextProvider>
+					<Navigation />
+				</SearchbarContextProvider>
+			</StopsListContextProvider>
+			<StopsDetailContextProvider stopId={id}>
 				<Stop paramId={id} />
-			</StopDetailContextProvider>
+			</StopsDetailContextProvider>
 		</div>
 	);
 }

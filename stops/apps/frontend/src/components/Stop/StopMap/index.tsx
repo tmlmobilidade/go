@@ -1,65 +1,46 @@
-'use client';
-
-/* * */
-
-import type { FeatureCollection } from 'geojson';
-
-/* * */
-
-import { MapView, MapViewStyleStops, MapViewStyleStopsInteractiveLayerId, Surface, useMap } from '@tmlmobilidade/ui';
+import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
+import { useStopsListContext } from '@/contexts/StopsList.context';
+import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
+import React from 'react';
+import { useEffect, useMemo } from 'react';
+
+import { MapView } from './map/MapView';
+import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from './map/MapViewStyleActiveStops';
+import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/MapViewStyleStops';
 
 /* * */
 
-import styles from './styles.module.css';
-
-/* * */
-
-interface MapperProps {
-	generic?: boolean
-}
-
-/* * */
-
-export default function Mapper({ generic }: MapperProps) {
+export function StopsListViewMap({ data, generic = false, getStopById }) {
 	//
 
 	//
-	// A. Render components
+	// A. Setup variables
 
 	const { stopsListMap } = useMap();
 	const router = useRouter();
-	// const stopsListContext = useStopsListContext();
+	const stopsListContext = useStopsListContext();
 
 	//
 	// B. Handle actions
 
-	// useEffect(() => {
-	//     // Exit early if there are no stops or map
-	//     if (!stopsListContext.data.filtered_fc || !stopsListContext.data.filtered_fc.features.length || !stopsListMap) return;
-	//     // When there are no search filters, center the map on all stops
-	//     if (!stopsListContext.filters.by_search.length) {
-	//         centerMap(stopsListMap, stopsListContext.data.filtered_fc.features);
-	//         return;
-	//     }
-	//     // When there are search filters, center the map on the cluster with the most points
-	//     const clusterPoints = turf.clustersKmeans(stopsListContext.data.filtered_fc, { mutate: true, numberOfClusters: 2 });
-	//     const clusterPointsCount = clusterPoints.features.reduce((acc, feature) => {
-	//         if (typeof feature.properties.cluster !== 'number') return acc;
-	//         const clusterId = feature.properties.cluster;
-	//         if (!acc[clusterId]) acc[clusterId] = 0;
-	//         acc[clusterId]++;
-	//         return acc;
-	//     }, {});
-	//     const clusterId = Object.keys(clusterPointsCount).reduce((a, b) => (clusterPointsCount[a] > clusterPointsCount[b] ? a : b));
-	//     const filteredClusterPoints = clusterPoints.features.filter(feature => feature.properties.cluster === Number(clusterId));
-	//     console.log('filteredClusterPoints', filteredClusterPoints);
-	//     centerMap(stopsListMap, filteredClusterPoints);
-	//     //
-	// }, [stopsListContext.data.filtered_fc, stopsListMap]);
+	const getStopByIdGeoJsonFC = (stopId: string): GeoJSON.FeatureCollection | undefined => {
+		const stop = getStopById(stopId);
+		if (!stop) return;
+		const collection = getBaseGeoJsonFeatureCollection();
+		const stopFC = transformStopDataIntoGeoJsonFeature(stop);
+		if (stopFC) collection.features.push(stopFC);
+		return collection;
+	};
 
-	function handleLayerClick(event) {
+	const activeStopGeoJson = useMemo(() => {
+		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
+		centerMap(stopsListMap, geoJson ? geoJson.features : []);
+		return geoJson;
+	}, [stopsListContext.data.filtered_fc, data.active_stop_id]);
+
+	const handleLayerClick = (event) => {
 		if (!stopsListMap) return;
 		const features = stopsListMap.queryRenderedFeatures(event.point);
 		if (!features.length) return;
@@ -69,52 +50,31 @@ export default function Mapper({ generic }: MapperProps) {
 				return;
 			}
 		}
-	}
+	};
+
+	useEffect(() => {
+		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
+		centerMap(stopsListMap, geoJson ? geoJson.features : []);
+	});
 
 	//
 	// C. Render components
 
-	const myFeatureCollection: FeatureCollection = {
-		features: [
-			{
-				geometry: {
-					coordinates: [-8.9595566, 38.7542436],
-					type: 'Point',
-				},
-				properties: {
-					name: 'Sample Point',
-				},
-				type: 'Feature',
-			},
-			{
-				geometry: {
-					coordinates: [
-						[-8.9595566, 38.7542436],
-						[103.0, 1.0],
-						[104.0, 0.0],
-						[105.0, 1.0],
-					],
-					type: 'MultiPoint',
-				},
-				properties: {
-					name: 'Sample Line',
-				},
-				type: 'Feature',
-			},
-		],
-		type: 'FeatureCollection',
-	};
-
-	// const MapViewStyleStopsInteractiveLayerId = "6476b094424adb51586dfcee";
 	return (
-		<div className={generic ? styles.containerGeneric : styles.containerSpecific}>
+		<div style={{ height: generic ? '90vh' : 400, minHeight: 400 }}>
 			<MapView
 				id="stopsListMap"
 				interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
 				onClick={handleLayerClick}
 			>
-				<MapViewStyleStops stopsData={myFeatureCollection} />
-				{/* <MapViewStyleStops stopsData={stopsListContext.data.filtered_fc} /> */}
+				<MapViewStyleActiveStops
+					stopsData={activeStopGeoJson}
+				/>
+
+				<MapViewStyleStops
+					presentBeforeId={MapViewStyleActiveStopsPrimaryLayerId}
+					stopsData={stopsListContext.data.filtered_fc}
+				/>
 			</MapView>
 		</div>
 	);

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import styles from './styles.module.css';
 
 /* * */
@@ -15,7 +13,7 @@ interface LeftProps {
 
 /* * */
 
-export default function Left({ _id, latitude, longitude, name }: LeftProps) {
+export function Left({ _id, latitude, longitude, name }: LeftProps) {
 	//
 
 	//

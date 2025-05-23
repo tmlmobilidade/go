@@ -7,6 +7,20 @@ const nextConfig: NextConfig = {
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
+	images: {
+		remotePatterns: [
+			{
+				hostname: '*.carrismetropolitana.pt',
+				port: '',
+				protocol: 'https',
+			},
+			{
+				hostname: '*.cloudflarestorage.com',
+				port: '',
+				protocol: 'https',
+			},
+		],
+	},
 	output: 'standalone',
 	reactStrictMode: true,
 	async redirects() {

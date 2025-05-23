@@ -1,6 +1,6 @@
-.text_area {}
+.textArea {}
 
-.text_area>div>textarea {
+.textArea>div>textarea {
     height: 10vh;
     padding: 7px 15px;
 }

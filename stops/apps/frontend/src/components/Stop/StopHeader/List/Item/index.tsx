@@ -1,10 +1,6 @@
 'use client';
 
-/* * */
-
 import { IconChevronRight } from '@tabler/icons-react';
-
-/* * */
 
 import styles from './styles.module.css';
 
@@ -16,7 +12,7 @@ interface ItemProps {
 
 /* * */
 
-export default function Item({ id }: ItemProps) {
+export function Item({ id }: ItemProps) {
 	//
 
 	//
