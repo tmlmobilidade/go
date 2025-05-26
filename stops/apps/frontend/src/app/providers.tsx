@@ -1,5 +1,6 @@
 'use client';
 
+import { LinesContextProvider } from '@/contexts/Lines.context';
 /* * */
 
 import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
@@ -34,11 +35,13 @@ export function Providers({ children }: PropsWithChildren) {
 	return (
 		<SWRConfig value={swrSettings}>
 			<StopsContextProvider>
-				<MapOptionsContextProvider>
-					<MapProvider>
-						{children}
-					</MapProvider>
-				</MapOptionsContextProvider>
+				<LinesContextProvider>
+					<MapOptionsContextProvider>
+						<MapProvider>
+							{children}
+						</MapProvider>
+					</MapOptionsContextProvider>
+				</LinesContextProvider>
 			</StopsContextProvider>
 		</SWRConfig>
 	);

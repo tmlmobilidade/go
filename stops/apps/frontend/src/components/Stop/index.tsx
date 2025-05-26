@@ -21,6 +21,7 @@ import { StopMedia } from './StopMedia';
 import { StopObservations } from './StopObservations';
 import { StopPublicInformation } from './StopPublicInformation';
 import { StopShelter } from './StopShelter';
+import { useLinesContext } from '@/contexts/Lines.context';
 
 /* * */
 
@@ -36,8 +37,10 @@ export default function Stop({ paramId }: StopProps) {
 	//
 	// A. Setup variables
 
+	// const linesContext = useLinesContext();
 	const { actions: { getStopById } } = useStopsContext();
 	const { actions, data, flags } = useStopsDetailContext();
+	// console.log("linesContext", linesContext);
 
 	//
 	// B. Render components
