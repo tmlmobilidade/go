@@ -45,7 +45,7 @@ export function SearchBar({ data, setQueryString }) {
 		const headerLine = keys.join(', ') + "\n";
 		const valuesLines = data.stops.map((stop) => Object.values(stop).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
-		
+
 		const blob = new Blob([textContent], { type: 'application/txt' });
 		const url = URL.createObjectURL(blob);
 
@@ -57,13 +57,49 @@ export function SearchBar({ data, setQueryString }) {
 		URL.revokeObjectURL(url); // Clean up
 	};
 
+	const downloadStopsEsri = () => {
+		// Header Line
+		const keys = Object.keys(data.stops[0]);
+		let headerLine = keys.join(', ') + "\n";
+		headerLine = headerLine.replace('_id', 'stop_id');
+		headerLine = headerLine.replace('name', 'stop_name');
+		headerLine = headerLine.replace('short_name', 'stop_short_name');
+		headerLine = headerLine.replace('tts_name', 'stop_tts_name');
+		headerLine = headerLine.replace('latitude', 'stop_lat, y');
+		headerLine = headerLine.replace('longitude', 'stop_lon, x');
+		
+		// Values Lines
+		let valuesLines = "";
+		for (let stop of data.stops) {
+			for (let key in stop) {
+				valuesLines += stop[key] + ', ';
+				if (key === 'latitude' || key === 'longitude') {
+					valuesLines += stop[key] + ', ';
+				}
+			}
+			valuesLines += '\n';
+		}
+
+		const textContent = headerLine + valuesLines;
+
+		const blob = new Blob([textContent], { type: 'application/txt' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'esri.txt';
+		link.click();
+
+		URL.revokeObjectURL(url); // Clean up
+	};
+
 	const items = [
 		{ onClick: () => handleNewStop(), title: '+ Nova Paragem' },
 		{ onClick: () => downloadStopsJson(), title: 'Exportar stops.json' },
 		{ onClick: () => downloadStopsTxt(), title: 'Exportar stops.txt' },
 		// { href: '#', title: 'Exportar deleted_stops.txt' },
 		// { href: '#', title: 'Exportar Linhas por Paragem' },
-		// { href: '#', title: 'Exportar para ESRI' },
+		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
 	].map((item, index) => (
 		<Anchor key={index} onClick={item.onClick}>
 			{item.title}
