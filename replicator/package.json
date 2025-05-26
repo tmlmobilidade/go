@@ -25,7 +25,7 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "npm@11.3.0",
+	"packageManager": "npm@11.4.1",
 	"engines": {
 		"node": ">=18"
 	}

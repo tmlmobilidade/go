@@ -17,7 +17,7 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/interfaces": "20250513.1857.29",
+		"@tmlmobilidade/interfaces": "20250526.1103.45",
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
 		"@tmlmobilidade/sae-replicator-pckg-sync": "*",
 		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
@@ -25,8 +25,8 @@
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250513.1857.29",
-		"@types/node": "22.15.17",
+		"@tmlmobilidade/tsconfig": "20250526.1103.45",
+		"@types/node": "22.15.21",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.4",
 		"typescript": "5.8.3"
