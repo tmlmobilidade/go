@@ -298,7 +298,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const getImages = async () => {
-		console.log('-> getImages');
 		if (!stopId || stopId === 'new') {
 			console.error('Invalid stopId provided');
 			return;
@@ -319,7 +318,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			}
 
 			const { data: imageUrls } = await response.json();
-			console.log('Retrieved images:', imageUrls);
 
 			useToast.success({
 				message: 'Imagens carregadas com sucesso',
@@ -337,7 +335,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const getFiles = async () => {
-		console.log('-> getFiles');
 		if (!stopId || stopId === 'new') {
 			console.error('Invalid stopId provided');
 			return;
@@ -358,7 +355,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			}
 
 			const { data: fileUrls } = await response.json();
-			console.log('Retrieved files:', fileUrls);
 
 			useToast.success({
 				message: 'Ficheiros carregadas com sucesso',
