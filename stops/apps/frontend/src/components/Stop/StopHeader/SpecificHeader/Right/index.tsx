@@ -38,7 +38,7 @@ export function Right({ actions, data, open }) {
 			</Link>
 
 			{/* Create New Button */}
-			<Link href={Routes.STOP_DETAIL('new')}>
+			{/* <Link href={Routes.STOP_DETAIL('new')}>
 				<Tooltip label="Criar Paragem" position="bottom">
 					<ActionIcon
 						className={styles.iconBlue}
@@ -47,7 +47,7 @@ export function Right({ actions, data, open }) {
 						<IconPlus />
 					</ActionIcon>
 				</Tooltip>
-			</Link>
+			</Link> */}
 			{/* Save Button */}
 			<Tooltip label="Salvar Paragem" position="bottom">
 				<div

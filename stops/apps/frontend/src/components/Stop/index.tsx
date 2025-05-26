@@ -53,7 +53,7 @@ export default function Stop({ paramId }: StopProps) {
 						? (
 							<Pane header={[<StopHeader actions={actions} data={data} generic={false} />]}>
 								{/* <StopMap generic={false} /> */}
-								<StopsListViewMap data={data}getStopById={getStopById} />
+								<StopsListViewMap data={data} getStopById={getStopById} />
 								<StopDetails data={data} />
 								<StopAdminInformation data={data} />
 								{/* <StopAffectation /> */}

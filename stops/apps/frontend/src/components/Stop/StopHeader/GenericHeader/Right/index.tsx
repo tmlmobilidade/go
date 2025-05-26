@@ -27,9 +27,9 @@ export function Right({ setToggleValue, toggleValue }: RightProps) {
 	return (
 		<div className={styles.section}>
 			{/* Patterns Butoon */}
-			<Button className={styles.button} onClick={() => setToggleValue()}>
+			{/* <Button className={styles.button} onClick={() => setToggleValue()}>
 				{toggleValue}
-			</Button>
+			</Button> */}
 
 			{/* Stop Button */}
 			<Link href="https://www.google.com/maps/@38.6512317,-8.8813723,10z" target="_blank">
@@ -45,7 +45,7 @@ export function Right({ setToggleValue, toggleValue }: RightProps) {
 			</Link>
 
 			{/* Save Button */}
-			<Link href={Routes.STOP_DETAIL('new')}>
+			{/* <Link href={Routes.STOP_DETAIL('new')}>
 				<Tooltip label="Criar Paragem" position="bottom">
 					<ActionIcon
 						className={styles.icon}
@@ -54,7 +54,7 @@ export function Right({ setToggleValue, toggleValue }: RightProps) {
 						<IconPlus />
 					</ActionIcon>
 				</Tooltip>
-			</Link>
+			</Link> */}
 		</div>
 	);
 }

@@ -7,6 +7,7 @@ import { Footer } from './Footer';
 import { List } from './List';
 import { SearchBar } from './SearchBar';
 import styles from './styles.module.css';
+import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,10 +20,10 @@ export function Navigation() {
 	const { queryString, setQueryString } = useSearchbarContext();
 
 	return (
-		<div className={styles.container}>
+		<Pane>
 			<SearchBar data={data} setQueryString={setQueryString} />
 			<List data={data} flags={flags} queryString={queryString} />
 			<Footer />
-		</div>
+		</Pane>
 	);
 }

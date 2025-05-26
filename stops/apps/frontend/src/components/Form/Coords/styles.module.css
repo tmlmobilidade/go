@@ -1,0 +1,30 @@
+.container {
+    align-self: center;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-spacing-md);
+}
+
+.subSection {
+    display: flex;
+    flex-direction: row;
+    /* gap: var(--size-spacing-md); */
+    justify-content: center;
+}
+
+.subSectionRed {
+    display: flex;
+    flex-direction: row;
+    gap: var(--size-spacing-md);
+    justify-content: center;
+    color: #F95252;
+}
+
+.button {
+    background-color: #1964AB;
+    border-color: #1964AB;
+    box-shadow: none;
+}

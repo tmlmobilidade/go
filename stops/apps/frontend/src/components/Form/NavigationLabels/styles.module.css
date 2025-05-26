@@ -1,0 +1,12 @@
+.container {
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    gap: var(--size-spacing-md);
+}
+
+.button {
+    background-color: #1964AB;
+    border-color: #1964AB;
+    box-shadow: none;
+}

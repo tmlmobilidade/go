@@ -24,6 +24,7 @@ export function SearchBar({ data, setQueryString }) {
 	// B. Transform data
 
 	const handleNewStop = () => {
+		console.log('New Stop');
 		router.push(Routes.STOP_DETAIL('new'));
 	}
 
@@ -67,7 +68,7 @@ export function SearchBar({ data, setQueryString }) {
 		headerLine = headerLine.replace('tts_name', 'stop_tts_name');
 		headerLine = headerLine.replace('latitude', 'stop_lat, y');
 		headerLine = headerLine.replace('longitude', 'stop_lon, x');
-		
+
 		// Values Lines
 		let valuesLines = "";
 		for (let stop of data.stops) {
@@ -97,8 +98,9 @@ export function SearchBar({ data, setQueryString }) {
 		{ onClick: () => handleNewStop(), title: '+ Nova Paragem' },
 		{ onClick: () => downloadStopsJson(), title: 'Exportar stops.json' },
 		{ onClick: () => downloadStopsTxt(), title: 'Exportar stops.txt' },
-		// { href: '#', title: 'Exportar deleted_stops.txt' },
-		// { href: '#', title: 'Exportar Linhas por Paragem' },
+		{ onClick: () => alert("deleted_stops.json"), title: 'Exportar deleted_stops.json' },
+		{ onClick: () => alert("deleted_stops.txt"), title: 'Exportar deleted_stops.txt' },
+		{ onClick: () => alert("linhas"), title: 'Exportar Linhas por Paragem' },
 		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
 	].map((item, index) => (
 		<Anchor key={index} onClick={item.onClick}>

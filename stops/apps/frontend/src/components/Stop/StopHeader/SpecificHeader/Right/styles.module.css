@@ -46,11 +46,11 @@
 }
 
 .iconBlue>svg {
-    stroke: #74c0fc;
+    stroke: #1E4B96;
 }
 
 .iconBlue:hover {
-    background-color: #253B53;
+    background-color: #253A53;
 }
 
 .iconGreen {

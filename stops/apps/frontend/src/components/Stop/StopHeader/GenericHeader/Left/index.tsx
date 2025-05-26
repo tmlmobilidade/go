@@ -16,11 +16,11 @@ export function Left() {
 	return (
 		<div className={styles.section}>
 			{/* Re-Center Map Button */}
-			<Tooltip label="Re-center Map" position="bottom">
+			{/* <Tooltip label="Re-center Map" position="bottom">
 				<div className={styles.icon}>
 					<IconArrowsMinimize />
 				</div>
-			</Tooltip>
+			</Tooltip> */}
 
 			{/* Label */}
 			<h3>All Stops</h3>
