@@ -11,8 +11,9 @@ export function Confirmation({ data }) {
     return (
         <div className={styles.container}>
             <div>{data.form.getValues().name}</div>
-            <div className={styles.location}>{data.form.getValues().locality_id}, {data.form.getValues().municipality}</div>
-            <div className={styles.coords}>{data.form.getValues().lat}, {data.form.getValues().lon}</div>
+            <div className={styles.location}>{data.form.getValues().municipality}</div>
+            {/* <div className={styles.location}>{data.form.getValues().locality_id}, {data.form.getValues().municipality}</div> */}
+            <div className={styles.coords}>{data.form.getValues().latitude}, {data.form.getValues().longitude}</div>
         </div>
     );
 }

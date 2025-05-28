@@ -7,6 +7,7 @@ import { StopsDetailContextProvider } from '@/contexts/StopsDetail.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
 import styles from './styles.module.css';
+import { PanesManager } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,15 +19,20 @@ export default function Page() {
 	// B. Render components
 
 	return (
-		<div className={styles.container}>
-			<StopsListContextProvider>
-				<SearchbarContextProvider>
-					<Navigation />
-				</SearchbarContextProvider>
-			</StopsListContextProvider>
-			<StopsDetailContextProvider stopId={null}>
-				<Stop paramId={null} />
-			</StopsDetailContextProvider>
-		</div>
+		<PanesManager
+			panes={[
+				<div className={styles.container}>
+					<StopsListContextProvider>
+						<SearchbarContextProvider>
+							<Navigation />
+						</SearchbarContextProvider>
+					</StopsListContextProvider>
+					<StopsDetailContextProvider stopId={null}>
+						<Stop paramId={null} />
+					</StopsDetailContextProvider>
+				</div>
+			]}
+		/>
+
 	);
 }

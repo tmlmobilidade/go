@@ -62,13 +62,13 @@ export function Identification({ data }) {
                 </Button>
             </Tooltip>
 
-            <TextInput
+            {/* <TextInput
                 label="Localidade da Paragem"
                 description="Introduza uma localidade para esta paragem."
                 maxLength={255}
                 placeholder="Bairro das Maçãs"
                 {...data.form.getInputProps('locality_id')}
-            />
+            /> */}
         </div>
     );
 }

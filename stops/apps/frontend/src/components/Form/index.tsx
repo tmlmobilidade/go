@@ -21,15 +21,15 @@ enum Phase {
 }
 
 export function Form() {
-    const [opened, { _open, _close }] = useDisclosure(true);
+    // const [opened, { _open, _close }] = useDisclosure(true);
+    const [opened] = useDisclosure(true);
     const { actions: { getStopById } } = useStopsContext();
     const router = useRouter();
-    const [lat, _setLat] = useState(1);
-    const [lon, _setLon] = useState(1);
 
     const [phase, setPhase] = useState<Phase>(Phase.LOCATION);
     const { actions, data, flags } = useStopsDetailContext();
-
+    console.log("lat", data.form.getValues().latitude)
+    console.log("lon", data.form.getValues().longitude)
     // A. Render components
     return (
         <div>
@@ -38,17 +38,13 @@ export function Form() {
                 <Pane>
                     <div className={styles.container}>
                         <NavigationLabels phase={phase} />
-                        {phase === Phase.LOCATION && <Location getStopById={getStopById} data={data} lat={lat} lon={lon} />}
+                        {phase === Phase.LOCATION && <Location getStopById={getStopById} data={data} />}
                         {phase === Phase.IDENTIFICATION && <Identification data={data} />}
                         {phase === Phase.CONFIRMATION && <Confirmation data={data} />}
-                        <NavigationButtons actions={actions} phase={phase} setPhase={setPhase} lat={lat} lon={lon} data={data} />
+                        <NavigationButtons actions={actions} phase={phase} setPhase={setPhase} data={data} />
                     </div>
                 </Pane>
             </Modal>
-
-            {/* <Button variant="default" onClick={open}>
-                Open modal
-            </Button> */}
         </div>
     );
 }

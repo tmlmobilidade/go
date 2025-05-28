@@ -13,7 +13,7 @@ enum Phase {
     CONFIRMATION = "CONFIRMATION"
 }
 
-export function NavigationButtons({ actions, phase, setPhase, lat, lon, data }) {
+export function NavigationButtons({ actions, phase, setPhase, data }) {
     const router = useRouter();
     console.log("phase", phase)
     // A. Render components
@@ -39,13 +39,14 @@ export function NavigationButtons({ actions, phase, setPhase, lat, lon, data }) 
 
 
             {phase === Phase.LOCATION &&
-                <Button className={styles.button} onClick={() => setPhase(Phase.IDENTIFICATION)} disabled={lat === 0 || lon === 0}>
+                <Button className={styles.button} onClick={() => setPhase(Phase.IDENTIFICATION)} disabled={data.form.getValues().latitude === 0 || data.form.getValues().longitude === 0}>
                     Avançar
                 </Button>
             }
 
             {phase === Phase.IDENTIFICATION &&
-                <Button className={styles.button} onClick={() => setPhase(Phase.CONFIRMATION)} disabled={data.form.getValues()._id === "temp" || data.form.getValues().name === 'temp' || data.form.getValues().short_name === "temp" || data.form.getValues().locality_id === "temp"}>
+                <Button className={styles.button} onClick={() => setPhase(Phase.CONFIRMATION)} disabled={data.form.getValues()._id === "temp" || data.form.getValues().name === 'temp' || data.form.getValues().short_name === "temp"}>
+                {/* <Button className={styles.button} onClick={() => setPhase(Phase.CONFIRMATION)} disabled={data.form.getValues()._id === "temp" || data.form.getValues().name === 'temp' || data.form.getValues().short_name === "temp" || data.form.getValues().locality_id === "temp"}> */}
                     Avançar
                 </Button>
             }

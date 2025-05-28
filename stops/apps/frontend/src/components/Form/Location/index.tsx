@@ -3,16 +3,17 @@
 import React from 'react';
 import { StopsListViewMap } from '@/components/Stop/StopMap';
 import { Coords } from '../Coords';
+import styles from './styles.module.css';
 
-export function Location({ getStopById, data, lon, lat }) {
+export function Location({ getStopById, data }) {
     //
 
     //
     // A. Render components
     return (
-        <div>
+        <div className={styles.container}>
             <StopsListViewMap data={data} getStopById={getStopById} />
-            <Coords lat={lat} lon={lon} municipality={"Lisboa"} />
+            <Coords latitude={data.form.getValues().latitude} longitude={data.form.getValues().longitude} municipality={"Lisboa"} />
         </div>
     );
 }

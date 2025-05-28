@@ -5,7 +5,7 @@ import { StopsDetailContextProvider } from '@/contexts/StopsDetail.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 
 import styles from './styles.module.css';
-import { useDisclosure } from '@tmlmobilidade/ui';
+import { PanesManager, useDisclosure } from '@tmlmobilidade/ui';
 import { Form } from '@/components/Form';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -13,25 +13,29 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
 	console.log('id', id);
 	return (
-		<div className={styles.container}>
-			{id === 'new' ? (
-				<StopsListContextProvider>
-					<StopsDetailContextProvider stopId={id}>
-						<Form />
-					</StopsDetailContextProvider>
-				</StopsListContextProvider>
-			) : (
-				<>
-					<StopsListContextProvider>
-						<SearchbarContextProvider>
-							<Navigation />
-						</SearchbarContextProvider>
-					</StopsListContextProvider>
-					<StopsDetailContextProvider stopId={id}>
-						<Stop paramId={id} />
-					</StopsDetailContextProvider>
-				</>
-			)}
-		</div>
+		<PanesManager
+			panes={[
+				<div className={styles.container}>
+					{id === 'new' ? (
+						<StopsListContextProvider>
+							<StopsDetailContextProvider stopId={id}>
+								<Form />
+							</StopsDetailContextProvider>
+						</StopsListContextProvider>
+					) : (
+						<>
+							<StopsListContextProvider>
+								<SearchbarContextProvider>
+									<Navigation />
+								</SearchbarContextProvider>
+							</StopsListContextProvider>
+							<StopsDetailContextProvider stopId={id}>
+								<Stop paramId={id} />
+							</StopsDetailContextProvider>
+						</>
+					)}
+				</div>
+			]}
+		/>
 	);
 }
