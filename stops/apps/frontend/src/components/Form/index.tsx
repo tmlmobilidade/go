@@ -39,7 +39,7 @@ export function Form() {
                     <div className={styles.container}>
                         <NavigationLabels phase={phase} />
                         {phase === Phase.LOCATION && <Location getStopById={getStopById} data={data} lat={lat} lon={lon} />}
-                        {phase === Phase.IDENTIFICATION && <Identification />}
+                        {phase === Phase.IDENTIFICATION && <Identification data={data} />}
                         {phase === Phase.CONFIRMATION && <Confirmation />}
                         <NavigationButtons actions={actions} phase={phase} setPhase={setPhase} />
                     </div>
