@@ -111,6 +111,7 @@ export default function CreateValidationModal() {
 			<Button
 				disabled={!validationDetailContext.flags.canSave || validationDetailContext.flags.isSaving}
 				label="Criar validação"
+				loading={validationDetailContext.flags.isSaving}
 				onClick={validationDetailContext.actions.saveValidation}
 				variant="primary"
 				fullWidth
