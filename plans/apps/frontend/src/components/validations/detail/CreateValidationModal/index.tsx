@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-const MODAL_ID = 'create-validation-modal';
+export const CREATE_VALIDATION_MODAL_ID = 'create-validation-modal';
 
 export const OpenCreateValidationModal = () => {
 	openModal({
@@ -17,7 +17,7 @@ export const OpenCreateValidationModal = () => {
 				<CreateValidationModal />
 			</ValidationDetailContextProvider>
 		),
-		modalId: MODAL_ID,
+		modalId: CREATE_VALIDATION_MODAL_ID,
 		size: 'auto',
 		withCloseButton: false,
 	});
@@ -107,7 +107,7 @@ export default function CreateValidationModal() {
 
 	const renderActionButtons = () => (
 		<Grid columns="ab" gap="md">
-			<Button label="Cancelar" onClick={() => closeModal(MODAL_ID)} variant="danger" fullWidth />
+			<Button label="Cancelar" onClick={() => closeModal(CREATE_VALIDATION_MODAL_ID)} variant="danger" fullWidth />
 			<Button
 				disabled={!validationDetailContext.flags.canSave || validationDetailContext.flags.isSaving}
 				label="Criar validação"
