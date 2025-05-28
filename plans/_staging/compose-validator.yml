@@ -46,5 +46,7 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
+    environment:
+      - GOMEMLIMIT=8GiB
     env_file:
       - ./secrets/.env
