@@ -40,8 +40,8 @@ export function Form() {
                         <NavigationLabels phase={phase} />
                         {phase === Phase.LOCATION && <Location getStopById={getStopById} data={data} lat={lat} lon={lon} />}
                         {phase === Phase.IDENTIFICATION && <Identification data={data} />}
-                        {phase === Phase.CONFIRMATION && <Confirmation />}
-                        <NavigationButtons actions={actions} phase={phase} setPhase={setPhase} />
+                        {phase === Phase.CONFIRMATION && <Confirmation data={data} />}
+                        <NavigationButtons actions={actions} phase={phase} setPhase={setPhase} lat={lat} lon={lon} data={data} />
                     </div>
                 </Pane>
             </Modal>

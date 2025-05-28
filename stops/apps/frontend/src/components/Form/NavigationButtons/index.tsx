@@ -13,7 +13,7 @@ enum Phase {
     CONFIRMATION = "CONFIRMATION"
 }
 
-export function NavigationButtons({ actions, phase, setPhase }) {
+export function NavigationButtons({ actions, phase, setPhase, lat, lon, data }) {
     const router = useRouter();
     console.log("phase", phase)
     // A. Render components
@@ -39,13 +39,13 @@ export function NavigationButtons({ actions, phase, setPhase }) {
 
 
             {phase === Phase.LOCATION &&
-                <Button className={styles.button} onClick={() => setPhase(Phase.IDENTIFICATION)}>
+                <Button className={styles.button} onClick={() => setPhase(Phase.IDENTIFICATION)} disabled={lat === 0 || lon === 0}>
                     Avançar
                 </Button>
             }
 
             {phase === Phase.IDENTIFICATION &&
-                <Button className={styles.button} onClick={() => setPhase(Phase.CONFIRMATION)}>
+                <Button className={styles.button} onClick={() => setPhase(Phase.CONFIRMATION)} disabled={data.form.getValues()._id === "temp" || data.form.getValues().name === 'temp' || data.form.getValues().short_name === "temp" || data.form.getValues().locality_id === "temp"}>
                     Avançar
                 </Button>
             }
