@@ -185,7 +185,6 @@ export function StopDetails({ data }) {
 							maxLength={255}
 							placeholder="Rua Marquês de Pombal Porta Oito"
 							{...data.form.getInputProps('tts_name')}
-							disabled
 						/>
 
 						<Tooltip label="Text to Speech" position="bottom">

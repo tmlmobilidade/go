@@ -16,7 +16,7 @@
     font-size: 11px;
     font-weight: 600;
     line-height: 1;
-    color: #c1c2c5;
+    color: var(--color-system-text-100);
     letter-spacing: 1px;
     border: 1px solid #5c5f66;
     border-radius: var(--mantine-spacing-xs);
@@ -28,7 +28,7 @@
     font-size: 11px;
     font-weight: 600;
     line-height: 1;
-    color: #c1c2c5;
+    color: var(--color-system-text-100);
     letter-spacing: 1px;
     border: 1px solid #5c5f66;
     border-radius: var(--mantine-spacing-xs);

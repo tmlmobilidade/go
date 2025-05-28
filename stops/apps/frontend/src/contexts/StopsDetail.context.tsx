@@ -33,17 +33,17 @@ export enum StopsDetailMode {
 
 interface StopsDetailContextState {
 	actions: {
+		deleteFile: (fileId: string) => void
+		deleteImage: (imageId: string) => void
 		// addReference: () => void
 		deleteStop: () => void
+		getFiles: (stopId: string) => void
+		getImages: (stopId: string) => void
 		handleCommentsChange: (userId: string, text: string) => void
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
-		handleImageChange: (file: File) => void
-		deleteImage: (imageId: string) => void
-		getImages: (stopId: string) => void
 		handleFileChange: (file: File) => void
-		deleteFile: (fileId: string) => void
-		getFiles: (stopId: string) => void
+		handleImageChange: (file: File) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
 		saveStop: () => void
@@ -63,7 +63,6 @@ interface StopsDetailContextState {
 	}
 }
 
-// @ts-ignore
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
 	// affectation: [],
@@ -274,7 +273,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const deleteStop = async () => {
-		// console.log('-> deleteStop');
 		if (stopId === 'new') return;
 
 		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'DELETE', stop);
@@ -325,7 +323,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			});
 
 			return imageUrls;
-		} catch (error) {
+		}
+		catch (error) {
 			console.error('Error fetching images:', error);
 			useToast.error({
 				message: 'Erro ao carregar imagens',
@@ -362,7 +361,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			});
 
 			return fileUrls;
-		} catch (error) {
+		}
+		catch (error) {
 			console.error('Error fetching ficheiros:', error);
 			useToast.error({
 				message: 'Erro ao carregar ficheiros',
@@ -391,7 +391,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	const deleteImage = async (imageId: string) => {
 		if (stopId === 'new') return;
-		
+
 		console.log('-> deleteImage', imageId);
 		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}/${imageId}`, 'DELETE', stop);
 		console.log('-> ==> response', response);
@@ -414,7 +414,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	;
 	const deleteFile = async (fileId: string) => {
 		if (stopId === 'new') return;
-		
+
 		console.log('-> deleteFile', fileId);
 		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_FILE(stopId)}/${fileId}`, 'DELETE', stop);
 		console.log('-> ==> response', response);
@@ -505,13 +505,13 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		setIsSaving(false);
 	};
 
-	const handleConnectionsChange = (connections: string) => {
+	const handleConnectionsChange = (connections: 'airport' | 'bike_parking' | 'bike_sharing' | 'boat' | 'car_parking' | 'ferry' | 'light_rail' | 'subway' | 'train') => {
 		// console.log('-> handleConnectionsChange');
 		const newConnections = form.values.connections.includes(connections) ? form.values.connections.filter(c => c !== connections) : [...form.values.connections, connections];
 		form.setFieldValue('connections', newConnections);
 	};
 
-	const handleFacilitiesChange = (facilities: string) => {
+	const handleFacilitiesChange = (facilities: 'fire_station' | 'health_clinic' | 'historic_building' | 'hospital' | 'pip' | 'police_station' | 'school' | 'shopping' | 'transit_office' | 'university') => {
 		// console.log('-> handleFacilitiesChange');
 		const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
 		form.setFieldValue('facilities', newFacilities);
@@ -527,7 +527,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		form.values.comments.push({
 			_id: generateRandomId(),
 			text: text,
-			user_id: userId
+			user_id: userId,
 		});
 		form.setFieldValue('comments', form.values.comments);
 	};
@@ -538,13 +538,13 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		return {
 			actions: {
 				// addReference,
-				deleteStop,
-				handleImageChange,
-				getImages,
-				deleteImage,
-				handleFileChange,
-				getFiles,
 				deleteFile,
+				deleteImage,
+				deleteStop,
+				getFiles,
+				getImages,
+				handleFileChange,
+				handleImageChange,
 				// removeReference,
 				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 				handleCommentsChange,

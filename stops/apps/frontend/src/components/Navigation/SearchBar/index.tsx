@@ -1,13 +1,13 @@
 'use client';
 
+import { Routes } from '@/lib/routes';
 import { Anchor, Breadcrumbs } from '@mantine/core';
 import { IconDots } from '@tabler/icons-react';
 import { TextInput } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
-import { Routes } from '@/lib/routes';
-import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -26,7 +26,7 @@ export function SearchBar({ data, setQueryString }) {
 	const handleNewStop = () => {
 		console.log('New Stop');
 		router.push(Routes.STOP_DETAIL('new'));
-	}
+	};
 
 	const downloadStopsJson = () => {
 		const jsonStr = JSON.stringify(data.stops, null, 2);
@@ -43,8 +43,8 @@ export function SearchBar({ data, setQueryString }) {
 
 	const downloadStopsTxt = () => {
 		const keys = Object.keys(data.stops[0]);
-		const headerLine = keys.join(', ') + "\n";
-		const valuesLines = data.stops.map((stop) => Object.values(stop).join(', ')).join('\n');
+		const headerLine = keys.join(', ') + '\n';
+		const valuesLines = data.stops.map(stop => Object.values(stop).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
 
 		const blob = new Blob([textContent], { type: 'application/txt' });
@@ -61,7 +61,7 @@ export function SearchBar({ data, setQueryString }) {
 	const downloadStopsEsri = () => {
 		// Header Line
 		const keys = Object.keys(data.stops[0]);
-		let headerLine = keys.join(', ') + "\n";
+		let headerLine = keys.join(', ') + '\n';
 		headerLine = headerLine.replace('_id', 'stop_id');
 		headerLine = headerLine.replace('name', 'stop_name');
 		headerLine = headerLine.replace('short_name', 'stop_short_name');
@@ -70,9 +70,9 @@ export function SearchBar({ data, setQueryString }) {
 		headerLine = headerLine.replace('longitude', 'stop_lon, x');
 
 		// Values Lines
-		let valuesLines = "";
-		for (let stop of data.stops) {
-			for (let key in stop) {
+		let valuesLines = '';
+		for (const stop of data.stops) {
+			for (const key in stop) {
 				valuesLines += stop[key] + ', ';
 				if (key === 'latitude' || key === 'longitude') {
 					valuesLines += stop[key] + ', ';
@@ -98,9 +98,9 @@ export function SearchBar({ data, setQueryString }) {
 		{ onClick: () => handleNewStop(), title: '+ Nova Paragem' },
 		{ onClick: () => downloadStopsJson(), title: 'Exportar stops.json' },
 		{ onClick: () => downloadStopsTxt(), title: 'Exportar stops.txt' },
-		{ onClick: () => alert("deleted_stops.json"), title: 'Exportar deleted_stops.json' },
-		{ onClick: () => alert("deleted_stops.txt"), title: 'Exportar deleted_stops.txt' },
-		{ onClick: () => alert("linhas"), title: 'Exportar Linhas por Paragem' },
+		{ onClick: () => alert('deleted_stops.json'), title: 'Exportar deleted_stops.json' },
+		{ onClick: () => alert('deleted_stops.txt'), title: 'Exportar deleted_stops.txt' },
+		{ onClick: () => alert('linhas'), title: 'Exportar Linhas por Paragem' },
 		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
 	].map((item, index) => (
 		<Anchor key={index} onClick={item.onClick}>
