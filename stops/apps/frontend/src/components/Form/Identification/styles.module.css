@@ -1,8 +1,8 @@
 .container {
+    align-self: center;
     display: flex;
     flex-direction: column;
     gap: var(--size-spacing-md);
-    height: 700px;
-    justify-content: space-between;
-    padding: var(--size-spacing-md);
+    justify-content: center;
+    align-items: center;
 }

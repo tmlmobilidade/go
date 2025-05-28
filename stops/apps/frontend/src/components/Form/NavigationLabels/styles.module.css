@@ -5,8 +5,19 @@
     gap: var(--size-spacing-md);
 }
 
-.button {
-    background-color: #1964AB;
-    border-color: #1964AB;
-    box-shadow: none;
+.section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-spacing-md);
+    padding: var(--size-spacing-md);
+}
+
+.active {
+    border: 2px solid #1964AB;
+    border-radius: 21px;
+}
+
+.description {
+    color: #828282;
 }

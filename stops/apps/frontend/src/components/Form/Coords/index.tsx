@@ -24,7 +24,7 @@ export function Coords({ lat, lon, municipality }: { lat: number; lon: number, m
             {lat && lon ? (
                 municipality ? (
                     <div className={styles.section}>
-                        <div>{municipality}</div>
+                        <div className={styles.subSection}>#01 {municipality}</div>
                         <div className={styles.subSection}>
                             <Button className={styles.button} onClick={() => {
                                 navigator.clipboard.writeText(lat.toString())
@@ -46,10 +46,26 @@ export function Coords({ lat, lon, municipality }: { lat: number; lon: number, m
                                 {copiedLon ? "Longitude Copiada" : `Lon: ${lon}`}
                             </Button>
                         </div>
-                        <div>
-                            <div>Copiar Coordenadas</div>
-                            <div>Abrir no Google Maps</div>
-                            <div>Abrir no Street View</div>
+                        <div className={styles.subSection}>
+                            <Link href={`https://www.google.com/maps/@${lat},${lon}`} target="_blank">
+                                <Tooltip label="Copiar Coordenadas" position="bottom">
+                                    <ActionIcon
+                                        variant="secondary"
+                                        onClick={() => copyToClipboard()}
+                                    >
+                                        <IconCopy />
+                                    </ActionIcon>
+                                </Tooltip>
+                            </Link>
+                            <Link href={`https://www.google.com/maps/@${lat},${lon}`} target="_blank">
+                                <Tooltip label="Abrir no Google Maps" position="bottom">
+                                    <ActionIcon
+                                        variant="secondary"
+                                    >
+                                        <IconMap />
+                                    </ActionIcon>
+                                </Tooltip>
+                            </Link>
                         </div>
                     </div>
                 ) : (
@@ -96,16 +112,6 @@ export function Coords({ lat, lon, municipality }: { lat: number; lon: number, m
                                     </ActionIcon>
                                 </Tooltip>
                             </Link>
-                            {/* <Link href={`https://www.google.com/maps/@${lat},${lon}`} target="_blank">
-                                <Tooltip label="Abrir no Street View" position="bottom">
-                                    <ActionIcon
-                                        variant="secondary"
-                                    >
-                                        <IconMap />
-                                    </ActionIcon>
-                                </Tooltip>
-                            </Link> */}
-                            {/* <div>Abrir no Google Maps</div> */}
                         </div>
                     </div>)
 
