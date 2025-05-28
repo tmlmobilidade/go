@@ -110,7 +110,6 @@ const emptyStop: CreateStopDto = {
 const StopsDetailContext = createContext<StopsDetailContextState | undefined>(undefined);
 
 export function useStopsDetailContext() {
-	// console.log('-> useStopsDetailContext');
 	const context = useContext(StopsDetailContext);
 	if (!context) {
 		throw new Error('useStopsDetailContext must be used within a StopsDetailContextProvider');
@@ -119,7 +118,8 @@ export function useStopsDetailContext() {
 }
 
 export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
-	// console.log('-> StopsDetailContextProvider');
+	//
+
 	//
 	// A. Setup variables
 	const router = useRouter();
@@ -174,16 +174,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		setLoading(false);
 	}, [stop]);
 
-	// useEffect(() => {
-	// 	console.log('-> UseEffect 2.1', loading);
-	// }, [loading]);
-
-	// useEffect(() => {
-	// 	console.log('-> UseEffect 2.2', flags);
-	// }, [stopsDetailContext.flags]);
-
 	useEffect(() => {
-		// console.log('-> UseEffect 3');
 		if (error) {
 			useToast.error({
 				message: error.message,
@@ -195,11 +186,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// Validate form on change
 	useEffect(() => {
-		// console.log('-> UseEffect 4');
 		form.validate();
 		setCanSave(form.isValid());
-
-		// console.log(form.errors);
 	}, [form.values]);
 
 	//
@@ -217,12 +205,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// const saveStop = async (type: 'draft' | 'publish') => {
 	const setActiveStopId = (stopId: string) => {
-		// console.log('-> setActiveStopId');
 		setDataActiveStopIdState(stopId);
 	};
 
 	const saveStop = async () => {
-		console.log('-> saveStop');
 		setIsSaving(true);
 
 		// Handle Save Stop
@@ -319,10 +305,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 			const { data: imageUrls } = await response.json();
 
-			useToast.success({
-				message: 'Imagens carregadas com sucesso',
-				title: 'Sucesso',
-			});
+			// useToast.success({
+			// 	message: 'Imagens carregadas com sucesso',
+			// 	title: 'Sucesso',
+			// });
 
 			return imageUrls;
 		}
@@ -357,10 +343,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 			const { data: fileUrls } = await response.json();
 
-			useToast.success({
-				message: 'Ficheiros carregadas com sucesso',
-				title: 'Sucesso',
-			});
+			// useToast.success({
+			// 	message: 'Ficheiros carregadas com sucesso',
+			// 	title: 'Sucesso',
+			// });
 
 			return fileUrls;
 		}
@@ -394,9 +380,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const deleteImage = async (imageId: string) => {
 		if (stopId === 'new') return;
 
-		console.log('-> deleteImage', imageId);
 		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}/${imageId}`, 'DELETE', stop);
-		console.log('-> ==> response', response);
+
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -417,9 +402,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const deleteFile = async (fileId: string) => {
 		if (stopId === 'new') return;
 
-		console.log('-> deleteFile', fileId);
 		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_FILE(stopId)}/${fileId}`, 'DELETE', stop);
-		console.log('-> ==> response', response);
+
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -447,8 +431,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		uploadFormData.append('File', image);
 
 		const response = await multipartFetch(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}`, uploadFormData);
-
-		console.log('-> ==> response', response);
 
 		if (response.error) {
 			useToast.error({

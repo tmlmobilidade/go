@@ -30,27 +30,27 @@ export class StopsController {
 		}
 	}
 
-	/**
-     * Deletes an stop by ID
-     * @param request Fastify request containing stop ID in params
-     * @param reply Fastify reply
-     */
-	static async delete(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
-			await stops.deleteById(id);
+	// /**
+	//  * Deletes an stop by ID
+	//  * @param request Fastify request containing stop ID in params
+	//  * @param reply Fastify reply
+	//  */
+	// static async delete(
+	// 	request: FastifyRequest<{ Params: { id: string } }>,
+	// 	reply: FastifyReply,
+	// ) {
+	// 	try {
+	// 		const { id } = request.params;
+	// 		await stops.deleteById(id);
 
-			reply.send({ message: `Stop with id: ${id} deleted` });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
+	// 		reply.send({ message: `Stop with id: ${id} deleted` });
+	// 	}
+	// 	catch (error) {
+	// 		reply
+	// 			.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+	// 			.send(error);
+	// 	}
+	// }
 
 	static async deleteFile(request: FastifyRequest<{ Params: { file_id: string, id: string } }>, reply: FastifyReply) {
 		try {
