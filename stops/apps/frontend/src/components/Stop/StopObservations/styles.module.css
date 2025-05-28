@@ -2,5 +2,5 @@
 
 .textArea>div>textarea {
     height: 10vh;
-    padding: 7px 15px;
+    padding: var(--size-spacing-xs) var(--size-spacing-md);
 }

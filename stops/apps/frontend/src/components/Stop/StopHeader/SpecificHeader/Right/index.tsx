@@ -1,7 +1,7 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
-import { IconDeviceFloppy, IconPlus, IconTrash, IconWorldUpload } from '@tabler/icons-react';
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
+import { IconDeviceFloppy, IconTrash, IconWorldUpload } from '@tabler/icons-react';
 import { ActionIcon, Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
@@ -10,11 +10,12 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export function Right({ actions, data, open }) {
+export function Right({ data, open }) {
 	//
 
 	//
 	// A. Render components
+	const { actions } = useStopsDetailContext();
 
 	return (
 		<div className={styles.section}>
@@ -63,9 +64,7 @@ export function Right({ actions, data, open }) {
 				<div
 					className={styles.iconBlue}
 					onClick={() => {
-						// actions.deleteStop();
-						data.form.setFieldValue('is_archived', true);
-						actions.saveStop();
+						actions.deleteStop();
 						redirect('/stops', RedirectType.replace);
 					}}
 				>

@@ -14,10 +14,10 @@
 }
 
 .active {
-    border: 2px solid #1964AB;
-    border-radius: 21px;
+    border: var(--size-spacing-xs) solid var(--color-status-active-primary);
+    border-radius: var(--border-radius-lg);
 }
 
 .description {
-    color: #828282;
+    color: var(--color-system-text-200);
 }

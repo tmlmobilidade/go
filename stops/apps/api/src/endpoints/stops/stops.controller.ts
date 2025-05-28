@@ -293,7 +293,6 @@ export class StopsController {
 		try {
 			const { id } = request.params;
 			const stopData = request.body as Partial<Stop>;
-			// const stopData = request.body as Partial<Stop>;
 
 			await stops.updateById(id, stopData);
 

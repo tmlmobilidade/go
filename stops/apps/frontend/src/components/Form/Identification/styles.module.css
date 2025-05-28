@@ -7,13 +7,13 @@
 }
 
 .locality {
-    background-color: #2F4156;
+    background-color: var(--color-system-text-200);
     padding: var(--size-spacing-md);
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
 }
 
 .button {
-    background-color: #1964AB;
-    border-color: #1964AB;
+    background-color: var(--color-status-active-primary);
+    border-color: var(--color-status-active-primary);
     box-shadow: none;
 }

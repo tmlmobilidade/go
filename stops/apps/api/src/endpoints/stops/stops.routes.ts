@@ -65,17 +65,17 @@ server.register(
 			StopsController.update,
 		);
 
-		// DELETE /stops/:id
-		instance.delete(
-			'/:id',
-			{
-				preHandler: authorizationMiddleware<Stop>(
-					Permissions.stops.scope,
-					Permissions.stops.actions.delete,
-				),
-			},
-			StopsController.delete,
-		);
+		// // DELETE /stops/:id
+		// instance.delete(
+		// 	'/:id',
+		// 	{
+		// 		preHandler: authorizationMiddleware<Stop>(
+		// 			Permissions.stops.scope,
+		// 			Permissions.stops.actions.delete,
+		// 		),
+		// 	},
+		// 	StopsController.delete,
+		// );
 
 		// POST /stops/:id/image
 		instance.post(

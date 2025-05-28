@@ -1,9 +1,6 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
-import { Button } from '@mantine/core';
 import { IconNumber1, IconNumber2, IconNumber3, IconSeparator } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import styles from './styles.module.css';

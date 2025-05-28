@@ -8,14 +8,14 @@
 }
 
 .location {
-    color: #8F9DAB;
+    color: var(--color-system-text-200);
 }
 
 .coords {
-    color: #8F9DAB;
-    background-color: #22272D;
-    border-radius: 8px;
-    padding: 4px;
+    color: var(--color-system-text-200);
+    background-color: var(--color-system-text-100);
+    border-radius: var(--border-radius-sm);
+    padding: var(--border-radius-sm);
 }
 
 .button {

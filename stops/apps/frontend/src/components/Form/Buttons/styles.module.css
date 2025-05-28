@@ -6,7 +6,7 @@
 }
 
 .button {
-    background-color: #1964AB;
-    border-color: #1964AB;
+    background-color: var(--color-status-active-primary);
+    border-color: var(--color-status-active-primary);
     box-shadow: none;
 }

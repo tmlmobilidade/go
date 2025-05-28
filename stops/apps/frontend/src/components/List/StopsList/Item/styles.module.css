@@ -5,7 +5,7 @@
     justify-content: space-between;
     padding: var(--mantine-spacing-md);
     cursor: pointer;
-    border-bottom: 1px solid #2f343d;
+    border-bottom: 1px solid var(--color-system-text-100);
 }
 
 .container:hover {
@@ -25,25 +25,25 @@
 }
 
 .id {
-    padding: 3px 6px 2px;
+    padding: var(--size-spacing-xs) var(--size-spacing-sm) var(--size-spacing-xs);
     font-family: "Courier New", Courier, monospace;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     font-weight: 600;
     line-height: 1;
     color: var(--color-system-text-100);
     letter-spacing: 1px;
-    border: 1px solid #5c5f66;
+    border: 1px solid var(--color-system-text-200);
     border-radius: var(--mantine-spacing-xs);
 }
 
 .coords {
-    padding: 3px 6px 2px;
+    padding: var(--size-spacing-xs) var(--size-spacing-sm) var(--size-spacing-xs);
     font-family: "Courier New", Courier, monospace;
-    font-size: 11px;
+    font-size: var(--font-size-xs);
     font-weight: 600;
     line-height: 1;
     color: var(--color-system-text-100);
     letter-spacing: 1px;
-    border: 1px solid #5c5f66;
+    border: 1px solid var(--color-system-text-200);
     border-radius: var(--mantine-spacing-xs);
 }

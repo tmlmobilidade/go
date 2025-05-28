@@ -20,11 +20,11 @@
     flex-direction: row;
     gap: var(--size-spacing-md);
     justify-content: center;
-    color: #F95252;
+    color: var(--color-brand-metro-100);
 }
 
 .button {
-    background-color: #1964AB;
-    border-color: #1964AB;
+    background-color: var(--color-status-active-primary);
+    border-color: var(--color-status-active-primary);
     box-shadow: none;
 }

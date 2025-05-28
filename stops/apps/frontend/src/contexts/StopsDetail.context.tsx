@@ -275,7 +275,9 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const deleteStop = async () => {
 		if (stopId === 'new') return;
 
-		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'DELETE', stop);
+		form.setFieldValue('is_archived', true);
+		const stop_delete = convertObject(form.getValues(), UpdateStopSchema);
+		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'PUT', stop_delete);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {

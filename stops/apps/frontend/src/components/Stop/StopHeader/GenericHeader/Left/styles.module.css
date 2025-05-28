@@ -11,13 +11,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
+    padding: 0px var(--size-spacing-xs);
     height: 100%;
     cursor: pointer;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius-sm);
     aspect-ratio: 1 / 1;
 }
 
 .icon:hover {
-    background-color: #363C42;
+    background-color: var(--color-system-text-100);
 }
