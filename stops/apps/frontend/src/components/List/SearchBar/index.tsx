@@ -42,9 +42,41 @@ export function SearchBar({ data, setQueryString }) {
 		URL.revokeObjectURL(url); // Clean up
 	};
 
+	const downloadDeletedStopsJson = () => {
+		const stops = data.stops.filter(stop => stop.is_archived === true);
+		const jsonStr = JSON.stringify(stops, null, 2);
+		const blob = new Blob([jsonStr], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'stops.json';
+		link.click();
+
+		URL.revokeObjectURL(url); // Clean up
+	};
+
 	const downloadStopsTxt = () => {
 		const keys = Object.keys(data.stops[0]);
 		const stops = data.stops.filter(stop => stop.is_archived === false);
+		const headerLine = keys.join(', ') + '\n';
+		const valuesLines = stops.map(stop => Object.values(stop).join(', ')).join('\n');
+		const textContent = headerLine + valuesLines;
+
+		const blob = new Blob([textContent], { type: 'application/txt' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'stops.txt';
+		link.click();
+
+		URL.revokeObjectURL(url); // Clean up
+	}
+	;
+	const downloadDeletedStopsTxt = () => {
+		const keys = Object.keys(data.stops[0]);
+		const stops = data.stops.filter(stop => stop.is_archived === true);
 		const headerLine = keys.join(', ') + '\n';
 		const valuesLines = stops.map(stop => Object.values(stop).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
@@ -101,8 +133,8 @@ export function SearchBar({ data, setQueryString }) {
 		{ onClick: () => handleNewStop(), title: '+ Nova Paragem' },
 		{ onClick: () => downloadStopsJson(), title: 'Exportar stops.json' },
 		{ onClick: () => downloadStopsTxt(), title: 'Exportar stops.txt' },
-		{ onClick: () => alert('deleted_stops.json'), title: 'Exportar deleted_stops.json' },
-		{ onClick: () => alert('deleted_stops.txt'), title: 'Exportar deleted_stops.txt' },
+		{ onClick: () => downloadDeletedStopsJson(), title: 'Exportar deleted_stops.json' },
+		{ onClick: () => downloadDeletedStopsTxt(), title: 'Exportar deleted_stops.txt' },
 		{ onClick: () => alert('linhas'), title: 'Exportar Linhas por Paragem' },
 		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
 	].map((item, index) => (
