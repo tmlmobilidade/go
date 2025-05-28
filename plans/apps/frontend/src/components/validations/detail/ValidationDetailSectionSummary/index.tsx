@@ -16,9 +16,9 @@ export function ValidationDetailSectionSummary() {
 
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
-			accessor: 'fileName',
-			render: ({ fileName }) => {
-				return <div>{fileName}</div>;
+			accessor: 'file_name',
+			render: ({ file_name }) => {
+				return <div>{file_name}</div>;
 			},
 			title: 'Ficheiro',
 			width: 200,

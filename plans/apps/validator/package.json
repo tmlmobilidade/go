@@ -9,7 +9,8 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsx --watch src/index.ts",
-		"lint": "fix:eslint --fix .",
+		"lint": "eslint . && tsc --noEmit",
+		"lint:fix": "eslint --fix .",
 		"start": "tsx src/index.ts",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
