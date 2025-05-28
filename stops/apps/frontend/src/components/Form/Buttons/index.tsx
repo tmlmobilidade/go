@@ -14,7 +14,7 @@ enum Phase {
 	LOCATION = 'LOCATION',
 }
 
-export function NavigationButtons({ actions, data, phase, setPhase }) {
+export function Buttons({ actions, data, phase, setPhase }) {
 	//
 
 	//

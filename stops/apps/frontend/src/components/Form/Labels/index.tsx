@@ -14,7 +14,7 @@ enum Phase {
 	LOCATION = 'LOCATION',
 }
 
-export function NavigationLabels({ phase }) {
+export function Labels({ phase }) {
 	//
 
 	//

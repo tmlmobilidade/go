@@ -5,12 +5,12 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function List({ data, flags, queryString }) {
+export function StopsList({ data, flags, queryString }) {
 	//
-
+	console.log('data.stops', data.stops);
 	//
 	// A. Setup variables
-	const filteredStops = data.stops.filter(stop => queryString == null || stop.name.includes(searchbarContext.queryString));
+	const filteredStops = data.stops.filter(stop => (queryString == null || stop.name.includes(queryString)) && stop.is_archived === false);
 	//
 	// B. Render components
 

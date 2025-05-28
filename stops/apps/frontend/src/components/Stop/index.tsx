@@ -2,6 +2,7 @@
 
 import type { Stop } from '@tmlmobilidade/types';
 
+import { useLinesContext } from '@/contexts/Lines.context';
 import { ManualContextProvider } from '@/contexts/Manual.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
@@ -21,7 +22,6 @@ import { StopMedia } from './StopMedia';
 import { StopObservations } from './StopObservations';
 import { StopPublicInformation } from './StopPublicInformation';
 import { StopShelter } from './StopShelter';
-import { useLinesContext } from '@/contexts/Lines.context';
 
 /* * */
 
@@ -37,11 +37,11 @@ export default function Stop({ paramId }: StopProps) {
 	//
 	// A. Setup variables
 
-	// const linesContext = useLinesContext();
+	const linesContext = useLinesContext();
 	const { actions: { getStopById } } = useStopsContext();
 	const { actions, data, flags } = useStopsDetailContext();
-	// console.log("linesContext", linesContext);
-
+	console.log('linesContext', linesContext);
+	console.log('data', data.form.getValues().is_archived);
 	//
 	// B. Render components
 

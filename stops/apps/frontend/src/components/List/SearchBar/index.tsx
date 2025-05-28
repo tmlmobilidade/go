@@ -29,7 +29,8 @@ export function SearchBar({ data, setQueryString }) {
 	};
 
 	const downloadStopsJson = () => {
-		const jsonStr = JSON.stringify(data.stops, null, 2);
+		const stops = data.stops.filter(stop => stop.is_archived === false);
+		const jsonStr = JSON.stringify(stops, null, 2);
 		const blob = new Blob([jsonStr], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 
@@ -43,8 +44,9 @@ export function SearchBar({ data, setQueryString }) {
 
 	const downloadStopsTxt = () => {
 		const keys = Object.keys(data.stops[0]);
+		const stops = data.stops.filter(stop => stop.is_archived === false);
 		const headerLine = keys.join(', ') + '\n';
-		const valuesLines = data.stops.map(stop => Object.values(stop).join(', ')).join('\n');
+		const valuesLines = stops.map(stop => Object.values(stop).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
 
 		const blob = new Blob([textContent], { type: 'application/txt' });
@@ -61,6 +63,7 @@ export function SearchBar({ data, setQueryString }) {
 	const downloadStopsEsri = () => {
 		// Header Line
 		const keys = Object.keys(data.stops[0]);
+		const stops = data.stops.filter(stop => stop.is_archived === false);
 		let headerLine = keys.join(', ') + '\n';
 		headerLine = headerLine.replace('_id', 'stop_id');
 		headerLine = headerLine.replace('name', 'stop_name');
@@ -71,7 +74,7 @@ export function SearchBar({ data, setQueryString }) {
 
 		// Values Lines
 		let valuesLines = '';
-		for (const stop of data.stops) {
+		for (const stop of stops) {
 			for (const key in stop) {
 				valuesLines += stop[key] + ', ';
 				if (key === 'latitude' || key === 'longitude') {

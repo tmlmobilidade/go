@@ -8,11 +8,11 @@ import { Pane, useDisclosure } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { Buttons } from './Buttons';
 import { Confirmation } from './Confirmation';
 import { Identification } from './Identification';
+import { Labels } from './Labels';
 import { Location } from './Location'; // Ensure Location is a valid React component
-import { NavigationButtons } from './NavigationButtons';
-import { NavigationLabels } from './NavigationLabels';
 import styles from './styles.module.css';
 
 enum Phase {
@@ -44,11 +44,11 @@ export function Form() {
 				{/* Modal content */}
 				<Pane>
 					<div className={styles.container}>
-						<NavigationLabels phase={phase} />
+						<Labels phase={phase} />
 						{phase === Phase.LOCATION && <Location data={data} getStopById={getStopById} />}
 						{phase === Phase.IDENTIFICATION && <Identification data={data} />}
 						{phase === Phase.CONFIRMATION && <Confirmation data={data} />}
-						<NavigationButtons actions={actions} data={data} phase={phase} setPhase={setPhase} />
+						<Buttons actions={actions} data={data} phase={phase} setPhase={setPhase} />
 					</div>
 				</Pane>
 			</Modal>

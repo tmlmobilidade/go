@@ -63,7 +63,9 @@ export function Right({ actions, data, open }) {
 				<div
 					className={styles.iconBlue}
 					onClick={() => {
-						actions.deleteStop();
+						// actions.deleteStop();
+						data.form.setFieldValue('is_archived', true);
+						actions.saveStop();
 						redirect('/stops', RedirectType.replace);
 					}}
 				>
