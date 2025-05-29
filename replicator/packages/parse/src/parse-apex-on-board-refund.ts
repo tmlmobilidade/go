@@ -23,7 +23,7 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): SimplifiedApexOn
 		line_id: null,
 		mac_ase_counter_value: pcgiDoc.transaction.macDataFields.aseCounterValue,
 		mac_sam_serial_number: pcgiDoc.transaction.macDataFields.samSerialNumber,
-		on_board_sale_id: null,
+		on_board_sale_id: pcgiDoc.transaction.corrTransactionId,
 		pattern_id: null,
 		payment_method: pcgiDoc.transaction.paymentMethod,
 		price: pcgiDoc.transaction.price,

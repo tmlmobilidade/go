@@ -95,6 +95,8 @@ async function syncApexOnBoardSales() {
 			// in the current timestamp chunk.
 
 			const pcgiQuery = {
+				'transaction.apexTransactionType': 3,
+				'transaction.cardPhysicalType': 28,
 				'transaction.transactionDate': {
 					$gte: chunkData.start.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 					$lte: chunkData.end.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),

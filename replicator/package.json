@@ -3,12 +3,12 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		"build:enrich": "turbo build --filter=@tmlmobilidade/sae-replicator-enrich",
 		"build:packages": "turbo build --filter=@tmlmobilidade/sae-replicator-pckg-*",
-		"build:stream": "turbo build --filter=@tmlmobilidade/sae-replicator-stream",
 		"clean": "sh cleanup.sh",
-		"dev:enrich": "turbo dev --filter=@tmlmobilidade/sae-replicator-enrich",
-		"dev:stream": "turbo dev --filter=@tmlmobilidade/sae-replicator-stream",
+		"dev:enrich": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-enrich",
+		"dev:stream": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-stream",
+		"dev:sync-apex-locations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-locations",
+		"dev:sync-apex-on-board-refunds": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-refunds",
 		"dev:sync-apex-on-board-sales": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
 		"dev:sync-apex-validations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-validations",
 		"lint": "turbo lint"

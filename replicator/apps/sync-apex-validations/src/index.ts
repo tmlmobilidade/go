@@ -97,6 +97,7 @@ export async function syncApexValidations() {
 			// in the current timestamp chunk.
 
 			const pcgiQuery = {
+				'transaction.apexTransactionType': 11,
 				'transaction.transactionDate': {
 					$gte: chunkData.start.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 					$lte: chunkData.end.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),

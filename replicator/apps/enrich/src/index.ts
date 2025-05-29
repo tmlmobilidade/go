@@ -34,10 +34,10 @@ async function enrichApexTransactions() {
 		// All sold on-board tickets have a unique CardSerialNumber value
 		// that is present in the Validation transaction.
 
-		const apexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
+		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
 
-		const unlinkedOnBoardRefundsBatch = apexOnBoardRefundsCollection
-			.find({ validation_transaction_id: { $exists: false } })
+		const unlinkedOnBoardRefundsBatch = simplifiedApexOnBoardRefundsCollection
+			.find({ validation_id: null })
 			.sort({ created_at: -1 })
 			// .limit(1000)
 			.stream();
@@ -50,6 +50,7 @@ async function enrichApexTransactions() {
 			// Fetch the corresponding OnBoardSale transaction.
 			// If no transaction is found, skip this iteration.
 			const onBoardSaleTransaction = await simplifiedApexOnBoardSales.findOne({ _id: onBoardRefund.on_board_sale_id });
+			console.log('found refund | validation | sale', onBoardRefund?._id, validationTransaction?._id, onBoardSaleTransaction?._id);
 			if (!onBoardSaleTransaction) continue;
 			// If both transactions are found, update all three documents with
 			// their corresponding IDs and additional information.
@@ -96,12 +97,13 @@ async function enrichApexTransactions() {
 		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
 
 		const unlinkedOnBoardSalesBatch = simplifiedApexOnBoardSalesCollection
-			.find({ validation_transaction_id: { $exists: false } })
+			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			// .limit(1000)
+			.limit(1000)
 			.stream();
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
+			console.log('found sale', onBoardSale?._id);
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
