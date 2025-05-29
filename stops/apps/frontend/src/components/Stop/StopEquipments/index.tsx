@@ -7,12 +7,12 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function StopEquipments({ actions, data }) {
+export function StopEquipments() {
 	//
 
 	//
 	// A. Setup variables
-	const { actions } = useStopsDetailContext();
+	const { actions, data } = useStopsDetailContext();
 
 	const facilities = [
 		'fire_station',

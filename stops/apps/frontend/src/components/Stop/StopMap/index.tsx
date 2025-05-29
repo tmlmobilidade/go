@@ -1,4 +1,5 @@
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { useMap } from '@vis.gl/react-maplibre';
@@ -12,11 +13,13 @@ import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/Ma
 
 /* * */
 
-export function StopsListViewMap({ data, generic = false, getStopById }) {
+export function StopsListViewMap({ generic = false, getStopById }) {
 	//
 
 	//
 	// A. Setup variables
+
+	const { data } = useStopsDetailContext();
 
 	const { stopsListMap } = useMap();
 	const router = useRouter();

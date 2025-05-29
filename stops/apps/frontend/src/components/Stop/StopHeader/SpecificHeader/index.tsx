@@ -1,5 +1,6 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 // import { useManualContext } from '@/contexts/Manual.context';
 // import { useDisclosure } from '@mantine/hooks';
 
@@ -9,11 +10,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function SpecificHeader({ data }) {
+export function SpecificHeader() {
 	//
 
 	//
 	// A. Setup variables
+
+	const { data } = useStopsDetailContext();
 
 	// Contexts
 	// const { isManual } = useManualContext();

@@ -1,12 +1,19 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, DateTimePicker, Grid, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function StopPublicInformation({ data }) {
+export function StopPublicInformation() {
 	//
+
+	//
+	// A. Setup variables
+
+	const { data } = useStopsDetailContext();
+
 	// A. Render components
 
 	return (

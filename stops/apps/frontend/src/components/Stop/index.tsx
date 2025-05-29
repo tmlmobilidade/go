@@ -51,26 +51,26 @@ export default function Stop({ paramId }: StopProps) {
 				{
 					flags.loading === false && (data?._id || paramId === 'new')
 						? (
-							<Pane header={[<StopHeader data={data} generic={false} />]}>
+							<Pane header={[<StopHeader generic={false} />]}>
 								{/* <StopMap generic={false} /> */}
-								<StopsListViewMap data={data} getStopById={getStopById} />
-								<StopDetails data={data} />
-								<StopAdminInformation data={data} />
+								<StopsListViewMap getStopById={getStopById} />
+								<StopDetails />
+								<StopAdminInformation />
 								{/* <StopAffectation /> */}
-								<StopShelter data={data} />
-								<StopInfrasctructure data={data} />
-								<StopPublicInformation data={data} />
-								<StopAccessibility data={data} />
-								<StopEquipments actions={actions} data={data} />
-								<StopConnections actions={actions} data={data} />
+								<StopShelter />
+								<StopInfrasctructure />
+								<StopPublicInformation />
+								<StopAccessibility />
+								<StopEquipments />
+								<StopConnections />
 								<StopMedia actions={actions} data={data} />
 								<StopComments actions={actions} data={data} />
 								<StopObservations data={data} />
 							</Pane>
 						// </div>
 						) : (
-							<Pane header={[<StopHeader data={data} generic={true} />]}>
-								{flags.loading === false ? <StopsListViewMap data={data} generic={true} getStopById={getStopById} /> : <div>Loading...</div>}
+							<Pane header={[<StopHeader generic={true} />]}>
+								{flags.loading === false ? <StopsListViewMap generic={true} getStopById={getStopById} /> : <div>Loading...</div>}
 								{/* <StopsListViewMap /> */}
 							</Pane>
 						)

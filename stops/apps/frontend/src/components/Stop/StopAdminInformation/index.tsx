@@ -1,10 +1,17 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function StopAdminInformation({ data }) {
+export function StopAdminInformation() {
+	//
+
+	//
+	// A. Setup variables
+	const { data } = useStopsDetailContext();
+
 	//
 	// B. Render components
 
