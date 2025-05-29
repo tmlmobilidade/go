@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionIcon, Button, Tooltip } from '@mantine/core';
-import { IconCopy, IconMap, IconMapPinFilled, IconWorld } from '@tabler/icons-react';
+import { IconCopy, IconMap, IconWorld } from '@tabler/icons-react';
 import Link from 'next/link';
 import React from 'react';
 

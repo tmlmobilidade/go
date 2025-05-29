@@ -2,23 +2,9 @@
 
 import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { ShelterStatus } from '@tmlmobilidade/types';
-import { SidewalkType } from '@tmlmobilidade/types';
-import { RoadType } from '@tmlmobilidade/types';
-import { PavementType } from '@tmlmobilidade/types';
-import { LightningStatus } from '@tmlmobilidade/types';
-import { FlagStatus } from '@tmlmobilidade/types';
-import { ElectricityStatus } from '@tmlmobilidade/types';
-import { Connections } from '@tmlmobilidade/types';
-import { Comment } from '@tmlmobilidade/types';
-import { DockingBayType } from '@tmlmobilidade/types';
-import { Facilities } from '@tmlmobilidade/types';
-import { Jurisdiction } from '@tmlmobilidade/types';
-import { OperationalStatus } from '@tmlmobilidade/types';
-import { PoleStatus } from '@tmlmobilidade/types';
-import { causeSchema, CreateStopDto, CreateStopSchema, effectSchema, referenceTypeSchema, Stop, StopSchema, UnixTimestamp, UpdateStopSchema } from '@tmlmobilidade/types';
+import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { convertObject, Dates, multipartFetch } from '@tmlmobilidade/utils';
+import { convertObject, multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -63,6 +49,7 @@ interface StopsDetailContextState {
 	}
 }
 
+// @ts-expect-error: affectation should be commented
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
 	// affectation: [],
@@ -509,6 +496,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const handleCommentsChange = (userId: string, text: string) => {
 		// console.log('-> handleCommentsChange');
 		form.values.comments.push({
+			// @ts-expect-error: Random _id should exist
 			_id: generateRandomId(),
 			text: text,
 			user_id: userId,

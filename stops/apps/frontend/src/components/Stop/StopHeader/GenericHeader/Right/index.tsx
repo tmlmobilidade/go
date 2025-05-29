@@ -1,24 +1,22 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
-import { ActionIcon, Button } from '@mantine/core';
-import { IconMapPinFilled, IconPlus } from '@tabler/icons-react';
+import { ActionIcon } from '@mantine/core';
+import { IconMapPinFilled } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
-import { SetStateAction } from 'react';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface RightProps {
-	setToggleValue: (value?: SetStateAction<'Mapa' | 'Satélite'>) => void
-	toggleValue: 'Mapa' | 'Satélite'
-}
+// interface RightProps {
+// 	setToggleValue: (value?: SetStateAction<'Mapa' | 'Satélite'>) => void
+// 	toggleValue: 'Mapa' | 'Satélite'
+// }
 
 /* * */
 
-export function Right({ setToggleValue, toggleValue }: RightProps) {
+export function Right() {
 	//
 
 	//

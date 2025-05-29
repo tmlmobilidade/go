@@ -4,19 +4,19 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface LeftProps {
-	// long_name?: string
-	data: {
-		form: {
-			getValues: () => { name?: string }
-		}
-	}
-	isManual: boolean
-}
+// interface LeftProps {
+// 	// long_name?: string
+// 	data: {
+// 		form: {
+// 			getValues: () => { name?: string }
+// 		}
+// 	}
+// 	isManual: boolean
+// }
 
 /* * */
 
-export function Left({ data, isManual }: LeftProps) {
+export function Left({ data }) {
 	//
 	// B. Render components
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { useManualContext } from '@/contexts/Manual.context';
 import { audioTtsUrl } from '@/settings/url.settings';
 import { StopOptions } from '@/utils/options.utils';
 import { IconAlertHexagon, IconPlayerPause, IconVolume } from '@tabler/icons-react';
@@ -9,21 +8,13 @@ import { useEffect, useRef, useState } from 'react';
 
 /* * */
 
-enum OperationalStatusValues {
-	active = 'Paragem Activa',
-	closed = 'Paragem Fechada',
-	provisional = 'Paragem Provisória',
-	seasonal = 'Paragem Sazonal',
-	voided = 'Vazio',
-}
-
 export function StopDetails({ data }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const { isManual, setIsManual } = useManualContext();
+	// const { isManual, setIsManual } = useManualContext();
 
 	const [isPlaying, setIsPlaying] = useState(false);
 	const audioPlayer = useRef<HTMLAudioElement | null>(null);

@@ -1,24 +1,24 @@
+import { IconFile, IconWorldUpload } from '@tabler/icons-react';
 import { ActionIcon, DeleteActionIcon, FileButton, Grid, Label, Tooltip, useToast } from '@tmlmobilidade/ui';
 import NextImage from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
-import Link from 'next/link';
-import { IconFile, IconWorldUpload } from '@tabler/icons-react';
 
 /* * */
 
 interface FormType {
-	setFieldValue: (field: string, value: any) => void
+	setFieldValue: (field: string, value: unknown) => void
 	values: {
 		file_ids: string[]
 	}
 }
 
 interface ActionsType {
-	handleFileChange: (file: File) => void
-	getFiles: () => any
 	deleteFile: (file_id: string) => void
+	getFiles: () => unknown
+	handleFileChange: (file: File) => void
 }
 
 interface UploadImageProps {
@@ -50,15 +50,15 @@ export function UploadFile({
 
 	//
 	// A. Setup variables
-	
+
 	const [preview, setPreview] = useState<string[]>([]);
 
 	useEffect(() => {
-		actions.getFiles()
+		(actions.getFiles() as Promise<string[]>)
 			.then((urls: string[]) => {
 				setPreview(urls);
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error('Error fetching or converting files:', err);
 			});
 	}, []);
@@ -67,10 +67,11 @@ export function UploadFile({
 	// B. Transform Data
 
 	const extractTextBetweenSlashAndQuestionMark = (url) => {
-		const regex = /(?<=\/)([^\/\?]*\.[^\/\?]*)(?=\?)/;
+		// const regex = /(?<=\/)([^\/\?]*\.[^\/\?]*)(?=\?)/;
+		const regex = /(?<=\/)([^/?]*\.[^/?]*)(?=\?)/;
 		const match = url.match(regex);
 		return match ? match[0] : null;
-	}
+	};
 
 	//
 	// C. Handle Actions
@@ -96,7 +97,7 @@ export function UploadFile({
 	};
 
 	const handleDelete = (index) => {
-		actions.deleteFile(data.form.values.file_ids[index])
+		actions.deleteFile(data.form.values.file_ids[index]);
 		const files = [...preview];
 		files.splice(index, 1);
 		setPreview(files);

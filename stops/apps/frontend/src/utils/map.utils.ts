@@ -2,7 +2,7 @@
 
 import { mapDefaultValues } from '@/settings/map.settings';
 import * as turf from '@turf/turf';
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString, Point, Polygon, Position } from 'geojson';
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry, LineString, Point, Position } from 'geojson';
 
 /* * */
 

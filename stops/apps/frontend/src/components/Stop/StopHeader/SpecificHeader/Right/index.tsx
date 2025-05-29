@@ -10,7 +10,7 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export function Right({ data, open }) {
+export function Right({ data }) {
 	//
 
 	//

@@ -2,8 +2,8 @@
 
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
-import { UploadImage } from './UploadImage';
 import { UploadFile } from './UploadFile';
+import { UploadImage } from './UploadImage';
 
 /* * */
 

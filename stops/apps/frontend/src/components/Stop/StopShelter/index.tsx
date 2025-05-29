@@ -87,7 +87,8 @@ export function StopShelter({ data }) {
 						{...data.form.getInputProps('last_shelter_installation')}
 						value={new Date(data.form.getValues().last_shelter_installation)}
 						onChange={(date) => {
-							data.form.setFieldValue('last_shelter_installation', Dates.fromJSDate(date).unix_timestamp);
+							const formattedDate = new Date(date);
+							data.form.setFieldValue('last_shelter_installation', Dates.fromJSDate(formattedDate).unix_timestamp);
 						}}
 					/>
 				</Grid>

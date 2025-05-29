@@ -22,7 +22,8 @@ export function StopPublicInformation({ data }) {
 						{...data.form.getInputProps('last_schedules_maintenance')}
 						value={new Date(data.form.getValues().last_schedules_maintenance)}
 						onChange={(date) => {
-							data.form.setFieldValue('last_schedules_maintenance', Dates.fromJSDate(date).unix_timestamp);
+							const formattedDate = new Date(date);
+							data.form.setFieldValue('last_schedules_maintenance', Dates.fromJSDate(formattedDate).unix_timestamp);
 						}}
 					/>
 
@@ -32,7 +33,8 @@ export function StopPublicInformation({ data }) {
 						{...data.form.getInputProps('last_schedules_check')}
 						value={new Date(data.form.getValues().last_schedules_check)}
 						onChange={(date) => {
-							data.form.setFieldValue('last_schedules_check', Dates.fromJSDate(date).unix_timestamp);
+							const formattedDate = new Date(date);
+							data.form.setFieldValue('last_schedules_check', Dates.fromJSDate(formattedDate).unix_timestamp);
 						}}
 					/>
 				</Grid>

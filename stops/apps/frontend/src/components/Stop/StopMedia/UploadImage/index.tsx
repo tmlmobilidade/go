@@ -7,16 +7,16 @@ import styles from './styles.module.css';
 /* * */
 
 interface FormType {
-	setFieldValue: (field: string, value: any) => void
+	setFieldValue: (field: string, value: unknown) => void
 	values: {
 		image_ids: string[]
 	}
 }
 
 interface ActionsType {
-	handleImageChange: (file: File) => void
-	getImages: () => any
 	deleteImage: (image_id: string) => void
+	getImages: () => unknown
+	handleImageChange: (file: File) => void
 }
 
 interface UploadImageProps {
@@ -48,15 +48,15 @@ export function UploadImage({
 
 	//
 	// A. Setup variables
-	
+
 	const [preview, setPreview] = useState<string[]>([]);
 
 	useEffect(() => {
-		actions.getImages()
+		(actions.getImages() as Promise<string[]>)
 			.then((urls: string[]) => {
 				setPreview(urls);
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error('Error fetching or converting files:', err);
 			});
 	}, []);
@@ -86,7 +86,7 @@ export function UploadImage({
 	};
 
 	const handleDelete = (index) => {
-		actions.deleteImage(data.form.values.image_ids[index])
+		actions.deleteImage(data.form.values.image_ids[index]);
 		const files = [...preview];
 		files.splice(index, 1);
 		setPreview(files);

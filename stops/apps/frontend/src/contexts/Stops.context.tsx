@@ -6,9 +6,8 @@
 import type { Stop } from '@tmlmobilidade/types';
 
 import { swrFetcher } from '@/lib/http';
-import { Routes } from '@/lib/routes';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -49,9 +48,9 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 
 	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`/api/stops`, swrFetcher);
 
-	const workerRef = useRef<null | Worker>(null);
+	// const workerRef = useRef<null | Worker>(null);
 
-	const [dataStopsState, setDataStopsState] = useState<StopsContextState['data']['stops']>([]);
+	const [dataStopsState] = useState<StopsContextState['data']['stops']>([]);
 	const [dataStopsFCState, setDataStopsFCState] = useState<StopsContextState['data']['stops_fc']>();
 	// const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${Routes.CMET_API}/stops`);
 
