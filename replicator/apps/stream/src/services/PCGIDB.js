@@ -98,8 +98,8 @@ class PCGIDB {
 			// Setup collections
 
 			this.VehicleEvents = coreManagementDatabase.collection('VehicleEvents');
-			this.SalesEntity = salesManagementDatabase.collection('salesEntity');
 			this.ValidationEntity = validationsManagementDatabase.collection('validationEntity');
+			this.SalesEntity = salesManagementDatabase.collection('salesEntity');
 			this.LocationEntity = locationManagementDatabase.collection('locationEntity');
 
 			//

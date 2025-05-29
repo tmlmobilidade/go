@@ -49,7 +49,7 @@ async function enrichApexTransactions() {
 			if (!validationTransaction) continue;
 			// Fetch the corresponding OnBoardSale transaction.
 			// If no transaction is found, skip this iteration.
-			const onBoardSaleTransaction = await simplifiedApexOnBoardSales.findOne({ _id: onBoardRefund.on_board_sale_transaction_id });
+			const onBoardSaleTransaction = await simplifiedApexOnBoardSales.findOne({ _id: onBoardRefund.on_board_sale_id });
 			if (!onBoardSaleTransaction) continue;
 			// If both transactions are found, update all three documents with
 			// their corresponding IDs and additional information.
@@ -59,7 +59,7 @@ async function enrichApexTransactions() {
 					pattern_id: validationTransaction.pattern_id,
 					stop_id: validationTransaction.stop_id,
 					trip_id: validationTransaction.trip_id,
-					validation_transaction_id: validationTransaction._id,
+					validation_id: validationTransaction._id,
 					vehicle_id: validationTransaction.vehicle_id,
 				},
 			);
@@ -67,19 +67,19 @@ async function enrichApexTransactions() {
 			await simplifiedApexOnBoardSales.updateById(onBoardSaleTransaction._id,
 				{
 					line_id: validationTransaction.line_id,
+					on_board_refund_id: onBoardRefund._id,
 					pattern_id: validationTransaction.pattern_id,
-					refund_transaction_id: onBoardRefund._id,
 					stop_id: validationTransaction.stop_id,
 					trip_id: validationTransaction.trip_id,
-					validation_transaction_id: validationTransaction._id,
+					validation_id: validationTransaction._id,
 					vehicle_id: validationTransaction.vehicle_id,
 				},
 			);
 			//
 			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
-					on_board_sale_transaction_id: onBoardSaleTransaction._id,
-					refund_transaction_id: onBoardRefund._id,
+					on_board_refund_id: onBoardRefund._id,
+					on_board_sale_id: onBoardSaleTransaction._id,
 				},
 			);
 			//
@@ -93,9 +93,9 @@ async function enrichApexTransactions() {
 		// the unique CardSerialNumber. In this iteration, we hopefully will only
 		// match the remaining transactions that were not linked in the previous iteration.
 
-		const apexOnBoardSalesCollection = await apexOnBoardSales.getCollection();
+		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
 
-		const unlinkedOnBoardSalesBatch = apexOnBoardSalesCollection
+		const unlinkedOnBoardSalesBatch = simplifiedApexOnBoardSalesCollection
 			.find({ validation_transaction_id: { $exists: false } })
 			.sort({ created_at: -1 })
 			// .limit(1000)
@@ -104,24 +104,24 @@ async function enrichApexTransactions() {
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
-			const validationTransaction = await apexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
+			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
 			if (!validationTransaction) continue;
 			// If a transaction was found, update both documents with
 			// their corresponding IDs and additional information.
-			await apexOnBoardSales.updateById(onBoardSale._id,
+			await simplifiedApexOnBoardSales.updateById(onBoardSale._id,
 				{
 					line_id: validationTransaction.line_id,
 					pattern_id: validationTransaction.pattern_id,
 					stop_id: validationTransaction.stop_id,
 					trip_id: validationTransaction.trip_id,
-					validation_transaction_id: validationTransaction._id,
+					validation_id: validationTransaction._id,
 					vehicle_id: validationTransaction.vehicle_id,
 				},
 			);
 			//
-			await apexValidations.updateById(validationTransaction._id,
+			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
-					on_board_sale_transaction_id: onBoardSale._id,
+					on_board_sale_id: onBoardSale._id,
 				},
 			);
 			//

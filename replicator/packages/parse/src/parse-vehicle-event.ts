@@ -1,7 +1,7 @@
 /* * */
 
-import { type VehicleEvent } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { validateUnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
+import { DateTime } from 'luxon';
 
 /* * */
 
@@ -12,7 +12,7 @@ export function parseVehicleEvent(pcgiDoc: any): VehicleEvent {
 	return {
 		_id: pcgiDoc._id,
 		agency_id: pcgiDoc.content.entity[0].vehicle.agencyId,
-		created_at: Dates.fromSeconds(pcgiDoc.content.entity[0].vehicle.timestamp).unix_timestamp,
+		created_at: validateUnixTimestamp(DateTime.fromSeconds(pcgiDoc.content.entity[0].vehicle.timestamp).toMillis()),
 		driver_id: pcgiDoc.content.entity[0].vehicle.vehicle.driverId,
 		event_id: pcgiDoc.content.entity[0]._id,
 		extra_trip_id: pcgiDoc.content.entity[0].vehicle.trip?.extraTripId,
@@ -20,12 +20,12 @@ export function parseVehicleEvent(pcgiDoc: any): VehicleEvent {
 		longitude: pcgiDoc.content.entity[0].vehicle.position.longitude,
 		odometer: pcgiDoc.content.entity[0].vehicle.position.odometer,
 		pattern_id: pcgiDoc.content.entity[0].vehicle.trip?.patternId,
-		received_at: Dates.fromMillis(pcgiDoc.millis).unix_timestamp,
+		received_at: validateUnixTimestamp(DateTime.fromMillis(pcgiDoc.millis).toMillis()),
 		stop_id: pcgiDoc.content.entity[0].vehicle.stopId,
 		trigger_activity: pcgiDoc.content.entity[0].vehicle.trigger.activity,
 		trigger_door: pcgiDoc.content.entity[0].vehicle.trigger.door,
 		trip_id: pcgiDoc.content.entity[0].vehicle.trip?.tripId,
-		updated_at: Dates.fromMillis(pcgiDoc.millis).unix_timestamp,
+		updated_at: validateUnixTimestamp(DateTime.fromMillis(pcgiDoc.millis).toMillis()),
 		vehicle_id: pcgiDoc.content.entity[0].vehicle.vehicle._id,
 	};
 

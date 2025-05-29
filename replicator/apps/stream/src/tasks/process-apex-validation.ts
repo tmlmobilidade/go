@@ -4,13 +4,13 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { simplifyApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { parseSimplifiedApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /* * */
 
-const apexT3DbWritter = new MongoDbWriter<SimplifiedApexValidation>({
+const simplifiedApexValidationsDbWritter = new MongoDbWriter<SimplifiedApexValidation>({
 	batch_size: 250,
 	batch_timeout: 10000,
 	collection: await simplifiedApexValidations.getCollection(),
@@ -19,7 +19,7 @@ const apexT3DbWritter = new MongoDbWriter<SimplifiedApexValidation>({
 
 /* * */
 
-export async function handleApexValidations(databaseOperation) {
+export async function processApexValidation(databaseOperation) {
 	//
 
 	//
@@ -27,14 +27,14 @@ export async function handleApexValidations(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		LOGGER.error(`WARNING: handleApexValidations with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
+		LOGGER.error(`WARNING: processApexValidation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
 	}
 
 	//
 	// Extract the PCGI document from the database operation
 	// and transform the vehicle timestamp into an operational date.
 
-	const newApexT3Document = simplifyApexValidation(databaseOperation.fullDocument);
+	const newSimplifiedApexValidationDocument = parseSimplifiedApexValidation(databaseOperation.fullDocument);
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation
@@ -45,10 +45,10 @@ export async function handleApexValidations(databaseOperation) {
 			const invalidationTimer = new TIMETRACKER();
 			// Map the flushed data to the query that will be used to invalidate the rides
 			const updates = flushedData.map((writeOp) => {
-				const standardWindowInterval = getStandardWindowInterval(writeOp.data._go_default__created_at);
+				const standardWindowInterval = getStandardWindowInterval(writeOp.data.created_at);
 				return {
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
-					trip_id: writeOp.data.service_info__journey_id,
+					trip_id: writeOp.data.trip_id,
 				};
 			});
 			// Invalidate all rides that are affected
@@ -62,17 +62,17 @@ export async function handleApexValidations(databaseOperation) {
 	};
 
 	//
-	// Write the new vehicle event document to the ApexT3s collection
+	// Write the new vehicle event document to the SimplifiedApexValidations collection
 
-	await apexT3DbWritter.write(newApexT3Document, { filter: { _id: newApexT3Document._id }, upsert: true }, () => null, flushCallback);
+	await simplifiedApexValidationsDbWritter.write(newSimplifiedApexValidationDocument, { filter: { _id: newSimplifiedApexValidationDocument._id }, upsert: true }, () => null, flushCallback);
 
 	//
 	// Publish the heartbeats for each agency
 
-	// if (newApexT3Document.agency_id === '41') fetch('https://uptime.betterstack.com/api/v1/heartbeat/YwYCawo9Jw1CrrqYDfJxTBeU');
-	// if (newApexT3Document.agency_id === '42') fetch('https://uptime.betterstack.com/api/v1/heartbeat/kKUC4oNPdCzkzrGdvrme2qFj');
-	// if (newApexT3Document.agency_id === '43') fetch('https://uptime.betterstack.com/api/v1/heartbeat/JbKYJFEncKTcitouz7fVZCki');
-	// if (newApexT3Document.agency_id === '44') fetch('https://uptime.betterstack.com/api/v1/heartbeat/8AqjCGLV34HeZSujBRHJbmg1');
+	if (newSimplifiedApexValidationDocument.agency_id === '41') fetch('https://uptime.betterstack.com/api/v1/heartbeat/YwYCawo9Jw1CrrqYDfJxTBeU');
+	if (newSimplifiedApexValidationDocument.agency_id === '42') fetch('https://uptime.betterstack.com/api/v1/heartbeat/kKUC4oNPdCzkzrGdvrme2qFj');
+	if (newSimplifiedApexValidationDocument.agency_id === '43') fetch('https://uptime.betterstack.com/api/v1/heartbeat/JbKYJFEncKTcitouz7fVZCki');
+	if (newSimplifiedApexValidationDocument.agency_id === '44') fetch('https://uptime.betterstack.com/api/v1/heartbeat/8AqjCGLV34HeZSujBRHJbmg1');
 
 	//
 };

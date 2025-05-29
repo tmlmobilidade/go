@@ -4,15 +4,13 @@
 	"scripts": {
 		"build": "turbo build",
 		"build:enrich": "turbo build --filter=@tmlmobilidade/sae-replicator-enrich",
-		"build:import-apex-on-board-sales": "turbo build --filter=@tmlmobilidade/sae-replicator-import-apex-on-board-sales",
-		"build:import-apex-validations": "turbo build --filter=@tmlmobilidade/sae-replicator-import-apex-validations",
 		"build:packages": "turbo build --filter=@tmlmobilidade/sae-replicator-pckg-*",
 		"build:stream": "turbo build --filter=@tmlmobilidade/sae-replicator-stream",
 		"clean": "sh cleanup.sh",
 		"dev:enrich": "turbo dev --filter=@tmlmobilidade/sae-replicator-enrich",
-		"dev:import-apex-on-board-sales": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-import-apex-on-board-sales",
-		"dev:import-apex-validations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-import-apex-validations",
 		"dev:stream": "turbo dev --filter=@tmlmobilidade/sae-replicator-stream",
+		"dev:sync-apex-on-board-sales": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
+		"dev:sync-apex-validations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-validations",
 		"lint": "turbo lint"
 	},
 	"devDependencies": {

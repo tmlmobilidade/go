@@ -8,10 +8,10 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 
 /* * */
 
-interface SyncDocumentsOptions<TSource, TResult> {
-	dbWriter: MongoDbWriter<TResult>
-	docParser: (pcgiDoc: TSource) => TResult
-	flushCallback: (data?: MongoDBWriterWriteOps<TResult>[]) => Promise<void>
+interface SyncDocumentsOptions<T> {
+	dbWriter: MongoDbWriter<T>
+	docParser: (pcgiDoc: any) => T
+	flushCallback: (data?: MongoDBWriterWriteOps<T>[]) => Promise<void>
 	pcgiCollection: any
 	pcgiIdKey: string
 	pcgiQuery: any
@@ -22,7 +22,7 @@ interface SyncDocumentsOptions<TSource, TResult> {
 
 /* * */
 
-export async function syncDocuments<TSource, TResult>({ dbWriter, docParser, flushCallback, pcgiCollection, pcgiIdKey, pcgiQuery, slaCollection, slaIdKey, slaQuery }: SyncDocumentsOptions<TSource, TResult>): Promise<void> {
+export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, pcgiCollection, pcgiIdKey, pcgiQuery, slaCollection, slaIdKey, slaQuery }: SyncDocumentsOptions<T>) {
 	try {
 		//
 
