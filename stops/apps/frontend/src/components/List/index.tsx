@@ -19,12 +19,14 @@ export function List() {
 	const { queryString, setQueryString } = useSearchbarContext();
 
 	return (
-		<Pane header={[
-			<SearchBar data={data} setQueryString={setQueryString} />,
-		]}
-		>
-			<StopsList data={data} flags={flags} queryString={queryString} />
-			<Footer />
-		</Pane>
+		<div style={{ height: '90vh' }}>
+			<Pane header={[
+				<SearchBar data={data} setQueryString={setQueryString} />,
+			]}
+			>
+				<StopsList data={data} flags={flags} queryString={queryString} />
+				<Footer />
+			</Pane>
+		</div>
 	);
 }
