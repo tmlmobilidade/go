@@ -1,6 +1,5 @@
-import { IconFile, IconWorldUpload } from '@tabler/icons-react';
-import { ActionIcon, DeleteActionIcon, FileButton, Grid, Label, Tooltip, useToast } from '@tmlmobilidade/ui';
-import NextImage from 'next/image';
+import { IconFile } from '@tabler/icons-react';
+import { ActionIcon, DeleteActionIcon, FileButton, Label, Tooltip, useToast } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
