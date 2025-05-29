@@ -51,9 +51,9 @@ export default function StopEquipments() {
 		>
 			<Section gap="md">
 				<Grid columns="abcd" gap="md">
-					{facilities.map((facility) => {
+					{facilities.map((facility, index) => {
 						return (
-							<div className={styles.inputCheckboxContainer}>
+							<div key={index} className={styles.inputCheckboxContainer}>
 								<Checkbox
 									checked={stopDetailContext.data.form.getInputProps('facilities').value.includes(facility)}
 									className={styles.inputCheckbox}
