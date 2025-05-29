@@ -2,6 +2,7 @@
 
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
+import { UploadFile } from './UploadFile';
 import { UploadImage } from './UploadImage';
 
 /* * */
@@ -30,6 +31,16 @@ export function StopMedia({ actions, data }) {
 					// imageUrl="image.png"
 					// label="Imagem"
 					onDelete={() => alert('Image deleted!')}
+					// onDelete={stopDetailContext.actions.deleteImage}
+					// onFileChange={() => alert('File changed!')}
+				/>
+				<UploadFile
+					actions={actions}
+					data={data}
+					// imageUrl={stopDetailContext.data.imageUrl}
+					// imageUrl="image.png"
+					// label="Imagem"
+					onDelete={() => alert('File deleted!')}
 					// onDelete={stopDetailContext.actions.deleteImage}
 					// onFileChange={() => alert('File changed!')}
 				/>

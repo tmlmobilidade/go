@@ -5,7 +5,7 @@ import { SpecificHeader } from './SpecificHeader';
 
 /* * */
 
-export function StopHeader({ actions, data, generic }) {
+export function StopHeader({ data, generic }) {
 	//
 
 	//
@@ -14,7 +14,7 @@ export function StopHeader({ actions, data, generic }) {
 	return (
 		<>
 			{
-				generic === true ? <GenericHeader /> : <SpecificHeader actions={actions} data={data} />
+				generic === true ? <GenericHeader /> : <SpecificHeader data={data} />
 			}
 		</>
 	);

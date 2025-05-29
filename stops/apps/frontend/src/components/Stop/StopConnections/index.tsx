@@ -53,7 +53,7 @@ export function StopConnections({ actions, data }) {
 									checked={data.form.getInputProps('connections').value.includes(connection)}
 									className={styles.inputCheckbox}
 									label={ConnectionsValues[connection]}
-									onChange={(_) => {
+									onChange={() => {
 										actions.handleConnectionsChange(connection);
 									}}
 								/>

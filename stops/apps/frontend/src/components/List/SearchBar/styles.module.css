@@ -5,7 +5,6 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--mantine-spacing-sm);
-    border-bottom: 1px solid #2f343d;
 }
 
 .inputText {
@@ -27,14 +26,14 @@
     justify-content: center;
     height: 100%;
     aspect-ratio: 1 / 1;
-    padding: 0 4px;
+    padding: 0 var(--size-spacing-xs);
     cursor: pointer;
     background-color: var(--mantine-color-gray-light);
-    border-radius: 0.25rem;
+    border-radius: var(--size-spacing-xs);
 }
 
 .icon:hover {
-    background-color: #363C42;
+    background-color: var(--color-system-text-100);
 }
 
 .breadcrumbs {

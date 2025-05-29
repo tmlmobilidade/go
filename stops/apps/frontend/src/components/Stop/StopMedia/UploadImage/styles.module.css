@@ -5,6 +5,7 @@
 	gap: var(--size-spacing-sm);
 	min-height: fit-content;
 	margin-bottom: var(--size-spacing-md);
+	width: 50%;
 }
 
 

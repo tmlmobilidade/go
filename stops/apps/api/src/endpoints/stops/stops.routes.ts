@@ -65,17 +65,17 @@ server.register(
 			StopsController.update,
 		);
 
-		// DELETE /stops/:id
-		instance.delete(
-			'/:id',
-			{
-				preHandler: authorizationMiddleware<Stop>(
-					Permissions.stops.scope,
-					Permissions.stops.actions.delete,
-				),
-			},
-			StopsController.delete,
-		);
+		// // DELETE /stops/:id
+		// instance.delete(
+		// 	'/:id',
+		// 	{
+		// 		preHandler: authorizationMiddleware<Stop>(
+		// 			Permissions.stops.scope,
+		// 			Permissions.stops.actions.delete,
+		// 		),
+		// 	},
+		// 	StopsController.delete,
+		// );
 
 		// POST /stops/:id/image
 		instance.post(
@@ -89,6 +89,18 @@ server.register(
 			StopsController.uploadImage,
 		);
 
+		// POST /stops/:id/image
+		instance.post(
+			'/:id/file',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.update,
+				),
+			},
+			StopsController.uploadFile,
+		);
+
 		// DELETE /stops/:id/image
 		instance.delete(
 			'/:id/image/:image_id',
@@ -99,6 +111,18 @@ server.register(
 				),
 			},
 			StopsController.deleteImage,
+		);
+
+		// DELETE /stops/:id/file
+		instance.delete(
+			'/:id/file/:file_id',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.update,
+				),
+			},
+			StopsController.deleteFile,
 		);
 
 		// GET /stops/:id/image
@@ -123,6 +147,18 @@ server.register(
 				),
 			},
 			StopsController.getImages,
+		)
+		;
+		// GET /stops/:id/files
+		instance.get(
+			'/:id/files',
+			{
+				preHandler: authorizationMiddleware<Stop>(
+					Permissions.stops.scope,
+					Permissions.stops.actions.read,
+				),
+			},
+			StopsController.getFiles,
 		);
 
 		next();

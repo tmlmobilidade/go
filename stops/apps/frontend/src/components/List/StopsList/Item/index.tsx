@@ -2,10 +2,9 @@
 
 import type { Stop } from '@tmlmobilidade/types';
 
+import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import { Left } from './Left';
-import { Right } from './Right';
 import styles from './styles.module.css';
 
 /* * */
@@ -25,13 +24,17 @@ export function Item({ stop }: ItemProps) {
 	return (
 		<Link href={`/stops/${stop._id}`}>
 			<div className={styles.container}>
-				<Left
-					_id={stop?._id}
-					latitude={stop?.latitude}
-					longitude={stop.longitude}
-					name={stop.name}
-				/>
-				<Right />
+				<div className={styles.section}>
+					<p>{stop.name}</p>
+					<div className={styles.details}>
+						<div className={styles.id}>{stop._id}</div>
+						<div className={styles.coords}>{stop.latitude} {stop.longitude}</div>
+					</div>
+				</div>
+
+				<div className={styles.section}>
+					<IconChevronRight />
+				</div>
 			</div>
 		</Link>
 	);

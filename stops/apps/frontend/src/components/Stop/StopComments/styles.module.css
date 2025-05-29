@@ -6,12 +6,12 @@
 }
 
 .button {
-    color: #fff;
-    background-color: #343a40;
-    border: 0.0625rem solid transparent;
+    color: var(--color-system-background-100);
+    background-color: var(--color-system-text-100);
+    border: 1px solid transparent;
     box-shadow: 0 1px 3px 0 transparent;
 }
 
 .button:hover {
-    background-color: #212529;
+    background-color: var(--color-system-background-100);
 }

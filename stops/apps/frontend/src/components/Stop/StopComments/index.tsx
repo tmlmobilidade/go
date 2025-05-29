@@ -56,7 +56,8 @@ export function StopComments({ actions, data }) {
 						variant="secondary"
 						onClick={() => {
 							if (value === '') return;
-							actions.handleCommentsChange(meContext.data.user._id, value);
+							console.log('meContext', meContext);
+							actions.handleCommentsChange(meContext.data.user.email, value);
 							setValue('');
 						}}
 					/>

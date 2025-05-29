@@ -2,12 +2,8 @@
 
 /* * */
 
-// import { useLinesContext } from '@/contexts/Lines.context';
-// import { useLocationsContext } from '@/contexts/Locations.context';
-import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
-// import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
+import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
 import { swrFetcher } from '@/lib/http';
-// import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { Stop } from '@tmlmobilidade/types';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/ui';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -78,7 +74,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 
 	// const locationsContext = useLocationsContext();
 	// const linesContext = useLinesContext();
-	const stopsContext = useStopsContext();
+	// const stopsContext = useStopsContext();
 
 	// const [dataFilteredState, setDataFilteredState] = useState<Stop[]>([]);
 	const [dataFilteredGeojsonFCState, setDataFilteredGeojsonFCState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>(getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>);

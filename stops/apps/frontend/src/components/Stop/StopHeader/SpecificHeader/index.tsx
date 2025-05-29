@@ -1,7 +1,7 @@
 'use client';
 
-import { useManualContext } from '@/contexts/Manual.context';
-import { useDisclosure } from '@mantine/hooks';
+// import { useManualContext } from '@/contexts/Manual.context';
+// import { useDisclosure } from '@mantine/hooks';
 
 import { Left } from './Left';
 import { Right } from './Right';
@@ -9,26 +9,26 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function SpecificHeader({ actions, data }) {
+export function SpecificHeader({ data }) {
 	//
 
 	//
 	// A. Setup variables
 
 	// Contexts
-	const { isManual } = useManualContext();
+	// const { isManual } = useManualContext();
 
 	// Hooks
-	const [opened, { close, open }] = useDisclosure(false);
+	// const [opened, { close, open }] = useDisclosure(false);
 
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.header}>
-			<Left data={data} isManual={isManual} />
+			<Left data={data} />
 
-			<Right actions={actions} data={data} open={open} />
+			<Right data={data} />
 
 			{/* <PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
 				<List>

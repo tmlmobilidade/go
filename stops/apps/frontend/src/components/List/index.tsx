@@ -2,15 +2,15 @@
 
 import { useSearchbarContext } from '@/contexts/Searchbar.context';
 import { useStopsContext } from '@/contexts/Stops.context';
+import { Pane } from '@tmlmobilidade/ui';
 
 import { Footer } from './Footer';
-import { List } from './List';
 import { SearchBar } from './SearchBar';
-import styles from './styles.module.css';
+import { StopsList } from './StopsList';
 
 /* * */
 
-export function Navigation() {
+export function List() {
 	//
 
 	//
@@ -19,10 +19,12 @@ export function Navigation() {
 	const { queryString, setQueryString } = useSearchbarContext();
 
 	return (
-		<div className={styles.container}>
-			<SearchBar data={data} setQueryString={setQueryString} />
-			<List data={data} flags={flags} queryString={queryString} />
+		<Pane header={[
+			<SearchBar data={data} setQueryString={setQueryString} />,
+		]}
+		>
+			<StopsList data={data} flags={flags} queryString={queryString} />
 			<Footer />
-		</div>
+		</Pane>
 	);
 }

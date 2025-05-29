@@ -1,7 +1,7 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
-import { IconDeviceFloppy, IconPlus, IconTrash, IconWorldUpload } from '@tabler/icons-react';
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
+import { IconDeviceFloppy, IconTrash, IconWorldUpload } from '@tabler/icons-react';
 import { ActionIcon, Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
@@ -10,11 +10,12 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export function Right({ actions, data, open }) {
+export function Right({ data }) {
 	//
 
 	//
 	// A. Render components
+	const { actions } = useStopsDetailContext();
 
 	return (
 		<div className={styles.section}>
@@ -26,7 +27,7 @@ export function Right({ actions, data, open }) {
 			</Tooltip> */}
 
 			{/* Stop Button */}
-			<Link href={`https://www.carrismetropolitana.pt/stops/${data._id}`}>
+			<Link href={`https://www.carrismetropolitana.pt/stops/${data._id}`} target="_blank">
 				<Tooltip label="Ver esta paragem no Site" position="bottom">
 					<ActionIcon
 						className={styles.iconBlue}
@@ -38,7 +39,7 @@ export function Right({ actions, data, open }) {
 			</Link>
 
 			{/* Create New Button */}
-			<Link href={Routes.STOP_DETAIL('new')}>
+			{/* <Link href={Routes.STOP_DETAIL('new')}>
 				<Tooltip label="Criar Paragem" position="bottom">
 					<ActionIcon
 						className={styles.iconBlue}
@@ -47,7 +48,7 @@ export function Right({ actions, data, open }) {
 						<IconPlus />
 					</ActionIcon>
 				</Tooltip>
-			</Link>
+			</Link> */}
 			{/* Save Button */}
 			<Tooltip label="Salvar Paragem" position="bottom">
 				<div

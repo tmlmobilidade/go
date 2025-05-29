@@ -19,13 +19,16 @@ export enum StopsDetailMode {
 
 interface StopsDetailContextState {
 	actions: {
+		deleteFile: (fileId: string) => void
 		deleteImage: (imageId: string) => void
 		// addReference: () => void
 		deleteStop: () => void
+		getFiles: (stopId: string) => void
 		getImages: (stopId: string) => void
 		handleCommentsChange: (userId: string, text: string) => void
 		handleConnectionsChange: (connections: string) => void
 		handleFacilitiesChange: (facilities: string) => void
+		handleFileChange: (file: File) => void
 		handleImageChange: (file: File) => void
 		// removeReference: (index: number) => void
 		// saveStop: (type: 'draft' | 'publish') => void
@@ -46,6 +49,7 @@ interface StopsDetailContextState {
 	}
 }
 
+// @ts-expect-error: affectation should be commented
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
 	affectation: [],
@@ -93,7 +97,6 @@ const emptyStop: CreateStopDto = {
 const StopsDetailContext = createContext<StopsDetailContextState | undefined>(undefined);
 
 export function useStopsDetailContext() {
-	// console.log('-> useStopsDetailContext');
 	const context = useContext(StopsDetailContext);
 	if (!context) {
 		throw new Error('useStopsDetailContext must be used within a StopsDetailContextProvider');
@@ -102,7 +105,8 @@ export function useStopsDetailContext() {
 }
 
 export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
-	// console.log('-> StopsDetailContextProvider');
+	//
+
 	//
 	// A. Setup variables
 	const router = useRouter();
@@ -157,16 +161,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		setLoading(false);
 	}, [stop]);
 
-	// useEffect(() => {
-	// 	console.log('-> UseEffect 2.1', loading);
-	// }, [loading]);
-
-	// useEffect(() => {
-	// 	console.log('-> UseEffect 2.2', flags);
-	// }, [stopsDetailContext.flags]);
-
 	useEffect(() => {
-		// console.log('-> UseEffect 3');
 		if (error) {
 			useToast.error({
 				message: error.message,
@@ -178,11 +173,8 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// Validate form on change
 	useEffect(() => {
-		// console.log('-> UseEffect 4');
 		form.validate();
 		setCanSave(form.isValid());
-
-		// console.log(form.errors);
 	}, [form.values]);
 
 	//
@@ -200,12 +192,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// const saveStop = async (type: 'draft' | 'publish') => {
 	const setActiveStopId = (stopId: string) => {
-		// console.log('-> setActiveStopId');
 		setDataActiveStopIdState(stopId);
 	};
 
 	const saveStop = async () => {
-		console.log('-> saveStop');
 		setIsSaving(true);
 
 		// Handle Save Stop
@@ -238,9 +228,9 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		}
 
 		const insertedId = stopId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : stopId;
-		if (insertedId) {
-			await uploadImage(insertedId);
-		}
+		// if (insertedId) {
+		// 	await uploadImage(insertedId);
+		// }
 
 		// If the Stop is new, redirect to the detail page
 		if (insertedId && stopId === 'new') {
@@ -256,10 +246,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const deleteStop = async () => {
-		// console.log('-> deleteStop');
 		if (stopId === 'new') return;
 
-		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'DELETE', stop);
+		form.setFieldValue('is_archived', true);
+		const stop_delete = convertObject(form.getValues(), UpdateStopSchema);
+		const response = await fetchData<Stop>(Routes.STOPS_API + Routes.STOP_DETAIL(stopId), 'PUT', stop_delete);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -280,7 +271,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const getImages = async () => {
-		console.log('-> getImages');
 		if (!stopId || stopId === 'new') {
 			console.error('Invalid stopId provided');
 			return;
@@ -301,12 +291,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			}
 
 			const { data: imageUrls } = await response.json();
-			console.log('Retrieved images:', imageUrls);
 
-			useToast.success({
-				message: 'Imagens carregadas com sucesso',
-				title: 'Sucesso',
-			});
+			// useToast.success({
+			// 	message: 'Imagens carregadas com sucesso',
+			// 	title: 'Sucesso',
+			// });
 
 			return imageUrls;
 		}
@@ -314,6 +303,44 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			console.error('Error fetching images:', error);
 			useToast.error({
 				message: 'Erro ao carregar imagens',
+				title: 'Erro',
+			});
+		}
+	};
+
+	const getFiles = async () => {
+		if (!stopId || stopId === 'new') {
+			console.error('Invalid stopId provided');
+			return;
+		}
+
+		try {
+			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_FILES(stopId)}`, {
+				method: 'GET',
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				useToast.error({
+					message: errorData.message || 'Erro ao carregar ficheiros',
+					title: 'Erro',
+				});
+				return;
+			}
+
+			const { data: fileUrls } = await response.json();
+
+			// useToast.success({
+			// 	message: 'Ficheiros carregadas com sucesso',
+			// 	title: 'Sucesso',
+			// });
+
+			return fileUrls;
+		}
+		catch (error) {
+			console.error('Error fetching ficheiros:', error);
+			useToast.error({
+				message: 'Erro ao carregar ficheiros',
 				title: 'Erro',
 			});
 		}
@@ -328,12 +355,20 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		uploadImage(stopId);
 	}, [image]);
 
+	const handleFileChange = (file: File) => {
+		setFile(file);
+	};
+
+	useEffect(() => {
+		if (!file) return;
+		uploadFile(stopId);
+	}, [file]);
+
 	const deleteImage = async (imageId: string) => {
 		if (stopId === 'new') return;
 
-		console.log('-> deleteImage', imageId);
 		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}/${imageId}`, 'DELETE', stop);
-		console.log('-> ==> response', response);
+
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -349,6 +384,28 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			message: 'Imagem apagada com sucesso',
 			title: 'Sucesso',
 		});
+	}
+	;
+	const deleteFile = async (fileId: string) => {
+		if (stopId === 'new') return;
+
+		const response = await fetchData<Stop>(`${Routes.STOPS_API}${Routes.STOP_FILE(stopId)}/${fileId}`, 'DELETE', stop);
+
+		if (response.error) {
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({
+					message: error.message,
+					title: 'Erro ao apagar ficheiro',
+				});
+			}
+			return;
+		}
+
+		useToast.success({
+			message: 'Ficheiro apagado com sucesso',
+			title: 'Sucesso',
+		});
 	};
 
 	const uploadImage = async (stopId: string) => {
@@ -362,8 +419,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		const response = await multipartFetch(`${Routes.STOPS_API}${Routes.STOP_IMAGE(stopId)}`, uploadFormData);
 
-		console.log('-> ==> response', response);
-
 		if (response.error) {
 			useToast.error({
 				message: response.error,
@@ -372,7 +427,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			return;
 		}
 
-		const { data: { insertedId } } = response.data as { data: { insertedId: string } };
+		// const { data: { insertedId } } = response.data as { data: { insertedId: string } };
 
 		// if (insertedId) {
 		// 	router.push(Routes.STOP_IMAGE(insertedId));
@@ -384,15 +439,50 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		});
 
 		setIsSaving(false);
+	}
+	;
+	const uploadFile = async (stopId: string) => {
+		if (stopId === 'new' || !file) return;
+
+		setIsSaving(true);
+
+		const uploadFormData = new FormData();
+
+		uploadFormData.append('File', file);
+
+		const response = await multipartFetch(`${Routes.STOPS_API}${Routes.STOP_FILE(stopId)}`, uploadFormData);
+
+		console.log('-> ==> response', response);
+
+		if (response.error) {
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao carregar file',
+			});
+			return;
+		}
+
+		// const { data: { insertedId } } = response.data as { data: { insertedId: string } };
+
+		// if (insertedId) {
+		// 	router.push(Routes.STOP_IMAGE(insertedId));
+		// }
+
+		useToast.success({
+			message: 'Ficheiro carregado com sucesso',
+			title: 'Sucesso',
+		});
+
+		setIsSaving(false);
 	};
 
-	const handleConnectionsChange = (connections: string) => {
+	const handleConnectionsChange = (connections: 'airport' | 'bike_parking' | 'bike_sharing' | 'boat' | 'car_parking' | 'ferry' | 'light_rail' | 'subway' | 'train') => {
 		// console.log('-> handleConnectionsChange');
 		const newConnections = form.values.connections.includes(connections) ? form.values.connections.filter(c => c !== connections) : [...form.values.connections, connections];
 		form.setFieldValue('connections', newConnections);
 	};
 
-	const handleFacilitiesChange = (facilities: string) => {
+	const handleFacilitiesChange = (facilities: 'fire_station' | 'health_clinic' | 'historic_building' | 'hospital' | 'pip' | 'police_station' | 'school' | 'shopping' | 'transit_office' | 'university') => {
 		// console.log('-> handleFacilitiesChange');
 		const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
 		form.setFieldValue('facilities', newFacilities);
@@ -406,6 +496,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const handleCommentsChange = (userId: string, text: string) => {
 		// console.log('-> handleCommentsChange');
 		form.values.comments.push({
+			// @ts-expect-error: Random _id should exist
 			_id: generateRandomId(),
 			text: text,
 			user_id: userId,
@@ -419,9 +510,12 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		return {
 			actions: {
 				// addReference,
+				deleteFile,
 				deleteImage,
 				deleteStop,
+				getFiles,
 				getImages,
+				handleFileChange,
 				handleImageChange,
 				// removeReference,
 				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
@@ -445,7 +539,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
 			},
 		};
-	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, getImages, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
+	}, [deleteImage, deleteStop, handleCommentsChange, handleImageChange, getImages, deleteImage, handleFileChange, getFiles, deleteFile, handleConnectionsChange, handleFacilitiesChange, saveStop, setActiveStopId, stopId, dataActiveStopIdState, form, canSave, isReadOnly, isSaving, isLoading, loading]);
 
 	//
 	// F. Render components

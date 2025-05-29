@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function StopEquipments({ data }) {
+export function StopEquipments({ actions, data }) {
 	//
 
 	//
@@ -57,7 +57,7 @@ export function StopEquipments({ data }) {
 									checked={data.form.getInputProps('facilities').value.includes(facility)}
 									className={styles.inputCheckbox}
 									label={FacilitiesValues[facility]}
-									onChange={(_) => {
+									onChange={() => {
 										actions.handleFacilitiesChange(facility);
 									}}
 								/>

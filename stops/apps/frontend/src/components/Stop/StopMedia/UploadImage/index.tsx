@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui';
 import NextImage from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -8,7 +7,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface FormType {
-	setFieldValue: (field: string, value: any) => void
+	setFieldValue: (field: string, value: unknown) => void
 	values: {
 		image_ids: string[]
 	}
@@ -16,7 +15,7 @@ interface FormType {
 
 interface ActionsType {
 	deleteImage: (image_id: string) => void
-	getImages: () => any
+	getImages: () => unknown
 	handleImageChange: (file: File) => void
 }
 
@@ -49,69 +48,22 @@ export function UploadImage({
 
 	//
 	// A. Setup variables
-	// const [preview, setPreview] = useState<null | string[]>(imageUrl ?? null);
+
 	const [preview, setPreview] = useState<string[]>([]);
 
-	// // Fetch the image and convert to Data URL
-	// const fetchImageAsDataUrl = async (url) => {
-	// 	try {
-	// 		console.log("--> URL", url);
-	// 		const response = await fetch(url);
-	// 		console.log("--> RESPONSE", response);
-	// 		const blob = await response.blob();
-	// 		console.log("--> BLOD", blob);
-	// 		const reader = new FileReader();
-
-	// 		return new Promise((resolve, reject) => {
-	// 			reader.onloadend = () => {
-	// 				resolve(reader.result);  // Return the Data URL
-	// 			};
-	// 			reader.onerror = reject;
-	// 			reader.readAsDataURL(blob);  // Convert the Blob to Data URL
-	// 		});
-	// 	} catch (error) {
-	// 		console.error(`Error fetching URL ${url}:`, error);
-	// 		throw error; // Re-throw the error to handle it in the calling function
-	// 	}
-	// };
-
 	useEffect(() => {
-		// // Fetch all images and convert to Data URLs
-		// const fetchAllImages = async (urls) => {
-		// 	console.log("HERE");
-		// 	try {
-		// 		const dataUrls = await Promise.all(urls.map(fetchImageAsDataUrl));
-		// 		console.log("dataUrls", dataUrls);
-		// 		setPreview(dataUrls);  // Set the array of Data URLs
-		// 	} catch (err) {
-		// 		console.error('Error fetching images:', err);
-		// 	}
-		// };
-
-		actions.getImages()
+		(actions.getImages() as Promise<string[]>)
 			.then((urls: string[]) => {
-				console.log('URLS', urls);
 				setPreview(urls);
-				// fetchAllImages(urls);
 			})
-			.then(res => console.log('RES', res))
 			.catch((err) => {
 				console.error('Error fetching or converting files:', err);
 			});
 	}, []);
 
-	// //
-	// // B. Transform Data
-	// useEffect(() => {
-	// 	setPreview(imageUrl ?? null);
-	// }, [imageUrl]);
-
-	// useEffect(() => {
-	// 	data.form.setFieldValue('image_ids', preview);
-	// }, [preview]);
-
 	//
-	// C. Handle Actions
+	// B. Handle Actions
+
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
