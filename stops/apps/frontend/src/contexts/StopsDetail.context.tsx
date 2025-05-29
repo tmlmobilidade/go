@@ -489,14 +489,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const generateRandomId = (length = 6): string => {
-		// console.log('-> generateRandomId');
 		return Math.random().toString(36).substr(2, length);
 	};
 
 	const handleCommentsChange = (userId: string, text: string) => {
-		// console.log('-> handleCommentsChange');
 		form.values.comments.push({
-			// @ts-expect-error: Random _id should exist
 			_id: generateRandomId(),
 			text: text,
 			user_id: userId,
