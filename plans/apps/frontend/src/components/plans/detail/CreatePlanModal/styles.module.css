@@ -1,0 +1,29 @@
+
+/* FILE INPUT */
+
+.fileInputWrapper {
+	width: 100%;
+}
+
+.fileIcon {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+	justify-content: center;
+	flex-direction: column;
+	position: relative;
+}
+
+.deleteContainer {
+	position: absolute;
+	top: -20px;
+	right: -20px;
+}
+
+/* DATE PICKER */
+
+.datePickerGrid {
+	* {
+		white-space: nowrap;
+	}
+}

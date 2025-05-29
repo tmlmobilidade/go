@@ -12,14 +12,7 @@ on:
       - 'controller/apps/bridge/**'
     branches:
       - production
-
-#   pull_request:
-#     paths:
-#       - 'controller/packages/**'
-#       - 'controller/apps/bridge/**'
-#     branches:
-#       - production
-
+      - staging
 # # #
 
 jobs:

@@ -12,13 +12,7 @@ on:
       - 'controller/apps/engine/**'
     branches:
       - production
-
-#   pull_request:
-#     paths:
-#       - 'controller/packages/**'
-#       - 'controller/apps/engine/**'
-#     branches:
-#       - production
+      - staging
 
 # # #
 

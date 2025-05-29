@@ -3,7 +3,7 @@
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/types';
-import { getUnixTimestamp } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /* * */
@@ -98,7 +98,7 @@ export class AuthController {
 		// Verify the token
 		const token_result = await verificationTokens.findOne({ token });
 
-		if (!token_result || token_result.expires_at < getUnixTimestamp()) {
+		if (!token_result || token_result.expires_at < Dates.now().unix_timestamp) {
 			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
 		}
 
