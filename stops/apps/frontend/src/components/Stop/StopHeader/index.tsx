@@ -1,17 +1,11 @@
 'use client';
 
-import GenericHeader from './GenericHeader';
-import SpecificHeader from './SpecificHeader';
+import { GenericHeader } from './GenericHeader';
+import { SpecificHeader } from './SpecificHeader';
 
 /* * */
 
-interface HeaderProps {
-	generic: boolean
-}
-
-/* * */
-
-export default function StopHeader({ generic }: HeaderProps) {
+export function StopHeader({ data, generic }) {
 	//
 
 	//
@@ -20,7 +14,7 @@ export default function StopHeader({ generic }: HeaderProps) {
 	return (
 		<>
 			{
-				generic === true ? <GenericHeader /> : <SpecificHeader />
+				generic === true ? <GenericHeader /> : <SpecificHeader data={data} />
 			}
 		</>
 	);

@@ -1,22 +1,12 @@
 'use client';
 
-/* * */
-
 import { IconChevronRight } from '@tabler/icons-react';
-
-/* * */
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface ItemProps {
-	id: string
-}
-
-/* * */
-
-export default function Item({ id }: ItemProps) {
+export function Item({ id }) {
 	//
 
 	//
@@ -28,7 +18,6 @@ export default function Item({ id }: ItemProps) {
 			<div className={styles.containerInfo}>
 				<div className={styles.details}>
 					<div className={styles.id}>{id}</div>
-					{/* TODO: Get Pattern Name from ID */}
 					<div className={styles.name}>Alcochete | Circular</div>
 				</div>
 			</div>

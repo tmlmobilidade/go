@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Modal } from '@mantine/core';
 import { ReactNode } from 'react';
 
@@ -16,7 +14,7 @@ interface PatternsModalProps {
 
 /* * */
 
-export default function Header({ children, onClose, opened, title }: PatternsModalProps) {
+export function PatternsModal({ children, onClose, opened, title }: PatternsModalProps) {
 	//
 
 	//

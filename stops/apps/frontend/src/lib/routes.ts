@@ -2,7 +2,9 @@ export const PageRoutes = Object.freeze({
 	HOME: '/',
 	STOP_DETAIL: (id: string) => `/stops/${id}`,
 	STOP_FILE: (id: string) => `/stops/${id}/file`,
+	STOP_FILES: (id: string) => `/stops/${id}/files`,
 	STOP_IMAGE: (id: string) => `/stops/${id}/image`,
+	STOP_IMAGES: (id: string) => `/stops/${id}/images`,
 	STOP_LIST: '/stops',
 	// Stops
 	// Example: STOP_DETAIL: (id: string) => `/stops/${id}`,

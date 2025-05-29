@@ -1,10 +1,6 @@
 'use client';
 
-/* * */
-
 import { ReactNode } from 'react';
-
-/* * */
 
 import styles from './styles.module.css';
 
@@ -16,7 +12,7 @@ interface ItemInterface {
 
 /* * */
 
-export default function List({ children }: ItemInterface) {
+export function List({ children }: ItemInterface) {
 	//
 
 	//

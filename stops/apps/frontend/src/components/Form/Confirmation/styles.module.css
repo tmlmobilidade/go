@@ -1,0 +1,25 @@
+.container {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--size-spacing-md);
+}
+
+.location {
+    color: var(--color-system-text-200);
+}
+
+.coords {
+    color: var(--color-system-text-200);
+    background-color: var(--color-system-text-100);
+    border-radius: var(--border-radius-sm);
+    padding: var(--border-radius-sm);
+}
+
+.button {
+    background-color: #1964AB;
+    border-color: #1964AB;
+    box-shadow: none;
+}

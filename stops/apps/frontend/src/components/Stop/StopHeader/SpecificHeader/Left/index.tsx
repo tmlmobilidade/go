@@ -1,35 +1,22 @@
 'use client';
 
-/* * */
-
-import { IconDeviceFloppy, IconX } from '@tabler/icons-react';
-import { Tooltip } from '@tmlmobilidade/ui';
-
-/* * */
-
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
-
 import styles from './styles.module.css';
 
 /* * */
 
-interface LeftProps {
-	isManual: boolean
-	// long_name?: string
-}
+// interface LeftProps {
+// 	// long_name?: string
+// 	data: {
+// 		form: {
+// 			getValues: () => { name?: string }
+// 		}
+// 	}
+// 	isManual: boolean
+// }
 
 /* * */
 
-export default function Left({ isManual }: LeftProps) {
-	//
-
-	//
-	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
-
-	const { data: stop } = stopDetailContext;
-
+export function Left({ data }) {
 	//
 	// B. Render components
 
@@ -37,7 +24,7 @@ export default function Left({ isManual }: LeftProps) {
 		<div className={styles.section}>
 			{/* Manual -> Save Button */}
 			{/* Automatic -> Close Button */}
-			{isManual
+			{/* {isManual
 				? (
 					<Tooltip label="Guardar Alterações" position="bottom">
 						<div className={styles.iconGreen}>
@@ -51,10 +38,10 @@ export default function Left({ isManual }: LeftProps) {
 							<IconX />
 						</div>
 					</Tooltip>
-				)}
+				)} */}
 
 			{/* Label */}
-			<h3>{stop.form.getValues().name || <i>Paragem sem Título</i>}</h3>
+			<h3>{data.form.getValues().name || <i>Paragem sem Título</i>}</h3>
 		</div>
 	);
 }

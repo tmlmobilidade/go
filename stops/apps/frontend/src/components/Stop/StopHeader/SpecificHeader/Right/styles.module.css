@@ -40,17 +40,17 @@
     justify-content: center;
     height: 100%;
     aspect-ratio: 1 / 1;
-    padding: 0 4px;
+    padding: 0 var(--border-radius-sm);
     cursor: pointer;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius-sm);
 }
 
 .iconBlue>svg {
-    stroke: #74c0fc;
+    stroke: var(--color-status-info-primary);
 }
 
 .iconBlue:hover {
-    background-color: #253B53;
+    background-color: var(--color-system-text-100);
 }
 
 .iconGreen {
@@ -61,15 +61,15 @@
     justify-content: center;
     height: 100%;
     aspect-ratio: 1 / 1;
-    padding: 0 4px;
+    padding: 0 var(--border-radius-sm);
     cursor: pointer;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius-sm);
 }
 
 .iconGreen>svg {
-    stroke: #8CE999;
+    stroke: var(--color-brand-go-100);
 }
 
 .iconGreen:hover {
-    background-color: #344B37;
+    background-color: var(--color-system-text-100);
 }

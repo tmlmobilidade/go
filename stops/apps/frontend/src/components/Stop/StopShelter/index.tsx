@@ -1,18 +1,15 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
 import { Collapsible, Combobox, DateTimePicker, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export default function StopShelter() {
+export function StopShelter({ data }) {
 	//
 
 	//
 	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
 
 	enum ShelterStatusValues {
 		is_damaged = 'Abrigo Danificado',
@@ -51,21 +48,21 @@ export default function StopShelter() {
 					<Combobox
 						data={shelterStatusItems}
 						label="Existe Abrigo?"
-						{...stopDetailContext.data.form.getInputProps('shelter_status')}
+						{...data.form.getInputProps('shelter_status')}
 					/>
 
 					<TextInput
 						label="Código do Abrigo"
 						maxLength={255}
 						placeholder="SH1234"
-						{...stopDetailContext.data.form.getInputProps('shelter_code')}
+						{...data.form.getInputProps('shelter_code')}
 					/>
 
 					<TextInput
 						label="Entidade Gestora do Abrigo"
 						maxLength={255}
 						placeholder="JC Decaux"
-						{...stopDetailContext.data.form.getInputProps('shelter_maintainer')}
+						{...data.form.getInputProps('shelter_maintainer')}
 					/>
 				</Grid>
 
@@ -73,13 +70,13 @@ export default function StopShelter() {
 					<TextInput
 						label="Modelo do Abrigo"
 						maxLength={255}
-						{...stopDetailContext.data.form.getInputProps('shelter_model')}
+						{...data.form.getInputProps('shelter_model')}
 					/>
 
 					<TextInput
 						label="Fabricante do Abrigo"
 						maxLength={255}
-						{...stopDetailContext.data.form.getInputProps('shelter_make')}
+						{...data.form.getInputProps('shelter_make')}
 					/>
 				</Grid>
 
@@ -87,10 +84,11 @@ export default function StopShelter() {
 					<DateTimePicker
 						label="Data de Instalação do Abrigo"
 						placeholder="2024-09"
-						{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
-						value={new Date(stopDetailContext.data.form.getValues().last_shelter_installation)}
+						{...data.form.getInputProps('last_shelter_installation')}
+						value={new Date(data.form.getValues().last_shelter_installation)}
 						onChange={(date) => {
-							stopDetailContext.data.form.setFieldValue('last_shelter_installation', Dates.fromJSDate(date).unix_timestamp);
+							const formattedDate = new Date(date);
+							data.form.setFieldValue('last_shelter_installation', Dates.fromJSDate(formattedDate).unix_timestamp);
 						}}
 					/>
 				</Grid>
