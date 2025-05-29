@@ -1,9 +1,10 @@
 /* * */
 
 import PCGIDB from '@/services/PCGIDB.js';
-import { processApexT11 } from '@/tasks/process-apex-t11.js';
-import { processApexT19 } from '@/tasks/process-apex-t19.js';
-import { processApexT3 } from '@/tasks/process-apex-t3.js';
+import { handleApexLocations } from '@/tasks/handle-apex-locations.js';
+import { handleApexOnBoardRefunds } from '@/tasks/handle-apex-on-board-refunds.js';
+import { handleApexOnBoardSales } from '@/tasks/handle-apex-on-board-sales.js';
+import { handleApexValidations } from '@/tasks/handle-apex-validations.js';
 import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
 
 /* * */
@@ -17,11 +18,13 @@ import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
 
-	PCGIDB.SalesEntity.watch().on('change', processApexT3);
+	PCGIDB.SalesEntity.watch().on('change', handleApexOnBoardRefunds);
 
-	PCGIDB.ValidationEntity.watch().on('change', processApexT11);
+	PCGIDB.SalesEntity.watch().on('change', handleApexOnBoardSales);
 
-	PCGIDB.LocationEntity.watch().on('change', processApexT19);
+	PCGIDB.ValidationEntity.watch().on('change', handleApexValidations);
+
+	PCGIDB.LocationEntity.watch().on('change', handleApexLocations);
 
 	PCGIDB.VehicleEvents.watch().on('change', processVehicleEvent);
 

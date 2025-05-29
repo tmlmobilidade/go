@@ -3,11 +3,11 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { apexOnBoardSales, rides } from '@tmlmobilidade/interfaces';
-import { parseApexOnBoardSales } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
+import { simplifyApexOnBoardSale } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type ApexOnBoardSale, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type PCGI_TransactionEntity, type SimplifiedApexOnBoardSale, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime, Interval } from 'luxon';
 
 /* * */
@@ -29,8 +29,8 @@ export async function importApexOnBoardSales() {
 
 		await PCGIDB.connect();
 
-		const apexOnBoardSalesCollection = await apexOnBoardSales.getCollection();
-		const apexOnBoardSalesDbWritter = new MongoDbWriter<ApexOnBoardSale>({ batch_size: 100000, collection: apexOnBoardSalesCollection });
+		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
+		const simplifiedApexOnBoardSalesDbWritter = new MongoDbWriter<SimplifiedApexOnBoardSale>({ batch_size: 100000, collection: simplifiedApexOnBoardSalesCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -66,14 +66,14 @@ export async function importApexOnBoardSales() {
 			// Setup the callback function that will be called on the DB Writer flush operation
 			// to invalidate all the rides that are affected by the new data.
 
-			const flushCallback = async (flushedData: MongoDBWriterWriteOps<ApexOnBoardSale>[]) => {
+			const flushCallback = async (flushedData: MongoDBWriterWriteOps<SimplifiedApexOnBoardSale>[]) => {
 				try {
 					const invalidationTimer = new TIMETRACKER();
 					// Extract the unique trip_ids from the flushed data
-					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
+					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data._go_enriched__journey_id)));
 					// Get the earliest and latest timestamps from the flushed data
-					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
-					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
+					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data._go_default__created_at)) as UnixTimestamp;
+					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data._go_default__created_at)) as UnixTimestamp;
 					// Create a standard window interval based on the earliest and latest timestamps
 					const earliestStandardWindowInterval = getStandardWindowInterval(earliestTimestamp);
 					const latestStandardWindowInterval = getStandardWindowInterval(latestTimestamp);
@@ -111,21 +111,21 @@ export async function importApexOnBoardSales() {
 			//
 			// Sync the documents
 
-			await syncDocuments<ApexOnBoardSale>({
+			await syncDocuments<PCGI_TransactionEntity, SimplifiedApexOnBoardSale>({
 
-				dbWriter: apexOnBoardSalesDbWritter,
+				dbWriter: simplifiedApexOnBoardSalesDbWritter,
 
-				docParser: parseApexOnBoardSales,
+				docParser: simplifyApexOnBoardSale,
 
 				flushCallback: flushCallback,
 
-				pcgiCollection: PCGIDB.OnBoardSaleEntity,
+				pcgiCollection: PCGIDB.SalesEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 
 				pcgiQuery: pcgiQuery,
 
-				slaCollection: apexOnBoardSalesCollection,
+				slaCollection: simplifiedApexOnBoardSalesCollection,
 
 				slaIdKey: '_id',
 

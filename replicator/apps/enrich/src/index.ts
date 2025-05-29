@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { apexOnBoardRefunds, apexOnBoardSales, apexValidations } from '@tmlmobilidade/interfaces';
+import { simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -34,7 +34,7 @@ async function enrichApexTransactions() {
 		// All sold on-board tickets have a unique CardSerialNumber value
 		// that is present in the Validation transaction.
 
-		const apexOnBoardRefundsCollection = await apexOnBoardRefunds.getCollection();
+		const apexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
 
 		const unlinkedOnBoardRefundsBatch = apexOnBoardRefundsCollection
 			.find({ validation_transaction_id: { $exists: false } })
@@ -45,15 +45,15 @@ async function enrichApexTransactions() {
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
-			const validationTransaction = await apexValidations.findOne({ card_serial_number: onBoardRefund.card_serial_number });
+			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardRefund.card_serial_number });
 			if (!validationTransaction) continue;
 			// Fetch the corresponding OnBoardSale transaction.
 			// If no transaction is found, skip this iteration.
-			const onBoardSaleTransaction = await apexOnBoardSales.findOne({ _id: onBoardRefund.on_board_sale_transaction_id });
+			const onBoardSaleTransaction = await simplifiedApexOnBoardSales.findOne({ _id: onBoardRefund.on_board_sale_transaction_id });
 			if (!onBoardSaleTransaction) continue;
 			// If both transactions are found, update all three documents with
 			// their corresponding IDs and additional information.
-			await apexOnBoardRefunds.updateById(onBoardRefund._id,
+			await simplifiedApexOnBoardRefunds.updateById(onBoardRefund._id,
 				{
 					line_id: validationTransaction.line_id,
 					pattern_id: validationTransaction.pattern_id,
@@ -64,7 +64,7 @@ async function enrichApexTransactions() {
 				},
 			);
 			//
-			await apexOnBoardSales.updateById(onBoardSaleTransaction._id,
+			await simplifiedApexOnBoardSales.updateById(onBoardSaleTransaction._id,
 				{
 					line_id: validationTransaction.line_id,
 					pattern_id: validationTransaction.pattern_id,
@@ -76,7 +76,7 @@ async function enrichApexTransactions() {
 				},
 			);
 			//
-			await apexValidations.updateById(validationTransaction._id,
+			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
 					on_board_sale_transaction_id: onBoardSaleTransaction._id,
 					refund_transaction_id: onBoardRefund._id,
