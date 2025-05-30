@@ -3,6 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
 
 /* * */
 
@@ -67,6 +68,7 @@ async function enrichApexTransactions() {
 			//
 			await simplifiedApexOnBoardSales.updateById(onBoardSaleTransaction._id,
 				{
+					is_passenger: validateIfSimplifiedApexOnBoardSaleIsPassenger(onBoardRefund._id),
 					line_id: validationTransaction.line_id,
 					on_board_refund_id: onBoardRefund._id,
 					pattern_id: validationTransaction.pattern_id,
@@ -79,6 +81,7 @@ async function enrichApexTransactions() {
 			//
 			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
+					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, onBoardRefund._id),
 					on_board_refund_id: onBoardRefund._id,
 					on_board_sale_id: onBoardSaleTransaction._id,
 				},
@@ -112,6 +115,7 @@ async function enrichApexTransactions() {
 			// their corresponding IDs and additional information.
 			await simplifiedApexOnBoardSales.updateById(onBoardSale._id,
 				{
+					is_passenger: validateIfSimplifiedApexOnBoardSaleIsPassenger(null),
 					line_id: validationTransaction.line_id,
 					pattern_id: validationTransaction.pattern_id,
 					stop_id: validationTransaction.stop_id,
@@ -123,6 +127,7 @@ async function enrichApexTransactions() {
 			//
 			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
+					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, null),
 					on_board_sale_id: onBoardSale._id,
 				},
 			);

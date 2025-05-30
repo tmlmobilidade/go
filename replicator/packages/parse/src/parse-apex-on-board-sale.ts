@@ -1,7 +1,7 @@
 /* * */
 
-import { type SimplifiedApexOnBoardSale, validateUnixTimestamp } from '@tmlmobilidade/types';
-import { DateTime } from 'luxon';
+import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -16,10 +16,10 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): SimplifiedApexOnBo
 		block_id: null,
 		card_physical_type: pcgiDoc.transaction.cardPhysicalType,
 		card_serial_number: pcgiDoc.transaction.cardSerialNumber,
-		created_at: validateUnixTimestamp(DateTime.fromISO(pcgiDoc.transaction.transactionDate).toMillis()),
+		created_at: Dates.fromISO(pcgiDoc.transaction.transactionDate).unix_timestamp,
 		device_id: pcgiDoc.transaction.deviceID,
 		duty_id: null,
-		is_valid: false,
+		is_passenger: validateIfSimplifiedApexOnBoardSaleIsPassenger(null),
 		line_id: null,
 		mac_ase_counter_value: pcgiDoc.transaction.macDataFields.aseCounterValue,
 		mac_sam_serial_number: pcgiDoc.transaction.macDataFields.samSerialNumber,
@@ -29,13 +29,20 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): SimplifiedApexOnBo
 		price: pcgiDoc.transaction.price,
 		product_long_id: pcgiDoc.transaction.productLongID,
 		product_quantity: pcgiDoc.transaction.productQuantity,
-		received_at: validateUnixTimestamp(DateTime.fromISO(pcgiDoc.createdAt).toMillis()),
+		received_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 		stop_id: null,
 		trip_id: null,
-		updated_at: validateUnixTimestamp(DateTime.fromISO(pcgiDoc.createdAt).toMillis()),
+		updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 		validation_id: null,
 		vehicle_id: null,
 	};
 
 	//
+}
+
+/* * */
+
+export function validateIfSimplifiedApexOnBoardSaleIsPassenger(refundId: null | string): boolean {
+	const hasNoRefund = refundId === null;
+	return hasNoRefund;
 }
