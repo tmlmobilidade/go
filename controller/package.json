@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
-		"@tmlmobilidade/tsconfig": "20250513.1456.29",
+		"@tmlmobilidade/tsconfig": "20250529.2227.8",
 		"turbo": "2.5.3",
 		"typescript": "5.8.3"
 	},
@@ -27,7 +27,7 @@
 		"apps/explorer/*",
 		"packages/*"
 	],
-	"packageManager": "npm@11.3.0",
+	"packageManager": "npm@11.4.1",
 	"engines": {
 		"node": ">=18"
 	}
