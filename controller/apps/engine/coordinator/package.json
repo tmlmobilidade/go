@@ -16,14 +16,14 @@
 	"dependencies": {
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250530.149.33",
+		"@tmlmobilidade/interfaces": "20250530.1052.55",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"fastify": "5.3.3",
 		"luxon": "3.6.1"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.15.26",
+		"@types/node": "22.15.27",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.4",
 		"typescript": "5.8.3"

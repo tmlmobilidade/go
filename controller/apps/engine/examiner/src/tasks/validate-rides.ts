@@ -180,12 +180,15 @@ export async function validateRides() {
 
 				rideData.driver_ids = Array.from(new Set(vehicleEventsData.map(item => item.driver_id).filter(Boolean)));
 				rideData.vehicle_ids = Array.from(new Set(vehicleEventsData.map(item => item.vehicle_id).filter(Boolean)));
+
 				rideData.apex_locations_qty = simplifiedApexLocationsData.length;
 				rideData.apex_on_board_refunds_amount = simplifiedApexOnBoardRefundsData.reduce((acc, item) => acc + (item.price || 0), 0);
 				rideData.apex_on_board_refunds_qty = simplifiedApexOnBoardRefundsData.length;
 				rideData.apex_on_board_sales_amount = simplifiedApexOnBoardSalesData.reduce((acc, item) => acc + (item.price || 0), 0);
 				rideData.apex_on_board_sales_qty = simplifiedApexOnBoardSalesData.length;
 				rideData.apex_validations_qty = simplifiedApexValidationsData.length;
+
+				rideData.passengers_observed = simplifiedApexValidationsData.filter(item => item.is_passenger).length;
 
 				//
 				// Run the analyzers and count how many passed,
@@ -214,6 +217,7 @@ export async function validateRides() {
 						driver_ids: rideData.driver_ids,
 						end_time_observed: rideData.end_time_observed,
 						extension_observed: rideData.extension_observed,
+						passengers_observed: rideData.passengers_observed,
 						seen_first_at: rideData.seen_first_at,
 						seen_last_at: rideData.seen_last_at,
 						start_time_observed: rideData.start_time_observed,
