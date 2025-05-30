@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'TRANSACTION_SEQUENTIALITY'
 	reason: 'ALL_TRANSACTIONS_RECEIVED_SO_FAR' | 'MISSING_TRANSACTIONS'
 };
 
@@ -74,8 +73,6 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			}
 		}
 
-		// console.log('transactionsBySamSerialNumber', transactionsBySamSerialNumber);
-
 		// 2.
 		// With the transactions organized by their SAM Serial Number,
 		// we can now check if there are any gaps in the sequence of Transactions.
@@ -102,14 +99,19 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			if (gaps.length > 0) missingTransactions.set(samSerialNumber, gaps);
 		}
 
-		console.log('missingTransactions', missingTransactions);
-
-		process.exit(0);
+		if (missingTransactions.size === 0) {
+			return {
+				grade: 'pass',
+				message: `This ride has all transactions until now.`,
+				reason: 'ALL_TRANSACTIONS_RECEIVED_SO_FAR',
+				unit: null,
+				value: null,
+			};
+		}
 
 		return {
-			_id: 'TRANSACTION_SEQUENTIALITY',
 			grade: 'fail',
-			message: `There are ${missingTransactions.size} Transactions.`,
+			message: `There are ${missingTransactions.size} missing transactions.`,
 			reason: 'MISSING_TRANSACTIONS',
 			unit: null,
 			value: null,
@@ -119,7 +121,6 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 	}
 	catch (error) {
 		return {
-			_id: 'TRANSACTION_SEQUENTIALITY',
 			grade: 'error',
 			message: error.message,
 			reason: null,

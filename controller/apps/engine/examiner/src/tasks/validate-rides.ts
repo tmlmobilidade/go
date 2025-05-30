@@ -3,7 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
-import { ALLOWED_VALIDATION_STATUSES, type RideAnalysis } from '@tmlmobilidade/types';
+import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -29,54 +30,39 @@ import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simple-one-v
 import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-validation-transaction.analyzer.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.analyzer.js';
 import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.analyzer.js';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
 
-function runAnalyzers(analysisData: AnalysisData): RideAnalysis[] {
-	return [
+function runAnalyzers(analysisData: AnalysisData): Ride['analysis'] {
+	return {
 
-		/* * * * */
+		AT_LEAST_ONE_EVENT_ON_FIRST_STOP: atLeastOneEventOnFirstStop(analysisData),
 
-		transactionSequentialityAnalyzer(analysisData),
+		AT_MOST_TWO_DRIVER_IDS: atMostTwoDriverIdsAnalyzer(analysisData),
 
-		//
+		AT_MOST_TWO_VEHICLE_IDS: atMostTwoVehicleIdsAnalyzer(analysisData),
 
-		atMostTwoDriverIdsAnalyzer(analysisData),
+		AVG_INTERVAL_VEHICLE_EVENTS: avgIntervalVehicleEvents(analysisData),
 
-		atMostTwoVehicleIdsAnalyzer(analysisData),
+		EXCESSIVE_VEHICLE_EVENT_DELAY: excessiveVehicleEventDelayAnalyzer(analysisData),
 
-		//
+		HIGHEST_VEHICLE_EVENT_DELAY: highestVehicleEventDelayAnalyzer(analysisData),
 
-		excessiveVehicleEventDelayAnalyzer(analysisData),
+		LESS_THAN_TEN_VEHICLE_EVENTS: lessThanTenVehicleEventsAnalyzer(analysisData),
 
-		highestVehicleEventDelayAnalyzer(analysisData),
+		MATCHING_LOCATION_TRANSACTIONS: matchingLocationTransactionsAnalyzer(analysisData),
 
-		lessThanTenVehicleEventsAnalyzer(analysisData),
+		ONTIME_START: ontimeStartAnalyzer(analysisData),
 
-		avgIntervalVehicleEvents(analysisData),
+		SIMPLE_ONE_VALIDATION_TRANSACTION: simpleOneValidationTransactionAnalyzer(analysisData),
 
-		//
+		SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION: simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisData),
 
-		matchingLocationTransactionsAnalyzer(analysisData),
+		SIMPLE_THREE_VEHICLE_EVENTS: simpleThreeVehicleEventsAnalyzer(analysisData),
 
-		//
+		TRANSACTION_SEQUENTIALITY: transactionSequentialityAnalyzer(analysisData),
 
-		ontimeStartAnalyzer(analysisData),
-
-		//
-
-		simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisData),
-
-		simpleOneValidationTransactionAnalyzer(analysisData),
-
-		simpleThreeVehicleEventsAnalyzer(analysisData),
-
-		atLeastOneEventOnFirstStop(analysisData),
-
-		/* * * * */
-
-	];
+	};
 }
 
 /* * */
@@ -194,7 +180,12 @@ export async function validateRides() {
 
 				rideData.driver_ids = Array.from(new Set(vehicleEventsData.map(item => item.driver_id).filter(Boolean)));
 				rideData.vehicle_ids = Array.from(new Set(vehicleEventsData.map(item => item.vehicle_id).filter(Boolean)));
-				rideData.validations_count = simplifiedApexValidationsData.filter(item => ALLOWED_VALIDATION_STATUSES.includes(item.validation_status)).length;
+				rideData.apex_locations_qty = simplifiedApexLocationsData.length;
+				rideData.apex_on_board_refunds_amount = simplifiedApexOnBoardRefundsData.reduce((acc, item) => acc + (item.price || 0), 0);
+				rideData.apex_on_board_refunds_qty = simplifiedApexOnBoardRefundsData.length;
+				rideData.apex_on_board_sales_amount = simplifiedApexOnBoardSalesData.reduce((acc, item) => acc + (item.price || 0), 0);
+				rideData.apex_on_board_sales_qty = simplifiedApexOnBoardSalesData.length;
+				rideData.apex_validations_qty = simplifiedApexValidationsData.length;
 
 				//
 				// Run the analyzers and count how many passed,
@@ -202,9 +193,9 @@ export async function validateRides() {
 
 				rideData.analysis = runAnalyzers(analysisData);
 
-				const passAnalysisCount = rideData.analysis.filter(item => item.grade === 'pass');
-				const failAnalysisCount = rideData.analysis.filter(item => item.grade === 'fail');
-				const errorAnalysisCount = rideData.analysis.filter(item => item.grade === 'error').map(item => item._id);
+				const passAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'pass').map(([key]) => key);
+				const errorAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'error').map(([key]) => key);
+				const failAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'fail').map(([key]) => key);
 
 				//
 				// Update the current Ride with the analysis result
@@ -214,6 +205,12 @@ export async function validateRides() {
 					rideData._id,
 					{
 						analysis: rideData.analysis,
+						apex_locations_qty: rideData.apex_locations_qty,
+						apex_on_board_refunds_amount: rideData.apex_on_board_refunds_amount,
+						apex_on_board_refunds_qty: rideData.apex_on_board_refunds_qty,
+						apex_on_board_sales_amount: rideData.apex_on_board_sales_amount,
+						apex_on_board_sales_qty: rideData.apex_on_board_sales_qty,
+						apex_validations_qty: rideData.apex_validations_qty,
 						driver_ids: rideData.driver_ids,
 						end_time_observed: rideData.end_time_observed,
 						extension_observed: rideData.extension_observed,
@@ -221,7 +218,6 @@ export async function validateRides() {
 						seen_last_at: rideData.seen_last_at,
 						start_time_observed: rideData.start_time_observed,
 						system_status: 'complete',
-						validations_count: rideData.validations_count,
 						vehicle_ids: rideData.vehicle_ids,
 					},
 				);

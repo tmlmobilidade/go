@@ -6,8 +6,7 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'MATCHING_LOCATION_TRANSACTIONS'
-	reason: 'ALL_STOPS_HAVE_LOCATION_TRANSACTIONS' | 'MISSING_LOCATION_TRANSACTION_FOR_AT_LEAST_ONE_STOP'
+	reason: 'ALL_STOPS_HAVE_LOCATION_TRANSACTIONS' | 'MISSING_LOCATION_TRANSACTION_FOR_AT_LEAST_ONE_STOP' | 'NO_PATH_DATA'
 };
 
 /**
@@ -20,6 +19,16 @@ interface ExplicitRideAnalysis extends RideAnalysis {
 export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData): ExplicitRideAnalysis {
 	try {
 		//
+
+		if (!analysisData.hashed_trip?.path) {
+			return {
+				grade: 'fail',
+				message: 'No trip path data available.',
+				reason: 'NO_PATH_DATA',
+				unit: null,
+				value: null,
+			};
+		}
 
 		// 1.
 		// Initiate Sets
@@ -54,7 +63,6 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 
 		if (missingStopIds.size > 0) {
 			return {
-				_id: 'MATCHING_LOCATION_TRANSACTIONS',
 				grade: 'fail',
 				message: `At least one Stop ID was not found in Location Transactions. Missing Stop IDs: [${Array.from(missingStopIds).join('|')}]`,
 				reason: 'MISSING_LOCATION_TRANSACTION_FOR_AT_LEAST_ONE_STOP',
@@ -64,7 +72,6 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 		}
 
 		return {
-			_id: 'MATCHING_LOCATION_TRANSACTIONS',
 			grade: 'pass',
 			message: `Found ${locationTransactionsStopIds.size} Location Transactions for ${pathStopIds.size} Stop IDs.`,
 			reason: 'ALL_STOPS_HAVE_LOCATION_TRANSACTIONS',
@@ -76,7 +83,6 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 	}
 	catch (error) {
 		return {
-			_id: 'MATCHING_LOCATION_TRANSACTIONS',
 			grade: 'error',
 			message: error.message,
 			reason: null,

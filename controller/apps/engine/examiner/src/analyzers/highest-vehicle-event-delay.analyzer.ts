@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'HIGHEST_VEHICLE_EVENT_DELAY'
 	unit: 'HIGHEST_EVENT_DELAY_IN_MILLISECONDS'
 };
 
@@ -40,7 +39,6 @@ export function highestVehicleEventDelayAnalyzer(analysisData: AnalysisData): Ex
 		}
 
 		return {
-			_id: 'HIGHEST_VEHICLE_EVENT_DELAY',
 			grade: 'pass',
 			message: null,
 			reason: null,
@@ -52,7 +50,6 @@ export function highestVehicleEventDelayAnalyzer(analysisData: AnalysisData): Ex
 	}
 	catch (error) {
 		return {
-			_id: 'HIGHEST_VEHICLE_EVENT_DELAY',
 			grade: 'error',
 			message: error.message,
 			reason: null,

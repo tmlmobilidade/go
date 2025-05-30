@@ -7,7 +7,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'AVG_INTERVAL_VEHICLE_EVENTS'
 	reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS' | 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS' | 'NO_VEHICLE_EVENTS_FOUND'
 	unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS'
 };
@@ -28,7 +27,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 
 		if (analysisData.vehicle_events.length === 0) {
 			return {
-				_id: 'AVG_INTERVAL_VEHICLE_EVENTS',
 				grade: 'fail',
 				message: 'No vehicle events found.',
 				reason: 'NO_VEHICLE_EVENTS_FOUND',
@@ -66,7 +64,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 
 		if (avgIntervalBetweenEvents <= 20000) {
 			return {
-				_id: 'AVG_INTERVAL_VEHICLE_EVENTS',
 				grade: 'pass',
 				message: 'Average interval between events is within limits.',
 				reason: 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS',
@@ -76,7 +73,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 		}
 
 		return {
-			_id: 'AVG_INTERVAL_VEHICLE_EVENTS',
 			grade: 'fail',
 			message: 'Average interval between events is higher than limit.',
 			reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS',
@@ -88,7 +84,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 	}
 	catch (error) {
 		return {
-			_id: 'AVG_INTERVAL_VEHICLE_EVENTS',
 			grade: 'error',
 			message: error.message,
 			reason: null,

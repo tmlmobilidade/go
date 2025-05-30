@@ -17,7 +17,7 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/interfaces": "20250529.2227.8",
+		"@tmlmobilidade/interfaces": "20250530.115.54",
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
 		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
 		"mongodb": "6.16.0",
@@ -25,7 +25,7 @@
 	},
 	"devDependencies": {
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.15.24",
+		"@types/node": "22.15.26",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.4",
 		"typescript": "5.8.3"

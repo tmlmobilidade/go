@@ -580,7 +580,13 @@ async function createRidesFromGtfs() {
 							const rideData: Ride = {
 								_id: `${planData._id}-${routeData.agency_id}-${calendarDate}-${tripData.trip_id}`,
 								agency_id: routeData.agency_id,
-								analysis: [],
+								analysis: null,
+								apex_locations_qty: null,
+								apex_on_board_refunds_amount: null,
+								apex_on_board_refunds_qty: null,
+								apex_on_board_sales_amount: null,
+								apex_on_board_sales_qty: null,
+								apex_validations_qty: null,
 								created_at: Dates.now().unix_timestamp,
 								driver_ids: [],
 								end_time_observed: null,
@@ -595,6 +601,7 @@ async function createRidesFromGtfs() {
 								line_id: routeData.line_id,
 								operational_date: calendarDate,
 								passengers_estimated: null,
+								passengers_observed: null,
 								pattern_id: tripData.pattern_id,
 								plan_id: planData._id,
 								route_id: routeData.route_id,
@@ -605,7 +612,6 @@ async function createRidesFromGtfs() {
 								system_status: 'pending',
 								trip_id: tripData.trip_id,
 								updated_at: Dates.now().unix_timestamp,
-								validations_count: null,
 								vehicle_ids: [],
 							};
 							//

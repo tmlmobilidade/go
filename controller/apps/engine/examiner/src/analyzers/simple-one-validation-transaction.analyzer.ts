@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'SIMPLE_ONE_VALIDATION_TRANSACTION'
 	reason: 'FOUND_AT_LEAST_ONE_VALIDATION_TRANSACTION' | 'NO_VALIDATION_TRANSACTION_FOUND'
 	unit: 'VALIDATION_TRANSACTIONS_QTY'
 };
@@ -27,7 +26,6 @@ export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisDat
 
 		if (analysisData.simplified_apex_validations.length > 0) {
 			return {
-				_id: 'SIMPLE_ONE_VALIDATION_TRANSACTION',
 				grade: 'pass',
 				message: `Found ${analysisData.simplified_apex_validations.length} Validation Transactions for this trip.`,
 				reason: 'FOUND_AT_LEAST_ONE_VALIDATION_TRANSACTION',
@@ -37,7 +35,6 @@ export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisDat
 		}
 
 		return {
-			_id: 'SIMPLE_ONE_VALIDATION_TRANSACTION',
 			grade: 'fail',
 			message: 'No Validation Transactions found for this trip.',
 			reason: 'NO_VALIDATION_TRANSACTION_FOUND',
@@ -49,7 +46,6 @@ export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisDat
 	}
 	catch (error) {
 		return {
-			_id: 'SIMPLE_ONE_VALIDATION_TRANSACTION',
 			grade: 'error',
 			message: error.message,
 			reason: null,
