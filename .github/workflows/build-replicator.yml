@@ -9,7 +9,7 @@ on:
   push:
     paths:
       - 'replicator/packages/**'
-      - 'replicator/apps/engine/**'
+      - 'replicator/apps/**'
     branches:
       - production
       - staging
@@ -53,7 +53,7 @@ jobs:
         with:
           push: true
           context: ./replicator
-          file: ./replicator/apps/engine/enrich/Dockerfile
+          file: ./replicator/apps/enrich/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-enrich:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -91,7 +91,7 @@ jobs:
         with:
           push: true
           context: ./replicator
-          file: ./replicator/apps/engine/stream/Dockerfile
+          file: ./replicator/apps/stream/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-stream:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -129,7 +129,7 @@ jobs:
         with:
           push: true
           context: ./replicator
-          file: ./replicator/apps/engine/sync-apex-locations/Dockerfile
+          file: ./replicator/apps/sync-apex-locations/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-sync-apex-locations:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -167,7 +167,7 @@ jobs:
         with:
           push: true
           context: ./replicator
-          file: ./replicator/apps/engine/sync-apex-on-board-refunds/Dockerfile
+          file: ./replicator/apps/sync-apex-on-board-refunds/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-sync-apex-on-board-refunds:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -205,7 +205,7 @@ jobs:
         with:
           push: true
           context: ./replicator
-          file: ./replicator/apps/engine/sync-apex-on-board-sales/Dockerfile
+          file: ./replicator/apps/sync-apex-on-board-sales/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-sync-apex-on-board-sales:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -243,7 +243,7 @@ jobs:
         with:
           push: true
           context: ./replicator
-          file: ./replicator/apps/engine/sync-apex-validations/Dockerfile
+          file: ./replicator/apps/sync-apex-validations/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-sync-apex-validations:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -281,5 +281,5 @@ jobs:
         with:
           push: true
           context: ./replicator
-          file: ./replicator/apps/engine/sync-vehicle-events/Dockerfile
+          file: ./replicator/apps/sync-vehicle-events/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-sync-vehicle-events:${{ github.ref_name }}
