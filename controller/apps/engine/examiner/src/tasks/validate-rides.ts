@@ -28,7 +28,7 @@ import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
 import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simple-one-validation-transaction.analyzer.js';
 import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-validation-transaction.analyzer.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.analyzer.js';
-// import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.analyzer.js';
+import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.analyzer.js';
 import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 
 /* * */
@@ -38,7 +38,7 @@ function runAnalyzers(analysisData: AnalysisData): RideAnalysis[] {
 
 		/* * * * */
 
-		// transactionSequentialityAnalyzer(analysisData),
+		transactionSequentialityAnalyzer(analysisData),
 
 		//
 

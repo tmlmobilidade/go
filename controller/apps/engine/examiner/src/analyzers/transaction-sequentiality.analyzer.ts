@@ -101,18 +101,19 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			// If there are gaps, add them to the missingTransactions map
 			if (gaps.length > 0) missingTransactions.set(samSerialNumber, gaps);
 		}
-		// console.log('missingTransactions', missingTransactions);
 
-		// process.exit(0);
+		console.log('missingTransactions', missingTransactions);
 
-		// return {
-		// 	_id: 'TRANSACTION_SEQUENTIALITY',
-		// 	grade: 'pass',
-		// 	message: `Found ${locationTransactionsStopIds.size} Location Transactions for ${pathStopIds.size} Stop IDs.`,
-		// 	reason: 'ALL_STOPS_HAVE_LOCATION_TRANSACTIONS',
-		// 	unit: null,
-		// 	value: null,
-		// };
+		process.exit(0);
+
+		return {
+			_id: 'TRANSACTION_SEQUENTIALITY',
+			grade: 'fail',
+			message: `There are ${missingTransactions.size} Transactions.`,
+			reason: 'MISSING_TRANSACTIONS',
+			unit: null,
+			value: null,
+		};
 
 		//
 	}

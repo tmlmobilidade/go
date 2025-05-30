@@ -7,6 +7,7 @@
 		"clean": "sh cleanup.sh",
 		"dev:enrich": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-enrich",
 		"dev:stream": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-stream",
+		"dev:sync-apex": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-*",
 		"dev:sync-apex-locations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-locations",
 		"dev:sync-apex-on-board-refunds": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-refunds",
 		"dev:sync-apex-on-board-sales": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
