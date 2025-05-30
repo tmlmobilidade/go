@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'LESS_THAN_TEN_VEHICLE_EVENTS'
 	reason: 'FOUND_MORE_THAN_10_VEHICLE_EVENTS' | 'FOUND_ONLY_1_VEHICLE_EVENT' | `FOUND_ONLY_${number}_VEHICLE_EVENTS`
 	unit: 'VEHICLE_EVENTS_QTY'
 };
@@ -27,7 +26,6 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 
 		if (analysisData.vehicle_events.length > 10) {
 			return {
-				_id: 'LESS_THAN_TEN_VEHICLE_EVENTS',
 				grade: 'pass',
 				message: `Found ${analysisData.vehicle_events.length} Vehicle Events for this trip.`,
 				reason: 'FOUND_MORE_THAN_10_VEHICLE_EVENTS',
@@ -38,7 +36,6 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 
 		if (analysisData.vehicle_events.length === 1) {
 			return {
-				_id: 'LESS_THAN_TEN_VEHICLE_EVENTS',
 				grade: 'fail',
 				message: `Found ${analysisData.vehicle_events.length} Vehicle Events for this trip.`,
 				reason: 'FOUND_ONLY_1_VEHICLE_EVENT',
@@ -48,7 +45,6 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 		}
 
 		return {
-			_id: 'LESS_THAN_TEN_VEHICLE_EVENTS',
 			grade: 'fail',
 			message: `Found ${analysisData.vehicle_events.length} Vehicle Events for this trip.`,
 			reason: `FOUND_ONLY_${analysisData.vehicle_events.length}_VEHICLE_EVENTS`,
@@ -60,7 +56,6 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 	}
 	catch (error) {
 		return {
-			_id: 'LESS_THAN_TEN_VEHICLE_EVENTS',
 			grade: 'error',
 			message: error.message,
 			reason: null,

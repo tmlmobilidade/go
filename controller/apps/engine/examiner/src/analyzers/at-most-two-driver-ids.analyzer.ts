@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'AT_MOST_TWO_DRIVER_IDS'
 	reason: 'FOUND_MORE_THAN_2_DRIVER_IDS' | 'FOUND_ONE_OR_TWO_DRIVER_IDS' | 'NO_DRIVER_ID_FOUND'
 	unit: 'UNIQUE_DRIVER_IDS'
 };
@@ -24,7 +23,6 @@ export function atMostTwoDriverIdsAnalyzer(analysisData: AnalysisData): Explicit
 
 		if (analysisData.ride.driver_ids.length === 0) {
 			return {
-				_id: 'AT_MOST_TWO_DRIVER_IDS',
 				grade: 'fail',
 				message: 'No Driver IDs found for this trip.',
 				reason: 'NO_DRIVER_ID_FOUND',
@@ -35,7 +33,6 @@ export function atMostTwoDriverIdsAnalyzer(analysisData: AnalysisData): Explicit
 
 		if (analysisData.ride.driver_ids.length > 2) {
 			return {
-				_id: 'AT_MOST_TWO_DRIVER_IDS',
 				grade: 'fail',
 				message: `Found ${analysisData.ride.driver_ids.length} Driver IDs for this trip.`,
 				reason: 'FOUND_MORE_THAN_2_DRIVER_IDS',
@@ -45,7 +42,6 @@ export function atMostTwoDriverIdsAnalyzer(analysisData: AnalysisData): Explicit
 		}
 
 		return {
-			_id: 'AT_MOST_TWO_DRIVER_IDS',
 			grade: 'pass',
 			message: `Found ${analysisData.ride.driver_ids.length} Driver IDs for this trip.`,
 			reason: 'FOUND_ONE_OR_TWO_DRIVER_IDS',
@@ -57,7 +53,6 @@ export function atMostTwoDriverIdsAnalyzer(analysisData: AnalysisData): Explicit
 	}
 	catch (error) {
 		return {
-			_id: 'AT_MOST_TWO_DRIVER_IDS',
 			grade: 'error',
 			message: error.message,
 			reason: null,

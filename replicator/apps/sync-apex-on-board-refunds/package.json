@@ -1,0 +1,35 @@
+{
+	"name": "@tmlmobilidade/sae-replicator-sync-apex-on-board-refunds",
+	"version": "1.0.0",
+	"type": "module",
+	"files": ["dist"],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@helperkits/logger": "20240703.1726.24",
+		"@helperkits/timer": "20240627.34.23",
+		"@helperkits/writer": "20250303.1058.31",
+		"@tmlmobilidade/interfaces": "20250530.1052.55",
+		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
+		"@tmlmobilidade/sae-replicator-pckg-sync": "*",
+		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
+		"luxon": "3.6.1",
+		"mongodb": "6.16.0",
+		"tunnel-ssh": "5.2.0"
+	},
+	"devDependencies": {
+		"@types/luxon": "3.6.2",
+		"@types/node": "22.15.27",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.19.4",
+		"typescript": "5.8.3"
+	}
+}
