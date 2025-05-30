@@ -1,8 +1,8 @@
-.input_checkbox_container {
+.inputCheckboxContainer {
     display: flex;
     flex: 1 1 0px;
     flex-direction: row-reverse;
-    gap: 15px;
+    gap: var(--mantine-spacing-md);
     align-items: center;
     justify-content: start;
     min-width: 100%;
@@ -10,29 +10,30 @@
     height: 10vh;
     padding: var(--mantine-spacing-md);
     cursor: default;
-    background-color: #171b21;
-    border: 1px solid #2f343d;
-    border-radius: 5px;
+    background-color: var(--color-system-text-100);
+    border: 1px solid var(--color-system-text-200);
+    border-radius: var(--border-radius-sm);
 }
 
-.input_checkbox_container>div>div {
+.inputCheckboxContainer>div>div {
     align-items: center;
 }
 
-.input_checkbox {
+.inputCheckbox {
     max-width: inherit;
 }
 
-.input_checkbox>div {
+.inputCheckbox>div {
     max-width: inherit;
 }
 
-.input_checkbox>div>div:last-child {
+.inputCheckbox>div>div:last-child {
     max-width: 100%;
 }
 
-.input_checkbox>div>div:last-child>label {
+.inputCheckbox>div>div:last-child>label {
     max-width: inherit;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+

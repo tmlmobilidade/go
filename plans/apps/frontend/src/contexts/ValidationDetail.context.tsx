@@ -2,10 +2,11 @@
 
 /* * */
 
+import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { Routes } from '@/lib/routes';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { CreateValidationDto, CreateValidationSchema, File as TmlFile, Validation, ValidationSchema } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { closeModal, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -156,6 +157,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		});
 
 		setIsSaving(false);
+		closeModal(CREATE_VALIDATION_MODAL_ID);
 	};
 
 	const updateValidation = () => {

@@ -19,10 +19,6 @@ export const ApiRoutes = Object.freeze({
 });
 
 export const Routes = Object.freeze({
-	// Common
-	AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
-	URL: process.env.NEXT_PUBLIC_URL ?? 'https://alerts.sae.carrismetropolitana.pt',
-
 	// Other
 	...PageRoutes,
 	...ApiRoutes,

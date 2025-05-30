@@ -1,15 +1,19 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Section } from '@tmlmobilidade/ui';
 
-export default function StopMedia() {
+import { UploadFile } from './UploadFile';
+import { UploadImage } from './UploadImage';
+
+/* * */
+
+export function StopMedia({ actions, data }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopDetailContext = useStopDetailContext();
+	// const [file, setFile] = useState<File | null>(null);
 
 	//
 	// B. Render components
@@ -20,13 +24,26 @@ export default function StopMedia() {
 			title="Imagens & Vídeos"
 		>
 			<Section gap="md">
-				<Grid columns="abcd" gap="md">
-					{stopDetailContext.data.form.getValues().file_ids.map(file_id => <div key={file_id}>{file_id}</div>)}
-				</Grid>
-
-				<Grid columns="abcd" gap="md">
-					{stopDetailContext.data.form.getValues().image_ids.map(image_id => <div key={image_id}>{image_id}</div>)}
-				</Grid>
+				<UploadImage
+					actions={actions}
+					data={data}
+					// imageUrl={stopDetailContext.data.imageUrl}
+					// imageUrl="image.png"
+					// label="Imagem"
+					onDelete={() => alert('Image deleted!')}
+					// onDelete={stopDetailContext.actions.deleteImage}
+					// onFileChange={() => alert('File changed!')}
+				/>
+				<UploadFile
+					actions={actions}
+					data={data}
+					// imageUrl={stopDetailContext.data.imageUrl}
+					// imageUrl="image.png"
+					// label="Imagem"
+					onDelete={() => alert('File deleted!')}
+					// onDelete={stopDetailContext.actions.deleteImage}
+					// onFileChange={() => alert('File changed!')}
+				/>
 			</Section>
 		</Collapsible>
 	);

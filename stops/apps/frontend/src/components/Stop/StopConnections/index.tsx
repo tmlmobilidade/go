@@ -1,19 +1,19 @@
 'use client';
 
-import { useStopDetailContext } from '@/contexts/StopDetail.context';
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export default function Connections() {
+export function StopConnections() {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopDetailContext = useStopDetailContext();
+	const { actions, data } = useStopsDetailContext();
 
 	const connections = [
 		'airport',
@@ -49,15 +49,15 @@ export default function Connections() {
 		>
 			<Section gap="md">
 				<Grid columns="abcd" gap="md">
-					{connections.map((connection) => {
+					{connections.map((connection, index) => {
 						return (
-							<div className={styles.input_checkbox_container}>
+							<div key={index} className={styles.inputCheckboxContainer}>
 								<Checkbox
-									checked={stopDetailContext.data.form.getInputProps('connections').value.includes(connection)}
-									className={styles.input_checkbox}
+									checked={data.form.getInputProps('connections').value.includes(connection)}
+									className={styles.inputCheckbox}
 									label={ConnectionsValues[connection]}
-									onChange={(_) => {
-										stopDetailContext.actions.handleConnectionsChange(connection);
+									onChange={() => {
+										actions.handleConnectionsChange(connection);
 									}}
 								/>
 							</div>

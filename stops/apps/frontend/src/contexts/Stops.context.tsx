@@ -6,8 +6,8 @@
 import type { Stop } from '@tmlmobilidade/types';
 
 import { swrFetcher } from '@/lib/http';
-import { Routes } from '@/lib/routes';
-import { createContext, useContext } from 'react';
+import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -15,9 +15,11 @@ import useSWR from 'swr';
 interface StopsContextState {
 	actions: {
 		getStopById: (stopId: string) => Stop | undefined
+		getStopByIdGeoJsonFC: (stopId: string) => GeoJSON.FeatureCollection | undefined
 	}
 	data: {
 		stops: Stop[]
+		stops_fc: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined
 	}
 	flags: {
 		is_loading: boolean
@@ -45,7 +47,47 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	// A. Fetch data
 
 	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`/api/stops`, swrFetcher);
+
+	// const workerRef = useRef<null | Worker>(null);
+
+	const [dataStopsState] = useState<StopsContextState['data']['stops']>([]);
+	const [dataStopsFCState, setDataStopsFCState] = useState<StopsContextState['data']['stops_fc']>();
 	// const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${Routes.CMET_API}/stops`);
+
+	// useEffect(() => {
+	// 	// Check if all data is available
+	// 	if (!allStopsData) return;
+	// 	// Initialize worker if not already initialized
+	// 	if (!workerRef.current) {
+	// 		// workerRef.current = new Worker(new URL('../workers/extend-stops.worker.ts', import.meta.url));
+	// 		workerRef.current.onmessage = (event: MessageEvent) => setDataStopsState(event.data);
+	// 		workerRef.current.onerror = error => console.error('Worker error:', error);
+	// 	}
+	// 	// Extend data for worker and send message
+	// 	const eventMessage = {
+	// 		stops: allStopsData,
+	// 	};
+	// 	workerRef.current.postMessage(eventMessage);
+	// 	// Cleanup worker
+	// 	return () => {
+	// 		workerRef.current?.terminate();
+	// 		workerRef.current = null;
+	// 	};
+	// }, [allStopsData]);
+
+	useEffect(() => {
+		// Check if all data is available
+		if (!dataStopsState) return;
+		// Transform data into GeoJSON FeatureCollection
+		const collection = getBaseGeoJsonFeatureCollection();
+		dataStopsState.forEach((stop) => {
+			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
+			if (stopFC) collection.features.push(stopFC);
+		});
+		// Set state value
+		setDataStopsFCState(collection);
+		//
+	}, [dataStopsState]);
 
 	//
 	// B. Handle actions
@@ -54,20 +96,33 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 		return allStopsData?.find(stop => stop._id === stopId);
 	};
 
+	const getStopByIdGeoJsonFC = (stopId: string): GeoJSON.FeatureCollection | undefined => {
+		const stop = getStopById(stopId);
+		if (!stop) return;
+		const collection = getBaseGeoJsonFeatureCollection();
+		const stopFC = transformStopDataIntoGeoJsonFeature(stop);
+		if (stopFC) collection.features.push(stopFC);
+		return collection;
+	};
+
 	//
 	// C. Define context value
 
-	const contextValue: StopsContextState = {
-		actions: {
-			getStopById,
-		},
-		data: {
-			stops: allStopsData || [],
-		},
-		flags: {
-			is_loading: allStopsLoading,
-		},
-	};
+	const contextValue: StopsContextState = useMemo(() => {
+		return {
+			actions: {
+				getStopById,
+				getStopByIdGeoJsonFC,
+			},
+			data: {
+				stops: allStopsData || [],
+				stops_fc: dataStopsFCState,
+			},
+			flags: {
+				is_loading: allStopsLoading,
+			},
+		};
+	}, [allStopsData, allStopsLoading, dataStopsFCState]);
 
 	//
 	// D. Render components

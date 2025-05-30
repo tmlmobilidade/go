@@ -10,22 +10,21 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.31.0",
-		"@tmlmobilidade/gtfs-validator": "^20250430.1640.50",
-		"@tmlmobilidade/lib": "20250430.1718.14",
-		"@tmlmobilidade/types": "^20250430.1422.42",
-		"@tmlmobilidade/ui": "20250430.1817.32",
-		"@tmlmobilidade/utils": "20250424.2144.24",
+		"@tabler/icons-react": "3.33.0",
+		"@tmlmobilidade/lib": "20250528.1447.55",
+		"@tmlmobilidade/types": "20250528.1447.55",
+		"@tmlmobilidade/ui": "20250528.1447.55",
+		"@tmlmobilidade/utils": "20250528.1447.55",
 		"clsx": "2.1.1",
-		"next": "15.3.1",
+		"next": "15.3.2",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
-		"swr": "^2.3.3"
+		"swr": "2.3.3"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
-		"@tmlmobilidade/tsconfig": "20250325.1731.13",
-		"@types/luxon": "^3.6.2",
+		"@tmlmobilidade/tsconfig": "20250528.1447.55",
+		"@types/luxon": "3.6.2",
 		"@types/node": "22",
 		"@types/react": "19",
 		"@types/react-dom": "19",
