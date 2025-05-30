@@ -24,11 +24,11 @@ export function simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisDat
 		// 1.
 		// Test if at least one Vehicle Event is found
 
-		if (analysisData.vehicle_events.length > 0 || analysisData.apex_t11.length > 0) {
+		if (analysisData.vehicle_events.length > 0 || analysisData.simplified_apex_validations.length > 0) {
 			return {
 				_id: 'SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION',
 				grade: 'pass',
-				message: `Found ${analysisData.vehicle_events.length} Vehicle Events and ${analysisData.apex_t11.length} Validation Transactions for this trip.`,
+				message: `Found ${analysisData.vehicle_events.length} Vehicle Events and ${analysisData.simplified_apex_validations.length} Validation Transactions for this trip.`,
 				reason: 'FOUND_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION',
 				unit: null,
 				value: null,

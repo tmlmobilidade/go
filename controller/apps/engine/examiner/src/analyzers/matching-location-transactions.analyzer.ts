@@ -34,7 +34,7 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 			pathStopIds.add(pathStop.stop_id);
 		}
 
-		for (const locationTransaction of analysisData.apex_t19) {
+		for (const locationTransaction of analysisData.simplified_apex_locations) {
 			locationTransactionsStopIds.add(locationTransaction.stop_id);
 		}
 

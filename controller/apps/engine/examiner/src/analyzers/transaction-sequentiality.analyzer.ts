@@ -1,7 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { ApexT11, ApexT19, type RideAnalysis } from '@tmlmobilidade/types';
+import { type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -26,7 +26,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 
 		const transactionsBySamSerialNumber = new Map<number, number[]>();
 
-		for (const transaction of analysisData.apex_t11) {
+		for (const transaction of analysisData.simplified_apex_locations) {
 			if (transaction.mac_sam_serial_number) {
 				// Check if the transaction is already in the map
 				if (!transactionsBySamSerialNumber.has(transaction.mac_sam_serial_number)) {
@@ -38,9 +38,31 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			}
 		}
 
-		// console.log('analysisData.apex_t19.length', analysisData.apex_t19.length);
+		for (const transaction of analysisData.simplified_apex_on_board_refunds) {
+			if (transaction.mac_sam_serial_number) {
+				// Check if the transaction is already in the map
+				if (!transactionsBySamSerialNumber.has(transaction.mac_sam_serial_number)) {
+					// If not, create a new array for this SAM Serial Number
+					transactionsBySamSerialNumber.set(transaction.mac_sam_serial_number, []);
+				}
+				// Add the ASE Counter Value to the array for this SAM Serial Number
+				transactionsBySamSerialNumber.get(transaction.mac_sam_serial_number)?.push(transaction.mac_ase_counter_value);
+			}
+		}
 
-		for (const transaction of analysisData.apex_t19) {
+		for (const transaction of analysisData.simplified_apex_on_board_sales) {
+			if (transaction.mac_sam_serial_number) {
+				// Check if the transaction is already in the map
+				if (!transactionsBySamSerialNumber.has(transaction.mac_sam_serial_number)) {
+					// If not, create a new array for this SAM Serial Number
+					transactionsBySamSerialNumber.set(transaction.mac_sam_serial_number, []);
+				}
+				// Add the ASE Counter Value to the array for this SAM Serial Number
+				transactionsBySamSerialNumber.get(transaction.mac_sam_serial_number)?.push(transaction.mac_ase_counter_value);
+			}
+		}
+
+		for (const transaction of analysisData.simplified_apex_validations) {
 			if (transaction.mac_sam_serial_number) {
 				// Check if the transaction is already in the map
 				if (!transactionsBySamSerialNumber.has(transaction.mac_sam_serial_number)) {

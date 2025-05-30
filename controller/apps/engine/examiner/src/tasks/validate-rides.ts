@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { apexT11, apexT19, hashedShapes, hashedTrips, rides, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { ALLOWED_VALIDATION_STATUSES, type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
@@ -134,11 +134,29 @@ export async function validateRides() {
 
 				const hashedShapePromise = hashedShapes.findById(rideData.hashed_shape_id);
 				const hashedTripPromise = hashedTrips.findById(rideData.hashed_trip_id);
-				const apexT11Promise = apexT11.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
-				const apexT19Promise = apexT19.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
+				const simplifiedApexLocationsPromise = simplifiedApexLocations.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
+				const simplifiedApexOnBoardRefundsPromise = simplifiedApexOnBoardRefunds.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
+				const simplifiedApexOnBoardSalesPromise = simplifiedApexOnBoardSales.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
+				const simplifiedApexValidationsPromise = simplifiedApexValidations.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
 				const vehicleEventsPromise = vehicleEvents.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, extra_trip_id: null, trip_id: rideData.trip_id });
 
-				const [hashedShapeData, hashedTripData, apexT11Data, apexT19Data, vehicleEventsData] = await Promise.all([hashedShapePromise, hashedTripPromise, apexT11Promise, apexT19Promise, vehicleEventsPromise]);
+				const [
+					hashedShapeData,
+					hashedTripData,
+					simplifiedApexLocationsData,
+					simplifiedApexOnBoardRefundsData,
+					simplifiedApexOnBoardSalesData,
+					simplifiedApexValidationsData,
+					vehicleEventsData,
+				] = await Promise.all([
+					hashedShapePromise,
+					hashedTripPromise,
+					simplifiedApexLocationsPromise,
+					simplifiedApexOnBoardRefundsPromise,
+					simplifiedApexOnBoardSalesPromise,
+					simplifiedApexValidationsPromise,
+					vehicleEventsPromise,
+				]);
 
 				const fetchAnalysisDataTime = fetchAnalysisDataTimer.get();
 
@@ -146,11 +164,13 @@ export async function validateRides() {
 				// Build the analysis data object to be passed to the analyzers.
 
 				const analysisData: AnalysisData = {
-					apex_t11: apexT11Data,
-					apex_t19: apexT19Data,
 					hashed_shape: hashedShapeData,
 					hashed_trip: hashedTripData,
 					ride: rideData,
+					simplified_apex_locations: simplifiedApexLocationsData,
+					simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData,
+					simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData,
+					simplified_apex_validations: simplifiedApexValidationsData,
 					vehicle_events: vehicleEventsData,
 				};
 
@@ -174,7 +194,7 @@ export async function validateRides() {
 
 				rideData.driver_ids = Array.from(new Set(vehicleEventsData.map(item => item.driver_id).filter(Boolean)));
 				rideData.vehicle_ids = Array.from(new Set(vehicleEventsData.map(item => item.vehicle_id).filter(Boolean)));
-				rideData.validations_count = apexT11Data.filter(item => ALLOWED_VALIDATION_STATUSES.includes(item.validation_status)).length;
+				rideData.validations_count = simplifiedApexValidationsData.filter(item => ALLOWED_VALIDATION_STATUSES.includes(item.validation_status)).length;
 
 				//
 				// Run the analyzers and count how many passed,

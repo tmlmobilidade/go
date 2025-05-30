@@ -25,14 +25,14 @@ export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisDat
 		// 1.
 		// Test if at least one Validation Transaction is found
 
-		if (analysisData.apex_t11.length > 0) {
+		if (analysisData.simplified_apex_validations.length > 0) {
 			return {
 				_id: 'SIMPLE_ONE_VALIDATION_TRANSACTION',
 				grade: 'pass',
-				message: `Found ${analysisData.apex_t11.length} Validation Transactions for this trip.`,
+				message: `Found ${analysisData.simplified_apex_validations.length} Validation Transactions for this trip.`,
 				reason: 'FOUND_AT_LEAST_ONE_VALIDATION_TRANSACTION',
 				unit: 'VALIDATION_TRANSACTIONS_QTY',
-				value: analysisData.apex_t11.length,
+				value: analysisData.simplified_apex_validations.length,
 			};
 		}
 
