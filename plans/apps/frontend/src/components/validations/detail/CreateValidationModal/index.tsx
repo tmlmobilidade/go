@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-const MODAL_ID = 'create-validation-modal';
+export const CREATE_VALIDATION_MODAL_ID = 'create-validation-modal';
 
 export const OpenCreateValidationModal = () => {
 	openModal({
@@ -17,7 +17,7 @@ export const OpenCreateValidationModal = () => {
 				<CreateValidationModal />
 			</ValidationDetailContextProvider>
 		),
-		modalId: MODAL_ID,
+		modalId: CREATE_VALIDATION_MODAL_ID,
 		size: 'auto',
 		withCloseButton: false,
 	});
@@ -74,7 +74,7 @@ export default function CreateValidationModal() {
 					value={validFrom}
 					onChange={(date) => {
 						validationDetailContext.data.form.setValues({
-							valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
+							valid_from: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 					withAsterisk
@@ -87,7 +87,7 @@ export default function CreateValidationModal() {
 					value={validUntil}
 					onChange={(date) => {
 						validationDetailContext.data.form.setValues({
-							valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
+							valid_until: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
 						});
 					}}
 				/>
@@ -107,10 +107,11 @@ export default function CreateValidationModal() {
 
 	const renderActionButtons = () => (
 		<Grid columns="ab" gap="md">
-			<Button label="Cancelar" onClick={() => closeModal(MODAL_ID)} variant="danger" fullWidth />
+			<Button label="Cancelar" onClick={() => closeModal(CREATE_VALIDATION_MODAL_ID)} variant="danger" fullWidth />
 			<Button
 				disabled={!validationDetailContext.flags.canSave || validationDetailContext.flags.isSaving}
 				label="Criar validação"
+				loading={validationDetailContext.flags.isSaving}
 				onClick={validationDetailContext.actions.saveValidation}
 				variant="primary"
 				fullWidth

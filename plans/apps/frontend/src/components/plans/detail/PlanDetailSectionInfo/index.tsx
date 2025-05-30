@@ -52,7 +52,7 @@ export function PlanDetailSectionInfo() {
 						value={validFrom}
 						onChange={(date) => {
 							planDetailContext.data.form.setValues({
-								valid_from: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
+								valid_from: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
 							});
 						}}
 						withAsterisk
@@ -66,7 +66,7 @@ export function PlanDetailSectionInfo() {
 						onChange={(date) => {
 							console.log('date', date);
 							planDetailContext.data.form.setValues({
-								valid_until: Dates.fromJSDate(date).setZone('Europe/Lisbon').operational_date,
+								valid_until: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
 							});
 						}}
 					/>

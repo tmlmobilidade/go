@@ -6,14 +6,14 @@
 }
 
 .button {
-    color: #fff;
-    background-color: #343a40;
-    border: 0.0625rem solid transparent;
+    color: var(--color-system-background-100);
+    background-color: var(--color-system-text-200);
+    border: 1px solid transparent;
     box-shadow: 0 1px 3px 0 transparent;
 }
 
 .button:hover {
-    background-color: #212529;
+    background-color: var(--color-system-text-100);
 }
 
 .icon {
@@ -22,13 +22,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
+    padding: 0px var(--size-spacing-xs);
     height: 100%;
     cursor: pointer;
-    border-radius: 0.25rem;
+    border-radius: var(--size-spacing-xs);
     aspect-ratio: 1 / 1;
 }
 
 .icon:hover {
-    background-color: #363C42;
+    background-color: var(--color-system-text-100);
 }

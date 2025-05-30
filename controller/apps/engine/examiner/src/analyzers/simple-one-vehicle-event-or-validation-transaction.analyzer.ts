@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION'
 	reason: 'FOUND_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION' | 'NO_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_FOUND'
 };
 
@@ -24,11 +23,10 @@ export function simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisDat
 		// 1.
 		// Test if at least one Vehicle Event is found
 
-		if (analysisData.vehicle_events.length > 0 || analysisData.apex_t11.length > 0) {
+		if (analysisData.vehicle_events.length > 0 || analysisData.simplified_apex_validations.length > 0) {
 			return {
-				_id: 'SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION',
 				grade: 'pass',
-				message: `Found ${analysisData.vehicle_events.length} Vehicle Events and ${analysisData.apex_t11.length} Validation Transactions for this trip.`,
+				message: `Found ${analysisData.vehicle_events.length} Vehicle Events and ${analysisData.simplified_apex_validations.length} Validation Transactions for this trip.`,
 				reason: 'FOUND_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION',
 				unit: null,
 				value: null,
@@ -36,7 +34,6 @@ export function simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisDat
 		}
 
 		return {
-			_id: 'SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION',
 			grade: 'fail',
 			message: 'No Vehicle Events or Validation Transactions found for this trip.',
 			reason: 'NO_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_FOUND',
@@ -48,7 +45,6 @@ export function simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisDat
 	}
 	catch (error) {
 		return {
-			_id: 'SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION',
 			grade: 'error',
 			message: error.message,
 			reason: null,

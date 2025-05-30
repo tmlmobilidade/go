@@ -1,49 +1,37 @@
 'use client';
 
-/* * */
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
+// import { useManualContext } from '@/contexts/Manual.context';
+// import { useDisclosure } from '@mantine/hooks';
 
-import { useManualContext } from '@/contexts/Manual.context';
-import { useStopsContext } from '@/contexts/Stops.context';
-import { Stop } from '@tmlmobilidade/types';
-// import { Stop } from '@carrismetropolitana/api-types/network';
-import { useDisclosure } from '@mantine/hooks';
-
-/* * */
-
-import List from '../List';
-import Item from '../List/Item';
-import PatternsModal from '../PatternsModal';
-import Left from './Left';
-import Right from './Right';
+import { Left } from './Left';
+import { Right } from './Right';
 import styles from './styles.module.css';
 
 /* * */
 
-export default function SpecificHeader() {
+export function SpecificHeader() {
 	//
 
 	//
 	// A. Setup variables
 
+	const { data } = useStopsDetailContext();
+
 	// Contexts
-	const { isManual } = useManualContext();
-	const { actions } = useStopsContext();
+	// const { isManual } = useManualContext();
 
 	// Hooks
-	const [opened, { close, open }] = useDisclosure(false);
+	// const [opened, { close, open }] = useDisclosure(false);
 
-	// const stopDetailContext = useStopDetailContext();
-
-	// const { data: stop } = stopDetailContext;
-	// console.log('=> latitude', stop.form.getValues().latitude);
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.header}>
-			<Left isManual={isManual} />
+			<Left data={data} />
 
-			<Right open={open} />
+			<Right data={data} />
 
 			{/* <PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
 				<List>

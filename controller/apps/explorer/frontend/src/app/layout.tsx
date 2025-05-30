@@ -66,7 +66,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 
 								<AppWrapper>
 									<RidesCatalogContextProvider>
-										<NavigationProgress size={5} zIndex={100} />
+										{/* <NavigationProgress size={5} zIndex={100} /> */}
 										{children}
 									</RidesCatalogContextProvider>
 								</AppWrapper>

@@ -5,15 +5,13 @@
 import { ValidationsListFilters } from '@/components/validations/list/ValidationsListFilters';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { useValidationListContext } from '@/contexts/ValidationList.context';
-import { Routes } from '@/lib/routes';
-import { IconLock, IconLockOff } from '@tabler/icons-react';
-import { type Validation } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, Pane, Tag } from '@tmlmobilidade/ui';
+import { IconArrowRight } from '@tabler/icons-react';
+import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
+import { Pane, Section, Tag } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
-import AgencyCell from '../AgencyCell';
-import DateCell from '../DateCell';
-import StatusCell from '../StatusCell';
+import styles from './styles.module.css';
 
 /* * */
 
@@ -25,44 +23,6 @@ export function ValidationList() {
 
 	const router = useRouter();
 	const { data, flags } = useValidationListContext();
-
-	const columns: DataTableColumn<Validation>[] = [
-		{
-			accessor: 'feeder_status',
-			render: ({ feeder_status }) => <StatusCell status={feeder_status} />,
-			title: 'Status',
-			width: 200,
-		},
-		{
-			accessor: 'agency_id',
-			render: ({ agency_id }) => {
-				return <AgencyCell agencyId={agency_id} />;
-			},
-			title: 'Operador',
-			width: 300,
-		},
-		{
-			accessor: 'is_locked',
-			center: true,
-			render: ({ is_locked }) => {
-				return is_locked ? <Tag icon={<IconLock />} variant="danger" /> : <Tag icon={<IconLockOff />} variant="success" />;
-			},
-			title: 'Bloqueado',
-			width: 100,
-		},
-		{
-			accessor: 'valid_from',
-			render: ({ valid_from }) => <DateCell date={valid_from} endDate={valid_from} />,
-			title: 'Data de início',
-			width: 300,
-		},
-		{
-			accessor: 'valid_until',
-			render: ({ valid_until }) => <DateCell date={valid_until} endDate={valid_until} />,
-			title: 'Data de fim',
-			width: 300,
-		},
-	];
 
 	//
 	// B. Render components
@@ -80,14 +40,26 @@ export function ValidationList() {
 			<ValidationsListFilters />,
 		]}
 		>
-			<DataTable
-				columns={columns}
-				records={data.filtered}
-				rowIdAccessor="_id"
-				onRowClick={(validation) => {
-					router.push(Routes.VALIDATION_DETAIL(validation._id));
-				}}
-			/>
+			{data.filtered.map(Validation => (
+				<div className={styles.root} onClick={() => router.push(`/validations/${Validation._id}`)}>
+					<Section key={Validation._id} alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
+						<Tag label={Validation._id} variant="muted" />
+						<Tag label={AVAILABLE_AGENCIES.find(agency => agency._id === Validation.agency_id)?.name} variant="secondary" />
+					</Section>
+					<Section alignItems="center" flexDirection="row" gap="md">
+						<Section alignItems="center" flexDirection="row" gap="sm">
+							<Tag label={Dates.fromOperationalDate(Validation.valid_from).toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
+							<IconArrowRight size={16} />
+							<Tag
+								label={Dates.fromOperationalDate(Validation.valid_until).toLocaleString(Dates.FORMATS.DATE_SHORT)}
+								variant={
+									Dates.now().operational_date > Validation.valid_until ? 'danger' : 'warning'
+								}
+							/>
+						</Section>
+					</Section>
+				</div>
+			))}
 		</Pane>
 	);
 

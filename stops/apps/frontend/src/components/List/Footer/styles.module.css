@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: #c1c2c5;
+    padding: var(--mantine-spacing-sm);
+    border-top: 1px solid var(--color-system-text-100);
+    cursor: default;
+}

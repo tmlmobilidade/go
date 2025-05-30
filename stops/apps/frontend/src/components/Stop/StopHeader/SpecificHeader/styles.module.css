@@ -1,18 +1,18 @@
 .header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
     gap: var(--mantine-spacing-sm);
-    padding: var(--mantine-spacing-sm);
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
+    padding: var(--mantine-spacing-sm);
 }
 
 .section {
     display: flex;
     flex-direction: row;
-    align-items: center;
     gap: var(--mantine-spacing-sm);
+    align-items: center;
 }
 
 .icon {
@@ -21,55 +21,55 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
     height: 100%;
-    cursor: pointer;
-    border-radius: 0.25rem;
     aspect-ratio: 1 / 1;
+    padding: 0 var(--border-radius-sm);
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
 }
 
 .icon:hover {
-    background-color: #363C42;
+    background-color: var(--color-system-text-100);
 }
 
-.icon_blue {
+.iconBlue {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
     height: 100%;
-    cursor: pointer;
-    border-radius: 0.25rem;
     aspect-ratio: 1 / 1;
+    padding: 0 var(--border-radius-sm);
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
 }
 
-.icon_blue>svg {
-    stroke: #74c0fc;
+.iconBlue>svg {
+    stroke: var(--color-status-info-primary);
 }
 
-.icon_blue:hover {
-    background-color: #253B53;
+.iconBlue:hover {
+    background-color: var(--color-system-text-100);
 }
 
-.icon_green {
+.iconGreen {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 4px;
     height: 100%;
-    cursor: pointer;
-    border-radius: 0.25rem;
     aspect-ratio: 1 / 1;
+    padding: 0 var(--border-radius-sm);
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
 }
 
-.icon_green>svg {
-    stroke: #8CE999;
+.iconGreen>svg {
+    stroke: var(--color-brand-go-100);
 }
 
-.icon_green:hover {
-    background-color: #344B37;
+.iconGreen:hover {
+    background-color: var(--color-system-text-100);
 }
