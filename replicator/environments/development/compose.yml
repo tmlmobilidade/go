@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-replicator-dev
+name: tmlmobilidade-sae-replicator
 
 services:
   #
