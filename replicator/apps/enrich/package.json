@@ -20,11 +20,13 @@
 		"@tmlmobilidade/interfaces": "20250530.1052.55",
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
 		"@tmlmobilidade/sae-replicator-pckg-sync": "*",
-		"@tmlmobilidade/sae-replicator-pckg-utils": "*"
+		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
+		"@tmlmobilidade/utils": "20250530.1052.55"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250530.1052.55",
-		"@types/node": "22.15.27",
+		"@tmlmobilidade/types": "20250530.1052.55",
+		"@types/node": "22.15.28",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.4",
 		"typescript": "5.8.3"

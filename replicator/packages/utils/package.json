@@ -10,12 +10,13 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20250530.1052.55",
 		"@turf/turf": "7.2.0",
 		"luxon": "3.6.1"
 	},
 	"devDependencies": {
-		"@types/node": "22.15.27",
+		"@tmlmobilidade/tsconfig": "20250530.1052.55",
+		"@tmlmobilidade/types": "20250530.1052.55",
+		"@types/node": "22.15.28",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
 	}

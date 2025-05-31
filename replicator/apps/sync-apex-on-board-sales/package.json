@@ -26,8 +26,9 @@
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "20250530.1052.55",
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.15.27",
+		"@types/node": "22.15.28",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.4",
 		"typescript": "5.8.3"
