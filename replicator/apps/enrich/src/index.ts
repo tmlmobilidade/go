@@ -7,7 +7,7 @@ import { validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApe
 
 /* * */
 
-const RUN_INTERVAL = 300000; // 5 minutes
+const RUN_INTERVAL = 60_000; // 1 minute
 
 /**
  * This function links Refunds with Sales and Validation transactions.
@@ -41,7 +41,7 @@ async function linkRefundsToSalesToValidations() {
 		const unlinkedOnBoardRefundsBatch = simplifiedApexOnBoardRefundsCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			.limit(1000)
+			.limit(5000)
 			.stream();
 
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
@@ -140,7 +140,7 @@ async function linkSalesToValidations() {
 		const unlinkedOnBoardSalesBatch = simplifiedApexOnBoardSalesCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			.limit(1000)
+			.limit(5000)
 			.stream();
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
