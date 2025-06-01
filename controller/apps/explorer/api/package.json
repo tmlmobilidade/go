@@ -18,8 +18,8 @@
 		"@fastify/websocket": "11.1.0",
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250601.1313.35",
-		"@tmlmobilidade/lib": "20250601.1313.35",
+		"@tmlmobilidade/interfaces": "20250601.1326.53",
+		"@tmlmobilidade/lib": "20250601.1326.53",
 		"@tmlmobilidade/sae-controller-pckg-utils": "*",
 		"fastify": "5.3.3",
 		"luxon": "3.6.1"
