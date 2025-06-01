@@ -4,13 +4,12 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
-import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Ride, type UnixTimestamp, validateOperationalDate } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
 import fs from 'fs';
-import { DateTime } from 'luxon';
 
 /* * */
 
@@ -889,13 +888,11 @@ const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: stri
 	// Extract the individual components of the time string (HH:MM:SS)
 	const [hoursOperation, minutesOperation, secondsOperation] = timeString.split(':').map(Number);
 
-	return validateUnixTimestamp(
-		DateTime
-			.fromFormat(operationalDate, OPERATIONAL_DATE_FORMAT)
-			.setZone('Europe/Lisbon')
-			.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-			.toMillis(),
-	);
+	return Dates
+		.fromOperationalDate(operationalDate)
+		.setZone('Europe/Lisbon')
+		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
+		.unix_timestamp;
 
 	//
 };
