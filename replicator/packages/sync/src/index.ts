@@ -4,7 +4,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { type MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 
 /* * */
 

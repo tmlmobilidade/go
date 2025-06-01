@@ -1,7 +1,7 @@
 /* * */
 
 import { type UnixTimestamp } from '@tmlmobilidade/types';
-import { DateTime } from 'luxon';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -20,10 +20,10 @@ const STANDARD_WINDOW_HOURS = 10;
  */
 export function getStandardWindowInterval(timestamp?: UnixTimestamp): { end: UnixTimestamp, start: UnixTimestamp } {
 	// If no timestamp is provided, use the current time
-	const dateObject = timestamp ? DateTime.fromMillis(timestamp) : DateTime.now();
+	const dateObject = timestamp ? Dates.fromMillis(timestamp) : Dates.now();
 	// Return the start and end of the standard window interval
 	return {
-		end: dateObject.plus({ hours: STANDARD_WINDOW_HOURS }).toMillis() as UnixTimestamp,
-		start: dateObject.minus({ hours: STANDARD_WINDOW_HOURS }).toMillis() as UnixTimestamp,
+		end: dateObject.plus({ hours: STANDARD_WINDOW_HOURS }).unix_timestamp,
+		start: dateObject.minus({ hours: STANDARD_WINDOW_HOURS }).unix_timestamp,
 	};
 }

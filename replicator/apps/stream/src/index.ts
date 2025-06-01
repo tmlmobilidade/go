@@ -1,9 +1,9 @@
 /* * */
 
-import PCGIDB from '@/services/PCGIDB.js';
 import { processApexLocation } from '@/tasks/process-apex-location.js';
 import { processApexValidation } from '@/tasks/process-apex-validation.js';
 import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
+import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
 
 /* * */
 
