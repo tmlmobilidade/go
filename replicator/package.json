@@ -4,7 +4,6 @@
 	"scripts": {
 		"build": "turbo build",
 		"build:packages": "turbo build --filter=@tmlmobilidade/sae-replicator-pckg-*",
-		"clean": "sh cleanup.sh",
 		"dev:enrich": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-enrich",
 		"dev:stream": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-stream",
 		"dev:sync-apex": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-*",
@@ -12,7 +11,8 @@
 		"dev:sync-apex-on-board-refunds": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-refunds",
 		"dev:sync-apex-on-board-sales": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
 		"dev:sync-apex-validations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-validations",
-		"lint": "turbo lint"
+		"lint": "turbo lint",
+		"purge": "sh purge.sh"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",

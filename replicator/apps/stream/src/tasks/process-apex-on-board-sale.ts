@@ -64,7 +64,7 @@ export async function processApexOnBoardSale(databaseOperation) {
 			// Invalidate all rides that are affected
 			const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
 			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [apex_t19]: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
+			LOGGER.info(`Flush [simplified_apex_on_board_sales]: Marked ${result.modifiedCount} Rides as 'pending' due to new simplified_apex_on_board_sales data (${invalidationTimer.get()})`);
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);
