@@ -5,8 +5,8 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -55,7 +55,7 @@ export async function processApexOnBoardSale(databaseOperation) {
 			const invalidationTimer = new TIMETRACKER();
 			// Map the flushed data to the query that will be used to invalidate the rides
 			const updates = flushedData.map((writeOp) => {
-				const standardWindowInterval = getStandardWindowInterval(writeOp.data.created_at);
+				const standardWindowInterval = Dates.fromUnixTimestamp(writeOp.data.created_at).std_window;
 				return {
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 					trip_id: writeOp.data.trip_id,

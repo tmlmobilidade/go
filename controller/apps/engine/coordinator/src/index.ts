@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { rides } from '@tmlmobilidade/interfaces';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
+import { Dates } from '@tmlmobilidade/utils';
 import Fastify from 'fastify';
 
 /* * */
@@ -48,7 +48,7 @@ import Fastify from 'fastify';
 		// sorted in descending order to prioritize the most recent rides.
 
 		const batchSize = 750;
-		const standardWindowInterval = getStandardWindowInterval();
+		const standardWindowInterval = Dates.now('utc').std_window;
 
 		const fetchTimer = new TIMETRACKER();
 

@@ -6,8 +6,9 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
-import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type SimplifiedApexValidation, type UnixTimestamp } from '@tmlmobilidade/types';
+import { CHUNK_LOG_DATE_FORMAT, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 import { DateTime, Interval } from 'luxon';
 
 /* * */
@@ -74,11 +75,11 @@ export async function syncApexValidations() {
 					// Extract the unique trip_ids from the flushed data
 					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
 					// Get the earliest and latest timestamps from the flushed data
-					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
-					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
+					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at));
+					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at));
 					// Create a standard window interval based on the earliest and latest timestamps
-					const earliestStandardWindowInterval = getStandardWindowInterval(earliestTimestamp);
-					const latestStandardWindowInterval = getStandardWindowInterval(latestTimestamp);
+					const earliestStandardWindowInterval = Dates.fromUnixTimestamp(earliestTimestamp).std_window;
+					const latestStandardWindowInterval = Dates.fromUnixTimestamp(latestTimestamp).std_window;
 					// Invalidate all rides that are affected
 					const result = await rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
