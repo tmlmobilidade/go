@@ -523,8 +523,8 @@ async function createRidesFromGtfs() {
 						const hashedTripData: HashedTrip = {
 							...hashableHashedTripData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedTripData)).digest('hex'),
-							created_at: Dates.now().unix_timestamp,
-							updated_at: Dates.now().unix_timestamp,
+							created_at: Dates.now('utc').unix_timestamp,
+							updated_at: Dates.now('utc').unix_timestamp,
 						};
 
 						const currentHashedTripAlreadyExists = await hashedTrips.findById(hashedTripData._id);
@@ -548,8 +548,8 @@ async function createRidesFromGtfs() {
 						const hashedShapeData: HashedShape = {
 							...hashableHashedShapeData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedShapeData)).digest('hex'),
-							created_at: Dates.now().unix_timestamp,
-							updated_at: Dates.now().unix_timestamp,
+							created_at: Dates.now('utc').unix_timestamp,
+							updated_at: Dates.now('utc').unix_timestamp,
 						};
 
 						const currentHashedShapeAlreadyExists = await hashedShapes.findById(hashedShapeData._id);
@@ -586,7 +586,7 @@ async function createRidesFromGtfs() {
 								apex_on_board_sales_amount: null,
 								apex_on_board_sales_qty: null,
 								apex_validations_qty: null,
-								created_at: Dates.now().unix_timestamp,
+								created_at: Dates.now('utc').unix_timestamp,
 								driver_ids: [],
 								end_time_observed: null,
 								end_time_scheduled: endTimeScheduledDate,
@@ -610,7 +610,7 @@ async function createRidesFromGtfs() {
 								start_time_scheduled: startTimeScheduledDate,
 								system_status: 'pending',
 								trip_id: tripData.trip_id,
-								updated_at: Dates.now().unix_timestamp,
+								updated_at: Dates.now('utc').unix_timestamp,
 								vehicle_ids: [],
 							};
 							//
@@ -889,9 +889,8 @@ const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: stri
 	const [hoursOperation, minutesOperation, secondsOperation] = timeString.split(':').map(Number);
 
 	return Dates
-		.fromOperationalDate(operationalDate)
+		.fromOperationalDate(operationalDate, 'Europe/Lisbon')
 		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-		.setZone('Europe/Lisbon')
 		.unix_timestamp;
 
 	//

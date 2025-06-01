@@ -3,8 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -116,7 +116,7 @@ export async function validateRides() {
 
 				const fetchAnalysisDataTimer = new TIMETRACKER();
 
-				const standardWindowInterval = getStandardWindowInterval(rideData.start_time_scheduled);
+				const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
 				const hashedShapePromise = hashedShapes.findById(rideData.hashed_shape_id);
 				const hashedTripPromise = hashedTrips.findById(rideData.hashed_trip_id);

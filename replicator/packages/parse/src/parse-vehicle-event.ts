@@ -19,12 +19,12 @@ export function parseVehicleEvent(pcgiDoc: any): null | VehicleEvent {
 			longitude: pcgiDoc.content.entity[0].vehicle.position.longitude,
 			odometer: pcgiDoc.content.entity[0].vehicle.position.odometer,
 			pattern_id: pcgiDoc.content.entity[0].vehicle.trip?.patternId,
-			received_at: Dates.fromMillis(pcgiDoc.millis).unix_timestamp,
+			received_at: Dates.fromUnixTimestamp(pcgiDoc.millis).unix_timestamp,
 			stop_id: pcgiDoc.content.entity[0].vehicle.stopId,
 			trigger_activity: pcgiDoc.content.entity[0].vehicle.trigger.activity,
 			trigger_door: pcgiDoc.content.entity[0].vehicle.trigger.door,
 			trip_id: pcgiDoc.content.entity[0].vehicle.trip?.tripId,
-			updated_at: Dates.fromMillis(pcgiDoc.millis).unix_timestamp,
+			updated_at: Dates.fromUnixTimestamp(pcgiDoc.millis).unix_timestamp,
 			vehicle_id: pcgiDoc.content.entity[0].vehicle.vehicle._id,
 		};
 	}
