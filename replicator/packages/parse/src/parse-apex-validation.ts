@@ -34,7 +34,7 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 		};
 	}
 	catch (error) {
-		console.error(`Error parsing simplified APEX Validation. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error);
+		console.error(`Error parsing simplified APEX Validation. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
 }

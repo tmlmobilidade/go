@@ -29,7 +29,7 @@ export function parseVehicleEvent(pcgiDoc: any): null | VehicleEvent {
 		};
 	}
 	catch (error) {
-		console.error(`Error parsing Vehicle Event. Transaction ID: "${pcgiDoc._id}"`, error);
+		console.error(`Error parsing Vehicle Event. Transaction ID: "${pcgiDoc._id}"`, error.message);
 		return null;
 	}
 }
