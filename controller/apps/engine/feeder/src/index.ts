@@ -891,7 +891,7 @@ const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: stri
 	return Dates
 		.fromOperationalDate(operationalDate)
 		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-		.setZone('Asia/Choibalsan')
+		.setZone('Europe/Lisbon')
 		.unix_timestamp;
 
 	//
