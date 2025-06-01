@@ -21,11 +21,11 @@
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
 		"@tmlmobilidade/sae-replicator-pckg-sync": "*",
 		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
-		"luxon": "0.0.1"
+		"luxon": "3.6.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250531.2332.25",
-		"@types/luxon": "0.0.1",
+		"@types/luxon": "3.6.2",
 		"@types/node": "22.15.29",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.4",
