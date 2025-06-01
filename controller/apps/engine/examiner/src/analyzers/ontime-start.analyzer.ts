@@ -2,7 +2,6 @@
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { type RideAnalysis } from '@tmlmobilidade/types';
-import { DateTime } from 'luxon';
 
 /* * */
 
@@ -50,10 +49,7 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 		//
 		// Calculate the delay in minutes
 
-		const delayInMinutes = DateTime
-			.fromMillis(analysisData.ride.start_time_observed)
-			.diff(DateTime.fromMillis(analysisData.ride.start_time_scheduled))
-			.as('minutes');
+		const delayInMinutes = (analysisData.ride.start_time_observed - analysisData.ride.start_time_scheduled) / 1000 / 60;
 
 		//
 		// Classify the delay
