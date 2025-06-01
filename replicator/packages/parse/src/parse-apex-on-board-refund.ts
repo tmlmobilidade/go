@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/utils';
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): SimplifiedApexOnBoardRefund {
+export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | SimplifiedApexOnBoardRefund {
 	try {
 		return {
 			_id: pcgiDoc.transaction.transactionId,
@@ -36,7 +36,7 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): SimplifiedApexOn
 		};
 	}
 	catch (error) {
-		console.log(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`);
-		throw new Error(error);
+		console.error(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error);
+		return null;
 	}
 }
