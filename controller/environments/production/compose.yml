@@ -33,7 +33,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    image: ghcr.io/tmlmobilidade/sae-replicator-engine-cleaner:production
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-cleaner:production
     deploy:
       restart_policy:
         condition: any
@@ -52,7 +52,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   coordinator:
-    image: ghcr.io/tmlmobilidade/sae-replicator-engine-coordinator:production
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-coordinator:production
     deploy:
       restart_policy:
         condition: any
@@ -71,7 +71,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   examiner:
-    image: ghcr.io/tmlmobilidade/sae-replicator-engine-examiner:production
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-examiner:production
     deploy:
       mode: replicated
       replicas: 4
@@ -92,7 +92,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   feeder:
-    image: ghcr.io/tmlmobilidade/sae-replicator-engine-feeder:production
+    image: ghcr.io/tmlmobilidade/sae-controller-engine-feeder:production
     deploy:
       restart_policy:
         condition: any
