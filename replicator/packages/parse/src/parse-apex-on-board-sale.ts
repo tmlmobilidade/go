@@ -37,7 +37,7 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 		};
 	}
 	catch (error) {
-		console.error(`Error parsing simplified APEX OnBoardSale. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error);
+		console.error(`Error parsing simplified APEX OnBoardSale. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
 }
