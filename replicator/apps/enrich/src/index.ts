@@ -7,43 +7,45 @@ import { validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApe
 
 /* * */
 
-const RUN_INTERVAL = 1800000; // 30 minutes
+const RUN_INTERVAL = 300000; // 5 minutes
 
-/* * */
-
-async function enrichApexTransactions() {
+/**
+ * This function links Refunds with Sales and Validation transactions.
+ * It first looks for OnBoardRefund trasactions that doe not yet have a validation_id value,
+ * and then finds the corresponding Validation transaction by matching the CardSerialNumber.
+ * It updates each transaction with the relevant IDs and additional information.
+ * APEX transactions are related to each other in the following way:
+ * - OnBoardRefunds already have the corresponding OnBoardSale ID.
+ * - OnBoardSales and Validations have a common and unique cardSerialNumber value.
+ */
+async function linkRefundsToSalesToValidations() {
 	try {
 		//
 
 		LOGGER.init();
+		LOGGER.info('Linking Refunds to Sales and Validations...');
 
 		const globalTimer = new TIMETRACKER();
 
-		//
-		// The goal is to enrich APEX OnBoard Sales with APEX Validations and APEX OnBoard Refunds data.
-		// To accomplish this, we need to start by fetching all validations and refunds data that do not yet
-		// have a corresponding OnBoard Sale ID. By doing it this way, we reduce the number of documents
-		// we need to process, as we are sure that there is a corresponding OnBoard Sale ID for each
-		// validation (of an on-board ticket) and refund document.
-
-		// -----------------
+		let totalUnlinkedOnBoardRefunds = 0;
+		let totalLinkedOnBoardRefunds = 0;
 
 		//
-		// Start with Refunds, as they are the smallest collection.
-		// Refunds already bring the corresponding OnBoard Sale ID.
-		// They can be linked to Validations by matching the CardSerialNumber.
-		// All sold on-board tickets have a unique CardSerialNumber value
-		// that is present in the Validation transaction.
+		// Refunds are the smallest collection, and they already bring
+		// the corresponding OnBoard Sale ID. They can be linked to Validations
+		// by matching the CardSerialNumber. All sold on-board tickets have
+		// a unique CardSerialNumber value that is present in the Validation transaction.
 
 		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
 
 		const unlinkedOnBoardRefundsBatch = simplifiedApexOnBoardRefundsCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			// .limit(1000)
+			.limit(1000)
 			.stream();
 
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
+			totalUnlinkedOnBoardRefunds++;
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardRefund.card_serial_number });
@@ -51,7 +53,6 @@ async function enrichApexTransactions() {
 			// Fetch the corresponding OnBoardSale transaction.
 			// If no transaction is found, skip this iteration.
 			const onBoardSaleTransaction = await simplifiedApexOnBoardSales.findOne({ _id: onBoardRefund.on_board_sale_id });
-			console.log('found refund | validation | sale', onBoardRefund?._id, validationTransaction?._id, onBoardSaleTransaction?._id);
 			if (!onBoardSaleTransaction) continue;
 			// If both transactions are found, update all three documents with
 			// their corresponding IDs and additional information.
@@ -87,12 +88,49 @@ async function enrichApexTransactions() {
 				},
 			);
 			//
+			totalLinkedOnBoardRefunds++;
+			//
 		}
 
-		// -----------------
+		//
+
+		LOGGER.success(`Linked ${totalLinkedOnBoardRefunds} out of ${totalUnlinkedOnBoardRefunds} OnBoardRefunds in ${globalTimer.get()}.`);
 
 		//
-		// Next, Sales.
+	}
+	catch (err) {
+		console.log('An error occurred. Halting execution.', err);
+		console.log('Retrying in 10 seconds...');
+		setTimeout(() => {
+			process.exit(0); // End process
+		},
+		10000); // after 10 seconds
+	}
+
+	//
+};
+
+/**
+ * This function links Sales with Validation transactions.
+ * This function should be run after the linkRefundsToSalesToValidations function,
+ * as it relies on the Sales already being linked to Refunds when they exist.
+ * The function looks for OnBoardSales that do not yet have a validation_id value,
+ * and then finds the corresponding Validation transaction by matching the CardSerialNumber.
+ * It updates each transaction with the relevant IDs and additional information.
+ */
+async function linkSalesToValidations() {
+	try {
+		//
+
+		LOGGER.init();
+		LOGGER.info('Linking Sales to Validations...');
+
+		const globalTimer = new TIMETRACKER();
+
+		let totalUnlinkedOnBoardSales = 0;
+		let totalLinkedOnBoardSales = 0;
+
+		//
 		// Like Refunds, OnBoard Sales can be linked to Validations by matching
 		// the unique CardSerialNumber. In this iteration, we hopefully will only
 		// match the remaining transactions that were not linked in the previous iteration.
@@ -106,7 +144,7 @@ async function enrichApexTransactions() {
 			.stream();
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
-			console.log('found sale', onBoardSale?._id);
+			totalUnlinkedOnBoardSales++;
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
@@ -132,11 +170,13 @@ async function enrichApexTransactions() {
 				},
 			);
 			//
+			totalLinkedOnBoardSales++;
+			//
 		}
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+		LOGGER.success(`Linked ${totalLinkedOnBoardSales} out of ${totalUnlinkedOnBoardSales} OnBoardSales in ${globalTimer.get()}.`);
 
 		//
 	}
@@ -156,7 +196,8 @@ async function enrichApexTransactions() {
 
 (async function init() {
 	const runOnInterval = async () => {
-		await enrichApexTransactions();
+		await linkRefundsToSalesToValidations();
+		await linkSalesToValidations();
 		setTimeout(runOnInterval, RUN_INTERVAL);
 	};
 	runOnInterval();
