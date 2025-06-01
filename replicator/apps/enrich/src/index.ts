@@ -41,7 +41,7 @@ async function linkRefundsToSalesToValidations() {
 		const unlinkedOnBoardRefundsBatch = simplifiedApexOnBoardRefundsCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			// .limit(5000)
+			.limit(5000)
 			.stream();
 
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
@@ -56,14 +56,11 @@ async function linkRefundsToSalesToValidations() {
 			if (!onBoardSaleTransaction) continue;
 			// If both transactions are found, update all three documents with
 			// their corresponding IDs and additional information.
-			await simplifiedApexOnBoardRefunds.updateById(onBoardRefund._id,
+			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
-					line_id: validationTransaction.line_id,
-					pattern_id: validationTransaction.pattern_id,
-					stop_id: validationTransaction.stop_id,
-					trip_id: validationTransaction.trip_id,
-					validation_id: validationTransaction._id,
-					vehicle_id: validationTransaction.vehicle_id,
+					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, onBoardRefund._id),
+					on_board_refund_id: onBoardRefund._id,
+					on_board_sale_id: onBoardSaleTransaction._id,
 				},
 			);
 			//
@@ -80,11 +77,14 @@ async function linkRefundsToSalesToValidations() {
 				},
 			);
 			//
-			await simplifiedApexValidations.updateById(validationTransaction._id,
+			await simplifiedApexOnBoardRefunds.updateById(onBoardRefund._id,
 				{
-					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, onBoardRefund._id),
-					on_board_refund_id: onBoardRefund._id,
-					on_board_sale_id: onBoardSaleTransaction._id,
+					line_id: validationTransaction.line_id,
+					pattern_id: validationTransaction.pattern_id,
+					stop_id: validationTransaction.stop_id,
+					trip_id: validationTransaction.trip_id,
+					validation_id: validationTransaction._id,
+					vehicle_id: validationTransaction.vehicle_id,
 				},
 			);
 			//
@@ -140,7 +140,7 @@ async function linkSalesToValidations() {
 		const unlinkedOnBoardSalesBatch = simplifiedApexOnBoardSalesCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			// .limit(5000)
+			.limit(5000)
 			.stream();
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
@@ -151,6 +151,13 @@ async function linkSalesToValidations() {
 			if (!validationTransaction) continue;
 			// If a transaction was found, update both documents with
 			// their corresponding IDs and additional information.
+			await simplifiedApexValidations.updateById(validationTransaction._id,
+				{
+					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, null),
+					on_board_sale_id: onBoardSale._id,
+				},
+			);
+			//
 			await simplifiedApexOnBoardSales.updateById(onBoardSale._id,
 				{
 					is_passenger: validateIfSimplifiedApexOnBoardSaleIsPassenger(null),
@@ -160,13 +167,6 @@ async function linkSalesToValidations() {
 					trip_id: validationTransaction.trip_id,
 					validation_id: validationTransaction._id,
 					vehicle_id: validationTransaction.vehicle_id,
-				},
-			);
-			//
-			await simplifiedApexValidations.updateById(validationTransaction._id,
-				{
-					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, null),
-					on_board_sale_id: onBoardSale._id,
 				},
 			);
 			//
