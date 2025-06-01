@@ -90,6 +90,7 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, pcg
 
 		for await (const pcgiDocument of missingDocumentsStream) {
 			const parsedSlaDoc = docParser(pcgiDocument);
+			if (!parsedSlaDoc) continue; // Skip if parsing failed
 			await dbWriter.write(parsedSlaDoc, { filter: { [slaIdKey]: parsedSlaDoc[slaIdKey] }, upsert: true }, async () => { /**/ }, flushCallback);
 		}
 

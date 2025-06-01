@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/utils';
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseSimplifiedApexLocation(pcgiDoc: any): SimplifiedApexLocation {
+export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApexLocation {
 	try {
 		return {
 			_id: pcgiDoc.transaction.transactionId,
@@ -26,7 +26,7 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): SimplifiedApexLocatio
 		};
 	}
 	catch (error) {
-		console.log(`Error parsing simplified APEX Location. Transaction ID: "${pcgiDoc.transaction.transactionId}"`);
-		throw new Error(error);
+		console.error(`Error parsing simplified APEX Location. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error);
+		return null;
 	}
 }

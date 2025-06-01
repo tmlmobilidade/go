@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/utils';
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseVehicleEvent(pcgiDoc: any): VehicleEvent {
+export function parseVehicleEvent(pcgiDoc: any): null | VehicleEvent {
 	try {
 		return {
 			_id: pcgiDoc._id,
@@ -29,7 +29,7 @@ export function parseVehicleEvent(pcgiDoc: any): VehicleEvent {
 		};
 	}
 	catch (error) {
-		console.log(`Error parsing Vehicle Event. Transaction ID: "${pcgiDoc._id}"`);
-		throw new Error(error);
+		console.error(`Error parsing Vehicle Event. Transaction ID: "${pcgiDoc._id}"`, error);
+		return null;
 	}
 }
