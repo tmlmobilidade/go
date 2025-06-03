@@ -36,7 +36,10 @@ export async function processApexValidation(databaseOperation) {
 	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexValidationDocument = parseSimplifiedApexValidation(databaseOperation.fullDocument);
-	if (!newSimplifiedApexValidationDocument) return;
+	if (!newSimplifiedApexValidationDocument) {
+		LOGGER.error(`Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		return;
+	}
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation

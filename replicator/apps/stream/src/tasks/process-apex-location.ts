@@ -36,7 +36,10 @@ export async function processApexLocation(databaseOperation) {
 	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexLocationDocument = parseSimplifiedApexLocation(databaseOperation.fullDocument);
-	if (!newSimplifiedApexLocationDocument) return;
+	if (!newSimplifiedApexLocationDocument) {
+		LOGGER.error(`Invalid APEX Location document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		return;
+	}
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation

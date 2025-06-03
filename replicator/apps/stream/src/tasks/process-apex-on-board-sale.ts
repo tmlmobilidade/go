@@ -31,22 +31,15 @@ export async function processApexOnBoardSale(databaseOperation) {
 	}
 
 	//
-	// Check if the document is a valid Apex OnBoard Sale document.
-
-	const expectedApexTransactionType = 3; // Sale Transaction
-	const expectedCardPhysicalType = 28; // OnBoard Transaction
-
-	if (!databaseOperation?.fullDocument?.transaction) return;
-	if (databaseOperation.fullDocument.transaction.apexTransactionType !== expectedApexTransactionType) return;
-	if (databaseOperation.fullDocument.transaction.cardPhysicalType !== expectedCardPhysicalType) return;
-
-	//
 	// Extract the PCGI document from the database operation
 	// and transform the vehicle timestamp into an operational date.
 	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexOnBoardSaleDocument = parseSimplifiedApexOnBoardSale(databaseOperation.fullDocument);
-	if (!newSimplifiedApexOnBoardSaleDocument) return;
+	if (!newSimplifiedApexOnBoardSaleDocument) {
+		LOGGER.error(`Invalid APEX OnBoard Sale document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		return;
+	}
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation

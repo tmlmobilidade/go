@@ -5,13 +5,39 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
+const ALLOWED_OPERATOR_LONG_IDS = ['41', '42', '43', '44'];
+
+const ALLOWED_APEX_TRANSACTION_VERSIONS = ['2.0'];
+
+const ALLOWED_APEX_TRANSACTION_TYPES = [6]; // Refund Transaction
+
+const ALLOWED_CARD_PHYSICAL_TYPES = [28]; // OnBoard Transaction
+
+/* * */
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | SimplifiedApexOnBoardRefund {
 	try {
-		// Validate the operatorLongID
-		if (!pcgiDoc?.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction');
-		if (!['41', '42', '43', '44'].includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: ${pcgiDoc.transaction.operatorLongID}`);
+		//
+
+		//
+		// Validate the document structure and content
+
+		if (!pcgiDoc?.transaction) throw new Error('Missing transaction in document');
+
+		if (!pcgiDoc.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction');
+
+		if (!ALLOWED_OPERATOR_LONG_IDS.includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: ${pcgiDoc.transaction.operatorLongID}`);
+
+		if (!ALLOWED_APEX_TRANSACTION_VERSIONS.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: ${pcgiDoc.transaction.apexTransactionVersion}`);
+
+		if (!ALLOWED_APEX_TRANSACTION_TYPES.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: ${pcgiDoc.transaction.apexTransactionType}`);
+
+		if (!ALLOWED_CARD_PHYSICAL_TYPES.includes(pcgiDoc.transaction.cardPhysicalType)) throw new Error(`Invalid cardPhysicalType: ${pcgiDoc.transaction.cardPhysicalType}`);
+
+		//
 		// Parse the document and return the simplified APEX object
+
 		return {
 			_id: pcgiDoc.transaction.transactionId,
 			agency_id: pcgiDoc.transaction.operatorLongID,
@@ -21,7 +47,7 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 			card_serial_number: pcgiDoc.transaction.cardSerialNumber,
 			created_at: Dates
 				.fromISO(pcgiDoc.transaction.transactionDate)
-				.setZone('Europe/Lisbon', 'rebase_utc') // Ensure the date is interpreted in Lisbon timezone
+				.setZone('Europe/Lisbon', 'rebase_utc') // Ensure the date is interpreted in Lisbon timezone, since the original APEX value does not include timezone in ISO string.
 				.unix_timestamp,
 			device_id: pcgiDoc.transaction.deviceID,
 			duty_id: null,
@@ -41,6 +67,8 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 			validation_id: null,
 			vehicle_id: null,
 		};
+
+		//
 	}
 	catch (error) {
 		if (process.env.DEBUG_MODE) console.error(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
