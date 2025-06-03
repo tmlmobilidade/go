@@ -7,7 +7,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 const ALLOWED_OPERATOR_LONG_IDS = ['41', '42', '43', '44'];
 
-const ALLOWED_APEX_TRANSACTION_VERSIONS = ['2.0'];
+const ALLOWED_APEX_TRANSACTION_VERSIONS = ['2.0', '3.0'];
 
 const ALLOWED_APEX_TRANSACTION_TYPES = [6]; // Refund Transaction
 
