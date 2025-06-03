@@ -10,7 +10,7 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 	try {
 		// Validate the operatorLongID
 		if (!pcgiDoc?.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction');
-		if (!['41', '42', '43'].includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: ${pcgiDoc.transaction.operatorLongID}`);
+		if (!['41', '42', '43', '44'].includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: ${pcgiDoc.transaction.operatorLongID}`);
 		// Parse the document and return the simplified APEX object
 		return {
 			_id: pcgiDoc.transaction.transactionId,
