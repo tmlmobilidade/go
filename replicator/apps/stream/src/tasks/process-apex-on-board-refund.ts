@@ -31,22 +31,15 @@ export async function processApexOnBoardRefund(databaseOperation) {
 	}
 
 	//
-	// Check if the document is a valid Apex OnBoard Refund document.
-
-	const expectedApexTransactionType = 6; // Refund Transaction
-	const expectedCardPhysicalType = 28; // OnBoard Transaction
-
-	if (!databaseOperation?.fullDocument?.transaction) return;
-	if (databaseOperation.fullDocument.transaction.apexTransactionType !== expectedApexTransactionType) return;
-	if (databaseOperation.fullDocument.transaction.cardPhysicalType !== expectedCardPhysicalType) return;
-
-	//
 	// Extract the PCGI document from the database operation
 	// and transform the vehicle timestamp into an operational date.
 	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexOnBoardRefundDocument = parseSimplifiedApexOnBoardRefund(databaseOperation.fullDocument);
-	if (!newSimplifiedApexOnBoardRefundDocument) return;
+	if (!newSimplifiedApexOnBoardRefundDocument) {
+		LOGGER.error(`Invalid APEX OnBoard Refund document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		return;
+	}
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation

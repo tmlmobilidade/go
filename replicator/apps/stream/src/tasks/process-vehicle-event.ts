@@ -46,7 +46,10 @@ export async function processVehicleEvent(databaseOperation) {
 	// Skip the operation if the document is not valid.
 
 	const newVehicleEventDocument = parseVehicleEvent(databaseOperation.fullDocument);
-	if (!newVehicleEventDocument) return;
+	if (!newVehicleEventDocument) {
+		LOGGER.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
+		return;
+	}
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation
