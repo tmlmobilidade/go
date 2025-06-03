@@ -8,6 +8,10 @@ import { Dates } from '@tmlmobilidade/utils';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedApexOnBoardSale {
 	try {
+		// Validate the operatorLongID
+		if (!pcgiDoc?.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction');
+		if (!['41', '42', '43'].includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: ${pcgiDoc.transaction.operatorLongID}`);
+		// Parse the document and return the simplified APEX object
 		return {
 			_id: pcgiDoc.transaction.transactionId,
 			agency_id: pcgiDoc.transaction.operatorLongID,
@@ -40,7 +44,7 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 		};
 	}
 	catch (error) {
-		console.error(`Error parsing simplified APEX OnBoardSale. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
+		if (process.env.DEBUG_MODE) console.error(`Error parsing simplified APEX OnBoardSale. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
 }
