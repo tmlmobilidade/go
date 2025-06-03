@@ -84,7 +84,7 @@ async function syncApexOnBoardRefunds() {
 						{ system_status: 'pending' },
 					);
 					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_on_board_refunds data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
@@ -123,17 +123,17 @@ async function syncApexOnBoardRefunds() {
 
 				flushCallback: flushCallback,
 
-				pcgiCollection: PCGIDB.SalesEntity,
-
-				pcgiIdKey: 'transaction.transactionId',
-
-				pcgiQuery: pcgiQuery,
-
 				goCollection: simplifiedApexOnBoardRefundsCollection,
 
 				goIdKey: '_id',
 
 				goQuery: goQuery,
+
+				pcgiCollection: PCGIDB.SalesEntity,
+
+				pcgiIdKey: 'transaction.transactionId',
+
+				pcgiQuery: pcgiQuery,
 
 			});
 

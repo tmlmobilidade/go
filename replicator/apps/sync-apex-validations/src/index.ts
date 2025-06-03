@@ -86,7 +86,7 @@ export async function syncApexValidations() {
 						{ system_status: 'pending' },
 					);
 					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t11 data (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_validations data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
@@ -124,17 +124,17 @@ export async function syncApexValidations() {
 
 				flushCallback: flushCallback,
 
-				pcgiCollection: PCGIDB.ValidationEntity,
-
-				pcgiIdKey: 'transaction.transactionId',
-
-				pcgiQuery: pcgiQuery,
-
 				goCollection: simplifiedApexValidationsCollection,
 
 				goIdKey: '_id',
 
 				goQuery: goQuery,
+
+				pcgiCollection: PCGIDB.ValidationEntity,
+
+				pcgiIdKey: 'transaction.transactionId',
+
+				pcgiQuery: pcgiQuery,
 
 			});
 

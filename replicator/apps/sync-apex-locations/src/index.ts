@@ -84,7 +84,7 @@ async function syncApexLocations() {
 						{ system_status: 'pending' },
 					);
 					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_locations data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
