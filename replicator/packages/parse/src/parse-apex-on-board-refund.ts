@@ -15,7 +15,10 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 			block_id: null,
 			card_physical_type: pcgiDoc.transaction.cardPhysicalType,
 			card_serial_number: pcgiDoc.transaction.cardSerialNumber,
-			created_at: Dates.fromISO(pcgiDoc.transaction.transactionDate).unix_timestamp,
+			created_at: Dates
+				.fromISO(pcgiDoc.transaction.transactionDate)
+				.setZone('Europe/Lisbon', 'rebase_utc') // Ensure the date is interpreted in Lisbon timezone
+				.unix_timestamp,
 			device_id: pcgiDoc.transaction.deviceID,
 			duty_id: null,
 			line_id: null,

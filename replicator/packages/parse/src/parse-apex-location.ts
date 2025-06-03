@@ -12,7 +12,10 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 			_id: pcgiDoc.transaction.transactionId,
 			agency_id: pcgiDoc.transaction.operatorLongID,
 			apex_version: pcgiDoc.transaction.apexVersion,
-			created_at: Dates.fromISO(pcgiDoc.transaction.transactionDate).unix_timestamp,
+			created_at: Dates
+				.fromISO(pcgiDoc.transaction.transactionDate)
+				.setZone('Europe/Lisbon', 'rebase_utc') // Ensure the date is interpreted in Lisbon timezone
+				.unix_timestamp,
 			device_id: pcgiDoc.transaction.deviceID,
 			line_id: pcgiDoc.transaction.lineLongID,
 			mac_ase_counter_value: pcgiDoc.transaction.macDataFields.aseCounterValue,
