@@ -98,6 +98,7 @@ async function syncApexOnBoardSales() {
 			const pcgiQuery = {
 				'transaction.apexTransactionType': 3,
 				'transaction.cardPhysicalType': 28,
+				'transaction.operatorLongID': { $in: ['41', '42', '43', '44'] },
 				'transaction.transactionDate': {
 					$gte: chunkData.start.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 					$lte: chunkData.end.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
