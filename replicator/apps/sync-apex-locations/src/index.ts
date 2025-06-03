@@ -6,7 +6,7 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
-import { CHUNK_LOG_DATE_FORMAT, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
+import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
@@ -50,7 +50,7 @@ async function syncApexLocations() {
 			.set({ hour: 4, minute: 0, second: 0 });
 
 		const allTimestampChunks = Interval
-			.fromDateTimes(earliestDataNeeded.datetime, thirtySecondsAgo.datetime)
+			.fromISO(`${earliestDataNeeded.datetime}/${thirtySecondsAgo.datetime}`)
 			.splitBy({ hour: 3 })
 			.sort((a, b) => b.start.toMillis() - a.start.toMillis());
 
@@ -66,7 +66,7 @@ async function syncApexLocations() {
 			const chunkTimer = new TIMETRACKER();
 
 			LOGGER.spacer(1);
-			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkData.end.toFormat(CHUNK_LOG_DATE_FORMAT)} › ${chunkData.start.toFormat(CHUNK_LOG_DATE_FORMAT)}`, 100);
+			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkData.end.toISO()} › ${chunkData.start.toISO()}`, 100);
 
 			//
 			// Setup the callback function that will be called on the DB Writer flush operation
