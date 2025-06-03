@@ -103,7 +103,7 @@ async function syncApexLocations() {
 				},
 			};
 
-			const slaQuery = {
+			const goQuery = {
 				created_at: {
 					$gte: chunkData.start.toMillis(),
 					$lte: chunkData.end.toMillis(),
@@ -121,17 +121,17 @@ async function syncApexLocations() {
 
 				flushCallback: flushCallback,
 
+				goCollection: simplifiedApexLocationsCollection,
+
+				goIdKey: '_id',
+
+				goQuery: goQuery,
+
 				pcgiCollection: PCGIDB.LocationEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 
 				pcgiQuery: pcgiQuery,
-
-				slaCollection: simplifiedApexLocationsCollection,
-
-				slaIdKey: '_id',
-
-				slaQuery: slaQuery,
 
 			});
 

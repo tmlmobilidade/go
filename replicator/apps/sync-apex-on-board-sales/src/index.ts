@@ -105,7 +105,7 @@ async function syncApexOnBoardSales() {
 				},
 			};
 
-			const slaQuery = {
+			const goQuery = {
 				created_at: {
 					$gte: chunkData.start.toMillis(),
 					$lte: chunkData.end.toMillis(),
@@ -129,11 +129,11 @@ async function syncApexOnBoardSales() {
 
 				pcgiQuery: pcgiQuery,
 
-				slaCollection: simplifiedApexOnBoardSalesCollection,
+				goCollection: simplifiedApexOnBoardSalesCollection,
 
-				slaIdKey: '_id',
+				goIdKey: '_id',
 
-				slaQuery: slaQuery,
+				goQuery: goQuery,
 
 			});
 

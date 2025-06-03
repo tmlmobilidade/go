@@ -102,7 +102,7 @@ async function syncVehicleEvents() {
 				},
 			};
 
-			const slaQuery = {
+			const goQuery = {
 				received_at: {
 					$gte: chunkData.start.toMillis(),
 					$lte: chunkData.end.toMillis(),
@@ -126,11 +126,11 @@ async function syncVehicleEvents() {
 
 				pcgiQuery: pcgiQuery,
 
-				slaCollection: vehicleEventsCollection,
+				goCollection: vehicleEventsCollection,
 
-				slaIdKey: '_id',
+				goIdKey: '_id',
 
-				slaQuery: slaQuery,
+				goQuery: goQuery,
 
 			});
 
