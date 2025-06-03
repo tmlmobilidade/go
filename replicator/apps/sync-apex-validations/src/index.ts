@@ -9,7 +9,7 @@ import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { CHUNK_LOG_DATE_FORMAT, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
-import { DateTime, Interval } from 'luxon';
+import { Interval } from 'luxon';
 
 /* * */
 
@@ -43,11 +43,16 @@ export async function syncApexValidations() {
 		// More recent data is more important than older data, so we start syncing the most recent data first.
 		// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
-		const thirtySecondsAgo = DateTime.now().minus({ seconds: 30 });
-		const earliestDataNeeded = DateTime.fromFormat(process.env.SYNC_EARLIEST_DATE, 'yyyyMMdd').set({ hour: 4, minute: 0, second: 0 });
+		const thirtySecondsAgo = Dates
+			.now('Europe/Lisbon')
+			.minus({ seconds: 30 });
+
+		const earliestDataNeeded = Dates
+			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon')
+			.set({ hour: 4, minute: 0, second: 0 });
 
 		const allTimestampChunks = Interval
-			.fromDateTimes(earliestDataNeeded, thirtySecondsAgo)
+			.fromDateTimes(earliestDataNeeded.datetime, thirtySecondsAgo.datetime)
 			.splitBy({ hour: 3 })
 			.sort((a, b) => b.start.toMillis() - a.start.toMillis());
 
