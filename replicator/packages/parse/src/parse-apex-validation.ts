@@ -13,7 +13,10 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			agency_id: pcgiDoc.transaction.operatorLongID,
 			apex_version: pcgiDoc.transaction.apexVersion,
 			card_serial_number: pcgiDoc.transaction.cardSerialNumber,
-			created_at: Dates.fromISO(pcgiDoc.transaction.transactionDate).unix_timestamp,
+			created_at: Dates
+				.fromISO(pcgiDoc.transaction.transactionDate)
+				.setZone('Europe/Lisbon', 'rebase_utc') // Ensure the date is interpreted in Lisbon timezone
+				.unix_timestamp,
 			device_id: pcgiDoc.transaction.deviceID,
 			event_type: pcgiDoc.transaction.eventType,
 			is_passenger: validateIfSimplifiedApexValidationIsPassenger(pcgiDoc.transaction.validationStatus, pcgiDoc.transaction.eventType, null),
