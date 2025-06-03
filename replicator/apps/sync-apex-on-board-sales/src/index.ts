@@ -50,9 +50,10 @@ async function syncApexOnBoardSales() {
 			.set({ hour: 4, minute: 0, second: 0 });
 
 		const allTimestampChunks = Interval
-			.fromISO(`${earliestDataNeeded.datetime}/${thirtySecondsAgo.datetime}`)
+			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
 			.splitBy({ hour: 3 })
-			.sort((a, b) => b.start.toMillis() - a.start.toMillis());
+			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
+			.sort((a, b) => b.start - a.start);
 
 		//
 		// Iterate over each timestamp chunk and sync the documents.
@@ -65,8 +66,16 @@ async function syncApexOnBoardSales() {
 
 			const chunkTimer = new TIMETRACKER();
 
+			const chunkStartDate = Dates
+				.fromUnixTimestamp(chunkData.start)
+				.setZone('Europe/Lisbon', 'offset_only');
+
+			const chunkEndDate = Dates
+				.fromUnixTimestamp(chunkData.end)
+				.setZone('Europe/Lisbon', 'offset_only');
+
 			LOGGER.spacer(1);
-			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkData.end.toISO()} › ${chunkData.start.toISO()}`, 100);
+			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 			//
 			// Setup the callback function that will be called on the DB Writer flush operation
@@ -105,15 +114,15 @@ async function syncApexOnBoardSales() {
 				'transaction.cardPhysicalType': 28,
 				'transaction.operatorLongID': { $in: ['41', '42', '43', '44'] },
 				'transaction.transactionDate': {
-					$gte: chunkData.start.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
-					$lte: chunkData.end.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
+					$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
+					$lte: chunkEndDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 				},
 			};
 
 			const goQuery = {
 				created_at: {
-					$gte: chunkData.start.toMillis(),
-					$lte: chunkData.end.toMillis(),
+					$gte: chunkStartDate.unix_timestamp,
+					$lte: chunkEndDate.unix_timestamp,
 				},
 			};
 
