@@ -106,7 +106,7 @@ export async function syncApexValidations() {
 				},
 			};
 
-			const slaQuery = {
+			const goQuery = {
 				created_at: {
 					$gte: chunkData.start.toMillis(),
 					$lte: chunkData.end.toMillis(),
@@ -130,11 +130,11 @@ export async function syncApexValidations() {
 
 				pcgiQuery: pcgiQuery,
 
-				slaCollection: simplifiedApexValidationsCollection,
+				goCollection: simplifiedApexValidationsCollection,
 
-				slaIdKey: '_id',
+				goIdKey: '_id',
 
-				slaQuery: slaQuery,
+				goQuery: goQuery,
 
 			});
 

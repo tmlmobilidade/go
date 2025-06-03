@@ -30,7 +30,7 @@ export async function processVehicleEvent(databaseOperation) {
 	if (databaseOperation.operationType !== 'insert') {
 		LOGGER.error('MAJOR ERROR: processVehicleEvent called with operationType different than "insert".');
 		await emailProvider.send({
-			subject: 'SLA ERROR',
+			subject: 'GO ERROR',
 			text: `
 				<h4>processVehicleEvent called with operationType different than "insert".</h4>
 				<pre>${JSON.stringify(databaseOperation)}</pre>
