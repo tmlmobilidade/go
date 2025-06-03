@@ -48,12 +48,11 @@ export async function syncApexValidations() {
 			.minus({ seconds: 30 });
 
 		const earliestDataNeeded = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon')
-			.set({ hour: 4, minute: 0, second: 0 });
+			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 3 })
+			.splitBy({ hour: 4 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
