@@ -43,8 +43,10 @@ export async function processApexOnBoardRefund(databaseOperation) {
 	//
 	// Extract the PCGI document from the database operation
 	// and transform the vehicle timestamp into an operational date.
+	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexOnBoardRefundDocument = parseSimplifiedApexOnBoardRefund(databaseOperation.fullDocument);
+	if (!newSimplifiedApexOnBoardRefundDocument) return;
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation

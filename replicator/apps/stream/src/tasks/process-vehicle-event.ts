@@ -43,8 +43,10 @@ export async function processVehicleEvent(databaseOperation) {
 	//
 	// Extract the PCGI document from the database operation
 	// and transform the vehicle timestamp into an operational date.
+	// Skip the operation if the document is not valid.
 
 	const newVehicleEventDocument = parseVehicleEvent(databaseOperation.fullDocument);
+	if (!newVehicleEventDocument) return;
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation
