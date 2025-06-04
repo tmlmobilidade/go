@@ -79,15 +79,15 @@ function parseRide(ride: Ride): Record<string, boolean | null | number | string>
 		validations_count: ride.apex_validations_qty,
 	};
 
-	const analysisFields: Record<string, null | number | string> = {};
+	const analysisFields: Record<string, number | string> = {};
 
 	for (const [key, val] of Object.entries(ride.analysis ?? {})) {
 		const safeKey = key.toLowerCase();
-		analysisFields[`${safeKey}_grade`] = val?.grade ?? null;
-		analysisFields[`${safeKey}_message`] = val?.message ?? null;
-		analysisFields[`${safeKey}_reason`] = val?.reason ?? null;
-		analysisFields[`${safeKey}_unit`] = val?.unit ?? null;
-		analysisFields[`${safeKey}_value`] = val?.value ?? null;
+		analysisFields[`${safeKey}_grade`] = val.grade;
+		// analysisFields[`${safeKey}_message`] = val.message;
+		analysisFields[`${safeKey}_reason`] = val.reason;
+		analysisFields[`${safeKey}_unit`] = val.unit;
+		analysisFields[`${safeKey}_value`] = val.value;
 	}
 
 	return {
