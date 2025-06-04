@@ -31,7 +31,7 @@ async function syncVehicleEvents() {
 		await PCGIDB.connect();
 
 		const vehicleEventsCollection = await vehicleEvents.getCollection();
-		const vehicleEventsDbWritter = new MongoDbWriter<VehicleEvent>({ batch_size: 100000, collection: vehicleEventsCollection });
+		const vehicleEventsDbWritter = new MongoDbWriter<VehicleEvent>({ batch_size: 200000, collection: vehicleEventsCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -50,7 +50,7 @@ async function syncVehicleEvents() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 4 })
+			.splitBy({ hour: 3 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 

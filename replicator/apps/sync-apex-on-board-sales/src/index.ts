@@ -31,7 +31,7 @@ async function syncApexOnBoardSales() {
 		await PCGIDB.connect();
 
 		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
-		const simplifiedApexOnBoardSalesDbWritter = new MongoDbWriter<SimplifiedApexOnBoardSale>({ batch_size: 100000, collection: simplifiedApexOnBoardSalesCollection });
+		const simplifiedApexOnBoardSalesDbWritter = new MongoDbWriter<SimplifiedApexOnBoardSale>({ batch_size: 200000, collection: simplifiedApexOnBoardSalesCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -50,7 +50,7 @@ async function syncApexOnBoardSales() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 4 })
+			.splitBy({ hour: 10 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
