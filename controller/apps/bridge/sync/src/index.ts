@@ -75,6 +75,8 @@ function parseRide(ride: Ride): Record<string, boolean | null | number | string>
 		trip_id: ride.trip_id,
 		updated_at: ride.updated_at,
 		vehicle_ids: (ride.vehicle_ids ?? []).join('|'),
+		// Legacy fields
+		validations_count: ride.apex_validations_qty,
 	};
 
 	const analysisFields: Record<string, null | number | string> = {};
