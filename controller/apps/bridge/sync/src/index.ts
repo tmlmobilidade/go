@@ -10,7 +10,7 @@ import { Dates } from '@tmlmobilidade/utils';
 /* * */
 
 const RUN_INTERVAL = 3600000; // 60 minutes
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 1000;
 
 /* * */
 
@@ -76,18 +76,18 @@ function parseRide(ride: Ride): Record<string, boolean | null | number | string>
 		updated_at: ride.updated_at,
 		vehicle_ids: (ride.vehicle_ids ?? []).join('|'),
 		// Legacy fields
-		validations_count: ride.apex_validations_qty,
+		validations_count: ride.passengers_observed,
 	};
 
-	const analysisFields: Record<string, null | number | string> = {};
+	const analysisFields: Record<string, number | string> = {};
 
 	for (const [key, val] of Object.entries(ride.analysis ?? {})) {
 		const safeKey = key.toLowerCase();
-		analysisFields[`${safeKey}_grade`] = val?.grade ?? null;
-		analysisFields[`${safeKey}_message`] = val?.message ?? null;
-		analysisFields[`${safeKey}_reason`] = val?.reason ?? null;
-		analysisFields[`${safeKey}_unit`] = val?.unit ?? null;
-		analysisFields[`${safeKey}_value`] = val?.value ?? null;
+		analysisFields[`${safeKey}_grade`] = val.grade;
+		// analysisFields[`${safeKey}_message`] = val.message;
+		analysisFields[`${safeKey}_reason`] = val.reason;
+		analysisFields[`${safeKey}_unit`] = val.unit;
+		analysisFields[`${safeKey}_value`] = val.value;
 	}
 
 	return {
