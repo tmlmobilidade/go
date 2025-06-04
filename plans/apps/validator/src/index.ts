@@ -7,6 +7,8 @@ import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
+import { extractFeedInfo } from './feed_info';
+
 interface ValidationMessage {
 	file_id: string
 	validation_id: string
@@ -30,12 +32,18 @@ async function processValidation(message: ValidationMessage) {
 		const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
 		await writeFile(tempFilePath, Buffer.from(fileBuffer));
 
-		console.log('🚀 Validating file:', tempFilePath);
+		// 4. Get Feed Info
+		console.log('🚀 Getting Feed Info:', tempFilePath);
+		const feedInfo = (await extractFeedInfo(tempFilePath))[0];
+		await validations.updateById(message.validation_id, {
+			gtfs_feed_info: feedInfo,
+		});
 
-		// 4. Run GTFS validation
+		// 5. Run GTFS validation
+		console.log('🚀 Validating file:', tempFilePath);
 		const validationResult = await GTFSValidator(tempFilePath);
 
-		// 5. Update validation status based on results
+		// 6. Update validation status based on results
 		await validations.updateById(message.validation_id, {
 			feeder_status: validationResult.total_errors > 0 ? 'error' : 'success',
 			summary: validationResult,
