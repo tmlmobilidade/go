@@ -87,11 +87,11 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 	//
 	// D. Handle actionsn
 	function handleChangeValidFrom(date: null | string) {
-		setFilterValidFrom(date ? Dates.fromFormat(date, 'yyyy-MM-dd').operational_date : null);
+		setFilterValidFrom(date ? Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date : null);
 	}
 
 	function handleChangeValidUntil(date: null | string) {
-		setFilterValidUntil(date ? Dates.fromFormat(date, 'yyyy-MM-dd').operational_date : null);
+		setFilterValidUntil(date ? Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date : null);
 	}
 
 	function handleToggleAgency(agency_id: string) {

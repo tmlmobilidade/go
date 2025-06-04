@@ -19,12 +19,12 @@ export function PlanDetailSectionInfo() {
 	// B. Transform data
 	const validFrom = useMemo(() => {
 		if (!planDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from).js_date;
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from, 'Europe/Lisbon').js_date;
 	}, [planDetailContext.data.form.values.valid_from]);
 
 	const validUntil = useMemo(() => {
 		if (!planDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until).js_date;
+		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until, 'Europe/Lisbon').js_date;
 	}, [planDetailContext.data.form.values.valid_until]);
 
 	//
@@ -52,7 +52,7 @@ export function PlanDetailSectionInfo() {
 						value={validFrom}
 						onChange={(date) => {
 							planDetailContext.data.form.setValues({
-								valid_from: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
+								valid_from: Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date,
 							});
 						}}
 						withAsterisk
@@ -66,7 +66,7 @@ export function PlanDetailSectionInfo() {
 						onChange={(date) => {
 							console.log('date', date);
 							planDetailContext.data.form.setValues({
-								valid_until: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
+								valid_until: Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date,
 							});
 						}}
 					/>

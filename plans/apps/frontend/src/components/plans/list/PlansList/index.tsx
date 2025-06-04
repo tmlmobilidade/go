@@ -48,12 +48,12 @@ export function PlanList() {
 					</Section>
 					<Section alignItems="center" flexDirection="row" gap="md">
 						<Section alignItems="center" flexDirection="row" gap="sm">
-							<Tag label={Dates.fromOperationalDate(plan.valid_from).toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
+							<Tag label={Dates.fromOperationalDate(plan.valid_from, 'local').toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
 							<IconArrowRight size={16} />
 							<Tag
-								label={Dates.fromOperationalDate(plan.valid_until).toLocaleString(Dates.FORMATS.DATE_SHORT)}
+								label={Dates.fromOperationalDate(plan.valid_until, 'local').toLocaleString(Dates.FORMATS.DATE_SHORT)}
 								variant={
-									Dates.now().operational_date > plan.valid_until ? 'danger' : 'warning'
+									Dates.now('local').operational_date > plan.valid_until ? 'danger' : 'warning'
 								}
 							/>
 						</Section>
