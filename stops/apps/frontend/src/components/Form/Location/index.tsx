@@ -13,7 +13,7 @@ export function Location({ data, getStopById }) {
 	// A. Render components
 	return (
 		<div className={styles.container}>
-			<StopsListViewMap data={data} getStopById={getStopById} />
+			<StopsListViewMap data={data} getStopById={getStopById} isCreateAction={true} />
 			<Coords latitude={data.form.getValues().latitude} longitude={data.form.getValues().longitude} municipality="Lisboa" />
 		</div>
 	);
