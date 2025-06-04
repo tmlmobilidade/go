@@ -61,6 +61,7 @@ export function ValidationDetailSectionInfo() {
 			</Section>
 		);
 	};
+
 	const renderMiscInfo = () => {
 		return (
 			<Section gap="sm">
