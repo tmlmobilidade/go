@@ -10,7 +10,7 @@ import { Dates } from '@tmlmobilidade/utils';
 /* * */
 
 const RUN_INTERVAL = 300_000; // 5 minutes
-const BATCH_SIZE = 1000;
+const BATCH_SIZE = 500;
 
 /* * */
 
@@ -377,7 +377,7 @@ function parseRide(ride: Ride): FlatRide {
 
 /* * */
 
-async function insertBatch(batch: ReturnType<typeof parseRide>[]) {
+async function insertBatch(batch: FlatRide[]) {
 	if (batch.length === 0) return;
 
 	const keys = Object.keys(sampleRide);
@@ -386,7 +386,7 @@ async function insertBatch(batch: ReturnType<typeof parseRide>[]) {
 		.map((_, i) => `(${keys.map((_, j) => `$${i * keys.length + j + 1}`).join(',')})`)
 		.join(', ');
 
-	const values = batch.flatMap(obj => keys.map(k => obj[k]));
+	const values = batch.flatMap(obj => keys.map(k => obj[k] ?? null));
 
 	const query = `
         INSERT INTO rides (${keys.map(k => `"${k}"`).join(', ')})
