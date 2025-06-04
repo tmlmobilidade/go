@@ -6,20 +6,20 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function Footer() {
+export function Footer({ data, queryString }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopsListContext = useStopsListContext();
+	const filteredStops = data.stops.filter(stop => (queryString == null || stop.name.includes(queryString)) && stop.is_archived === false);
 
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.container}>
-			Encontradas {stopsListContext.data.raw.length} paragens
+			Encontradas {filteredStops.length} paragens
 		</div>
 	);
 }

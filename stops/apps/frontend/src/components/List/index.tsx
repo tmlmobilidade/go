@@ -25,7 +25,7 @@ export function List() {
 			]}
 			>
 				<StopsList data={data} flags={flags} queryString={queryString} />
-				<Footer />
+				<Footer data={data} queryString={queryString} />
 			</Pane>
 		</div>
 	);
