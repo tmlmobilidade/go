@@ -2,15 +2,15 @@
 
 /* * */
 
+import { StatusTag } from '@/components/common/StatusTag';
 import { ValidationsListFilters } from '@/components/validations/list/ValidationsListFilters';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { useValidationListContext } from '@/contexts/ValidationList.context';
-import { IconArrowRight } from '@tabler/icons-react';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { Pane, Section, Tag } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
+import DateCell from '../DateCell';
 import styles from './styles.module.css';
 
 /* * */
@@ -43,21 +43,11 @@ export function ValidationList() {
 			{data.filtered.map(Validation => (
 				<div className={styles.root} onClick={() => router.push(`/validations/${Validation._id}`)}>
 					<Section key={Validation._id} alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
-						<Tag label={Validation._id} variant="muted" />
+						<StatusTag status={Validation.feeder_status} />
+						<Tag label={Validation._id} variant="primary" />
 						<Tag label={AVAILABLE_AGENCIES.find(agency => agency._id === Validation.agency_id)?.name} variant="secondary" />
 					</Section>
-					<Section alignItems="center" flexDirection="row" gap="md">
-						<Section alignItems="center" flexDirection="row" gap="sm">
-							<Tag label={Dates.fromOperationalDate(Validation.valid_from).toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
-							<IconArrowRight size={16} />
-							<Tag
-								label={Dates.fromOperationalDate(Validation.valid_until).toLocaleString(Dates.FORMATS.DATE_SHORT)}
-								variant={
-									Dates.now().operational_date > Validation.valid_until ? 'danger' : 'warning'
-								}
-							/>
-						</Section>
-					</Section>
+					<DateCell date={Validation.valid_from} endDate={Validation.valid_until} />
 				</div>
 			))}
 		</Pane>

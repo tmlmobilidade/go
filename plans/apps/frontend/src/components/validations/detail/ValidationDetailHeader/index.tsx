@@ -3,10 +3,10 @@
 /* * */
 
 import BackButton from '@/components/common/BackButton';
+import { StatusTag } from '@/components/common/StatusTag';
 import { useValidationDetailContext, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
 import { IconLock, IconLockOpen, IconTrash, IconUpload } from '@tabler/icons-react';
-import { ValidationSchema } from '@tmlmobilidade/types';
-import { ActionIcon, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { ActionIcon, Button, Label, Spacer } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 /* * */
 
@@ -17,19 +17,6 @@ export function ValidationDetailHeader() {
 	// A. Setup variables
 
 	const validationDetailContext = useValidationDetailContext();
-
-	const variant = useMemo(() => {
-		switch (validationDetailContext.data.form.getValues().feeder_status) {
-			case ValidationSchema.shape.feeder_status.enum.error:
-				return 'danger';
-			case ValidationSchema.shape.feeder_status.enum.processing:
-				return 'warning';
-			case ValidationSchema.shape.feeder_status.enum.success:
-				return 'success';
-			default:
-				return 'muted';
-		}
-	}, [validationDetailContext.data.form.getValues().feeder_status]);
 
 	//
 	// B. Render components
@@ -50,7 +37,7 @@ export function ValidationDetailHeader() {
 	return (
 		<>
 			<BackButton />
-			<Tag label={validationDetailContext.data.form.getValues().feeder_status} variant={variant} />
+			<StatusTag status={validationDetailContext.data.form.getValues().feeder_status} />
 			<Label size="lg" caps>{validationDetailContext.data.id}</Label>
 			<Spacer />
 			{lockButton}
