@@ -140,6 +140,7 @@ interface FlatRide {
 	hashed_trip_id: string
 	headsign: string
 	is_locked: boolean
+	less_than_ten_vehicle_events_value: null | number // Legacy field
 	line_id: string
 	ontime_start_value: null | number // Legacy field
 	operational_date: string
@@ -262,6 +263,7 @@ const sampleRide: FlatRide = {
 	updated_at: 0,
 	vehicle_ids: 'vehicle1|vehicle2',
 	// Legacy fields
+	less_than_ten_vehicle_events_value: 0, // Legacy field
 	ontime_start_value: 0, // Legacy field
 	validations_count: 0, // Legacy field
 };
@@ -370,6 +372,7 @@ function parseRide(ride: Ride): FlatRide {
 		updated_at: ride.updated_at,
 		vehicle_ids: (ride.vehicle_ids ?? []).join('|'),
 		// Legacy fields
+		less_than_ten_vehicle_events_value: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.value ?? null,
 		ontime_start_value: ride.analysis?.ONTIME_START?.value ?? null,
 		validations_count: ride.passengers_observed,
 	};
