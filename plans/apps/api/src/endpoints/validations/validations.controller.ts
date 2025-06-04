@@ -2,7 +2,7 @@ import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { CreateValidationDto, Validation } from '@tmlmobilidade/types';
+import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Validation } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -25,16 +25,12 @@ export class ValidationsController {
 
 			const fields = data.fields as Record<string, MultipartValue>;
 
-			const missingFields = ['agency_id', 'feeder_status'].filter(field => !fields[field]);
-			if (missingFields.length > 0) {
-				reply.status(HttpStatus.BAD_REQUEST).send({ message: `Missing required fields: ${missingFields.join(', ')}` });
-				return;
-			}
-
 			// Convert form fields to Validation data
 			const ValidationData: CreateValidationDto = {
-				agency_id: fields.agency_id.value as string,
 				feeder_status: fields.feeder_status.value as 'error' | 'processing' | 'success' | 'waiting',
+				file_id: '',
+				gtfs_agency: JSON.parse(fields.gtfs_agency.value as string) as GtfsAgency,
+				gtfs_feed_info: JSON.parse(fields.gtfs_feed_info.value as string) as GtfsFeedInfo,
 			};
 
 			const buffer = await data.toBuffer();

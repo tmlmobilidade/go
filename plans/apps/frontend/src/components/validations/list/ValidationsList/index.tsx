@@ -44,7 +44,7 @@ export function ValidationList() {
 					<Section key={Validation._id} alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
 						<StatusTag status={Validation.feeder_status} />
 						<Tag label={Validation._id} variant="primary" />
-						<Tag label={AVAILABLE_AGENCIES.find(agency => agency._id === Validation.agency_id)?.name} variant="secondary" />
+						<Tag label={Validation.gtfs_agency?.agency_name ? Validation.gtfs_agency.agency_name : 'N/A'} variant="secondary" />
 					</Section>
 				</div>
 			))}

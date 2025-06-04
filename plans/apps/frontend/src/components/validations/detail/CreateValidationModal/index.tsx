@@ -1,6 +1,7 @@
 import { UploadFile } from '@/components/common/UploadFile';
 import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
-import { Button, closeModal, Combobox, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
+import { Button, closeModal, Description, Divider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -35,18 +36,6 @@ export default function CreateValidationModal() {
 		</Section>
 	);
 
-	const renderOperatorSelection = () => (
-		<Section gap="sm" padding="none">
-			<Combobox
-				data={validationDetailContext.data.agencies}
-				description="Selecione o operador ao qual este validação pertence"
-				label="Operador"
-				{...validationDetailContext.data.form.getInputProps('agency_id')}
-				fullWidth
-			/>
-		</Section>
-	);
-
 	const renderFileUploadSection = () => (
 		<Section gap="sm" padding="none">
 			<UploadFile
@@ -56,6 +45,66 @@ export default function CreateValidationModal() {
 			/>
 		</Section>
 	);
+
+	const renderFeedInfoSection = () => {
+		if (!validationDetailContext.data.form.values.gtfs_agency || !validationDetailContext.data.form.values.gtfs_feed_info) return null;
+
+		return (
+			<Section gap="sm" padding="none">
+				<Label>Agência</Label>
+				<Grid columns="abc" gap="md">
+					<Section padding="none">
+						<Label size="sm" caps>ID</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_id ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Nome</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_name ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Telefone</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_phone ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+				<Divider />
+				<Label>Feed Info</Label>
+				<Grid columns="abc" gap="md">
+					<Section padding="none">
+						<Label size="sm" caps>Data de início</Label>
+						<Text size="base">{Dates.fromUnixTimestamp(validationDetailContext.data.form.values.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Data de fim</Label>
+						<Text size="base">{Dates.fromUnixTimestamp(validationDetailContext.data.form.values.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Linguagem do feed</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email de contacto</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL de contacto</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_url ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+			</Section>
+		);
+	};
 
 	const renderActionButtons = () => (
 		<Grid columns="ab" gap="md">
@@ -72,10 +121,9 @@ export default function CreateValidationModal() {
 	);
 
 	return (
-
 		<Section gap="lg">
 			{renderModalHeader()}
-			{renderOperatorSelection()}
+			{renderFeedInfoSection()}
 			{renderFileUploadSection()}
 			{renderActionButtons()}
 		</Section>

@@ -5,11 +5,11 @@
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { Routes } from '@/lib/routes';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
-import { CreateValidationDto, CreateValidationSchema, File as TmlFile, Validation, ValidationSchema } from '@tmlmobilidade/types';
+import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, File as TmlFile, Validation, ValidationSchema } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -29,6 +29,7 @@ interface ValidationDetailContextState {
 		file: null | TmlFile
 		form: UseFormReturnType<CreateValidationDto>
 		id: string | undefined
+		validation: null | Validation
 	}
 	flags: {
 		canSave: boolean
@@ -41,8 +42,10 @@ interface ValidationDetailContextState {
 }
 
 const emptyValidation: CreateValidationDto = {
-	agency_id: undefined,
 	feeder_status: 'waiting',
+	file_id: null,
+	gtfs_agency: undefined,
+	gtfs_feed_info: undefined,
 };
 const ValidationDetailContext = createContext<undefined | ValidationDetailContextState>(undefined);
 
@@ -59,6 +62,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	//
 	// A. State Management
 	const router = useRouter();
+	const workerRef = useRef<null | Worker>(null);
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [canSave, setCanSave] = useState(false);
@@ -105,8 +109,41 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 
 	// Set canSave
 	useEffect(() => {
-		setCanSave(form.isValid() && !!validationFile);
-	}, [form.isValid(), validationFile]);
+		if (!validationFile) {
+			setCanSave(false);
+			form.setValues({
+				gtfs_agency: undefined,
+				gtfs_feed_info: undefined,
+			});
+			return;
+		}
+
+		if (workerRef.current) {
+			workerRef.current.terminate();
+		}
+
+		workerRef.current = new Worker(new URL('@/workers/gtfs-info.worker.ts', import.meta.url));
+		workerRef.current.postMessage({ file: validationFile });
+
+		workerRef.current.onmessage = (event) => {
+			if (event.data.error) {
+				useToast.error({
+					message: event.data.error.message,
+					title: 'Erro ao carregar validação',
+				});
+				return;
+			}
+
+			const { agency, feedInfo } = event.data as { agency: GtfsAgency, feedInfo: GtfsFeedInfo };
+
+			form.setValues({
+				gtfs_agency: agency,
+				gtfs_feed_info: feedInfo,
+			});
+
+			setCanSave(true);
+		};
+	}, [validationFile]);
 
 	const availableAgencies = useMemo(() => {
 		return AVAILABLE_AGENCIES.map(agency => ({
@@ -121,11 +158,10 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		setIsSaving(true);
 		const uploadFormData = new FormData();
 
-		console.log('HERE =======> ', form.values.agency_id, form.values.feeder_status);
-
-		uploadFormData.append('agency_id', form.values.agency_id);
+		uploadFormData.append('gtfs_agency', JSON.stringify(form.values.gtfs_agency));
+		uploadFormData.append('gtfs_feed_info', JSON.stringify(form.values.gtfs_feed_info));
 		uploadFormData.append('feeder_status', form.values.feeder_status);
-		uploadFormData.append('operation_validation', validationFile);
+		uploadFormData.append('file', validationFile);
 
 		const response = await multipartFetch(Routes.API(Routes.VALIDATION_LIST), uploadFormData);
 
@@ -180,6 +216,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 				file,
 				form,
 				id: validationId === ValidationDetailMode.NEW ? undefined : validationId,
+				validation,
 			},
 			flags: {
 				canSave,
@@ -190,7 +227,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 				mode: validationId === ValidationDetailMode.NEW ? ValidationDetailMode.NEW : ValidationDetailMode.EDIT,
 			},
 		};
-	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave, file, fileError, error]);
+	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave, file, fileError, error, validation]);
 
 	// F. Render Components
 	return (

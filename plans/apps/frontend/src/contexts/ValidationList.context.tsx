@@ -69,17 +69,17 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 	}, [allValidationsData]);
 
 	const filteredValidations = useMemo(() => {
-		let validations = rawValidations;
+		const validations = rawValidations;
 
-		if (filterValidFrom) {
-			validations = validations.filter(validation => validation.valid_from >= filterValidFrom);
-		}
+		// if (filterValidFrom) {
+		// 	validations = validations.filter(validation => validation.gtfs_feed_info.feed_start_date >= filterValidFrom);
+		// }
 
-		if (filterValidUntil) {
-			validations = validations.filter(validation => validation.valid_until <= filterValidUntil);
-		}
+		// if (filterValidUntil) {
+		// 	validations = validations.filter(validation => validation.gtfs_feed_info.feed_end_date <= filterValidUntil);
+		// }
 
-		validations = validations.filter(validation => filterAgencies.includes(validation.agency_id));
+		// validations = validations.filter(validation => filterAgencies.includes(validation.gtfs_agency.agency_id));
 
 		return validations;
 	}, [rawValidations, filterValidFrom, filterValidUntil, filterAgencies]);
