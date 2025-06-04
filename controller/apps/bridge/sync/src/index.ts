@@ -45,81 +45,81 @@ interface FlatRide {
 	agency_id: string
 
 	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_grade: string
-	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_message: null | string
-	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_reason: null | string
-	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_unit: null | string
+	// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_message: null | string
+	// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_reason: null | string
+	// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_unit: null | string
 	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_value: null | number
 
 	analysis_AT_MOST_TWO_DRIVER_IDS_grade: string
-	analysis_AT_MOST_TWO_DRIVER_IDS_message: null | string
-	analysis_AT_MOST_TWO_DRIVER_IDS_reason: null | string
-	analysis_AT_MOST_TWO_DRIVER_IDS_unit: null | string
+	// analysis_AT_MOST_TWO_DRIVER_IDS_message: null | string
+	// analysis_AT_MOST_TWO_DRIVER_IDS_reason: null | string
+	// analysis_AT_MOST_TWO_DRIVER_IDS_unit: null | string
 	analysis_AT_MOST_TWO_DRIVER_IDS_value: null | number
 
 	analysis_AT_MOST_TWO_VEHICLE_IDS_grade: string
-	analysis_AT_MOST_TWO_VEHICLE_IDS_message: null | string
-	analysis_AT_MOST_TWO_VEHICLE_IDS_reason: null | string
-	analysis_AT_MOST_TWO_VEHICLE_IDS_unit: null | string
+	// analysis_AT_MOST_TWO_VEHICLE_IDS_message: null | string
+	// analysis_AT_MOST_TWO_VEHICLE_IDS_reason: null | string
+	// analysis_AT_MOST_TWO_VEHICLE_IDS_unit: null | string
 	analysis_AT_MOST_TWO_VEHICLE_IDS_value: null | number
 
 	analysis_AVG_INTERVAL_VEHICLE_EVENTS_grade: string
-	analysis_AVG_INTERVAL_VEHICLE_EVENTS_message: null | string
-	analysis_AVG_INTERVAL_VEHICLE_EVENTS_reason: null | string
-	analysis_AVG_INTERVAL_VEHICLE_EVENTS_unit: null | string
+	// analysis_AVG_INTERVAL_VEHICLE_EVENTS_message: null | string
+	// analysis_AVG_INTERVAL_VEHICLE_EVENTS_reason: null | string
+	// analysis_AVG_INTERVAL_VEHICLE_EVENTS_unit: null | string
 	analysis_AVG_INTERVAL_VEHICLE_EVENTS_value: null | number
 
 	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_grade: string
-	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_message: null | string
-	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_reason: null | string
-	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_unit: null | string
+	// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_message: null | string
+	// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_reason: null | string
+	// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_unit: null | string
 	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_value: null | number
 
 	analysis_HIGHEST_VEHICLE_EVENT_DELAY_grade: string
-	analysis_HIGHEST_VEHICLE_EVENT_DELAY_message: null | string
-	analysis_HIGHEST_VEHICLE_EVENT_DELAY_reason: null | string
-	analysis_HIGHEST_VEHICLE_EVENT_DELAY_unit: null | string
+	// analysis_HIGHEST_VEHICLE_EVENT_DELAY_message: null | string
+	// analysis_HIGHEST_VEHICLE_EVENT_DELAY_reason: null | string
+	// analysis_HIGHEST_VEHICLE_EVENT_DELAY_unit: null | string
 	analysis_HIGHEST_VEHICLE_EVENT_DELAY_value: null | number
 
 	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_grade: string
-	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_message: null | string
-	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_reason: null | string
-	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_unit: null | string
+	// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_message: null | string
+	// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_reason: null | string
+	// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_unit: null | string
 	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_value: null | number
 
 	analysis_MATCHING_LOCATION_TRANSACTIONS_grade: string
-	analysis_MATCHING_LOCATION_TRANSACTIONS_message: null | string
-	analysis_MATCHING_LOCATION_TRANSACTIONS_reason: null | string
-	analysis_MATCHING_LOCATION_TRANSACTIONS_unit: null | string
+	// analysis_MATCHING_LOCATION_TRANSACTIONS_message: null | string
+	// analysis_MATCHING_LOCATION_TRANSACTIONS_reason: null | string
+	// analysis_MATCHING_LOCATION_TRANSACTIONS_unit: null | string
 	analysis_MATCHING_LOCATION_TRANSACTIONS_value: null | number
 
 	analysis_ONTIME_START_grade: string
-	analysis_ONTIME_START_message: null | string
-	analysis_ONTIME_START_reason: null | string
-	analysis_ONTIME_START_unit: null | string
+	// analysis_ONTIME_START_message: null | string
+	// analysis_ONTIME_START_reason: null | string
+	// analysis_ONTIME_START_unit: null | string
 	analysis_ONTIME_START_value: null | number
 
 	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_grade: string
-	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_message: null | string
-	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_reason: null | string
-	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_unit: null | string
+	// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_message: null | string
+	// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_reason: null | string
+	// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_unit: null | string
 	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_value: null | number
 
 	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_grade: string
-	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_message: null | string
-	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_reason: null | string
-	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_unit: null | string
+	// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_message: null | string
+	// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_reason: null | string
+	// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_unit: null | string
 	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_value: null | number
 
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS_grade: string
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_message: null | string
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: null | string
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_unit: null | string
+	// analysis_SIMPLE_THREE_VEHICLE_EVENTS_message: null | string
+	// analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: null | string
+	// analysis_SIMPLE_THREE_VEHICLE_EVENTS_unit: null | string
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS_value: null | number
 
 	analysis_TRANSACTION_SEQUENTIALITY_grade: string
-	analysis_TRANSACTION_SEQUENTIALITY_message: null | string
-	analysis_TRANSACTION_SEQUENTIALITY_reason: null | string
-	analysis_TRANSACTION_SEQUENTIALITY_unit: null | string
+	// analysis_TRANSACTION_SEQUENTIALITY_message: null | string
+	// analysis_TRANSACTION_SEQUENTIALITY_reason: null | string
+	// analysis_TRANSACTION_SEQUENTIALITY_unit: null | string
 	analysis_TRANSACTION_SEQUENTIALITY_value: null | number
 
 	apex_locations_qty: null | number
@@ -165,69 +165,69 @@ const sampleRide: FlatRide = {
 	_id: 'string',
 	agency_id: 'string',
 	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_grade: 'string',
-	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_message: 'string',
-	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_reason: 'string',
-	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_unit: 'string',
+	// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_message: 'string',
+	// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_reason: 'string',
+	// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_unit: 'string',
 	analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_value: 0,
 	analysis_AT_MOST_TWO_DRIVER_IDS_grade: 'string',
-	analysis_AT_MOST_TWO_DRIVER_IDS_message: 'string',
-	analysis_AT_MOST_TWO_DRIVER_IDS_reason: 'string',
-	analysis_AT_MOST_TWO_DRIVER_IDS_unit: 'string',
+	// analysis_AT_MOST_TWO_DRIVER_IDS_message: 'string',
+	// analysis_AT_MOST_TWO_DRIVER_IDS_reason: 'string',
+	// analysis_AT_MOST_TWO_DRIVER_IDS_unit: 'string',
 	analysis_AT_MOST_TWO_DRIVER_IDS_value: 0,
 	analysis_AT_MOST_TWO_VEHICLE_IDS_grade: 'string',
-	analysis_AT_MOST_TWO_VEHICLE_IDS_message: 'string',
-	analysis_AT_MOST_TWO_VEHICLE_IDS_reason: 'string',
-	analysis_AT_MOST_TWO_VEHICLE_IDS_unit: 'string',
+	// analysis_AT_MOST_TWO_VEHICLE_IDS_message: 'string',
+	// analysis_AT_MOST_TWO_VEHICLE_IDS_reason: 'string',
+	// analysis_AT_MOST_TWO_VEHICLE_IDS_unit: 'string',
 	analysis_AT_MOST_TWO_VEHICLE_IDS_value: 0,
 	analysis_AVG_INTERVAL_VEHICLE_EVENTS_grade: 'string',
-	analysis_AVG_INTERVAL_VEHICLE_EVENTS_message: 'string',
-	analysis_AVG_INTERVAL_VEHICLE_EVENTS_reason: 'string',
-	analysis_AVG_INTERVAL_VEHICLE_EVENTS_unit: 'string',
+	// analysis_AVG_INTERVAL_VEHICLE_EVENTS_message: 'string',
+	// analysis_AVG_INTERVAL_VEHICLE_EVENTS_reason: 'string',
+	// analysis_AVG_INTERVAL_VEHICLE_EVENTS_unit: 'string',
 	analysis_AVG_INTERVAL_VEHICLE_EVENTS_value: 0,
 	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_grade: 'string',
-	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_message: 'string',
-	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_reason: 'string',
-	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_unit: 'string',
+	// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_message: 'string',
+	// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_reason: 'string',
+	// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_unit: 'string',
 	analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_value: 0,
 	analysis_HIGHEST_VEHICLE_EVENT_DELAY_grade: 'string',
-	analysis_HIGHEST_VEHICLE_EVENT_DELAY_message: 'string',
-	analysis_HIGHEST_VEHICLE_EVENT_DELAY_reason: 'string',
-	analysis_HIGHEST_VEHICLE_EVENT_DELAY_unit: 'string',
+	// analysis_HIGHEST_VEHICLE_EVENT_DELAY_message: 'string',
+	// analysis_HIGHEST_VEHICLE_EVENT_DELAY_reason: 'string',
+	// analysis_HIGHEST_VEHICLE_EVENT_DELAY_unit: 'string',
 	analysis_HIGHEST_VEHICLE_EVENT_DELAY_value: 0,
 	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_grade: 'string',
-	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_message: 'string',
-	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_reason: 'string',
-	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_unit: 'string',
+	// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_message: 'string',
+	// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_reason: 'string',
+	// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_unit: 'string',
 	analysis_LESS_THAN_TEN_VEHICLE_EVENTS_value: 0,
 	analysis_MATCHING_LOCATION_TRANSACTIONS_grade: 'string',
-	analysis_MATCHING_LOCATION_TRANSACTIONS_message: 'string',
-	analysis_MATCHING_LOCATION_TRANSACTIONS_reason: 'string',
-	analysis_MATCHING_LOCATION_TRANSACTIONS_unit: 'string',
+	// analysis_MATCHING_LOCATION_TRANSACTIONS_message: 'string',
+	// analysis_MATCHING_LOCATION_TRANSACTIONS_reason: 'string',
+	// analysis_MATCHING_LOCATION_TRANSACTIONS_unit: 'string',
 	analysis_MATCHING_LOCATION_TRANSACTIONS_value: 0,
 	analysis_ONTIME_START_grade: 'string',
-	analysis_ONTIME_START_message: 'string',
-	analysis_ONTIME_START_reason: 'string',
-	analysis_ONTIME_START_unit: 'string',
+	// analysis_ONTIME_START_message: 'string',
+	// analysis_ONTIME_START_reason: 'string',
+	// analysis_ONTIME_START_unit: 'string',
 	analysis_ONTIME_START_value: 0,
 	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_grade: 'string',
-	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_message: 'string',
-	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_reason: 'string',
-	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_unit: 'string',
+	// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_message: 'string',
+	// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_reason: 'string',
+	// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_unit: 'string',
 	analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_value: 0,
 	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_grade: 'string',
-	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_message: 'string',
-	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_reason: 'string',
-	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_unit: 'string',
+	// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_message: 'string',
+	// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_reason: 'string',
+	// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_unit: 'string',
 	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_value: 0,
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS_grade: 'string',
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_message: 'string',
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: 'string',
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_unit: 'string',
+	// analysis_SIMPLE_THREE_VEHICLE_EVENTS_message: 'string',
+	// analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: 'string',
+	// analysis_SIMPLE_THREE_VEHICLE_EVENTS_unit: 'string',
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS_value: 0,
 	analysis_TRANSACTION_SEQUENTIALITY_grade: 'string',
-	analysis_TRANSACTION_SEQUENTIALITY_message: 'string',
-	analysis_TRANSACTION_SEQUENTIALITY_reason: 'string',
-	analysis_TRANSACTION_SEQUENTIALITY_unit: 'string',
+	// analysis_TRANSACTION_SEQUENTIALITY_message: 'string',
+	// analysis_TRANSACTION_SEQUENTIALITY_reason: 'string',
+	// analysis_TRANSACTION_SEQUENTIALITY_unit: 'string',
 	analysis_TRANSACTION_SEQUENTIALITY_value: 0,
 	apex_locations_qty: 0,
 	apex_on_board_refunds_amount: 0,
@@ -273,69 +273,69 @@ function parseRide(ride: Ride): FlatRide {
 		_id: ride._id,
 		agency_id: ride.agency_id,
 		analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_grade: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.grade ?? null,
-		analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_message: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.message ?? null,
-		analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_reason: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.reason ?? null,
-		analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_unit: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.unit ?? null,
+		// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_message: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.message ?? null,
+		// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_reason: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.reason ?? null,
+		// analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_unit: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.unit ?? null,
 		analysis_AT_LEAST_ONE_EVENT_ON_FIRST_STOP_value: ride.analysis?.AT_LEAST_ONE_EVENT_ON_FIRST_STOP?.value ?? null,
 		analysis_AT_MOST_TWO_DRIVER_IDS_grade: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.grade ?? null,
-		analysis_AT_MOST_TWO_DRIVER_IDS_message: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.message ?? null,
-		analysis_AT_MOST_TWO_DRIVER_IDS_reason: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.reason ?? null,
-		analysis_AT_MOST_TWO_DRIVER_IDS_unit: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.unit ?? null,
+		// analysis_AT_MOST_TWO_DRIVER_IDS_message: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.message ?? null,
+		// analysis_AT_MOST_TWO_DRIVER_IDS_reason: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.reason ?? null,
+		// analysis_AT_MOST_TWO_DRIVER_IDS_unit: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.unit ?? null,
 		analysis_AT_MOST_TWO_DRIVER_IDS_value: ride.analysis?.AT_MOST_TWO_DRIVER_IDS?.value ?? null,
 		analysis_AT_MOST_TWO_VEHICLE_IDS_grade: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.grade ?? null,
-		analysis_AT_MOST_TWO_VEHICLE_IDS_message: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.message ?? null,
-		analysis_AT_MOST_TWO_VEHICLE_IDS_reason: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.reason ?? null,
-		analysis_AT_MOST_TWO_VEHICLE_IDS_unit: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.unit ?? null,
+		// analysis_AT_MOST_TWO_VEHICLE_IDS_message: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.message ?? null,
+		// analysis_AT_MOST_TWO_VEHICLE_IDS_reason: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.reason ?? null,
+		// analysis_AT_MOST_TWO_VEHICLE_IDS_unit: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.unit ?? null,
 		analysis_AT_MOST_TWO_VEHICLE_IDS_value: ride.analysis?.AT_MOST_TWO_VEHICLE_IDS?.value ?? null,
 		analysis_AVG_INTERVAL_VEHICLE_EVENTS_grade: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.grade ?? null,
-		analysis_AVG_INTERVAL_VEHICLE_EVENTS_message: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.message ?? null,
-		analysis_AVG_INTERVAL_VEHICLE_EVENTS_reason: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.reason ?? null,
-		analysis_AVG_INTERVAL_VEHICLE_EVENTS_unit: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.unit ?? null,
+		// analysis_AVG_INTERVAL_VEHICLE_EVENTS_message: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.message ?? null,
+		// analysis_AVG_INTERVAL_VEHICLE_EVENTS_reason: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.reason ?? null,
+		// analysis_AVG_INTERVAL_VEHICLE_EVENTS_unit: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.unit ?? null,
 		analysis_AVG_INTERVAL_VEHICLE_EVENTS_value: ride.analysis?.AVG_INTERVAL_VEHICLE_EVENTS?.value ?? null,
 		analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_grade: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.grade ?? null,
-		analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_message: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.message ?? null,
-		analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_reason: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.reason ?? null,
-		analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_unit: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.unit ?? null,
+		// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_message: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.message ?? null,
+		// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_reason: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.reason ?? null,
+		// analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_unit: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.unit ?? null,
 		analysis_EXCESSIVE_VEHICLE_EVENT_DELAY_value: ride.analysis?.EXCESSIVE_VEHICLE_EVENT_DELAY?.value ?? null,
 		analysis_HIGHEST_VEHICLE_EVENT_DELAY_grade: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.grade ?? null,
-		analysis_HIGHEST_VEHICLE_EVENT_DELAY_message: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.message ?? null,
-		analysis_HIGHEST_VEHICLE_EVENT_DELAY_reason: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.reason ?? null,
-		analysis_HIGHEST_VEHICLE_EVENT_DELAY_unit: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.unit ?? null,
+		// analysis_HIGHEST_VEHICLE_EVENT_DELAY_message: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.message ?? null,
+		// analysis_HIGHEST_VEHICLE_EVENT_DELAY_reason: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.reason ?? null,
+		// analysis_HIGHEST_VEHICLE_EVENT_DELAY_unit: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.unit ?? null,
 		analysis_HIGHEST_VEHICLE_EVENT_DELAY_value: ride.analysis?.HIGHEST_VEHICLE_EVENT_DELAY?.value ?? null,
 		analysis_LESS_THAN_TEN_VEHICLE_EVENTS_grade: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.grade ?? null,
-		analysis_LESS_THAN_TEN_VEHICLE_EVENTS_message: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.message ?? null,
-		analysis_LESS_THAN_TEN_VEHICLE_EVENTS_reason: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.reason ?? null,
-		analysis_LESS_THAN_TEN_VEHICLE_EVENTS_unit: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.unit ?? null,
+		// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_message: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.message ?? null,
+		// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_reason: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.reason ?? null,
+		// analysis_LESS_THAN_TEN_VEHICLE_EVENTS_unit: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.unit ?? null,
 		analysis_LESS_THAN_TEN_VEHICLE_EVENTS_value: ride.analysis?.LESS_THAN_TEN_VEHICLE_EVENTS?.value ?? null,
 		analysis_MATCHING_LOCATION_TRANSACTIONS_grade: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.grade ?? null,
-		analysis_MATCHING_LOCATION_TRANSACTIONS_message: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.message ?? null,
-		analysis_MATCHING_LOCATION_TRANSACTIONS_reason: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.reason ?? null,
-		analysis_MATCHING_LOCATION_TRANSACTIONS_unit: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.unit ?? null,
+		// analysis_MATCHING_LOCATION_TRANSACTIONS_message: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.message ?? null,
+		// analysis_MATCHING_LOCATION_TRANSACTIONS_reason: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.reason ?? null,
+		// analysis_MATCHING_LOCATION_TRANSACTIONS_unit: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.unit ?? null,
 		analysis_MATCHING_LOCATION_TRANSACTIONS_value: ride.analysis?.MATCHING_LOCATION_TRANSACTIONS?.value ?? null,
 		analysis_ONTIME_START_grade: ride.analysis?.ONTIME_START?.grade ?? null,
-		analysis_ONTIME_START_message: ride.analysis?.ONTIME_START?.message ?? null,
-		analysis_ONTIME_START_reason: ride.analysis?.ONTIME_START?.reason ?? null,
-		analysis_ONTIME_START_unit: ride.analysis?.ONTIME_START?.unit ?? null,
+		// analysis_ONTIME_START_message: ride.analysis?.ONTIME_START?.message ?? null,
+		// analysis_ONTIME_START_reason: ride.analysis?.ONTIME_START?.reason ?? null,
+		// analysis_ONTIME_START_unit: ride.analysis?.ONTIME_START?.unit ?? null,
 		analysis_ONTIME_START_value: ride.analysis?.ONTIME_START?.value ?? null,
 		analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_grade: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.grade ?? null,
-		analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_message: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.message ?? null,
-		analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_reason: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.reason ?? null,
-		analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_unit: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.unit ?? null,
+		// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_message: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.message ?? null,
+		// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_reason: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.reason ?? null,
+		// analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_unit: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.unit ?? null,
 		analysis_SIMPLE_ONE_VALIDATION_TRANSACTION_value: ride.analysis?.SIMPLE_ONE_VALIDATION_TRANSACTION?.value ?? null,
 		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_grade: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.grade ?? null,
-		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_message: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.message ?? null,
-		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_reason: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.reason ?? null,
-		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_unit: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.unit ?? null,
+		// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_message: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.message ?? null,
+		// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_reason: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.reason ?? null,
+		// analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_unit: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.unit ?? null,
 		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_value: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION?.value ?? null,
 		analysis_SIMPLE_THREE_VEHICLE_EVENTS_grade: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade ?? null,
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_message: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.message ?? null,
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.reason ?? null,
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_unit: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.unit ?? null,
+		// analysis_SIMPLE_THREE_VEHICLE_EVENTS_message: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.message ?? null,
+		// analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.reason ?? null,
+		// analysis_SIMPLE_THREE_VEHICLE_EVENTS_unit: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.unit ?? null,
 		analysis_SIMPLE_THREE_VEHICLE_EVENTS_value: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.value ?? null,
 		analysis_TRANSACTION_SEQUENTIALITY_grade: ride.analysis?.TRANSACTION_SEQUENTIALITY?.grade ?? null,
-		analysis_TRANSACTION_SEQUENTIALITY_message: ride.analysis?.TRANSACTION_SEQUENTIALITY?.message ?? null,
-		analysis_TRANSACTION_SEQUENTIALITY_reason: ride.analysis?.TRANSACTION_SEQUENTIALITY?.reason ?? null,
-		analysis_TRANSACTION_SEQUENTIALITY_unit: ride.analysis?.TRANSACTION_SEQUENTIALITY?.unit ?? null,
+		// analysis_TRANSACTION_SEQUENTIALITY_message: ride.analysis?.TRANSACTION_SEQUENTIALITY?.message ?? null,
+		// analysis_TRANSACTION_SEQUENTIALITY_reason: ride.analysis?.TRANSACTION_SEQUENTIALITY?.reason ?? null,
+		// analysis_TRANSACTION_SEQUENTIALITY_unit: ride.analysis?.TRANSACTION_SEQUENTIALITY?.unit ?? null,
 		analysis_TRANSACTION_SEQUENTIALITY_value: ride.analysis?.TRANSACTION_SEQUENTIALITY?.value ?? null,
 		apex_locations_qty: ride.apex_locations_qty,
 		apex_on_board_refunds_amount: ride.apex_on_board_refunds_amount,
@@ -420,7 +420,7 @@ export async function syncRides() {
 
 		const oneMonthAgo = Dates
 			.now('Europe/Lisbon')
-			.minus({ months: 1 })
+			.minus({ days: 2 })
 			.operational_date;
 
 		const stream = ridesCollection
