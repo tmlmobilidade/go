@@ -10,7 +10,7 @@ import { Dates } from '@tmlmobilidade/utils';
 /* * */
 
 const RUN_INTERVAL = 3600000; // 60 minutes
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 1000;
 
 /* * */
 
