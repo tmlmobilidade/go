@@ -33,7 +33,7 @@ export async function syncApexValidations() {
 		await PCGIDB.connect();
 
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
-		const simplifiedApexValidationsDbWritter = new MongoDbWriter<SimplifiedApexValidation>({ batch_size: 100000, collection: simplifiedApexValidationsCollection });
+		const simplifiedApexValidationsDbWritter = new MongoDbWriter<SimplifiedApexValidation>({ batch_size: 200000, collection: simplifiedApexValidationsCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -52,7 +52,7 @@ export async function syncApexValidations() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 4 })
+			.splitBy({ hour: 5 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 

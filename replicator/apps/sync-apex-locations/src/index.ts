@@ -31,7 +31,7 @@ async function syncApexLocations() {
 		await PCGIDB.connect();
 
 		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
-		const simplifiedApexLocationsDbWritter = new MongoDbWriter<SimplifiedApexLocation>({ batch_size: 100000, collection: simplifiedApexLocationsCollection });
+		const simplifiedApexLocationsDbWritter = new MongoDbWriter<SimplifiedApexLocation>({ batch_size: 200000, collection: simplifiedApexLocationsCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -50,7 +50,7 @@ async function syncApexLocations() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 4 })
+			.splitBy({ hour: 5 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
