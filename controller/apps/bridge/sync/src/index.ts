@@ -82,11 +82,12 @@ function parseRide(ride: Ride): Record<string, boolean | null | number | string>
 	const analysisFields: Record<string, null | number | string> = {};
 
 	for (const [key, val] of Object.entries(ride.analysis ?? {})) {
-		analysisFields[`analysis_${key}_grade`] = val?.grade ?? null;
-		analysisFields[`analysis_${key}_message`] = val?.message ?? null;
-		analysisFields[`analysis_${key}_reason`] = val?.reason ?? null;
-		analysisFields[`analysis_${key}_unit`] = val?.unit ?? null;
-		analysisFields[`analysis_${key}_value`] = val?.value ?? null;
+		const safeKey = key.toLowerCase();
+		analysisFields[`${safeKey}_grade`] = val?.grade ?? null;
+		analysisFields[`${safeKey}_message`] = val?.message ?? null;
+		analysisFields[`${safeKey}_reason`] = val?.reason ?? null;
+		analysisFields[`${safeKey}_unit`] = val?.unit ?? null;
+		analysisFields[`${safeKey}_value`] = val?.value ?? null;
 	}
 
 	return {
