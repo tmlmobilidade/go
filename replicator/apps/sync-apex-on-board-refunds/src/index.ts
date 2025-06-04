@@ -31,7 +31,7 @@ async function syncApexOnBoardRefunds() {
 		await PCGIDB.connect();
 
 		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
-		const simplifiedApexOnBoardRefundsDbWritter = new MongoDbWriter<SimplifiedApexOnBoardRefund>({ batch_size: 200000, collection: simplifiedApexOnBoardRefundsCollection });
+		const simplifiedApexOnBoardRefundsDbWritter = new MongoDbWriter<SimplifiedApexOnBoardRefund>({ batch_size: 100000, collection: simplifiedApexOnBoardRefundsCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
