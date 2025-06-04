@@ -23,7 +23,6 @@ interface ValidationDetailContextState {
 	actions: {
 		saveValidation: () => void
 		setValidationFile: (file: File) => void
-		toggleLock: () => void
 	}
 	data: {
 		agencies: { label: string, value: string }[]
@@ -44,9 +43,6 @@ interface ValidationDetailContextState {
 const emptyValidation: CreateValidationDto = {
 	agency_id: undefined,
 	feeder_status: 'waiting',
-	is_locked: false,
-	valid_from: undefined,
-	valid_until: undefined,
 };
 const ValidationDetailContext = createContext<undefined | ValidationDetailContextState>(undefined);
 
@@ -105,11 +101,12 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	// Validate form on change
 	useEffect(() => {
 		form.validate();
-		console.log('canSave', form.isValid());
-		setCanSave(form.isValid());
-
-		console.log(form.errors);
 	}, [form.values]);
+
+	// Set canSave
+	useEffect(() => {
+		setCanSave(form.isValid() && !!validationFile);
+	}, [form.isValid, validationFile]);
 
 	const availableAgencies = useMemo(() => {
 		return AVAILABLE_AGENCIES.map(agency => ({
@@ -120,20 +117,15 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 
 	//
 	// D. Define actions
-	const toggleLock = () => {
-		form.setFieldValue('is_locked', !form.getValues().is_locked);
-	};
-
 	const createValidation = async () => {
 		setIsSaving(true);
 		const uploadFormData = new FormData();
 
-		uploadFormData.append('agency_id', form.getValues().agency_id);
-		uploadFormData.append('feeder_status', form.getValues().feeder_status);
-		uploadFormData.append('is_locked', form.getValues().is_locked.toString());
-		uploadFormData.append('valid_from', form.getValues().valid_from);
-		uploadFormData.append('valid_until', form.getValues().valid_until);
 		uploadFormData.append('operation_validation', validationFile);
+		Object.entries(form.getValues()).forEach(([key, value]) => {
+			if (!value) return;
+			uploadFormData.append(key, String(value));
+		});
 
 		const response = await multipartFetch(Routes.API(Routes.VALIDATION_LIST), uploadFormData);
 
@@ -181,7 +173,6 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 			actions: {
 				saveValidation,
 				setValidationFile,
-				toggleLock,
 			},
 			data: {
 				agencies: availableAgencies,
