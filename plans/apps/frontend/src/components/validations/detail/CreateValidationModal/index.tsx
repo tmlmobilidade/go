@@ -1,10 +1,6 @@
 import { UploadFile } from '@/components/common/UploadFile';
 import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
-import { Button, closeModal, Combobox, DatePicker, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
-import { useMemo } from 'react';
-
-import styles from './styles.module.css';
+import { Button, closeModal, Combobox, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -29,18 +25,6 @@ export default function CreateValidationModal() {
 	// A. State Management
 	const validationDetailContext = useValidationDetailContext();
 
-	//
-	// B. Transform data
-	const validFrom = useMemo(() => {
-		if (!validationDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_from, 'local').js_date;
-	}, [validationDetailContext.data.form.values.valid_from]);
-
-	const validUntil = useMemo(() => {
-		if (!validationDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_until, 'local').js_date;
-	}, [validationDetailContext.data.form.values.valid_until]);
-
 	// D. Render Components
 	const renderModalHeader = () => (
 		<Section gap="sm" padding="none">
@@ -63,42 +47,10 @@ export default function CreateValidationModal() {
 		</Section>
 	);
 
-	const renderDateRangeSelection = () => (
-		<Section padding="none">
-			<Grid className={styles.datePickerGrid} columns="ab" gap="md">
-				<DatePicker
-					description="Data de início da vigência do validação"
-					flex={1}
-					label="Data de início"
-					{...validationDetailContext.data.form.getInputProps('valid_from')}
-					value={validFrom}
-					onChange={(date) => {
-						validationDetailContext.data.form.setValues({
-							valid_from: Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date,
-						});
-					}}
-					withAsterisk
-				/>
-				<DatePicker
-					description="Data de fim da vigência do validação"
-					label="Data de fim"
-					clearable
-					{...validationDetailContext.data.form.getInputProps('valid_until')}
-					value={validUntil}
-					onChange={(date) => {
-						validationDetailContext.data.form.setValues({
-							valid_until: Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date,
-						});
-					}}
-				/>
-			</Grid>
-		</Section>
-	);
-
 	const renderFileUploadSection = () => (
 		<Section gap="sm" padding="none">
 			<UploadFile
-				label="Validação de Referencia (GO)"
+				label="Ficheiro GTFS"
 				maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
 				onFileChange={validationDetailContext.actions.setValidationFile}
 			/>
@@ -124,7 +76,6 @@ export default function CreateValidationModal() {
 		<Section gap="lg">
 			{renderModalHeader()}
 			{renderOperatorSelection()}
-			{renderDateRangeSelection()}
 			{renderFileUploadSection()}
 			{renderActionButtons()}
 		</Section>

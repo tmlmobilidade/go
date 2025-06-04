@@ -22,7 +22,7 @@ export enum ValidationDetailMode {
 interface ValidationDetailContextState {
 	actions: {
 		saveValidation: () => void
-		setValidationFile: (file: File) => void
+		setValidationFile: (file: File | null) => void
 	}
 	data: {
 		agencies: { label: string, value: string }[]
@@ -72,7 +72,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	// B. Define form
 	const form = useForm<CreateValidationDto>({
 		initialValues: validationId === ValidationDetailMode.NEW ? emptyValidation : validation,
-		validate: zodResolver(validationId === ValidationDetailMode.NEW ? CreateValidationSchema : ValidationSchema),
+		validate: zodResolver((validationId === ValidationDetailMode.NEW ? CreateValidationSchema : ValidationSchema)) as unknown,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -106,7 +106,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	// Set canSave
 	useEffect(() => {
 		setCanSave(form.isValid() && !!validationFile);
-	}, [form.isValid, validationFile]);
+	}, [form.isValid(), validationFile]);
 
 	const availableAgencies = useMemo(() => {
 		return AVAILABLE_AGENCIES.map(agency => ({
@@ -121,11 +121,11 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		setIsSaving(true);
 		const uploadFormData = new FormData();
 
+		console.log('HERE =======> ', form.values.agency_id, form.values.feeder_status);
+
+		uploadFormData.append('agency_id', form.values.agency_id);
+		uploadFormData.append('feeder_status', form.values.feeder_status);
 		uploadFormData.append('operation_validation', validationFile);
-		Object.entries(form.getValues()).forEach(([key, value]) => {
-			if (!value) return;
-			uploadFormData.append(key, String(value));
-		});
 
 		const response = await multipartFetch(Routes.API(Routes.VALIDATION_LIST), uploadFormData);
 
@@ -134,6 +134,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 				message: response.error,
 				title: 'Erro ao criar validação',
 			});
+			setIsSaving(false);
 			return;
 		}
 
