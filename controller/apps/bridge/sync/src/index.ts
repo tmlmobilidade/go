@@ -447,6 +447,8 @@ export async function syncRides() {
 			LOGGER.info(`Inserted remaining ${batch.length} rides.`);
 		}
 
+		await BRIDGEDB.disconnect();
+
 		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
 	}
 	catch (err) {
