@@ -10,7 +10,6 @@ import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { Pane, Section, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
-import DateCell from '../DateCell';
 import styles from './styles.module.css';
 
 /* * */
@@ -41,13 +40,12 @@ export function ValidationList() {
 		]}
 		>
 			{data.filtered.map(Validation => (
-				<div className={styles.root} onClick={() => router.push(`/validations/${Validation._id}`)}>
+				<div key={Validation._id} className={styles.root} onClick={() => router.push(`/validations/${Validation._id}`)}>
 					<Section key={Validation._id} alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
 						<StatusTag status={Validation.feeder_status} />
 						<Tag label={Validation._id} variant="primary" />
 						<Tag label={AVAILABLE_AGENCIES.find(agency => agency._id === Validation.agency_id)?.name} variant="secondary" />
 					</Section>
-					<DateCell date={Validation.valid_from} endDate={Validation.valid_until} />
 				</div>
 			))}
 		</Pane>
