@@ -347,7 +347,7 @@ export async function syncRides() {
 
 		const oneMonthAgo = Dates
 			.now('Europe/Lisbon')
-			.minus({ days: 2 })
+			.minus({ months: 1 })
 			.operational_date;
 
 		const stream = ridesCollection
