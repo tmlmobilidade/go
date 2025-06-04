@@ -1,5 +1,7 @@
 'use client';
 
+// import localities from '../data/localities.json';
+// import parishes from '../data/parishes.json';
 import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
@@ -204,7 +206,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date };
+
 		const saveStop: CreateStopDto = { ...form.values };
+
+		console.log('saveStop', saveStop);
 		// console.log('-> ==> saveStop', saveStop);
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);
@@ -385,7 +390,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			title: 'Sucesso',
 		});
 	}
-	;
+		;
 	const deleteFile = async (fileId: string) => {
 		if (stopId === 'new') return;
 
@@ -440,7 +445,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		setIsSaving(false);
 	}
-	;
+		;
 	const uploadFile = async (stopId: string) => {
 		if (stopId === 'new' || !file) return;
 
@@ -494,6 +499,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	const handleCommentsChange = (userId: string, text: string) => {
 		form.values.comments.push({
+			// @ts-expect-error: comment has property _id
 			_id: generateRandomId(),
 			text: text,
 			user_id: userId,

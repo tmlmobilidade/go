@@ -23,5 +23,8 @@
 	},
 	"workspaces": [
 		"apps/*"
-	]
+	],
+	"dependencies": {
+		"@turf/turf": "^7.2.0"
+	}
 }
