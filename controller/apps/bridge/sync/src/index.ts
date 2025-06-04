@@ -9,7 +9,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-const RUN_INTERVAL = 3600000; // 60 minutes
+const RUN_INTERVAL = 300_000; // 5 minutes
 const BATCH_SIZE = 1000;
 
 /* * */
@@ -380,7 +380,7 @@ function parseRide(ride: Ride): FlatRide {
 async function insertBatch(batch: ReturnType<typeof parseRide>[]) {
 	if (batch.length === 0) return;
 
-	const keys = Object.keys(batch[0]);
+	const keys = Object.keys(sampleRide);
 
 	const placeholders = batch
 		.map((_, i) => `(${keys.map((_, j) => `$${i * keys.length + j + 1}`).join(',')})`)
