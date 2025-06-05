@@ -10,7 +10,7 @@ import { closeModal, useForm, UseFormReturnType, useToast, zodResolver } from '@
 import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
@@ -187,6 +187,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 
 		setIsSaving(false);
 		closeModal(CREATE_VALIDATION_MODAL_ID);
+		mutate(Routes.API(Routes.VALIDATION_LIST));
 	};
 
 	const updateValidation = () => {

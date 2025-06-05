@@ -4,6 +4,7 @@ import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { mutate } from 'swr';
 
 export const CREATE_PLAN_MODAL_ID = 'create-plan-modal';
 
@@ -56,6 +57,8 @@ export function useCreatePlan(validations: Validation[], validation_id?: string)
 			message: 'Validação criado com sucesso',
 			title: 'Sucesso',
 		});
+
+		mutate(Routes.API(Routes.PLAN_LIST));
 
 		setLoading(false);
 		closeModal(CREATE_PLAN_MODAL_ID);
