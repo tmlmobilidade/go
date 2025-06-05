@@ -6,11 +6,11 @@ import { CREATE_PLAN_MODAL_ID, useCreatePlan } from './useCreatePlan';
 
 /* * */
 
-export const OpenCreatePlanModal = () => {
+export const OpenCreatePlanModal = (validation_id?: string) => {
 	openModal({
 		children: (
 			<ValidationListContextProvider>
-				<CreatePlanModal />
+				<CreatePlanModal validation_id={validation_id} />
 			</ValidationListContextProvider>
 		),
 		modalId: CREATE_PLAN_MODAL_ID,
@@ -21,9 +21,9 @@ export const OpenCreatePlanModal = () => {
 
 /* * */
 
-export default function CreatePlanModal() {
+export default function CreatePlanModal({ validation_id }: { validation_id?: string }) {
 	const validationListContext = useValidationListContext();
-	const { actions, data, flags } = useCreatePlan(validationListContext.data.raw);
+	const { actions, data, flags } = useCreatePlan(validationListContext.data.raw, validation_id);
 
 	const renderFeedInfoSection = () => {
 		return (
@@ -89,6 +89,7 @@ export default function CreatePlanModal() {
 				<Combobox
 					label="Selecione uma validação"
 					onChange={(id: string) => actions.setSelectedValidation(id)}
+					value={data.selectedValidation?._id}
 					data={data.validations.map(validation => ({
 						label: `${validation._id} - ${validation.gtfs_agency.agency_name} | ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_SHORT)} - ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_SHORT)}`,
 						value: validation._id,

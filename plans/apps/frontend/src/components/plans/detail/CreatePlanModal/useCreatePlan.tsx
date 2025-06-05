@@ -22,14 +22,14 @@ interface CreatePlanState {
 	}
 }
 
-export function useCreatePlan(validations: Validation[]) {
+export function useCreatePlan(validations: Validation[], validation_id?: string) {
 	//
 
 	//
 	// A. Define state
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
-	const [selectedValidation, setSelectedValidation] = useState<null | Validation>(null);
+	const [selectedValidation, setSelectedValidation] = useState<null | Validation>(validation_id ? validations.find(v => v._id === validation_id) ?? null : null);
 
 	//
 	// B. Define actions

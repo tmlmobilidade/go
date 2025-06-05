@@ -4,6 +4,7 @@
 
 import BackButton from '@/components/common/BackButton';
 import { StatusTag } from '@/components/common/StatusTag';
+import { OpenCreatePlanModal } from '@/components/plans/detail/CreatePlanModal';
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
 import { IconTransform } from '@tabler/icons-react';
 import { Button, Label, Spacer } from '@tmlmobilidade/ui';
@@ -29,7 +30,7 @@ export function ValidationDetailHeader() {
 			<Label size="lg" caps>{validationDetailContext.data.id}</Label>
 			<Spacer />
 			{canConvertToPlan && (
-				<Button icon={<IconTransform size={24} />} label="Converter para plano" size="lg" variant="primary" />
+				<Button icon={<IconTransform size={24} />} label="Converter para plano" onClick={() => OpenCreatePlanModal(validationDetailContext.data.validation._id)} size="lg" variant="primary" />
 			)}
 		</>
 	);
