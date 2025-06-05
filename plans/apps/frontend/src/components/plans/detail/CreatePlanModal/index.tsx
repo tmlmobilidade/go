@@ -109,7 +109,7 @@ export default function CreatePlanModal() {
 					label="Selecione uma validação"
 					onChange={value => setSelectedValidation(validationListContext.data.filtered.find(validation => validation._id === value) ?? null)}
 					data={validationListContext.data.filtered.map(validation => ({
-						label: `${validation.feeder_status} - ${validation._id} - ${validation.gtfs_agency.agency_name} | ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_SHORT)} - ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_SHORT)}`,
+						label: `${validation._id} - ${validation.gtfs_agency.agency_name} | ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_SHORT)} - ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_SHORT)}`,
 						value: validation._id,
 					}))}
 					clearable
