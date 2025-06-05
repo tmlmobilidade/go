@@ -1,9 +1,8 @@
 /* * */
 
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { Collapsible, Combobox, DatePicker, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { useMemo } from 'react';
 
 /* * */
 
@@ -12,66 +11,89 @@ export function PlanDetailSectionInfo() {
 
 	//
 	// A. Setup variables
-
-	const planDetailContext = usePlanDetailContext();
-
-	//
-	// B. Transform data
-	const validFrom = useMemo(() => {
-		if (!planDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from, 'Europe/Lisbon').js_date;
-	}, [planDetailContext.data.form.values.valid_from]);
-
-	const validUntil = useMemo(() => {
-		if (!planDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until, 'Europe/Lisbon').js_date;
-	}, [planDetailContext.data.form.values.valid_until]);
+	const { data: { plan } } = usePlanDetailContext();
 
 	//
 	// C. Render components
 
-	return (
-		<Collapsible
-			description="Informações gerais sobre o plano, como operador, data de vigência, etc."
-			title="Informação do plano"
-		>
-			<Section gap="md">
-				<Combobox
-					aria-label="Agência"
-					data={planDetailContext.data.agencies}
-					label="Agência"
-					fullWidth
-					{...planDetailContext.data.form.getInputProps('agency_id')}
-				/>
-				<Grid columns="ab" gap="md">
-					<DatePicker
-						description="Data de início da vigência do plano"
-						flex={1}
-						label="Data de início"
-						{...planDetailContext.data.form.getInputProps('valid_from')}
-						value={validFrom}
-						onChange={(date) => {
-							planDetailContext.data.form.setValues({
-								valid_from: Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date,
-							});
-						}}
-						withAsterisk
-					/>
-					<DatePicker
-						description="Data de fim da vigência do plano"
-						label="Data de fim"
-						clearable
-						{...planDetailContext.data.form.getInputProps('valid_until')}
-						value={validUntil}
-						onChange={(date) => {
-							console.log('date', date);
-							planDetailContext.data.form.setValues({
-								valid_until: Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date,
-							});
-						}}
-					/>
+	if (!plan?.gtfs_agency || !plan?.gtfs_feed_info) return null;
+
+	const renderAgencyInfo = () => {
+		return (
+			<Section gap="sm">
+				<Label caps>Agência</Label>
+				<Grid columns="abc" gap="sm">
+					<Section padding="none">
+						<Label size="sm" caps>Agência</Label>
+						<Text size="base">{plan.gtfs_agency.agency_name ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL da agência</Label>
+						<Text size="base">{plan.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email de contacto</Label>
+						<Text size="base">{plan.gtfs_agency.agency_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL de contacto</Label>
+						<Text size="base">{plan.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
 				</Grid>
 			</Section>
+		);
+	};
+
+	const renderDatesInfo = () => {
+		return (
+			<Section gap="sm">
+				<Label caps>Data de vigência</Label>
+				<Grid columns="abc" gap="sm">
+					<Section padding="none">
+						<Label size="sm" caps>Data de início</Label>
+						<Text size="base">{plan.gtfs_feed_info.feed_start_date ? Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_start_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Data de fim</Label>
+						<Text size="base">{plan.gtfs_feed_info.feed_end_date ? Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_end_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+					</Section>
+				</Grid>
+			</Section>
+		);
+	};
+
+	const renderMiscInfo = () => {
+		return (
+			<Section gap="sm">
+				<Label caps>Outras informações</Label>
+				<Grid columns="abc" gap="sm">
+					<Section padding="none">
+						<Label size="sm" caps>Versão</Label>
+						<Text size="base">{plan.gtfs_feed_info.feed_version ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Idioma padrão</Label>
+						<Text size="base">{plan.gtfs_feed_info.default_lang?.toUpperCase() ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Idioma do feed</Label>
+						<Text size="base">{plan.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+			</Section>
+		);
+	};
+
+	return (
+		<Collapsible
+			description="Informações gerais sobre o ficheiro GTFS, estas informações são extraídas do ficheiro feed_info.txt"
+			title="Informação do ficheiro GTFS"
+		>
+			{renderAgencyInfo()}
+			<Divider />
+			{renderDatesInfo()}
+			<Divider />
+			{renderMiscInfo()}
 		</Collapsible>
 	);
 }

@@ -69,16 +69,16 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 	}, [allPlansData]);
 
 	const filteredPlans = useMemo(() => {
-		let plans = rawPlans;
+		const plans = rawPlans;
 
-		if (filterValidFrom) {
-			plans = plans.filter(plan => plan.valid_from >= filterValidFrom);
-		}
-		if (filterValidUntil) {
-			plans = plans.filter(plan => plan.valid_until <= filterValidUntil);
-		}
+		// if (filterValidFrom) {
+		// 	plans = plans.filter(plan => Dates.fromUnixTimestamp(plan?.gtfs_feed_info.feed_start_date).operational_date >= filterValidFrom);
+		// }
+		// if (filterValidUntil) {
+		// 	plans = plans.filter(plan => Dates.fromUnixTimestamp(plan?.gtfs_feed_info.feed_end_date).operational_date <= filterValidUntil);
+		// }
 
-		plans = plans.filter(plan => filterAgencies.includes(plan.agency_id));
+		// plans = plans.filter(plan => filterAgencies.includes(plan.gtfs_agency.agency_id));
 
 		return plans;
 	}, [rawPlans, filterValidFrom, filterValidUntil, filterAgencies]);

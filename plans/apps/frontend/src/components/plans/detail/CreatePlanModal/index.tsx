@@ -2,11 +2,9 @@ import { useValidationListContext, ValidationListContextProvider } from '@/conte
 import { Button, closeModal, Combobox, Divider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
-import { useCreatePlan } from './useCreatePlan';
+import { CREATE_PLAN_MODAL_ID, useCreatePlan } from './useCreatePlan';
 
 /* * */
-
-const CREATE_PLAN_MODAL_ID = 'create-plan-modal';
 
 export const OpenCreatePlanModal = () => {
 	openModal({

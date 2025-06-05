@@ -1,5 +1,11 @@
-import { Validation } from '@tmlmobilidade/types';
+import { Routes } from '@/lib/routes';
+import { Plan, Validation } from '@tmlmobilidade/types';
+import { closeModal, useToast } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+
+export const CREATE_PLAN_MODAL_ID = 'create-plan-modal';
 
 interface CreatePlanState {
 	actions: {
@@ -21,13 +27,38 @@ export function useCreatePlan(validations: Validation[]) {
 
 	//
 	// A. Define state
+	const router = useRouter();
+	const [loading, setLoading] = useState(false);
 	const [selectedValidation, setSelectedValidation] = useState<null | Validation>(null);
 
 	//
 	// B. Define actions
-	const handleCreatePlan = () => {
-		// TODO: Implement plan creation logic
-		console.log('createPlan', selectedValidation);
+	const handleCreatePlan = async () => {
+		setLoading(true);
+		const response = await fetchData<Plan>(Routes.API(Routes.PLAN_LIST), 'POST', {
+			validation_id: selectedValidation?._id,
+		});
+
+		if (response.error) {
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao criar validação',
+			});
+			setLoading(false);
+			return;
+		}
+
+		if (response.data) {
+			router.push(Routes.PLAN_DETAIL(response.data._id));
+		}
+
+		useToast.success({
+			message: 'Validação criado com sucesso',
+			title: 'Sucesso',
+		});
+
+		setLoading(false);
+		closeModal(CREATE_PLAN_MODAL_ID);
 	};
 
 	const handleSetSelectedValidation = (validation_id: string) => {
@@ -48,10 +79,10 @@ export function useCreatePlan(validations: Validation[]) {
 			},
 			flags: {
 				canCreatePlan: selectedValidation !== null,
-				loading: false,
+				loading,
 			},
 		};
-	}, [selectedValidation]);
+	}, [selectedValidation, validations, loading]);
 
 	return contextValue;
 }
