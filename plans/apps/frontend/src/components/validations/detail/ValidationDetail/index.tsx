@@ -1,6 +1,7 @@
 'use client';
 
-import { Pane } from '@tmlmobilidade/ui';
+import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
+import { Loader, Pane } from '@tmlmobilidade/ui';
 
 import { ValidationDetailHeader } from '../ValidationDetailHeader';
 import { ValidationDetailSectionFiles } from '../ValidationDetailSectionFiles';
@@ -13,6 +14,10 @@ export function ValidationDetail() {
 
 	//
 	// A. Render components
+
+	const { flags: { loading } } = useValidationDetailContext();
+	if (loading) return <Loader />;
+
 	return (
 		<Pane header={[<ValidationDetailHeader />]}>
 			<ValidationDetailSectionInfo />

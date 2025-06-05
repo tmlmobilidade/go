@@ -87,7 +87,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		if (!validation) return;
 
 		form.reset();
-		form.setValues(validation);
+		form.initialize(validation);
 		form.resetDirty();
 	}, [validation]);
 
