@@ -7,7 +7,11 @@ import { Routes } from '@/lib/routes';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, multipartFetch } from '@tmlmobilidade/utils';
+// import AdmZip from 'adm-zip';
+import fs from 'fs/promises';
+import JSZip from 'jszip';
 import { useRouter } from 'next/navigation';
+import path from 'path';
 import React from 'react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -106,6 +110,30 @@ export function useStopsDetailContext() {
 	return context;
 }
 
+async function unzipFile(originPath, destinationPath) {
+	const origin = path.resolve(originPath);
+	const destination = path.resolve(destinationPath);
+
+	const data = await fs.readFile(origin);
+	const zip = await JSZip.loadAsync(data);
+
+	for (const filename in zip.files) {
+		const file = zip.files[filename];
+		const filePath = path.join(destination, filename);
+
+		if (file.dir) {
+			await fs.mkdir(filePath, { recursive: true });
+		}
+		else {
+			await fs.mkdir(path.dirname(filePath), { recursive: true });
+			const content = await file.async('nodebuffer');
+			await fs.writeFile(filePath, content);
+		}
+	}
+
+	console.log(`Unzipped to: ${destinationPath}`);
+}
+
 export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
 	//
 
@@ -123,7 +151,18 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const stopsContext = useStopsContext();
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
+	console.log('__dirname', __dirname);
+	console.log('process.cwd()', process.cwd());
+	// const zipMunicipalities = new AdmZip('../../public/data/municipalities.zip');
+	// zipMunicipalities.extractAllTo('../../public/data/', true);
+	// const zipMunicipalities = new AdmZip('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/municipalities.zip');
+	// zipMunicipalities.extractAllTo('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/', true);
 
+	unzipFile('./public/data/municipalities.zip', './public/data/');
+	unzipFile('./public/data/localities.zip', './public/data/');
+	unzipFile('./public/data/parishes.zip', './public/data/');
+	// unzipFile('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/localities.zip', '/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/');
+	// unzipFile('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/localities.zip', '/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/');
 	//
 	// B. Define form
 	const form = useForm<CreateStopDto>({

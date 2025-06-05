@@ -160,4 +160,4 @@ uptime.conf
 yalc.*
 
 # Data
-stops/apps/frontend/public/data
+stops/apps/frontend/public/data/*.json
