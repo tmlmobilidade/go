@@ -5,7 +5,7 @@
 import { Routes } from '@/lib/routes';
 import { toggleArray } from '@/lib/utils';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
-import { OperationalDate, Validation } from '@tmlmobilidade/types';
+import { FeederStatusSchema, OperationalDate, Validation } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { Dates } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
@@ -18,6 +18,7 @@ interface ValidationListContextState {
 		changeValidFrom: (date: null | string) => void
 		changeValidUntil: (date: null | string) => void
 		toggleAgency: (agency_id: string) => void
+		toggleStatus: (status: 'all' | 'none' | Validation['feeder_status']) => void
 	}
 	data: {
 		filtered: Validation[]
@@ -25,6 +26,7 @@ interface ValidationListContextState {
 	}
 	filters: {
 		agencies: string[]
+		status: ('all' | 'none' | Validation['feeder_status'])[]
 		validFrom: null | OperationalDate
 		validUntil: null | OperationalDate
 	}
@@ -56,6 +58,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 	const [filterValidFrom, setFilterValidFrom] = useState<null | OperationalDate>(null);
 	const [filterValidUntil, setFilterValidUntil] = useState<null | OperationalDate>(null);
 	const [filterAgencies, setFilterAgencies] = useState<string[]>(AVAILABLE_AGENCIES.map(agency => agency._id));
+	const [filterStatus, setFilterStatus] = useState<Validation['feeder_status'][]>(Object.values(FeederStatusSchema.enum));
 
 	//
 	// B. Fetch data
@@ -69,7 +72,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 	}, [allValidationsData]);
 
 	const filteredValidations = useMemo(() => {
-		const validations = rawValidations;
+		let validations = rawValidations;
 
 		// if (filterValidFrom) {
 		// 	validations = validations.filter(validation => validation.gtfs_feed_info.feed_start_date >= filterValidFrom);
@@ -81,8 +84,10 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 
 		// validations = validations.filter(validation => filterAgencies.includes(validation.gtfs_agency.agency_id));
 
+		validations = validations.filter(validation => filterStatus.includes(validation.feeder_status));
+
 		return validations;
-	}, [rawValidations, filterValidFrom, filterValidUntil, filterAgencies]);
+	}, [rawValidations, filterValidFrom, filterValidUntil, filterAgencies, filterStatus]);
 
 	//
 	// D. Handle actionsn
@@ -92,6 +97,21 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 
 	function handleChangeValidUntil(date: null | string) {
 		setFilterValidUntil(date ? Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date : null);
+	}
+
+	function handleToggleStatus(status: 'all' | 'none' | Validation['feeder_status']) {
+		console.log('status', status);
+		if (status === 'all') {
+			setFilterStatus(Object.values(FeederStatusSchema.enum));
+			return;
+		}
+
+		if (status === 'none') {
+			setFilterStatus([]);
+			return;
+		}
+
+		setFilterStatus(toggleArray(filterStatus, status));
 	}
 
 	function handleToggleAgency(agency_id: string) {
@@ -116,6 +136,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 			changeValidFrom: handleChangeValidFrom,
 			changeValidUntil: handleChangeValidUntil,
 			toggleAgency: handleToggleAgency,
+			toggleStatus: handleToggleStatus,
 		},
 		data: {
 			filtered: filteredValidations,
@@ -123,6 +144,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 		},
 		filters: {
 			agencies: filterAgencies,
+			status: filterStatus,
 			validFrom: filterValidFrom,
 			validUntil: filterValidUntil,
 		},

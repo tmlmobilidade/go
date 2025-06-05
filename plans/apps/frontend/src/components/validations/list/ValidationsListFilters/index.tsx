@@ -1,7 +1,9 @@
 /* * */
 
+import { StatusTag } from '@/components/common/StatusTag';
 import { useValidationListContext } from '@/contexts/ValidationList.context';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
+import { FeederStatusSchema } from '@tmlmobilidade/types';
 import { Badge, Button, Checkbox, DatePicker, Grid, Label, Menu, Spacer, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -15,6 +17,7 @@ export function ValidationsListFilters() {
 			<Label size="sm" caps singleLine>Filtrar por</Label>
 			<ValidityDateFilter />
 			<AgencyFilter />
+			<StatusFilter />
 		</>
 	);
 }
@@ -75,6 +78,47 @@ function AgencyFilter() {
 							<div className={styles.filterItem}>
 								<Checkbox checked={filters.agencies.includes(agency.value)} />
 								<Text className={styles.filterTitle} size="sm" weight="medium">{agency.label}</Text>
+							</div>
+						</Menu.Item>
+					</div>
+				))}
+			</Menu.Dropdown>
+		</Menu>
+	);
+}
+
+/* * */
+
+function StatusFilter() {
+	//
+
+	//
+	// A. State Management
+	const { actions, filters } = useValidationListContext();
+
+	const hasChanged = filters.status.length !== Object.values(FeederStatusSchema.enum).length;
+
+	//
+	// B. Render
+	return (
+		<Menu trigger="click-hover" withArrow>
+			<Menu.Target>
+				<Badge p="xs" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
+					<Text className={styles.filterTitle} size="sm" weight="medium">Status</Text>
+				</Badge>
+			</Menu.Target>
+			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
+				<Grid columns="ab" gap="md">
+					<Button label="Selecionar todas" onClick={() => actions.toggleStatus('all')} variant="secondary" />
+					<Button label="Desselecionar todas" onClick={() => actions.toggleStatus('none')} variant="secondary" />
+				</Grid>
+				<Spacer orientation="vertical" size="sm" />
+				{Object.values(FeederStatusSchema.enum).map(status => (
+					<div key={status} onClick={() => actions.toggleStatus(status)}>
+						<Menu.Item closeMenuOnClick={false} p="sm">
+							<div className={styles.filterItem}>
+								<Checkbox checked={filters.status.includes(status)} />
+								<StatusTag status={status} />
 							</div>
 						</Menu.Item>
 					</div>
