@@ -45,7 +45,7 @@ export function PlanList() {
 				<div key={plan._id} className={styles.root} onClick={() => router.push(Routes.PLAN_DETAIL(plan._id))}>
 					<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
 						<Tag label={plan._id} variant="muted" />
-						<Tag label={AVAILABLE_AGENCIES.find(agency => agency._id === plan.gtfs_agency.agency_id)?.name} variant="secondary" />
+						<Tag label={plan.gtfs_agency.agency_name} variant="secondary" />
 					</Section>
 					<Section alignItems="center" flexDirection="row" gap="md">
 						<Section alignItems="center" flexDirection="row" gap="sm">
