@@ -17,6 +17,7 @@ interface ValidationListContextState {
 	actions: {
 		changeValidFrom: (date: null | string) => void
 		changeValidUntil: (date: null | string) => void
+		setStatus: (status: Validation['feeder_status']) => void
 		toggleAgency: (agency_id: string) => void
 		toggleStatus: (status: 'all' | 'none' | Validation['feeder_status']) => void
 	}
@@ -128,6 +129,10 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 		setFilterAgencies(toggleArray(filterAgencies, agency_id));
 	}
 
+	function handleSetStatus(status: Validation['feeder_status']) {
+		setFilterStatus([status]);
+	}
+
 	//
 	// E. Define context value
 
@@ -135,6 +140,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 		actions: {
 			changeValidFrom: handleChangeValidFrom,
 			changeValidUntil: handleChangeValidUntil,
+			setStatus: handleSetStatus,
 			toggleAgency: handleToggleAgency,
 			toggleStatus: handleToggleStatus,
 		},
