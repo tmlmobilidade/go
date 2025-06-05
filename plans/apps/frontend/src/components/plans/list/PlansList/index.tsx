@@ -7,7 +7,6 @@ import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlanListContext } from '@/contexts/PlanList.context';
 import { Routes } from '@/lib/routes';
 import { IconArrowRight, IconLock, IconLockOpen } from '@tabler/icons-react';
-import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { Pane, Section, Tag } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
