@@ -1,9 +1,8 @@
 /* * */
 
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
-import { Collapsible, Combobox, DatePicker, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { useMemo } from 'react';
 
 /* * */
 
@@ -12,66 +11,89 @@ export function ValidationDetailSectionInfo() {
 
 	//
 	// A. Setup variables
-
-	const validationDetailContext = useValidationDetailContext();
-
-	//
-	// B. Transform data
-	const validFrom = useMemo(() => {
-		if (!validationDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_from).js_date;
-	}, [validationDetailContext.data.form.values.valid_from]);
-
-	const validUntil = useMemo(() => {
-		if (!validationDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_until).js_date;
-	}, [validationDetailContext.data.form.values.valid_until]);
+	const { data: { validation } } = useValidationDetailContext();
 
 	//
 	// C. Render components
 
-	return (
-		<Collapsible
-			description="Informações gerais sobre o validação, como operador, data de vigência, etc."
-			title="Informação do validação"
-		>
-			<Section gap="md">
-				<Combobox
-					aria-label="Agência"
-					data={validationDetailContext.data.agencies}
-					label="Agência"
-					fullWidth
-					{...validationDetailContext.data.form.getInputProps('agency_id')}
-				/>
-				<Grid columns="ab" gap="md">
-					<DatePicker
-						description="Data de início da vigência do validação"
-						flex={1}
-						label="Data de início"
-						{...validationDetailContext.data.form.getInputProps('valid_from')}
-						value={validFrom}
-						onChange={(date) => {
-							validationDetailContext.data.form.setValues({
-								valid_from: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
-							});
-						}}
-						withAsterisk
-					/>
-					<DatePicker
-						description="Data de fim da vigência do validação"
-						label="Data de fim"
-						clearable
-						{...validationDetailContext.data.form.getInputProps('valid_until')}
-						value={validUntil}
-						onChange={(date) => {
-							console.log('date', date);
-							validationDetailContext.data.form.setValues({
-								valid_until: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
-							});
-						}}
-					/>
+	if (!validation?.gtfs_agency || !validation?.gtfs_feed_info) return null;
+
+	const renderAgencyInfo = () => {
+		return (
+			<Section gap="sm">
+				<Label caps>Agência</Label>
+				<Grid columns="abc" gap="sm">
+					<Section padding="none">
+						<Label size="sm" caps>Agência</Label>
+						<Text size="base">{validation.gtfs_agency.agency_name ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL da agência</Label>
+						<Text size="base">{validation.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email de contacto</Label>
+						<Text size="base">{validation.gtfs_agency.agency_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL de contacto</Label>
+						<Text size="base">{validation.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
 				</Grid>
 			</Section>
+		);
+	};
+
+	const renderDatesInfo = () => {
+		return (
+			<Section gap="sm">
+				<Label caps>Data de vigência</Label>
+				<Grid columns="abc" gap="sm">
+					<Section padding="none">
+						<Label size="sm" caps>Data de início</Label>
+						<Text size="base">{validation.gtfs_feed_info.feed_start_date ? Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_start_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Data de fim</Label>
+						<Text size="base">{validation.gtfs_feed_info.feed_end_date ? Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_end_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+					</Section>
+				</Grid>
+			</Section>
+		);
+	};
+
+	const renderMiscInfo = () => {
+		return (
+			<Section gap="sm">
+				<Label caps>Outras informações</Label>
+				<Grid columns="abc" gap="sm">
+					<Section padding="none">
+						<Label size="sm" caps>Versão</Label>
+						<Text size="base">{validation.gtfs_feed_info.feed_version ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Idioma padrão</Label>
+						<Text size="base">{validation.gtfs_feed_info.default_lang?.toUpperCase() ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Idioma do feed</Label>
+						<Text size="base">{validation.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+			</Section>
+		);
+	};
+
+	return (
+		<Collapsible
+			description="Informações gerais sobre o ficheiro GTFS, estas informações são extraídas dos ficheiros feed_info.txt e agency.txt"
+			title="Informação do ficheiro GTFS"
+		>
+			{renderAgencyInfo()}
+			<Divider />
+			{renderDatesInfo()}
+			<Divider />
+			{renderMiscInfo()}
 		</Collapsible>
 	);
 }

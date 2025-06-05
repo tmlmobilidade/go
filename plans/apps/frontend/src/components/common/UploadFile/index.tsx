@@ -61,6 +61,7 @@ export function UploadFile({
 	const handleDelete = () => {
 		setPreview(null);
 		setFile(null);
+		onFileChange?.(null);
 	};
 
 	//

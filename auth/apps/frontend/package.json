@@ -10,14 +10,14 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.31.0",
-		"@tmlmobilidade/lib": "20250508.1344.22",
-		"@tmlmobilidade/types": "20250508.1344.22",
-		"@tmlmobilidade/ui": "20250508.1344.22",
-		"@tmlmobilidade/utils": "20250508.1344.22",
+		"@tabler/icons-react": "3.34.0",
+		"@tmlmobilidade/lib": "20250604.936.42",
+		"@tmlmobilidade/types": "20250604.936.42",
+		"@tmlmobilidade/ui": "20250604.936.42",
+		"@tmlmobilidade/utils": "20250604.936.42",
 		"bcryptjs": "3.0.2",
 		"clsx": "2.1.1",
-		"next": "15.3.2",
+		"next": "15.3.3",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"swr": "2.3.3"

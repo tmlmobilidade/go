@@ -36,8 +36,8 @@ function ValidityDateFilter() {
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o plano é válido</Text>
 				<div className={styles.filterItem}>
-					<DatePicker description="Data de início da vigência do plano" flex={1} label="Data de início" onChange={actions.changeValidFrom} value={filters.validFrom ? Dates.fromOperationalDate(filters.validFrom).js_date : null} clearable />
-					<DatePicker description="Data de fim da vigência do plano" flex={1} label="Data de fim" onChange={actions.changeValidUntil} value={filters.validUntil ? Dates.fromOperationalDate(filters.validUntil).js_date : null} clearable />
+					<DatePicker description="Data de início da vigência do plano" flex={1} label="Data de início" onChange={actions.changeValidFrom} value={filters.validFrom ? Dates.fromOperationalDate(filters.validFrom, 'local').js_date : null} clearable />
+					<DatePicker description="Data de fim da vigência do plano" flex={1} label="Data de fim" onChange={actions.changeValidUntil} value={filters.validUntil ? Dates.fromOperationalDate(filters.validUntil, 'local').js_date : null} clearable />
 				</div>
 			</Menu.Dropdown>
 		</Menu>

@@ -1,7 +1,7 @@
-import { MultipartValue } from '@fastify/multipart';
-import { files, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { CreatePlanDto, OperationalDate, Plan } from '@tmlmobilidade/types';
+import { CreatePlanDto, Plan, PlanSchema } from '@tmlmobilidade/types';
+import { convertObject } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -15,31 +15,26 @@ export class PlansController {
 	 */
 	static async create(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			const data = await request.file();
+			const { validation_id } = request.body as CreatePlanDto;
 
-			if (!data) {
-				reply.status(HttpStatus.BAD_REQUEST).send({ message: 'No file provided' });
+			const validation = await validations.findById(validation_id);
+
+			if (!validation) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Validation not found' });
 				return;
 			}
 
-			const fields = data.fields as Record<string, MultipartValue>;
-
-			// Convert form fields to plan data
-			const planData: CreatePlanDto = {
-				agency_id: fields.agency_id?.value as string,
-				feeder_status: fields.feeder_status?.value as 'error' | 'processing' | 'success' | 'waiting',
-				is_approved: fields.is_approved?.value === 'true',
-				is_locked: fields.is_locked?.value === 'true',
-				valid_from: fields.valid_from?.value as OperationalDate,
-				valid_until: fields.valid_until?.value as OperationalDate,
+			// Clone the validation to plan
+			const plan: Plan = {
+				...validation,
+				is_approved: false,
+				is_locked: false,
+				validation_id: validation_id,
 			};
 
-			const buffer = await data.toBuffer();
-			const size = buffer.buffer.byteLength;
-
+			// Start transaction
 			const transactionManager = new TransactionManager([plans, files]);
 
-			// Start transaction
 			const result = await transactionManager.withTransaction(async (collections, transactions) => {
 				const [plansCollection, filesCollection] = collections;
 
@@ -48,33 +43,35 @@ export class PlansController {
 				const filesTransaction = transactions.get(filesCollection);
 
 				// 1. Create the plan
-				const planResult = await plansCollection.insertOne(planData, { options: { session: plansTransaction.getSession() } });
+				const planResult = await plansCollection.insertOne(
+					convertObject(plan, PlanSchema.omit({ _id: true, created_at: true, updated_at: true })),
+					{ options: { session: plansTransaction.getSession() } },
+				);
 
 				// 2. Upload the operation plan file
-				const fileResult = await (filesCollection as typeof files).upload(buffer, {
-					created_by: 'system', // TODO: Change to user id
-					name: data.filename,
-					resource_id: planResult.insertedId.toString(),
-					scope: 'plans',
-					size: size,
-					type: data.mimetype,
-					updated_by: 'system', // TODO: Change to user id
-				}, { session: filesTransaction.getSession() });
+				const fileResult = await (filesCollection as typeof files).clone(
+					validation.file_id,
+					'plans',
+					planResult.insertedId.toString(),
+					{ session: filesTransaction.getSession() },
+				);
 
 				// 3. Update the plan with the file reference
 				await plansCollection.updateById(planResult.insertedId.toString(), {
-					operation_file: fileResult.insertedId.toString(),
+					file_id: fileResult.insertedId.toString(),
 				} as Partial<Plan>, { session: plansTransaction.getSession() });
 
+				// 4. Return the plan with the file reference
+				const finalPlan = await plansCollection.findById(planResult.insertedId.toString(), { session: plansTransaction.getSession() });
+
 				return {
-					...planResult,
+					...finalPlan,
 					file_id: fileResult.insertedId.toString(),
 				};
 			});
 
 			reply.send({
-				data: result,
-				message: 'Plan created with operation plan file',
+				...result,
 			});
 		}
 		catch (error) {

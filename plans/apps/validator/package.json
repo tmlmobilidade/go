@@ -15,14 +15,18 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "20250530.1052.55",
-		"@tmlmobilidade/gtfs-validator": "20250530.1653.30",
-		"@tmlmobilidade/interfaces": "20250530",
+		"@tmlmobilidade/connectors": "20250604.1559.14",
+		"@tmlmobilidade/gtfs-validator": "20250603.1718.53",
+		"@tmlmobilidade/interfaces": "20250604",
+		"@tmlmobilidade/utils": "^20250604.1559.14",
+		"adm-zip": "^0.5.16",
+		"csv-parse": "^5.6.0",
 		"tsx": "4.19.4"
 	},
 	"devDependencies": {
 		"@dotenv-run/cli": "1.3.6",
-		"@types/node": "22.15.28",
+		"@types/adm-zip": "^0.5.7",
+		"@types/node": "22.15.29",
 		"typescript": "5.8.3"
 	}
 }
