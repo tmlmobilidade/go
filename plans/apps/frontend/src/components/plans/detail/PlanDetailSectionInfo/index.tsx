@@ -86,7 +86,7 @@ export function PlanDetailSectionInfo() {
 
 	return (
 		<Collapsible
-			description="Informações gerais sobre o ficheiro GTFS, estas informações são extraídas do ficheiro feed_info.txt"
+			description="Informações gerais sobre o ficheiro GTFS, estas informações são extraídas dos ficheiros feed_info.txt e agency.txt"
 			title="Informação do ficheiro GTFS"
 		>
 			{renderAgencyInfo()}
