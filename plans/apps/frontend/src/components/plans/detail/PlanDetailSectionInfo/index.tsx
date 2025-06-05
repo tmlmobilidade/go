@@ -16,8 +16,6 @@ export function PlanDetailSectionInfo() {
 	//
 	// C. Render components
 
-	if (!plan?.gtfs_agency || !plan?.gtfs_feed_info) return null;
-
 	const renderAgencyInfo = () => {
 		return (
 			<Section gap="sm">

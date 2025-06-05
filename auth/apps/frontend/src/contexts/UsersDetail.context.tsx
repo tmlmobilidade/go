@@ -6,7 +6,7 @@ import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { Permissions } from '@tmlmobilidade/lib';
 import { CreateUserDto, CreateUserSchema, Permission, UpdateUserSchema, User } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -95,7 +95,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 
 	const form = useForm<CreateUserDto>({
 		initialValues: emptyUser,
-		validate: zodResolver(CreateUserSchema),
+		validate: zodResolver(CreateUserSchema) as unknown as FormValidateInput<CreateUserDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
