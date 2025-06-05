@@ -64,13 +64,20 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 	const handleApprovePlan = () => {
 		console.log('approvePlan');
 	};
+
 	const handleToggleLock = async () => {
 		try {
+			// Optimistically update the UI
+			const optimisticData = { ...plan, is_locked: !plan.is_locked };
+			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), optimisticData, false);
+
 			const response = await fetchData<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), 'PUT', {
 				is_locked: !plan.is_locked,
 			});
 
 			if (response.error) {
+				// Revert optimistic update on error
+				mutate(Routes.API(Routes.PLAN_DETAIL(planId)));
 				useToast.error({
 					message: response.error,
 					title: 'Erro ao bloquear plano',
@@ -78,11 +85,13 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 				return;
 			}
 
-			console.log('response', response);
-
+			// Update with actual server response
 			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), response.data);
+			mutate(Routes.API(Routes.PLAN_LIST));
 		}
 		catch (error) {
+			// Revert optimistic update on error
+			mutate(Routes.API(Routes.PLAN_DETAIL(planId)));
 			useToast.error({
 				message: error,
 				title: 'Erro ao bloquear plano',
