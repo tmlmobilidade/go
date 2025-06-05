@@ -5,21 +5,25 @@
 import { Routes } from '@/lib/routes';
 import { Plan } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
-import { swrFetcher } from '@tmlmobilidade/utils';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
 interface PlanDetailContextState {
+	actions: {
+		approvePlan: () => void
+		toggleLock: () => void
+	}
 	data: {
 		id: string | undefined
 		plan: Plan
 	}
 	flags: {
+		isLoading: boolean
 		isReadOnly: boolean
-		loading: boolean
 	}
 }
 
@@ -57,18 +61,50 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 
 	//
 	// D. Define actions
+	const handleApprovePlan = () => {
+		console.log('approvePlan');
+	};
+	const handleToggleLock = async () => {
+		try {
+			const response = await fetchData<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), 'PUT', {
+				is_locked: !plan.is_locked,
+			});
+
+			if (response.error) {
+				useToast.error({
+					message: response.error,
+					title: 'Erro ao bloquear plano',
+				});
+				return;
+			}
+
+			console.log('response', response);
+
+			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), response.data);
+		}
+		catch (error) {
+			useToast.error({
+				message: error,
+				title: 'Erro ao bloquear plano',
+			});
+		}
+	};
 
 	//
 	// E. Define context value
 	const contextValue: PlanDetailContextState = useMemo(() => {
 		return {
+			actions: {
+				approvePlan: handleApprovePlan,
+				toggleLock: handleToggleLock,
+			},
 			data: {
 				id: planId,
 				plan,
 			},
 			flags: {
+				isLoading: isLoading || !plan,
 				isReadOnly: plan?.is_locked ?? false,
-				loading: isLoading,
 			},
 		};
 	}, [isLoading, plan, planId]);

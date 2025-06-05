@@ -17,7 +17,7 @@ export function PlanDetail() {
 
 	const { flags } = usePlanDetailContext();
 
-	if (flags.loading) {
+	if (flags.isLoading) {
 		return <Loader />;
 	}
 

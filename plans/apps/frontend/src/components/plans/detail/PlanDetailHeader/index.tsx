@@ -4,9 +4,8 @@
 
 import BackButton from '@/components/common/BackButton';
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { IconLock, IconLockOpen, IconTrash, IconUpload } from '@tabler/icons-react';
-import { PlanSchema } from '@tmlmobilidade/types';
-import { ActionIcon, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { IconLock, IconLockOpen } from '@tabler/icons-react';
+import { ActionIcon, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 /* * */
 
@@ -26,7 +25,7 @@ export function PlanDetailHeader() {
 			<ActionIcon
 				variant={is_locked ? 'danger' : 'success'}
 				onClick={() => {
-					// planDetailContext.actions.toggleLock();
+					planDetailContext.actions.toggleLock();
 				}}
 			>
 				{is_locked ? <IconLock size={28} /> : <IconLockOpen size={28} />}
@@ -41,13 +40,6 @@ export function PlanDetailHeader() {
 			<Label size="lg" caps>{planDetailContext.data.id}</Label>
 			<Spacer />
 			{lockButton}
-			{!planDetailContext.data.plan.is_locked && (
-				<Button
-					icon={<IconTrash size={28} />}
-					label="Apagar"
-					variant="danger"
-				/>
-			)}
 		</>
 	);
 
