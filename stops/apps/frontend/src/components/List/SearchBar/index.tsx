@@ -1,5 +1,6 @@
 'use client';
 
+import { useLinesContext } from '@/contexts/Lines.context';
 import { Routes } from '@/lib/routes';
 import { Anchor, Breadcrumbs } from '@mantine/core';
 import { IconDots } from '@tabler/icons-react';
@@ -19,6 +20,7 @@ export function SearchBar({ data, setQueryString }) {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
+	const linesContext = useLinesContext();
 
 	//
 	// B. Transform data
@@ -72,8 +74,8 @@ export function SearchBar({ data, setQueryString }) {
 		link.click();
 
 		URL.revokeObjectURL(url); // Clean up
-	}
-	;
+	};
+
 	const downloadDeletedStopsTxt = () => {
 		const keys = Object.keys(data.stops[0]);
 		const stops = data.stops.filter(stop => stop.is_archived === true);
@@ -129,13 +131,34 @@ export function SearchBar({ data, setQueryString }) {
 		URL.revokeObjectURL(url); // Clean up
 	};
 
+	const downloadLinesJson = () => {
+		console.log('HERE');
+		console.log('linesContext', linesContext.data.lines);
+		// console.log('data', data);
+		const keys = Object.keys(data.stops[0]);
+		// const stops = data.stops.filter(stop => stop.is_archived === false);
+		const headerLine = keys.join(', ') + '\n';
+		const valuesLines = linesContext.data.lines.map(line => Object.values(line).join(', ')).join('\n');
+		const textContent = headerLine + valuesLines;
+
+		const blob = new Blob([textContent], { type: 'application/txt' });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'lines.json';
+		link.click();
+
+		URL.revokeObjectURL(url); // Clean up
+	};
+
 	const items = [
 		{ onClick: () => handleNewStop(), title: '+ Nova Paragem' },
 		{ onClick: () => downloadStopsJson(), title: 'Exportar stops.json' },
 		{ onClick: () => downloadStopsTxt(), title: 'Exportar stops.txt' },
 		{ onClick: () => downloadDeletedStopsJson(), title: 'Exportar deleted_stops.json' },
 		{ onClick: () => downloadDeletedStopsTxt(), title: 'Exportar deleted_stops.txt' },
-		{ onClick: () => alert('linhas'), title: 'Exportar Linhas por Paragem' },
+		{ onClick: () => downloadLinesJson(), title: 'Exportar Linhas por Paragem' },
 		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
 	].map((item, index) => (
 		<Anchor key={index} onClick={item.onClick}>
