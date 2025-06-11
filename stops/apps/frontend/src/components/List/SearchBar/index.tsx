@@ -1,6 +1,8 @@
 'use client';
 
 import { useLinesContext } from '@/contexts/Lines.context';
+import { useStopsContext } from '@/contexts/Stops.context';
+import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Routes } from '@/lib/routes';
 import { Anchor, Breadcrumbs } from '@mantine/core';
 import { IconDots } from '@tabler/icons-react';
@@ -21,6 +23,9 @@ export function SearchBar({ data, setQueryString }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 	const linesContext = useLinesContext();
+	const stops = useStopsContext();
+	const stopsList = useStopsListContext();
+	const lines = useLinesContext();
 
 	//
 	// B. Transform data
@@ -148,6 +153,15 @@ export function SearchBar({ data, setQueryString }) {
 		URL.revokeObjectURL(url); // Clean up
 	};
 
+	const handleStopsSync = () => {
+		stops.actions.handleDBSync();
+		stopsList.actions.handleDBSync();
+	};
+
+	const handleLinesSync = () => {
+		lines.actions.handleDBSync();
+	};
+
 	const items = [
 		{ onClick: () => handleNewStop(), title: '+ Nova Paragem' },
 		{ onClick: () => downloadStopsJson(), title: 'Exportar stops.json' },
@@ -156,6 +170,8 @@ export function SearchBar({ data, setQueryString }) {
 		{ onClick: () => downloadDeletedStopsTxt(), title: 'Exportar deleted_stops.txt' },
 		{ onClick: () => downloadLinesJson(), title: 'Exportar Linhas por Paragem' },
 		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
+		{ onClick: () => handleStopsSync(), title: 'Sincronizar Paragens' },
+		{ onClick: () => handleLinesSync(), title: 'Sincronizar Linhas' },
 	].map((item, index) => (
 		<Anchor key={index} onClick={item.onClick}>
 			{item.title}

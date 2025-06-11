@@ -16,6 +16,7 @@ interface StopsContextState {
 	actions: {
 		getStopById: (stopId: string) => Stop | undefined
 		getStopByIdGeoJsonFC: (stopId: string) => GeoJSON.FeatureCollection | undefined
+		handleDBSync: () => void
 	}
 	data: {
 		stops: Stop[]
@@ -92,9 +93,9 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// B. Handle actions
 
-	// const handleDBSync = () => {
-	// 	mutate('/api/stops', undefined, false); // Invalidate cache
-	// };
+	const handleDBSync = () => {
+		mutate('/api/stops'); // Invalidate cache
+	};
 
 	const getStopById = (stopId: string): Stop | undefined => {
 		return allStopsData?.find(stop => stop._id === stopId);
@@ -117,6 +118,7 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 			actions: {
 				getStopById,
 				getStopByIdGeoJsonFC,
+				handleDBSync,
 			},
 			data: {
 				stops: allStopsData || [],

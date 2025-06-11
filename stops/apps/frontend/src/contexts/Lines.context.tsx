@@ -7,7 +7,7 @@ import type { Line } from '@carrismetropolitana/api-types/network';
 import { Routes } from '@/lib/routes';
 import { unauthenticatedFetcher } from '@/utils/http';
 import { createContext, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
@@ -16,6 +16,7 @@ interface LinesContextState {
 		getDemandMetricsByLineId: (lineId: string) => DemandMetricsByLine | undefined
 		getLineDataById: (lineId: string) => Line | undefined
 		getServiceMetricsByLineId: (lineId: string) => ServiceMetrics[] | undefined
+		handleDBSync: () => void
 	}
 	data: {
 		demand_metrics: DemandMetricsByLine[]
@@ -55,6 +56,12 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// B. Handle actions
 
+	const handleDBSync = () => {
+		mutate(`${Routes.CMET_API}/lines`);
+		mutate(`${Routes.CMET_API}/metrics/demand/by_line`);
+		mutate(`${Routes.CMET_API}/metrics/service/all`);
+	};
+
 	const getLineDataById = (lineId: string) => {
 		return allLinesData?.find(line => line.id === lineId);
 	};
@@ -75,6 +82,7 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 			getDemandMetricsByLineId,
 			getLineDataById,
 			getServiceMetricsByLineId,
+			handleDBSync,
 		},
 		data: {
 			demand_metrics: demandByLineData || [],

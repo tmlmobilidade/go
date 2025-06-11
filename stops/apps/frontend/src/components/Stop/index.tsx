@@ -37,11 +37,8 @@ export default function Stop({ paramId }: StopProps) {
 	//
 	// A. Setup variables
 
-	const linesContext = useLinesContext();
 	const { actions: { getStopById } } = useStopsContext();
 	const { actions, data, flags } = useStopsDetailContext();
-	console.log('linesContext', linesContext);
-	console.log('data', data.form.getValues().is_archived);
 	//
 	// B. Render components
 
