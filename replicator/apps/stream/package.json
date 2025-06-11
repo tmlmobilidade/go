@@ -17,16 +17,16 @@
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250303.1058.31",
-		"@tmlmobilidade/interfaces": "20250603.1604.44",
+		"@tmlmobilidade/interfaces": "20250611.1112.17",
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
 		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
-		"@tmlmobilidade/utils": "20250603.1604.44"
+		"@tmlmobilidade/utils": "20250611.1112.17"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250603.1604.44",
-		"@types/node": "22.15.29",
+		"@tmlmobilidade/tsconfig": "20250611.1112.17",
+		"@types/node": "24.0.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.19.4",
+		"tsx": "4.20.1",
 		"typescript": "5.8.3"
 	}
 }
