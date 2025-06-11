@@ -4,6 +4,7 @@
 
 import { Routes } from '@/lib/routes';
 import { Plan } from '@tmlmobilidade/types';
+import { File } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -19,7 +20,7 @@ interface PlanDetailContextState {
 	}
 	data: {
 		id: string | undefined
-		plan: Plan
+		plan: Plan & { file: File }
 	}
 	flags: {
 		isLoading: boolean
@@ -43,7 +44,7 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 	// A. State Management
 	const router = useRouter();
 
-	const { data: plan, error, isLoading } = useSWR<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), swrFetcher);
+	const { data: plan, error, isLoading } = useSWR<Plan & { file: File }>(Routes.API(Routes.PLAN_DETAIL(planId)), swrFetcher);
 
 	//
 	// C. Transform Data

@@ -1,7 +1,7 @@
 /* * */
 
+import { File } from '@/components/common/File';
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { IconFileTypeZip } from '@tabler/icons-react';
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
 /* * */
 
@@ -21,10 +21,9 @@ export function PlanDetailSectionFiles() {
 	function renderFile() {
 		return (
 			<Section alignItems="flex-start" gap="md" justifyContent="flex-start">
-				<Section flexDirection="row" gap="sm" padding="none">
-					<IconFileTypeZip />
-					<Label>{planDetailContext.data.plan.operation_file_id}</Label>
-				</Section>
+				<File
+					file={planDetailContext.data.plan.file}
+				/>
 			</Section>
 		);
 	}

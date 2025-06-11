@@ -139,7 +139,19 @@ export class PlansController {
 				return;
 			}
 
-			reply.send(plan);
+			const file = await files.findById(plan.operation_file_id);
+
+			if (!file) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
+				return;
+			}
+
+			file.url = await files.getFileUrl({ file_id: file._id });
+
+			reply.send({
+				...plan,
+				file,
+			});
 		}
 		catch (error) {
 			reply
