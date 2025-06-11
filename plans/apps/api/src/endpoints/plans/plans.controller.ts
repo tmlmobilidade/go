@@ -29,6 +29,7 @@ export class PlansController {
 				...validation,
 				is_approved: false,
 				is_locked: false,
+				operation_file_id: validation.file_id,
 				validation_id: validation_id,
 			};
 
@@ -58,7 +59,7 @@ export class PlansController {
 
 				// 3. Update the plan with the file reference
 				await plansCollection.updateById(planResult.insertedId.toString(), {
-					file_id: fileResult.insertedId.toString(),
+					operation_file_id: fileResult.insertedId.toString(),
 				} as Partial<Plan>, { session: plansTransaction.getSession() });
 
 				// 4. Return the plan with the file reference
