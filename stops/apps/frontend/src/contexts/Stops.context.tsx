@@ -8,7 +8,7 @@ import type { Stop } from '@tmlmobilidade/types';
 import { swrFetcher } from '@/lib/http';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
@@ -91,6 +91,10 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 
 	//
 	// B. Handle actions
+
+	// const handleDBSync = () => {
+	// 	mutate('/api/stops', undefined, false); // Invalidate cache
+	// };
 
 	const getStopById = (stopId: string): Stop | undefined => {
 		return allStopsData?.find(stop => stop._id === stopId);

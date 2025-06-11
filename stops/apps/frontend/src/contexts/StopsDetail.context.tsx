@@ -8,7 +8,10 @@ import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } f
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, multipartFetch } from '@tmlmobilidade/utils';
 // import AdmZip from 'adm-zip';
-import fs from 'fs/promises';
+// import fs from 'fs/promises';
+import { promises as fs } from 'fs';
+// import fs from 'fs';
+import { unzipFile } from '@/lib/utils';
 import JSZip from 'jszip';
 import { useRouter } from 'next/navigation';
 import path from 'path';
@@ -110,29 +113,29 @@ export function useStopsDetailContext() {
 	return context;
 }
 
-async function unzipFile(originPath, destinationPath) {
-	const origin = path.resolve(originPath);
-	const destination = path.resolve(destinationPath);
+// async function unzipFile(originPath, destinationPath) {
+// 	const origin = path.resolve(originPath);
+// 	const destination = path.resolve(destinationPath);
 
-	const data = await fs.readFile(origin);
-	const zip = await JSZip.loadAsync(data);
+// 	const data = await fs.readFile(origin);
+// 	const zip = await JSZip.loadAsync(data);
 
-	for (const filename in zip.files) {
-		const file = zip.files[filename];
-		const filePath = path.join(destination, filename);
+// 	for (const filename in zip.files) {
+// 		const file = zip.files[filename];
+// 		const filePath = path.join(destination, filename);
 
-		if (file.dir) {
-			await fs.mkdir(filePath, { recursive: true });
-		}
-		else {
-			await fs.mkdir(path.dirname(filePath), { recursive: true });
-			const content = await file.async('nodebuffer');
-			await fs.writeFile(filePath, content);
-		}
-	}
+// 		if (file.dir) {
+// 			await fs.mkdir(filePath, { recursive: true });
+// 		}
+// 		else {
+// 			await fs.mkdir(path.dirname(filePath), { recursive: true });
+// 			const content = await file.async('nodebuffer');
+// 			await fs.writeFile(filePath, content);
+// 		}
+// 	}
 
-	console.log(`Unzipped to: ${destinationPath}`);
-}
+// 	console.log(`Unzipped to: ${destinationPath}`);
+// }
 
 export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
 	//
@@ -151,18 +154,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const stopsContext = useStopsContext();
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
-	console.log('__dirname', __dirname);
-	console.log('process.cwd()', process.cwd());
-	// const zipMunicipalities = new AdmZip('../../public/data/municipalities.zip');
-	// zipMunicipalities.extractAllTo('../../public/data/', true);
-	// const zipMunicipalities = new AdmZip('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/municipalities.zip');
-	// zipMunicipalities.extractAllTo('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/', true);
 
+	// Unzip files if they are not already unzipped
 	unzipFile('./public/data/municipalities.zip', './public/data/');
 	unzipFile('./public/data/localities.zip', './public/data/');
 	unzipFile('./public/data/parishes.zip', './public/data/');
-	// unzipFile('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/localities.zip', '/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/');
-	// unzipFile('/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/localities.zip', '/Users/samuelsantos/Documents/sae3/stops/apps/frontend/public/data/');
 	//
 	// B. Define form
 	const form = useForm<CreateStopDto>({
@@ -248,7 +244,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		const saveStop: CreateStopDto = { ...form.values };
 
-		console.log('saveStop', saveStop);
+		// console.log('saveStop', saveStop);
 		// console.log('-> ==> saveStop', saveStop);
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);

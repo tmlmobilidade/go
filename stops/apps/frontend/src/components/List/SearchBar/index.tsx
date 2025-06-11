@@ -132,11 +132,7 @@ export function SearchBar({ data, setQueryString }) {
 	};
 
 	const downloadLinesJson = () => {
-		console.log('HERE');
-		console.log('linesContext', linesContext.data.lines);
-		// console.log('data', data);
 		const keys = Object.keys(data.stops[0]);
-		// const stops = data.stops.filter(stop => stop.is_archived === false);
 		const headerLine = keys.join(', ') + '\n';
 		const valuesLines = linesContext.data.lines.map(line => Object.values(line).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
