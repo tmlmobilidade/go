@@ -14,7 +14,7 @@ export const OpenCreatePlanModal = (validation_id?: string) => {
 			</ValidationListContextProvider>
 		),
 		modalId: CREATE_PLAN_MODAL_ID,
-		size: 'xl',
+		size: 'auto',
 		withCloseButton: false,
 	});
 };

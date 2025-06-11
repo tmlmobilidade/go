@@ -1,8 +1,12 @@
 /* * */
 
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
+import { IconAlertCircle, IconAlertTriangle, IconEdit } from '@tabler/icons-react';
 import { Collapsible, Divider, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
+
+import { OpenEditDateModal } from '../EditDateModal';
+import styles from './styles.module.css';
 
 /* * */
 
@@ -11,7 +15,27 @@ export function PlanDetailSectionInfo() {
 
 	//
 	// A. Setup variables
-	const { data: { plan } } = usePlanDetailContext();
+	const { actions, data: { plan } } = usePlanDetailContext();
+
+	//
+	// B. Setup functions
+	const handleEditDate = (type: 'end' | 'start') => () => {
+		OpenEditDateModal({
+			description: (
+				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+					<IconAlertTriangle color="var(--color-status-danger-primary)" style={{ marginTop: '4px' }} />
+					<Text size="base">
+						Esta ação irá alterar a data de {type === 'start' ? 'início' : 'fim'} da vigência do plano no ficheiro <b>feed_info.txt</b> do <b>GTFS</b>.
+					</Text>
+				</Section>
+			),
+			label: `Data de ${type === 'start' ? 'início' : 'fim'}`,
+			onConfirm: (value) => {
+				actions.editDate(type)(value);
+			},
+			value: Dates.fromUnixTimestamp(plan.gtfs_feed_info[type === 'start' ? 'feed_start_date' : 'feed_end_date']).iso,
+		});
+	};
 
 	//
 	// C. Render components
@@ -48,11 +72,17 @@ export function PlanDetailSectionInfo() {
 				<Label caps>Data de vigência</Label>
 				<Grid columns="abc" gap="sm">
 					<Section padding="none">
-						<Label size="sm" caps>Data de início</Label>
+						<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+							<Label size="sm" caps>Data de início</Label>
+							<IconEdit className={styles.editIcon} onClick={handleEditDate('start')} size={16} />
+						</Section>
 						<Text size="base">{plan.gtfs_feed_info.feed_start_date ? Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_start_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
-						<Label size="sm" caps>Data de fim</Label>
+						<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+							<Label size="sm" caps>Data de fim</Label>
+							<IconEdit className={styles.editIcon} onClick={handleEditDate('end')} size={16} />
+						</Section>
 						<Text size="base">{plan.gtfs_feed_info.feed_end_date ? Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_end_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
 					</Section>
 				</Grid>

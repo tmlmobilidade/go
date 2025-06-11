@@ -6,7 +6,7 @@ import { Routes } from '@/lib/routes';
 import { Plan } from '@tmlmobilidade/types';
 import { File } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { Dates, fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -16,6 +16,7 @@ import useSWR, { mutate } from 'swr';
 interface PlanDetailContextState {
 	actions: {
 		approvePlan: () => void
+		editDate: (type: 'end' | 'start') => (value: string) => void
 		toggleLock: () => void
 	}
 	data: {
@@ -65,6 +66,45 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 	const handleApprovePlan = () => {
 		console.log('approvePlan');
 	};
+	const handleEditDate = (type: 'end' | 'start') => async (value: string) => {
+		try {
+			// Optimistically update the UI
+			const optimisticData = {
+				...plan,
+				gtfs_feed_info: {
+					...plan.gtfs_feed_info,
+					[type === 'start' ? 'feed_start_date' : 'feed_end_date']: Dates.fromISO(value).unix_timestamp,
+				},
+			};
+			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), optimisticData, false);
+
+			const response = await fetchData<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), 'PUT', {
+				[type === 'start' ? 'feed_start_date' : 'feed_end_date']: Dates.fromISO(value).unix_timestamp,
+			});
+
+			if (response.error) {
+				// Revert optimistic update on error
+				mutate(Routes.API(Routes.PLAN_DETAIL(planId)));
+				useToast.error({
+					message: response.error,
+					title: 'Erro ao atualizar data',
+				});
+				return;
+			}
+
+			// Update with actual server response
+			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), response.data);
+			mutate(Routes.API(Routes.PLAN_LIST));
+		}
+		catch (error) {
+			// Revert optimistic update on error
+			mutate(Routes.API(Routes.PLAN_DETAIL(planId)));
+			useToast.error({
+				message: error,
+				title: 'Erro ao atualizar data',
+			});
+		}
+	};
 
 	const handleToggleLock = async () => {
 		try {
@@ -106,6 +146,7 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 		return {
 			actions: {
 				approvePlan: handleApprovePlan,
+				editDate: handleEditDate,
 				toggleLock: handleToggleLock,
 			},
 			data: {
