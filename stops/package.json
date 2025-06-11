@@ -8,6 +8,13 @@
 		"lint": "turbo lint",
 		"start": "turbo start"
 	},
+	"dependencies": {
+		"@turf/turf": "^7.2.0",
+		"fs": "^0.0.1-security",
+		"fs.promises": "^0.1.2",
+		"jszip": "^3.10.1",
+		"path": "^0.12.7"
+	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250418.42.41",
 		"@fastify/multipart": "^9.0.3",

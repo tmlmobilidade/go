@@ -12,8 +12,8 @@
 }
 
 .coords {
-    color: var(--color-system-text-200);
-    background-color: var(--color-system-text-100);
+    color: var(--color-system-text-100);
+    background-color: var(--color-system-text-200);
     border-radius: var(--border-radius-sm);
     padding: var(--border-radius-sm);
 }
