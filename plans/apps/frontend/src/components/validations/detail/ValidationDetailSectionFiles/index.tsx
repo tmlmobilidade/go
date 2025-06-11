@@ -38,7 +38,7 @@ export function ValidationDetailSectionFiles() {
 	}
 	return (
 		<Collapsible
-			description="Ficheiros GTFS para o validação. O ficheiro deve ser um arquivo zip com os ficheiros GTFS."
+			description="Ficheiros GTFS para a validação. O ficheiro deve ser um arquivo zip com os ficheiros GTFS."
 			title="Ficheiros GTFS"
 		>
 			{validationDetailContext.data.file ? renderFile() : renderEmpty()}

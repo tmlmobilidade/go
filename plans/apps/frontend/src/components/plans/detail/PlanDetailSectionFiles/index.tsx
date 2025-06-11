@@ -1,8 +1,8 @@
 /* * */
 
-import { UploadFile } from '@/components/common/UploadFile';
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
-
+import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
+import { IconFileTypeZip } from '@tabler/icons-react';
+import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
 /* * */
 
 export function PlanDetailSectionFiles() {
@@ -10,6 +10,7 @@ export function PlanDetailSectionFiles() {
 
 	//
 	// A. Setup variables
+	const planDetailContext = usePlanDetailContext();
 
 	//
 	// B. Transform data
@@ -17,21 +18,30 @@ export function PlanDetailSectionFiles() {
 	//
 	// C. Render components
 
+	function renderFile() {
+		return (
+			<Section alignItems="flex-start" gap="md" justifyContent="flex-start">
+				<Section flexDirection="row" gap="sm" padding="none">
+					<IconFileTypeZip />
+					<Label>{planDetailContext.data.plan.operation_file_id}</Label>
+				</Section>
+			</Section>
+		);
+	}
+
+	function renderEmpty() {
+		return (
+			<Section alignItems="flex-start" gap="md" justifyContent="flex-start">
+				<Label>Nenhum ficheiro selecionado</Label>
+			</Section>
+		);
+	}
 	return (
 		<Collapsible
-			description="Ficheiros GTFS para o plano. O ficheiro deve ser um arquivo zip com os ficheiros GTFS."
+			description="Ficheiros GTFS referentes a este plano."
 			title="Ficheiros GTFS"
 		>
-			<Section gap="md">
-				<Grid columns="ab" gap="md">
-					<UploadFile
-						label="Plano de Referencia (GO)"
-					/>
-					<UploadFile
-						label="Plano de Operação (Operador)"
-					/>
-				</Grid>
-			</Section>
+			{planDetailContext.data.plan.operation_file_id ? renderFile() : renderEmpty()}
 		</Collapsible>
 	);
 }
