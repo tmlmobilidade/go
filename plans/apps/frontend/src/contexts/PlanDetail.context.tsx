@@ -3,12 +3,12 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { Plan } from '@tmlmobilidade/types';
+import { Plan, PlanSchema, UpdatePlanSchema } from '@tmlmobilidade/types';
 import { File } from '@tmlmobilidade/types';
-import { useToast } from '@tmlmobilidade/ui';
-import { Dates, fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { convertObject, fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
 /* * */
@@ -16,16 +16,18 @@ import useSWR, { mutate } from 'swr';
 interface PlanDetailContextState {
 	actions: {
 		approvePlan: () => void
-		editDate: (type: 'end' | 'start') => (value: string) => void
+		savePlan: () => void
 		toggleLock: () => void
 	}
 	data: {
+		form: UseFormReturnType<Plan & { file: File }>
 		id: string | undefined
 		plan: Plan & { file: File }
 	}
 	flags: {
 		isLoading: boolean
 		isReadOnly: boolean
+		isSaving: boolean
 	}
 }
 
@@ -45,10 +47,26 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 	// A. State Management
 	const router = useRouter();
 
+	const [isSaving, setIsSaving] = useState(false);
+
 	const { data: plan, error, isLoading } = useSWR<Plan & { file: File }>(Routes.API(Routes.PLAN_DETAIL(planId)), swrFetcher);
 
 	//
+	// B. Define form
+	const form = useForm<Plan & { file: File }>({
+		validate: zodResolver(PlanSchema) as FormValidateInput<Plan & { file: File }>,
+		validateInputOnBlur: true,
+		validateInputOnChange: true,
+	});
+
+	//
 	// C. Transform Data
+
+	useEffect(() => {
+		if (!plan) return;
+
+		form.initialize(plan);
+	}, [plan]);
 
 	useEffect(() => {
 		if (!error) return;
@@ -65,45 +83,6 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 	// D. Define actions
 	const handleApprovePlan = () => {
 		console.log('approvePlan');
-	};
-	const handleEditDate = (type: 'end' | 'start') => async (value: string) => {
-		try {
-			// Optimistically update the UI
-			const optimisticData = {
-				...plan,
-				gtfs_feed_info: {
-					...plan.gtfs_feed_info,
-					[type === 'start' ? 'feed_start_date' : 'feed_end_date']: Dates.fromISO(value).unix_timestamp,
-				},
-			};
-			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), optimisticData, false);
-
-			const response = await fetchData<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), 'PUT', {
-				[type === 'start' ? 'feed_start_date' : 'feed_end_date']: Dates.fromISO(value).unix_timestamp,
-			});
-
-			if (response.error) {
-				// Revert optimistic update on error
-				mutate(Routes.API(Routes.PLAN_DETAIL(planId)));
-				useToast.error({
-					message: response.error,
-					title: 'Erro ao atualizar data',
-				});
-				return;
-			}
-
-			// Update with actual server response
-			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), response.data);
-			mutate(Routes.API(Routes.PLAN_LIST));
-		}
-		catch (error) {
-			// Revert optimistic update on error
-			mutate(Routes.API(Routes.PLAN_DETAIL(planId)));
-			useToast.error({
-				message: error,
-				title: 'Erro ao atualizar data',
-			});
-		}
 	};
 
 	const handleToggleLock = async () => {
@@ -140,25 +119,51 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 		}
 	};
 
+	const handleSavePlan = async () => {
+		setIsSaving(true);
+
+		const body = convertObject(form.getValues(), UpdatePlanSchema);
+
+		const response = await fetchData<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), 'PUT', body);
+		if (response.error) {
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao guardar plano',
+			});
+			return;
+		}
+
+		mutate(Routes.API(Routes.PLAN_LIST));
+
+		useToast.success({
+			message: 'Plano guardado com sucesso',
+			title: 'Plano guardado',
+		});
+
+		setIsSaving(false);
+	};
+
 	//
 	// E. Define context value
 	const contextValue: PlanDetailContextState = useMemo(() => {
 		return {
 			actions: {
 				approvePlan: handleApprovePlan,
-				editDate: handleEditDate,
+				savePlan: handleSavePlan,
 				toggleLock: handleToggleLock,
 			},
 			data: {
+				form,
 				id: planId,
 				plan,
 			},
 			flags: {
-				isLoading: isLoading || !plan,
+				isLoading: isLoading || !plan || !form.initialized,
 				isReadOnly: plan?.is_locked ?? false,
+				isSaving,
 			},
 		};
-	}, [isLoading, plan, planId]);
+	}, [isLoading, plan, planId, form]);
 
 	// F. Render Components
 	return (

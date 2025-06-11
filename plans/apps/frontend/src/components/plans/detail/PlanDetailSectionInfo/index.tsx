@@ -1,12 +1,9 @@
 /* * */
 
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { IconAlertCircle, IconAlertTriangle, IconEdit } from '@tabler/icons-react';
-import { Collapsible, Divider, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
+import { IconInfoCircle } from '@tabler/icons-react';
+import { Collapsible, DateTimePicker, Divider, Grid, Label, Section, Text, Tooltip } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-
-import { OpenEditDateModal } from '../EditDateModal';
-import styles from './styles.module.css';
 
 /* * */
 
@@ -15,27 +12,16 @@ export function PlanDetailSectionInfo() {
 
 	//
 	// A. Setup variables
-	const { actions, data: { plan } } = usePlanDetailContext();
+	const { data: { form, plan } } = usePlanDetailContext();
 
 	//
-	// B. Setup functions
-	const handleEditDate = (type: 'end' | 'start') => () => {
-		OpenEditDateModal({
-			description: (
-				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-					<IconAlertTriangle color="var(--color-status-danger-primary)" style={{ marginTop: '4px' }} />
-					<Text size="base">
-						Esta ação irá alterar a data de {type === 'start' ? 'início' : 'fim'} da vigência do plano no ficheiro <b>feed_info.txt</b> do <b>GTFS</b>.
-					</Text>
-				</Section>
-			),
-			label: `Data de ${type === 'start' ? 'início' : 'fim'}`,
-			onConfirm: (value) => {
-				actions.editDate(type)(value);
-			},
-			value: Dates.fromUnixTimestamp(plan.gtfs_feed_info[type === 'start' ? 'feed_start_date' : 'feed_end_date']).iso,
-		});
-	};
+	// B. Transform data
+
+	const startDateValue = form.values.gtfs_feed_info.feed_start_date;
+	const endDateValue = form.values.gtfs_feed_info.feed_end_date;
+
+	const startDate = startDateValue ? Dates.fromUnixTimestamp(startDateValue).js_date : null;
+	const endDate = endDateValue ? Dates.fromUnixTimestamp(endDateValue).js_date : null;
 
 	//
 	// C. Render components
@@ -70,20 +56,38 @@ export function PlanDetailSectionInfo() {
 		return (
 			<Section gap="sm">
 				<Label caps>Data de vigência</Label>
-				<Grid columns="abc" gap="sm">
-					<Section padding="none">
+				<Grid columns="ab" gap="sm">
+					<Section flexDirection="column" gap="sm" padding="none">
 						<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
 							<Label size="sm" caps>Data de início</Label>
-							<IconEdit className={styles.editIcon} onClick={handleEditDate('start')} size={16} />
+							<Tooltip label="Esta data provém do ficheiro feed_info.txt. Ao alterar esta data, o ficheiro feed_info.txt será atualizado." position="right">
+								<IconInfoCircle color="var(--color-status-warning-primary)" cursor="pointer" size={16} strokeWidth={2.5} />
+							</Tooltip>
 						</Section>
-						<Text size="base">{plan.gtfs_feed_info.feed_start_date ? Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_start_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+						<DateTimePicker
+							{...form.getInputProps('gtfs_feed_info.feed_start_date')}
+							value={startDate}
+							onChange={(date) => {
+								form.setFieldValue('gtfs_feed_info.feed_start_date', Dates.fromJSDate(new Date(date)).unix_timestamp);
+							}}
+							fullWidth
+						/>
 					</Section>
-					<Section padding="none">
+					<Section flexDirection="column" gap="sm" padding="none">
 						<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
 							<Label size="sm" caps>Data de fim</Label>
-							<IconEdit className={styles.editIcon} onClick={handleEditDate('end')} size={16} />
+							<Tooltip label="Esta data provém do ficheiro feed_info.txt. Ao alterar esta data, o ficheiro feed_info.txt será atualizado." position="right">
+								<IconInfoCircle color="var(--color-status-warning-primary)" cursor="pointer" size={16} strokeWidth={2.5} />
+							</Tooltip>
 						</Section>
-						<Text size="base">{plan.gtfs_feed_info.feed_end_date ? Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_end_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+						<DateTimePicker
+							{...form.getInputProps('gtfs_feed_info.feed_end_date')}
+							value={endDate}
+							onChange={(date) => {
+								form.setFieldValue('gtfs_feed_info.feed_end_date', Dates.fromJSDate(new Date(date)).unix_timestamp);
+							}}
+							fullWidth
+						/>
 					</Section>
 				</Grid>
 			</Section>

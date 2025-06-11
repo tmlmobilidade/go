@@ -4,8 +4,8 @@
 
 import BackButton from '@/components/common/BackButton';
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { IconLock, IconLockOpen } from '@tabler/icons-react';
-import { ActionIcon, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { IconLock, IconLockOpen, IconUpload } from '@tabler/icons-react';
+import { ActionIcon, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 /* * */
 
@@ -40,6 +40,15 @@ export function PlanDetailHeader() {
 			<Label size="lg" caps>{planDetailContext.data.id}</Label>
 			<Spacer />
 			{lockButton}
+
+			<Button
+				// disabled={planDetailContext.flags.isLoading}
+				icon={<IconUpload size={28} />}
+				label="Salvar"
+				loading={planDetailContext.flags.isLoading}
+				onClick={() => planDetailContext.actions.savePlan()}
+				variant="primary"
+			/>
 		</>
 	);
 

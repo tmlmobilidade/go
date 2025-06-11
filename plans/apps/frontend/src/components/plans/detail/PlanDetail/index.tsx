@@ -15,9 +15,9 @@ export function PlanDetail() {
 	//
 	// A. Render components
 
-	const { flags } = usePlanDetailContext();
+	const { data, flags } = usePlanDetailContext();
 
-	if (flags.isLoading) {
+	if (flags.isLoading || !data.plan || !data.plan.gtfs_agency || !data.plan.gtfs_feed_info) {
 		return <Loader />;
 	}
 
