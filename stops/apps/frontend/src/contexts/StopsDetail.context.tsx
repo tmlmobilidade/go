@@ -1,17 +1,13 @@
 'use client';
 
-// import localities from '../data/localities.json';
-// import parishes from '../data/parishes.json';
+// Commit: Samuel Santos
 import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
+import { unzipFile } from '@/lib/utils';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, multipartFetch } from '@tmlmobilidade/utils';
-// import AdmZip from 'adm-zip';
-// import fs from 'fs/promises';
 import { promises as fs } from 'fs';
-// import fs from 'fs';
-import { unzipFile } from '@/lib/utils';
 import JSZip from 'jszip';
 import { useRouter } from 'next/navigation';
 import path from 'path';
@@ -112,30 +108,6 @@ export function useStopsDetailContext() {
 	}
 	return context;
 }
-
-// async function unzipFile(originPath, destinationPath) {
-// 	const origin = path.resolve(originPath);
-// 	const destination = path.resolve(destinationPath);
-
-// 	const data = await fs.readFile(origin);
-// 	const zip = await JSZip.loadAsync(data);
-
-// 	for (const filename in zip.files) {
-// 		const file = zip.files[filename];
-// 		const filePath = path.join(destination, filename);
-
-// 		if (file.dir) {
-// 			await fs.mkdir(filePath, { recursive: true });
-// 		}
-// 		else {
-// 			await fs.mkdir(path.dirname(filePath), { recursive: true });
-// 			const content = await file.async('nodebuffer');
-// 			await fs.writeFile(filePath, content);
-// 		}
-// 	}
-
-// 	console.log(`Unzipped to: ${destinationPath}`);
-// }
 
 export const StopsDetailContextProvider = ({ children, stopId }: { children: React.ReactNode, stopId: string }) => {
 	//
