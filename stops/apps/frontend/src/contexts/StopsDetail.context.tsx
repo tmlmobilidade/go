@@ -51,10 +51,9 @@ interface StopsDetailContextState {
 	}
 }
 
-// @ts-expect-error: affectation should be commented
 const emptyStop: CreateStopDto = {
 	_id: 'temp',
-	// affectation: [],
+	affectation: [],
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],

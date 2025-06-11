@@ -1,15 +1,18 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, Combobox, DateTimePicker, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function StopShelter({ data }) {
+export function StopShelter() {
 	//
 
 	//
 	// A. Setup variables
+
+	const { data } = useStopsDetailContext();
 
 	enum ShelterStatusValues {
 		is_damaged = 'Abrigo Danificado',

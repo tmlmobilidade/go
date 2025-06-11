@@ -30,12 +30,11 @@ async function processValidation(message: ValidationMessage) {
 		const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
 		await writeFile(tempFilePath, Buffer.from(fileBuffer));
 
-		console.log('🚀 Validating file:', tempFilePath);
-
 		// 4. Run GTFS validation
+		console.log('🚀 Validating file:', tempFilePath);
 		const validationResult = await GTFSValidator(tempFilePath);
 
-		// 5. Update validation status based on results
+		// 6. Update validation status based on results
 		await validations.updateById(message.validation_id, {
 			feeder_status: validationResult.total_errors > 0 ? 'error' : 'success',
 			summary: validationResult,

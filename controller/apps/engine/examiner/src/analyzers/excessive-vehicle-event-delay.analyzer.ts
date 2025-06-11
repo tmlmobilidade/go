@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'EXCESSIVE_VEHICLE_EVENT_DELAY'
 	reason: 'ALL_VEHICLE_EVENTS_ARE_WITHIN_DELAY_LIMITS' | `THERE_ARE_${number}_VEHICLE_EVENTS_WITH_EXCESSIVE_DELAY`
 	unit: 'COUNT_OF_VEHICLE_EVENTS_WITH_EXCESSIVE_DELAY'
 };
@@ -42,7 +41,6 @@ export function excessiveVehicleEventDelayAnalyzer(analysisData: AnalysisData): 
 
 		if (countOfEventsWithDelay === 0) {
 			return {
-				_id: 'EXCESSIVE_VEHICLE_EVENT_DELAY',
 				grade: 'pass',
 				message: 'All vehicle events are within delay limits.',
 				reason: 'ALL_VEHICLE_EVENTS_ARE_WITHIN_DELAY_LIMITS',
@@ -52,7 +50,6 @@ export function excessiveVehicleEventDelayAnalyzer(analysisData: AnalysisData): 
 		}
 
 		return {
-			_id: 'EXCESSIVE_VEHICLE_EVENT_DELAY',
 			grade: 'fail',
 			message: `Found ${countOfEventsWithDelay} vehicle events with excessive delay.`,
 			reason: `THERE_ARE_${countOfEventsWithDelay}_VEHICLE_EVENTS_WITH_EXCESSIVE_DELAY`,
@@ -64,7 +61,6 @@ export function excessiveVehicleEventDelayAnalyzer(analysisData: AnalysisData): 
 	}
 	catch (error) {
 		return {
-			_id: 'EXCESSIVE_VEHICLE_EVENT_DELAY',
 			grade: 'error',
 			message: error.message,
 			reason: null,

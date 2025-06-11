@@ -1,4 +1,5 @@
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 // import { municipalities } from '../../../data/municipalities.json';
 import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';

@@ -2,7 +2,7 @@ import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { CreateValidationDto, OperationalDate, Validation } from '@tmlmobilidade/types';
+import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Validation } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -27,11 +27,10 @@ export class ValidationsController {
 
 			// Convert form fields to Validation data
 			const ValidationData: CreateValidationDto = {
-				agency_id: fields.agency_id?.value as string,
-				feeder_status: fields.feeder_status?.value as 'error' | 'processing' | 'success' | 'waiting',
-				is_locked: fields.is_locked?.value === 'true',
-				valid_from: fields.valid_from?.value as OperationalDate,
-				valid_until: fields.valid_until?.value as OperationalDate,
+				feeder_status: fields.feeder_status.value as 'error' | 'processing' | 'success' | 'waiting',
+				file_id: '',
+				gtfs_agency: JSON.parse(fields.gtfs_agency.value as string) as GtfsAgency,
+				gtfs_feed_info: JSON.parse(fields.gtfs_feed_info.value as string) as GtfsFeedInfo,
 			};
 
 			const buffer = await data.toBuffer();

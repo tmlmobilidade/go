@@ -1,16 +1,18 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function StopEquipments({ actions, data }) {
+export function StopEquipments() {
 	//
 
 	//
 	// A. Setup variables
+	const { actions, data } = useStopsDetailContext();
 
 	const facilities = [
 		'fire_station',

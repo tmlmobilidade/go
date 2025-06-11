@@ -1,5 +1,6 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { audioTtsUrl } from '@/settings/url.settings';
 import { StopOptions } from '@/utils/options.utils';
 import { IconAlertHexagon, IconPlayerPause, IconVolume } from '@tabler/icons-react';
@@ -8,11 +9,13 @@ import { useEffect, useRef, useState } from 'react';
 
 /* * */
 
-export function StopDetails({ data }) {
+export function StopDetails() {
 	//
 
 	//
 	// A. Setup variables
+
+	const { data } = useStopsDetailContext();
 
 	// const { isManual, setIsManual } = useManualContext();
 

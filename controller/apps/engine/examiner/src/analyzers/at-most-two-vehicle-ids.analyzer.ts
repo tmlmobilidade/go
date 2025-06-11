@@ -6,7 +6,6 @@ import { type RideAnalysis } from '@tmlmobilidade/types';
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'AT_MOST_TWO_VEHICLE_IDS'
 	reason: 'FOUND_MORE_THAN_2_VEHICLE_IDS' | 'FOUND_ONE_OR_TWO_VEHICLE_IDS' | 'NO_VEHICLE_ID_FOUND'
 	unit: 'UNIQUE_VEHICLE_IDS'
 };
@@ -24,7 +23,6 @@ export function atMostTwoVehicleIdsAnalyzer(analysisData: AnalysisData): Explici
 
 		if (analysisData.ride.vehicle_ids.length === 0) {
 			return {
-				_id: 'AT_MOST_TWO_VEHICLE_IDS',
 				grade: 'fail',
 				message: 'No Vehicle IDs found for this trip.',
 				reason: 'NO_VEHICLE_ID_FOUND',
@@ -35,7 +33,6 @@ export function atMostTwoVehicleIdsAnalyzer(analysisData: AnalysisData): Explici
 
 		if (analysisData.ride.vehicle_ids.length > 2) {
 			return {
-				_id: 'AT_MOST_TWO_VEHICLE_IDS',
 				grade: 'fail',
 				message: `Found ${analysisData.ride.vehicle_ids.length} Vehicle IDs for this trip.`,
 				reason: 'FOUND_MORE_THAN_2_VEHICLE_IDS',
@@ -45,7 +42,6 @@ export function atMostTwoVehicleIdsAnalyzer(analysisData: AnalysisData): Explici
 		}
 
 		return {
-			_id: 'AT_MOST_TWO_VEHICLE_IDS',
 			grade: 'pass',
 			message: `Found ${analysisData.ride.vehicle_ids.length} Vehicle IDs for this trip.`,
 			reason: 'FOUND_ONE_OR_TWO_VEHICLE_IDS',
@@ -57,7 +53,6 @@ export function atMostTwoVehicleIdsAnalyzer(analysisData: AnalysisData): Explici
 	}
 	catch (error) {
 		return {
-			_id: 'AT_MOST_TWO_VEHICLE_IDS',
 			grade: 'error',
 			message: error.message,
 			reason: null,

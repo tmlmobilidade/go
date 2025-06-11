@@ -1,0 +1,217 @@
+# # #
+
+name: tmlmobilidade-sae-controller-engine
+
+secrets:
+  pcgidbkey:
+    file: ./secrets/PCGIDB.key
+
+services:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  watchtower:
+    image: containrrr/watchtower
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 100mb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_ROLLING_RESTART=TRUE
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cleaner:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-cleaner:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  coordinator:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-coordinator:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  examiner:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-examiner:production
+    deploy:
+      mode: replicated
+      replicas: 4
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  feeder:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-feeder:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  stream:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-stream:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-apex-t3:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-sync-apex-t3:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-apex-t11:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-sync-apex-t11:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-apex-t19:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-sync-apex-t19:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-vehicle-events:
+    image: ghcr.io/tmlmobilidade/sae-replicator-engine-sync-vehicle-events:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - pcgidbkey

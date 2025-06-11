@@ -98,7 +98,7 @@ export class AuthController {
 		// Verify the token
 		const token_result = await verificationTokens.findOne({ token });
 
-		if (!token_result || token_result.expires_at < Dates.now().unix_timestamp) {
+		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
 			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
 		}
 

@@ -1,16 +1,19 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function StopConnections({ actions, data }) {
+export function StopConnections() {
 	//
 
 	//
 	// A. Setup variables
+
+	const { actions, data } = useStopsDetailContext();
 
 	const connections = [
 		'airport',

@@ -11,7 +11,6 @@ const BUFFER_RADIUS = 50; // meters
 /* * */
 
 interface ExplicitRideAnalysis extends RideAnalysis {
-	_id: 'AT_LEAST_ONE_EVENT_ON_FIRST_STOP'
 	reason: 'FOUND_ONE_OR_MORE_EVENTS_ON_FIRST_STOP' | 'NO_EVENTS_FOUND_ON_FIRST_STOP'
 	unit: 'EVENTS_FOUND_ON_FIRST_STOP'
 };
@@ -32,7 +31,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 
 		if (!analysisData.vehicle_events.length) {
 			return {
-				_id: 'AT_LEAST_ONE_EVENT_ON_FIRST_STOP',
 				grade: 'fail',
 				message: 'Ride has no events.',
 				reason: 'NO_EVENTS_FOUND_ON_FIRST_STOP',
@@ -63,7 +61,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 
 		if (eventsFoundOnFirstStop > 0) {
 			return {
-				_id: 'AT_LEAST_ONE_EVENT_ON_FIRST_STOP',
 				grade: 'pass',
 				message: 'Found at least one event on the first stop.',
 				reason: 'FOUND_ONE_OR_MORE_EVENTS_ON_FIRST_STOP',
@@ -73,7 +70,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 		}
 
 		return {
-			_id: 'AT_LEAST_ONE_EVENT_ON_FIRST_STOP',
 			grade: 'fail',
 			message: `No events found on the first stop.`,
 			reason: 'NO_EVENTS_FOUND_ON_FIRST_STOP',
@@ -85,7 +81,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 	}
 	catch (error) {
 		return {
-			_id: 'AT_LEAST_ONE_EVENT_ON_FIRST_STOP',
 			grade: 'error',
 			message: error.message,
 			reason: null,

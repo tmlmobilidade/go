@@ -1,12 +1,15 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
 
-export function StopAccessibility({ data }) {
+export function StopAccessibility() {
 	//
 
 	//
 	// A. Setup variables
+
+	const { data } = useStopsDetailContext();
 
 	enum SidewalkTypeValues {
 		gutter = 'Sarjeta',

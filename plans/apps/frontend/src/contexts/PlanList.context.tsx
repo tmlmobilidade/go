@@ -3,6 +3,8 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
+import { toggleArray } from '@/lib/utils';
+import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { OperationalDate, Plan } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { Dates } from '@tmlmobilidade/utils';
@@ -15,12 +17,14 @@ interface PlanListContextState {
 	actions: {
 		changeValidFrom: (date: null | string) => void
 		changeValidUntil: (date: null | string) => void
+		toggleAgency: (agency: string) => void
 	}
 	data: {
 		filtered: Plan[]
 		raw: Plan[]
 	}
 	filters: {
+		agencies: string[]
 		validFrom: null | OperationalDate
 		validUntil: null | OperationalDate
 	}
@@ -51,6 +55,7 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 	// A. Setup variables
 	const [filterValidFrom, setFilterValidFrom] = useState<null | OperationalDate>(null);
 	const [filterValidUntil, setFilterValidUntil] = useState<null | OperationalDate>(null);
+	const [filterAgencies, setFilterAgencies] = useState<string[]>(AVAILABLE_AGENCIES.map(agency => agency._id));
 
 	//
 	// B. Fetch data
@@ -66,17 +71,40 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 	const filteredPlans = useMemo(() => {
 		const plans = rawPlans;
 
+		// if (filterValidFrom) {
+		// 	plans = plans.filter(plan => Dates.fromUnixTimestamp(plan?.gtfs_feed_info.feed_start_date).operational_date >= filterValidFrom);
+		// }
+		// if (filterValidUntil) {
+		// 	plans = plans.filter(plan => Dates.fromUnixTimestamp(plan?.gtfs_feed_info.feed_end_date).operational_date <= filterValidUntil);
+		// }
+
+		// plans = plans.filter(plan => filterAgencies.includes(plan.gtfs_agency.agency_id));
+
 		return plans;
-	}, [rawPlans]);
+	}, [rawPlans, filterValidFrom, filterValidUntil, filterAgencies]);
 
 	//
 	// D. Handle actionsn
 	function handleChangeValidFrom(date: null | string) {
-		setFilterValidFrom(date ? Dates.fromFormat(date, 'yyyy-MM-dd').operational_date : null);
+		setFilterValidFrom(date ? Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date : null);
 	}
 
 	function handleChangeValidUntil(date: null | string) {
-		setFilterValidUntil(date ? Dates.fromFormat(date, 'yyyy-MM-dd').operational_date : null);
+		setFilterValidUntil(date ? Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date : null);
+	}
+
+	function handleToggleAgency(agency_id: string) {
+		if (agency_id === 'all') {
+			setFilterAgencies(AVAILABLE_AGENCIES.map(agency => agency._id));
+			return;
+		}
+
+		if (agency_id === 'none') {
+			setFilterAgencies([]);
+			return;
+		}
+
+		setFilterAgencies(toggleArray(filterAgencies, agency_id));
 	}
 
 	//
@@ -86,12 +114,14 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 		actions: {
 			changeValidFrom: handleChangeValidFrom,
 			changeValidUntil: handleChangeValidUntil,
+			toggleAgency: handleToggleAgency,
 		},
 		data: {
 			filtered: filteredPlans,
 			raw: rawPlans,
 		},
 		filters: {
+			agencies: filterAgencies,
 			validFrom: filterValidFrom,
 			validUntil: filterValidUntil,
 		},

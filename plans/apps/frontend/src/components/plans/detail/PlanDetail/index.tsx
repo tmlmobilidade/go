@@ -1,6 +1,7 @@
 'use client';
 
-import { Pane } from '@tmlmobilidade/ui';
+import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
+import { Loader, Pane } from '@tmlmobilidade/ui';
 
 import { PlanDetailHeader } from '../PlanDetailHeader';
 import { PlanDetailSectionFiles } from '../PlanDetailSectionFiles';
@@ -13,6 +14,13 @@ export function PlanDetail() {
 
 	//
 	// A. Render components
+
+	const { flags } = usePlanDetailContext();
+
+	if (flags.isLoading) {
+		return <Loader />;
+	}
+
 	return (
 		<Pane header={[<PlanDetailHeader />]}>
 			<PlanDetailSectionInfo />

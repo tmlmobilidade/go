@@ -16,21 +16,21 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
-		"@tmlmobilidade/interfaces": "20250508.1344.22",
-		"@tmlmobilidade/lib": "20250508.1344.22",
-		"@tmlmobilidade/types": "20250508.1344.22",
-		"@tmlmobilidade/utils": "20250508.1344.22",
-		"fastify": "5.3.2",
+		"@tmlmobilidade/interfaces": "20250605.1703.12",
+		"@tmlmobilidade/lib": "20250605.1703.12",
+		"@tmlmobilidade/types": "20250605.1703.12",
+		"@tmlmobilidade/utils": "20250605.1703.12",
+		"fastify": "5.3.3",
 		"pino-pretty": "13.0.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.4",
-		"zustand": "5.0.4"
+		"zustand": "5.0.5"
 	},
 	"devDependencies": {
 		"@fastify/multipart": "9.0.3",
-		"@tmlmobilidade/tsconfig": "20250508.1344.22",
+		"@tmlmobilidade/tsconfig": "20250605.1703.12",
 		"@types/jest": "29.5.14",
-		"@types/node": "22.15.16",
+		"@types/node": "22.15.29",
 		"jest": "29.7.0",
 		"typescript": "5.8.3"
 	}
