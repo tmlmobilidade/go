@@ -1,7 +1,7 @@
 /* * */
 
+import { FileComponent } from '@/components/common/FileComponent';
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
-import { IconFileTypeZip } from '@tabler/icons-react';
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
 /* * */
 
@@ -21,10 +21,7 @@ export function ValidationDetailSectionFiles() {
 	function renderFile() {
 		return (
 			<Section alignItems="flex-start" gap="md" justifyContent="flex-start">
-				<Section flexDirection="row" gap="sm" padding="none">
-					<IconFileTypeZip />
-					<Label>{validationDetailContext.data.file.name}</Label>
-				</Section>
+				<FileComponent file={validationDetailContext.data.file} />
 			</Section>
 		);
 	}

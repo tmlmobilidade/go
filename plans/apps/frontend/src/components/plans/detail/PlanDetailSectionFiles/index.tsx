@@ -1,6 +1,6 @@
 /* * */
 
-import { File } from '@/components/common/File';
+import { FileComponent } from '@/components/common/FileComponent';
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
 /* * */
@@ -21,7 +21,7 @@ export function PlanDetailSectionFiles() {
 	function renderFile() {
 		return (
 			<Section alignItems="flex-start" gap="md" justifyContent="flex-start">
-				<File
+				<FileComponent
 					file={planDetailContext.data.plan.file}
 				/>
 			</Section>

@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function File({ file }: { file: File }) {
+export function FileComponent({ file }: { file: File }) {
 	//
 	if (!file) {
 		return null;
