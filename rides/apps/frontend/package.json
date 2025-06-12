@@ -1,10 +1,10 @@
 {
-	"name": "@tmlmobilidade/sae-controller-explorer-frontend",
+	"name": "@tmlmobilidade/sae-rides-frontend",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"dev": "dotenv-run -f ./apps/explorer/_dev/.env -- next dev -p 51002",
+		"dev": "next dev -p 51002",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"start": "next start"
@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@mantine/nprogress": "8.0.2",
 		"@tabler/icons-react": "3.34.0",
-		"@tmlmobilidade/sae-controller-pckg-utils": "*",
+		"@tmlmobilidade/sae-rides-pckg-utils": "*",
 		"@tmlmobilidade/types": "20250604.1320.34",
 		"@tmlmobilidade/ui": "20250604.1320.34",
 		"@turf/turf": "7.2.0",

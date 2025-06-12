@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller",
+	"name": "@tmlmobilidade/sae-rides",
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
