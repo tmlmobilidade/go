@@ -42,10 +42,10 @@ export function PlanDetailHeader() {
 			{lockButton}
 
 			<Button
-				// disabled={planDetailContext.flags.isLoading}
+				disabled={planDetailContext.flags.isSaving || !planDetailContext.data.form.isDirty()}
 				icon={<IconUpload size={28} />}
 				label="Salvar"
-				loading={planDetailContext.flags.isLoading}
+				loading={planDetailContext.flags.isSaving}
 				onClick={() => planDetailContext.actions.savePlan()}
 				variant="primary"
 			/>

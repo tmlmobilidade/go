@@ -48,12 +48,12 @@ export function PlanList() {
 					</Section>
 					<Section alignItems="center" flexDirection="row" gap="md">
 						<Section alignItems="center" flexDirection="row" gap="sm">
-							<Tag label={Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
+							<Tag label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
 							<IconArrowRight size={16} />
 							<Tag
-								label={Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_SHORT)}
+								label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)}
 								variant={
-									Dates.now('local').operational_date > Dates.fromUnixTimestamp(plan.gtfs_feed_info.feed_end_date).operational_date ? 'danger' : 'warning'
+									Dates.now('local').operational_date > Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').operational_date ? 'danger' : 'warning'
 								}
 							/>
 						</Section>

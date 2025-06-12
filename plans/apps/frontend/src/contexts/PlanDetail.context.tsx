@@ -124,17 +124,26 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 
 		const body = convertObject(form.getValues(), UpdatePlanSchema);
 
+		const toastId = useToast.loading({
+			message: 'A guardar plano...',
+			title: 'A guardar plano',
+		});
+
 		const response = await fetchData<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), 'PUT', body);
 		if (response.error) {
 			useToast.error({
 				message: response.error,
 				title: 'Erro ao guardar plano',
 			});
+			useToast.hide(toastId);
+			setIsSaving(false);
 			return;
 		}
 
+		mutate(Routes.API(Routes.PLAN_DETAIL(planId)), response.data);
 		mutate(Routes.API(Routes.PLAN_LIST));
 
+		useToast.hide(toastId);
 		useToast.success({
 			message: 'Plano guardado com sucesso',
 			title: 'Plano guardado',

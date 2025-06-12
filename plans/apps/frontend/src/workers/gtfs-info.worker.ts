@@ -1,7 +1,6 @@
 /* * */
 
 import { GtfsAgency, GtfsFeedInfo } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
 import jszip from 'jszip';
 import papa from 'papaparse';
 
@@ -34,12 +33,6 @@ self.addEventListener('message', async (event) => {
 		const feedInfoData = papa.parse<GtfsFeedInfo>(feedInfo, {
 			header: true,
 			skipEmptyLines: true,
-			transform: (value, field) => {
-				if (field === 'feed_start_date' || field === 'feed_end_date') {
-					return Dates.fromOperationalDate(value, 'Europe/Lisbon').unix_timestamp;
-				}
-				return value;
-			},
 		});
 
 		// Return the feed info data

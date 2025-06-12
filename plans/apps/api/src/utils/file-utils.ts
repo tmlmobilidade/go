@@ -1,6 +1,6 @@
 import { files } from '@tmlmobilidade/interfaces';
-import { File, UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates, Files } from '@tmlmobilidade/utils';
+import { File, OperationalDate } from '@tmlmobilidade/types';
+import { Files } from '@tmlmobilidade/utils';
 import { File as NodeFile } from 'node:buffer';
 
 /**
@@ -23,7 +23,7 @@ export function updateFileName(string: string): string {
  * @param feed_end_date - The new feed end date
  * @returns The updated file and the path to the file
  */
-export async function updateFeedInfoDates(file_id: string, feed_start_date?: UnixTimestamp, feed_end_date?: UnixTimestamp): Promise<{ file: NodeFile, info: File }> {
+export async function updateFeedInfoDates(file_id: string, feed_start_date?: OperationalDate, feed_end_date?: OperationalDate): Promise<{ file: NodeFile, info: File }> {
 	if (!file_id) {
 		throw new Error('File ID is required to update dates');
 	}
@@ -45,13 +45,13 @@ export async function updateFeedInfoDates(file_id: string, feed_start_date?: Uni
 			column: 'feed_start_date',
 			csvString: feed_info_csv,
 			rowIndex: 0,
-			value: Dates.fromUnixTimestamp(feed_start_date).setZone('Europe/Lisbon', 'offset_only').operational_date,
+			value: feed_start_date,
 		},
 		{
 			column: 'feed_end_date',
 			csvString: feed_info_csv,
 			rowIndex: 0,
-			value: Dates.fromUnixTimestamp(feed_end_date).setZone('Europe/Lisbon', 'offset_only').operational_date,
+			value: feed_end_date,
 		},
 	]);
 

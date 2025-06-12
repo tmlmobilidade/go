@@ -2,7 +2,7 @@
 
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
 import { IconInfoCircle } from '@tabler/icons-react';
-import { Collapsible, DateTimePicker, Divider, Grid, Label, Section, Text, Tooltip } from '@tmlmobilidade/ui';
+import { Collapsible, DatePicker, Divider, Grid, Label, Section, Text, Tooltip } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -20,8 +20,8 @@ export function PlanDetailSectionInfo() {
 	const startDateValue = form.values.gtfs_feed_info.feed_start_date;
 	const endDateValue = form.values.gtfs_feed_info.feed_end_date;
 
-	const startDate = startDateValue ? Dates.fromUnixTimestamp(startDateValue).js_date : null;
-	const endDate = endDateValue ? Dates.fromUnixTimestamp(endDateValue).js_date : null;
+	const startDate = startDateValue ? Dates.fromOperationalDate(startDateValue, 'Europe/Lisbon').js_date : null;
+	const endDate = endDateValue ? Dates.fromOperationalDate(endDateValue, 'Europe/Lisbon').js_date : null;
 
 	//
 	// C. Render components
@@ -64,11 +64,11 @@ export function PlanDetailSectionInfo() {
 								<IconInfoCircle color="var(--color-status-warning-primary)" cursor="pointer" size={16} strokeWidth={2.5} />
 							</Tooltip>
 						</Section>
-						<DateTimePicker
+						<DatePicker
 							{...form.getInputProps('gtfs_feed_info.feed_start_date')}
 							value={startDate}
 							onChange={(date) => {
-								form.setFieldValue('gtfs_feed_info.feed_start_date', Dates.fromJSDate(new Date(date)).unix_timestamp);
+								form.setFieldValue('gtfs_feed_info.feed_start_date', Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date);
 							}}
 							fullWidth
 						/>
@@ -80,11 +80,11 @@ export function PlanDetailSectionInfo() {
 								<IconInfoCircle color="var(--color-status-warning-primary)" cursor="pointer" size={16} strokeWidth={2.5} />
 							</Tooltip>
 						</Section>
-						<DateTimePicker
+						<DatePicker
 							{...form.getInputProps('gtfs_feed_info.feed_end_date')}
 							value={endDate}
 							onChange={(date) => {
-								form.setFieldValue('gtfs_feed_info.feed_end_date', Dates.fromJSDate(new Date(date)).unix_timestamp);
+								form.setFieldValue('gtfs_feed_info.feed_end_date', Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date);
 							}}
 							fullWidth
 						/>
