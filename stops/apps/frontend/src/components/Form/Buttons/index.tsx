@@ -1,5 +1,6 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Routes } from '@/lib/routes';
 import { Button } from '@mantine/core';
 import { IconMapPlus } from '@tabler/icons-react';
@@ -14,12 +15,13 @@ enum Phase {
 	LOCATION = 'LOCATION',
 }
 
-export function Buttons({ actions, data, phase, setPhase }) {
+export function Buttons({ phase, setPhase }) {
 	//
 
 	//
 	// A. Setup Variables
 	const router = useRouter();
+	const stopDetailsContext = useStopsDetailContext();
 
 	//
 	// B. Render components
@@ -48,14 +50,14 @@ export function Buttons({ actions, data, phase, setPhase }) {
 
 			{phase === Phase.LOCATION
 			&& (
-				<Button className={styles.button} disabled={data.form.getValues().latitude === 0 || data.form.getValues().longitude === 0 || data.form.getValues().municipality_id === null} onClick={() => setPhase(Phase.IDENTIFICATION)}>
+				<Button className={styles.button} disabled={stopDetailsContext.data.form.getValues().latitude === 0 || stopDetailsContext.data.form.getValues().longitude === 0 || stopDetailsContext.data.form.getValues().municipality_id === null} onClick={() => setPhase(Phase.IDENTIFICATION)}>
 					Avançar
 				</Button>
 			)}
 
 			{phase === Phase.IDENTIFICATION
 			&& (
-				<Button className={styles.button} disabled={data.form.getValues()._id === 'temp' || data.form.getValues().name === 'temp' || data.form.getValues().short_name === 'temp'} onClick={() => setPhase(Phase.CONFIRMATION)}>
+				<Button className={styles.button} disabled={stopDetailsContext.data.form.getValues()._id === 'temp' || stopDetailsContext.data.form.getValues().name === 'temp' || stopDetailsContext.data.form.getValues().short_name === 'temp'} onClick={() => setPhase(Phase.CONFIRMATION)}>
 					{/* <Button className={styles.button} onClick={() => setPhase(Phase.CONFIRMATION)} disabled={data.form.getValues()._id === "temp" || data.form.getValues().name === 'temp' || data.form.getValues().short_name === "temp" || data.form.getValues().locality_id === "temp"}> */}
 					Avançar
 				</Button>
@@ -66,7 +68,7 @@ export function Buttons({ actions, data, phase, setPhase }) {
 				<Button
 					className={styles.button}
 					onClick={() => {
-						actions.saveStop();
+						stopDetailsContext.actions.saveStop();
 						router.push(Routes.STOP_DETAIL('new'));
 						// router.push(Routes.STOP_LIST);
 					}}

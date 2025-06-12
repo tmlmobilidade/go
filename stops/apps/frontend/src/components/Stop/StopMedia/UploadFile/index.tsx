@@ -1,3 +1,4 @@
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { IconFile, IconWorldUpload } from '@tabler/icons-react';
 import { ActionIcon, DeleteActionIcon, FileButton, Grid, Label, Tooltip, useToast } from '@tmlmobilidade/ui';
 import NextImage from 'next/image';
@@ -15,15 +16,7 @@ interface FormType {
 	}
 }
 
-interface ActionsType {
-	deleteFile: (file_id: string) => void
-	getFiles: () => unknown
-	handleFileChange: (file: File) => void
-}
-
 interface UploadImageProps {
-	actions: ActionsType
-	data: { form: FormType }
 	fileUrl?: string[]
 	label?: string
 	maxFileSize?: number
@@ -36,8 +29,6 @@ interface UploadImageProps {
 /* * */
 
 export function UploadFile({
-	actions,
-	data,
 	fileUrl,
 	label,
 	maxFileSize = 6 * 1024 * 1024, // 5MB default
@@ -51,10 +42,11 @@ export function UploadFile({
 	//
 	// A. Setup variables
 
+	const stopsDetailContext = useStopsDetailContext();
 	const [preview, setPreview] = useState<string[]>([]);
 
 	useEffect(() => {
-		(actions.getFiles() as Promise<string[]>)
+		(stopsDetailContext.actions.getImages(stopsDetailContext.data._id) as unknown as Promise<string[]>)
 			.then((urls: string[]) => {
 				setPreview(urls);
 			})
@@ -92,12 +84,12 @@ export function UploadFile({
 
 		onFileChange?.(file);
 
-		actions.handleFileChange(file);
-		actions.getFiles();
+		stopsDetailContext.actions.handleFileChange(file);
+		stopsDetailContext.actions.getFiles(stopsDetailContext.data._id);
 	};
 
 	const handleDelete = (index) => {
-		actions.deleteFile(data.form.values.file_ids[index]);
+		stopsDetailContext.actions.deleteFile(stopsDetailContext.data.form.values.file_ids[index]);
 		const files = [...preview];
 		files.splice(index, 1);
 		setPreview(files);

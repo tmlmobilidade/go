@@ -1,14 +1,16 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, Grid, Section, TextArea } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function StopObservations({ data }) {
+export function StopObservations() {
 	//
 
+	const stopDetailsContext = useStopsDetailContext();
 	//
 	// A. Render components
 
@@ -24,7 +26,7 @@ export function StopObservations({ data }) {
 						maxRows={10}
 						minRows={4}
 						placeholder="Construção planeada a..."
-						{...data.form.getInputProps('observations')}
+						{...stopDetailsContext.data.form.getInputProps('observations')}
 					/>
 				</Grid>
 			</Section>

@@ -2,7 +2,6 @@
 
 /* * */
 
-// import type { Stop } from '@carrismetropolitana/api-types/network';
 import type { Stop } from '@tmlmobilidade/types';
 
 import { swrFetcher } from '@/lib/http';
@@ -49,32 +48,8 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 
 	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`/api/stops`, swrFetcher);
 
-	// const workerRef = useRef<null | Worker>(null);
-
 	const [dataStopsState] = useState<StopsContextState['data']['stops']>([]);
 	const [dataStopsFCState, setDataStopsFCState] = useState<StopsContextState['data']['stops_fc']>();
-	// const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${Routes.CMET_API}/stops`);
-
-	// useEffect(() => {
-	// 	// Check if all data is available
-	// 	if (!allStopsData) return;
-	// 	// Initialize worker if not already initialized
-	// 	if (!workerRef.current) {
-	// 		// workerRef.current = new Worker(new URL('../workers/extend-stops.worker.ts', import.meta.url));
-	// 		workerRef.current.onmessage = (event: MessageEvent) => setDataStopsState(event.data);
-	// 		workerRef.current.onerror = error => console.error('Worker error:', error);
-	// 	}
-	// 	// Extend data for worker and send message
-	// 	const eventMessage = {
-	// 		stops: allStopsData,
-	// 	};
-	// 	workerRef.current.postMessage(eventMessage);
-	// 	// Cleanup worker
-	// 	return () => {
-	// 		workerRef.current?.terminate();
-	// 		workerRef.current = null;
-	// 	};
-	// }, [allStopsData]);
 
 	useEffect(() => {
 		// Check if all data is available
@@ -138,8 +113,6 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 			{children}
 		</StopsContext.Provider>
 	);
-
-	//
 };
 
 /* * */

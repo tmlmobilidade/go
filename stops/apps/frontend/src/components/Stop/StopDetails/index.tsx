@@ -1,5 +1,6 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { audioTtsUrl } from '@/settings/url.settings';
 import { StopOptions } from '@/utils/options.utils';
 import { IconAlertHexagon, IconPlayerPause, IconVolume } from '@tabler/icons-react';
@@ -8,11 +9,13 @@ import { useEffect, useRef, useState } from 'react';
 
 /* * */
 
-export function StopDetails({ data }) {
+export function StopDetails() {
 	//
 
 	//
 	// A. Setup variables
+
+	const stopsDetailContext = useStopsDetailContext();
 
 	// const { isManual, setIsManual } = useManualContext();
 
@@ -23,7 +26,7 @@ export function StopDetails({ data }) {
 	// B. Transform data
 
 	useEffect(() => {
-		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${data._id}.mp3`);
+		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${stopsDetailContext.data._id}.mp3`);
 	}, []);
 
 	useEffect(() => {
@@ -46,9 +49,9 @@ export function StopDetails({ data }) {
 
 	const handleShortName = () => {
 	// Return if stop has no name
-		if (!data.form.values.new_name || !data.form.values.short_name) return;
+		if (!stopsDetailContext.data.form.values.new_name || !stopsDetailContext.data.form.values.short_name) return;
 		// Copy the name first
-		let shortenedStopName = data.form.values.new_name;
+		let shortenedStopName = stopsDetailContext.data.form.values.new_name;
 		// Shorten the stop name
 		StopOptions.name_abbreviations
 			.filter(abbreviation => abbreviation.enabled)
@@ -57,7 +60,7 @@ export function StopDetails({ data }) {
 				shortenedStopName = shortenedStopName.replace(regexExpression, abbreviation.replacement);
 			});
 		// Save the new name
-		data.form.setFieldValue('short_name', shortenedStopName);
+		stopsDetailContext.data.form.setFieldValue('short_name', shortenedStopName);
 	};
 
 	const handleToogleAudio = () => {
@@ -85,17 +88,17 @@ export function StopDetails({ data }) {
 						label="Código Único da Paragem"
 						maxLength={255}
 						placeholder="012345"
-						{...data.form.getInputProps('_id')}
+						{...stopsDetailContext.data.form.getInputProps('_id')}
 					/>
 
 					<TextInput
 						label="Latitude"
 						maxLength={255}
-						{...data.form.getInputProps('latitude')}
+						{...stopsDetailContext.data.form.getInputProps('latitude')}
 						onBlur={(e) => {
 							const value = parseFloat(e.target.value);
 							if (!isNaN(value)) {
-								data.form.setFieldValue('latitude', value);
+								stopsDetailContext.data.form.setFieldValue('latitude', value);
 							}
 							else {
 								console.log('Invalid latitude value');
@@ -106,11 +109,11 @@ export function StopDetails({ data }) {
 					<TextInput
 						label="Longitude"
 						maxLength={255}
-						{...data.form.getInputProps('longitude')}
+						{...stopsDetailContext.data.form.getInputProps('longitude')}
 						onBlur={(e) => {
 							const value = parseFloat(e.target.value);
 							if (!isNaN(value)) {
-								data.form.setFieldValue('longitude', value);
+								stopsDetailContext.data.form.setFieldValue('longitude', value);
 							}
 							else {
 								console.log('Invalid longitude value');
@@ -125,7 +128,7 @@ export function StopDetails({ data }) {
 						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
 						disabled
-						{...data.form.getInputProps('name')}
+						{...stopsDetailContext.data.form.getInputProps('name')}
 					/>
 				</Grid>
 
@@ -134,7 +137,7 @@ export function StopDetails({ data }) {
 						label="Nome da Paragem (depois da correção)"
 						maxLength={255}
 						placeholder="Rua Marquês de Pombal 8"
-						{...data.form.getInputProps('new_name')}
+						{...stopsDetailContext.data.form.getInputProps('new_name')}
 					/>
 				</Grid>
 
@@ -144,7 +147,7 @@ export function StopDetails({ data }) {
 							label="Nome Curto (Postalete)"
 							maxLength={255}
 							placeholder="R. Mrq. de Pombal 8"
-							{...data.form.getInputProps('short_name')}
+							{...stopsDetailContext.data.form.getInputProps('short_name')}
 						/>
 
 						<Tooltip label="Gerar Nome Curto" position="bottom">
@@ -175,7 +178,7 @@ export function StopDetails({ data }) {
 							label="Nome Falado (Text-to-Speech)"
 							maxLength={255}
 							placeholder="Rua Marquês de Pombal Porta Oito"
-							{...data.form.getInputProps('tts_name')}
+							{...stopsDetailContext.data.form.getInputProps('tts_name')}
 						/>
 
 						<Tooltip label="Text to Speech" position="bottom">

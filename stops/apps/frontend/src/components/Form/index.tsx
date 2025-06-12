@@ -56,10 +56,10 @@ export function Form() {
 				<Pane>
 					<div className={styles.container}>
 						<Labels phase={phase} />
-						{phase === Phase.LOCATION && <Location data={data} getStopById={getStopById} municipality={municipality} />}
-						{phase === Phase.IDENTIFICATION && <Identification data={data} />}
-						{phase === Phase.CONFIRMATION && <Confirmation data={data} />}
-						<Buttons actions={actions} data={data} phase={phase} setPhase={setPhase} />
+						{phase === Phase.LOCATION && <Location municipality={municipality} />}
+						{phase === Phase.IDENTIFICATION && <Identification />}
+						{phase === Phase.CONFIRMATION && <Confirmation municipality={municipality} />}
+						<Buttons phase={phase} setPhase={setPhase} />
 					</div>
 				</Pane>
 			</Modal>

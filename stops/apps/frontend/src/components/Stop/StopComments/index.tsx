@@ -1,5 +1,6 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Button, Collapsible, Grid, Section, TextArea, useMeContext } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 

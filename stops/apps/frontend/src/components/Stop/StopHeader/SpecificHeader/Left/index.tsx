@@ -1,5 +1,7 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
+
 import styles from './styles.module.css';
 
 /* * */
@@ -16,7 +18,11 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function Left({ data }) {
+export function Left() {
+	//
+
+	const stopsDetailContext = useStopsDetailContext();
+
 	//
 	// B. Render components
 
@@ -41,7 +47,7 @@ export function Left({ data }) {
 				)} */}
 
 			{/* Label */}
-			<h3>{data.form.getValues().name || <i>Paragem sem Título</i>}</h3>
+			<h3>{stopsDetailContext.data.form.getValues().name || <i>Paragem sem Título</i>}</h3>
 		</div>
 	);
 }

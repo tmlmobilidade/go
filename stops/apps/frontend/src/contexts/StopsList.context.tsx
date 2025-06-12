@@ -14,39 +14,11 @@ import useSWR, { mutate } from 'swr';
 interface StopsListContextState {
 	actions: {
 		handleDBSync?: () => void
-	// changePublishDateEnd: (date: Date | null) => void
-	// changePublishDateStart: (date: Date | null) => void
-	// changeSearchQuery: (query: string) => void
-	// changeValidityDateEnd: (date: Date | null) => void
-	// changeValidityDateStart: (date: Date | null) => void
-	// toggleCause: (cause: string) => void
-	// toggleEffect: (effect: string) => void
-	// toggleLine: (line: string) => void
-	// toggleMunicipality: (municipality: string) => void
-	// togglePublishStatus: (status: string) => void
-	// toggleStop: (stop: string) => void
 	}
 	data: {
 		filtered_fc: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>
-		// filtered: Alert[]
 		raw: Stop[]
 	}
-	// filters: {
-	// cause: string[]
-	// effect: string[]
-	// line: string[]
-	// lineOptions: string[]
-	// municipality: string[]
-	// municipalityOptions: string[]
-	// publish_status: string[]
-	// publishDateEnd: Date | null
-	// publishDateStart: Date | null
-	// searchQuery: string
-	// stop: string[]
-	// stopOptions: string[]
-	// validityDateEnd: Date | null
-	// validityDateStart: Date | null
-	// }
 	flags: {
 		error: Error | undefined
 		isLoading: boolean
@@ -96,8 +68,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	}, [dataFilteredGeojsonFCState]);
 
 	useEffect(() => {
-		// Check if all data is available
-		// if (!dataFilteredState) return;
 		if (!allStopsData) return;
 		// Initialize worker if not already initialized
 		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> = getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>;
@@ -108,7 +78,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		});
 		// Set state value
 		setDataFilteredGeojsonFCState(collection);
-		//
 	}, [allStopsData]);
 
 	//
@@ -124,20 +93,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			raw: rawStops || [],
 		},
 		filters: {
-			// cause: filterCause,
-			// effect: filterEffect,
-			// line: filterLine,
-			// lineOptions: lineOptions,
-			// municipality: filterMunicipality,
-			// municipalityOptions: municipalityOptions,
-			// publish_status: filterPublishStatus,
-			// publishDateEnd: filterPublishDateEnd,
-			// publishDateStart: filterPublishDateStart,
-			// searchQuery: searchQuery || '',
-			// stop: filterStop,
-			// stopOptions: stopOptions,
-			// validityDateEnd: filterValidityDateEnd,
-			// validityDateStart: filterValidityDateStart,
 		},
 		flags: {
 			error: allStopsError,
@@ -148,24 +103,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		geoStops,
 		allStopsError,
 		allStopsLoading,
-		// filteredAlerts,
-		// allAlertsData,
-		// allAlertsLoading,
-		// allAlertsError,
-		// filterPublishStatus,
-		// filterCause,
-		// filterEffect,
-		// filterMunicipality,
-		// municipalityOptions,
-		// filterLine,
-		// lineOptions,
-		// filterStop,
-		// stopOptions,
-		// filterValidityDateStart,
-		// filterValidityDateEnd,
-		// filterPublishDateStart,
-		// filterPublishDateEnd,
-		// searchQuery,
 	]);
 
 	//

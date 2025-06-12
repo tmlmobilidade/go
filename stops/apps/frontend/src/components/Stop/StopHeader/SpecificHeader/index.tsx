@@ -1,5 +1,6 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 // import { useManualContext } from '@/contexts/Manual.context';
 // import { useDisclosure } from '@mantine/hooks';
 
@@ -9,7 +10,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function SpecificHeader({ data }) {
+export function SpecificHeader() {
 	//
 
 	//
@@ -26,9 +27,9 @@ export function SpecificHeader({ data }) {
 
 	return (
 		<div className={styles.header}>
-			<Left data={data} />
+			<Left />
 
-			<Right data={data} />
+			<Right />
 
 			{/* <PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
 				<List>

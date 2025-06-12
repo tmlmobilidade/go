@@ -1,11 +1,16 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, DateTimePicker, Grid, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function StopPublicInformation({ data }) {
+export function StopPublicInformation() {
+	//
+
+	const stopsDetailContext = useStopsDetailContext();
+
 	//
 	// A. Render components
 
@@ -19,22 +24,22 @@ export function StopPublicInformation({ data }) {
 					<DateTimePicker
 						label="Última Manutenção dos Horários"
 						placeholder="2023-02-10"
-						{...data.form.getInputProps('last_schedules_maintenance')}
-						value={new Date(data.form.getValues().last_schedules_maintenance)}
+						{...stopsDetailContext.data.form.getInputProps('last_schedules_maintenance')}
+						value={new Date(stopsDetailContext.data.form.getValues().last_schedules_maintenance)}
 						onChange={(date) => {
 							const formattedDate = new Date(date);
-							data.form.setFieldValue('last_schedules_maintenance', Dates.fromJSDate(formattedDate).unix_timestamp);
+							stopsDetailContext.data.form.setFieldValue('last_schedules_maintenance', Dates.fromJSDate(formattedDate).unix_timestamp);
 						}}
 					/>
 
 					<DateTimePicker
 						label="Última Verificação dos Horários"
 						placeholder="2023-02-10"
-						{...data.form.getInputProps('last_schedules_check')}
-						value={new Date(data.form.getValues().last_schedules_check)}
+						{...stopsDetailContext.data.form.getInputProps('last_schedules_check')}
+						value={new Date(stopsDetailContext.data.form.getValues().last_schedules_check)}
 						onChange={(date) => {
 							const formattedDate = new Date(date);
-							data.form.setFieldValue('last_schedules_check', Dates.fromJSDate(formattedDate).unix_timestamp);
+							stopsDetailContext.data.form.setFieldValue('last_schedules_check', Dates.fromJSDate(formattedDate).unix_timestamp);
 						}}
 					/>
 				</Grid>

@@ -1,23 +1,27 @@
 'use client';
 
+import { useSearchbarContext } from '@/contexts/Searchbar.context';
+import { useStopsContext } from '@/contexts/Stops.context';
+
 import { Item } from './Item';
 import styles from './styles.module.css';
 
 /* * */
 
-export function StopsList({ data, flags, queryString }) {
+export function StopsList() {
 	//
-	console.log('data.stops', data.stops);
+	const stopsContext = useStopsContext();
+	const searchBarContext = useSearchbarContext();
 	//
 	// A. Setup variables
-	const filteredStops = data.stops.filter(stop => (queryString == null || stop.name.includes(queryString)) && stop.is_archived === false);
+	const filteredStops = stopsContext.data.stops.filter(stop => (searchBarContext.queryString == null || stop.name.includes(searchBarContext.queryString)) && stop.is_archived === false);
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.container}>
 			{
-				flags.is_loading
+				stopsContext.flags.is_loading
 					? <div>Loading...</div>
 					: filteredStops.map((stop, index) => (<Item key={index} stop={stop} />))
 			}

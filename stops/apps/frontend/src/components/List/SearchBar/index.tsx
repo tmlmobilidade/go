@@ -1,6 +1,7 @@
 'use client';
 
 import { useLinesContext } from '@/contexts/Lines.context';
+import { useSearchbarContext } from '@/contexts/Searchbar.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Routes } from '@/lib/routes';
@@ -14,12 +15,14 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function SearchBar({ data, setQueryString }) {
+export function SearchBar() {
 	//
 
 	//
 	// A. Render components
 
+	const stopsContext = useStopsContext();
+	const searchBarContext = useSearchbarContext();
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 	const linesContext = useLinesContext();
@@ -36,7 +39,7 @@ export function SearchBar({ data, setQueryString }) {
 	};
 
 	const downloadStopsJson = () => {
-		const stops = data.stops.filter(stop => stop.is_archived === false);
+		const stops = stopsContext.data.stops.filter(stop => stop.is_archived === false);
 		const jsonStr = JSON.stringify(stops, null, 2);
 		const blob = new Blob([jsonStr], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
@@ -50,7 +53,7 @@ export function SearchBar({ data, setQueryString }) {
 	};
 
 	const downloadDeletedStopsJson = () => {
-		const stops = data.stops.filter(stop => stop.is_archived === true);
+		const stops = stopsContext.data.stops.filter(stop => stop.is_archived === true);
 		const jsonStr = JSON.stringify(stops, null, 2);
 		const blob = new Blob([jsonStr], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
@@ -64,8 +67,8 @@ export function SearchBar({ data, setQueryString }) {
 	};
 
 	const downloadStopsTxt = () => {
-		const keys = Object.keys(data.stops[0]);
-		const stops = data.stops.filter(stop => stop.is_archived === false);
+		const keys = Object.keys(stopsContext.data.stops[0]);
+		const stops = stopsContext.data.stops.filter(stop => stop.is_archived === false);
 		const headerLine = keys.join(', ') + '\n';
 		const valuesLines = stops.map(stop => Object.values(stop).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
@@ -82,8 +85,8 @@ export function SearchBar({ data, setQueryString }) {
 	};
 
 	const downloadDeletedStopsTxt = () => {
-		const keys = Object.keys(data.stops[0]);
-		const stops = data.stops.filter(stop => stop.is_archived === true);
+		const keys = Object.keys(stopsContext.data.stops[0]);
+		const stops = stopsContext.data.stops.filter(stop => stop.is_archived === true);
 		const headerLine = keys.join(', ') + '\n';
 		const valuesLines = stops.map(stop => Object.values(stop).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
@@ -101,8 +104,8 @@ export function SearchBar({ data, setQueryString }) {
 
 	const downloadStopsEsri = () => {
 		// Header Line
-		const keys = Object.keys(data.stops[0]);
-		const stops = data.stops.filter(stop => stop.is_archived === false);
+		const keys = Object.keys(stopsContext.data.stops[0]);
+		const stops = stopsContext.data.stops.filter(stop => stop.is_archived === false);
 		let headerLine = keys.join(', ') + '\n';
 		headerLine = headerLine.replace('_id', 'stop_id');
 		headerLine = headerLine.replace('name', 'stop_name');
@@ -137,7 +140,7 @@ export function SearchBar({ data, setQueryString }) {
 	};
 
 	const downloadLinesJson = () => {
-		const keys = Object.keys(data.stops[0]);
+		const keys = Object.keys(stopsContext.data.stops[0]);
 		const headerLine = keys.join(', ') + '\n';
 		const valuesLines = linesContext.data.lines.map(line => Object.values(line).join(', ')).join('\n');
 		const textContent = headerLine + valuesLines;
@@ -153,12 +156,12 @@ export function SearchBar({ data, setQueryString }) {
 		URL.revokeObjectURL(url); // Clean up
 	};
 
-	const handleStopsSync = () => {
+	const syncStops = () => {
 		stops.actions.handleDBSync();
 		stopsList.actions.handleDBSync();
 	};
 
-	const handleLinesSync = () => {
+	const syncLines = () => {
 		lines.actions.handleDBSync();
 	};
 
@@ -170,8 +173,8 @@ export function SearchBar({ data, setQueryString }) {
 		{ onClick: () => downloadDeletedStopsTxt(), title: 'Exportar deleted_stops.txt' },
 		{ onClick: () => downloadLinesJson(), title: 'Exportar Linhas por Paragem' },
 		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
-		{ onClick: () => handleStopsSync(), title: 'Sincronizar Paragens' },
-		{ onClick: () => handleLinesSync(), title: 'Sincronizar Linhas' },
+		{ onClick: () => syncStops(), title: 'Sincronizar Paragens' },
+		{ onClick: () => syncLines(), title: 'Sincronizar Linhas' },
 	].map((item, index) => (
 		<Anchor key={index} onClick={item.onClick}>
 			{item.title}
@@ -187,7 +190,7 @@ export function SearchBar({ data, setQueryString }) {
 			<TextInput
 				className={styles.inputText}
 				maxLength={255}
-				onChange={e => setQueryString(e.target.value)}
+				onChange={e => searchBarContext.setQueryString(e.target.value)}
 				placeholder="Pesquisar..."
 			/>
 

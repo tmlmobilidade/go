@@ -1,4 +1,4 @@
-import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
+import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 // import { municipalities } from '../../../data/municipalities.json';
 import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
@@ -12,6 +12,8 @@ import * as turf from '@turf/turf';
 // import municipalities from '../../../data/municipalities.json';
 // import localities from '../../../data/localities.json';
 // import parishes from '../../../data/parishes.json';
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
+
 import { MapView } from './map/MapView';
 import { MapViewStyleActiveStops } from './map/MapViewStyleActiveStops';
 import { MapViewStylePin } from './map/MapViewStylePin';
@@ -19,13 +21,15 @@ import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from './map/Ma
 
 /* * */
 
-export function StopsListViewMap({ data, generic = false, getStopById, isCreateAction = false }) {
+export function StopsListViewMap({ generic = false, isCreateAction = false }) {
 	//
 
 	//
 	// A. Setup variables
 
 	// const fetcher = url => fetch(url).then(res => res.json());
+	const stopsDetailContext = useStopsDetailContext();
+	const stopsContext = useStopsContext();
 	const { stopsListMap } = useMap();
 	const router = useRouter();
 	const stopsListContext = useStopsListContext();
@@ -38,7 +42,7 @@ export function StopsListViewMap({ data, generic = false, getStopById, isCreateA
 	// B. Handle actions
 
 	const getStopByIdGeoJsonFC = (stopId: string): GeoJSON.FeatureCollection | undefined => {
-		const stop = getStopById(stopId);
+		const stop = stopsContext.actions.getStopById(stopId);
 		if (!stop) return;
 		const collection = getBaseGeoJsonFeatureCollection();
 		const stopFC = transformStopDataIntoGeoJsonFeature(stop);
@@ -47,10 +51,10 @@ export function StopsListViewMap({ data, generic = false, getStopById, isCreateA
 	};
 
 	const activeStopGeoJson = useMemo(() => {
-		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
+		const geoJson = getStopByIdGeoJsonFC(stopsDetailContext.data.active_stop_id);
 		centerMap(stopsListMap, geoJson ? geoJson.features : []);
 		return geoJson;
-	}, [stopsListContext.data.filtered_fc, data.active_stop_id]);
+	}, [stopsListContext.data.filtered_fc, stopsDetailContext.data.active_stop_id]);
 
 	const getPinnedStopGeoJson = (longitude, latitude) => {
 		const collection = getBaseGeoJsonFeatureCollection();
@@ -87,8 +91,8 @@ export function StopsListViewMap({ data, generic = false, getStopById, isCreateA
 
 	const handleLayerClickCreateStop = (event) => {
 		if (!stopsListMap) return;
-		data.form.setFieldValue('latitude', event.lngLat.lat);
-		data.form.setFieldValue('longitude', event.lngLat.lng);
+		stopsDetailContext.data.form.setFieldValue('latitude', event.lngLat.lat);
+		stopsDetailContext.data.form.setFieldValue('longitude', event.lngLat.lng);
 		setPinnedStopGeoJson(getPinnedStopGeoJson(event.lngLat.lng, event.lngLat.lat));
 
 		fetch('/data/municipalities.json').then(res => res.json()).then((municipalities) => {
@@ -113,13 +117,13 @@ export function StopsListViewMap({ data, generic = false, getStopById, isCreateA
 			setMunicipalityDataForThisStop(foundMunicipality);
 
 			if (foundMunicipality) {
-				data.form.setFieldValue('municipality_id', foundMunicipality.properties.id);
-				data.form.setFieldValue('district_id', foundMunicipality.properties.district_id);
+				stopsDetailContext.data.form.setFieldValue('municipality_id', foundMunicipality.properties.id);
+				stopsDetailContext.data.form.setFieldValue('district_id', foundMunicipality.properties.district_id);
 
 				fetch('/data/localities.json').then(res => res.json()).then((localities) => {
 					for (const localitiesData of localities.features) {
 						if (localitiesData.properties.municipality_id === foundMunicipality.id) {
-							data.form.setFieldValue('locality_id', localitiesData.id);
+							stopsDetailContext.data.form.setFieldValue('locality_id', localitiesData.id);
 							break;
 						}
 					}
@@ -128,7 +132,7 @@ export function StopsListViewMap({ data, generic = false, getStopById, isCreateA
 				fetch('/data/parishes.json').then(res => res.json()).then((parishes) => {
 					for (const parishesData of parishes.features) {
 						if (parishesData.properties.municipality_id === foundMunicipality.id) {
-							data.form.setFieldValue('parish_id', parishesData.id);
+							stopsDetailContext.data.form.setFieldValue('parish_id', parishesData.id);
 							break;
 						}
 					}
@@ -138,7 +142,7 @@ export function StopsListViewMap({ data, generic = false, getStopById, isCreateA
 	};
 
 	useEffect(() => {
-		const geoJson = getStopByIdGeoJsonFC(data.active_stop_id);
+		const geoJson = getStopByIdGeoJsonFC(stopsDetailContext.data.active_stop_id);
 		centerMap(stopsListMap, geoJson ? geoJson.features : []);
 	});
 

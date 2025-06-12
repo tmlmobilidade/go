@@ -1,5 +1,6 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 import { UploadFile } from './UploadFile';
@@ -7,7 +8,7 @@ import { UploadImage } from './UploadImage';
 
 /* * */
 
-export function StopMedia({ actions, data }) {
+export function StopMedia() {
 	//
 
 	//
@@ -25,8 +26,6 @@ export function StopMedia({ actions, data }) {
 		>
 			<Section gap="md">
 				<UploadImage
-					actions={actions}
-					data={data}
 					// imageUrl={stopDetailContext.data.imageUrl}
 					// imageUrl="image.png"
 					// label="Imagem"
@@ -35,8 +34,6 @@ export function StopMedia({ actions, data }) {
 					// onFileChange={() => alert('File changed!')}
 				/>
 				<UploadFile
-					actions={actions}
-					data={data}
 					// imageUrl={stopDetailContext.data.imageUrl}
 					// imageUrl="image.png"
 					// label="Imagem"

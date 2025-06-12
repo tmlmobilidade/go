@@ -10,12 +10,13 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export function Right({ data }) {
+export function Right() {
 	//
 
+	const stopsDetailContext = useStopsDetailContext();
+
 	//
-	// A. Render components
-	const { actions } = useStopsDetailContext();
+	// B. Render components
 
 	return (
 		<div className={styles.section}>
@@ -27,7 +28,7 @@ export function Right({ data }) {
 			</Tooltip> */}
 
 			{/* Stop Button */}
-			<Link href={`https://www.carrismetropolitana.pt/stops/${data._id}`} target="_blank">
+			<Link href={`https://www.carrismetropolitana.pt/stops/${stopsDetailContext.data._id}`} target="_blank">
 				<Tooltip label="Ver esta paragem no Site" position="bottom">
 					<ActionIcon
 						className={styles.iconBlue}
@@ -53,7 +54,7 @@ export function Right({ data }) {
 			<Tooltip label="Salvar Paragem" position="bottom">
 				<div
 					className={styles.iconBlue}
-					onClick={() => actions.saveStop()}
+					onClick={() => stopsDetailContext.actions.saveStop()}
 				>
 					<IconDeviceFloppy />
 				</div>
@@ -64,7 +65,7 @@ export function Right({ data }) {
 				<div
 					className={styles.iconBlue}
 					onClick={() => {
-						actions.deleteStop();
+						stopsDetailContext.actions.deleteStop();
 						redirect('/stops', RedirectType.replace);
 					}}
 				>

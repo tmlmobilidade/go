@@ -1,3 +1,5 @@
+import { useStopsContext } from '@/contexts/Stops.context';
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui';
 import NextImage from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -20,8 +22,6 @@ interface ActionsType {
 }
 
 interface UploadImageProps {
-	actions: ActionsType
-	data: { form: FormType }
 	imageUrl?: string[]
 	label?: string
 	maxFileSize?: number
@@ -34,8 +34,6 @@ interface UploadImageProps {
 /* * */
 
 export function UploadImage({
-	actions,
-	data,
 	imageUrl,
 	label,
 	maxFileSize = 6 * 1024 * 1024, // 5MB default
@@ -49,10 +47,11 @@ export function UploadImage({
 	//
 	// A. Setup variables
 
+	const stopsDetailContext = useStopsDetailContext();
 	const [preview, setPreview] = useState<string[]>([]);
 
 	useEffect(() => {
-		(actions.getImages() as Promise<string[]>)
+		(stopsDetailContext.actions.getImages(stopsDetailContext.data._id) as unknown as Promise<string[]>)
 			.then((urls: string[]) => {
 				setPreview(urls);
 			})
@@ -80,13 +79,13 @@ export function UploadImage({
 		reader.readAsDataURL(file);
 
 		onFileChange?.(file);
-		console.log('actions', actions);
-		actions.handleImageChange(file);
-		actions.getImages();
+
+		stopsDetailContext.actions.handleImageChange(file);
+		stopsDetailContext.actions.getImages(stopsDetailContext.data._id);
 	};
 
 	const handleDelete = (index) => {
-		actions.deleteImage(data.form.values.image_ids[index]);
+		stopsDetailContext.actions.deleteImage(stopsDetailContext.data.form.values.image_ids[index]);
 		const files = [...preview];
 		files.splice(index, 1);
 		setPreview(files);

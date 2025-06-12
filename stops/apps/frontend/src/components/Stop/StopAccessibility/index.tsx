@@ -1,12 +1,15 @@
 'use client';
 
+import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
 
-export function StopAccessibility({ data }) {
+export function StopAccessibility() {
 	//
 
 	//
 	// A. Setup variables
+
+	const stopsDetailContext = useStopsDetailContext();
 
 	enum SidewalkTypeValues {
 		gutter = 'Sarjeta',
@@ -222,13 +225,13 @@ export function StopAccessibility({ data }) {
 					<Combobox
 						data={sidewalkTypeItems}
 						label="Tem Passeio?"
-						{...data.form.getInputProps('sidewalk_type')}
+						{...stopsDetailContext.data.form.getInputProps('sidewalk_type')}
 					/>
 
 					<Combobox
 						data={benchStatusItems}
 						label="Estado do Banco"
-						{...data.form.getInputProps('bench_status')}
+						{...stopsDetailContext.data.form.getInputProps('bench_status')}
 					/>
 				</Grid>
 
@@ -236,13 +239,13 @@ export function StopAccessibility({ data }) {
 					<Combobox
 						data={dockingBayTypeItems}
 						label="Tipo de Doca"
-						{...data.form.getInputProps('docking_bay_type')}
+						{...stopsDetailContext.data.form.getInputProps('docking_bay_type')}
 					/>
 
 					<Combobox
 						data={electricityStatusItems}
 						label="Estado da Electricidade"
-						{...data.form.getInputProps('electricity_status')}
+						{...stopsDetailContext.data.form.getInputProps('electricity_status')}
 					/>
 				</Grid>
 
@@ -250,13 +253,13 @@ export function StopAccessibility({ data }) {
 					<Combobox
 						data={flagStatusItems}
 						label="Estado da Bandeira"
-						{...data.form.getInputProps('flag_status')}
+						{...stopsDetailContext.data.form.getInputProps('flag_status')}
 					/>
 
 					<Combobox
 						data={lightningStatusItems}
 						label="Estado da Luz"
-						{...data.form.getInputProps('lighting_status')}
+						{...stopsDetailContext.data.form.getInputProps('lighting_status')}
 					/>
 				</Grid>
 
@@ -264,19 +267,19 @@ export function StopAccessibility({ data }) {
 					<Combobox
 						data={pavementTypeItems}
 						label="Tipo de Pavimento"
-						{...data.form.getInputProps('pavement_type')}
+						{...stopsDetailContext.data.form.getInputProps('pavement_type')}
 					/>
 
 					<Combobox
 						data={poleStatusItems}
 						label="Estado do Poste"
-						{...data.form.getInputProps('pole_status')}
+						{...stopsDetailContext.data.form.getInputProps('pole_status')}
 					/>
 
 					<Combobox
 						data={roadTypeItems}
 						label="Tipo de Estrada"
-						{...data.form.getInputProps('road_type')}
+						{...stopsDetailContext.data.form.getInputProps('road_type')}
 					/>
 				</Grid>
 			</Section>

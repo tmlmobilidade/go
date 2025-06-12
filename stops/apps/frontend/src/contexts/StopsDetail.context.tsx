@@ -185,18 +185,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	//
 	// D. Define actions
-	// const addReference = () => {
-	// 	const currentReferences = form.values.references || [];
-	// 	currentReferences.push({ child_ids: [], parent_id: '' });
-	// 	form.setFieldValue('references', currentReferences);
-	// };
 
-	// const removeReference = (index: number) => {
-	// 	const currentReferences = form.values.references || [];
-	// 	form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
-	// };
-
-	// const saveStop = async (type: 'draft' | 'publish') => {
 	const setActiveStopId = (stopId: string) => {
 		setDataActiveStopIdState(stopId);
 	};
@@ -213,17 +202,15 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 		const saveStop: CreateStopDto = { ...form.values };
 
-		// console.log('saveStop', saveStop);
-		// console.log('-> ==> saveStop', saveStop);
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);
 		let body = stopId === 'new' ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
 		// body = { ...body, active_period_end_date, publish_end_date };
 		body = { ...body };
-		// console.log('-> ==> body', body);
+
 		const response = await fetchData<unknown>(url, method, body);
-		// console.log('-> ==> response', response);
+
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -237,9 +224,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		}
 
 		const insertedId = stopId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : stopId;
-		// if (insertedId) {
-		// 	await uploadImage(insertedId);
-		// }
 
 		// If the Stop is new, redirect to the detail page
 		if (insertedId && stopId === 'new') {
@@ -522,13 +506,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				deleteStop,
 				getFiles,
 				getImages,
-				handleFileChange,
-				handleImageChange,
-				// removeReference,
-				// saveStop: (type: 'draft' | 'publish') => saveStop(type),
 				handleCommentsChange,
 				handleConnectionsChange,
 				handleFacilitiesChange,
+				handleFileChange,
+				handleImageChange,
 				saveStop,
 				setActiveStopId,
 			},
@@ -542,7 +524,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				isReadOnly,
 				isSaving,
 				loading: isLoading || loading,
-				// loading: isLoading || loading || imageUrlLoading,
 				mode: stopId === 'new' ? StopsDetailMode.CREATE : StopsDetailMode.EDIT,
 			},
 		};
