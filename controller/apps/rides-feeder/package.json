@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller-engine-feeder",
+	"name": "@tmlmobilidade/sae-controller-rides-feeder",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],

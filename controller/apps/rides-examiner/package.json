@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller-engine-examiner",
+	"name": "@tmlmobilidade/sae-controller-rides-examiner",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
