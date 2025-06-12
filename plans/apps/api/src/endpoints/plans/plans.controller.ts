@@ -1,6 +1,7 @@
+import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { CreatePlanDto, Plan, PlanSchema } from '@tmlmobilidade/types';
+import { HttpStatus, mimeTypes } from '@tmlmobilidade/lib';
+import { CreateFileDto, CreatePlanDto, Plan, PlanSchema } from '@tmlmobilidade/types';
 import { convertObject } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -171,12 +172,59 @@ export class PlansController {
 	) {
 		try {
 			const { id } = request.params;
-			const planData = request.body as Partial<Plan>;
+			const update_data = request.body as Partial<Plan>;
 
-			await plans.updateById(id, planData);
+			const plan = await plans.findById(id);
+
+			if (!plan) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Plan not found' });
+				return;
+			}
+
+			const plan_dates = {
+				feed_end_date: plan.gtfs_feed_info?.feed_end_date,
+				feed_start_date: plan.gtfs_feed_info?.feed_start_date,
+			};
+			const update_dates = {
+				feed_end_date: update_data.gtfs_feed_info?.feed_end_date,
+				feed_start_date: update_data.gtfs_feed_info?.feed_start_date,
+			};
+
+			// Check if feed dates are being updated
+			if (update_dates.feed_start_date || update_dates.feed_end_date) {
+				// Only update file if dates actually changed
+				if (update_dates.feed_start_date !== plan_dates.feed_start_date || update_dates.feed_end_date !== plan_dates.feed_end_date) {
+					// Update feed info dates in file
+					const { file, info } = await updateFeedInfoDates(
+						plan.operation_file_id,
+						update_dates.feed_start_date, // Use new dates instead of old ones
+						update_dates.feed_end_date,
+					);
+
+					// Prepare file metadata
+					const file_data: CreateFileDto = {
+						created_by: info.created_by,
+						name: info.name,
+						resource_id: info.resource_id,
+						scope: info.scope,
+						size: file.size,
+						type: mimeTypes.zip,
+						updated_by: 'system',
+					};
+
+					// Upload updated file and store new file ID
+					const file_result = await files.upload(
+						Buffer.from(await file.arrayBuffer()),
+						file_data,
+					);
+					update_data.operation_file_id = file_result.insertedId.toString();
+				}
+			}
+
+			await plans.updateById(id, update_data);
 
 			reply.send({
-				data: planData,
+				data: update_data,
 				message: `Plan with id: ${id} updated`,
 			});
 		}

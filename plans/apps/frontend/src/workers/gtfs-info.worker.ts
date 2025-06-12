@@ -14,8 +14,11 @@ self.addEventListener('message', async (event) => {
 		const zip = await jszip.loadAsync(file);
 		const feedInfo = await zip.file('feed_info.txt')?.async('string');
 		const agency = await zip.file('agency.txt')?.async('string');
+		const stopTimes = await zip.file('stop_times.txt')?.async('blob');
 
-		if (!feedInfo || !agency) {
+		console.log('Stop times size:', stopTimes?.size);
+
+		if (!feedInfo || !agency || !stopTimes) {
 			const filesNotFound: string[] = [];
 			if (!feedInfo) filesNotFound.push('feed_info.txt');
 			if (!agency) filesNotFound.push('agency.txt');
