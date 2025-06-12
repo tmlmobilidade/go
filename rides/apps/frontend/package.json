@@ -10,11 +10,11 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/nprogress": "8.0.2",
+		"@mantine/nprogress": "8.1.0",
 		"@tabler/icons-react": "3.34.0",
 		"@tmlmobilidade/sae-rides-pckg-utils": "*",
-		"@tmlmobilidade/types": "20250604.1320.34",
-		"@tmlmobilidade/ui": "20250604.1320.34",
+		"@tmlmobilidade/types": "20250611.2204.4",
+		"@tmlmobilidade/ui": "20250611.2204.4",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.4",
 		"lodash": "4.17.21",
@@ -34,8 +34,8 @@
 		"@types/geojson": "7946.0.16",
 		"@types/lodash": "4.17.17",
 		"@types/luxon": "3.6.2",
-		"@types/node": "22.15.29",
-		"@types/react": "19.1.6",
+		"@types/node": "24.0.1",
+		"@types/react": "19.1.8",
 		"@types/react-dom": "19.1.6",
 		"typescript": "5.8.3"
 	},
