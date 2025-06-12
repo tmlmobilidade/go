@@ -83,11 +83,11 @@ export default function CreateValidationModal() {
 				<Grid columns="abc" gap="md">
 					<Section padding="none">
 						<Label size="sm" caps>Data de início</Label>
-						<Text size="base">{Dates.fromUnixTimestamp(validationDetailContext.data.form.values.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
+						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Data de fim</Label>
-						<Text size="base">{Dates.fromUnixTimestamp(validationDetailContext.data.form.values.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
+						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Linguagem do feed</Label>

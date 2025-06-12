@@ -51,11 +51,11 @@ export function ValidationDetailSectionInfo() {
 				<Grid columns="abc" gap="sm">
 					<Section padding="none">
 						<Label size="sm" caps>Data de início</Label>
-						<Text size="base">{validation.gtfs_feed_info.feed_start_date ? Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_start_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+						<Text size="base">{validation.gtfs_feed_info.feed_start_date ? Dates.fromOperationalDate(validation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Data de fim</Label>
-						<Text size="base">{validation.gtfs_feed_info.feed_end_date ? Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_end_date).toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+						<Text size="base">{validation.gtfs_feed_info.feed_end_date ? Dates.fromOperationalDate(validation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
 					</Section>
 				</Grid>
 			</Section>

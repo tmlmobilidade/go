@@ -60,11 +60,11 @@ export default function CreatePlanModal({ validation_id }: { validation_id?: str
 				<Grid columns="abc" gap="md">
 					<Section padding="none">
 						<Label size="sm" caps>Data de início</Label>
-						<Text size="base">{data.selectedValidation ? Dates.fromUnixTimestamp(data.selectedValidation.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR) : 'N/A'}</Text>
+						<Text size="base">{data.selectedValidation ? Dates.fromOperationalDate(data.selectedValidation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR) : 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Data de fim</Label>
-						<Text size="base">{data.selectedValidation ? Dates.fromUnixTimestamp(data.selectedValidation.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR) : 'N/A'}</Text>
+						<Text size="base">{data.selectedValidation ? Dates.fromOperationalDate(data.selectedValidation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR) : 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Linguagem do feed</Label>
@@ -91,7 +91,7 @@ export default function CreatePlanModal({ validation_id }: { validation_id?: str
 					onChange={(id: string) => actions.setSelectedValidation(id)}
 					value={data.selectedValidation?._id}
 					data={data.validations.map(validation => ({
-						label: `${validation._id} - ${validation.gtfs_agency.agency_name} | ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_start_date).toLocaleString(Dates.FORMATS.DATE_SHORT)} - ${Dates.fromUnixTimestamp(validation.gtfs_feed_info.feed_end_date).toLocaleString(Dates.FORMATS.DATE_SHORT)}`,
+						label: `${validation._id} - ${validation.gtfs_agency.agency_name} | ${Dates.fromOperationalDate(validation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)} - ${Dates.fromOperationalDate(validation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)}`,
 						value: validation._id,
 					}))}
 					clearable
