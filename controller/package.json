@@ -4,6 +4,8 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
+		"dev:sams-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-sams-examiner",
+		"dev:sams-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-sams-feeder",
 		"lint": "turbo lint",
 		"purge": "sh purge.sh"
 	},
@@ -17,7 +19,7 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "npm@11.4.1",
+	"packageManager": "npm@11.4.2",
 	"engines": {
 		"node": ">=18"
 	}

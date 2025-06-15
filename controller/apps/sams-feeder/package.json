@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller-sams-examiner",
+	"name": "@tmlmobilidade/sae-controller-sams-feeder",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
@@ -16,10 +16,7 @@
 	"dependencies": {
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250612.1741.30",
-		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"@tmlmobilidade/utils": "20250612.1741.30",
-		"@turf/turf": "7.2.0"
+		"@tmlmobilidade/interfaces": "20250612.1741.30"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250612.1741.30",
