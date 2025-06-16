@@ -2,13 +2,13 @@
 
 /* * */
 
-import { UsersListHeader } from '@/components/users/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
-import { User } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, Loader, Pane } from '@tmlmobilidade/ui';
+import { IconArrowRight } from '@tabler/icons-react';
+import { Loader, Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
+import { UsersListHeader } from '../UsersListHeader';
 import styles from './styles.module.css';
 
 /* * */
@@ -20,41 +20,31 @@ export function UsersList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const usersListContext = useUsersListContext();
-
-	const columns: DataTableColumn<User>[] = [
-		{ accessor: '_id', title: 'ID', width: 250 },
-		{ accessor: 'first_name', title: 'Primeiro Nome', width: 250 },
-		{ accessor: 'last_name', title: 'Último Nome', width: 250 },
-		{ accessor: 'email', title: 'Email' },
-	];
+	const { data, flags } = useUsersListContext();
 
 	//
-	// B. Handle actions
+	// B. Render components
 
-	const handleRowClick = (record: User) => {
-		router.push(Routes.USER_DETAIL(record._id));
-	};
-
-	//
-	// C. Render components
-
-	if (usersListContext.flags.error) {
-		return <div>Error: {usersListContext.flags.error.message}</div>;
-	}
-
-	if (usersListContext.flags.loading) {
+	if (flags.loading) {
 		return <Loader />;
+	}
+	else if (flags.error) {
+		return <div>Error: {flags.error.message}</div>;
 	}
 
 	return (
-		<Pane header={[<UsersListHeader />]}>
-			<DataTable
-				classnames={{ root: styles.table, row: styles.row }}
-				columns={columns}
-				onRowClick={handleRowClick}
-				records={usersListContext.data.filtered}
-			/>
+		<Pane header={[
+			<UsersListHeader />,
+		]}
+		>
+			{data.filtered.map(user => (
+				<div key={user._id} className={styles.root} onClick={() => router.push(Routes.USER_DETAIL(user._id))}>
+					<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">
+						<Tag label={user._id} variant="muted" />
+						<Text size="lg">{user.first_name} {user.last_name}</Text>
+					</Section>
+				</div>
+			))}
 		</Pane>
 	);
 
