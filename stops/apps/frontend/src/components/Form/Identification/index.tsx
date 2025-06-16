@@ -16,11 +16,11 @@ export function Identification() {
 	//
 	// A. Handle actions
 
-	const handleShortName = () => {
+	const handleShortName = (name) => {
 		// Return if stop has no name
-		if (!stopDetailsContext.data.form.values.name || !stopDetailsContext.data.form.values.short_name) return;
+		if (!name) return;
 		// Copy the name first
-		let shortenedStopName = stopDetailsContext.data.form.values.name;
+		let shortenedStopName = name;
 		// Shorten the stop name
 		StopOptions.name_abbreviations
 			.filter(abbreviation => abbreviation.enabled)
@@ -49,6 +49,10 @@ export function Identification() {
 				maxLength={255}
 				placeholder="Rua Marquês de Pombal 8"
 				{...stopDetailsContext.data.form.getInputProps('name')}
+				onChange={(event) => {
+					stopDetailsContext.data.form.setFieldValue('name', event.currentTarget.value);
+					handleShortName(event.currentTarget.value);
+				}}
 			/>
 
 			<TextInput
@@ -59,12 +63,12 @@ export function Identification() {
 				disabled
 				{...stopDetailsContext.data.form.getInputProps('short_name')}
 			/>
-
+			{/*
 			<Tooltip label="Gerar Nome Curto" position="bottom">
 				<Button className={styles.button} onClick={() => handleShortName()}>
 					Gerar Nome Curto
 				</Button>
-			</Tooltip>
+			</Tooltip> */}
 		</div>
 	);
 }
