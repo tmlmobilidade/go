@@ -6,7 +6,7 @@ import { UsersListHeader } from '@/components/users/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
 import { User } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, Loader, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';
@@ -44,7 +44,7 @@ export function UsersList() {
 	}
 
 	if (usersListContext.flags.loading) {
-		return <div>Loading...</div>;
+		return <Loader />;
 	}
 
 	return (
