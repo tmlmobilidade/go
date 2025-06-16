@@ -1,5 +1,6 @@
 /* * */
 
+import { RoleListContextProvider } from '@/contexts/RoleList.context';
 import { AppWrapper, MeContextProvider } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -29,7 +30,9 @@ export default async function Layout({ children }: PropsWithChildren) {
 	return (
 		<MeContextProvider>
 			<AppWrapper>
-				{children}
+				<RoleListContextProvider>
+					{children}
+				</RoleListContextProvider>
 			</AppWrapper>
 		</MeContextProvider>
 	);

@@ -4,7 +4,6 @@
 
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
-import { IconArrowRight } from '@tabler/icons-react';
 import { Loader, Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

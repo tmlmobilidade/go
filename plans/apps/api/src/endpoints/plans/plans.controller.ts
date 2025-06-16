@@ -1,7 +1,7 @@
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { HttpStatus, mimeTypes } from '@tmlmobilidade/lib';
-import { CreateFileDto, CreatePlanDto, Plan, PlanSchema } from '@tmlmobilidade/types';
+import { CreateFileDto, CreatePlanDto, Permission, Plan, PlanPermission, PlanSchema } from '@tmlmobilidade/types';
 import { convertObject } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -112,7 +112,21 @@ export class PlansController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await plans.findMany({}, undefined, undefined, { created_at: -1 }));
+			const permissions = request.permissions as Permission<PlanPermission>;
+
+			if (permissions?.resource?.agency_ids) {
+				const filteredPlans = await plans.findMany(
+					{ 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } },
+					undefined,
+					undefined,
+					{ created_at: -1 },
+				);
+
+				return reply.send(filteredPlans);
+			}
+
+			// Send all plans
+			return reply.send(await plans.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply

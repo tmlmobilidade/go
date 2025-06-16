@@ -21,12 +21,22 @@ export enum UsersDetailMode {
 
 export const availablePermissions = Object.entries(Permissions).map(([scope, value]) => ({
 	children: Object.entries(value.actions).map(([action]) => ({
+		children: Object.keys(value.resources ?? {}).map(resource => ({
+			label: resource,
+			value: `${scope}-${action}-${resource}`,
+		})),
 		label: action,
 		value: `${scope}-${action}`,
 	})),
 	label: scope,
 	value: scope,
 }));
+
+const temp = Object.values(Permissions).map((value) => {
+	return value;
+});
+
+console.log(temp);
 
 interface UsersDetailContextState {
 	actions: {

@@ -1,4 +1,4 @@
-import { UsersList } from '@/components/users/UsersList';
+import { UsersList } from '@/components/users/list/UsersList';
 import { UsersListContextProvider } from '@/contexts/UsersList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 
