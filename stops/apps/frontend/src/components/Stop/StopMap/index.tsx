@@ -103,17 +103,15 @@ export function StopsListViewMap({ generic = false, isCreateAction = false }) {
 				// console.log('municipalityData', municipalityData);
 				// Skip if no geometry is set for this municipality
 				if (!municipalityData.geometry?.coordinates.length) continue;
-				console.log('HERE!');
 				// Check if this stop is inside this municipality boundary
 				const isStopInThisMunicipality = turf.booleanPointInPolygon([event.lngLat.lng, event.lngLat.lat], municipalityData.geometry);
 				// If it is, add this municipality id to the stop
 				if (isStopInThisMunicipality) {
-					console.log('FOUND!');
 					foundMunicipality = municipalityData;
 					break;
 				}
 			}
-			console.log('MUNI!', foundMunicipality);
+
 			setMunicipalityDataForThisStop(foundMunicipality);
 
 			if (foundMunicipality) {

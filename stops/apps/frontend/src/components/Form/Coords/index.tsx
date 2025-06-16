@@ -37,6 +37,7 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 							<Button
 								className={styles.button}
 								color="blue"
+								leftSection={<IconWorld size={16} />}
 								onClick={() => {
 									navigator.clipboard.writeText(latitude.toString())
 										.then(() => console.log('Copied to clipboard!'))
@@ -44,13 +45,13 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 									setCopiedLat(true);
 								}}
 							>
-								<IconWorld />
 								{copiedLat ? 'Latitude Copiada' : `Lat: ${latitude}`}
 							</Button>
 							{/* </div>
 							<div style={{ width: '50%' }}> */}
 							<Button
 								className={styles.button}
+								leftSection={<IconWorld size={16} />}
 								onClick={() => {
 									navigator.clipboard.writeText(longitude.toString())
 										.then(() => console.log('Copied to clipboard!'))
@@ -58,7 +59,6 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 									setCopiedLon(true);
 								}}
 							>
-								<IconWorld />
 								{copiedLon ? 'Longitude Copiada' : `Lon: ${longitude}`}
 							</Button>
 							{/* </div> */}
@@ -90,6 +90,7 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 							<Button
 								className={styles.button}
 								color="blue"
+								leftSection={<IconWorld size={16} />}
 								onClick={() => {
 									navigator.clipboard.writeText(latitude.toString())
 										.then(() => console.log('Copied to clipboard!'))
@@ -97,11 +98,11 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 									setCopiedLat(true);
 								}}
 							>
-								<IconWorld />
 								{copiedLat ? 'Latitude Copiada' : `Lat: ${latitude}`}
 							</Button>
 							<Button
 								className={styles.button}
+								leftSection={<IconWorld size={16} />}
 								onClick={() => {
 									navigator.clipboard.writeText(longitude.toString())
 										.then(() => console.log('Copied to clipboard!'))
@@ -109,7 +110,6 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 									setCopiedLon(true);
 								}}
 							>
-								<IconWorld />
 								{copiedLon ? 'Longitude Copiada' : `Lon: ${longitude}`}
 							</Button>
 						</div>

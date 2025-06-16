@@ -3,7 +3,7 @@
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Routes } from '@/lib/routes';
 import { Button } from '@mantine/core';
-import { IconMapPlus } from '@tabler/icons-react';
+import { IconCloudDown, IconMapPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -66,14 +66,16 @@ export function Buttons({ phase, setPhase }) {
 			{phase === Phase.CONFIRMATION
 			&& (
 				<Button
+					// leftSection
 					className={styles.button}
+					leftSection={<IconMapPlus size={16} />}
 					onClick={() => {
 						stopDetailsContext.actions.saveStop();
 						router.push(Routes.STOP_DETAIL('new'));
 						// router.push(Routes.STOP_LIST);
 					}}
 				>
-					<IconMapPlus />
+					{/* <IconMapPlus /> */}
 					Criar Paragem
 				</Button>
 			)}
