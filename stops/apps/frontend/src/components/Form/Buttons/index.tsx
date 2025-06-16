@@ -29,7 +29,7 @@ export function Buttons({ phase, setPhase }) {
 		<div className={styles.container}>
 			{phase === Phase.LOCATION
 			&& (
-				<Button className={styles.button} onClick={() => router.push(Routes.STOP_LIST)}>
+				<Button className={styles.button} fullWidth={true} onClick={() => router.push(Routes.STOP_LIST)}>
 					Cancelar
 				</Button>
 			)}

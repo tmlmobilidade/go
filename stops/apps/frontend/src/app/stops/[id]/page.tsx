@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 	return (
 		<StopsListContextProvider>
 			<StopsDetailContextProvider stopId={id}>
-				{id == 'new' ? <Form /> : <Stop paramId={id} />}
+				{id == 'new' ? <><Form /><Stop paramId={id} /></> : <Stop paramId={id} />}
 			</StopsDetailContextProvider>
 		</StopsListContextProvider>
 	);

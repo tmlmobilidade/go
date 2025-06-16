@@ -50,16 +50,20 @@ export function Form() {
 	//
 	// B. Render components
 	return (
-		<div>
-			<Modal fullScreen={true} onClose={() => router.push(Routes.STOP_LIST)} opened={opened} title="Nova Paragem">
-				{/* Modal content */}
+		<div className={styles.container}>
+			<Modal fullScreen={false} onClose={() => router.push(Routes.STOP_LIST)} opened={opened} size="lg" title="Nova Paragem">
 				<Pane>
-					<div className={styles.container}>
+					<div className={styles.section}>
+						{/* Modal content */}
+						{/* <Pane> */}
+						{/* <div className={styles.container}> */}
 						<Labels phase={phase} />
 						{phase === Phase.LOCATION && <Location municipality={municipality} />}
 						{phase === Phase.IDENTIFICATION && <Identification />}
 						{phase === Phase.CONFIRMATION && <Confirmation municipality={municipality} />}
 						<Buttons phase={phase} setPhase={setPhase} />
+						{/* </div> */}
+						{/* </Pane> */}
 					</div>
 				</Pane>
 			</Modal>

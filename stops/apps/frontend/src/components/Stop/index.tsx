@@ -39,12 +39,12 @@ export default function Stop({ paramId }: StopProps) {
 	const { actions, data, flags } = useStopsDetailContext();
 	//
 	// B. Render components
-
+	console.log('ParamId:', paramId);
 	return (
 		<ManualContextProvider>
 			<StopsListContextProvider>
 				{
-					flags.loading === false && (data?._id || paramId === 'new')
+					flags.loading === false && (data?._id || paramId !== 'new')
 						? (
 							<div style={{ height: '90vh' }}>
 								<Pane header={[<StopHeader generic={false} />]}>
@@ -67,7 +67,8 @@ export default function Stop({ paramId }: StopProps) {
 						) : (
 							<div style={{ height: '90vh' }}>
 								<Pane header={[<StopHeader generic={true} />]}>
-									{flags.loading === false ? <StopsListViewMap generic={true} /> : <div>Loading...</div>}
+									{flags.loading === false && paramId !== 'new' ? <StopsListViewMap generic={true} /> : <div>Loading...</div>}
+									{/* {flags.loading === false ? <div>Map...</div> : <div>Loading...</div>} */}
 									{/* <StopsListViewMap /> */}
 								</Pane>
 							</div>

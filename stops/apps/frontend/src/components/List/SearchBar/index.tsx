@@ -5,11 +5,9 @@ import { useSearchbarContext } from '@/contexts/Searchbar.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Routes } from '@/lib/routes';
-import { Anchor, Breadcrumbs, Text } from '@mantine/core';
-import { IconArrowsLeftRight, IconCloudDown, IconDots, IconFileArrowRight, IconMessageCircle, IconPhoto, IconPlus, IconSearch, IconSettings, IconTrash } from '@tabler/icons-react';
-import { Button, Menu, TextInput } from '@tmlmobilidade/ui';
+import { IconCloudDown, IconDots, IconFileArrowRight, IconPlus } from '@tabler/icons-react';
+import { Menu, TextInput } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -23,7 +21,6 @@ export function SearchBar() {
 
 	const stopsContext = useStopsContext();
 	const searchBarContext = useSearchbarContext();
-	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 	const linesContext = useLinesContext();
 	const stops = useStopsContext();
@@ -34,7 +31,6 @@ export function SearchBar() {
 	// B. Transform data
 
 	const handleNewStop = () => {
-		console.log('New Stop');
 		router.push(Routes.STOP_DETAIL('new'));
 	};
 
@@ -179,10 +175,9 @@ export function SearchBar() {
 
 			<Menu shadow="md" width={200}>
 				<Menu.Target>
-					{/* <div className={styles.icon} onClick={() => setIsOpen((isOpen: boolean) => !isOpen)}> */}
-					<IconDots />
-					{/* {isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>} */}
-					{/* </div> */}
+					<div className={styles.icon}>
+						<IconDots />
+					</div>
 				</Menu.Target>
 
 				<Menu.Dropdown>

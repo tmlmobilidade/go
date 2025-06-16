@@ -33,8 +33,10 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 					<div className={styles.section}>
 						<div className={styles.subSection}>#{municipality_id} {municipality}</div>
 						<div className={styles.subSection}>
+							{/* <div style={{ width: '50%' }}> */}
 							<Button
 								className={styles.button}
+								color="blue"
 								onClick={() => {
 									navigator.clipboard.writeText(latitude.toString())
 										.then(() => console.log('Copied to clipboard!'))
@@ -45,7 +47,8 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 								<IconWorld />
 								{copiedLat ? 'Latitude Copiada' : `Lat: ${latitude}`}
 							</Button>
-
+							{/* </div>
+							<div style={{ width: '50%' }}> */}
 							<Button
 								className={styles.button}
 								onClick={() => {
@@ -58,6 +61,7 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 								<IconWorld />
 								{copiedLon ? 'Longitude Copiada' : `Lon: ${longitude}`}
 							</Button>
+							{/* </div> */}
 						</div>
 						<div className={styles.subSection}>
 							<Tooltip label="Copiar Coordenadas" position="bottom">
@@ -85,6 +89,7 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 						<div className={styles.subSection}>
 							<Button
 								className={styles.button}
+								color="blue"
 								onClick={() => {
 									navigator.clipboard.writeText(latitude.toString())
 										.then(() => console.log('Copied to clipboard!'))
@@ -95,7 +100,6 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 								<IconWorld />
 								{copiedLat ? 'Latitude Copiada' : `Lat: ${latitude}`}
 							</Button>
-
 							<Button
 								className={styles.button}
 								onClick={() => {

@@ -264,10 +264,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const getImages = async () => {
-		if (!stopId || stopId === 'new') {
-			console.error('Invalid stopId provided');
-			return;
-		}
+		// if (!stopId || stopId === 'new') {
+		// 	console.error('Invalid stopId provided');
+		// 	return;
+		// }
 
 		try {
 			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_IMAGES(stopId)}`, {
@@ -302,10 +302,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const getFiles = async () => {
-		if (!stopId || stopId === 'new') {
-			console.error('Invalid stopId provided');
-			return;
-		}
+		// if (!stopId || stopId === 'new') {
+		// 	console.error('Invalid stopId provided');
+		// 	return;
+		// }
 
 		try {
 			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_FILES(stopId)}`, {

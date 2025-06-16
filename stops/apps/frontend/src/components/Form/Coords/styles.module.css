@@ -1,5 +1,6 @@
 .container {
     align-self: center;
+    width: 100%
 }
 
 .section {
@@ -11,7 +12,7 @@
 .subSection {
     display: flex;
     flex-direction: row;
-    /* gap: var(--size-spacing-md); */
+    gap: var(--size-spacing-md);
     justify-content: center;
 }
 
@@ -24,7 +25,8 @@
 }
 
 .button {
-    background-color: var(--color-status-active-primary);
+    width: 50%;
+    /* background-color: var(--color-status-active-primary);
     border-color: var(--color-status-active-primary);
-    box-shadow: none;
+    box-shadow: none; */
 }
