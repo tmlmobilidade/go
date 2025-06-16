@@ -5,9 +5,9 @@ import { useSearchbarContext } from '@/contexts/Searchbar.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Routes } from '@/lib/routes';
-import { Anchor, Breadcrumbs } from '@mantine/core';
-import { IconDots } from '@tabler/icons-react';
-import { TextInput } from '@tmlmobilidade/ui';
+import { Anchor, Breadcrumbs, Text } from '@mantine/core';
+import { IconArrowsLeftRight, IconCloudDown, IconDots, IconFileArrowRight, IconMessageCircle, IconPhoto, IconPlus, IconSearch, IconSettings, IconTrash } from '@tabler/icons-react';
+import { Button, Menu, TextInput } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -156,30 +156,11 @@ export function SearchBar() {
 		URL.revokeObjectURL(url); // Clean up
 	};
 
-	const syncStops = () => {
+	const syncDBs = () => {
 		stops.actions.handleDBSync();
 		stopsList.actions.handleDBSync();
-	};
-
-	const syncLines = () => {
 		lines.actions.handleDBSync();
 	};
-
-	const items = [
-		{ onClick: () => handleNewStop(), title: '+ Nova Paragem' },
-		{ onClick: () => downloadStopsJson(), title: 'Exportar stops.json' },
-		{ onClick: () => downloadStopsTxt(), title: 'Exportar stops.txt' },
-		{ onClick: () => downloadDeletedStopsJson(), title: 'Exportar deleted_stops.json' },
-		{ onClick: () => downloadDeletedStopsTxt(), title: 'Exportar deleted_stops.txt' },
-		{ onClick: () => downloadLinesJson(), title: 'Exportar Linhas por Paragem' },
-		{ onClick: () => downloadStopsEsri(), title: 'Exportar para ESRI' },
-		{ onClick: () => syncStops(), title: 'Sincronizar Paragens' },
-		{ onClick: () => syncLines(), title: 'Sincronizar Linhas' },
-	].map((item, index) => (
-		<Anchor key={index} onClick={item.onClick}>
-			{item.title}
-		</Anchor>
-	));
 
 	//
 	// C. Render components
@@ -195,10 +176,60 @@ export function SearchBar() {
 			/>
 
 			{/* Settings Button */}
-			<div className={styles.icon} onClick={() => setIsOpen((isOpen: boolean) => !isOpen)}>
-				<IconDots />
-				{isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>}
-			</div>
+
+			<Menu shadow="md" width={200}>
+				<Menu.Target>
+					{/* <div className={styles.icon} onClick={() => setIsOpen((isOpen: boolean) => !isOpen)}> */}
+					<IconDots />
+					{/* {isOpen && <Breadcrumbs className={styles.breadcrumbs}>{items}</Breadcrumbs>} */}
+					{/* </div> */}
+				</Menu.Target>
+
+				<Menu.Dropdown>
+					<Menu.Label>Paragens</Menu.Label>
+
+					<Menu.Item leftSection={<IconPlus size={14} />}>
+						<div onClick={() => handleNewStop()}>Nova Paragem</div>
+					</Menu.Item>
+
+					<Menu.Divider />
+
+					<Menu.Label>Exportações</Menu.Label>
+
+					<Menu.Item leftSection={<IconFileArrowRight size={14} />}>
+						<div onClick={() => downloadStopsJson()}>stops.json</div>
+					</Menu.Item>
+
+					<Menu.Item leftSection={<IconFileArrowRight size={14} />}>
+						<div onClick={() => downloadStopsTxt()}>stops.txt</div>
+					</Menu.Item>
+
+					<Menu.Item leftSection={<IconFileArrowRight size={14} />}>
+						<div onClick={() => downloadDeletedStopsJson()}>deleted_stops.json</div>
+					</Menu.Item>
+
+					<Menu.Item leftSection={<IconFileArrowRight size={14} />}>
+						<div onClick={() => downloadDeletedStopsTxt()}>deleted_stops.txt</div>
+					</Menu.Item>
+
+					<Menu.Item leftSection={<IconFileArrowRight size={14} />}>
+						<div onClick={() => downloadLinesJson()}>Linhas por Paragem</div>
+					</Menu.Item>
+
+					<Menu.Item leftSection={<IconFileArrowRight size={14} />}>
+						<div onClick={() => downloadStopsEsri()}>ESRI</div>
+					</Menu.Item>
+
+					<Menu.Divider />
+
+					<Menu.Label>Sincronizações</Menu.Label>
+
+					<Menu.Item leftSection={<IconCloudDown size={14} />}>
+						<div onClick={() => syncDBs()}>Bases de Dados</div>
+					</Menu.Item>
+
+				</Menu.Dropdown>
+			</Menu>
 		</div>
 	);
 }

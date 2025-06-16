@@ -54,11 +54,10 @@ export class StopsController {
 
 	static async deleteFile(request: FastifyRequest<{ Params: { file_id: string, id: string } }>, reply: FastifyReply) {
 		try {
-			console.log('===> request.params', request.params);
 			const { file_id, id } = request.params;
 
 			const stop = await stops.findById(id);
-			console.log('===> stop', stop);
+
 			if (!stop) {
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
 				return;
@@ -89,11 +88,10 @@ export class StopsController {
 
 	static async deleteImage(request: FastifyRequest<{ Params: { id: string, image_id: string } }>, reply: FastifyReply) {
 		try {
-			console.log('===> request.params', request.params);
 			const { id, image_id } = request.params;
 
 			const stop = await stops.findById(id);
-			console.log('===> stop', stop);
+
 			if (!stop) {
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
 				return;

@@ -125,9 +125,9 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.STOPS_API + Routes.STOP_DETAIL(stopId), swrFetcher);
 
 	// Unzip files if they are not already unzipped
-	unzipFile('./public/data/municipalities.zip', './public/data/');
-	unzipFile('./public/data/localities.zip', './public/data/');
-	unzipFile('./public/data/parishes.zip', './public/data/');
+	// unzipFile('./public/data/municipalities.zip', './public/data/');
+	// unzipFile('./public/data/localities.zip', './public/data/');
+	// unzipFile('./public/data/parishes.zip', './public/data/');
 	//
 	// B. Define form
 	const form = useForm<CreateStopDto>({

@@ -44,16 +44,19 @@ export function UploadFile({
 
 	const stopsDetailContext = useStopsDetailContext();
 	const [preview, setPreview] = useState<string[]>([]);
+	const [changed, setChanged] = useState(false);
 
 	useEffect(() => {
-		(stopsDetailContext.actions.getImages(stopsDetailContext.data._id) as unknown as Promise<string[]>)
-			.then((urls: string[]) => {
-				setPreview(urls);
-			})
-			.catch((err) => {
-				console.error('Error fetching or converting files:', err);
-			});
-	}, []);
+		setTimeout(() => {
+			(stopsDetailContext.actions.getFiles(stopsDetailContext.data._id) as unknown as Promise<string[]>)
+				.then((urls: string[]) => {
+					setPreview(urls);
+				})
+				.catch((err) => {
+					console.error('Error fetching or converting files:', err);
+				});
+		}, 1000);
+	}, [changed]);
 
 	//
 	// B. Transform Data
@@ -62,6 +65,7 @@ export function UploadFile({
 		// const regex = /(?<=\/)([^\/\?]*\.[^\/\?]*)(?=\?)/;
 		const regex = /(?<=\/)([^/?]*\.[^/?]*)(?=\?)/;
 		const match = url.match(regex);
+		// setListNames(prev => [...prev, match ? match[0] : '']);
 		return match ? match[0] : null;
 	};
 
@@ -86,6 +90,8 @@ export function UploadFile({
 
 		stopsDetailContext.actions.handleFileChange(file);
 		stopsDetailContext.actions.getFiles(stopsDetailContext.data._id);
+
+		setChanged(!changed);
 	};
 
 	const handleDelete = (index) => {
@@ -112,7 +118,7 @@ export function UploadFile({
 									variant="secondary"
 								>
 									<IconFile />
-									<div>{extractTextBetweenSlashAndQuestionMark(file_id)}</div>
+									<div onClick={() => alert(file_id)}>{extractTextBetweenSlashAndQuestionMark(file_id)}</div>
 								</ActionIcon>
 							</Tooltip>
 						</Link>
