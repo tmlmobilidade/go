@@ -38,13 +38,6 @@ export function AgencyDetailBasicInfo() {
 				</Grid>
 				<Grid columns="abc" gap="lg">
 					<TextInput
-						label="Código da agência"
-						maxLength={20}
-						placeholder="41"
-						withAsterisk={!CreateAgencySchema.shape.code.isOptional()}
-						{...agencyDetailContext.data.form.getInputProps('code')}
-					/>
-					<TextInput
 						label="Email da agência"
 						placeholder="email@example.com"
 						type="email"

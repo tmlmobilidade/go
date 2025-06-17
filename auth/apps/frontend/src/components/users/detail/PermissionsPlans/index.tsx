@@ -1,19 +1,14 @@
 'use client';
 
+import { AgencyPermissionMultiselect } from '@/components/common/AgenciesMultiselect';
 import CheckCard from '@/components/common/CheckCard';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { Permissions } from '@tmlmobilidade/lib';
 import { PlanPermission } from '@tmlmobilidade/types';
-import { Collapsible, Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 export function PermissionsPlans() {
 	const { actions, data } = useUsersDetailContext();
-
-	const agencyOptions = [
-		{ label: 'Todas as agências', value: 'all' },
-		{ label: 'Agência 1', value: '1' },
-		{ label: 'Agência 2', value: '2' },
-	];
 
 	// Helper to get permission and resource
 	const getPermissionData = (action: keyof typeof Permissions.plans.actions) => {
@@ -53,8 +48,7 @@ export function PermissionsPlans() {
 								onChange={() =>
 									actions.handlePermissionToggle(Permissions.plans.scope, key)}
 							>
-								<MultiSelect
-									data={agencyOptions}
+								<AgencyPermissionMultiselect
 									description="Agências ao qual o utilizador tem acesso a para esta ação"
 									disabled={!hasPermission}
 									label="Agências"

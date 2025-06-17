@@ -43,7 +43,7 @@ interface AgencyDetailContextState {
 }
 
 const emptyAgency: CreateAgencyDto = {
-	code: '',
+	_id: '',
 	email: '',
 	fare_url: '',
 	is_locked: false,
