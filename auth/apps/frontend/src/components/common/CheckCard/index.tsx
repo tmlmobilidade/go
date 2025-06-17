@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox, Description, Label } from '@tmlmobilidade/ui';
+import { Checkbox, Description, Label, Section } from '@tmlmobilidade/ui';
 import React, { useCallback } from 'react';
 
 import styles from './styles.module.css';
@@ -54,34 +54,35 @@ export default function CheckCard({
 					}
 			}
 		>
-			<div className={styles.checkbox}>
-				<Checkbox
-					checked={checked}
-					disabled={disabled}
-					onChange={() => handleChange(!checked)}
-				/>
-			</div>
-
-			<div className={styles.content}>
-				<Label>{label}</Label>
-				<Description>{description}</Description>
-
-				<div
-					aria-disabled={!checked || disabled}
-					className={styles.children}
-					onClick={(e) => {
-						if (disabled || !checked) return;
-						e.stopPropagation();
-					}}
-					onKeyDown={(e) => {
-						if (disabled || !checked) return;
-						if (e.key === ' ' || e.key === 'Enter') {
-							e.stopPropagation();
-						}
-					}}
-				>
-					{children}
+			<Section flexDirection="row" gap="sm" padding="none">
+				<div className={styles.checkbox}>
+					<Checkbox
+						checked={checked}
+						disabled={disabled}
+						onChange={() => handleChange(!checked)}
+					/>
 				</div>
+
+				<div className={styles.content}>
+					<Label>{label}</Label>
+					<Description>{description}</Description>
+				</div>
+			</Section>
+			<div
+				aria-disabled={!checked || disabled}
+				className={styles.children}
+				onClick={(e) => {
+					if (disabled || !checked) return;
+					e.stopPropagation();
+				}}
+				onKeyDown={(e) => {
+					if (disabled || !checked) return;
+					if (e.key === ' ' || e.key === 'Enter') {
+						e.stopPropagation();
+					}
+				}}
+			>
+				{children}
 			</div>
 		</div>
 	);
