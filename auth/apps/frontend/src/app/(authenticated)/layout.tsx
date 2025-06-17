@@ -1,5 +1,6 @@
 /* * */
 
+import { AgencyListContextProvider } from '@/contexts/AgencyList.context';
 import { RoleListContextProvider } from '@/contexts/RoleList.context';
 import { AppWrapper, MeContextProvider } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
@@ -31,7 +32,9 @@ export default async function Layout({ children }: PropsWithChildren) {
 		<MeContextProvider>
 			<AppWrapper>
 				<RoleListContextProvider>
-					{children}
+					<AgencyListContextProvider>
+						{children}
+					</AgencyListContextProvider>
 				</RoleListContextProvider>
 			</AppWrapper>
 		</MeContextProvider>

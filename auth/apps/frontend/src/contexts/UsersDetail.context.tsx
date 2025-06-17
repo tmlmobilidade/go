@@ -114,7 +114,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	const handleSaveUser = async () => {
 		setIsSaving(true);
 		const method = user_id === 'new' ? 'POST' : 'PUT';
-		const url = user_id === 'new' ? Routes.AUTH_API + Routes.USERS : Routes.AUTH_API + Routes.USER_DETAIL(user_id);
+		const url = user_id === 'new' ? Routes.API(Routes.USERS) : Routes.API(Routes.USER_DETAIL(user_id));
 		const body = user_id === 'new' ? form.values : convertObject(form.values, UpdateUserSchema);
 		const response = await fetchData<User>(url, method, body);
 

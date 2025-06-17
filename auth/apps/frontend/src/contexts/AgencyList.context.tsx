@@ -16,7 +16,7 @@ interface AgencyListContextState {
 		raw: Agency[]
 	}
 	filters: {
-		searchQuery: string
+		search_query: string
 	}
 	flags: {
 		error: Error | undefined
@@ -39,13 +39,13 @@ export const AgencyListContextProvider = ({ children }: { children: React.ReactN
 
 	//
 	// A. Setup variables
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(Routes.AUTH_API + Routes.ROLES, swrFetcher);
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(Routes.API(Routes.AGENCY_LIST), swrFetcher);
 	const rawAgencies = useMemo(() => allAgenciesData || [], [allAgenciesData]);
 
 	//
 	// B. Transform Data
 	const { filteredData: searchFilteredAgencies, searchQuery, setSearchQuery } = useSearchQuery(rawAgencies, {
-		accessors: ['first_name', 'last_name', 'email'],
+		accessors: ['name'],
 	});
 
 	const filteredAgencies = useMemo(() => {
@@ -66,7 +66,7 @@ export const AgencyListContextProvider = ({ children }: { children: React.ReactN
 			raw: rawAgencies,
 		},
 		filters: {
-			searchQuery: searchQuery ?? '',
+			search_query: searchQuery ?? '',
 		},
 		flags: {
 			error: allAgenciesError ?? undefined,
