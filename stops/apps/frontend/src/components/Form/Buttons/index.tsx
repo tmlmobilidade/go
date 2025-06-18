@@ -2,8 +2,8 @@
 
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Routes } from '@/lib/routes';
-import { Button } from '@mantine/core';
-import { IconCloudDown, IconMapPlus } from '@tabler/icons-react';
+import { IconMapPlus } from '@tabler/icons-react';
+import { Button } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -29,55 +29,40 @@ export function Buttons({ phase, setPhase }) {
 		<div className={styles.container}>
 			{phase === Phase.LOCATION
 			&& (
-				<Button className={styles.button} fullWidth={true} onClick={() => router.push(Routes.STOP_LIST)}>
-					Cancelar
-				</Button>
+				<Button className={styles.button} fullWidth={true} label="Cancelar" onClick={() => router.push(Routes.STOP_LIST)} />
 			)}
 
 			{phase === Phase.IDENTIFICATION
 			&& (
-				<Button className={styles.button} onClick={() => setPhase(Phase.LOCATION)}>
-					Voltar
-				</Button>
+				<Button className={styles.button} label="Voltar" onClick={() => setPhase(Phase.LOCATION)} />
 			)}
 
 			{phase === Phase.CONFIRMATION
 			&& (
-				<Button className={styles.button} onClick={() => setPhase(Phase.IDENTIFICATION)}>
-					Voltar
-				</Button>
+				<Button className={styles.button} label="Voltar" onClick={() => setPhase(Phase.IDENTIFICATION)} />
 			)}
 
 			{phase === Phase.LOCATION
 			&& (
-				<Button className={styles.button} disabled={stopDetailsContext.data.form.getValues().latitude === 0 || stopDetailsContext.data.form.getValues().longitude === 0 || stopDetailsContext.data.form.getValues().municipality_id === null} onClick={() => setPhase(Phase.IDENTIFICATION)}>
-					Avançar
-				</Button>
+				<Button className={styles.button} disabled={stopDetailsContext.data.form.getValues().latitude === 0 || stopDetailsContext.data.form.getValues().longitude === 0 || stopDetailsContext.data.form.getValues().municipality_id === null} label="Avançar" onClick={() => setPhase(Phase.IDENTIFICATION)} />
 			)}
 
 			{phase === Phase.IDENTIFICATION
 			&& (
-				<Button className={styles.button} disabled={stopDetailsContext.data.form.getValues()._id === 'temp' || stopDetailsContext.data.form.getValues().name === 'temp' || stopDetailsContext.data.form.getValues().short_name === 'temp'} onClick={() => setPhase(Phase.CONFIRMATION)}>
-					{/* <Button className={styles.button} onClick={() => setPhase(Phase.CONFIRMATION)} disabled={data.form.getValues()._id === "temp" || data.form.getValues().name === 'temp' || data.form.getValues().short_name === "temp" || data.form.getValues().locality_id === "temp"}> */}
-					Avançar
-				</Button>
+				<Button className={styles.button} disabled={stopDetailsContext.data.form.getValues()._id === 'temp' || stopDetailsContext.data.form.getValues().name === 'temp' || stopDetailsContext.data.form.getValues().short_name === 'temp'} label="Avançar" onClick={() => setPhase(Phase.CONFIRMATION)} />
 			)}
 
 			{phase === Phase.CONFIRMATION
 			&& (
 				<Button
-					// leftSection
 					className={styles.button}
+					label="Criar Paragem"
 					leftSection={<IconMapPlus size={16} />}
 					onClick={() => {
 						stopDetailsContext.actions.saveStop();
 						router.push(Routes.STOP_DETAIL('new'));
-						// router.push(Routes.STOP_LIST);
 					}}
-				>
-					{/* <IconMapPlus /> */}
-					Criar Paragem
-				</Button>
+				/>
 			)}
 		</div>
 	);
