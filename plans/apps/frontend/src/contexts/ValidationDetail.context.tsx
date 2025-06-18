@@ -4,9 +4,9 @@
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { Routes } from '@/lib/routes';
-import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
-import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, File as TmlFile, Validation, ValidationSchema } from '@tmlmobilidade/types';
-import { closeModal, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { AVAILABLE_AGENCIES, Permissions } from '@tmlmobilidade/lib';
+import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, File as TmlFile, Validation, ValidationPermission, ValidationSchema } from '@tmlmobilidade/types';
+import { closeModal, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -63,10 +63,12 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	// A. State Management
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
+	const me = useMeContext();
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 	const [validationFile, setValidationFile] = useState<File | null>(null);
+	const [validationError, setValidationError] = useState<Error | null>(null);
 
 	const { data: validation, error, isLoading } = useSWR<Validation>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)), swrFetcher);
 	const { data: file, error: fileError, isLoading: fileLoading } = useSWR<TmlFile>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)) + '/file', swrFetcher);
@@ -140,6 +142,24 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 				gtfs_agency: agency,
 				gtfs_feed_info: feedInfo,
 			});
+
+			// Check if the agency is in the permissions
+			const hasPermission = me.actions.hasPermissionResource<ValidationPermission>({
+				action: Permissions.validations.actions.create,
+				resource_key: 'agency_ids',
+				scope: Permissions.validations.scope,
+				value: agency.agency_id,
+			});
+
+			if (!hasPermission) {
+				setCanSave(false);
+				setValidationError({
+					message: 'Não tem permissão para criar validações para esta agência',
+					name: 'ValidationError',
+				});
+				console.log('validationError', validationError);
+				return;
+			}
 
 			setCanSave(true);
 		};
@@ -221,14 +241,14 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 			},
 			flags: {
 				canSave,
-				error: fileError || error,
+				error: fileError || error || validationError,
 				isReadOnly: false,
 				isSaving,
 				loading: isLoading || fileLoading,
 				mode: validationId === ValidationDetailMode.NEW ? ValidationDetailMode.NEW : ValidationDetailMode.EDIT,
 			},
 		};
-	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave, file, fileError, error, validation]);
+	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave, file, fileError, error, validation, validationError]);
 
 	// F. Render Components
 	return (
