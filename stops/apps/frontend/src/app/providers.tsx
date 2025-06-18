@@ -1,6 +1,7 @@
 'use client';
 
 import { LinesContextProvider } from '@/contexts/Lines.context';
+import { LocationsContextProvider } from '@/contexts/Locations.context';
 import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { StopsContextProvider } from '@/contexts/Stops.context';
 import { MapProvider } from '@vis.gl/react-maplibre';
@@ -33,13 +34,15 @@ export function Providers({ children }: PropsWithChildren) {
 	return (
 		<SWRConfig value={swrSettings}>
 			<StopsContextProvider>
-				<LinesContextProvider>
-					<MapOptionsContextProvider>
-						<MapProvider>
-							{children}
-						</MapProvider>
-					</MapOptionsContextProvider>
-				</LinesContextProvider>
+				<LocationsContextProvider>
+					<LinesContextProvider>
+						<MapOptionsContextProvider>
+							<MapProvider>
+								{children}
+							</MapProvider>
+						</MapOptionsContextProvider>
+					</LinesContextProvider>
+				</LocationsContextProvider>
 			</StopsContextProvider>
 		</SWRConfig>
 	);

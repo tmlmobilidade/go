@@ -1,6 +1,7 @@
 'use client';
 
 import { useLinesContext } from '@/contexts/Lines.context';
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { useSearchbarContext } from '@/contexts/Searchbar.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
@@ -25,6 +26,7 @@ export function SearchBar() {
 	const stops = useStopsContext();
 	const stopsList = useStopsListContext();
 	const lines = useLinesContext();
+	const locations = useLocationsContext();
 
 	//
 	// B. Transform data
@@ -154,6 +156,7 @@ export function SearchBar() {
 		stops.actions.handleDBSync();
 		stopsList.actions.handleDBSync();
 		lines.actions.handleDBSync();
+		locations.actions.handleDBSync();
 	};
 
 	//
