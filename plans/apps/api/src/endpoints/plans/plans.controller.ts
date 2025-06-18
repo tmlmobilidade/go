@@ -21,7 +21,7 @@ export class PlansController {
 			const validation = await validations.findById(validation_id);
 
 			if (!validation) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Validation not found' });
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Plan not found' });
 				return;
 			}
 
@@ -114,9 +114,14 @@ export class PlansController {
 		try {
 			const permissions = request.permissions as Permission<PlanPermission>;
 
-			if (permissions?.resource?.agency_ids) {
-				const filteredPlans = await plans.findMany(
-					{ 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } },
+			// Filter validations by all keys
+			if (permissions?.resource) {
+				const filteredPlans = await validations.findMany(
+					{
+						...(permissions.resource.agency_ids && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
+						...(permissions.resource.end_date && { 'gtfs_feed_info.feed_end_date': { $lte: permissions.resource.end_date } }),
+						...(permissions.resource.start_date && { 'gtfs_feed_info.feed_start_date': { $gte: permissions.resource.start_date } }),
+					},
 					undefined,
 					undefined,
 					{ created_at: -1 },
@@ -125,8 +130,8 @@ export class PlansController {
 				return reply.send(filteredPlans);
 			}
 
-			// Send all plans
-			return reply.send(await plans.findMany({}, undefined, undefined, { created_at: -1 }));
+			// Send all validations
+			return reply.send(await validations.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply

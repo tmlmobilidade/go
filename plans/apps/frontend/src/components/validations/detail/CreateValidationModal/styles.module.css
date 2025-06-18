@@ -1,29 +1,9 @@
-
-/* FILE INPUT */
-
-.fileInputWrapper {
-	width: 100%;
-}
-
-.fileIcon {
+.errorContainer {
 	display: flex;
 	align-items: center;
-	gap: var(--size-spacing-xs);
 	justify-content: center;
-	flex-direction: column;
-	position: relative;
-}
-
-.deleteContainer {
-	position: absolute;
-	top: -20px;
-	right: -20px;
-}
-
-/* DATE PICKER */
-
-.datePickerGrid {
-	* {
-		white-space: nowrap;
-	}
+	gap: var(--size-spacing-md);
+	background-color: var(--color-status-danger-primary);
+	padding: var(--size-spacing-md);
+	width: 100%;
 }

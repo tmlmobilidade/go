@@ -1,8 +1,10 @@
 'use client';
 
+import { AgencyPermissionMultiselect } from '@/components/common/AgenciesMultiselect';
 import CheckCard from '@/components/common/CheckCard';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { Permissions } from '@tmlmobilidade/lib';
+import { ValidationPermission } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 export function PermissionsValidations() {
@@ -15,6 +17,7 @@ export function PermissionsValidations() {
 		);
 		return {
 			hasPermission: !!permission,
+			resource: permission?.resource as undefined | ValidationPermission,
 		};
 	};
 
@@ -34,7 +37,7 @@ export function PermissionsValidations() {
 			<Section gap="md">
 				<Grid columns="ab" gap="sm">
 					{validationActions.map(({ description, key, label }) => {
-						const { hasPermission } = getPermissionData(key as keyof typeof Permissions.validations.actions);
+						const { hasPermission, resource } = getPermissionData(key as keyof typeof Permissions.validations.actions);
 
 						return (
 							<CheckCard
@@ -44,7 +47,15 @@ export function PermissionsValidations() {
 								label={label}
 								onChange={() =>
 									actions.handlePermissionToggle(Permissions.validations.scope, key)}
-							/>
+							>
+								<AgencyPermissionMultiselect
+									description="Agências ao qual o utilizador tem acesso a para esta ação"
+									disabled={!hasPermission}
+									label="Agências"
+									onChange={value => actions.handlePermissionResourceToggle(Permissions.validations.scope, key, { agency_ids: value || [] })}
+									selected={resource?.agency_ids || []}
+								/>
+							</CheckCard>
 						);
 					})}
 				</Grid>

@@ -1,7 +1,10 @@
 import { UploadFile } from '@/components/common/UploadFile';
 import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
-import { Button, closeModal, Description, Divider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { Button, closeModal, Description, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -10,9 +13,11 @@ export const CREATE_VALIDATION_MODAL_ID = 'create-validation-modal';
 export const OpenCreateValidationModal = () => {
 	openModal({
 		children: (
-			<ValidationDetailContextProvider validationId={ValidationDetailMode.NEW}>
-				<CreateValidationModal />
-			</ValidationDetailContextProvider>
+			<MeContextProvider>
+				<ValidationDetailContextProvider validationId={ValidationDetailMode.NEW}>
+					<CreateValidationModal />
+				</ValidationDetailContextProvider>
+			</MeContextProvider>
 		),
 		modalId: CREATE_VALIDATION_MODAL_ID,
 		size: 'auto',
@@ -120,8 +125,21 @@ export default function CreateValidationModal() {
 		</Grid>
 	);
 
+	const renderError = () => {
+		if (validationDetailContext.flags.error && validationDetailContext.flags.error.name === 'ValidationError') {
+			return (
+				<div className={styles.errorContainer}>
+					<IconAlertCircle size={20} />
+					<Text size="base">{validationDetailContext.flags.error.message}</Text>
+				</div>
+			);
+		}
+		return null;
+	};
+
 	return (
 		<Section gap="lg">
+			{renderError()}
 			{renderModalHeader()}
 			{renderFeedInfoSection()}
 			{renderFileUploadSection()}

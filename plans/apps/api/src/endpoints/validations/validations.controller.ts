@@ -1,8 +1,8 @@
 import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
-import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
+import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Validation } from '@tmlmobilidade/types';
+import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Permission, Validation, ValidationPermission } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -121,7 +121,28 @@ export class ValidationsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await validations.findMany({}, undefined, undefined, { created_at: -1 }));
+			const permissions = request.permissions as Permission<ValidationPermission>;
+
+			// Filter validations by all keys
+			if (permissions?.resource) {
+				const filters = {
+					...(permissions.resource.agency_ids && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
+				};
+
+				console.log(filters);
+
+				const filteredValidations = await validations.findMany(
+					filters,
+					undefined,
+					undefined,
+					{ created_at: -1 },
+				);
+
+				return reply.send(filteredValidations);
+			}
+
+			// Send all validations
+			return reply.send(await validations.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
