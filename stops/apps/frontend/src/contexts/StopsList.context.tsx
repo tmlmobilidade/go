@@ -73,7 +73,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> = getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>;
 		allStopsData.map((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
-			// console.log('stopFC', stopFC);
 			if (stopFC) collection.features.push(stopFC);
 		});
 		// Set state value
@@ -88,7 +87,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			handleDBSync,
 		},
 		data: {
-			// filtered: filteredAlerts || [],
 			filtered_fc: geoStops || (getBaseGeoJsonFeatureCollection() as GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>),
 			raw: rawStops || [],
 		},

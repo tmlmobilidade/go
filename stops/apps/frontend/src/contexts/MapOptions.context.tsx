@@ -1,11 +1,8 @@
 'use client';
 
-// import { MapStyle } from '@/components/map/MapView';
-import { MapRef } from '@vis.gl/react-maplibre';
-/* * */
-
 import { MapStyle } from '@/components/Stop/StopMap/map/MapView';
 import * as turf from '@turf/turf';
+import { MapRef } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';
 import { createContext, useContext, useEffect, useState } from 'react';
 

@@ -3,7 +3,7 @@
 // Commit: Samuel Santos
 import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
-import { unzipFile } from '@/lib/utils';
+// import { unzipFile } from '@/lib/utils';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, multipartFetch } from '@tmlmobilidade/utils';
@@ -150,15 +150,9 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	// Update form
 	useEffect(() => {
-		// console.log('-> UseEffect 2');
 		if (!stop) return;
 
 		setLoading(true);
-
-		// if (!stop.reference_type) {
-		// 	stop.reference_type = Object.values(referenceTypeSchema.Enum)[0];
-		// 	stop.references = [];
-		// }
 
 		form.reset();
 		form.setValues(stop);
@@ -194,19 +188,12 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		setIsSaving(true);
 
 		// Handle Save Stop
-		// const active_period_end_date = form.getValues().active_period_end_date ?? null;
-		// const publish_end_date = form.getValues().publish_end_date ?? null;
-
-		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
-		// const saveStop: CreateStopDto = { ...form.values, active_period_end_date, publish_end_date };
-
 		const saveStop: CreateStopDto = { ...form.values };
 
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.STOPS_API + Routes.STOP_LIST : Routes.STOPS_API + Routes.STOP_DETAIL(stopId);
 		let body = stopId === 'new' ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
-		// body = { ...body, active_period_end_date, publish_end_date };
 		body = { ...body };
 
 		const response = await fetchData<unknown>(url, method, body);
@@ -264,11 +251,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const getImages = async () => {
-		// if (!stopId || stopId === 'new') {
-		// 	console.error('Invalid stopId provided');
-		// 	return;
-		// }
-
 		try {
 			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_IMAGES(stopId)}`, {
 				method: 'GET',
@@ -302,11 +284,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const getFiles = async () => {
-		// if (!stopId || stopId === 'new') {
-		// 	console.error('Invalid stopId provided');
-		// 	return;
-		// }
-
 		try {
 			const response = await fetch(`${Routes.STOPS_API}${Routes.STOP_FILES(stopId)}`, {
 				method: 'GET',
@@ -420,12 +397,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			return;
 		}
 
-		// const { data: { insertedId } } = response.data as { data: { insertedId: string } };
-
-		// if (insertedId) {
-		// 	router.push(Routes.STOP_IMAGE(insertedId));
-		// }
-
 		useToast.success({
 			message: 'Imagem carregada com sucesso',
 			title: 'Sucesso',
@@ -455,12 +426,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			return;
 		}
 
-		// const { data: { insertedId } } = response.data as { data: { insertedId: string } };
-
-		// if (insertedId) {
-		// 	router.push(Routes.STOP_IMAGE(insertedId));
-		// }
-
 		useToast.success({
 			message: 'Ficheiro carregado com sucesso',
 			title: 'Sucesso',
@@ -470,13 +435,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	};
 
 	const handleConnectionsChange = (connections: 'airport' | 'bike_parking' | 'bike_sharing' | 'boat' | 'car_parking' | 'ferry' | 'light_rail' | 'subway' | 'train') => {
-		// console.log('-> handleConnectionsChange');
 		const newConnections = form.values.connections.includes(connections) ? form.values.connections.filter(c => c !== connections) : [...form.values.connections, connections];
 		form.setFieldValue('connections', newConnections);
 	};
 
 	const handleFacilitiesChange = (facilities: 'fire_station' | 'health_clinic' | 'historic_building' | 'hospital' | 'pip' | 'police_station' | 'school' | 'shopping' | 'transit_office' | 'university') => {
-		// console.log('-> handleFacilitiesChange');
 		const newFacilities = form.values.facilities.includes(facilities) ? form.values.facilities.filter(c => c !== facilities) : [...form.values.facilities, facilities];
 		form.setFieldValue('facilities', newFacilities);
 	};
@@ -500,7 +463,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const contextValue: StopsDetailContextState = useMemo(() => {
 		return {
 			actions: {
-				// addReference,
 				deleteFile,
 				deleteImage,
 				deleteStop,
