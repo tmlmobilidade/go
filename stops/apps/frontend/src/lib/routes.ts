@@ -14,6 +14,7 @@ export const ApiRoutes = Object.freeze({
 	// Common
 	AUTH_API: (process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt') + '/api',
 	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
+	LOCATIONS_API: process.env.NEXT_PUBLIC_LOCATIONS_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
 	STOPS_API: '/api',
 
 	// Page routes
