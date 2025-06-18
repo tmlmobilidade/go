@@ -1,6 +1,6 @@
 import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
-import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
+import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Permission, Validation, ValidationPermission } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';

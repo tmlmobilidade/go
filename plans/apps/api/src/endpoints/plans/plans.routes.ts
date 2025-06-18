@@ -3,7 +3,7 @@
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import FastifyService from '@/services/fastify.service.js';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Plan, PlanPermission } from '@tmlmobilidade/types';
+import { PlanPermission } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
 import { PlansController } from './plans.controller.js';
