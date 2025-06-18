@@ -1,11 +1,11 @@
 'use client';
 
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
-// import { useManualContext } from '@/contexts/Manual.context';
-// import { useDisclosure } from '@mantine/hooks';
+import { IconDeviceFloppy, IconTrash, IconWorldUpload } from '@tabler/icons-react';
+import { ActionIcon, Tooltip } from '@tmlmobilidade/ui';
+import Link from 'next/link';
+import { redirect, RedirectType } from 'next/navigation';
 
-import { Left } from './Left';
-import { Right } from './Right';
 import styles from './styles.module.css';
 
 /* * */
@@ -15,27 +15,52 @@ export function SpecificHeader() {
 
 	//
 	// A. Setup variables
-
-	// Contexts
-	// const { isManual } = useManualContext();
-
-	// Hooks
-	// const [opened, { close, open }] = useDisclosure(false);
+	const stopsDetailContext = useStopsDetailContext();
 
 	//
 	// B. Render components
-
 	return (
 		<div className={styles.header}>
-			<Left />
+			<div className={styles.section}>
+				<h3>{stopsDetailContext.data.form.getValues().name || <i>Paragem sem Título</i>}</h3>
+			</div>
 
-			<Right />
+			<div className={styles.section}>
+				{/* Stop Button */}
+				<Link href={`https://www.carrismetropolitana.pt/stops/${stopsDetailContext.data._id}`} target="_blank">
+					<Tooltip label="Ver esta paragem no Site" position="bottom">
+						<ActionIcon
+							className={styles.iconBlue}
+							variant="secondary"
+						>
+							<IconWorldUpload />
+						</ActionIcon>
+					</Tooltip>
+				</Link>
 
-			{/* <PatternsModal onClose={close} opened={opened} title="Patterns associados a esta paragem">
-				<List>
-					{stop?.pattern_ids?.map(id => <Item key={id} id={id} />)}
-				</List>
-			</PatternsModal> */}
+				{/* Save Button */}
+				<Tooltip label="Salvar Paragem" position="bottom">
+					<div
+						className={styles.iconBlue}
+						onClick={() => stopsDetailContext.actions.saveStop()}
+					>
+						<IconDeviceFloppy />
+					</div>
+				</Tooltip>
+
+				{/* Delete Button */}
+				<Tooltip label="Apagar Paragem" position="bottom">
+					<div
+						className={styles.iconBlue}
+						onClick={() => {
+							stopsDetailContext.actions.deleteStop();
+							redirect('/stops', RedirectType.replace);
+						}}
+					>
+						<IconTrash />
+					</div>
+				</Tooltip>
+			</div>
 		</div>
 	);
 }

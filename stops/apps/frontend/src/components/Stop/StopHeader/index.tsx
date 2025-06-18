@@ -10,7 +10,6 @@ export function StopHeader({ generic }) {
 
 	//
 	// A. Render components
-
 	return (
 		<>
 			{

@@ -28,25 +28,6 @@ export function Left() {
 
 	return (
 		<div className={styles.section}>
-			{/* Manual -> Save Button */}
-			{/* Automatic -> Close Button */}
-			{/* {isManual
-				? (
-					<Tooltip label="Guardar Alterações" position="bottom">
-						<div className={styles.iconGreen}>
-							<IconDeviceFloppy />
-						</div>
-					</Tooltip>
-				)
-				: (
-					<Tooltip label="Fechar" position="bottom">
-						<div className={styles.icon}>
-							<IconX />
-						</div>
-					</Tooltip>
-				)} */}
-
-			{/* Label */}
 			<h3>{stopsDetailContext.data.form.getValues().name || <i>Paragem sem Título</i>}</h3>
 		</div>
 	);

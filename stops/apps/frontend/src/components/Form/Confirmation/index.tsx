@@ -8,6 +8,8 @@ import styles from './styles.module.css';
 export function Confirmation({ municipality }) {
 	//
 
+	//
+	// A. Setup Variables
 	const stopDetailsContext = useStopsDetailContext();
 
 	//

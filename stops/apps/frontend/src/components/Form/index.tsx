@@ -1,6 +1,5 @@
 'use client';
 
-import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Routes } from '@/lib/routes';
 import { Modal } from '@mantine/core';
@@ -26,16 +25,12 @@ export function Form() {
 
 	//
 	// A. Setup Variables
-	// const [opened, { _open, _close }] = useDisclosure(true);
 	const [opened] = useDisclosure(true);
-	const { actions: { getStopById } } = useStopsContext();
 	const router = useRouter();
 	const [municipality, setMunicipality] = useState(null);
 
 	const [phase, setPhase] = useState<Phase>(Phase.LOCATION);
-	const { actions, data } = useStopsDetailContext();
-	// console.log('lat', data.form.getValues().latitude);
-	// console.log('lon', data.form.getValues().longitude);
+	const { data } = useStopsDetailContext();
 
 	useEffect(() => {
 		fetch('/data/municipalities.json').then(res => res.json()).then((municipalities) => {
@@ -54,16 +49,11 @@ export function Form() {
 			<Modal fullScreen={false} onClose={() => router.push(Routes.STOP_LIST)} opened={opened} size="lg" title="Nova Paragem">
 				<Pane>
 					<div className={styles.section}>
-						{/* Modal content */}
-						{/* <Pane> */}
-						{/* <div className={styles.container}> */}
 						<Labels phase={phase} />
 						{phase === Phase.LOCATION && <Location municipality={municipality} />}
 						{phase === Phase.IDENTIFICATION && <Identification />}
 						{phase === Phase.CONFIRMATION && <Confirmation municipality={municipality} />}
 						<Buttons phase={phase} setPhase={setPhase} />
-						{/* </div> */}
-						{/* </Pane> */}
 					</div>
 				</Pane>
 			</Modal>

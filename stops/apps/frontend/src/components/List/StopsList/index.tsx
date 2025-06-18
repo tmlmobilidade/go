@@ -10,14 +10,17 @@ import styles from './styles.module.css';
 
 export function StopsList() {
 	//
-	const stopsContext = useStopsContext();
-	const searchBarContext = useSearchbarContext();
+
 	//
 	// A. Setup variables
+	const stopsContext = useStopsContext();
+	const searchBarContext = useSearchbarContext();
+
+	//
+	// B. Transform Data
 	const filteredStops = stopsContext.data.stops.filter(stop => (searchBarContext.queryString == null || stop.name.includes(searchBarContext.queryString)) && stop.is_archived === false);
 	//
-	// B. Render components
-
+	// C. Render components
 	return (
 		<div className={styles.container}>
 			{

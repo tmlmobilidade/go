@@ -9,11 +9,12 @@ import { Dates } from '@tmlmobilidade/utils';
 export function StopPublicInformation() {
 	//
 
+	//
+	// A. Setup variables
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
-	// A. Render components
-
+	// B. Render components
 	return (
 		<Collapsible
 			description="Informações relacionadas com os suportes de informação ao público."

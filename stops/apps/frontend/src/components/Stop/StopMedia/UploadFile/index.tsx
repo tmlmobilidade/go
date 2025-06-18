@@ -1,7 +1,6 @@
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
-import { IconFile, IconWorldUpload } from '@tabler/icons-react';
-import { ActionIcon, DeleteActionIcon, FileButton, Grid, Label, Tooltip, useToast } from '@tmlmobilidade/ui';
-import NextImage from 'next/image';
+import { IconFile } from '@tabler/icons-react';
+import { ActionIcon, DeleteActionIcon, FileButton, Label, Tooltip, useToast } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
@@ -65,7 +64,6 @@ export function UploadFile({
 		// const regex = /(?<=\/)([^\/\?]*\.[^\/\?]*)(?=\?)/;
 		const regex = /(?<=\/)([^/?]*\.[^/?]*)(?=\?)/;
 		const match = url.match(regex);
-		// setListNames(prev => [...prev, match ? match[0] : '']);
 		return match ? match[0] : null;
 	};
 
@@ -110,7 +108,6 @@ export function UploadFile({
 			{preview?.map((file_id: string, index: number) => (
 				file_id ? (
 					<div key={index} className={styles.imageContainer}>
-						{/* <NextImage alt="Preview" className={styles.image} height={maxHeight} src={file_id} width={maxWidth} /> */}
 						<Link href={file_id} target="_blank">
 							<Tooltip label="Descarregar Ficheiro" position="bottom">
 								<ActionIcon
@@ -137,7 +134,6 @@ export function UploadFile({
 			))}
 
 			<FileButton
-				// accept="image/*"
 				label="Carregar ficheiro"
 				onFileChange={handleFileChange}
 			/>

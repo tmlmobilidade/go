@@ -9,11 +9,12 @@ import { Dates } from '@tmlmobilidade/utils';
 export function StopInfrasctructure() {
 	//
 
+	//
+	// A. Setup variables
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
-	// A. Render components
-
+	// B. Render components
 	return (
 		<Collapsible
 			description="Informações relacionadas com os equipamentos da paragem e envolvente."

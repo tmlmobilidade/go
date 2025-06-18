@@ -3,7 +3,6 @@
 import type { Stop } from '@tmlmobilidade/types';
 
 import { ManualContextProvider } from '@/contexts/Manual.context';
-import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
 import { Pane } from '@tmlmobilidade/ui';
@@ -35,12 +34,10 @@ export default function Stop({ paramId }: StopProps) {
 
 	//
 	// A. Setup variables
-
 	const { actions, data, flags } = useStopsDetailContext();
 
 	//
 	// B. Render components
-
 	return (
 		<ManualContextProvider>
 			<StopsListContextProvider>
@@ -49,11 +46,9 @@ export default function Stop({ paramId }: StopProps) {
 						? (
 							<div style={{ height: '90vh' }}>
 								<Pane header={[<StopHeader generic={false} />]}>
-									{/* <StopMap generic={false} /> */}
 									<StopsListViewMap />
 									<StopDetails />
 									<StopAdminInformation />
-									{/* <StopAffectation /> */}
 									<StopShelter />
 									<StopInfrasctructure />
 									<StopPublicInformation />
@@ -69,8 +64,6 @@ export default function Stop({ paramId }: StopProps) {
 							<div style={{ height: '90vh' }}>
 								<Pane header={[<StopHeader generic={true} />]}>
 									{flags.loading === false && paramId !== 'new' ? <StopsListViewMap generic={true} /> : <div>Loading...</div>}
-									{/* {flags.loading === false ? <div>Map...</div> : <div>Loading...</div>} */}
-									{/* <StopsListViewMap /> */}
 								</Pane>
 							</div>
 						)

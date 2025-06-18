@@ -12,7 +12,6 @@ export function StopConnections() {
 
 	//
 	// A. Setup variables
-
 	const stopsDetailContext = useStopsDetailContext();
 
 	const connections = [
@@ -41,7 +40,6 @@ export function StopConnections() {
 
 	//
 	// B. Render components
-
 	return (
 		<Collapsible
 			description="Quais são os outros modos de transporte, para além do autocarro, que esteja paragem serve."

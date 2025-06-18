@@ -8,7 +8,6 @@ export function StopAccessibility() {
 
 	//
 	// A. Setup variables
-
 	const stopsDetailContext = useStopsDetailContext();
 
 	enum SidewalkTypeValues {
@@ -165,7 +164,6 @@ export function StopAccessibility() {
 
 	//
 	// B. Transform data
-
 	const sidewalkTypeItems = sidewalkTypeValues.map(el => ({
 		label: SidewalkTypeValues[el],
 		value: el,
@@ -213,7 +211,6 @@ export function StopAccessibility() {
 
 	//
 	// C. Render components
-
 	return (
 
 		<Collapsible

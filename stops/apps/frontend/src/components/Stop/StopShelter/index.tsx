@@ -11,7 +11,6 @@ export function StopShelter() {
 
 	//
 	// A. Setup variables
-
 	const stopsDetailContext = useStopsDetailContext();
 
 	enum ShelterStatusValues {
@@ -31,16 +30,14 @@ export function StopShelter() {
 	];
 
 	//
-	// A. Transform data
-
+	// B. Transform data
 	const shelterStatusItems = shelterStatusValues.map(el => ({
 		label: ShelterStatusValues[el],
 		value: el,
 	}));
 
 	//
-	// B. Render components
-
+	// C. Render components
 	return (
 		<Collapsible
 			description="Informações relacionadas com o abrigo."

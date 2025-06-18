@@ -20,7 +20,6 @@ export function Item({ stop }: ItemProps) {
 
 	//
 	// A. Render components
-
 	return (
 		<Link href={`/stops/${stop._id}`}>
 			<div className={styles.container}>

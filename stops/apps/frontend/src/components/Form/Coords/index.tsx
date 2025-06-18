@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionIcon, Tooltip } from '@mantine/core';
-import { IconCopy, IconMap, IconUpload, IconWorld } from '@tabler/icons-react';
+import { IconCopy, IconMap, IconWorld } from '@tabler/icons-react';
 import { Button } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import React from 'react';
@@ -13,7 +13,6 @@ export function Coords({ latitude, longitude, municipality, municipality_id }: {
 
 	//
 	// A. Setup Variables
-
 	const [copiedLat, setCopiedLat] = React.useState(false);
 	const [copiedLon, setCopiedLon] = React.useState(false);
 

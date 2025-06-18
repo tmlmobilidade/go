@@ -1,8 +1,6 @@
 'use client';
 
 import { LinesContextProvider } from '@/contexts/Lines.context';
-/* * */
-
 import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { StopsContextProvider } from '@/contexts/Stops.context';
 import { MapProvider } from '@vis.gl/react-maplibre';

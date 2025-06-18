@@ -12,7 +12,6 @@ export function StopEquipments() {
 
 	//
 	// A. Setup variables
-
 	const stopsDetailContext = useStopsDetailContext();
 
 	const facilities = [
@@ -43,7 +42,6 @@ export function StopEquipments() {
 
 	//
 	// B. Render components
-
 	return (
 		<Collapsible
 			description="Quais são os equipamentos que esta paragem serve."

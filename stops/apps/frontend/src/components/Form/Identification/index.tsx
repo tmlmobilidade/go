@@ -2,8 +2,7 @@
 
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { StopOptions } from '@/utils/options.utils';
-import { Button } from '@mantine/core';
-import { TextInput, Tooltip } from '@tmlmobilidade/ui';
+import { TextInput } from '@tmlmobilidade/ui';
 import React from 'react';
 
 import styles from './styles.module.css';
@@ -11,11 +10,12 @@ import styles from './styles.module.css';
 export function Identification() {
 	//
 
+	//
+	// A. Setup Variables
 	const stopDetailsContext = useStopsDetailContext();
 
 	//
-	// A. Handle actions
-
+	// B. Handle actions
 	const handleShortName = (name) => {
 		// Return if stop has no name
 		if (!name) return;
@@ -33,7 +33,7 @@ export function Identification() {
 	};
 
 	//
-	// B. Render components
+	// C. Render components
 	return (
 		<div className={styles.container}>
 			<TextInput
@@ -63,12 +63,6 @@ export function Identification() {
 				disabled
 				{...stopDetailsContext.data.form.getInputProps('short_name')}
 			/>
-			{/*
-			<Tooltip label="Gerar Nome Curto" position="bottom">
-				<Button className={styles.button} onClick={() => handleShortName()}>
-					Gerar Nome Curto
-				</Button>
-			</Tooltip> */}
 		</div>
 	);
 }

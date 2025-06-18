@@ -1,6 +1,5 @@
 'use client';
 
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Button, Collapsible, Grid, Section, TextArea, useMeContext } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
@@ -13,14 +12,12 @@ export function StopComments({ actions, data }) {
 
 	//
 	// A. Setup variables
-
 	const [value, setValue] = useState<string>('');
 
 	const meContext = useMeContext();
 
 	//
 	// B. Render components
-
 	return (
 		<Collapsible
 			description="Texto livre para informações adicionais."

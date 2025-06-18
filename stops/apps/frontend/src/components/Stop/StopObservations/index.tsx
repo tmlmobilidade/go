@@ -10,10 +10,12 @@ import styles from './styles.module.css';
 export function StopObservations() {
 	//
 
-	const stopDetailsContext = useStopsDetailContext();
 	//
-	// A. Render components
+	// A. Setup Variables
+	const stopDetailsContext = useStopsDetailContext();
 
+	//
+	// B. Render components
 	return (
 		<Collapsible
 			description="Texto livre para informações adicionais."

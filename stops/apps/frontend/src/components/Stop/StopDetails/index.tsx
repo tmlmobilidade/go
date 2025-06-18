@@ -14,17 +14,13 @@ export function StopDetails() {
 
 	//
 	// A. Setup variables
-
 	const stopsDetailContext = useStopsDetailContext();
-
-	// const { isManual, setIsManual } = useManualContext();
 
 	const [isPlaying, setIsPlaying] = useState(false);
 	const audioPlayer = useRef<HTMLAudioElement | null>(null);
 
 	//
 	// B. Transform data
-
 	useEffect(() => {
 		audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${stopsDetailContext.data._id}.mp3`);
 	}, []);
@@ -46,7 +42,6 @@ export function StopDetails() {
 
 	//
 	// C. Handle actions
-
 	const handleShortName = () => {
 	// Return if stop has no name
 		if (!stopsDetailContext.data.form.values.new_name || !stopsDetailContext.data.form.values.short_name) return;
@@ -71,12 +66,10 @@ export function StopDetails() {
 			audioPlayer.current?.load();
 			audioPlayer.current?.play();
 		}
-		// analyticsContext.actions.capture(ampli => ampli.stopAudioPlayed({ audio_played: 'true', stop_id: stopId || '' }));
 	};
 
 	//
 	// D. Render components
-
 	return (
 		<Collapsible
 			description="Informações gerais sobre esta paragem"
@@ -155,22 +148,6 @@ export function StopDetails() {
 								onClick={() => handleShortName()}
 							/>
 						</Tooltip>
-						{/*
-						{isManual
-							? (
-								<Tooltip label="Modo Manual Ativado" position="bottom">
-									<IconAlertHexagon
-										onClick={() => setIsManual(isManual => !isManual)}
-									/>
-								</Tooltip>
-							)
-							: (
-								<Tooltip label="Modo Automático Ativado" position="bottom">
-									<IconAlertHexagonOff
-										onClick={() => setIsManual(isManual => !isManual)}
-									/>
-								</Tooltip>
-							)} */}
 					</Grid>
 
 					<Grid columns="ab" gap="md">
@@ -190,10 +167,6 @@ export function StopDetails() {
 						</Tooltip>
 					</Grid>
 				</Grid>
-
-				{/* <Grid gap="md">
-				<Item label="Estado Operacional" {...data.form.getInputProps('operational_status')} />
-			</Grid> */}
 			</Section>
 		</Collapsible>
 

@@ -18,7 +18,6 @@ export function SearchBar() {
 
 	//
 	// A. Render components
-
 	const stopsContext = useStopsContext();
 	const searchBarContext = useSearchbarContext();
 	const router = useRouter();
@@ -29,7 +28,6 @@ export function SearchBar() {
 
 	//
 	// B. Transform data
-
 	const handleNewStop = () => {
 		router.push(Routes.STOP_DETAIL('new'));
 	};
@@ -160,18 +158,14 @@ export function SearchBar() {
 
 	//
 	// C. Render components
-
 	return (
 		<div className={styles.container}>
-			{/* Search Bar */}
 			<TextInput
 				className={styles.inputText}
 				maxLength={255}
 				onChange={e => searchBarContext.setQueryString(e.target.value)}
 				placeholder="Pesquisar..."
 			/>
-
-			{/* Settings Button */}
 
 			<Menu shadow="md" width={200}>
 				<Menu.Target>

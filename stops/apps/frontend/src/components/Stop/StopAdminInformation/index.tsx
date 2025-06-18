@@ -8,11 +8,11 @@ import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 export function StopAdminInformation() {
 	//
 
+	// A. Setup Variables
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
 	// B. Render components
-
 	return (
 		<Collapsible
 			description="Informações sobre a localização administrativa e responsabilidade de gestão desta paragem"

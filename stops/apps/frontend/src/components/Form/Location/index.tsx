@@ -10,10 +10,12 @@ import styles from './styles.module.css';
 export function Location({ municipality }) {
 	//
 
+	//
+	// A. Setup Variables
 	const stopDetailsContext = useStopsDetailContext();
 
 	//
-	// A. Render components
+	// B. Render components
 	return (
 		<div className={styles.container}>
 			<StopsListViewMap isCreateAction={true} />

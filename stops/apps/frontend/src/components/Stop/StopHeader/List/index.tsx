@@ -17,7 +17,6 @@ export function List({ children }: ItemInterface) {
 
 	//
 	// A. Render components
-
 	return (
 		<div className={styles.container}>
 			{children}

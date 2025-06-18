@@ -10,8 +10,7 @@ const comboBoxValues = ['AML', 'Alcochete'];
 
 export function StopAffectation({ data }) {
 	//
-	// B. Render components
-
+	// A. Render Components
 	return (
 		<Collapsible
 			description="Configuração dos passes aceites por esta paragem. É possível alterar estas definições para cada pattern."

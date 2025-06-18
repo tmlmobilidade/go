@@ -1,4 +1,3 @@
-import { useStopsContext } from '@/contexts/Stops.context';
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui';
 import NextImage from 'next/image';
@@ -7,19 +6,6 @@ import React, { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 
 /* * */
-
-interface FormType {
-	setFieldValue: (field: string, value: unknown) => void
-	values: {
-		image_ids: string[]
-	}
-}
-
-interface ActionsType {
-	deleteImage: (image_id: string) => void
-	getImages: () => unknown
-	handleImageChange: (file: File) => void
-}
 
 interface UploadImageProps {
 	imageUrl?: string[]
@@ -46,7 +32,6 @@ export function UploadImage({
 
 	//
 	// A. Setup variables
-
 	const stopsDetailContext = useStopsDetailContext();
 	const [preview, setPreview] = useState<string[]>([]);
 
@@ -62,7 +47,6 @@ export function UploadImage({
 
 	//
 	// B. Handle Actions
-
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
@@ -93,7 +77,7 @@ export function UploadImage({
 	};
 
 	//
-	// D. Render components
+	// C. Render components
 	return (
 		<div className={styles.container}>
 			{label && <Label>{label}</Label>}

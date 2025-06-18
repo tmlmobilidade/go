@@ -11,7 +11,6 @@ export function Item({ id }) {
 
 	//
 	// A. Render components
-
 	return (
 		<div className={styles.container}>
 			{/* Left Side */}

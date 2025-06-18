@@ -19,7 +19,6 @@ export function PatternsModal({ children, onClose, opened, title }: PatternsModa
 
 	//
 	// A. Render components
-
 	return (
 		<Modal onClose={onClose} opened={opened} title={title}>
 			{children}

@@ -1,6 +1,5 @@
 'use client';
 
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 import { UploadFile } from './UploadFile';
@@ -12,13 +11,7 @@ export function StopMedia() {
 	//
 
 	//
-	// A. Setup variables
-
-	// const [file, setFile] = useState<File | null>(null);
-
-	//
-	// B. Render components
-
+	// A. Render components
 	return (
 		<Collapsible
 			description="Suportes visuais."
@@ -26,20 +19,10 @@ export function StopMedia() {
 		>
 			<Section gap="md">
 				<UploadImage
-					// imageUrl={stopDetailContext.data.imageUrl}
-					// imageUrl="image.png"
-					// label="Imagem"
-					onDelete={() => alert('Image deleted!')}
-					// onDelete={stopDetailContext.actions.deleteImage}
-					// onFileChange={() => alert('File changed!')}
+					onDelete={() => console.log('Image Deleted!')}
 				/>
 				<UploadFile
-					// imageUrl={stopDetailContext.data.imageUrl}
-					// imageUrl="image.png"
-					// label="Imagem"
-					onDelete={() => alert('File deleted!')}
-					// onDelete={stopDetailContext.actions.deleteImage}
-					// onFileChange={() => alert('File changed!')}
+					onDelete={() => console.log('File Deleted!')}
 				/>
 			</Section>
 		</Collapsible>
