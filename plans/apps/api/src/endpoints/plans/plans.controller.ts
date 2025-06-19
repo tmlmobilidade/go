@@ -1,8 +1,8 @@
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
-import { HttpStatus, mimeTypes } from '@tmlmobilidade/lib';
-import { CreateFileDto, CreatePlanDto, Plan, PlanSchema } from '@tmlmobilidade/types';
-import { convertObject } from '@tmlmobilidade/utils';
+import { ALLOW_ALL_FLAG, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/lib';
+import { CreateFileDto, CreatePlanDto, Permission, Plan, PlanPermission, PlanSchema } from '@tmlmobilidade/types';
+import { convertObject, hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -17,13 +17,28 @@ export class PlansController {
 	static async create(request: FastifyRequest, reply: FastifyReply) {
 		try {
 			const { validation_id } = request.body as CreatePlanDto;
-
 			const validation = await validations.findById(validation_id);
 
 			if (!validation) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Validation not found' });
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Plan not found' });
 				return;
 			}
+
+			//
+
+			//
+			// Check if the user has permission to create a plan
+			if (!hasAPIResourcePermission<PlanPermission>(request, {
+				action: Permissions.plans.actions.create,
+				resource_key: 'agency_ids',
+				scope: Permissions.plans.scope,
+				value: validation.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 
 			// Clone the validation to plan
 			const plan: Plan = {
@@ -94,6 +109,29 @@ export class PlansController {
 	) {
 		try {
 			const { id } = request.params;
+			const plan = await plans.findById(id);
+
+			if (!plan) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Plan not found' });
+				return;
+			}
+
+			//
+
+			//
+			// Check if the user has permission to create a plan
+			if (!hasAPIResourcePermission<PlanPermission>(request, {
+				action: Permissions.plans.actions.delete,
+				resource_key: 'agency_ids',
+				scope: Permissions.plans.scope,
+				value: plan.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
+
 			await plans.deleteById(id);
 
 			reply.send({ message: `Plan with id: ${id} deleted` });
@@ -112,7 +150,28 @@ export class PlansController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await plans.findMany({}, undefined, undefined, { created_at: -1 }));
+			const permissions = request.permissions as Permission<PlanPermission>;
+
+			// Filter validations by all keys
+			if (permissions?.resource) {
+				const filter = {
+					...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
+					...(permissions.resource.end_date && { 'gtfs_feed_info.feed_end_date': { $lte: permissions.resource.end_date } }),
+					...(permissions.resource.start_date && { 'gtfs_feed_info.feed_start_date': { $gte: permissions.resource.start_date } }),
+				};
+
+				const filteredPlans = await validations.findMany(
+					filter,
+					undefined,
+					undefined,
+					{ created_at: -1 },
+				);
+
+				return reply.send(filteredPlans);
+			}
+
+			// Send all validations
+			return reply.send(await validations.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
@@ -139,6 +198,22 @@ export class PlansController {
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Plan not found' });
 				return;
 			}
+
+			//
+
+			//
+			// Check if the user has permission to create a plan
+			if (!hasAPIResourcePermission<PlanPermission>(request, {
+				action: Permissions.plans.actions.read,
+				resource_key: 'agency_ids',
+				scope: Permissions.plans.scope,
+				value: plan.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 
 			const file = await files.findById(plan.operation_file_id);
 
@@ -175,6 +250,22 @@ export class PlansController {
 			const update_data = request.body as Partial<Plan>;
 
 			const plan = await plans.findById(id);
+
+			//
+
+			//
+			// Check if the user has permission to create a plan
+			if (!hasAPIResourcePermission<PlanPermission>(request, {
+				action: Permissions.plans.actions.update,
+				resource_key: 'agency_ids',
+				scope: Permissions.plans.scope,
+				value: plan.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 
 			if (!plan) {
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Plan not found' });

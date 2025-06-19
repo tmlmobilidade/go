@@ -2,7 +2,8 @@
 
 import { OpenCreatePlanModal } from '@/components/plans/detail/CreatePlanModal';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, Spacer } from '@tmlmobilidade/ui';
+import { Permissions } from '@tmlmobilidade/lib';
+import { Button, HasPermission, Label, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,7 +15,12 @@ export function PlansListHeader() {
 		<>
 			<Label size="lg" caps>Planos</Label>
 			<Spacer />
-			<Button label="Novo plano" leftSection={<IconPlus size={20} />} onClick={OpenCreatePlanModal} />
+			<HasPermission
+				action={Permissions.plans.actions.create}
+				scope={Permissions.plans.scope}
+			>
+				<Button label="Novo plano" leftSection={<IconPlus size={20} />} onClick={OpenCreatePlanModal} />
+			</HasPermission>
 		</>
 	);
 

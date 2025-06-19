@@ -2,25 +2,24 @@
 
 /* * */
 
-import { useUsersListContext } from '@/contexts/UsersList.context';
+import { useAgencyListContext } from '@/contexts/AgencyList.context';
 import { Routes } from '@/lib/routes';
-import { IconArrowRight } from '@tabler/icons-react';
 import { Loader, Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
-import { UsersListHeader } from '../UsersListHeader';
+import { AgencyListHeader } from '../AgencyListHeader';
 import styles from './styles.module.css';
 
 /* * */
 
-export function UsersList() {
+export function AgencyList() {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data, flags } = useUsersListContext();
+	const { data, flags } = useAgencyListContext();
 
 	//
 	// B. Render components
@@ -34,14 +33,14 @@ export function UsersList() {
 
 	return (
 		<Pane header={[
-			<UsersListHeader />,
+			<AgencyListHeader />,
 		]}
 		>
-			{data.filtered.map(user => (
-				<div key={user._id} className={styles.root} onClick={() => router.push(Routes.USER_DETAIL(user._id))}>
+			{data.filtered.map(agency => (
+				<div key={agency._id} className={styles.root} onClick={() => router.push(Routes.AGENCY_DETAIL(agency._id))}>
 					<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">
-						<Tag label={user._id} variant="muted" />
-						<Text size="lg">{user.first_name} {user.last_name}</Text>
+						<Tag label={agency._id} variant="muted" />
+						<Text size="lg">{agency.name}</Text>
 					</Section>
 				</div>
 			))}

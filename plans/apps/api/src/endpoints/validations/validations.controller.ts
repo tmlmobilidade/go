@@ -1,8 +1,9 @@
 import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Validation } from '@tmlmobilidade/types';
+import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
+import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Permission, Validation, ValidationPermission } from '@tmlmobilidade/types';
+import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -24,6 +25,22 @@ export class ValidationsController {
 			}
 
 			const fields = data.fields as Record<string, MultipartValue>;
+
+			//
+
+			//
+			// Check if the user has permission to create a plan
+			if (!hasAPIResourcePermission<ValidationPermission>(request, {
+				action: Permissions.validations.actions.create,
+				resource_key: 'agency_ids',
+				scope: Permissions.validations.scope,
+				value: fields['gtfs_agency']['agency_id'],
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 
 			// Convert form fields to Validation data
 			const ValidationData: CreateValidationDto = {
@@ -103,6 +120,28 @@ export class ValidationsController {
 	) {
 		try {
 			const { id } = request.params;
+			const validation = await validations.findById(id);
+
+			if (!validation) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Validation not found' });
+				return;
+			}
+
+			//
+
+			//
+			// Check if the user has permission to delete the validation
+			if (!hasAPIResourcePermission<ValidationPermission>(request, {
+				action: Permissions.validations.actions.delete,
+				resource_key: 'agency_ids',
+				scope: Permissions.validations.scope,
+				value: validation.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 			await validations.deleteById(id);
 
 			reply.send({ message: `Validation with id: ${id} deleted` });
@@ -121,7 +160,28 @@ export class ValidationsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await validations.findMany({}, undefined, undefined, { created_at: -1 }));
+			const permissions = request.permissions as Permission<ValidationPermission>;
+
+			// Filter validations by all keys
+			if (permissions?.resource) {
+				const filters = {
+					...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
+				};
+
+				console.log(filters);
+
+				const filteredValidations = await validations.findMany(
+					filters,
+					undefined,
+					undefined,
+					{ created_at: -1 },
+				);
+
+				return reply.send(filteredValidations);
+			}
+
+			// Send all validations
+			return reply.send(await validations.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
@@ -149,6 +209,21 @@ export class ValidationsController {
 				return;
 			}
 
+			//
+
+			//
+			// Check if the user has permission to read the validation
+			if (!hasAPIResourcePermission<ValidationPermission>(request, {
+				action: Permissions.validations.actions.read,
+				resource_key: 'agency_ids',
+				scope: Permissions.validations.scope,
+				value: Validation.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 			reply.send(Validation);
 		}
 		catch (error) {
@@ -173,6 +248,21 @@ export class ValidationsController {
 				return;
 			}
 
+			//
+
+			//
+			// Check if the user has permission to read the validation
+			if (!hasAPIResourcePermission<ValidationPermission>(request, {
+				action: Permissions.validations.actions.read,
+				resource_key: 'agency_ids',
+				scope: Permissions.validations.scope,
+				value: Validation.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 			const file = await files.findById(Validation.file_id);
 
 			if (!file) {
@@ -202,6 +292,21 @@ export class ValidationsController {
 			const { id } = request.params;
 			const ValidationData = request.body as Partial<Validation>;
 
+			//
+
+			//
+			// Check if the user has permission to update the validation
+			if (!hasAPIResourcePermission<ValidationPermission>(request, {
+				action: Permissions.validations.actions.update,
+				resource_key: 'agency_ids',
+				scope: Permissions.validations.scope,
+				value: ValidationData.gtfs_agency.agency_id,
+			})) {
+				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
+				return;
+			}
+
+			//
 			await validations.updateById(id, ValidationData);
 
 			reply.send({

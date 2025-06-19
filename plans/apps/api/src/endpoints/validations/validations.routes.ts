@@ -3,7 +3,7 @@
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import FastifyService from '@/services/fastify.service.js';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Validation } from '@tmlmobilidade/types';
+import { ValidationPermission } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
 import { ValidationsController } from './validations.controller.js';
@@ -21,9 +21,9 @@ server.register(
 		instance.get(
 			'/',
 			{
-				preHandler: authorizationMiddleware<Validation>(
-					Permissions.plans.scope,
-					Permissions.plans.actions.list,
+				preHandler: authorizationMiddleware<ValidationPermission>(
+					Permissions.validations.scope,
+					Permissions.validations.actions.list,
 				),
 			},
 			ValidationsController.getAll,
@@ -33,9 +33,9 @@ server.register(
 		instance.get(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Validation>(
-					Permissions.plans.scope,
-					Permissions.plans.actions.read,
+				preHandler: authorizationMiddleware<ValidationPermission>(
+					Permissions.validations.scope,
+					Permissions.validations.actions.read,
 				),
 			},
 			ValidationsController.getById,
@@ -45,9 +45,9 @@ server.register(
 		instance.post(
 			'/',
 			{
-				preHandler: authorizationMiddleware<Validation>(
-					Permissions.plans.scope,
-					Permissions.plans.actions.create,
+				preHandler: authorizationMiddleware<ValidationPermission>(
+					Permissions.validations.scope,
+					Permissions.validations.actions.create,
 				),
 			},
 			ValidationsController.create,
@@ -57,9 +57,9 @@ server.register(
 		instance.put(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Validation>(
-					Permissions.plans.scope,
-					Permissions.plans.actions.update,
+				preHandler: authorizationMiddleware<ValidationPermission>(
+					Permissions.validations.scope,
+					Permissions.validations.actions.update,
 				),
 			},
 			ValidationsController.update,
@@ -69,9 +69,9 @@ server.register(
 		instance.delete(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Validation>(
-					Permissions.plans.scope,
-					Permissions.plans.actions.delete,
+				preHandler: authorizationMiddleware<ValidationPermission>(
+					Permissions.validations.scope,
+					Permissions.validations.actions.delete,
 				),
 			},
 			ValidationsController.delete,
@@ -81,9 +81,9 @@ server.register(
 		instance.get(
 			'/:id/file',
 			{
-				preHandler: authorizationMiddleware<Validation>(
-					Permissions.plans.scope,
-					Permissions.plans.actions.read,
+				preHandler: authorizationMiddleware<ValidationPermission>(
+					Permissions.validations.scope,
+					Permissions.validations.actions.read,
 				),
 			},
 			ValidationsController.getFile,

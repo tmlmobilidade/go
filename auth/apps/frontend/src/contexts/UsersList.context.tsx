@@ -48,7 +48,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Setup variables
 
-	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(Routes.AUTH_API + Routes.USERS, swrFetcher);
+	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(Routes.API(Routes.USERS), swrFetcher);
 	const rawUsers = useMemo(() => allUsersData || [], [allUsersData]);
 
 	//
