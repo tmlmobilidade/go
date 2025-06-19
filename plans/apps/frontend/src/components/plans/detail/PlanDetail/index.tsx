@@ -17,7 +17,7 @@ export function PlanDetail() {
 
 	const { data, flags } = usePlanDetailContext();
 
-	if (flags.isLoading || !data.plan || !data.plan.gtfs_agency || !data.plan.gtfs_feed_info) {
+	if (flags.isLoading || flags.error || !data.plan || !data.plan.gtfs_agency || !data.plan.gtfs_feed_info) {
 		return <Loader />;
 	}
 

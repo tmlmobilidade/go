@@ -33,6 +33,7 @@ interface ValidationDetailContextState {
 	}
 	flags: {
 		canSave: boolean
+		data_error: Error | null
 		error: Error | null
 		isReadOnly: boolean
 		isSaving: boolean
@@ -102,7 +103,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		});
 
 		router.replace(Routes.VALIDATION_LIST);
-	}, [error]);
+	}, [isLoading]);
 
 	// Validate form on change
 	useEffect(() => {
@@ -241,6 +242,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 			},
 			flags: {
 				canSave,
+				data_error: error,
 				error: fileError || error || validationError,
 				isReadOnly: false,
 				isSaving,

@@ -36,7 +36,6 @@ server.register(
 				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.read,
-					['agency_ids'],
 				),
 			},
 			PlansController.getById,
@@ -49,7 +48,6 @@ server.register(
 				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.create,
-					['agency_ids'],
 				),
 			},
 			PlansController.create,
@@ -62,7 +60,6 @@ server.register(
 				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.update,
-					['agency_ids'],
 				),
 			},
 			PlansController.update,
@@ -75,7 +72,6 @@ server.register(
 				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.delete,
-					['agency_ids'],
 				),
 			},
 			PlansController.delete,

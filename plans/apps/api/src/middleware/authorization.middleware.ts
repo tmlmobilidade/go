@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { Permission } from '@tmlmobilidade/types';
-import { fetchData, hasPermissionResource } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 declare module 'fastify' {
@@ -12,7 +12,6 @@ declare module 'fastify' {
 export default function authorizationMiddleware<T = unknown>( // Added default type for T
 	scope: string,
 	action: string,
-	resources?: (keyof T)[],
 ) {
 	return async (
 		request: FastifyRequest,
@@ -46,27 +45,6 @@ export default function authorizationMiddleware<T = unknown>( // Added default t
 
 			// Set the permissions
 			request.permissions = res.data;
-
-			// Check if the resource is in the permissions
-			if (resources) {
-				for (const resource of resources) {
-					const resource_key = resource as string;
-					const hasPermission = hasPermissionResource<T>({
-						action,
-						permissions: [res.data],
-						resource_key: resource,
-						scope,
-						value: request.permissions?.resource?.[resource_key] as unknown,
-					});
-
-					if (!hasPermission) {
-						throw new HttpException(
-							HttpStatus.FORBIDDEN,
-							'You are not authorized to access this resource',
-						);
-					}
-				}
-			}
 		}
 		catch (error) {
 			reply

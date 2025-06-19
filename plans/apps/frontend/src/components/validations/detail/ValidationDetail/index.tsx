@@ -15,8 +15,8 @@ export function ValidationDetail() {
 	//
 	// A. Render components
 
-	const { flags: { loading } } = useValidationDetailContext();
-	if (loading) return <Loader />;
+	const { flags } = useValidationDetailContext();
+	if (flags.loading || flags.data_error) return <Loader />;
 
 	return (
 		<Pane header={[<ValidationDetailHeader />]}>

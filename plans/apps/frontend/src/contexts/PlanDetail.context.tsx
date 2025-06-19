@@ -25,6 +25,7 @@ interface PlanDetailContextState {
 		plan: Plan & { file: File }
 	}
 	flags: {
+		error: Error | null
 		isLoading: boolean
 		isReadOnly: boolean
 		isSaving: boolean
@@ -73,11 +74,11 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 
 		useToast.error({
 			message: error.message,
-			title: 'Erro ao carregar plano',
+			title: 'Erro ao carregar validação',
 		});
 
-		router.replace(Routes.PLAN_LIST);
-	}, [error]);
+		router.replace(Routes.VALIDATION_LIST);
+	}, [isLoading]);
 
 	//
 	// D. Define actions
@@ -167,12 +168,13 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 				plan,
 			},
 			flags: {
+				error,
 				isLoading: isLoading || !plan || !form.initialized,
 				isReadOnly: plan?.is_locked ?? false,
 				isSaving,
 			},
 		};
-	}, [isLoading, plan, planId, form]);
+	}, [isLoading, plan, planId, form, error]);
 
 	// F. Render Components
 	return (

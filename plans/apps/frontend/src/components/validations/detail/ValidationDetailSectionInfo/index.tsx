@@ -25,7 +25,7 @@ export function ValidationDetailSectionInfo() {
 				<Grid columns="abc" gap="sm">
 					<Section padding="none">
 						<Label size="sm" caps>Agência</Label>
-						<Text size="base">{validation.gtfs_agency.agency_name ?? 'N/A'}</Text>
+						<Text size="base">{validation.gtfs_agency.agency_id} - {validation.gtfs_agency.agency_name ?? 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>URL da agência</Label>

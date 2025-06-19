@@ -36,7 +36,7 @@ server.register(
 				preHandler: authorizationMiddleware<ValidationPermission>(
 					Permissions.validations.scope,
 					Permissions.validations.actions.read,
-					['agency_ids'],
+					request => [{ resource_key: 'agency_ids', value: request.params['id'] }],
 				),
 			},
 			ValidationsController.getById,
@@ -49,7 +49,7 @@ server.register(
 				preHandler: authorizationMiddleware<ValidationPermission>(
 					Permissions.validations.scope,
 					Permissions.validations.actions.create,
-					['agency_ids'],
+					request => [{ resource_key: 'agency_ids', value: request.body['gtfs_agency']['agency_id'] }],
 				),
 			},
 			ValidationsController.create,
@@ -62,7 +62,7 @@ server.register(
 				preHandler: authorizationMiddleware<ValidationPermission>(
 					Permissions.validations.scope,
 					Permissions.validations.actions.update,
-					['agency_ids'],
+					request => [{ resource_key: 'agency_ids', value: request.params['id'] }],
 				),
 			},
 			ValidationsController.update,
@@ -75,7 +75,7 @@ server.register(
 				preHandler: authorizationMiddleware<ValidationPermission>(
 					Permissions.validations.scope,
 					Permissions.validations.actions.delete,
-					['agency_ids'],
+					request => [{ resource_key: 'agency_ids', value: request.params['id'] }],
 				),
 			},
 			ValidationsController.delete,
@@ -88,7 +88,7 @@ server.register(
 				preHandler: authorizationMiddleware<ValidationPermission>(
 					Permissions.validations.scope,
 					Permissions.validations.actions.read,
-					['agency_ids'],
+					request => [{ resource_key: 'agency_ids', value: request.params['id'] }],
 				),
 			},
 			ValidationsController.getFile,

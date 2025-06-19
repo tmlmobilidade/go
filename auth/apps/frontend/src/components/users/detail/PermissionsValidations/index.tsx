@@ -1,6 +1,6 @@
 'use client';
 
-import { AgencyPermissionMultiselect } from '@/components/common/AgenciesMultiselect';
+import { AgencyPermissionMultiselect } from '@/components/common/AgencyPermissionMultiselect';
 import CheckCard from '@/components/common/CheckCard';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { Permissions } from '@tmlmobilidade/lib';
