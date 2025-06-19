@@ -6,7 +6,6 @@ import { StatusTag } from '@/components/common/StatusTag';
 import { ValidationsListFilters } from '@/components/validations/list/ValidationsListFilters';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { useValidationListContext } from '@/contexts/ValidationList.context';
-import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { Pane, Section, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
