@@ -27,6 +27,7 @@ export function PermissionsValidations() {
 		{ description: 'Permite criar uma validação', key: 'create', label: 'Criar' },
 		{ description: 'Permite atualizar uma validação', key: 'update', label: 'Atualizar' },
 		{ description: 'Permite eliminar uma validação', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite converter uma validação para um plano', key: 'create_plan', label: 'Converter para plano' },
 	];
 
 	return (
