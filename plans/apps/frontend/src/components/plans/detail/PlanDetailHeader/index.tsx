@@ -5,7 +5,8 @@
 import BackButton from '@/components/common/BackButton';
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
 import { IconLock, IconLockOpen, IconUpload } from '@tabler/icons-react';
-import { ActionIcon, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { Permissions } from '@tmlmobilidade/lib';
+import { ActionIcon, Button, HasPermission, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 /* * */
 
@@ -40,15 +41,22 @@ export function PlanDetailHeader() {
 			<Label size="lg" caps>{planDetailContext.data.id}</Label>
 			<Spacer />
 			{lockButton}
+			<HasPermission
+				action={Permissions.plans.actions.update}
+				resource_key="agency_ids"
+				scope={Permissions.plans.scope}
+				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+			>
 
-			<Button
-				disabled={planDetailContext.flags.isSaving || !planDetailContext.data.form.isDirty()}
-				icon={<IconUpload size={28} />}
-				label="Salvar"
-				loading={planDetailContext.flags.isSaving}
-				onClick={() => planDetailContext.actions.savePlan()}
-				variant="primary"
-			/>
+				<Button
+					disabled={planDetailContext.flags.isSaving || !planDetailContext.data.form.isDirty()}
+					icon={<IconUpload size={28} />}
+					label="Salvar"
+					loading={planDetailContext.flags.isSaving}
+					onClick={() => planDetailContext.actions.savePlan()}
+					variant="primary"
+				/>
+			</HasPermission>
 		</>
 	);
 
