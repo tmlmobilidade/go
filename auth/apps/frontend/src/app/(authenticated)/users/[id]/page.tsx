@@ -1,6 +1,6 @@
 /* * */
 
-import { UsersDetail } from '@/components/users/UsersDetail';
+import { UsersDetail } from '@/components/users/detail/UsersDetail';
 import { UsersDetailContextProvider } from '@/contexts/UsersDetail.context';
 
 /* * */
