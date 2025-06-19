@@ -4,7 +4,7 @@
 
 import { useRoleListContext } from '@/contexts/RoleList.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { Collapsible, Combobox, Grid, Label, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
