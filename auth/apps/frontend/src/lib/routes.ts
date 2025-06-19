@@ -1,16 +1,24 @@
 export const PageRoutes = Object.freeze({
+	// Agencies
+	AGENCY_DETAIL: (id: string) => `/agencies/${id}`,
+	AGENCY_LIST: '/agencies',
+
 	LOGIN: '/login',
 	LOGOUT: '/logout',
 	ME: '/users/me',
 	ROLE_DETAIL: (id: string) => `/roles/${id}`,
 	ROLES: '/roles',
 	USER_DETAIL: (id: string) => `/users/${id}`,
+
 	USERS: '/users',
 } as const);
 
 export const ApiRoutes = Object.freeze({
 	AUTH_API: '/api',
 	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
+
+	// APP
+	API: (path: string) => `/api${path}`,
 });
 
 export const Routes = Object.freeze({

@@ -3,7 +3,7 @@
 export default function Page() {
 	return (
 		<>
-			Selecione um utilizador
+			Selecione uma agência
 		</>
 	);
 }
