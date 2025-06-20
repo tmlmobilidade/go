@@ -30,15 +30,19 @@ async function examineUniqueSams() {
 			.now('Europe/Lisbon')
 			// .minus({ days: 15, month: 1 })
 			// .startOf('day')
-			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 0, second: 0, year: 2025 })
+			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 7, second: 0, year: 2024 })
 			.unix_timestamp;
+
+		console.log('searchTimestampStart', searchTimestampStart);
 
 		const searchTimestampEnd = Dates
 			.now('Europe/Lisbon')
 			// .minus({ days: 15 })
 			// .startOf('day')
-			.set({ day: 1, hour: 3, millisecond: 59, minute: 59, month: 2, second: 59, year: 2025 })
+			.set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 7, second: 59, year: 2024 })
 			.unix_timestamp;
+
+		console.log('searchTimestampEnd', searchTimestampEnd);
 
 		const allUniqueSamsStream = allUniqueSamsCollection
 			.find()
@@ -47,7 +51,7 @@ async function examineUniqueSams() {
 		for await (const uniqueSam of allUniqueSamsStream) {
 			//
 
-			// if (uniqueSam._id !== 2932064107) continue;
+			if (uniqueSam._id !== 2932063999) continue;
 
 			//
 			// Get all APEX transactions for the current Unique SAM in parallel.
@@ -172,6 +176,23 @@ async function examineUniqueSams() {
 			await uniqueSams.updateById(uniqueSam._id, updatedSamData);
 
 			LOGGER.success(`SAM ${uniqueSam._id} [${updatedSamData.agency_id}] Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} | Status: ${updatedSamData.status}`);
+
+			// Get the aseCounterValues missing
+
+			const aseCounterValues = sortedTransactions.map(t => t.mac_ase_counter_value);
+			const aseCounterValuesSet = new Set(aseCounterValues);
+			const missingAseCounterValues = [];
+
+			for (let i = firstTransaction.mac_ase_counter_value; i <= latestTransaction.mac_ase_counter_value; i++) {
+				if (!aseCounterValuesSet.has(i)) {
+					missingAseCounterValues.push(i);
+				}
+			}
+
+			if (missingAseCounterValues.length > 0) {
+				LOGGER.info(`Missing ASE Counter Values for Unique SAM ${uniqueSam._id}: ${missingAseCounterValues.join(', ')}`);
+			}
+
 			LOGGER.spacer(1);
 
 			//
