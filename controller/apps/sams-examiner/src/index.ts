@@ -30,7 +30,8 @@ async function examineUniqueSams() {
 			.now('Europe/Lisbon')
 			// .minus({ days: 15, month: 1 })
 			// .startOf('day')
-			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 7, second: 0, year: 2024 })
+			// .set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 7, second: 0, year: 2024 })
+			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 })
 			.unix_timestamp;
 
 		console.log('searchTimestampStart', searchTimestampStart);
@@ -39,7 +40,8 @@ async function examineUniqueSams() {
 			.now('Europe/Lisbon')
 			// .minus({ days: 15 })
 			// .startOf('day')
-			.set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 7, second: 59, year: 2024 })
+			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 7, second: 59, year: 2024 })
+			.set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
 			.unix_timestamp;
 
 		console.log('searchTimestampEnd', searchTimestampEnd);
