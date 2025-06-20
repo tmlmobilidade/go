@@ -10,12 +10,12 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20250619.107.10",
+		"@tmlmobilidade/types": "20250612.1741.30",
 		"@turf/turf": "7.2.0",
 		"luxon": "3.6.1"
 	},
 	"devDependencies": {
-		"@types/node": "24.0.3",
+		"@types/node": "24.0.1",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
 	}
