@@ -16,14 +16,14 @@
 	"dependencies": {
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250612.1741.30",
-		"@tmlmobilidade/types": "20250612.1741.30",
-		"@tmlmobilidade/utils": "20250612.1741.30",
-		"pg": "8.16.0"
+		"@tmlmobilidade/interfaces": "20250619.107.10",
+		"@tmlmobilidade/types": "20250619.107.10",
+		"@tmlmobilidade/utils": "20250619.107.10",
+		"pg": "8.16.2"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250612.1741.30",
-		"@types/node": "24.0.1",
+		"@tmlmobilidade/tsconfig": "20250619.107.10",
+		"@types/node": "24.0.3",
 		"@types/pg": "8.15.4",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
