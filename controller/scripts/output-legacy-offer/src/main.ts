@@ -11,7 +11,7 @@ import fs from 'fs';
 
 /* * */
 
-export async function generateOfferOutput(filePath: string, startDate: OperationalDate, endDate: OperationalDate): Promise<void> {
+export async function generateOfferOutput(filePath: string, startDate: OperationalDate, endDate: OperationalDate, outputDir: string): Promise<void> {
 	try {
 		//
 
@@ -459,7 +459,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 							wheelchairAccessible: 0,
 						};
 						//
-						console.log(offerJourneyData);
+						saveOutputFile(outputDir, offerJourneyData);
 					}
 
 					//
@@ -576,4 +576,11 @@ const convertMetersOrKilometersToMeters = (value: number | string, ballpark: num
 	}
 
 	//
+};
+
+/* * */
+
+const saveOutputFile = (outputDir: string, data: OfferJourney | OfferStop): void => {
+	fs.writeFileSync(`${outputDir}/${data.date}-${data.tripId}.json`, JSON.stringify(data, null, 2), 'utf8');
+	LOGGER.success(`Output file saved to ${outputDir}/${data.date}-${data.tripId}.json`);
 };
