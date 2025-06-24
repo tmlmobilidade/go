@@ -6,9 +6,10 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
-import { CHUNK_LOG_DATE_FORMAT, getStandardWindowInterval, PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type SimplifiedApexOnBoardRefund, type UnixTimestamp } from '@tmlmobilidade/types';
-import { DateTime, Interval } from 'luxon';
+import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
+import { Interval } from 'luxon';
 
 /* * */
 
@@ -40,13 +41,18 @@ async function syncApexOnBoardRefunds() {
 		// More recent data is more important than older data, so we start syncing the most recent data first.
 		// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
-		const thirtySecondsAgo = DateTime.now().minus({ seconds: 30 });
-		const earliestDataNeeded = DateTime.fromFormat(process.env.SYNC_EARLIEST_DATE, 'yyyyMMdd').set({ hour: 4, minute: 0, second: 0 });
+		const thirtySecondsAgo = Dates
+			.now('Europe/Lisbon')
+			.minus({ seconds: 30 });
+
+		const earliestDataNeeded = Dates
+			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
 
 		const allTimestampChunks = Interval
-			.fromDateTimes(earliestDataNeeded, thirtySecondsAgo)
-			.splitBy({ hour: 3 })
-			.sort((a, b) => b.start.toMillis() - a.start.toMillis());
+			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
+			.splitBy({ hour: 10 })
+			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
+			.sort((a, b) => b.start - a.start);
 
 		//
 		// Iterate over each timestamp chunk and sync the documents.
@@ -59,8 +65,16 @@ async function syncApexOnBoardRefunds() {
 
 			const chunkTimer = new TIMETRACKER();
 
+			const chunkStartDate = Dates
+				.fromUnixTimestamp(chunkData.start)
+				.setZone('Europe/Lisbon', 'offset_only');
+
+			const chunkEndDate = Dates
+				.fromUnixTimestamp(chunkData.end)
+				.setZone('Europe/Lisbon', 'offset_only');
+
 			LOGGER.spacer(1);
-			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkData.end.toFormat(CHUNK_LOG_DATE_FORMAT)} › ${chunkData.start.toFormat(CHUNK_LOG_DATE_FORMAT)}`, 100);
+			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 			//
 			// Setup the callback function that will be called on the DB Writer flush operation
@@ -72,18 +86,18 @@ async function syncApexOnBoardRefunds() {
 					// Extract the unique trip_ids from the flushed data
 					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
 					// Get the earliest and latest timestamps from the flushed data
-					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
-					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at)) as UnixTimestamp;
+					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at));
+					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at));
 					// Create a standard window interval based on the earliest and latest timestamps
-					const earliestStandardWindowInterval = getStandardWindowInterval(earliestTimestamp);
-					const latestStandardWindowInterval = getStandardWindowInterval(latestTimestamp);
+					const earliestStandardWindowInterval = Dates.fromUnixTimestamp(earliestTimestamp).std_window;
+					const latestStandardWindowInterval = Dates.fromUnixTimestamp(latestTimestamp).std_window;
 					// Invalidate all rides that are affected
 					const result = await rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
 						{ system_status: 'pending' },
 					);
 					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t19 data (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_on_board_refunds data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
@@ -97,16 +111,17 @@ async function syncApexOnBoardRefunds() {
 			const pcgiQuery = {
 				'transaction.apexTransactionType': 6,
 				'transaction.cardPhysicalType': 28,
+				'transaction.operatorLongID': { $in: ['41', '42', '43', '44'] },
 				'transaction.transactionDate': {
-					$gte: chunkData.start.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
-					$lte: chunkData.end.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
+					$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
+					$lte: chunkEndDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 				},
 			};
 
-			const slaQuery = {
+			const goQuery = {
 				created_at: {
-					$gte: chunkData.start.toMillis(),
-					$lte: chunkData.end.toMillis(),
+					$gte: chunkStartDate.unix_timestamp,
+					$lte: chunkEndDate.unix_timestamp,
 				},
 			};
 
@@ -121,17 +136,17 @@ async function syncApexOnBoardRefunds() {
 
 				flushCallback: flushCallback,
 
+				goCollection: simplifiedApexOnBoardRefundsCollection,
+
+				goIdKey: '_id',
+
+				goQuery: goQuery,
+
 				pcgiCollection: PCGIDB.SalesEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 
 				pcgiQuery: pcgiQuery,
-
-				slaCollection: simplifiedApexOnBoardRefundsCollection,
-
-				slaIdKey: '_id',
-
-				slaQuery: slaQuery,
 
 			});
 

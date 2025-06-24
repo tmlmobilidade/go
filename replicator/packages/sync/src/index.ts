@@ -4,7 +4,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { type MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 
 /* * */
 
@@ -12,17 +12,17 @@ interface SyncDocumentsOptions<T> {
 	dbWriter: MongoDbWriter<T>
 	docParser: (pcgiDoc: any) => T
 	flushCallback: (data?: MongoDBWriterWriteOps<T>[]) => Promise<void>
+	goCollection: any
+	goIdKey: string
+	goQuery: any
 	pcgiCollection: any
 	pcgiIdKey: string
 	pcgiQuery: any
-	slaCollection: any
-	slaIdKey: string
-	slaQuery: any
 }
 
 /* * */
 
-export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, pcgiCollection, pcgiIdKey, pcgiQuery, slaCollection, slaIdKey, slaQuery }: SyncDocumentsOptions<T>) {
+export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, goCollection, goIdKey, goQuery, pcgiCollection, pcgiIdKey, pcgiQuery }: SyncDocumentsOptions<T>) {
 	try {
 		//
 
@@ -36,14 +36,14 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, pcg
 		const countQueryTimer = new TIMETRACKER();
 
 		const pcgiDocCount = await pcgiCollection.countDocuments(pcgiQuery);
-		const slaDocCount = await slaCollection.countDocuments(slaQuery);
+		const goDocCount = await goCollection.countDocuments(goQuery);
 
-		if (pcgiDocCount === slaDocCount) {
-			LOGGER.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${slaDocCount} SLA (${countQueryTimer.get()})`);
+		if (pcgiDocCount === goDocCount) {
+			LOGGER.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${goDocCount} GO (${countQueryTimer.get()})`);
 			return;
 		}
 
-		LOGGER.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${slaDocCount} SLA (${countQueryTimer.get()})`);
+		LOGGER.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${goDocCount} GO (${countQueryTimer.get()})`);
 
 		//
 		// If the document count was different, then we check which documents are missing.
@@ -55,13 +55,13 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, pcg
 		const pcgiDocIds = await pcgiCollection.distinct(pcgiIdKey, pcgiQuery);
 		const pcgiDocIdsUnique = new Set(pcgiDocIds.map(String));
 
-		const slaDocIds = await slaCollection.distinct(slaIdKey, slaQuery);
-		const slaDocIdsUnique = new Set(slaDocIds.map(String));
+		const goDocIds = await goCollection.distinct(goIdKey, goQuery);
+		const goDocIdsUnique = new Set(goDocIds.map(String));
 
-		const missingDocuments = pcgiDocIds.filter((documentId: string) => !slaDocIdsUnique.has(String(documentId)));
-		const extraDocuments = slaDocIds.filter((documentId: string) => !pcgiDocIdsUnique.has(String(documentId)));
+		const missingDocuments = pcgiDocIds.filter((documentId: string) => !goDocIdsUnique.has(String(documentId)));
+		const extraDocuments = goDocIds.filter((documentId: string) => !pcgiDocIdsUnique.has(String(documentId)));
 
-		LOGGER.info(`PCGI Total: ${pcgiDocIds.length} | PCGI Unique: ${pcgiDocIdsUnique.size} | SLA Total: ${slaDocIds.length} | SLA Unique: ${slaDocIdsUnique.size} | SLA Missing: ${missingDocuments.length} | SLA Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
+		LOGGER.info(`PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | GO Total: ${goDocCount} | GO Unique: ${goDocIdsUnique.size} | GO ▲: ${goDocCount - goDocIdsUnique.size} | GO Missing: ${missingDocuments.length} | GO Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
 
 		//
 		// If all documents are already synced, then we can skip the rest of the process.
@@ -71,18 +71,18 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, pcg
 		}
 
 		//
-		// If there are extra documents in the SLA database, then we remove them.
+		// If there are extra documents in the GO database, then we remove them.
 
 		if (extraDocuments.length > 0) {
-			await slaCollection.deleteMany({ [slaIdKey]: { $in: extraDocuments }, ...slaQuery });
-			LOGGER.info(`Removed ${extraDocuments.length} extra documents in SLA. (${distinctQueryTimer.get()})`);
+			await goCollection.deleteMany({ [goIdKey]: { $in: extraDocuments }, ...goQuery });
+			LOGGER.info(`Removed ${extraDocuments.length} extra documents in GO. (${distinctQueryTimer.get()})`);
 		}
 
 		//
 		// If there are missing documents, then we sync them.
-		// We query the PCGIDB for the missing documents and write them to the SLA database.
+		// We query the PCGIDB for the missing documents and write them to the GO database.
 
-		LOGGER.info(`Found ${missingDocuments.length} missing documents in SLA. (${distinctQueryTimer.get()})`);
+		LOGGER.info(`Found ${missingDocuments.length} missing documents in GO. (${distinctQueryTimer.get()})`);
 
 		const missingDocumentsStream = pcgiCollection
 			.find({ [pcgiIdKey]: { $in: missingDocuments } })
@@ -90,7 +90,8 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, pcg
 
 		for await (const pcgiDocument of missingDocumentsStream) {
 			const parsedSlaDoc = docParser(pcgiDocument);
-			await dbWriter.write(parsedSlaDoc, { filter: { [slaIdKey]: parsedSlaDoc[slaIdKey] }, upsert: true }, async () => { /**/ }, flushCallback);
+			if (!parsedSlaDoc) continue; // Skip if parsing failed
+			await dbWriter.write(parsedSlaDoc, { filter: { [goIdKey]: parsedSlaDoc[goIdKey] }, upsert: true }, async () => { /**/ }, flushCallback);
 		}
 
 		//

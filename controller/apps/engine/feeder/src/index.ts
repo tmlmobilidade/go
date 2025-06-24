@@ -4,13 +4,12 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
-import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, OPERATIONAL_DATE_FORMAT, type OperationalDate, type Ride, type UnixTimestamp, validateOperationalDate, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Ride, type UnixTimestamp, validateOperationalDate } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
 import fs from 'fs';
-import { DateTime } from 'luxon';
 
 /* * */
 
@@ -524,8 +523,8 @@ async function createRidesFromGtfs() {
 						const hashedTripData: HashedTrip = {
 							...hashableHashedTripData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedTripData)).digest('hex'),
-							created_at: Dates.now().unix_timestamp,
-							updated_at: Dates.now().unix_timestamp,
+							created_at: Dates.now('utc').unix_timestamp,
+							updated_at: Dates.now('utc').unix_timestamp,
 						};
 
 						const currentHashedTripAlreadyExists = await hashedTrips.findById(hashedTripData._id);
@@ -549,8 +548,8 @@ async function createRidesFromGtfs() {
 						const hashedShapeData: HashedShape = {
 							...hashableHashedShapeData,
 							_id: crypto.createHash('sha256').update(JSON.stringify(hashableHashedShapeData)).digest('hex'),
-							created_at: Dates.now().unix_timestamp,
-							updated_at: Dates.now().unix_timestamp,
+							created_at: Dates.now('utc').unix_timestamp,
+							updated_at: Dates.now('utc').unix_timestamp,
 						};
 
 						const currentHashedShapeAlreadyExists = await hashedShapes.findById(hashedShapeData._id);
@@ -587,7 +586,7 @@ async function createRidesFromGtfs() {
 								apex_on_board_sales_amount: null,
 								apex_on_board_sales_qty: null,
 								apex_validations_qty: null,
-								created_at: Dates.now().unix_timestamp,
+								created_at: Dates.now('utc').unix_timestamp,
 								driver_ids: [],
 								end_time_observed: null,
 								end_time_scheduled: endTimeScheduledDate,
@@ -611,7 +610,7 @@ async function createRidesFromGtfs() {
 								start_time_scheduled: startTimeScheduledDate,
 								system_status: 'pending',
 								trip_id: tripData.trip_id,
-								updated_at: Dates.now().unix_timestamp,
+								updated_at: Dates.now('utc').unix_timestamp,
 								vehicle_ids: [],
 							};
 							//
@@ -889,13 +888,10 @@ const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: stri
 	// Extract the individual components of the time string (HH:MM:SS)
 	const [hoursOperation, minutesOperation, secondsOperation] = timeString.split(':').map(Number);
 
-	return validateUnixTimestamp(
-		DateTime
-			.fromFormat(operationalDate, OPERATIONAL_DATE_FORMAT)
-			.setZone('Europe/Lisbon')
-			.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-			.toMillis(),
-	);
+	return Dates
+		.fromOperationalDate(operationalDate, 'Europe/Lisbon')
+		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
+		.unix_timestamp;
 
 	//
 };

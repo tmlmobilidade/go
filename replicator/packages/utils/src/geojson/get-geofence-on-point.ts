@@ -1,10 +1,9 @@
 /* * */
 
 import { EARTH_RADIUS } from '@/geojson/constants.js';
+import { toFeatureFromObject, toPointFromPositions } from '@/geojson/conversions.js';
 import { polygon } from '@turf/helpers';
 import { type Feature, type Point, type Polygon } from 'geojson';
-
-import { toFeatureFromObject, toPointFromPositions } from './conversions.js';
 
 /**
  * Create a geofence around a given point with a given radius in meters (default is 50 meters).

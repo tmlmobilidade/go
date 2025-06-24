@@ -5,8 +5,8 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -33,8 +33,13 @@ export async function processApexValidation(databaseOperation) {
 	//
 	// Extract the PCGI document from the database operation
 	// and transform the vehicle timestamp into an operational date.
+	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexValidationDocument = parseSimplifiedApexValidation(databaseOperation.fullDocument);
+	if (!newSimplifiedApexValidationDocument) {
+		LOGGER.error(`Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		return;
+	}
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation
@@ -45,7 +50,7 @@ export async function processApexValidation(databaseOperation) {
 			const invalidationTimer = new TIMETRACKER();
 			// Map the flushed data to the query that will be used to invalidate the rides
 			const updates = flushedData.map((writeOp) => {
-				const standardWindowInterval = getStandardWindowInterval(writeOp.data.created_at);
+				const standardWindowInterval = Dates.fromUnixTimestamp(writeOp.data.created_at).std_window;
 				return {
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 					trip_id: writeOp.data.trip_id,
@@ -54,7 +59,7 @@ export async function processApexValidation(databaseOperation) {
 			// Invalidate all rides that are affected
 			const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
 			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [apex_t11]: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_t11 data (${invalidationTimer.get()})`);
+			LOGGER.info(`Flush [simplified_apex_validations]: Marked ${result.modifiedCount} Rides as 'pending' due to new simplified_apex_validations data (${invalidationTimer.get()})`);
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);

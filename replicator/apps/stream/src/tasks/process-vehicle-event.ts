@@ -6,8 +6,8 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { emailProvider } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { getStandardWindowInterval } from '@tmlmobilidade/sae-replicator-pckg-utils';
 import { type VehicleEvent } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -30,7 +30,7 @@ export async function processVehicleEvent(databaseOperation) {
 	if (databaseOperation.operationType !== 'insert') {
 		LOGGER.error('MAJOR ERROR: processVehicleEvent called with operationType different than "insert".');
 		await emailProvider.send({
-			subject: 'SLA ERROR',
+			subject: 'GO ERROR',
 			text: `
 				<h4>processVehicleEvent called with operationType different than "insert".</h4>
 				<pre>${JSON.stringify(databaseOperation)}</pre>
@@ -43,8 +43,13 @@ export async function processVehicleEvent(databaseOperation) {
 	//
 	// Extract the PCGI document from the database operation
 	// and transform the vehicle timestamp into an operational date.
+	// Skip the operation if the document is not valid.
 
 	const newVehicleEventDocument = parseVehicleEvent(databaseOperation.fullDocument);
+	if (!newVehicleEventDocument) {
+		LOGGER.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
+		return;
+	}
 
 	//
 	// Setup the callback function that will be called on the DB Writer flush operation
@@ -55,7 +60,7 @@ export async function processVehicleEvent(databaseOperation) {
 			const invalidationTimer = new TIMETRACKER();
 			// Map the flushed data to the query that will be used to invalidate the rides
 			const updates = flushedData.map((writeOp) => {
-				const standardWindowInterval = getStandardWindowInterval(writeOp.data.created_at);
+				const standardWindowInterval = Dates.fromUnixTimestamp(writeOp.data.created_at).std_window;
 				return {
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 					trip_id: writeOp.data.trip_id,
