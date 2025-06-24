@@ -3,6 +3,7 @@
 import { type OfferJourney, type OfferStop } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
+import { JsonWriter } from '@helperkits/writer';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { parse as csvParser } from 'csv-parse';
@@ -18,6 +19,9 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		LOGGER.init();
 
 		const globalTimer = new TIMETRACKER();
+
+		const offerStopsWriter = new JsonWriter<OfferStop>('offer-stops', `${outputDir}/offer-stops.json`, { add_after: '}', add_before: '{"payload":', batch_size: 5 });
+		const offerJourneysWriter = new JsonWriter<OfferJourney>('offer-journeys', `${outputDir}/offer-journeys.json`, { add_after: '}', add_before: '{"payload":', batch_size: 5 });
 
 		//
 		// Read a GTFS file from the filesystem
@@ -35,7 +39,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			const savedTrips = new Map();
 			const savedStops = new Map();
 			const savedRoutes = new Map();
-			const savedStopTimes = new Map<string, OfferStop[]>();
+			const savedStopTimes = new Map();
 
 			//
 			// Prepare the working directories for the current plan
@@ -298,7 +302,8 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					//
 					// Skip if this row's trip_id was not saved before
 
-					if (!savedTrips.has(data.trip_id)) return;
+					const tripData = savedTrips.get(data.trip_id);
+					if (!tripData) return;
 
 					//
 					// Get the associated stop data. Skip if none found.
@@ -306,50 +311,8 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					const stopData = savedStops.get(data.stop_id);
 					if (!stopData) return;
 
-					const parsedRowData: OfferStop = {
-						arrivalTime: '14:17:52',
-						bench: 0,
-						continuousDropOff: 0,
-						continuousPickup: 0,
-						date: '2024-09-01',
-						departureTime: '14:17:52',
-						dropOffType: 0,
-						entranceRestriction: 0,
-						equipment: 0,
-						exitRestriction: 0,
-						feedId: 'testeCascais',
-						locationType: 0,
-						municipality: 1105,
-						municipalityFare1: null,
-						municipalityFare2: null,
-						networkMap: 0,
-						parentStation: '',
-						pickupType: 0,
-						platformCode: '',
-						preservationState: 0,
-						realTimeInformation: 0,
-						region: null,
-						rowId: 1,
-						schedule: 0,
-						shapeDistTraveled: 4217.77,
-						shelter: 0,
-						signalling: 0,
-						slot: 0,
-						stopCode: '',
-						stopDesc: '',
-						stopHeadsign: 'Rua da Torre',
-						stopId: '20811',
-						stopIdStepp: 'Stepp_20811',
-						stopLat: 38.69632,
-						stopLon: -9.441346,
-						stopName: 'Rua da Torre',
-						stopRemarks: '',
-						stopSequence: 11,
-						tariff: 0,
-						timepoint: 0,
-						tripId: 'M27-1-079-A-SDF-14h05-CascaisEstacao',
-						wheelchairBoarding: 0,
-						zoneShift: 0,
+					const parsedRowData = {
+						...data,
 					};
 
 					const savedStopTime = savedStopTimes.has(data.trip_id);
@@ -459,7 +422,65 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 							wheelchairAccessible: 0,
 						};
 						//
-						saveOutputFile(outputDir, offerJourneyData);
+						offerJourneysWriter.write(offerJourneyData);
+
+						for (const stData of stopTimesData) {
+							// Get data
+							const currentStopData = savedStops.get(stData.stop_id);
+							if (!currentStopData) {
+								LOGGER.error(`Stop ${stData.stopId} not found for trip ${tripData.trip_id}. Skipping...`);
+								continue;
+							}
+							// Create an offer stop for each stop time,
+							// including the associated stop data
+							const offerStopData: OfferStop = {
+								arrivalTime: stData.arrivalTime,
+								bench: 0,
+								continuousDropOff: 0,
+								continuousPickup: 0,
+								date: Dates.fromOperationalDate(calendarDate, 'Europe/Lisbon').toFormat('yyyy-MM-dd'),
+								departureTime: stData.departureTime,
+								dropOffType: 0,
+								entranceRestriction: 0,
+								equipment: 0,
+								exitRestriction: 0,
+								feedId: 'GTFS_FEED',
+								locationType: 0,
+								municipality: 1105, // Cascais
+								municipalityFare1: null,
+								municipalityFare2: null,
+								networkMap: 0,
+								parentStation: null,
+								pickupType: 0,
+								platformCode: stData.platformCode || '',
+								preservationState: 0,
+								realTimeInformation: 0,
+								region: null,
+								rowId: 0, // This will be set later by the database
+								schedule: 0, // 0 = Scheduled, 1 = Real-time
+								shapeDistTraveled: stData.shapeDistTraveled,
+								shelter: 0,
+								signalling: 0,
+								slot: 0,
+								stopCode: stData.stopCode,
+								stopDesc: '',
+								stopHeadsign: stData.stopHeadsign,
+								stopId: stData.stopId,
+								stopIdStepp: '',
+								stopLat: currentStopData.stop_lat,
+								stopLon: currentStopData.stop_lon,
+								stopName: currentStopData.stop_name,
+								stopRemarks: '',
+								stopSequence: stData.stopSequence,
+								tariff: 0,
+								timepoint: 0,
+								tripId: tripData.trip_id,
+								wheelchairBoarding: 0,
+								zoneShift: 0,
+							};
+							//
+							offerStopsWriter.write(offerStopData);
+						}
 					}
 
 					//
@@ -477,6 +498,11 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				LOGGER.error('Error transforming or saving Shapes, Trips or Rides to database.', error);
 				throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.');
 			}
+
+			//
+
+			offerStopsWriter.close();
+			offerJourneysWriter.close();
 
 			//
 
@@ -576,11 +602,4 @@ const convertMetersOrKilometersToMeters = (value: number | string, ballpark: num
 	}
 
 	//
-};
-
-/* * */
-
-const saveOutputFile = (outputDir: string, data: OfferJourney | OfferStop): void => {
-	fs.writeFileSync(`${outputDir}/${data.date}-${data.tripId}.json`, JSON.stringify(data, null, 2), 'utf8');
-	LOGGER.success(`Output file saved to ${outputDir}/${data.date}-${data.tripId}.json`);
 };

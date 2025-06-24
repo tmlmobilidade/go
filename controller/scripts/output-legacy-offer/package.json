@@ -21,7 +21,7 @@
 	"dependencies": {
 		"@helperkits/logger": "20240703.1726.24",
 		"@helperkits/timer": "20240627.34.23",
-		"@helperkits/writer": "20250303.1058.31",
+		"@helperkits/writer": "20250623.2358.3",
 		"@tmlmobilidade/interfaces": "20250619.107.10",
 		"@tmlmobilidade/utils": "20250619.107.10",
 		"commander": "^14.0.0",
