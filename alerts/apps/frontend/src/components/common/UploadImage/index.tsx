@@ -2,8 +2,9 @@ import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
-import ComponentWrapper from '../ComponentWrapper';
 import styles from './styles.module.css';
+
+import ComponentWrapper from '../ComponentWrapper';
 
 interface UploadImageProps {
 	imageUrl?: string

@@ -13,6 +13,7 @@ import { type Municipality } from '@carrismetropolitana/api-types/locations';
 import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -21,11 +22,11 @@ import useSWR from 'swr';
 
 interface AlertListContextState {
 	actions: {
-		changePublishDateEnd: (date: Date | null) => void
-		changePublishDateStart: (date: Date | null) => void
+		changePublishDateEnd: (date: null | string) => void
+		changePublishDateStart: (date: null | string) => void
 		changeSearchQuery: (query: string) => void
-		changeValidityDateEnd: (date: Date | null) => void
-		changeValidityDateStart: (date: Date | null) => void
+		changeValidityDateEnd: (date: null | string) => void
+		changeValidityDateStart: (date: null | string) => void
 		toggleCause: (cause: string) => void
 		toggleEffect: (effect: string) => void
 		toggleLine: (line: string) => void
@@ -45,13 +46,13 @@ interface AlertListContextState {
 		municipality: string[]
 		municipalityOptions: string[]
 		publish_status: string[]
-		publishDateEnd: Date | null
-		publishDateStart: Date | null
+		publishDateEnd: null | string
+		publishDateStart: null | string
 		searchQuery: string
 		stop: string[]
 		stopOptions: string[]
-		validityDateEnd: Date | null
-		validityDateStart: Date | null
+		validityDateEnd: null | string
+		validityDateStart: null | string
 	}
 	flags: {
 		error: Error | undefined
@@ -89,10 +90,10 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	const [filterMunicipality, setFilterMunicipality] = useState<string[]>([]);
 	const [filterLine, setFilterLine] = useState<string[]>([]);
 	const [filterStop, setFilterStop] = useState<string[]>([]);
-	const [filterValidityDateStart, setFilterValidityDateStart] = useState<Date | null>(null);
-	const [filterValidityDateEnd, setFilterValidityDateEnd] = useState<Date | null>(null);
-	const [filterPublishDateStart, setFilterPublishDateStart] = useState<Date | null>(null);
-	const [filterPublishDateEnd, setFilterPublishDateEnd] = useState<Date | null>(null);
+	const [filterValidityDateStart, setFilterValidityDateStart] = useState<null | string>(null);
+	const [filterValidityDateEnd, setFilterValidityDateEnd] = useState<null | string>(null);
+	const [filterPublishDateStart, setFilterPublishDateStart] = useState<null | string>(null);
+	const [filterPublishDateEnd, setFilterPublishDateEnd] = useState<null | string>(null);
 
 	//
 	// B. Fetch data
@@ -272,11 +273,11 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		const stopSet = new Set(filterStop);
 
 		// 2. Create date boundaries if needed
-		const fromPublishStart = filterPublishDateStart ? DateTime.fromJSDate(filterPublishDateStart).toMillis() : null;
-		const fromPublishEnd = filterPublishDateEnd ? DateTime.fromJSDate(filterPublishDateEnd).toMillis() : null;
+		const fromPublishStart = filterPublishDateStart ? Dates.fromFormat(filterPublishDateStart, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp : null;
+		const fromPublishEnd = filterPublishDateEnd ? Dates.fromFormat(filterPublishDateEnd, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp : null;
 
-		const fromValidityStart = filterValidityDateStart ? DateTime.fromJSDate(filterValidityDateStart).toMillis() : null;
-		const fromValidityEnd = filterValidityDateEnd ? DateTime.fromJSDate(filterValidityDateEnd).toMillis() : null;
+		const fromValidityStart = filterValidityDateStart ? Dates.fromFormat(filterValidityDateStart, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp : null;
+		const fromValidityEnd = filterValidityDateEnd ? Dates.fromFormat(filterValidityDateEnd, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp : null;
 
 		// 3. Booleans to see if all possible options are chosen (meaning we skip that filter entirely)
 		const allPublishStatuses = filterPublishStatus.length === AlertSchema.shape.publish_status.options.length;
@@ -416,19 +417,19 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		setFilterStop(toggleArray(filterStop, stop_id));
 	}
 
-	function handleChangeValidityDateStart(date: Date | null) {
+	function handleChangeValidityDateStart(date: null | string) {
 		setFilterValidityDateStart(date);
 	}
 
-	function handleChangeValidityDateEnd(date: Date | null) {
+	function handleChangeValidityDateEnd(date: null | string) {
 		setFilterValidityDateEnd(date);
 	}
 
-	function handleChangePublishDateStart(date: Date | null) {
+	function handleChangePublishDateStart(date: null | string) {
 		setFilterPublishDateStart(date);
 	}
 
-	function handleChangePublishDateEnd(date: Date | null) {
+	function handleChangePublishDateEnd(date: null | string) {
 		setFilterPublishDateEnd(date);
 	}
 

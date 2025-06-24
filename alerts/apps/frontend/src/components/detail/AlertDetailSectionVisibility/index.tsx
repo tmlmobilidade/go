@@ -4,7 +4,7 @@
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
-import { getUnixTimestampFromJSDate } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
 
@@ -43,7 +43,7 @@ export function AlertDetailSectionVisibility() {
 					{...alertDetailContext.data.form.getInputProps('publish_start_date')}
 					value={startDate}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('publish_start_date', getUnixTimestampFromJSDate(date));
+						alertDetailContext.data.form.setFieldValue('publish_start_date', Dates.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp);
 					}}
 				/>
 				<DateTimePicker
@@ -54,7 +54,7 @@ export function AlertDetailSectionVisibility() {
 					{...alertDetailContext.data.form.getInputProps('publish_end_date')}
 					value={endDate}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('publish_end_date', getUnixTimestampFromJSDate(date));
+						alertDetailContext.data.form.setFieldValue('publish_end_date', date ? Dates.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp : null);
 					}}
 				/>
 			</Section>
