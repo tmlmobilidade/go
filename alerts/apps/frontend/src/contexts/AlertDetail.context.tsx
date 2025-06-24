@@ -3,8 +3,8 @@
 import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { convertObject, getUnixTimestamp } from '@tmlmobilidade/utils';
+import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { convertObject, Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -39,7 +39,7 @@ interface AlertDetailContextState {
 
 const emptyAlert: CreateAlertDto = {
 	active_period_end_date: undefined,
-	active_period_start_date: getUnixTimestamp(),
+	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	cause: Object.values(causeSchema.Enum)[0],
 	created_by: 'temp',
 	description: '',
@@ -47,7 +47,7 @@ const emptyAlert: CreateAlertDto = {
 	modified_by: 'temp',
 	municipality_ids: [],
 	publish_end_date: undefined,
-	publish_start_date: getUnixTimestamp(),
+	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	publish_status: 'DRAFT',
 	reference_type: Object.values(referenceTypeSchema.Enum)[0],
 	references: [],
@@ -87,7 +87,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: alert || emptyAlert,
-		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema),
+		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -148,16 +148,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setIsSaving(true);
 
 		// Handle Save Alert
-		const active_period_end_date = form.getValues().active_period_end_date ?? null;
-		const publish_end_date = form.getValues().publish_end_date ?? null;
-
-		const saveAlert: CreateAlertDto = { ...form.values, active_period_end_date, publish_end_date, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
+		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 
 		const method = alertId === 'new' ? 'POST' : 'PUT';
 		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
-		let body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
-
-		body = { ...body, active_period_end_date, publish_end_date };
+		const body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
 
 		const response = await fetchData<unknown>(url, method, body);
 

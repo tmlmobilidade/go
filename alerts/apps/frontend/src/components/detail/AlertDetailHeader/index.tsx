@@ -24,7 +24,7 @@ export function AlertDetailHeader() {
 		<>
 			<BackButton />
 			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
-			<Label size="lg" caps>{alertDetailContext.data.form.getValues()._id}</Label>
+			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 			<Spacer />
 			<Button
 				label="Salvar como rascunho"
