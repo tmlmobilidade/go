@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
 				port: '',
 				protocol: 'https',
 			},
+			{
+				hostname: '*.oraclecloud.com',
+				port: '',
+				protocol: 'https',
+			},
 		],
 	},
 	output: 'standalone',
