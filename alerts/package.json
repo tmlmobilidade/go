@@ -9,14 +9,14 @@
 		"start": "turbo start"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250325.1926.5",
-		"@tmlmobilidade/tsconfig": "20250325.1731.13",
+		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@tmlmobilidade/tsconfig": "20250624.1433.23",
 		"dotenv-cli": "8.0.0",
-		"prettier": "3.5.3",
-		"turbo": "2.5.0",
+		"prettier": "3.6.0",
+		"turbo": "2.5.4",
 		"typescript": "5.8.3"
 	},
-	"packageManager": "npm@11.3.0",
+	"packageManager": "npm@11.4.2",
 	"engines": {
 		"node": ">=18"
 	},
