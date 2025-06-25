@@ -26,6 +26,7 @@ import fs from 'fs';
 		.requiredOption('--end-date <operational-date>', 'The end date of the plan in YYYYMMDD format')
 		.option('--output-dir <path>', 'Output directory for the offer_journey.json files', './output')
 		.option('--override', 'Override output directory if it exists', false)
+		.option('--feed-id <value>', 'Optional feedId value to include in output files', null)
 		.parse();
 
 	//
@@ -64,7 +65,7 @@ import fs from 'fs';
 	//
 	// Start the offer generation process
 
-	await generateOfferOutput(options.file, options.startDate, options.endDate, options.outputDir);
+	await generateOfferOutput(options.file, options.startDate, options.endDate, options.outputDir, options.feedId);
 
 	//
 })();
