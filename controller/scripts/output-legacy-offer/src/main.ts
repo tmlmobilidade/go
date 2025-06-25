@@ -1,21 +1,24 @@
 /* * */
 
+import { ascii } from '@/ascii.js';
 import { type OfferJourney, type OfferStop } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { JsonWriter } from '@helperkits/writer';
-import { type OperationalDate, type Route_TMLExtended, type Trip_TMLExtended, validateOperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate, type Route_TMLExtended, type Stop_TMLExtended, type Trip_TMLExtended, validateOperationalDate } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
 import fs from 'fs';
-import { type Calendar, type CalendarDates, ExceptionType, type Stop, type StopTime } from 'gtfs-types';
+import { type Calendar, type CalendarDates, ExceptionType, type StopTime } from 'gtfs-types';
 
 /* * */
 
 export async function generateOfferOutput(filePath: string, startDate: OperationalDate, endDate: OperationalDate, outputDir: string, feedId: null | string): Promise<void> {
 	try {
 		//
+
+		console.log(ascii);
 
 		LOGGER.init();
 
@@ -38,9 +41,9 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 		const savedCalendarDates = new Map<string, OperationalDate[]>();
 		const savedTrips = new Map<string, Trip_TMLExtended>();
-		const savedStops = new Map<string, Stop>();
+		const savedStops = new Map<string, Stop_TMLExtended>();
 		const savedRoutes = new Map<string, Partial<Route_TMLExtended>>();
-		const savedStopTimes = new Map<string, (Stop & StopTime)[]>();
+		const savedStopTimes = new Map<string, StopTime[]>();
 
 		let totalOfferJourneysCounter = 0;
 		let totalOfferStopsCounter = 0;
@@ -386,13 +389,18 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			LOGGER.info(`Reading zip entry "stops.txt"...`);
 
-			const parseEachRow = async (data: Stop) => {
+			const parseEachRow = async (data: Stop_TMLExtended) => {
 				//
 
 				//
 				// Save all stops, but only the mininum required data.
 
-				const parsedRowData: Stop = {
+				const parsedRowData: Stop_TMLExtended = {
+					location_type: data.location_type,
+					municipality_id: data.municipality_id,
+					parent_station: data.parent_station,
+					parish_id: data.parish_id,
+					region_id: data.region_id,
 					stop_id: data.stop_id,
 					stop_lat: Number(data.stop_lat),
 					stop_lon: Number(data.stop_lon),
@@ -451,7 +459,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				// Format the exported row. Only include the minimum required data
 				// to prevent memory bloat later on, and include the stop data right away.
 
-				const parsedRowData: Stop & StopTime = {
+				const parsedRowData: StopTime = {
 					arrival_time: data.arrival_time,
 					continuous_drop_off: data.continuous_drop_off,
 					continuous_pickup: data.continuous_pickup,
@@ -459,12 +467,9 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					shape_dist_traveled: data.shape_dist_traveled,
 					stop_headsign: data.stop_headsign,
 					stop_id: data.stop_id,
-					stop_lat: stopData.stop_lat,
-					stop_lon: stopData.stop_lon,
-					stop_name: stopData.stop_name,
 					stop_sequence: data.stop_sequence,
+					timepoint: data.timepoint,
 					trip_id: data.trip_id,
-					wheelchair_boarding: stopData.wheelchair_boarding,
 				};
 
 				const savedStopTime = savedStopTimes.get(data.trip_id);
@@ -500,25 +505,25 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			for (const tripData of savedTrips.values()) {
+			for (const currentTrip of savedTrips.values()) {
 				//
 
 				//
 				// Get associated data for the current trip
 
-				const calendarDatesData = savedCalendarDates.get(tripData.service_id);
-				const stopTimesData = savedStopTimes.get(tripData.trip_id);
-				const routeData = savedRoutes.get(tripData.route_id);
+				const calendarDatesData = savedCalendarDates.get(currentTrip.service_id);
+				const stopTimesData = savedStopTimes.get(currentTrip.trip_id);
+				const routeData = savedRoutes.get(currentTrip.route_id);
 
 				if (!stopTimesData || stopTimesData.length === 0) {
-					LOGGER.error(`Trip ${tripData.trip_id} has no path data. Skipping...`);
+					LOGGER.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
 					continue;
 				}
 
 				//
 				// Build an OfferJourney object for all dates when the trip is valid
 
-				for (const calendarDate of calendarDatesData) {
+				for (const currentCalendarDate of calendarDatesData) {
 					//
 
 					//
@@ -526,11 +531,14 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					// Extract common use cases from the stopTimesData to avoid repeated calculations.
 
 					const firstStopTime = stopTimesData[0];
+					const firstStopData = savedStops.get(firstStopTime.stop_id);
+
 					const lastStopTime = stopTimesData[stopTimesData.length - 1];
+					const lastStopData = savedStops.get(lastStopTime.stop_id);
 
 					const extensionScheduledInMeters = convertMetersOrKilometersToMeters(lastStopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
 
-					const currentDateFormated = Dates.fromOperationalDate(calendarDate, 'Europe/Lisbon').toFormat('yyyy-MM-dd');
+					const currentDateFormated = Dates.fromOperationalDate(currentCalendarDate, 'Europe/Lisbon').toFormat('yyyy-MM-dd');
 
 					//
 
@@ -546,11 +554,11 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 						dayType: null,
 						dayTypeName: null,
 						departureTime: firstStopTime.departure_time ?? '-',
-						directionId: tripData.direction_id ?? null,
+						directionId: currentTrip.direction_id ?? null,
 						endShiftId: null,
 						endStopCode: lastStopTime.stop_id ?? '-',
 						endStopId: lastStopTime.stop_id ?? '-',
-						endStopName: lastStopTime.stop_name ?? '-',
+						endStopName: lastStopData.stop_name ?? '-',
 						feedId: feedId,
 						holiday: null,
 						holidayName: null,
@@ -558,14 +566,14 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 						lineLongName: routeData.line_long_name ?? '-',
 						lineShortName: routeData.line_short_name ?? '-',
 						pathType: routeData.path_type ?? 0,
-						patternId: tripData.pattern_id ?? '-',
+						patternId: currentTrip.pattern_id ?? '-',
 						patternShortName: null,
 						period: null,
 						periodName: null,
 						routeColor: null,
 						routeDesc: null,
 						routeDestination: null,
-						routeId: tripData.route_id ?? '-',
+						routeId: currentTrip.route_id ?? '-',
 						routeLongName: routeData.route_long_name ?? '-',
 						routeOrigin: null,
 						routeShortName: routeData.route_short_name ?? '-',
@@ -573,15 +581,15 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 						routeType: String(routeData.route_type ?? '-'),
 						rowId: null,
 						school: null,
-						shapeId: tripData.shape_id ?? '-',
+						shapeId: currentTrip.shape_id ?? '-',
 						startShiftId: null,
 						startStopCode: firstStopTime.stop_id ?? '-',
 						startStopId: firstStopTime.stop_id ?? '-',
-						startStopName: firstStopTime.stop_name ?? '-',
-						tripHeadsign: tripData.trip_headsign ?? '-',
-						tripId: tripData.trip_id ?? '-',
+						startStopName: firstStopData.stop_name ?? '-',
+						tripHeadsign: currentTrip.trip_headsign ?? '-',
+						tripId: currentTrip.trip_id ?? '-',
 						tripLength: extensionScheduledInMeters ?? 0,
-						wheelchairAccessible: tripData.wheelchair_accessible ?? 0,
+						wheelchairAccessible: currentTrip.wheelchair_accessible ?? 0,
 					};
 
 					offerJourneysWriter.write(offerJourneyData);
@@ -591,52 +599,56 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					//
 					// Now, for each stop time of the current trip, create an OfferStop object
 
-					for (const stData of stopTimesData) {
+					for (const currentStopTime of stopTimesData) {
 						//
 
+						const currentStop = savedStops.get(currentStopTime.stop_id);
+
+						const shapeDistTraveledInMeters = convertMetersOrKilometersToMeters(currentStopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
+
 						const offerStopData: OfferStop = {
-							arrivalTime: stData.arrival_time,
+							arrivalTime: currentStopTime.arrival_time,
 							bench: null,
-							continuousDropOff: stData.continuous_drop_off,
-							continuousPickup: stData.continuous_pickup,
+							continuousDropOff: currentStopTime.continuous_drop_off,
+							continuousPickup: currentStopTime.continuous_pickup,
 							date: currentDateFormated,
-							departureTime: stData.departure_time,
-							dropOffType: stData.drop_off_type,
+							departureTime: currentStopTime.departure_time,
+							dropOffType: currentStopTime.drop_off_type,
 							entranceRestriction: null,
 							equipment: null,
 							exitRestriction: null,
 							feedId: feedId,
-							locationType: null,
-							municipality: null,
+							locationType: currentStop.location_type ?? 0,
+							municipality: Number(currentStop.municipality_id ?? 0),
 							municipalityFare1: null,
 							municipalityFare2: null,
 							networkMap: null,
-							parentStation: null,
+							parentStation: currentStop.parent_station ?? '',
 							pickupType: null,
-							platformCode: stData.platform_code,
+							platformCode: currentStop.platform_code,
 							preservationState: null,
 							realTimeInformation: null,
-							region: null,
+							region: currentStop.region_id ?? '-',
 							rowId: null,
 							schedule: null,
-							shapeDistTraveled: stData.shape_dist_traveled,
+							shapeDistTraveled: shapeDistTraveledInMeters,
 							shelter: null,
 							signalling: null,
 							slot: null,
-							stopCode: stData.stop_id,
+							stopCode: currentStopTime.stop_id,
 							stopDesc: null,
-							stopHeadsign: stData.stop_headsign,
-							stopId: stData.stop_id,
+							stopHeadsign: currentStopTime.stop_headsign,
+							stopId: currentStopTime.stop_id,
 							stopIdStepp: null,
-							stopLat: stData.stop_lat,
-							stopLon: stData.stop_lon,
-							stopName: stData.stop_name,
+							stopLat: currentStop.stop_lat,
+							stopLon: currentStop.stop_lon,
+							stopName: currentStop.stop_name,
 							stopRemarks: null,
-							stopSequence: stData.stop_sequence,
+							stopSequence: currentStopTime.stop_sequence,
 							tariff: null,
-							timepoint: null,
-							tripId: tripData.trip_id,
-							wheelchairBoarding: stData.wheelchair_boarding as number,
+							timepoint: Number(currentStopTime.timepoint ?? 0),
+							tripId: currentTrip.trip_id,
+							wheelchairBoarding: Number(currentStop.wheelchair_boarding),
 							zoneShift: null,
 						};
 
@@ -651,8 +663,8 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				//
 				// Delete the already written data to free up memory sooner
 
-				savedTrips.delete(tripData.trip_id);
-				savedStopTimes.delete(tripData.trip_id);
+				savedTrips.delete(currentTrip.trip_id);
+				savedStopTimes.delete(currentTrip.trip_id);
 
 				//
 			}

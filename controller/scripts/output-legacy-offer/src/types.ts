@@ -74,7 +74,7 @@ export interface OfferStop {
 	platformCode: string // ''
 	preservationState: number // 0
 	realTimeInformation: number // 0
-	region: null
+	region: string
 	rowId: number // 1
 	schedule: number // 0
 	shapeDistTraveled: number // 4217.77
