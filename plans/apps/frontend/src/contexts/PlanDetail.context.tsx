@@ -77,7 +77,7 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 			title: 'Erro ao carregar validação',
 		});
 
-		router.replace(Routes.VALIDATION_LIST);
+		// router.replace(Routes.PLAN_LIST);
 	}, [isLoading]);
 
 	//

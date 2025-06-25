@@ -152,7 +152,8 @@ export class PlansController {
 		try {
 			const permissions = request.permissions as Permission<PlanPermission>;
 
-			// Filter validations by all keys
+			// Filter plans by all keys
+			console.log('======= permissions ========', permissions);
 			if (permissions?.resource) {
 				const filter = {
 					...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
@@ -160,18 +161,22 @@ export class PlansController {
 					...(permissions.resource.start_date && { 'gtfs_feed_info.feed_start_date': { $gte: permissions.resource.start_date } }),
 				};
 
-				const filteredPlans = await validations.findMany(
+				console.log('======= filter ========', filter);
+
+				const filteredPlans = await plans.findMany(
 					filter,
 					undefined,
 					undefined,
 					{ created_at: -1 },
 				);
 
+				console.log('======= filteredPlans ========', filteredPlans);
+
 				return reply.send(filteredPlans);
 			}
 
-			// Send all validations
-			return reply.send(await validations.findMany({}, undefined, undefined, { created_at: -1 }));
+			// Send all plans
+			return reply.send(await plans.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
@@ -215,19 +220,19 @@ export class PlansController {
 
 			//
 
-			const file = await files.findById(plan.operation_file_id);
-
-			if (!file) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
-				return;
+			try {
+				const file = await files.findById(plan.operation_file_id);
+				return reply.send({
+					...plan,
+					file,
+				});
 			}
-
-			file.url = await files.getFileUrl({ file_id: file._id });
-
-			reply.send({
-				...plan,
-				file,
-			});
+			catch (error) {
+				return reply.send({
+					...plan,
+					file: undefined,
+				});
+			}
 		}
 		catch (error) {
 			reply
