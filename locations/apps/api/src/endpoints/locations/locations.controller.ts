@@ -6,7 +6,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 /**
  * This is an example controller that is using the alerts interface.
  */
-export class AlertsController {
+export class LocationsController {
 	/**
 	 * Creates a new alert
 	 * @param request Fastify request containing alert data in body

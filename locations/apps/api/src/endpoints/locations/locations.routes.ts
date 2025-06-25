@@ -6,7 +6,7 @@ import { Permissions } from '@tmlmobilidade/lib';
 import { Alert } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
-import { AlertsController } from './alerts.controller.js';
+import { LocationsController } from './locations.controller.js';
 
 /* * */
 
@@ -26,7 +26,7 @@ server.register(
 					Permissions.alerts.actions.list,
 				),
 			},
-			AlertsController.getAll,
+			LocationsController.getAll,
 		);
 
 		// GET /alerts/:id
@@ -38,7 +38,7 @@ server.register(
 					Permissions.alerts.actions.read,
 				),
 			},
-			AlertsController.getById,
+			LocationsController.getById,
 		);
 
 		// POST /alerts
@@ -50,7 +50,7 @@ server.register(
 					Permissions.alerts.actions.create,
 				),
 			},
-			AlertsController.create,
+			LocationsController.create,
 		);
 
 		// PUT /alerts/:id
@@ -62,7 +62,7 @@ server.register(
 					Permissions.alerts.actions.update,
 				),
 			},
-			AlertsController.update,
+			LocationsController.update,
 		);
 
 		// DELETE /alerts/:id
@@ -74,7 +74,7 @@ server.register(
 					Permissions.alerts.actions.delete,
 				),
 			},
-			AlertsController.delete,
+			LocationsController.delete,
 		);
 
 		next();
