@@ -4,6 +4,7 @@
 
 import BackButton from '@/components/common/BackButton';
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
+import { Routes } from '@/lib/routes';
 import { IconLock, IconLockOpen, IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { ActionIcon, Button, HasPermission, Label, Spacer, Tag } from '@tmlmobilidade/ui';
@@ -36,7 +37,7 @@ export function PlanDetailHeader() {
 
 	return (
 		<>
-			<BackButton />
+			<BackButton href={Routes.PLAN_LIST} />
 			<Tag label={planDetailContext.data.plan._id} variant="muted" />
 			<Label size="lg" caps>{planDetailContext.data.id}</Label>
 			<Spacer />

@@ -6,6 +6,7 @@ import BackButton from '@/components/common/BackButton';
 import { StatusTag } from '@/components/common/StatusTag';
 import { OpenCreatePlanModal } from '@/components/plans/detail/CreatePlanModal';
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
+import { Routes } from '@/lib/routes';
 import { IconTransform } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { Button, HasPermission, Label, Spacer } from '@tmlmobilidade/ui';
@@ -27,7 +28,7 @@ export function ValidationDetailHeader() {
 
 	return (
 		<>
-			<BackButton />
+			<BackButton href={Routes.VALIDATION_LIST} />
 			<StatusTag status={validationDetailContext.data.form.getValues().feeder_status} />
 			<Label size="lg" caps>{validationDetailContext.data.id}</Label>
 			<Spacer />
