@@ -46,7 +46,7 @@ export interface OfferJourney {
 	startStopName: string // 'Apadil'
 	tripHeadsign: string // 'Carcavelos Estação'
 	tripId: string // 'M36-1-014-A-U-14h10-Apadil'
-	tripLength: string // '10698.14'
+	tripLength: number // '10698.14'
 	wheelchairAccessible: number // 0
 }
 

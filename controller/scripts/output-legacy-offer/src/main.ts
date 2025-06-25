@@ -50,7 +50,20 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		const extractDirPath = `${workdirPath}/extracted`;
 
 		try {
+			fs.rmSync(workdirPath, { recursive: true });
+			fs.mkdirSync(workdirPath, { recursive: true });
+			LOGGER.success('Prepared working directory.');
+			LOGGER.spacer(1);
+		}
+		catch (error) {
+			LOGGER.error(`Error preparing workdir path "${workdirPath}".`, error);
+			process.exit(1);
+		}
+
+		try {
 			await unzipFile(filePath, extractDirPath);
+			LOGGER.success(`Unzipped GTFS file from "${filePath}" to "${extractDirPath}".`);
+			LOGGER.spacer(1);
 		}
 		catch (error) {
 			LOGGER.error('Error unzipping the file.', error);
@@ -137,11 +150,17 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			};
 
 			//
-			// Setup the CSV parsing operation
+			// Setup the CSV parsing operation only if the file exists
 
-			await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
-
-			LOGGER.success(`Finished processing "calendar.txt"`);
+			if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
+				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
+				LOGGER.success(`Finished processing "calendar.txt"`);
+				LOGGER.spacer(1);
+			}
+			else {
+				LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`);
+				LOGGER.spacer(1);
+			}
 
 			//
 		}
@@ -195,15 +214,15 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					const updatedCalendar = new Set(savedCalendar);
 					// If this service_id was previously saved, either add or remove the current date
 					// to it based on the exception_type value for this row.
-					if (data.exception_type === ExceptionType.SERVICE_ADDED) updatedCalendar.add(currentOperationalDate);
-					else if (data.exception_type === ExceptionType.SERVICE_REMOVED) updatedCalendar.delete(currentOperationalDate);
+					if (Number(data.exception_type) === ExceptionType.SERVICE_ADDED) updatedCalendar.add(currentOperationalDate);
+					else if (Number(data.exception_type) === ExceptionType.SERVICE_REMOVED) updatedCalendar.delete(currentOperationalDate);
 					// Update the service_id with the new dates
 					savedCalendarDates.set(data.service_id, Array.from(updatedCalendar));
 				}
 				else {
 					// If this is the first time we're seeing this service_id, then it is only necessary
 					// to initiate a new dates array if it is a service addition
-					if (data.exception_type === ExceptionType.SERVICE_ADDED) {
+					if (Number(data.exception_type) === ExceptionType.SERVICE_ADDED) {
 						savedCalendarDates.set(data.service_id, [currentOperationalDate]);
 					}
 				}
@@ -217,9 +236,11 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
 				LOGGER.success(`Finished processing "calendar_dates.txt"`);
+				LOGGER.spacer(1);
 			}
 			else {
 				LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`);
+				LOGGER.spacer(1);
 			}
 
 			//
@@ -283,6 +304,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			await parseCsvFile(`${extractDirPath}/trips.txt`, parseEachRow);
 
 			LOGGER.success(`Finished processing "trips.txt"`);
+			LOGGER.spacer(1);
 
 			//
 		}
@@ -320,6 +342,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					line_id: data.line_id,
 					line_long_name: data.line_long_name,
 					line_short_name: data.line_short_name,
+					path_type: data.path_type,
 					route_color: data.route_color,
 					route_id: data.route_id,
 					route_long_name: data.route_long_name,
@@ -338,6 +361,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			await parseCsvFile(`${extractDirPath}/routes.txt`, parseEachRow);
 
 			LOGGER.success(`Finished processing "routes.txt"`);
+			LOGGER.spacer(1);
 
 			//
 		}
@@ -383,6 +407,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			await parseCsvFile(`${extractDirPath}/stops.txt`, parseEachRow);
 
 			LOGGER.success(`Finished processing "stops.txt"`);
+			LOGGER.spacer(1);
 
 			//
 		}
@@ -453,6 +478,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			await parseCsvFile(`${extractDirPath}/stop_times.txt`, parseEachRow);
 
 			LOGGER.success(`Finished processing "stop_times.txt"`);
+			LOGGER.spacer(1);
 
 			//
 		}
@@ -506,8 +532,8 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					//
 
 					const offerJourneyData: OfferJourney = {
-						agencyId: routeData.agency_id,
-						arrivalTime: lastStopTime.arrival_time,
+						agencyId: routeData.agency_id ?? '-',
+						arrivalTime: lastStopTime.arrival_time ?? '-',
 						bikesAllowed: null,
 						blockId: null,
 						circular: null,
@@ -516,43 +542,43 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 						date: currentDateFormated,
 						dayType: null,
 						dayTypeName: null,
-						departureTime: firstStopTime.departure_time,
-						directionId: tripData.direction_id,
+						departureTime: firstStopTime.departure_time ?? '-',
+						directionId: tripData.direction_id ?? null,
 						endShiftId: null,
-						endStopCode: null,
-						endStopId: lastStopTime.stop_id,
-						endStopName: lastStopTime.stop_name,
+						endStopCode: lastStopTime.stop_id ?? '-',
+						endStopId: lastStopTime.stop_id ?? '-',
+						endStopName: lastStopTime.stop_name ?? '-',
 						feedId: feedId,
 						holiday: null,
 						holidayName: null,
-						lineId: routeData.line_id,
-						lineLongName: routeData.line_long_name,
-						lineShortName: routeData.line_short_name,
-						pathType: null,
-						patternId: tripData.pattern_id,
+						lineId: String(routeData.line_id ?? '-'),
+						lineLongName: routeData.line_long_name ?? '-',
+						lineShortName: routeData.line_short_name ?? '-',
+						pathType: routeData.path_type ?? 0,
+						patternId: tripData.pattern_id ?? '-',
 						patternShortName: null,
 						period: null,
 						periodName: null,
-						routeColor: routeData.route_color,
+						routeColor: null,
 						routeDesc: null,
 						routeDestination: null,
-						routeId: tripData.route_id,
-						routeLongName: routeData.route_long_name,
+						routeId: tripData.route_id ?? '-',
+						routeLongName: routeData.route_long_name ?? '-',
 						routeOrigin: null,
-						routeShortName: routeData.route_short_name,
-						routeTextColor: routeData.route_text_color,
-						routeType: null,
+						routeShortName: routeData.route_short_name ?? '-',
+						routeTextColor: routeData.route_text_color ?? '-',
+						routeType: String(routeData.route_type ?? '-'),
 						rowId: null,
 						school: null,
-						shapeId: tripData.shape_id,
+						shapeId: tripData.shape_id ?? '-',
 						startShiftId: null,
-						startStopCode: null,
-						startStopId: stopTimesData[0].stop_id,
-						startStopName: stopTimesData[0].stop_name,
-						tripHeadsign: tripData.trip_headsign,
-						tripId: tripData.trip_id,
-						tripLength: extensionScheduledInMeters.toFixed(2),
-						wheelchairAccessible: tripData.wheelchair_accessible,
+						startStopCode: firstStopTime.stop_id ?? '-',
+						startStopId: firstStopTime.stop_id ?? '-',
+						startStopName: firstStopTime.stop_name ?? '-',
+						tripHeadsign: tripData.trip_headsign ?? '-',
+						tripId: tripData.trip_id ?? '-',
+						tripLength: extensionScheduledInMeters ?? 0,
+						wheelchairAccessible: tripData.wheelchair_accessible ?? 0,
 					};
 
 					offerJourneysWriter.write(offerJourneyData);
