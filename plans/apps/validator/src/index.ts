@@ -50,6 +50,20 @@ async function processValidation(message: ValidationMessage) {
 		// Update validation status to error
 		await validations.updateById(message.validation_id, {
 			feeder_status: 'error',
+			summary: {
+				messages: [
+					{
+						field: 'validation',
+						file_name: 'validation.json',
+						message: error instanceof Error ? error.message : 'Unknown error',
+						rows: [],
+						severity: 'error',
+						validation_id: message.validation_id,
+					},
+				],
+				total_errors: 1,
+				total_warnings: 0,
+			},
 		});
 	}
 }
