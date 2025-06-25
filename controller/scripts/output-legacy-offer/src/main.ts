@@ -42,6 +42,9 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		const savedRoutes = new Map<string, Partial<Route_TMLExtended>>();
 		const savedStopTimes = new Map<string, (Stop & StopTime)[]>();
 
+		let totalOfferJourneysCounter = 0;
+		let totalOfferStopsCounter = 0;
+
 		//
 		// Prepare the working directories to work with the zip file
 		// and the extracted files. Try to unzip the archive.
@@ -583,6 +586,8 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 					offerJourneysWriter.write(offerJourneyData);
 
+					totalOfferJourneysCounter++;
+
 					//
 					// Now, for each stop time of the current trip, create an OfferStop object
 
@@ -637,6 +642,8 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 						offerStopsWriter.write(offerStopData);
 
+						totalOfferStopsCounter++;
+
 						//
 					}
 				}
@@ -662,7 +669,10 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		offerStopsWriter.close();
 		offerJourneysWriter.close();
 
-		//
+		LOGGER.spacer(1);
+
+		LOGGER.success(`Total OfferJourneys written: ${totalOfferJourneysCounter}`);
+		LOGGER.success(`Total OfferStops written: ${totalOfferStopsCounter}`);
 
 		LOGGER.terminate(`Finished processing GTFS file. Run took ${globalTimer.get()}`);
 
