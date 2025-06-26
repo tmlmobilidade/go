@@ -8,7 +8,7 @@ import { AlertReferencesStops } from '@/components/detail/AlertReferencesStops';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -87,15 +87,12 @@ export function AlertDetailSectionReferences() {
 		>
 			<Section gap="md">
 
-				<Combobox
+				<MultiSelect
 					key={alertDetailContext.data.form.key('municipality_ids')}
 					data={municipalitiesOptions}
 					description="Selecione os munícios que serão afetados pelo alerta"
 					label="Municípios Afetados"
-					clearable
-					fullWidth
-					multiple
-					searchable
+					selected={alertDetailContext.data.form.values.municipality_ids}
 					{...alertDetailContext.data.form.getInputProps('municipality_ids')}
 				/>
 
