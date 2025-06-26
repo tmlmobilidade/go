@@ -10,7 +10,7 @@ const client = new pg.Client({
 	database: process.env.BRIDGEDB_DB,
 	host: process.env.BRIDGEDB_HOST,
 	password: process.env.BRIDGEDB_PASSWORD,
-	port: process.env.BRIDGEDB_PORT || 5432,
+	port: Number(process.env.BRIDGEDB_PORT) || 5432,
 	user: process.env.BRIDGEDB_USER,
 });
 
@@ -26,12 +26,8 @@ async function disconnect() {
 
 /* * */
 
-const slamanagerbridgedb = {
+export const BRIDGEDB = {
 	client,
 	connect,
 	disconnect,
 };
-
-/* * */
-
-export default slamanagerbridgedb;
