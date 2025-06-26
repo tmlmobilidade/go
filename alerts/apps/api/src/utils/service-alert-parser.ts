@@ -79,10 +79,9 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 		return informed_entity;
 	};
 
-	const file = await files.findById(alert.file_id);
-	let fileUrl = '';
+	let file = undefined;
 	try {
-		fileUrl = await files.getFileUrl({ file_id: alert.file_id });
+		file = await files.findById(alert.file_id);
 	}
 	catch (error) {
 		console.error(error);
@@ -119,7 +118,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 					{
 						language: 'pt-PT',
 						media_type: file.type ?? 'image/png',
-						url: fileUrl,
+						url: file.url ?? '',
 					},
 				],
 			},
