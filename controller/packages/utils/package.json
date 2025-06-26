@@ -10,7 +10,7 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20250626.1107.33",
+		"@tmlmobilidade/types": "20250626.1210.54",
 		"@turf/turf": "7.2.0",
 		"luxon": "3.6.1"
 	},

@@ -13,10 +13,6 @@ import fs from 'fs';
 
 /* * */
 
-const RUN_INTERVAL = 60000; // 1 minute
-
-/* * */
-
 async function createRidesFromGtfs() {
 	try {
 		//
@@ -26,7 +22,8 @@ async function createRidesFromGtfs() {
 		const globalTimer = new TIMETRACKER();
 
 		//
-		// Setup database writer
+		// Connect to the databases
+		// and setup the MongoDB Writers
 
 		const hashedShapesCollection = await hashedShapes.getCollection();
 		const hashedTripsCollection = await hashedTrips.getCollection();
@@ -40,7 +37,7 @@ async function createRidesFromGtfs() {
 		// Get all Plans and iterate on each one
 
 		const allPlansData = await plans.all();
-		const allPlansDataSorted = allPlansData.sort((a, b) => b.valid_from.localeCompare(a.valid_from));
+		const allPlansDataSorted = allPlansData.sort((a, b) => b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date));
 
 		LOGGER.info(`Found ${allPlansData.length} Plans to process...`);
 
@@ -70,7 +67,7 @@ async function createRidesFromGtfs() {
 				//
 				// Skip this plan if it does not have an associated operation file
 
-				if (!planData.operation_file) {
+				if (!planData.operation_file_id) {
 					LOGGER.error(`Skip processing: No operation file found.`);
 					continue;
 				}
@@ -81,7 +78,7 @@ async function createRidesFromGtfs() {
 
 				await plans.updateById(planData._id, { feeder_status: 'processing' });
 
-				LOGGER.success(`Processing started: valid_from: ${planData.valid_from} | valid_until: ${planData.valid_until}`);
+				LOGGER.success(`Processing started: gtfs_feed_info.feed_start_date: ${planData.gtfs_feed_info.feed_start_date} | gtfs_feed_info.feed_end_date: ${planData.gtfs_feed_info.feed_end_date}`);
 
 				//
 				// Setup variables to save formatted entities found in this Plan
@@ -901,7 +898,7 @@ const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: stri
 (async function init() {
 	const runOnInterval = async () => {
 		await createRidesFromGtfs();
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		setTimeout(runOnInterval, 60_000); // Run every 60 seconds
 	};
 	runOnInterval();
 })();
