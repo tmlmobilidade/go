@@ -2,8 +2,8 @@
 
 /* * */
 
-import { RidesCatalogClockStatus } from '@/components/catalog/RidesCatalogClockStatus';
-import { RidesCatalogUpdatedAt } from '@/components/catalog/RidesCatalogUpdatedAt';
+import { type RidesCatalogClockStatus } from '@/components/catalog/RidesCatalogClockStatus';
+import { type RidesCatalogUpdatedAt } from '@/components/catalog/RidesCatalogUpdatedAt';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { Button, Label, SegmentedControl, Spacer, TextInput } from '@tmlmobilidade/ui';
 

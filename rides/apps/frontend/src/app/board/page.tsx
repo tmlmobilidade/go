@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesBoard } from '@/components/RidesBoard';
+import { type RidesBoard } from '@/components/RidesBoard';
 
 /* * */
 

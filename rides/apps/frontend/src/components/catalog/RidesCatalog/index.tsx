@@ -3,8 +3,8 @@
 /* * */
 
 import { AnalysisStatusTag } from '@/components/AnalysisStatusTag';
-import { RidesCatalogClock } from '@/components/catalog/RidesCatalogClock';
-import { RidesCatalogHeader } from '@/components/catalog/RidesCatalogHeader';
+import { type RidesCatalogClock } from '@/components/catalog/RidesCatalogClock';
+import { type RidesCatalogHeader } from '@/components/catalog/RidesCatalogHeader';
 import { OperationalStatusTag } from '@/components/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/StartTimeStatusTag';

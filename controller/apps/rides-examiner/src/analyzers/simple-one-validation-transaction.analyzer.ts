@@ -1,14 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type RideAnalysis } from '@tmlmobilidade/types';
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'FOUND_AT_LEAST_ONE_VALIDATION_TRANSACTION' | 'NO_VALIDATION_TRANSACTION_FOUND'
-	unit: 'VALIDATION_TRANSACTIONS_QTY'
-};
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if at least one validation is found for the trip.
@@ -17,7 +10,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = At least one Validation Transaction is found for the trip.
  * → FAIL = No Validation Transactions found for the trip.
  */
-export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisData): Ride['analysis']['SIMPLE_ONE_VALIDATION_TRANSACTION'] {
 	try {
 		//
 
@@ -29,7 +22,6 @@ export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisDat
 				grade: 'pass',
 				message: `Found ${analysisData.simplified_apex_validations.length} Validation Transactions for this trip.`,
 				reason: 'FOUND_AT_LEAST_ONE_VALIDATION_TRANSACTION',
-				unit: 'VALIDATION_TRANSACTIONS_QTY',
 				value: analysisData.simplified_apex_validations.length,
 			};
 		}
@@ -38,7 +30,6 @@ export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisDat
 			grade: 'fail',
 			message: 'No Validation Transactions found for this trip.',
 			reason: 'NO_VALIDATION_TRANSACTION_FOUND',
-			unit: 'VALIDATION_TRANSACTIONS_QTY',
 			value: 0,
 		};
 
@@ -49,7 +40,6 @@ export function simpleOneValidationTransactionAnalyzer(analysisData: AnalysisDat
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}

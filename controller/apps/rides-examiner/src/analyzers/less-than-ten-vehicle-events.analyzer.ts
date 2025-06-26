@@ -1,14 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type RideAnalysis } from '@tmlmobilidade/types';
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'FOUND_MORE_THAN_10_VEHICLE_EVENTS' | 'FOUND_ONLY_1_VEHICLE_EVENT' | `FOUND_ONLY_${number}_VEHICLE_EVENTS`
-	unit: 'VEHICLE_EVENTS_QTY'
-};
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if at the trip has less than ten Vehicle Events.
@@ -17,7 +10,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = More than ten Vehicle Events found for the trip.
  * → FAIL = Less than or equal to ten Vehicle Events found for the trip.
  */
-export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ride['analysis']['LESS_THAN_TEN_VEHICLE_EVENTS'] {
 	try {
 		//
 
@@ -29,7 +22,6 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 				grade: 'pass',
 				message: `Found ${analysisData.vehicle_events.length} Vehicle Events for this trip.`,
 				reason: 'FOUND_MORE_THAN_10_VEHICLE_EVENTS',
-				unit: 'VEHICLE_EVENTS_QTY',
 				value: analysisData.vehicle_events.length,
 			};
 		}
@@ -39,7 +31,6 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 				grade: 'fail',
 				message: `Found ${analysisData.vehicle_events.length} Vehicle Events for this trip.`,
 				reason: 'FOUND_ONLY_1_VEHICLE_EVENT',
-				unit: 'VEHICLE_EVENTS_QTY',
 				value: analysisData.vehicle_events.length,
 			};
 		}
@@ -47,8 +38,7 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 		return {
 			grade: 'fail',
 			message: `Found ${analysisData.vehicle_events.length} Vehicle Events for this trip.`,
-			reason: `FOUND_ONLY_${analysisData.vehicle_events.length}_VEHICLE_EVENTS`,
-			unit: 'VEHICLE_EVENTS_QTY',
+			reason: 'FOUND_LESS_THAN_10_VEHICLE_EVENTS',
 			value: analysisData.vehicle_events.length,
 		};
 
@@ -59,7 +49,6 @@ export function lessThanTenVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}

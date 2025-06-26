@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesDetailAnalysisResultItem } from '@/components/detail/RidesDetailAnalysisResultItem';
+import { type RidesDetailAnalysisResultItem } from '@/components/detail/RidesDetailAnalysisResultItem';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';

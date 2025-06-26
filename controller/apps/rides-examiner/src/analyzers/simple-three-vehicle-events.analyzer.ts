@@ -1,13 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type RideAnalysis } from '@tmlmobilidade/types';
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'ALL_STOPS_FOUND' | 'MISSING_FIRST_STOPS' | 'MISSING_LAST_STOPS' | 'MISSING_MIDDLE_STOPS' | 'NO_PATH_DATA'
-};
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if at least one stop_id is found for each segment of the trip.
@@ -18,7 +12,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = At least one Stop ID is found for each segment of the trip.
  * → FAIL = At least one segment without any matching stops.
  */
-export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ride['analysis']['SIMPLE_THREE_VEHICLE_EVENTS'] {
 	try {
 		//
 
@@ -27,7 +21,6 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 				grade: 'fail',
 				message: 'No trip path data available.',
 				reason: 'NO_PATH_DATA',
-				unit: null,
 				value: null,
 			};
 		}
@@ -85,7 +78,6 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 				grade: 'fail',
 				message: `None of the first ${firstStopIds.size} Stop IDs was found. [${Array.from(firstStopIds).join('|')}]`,
 				reason: 'MISSING_FIRST_STOPS',
-				unit: null,
 				value: null,
 			};
 		}
@@ -95,7 +87,6 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 				grade: 'fail',
 				message: `None of the middle ${middleStopIds.size} Stop IDs was found. [${Array.from(middleStopIds).join('|')}]`,
 				reason: 'MISSING_MIDDLE_STOPS',
-				unit: null,
 				value: null,
 			};
 		}
@@ -105,7 +96,6 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 				grade: 'fail',
 				message: `None of the last ${lastStopIds.size} Stop IDs was found. [${Array.from(lastStopIds).join('|')}]`,
 				reason: 'MISSING_LAST_STOPS',
-				unit: null,
 				value: null,
 			};
 		}
@@ -114,7 +104,6 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 			grade: 'pass',
 			message: `Found at least one Stop ID for each section (first|middle|last). First: [${Array.from(foundFirstStopIds).join('|')}] | Middle: [${Array.from(foundMiddleStopIds).join('|')}] | Last: [${Array.from(foundLastStopIds).join('|')}]`,
 			reason: 'ALL_STOPS_FOUND',
-			unit: null,
 			value: null,
 		};
 
@@ -125,7 +114,6 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ex
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}

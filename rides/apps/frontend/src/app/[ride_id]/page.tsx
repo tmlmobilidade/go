@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesDetail } from '@/components/detail/RidesDetail';
+import { type RidesDetail } from '@/components/detail/RidesDetail';
 
 /* * */
 

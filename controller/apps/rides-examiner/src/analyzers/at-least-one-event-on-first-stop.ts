@@ -2,18 +2,11 @@
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { getDistanceBetweenPositions } from '@tmlmobilidade/sae-controller-pckg-utils';
-import { type RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
 const BUFFER_RADIUS = 50; // meters
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'FOUND_ONE_OR_MORE_EVENTS_ON_FIRST_STOP' | 'NO_EVENTS_FOUND_ON_FIRST_STOP'
-	unit: 'EVENTS_FOUND_ON_FIRST_STOP'
-};
 
 /**
  * This analyzer tests if the trip has at least one event on the first stop.
@@ -22,7 +15,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = At least one event on the first stop.
  * → FAIL = No events found on the first stop.
  */
-export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Ride['analysis']['AT_LEAST_ONE_EVENT_ON_FIRST_STOP'] {
 	try {
 		//
 
@@ -34,7 +27,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 				grade: 'fail',
 				message: 'Ride has no events.',
 				reason: 'NO_EVENTS_FOUND_ON_FIRST_STOP',
-				unit: 'EVENTS_FOUND_ON_FIRST_STOP',
 				value: 0,
 			};
 		}
@@ -64,7 +56,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 				grade: 'pass',
 				message: 'Found at least one event on the first stop.',
 				reason: 'FOUND_ONE_OR_MORE_EVENTS_ON_FIRST_STOP',
-				unit: 'EVENTS_FOUND_ON_FIRST_STOP',
 				value: eventsFoundOnFirstStop,
 			};
 		}
@@ -73,7 +64,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 			grade: 'fail',
 			message: `No events found on the first stop.`,
 			reason: 'NO_EVENTS_FOUND_ON_FIRST_STOP',
-			unit: 'EVENTS_FOUND_ON_FIRST_STOP',
 			value: 0,
 		};
 
@@ -84,7 +74,6 @@ export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Explicit
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}

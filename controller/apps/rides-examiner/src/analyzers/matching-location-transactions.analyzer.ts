@@ -1,13 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type RideAnalysis } from '@tmlmobilidade/types';
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'ALL_STOPS_HAVE_LOCATION_TRANSACTIONS' | 'MISSING_LOCATION_TRANSACTION_FOR_AT_LEAST_ONE_STOP' | 'NO_PATH_DATA'
-};
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if there are Location Transactions for all stops of the trip.
@@ -16,7 +10,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = At least one Location Transaction for each stop of the trip.
  * → FAIL = Missing Location Transaction for any stop of the trip.
  */
-export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData): Ride['analysis']['MATCHING_LOCATION_TRANSACTIONS'] {
 	try {
 		//
 
@@ -25,7 +19,6 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 				grade: 'fail',
 				message: 'No trip path data available.',
 				reason: 'NO_PATH_DATA',
-				unit: null,
 				value: null,
 			};
 		}
@@ -66,7 +59,6 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 				grade: 'fail',
 				message: `At least one Stop ID was not found in Location Transactions. Missing Stop IDs: [${Array.from(missingStopIds).join('|')}]`,
 				reason: 'MISSING_LOCATION_TRANSACTION_FOR_AT_LEAST_ONE_STOP',
-				unit: null,
 				value: null,
 			};
 		}
@@ -75,7 +67,6 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 			grade: 'pass',
 			message: `Found ${locationTransactionsStopIds.size} Location Transactions for ${pathStopIds.size} Stop IDs.`,
 			reason: 'ALL_STOPS_HAVE_LOCATION_TRANSACTIONS',
-			unit: null,
 			value: null,
 		};
 
@@ -86,7 +77,6 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}

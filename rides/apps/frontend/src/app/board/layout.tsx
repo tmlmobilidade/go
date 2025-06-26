@@ -1,6 +1,6 @@
 /* * */
 
-import { RidesBoardContextProvider } from '@/contexts/RidesBoard.context';
+import { type RidesBoardContextProvider } from '@/contexts/RidesBoard.context';
 import { type PropsWithChildren } from 'react';
 
 /* * */

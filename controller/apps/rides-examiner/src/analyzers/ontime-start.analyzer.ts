@@ -1,14 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type RideAnalysis } from '@tmlmobilidade/types';
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'NO_OBSERVED_START_TIME' | 'NO_SCHEDULED_START_TIME' | 'RIDE_STARTED_EARLY' | 'RIDE_STARTED_MORE_THAN_FIVE_MINUTES_LATE' | 'RIDE_STARTED_ZERO_TO_FIVE_MINUTES_LATE'
-	unit: 'DIFF_IN_MINUTES_FROM_SCHEDULED_START_TIME'
-};
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if there is an excess delay starting the trip using geographic data.
@@ -19,7 +12,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = Ride start time delay is less than or equal to five minutes.
  * → FAIL = Ride start time delay is greater than five minutes.
  */
-export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function ontimeStartAnalyzer(analysisData: AnalysisData): Ride['analysis']['ONTIME_START'] {
 	try {
 		//
 
@@ -31,7 +24,6 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 				grade: 'fail',
 				message: 'Ride has no scheduled start_time.',
 				reason: 'NO_SCHEDULED_START_TIME',
-				unit: null,
 				value: null,
 			};
 		}
@@ -41,7 +33,6 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 				grade: 'fail',
 				message: 'Ride has no observed start_time.',
 				reason: 'NO_OBSERVED_START_TIME',
-				unit: null,
 				value: null,
 			};
 		}
@@ -59,7 +50,6 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 				grade: 'fail',
 				message: `Ride started ${delayInMinutes} minutes early.`,
 				reason: 'RIDE_STARTED_EARLY',
-				unit: 'DIFF_IN_MINUTES_FROM_SCHEDULED_START_TIME',
 				value: delayInMinutes,
 			};
 		}
@@ -69,7 +59,6 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 				grade: 'pass',
 				message: `Ride started ${delayInMinutes} minutes late.`,
 				reason: 'RIDE_STARTED_ZERO_TO_FIVE_MINUTES_LATE',
-				unit: 'DIFF_IN_MINUTES_FROM_SCHEDULED_START_TIME',
 				value: delayInMinutes,
 			};
 		}
@@ -79,7 +68,6 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 				grade: 'fail',
 				message: `Ride started ${delayInMinutes} minutes late.`,
 				reason: 'RIDE_STARTED_MORE_THAN_FIVE_MINUTES_LATE',
-				unit: 'DIFF_IN_MINUTES_FROM_SCHEDULED_START_TIME',
 				value: delayInMinutes,
 			};
 		}
@@ -91,7 +79,6 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): ExplicitRideAna
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}

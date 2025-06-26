@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesCatalog } from '@/components/catalog/RidesCatalog';
+import { type RidesCatalog } from '@/components/catalog/RidesCatalog';
 
 /* * */
 

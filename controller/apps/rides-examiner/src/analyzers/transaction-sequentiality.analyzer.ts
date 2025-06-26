@@ -1,13 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type RideAnalysis } from '@tmlmobilidade/types';
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'ALL_TRANSACTIONS_RECEIVED_SO_FAR' | 'MISSING_TRANSACTIONS'
-};
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if there are any missing Transactions for the given Ride.
@@ -16,7 +10,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = There are no gaps in the sequence of Transactions.
  * → FAIL = At least one Transaction is missing.
  */
-export function transactionSequentialityAnalyzer(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ride['analysis']['TRANSACTION_SEQUENTIALITY'] {
 	try {
 		//
 
@@ -104,7 +98,6 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 				grade: 'pass',
 				message: `This ride has all transactions until now.`,
 				reason: 'ALL_TRANSACTIONS_RECEIVED_SO_FAR',
-				unit: null,
 				value: null,
 			};
 		}
@@ -113,7 +106,6 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			grade: 'fail',
 			message: `There are ${missingTransactions.size} missing transactions.`,
 			reason: 'MISSING_TRANSACTIONS',
-			unit: null,
 			value: null,
 		};
 
@@ -124,7 +116,6 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ex
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}

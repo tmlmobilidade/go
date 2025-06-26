@@ -1,6 +1,6 @@
 /* * */
 
-import { RidesDetailContextProvider } from '@/contexts/RidesDetail.context';
+import { type RidesDetailContextProvider } from '@/contexts/RidesDetail.context';
 
 /* * */
 

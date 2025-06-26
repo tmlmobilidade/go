@@ -2,14 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
 import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { type RideAnalysis } from '@tmlmobilidade/types';
-
-/* * */
-
-interface ExplicitRideAnalysis extends RideAnalysis {
-	reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS' | 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS' | 'NO_VEHICLE_EVENTS_FOUND'
-	unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS'
-};
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if the average interval between vehicle events is within limits.
@@ -18,7 +11,7 @@ interface ExplicitRideAnalysis extends RideAnalysis {
  * → PASS = Average interval between Vehicle events is less than or equal to 20 seconds.
  * → FAIL = Average interval between Vehicle events is higher than 20 seconds.
  */
-export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRideAnalysis {
+export function avgIntervalVehicleEvents(analysisData: AnalysisData): Ride['analysis']['AVG_INTERVAL_VEHICLE_EVENTS'] {
 	try {
 		//
 
@@ -30,7 +23,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 				grade: 'fail',
 				message: 'No vehicle events found.',
 				reason: 'NO_VEHICLE_EVENTS_FOUND',
-				unit: null,
 				value: null,
 			};
 		}
@@ -67,7 +59,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 				grade: 'pass',
 				message: 'Average interval between events is within limits.',
 				reason: 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS',
-				unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS',
 				value: avgIntervalBetweenEvents,
 			};
 		}
@@ -76,7 +67,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 			grade: 'fail',
 			message: 'Average interval between events is higher than limit.',
 			reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS',
-			unit: 'AVG_INTERVAL_VEHICLE_EVENTS_MILLISECONDS',
 			value: avgIntervalBetweenEvents,
 		};
 
@@ -87,7 +77,6 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): ExplicitRi
 			grade: 'error',
 			message: error.message,
 			reason: null,
-			unit: null,
 			value: null,
 		};
 	}
