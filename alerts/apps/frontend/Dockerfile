@@ -5,6 +5,11 @@ FROM node:22.6-alpine3.20 AS base
 ENV MODULE=alerts
 ENV PROJECT=frontend
 
+ARG ENVIRONMENT
+
+ENV ENVIRONMENT=${ENVIRONMENT}
+ENV NEXT_PUBLIC_ENVIRONMENT=${ENVIRONMENT}
+
 RUN npm install -g turbo@^2
 
 # # # # # # # # #
