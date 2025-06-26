@@ -15,10 +15,10 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "20250625.1612.48",
-		"@tmlmobilidade/gtfs-validator": "20250603.1718.53",
-		"@tmlmobilidade/interfaces": "20250625",
-		"@tmlmobilidade/utils": "^20250625.1612.48",
+		"@tmlmobilidade/connectors": "20250626.1513.39",
+		"@tmlmobilidade/gtfs-validator": "20250626.1626.5",
+		"@tmlmobilidade/interfaces": "20250626",
+		"@tmlmobilidade/utils": "^20250626.1513.39",
 		"adm-zip": "^0.5.16",
 		"csv-parse": "^5.6.0",
 		"tsx": "4.20.3"
