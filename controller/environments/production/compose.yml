@@ -53,7 +53,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-cleaner:production
+    image: ghcr.io/tmlmobilidade/sae-controller-cleaner:production
     deploy:
       restart_policy:
         condition: any
@@ -72,7 +72,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   coordinator:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-coordinator:production
+    image: ghcr.io/tmlmobilidade/sae-controller-coordinator:production
     deploy:
       restart_policy:
         condition: any
@@ -132,6 +132,25 @@ services:
 
   rides-feeder:
     image: ghcr.io/tmlmobilidade/sae-controller-rides-feeder:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sams-feeder:
+    image: ghcr.io/tmlmobilidade/sae-controller-sams-feeder:production
     deploy:
       restart_policy:
         condition: any
