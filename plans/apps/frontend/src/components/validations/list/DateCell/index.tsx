@@ -1,23 +1,24 @@
-import { cn } from '@/lib/utils';
+import { IconArrowRight } from '@tabler/icons-react';
 import { OperationalDate } from '@tmlmobilidade/types';
+import { Section, Tag } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-
-import styles from './styles.module.css';
 
 export default function DateCell({ date, endDate }: { date: OperationalDate, endDate: OperationalDate }) {
 	//
 
 	//
-	// A. Setup variables
-	const parsedDate = date ? Dates.fromOperationalDate(date).js_date : null;
-	const parsedEndDate = endDate ? Dates.fromOperationalDate(endDate).js_date : null;
-	//
-	// B. Render
+	// A. Render
 	return (
-		<div className={styles.wrapper}>
-			<div className={cn(parsedEndDate && parsedEndDate < new Date() && styles.expired)}>
-				{parsedDate ? parsedDate.toLocaleDateString() : 'N/A'}
-			</div>
-		</div>
+		<Section alignItems="center" flexDirection="row" gap="sm">
+			<Tag
+				label={Dates.fromOperationalDate(date, 'local').toLocaleString(Dates.FORMATS.DATE_SHORT)}
+				variant="muted"
+			/>
+			<IconArrowRight size={16} />
+			<Tag
+				label={Dates.fromOperationalDate(endDate, 'local').toLocaleString(Dates.FORMATS.DATE_SHORT)}
+				variant="muted"
+			/>
+		</Section>
 	);
 }

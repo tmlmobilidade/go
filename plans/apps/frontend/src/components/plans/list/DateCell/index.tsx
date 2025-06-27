@@ -9,8 +9,8 @@ export default function DateCell({ date, endDate }: { date: OperationalDate, end
 
 	//
 	// A. Setup variables
-	const parsedDate = date ? Dates.fromOperationalDate(date).js_date : null;
-	const parsedEndDate = endDate ? Dates.fromOperationalDate(endDate).js_date : null;
+	const parsedDate = date ? Dates.fromOperationalDate(date, 'local').js_date : null;
+	const parsedEndDate = endDate ? Dates.fromOperationalDate(endDate, 'local').js_date : null;
 	//
 	// B. Render
 	return (

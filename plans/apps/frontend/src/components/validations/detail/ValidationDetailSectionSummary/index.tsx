@@ -74,7 +74,6 @@ export function ValidationDetailSectionSummary() {
 				<Section flexDirection="row" gap="xs" padding="none">
 					<SeverityBadge label={validationDetailContext.data.form.getValues().summary?.total_errors?.toString()} severity="error" />
 					<SeverityBadge label={validationDetailContext.data.form.getValues().summary?.total_warnings?.toString()} severity="warning" />
-					<SeverityBadge label={validationDetailContext.data.form.getValues().summary?.total_infos?.toString()} severity="info" />
 				</Section>
 				<Divider />
 				<DataTable

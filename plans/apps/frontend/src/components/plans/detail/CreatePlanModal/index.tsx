@@ -1,23 +1,19 @@
-import { UploadFile } from '@/components/common/UploadFile';
-import { PlanDetailContextProvider, PlanDetailMode, usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { Button, closeModal, Combobox, DatePicker, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
+import { useValidationListContext, ValidationListContextProvider } from '@/contexts/ValidationList.context';
+import { Button, closeModal, Combobox, Divider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { useMemo } from 'react';
 
-import styles from './styles.module.css';
+import { CREATE_PLAN_MODAL_ID, useCreatePlan } from './useCreatePlan';
 
 /* * */
 
-const MODAL_ID = 'create-plan-modal';
-
-export const OpenCreatePlanModal = () => {
+export const OpenCreatePlanModal = (validation_id?: string) => {
 	openModal({
 		children: (
-			<PlanDetailContextProvider planId={PlanDetailMode.NEW}>
-				<CreatePlanModal />
-			</PlanDetailContextProvider>
+			<ValidationListContextProvider>
+				<CreatePlanModal validation_id={validation_id} />
+			</ValidationListContextProvider>
 		),
-		modalId: MODAL_ID,
+		modalId: CREATE_PLAN_MODAL_ID,
 		size: 'auto',
 		withCloseButton: false,
 	});
@@ -25,97 +21,94 @@ export const OpenCreatePlanModal = () => {
 
 /* * */
 
-export default function CreatePlanModal() {
-	// A. State Management
-	const planDetailContext = usePlanDetailContext();
+export default function CreatePlanModal({ validation_id }: { validation_id?: string }) {
+	const validationListContext = useValidationListContext();
+	const { actions, data, flags } = useCreatePlan(validationListContext.data.raw, validation_id);
 
-	//
-	// B. Transform data
-	const validFrom = useMemo(() => {
-		if (!planDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_from).js_date;
-	}, [planDetailContext.data.form.values.valid_from]);
+	const renderFeedInfoSection = () => {
+		return (
+			<Section gap="sm" padding="none">
+				<Label>Agência</Label>
+				<Grid columns="abc" gap="md">
+					<Section padding="none">
+						<Label size="sm" caps>ID</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_agency.agency_id ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Nome</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_agency.agency_name ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_agency.agency_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Telefone</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_agency.agency_phone ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+				<Divider />
+				<Label>Feed Info</Label>
+				<Grid columns="abc" gap="md">
+					<Section padding="none">
+						<Label size="sm" caps>Data de início</Label>
+						<Text size="base">{data.selectedValidation ? Dates.fromOperationalDate(data.selectedValidation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR) : 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Data de fim</Label>
+						<Text size="base">{data.selectedValidation ? Dates.fromOperationalDate(data.selectedValidation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR) : 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Linguagem do feed</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email de contacto</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_feed_info.feed_contact_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL de contacto</Label>
+						<Text size="base">{data.selectedValidation?.gtfs_feed_info.feed_contact_url ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+			</Section>
+		);
+	};
 
-	const validUntil = useMemo(() => {
-		if (!planDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(planDetailContext.data.form.values.valid_until).js_date;
-	}, [planDetailContext.data.form.values.valid_until]);
-
-	// D. Render Components
-	const renderModalHeader = () => (
-		<Section gap="sm" padding="none">
-			<Label size="lg">Criar plano GTFS</Label>
-			<Description>
-				Carregue um arquivo GTFS para criar um novo plano. Este será validado
-				automaticamente.
-			</Description>
-		</Section>
-	);
-
-	const renderOperatorSelection = () => (
-		<Section gap="sm" padding="none">
-			<Combobox
-				data={planDetailContext.data.agencies}
-				description="Selecione o operador ao qual este plano pertence"
-				label="Operador"
-				{...planDetailContext.data.form.getInputProps('agency_id')}
-				fullWidth
-			/>
-		</Section>
-	);
-
-	const renderDateRangeSelection = () => (
-		<Section padding="none">
-			<Grid className={styles.datePickerGrid} columns="ab" gap="md">
-				<DatePicker
-					description="Data de início da vigência do plano"
-					flex={1}
-					label="Data de início"
-					{...planDetailContext.data.form.getInputProps('valid_from')}
-					value={validFrom}
-					onChange={(date) => {
-						planDetailContext.data.form.setValues({
-							valid_from: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
-						});
-					}}
-					withAsterisk
-				/>
-				<DatePicker
-					description="Data de fim da vigência do plano"
-					label="Data de fim"
+	const renderValidationSelection = () => {
+		return (
+			<div style={{ width: '100%', zIndex: 1000 }}>
+				<Combobox
+					label="Selecione uma validação"
+					onChange={(id: string) => actions.setSelectedValidation(id)}
+					value={data.selectedValidation?._id}
+					data={data.validations.map(validation => ({
+						label: `${validation._id} - ${validation.gtfs_agency.agency_name} | ${Dates.fromOperationalDate(validation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)} - ${Dates.fromOperationalDate(validation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)}`,
+						value: validation._id,
+					}))}
 					clearable
-					{...planDetailContext.data.form.getInputProps('valid_until')}
-					value={validUntil}
-					onChange={(date) => {
-						planDetailContext.data.form.setValues({
-							valid_until: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
-						});
-					}}
+					// searchable
 				/>
-			</Grid>
-		</Section>
-	);
-
-	const renderFileUploadSection = () => (
-		<Section gap="sm" padding="none">
-			<UploadFile
-				label="Plano de Referencia (GO)"
-				maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
-				onFileChange={planDetailContext.actions.setOperationPlanFile}
-			/>
-			<UploadFile
-				label="Plano de Operação (Operador)"
-			/>
-		</Section>
-	);
+			</div>
+		);
+	};
 
 	const renderActionButtons = () => (
 		<Grid columns="ab" gap="md">
-			<Button label="Cancelar" onClick={() => closeModal(MODAL_ID)} variant="danger" fullWidth />
+			<Button label="Cancelar" onClick={() => closeModal(CREATE_PLAN_MODAL_ID)} variant="danger" fullWidth />
 			<Button
-				disabled={!planDetailContext.flags.canSave}
+				disabled={!flags.canCreatePlan}
 				label="Criar plano"
-				onClick={planDetailContext.actions.savePlan}
+				loading={flags.loading}
+				onClick={actions.createPlan}
 				variant="primary"
 				fullWidth
 			/>
@@ -123,12 +116,9 @@ export default function CreatePlanModal() {
 	);
 
 	return (
-
-		<Section gap="lg">
-			{renderModalHeader()}
-			{renderOperatorSelection()}
-			{renderDateRangeSelection()}
-			{renderFileUploadSection()}
+		<Section gap="lg" padding="lg">
+			{renderFeedInfoSection()}
+			{renderValidationSelection()}
 			{renderActionButtons()}
 		</Section>
 	);

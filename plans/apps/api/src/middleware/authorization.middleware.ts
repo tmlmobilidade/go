@@ -43,6 +43,7 @@ export default function authorizationMiddleware<T = unknown>( // Added default t
 				);
 			}
 
+			// Set the permissions
 			request.permissions = res.data;
 		}
 		catch (error) {

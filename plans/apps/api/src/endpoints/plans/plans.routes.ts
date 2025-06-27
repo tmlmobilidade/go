@@ -3,7 +3,7 @@
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import FastifyService from '@/services/fastify.service.js';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Plan } from '@tmlmobilidade/types';
+import { PlanPermission } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
 import { PlansController } from './plans.controller.js';
@@ -21,7 +21,7 @@ server.register(
 		instance.get(
 			'/',
 			{
-				preHandler: authorizationMiddleware<Plan>(
+				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.list,
 				),
@@ -33,7 +33,7 @@ server.register(
 		instance.get(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Plan>(
+				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.read,
 				),
@@ -45,7 +45,7 @@ server.register(
 		instance.post(
 			'/',
 			{
-				preHandler: authorizationMiddleware<Plan>(
+				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.create,
 				),
@@ -57,7 +57,7 @@ server.register(
 		instance.put(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Plan>(
+				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.update,
 				),
@@ -69,7 +69,7 @@ server.register(
 		instance.delete(
 			'/:id',
 			{
-				preHandler: authorizationMiddleware<Plan>(
+				preHandler: authorizationMiddleware<PlanPermission>(
 					Permissions.plans.scope,
 					Permissions.plans.actions.delete,
 				),

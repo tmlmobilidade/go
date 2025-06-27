@@ -1,8 +1,8 @@
 import { UploadFile } from '@/components/common/UploadFile';
 import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
-import { Button, closeModal, Combobox, DatePicker, Description, Grid, Label, openModal, Section } from '@tmlmobilidade/ui';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { Button, closeModal, Description, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
@@ -13,9 +13,11 @@ export const CREATE_VALIDATION_MODAL_ID = 'create-validation-modal';
 export const OpenCreateValidationModal = () => {
 	openModal({
 		children: (
-			<ValidationDetailContextProvider validationId={ValidationDetailMode.NEW}>
-				<CreateValidationModal />
-			</ValidationDetailContextProvider>
+			<MeContextProvider>
+				<ValidationDetailContextProvider validationId={ValidationDetailMode.NEW}>
+					<CreateValidationModal />
+				</ValidationDetailContextProvider>
+			</MeContextProvider>
 		),
 		modalId: CREATE_VALIDATION_MODAL_ID,
 		size: 'auto',
@@ -29,18 +31,6 @@ export default function CreateValidationModal() {
 	// A. State Management
 	const validationDetailContext = useValidationDetailContext();
 
-	//
-	// B. Transform data
-	const validFrom = useMemo(() => {
-		if (!validationDetailContext.data.form.values.valid_from) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_from).js_date;
-	}, [validationDetailContext.data.form.values.valid_from]);
-
-	const validUntil = useMemo(() => {
-		if (!validationDetailContext.data.form.values.valid_until) return null;
-		return Dates.fromOperationalDate(validationDetailContext.data.form.values.valid_until).js_date;
-	}, [validationDetailContext.data.form.values.valid_until]);
-
 	// D. Render Components
 	const renderModalHeader = () => (
 		<Section gap="sm" padding="none">
@@ -51,59 +41,75 @@ export default function CreateValidationModal() {
 		</Section>
 	);
 
-	const renderOperatorSelection = () => (
-		<Section gap="sm" padding="none">
-			<Combobox
-				data={validationDetailContext.data.agencies}
-				description="Selecione o operador ao qual este validação pertence"
-				label="Operador"
-				{...validationDetailContext.data.form.getInputProps('agency_id')}
-				fullWidth
-			/>
-		</Section>
-	);
-
-	const renderDateRangeSelection = () => (
-		<Section padding="none">
-			<Grid className={styles.datePickerGrid} columns="ab" gap="md">
-				<DatePicker
-					description="Data de início da vigência do validação"
-					flex={1}
-					label="Data de início"
-					{...validationDetailContext.data.form.getInputProps('valid_from')}
-					value={validFrom}
-					onChange={(date) => {
-						validationDetailContext.data.form.setValues({
-							valid_from: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
-						});
-					}}
-					withAsterisk
-				/>
-				<DatePicker
-					description="Data de fim da vigência do validação"
-					label="Data de fim"
-					clearable
-					{...validationDetailContext.data.form.getInputProps('valid_until')}
-					value={validUntil}
-					onChange={(date) => {
-						validationDetailContext.data.form.setValues({
-							valid_until: Dates.fromFormat(date, 'yyyy-MM-dd').setZone('Europe/Lisbon').operational_date,
-						});
-					}}
-				/>
-			</Grid>
-		</Section>
-	);
-
 	const renderFileUploadSection = () => (
 		<Section gap="sm" padding="none">
 			<UploadFile
-				label="Validação de Referencia (GO)"
+				label="Ficheiro GTFS"
 				maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
 				onFileChange={validationDetailContext.actions.setValidationFile}
 			/>
 		</Section>
 	);
+
+	const renderFeedInfoSection = () => {
+		if (!validationDetailContext.data.form.values.gtfs_agency || !validationDetailContext.data.form.values.gtfs_feed_info) return null;
+
+		return (
+			<Section gap="sm" padding="none">
+				<Label>Agência</Label>
+				<Grid columns="abc" gap="md">
+					<Section padding="none">
+						<Label size="sm" caps>ID</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_id ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Nome</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_name ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Telefone</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_phone ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+				<Divider />
+				<Label>Feed Info</Label>
+				<Grid columns="abc" gap="md">
+					<Section padding="none">
+						<Label size="sm" caps>Data de início</Label>
+						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Data de fim</Label>
+						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Linguagem do feed</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>Email de contacto</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_email ?? 'N/A'}</Text>
+					</Section>
+					<Section padding="none">
+						<Label size="sm" caps>URL de contacto</Label>
+						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_url ?? 'N/A'}</Text>
+					</Section>
+				</Grid>
+			</Section>
+		);
+	};
 
 	const renderActionButtons = () => (
 		<Grid columns="ab" gap="md">
@@ -119,12 +125,23 @@ export default function CreateValidationModal() {
 		</Grid>
 	);
 
-	return (
+	const renderError = () => {
+		if (validationDetailContext.flags.error && validationDetailContext.flags.error.name === 'ValidationError') {
+			return (
+				<div className={styles.errorContainer}>
+					<IconAlertCircle size={20} />
+					<Text size="base">{validationDetailContext.flags.error.message}</Text>
+				</div>
+			);
+		}
+		return null;
+	};
 
+	return (
 		<Section gap="lg">
+			{renderError()}
 			{renderModalHeader()}
-			{renderOperatorSelection()}
-			{renderDateRangeSelection()}
+			{renderFeedInfoSection()}
 			{renderFileUploadSection()}
 			{renderActionButtons()}
 		</Section>

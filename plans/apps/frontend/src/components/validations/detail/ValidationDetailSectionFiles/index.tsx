@@ -1,7 +1,7 @@
 /* * */
 
+import { FileComponent } from '@/components/common/FileComponent';
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
-import { IconFileTypeZip } from '@tabler/icons-react';
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
 /* * */
 
@@ -21,10 +21,7 @@ export function ValidationDetailSectionFiles() {
 	function renderFile() {
 		return (
 			<Section alignItems="flex-start" gap="md" justifyContent="flex-start">
-				<Section flexDirection="row" gap="sm" padding="none">
-					<IconFileTypeZip />
-					<Label>{validationDetailContext.data.file.name}</Label>
-				</Section>
+				<FileComponent file={validationDetailContext.data.file} />
 			</Section>
 		);
 	}
@@ -38,7 +35,7 @@ export function ValidationDetailSectionFiles() {
 	}
 	return (
 		<Collapsible
-			description="Ficheiros GTFS para o validação. O ficheiro deve ser um arquivo zip com os ficheiros GTFS."
+			description="Ficheiros GTFS para a validação. O ficheiro deve ser um arquivo zip com os ficheiros GTFS."
 			title="Ficheiros GTFS"
 		>
 			{validationDetailContext.data.file ? renderFile() : renderEmpty()}

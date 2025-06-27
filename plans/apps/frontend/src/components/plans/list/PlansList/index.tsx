@@ -5,8 +5,8 @@
 import { PlansListFilters } from '@/components/plans/list/PlansListFilters';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlanListContext } from '@/contexts/PlanList.context';
+import { Routes } from '@/lib/routes';
 import { IconArrowRight, IconLock, IconLockOpen } from '@tabler/icons-react';
-import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { Pane, Section, Tag } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -41,19 +41,19 @@ export function PlanList() {
 		]}
 		>
 			{data.filtered.map(plan => (
-				<div className={styles.root} onClick={() => router.push(`/plans/${plan._id}`)}>
-					<Section key={plan._id} alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
+				<div key={plan._id} className={styles.root} onClick={() => router.push(Routes.PLAN_DETAIL(plan._id))}>
+					<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
 						<Tag label={plan._id} variant="muted" />
-						<Tag label={AVAILABLE_AGENCIES.find(agency => agency._id === plan.agency_id)?.name} variant="secondary" />
+						<Tag label={plan.gtfs_agency.agency_name} variant="secondary" />
 					</Section>
 					<Section alignItems="center" flexDirection="row" gap="md">
 						<Section alignItems="center" flexDirection="row" gap="sm">
-							<Tag label={Dates.fromOperationalDate(plan.valid_from).toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
+							<Tag label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
 							<IconArrowRight size={16} />
 							<Tag
-								label={Dates.fromOperationalDate(plan.valid_until).toLocaleString(Dates.FORMATS.DATE_SHORT)}
+								label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)}
 								variant={
-									Dates.now().operational_date > plan.valid_until ? 'danger' : 'warning'
+									Dates.now('local').operational_date > Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').operational_date ? 'danger' : 'warning'
 								}
 							/>
 						</Section>

@@ -1,0 +1,9 @@
+.editIcon {
+	cursor: pointer;
+	color: var(--color-system-text-300);
+	transition: opacity 0.2s ease-in-out;
+
+	&:hover {
+		color: var(--color-system-text-100);
+	}
+}
