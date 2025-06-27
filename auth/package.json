@@ -10,10 +10,11 @@
 		"clean": "sh cleanup.sh",
 		"dev": "dotenv-run -f ./_dev/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
+		"lint:fix": "turbo lint:fix",
 		"start": "turbo start"
 	},
 	"dependencies": {
-		"@carrismetropolitana/eslint": "20250418.42.41",
+		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"turbo": "2.5.4"
 	},
 	"devDependencies": {
