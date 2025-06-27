@@ -54,7 +54,7 @@ export interface FlatRide {
 	less_than_ten_vehicle_events_reason: null | string
 	// less_than_ten_vehicle_events_unit: null | string
 	less_than_ten_vehicle_events_value: null | number
-	line_id: string
+	line_id: number
 	matching_location_transactions_grade: string
 	// matching_location_transactions_message: null | string
 	matching_location_transactions_reason: null | string
@@ -142,7 +142,7 @@ export const sampleRide: FlatRide = {
 	less_than_ten_vehicle_events_grade: 'string',
 	less_than_ten_vehicle_events_reason: 'string',
 	less_than_ten_vehicle_events_value: 0,
-	line_id: 'string',
+	line_id: 0,
 	matching_location_transactions_grade: 'string',
 	matching_location_transactions_reason: 'string',
 	matching_location_transactions_value: 0,
