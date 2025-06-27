@@ -1,0 +1,103 @@
+/* * */
+
+import { BRIDGEDB } from '@/BRIDGEDB.js';
+import { parseRide, sampleRide } from '@/types.js';
+import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.js';
+import LOGGER from '@helperkits/logger';
+import TIMETRACKER from '@helperkits/timer';
+import { rides } from '@tmlmobilidade/interfaces';
+import { Dates } from '@tmlmobilidade/utils';
+
+/* * */
+
+const RUN_INTERVAL = 300_000; // 5 minutes
+const BATCH_SIZE = 500;
+
+/* * */
+
+export async function syncRides() {
+	try {
+		//
+
+		LOGGER.init();
+		const globalTimer = new TIMETRACKER();
+
+		//
+		// Connect to the BRIDGEDB database and drop the existing 'rides' table
+		// if it exists. It is easier, faster and more ecological to just delete
+		// everything and copy everything again than checking if each individual
+		// item is present, updated or orphan in the original MongoDB collection.
+
+		LOGGER.info('Connecting to databases...');
+
+		await BRIDGEDB.connect();
+		const ridesCollection = await rides.getCollection();
+
+		LOGGER.info('Rebuilding table...');
+
+		await dropExistingTable();
+		await createTableFromExample(sampleRide);
+
+		//
+		// Fetch rides from the MongoDB collection, parse them, and insert them
+		// into the BRIDGEDB database in batches. The rides are fetched from the
+		// last month, sorted by operational date in descending order.
+
+		const today = Dates
+			.now('Europe/Lisbon')
+			.operational_date;
+
+		const oneMonthAgo = Dates
+			.now('Europe/Lisbon')
+			.minus({ months: 1 })
+			.operational_date;
+
+		const stream = ridesCollection
+			.find({ operational_date: { $gte: oneMonthAgo, $lte: today } })
+			.sort({ operational_date: -1 })
+			.stream();
+
+		let batch = [];
+		let count = 0;
+
+		for await (const ride of stream) {
+			batch.push(parseRide(ride));
+			if (batch.length >= BATCH_SIZE) {
+				await insertBatch(batch);
+				LOGGER.info(`Inserted ${count} rides so far...`);
+				count += batch.length;
+				batch = [];
+			}
+		}
+
+		if (batch.length > 0) {
+			await insertBatch(batch);
+			LOGGER.info(`Inserted remaining ${batch.length} rides. Total: ${count + batch.length}.`);
+		}
+
+		//
+		// Disconnect from the BRIDGEDB database
+		// and log the total time taken for the operation.
+
+		await BRIDGEDB.disconnect();
+
+		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+
+		//
+	}
+	catch (err) {
+		LOGGER.error('An error occurred. Halting execution.', err);
+		LOGGER.info('Retrying in 10 seconds...');
+		setTimeout(() => process.exit(1), 10000);
+	}
+}
+
+/* * */
+
+(async function init() {
+	const runOnInterval = async () => {
+		await syncRides();
+		setTimeout(runOnInterval, RUN_INTERVAL);
+	};
+	runOnInterval();
+})();

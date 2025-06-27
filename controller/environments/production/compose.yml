@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-controller-engine
+name: tmlmobilidade-sae-controller
 
 services:
 
@@ -32,8 +32,28 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
+  bridgedb:
+    image: postgres:alpine
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+    ports:
+      - 27027:5432
+    volumes:
+      - ./bridge-db-data:/var/lib/postgresql/data
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
   cleaner:
-    image: ghcr.io/tmlmobilidade/sae-controller-engine-cleaner:production
+    image: ghcr.io/tmlmobilidade/sae-controller-rides-cleaner:production
     deploy:
       restart_policy:
         condition: any
@@ -52,7 +72,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   coordinator:
-    image: ghcr.io/tmlmobilidade/sae-controller-engine-coordinator:production
+    image: ghcr.io/tmlmobilidade/sae-controller-rides-coordinator:production
     deploy:
       restart_policy:
         condition: any
@@ -70,8 +90,27 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  examiner:
-    image: ghcr.io/tmlmobilidade/sae-controller-engine-examiner:production
+  rides-bridge:
+    image: ghcr.io/tmlmobilidade/sae-controller-rides-bridge:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  rides-examiner:
+    image: ghcr.io/tmlmobilidade/sae-controller-rides-examiner:production
     deploy:
       mode: replicated
       replicas: 4
@@ -91,8 +130,27 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  feeder:
-    image: ghcr.io/tmlmobilidade/sae-controller-engine-feeder:production
+  rides-feeder:
+    image: ghcr.io/tmlmobilidade/sae-controller-rides-feeder:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sams-examiner:
+    image: ghcr.io/tmlmobilidade/sae-controller-sams-examiner:production
     deploy:
       restart_policy:
         condition: any

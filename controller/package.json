@@ -2,32 +2,36 @@
 	"name": "@tmlmobilidade/sae-controller",
 	"private": true,
 	"scripts": {
-		"build:bridge": "turbo build --filter=@tmlmobilidade/sae-controller-bridge-*",
-		"build:engine": "turbo build --filter=@tmlmobilidade/sae-controller-engine-*",
-		"build:explorer": "turbo build --filter=@tmlmobilidade/sae-controller-explorer-*",
-		"build:packages": "turbo build --filter=@tmlmobilidade/sae-controller-pckg-*",
-		"clean": "sh cleanup.sh",
-		"dev:bridge": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-bridge-*",
-		"dev:engine": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-engine-*",
-		"dev:engine-coordinator": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-engine-coordinator",
-		"dev:engine-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-engine-examiner",
-		"dev:engine-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-engine-feeder",
-		"dev:explorer": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-explorer-*",
-		"lint": "turbo lint"
+		"build": "turbo build",
+		"build:cleaner": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-cleaner",
+		"build:coordinator": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-coordinator",
+		"build:rides-bridge": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-rides-bridge",
+		"build:rides-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-rides-examiner",
+		"build:rides-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-rides-feeder",
+		"build:sams-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-sams-examiner",
+		"build:sams-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-sams-feeder",
+		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
+		"dev:cleaner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-cleaner",
+		"dev:coordinator": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-coordinator",
+		"dev:rides-bridge": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-bridge",
+		"dev:rides-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-examiner",
+		"dev:rides-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-feeder",
+		"dev:sams-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-sams-examiner",
+		"dev:sams-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-sams-feeder",
+		"lint": "turbo lint",
+		"purge": "sh purge.sh"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250418.42.41",
+		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@dotenv-run/cli": "1.3.6",
 		"turbo": "2.5.4",
 		"typescript": "5.8.3"
 	},
 	"workspaces": [
-		"apps/bridge/*",
-		"apps/engine/*",
-		"apps/explorer/*",
+		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "npm@11.4.1",
+	"packageManager": "npm@11.4.2",
 	"engines": {
 		"node": ">=18"
 	}

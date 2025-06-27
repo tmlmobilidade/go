@@ -1,0 +1,22 @@
+{
+	"name": "@tmlmobilidade/sae-rides-pckg-utils",
+	"version": "1.0.0",
+	"type": "module",
+	"files": ["dist"],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist"
+	},
+	"dependencies": {
+		"@tmlmobilidade/types": "20250611.2204.4",
+		"@turf/turf": "7.2.0",
+		"luxon": "3.6.1"
+	},
+	"devDependencies": {
+		"@types/node": "24.0.1",
+		"resolve-tspaths": "0.8.23",
+		"typescript": "5.8.3"
+	}
+}
