@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"clean": "sh cleanup.sh",
-		"dev": "dotenv-run -f ./_dev/secrets/.env -- turbo dev",
+		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 		"start": "turbo start"
