@@ -55,7 +55,7 @@ export async function parsePlan(planData: Plan) {
 		const extractDirPath = `${workdirPath}/extracted`;
 
 		try {
-			fs.rmSync(workdirPath, { recursive: true });
+			fs.rmSync(workdirPath, { force: true, recursive: true });
 			fs.mkdirSync(workdirPath, { recursive: true });
 			LOGGER.success('Prepared working directory.');
 			LOGGER.spacer(1);
@@ -171,11 +171,11 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar.txt"`);
+				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} service_ids saved.`);
 				LOGGER.spacer(1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`);
+				LOGGER.info(`Optional file "calendar.txt" not saved. This may or may not be an error. Proceeding...`);
 				LOGGER.spacer(1);
 			}
 
@@ -244,11 +244,11 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar_dates.txt"`);
+				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} service_ids saved.`);
 				LOGGER.spacer(1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`);
+				LOGGER.info(`Optional file "calendar_dates.txt" not saved. This may or may not be an error. Proceeding...`);
 				LOGGER.spacer(1);
 			}
 
@@ -290,7 +290,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/trips.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "trips.txt"`);
+			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} trips saved.`);
 			LOGGER.spacer(1);
 
 			//
@@ -327,7 +327,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/routes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "routes.txt"`);
+			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} routes saved.`);
 			LOGGER.spacer(1);
 
 			//
@@ -367,7 +367,8 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/shapes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "shapes.txt"`);
+			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} shapes saved.`);
+			LOGGER.spacer(1);
 
 			//
 		}
@@ -401,7 +402,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/stops.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stops.txt"`);
+			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} stops saved.`);
 			LOGGER.spacer(1);
 
 			//
@@ -461,7 +462,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/stop_times.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stop_times.txt"`);
+			LOGGER.success(`Finished processing "stop_times.txt": ${savedStopTimes.size} stop_times saved.`);
 			LOGGER.spacer(1);
 
 			//
@@ -482,6 +483,8 @@ export async function parsePlan(planData: Plan) {
 
 		try {
 			//
+
+			LOGGER.info(`Building HashedTrips, HashedShapes and Rides...`);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
@@ -654,6 +657,8 @@ export async function parsePlan(planData: Plan) {
 				const firstWaypoint = finalHashedTrip.path[0];
 				const lastWaypoint = finalHashedTrip.path[finalHashedTrip.path.length - 1];
 
+				const extensionScheduledInMeters = convertMetersOrKilometersToMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled);
+
 				//
 				// Iterate on the saved calendar dates for this trip,
 				// and create a Ride document for each date.
@@ -666,10 +671,8 @@ export async function parsePlan(planData: Plan) {
 
 					const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
 
-					const extensionScheduledInMeters = convertMetersOrKilometersToMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled);
-
-					const startTimeScheduled = firstWaypoint.arrival_time;
-					const startTimeScheduledDate = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(startTimeScheduled, calendarDate);
+					const startTimeScheduledString = firstWaypoint.arrival_time;
+					const startTimeScheduledDate = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(startTimeScheduledString, calendarDate);
 
 					const endTimeScheduledString = lastWaypoint.arrival_time;
 					const endTimeScheduledDate = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(endTimeScheduledString, calendarDate);

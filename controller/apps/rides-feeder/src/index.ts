@@ -30,7 +30,7 @@ async function main() {
 				//
 
 				LOGGER.spacer(1);
-				LOGGER.divider(`[${planIndex + 1}/${allPlansData.length}] - ${currentPlan._id}`);
+				LOGGER.divider(`[${planIndex + 1}/${allPlansData.length}] - Plan ${currentPlan._id} from ${currentPlan.gtfs_agency.agency_id}`);
 
 				//
 				// Validate the Plan data before processing
@@ -44,7 +44,7 @@ async function main() {
 
 				await plans.updateById(currentPlan._id, { feeder_status: 'processing' });
 
-				LOGGER.success(`Processing started: gtfs_feed_info.feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | gtfs_feed_info.feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
+				LOGGER.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
 
 				//
 				// Parse the plan into Rides
