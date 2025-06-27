@@ -1,6 +1,6 @@
 # # #
 
-name: 'Controller - explorer | Build & Test'
+name: 'Rides | Build & Test'
 
 # # #
 
@@ -8,8 +8,7 @@ on:
 
   push:
     paths:
-      - 'controller/packages/**'
-      - 'controller/apps/explorer/**'
+      - 'rides/**'
     branches:
       - production
       - staging
@@ -52,9 +51,9 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
-          file: ./controller/apps/explorer/frontend/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-explorer-frontend:${{ github.ref_name }}
+          context: ./rides
+          file: ./rides/apps/frontend/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-rides-frontend:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -90,9 +89,9 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
-          file: ./controller/apps/explorer/api/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-explorer-api:${{ github.ref_name }}
+          context: ./rides
+          file: ./rides/apps/api/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-rides-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # #
@@ -128,6 +127,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
-          file: ./controller/apps/explorer/nginx/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-explorer-nginx:${{ github.ref_name }}
+          context: ./rides
+          file: ./rides/apps/nginx/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-rides-nginx:${{ github.ref_name }}
