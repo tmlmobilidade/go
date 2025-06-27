@@ -22,7 +22,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250627.1437.14",
-		"@types/node": "24.0.4",
+		"@types/node": "24.0.5",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.3",
 		"typescript": "5.8.3"
