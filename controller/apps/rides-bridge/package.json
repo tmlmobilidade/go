@@ -23,7 +23,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250627.1437.14",
-		"@types/node": "24.0.4",
+		"@types/node": "24.0.5",
 		"@types/pg": "8.15.4",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
