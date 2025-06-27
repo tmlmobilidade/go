@@ -7,8 +7,9 @@ import { Routes } from '@/lib/routes';
 import { Loader, Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
-import { UsersListHeader } from '../UsersListHeader';
 import styles from './styles.module.css';
+
+import { UsersListHeader } from '../UsersListHeader';
 
 /* * */
 
