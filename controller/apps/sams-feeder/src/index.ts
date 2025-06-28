@@ -31,7 +31,7 @@ async function main() {
 		const agregationPipeline = [
 			{
 				$match: {
-					agency_id: '44',
+					agency_id: { $in: ['44'] },
 				},
 			},
 			{
