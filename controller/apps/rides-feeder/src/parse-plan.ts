@@ -60,8 +60,7 @@ export async function parsePlan(planData: Plan) {
 		try {
 			fs.rmSync(workdirPath, { force: true, recursive: true });
 			fs.mkdirSync(workdirPath, { recursive: true });
-			LOGGER.success('Prepared working directory.');
-			LOGGER.spacer(1);
+			LOGGER.success('Prepared working directory.', 1);
 		}
 		catch (error) {
 			LOGGER.error(`Error preparing workdir path "${workdirPath}".`, error);
@@ -90,8 +89,7 @@ export async function parsePlan(planData: Plan) {
 
 		try {
 			await unzipFile(downloadFilePath, extractDirPath);
-			LOGGER.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`);
-			LOGGER.spacer(1);
+			LOGGER.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
 		}
 		catch (error) {
 			LOGGER.error('Error unzipping the file.', error);
@@ -176,12 +174,10 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} service_ids saved.`);
-				LOGGER.spacer(1);
+				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} service_ids saved.`, 1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar.txt" not saved. This may or may not be an error. Proceeding...`);
-				LOGGER.spacer(1);
+				LOGGER.info(`Optional file "calendar.txt" not saved. This may or may not be an error. Proceeding...`, 1);
 			}
 
 			//
@@ -256,12 +252,10 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} service_ids saved.`);
-				LOGGER.spacer(1);
+				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} service_ids saved.`, 1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar_dates.txt" not saved. This may or may not be an error. Proceeding...`);
-				LOGGER.spacer(1);
+				LOGGER.info(`Optional file "calendar_dates.txt" not saved. This may or may not be an error. Proceeding...`, 1);
 			}
 
 			//
@@ -304,8 +298,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/trips.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} trips saved.`);
-			LOGGER.spacer(1);
+			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} trips saved.`, 1);
 
 			//
 		}
@@ -341,8 +334,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/routes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} routes saved.`);
-			LOGGER.spacer(1);
+			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} routes saved.`, 1);
 
 			//
 		}
@@ -382,7 +374,6 @@ export async function parsePlan(planData: Plan) {
 			await parseCsvFile(`${extractDirPath}/shapes.txt`, parseEachRow);
 
 			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} shapes saved.`);
-			LOGGER.spacer(1);
 
 			//
 		}
@@ -417,7 +408,6 @@ export async function parsePlan(planData: Plan) {
 			await parseCsvFile(`${extractDirPath}/stops.txt`, parseEachRow);
 
 			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} stops saved.`);
-			LOGGER.spacer(1);
 
 			//
 		}
@@ -439,6 +429,8 @@ export async function parsePlan(planData: Plan) {
 			//
 
 			LOGGER.info(`Reading zip entry "stop_times.txt"...`);
+
+			let stopTimesCounter = 0;
 
 			const parseEachRow = async (data: GTFS_StopTime_Raw) => {
 				//
@@ -468,6 +460,8 @@ export async function parsePlan(planData: Plan) {
 				if (savedStopTime) savedStopTimes.set(validatedData.trip_id, [...savedStopTime, validatedData]);
 				else savedStopTimes.set(validatedData.trip_id, [validatedData]);
 
+				stopTimesCounter++;
+
 				//
 			};
 
@@ -476,8 +470,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/stop_times.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stop_times.txt": ${savedStopTimes.size} stop_times saved.`);
-			LOGGER.spacer(1);
+			LOGGER.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved.`, 1);
 
 			//
 		}
@@ -498,8 +491,7 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`);
-			LOGGER.spacer(1);
+			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`, 1);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
