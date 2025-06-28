@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { UnixTimestamp, UpdateUniqueSamDto } from '@tmlmobilidade/types';
+import { ProcessingStatus, UnixTimestamp, UpdateUniqueSamDto } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -119,7 +119,8 @@ async function examineUniqueSams() {
 			}));
 
 			//
-			// Now merge all transactions into a single variable and sort them by ASE Counter Value
+			// Now merge all transactions into a single variable
+			// and sort them by ASE Counter Value.
 
 			const allCleanedTransactions = [
 				...cleanedLocationTransactions,
@@ -133,7 +134,8 @@ async function examineUniqueSams() {
 				.sort((a, b) => a.mac_ase_counter_value - b.mac_ase_counter_value);
 
 			//
-			// Validate if all the transactions match the same Agency ID and the same Device ID
+			// Validate if all the transactions match the
+			// same Agency ID and the same Device ID.
 
 			if (sortedTransactions.length === 0) {
 				LOGGER.error(`No transactions found for Unique SAM ${uniqueSam._id}. Skipping.`);
@@ -150,7 +152,8 @@ async function examineUniqueSams() {
 			}
 
 			//
-			// Update the Unique SAM with the latest ASE Counter Value and the number of transactions
+			// Update the Unique SAM with the latest ASE Counter Value
+			// and the number of transactions.
 
 			const firstTransaction = sortedTransactions[0];
 			const latestTransaction = sortedTransactions[sortedTransactions.length - 1];
@@ -159,26 +162,7 @@ async function examineUniqueSams() {
 			const transactionsExpected = latestTransaction.mac_ase_counter_value - firstTransaction.mac_ase_counter_value + 1;
 			const transactionsMissing = transactionsExpected - transactionsFound;
 
-			// console.log('firstTransaction', firstTransaction);
-			// console.log('latestTransaction', latestTransaction);
-			// console.log('expected', transactionsExpected);
-
-			const updatedSamData: UpdateUniqueSamDto = {
-				agency_id: agencyId,
-				device_id: deviceId,
-				latest_apex_version: latestTransaction.apex_version,
-				seen_first_at: firstTransaction.created_at as UnixTimestamp,
-				seen_last_at: latestTransaction.created_at as UnixTimestamp,
-				status: transactionsMissing === 0 ? 'complete' : 'missing_transactions',
-				transactions_expected: transactionsExpected,
-				transactions_found: transactionsFound,
-				transactions_missing: transactionsMissing,
-			};
-
-			await uniqueSams.updateById(uniqueSam._id, updatedSamData);
-
-			LOGGER.success(`SAM ${uniqueSam._id} [${updatedSamData.agency_id}] Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} | Status: ${updatedSamData.status}`);
-
+			//
 			// Get the aseCounterValues missing
 
 			const aseCounterValues = sortedTransactions.map(t => t.mac_ase_counter_value);
@@ -195,6 +179,26 @@ async function examineUniqueSams() {
 				LOGGER.info(`Missing ASE Counter Values for Unique SAM ${uniqueSam._id}: ${missingAseCounterValues.join(', ')}`);
 			}
 
+			//
+			// Update the Unique SAM with the new data.
+
+			const updatedSamData: UpdateUniqueSamDto = {
+				agency_id: agencyId,
+				device_id: deviceId,
+				is_complete: transactionsMissing === 0 ? true : false,
+				latest_apex_version: latestTransaction.apex_version,
+				message: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions.`,
+				seen_first_at: firstTransaction.created_at as UnixTimestamp,
+				seen_last_at: latestTransaction.created_at as UnixTimestamp,
+				system_status: ProcessingStatus.Complete,
+				transactions_expected: transactionsExpected,
+				transactions_found: transactionsFound,
+				transactions_missing: transactionsMissing,
+			};
+
+			await uniqueSams.updateById(uniqueSam._id, updatedSamData);
+
+			LOGGER.success(`SAM ${uniqueSam._id} [${updatedSamData.agency_id}] Is Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`);
 			LOGGER.spacer(1);
 
 			//

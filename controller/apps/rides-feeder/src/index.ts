@@ -6,6 +6,7 @@ import { validatePlan } from '@/validate-plan.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { plans } from '@tmlmobilidade/interfaces';
+import { ProcessingStatus } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -42,7 +43,7 @@ async function main() {
 				// At this point, the plan will be processed.
 				// Mark it as 'processing' to prevent multiple concurrent runs.
 
-				await plans.updateById(currentPlan._id, { feeder_status: 'processing' });
+				await plans.updateById(currentPlan._id, { feeder_status: ProcessingStatus.Processing });
 
 				LOGGER.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
 
@@ -54,7 +55,7 @@ async function main() {
 				//
 			}
 			catch (error) {
-				await plans.updateById(currentPlan._id, { feeder_status: 'error' });
+				await plans.updateById(currentPlan._id, { feeder_status: ProcessingStatus.Error });
 				LOGGER.error(`Error processing plan ${currentPlan._id}`, error);
 				LOGGER.divider();
 			}

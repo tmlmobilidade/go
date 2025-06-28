@@ -3,6 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { rides } from '@tmlmobilidade/interfaces';
+import { ProcessingStatus } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import Fastify from 'fastify';
 
@@ -44,7 +45,7 @@ import Fastify from 'fastify';
 		isBusy = true;
 
 		//
-		// Find all ride IDs that are pending analysis and which started before the current time,
+		// Find all ride IDs that are waiting analysis and which started before the current time,
 		// sorted in descending order to prioritize the most recent rides.
 
 		const batchSize = 750;
@@ -52,23 +53,23 @@ import Fastify from 'fastify';
 
 		const fetchTimer = new TIMETRACKER();
 
-		const latestPendingRides = await ridesCollection
-			.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'pending' })
+		const latestWaitingRides = await ridesCollection
+			.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: ProcessingStatus.Waiting })
 			.sort({ start_time_scheduled: -1 })
 			.limit(batchSize)
 			.toArray();
 
 		/* === FOR TESTING === */
-		// const latestPendingRides = await ridesCollection
+		// const latestWaitingRides = await ridesCollection
 		// 	.find({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
 		// 	.toArray();
 		/* === FOR TESTING === */
 
-		const latestPendingRidesIds = latestPendingRides.map(ride => ride._id);
+		const latestWaitingRidesIds = latestWaitingRides.map(ride => ride._id);
 
 		const fetchTimerResult = fetchTimer.get();
 
-		if (latestPendingRidesIds.length === 0) {
+		if (latestWaitingRidesIds.length === 0) {
 			LOGGER.info(`No rides to process | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})`);
 			isBusy = false;
 			return [];
@@ -80,13 +81,13 @@ import Fastify from 'fastify';
 
 		const markTimer = new TIMETRACKER();
 
-		await ridesCollection.updateMany({ _id: { $in: latestPendingRidesIds } }, { $set: { system_status: 'processing' } });
+		await ridesCollection.updateMany({ _id: { $in: latestWaitingRidesIds } }, { $set: { system_status: ProcessingStatus.Processing } });
 
-		LOGGER.info(`New batch: Qty ${latestPendingRidesIds.length} | start_time_scheduled: ${latestPendingRides.pop().start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+		LOGGER.info(`New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides.pop().start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
 		isBusy = false;
 
-		return latestPendingRidesIds;
+		return latestWaitingRidesIds;
 
 		//
 	});

@@ -5,7 +5,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, ProcessingStatus, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { convertMetersOrKilometersToMeters, Dates, getOperationalDatesFromRange } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
@@ -712,7 +712,7 @@ export async function parsePlan(planData: Plan) {
 						seen_last_at: null,
 						start_time_observed: null,
 						start_time_scheduled: startTimeScheduledDate,
-						system_status: 'pending',
+						system_status: ProcessingStatus.Waiting,
 						trip_id: currentTrip.trip_id,
 						updated_at: Dates.now('utc').unix_timestamp,
 						vehicle_ids: [],
@@ -765,9 +765,9 @@ export async function parsePlan(planData: Plan) {
 		await cleanupOrphanRidesForPlan(planData._id, savedRideIds);
 
 		//
-		// Mark this plan as 'success' to indicate that it was processed successfully
+		// Mark this plan as 'complete' to indicate that it was processed successfully
 
-		await plans.updateById(planData._id, { feeder_status: 'success' });
+		await plans.updateById(planData._id, { feeder_status: ProcessingStatus.Complete });
 
 		LOGGER.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 
@@ -783,7 +783,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	}
 	catch (error) {
-		await plans.updateById(planData._id, { feeder_status: 'error' });
+		await plans.updateById(planData._id, { feeder_status: ProcessingStatus.Error });
 		LOGGER.error(`Error processing plan ${planData._id}`, error);
 		LOGGER.divider();
 	}

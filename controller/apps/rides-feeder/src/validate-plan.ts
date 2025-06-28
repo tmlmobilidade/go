@@ -1,7 +1,7 @@
 /* * */
 
 import LOGGER from '@helperkits/logger';
-import { type Plan } from '@tmlmobilidade/types';
+import { type Plan, ProcessingStatus } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -11,7 +11,7 @@ export function validatePlan(planData: Plan): boolean {
 	//
 	// Return false if its feeder status is other than 'waiting' or 'processing'
 
-	if (planData.feeder_status !== 'waiting' && planData.feeder_status !== 'processing') {
+	if (planData.feeder_status !== ProcessingStatus.Waiting && planData.feeder_status !== ProcessingStatus.Processing) {
 		LOGGER.error(`Skip processing: feeder_status is '${planData.feeder_status}'. Only 'waiting' or 'processing' plans will be processed.`);
 		return false;
 	}
