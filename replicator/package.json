@@ -12,7 +12,8 @@
 		"dev:sync-apex-on-board-sales": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
 		"dev:sync-apex-validations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-validations",
 		"lint": "turbo lint",
-		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
+		"start": "turbo start"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
