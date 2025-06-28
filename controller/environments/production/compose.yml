@@ -172,7 +172,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-sams-examiner:production
     deploy:
       mode: replicated
-      replicas: 4
+      replicas: 2
       restart_policy:
         condition: any
         delay: 30s

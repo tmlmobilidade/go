@@ -37,7 +37,7 @@ export async function getUniqueSams(): Promise<number[]> {
 	// Find all Unique SAM IDs that are waiting analysis and which started before the current time,
 	// sorted in descending order to prioritize the most recent Unique SAMs.
 
-	const batchSize = 50;
+	const batchSize = 5;
 
 	const fetchTimer = new TIMETRACKER();
 
