@@ -7,7 +7,7 @@ import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { ProcessingStatus, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
@@ -94,10 +94,10 @@ async function syncApexOnBoardRefunds() {
 					// Invalidate all rides that are affected
 					const result = await rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
-						{ system_status: 'pending' },
+						{ system_status: ProcessingStatus.Waiting },
 					);
-					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_on_board_refunds data (${invalidationTimer.get()})`);
+					// Log the number of rides that were marked as 'waiting'
+					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'waiting' due to new apex_on_board_refunds data (${invalidationTimer.get()})`);
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);

@@ -6,7 +6,7 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { emailProvider } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { ProcessingStatus, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -67,9 +67,9 @@ export async function processVehicleEvent(databaseOperation) {
 				};
 			});
 			// Invalidate all rides that are affected
-			const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
-			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [vehicle_events]: Marked ${result.modifiedCount} Rides as 'pending' due to new vehicle_events data (${invalidationTimer.get()})`);
+			const result = await rides.updateMany({ $or: updates }, { system_status: ProcessingStatus.Waiting });
+			// Log the number of rides that were marked as 'waiting'
+			LOGGER.info(`Flush [vehicle_events]: Marked ${result.modifiedCount} Rides as 'waiting' due to new vehicle_events data (${invalidationTimer.get()})`);
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);

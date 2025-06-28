@@ -5,7 +5,7 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
+import { ProcessingStatus, type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -57,9 +57,9 @@ export async function processApexLocation(databaseOperation) {
 				};
 			});
 			// Invalidate all rides that are affected
-			const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
-			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [simplified_apex_locations]: Marked ${result.modifiedCount} Rides as 'pending' due to new simplified_apex_locations data (${invalidationTimer.get()})`);
+			const result = await rides.updateMany({ $or: updates }, { system_status: ProcessingStatus.Waiting });
+			// Log the number of rides that were marked as 'waiting'
+			LOGGER.info(`Flush [simplified_apex_locations]: Marked ${result.modifiedCount} Rides as 'waiting' due to new simplified_apex_locations data (${invalidationTimer.get()})`);
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);

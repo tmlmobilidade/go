@@ -5,7 +5,7 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { ProcessingStatus, type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -57,9 +57,9 @@ export async function processApexOnBoardSale(databaseOperation) {
 				};
 			});
 			// Invalidate all rides that are affected
-			const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
-			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [simplified_apex_on_board_sales]: Marked ${result.modifiedCount} Rides as 'pending' due to new simplified_apex_on_board_sales data (${invalidationTimer.get()})`);
+			const result = await rides.updateMany({ $or: updates }, { system_status: ProcessingStatus.Waiting });
+			// Log the number of rides that were marked as 'waiting'
+			LOGGER.info(`Flush [simplified_apex_on_board_sales]: Marked ${result.modifiedCount} Rides as 'waiting' due to new simplified_apex_on_board_sales data (${invalidationTimer.get()})`);
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);
