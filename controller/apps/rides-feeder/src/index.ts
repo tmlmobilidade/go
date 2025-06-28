@@ -31,7 +31,7 @@ async function main() {
 				//
 
 				LOGGER.spacer(1);
-				LOGGER.divider(`[${planIndex + 1}/${allPlansData.length}] - Plan ${currentPlan._id} from ${currentPlan.gtfs_agency.agency_id}`);
+				LOGGER.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.gtfs_agency.agency_id} - Plan ${currentPlan._id}`);
 
 				//
 				// Validate the Plan data before processing

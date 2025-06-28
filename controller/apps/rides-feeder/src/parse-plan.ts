@@ -491,7 +491,7 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`);
+			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`, 1);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
@@ -499,7 +499,7 @@ export async function parsePlan(planData: Plan) {
 				//
 				// Log every 10000 trips processed
 
-				if (savedTrips.size % 10000 === 0) LOGGER.title(`${savedTrips.size} trips left...`);
+				if (savedTrips.size % 10000 === 0) LOGGER.title(`${savedTrips.size} trips left. Generated ${savedRideIds.size} Rides so far.`);
 
 				//
 				// Get associated data from previously saved entities,
