@@ -1,11 +1,11 @@
 /* * */
 
-import { type AggregationResult } from '@/types.js';
+import { type AggregationResultItem } from '@/types.js';
 import { ProcessingStatus, type UpdateUniqueSamDto } from '@tmlmobilidade/types';
 
 /* * */
 
-export function parseUniqueSam(item: AggregationResult): UpdateUniqueSamDto {
+export function parseUniqueSam(item: AggregationResultItem): UpdateUniqueSamDto {
 	return {
 		agency_id: item.agency_id,
 		device_ids: null,

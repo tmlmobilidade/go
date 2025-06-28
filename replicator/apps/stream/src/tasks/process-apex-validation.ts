@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { rides, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { ProcessingStatus, type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
@@ -47,19 +47,36 @@ export async function processApexValidation(databaseOperation) {
 
 	const flushCallback = async (flushedData: MongoDBWriterWriteOps<SimplifiedApexValidation>[]) => {
 		try {
+			//
+
 			const invalidationTimer = new TIMETRACKER();
-			// Map the flushed data to the query that will be used to invalidate the rides
-			const updates = flushedData.map((writeOp) => {
+
+			//
+			// Map the flushed data to the query that will be used to invalidate documents
+
+			const updateRidesOps = flushedData.map((writeOp) => {
 				const standardWindowInterval = Dates.fromUnixTimestamp(writeOp.data.created_at).std_window;
 				return {
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 					trip_id: writeOp.data.trip_id,
 				};
 			});
-			// Invalidate all rides that are affected
-			const result = await rides.updateMany({ $or: updates }, { system_status: ProcessingStatus.Waiting });
-			// Log the number of rides that were marked as 'waiting'
-			LOGGER.info(`Flush [simplified_apex_validations]: Marked ${result.modifiedCount} Rides as 'waiting' due to new simplified_apex_validations data (${invalidationTimer.get()})`);
+
+			const updateUniqueSamsOps = flushedData.map((writeOp) => {
+				return { _id: writeOp.data.mac_sam_serial_number };
+			});
+
+			//
+			// Invalidate all documents that are affected
+
+			const updateRidesPromise = rides.updateMany({ $or: updateRidesOps }, { system_status: ProcessingStatus.Waiting });
+			const updateUniqueSamsPromise = uniqueSams.updateMany({ $or: updateUniqueSamsOps }, { system_status: ProcessingStatus.Waiting });
+
+			const [updateRidesResult, updateUniqueSamsResult] = await Promise.all([updateRidesPromise, updateUniqueSamsPromise]);
+
+			LOGGER.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateUniqueSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
+
+			//
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);

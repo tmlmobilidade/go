@@ -1,7 +1,7 @@
 /* * */
 
 import { parseUniqueSam } from '@/parse-unique-sam.js';
-import { type AggregationResult } from '@/types.js';
+import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
@@ -66,7 +66,7 @@ async function main() {
 
 		for await (const item of allUniqueSamsForApexLocations) {
 			// Set the type of item
-			const itemData = item as AggregationResult;
+			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
 				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
@@ -100,7 +100,7 @@ async function main() {
 
 		for await (const item of allUniqueSamsForApexOnBoardRefunds) {
 			// Set the type of item
-			const itemData = item as AggregationResult;
+			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
 				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
@@ -134,7 +134,7 @@ async function main() {
 
 		for await (const item of allUniqueSamsForApexOnBoardSales) {
 			// Set the type of item
-			const itemData = item as AggregationResult;
+			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
 				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
@@ -168,7 +168,7 @@ async function main() {
 
 		for await (const item of allUniqueSamsForApexValidations) {
 			// Set the type of item
-			const itemData = item as AggregationResult;
+			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
 				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);

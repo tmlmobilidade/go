@@ -1,9 +1,10 @@
 /* * */
 
+import { AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus, UnixTimestamp, UpdateUniqueSamDto } from '@tmlmobilidade/types';
+import { ProcessingStatus, type UpdateUniqueSamDto } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -17,40 +18,43 @@ async function main() {
 		const globalTimer = new TIMETRACKER();
 
 		const allUniqueSamsCollection = await uniqueSams.getCollection();
+		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
+		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
+		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
+		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
 
 		//
 		// For each Unique SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		const searchTimestampStart = Dates
-			.now('Europe/Lisbon')
-			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 })
-			.unix_timestamp;
-
 		const searchTimestampEnd = Dates
 			.now('Europe/Lisbon')
 			.minus({ days: 15 })
 			.startOf('day')
-			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 7, second: 59, year: 2024 })
 			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
 			.unix_timestamp;
 
-		const allUniqueSamsStream = allUniqueSamsCollection
-			.find()
-			.stream();
+		const allUniqueSams = await allUniqueSamsCollection
+			.find({ system_status: ProcessingStatus.Waiting })
+			.toArray();
 
-		for await (const uniqueSam of allUniqueSamsStream) {
+		for (const [uniqueSamIndex, uniqueSamItem] of allUniqueSams.entries()) {
 			//
 
 			//
 			// Get all APEX transactions for the current Unique SAM in parallel.
 
-			LOGGER.info(`Examining Unique SAM: ${uniqueSam._id}`);
+			LOGGER.divider(`[${allUniqueSams.length - uniqueSamIndex}/${allUniqueSams.length}] [${uniqueSamItem.agency_id}] Unique SAM ${uniqueSamItem._id}`);
 
-			const locationTransactionsPromise = simplifiedApexLocations.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
-			const onBoardRefundsTransactionsPromise = simplifiedApexOnBoardRefunds.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
-			const onBoardSalesTransactionsPromise = simplifiedApexOnBoardSales.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
-			const validationsTransactionsPromise = simplifiedApexValidations.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
+			const aggrgationPipeline = [
+				{ $match: { created_at: { $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSamItem._id } },
+				{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1 } },
+			];
+
+			const locationTransactionsPromise = simplifiedApexLocationsCollection.aggregate(aggrgationPipeline).toArray();
+			const onBoardRefundsTransactionsPromise = simplifiedApexOnBoardRefundsCollection.aggregate(aggrgationPipeline).toArray();
+			const onBoardSalesTransactionsPromise = simplifiedApexOnBoardSalesCollection.aggregate(aggrgationPipeline).toArray();
+			const validationsTransactionsPromise = simplifiedApexValidationsCollection.aggregate(aggrgationPipeline).toArray();
 
 			const [
 				locationTransactionsData,
@@ -67,53 +71,14 @@ async function main() {
 			LOGGER.info(`Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length}`);
 
 			//
-			// Simplify all transaction to only keep the necessary fields for validation.
-
-			const simplifiedLocationTransactions = locationTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			const simplifiedOnBoardRefundTransactions = onBoardRefundsTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			const simplifiedOnBoardSaleTransactions = onBoardSalesTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			const simplifiedValidationTransactions = validationsTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			//
 			// Now merge all transactions into a single variable
 			// and sort them by ASE Counter Value.
 
-			const allSimplifiedTransactions = [
-				...simplifiedLocationTransactions,
-				...simplifiedOnBoardRefundTransactions,
-				...simplifiedOnBoardSaleTransactions,
-				...simplifiedValidationTransactions,
+			const allSimplifiedTransactions: AggregationResultItem[] = [
+				...locationTransactionsData as AggregationResultItem[],
+				...onBoardRefundsTransactionsData as AggregationResultItem[],
+				...onBoardSalesTransactionsData as AggregationResultItem[],
+				...validationsTransactionsData as AggregationResultItem[],
 			];
 
 			const sortedTransactions = allSimplifiedTransactions
@@ -125,7 +90,7 @@ async function main() {
 			// same Agency ID and the same Device ID.
 
 			if (sortedTransactions.length === 0) {
-				LOGGER.error(`No transactions found for Unique SAM "${uniqueSam._id}". Skipping.`);
+				LOGGER.error(`No transactions found for Unique SAM "${uniqueSamItem._id}". Skipping.`);
 				LOGGER.spacer(1);
 				continue;
 			}
@@ -135,7 +100,7 @@ async function main() {
 			const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 			if (!allTransactionsMatch) {
-				LOGGER.error(`Unique SAM ${uniqueSam._id} has transactions with different Agency ID.`);
+				LOGGER.error(`Unique SAM ${uniqueSamItem._id} has transactions with different Agency ID.`);
 			}
 
 			//
@@ -173,17 +138,17 @@ async function main() {
 				is_complete: transactionsMissing === 0 ? true : false,
 				latest_apex_version: latestTransaction.apex_version,
 				remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.join(',')}]`,
-				seen_first_at: firstTransaction.created_at as UnixTimestamp,
-				seen_last_at: latestTransaction.created_at as UnixTimestamp,
+				seen_first_at: firstTransaction.created_at,
+				seen_last_at: latestTransaction.created_at,
 				system_status: ProcessingStatus.Complete,
 				transactions_expected: transactionsExpected,
 				transactions_found: transactionsFound,
 				transactions_missing: transactionsMissing,
 			};
 
-			await uniqueSams.updateById(uniqueSam._id, updatedSamData);
+			await uniqueSams.updateById(uniqueSamItem._id, updatedSamData);
 
-			LOGGER.success(`SAM ${uniqueSam._id} [${updatedSamData.agency_id}] Is Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
+			LOGGER.success(`Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
 
 			//
 		}
