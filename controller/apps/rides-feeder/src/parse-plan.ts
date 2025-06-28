@@ -498,7 +498,7 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			LOGGER.info(`Will output HashedTips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`);
+			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
