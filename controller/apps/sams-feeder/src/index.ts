@@ -32,6 +32,7 @@ async function main() {
 			{
 				$match: {
 					agency_id: { $in: ['44'] },
+					created_at: { $lt: 1735704000000 },
 				},
 			},
 			{

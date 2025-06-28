@@ -50,9 +50,9 @@ async function main() {
 
 		const searchTimestampEnd = Dates
 			.now('Europe/Lisbon')
-			.minus({ days: 15 })
-			.startOf('day')
-			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
+			// .minus({ days: 15 })
+			// .startOf('day')
+			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2025 })
 			.unix_timestamp;
 
 		for (const [uniqueSamIndex, uniqueSamItem] of uniqueSamsBatch.entries()) {
@@ -66,7 +66,7 @@ async function main() {
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
 
 				const aggregationPipeline = [
-					{ $match: { created_at: { $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSamItem._id } },
+					{ $match: { created_at: { $lt: searchTimestampEnd }, mac_sam_serial_number: uniqueSamItem._id } },
 					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1 } },
 				];
 
