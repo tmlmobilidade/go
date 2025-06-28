@@ -156,7 +156,7 @@ async function main() {
 					device_ids: Array.from(foundDeviceIds),
 					is_complete: transactionsMissing === 0 ? true : false,
 					latest_apex_version: latestTransaction.apex_version,
-					remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.join(',')}]`,
+					remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.slice(0, 25).join(',')}]`,
 					seen_first_at: firstTransaction.created_at,
 					seen_last_at: latestTransaction.created_at,
 					system_status: ProcessingStatus.Complete,
