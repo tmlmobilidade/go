@@ -1,24 +1,20 @@
 {
-	"name": "@tmlmobilidade/auth",
+	"name": "@tmlmobilidade/sae-auth",
 	"version": "1.0.0",
-	"author": "",
-	"license": "ISC",
 	"keywords": [],
 	"main": "index.js",
 	"scripts": {
 		"build": "turbo build",
-		"clean": "sh cleanup.sh",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
-		"lint:fix": "turbo lint:fix",
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start"
 	},
-	"dependencies": {
-		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"turbo": "2.5.4"
-	},
 	"devDependencies": {
-		"@dotenv-run/cli": "1.3.6"
+		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@dotenv-run/cli": "1.3.6",
+		"turbo": "2.5.4",
+		"typescript": "5.8.3"
 	},
 	"packageManager": "npm@11.4.2",
 	"workspaces": [
