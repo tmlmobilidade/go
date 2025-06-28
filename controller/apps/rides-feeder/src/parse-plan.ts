@@ -47,7 +47,7 @@ export async function parsePlan(planData: Plan) {
 		const savedStopTimes = new Map<string, GTFS_StopTime[]>();
 
 		let calendarDatesCounter = 0;
-		let tripsCounter = 0;
+		let stopTimesCounter = 0;
 
 		//
 		// Prepare the working directories to work with the zip file
@@ -177,7 +177,7 @@ export async function parsePlan(planData: Plan) {
 				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} service_ids saved.`, 1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar.txt" not saved. This may or may not be an error. Proceeding...`, 1);
+				LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
 			}
 
 			//
@@ -255,7 +255,7 @@ export async function parsePlan(planData: Plan) {
 				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} service_ids saved.`, 1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar_dates.txt" not saved. This may or may not be an error. Proceeding...`, 1);
+				LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
 			}
 
 			//
@@ -289,8 +289,6 @@ export async function parsePlan(planData: Plan) {
 				// Reference the associated entities to filter them later.
 				referencedRouteIds.add(validatedData.route_id);
 				referencedShapeIds.add(validatedData.shape_id);
-				// Increment the trips counter
-				tripsCounter++;
 			};
 
 			//
@@ -430,8 +428,6 @@ export async function parsePlan(planData: Plan) {
 
 			LOGGER.info(`Reading zip entry "stop_times.txt"...`);
 
-			let stopTimesCounter = 0;
-
 			const parseEachRow = async (data: GTFS_StopTime_Raw) => {
 				//
 
@@ -491,7 +487,14 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`, 1);
+			LOGGER.title(`Generating HashedTrips, HashedShapes and Rides:`);
+
+			LOGGER.info(`Dates: ${calendarDatesCounter} for ${savedCalendarDates.size} service_ids`);
+			LOGGER.info(`Trips: ${savedTrips.size}`);
+			LOGGER.info(`Routes: ${savedRoutes.size}`);
+			LOGGER.info(`Shapes: ${savedShapes.size}`);
+			LOGGER.info(`Stops: ${savedStops.size}`);
+			LOGGER.info(`StopTimes: ${stopTimesCounter} rows`, 1);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
