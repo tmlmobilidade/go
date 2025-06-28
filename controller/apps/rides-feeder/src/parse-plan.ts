@@ -499,7 +499,7 @@ export async function parsePlan(planData: Plan) {
 				//
 				// Log every 100 trips processed
 
-				if (savedTrips.size % 100 === 0) LOGGER.info(`${savedTrips.size} trips left...`);
+				if (savedTrips.size % 100 === 0) LOGGER.title(`${savedTrips.size} trips left...`);
 
 				//
 				// Get associated data from previously saved entities,
