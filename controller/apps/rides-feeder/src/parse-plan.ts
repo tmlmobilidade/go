@@ -373,7 +373,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/shapes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} shapes saved.`);
+			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} shapes saved.`, 1);
 
 			//
 		}
@@ -407,7 +407,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/stops.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} stops saved.`);
+			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} stops saved.`, 1);
 
 			//
 		}
@@ -491,15 +491,15 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`, 1);
+			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
 
 				//
-				// Log every 100 trips processed
+				// Log every 10000 trips processed
 
-				if (savedTrips.size % 100 === 0) LOGGER.title(`${savedTrips.size} trips left...`);
+				if (savedTrips.size % 10000 === 0) LOGGER.title(`${savedTrips.size} trips left...`);
 
 				//
 				// Get associated data from previously saved entities,
@@ -578,7 +578,7 @@ export async function parsePlan(planData: Plan) {
 				// Check if there is already a document with this unique ID value.
 				// If it does not exist, save it to the database.
 
-				const currentHashedTripAlreadyExists = await hashedTrips.findById(uniqueIdValueForHashedTrip);
+				const currentHashedTripAlreadyExists = await hashedTrips.existsById(uniqueIdValueForHashedTrip);
 
 				const finalHashedTrip: HashedTrip = {
 					...hashableHashedTrip,
@@ -632,7 +632,7 @@ export async function parsePlan(planData: Plan) {
 				// Check if there is already a document with this unique ID value.
 				// If it does not exist, save it to the database.
 
-				const currentHashedShapeAlreadyExists = await hashedShapes.findById(uniqueIdValueForHashedShape);
+				const currentHashedShapeAlreadyExists = await hashedShapes.existsById(uniqueIdValueForHashedShape);
 
 				const finalHashedShape: HashedShape = {
 					...hashableHashedShape,
