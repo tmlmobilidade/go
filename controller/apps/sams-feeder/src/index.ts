@@ -29,27 +29,9 @@ async function main() {
 		// from simplified Apex Transactions. The pipeline is common to all transaction types.
 
 		const agregationPipeline = [
-			{
-				$match: {
-					agency_id: { $in: ['44'] },
-					created_at: { $lt: 1735704000000 },
-				},
-			},
-			{
-				$group: {
-					_id: {
-						agency_id: '$agency_id',
-						mac_sam_serial_number: '$mac_sam_serial_number',
-					},
-				},
-			},
-			{
-				$project: {
-					_id: false,
-					agency_id: '$_id.agency_id',
-					mac_sam_serial_number: '$_id.mac_sam_serial_number',
-				},
-			},
+			{ $match: { agency_id: { $in: ['44'] } } },
+			{ $group: { _id: { agency_id: '$agency_id', mac_sam_serial_number: '$mac_sam_serial_number' } } },
+			{ $project: { _id: false, agency_id: '$_id.agency_id', mac_sam_serial_number: '$_id.mac_sam_serial_number' } },
 		];
 
 		/* * */
