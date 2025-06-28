@@ -19,7 +19,7 @@
 		"dev:sams-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-sams-examiner",
 		"dev:sams-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-sams-feeder",
 		"lint": "turbo lint",
-		"purge": "sh purge.sh"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
