@@ -499,9 +499,15 @@ export async function parsePlan(planData: Plan) {
 			//
 
 			LOGGER.info(`Will output HashedTrips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`);
+			LOGGER.spacer(1);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
+
+				//
+				// Log every 100 trips processed
+
+				if (savedTrips.size % 100 === 0) LOGGER.info(`${savedTrips.size} trips left...`);
 
 				//
 				// Get associated data from previously saved entities,
