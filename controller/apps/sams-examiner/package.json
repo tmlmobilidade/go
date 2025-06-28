@@ -17,9 +17,7 @@
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/interfaces": "20250628.1722.47",
-		"@tmlmobilidade/sae-controller-pckg-utils": "*",
-		"@tmlmobilidade/utils": "20250628.1722.47",
-		"@turf/turf": "7.2.0"
+		"@tmlmobilidade/utils": "20250628.1722.47"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250628.1722.47",
