@@ -91,7 +91,7 @@ async function main() {
 (async function init() {
 	const runOnInterval = async () => {
 		await main();
-		setTimeout(runOnInterval, 60_000); // Run every 60 seconds
+		setTimeout(runOnInterval, 60_000); // 1 minute
 	};
 	runOnInterval();
 })();

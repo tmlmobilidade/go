@@ -1,17 +1,14 @@
 /* * */
 
+import { parseUniqueSam } from '@/parse-unique-sam.js';
+import { type AggregationResult } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus } from '@tmlmobilidade/types';
 
 /* * */
 
-const RUN_INTERVAL = 60000; // 1 minute
-
-/* * */
-
-async function createUniqueSamsFromSimplifiedApexTransactions() {
+async function main() {
 	try {
 		//
 
@@ -56,9 +53,8 @@ async function createUniqueSamsFromSimplifiedApexTransactions() {
 			},
 		];
 
-		//
-		// Get all unique SAM Serial Numbers from each Simplified Apex Transaction type.
-		// Check if the unique SAM Serial Number already exists in the database.
+		/* * */
+		/* SIMPLIFIED APEX LOCATIONS */
 
 		const uniqueSamsForLocationsTimer = new TIMETRACKER();
 
@@ -69,42 +65,31 @@ async function createUniqueSamsFromSimplifiedApexTransactions() {
 			.stream();
 
 		for await (const item of allUniqueSamsForApexLocations) {
-			if (typeof item.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Invalid Unique SAM Serial Number: ${item.mac_sam_serial_number}. Expected a number.`);
+			// Set the type of item
+			const itemData = item as AggregationResult;
+			// Validate if the Unique SAM Serial Number is a number
+			if (typeof itemData.mac_sam_serial_number !== 'number') {
+				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Check if the Unique SAM Serial Number already exists in the database.
-			const existingUniqueSam = await uniqueSams.findById(item.mac_sam_serial_number);
-			// Validate if the Unique SAM Serial Number is not already registered for the same agency and device.
-			if (existingUniqueSam) {
-				// Validate if this Unique SAM matches the agency and device.
-				if (existingUniqueSam.agency_id !== item.agency_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different agency.`);
-				if (existingUniqueSam.device_id !== item.device_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different device.`);
-				// If it matches, skip to the next item.
+			// Skip if the Unique SAM already exists
+			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
+			if (uniqueSamAlreadyExists) {
+				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Create a new Unique SAM document.
-			await uniqueSams.insertOne({
-				_id: item.mac_sam_serial_number,
-				agency_id: item.agency_id,
-				device_id: item.device_id,
-				is_complete: false,
-				latest_apex_version: null,
-				message: null,
-				seen_first_at: null,
-				seen_last_at: null,
-				system_status: ProcessingStatus.Waiting,
-				transactions_expected: null,
-				transactions_found: null,
-				transactions_missing: null,
-			});
+			// Parse the Unique SAM data
+			const parsedUniqueSam = parseUniqueSam(item);
+			// Create a new Unique SAM document
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForLocationsCounter++;
 		}
 
 		LOGGER.info(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified Apex Locations. (${uniqueSamsForLocationsTimer.get()})`);
 
-		//
+		/* * */
+		/* SIMPLIFIED APEX ON BOARD REFUNDS */
 
 		const uniqueSamsForOnBoardRefundsTimer = new TIMETRACKER();
 
@@ -115,42 +100,31 @@ async function createUniqueSamsFromSimplifiedApexTransactions() {
 			.stream();
 
 		for await (const item of allUniqueSamsForApexOnBoardRefunds) {
-			if (typeof item.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Invalid Unique SAM Serial Number: ${item.mac_sam_serial_number}. Expected a number.`);
+			// Set the type of item
+			const itemData = item as AggregationResult;
+			// Validate if the Unique SAM Serial Number is a number
+			if (typeof itemData.mac_sam_serial_number !== 'number') {
+				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Check if the Unique SAM Serial Number already exists in the database.
-			const existingUniqueSam = await uniqueSams.findById(item.mac_sam_serial_number);
-			// Validate if the Unique SAM Serial Number is not already registered for the same agency and device.
-			if (existingUniqueSam) {
-				// Validate if this Unique SAM matches the agency and device.
-				if (existingUniqueSam.agency_id !== item.agency_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different agency.`);
-				if (existingUniqueSam.device_id !== item.device_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different device.`);
-				// If it matches, skip to the next item.
+			// Skip if the Unique SAM already exists
+			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
+			if (uniqueSamAlreadyExists) {
+				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Create a new Unique SAM document.
-			await uniqueSams.insertOne({
-				_id: item.mac_sam_serial_number,
-				agency_id: item.agency_id,
-				device_id: item.device_id,
-				is_complete: false,
-				latest_apex_version: null,
-				message: null,
-				seen_first_at: null,
-				seen_last_at: null,
-				system_status: ProcessingStatus.Waiting,
-				transactions_expected: null,
-				transactions_found: null,
-				transactions_missing: null,
-			});
+			// Parse the Unique SAM data
+			const parsedUniqueSam = parseUniqueSam(item);
+			// Create a new Unique SAM document
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForOnBoardRefundsCounter++;
 		}
 
 		LOGGER.info(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified Apex OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`);
 
-		//
+		/* * */
+		/* SIMPLIFIED APEX ON BOARD SALES */
 
 		const uniqueSamsForOnBoardSalesTimer = new TIMETRACKER();
 
@@ -161,42 +135,31 @@ async function createUniqueSamsFromSimplifiedApexTransactions() {
 			.stream();
 
 		for await (const item of allUniqueSamsForApexOnBoardSales) {
-			if (typeof item.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Invalid Unique SAM Serial Number: ${item.mac_sam_serial_number}. Expected a number.`);
+			// Set the type of item
+			const itemData = item as AggregationResult;
+			// Validate if the Unique SAM Serial Number is a number
+			if (typeof itemData.mac_sam_serial_number !== 'number') {
+				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Check if the Unique SAM Serial Number already exists in the database.
-			const existingUniqueSam = await uniqueSams.findById(item.mac_sam_serial_number);
-			// Validate if the Unique SAM Serial Number is not already registered for the same agency and device.
-			if (existingUniqueSam) {
-				// Validate if this Unique SAM matches the agency and device.
-				if (existingUniqueSam.agency_id !== item.agency_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different agency.`);
-				if (existingUniqueSam.device_id !== item.device_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different device.`);
-				// If it matches, skip to the next item.
+			// Skip if the Unique SAM already exists
+			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
+			if (uniqueSamAlreadyExists) {
+				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Create a new Unique SAM document.
-			await uniqueSams.insertOne({
-				_id: item.mac_sam_serial_number,
-				agency_id: item.agency_id,
-				device_id: item.device_id,
-				is_complete: false,
-				latest_apex_version: null,
-				message: null,
-				seen_first_at: null,
-				seen_last_at: null,
-				system_status: ProcessingStatus.Waiting,
-				transactions_expected: null,
-				transactions_found: null,
-				transactions_missing: null,
-			});
+			// Parse the Unique SAM data
+			const parsedUniqueSam = parseUniqueSam(item);
+			// Create a new Unique SAM document
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForOnBoardSalesCounter++;
 		}
 
 		LOGGER.info(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified Apex OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`);
 
-		//
+		/* * */
+		/* SIMPLIFIED APEX VALIDATIONS */
 
 		const uniqueSamsForValidationsTimer = new TIMETRACKER();
 
@@ -207,35 +170,23 @@ async function createUniqueSamsFromSimplifiedApexTransactions() {
 			.stream();
 
 		for await (const item of allUniqueSamsForApexValidations) {
-			if (typeof item.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Invalid Unique SAM Serial Number: ${item.mac_sam_serial_number}. Expected a number.`);
+			// Set the type of item
+			const itemData = item as AggregationResult;
+			// Validate if the Unique SAM Serial Number is a number
+			if (typeof itemData.mac_sam_serial_number !== 'number') {
+				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Check if the Unique SAM Serial Number already exists in the database.
-			const existingUniqueSam = await uniqueSams.findById(item.mac_sam_serial_number);
-			// Validate if the Unique SAM Serial Number is not already registered for the same agency and device.
-			if (existingUniqueSam) {
-				// Validate if this Unique SAM matches the agency and device.
-				if (existingUniqueSam.agency_id !== item.agency_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different agency.`);
-				if (existingUniqueSam.device_id !== item.device_id) LOGGER.error(`Unique SAM Serial Number ${item.mac_sam_serial_number} already exists for a different device.`);
-				// If it matches, skip to the next item.
+			// Skip if the Unique SAM already exists
+			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
+			if (uniqueSamAlreadyExists) {
+				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Create a new Unique SAM document.
-			await uniqueSams.insertOne({
-				_id: item.mac_sam_serial_number,
-				agency_id: item.agency_id,
-				device_id: item.device_id,
-				is_complete: false,
-				latest_apex_version: null,
-				message: null,
-				seen_first_at: null,
-				seen_last_at: null,
-				system_status: ProcessingStatus.Waiting,
-				transactions_expected: null,
-				transactions_found: null,
-				transactions_missing: null,
-			});
+			// Parse the Unique SAM data
+			const parsedUniqueSam = parseUniqueSam(item);
+			// Create a new Unique SAM document
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForValidationsCounter++;
 		}
@@ -255,16 +206,14 @@ async function createUniqueSamsFromSimplifiedApexTransactions() {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds
 	}
-
-	//
 };
 
 /* * */
 
 (async function init() {
 	const runOnInterval = async () => {
-		await createUniqueSamsFromSimplifiedApexTransactions();
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		await main();
+		setTimeout(runOnInterval, 60_000); // 1 minute
 	};
 	runOnInterval();
 })();
