@@ -17,11 +17,32 @@ async function main() {
 
 		const globalTimer = new TIMETRACKER();
 
-		const allUniqueSamsCollection = await uniqueSams.getCollection();
+		//
+		// Connect to databases
+
 		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
 		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
 		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
+
+		//
+		// Ask the coordinator for a batch of Unique SAM IDs to process
+
+		const fetchCoordinatorTimer = new TIMETRACKER();
+
+		const uniqueSamIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/unique-sams');
+		const uniqueSamIdsBatch = await uniqueSamIdsBatchResponse.json() as number[];
+
+		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
+
+		//
+		// With the list of Unique SAM IDs, fetch the actual Unique SAM documents to be processsed
+
+		const fetchUniqueSamDocumentsTimer = new TIMETRACKER();
+
+		const uniqueSamsBatch = await uniqueSams.findMany({ _id: { $in: uniqueSamIdsBatch || [] } });
+
+		LOGGER.info(`Processing ${uniqueSamsBatch.length} Unique SAMs... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchUniqueSamDocumentsTimer.get()})`, 1);
 
 		//
 		// For each Unique SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
@@ -34,17 +55,14 @@ async function main() {
 			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
 			.unix_timestamp;
 
-		const allUniqueSams = await allUniqueSamsCollection
-			.find({ system_status: ProcessingStatus.Waiting })
-			.toArray();
-
-		for (const [uniqueSamIndex, uniqueSamItem] of allUniqueSams.entries()) {
+		for (const [uniqueSamIndex, uniqueSamItem] of uniqueSamsBatch.entries()) {
 			//
+
+			LOGGER.divider(`[${uniqueSamsBatch.length - uniqueSamIndex}/${uniqueSamsBatch.length}] [${uniqueSamItem.agency_id}] Unique SAM ${uniqueSamItem._id}`);
 
 			//
 			// Get all APEX transactions for the current Unique SAM in parallel.
-
-			LOGGER.divider(`[${allUniqueSams.length - uniqueSamIndex}/${allUniqueSams.length}] [${uniqueSamItem.agency_id}] Unique SAM ${uniqueSamItem._id}`);
+			// Use an aggregation pipeline to avoid fetching unnecessary fields.
 
 			const aggrgationPipeline = [
 				{ $match: { created_at: { $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSamItem._id } },
