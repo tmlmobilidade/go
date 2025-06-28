@@ -8,7 +8,7 @@ import { ProcessingStatus, type UpdateUniqueSamDto } from '@tmlmobilidade/types'
 export function parseUniqueSam(item: AggregationResult): UpdateUniqueSamDto {
 	return {
 		agency_id: item.agency_id,
-		device_id: item.device_id,
+		device_ids: null,
 		is_complete: false,
 		latest_apex_version: null,
 		remarks: null,

@@ -38,7 +38,6 @@ async function main() {
 				$group: {
 					_id: {
 						agency_id: '$agency_id',
-						device_id: '$device_id',
 						mac_sam_serial_number: '$mac_sam_serial_number',
 					},
 				},
@@ -47,7 +46,6 @@ async function main() {
 				$project: {
 					_id: false,
 					agency_id: '$_id.agency_id',
-					device_id: '$_id.device_id',
 					mac_sam_serial_number: '$_id.mac_sam_serial_number',
 				},
 			},
@@ -56,7 +54,7 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX LOCATIONS */
 
-		LOGGER.title('Adding Unique SAMs from Simplified Apex Locations');
+		LOGGER.info('Adding Unique SAMs from Simplified Apex Locations...');
 
 		const uniqueSamsForLocationsTimer = new TIMETRACKER();
 
@@ -85,12 +83,12 @@ async function main() {
 			uniqueSamsForLocationsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified Apex Locations. (${uniqueSamsForLocationsTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified Apex Locations. (${uniqueSamsForLocationsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
 
-		LOGGER.title('Adding Unique SAMs from Simplified Apex On Board Refunds');
+		LOGGER.info('Adding Unique SAMs from Simplified Apex On Board Refunds...');
 
 		const uniqueSamsForOnBoardRefundsTimer = new TIMETRACKER();
 
@@ -119,12 +117,12 @@ async function main() {
 			uniqueSamsForOnBoardRefundsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified Apex OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified Apex OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD SALES */
 
-		LOGGER.title('Adding Unique SAMs from Simplified Apex On Board Sales');
+		LOGGER.info('Adding Unique SAMs from Simplified Apex On Board Sales...');
 
 		const uniqueSamsForOnBoardSalesTimer = new TIMETRACKER();
 
@@ -153,12 +151,12 @@ async function main() {
 			uniqueSamsForOnBoardSalesCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified Apex OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified Apex OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX VALIDATIONS */
 
-		LOGGER.title('Adding Unique SAMs from Simplified Apex Validations');
+		LOGGER.info('Adding Unique SAMs from Simplified Apex Validations...');
 
 		const uniqueSamsForValidationsTimer = new TIMETRACKER();
 
@@ -187,7 +185,7 @@ async function main() {
 			uniqueSamsForValidationsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForValidationsCounter} Unique SAMs from Simplified Apex Validations. (${uniqueSamsForValidationsTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForValidationsCounter} Unique SAMs from Simplified Apex Validations. (${uniqueSamsForValidationsTimer.get()})`, 1);
 
 		//
 
@@ -209,7 +207,7 @@ async function main() {
 (async function init() {
 	const runOnInterval = async () => {
 		await main();
-		setTimeout(runOnInterval, 60_000); // 1 minute
+		setTimeout(runOnInterval, 43_200_000); // 12 hours
 	};
 	runOnInterval();
 })();

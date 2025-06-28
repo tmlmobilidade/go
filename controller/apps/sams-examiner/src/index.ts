@@ -8,11 +8,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-const RUN_INTERVAL = 60000; // 1 minute
-
-/* * */
-
-async function examineUniqueSams() {
+async function main() {
 	try {
 		//
 
@@ -28,23 +24,16 @@ async function examineUniqueSams() {
 
 		const searchTimestampStart = Dates
 			.now('Europe/Lisbon')
-			// .minus({ days: 15, month: 1 })
-			// .startOf('day')
-			// .set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 7, second: 0, year: 2024 })
 			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 })
 			.unix_timestamp;
 
-		console.log('searchTimestampStart', searchTimestampStart);
-
 		const searchTimestampEnd = Dates
 			.now('Europe/Lisbon')
-			// .minus({ days: 15 })
-			// .startOf('day')
+			.minus({ days: 15 })
+			.startOf('day')
 			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 7, second: 59, year: 2024 })
-			.set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
+			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
 			.unix_timestamp;
-
-		console.log('searchTimestampEnd', searchTimestampEnd);
 
 		const allUniqueSamsStream = allUniqueSamsCollection
 			.find()
@@ -52,8 +41,6 @@ async function examineUniqueSams() {
 
 		for await (const uniqueSam of allUniqueSamsStream) {
 			//
-
-			if (uniqueSam._id !== 2932063999) continue;
 
 			//
 			// Get all APEX transactions for the current Unique SAM in parallel.
@@ -82,7 +69,7 @@ async function examineUniqueSams() {
 			//
 			// Simplify all transaction to only keep the necessary fields for validation.
 
-			const cleanedLocationTransactions = locationTransactionsData.map(transaction => ({
+			const simplifiedLocationTransactions = locationTransactionsData.map(transaction => ({
 				_id: transaction._id,
 				agency_id: transaction.agency_id,
 				apex_version: transaction.apex_version,
@@ -91,7 +78,7 @@ async function examineUniqueSams() {
 				mac_ase_counter_value: transaction.mac_ase_counter_value,
 			}));
 
-			const cleanedOnBoardRefundTransactions = onBoardRefundsTransactionsData.map(transaction => ({
+			const simplifiedOnBoardRefundTransactions = onBoardRefundsTransactionsData.map(transaction => ({
 				_id: transaction._id,
 				agency_id: transaction.agency_id,
 				apex_version: transaction.apex_version,
@@ -100,7 +87,7 @@ async function examineUniqueSams() {
 				mac_ase_counter_value: transaction.mac_ase_counter_value,
 			}));
 
-			const cleanedOnBoardSaleTransactions = onBoardSalesTransactionsData.map(transaction => ({
+			const simplifiedOnBoardSaleTransactions = onBoardSalesTransactionsData.map(transaction => ({
 				_id: transaction._id,
 				agency_id: transaction.agency_id,
 				apex_version: transaction.apex_version,
@@ -109,7 +96,7 @@ async function examineUniqueSams() {
 				mac_ase_counter_value: transaction.mac_ase_counter_value,
 			}));
 
-			const cleanedValidationTransactions = validationsTransactionsData.map(transaction => ({
+			const simplifiedValidationTransactions = validationsTransactionsData.map(transaction => ({
 				_id: transaction._id,
 				agency_id: transaction.agency_id,
 				apex_version: transaction.apex_version,
@@ -122,14 +109,14 @@ async function examineUniqueSams() {
 			// Now merge all transactions into a single variable
 			// and sort them by ASE Counter Value.
 
-			const allCleanedTransactions = [
-				...cleanedLocationTransactions,
-				...cleanedOnBoardRefundTransactions,
-				...cleanedOnBoardSaleTransactions,
-				...cleanedValidationTransactions,
+			const allSimplifiedTransactions = [
+				...simplifiedLocationTransactions,
+				...simplifiedOnBoardRefundTransactions,
+				...simplifiedOnBoardSaleTransactions,
+				...simplifiedValidationTransactions,
 			];
 
-			const sortedTransactions = allCleanedTransactions
+			const sortedTransactions = allSimplifiedTransactions
 				.filter(t => !!t) // Remove any null or undefined transactions
 				.sort((a, b) => a.mac_ase_counter_value - b.mac_ase_counter_value);
 
@@ -138,17 +125,17 @@ async function examineUniqueSams() {
 			// same Agency ID and the same Device ID.
 
 			if (sortedTransactions.length === 0) {
-				LOGGER.error(`No transactions found for Unique SAM ${uniqueSam._id}. Skipping.`);
-				continue; // Skip to the next Unique SAM if no transactions are found
+				LOGGER.error(`No transactions found for Unique SAM "${uniqueSam._id}". Skipping.`);
+				LOGGER.spacer(1);
+				continue;
 			}
 
 			const agencyId = sortedTransactions[0].agency_id;
-			const deviceId = sortedTransactions[0].device_id;
 
-			const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId && transaction.device_id === deviceId);
+			const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 			if (!allTransactionsMatch) {
-				LOGGER.error(`Unique SAM ${uniqueSam._id} has transactions with different Agency ID or Device ID.`);
+				LOGGER.error(`Unique SAM ${uniqueSam._id} has transactions with different Agency ID.`);
 			}
 
 			//
@@ -161,6 +148,8 @@ async function examineUniqueSams() {
 			const transactionsFound = sortedTransactions.length;
 			const transactionsExpected = latestTransaction.mac_ase_counter_value - firstTransaction.mac_ase_counter_value + 1;
 			const transactionsMissing = transactionsExpected - transactionsFound;
+
+			const foundDeviceIds = new Set(sortedTransactions.map(t => t.device_id));
 
 			//
 			// Get the aseCounterValues missing
@@ -175,19 +164,15 @@ async function examineUniqueSams() {
 				}
 			}
 
-			if (missingAseCounterValues.length > 0) {
-				LOGGER.info(`Missing ASE Counter Values for Unique SAM ${uniqueSam._id}: ${missingAseCounterValues.join(', ')}`);
-			}
-
 			//
 			// Update the Unique SAM with the new data.
 
 			const updatedSamData: UpdateUniqueSamDto = {
 				agency_id: agencyId,
-				device_id: deviceId,
+				device_ids: Array.from(foundDeviceIds),
 				is_complete: transactionsMissing === 0 ? true : false,
 				latest_apex_version: latestTransaction.apex_version,
-				message: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions.`,
+				remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.join(',')}]`,
 				seen_first_at: firstTransaction.created_at as UnixTimestamp,
 				seen_last_at: latestTransaction.created_at as UnixTimestamp,
 				system_status: ProcessingStatus.Complete,
@@ -198,8 +183,7 @@ async function examineUniqueSams() {
 
 			await uniqueSams.updateById(uniqueSam._id, updatedSamData);
 
-			LOGGER.success(`SAM ${uniqueSam._id} [${updatedSamData.agency_id}] Is Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`);
-			LOGGER.spacer(1);
+			LOGGER.success(`SAM ${uniqueSam._id} [${updatedSamData.agency_id}] Is Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
 
 			//
 		}
@@ -225,8 +209,8 @@ async function examineUniqueSams() {
 
 (async function init() {
 	const runOnInterval = async () => {
-		await examineUniqueSams();
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		await main();
+		setTimeout(runOnInterval, 60_000); // 1 minute
 	};
 	runOnInterval();
 })();
