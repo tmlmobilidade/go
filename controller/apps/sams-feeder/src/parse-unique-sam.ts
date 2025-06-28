@@ -11,7 +11,7 @@ export function parseUniqueSam(item: AggregationResult): UpdateUniqueSamDto {
 		device_id: item.device_id,
 		is_complete: false,
 		latest_apex_version: null,
-		message: null,
+		remarks: null,
 		seen_first_at: null,
 		seen_last_at: null,
 		system_status: ProcessingStatus.Waiting,

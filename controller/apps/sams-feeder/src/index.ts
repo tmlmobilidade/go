@@ -56,6 +56,8 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX LOCATIONS */
 
+		LOGGER.title('Adding Unique SAMs from Simplified Apex Locations');
+
 		const uniqueSamsForLocationsTimer = new TIMETRACKER();
 
 		let uniqueSamsForLocationsCounter = 0;
@@ -74,10 +76,7 @@ async function main() {
 			}
 			// Skip if the Unique SAM already exists
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) {
-				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
-				continue;
-			}
+			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
 			const parsedUniqueSam = parseUniqueSam(item);
 			// Create a new Unique SAM document
@@ -86,10 +85,12 @@ async function main() {
 			uniqueSamsForLocationsCounter++;
 		}
 
-		LOGGER.info(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified Apex Locations. (${uniqueSamsForLocationsTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified Apex Locations. (${uniqueSamsForLocationsTimer.get()})`);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
+
+		LOGGER.title('Adding Unique SAMs from Simplified Apex On Board Refunds');
 
 		const uniqueSamsForOnBoardRefundsTimer = new TIMETRACKER();
 
@@ -109,10 +110,7 @@ async function main() {
 			}
 			// Skip if the Unique SAM already exists
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) {
-				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
-				continue;
-			}
+			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
 			const parsedUniqueSam = parseUniqueSam(item);
 			// Create a new Unique SAM document
@@ -121,10 +119,12 @@ async function main() {
 			uniqueSamsForOnBoardRefundsCounter++;
 		}
 
-		LOGGER.info(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified Apex OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified Apex OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD SALES */
+
+		LOGGER.title('Adding Unique SAMs from Simplified Apex On Board Sales');
 
 		const uniqueSamsForOnBoardSalesTimer = new TIMETRACKER();
 
@@ -144,10 +144,7 @@ async function main() {
 			}
 			// Skip if the Unique SAM already exists
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) {
-				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
-				continue;
-			}
+			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
 			const parsedUniqueSam = parseUniqueSam(item);
 			// Create a new Unique SAM document
@@ -156,10 +153,12 @@ async function main() {
 			uniqueSamsForOnBoardSalesCounter++;
 		}
 
-		LOGGER.info(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified Apex OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified Apex OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`);
 
 		/* * */
 		/* SIMPLIFIED APEX VALIDATIONS */
+
+		LOGGER.title('Adding Unique SAMs from Simplified Apex Validations');
 
 		const uniqueSamsForValidationsTimer = new TIMETRACKER();
 
@@ -179,10 +178,7 @@ async function main() {
 			}
 			// Skip if the Unique SAM already exists
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) {
-				LOGGER.info(`Skipping existing Unique SAM: "${itemData.mac_sam_serial_number}"`);
-				continue;
-			}
+			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
 			const parsedUniqueSam = parseUniqueSam(item);
 			// Create a new Unique SAM document
@@ -191,7 +187,7 @@ async function main() {
 			uniqueSamsForValidationsCounter++;
 		}
 
-		LOGGER.info(`Added ${uniqueSamsForValidationsCounter} Unique SAMs from Simplified Apex Validations. (${uniqueSamsForValidationsTimer.get()})`);
+		LOGGER.success(`Added ${uniqueSamsForValidationsCounter} Unique SAMs from Simplified Apex Validations. (${uniqueSamsForValidationsTimer.get()})`);
 
 		//
 
