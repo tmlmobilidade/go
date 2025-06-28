@@ -171,12 +171,14 @@ services:
   sams-examiner:
     image: ghcr.io/tmlmobilidade/sae-controller-sams-examiner:production
     deploy:
+      mode: replicated
+      replicas: 4
       restart_policy:
         condition: any
         delay: 30s
       resources:
         limits:
-          memory: 4gb
+          memory: 2gb
     logging:
       options:
         max-size: '1m'

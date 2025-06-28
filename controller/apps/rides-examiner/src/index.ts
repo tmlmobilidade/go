@@ -73,27 +73,26 @@ export async function validateRides() {
 		const globalTimer = new TIMETRACKER();
 
 		//
-		// Ask the coordinator for a batch of ride IDs to process
+		// Ask the coordinator for a batch of Ride IDs to process
 
 		const fetchCoordinatorTimer = new TIMETRACKER();
 
-		const rideIdsBatchResponse = await fetch(process.env.COORDINATOR_URL);
+		const rideIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/rides');
 		const rideIdsBatch = await rideIdsBatchResponse.json() as string[];
 
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
 
 		//
-		// With the list of ride IDs, fetch the actual ride documents to be processsed
+		// With the list of Ride IDs, fetch the actual Ride documents to be processsed
 
 		const fetchRideDocumentsTimer = new TIMETRACKER();
 
 		const ridesBatch = await rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
-		LOGGER.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`);
-		LOGGER.spacer(1);
+		LOGGER.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, 1);
 
 		//
-		// Process each ride
+		// Process each Ride
 
 		for (const [rideIndex, rideData] of ridesBatch.entries()) {
 			try {

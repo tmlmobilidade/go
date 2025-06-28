@@ -1,8 +1,7 @@
 /* * */
 
-import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { getGeofenceOnPosition, isInsideGeofence } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type HashedTripWaypoint, type VehicleEvent } from '@tmlmobilidade/types';
+import { getGeofenceOnPosition, isPointInPolygon, sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
 /**
  * The trip end time is the time of the first event inside the geofence of the last stop
@@ -38,7 +37,7 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 	//
 	// Sort vehicle events by vehicle timestamp
 
-	const sortedVehicleEvents = sortByTimestamp(vehicleEventsData, 'created_at', 'desc');
+	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at', 'desc');
 
 	//
 	// Detect the last event that is inside the geofence of the last before last stop.
@@ -46,7 +45,7 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 	let lastEventInsideLastBeforeLastStop: null | VehicleEvent = null;
 
 	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfLastBeforeLastStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], lastBeforeLastStopGeofence);
+		const vehicleEventIsInsideGeofenceOfLastBeforeLastStop = isPointInPolygon([vehicleEventData.longitude, vehicleEventData.latitude], lastBeforeLastStopGeofence);
 		if (vehicleEventIsInsideGeofenceOfLastBeforeLastStop) {
 			lastEventInsideLastBeforeLastStop = vehicleEventData;
 			break;
@@ -65,7 +64,7 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 	let firstEventInsideLastStop: null | VehicleEvent = null;
 
 	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfFirstStop = isInsideGeofence([vehicleEventData.longitude, vehicleEventData.latitude], lastStopGeofence);
+		const vehicleEventIsInsideGeofenceOfFirstStop = isPointInPolygon([vehicleEventData.longitude, vehicleEventData.latitude], lastStopGeofence);
 		if (vehicleEventIsInsideGeofenceOfFirstStop) {
 			// Check if the event is after the last event found inside the geofence of the last before last stop
 			if (vehicleEventData.created_at > lastEventInsideLastBeforeLastStop.created_at) {

@@ -5,10 +5,6 @@ import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
 
-/* * */
-
-const RUN_INTERVAL = 60_000; // 1 minute
-
 /**
  * This function links Refunds with Sales and Validation transactions.
  * It first looks for OnBoardRefund trasactions that doe not yet have a validation_id value,
@@ -198,7 +194,7 @@ async function linkSalesToValidations() {
 	const runOnInterval = async () => {
 		await linkRefundsToSalesToValidations();
 		await linkSalesToValidations();
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		setTimeout(runOnInterval, 60_000); // 60 seconds
 	};
 	runOnInterval();
 })();

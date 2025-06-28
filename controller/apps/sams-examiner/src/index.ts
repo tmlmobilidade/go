@@ -1,18 +1,15 @@
 /* * */
 
+import { AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus, UnixTimestamp, UpdateUniqueSamDto } from '@tmlmobilidade/types';
+import { ProcessingStatus, type UpdateUniqueSamDto } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-const RUN_INTERVAL = 60000; // 1 minute
-
-/* * */
-
-async function examineUniqueSams() {
+async function main() {
 	try {
 		//
 
@@ -20,50 +17,62 @@ async function examineUniqueSams() {
 
 		const globalTimer = new TIMETRACKER();
 
-		const allUniqueSamsCollection = await uniqueSams.getCollection();
+		//
+		// Connect to databases
+
+		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
+		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
+		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
+		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
+
+		//
+		// Ask the coordinator for a batch of Unique SAM IDs to process
+
+		const fetchCoordinatorTimer = new TIMETRACKER();
+
+		const uniqueSamIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/unique-sams');
+		const uniqueSamIdsBatch = await uniqueSamIdsBatchResponse.json() as number[];
+
+		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
+
+		//
+		// With the list of Unique SAM IDs, fetch the actual Unique SAM documents to be processsed
+
+		const fetchUniqueSamDocumentsTimer = new TIMETRACKER();
+
+		const uniqueSamsBatch = await uniqueSams.findMany({ _id: { $in: uniqueSamIdsBatch || [] } });
+
+		LOGGER.info(`Processing ${uniqueSamsBatch.length} Unique SAMs... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchUniqueSamDocumentsTimer.get()})`, 1);
 
 		//
 		// For each Unique SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		const searchTimestampStart = Dates
-			.now('Europe/Lisbon')
-			// .minus({ days: 15, month: 1 })
-			// .startOf('day')
-			// .set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 7, second: 0, year: 2024 })
-			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 })
-			.unix_timestamp;
-
-		console.log('searchTimestampStart', searchTimestampStart);
-
 		const searchTimestampEnd = Dates
 			.now('Europe/Lisbon')
-			// .minus({ days: 15 })
-			// .startOf('day')
-			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 7, second: 59, year: 2024 })
-			.set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
+			.minus({ days: 15 })
+			.startOf('day')
+			// .set({ day: 2, hour: 3, millisecond: 59, minute: 59, month: 1, second: 59, year: 2024 })
 			.unix_timestamp;
 
-		console.log('searchTimestampEnd', searchTimestampEnd);
-
-		const allUniqueSamsStream = allUniqueSamsCollection
-			.find()
-			.stream();
-
-		for await (const uniqueSam of allUniqueSamsStream) {
+		for (const [uniqueSamIndex, uniqueSamItem] of uniqueSamsBatch.entries()) {
 			//
 
-			if (uniqueSam._id !== 2932063999) continue;
+			LOGGER.divider(`[${uniqueSamsBatch.length - uniqueSamIndex}/${uniqueSamsBatch.length}] [${uniqueSamItem.agency_id}] Unique SAM ${uniqueSamItem._id}`);
 
 			//
 			// Get all APEX transactions for the current Unique SAM in parallel.
+			// Use an aggregation pipeline to avoid fetching unnecessary fields.
 
-			LOGGER.info(`Examining Unique SAM: ${uniqueSam._id}`);
+			const aggrgationPipeline = [
+				{ $match: { created_at: { $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSamItem._id } },
+				{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1 } },
+			];
 
-			const locationTransactionsPromise = simplifiedApexLocations.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
-			const onBoardRefundsTransactionsPromise = simplifiedApexOnBoardRefunds.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
-			const onBoardSalesTransactionsPromise = simplifiedApexOnBoardSales.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
-			const validationsTransactionsPromise = simplifiedApexValidations.findMany({ created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: uniqueSam._id });
+			const locationTransactionsPromise = simplifiedApexLocationsCollection.aggregate(aggrgationPipeline).toArray();
+			const onBoardRefundsTransactionsPromise = simplifiedApexOnBoardRefundsCollection.aggregate(aggrgationPipeline).toArray();
+			const onBoardSalesTransactionsPromise = simplifiedApexOnBoardSalesCollection.aggregate(aggrgationPipeline).toArray();
+			const validationsTransactionsPromise = simplifiedApexValidationsCollection.aggregate(aggrgationPipeline).toArray();
 
 			const [
 				locationTransactionsData,
@@ -80,56 +89,17 @@ async function examineUniqueSams() {
 			LOGGER.info(`Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length}`);
 
 			//
-			// Simplify all transaction to only keep the necessary fields for validation.
-
-			const cleanedLocationTransactions = locationTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			const cleanedOnBoardRefundTransactions = onBoardRefundsTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			const cleanedOnBoardSaleTransactions = onBoardSalesTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			const cleanedValidationTransactions = validationsTransactionsData.map(transaction => ({
-				_id: transaction._id,
-				agency_id: transaction.agency_id,
-				apex_version: transaction.apex_version,
-				created_at: transaction.created_at,
-				device_id: transaction.device_id,
-				mac_ase_counter_value: transaction.mac_ase_counter_value,
-			}));
-
-			//
 			// Now merge all transactions into a single variable
 			// and sort them by ASE Counter Value.
 
-			const allCleanedTransactions = [
-				...cleanedLocationTransactions,
-				...cleanedOnBoardRefundTransactions,
-				...cleanedOnBoardSaleTransactions,
-				...cleanedValidationTransactions,
+			const allSimplifiedTransactions: AggregationResultItem[] = [
+				...locationTransactionsData as AggregationResultItem[],
+				...onBoardRefundsTransactionsData as AggregationResultItem[],
+				...onBoardSalesTransactionsData as AggregationResultItem[],
+				...validationsTransactionsData as AggregationResultItem[],
 			];
 
-			const sortedTransactions = allCleanedTransactions
+			const sortedTransactions = allSimplifiedTransactions
 				.filter(t => !!t) // Remove any null or undefined transactions
 				.sort((a, b) => a.mac_ase_counter_value - b.mac_ase_counter_value);
 
@@ -138,17 +108,17 @@ async function examineUniqueSams() {
 			// same Agency ID and the same Device ID.
 
 			if (sortedTransactions.length === 0) {
-				LOGGER.error(`No transactions found for Unique SAM ${uniqueSam._id}. Skipping.`);
-				continue; // Skip to the next Unique SAM if no transactions are found
+				LOGGER.error(`No transactions found for Unique SAM "${uniqueSamItem._id}". Skipping.`);
+				LOGGER.spacer(1);
+				continue;
 			}
 
 			const agencyId = sortedTransactions[0].agency_id;
-			const deviceId = sortedTransactions[0].device_id;
 
-			const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId && transaction.device_id === deviceId);
+			const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 			if (!allTransactionsMatch) {
-				LOGGER.error(`Unique SAM ${uniqueSam._id} has transactions with different Agency ID or Device ID.`);
+				LOGGER.error(`Unique SAM ${uniqueSamItem._id} has transactions with different Agency ID.`);
 			}
 
 			//
@@ -161,6 +131,8 @@ async function examineUniqueSams() {
 			const transactionsFound = sortedTransactions.length;
 			const transactionsExpected = latestTransaction.mac_ase_counter_value - firstTransaction.mac_ase_counter_value + 1;
 			const transactionsMissing = transactionsExpected - transactionsFound;
+
+			const foundDeviceIds = new Set(sortedTransactions.map(t => t.device_id));
 
 			//
 			// Get the aseCounterValues missing
@@ -175,31 +147,26 @@ async function examineUniqueSams() {
 				}
 			}
 
-			if (missingAseCounterValues.length > 0) {
-				LOGGER.info(`Missing ASE Counter Values for Unique SAM ${uniqueSam._id}: ${missingAseCounterValues.join(', ')}`);
-			}
-
 			//
 			// Update the Unique SAM with the new data.
 
 			const updatedSamData: UpdateUniqueSamDto = {
 				agency_id: agencyId,
-				device_id: deviceId,
+				device_ids: Array.from(foundDeviceIds),
 				is_complete: transactionsMissing === 0 ? true : false,
 				latest_apex_version: latestTransaction.apex_version,
-				message: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions.`,
-				seen_first_at: firstTransaction.created_at as UnixTimestamp,
-				seen_last_at: latestTransaction.created_at as UnixTimestamp,
+				remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.join(',')}]`,
+				seen_first_at: firstTransaction.created_at,
+				seen_last_at: latestTransaction.created_at,
 				system_status: ProcessingStatus.Complete,
 				transactions_expected: transactionsExpected,
 				transactions_found: transactionsFound,
 				transactions_missing: transactionsMissing,
 			};
 
-			await uniqueSams.updateById(uniqueSam._id, updatedSamData);
+			await uniqueSams.updateById(uniqueSamItem._id, updatedSamData);
 
-			LOGGER.success(`SAM ${uniqueSam._id} [${updatedSamData.agency_id}] Is Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`);
-			LOGGER.spacer(1);
+			LOGGER.success(`Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
 
 			//
 		}
@@ -225,8 +192,8 @@ async function examineUniqueSams() {
 
 (async function init() {
 	const runOnInterval = async () => {
-		await examineUniqueSams();
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		await main();
+		setTimeout(runOnInterval, 60_000); // 1 minute
 	};
 	runOnInterval();
 })();

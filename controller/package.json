@@ -28,8 +28,7 @@
 		"typescript": "5.8.3"
 	},
 	"workspaces": [
-		"apps/*",
-		"packages/*"
+		"apps/*"
 	],
 	"packageManager": "npm@11.4.2",
 	"engines": {

@@ -1,0 +1,83 @@
+/* * */
+
+import LOGGER from '@helperkits/logger';
+import TIMETRACKER from '@helperkits/timer';
+import { rides } from '@tmlmobilidade/interfaces';
+import { ProcessingStatus } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
+
+/* * */
+
+let isBusy = false;
+
+/* * */
+
+export async function getRides(): Promise<string[]> {
+	//
+
+	const ridesCollection = await rides.getCollection();
+
+	//
+	// The whole point of a coordinator is to prevent multiple instances
+	// from processing the same documents at the same time. For that reason,
+	// we need to make sure that instances request the next batch of documents
+	// sequentially. To do that, we implement a simple lock mechanism.
+
+	while (isBusy) {
+		LOGGER.info('[rides] Waiting for another request to complete...');
+		await new Promise(resolve => setTimeout(resolve, 500));
+	}
+
+	//
+	// Set the busy flag to prevent other requests
+	// from being processed until the current one is done.
+
+	isBusy = true;
+
+	//
+	// Find all Ride IDs that are waiting analysis and which started before the current time,
+	// sorted in descending order to prioritize the most recent Rides.
+
+	const batchSize = 750;
+	const standardWindowInterval = Dates.now('utc').std_window;
+
+	const fetchTimer = new TIMETRACKER();
+
+	const latestWaitingRides = await ridesCollection
+		.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: ProcessingStatus.Waiting })
+		.sort({ start_time_scheduled: -1 })
+		.limit(batchSize)
+		.toArray();
+
+	/* === FOR TESTING === */
+	// const latestWaitingRides = await ridesCollection
+	// 	.find({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
+	// 	.toArray();
+	/* === FOR TESTING === */
+
+	const latestWaitingRidesIds = latestWaitingRides.map(item => item._id);
+
+	const fetchTimerResult = fetchTimer.get();
+
+	if (latestWaitingRidesIds.length === 0) {
+		LOGGER.info(`[rides] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})`);
+		isBusy = false;
+		return [];
+	}
+
+	//
+	// Mark those Rides as 'processing' to ensure the next batch of Rdes does not include them,
+	// and return them to the caller instance.
+
+	const markTimer = new TIMETRACKER();
+
+	await ridesCollection.updateMany({ _id: { $in: latestWaitingRidesIds } }, { $set: { system_status: ProcessingStatus.Processing } });
+
+	LOGGER.info(`[rides] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides.pop().start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+
+	isBusy = false;
+
+	return latestWaitingRidesIds;
+
+	//
+}
