@@ -46,6 +46,9 @@ export async function parsePlan(planData: Plan) {
 		const savedShapes = new Map<string, GTFS_Shape[]>();
 		const savedStopTimes = new Map<string, GTFS_StopTime[]>();
 
+		let calendarDatesCounter = 0;
+		let tripsCounter = 0;
+
 		//
 		// Prepare the working directories to work with the zip file
 		// and the extracted files. Try to download and unzip the archive.
@@ -145,23 +148,25 @@ export async function parsePlan(planData: Plan) {
 
 				const allOperationalDatesInRange = getOperationalDatesFromRange(serviceIdStartDate, serviceIdEndDate);
 
-				const validOperationalDates: OperationalDate[] = [];
+				const validOperationalDates = new Set<OperationalDate>();
 
 				for (const currentDate of allOperationalDatesInRange) {
 					const dayOfWeek = Dates.fromOperationalDate(currentDate, 'Europe/Lisbon').toFormat('c');
-					if (dayOfWeek === '1' && validatedData.monday === 1) validOperationalDates.push(currentDate);
-					if (dayOfWeek === '2' && validatedData.tuesday === 1) validOperationalDates.push(currentDate);
-					if (dayOfWeek === '3' && validatedData.wednesday === 1) validOperationalDates.push(currentDate);
-					if (dayOfWeek === '4' && validatedData.thursday === 1) validOperationalDates.push(currentDate);
-					if (dayOfWeek === '5' && validatedData.friday === 1) validOperationalDates.push(currentDate);
-					if (dayOfWeek === '6' && validatedData.saturday === 1) validOperationalDates.push(currentDate);
-					if (dayOfWeek === '7' && validatedData.sunday === 1) validOperationalDates.push(currentDate);
+					if (dayOfWeek === '1' && validatedData.monday === 1) validOperationalDates.add(currentDate);
+					if (dayOfWeek === '2' && validatedData.tuesday === 1) validOperationalDates.add(currentDate);
+					if (dayOfWeek === '3' && validatedData.wednesday === 1) validOperationalDates.add(currentDate);
+					if (dayOfWeek === '4' && validatedData.thursday === 1) validOperationalDates.add(currentDate);
+					if (dayOfWeek === '5' && validatedData.friday === 1) validOperationalDates.add(currentDate);
+					if (dayOfWeek === '6' && validatedData.saturday === 1) validOperationalDates.add(currentDate);
+					if (dayOfWeek === '7' && validatedData.sunday === 1) validOperationalDates.add(currentDate);
 				}
 
 				//
 				// Save the valid operational dates for this service_id
 
-				savedCalendarDates.set(validatedData.service_id, validOperationalDates);
+				savedCalendarDates.set(validatedData.service_id, Array.from(validOperationalDates));
+
+				calendarDatesCounter += validOperationalDates.size;
 
 				//
 			};
@@ -223,8 +228,14 @@ export async function parsePlan(planData: Plan) {
 					const updatedCalendar = new Set(savedCalendar);
 					// If this service_id was previously saved, either add or remove the current date
 					// to it based on the exception_type value for this row.
-					if (validatedData.exception_type === 1) updatedCalendar.add(validatedData.date);
-					else if (validatedData.exception_type === 2) updatedCalendar.delete(validatedData.date);
+					if (validatedData.exception_type === 1) {
+						updatedCalendar.add(validatedData.date);
+						calendarDatesCounter++;
+					}
+					else if (validatedData.exception_type === 2) {
+						updatedCalendar.delete(validatedData.date);
+						calendarDatesCounter--;
+					}
 					// Update the service_id with the new dates
 					savedCalendarDates.set(validatedData.service_id, Array.from(updatedCalendar));
 				}
@@ -233,6 +244,7 @@ export async function parsePlan(planData: Plan) {
 					// to initiate a new dates array if it is a service addition
 					if (validatedData.exception_type === 1) {
 						savedCalendarDates.set(validatedData.service_id, [validatedData.date]);
+						calendarDatesCounter++;
 					}
 				}
 
@@ -283,6 +295,8 @@ export async function parsePlan(planData: Plan) {
 				// Reference the associated entities to filter them later.
 				referencedRouteIds.add(validatedData.route_id);
 				referencedShapeIds.add(validatedData.shape_id);
+				// Increment the trips counter
+				tripsCounter++;
 			};
 
 			//
@@ -484,7 +498,7 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			LOGGER.info(`Building HashedTrips, HashedShapes and Rides...`);
+			LOGGER.info(`Will output HashedTips, ${savedShapes.size} HashedShapes and ${tripsCounter * calendarDatesCounter} Rides...`);
 
 			for (const currentTrip of savedTrips.values()) {
 				//
@@ -615,10 +629,6 @@ export async function parsePlan(planData: Plan) {
 					.createHash('sha256')
 					.update(hashableHashedShapeStringified)
 					.digest('hex');
-
-				//
-				// Hash the hashed shape contents to prevent duplicates
-				// Check if this hashed shape already exists. If it does not exist, save it to the database.
 
 				//
 				// Check if there is already a document with this unique ID value.

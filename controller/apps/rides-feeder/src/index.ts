@@ -46,6 +46,7 @@ async function main() {
 				await plans.updateById(currentPlan._id, { feeder_status: ProcessingStatus.Processing });
 
 				LOGGER.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
+				LOGGER.spacer(1);
 
 				//
 				// Parse the plan into Rides
