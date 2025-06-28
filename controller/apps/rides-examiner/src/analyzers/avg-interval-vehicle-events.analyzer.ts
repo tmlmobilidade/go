@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
 import { type Ride } from '@tmlmobilidade/types';
+import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
 /**
  * This analyzer tests if the average interval between vehicle events is within limits.
@@ -30,7 +30,7 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): Ride['anal
 		//
 		// Sort vehicle events by created_at timestamp
 
-		const sortedVehicleEvents = sortByTimestamp(analysisData.vehicle_events, 'created_at', 'asc');
+		const sortedVehicleEvents = sortByUnixTimestamp(analysisData.vehicle_events, 'created_at', 'asc');
 
 		//
 		// Evaluate each vehicle event

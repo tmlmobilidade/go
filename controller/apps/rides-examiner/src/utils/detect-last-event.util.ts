@@ -1,7 +1,7 @@
 /* * */
 
-import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
 import { type VehicleEvent } from '@tmlmobilidade/types';
+import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
 /**
  * Detect the last event in the vehicle events data.
@@ -23,7 +23,7 @@ export function detectLastEvent(vehicleEventsData: VehicleEvent[]): null | Vehic
 	// Sort the vehicle events by vehicle timestamp in descending order.
 	// Return the first event found.
 
-	const sortedVehicleEvents = sortByTimestamp(vehicleEventsData, 'created_at', 'desc');
+	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at', 'desc');
 
 	return sortedVehicleEvents[0];
 

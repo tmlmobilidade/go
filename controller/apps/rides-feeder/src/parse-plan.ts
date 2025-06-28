@@ -6,7 +6,7 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, ProcessingStatus, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
-import { convertMetersOrKilometersToMeters, Dates, getOperationalDatesFromRange } from '@tmlmobilidade/utils';
+import { Dates, getOperationalDatesFromRange, toMetersFromKilometersOrMeters } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -529,7 +529,7 @@ export async function parsePlan(planData: Plan) {
 					const stopData = savedStops.get(stopTime.stop_id);
 					if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
 					// Normalize the shape_dist_traveled to meters, if necessary
-					const normalizedShapeDistTraveled = convertMetersOrKilometersToMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
+					const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
 					// Return the formatted path data for this stop_time
 					return {
 						arrival_time: stopTime.arrival_time,
@@ -603,7 +603,7 @@ export async function parsePlan(planData: Plan) {
 
 				const formattedHashedShapePoints: HashedShapePoint[] = shapeData?.map((point) => {
 					return {
-						shape_dist_traveled: convertMetersOrKilometersToMeters(point.shape_dist_traveled, lastStopTime.shape_dist_traveled),
+						shape_dist_traveled: toMetersFromKilometersOrMeters(point.shape_dist_traveled, lastStopTime.shape_dist_traveled),
 						shape_pt_lat: point.shape_pt_lat,
 						shape_pt_lon: point.shape_pt_lon,
 						shape_pt_sequence: point.shape_pt_sequence,
@@ -668,7 +668,7 @@ export async function parsePlan(planData: Plan) {
 				const firstWaypoint = finalHashedTrip.path[0];
 				const lastWaypoint = finalHashedTrip.path[finalHashedTrip.path.length - 1];
 
-				const extensionScheduledInMeters = convertMetersOrKilometersToMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled);
+				const extensionScheduledInMeters = toMetersFromKilometersOrMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled);
 
 				//
 				// Iterate on the saved calendar dates for this trip,

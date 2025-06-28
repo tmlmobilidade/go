@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { getDistanceBetweenPositions } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type Ride } from '@tmlmobilidade/types';
+import { getDistanceBetweenPositions } from '@tmlmobilidade/utils';
 
 /* * */
 

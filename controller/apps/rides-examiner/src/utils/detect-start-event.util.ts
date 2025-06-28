@@ -1,9 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { sortByTimestamp } from '@/utils/sort-by-timestamp.util.js';
-import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type VehicleEvent } from '@tmlmobilidade/types';
+import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, sortByUnixTimestamp, toLineStringFromHashedShape } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -29,7 +28,7 @@ export function detectStartEvent(analysisData: AnalysisData): null | VehicleEven
 		return null;
 	}
 
-	const sortedVehicleEvents = sortByTimestamp(analysisData.vehicle_events, 'created_at');
+	const sortedVehicleEvents = sortByUnixTimestamp(analysisData.vehicle_events, 'created_at');
 
 	//
 	// Ensure that the hashed trip is not empty.
