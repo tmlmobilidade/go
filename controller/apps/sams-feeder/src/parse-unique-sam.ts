@@ -1,15 +1,15 @@
 /* * */
 
 import { type AggregationResultItem } from '@/types.js';
-import { ProcessingStatus, type UpdateUniqueSamDto } from '@tmlmobilidade/types';
+import { type CreateUniqueSamDto, ProcessingStatus } from '@tmlmobilidade/types';
 
 /* * */
 
-export function parseUniqueSam(item: AggregationResultItem): UpdateUniqueSamDto {
+export function parseUniqueSam(item: AggregationResultItem): CreateUniqueSamDto {
 	return {
+		_id: item.mac_sam_serial_number,
 		agency_id: item.agency_id,
 		device_ids: null,
-		is_complete: false,
 		latest_apex_version: null,
 		remarks: null,
 		seen_first_at: null,
@@ -18,5 +18,6 @@ export function parseUniqueSam(item: AggregationResultItem): UpdateUniqueSamDto 
 		transactions_expected: null,
 		transactions_found: null,
 		transactions_missing: null,
+		vehicle_ids: null,
 	};
 }

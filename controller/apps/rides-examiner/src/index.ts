@@ -175,7 +175,7 @@ export async function validateRides() {
 				rideData.extension_observed = getObservedExtension(detectedStartEvent, detectedEndEvent);
 
 				rideData.driver_ids = Array.from(new Set(vehicleEventsData.map(item => item.driver_id).filter(Boolean)));
-				rideData.vehicle_ids = Array.from(new Set(vehicleEventsData.map(item => item.vehicle_id).filter(Boolean)));
+				rideData.vehicle_ids = Array.from(new Set(vehicleEventsData.map(item => Number(item.vehicle_id)).filter(Boolean)));
 
 				rideData.apex_locations_qty = simplifiedApexLocationsData.length;
 				rideData.apex_on_board_refunds_amount = simplifiedApexOnBoardRefundsData.reduce((acc, item) => acc + (item.price || 0), 0);

@@ -11,4 +11,5 @@ export interface AggregationResultItem {
 	created_at: UnixTimestamp
 	device_id: string
 	mac_ase_counter_value: number
+	vehicle_id: null | number
 }
