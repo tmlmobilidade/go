@@ -160,7 +160,6 @@ async function main() {
 					_id: uniqueSamItem._id,
 					agency_id: agencyId,
 					device_ids: Array.from(foundDeviceIds),
-					is_complete: transactionsMissing === 0 ? true : false,
 					latest_apex_version: latestTransaction.apex_version,
 					remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.slice(0, 25).join(',')}]`,
 					seen_first_at: firstTransaction.created_at,
@@ -174,7 +173,7 @@ async function main() {
 
 				await uniqueSams.updateById(uniqueSamItem._id, updatedSamData);
 
-				LOGGER.success(`Complete: ${updatedSamData.is_complete} | Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
+				LOGGER.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
 
 			//
 			}

@@ -10,7 +10,6 @@ export function parseUniqueSam(item: AggregationResultItem): CreateUniqueSamDto 
 		_id: item.mac_sam_serial_number,
 		agency_id: item.agency_id,
 		device_ids: null,
-		is_complete: false,
 		latest_apex_version: null,
 		remarks: null,
 		seen_first_at: null,
