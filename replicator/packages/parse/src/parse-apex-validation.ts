@@ -72,7 +72,7 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			stop_id: pcgiDoc.transaction.stopLongID,
 			trip_id: pcgiDoc.transaction.journeyID,
 			units_qty: null,
-			updated_at: Dates.fromISO(pcgiDoc.updatedAt).unix_timestamp,
+			updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			validation_status: pcgiDoc.transaction.validationStatus,
 			vehicle_id: pcgiDoc.transaction.vehicleID,
 		};

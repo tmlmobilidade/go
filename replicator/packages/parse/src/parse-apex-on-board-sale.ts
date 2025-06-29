@@ -79,7 +79,7 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 			received_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			stop_id: null,
 			trip_id: null,
-			updated_at: Dates.fromISO(pcgiDoc.updatedAt).unix_timestamp,
+			updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			validation_id: null,
 			vehicle_id: null,
 		};
