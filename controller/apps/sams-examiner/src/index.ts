@@ -1,10 +1,10 @@
 /* * */
 
-import { AggregationResultItem } from '@/types.js';
+import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus, type UpdateUniqueSamDto } from '@tmlmobilidade/types';
+import { type CreateUniqueSamDto, ProcessingStatus } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -67,7 +67,7 @@ async function main() {
 
 				const aggregationPipeline = [
 					{ $match: { created_at: { $lt: searchTimestampEnd }, mac_sam_serial_number: uniqueSamItem._id } },
-					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1 } },
+					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1, vehicle_id: 1 } },
 				];
 
 				const locationTransactionsPromise = simplifiedApexLocationsCollection.aggregate(aggregationPipeline).toArray();
@@ -110,6 +110,7 @@ async function main() {
 
 				if (sortedTransactions.length === 0) {
 					LOGGER.error(`No transactions found for Unique SAM "${uniqueSamItem._id}". Skipping.`);
+					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'No transactions found for given time range.', system_status: ProcessingStatus.Complete });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -120,6 +121,9 @@ async function main() {
 
 				if (!allTransactionsMatch) {
 					LOGGER.error(`Unique SAM ${uniqueSamItem._id} has transactions with different Agency ID.`);
+					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'Transactions with different Agency IDs found.', system_status: ProcessingStatus.Error });
+					LOGGER.spacer(1);
+					continue;
 				}
 
 				//
@@ -133,7 +137,8 @@ async function main() {
 				const transactionsExpected = latestTransaction.mac_ase_counter_value - firstTransaction.mac_ase_counter_value + 1;
 				const transactionsMissing = transactionsExpected - transactionsFound;
 
-				const foundDeviceIds = new Set(sortedTransactions.map(t => t.device_id));
+				const foundDeviceIds = new Set(sortedTransactions.map(item => item.device_id).filter(id => !!id));
+				const foundVehicleIds = new Set(sortedTransactions.map(item => item.vehicle_id).filter(id => !!id));
 
 				//
 				// Get the aseCounterValues missing
@@ -151,7 +156,8 @@ async function main() {
 				//
 				// Update the Unique SAM with the new data.
 
-				const updatedSamData: UpdateUniqueSamDto = {
+				const updatedSamData: CreateUniqueSamDto = {
+					_id: uniqueSamItem._id,
 					agency_id: agencyId,
 					device_ids: Array.from(foundDeviceIds),
 					is_complete: transactionsMissing === 0 ? true : false,
@@ -163,6 +169,7 @@ async function main() {
 					transactions_expected: transactionsExpected,
 					transactions_found: transactionsFound,
 					transactions_missing: transactionsMissing,
+					vehicle_ids: Array.from(foundVehicleIds),
 				};
 
 				await uniqueSams.updateById(uniqueSamItem._id, updatedSamData);
@@ -173,10 +180,7 @@ async function main() {
 			}
 			catch (error) {
 				LOGGER.error(`Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`);
-				await uniqueSams.updateById(uniqueSamItem._id, {
-					remarks: `Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`,
-					system_status: ProcessingStatus.Error,
-				});
+				await uniqueSams.updateById(uniqueSamItem._id, { remarks: `Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`, system_status: ProcessingStatus.Error });
 			}
 		}
 
