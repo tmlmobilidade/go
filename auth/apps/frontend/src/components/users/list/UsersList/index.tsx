@@ -2,14 +2,13 @@
 
 /* * */
 
+import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
 import { Loader, Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';
-
-import { UsersListHeader } from '../UsersListHeader';
 
 /* * */
 
@@ -33,10 +32,7 @@ export function UsersList() {
 	}
 
 	return (
-		<Pane header={[
-			<UsersListHeader />,
-		]}
-		>
+		<Pane header={[<UsersListHeader />]}>
 			{data.filtered.map(user => (
 				<div key={user._id} className={styles.root} onClick={() => router.push(Routes.USER_DETAIL(user._id))}>
 					<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">

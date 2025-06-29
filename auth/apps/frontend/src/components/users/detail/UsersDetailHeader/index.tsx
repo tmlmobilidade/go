@@ -2,10 +2,9 @@
 
 /* * */
 
-import BackButton from '@/components/common/BackButton';
 import { UsersDetailMode, useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { Button, Spacer, Tag } from '@tmlmobilidade/ui';
+import { BackButton, Button, Spacer, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,7 +21,7 @@ export function UsersDetailHeader() {
 
 	return (
 		<>
-			<BackButton />
+			<BackButton type="close" />
 			<Tag label={usersDetailContext.data.id || 'Novo Utilizador'} variant="muted" />
 			<Spacer />
 			<Button
