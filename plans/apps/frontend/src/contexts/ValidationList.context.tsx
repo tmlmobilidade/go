@@ -5,7 +5,7 @@
 import { Routes } from '@/lib/routes';
 import { toggleArray } from '@/lib/utils';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
-import { FeederStatusSchema, OperationalDate, Validation } from '@tmlmobilidade/types';
+import { OperationalDate, ProcessingStatus, Validation } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { Dates } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
@@ -59,7 +59,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 	const [filterValidFrom, setFilterValidFrom] = useState<null | OperationalDate>(null);
 	const [filterValidUntil, setFilterValidUntil] = useState<null | OperationalDate>(null);
 	const [filterAgencies, setFilterAgencies] = useState<string[]>(AVAILABLE_AGENCIES.map(agency => agency._id));
-	const [filterStatus, setFilterStatus] = useState<Validation['feeder_status'][]>(Object.values(FeederStatusSchema.enum));
+	const [filterStatus, setFilterStatus] = useState<Validation['feeder_status'][]>(Object.values(ProcessingStatus));
 
 	//
 	// B. Fetch data
@@ -103,7 +103,7 @@ export const ValidationListContextProvider = ({ children }: { children: React.Re
 	function handleToggleStatus(status: 'all' | 'none' | Validation['feeder_status']) {
 		console.log('status', status);
 		if (status === 'all') {
-			setFilterStatus(Object.values(FeederStatusSchema.enum));
+			setFilterStatus(Object.values(ProcessingStatus));
 			return;
 		}
 

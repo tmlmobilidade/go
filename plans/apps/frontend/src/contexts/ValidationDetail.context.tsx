@@ -5,7 +5,7 @@
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { Routes } from '@/lib/routes';
 import { AVAILABLE_AGENCIES, Permissions } from '@tmlmobilidade/lib';
-import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, File as TmlFile, Validation, ValidationPermission, ValidationSchema } from '@tmlmobilidade/types';
+import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, ProcessingStatus, File as TmlFile, Validation, ValidationPermission, ValidationSchema } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -43,7 +43,7 @@ interface ValidationDetailContextState {
 }
 
 const emptyValidation: CreateValidationDto = {
-	feeder_status: 'waiting',
+	feeder_status: ProcessingStatus.Waiting,
 	file_id: null,
 	gtfs_agency: undefined,
 	gtfs_feed_info: undefined,

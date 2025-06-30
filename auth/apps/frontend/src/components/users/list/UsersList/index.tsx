@@ -2,6 +2,7 @@
 
 /* * */
 
+import { TransparentPane } from '@/components/TransparentPane';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
@@ -25,9 +26,14 @@ export function UsersList() {
 	// B. Render components
 
 	if (flags.loading) {
-		return <Loader />;
+		return (
+			<TransparentPane>
+				<Loader />
+			</TransparentPane>
+		);
 	}
-	else if (flags.error) {
+
+	if (flags.error) {
 		return <div>Error: {flags.error.message}</div>;
 	}
 

@@ -3,6 +3,7 @@
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
+import { ProcessingStatus } from '@tmlmobilidade/types';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -16,7 +17,7 @@ async function processValidation(message: ValidationMessage) {
 	try {
 		// 1. Update validation status to processing
 		await validations.updateById(message.validation_id, {
-			feeder_status: 'processing',
+			feeder_status: ProcessingStatus.Processing,
 		});
 
 		// 2. Get the file from MongoDB
@@ -36,7 +37,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// 6. Update validation status based on results
 		await validations.updateById(message.validation_id, {
-			feeder_status: validationResult.total_errors > 0 ? 'error' : 'success',
+			feeder_status: validationResult.total_errors > 0 ? ProcessingStatus.Error : ProcessingStatus.Complete,
 			summary: validationResult,
 		});
 
@@ -49,7 +50,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// Update validation status to error
 		await validations.updateById(message.validation_id, {
-			feeder_status: 'error',
+			feeder_status: ProcessingStatus.Error,
 			summary: {
 				messages: [
 					{

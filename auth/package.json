@@ -8,7 +8,8 @@
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
-		"start": "turbo start"
+		"start": "turbo start",
+		"yalc": "yalc link @tmlmobilidade/connectors @tmlmobilidade/interfaces @tmlmobilidade/lib @tmlmobilidade/utils @tmlmobilidade/types @tmlmobilidade/ui --no-pure"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
