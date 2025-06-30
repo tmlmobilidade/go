@@ -1,12 +1,11 @@
 /* * */
 
+import { ValidationsController } from '@/endpoints/validations/validations.controller.js';
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
-import FastifyService from '@/services/fastify.service.js';
+import { FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
 import { ValidationPermission } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
-
-import { ValidationsController } from './validations.controller.js';
 
 /* * */
 
