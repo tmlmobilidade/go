@@ -11,10 +11,10 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.34.0",
-		"@tmlmobilidade/lib": "20250630.1420.19",
-		"@tmlmobilidade/types": "20250630.1420.19",
-		"@tmlmobilidade/ui": "20250630.1420.19",
-		"@tmlmobilidade/utils": "20250630.1420.19",
+		"@tmlmobilidade/lib": "20250701.1203.18",
+		"@tmlmobilidade/types": "20250701.1203.18",
+		"@tmlmobilidade/ui": "20250701.1203.18",
+		"@tmlmobilidade/utils": "20250701.1203.18",
 		"clsx": "2.1.1",
 		"luxon": "3.6.1",
 		"next": "15.3.4",
@@ -27,7 +27,7 @@
 		"@carrismetropolitana/api-types": "20250628.1141.3",
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@types/luxon": "3.6.2",
-		"@types/node": "24.0.7",
+		"@types/node": "24.0.8",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5"
