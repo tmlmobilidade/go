@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
+import { getAppConfig, HttpStatus } from '@tmlmobilidade/lib';
 import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -61,7 +61,7 @@ export class AuthController {
 			domain:
 				process.env.NODE_ENV === 'development'
 					? 'localhost'
-					: `.${process.env.COOKIE_DOMAIN}`,
+					: getAppConfig('auth', 'cookie_domain'),
 			httpOnly: true,
 			maxAge:
 				parseInt(process.env.COOKIE_MAX_AGE_DAYS ?? '30')
