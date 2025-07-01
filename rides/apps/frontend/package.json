@@ -1,0 +1,46 @@
+{
+	"name": "@tmlmobilidade/sae-rides-frontend",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "next dev -p 51002",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "next start"
+	},
+	"dependencies": {
+		"@mantine/nprogress": "8.1.2",
+		"@tabler/icons-react": "3.34.0",
+		"@tmlmobilidade/sae-rides-pckg-utils": "*",
+		"@tmlmobilidade/types": "20250628.1124.5",
+		"@tmlmobilidade/ui": "20250628.1124.5",
+		"@turf/turf": "7.2.0",
+		"@vis.gl/react-maplibre": "8.0.4",
+		"lodash": "4.17.21",
+		"luxon": "3.6.1",
+		"maplibre-gl": "5.6.0",
+		"next": "15.3.4",
+		"next-intl": "4.3.1",
+		"nuqs": "2.4.3",
+		"react": "19.1.0",
+		"react-dom": "19.1.0",
+		"react-viewport-list": "7.1.2",
+		"recharts": "3.0.2",
+		"sharp": "0.34.2",
+		"swr": "2.3.3"
+	},
+	"devDependencies": {
+		"@types/geojson": "7946.0.16",
+		"@types/lodash": "4.17.19",
+		"@types/luxon": "3.6.2",
+		"@types/node": "24.0.7",
+		"@types/react": "19.1.8",
+		"@types/react-dom": "19.1.6",
+		"typescript": "5.8.3"
+	},
+	"overrides": {
+		"react": "19.1.0",
+		"react-dom": "19.1.0"
+	}
+}

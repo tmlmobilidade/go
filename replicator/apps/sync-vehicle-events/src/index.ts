@@ -7,13 +7,9 @@ import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { ProcessingStatus, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
-
-/* * */
-
-const RUN_INTERVAL = 1800000; // 30 minutes
 
 /* * */
 
@@ -82,22 +78,35 @@ async function syncVehicleEvents() {
 
 			const flushCallback = async (flushedData: MongoDBWriterWriteOps<VehicleEvent>[]) => {
 				try {
+					//
+
 					const invalidationTimer = new TIMETRACKER();
+
+					//
 					// Extract the unique trip_ids from the flushed data
+
 					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
-					// Get the earliest and latest timestamps from the flushed data
+
+					//
+					// Create a standard window interval based on the earliest and latest timestamps
+
 					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at));
 					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at));
-					// Create a standard window interval based on the earliest and latest timestamps
+
 					const earliestStandardWindowInterval = Dates.fromUnixTimestamp(earliestTimestamp).std_window;
 					const latestStandardWindowInterval = Dates.fromUnixTimestamp(latestTimestamp).std_window;
+
+					//
 					// Invalidate all rides that are affected
-					const result = await rides.updateMany(
+
+					const updateRidesResult = await rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
-						{ system_status: 'pending' },
+						{ system_status: ProcessingStatus.Waiting },
 					);
-					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new vehicle_events data (${invalidationTimer.get()})`);
+
+					LOGGER.info(`Flush [vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+
+					//
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
@@ -176,7 +185,7 @@ async function syncVehicleEvents() {
 (async function init() {
 	const runOnInterval = async () => {
 		await syncVehicleEvents();
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		setTimeout(runOnInterval, 1_800_000);// 30 minutes
 	};
 	runOnInterval();
 })();

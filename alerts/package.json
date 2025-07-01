@@ -10,9 +10,9 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20250624.2231.56",
+		"@tmlmobilidade/tsconfig": "20250626.1107.33",
 		"dotenv-cli": "8.0.0",
-		"prettier": "3.6.0",
+		"prettier": "3.6.1",
 		"turbo": "2.5.4",
 		"typescript": "5.8.3"
 	},

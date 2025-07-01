@@ -3,17 +3,13 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
+import { rides, simplifiedApexOnBoardRefunds, uniqueSams } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { ProcessingStatus, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
-
-/* * */
-
-const RUN_INTERVAL = 1800000; // 30 minutes
 
 /* * */
 
@@ -82,22 +78,44 @@ async function syncApexOnBoardRefunds() {
 
 			const flushCallback = async (flushedData: MongoDBWriterWriteOps<SimplifiedApexOnBoardRefund>[]) => {
 				try {
+					//
+
 					const invalidationTimer = new TIMETRACKER();
-					// Extract the unique trip_ids from the flushed data
+
+					//
+					// Extract the unique trip_ids from the flushed data and
+					// the unique sam serial numbers associated with those transactions.
+
 					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
-					// Get the earliest and latest timestamps from the flushed data
+					const uniqueSamSerialNumbers: number[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.mac_sam_serial_number)));
+
+					//
+					// Create a standard window interval based on the earliest and latest timestamps
+
 					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at));
 					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at));
-					// Create a standard window interval based on the earliest and latest timestamps
+
 					const earliestStandardWindowInterval = Dates.fromUnixTimestamp(earliestTimestamp).std_window;
 					const latestStandardWindowInterval = Dates.fromUnixTimestamp(latestTimestamp).std_window;
+
+					//
 					// Invalidate all rides that are affected
-					const result = await rides.updateMany(
+
+					const updateRidesPromise = rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
-						{ system_status: 'pending' },
+						{ system_status: ProcessingStatus.Waiting },
 					);
-					// Log the number of rides that were marked as 'pending'
-					LOGGER.info(`Flush: Marked ${result.modifiedCount} Rides as 'pending' due to new apex_on_board_refunds data (${invalidationTimer.get()})`);
+
+					const updateUniqueSamsPromise = uniqueSams.updateMany(
+						{ mac_sam_serial_number: { $in: uniqueSamSerialNumbers } },
+						{ system_status: ProcessingStatus.Waiting },
+					);
+
+					const [updateRidesResult, updateUniqueSamsResult] = await Promise.all([updateRidesPromise, updateUniqueSamsPromise]);
+
+					LOGGER.info(`Flush [apex_on_board_refunds]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateUniqueSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
+
+					//
 				}
 				catch (error) {
 					LOGGER.error('Error in flushCallback', error);
@@ -179,7 +197,7 @@ async function syncApexOnBoardRefunds() {
 (async function init() {
 	const runOnInterval = async () => {
 		await syncApexOnBoardRefunds();
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		setTimeout(runOnInterval, 1_800_000);// 30 minutes
 	};
 	runOnInterval();
 })();

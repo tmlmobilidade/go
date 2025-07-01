@@ -7,7 +7,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 const ALLOWED_OPERATOR_LONG_IDS = ['41', '42', '43', '44'];
 
-const ALLOWED_APEX_TRANSACTION_VERSIONS = ['3.0'];
+const ALLOWED_APEX_TRANSACTION_VERSIONS = ['2.0', '3.0'];
 
 const ALLOWED_APEX_TRANSACTION_TYPES = [11]; // Validation Transaction
 
@@ -21,15 +21,33 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 		//
 		// Validate the document structure and content
 
-		if (!pcgiDoc?.transaction) throw new Error('Missing transaction in document');
+		if (!pcgiDoc?.transaction) throw new Error('Missing transaction in document.');
 
-		if (!pcgiDoc.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction');
+		if (!pcgiDoc.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction.');
 
-		if (!ALLOWED_OPERATOR_LONG_IDS.includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: ${pcgiDoc.transaction.operatorLongID}`);
+		if (!ALLOWED_OPERATOR_LONG_IDS.includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: "${pcgiDoc.transaction.operatorLongID}"`);
 
-		if (!ALLOWED_APEX_TRANSACTION_VERSIONS.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: ${pcgiDoc.transaction.apexTransactionVersion}`);
+		if (!ALLOWED_APEX_TRANSACTION_VERSIONS.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: "${pcgiDoc.transaction.apexTransactionVersion}"`);
 
-		if (!ALLOWED_APEX_TRANSACTION_TYPES.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: ${pcgiDoc.transaction.apexTransactionType}`);
+		if (!ALLOWED_APEX_TRANSACTION_TYPES.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
+
+		//
+		// Evaluate the transaction date and ensure it is not before the set earliest date
+
+		if (!pcgiDoc.transaction.transactionDate) throw new Error('Missing transactionDate in transaction.');
+
+		if (!process.env.SYNC_EARLIEST_DATE) throw new Error('Missing SYNC_EARLIEST_DATE environment variable.');
+
+		const earliestTransactionDate = Dates
+			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon')
+			.unix_timestamp;
+
+		const transactionDate = Dates
+			.fromISO(pcgiDoc.transaction.transactionDate)
+			.setZone('Europe/Lisbon', 'rebase_utc')
+			.unix_timestamp;
+
+		if (transactionDate < earliestTransactionDate) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${process.env.SYNC_EARLIEST_DATE}".`);
 
 		//
 		// Parse the document and return the simplified APEX object
@@ -39,10 +57,7 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			agency_id: pcgiDoc.transaction.operatorLongID,
 			apex_version: pcgiDoc.transaction.apexVersion,
 			card_serial_number: pcgiDoc.transaction.cardSerialNumber,
-			created_at: Dates
-				.fromISO(pcgiDoc.transaction.transactionDate)
-				.setZone('Europe/Lisbon', 'rebase_utc') // Ensure the date is interpreted in Lisbon timezone, since the original APEX value does not include timezone in ISO string.
-				.unix_timestamp,
+			created_at: transactionDate,
 			device_id: pcgiDoc.transaction.deviceID,
 			event_type: pcgiDoc.transaction.eventType,
 			is_passenger: validateIfSimplifiedApexValidationIsPassenger(pcgiDoc.transaction.validationStatus, pcgiDoc.transaction.eventType, null),

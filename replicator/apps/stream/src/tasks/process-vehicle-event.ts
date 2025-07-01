@@ -6,7 +6,7 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { emailProvider } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { ProcessingStatus, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -57,19 +57,29 @@ export async function processVehicleEvent(databaseOperation) {
 
 	const flushCallback = async (flushedData: MongoDBWriterWriteOps<VehicleEvent>[]) => {
 		try {
+			//
+
 			const invalidationTimer = new TIMETRACKER();
-			// Map the flushed data to the query that will be used to invalidate the rides
-			const updates = flushedData.map((writeOp) => {
+
+			//
+			// Map the flushed data to the query that will be used to invalidate documents
+
+			const rideUpdates = flushedData.map((writeOp) => {
 				const standardWindowInterval = Dates.fromUnixTimestamp(writeOp.data.created_at).std_window;
 				return {
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 					trip_id: writeOp.data.trip_id,
 				};
 			});
+
+			//
 			// Invalidate all rides that are affected
-			const result = await rides.updateMany({ $or: updates }, { system_status: 'pending' });
-			// Log the number of rides that were marked as 'pending'
-			LOGGER.info(`Flush [vehicle_events]: Marked ${result.modifiedCount} Rides as 'pending' due to new vehicle_events data (${invalidationTimer.get()})`);
+
+			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: ProcessingStatus.Waiting });
+
+			LOGGER.info(`Flush [vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+
+			//
 		}
 		catch (error) {
 			LOGGER.error('Error in flushCallback', error);

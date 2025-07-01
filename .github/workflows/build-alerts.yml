@@ -50,6 +50,8 @@ jobs:
           context: ./alerts
           file: ./alerts/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-alerts-frontend:${{ github.ref_name }}
+          build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

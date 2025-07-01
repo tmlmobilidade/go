@@ -5,6 +5,10 @@ FROM node:22.6-alpine3.20 AS base
 ENV MODULE=auth
 ENV PROJECT=frontend
 
+
+ARG ENVIRONMENT
+ENV ENVIRONMENT=${ENVIRONMENT}
+
 RUN npm install -g turbo@^2
 
 # # # # # # # # #

@@ -50,6 +50,8 @@ jobs:
           context: ./auth
           file: ./auth/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-auth-frontend:${{ github.ref_name }}
+          build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -126,3 +128,5 @@ jobs:
           context: ./auth/apps/nginx
           file: ./auth/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-auth-nginx:${{ github.ref_name }}
+          build-args: |
+            NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.auth.sae.carrismetropolitana.pt' || 'auth.sae.carrismetropolitana.pt' }}

@@ -6,7 +6,7 @@ import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconCornerDownRight, IconPlus, IconTrash } from '@tabler/icons-react';
-import { Button, Combobox, Label, Section, Surface } from '@tmlmobilidade/ui';
+import { Button, Combobox, Label, MultiSelect, Section, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -130,15 +130,12 @@ function AlertReferencesStopsItem({ index }: { index: number }) {
 				/>
 				<div className={styles.childrenWrapper}>
 					<IconCornerDownRight className={styles.icon} size={28} />
-					<Combobox
+					<MultiSelect
 						aria-label="Linhas Afetadas"
 						data={availableRoutes}
 						description="Selecione as linhas que serão afetadas pelo alerta"
 						label="Linhas Afetadas"
-						clearable
-						fullWidth
-						multiple
-						searchable
+						selected={alertDetailContext.data.form.values.references[index].child_ids}
 						{...alertDetailContext.data.form.getInputProps(
 							`references.${index}.child_ids`,
 						)}
