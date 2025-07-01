@@ -1,4 +1,2 @@
-/* * */
-
-import './main';
-import './endpoints';
+import '@/main';
+import '@/endpoints';

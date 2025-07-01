@@ -1,21 +1,19 @@
 /* * */
 
 import fastifyMultipart from '@fastify/multipart';
-import { type ExtendedFastifyServiceOptions, FastifyService } from '@tmlmobilidade/connectors';
+import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
+import { getAppConfig } from '@tmlmobilidade/lib';
 
 /* * */
 
 const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
 
-async function main() {
+/* * */
+
+(async function () {
 	//
 
-	const origin
-		= process.env.NODE_ENV === 'development'
-			? '*'
-			: `https://*.${process.env.COOKIE_DOMAIN}`;
-
-	const options: ExtendedFastifyServiceOptions = {
+	const options: FastifyServiceOptions = {
 		bodyLimit: MAX_BODY_SIZE,
 		ignoreTrailingSlash: true,
 		logger: {
@@ -27,11 +25,14 @@ async function main() {
 				target: 'pino-pretty',
 			},
 		},
-		origin: origin,
+		origin: getAppConfig('alerts', 'cookie_domain'),
+		port: getAppConfig('alerts', 'api_port'),
 	};
 
 	// Start Fastify server
+
 	const fastifyService = FastifyService.getInstance(options);
+
 	await fastifyService.server.register(fastifyMultipart, {
 		limits: {
 			fileSize: MAX_BODY_SIZE,
@@ -39,6 +40,6 @@ async function main() {
 	});
 
 	await fastifyService.start();
-}
 
-main();
+	//
+})();
