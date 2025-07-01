@@ -1,5 +1,6 @@
 /* * */
 
+import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
@@ -15,25 +16,34 @@ interface ValidationMessage {
 
 async function processValidation(message: ValidationMessage) {
 	try {
+		logger.info('Processing validation...');
 		// 1. Update validation status to processing
-		await validations.updateById(message.validation_id, {
+		const validation = await validations.updateById(message.validation_id, {
 			feeder_status: ProcessingStatus.Processing,
 		});
 
+		logger.info(`Validation set to processing: ${validation.acknowledged}`);
+
 		// 2. Get the file from MongoDB
-		const fileUrl = await files.getFileUrl({ file_id: message.file_id });
-		if (!fileUrl) {
+		const file = await files.findById(message.file_id);
+		if (!file) {
 			throw new Error(`File not found: ${message.file_id}`);
 		}
 
+		logger.info(`Getting file from MongoDB: ${file._id}`);
+
 		// 3. Download and write file to temp directory for validation
-		const fileBuffer = await fetch(fileUrl).then(res => res.arrayBuffer());
+		const fileBuffer = await fetch(file.url).then(res => res.arrayBuffer());
 		const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
 		await writeFile(tempFilePath, Buffer.from(fileBuffer));
 
+		logger.info(`File downloaded and written to temp directory: ${tempFilePath}`);
+
 		// 4. Run GTFS validation
-		console.log('🚀 Validating file:', tempFilePath);
+		logger.info(`Validating file: ${tempFilePath}`);
 		const validationResult = await GTFSValidator(tempFilePath);
+
+		logger.info(`File validated, updating document in MongoDB`);
 
 		// 6. Update validation status based on results
 		await validations.updateById(message.validation_id, {
@@ -41,12 +51,10 @@ async function processValidation(message: ValidationMessage) {
 			summary: validationResult,
 		});
 
-		// 6. Send validation results to RabbitMQ
-		await rabbitMQ.publish('gtfs-validation-results', JSON.stringify(validationResult));
-		console.log('🚀 Validation Finished Successfully');
+		logger.success('Validation Finished Successfully');
 	}
 	catch (error) {
-		console.error('Error processing validation:', error);
+		logger.error('Error processing validation:', error);
 
 		// Update validation status to error
 		await validations.updateById(message.validation_id, {
@@ -73,10 +81,15 @@ async function main() {
 	// Subscribe to validation queue
 	await rabbitMQ.subscribe('gtfs-validation', async (message) => {
 		const validationMessage = JSON.parse(message.toString()) as ValidationMessage;
-		console.log(validationMessage);
+
+		logger.spacer(3);
+		logger.title('🚀 Validation message received');
+		logger.info(JSON.stringify(validationMessage));
+
 		await processValidation(validationMessage);
 	});
-	console.log('🚀 GTFS Validator service started');
+
+	logger.divider('🚀 GTFS Validator service started');
 }
 
 main();
