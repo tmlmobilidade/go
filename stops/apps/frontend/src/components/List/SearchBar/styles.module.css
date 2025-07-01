@@ -5,6 +5,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--mantine-spacing-sm);
+    width: 100%;
 }
 
 .inputText {
@@ -28,13 +29,13 @@
     aspect-ratio: 1 / 1;
     padding: 0 var(--size-spacing-xs);
     cursor: pointer;
-    background-color: var(--mantine-color-gray-light);
+    background-color: var(--color-system-border-100);
     border-radius: var(--size-spacing-xs);
 }
 
-.icon:hover {
-    background-color: var(--color-system-text-100);
-}
+/* .icon:hover {
+    background-color: var(--color-system-text-200);
+} */
 
 .breadcrumbs {
     position: absolute;
@@ -42,5 +43,5 @@
     right: 0;
     display: flex;
     flex-direction: column;
-    background-color: rgb(10 10 20);
+    background-color: var(--color-system-border-100);
 }

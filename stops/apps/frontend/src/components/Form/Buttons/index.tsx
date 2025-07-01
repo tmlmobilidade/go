@@ -48,7 +48,7 @@ export function Buttons({ actions, data, phase, setPhase }) {
 
 			{phase === Phase.LOCATION
 			&& (
-				<Button className={styles.button} disabled={data.form.getValues().latitude === 0 || data.form.getValues().longitude === 0} onClick={() => setPhase(Phase.IDENTIFICATION)}>
+				<Button className={styles.button} disabled={data.form.getValues().latitude === 0 || data.form.getValues().longitude === 0 || data.form.getValues().municipality_id === null} onClick={() => setPhase(Phase.IDENTIFICATION)}>
 					Avançar
 				</Button>
 			)}

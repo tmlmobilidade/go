@@ -1,14 +1,13 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
-/* * */
-
 import type { CachedResource } from '@carrismetropolitana/api-types/common';
 import type { DemandMetricsByLine, ServiceMetrics } from '@carrismetropolitana/api-types/metrics';
 import type { Line } from '@carrismetropolitana/api-types/network';
 
+import { Routes } from '@/lib/routes';
+import { unauthenticatedFetcher } from '@/utils/http';
 import { createContext, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
@@ -17,6 +16,7 @@ interface LinesContextState {
 		getDemandMetricsByLineId: (lineId: string) => DemandMetricsByLine | undefined
 		getLineDataById: (lineId: string) => Line | undefined
 		getServiceMetricsByLineId: (lineId: string) => ServiceMetrics[] | undefined
+		handleDBSync: () => void
 	}
 	data: {
 		demand_metrics: DemandMetricsByLine[]
@@ -48,12 +48,19 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>(`${Routes.CMET_API}/lines`);
-	const { data: demandByLineData, isLoading: demandByLineDataLoading } = useSWR<DemandMetricsByLine[], Error>(`${Routes.CMET_API}/metrics/demand/by_line`, { refreshInterval: 300000 });
-	const { data: serviceMetricsData, isLoading: serviceMetricsLoading } = useSWR<CachedResource<ServiceMetrics[]>, Error>(`${Routes.CMET_API}/metrics/service/all`);
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>(`${Routes.CMET_API}/lines`, unauthenticatedFetcher);
+	const { data: demandByLineData, isLoading: demandByLineDataLoading } = useSWR<DemandMetricsByLine[], Error>(`${Routes.CMET_API}/metrics/demand/by_line`, unauthenticatedFetcher, { refreshInterval: 300000 });
+	const { data: serviceMetricsData, isLoading: serviceMetricsLoading } = useSWR<CachedResource<ServiceMetrics[]>, Error>(`${Routes.CMET_API}/metrics/service/all`, unauthenticatedFetcher);
+	console.log('allLinesData', allLinesData);
 
 	//
 	// B. Handle actions
+
+	const handleDBSync = () => {
+		mutate(`${Routes.CMET_API}/lines`);
+		mutate(`${Routes.CMET_API}/metrics/demand/by_line`);
+		mutate(`${Routes.CMET_API}/metrics/service/all`);
+	};
 
 	const getLineDataById = (lineId: string) => {
 		return allLinesData?.find(line => line.id === lineId);
@@ -75,6 +82,7 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 			getDemandMetricsByLineId,
 			getLineDataById,
 			getServiceMetricsByLineId,
+			handleDBSync,
 		},
 		data: {
 			demand_metrics: demandByLineData || [],

@@ -3,6 +3,14 @@ import type { NextConfig } from 'next';
 import { Routes } from '@/lib/routes';
 
 const nextConfig: NextConfig = {
+	webpack: (config) => {
+		config.resolve.fallback = {
+			fs: false,
+		};
+
+		return config;
+	},
+	webpack5: true,
 	/* config options here */
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
