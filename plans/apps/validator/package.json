@@ -15,16 +15,16 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "20250630.1420.19",
+		"@tmlmobilidade/connectors": "20250701.1500.51",
 		"@tmlmobilidade/gtfs-validator": "20250626.1626.5",
-		"@tmlmobilidade/interfaces": "20250630.1420.9",
-		"@tmlmobilidade/utils": "20250630.1420.19",
+		"@tmlmobilidade/interfaces": "20250701.1500.51",
+		"@tmlmobilidade/utils": "20250701.1500.51",
 		"csv-parse": "5.6.0",
 		"tsx": "4.20.3"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/types": "20250630.1420.19",
-		"@types/node": "24.0.7",
+		"@tmlmobilidade/types": "20250701.1500.51",
+		"@types/node": "24.0.8",
 		"typescript": "5.8.3"
 	}
 }

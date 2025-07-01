@@ -3,13 +3,13 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { Permission } from '@tmlmobilidade/types';
+import { type Permission } from '@tmlmobilidade/types';
 
 /* * */
 
 declare module 'fastify' {
 	export interface FastifyRequest {
-		permissions?: Permission<unknown>
+		permissions: null | Permission<unknown>
 	}
 }
 

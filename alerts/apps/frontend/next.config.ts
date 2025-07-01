@@ -1,6 +1,9 @@
-import type { NextConfig } from 'next';
+/* * */
 
 import { Routes } from '@/lib/routes';
+import { type NextConfig } from 'next';
+
+/* * */
 
 const nextConfig: NextConfig = {
 	images: {
@@ -39,5 +42,7 @@ const nextConfig: NextConfig = {
 		];
 	},
 };
+
+/* * */
 
 export default nextConfig;

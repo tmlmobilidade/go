@@ -5,7 +5,7 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { AlertSchema } from '@tmlmobilidade/types';
-import { Badge, Checkbox, DateTimePicker, Label, Menu, Text } from '@tmlmobilidade/ui';
+import { Checkbox, DateTimePicker, Label, Menu, Tag, Text } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';
@@ -37,9 +37,7 @@ function StateFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="xs" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Estado</Text>
-				</Badge>
+				<Tag label="Estado" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				{AlertSchema.shape.publish_status.options.map(status => (
@@ -64,9 +62,7 @@ function CauseFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="xs" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Causa</Text>
-				</Badge>
+				<Tag label="Causa" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				{AlertSchema.shape.cause.options.map(cause => (
@@ -91,9 +87,7 @@ function EffectFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="xs" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Efeito</Text>
-				</Badge>
+				<Tag label="Efeito" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				{AlertSchema.shape.effect.options.map(effect => (
@@ -127,9 +121,7 @@ function MunicipalityFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="xs" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Municípios</Text>
-				</Badge>
+				<Tag label="Municípios" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				{filters.municipalityOptions.map(municipality => (
@@ -163,9 +155,7 @@ function LineFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="xs" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Linhas</Text>
-				</Badge>
+				<Tag label="Linhas" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.lineDropdown }}>
 				<ViewportList items={filters.lineOptions}>
@@ -201,9 +191,7 @@ function StopFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="sm" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Paragens</Text>
-				</Badge>
+				<Tag label="Paragens" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.stopDropdown }}>
 				<ViewportList items={filters.stopOptions}>
@@ -233,9 +221,7 @@ function PublishDateFilter() {
 	return (
 		<Menu closeOnClickOutside={false} trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="sm" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Visibilidade</Text>
-				</Badge>
+				<Tag label="Visibilidade" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o alerta é visível nos canais digitais, não necessariamente a data de que é valido (Periodo de vigência)</Text>
@@ -258,9 +244,7 @@ function ValidityDateFilter() {
 	return (
 		<Menu closeOnClickOutside={false} trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="sm" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Vigência</Text>
-				</Badge>
+				<Tag label="Vigência" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o alerta é válido</Text>

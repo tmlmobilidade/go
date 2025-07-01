@@ -7,7 +7,9 @@ import { getAppConfig } from '@tmlmobilidade/lib';
 
 const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
 
-async function main() {
+/* * */
+
+(async function () {
 	//
 
 	const options: FastifyServiceOptions = {
@@ -31,6 +33,6 @@ async function main() {
 	const fastifyService = FastifyService.getInstance(options);
 
 	await fastifyService.start();
-}
 
-main();
+	//
+})();

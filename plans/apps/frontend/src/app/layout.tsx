@@ -1,7 +1,7 @@
 /* * */
 
 import '@tmlmobilidade/ui/styles';
-import { getAppBaseUrl } from '@tmlmobilidade/lib';
+import { getAppConfig } from '@tmlmobilidade/lib';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
@@ -27,8 +27,8 @@ export default async function Layout({ children }: PropsWithChildren) {
 	const sessionToken = cookies.get('session_token')?.value;
 
 	if (!sessionToken) {
-		const authUrl = getAppBaseUrl('auth');
-		const appUrl = getAppBaseUrl('plans');
+		const authUrl = getAppConfig('auth', 'frontend_url');
+		const appUrl = getAppConfig('plans', 'frontend_url');
 		redirect(`${authUrl}/login?redirect=${encodeURI(appUrl)}`, RedirectType.replace);
 	}
 

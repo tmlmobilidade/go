@@ -1,2 +1,2 @@
-import './plans/plans.routes';
-import './validations/validations.routes';
+import '@/endpoints/plans/plans.routes';
+import '@/endpoints/validations/validations.routes';
