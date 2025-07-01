@@ -83,7 +83,7 @@ export async function parsePlan(planData: Plan) {
 			fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 		}
 		catch (error) {
-			LOGGER.error('Error unzipping the file.', error);
+			LOGGER.error('Error downloading the file.', error);
 			process.exit(1);
 		}
 
@@ -512,6 +512,34 @@ export async function parsePlan(planData: Plan) {
 				const stopTimesData = savedStopTimes.get(currentTrip.trip_id);
 				const routeData = savedRoutes.get(currentTrip.route_id);
 				const shapeData = savedShapes.get(currentTrip.shape_id);
+
+				//
+				// Validate the required data for this trip
+				// to prevent errors later on.
+
+				if (!calendarDatesData || calendarDatesData.length === 0) {
+					LOGGER.error(`Trip "${currentTrip.trip_id}" has no calendar dates. Skipping...`);
+					continue;
+				}
+
+				if (!stopTimesData || stopTimesData.length === 0) {
+					LOGGER.error(`Trip "${currentTrip.trip_id}" has no stop_times data. Skipping...`);
+					continue;
+				}
+
+				if (!routeData) {
+					LOGGER.error(`Trip "${currentTrip.trip_id}" has no route data. Skipping...`);
+					continue;
+				}
+
+				if (!shapeData || shapeData.length === 0) {
+					LOGGER.error(`Trip "${currentTrip.trip_id}" has no shape data. Skipping...`);
+					continue;
+				}
+
+				//
+				// Extract commonly used variables use in the next steps
+				// to avoid repeated lookups and calculations.
 
 				const sortedStopTimesData = stopTimesData?.sort((a, b) => a.stop_sequence - b.stop_sequence);
 
