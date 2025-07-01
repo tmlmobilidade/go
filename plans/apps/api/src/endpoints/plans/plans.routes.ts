@@ -1,8 +1,7 @@
 /* * */
 
 import { PlansController } from '@/endpoints/plans/plans.controller.js';
-import authorizationMiddleware from '@/middleware/authorization.middleware.js';
-import { FastifyService } from '@tmlmobilidade/connectors';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
 import { PlanPermission } from '@tmlmobilidade/types';
 

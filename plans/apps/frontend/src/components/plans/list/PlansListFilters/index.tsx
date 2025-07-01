@@ -2,7 +2,7 @@
 
 import { usePlanListContext } from '@/contexts/PlanList.context';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
-import { Badge, Button, Checkbox, DatePicker, Grid, Label, Menu, Spacer, Text } from '@tmlmobilidade/ui';
+import { Button, Checkbox, DatePicker, Grid, Label, Menu, Spacer, Tag, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
@@ -29,9 +29,7 @@ function ValidityDateFilter() {
 	return (
 		<Menu closeOnClickOutside={false} trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="sm" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Vigência</Text>
-				</Badge>
+				<Tag label="Vigência" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o plano é válido</Text>
@@ -59,9 +57,7 @@ function AgencyFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Badge p="xs" type="pill" variant={hasChanged ? 'primary' : 'muted'}>
-					<Text className={styles.filterTitle} size="sm" weight="medium">Agências</Text>
-				</Badge>
+				<Tag label="Agências" variant={hasChanged ? 'primary' : 'muted'} />
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Grid columns="ab" gap="md">
