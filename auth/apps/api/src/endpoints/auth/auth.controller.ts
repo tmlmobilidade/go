@@ -58,10 +58,7 @@ export class AuthController {
 		});
 
 		reply.setCookie(COOKIE_NAME, session.token, {
-			domain:
-				process.env.NODE_ENV === 'development'
-					? 'localhost'
-					: getAppConfig('auth', 'cookie_domain'),
+			domain: getAppConfig('auth', 'cookie_domain'),
 			httpOnly: true,
 			maxAge:
 				parseInt(process.env.COOKIE_MAX_AGE_DAYS ?? '30')
