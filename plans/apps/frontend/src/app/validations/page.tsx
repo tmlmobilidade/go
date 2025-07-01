@@ -1,6 +1,7 @@
+/* * */
+
 import { Routes } from '@/lib/routes';
 import { IconFileCheck } from '@tabler/icons-react';
-import Link from 'next/link';
 
 import styles from './page.module.css';
 

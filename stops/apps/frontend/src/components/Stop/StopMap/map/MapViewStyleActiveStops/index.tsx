@@ -64,7 +64,7 @@ export function MapViewStyleActiveStops({ presentBeforeId, stopsData = baseGeoJs
 
 			<Layer
 				beforeId="default-layer-active-stops-pole"
-				id="default-layer-active-stops-circle"
+				id={MapViewStyleActiveStopsPrimaryLayerId}
 				source="default-source-active-stops"
 				type="circle"
 				paint={{

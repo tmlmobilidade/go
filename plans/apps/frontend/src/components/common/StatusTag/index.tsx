@@ -1,26 +1,36 @@
-import { ValidationSchema } from '@tmlmobilidade/types';
+/* * */
+
+import { ProcessingStatus } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
 
-export function StatusTag({ status }: { status: keyof typeof ValidationSchema.shape.feeder_status.enum }) {
+/* * */
+
+interface StatusTagProps {
+	status: ProcessingStatus
+}
+
+/* * */
+
+export function StatusTag({ status }: StatusTagProps) {
 	//
 
-	//
-	// A. Setup variables
-	const variant = useMemo(() => {
-		switch (status) {
-			case ValidationSchema.shape.feeder_status.enum.error:
-				return 'danger';
-			case ValidationSchema.shape.feeder_status.enum.processing:
-				return 'warning';
-			case ValidationSchema.shape.feeder_status.enum.success:
-				return 'success';
-			default:
-				return 'muted';
-		}
-	}, [status]);
+	if (status === ProcessingStatus.Waiting) {
+		return <Tag label="Em Espera" variant="secondary" />;
+	}
+
+	if (status === ProcessingStatus.Processing) {
+		return <Tag label="Em Processamento" variant="primary" />;
+	}
+
+	if (status === ProcessingStatus.Complete) {
+		return <Tag label="Processado" variant="success" />;
+	}
+
+	if (status === ProcessingStatus.Error) {
+		return <Tag label="Erro" variant="danger" />;
+	}
+
+	return <Tag label="Missing feeder_status value" variant="muted" />;
 
 	//
-	// B. Render
-	return <Tag label={status} variant={variant} />;
 }

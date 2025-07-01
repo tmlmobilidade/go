@@ -1,13 +1,14 @@
+/* * */
+
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/lib';
-import { CreateFileDto, CreatePlanDto, Permission, Plan, PlanPermission, PlanSchema } from '@tmlmobilidade/types';
+import { type CreateFileDto, type CreatePlanDto, type Permission, type Plan, type PlanPermission, PlanSchema } from '@tmlmobilidade/types';
 import { convertObject, hasAPIResourcePermission } from '@tmlmobilidade/utils';
-import { FastifyReply, FastifyRequest } from 'fastify';
 
-/**
- * This is an example controller that is using the plans interface.
- */
+/* * */;
+
 export class PlansController {
 	/**
 	 * Creates a new plan
@@ -228,6 +229,7 @@ export class PlansController {
 				});
 			}
 			catch (error) {
+				console.warn('Error fetching file for plan:', error);
 				return reply.send({
 					...plan,
 					file: undefined,

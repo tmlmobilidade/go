@@ -2,10 +2,9 @@
 
 /* * */
 
-import BackButton from '@/components/common/BackButton';
 import { AgencyDetailMode, useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { Button, Section, Spacer, Tag, Text } from '@tmlmobilidade/ui';
+import { BackButton, Button, Section, Spacer, Tag, Text } from '@tmlmobilidade/ui';
 
 /* * */
 

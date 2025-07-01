@@ -37,11 +37,8 @@ export default function Stop({ paramId }: StopProps) {
 	//
 	// A. Setup variables
 
-	const linesContext = useLinesContext();
 	const { actions: { getStopById } } = useStopsContext();
 	const { actions, data, flags } = useStopsDetailContext();
-	console.log('linesContext', linesContext);
-	console.log('data', data.form.getValues().is_archived);
 	//
 	// B. Render components
 
@@ -51,28 +48,31 @@ export default function Stop({ paramId }: StopProps) {
 				{
 					flags.loading === false && (data?._id || paramId === 'new')
 						? (
-							<Pane header={[<StopHeader generic={false} />]}>
-								{/* <StopMap generic={false} /> */}
-								<StopsListViewMap getStopById={getStopById} />
-								<StopDetails />
-								<StopAdminInformation />
-								{/* <StopAffectation /> */}
-								<StopShelter />
-								<StopInfrasctructure />
-								<StopPublicInformation />
-								<StopAccessibility />
-								<StopEquipments />
-								<StopConnections />
-								<StopMedia actions={actions} data={data} />
-								<StopComments actions={actions} data={data} />
-								<StopObservations data={data} />
-							</Pane>
-						// </div>
+							<div style={{ height: '90vh' }}>
+								<Pane header={[<StopHeader generic={false} />]}>
+									{/* <StopMap generic={false} /> */}
+									<StopsListViewMap data={data} getStopById={getStopById} />
+									<StopDetails />
+									<StopAdminInformation />
+									{/* <StopAffectation /> */}
+									<StopShelter />
+									<StopInfrasctructure />
+									<StopPublicInformation />
+									<StopAccessibility />
+									<StopEquipments />
+									<StopConnections />
+									<StopMedia actions={actions} data={data} />
+									<StopComments actions={actions} data={data} />
+									<StopObservations data={data} />
+								</Pane>
+							</div>
 						) : (
-							<Pane header={[<StopHeader generic={true} />]}>
-								{flags.loading === false ? <StopsListViewMap generic={true} getStopById={getStopById} /> : <div>Loading...</div>}
-								{/* <StopsListViewMap /> */}
-							</Pane>
+							<div style={{ height: '90vh' }}>
+								<Pane header={[<StopHeader generic={true} />]}>
+									{flags.loading === false ? <StopsListViewMap data={data} generic={true} getStopById={getStopById} /> : <div>Loading...</div>}
+									{/* <StopsListViewMap /> */}
+								</Pane>
+							</div>
 						)
 				}
 			</StopsListContextProvider>

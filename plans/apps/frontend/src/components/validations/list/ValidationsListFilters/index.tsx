@@ -3,7 +3,7 @@
 import { StatusTag } from '@/components/common/StatusTag';
 import { useValidationListContext } from '@/contexts/ValidationList.context';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
-import { FeederStatusSchema } from '@tmlmobilidade/types';
+import { ProcessingStatus } from '@tmlmobilidade/types';
 import { Badge, Button, Checkbox, DatePicker, Grid, Label, Menu, Spacer, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -96,7 +96,7 @@ function StatusFilter() {
 	// A. State Management
 	const { actions, filters } = useValidationListContext();
 
-	const hasChanged = filters.status.length !== Object.values(FeederStatusSchema.enum).length;
+	const hasChanged = filters.status.length !== Object.values(ProcessingStatus).length;
 
 	//
 	// B. Render
@@ -113,7 +113,7 @@ function StatusFilter() {
 					<Button label="Desselecionar todas" onClick={() => actions.toggleStatus('none')} variant="secondary" />
 				</Grid>
 				<Spacer orientation="vertical" size="sm" />
-				{Object.values(FeederStatusSchema.enum).map(status => (
+				{Object.values(ProcessingStatus).map(status => (
 					<div key={status} onClick={() => actions.toggleStatus(status)}>
 						<Menu.Item closeMenuOnClick={false} p="sm">
 							<div className={styles.filterItem}>

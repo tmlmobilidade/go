@@ -8,7 +8,7 @@ import { AlertReferencesStops } from '@/components/detail/AlertReferencesStops';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { Collapsible, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

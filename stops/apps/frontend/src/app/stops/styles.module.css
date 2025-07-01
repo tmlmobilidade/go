@@ -1,4 +1,4 @@
-.container {
+/* .container {
     display: grid;
     grid-template-rows: 1fr;
     align-items: stretch;
@@ -10,4 +10,4 @@
     width: 100%;
     grid-template-columns: 350px 1fr;
     padding: var(--mantine-spacing-sm);
-}
+} */

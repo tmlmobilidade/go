@@ -19,23 +19,20 @@ export function UsersListHeader() {
 	// B. Render components
 
 	return (
-		<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="space-between">
+		<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="space-between" padding="none">
 			<Label size="lg" caps>Utilizadores</Label>
 			<Spacer />
-			<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm" padding="none">
-				<TextInput
-					leftSection={<IconSearch size={20} />}
-					miw={400}
-					onChange={e => userListContext.actions.changeSearchQuery(e.target.value)}
-					placeholder="Pesquisar..."
-					value={userListContext.filters.search_query}
-				/>
-				<Button
-					href={Routes.USER_DETAIL('new')}
-					icon={<IconPlus size={20} />}
-					label="Novo utilizador"
-				/>
-			</Section>
+			<TextInput
+				leftSection={<IconSearch size={20} />}
+				onChange={e => userListContext.actions.changeSearchQuery(e.target.value)}
+				placeholder="Pesquisar..."
+				value={userListContext.filters.search_query}
+			/>
+			<Button
+				href={Routes.USER_DETAIL('new')}
+				icon={<IconPlus size={20} />}
+				label="Novo utilizador"
+			/>
 		</Section>
 	);
 

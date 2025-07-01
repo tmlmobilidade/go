@@ -7,7 +7,7 @@ import React from 'react';
 
 import styles from './styles.module.css';
 
-export function Coords({ latitude, longitude, municipality }: { latitude: number, longitude: number, municipality: null | string }) {
+export function Coords({ latitude, longitude, municipality, municipality_id }: { latitude: number, longitude: number, municipality: null | string, municipality_id: string }) {
 	//
 
 	//
@@ -17,7 +17,7 @@ export function Coords({ latitude, longitude, municipality }: { latitude: number
 	const [copiedLon, setCopiedLon] = React.useState(false);
 
 	const copyToClipboard = () => {
-		navigator.clipboard.writeText(latitude.toString() + longitude.toString())
+		navigator.clipboard.writeText(latitude.toString() + ', ' + longitude.toString())
 			.then(() => console.log('Copied to clipboard!'))
 			.catch(err => console.error('Failed to copy: ', err));
 		setCopiedLat(true);
@@ -31,7 +31,7 @@ export function Coords({ latitude, longitude, municipality }: { latitude: number
 			{latitude && longitude ? (
 				municipality ? (
 					<div className={styles.section}>
-						<div className={styles.subSection}>#01 {municipality}</div>
+						<div className={styles.subSection}>#{municipality_id} {municipality}</div>
 						<div className={styles.subSection}>
 							<Button
 								className={styles.button}
@@ -60,16 +60,14 @@ export function Coords({ latitude, longitude, municipality }: { latitude: number
 							</Button>
 						</div>
 						<div className={styles.subSection}>
-							<Link href={`https://www.google.com/maps/@${latitude},${longitude}`} target="_blank">
-								<Tooltip label="Copiar Coordenadas" position="bottom">
-									<ActionIcon
-										onClick={() => copyToClipboard()}
-										variant="secondary"
-									>
-										<IconCopy />
-									</ActionIcon>
-								</Tooltip>
-							</Link>
+							<Tooltip label="Copiar Coordenadas" position="bottom">
+								<ActionIcon
+									onClick={() => copyToClipboard()}
+									variant="secondary"
+								>
+									<IconCopy />
+								</ActionIcon>
+							</Tooltip>
 							<Link href={`https://www.google.com/maps/@${latitude},${longitude}`} target="_blank">
 								<Tooltip label="Abrir no Google Maps" position="bottom">
 									<ActionIcon
@@ -112,16 +110,14 @@ export function Coords({ latitude, longitude, municipality }: { latitude: number
 							</Button>
 						</div>
 						<div className={styles.subSection}>
-							<Link href={`https://www.google.com/maps/@${latitude},${longitude}`} target="_blank">
-								<Tooltip label="Copiar Coordenadas" position="bottom">
-									<ActionIcon
-										onClick={() => copyToClipboard()}
-										variant="secondary"
-									>
-										<IconCopy />
-									</ActionIcon>
-								</Tooltip>
-							</Link>
+							<Tooltip label="Copiar Coordenadas" position="bottom">
+								<ActionIcon
+									onClick={() => copyToClipboard()}
+									variant="secondary"
+								>
+									<IconCopy />
+								</ActionIcon>
+							</Tooltip>
 							<Link href={`https://www.google.com/maps/@${latitude},${longitude}`} target="_blank">
 								<Tooltip label="Abrir no Google Maps" position="bottom">
 									<ActionIcon

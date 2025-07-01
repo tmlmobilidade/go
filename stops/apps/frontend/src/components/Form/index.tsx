@@ -6,7 +6,7 @@ import { Routes } from '@/lib/routes';
 import { Modal } from '@mantine/core';
 import { Pane, useDisclosure } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Buttons } from './Buttons';
 import { Confirmation } from './Confirmation';
@@ -30,11 +30,22 @@ export function Form() {
 	const [opened] = useDisclosure(true);
 	const { actions: { getStopById } } = useStopsContext();
 	const router = useRouter();
+	const [municipality, setMunicipality] = useState(null);
 
 	const [phase, setPhase] = useState<Phase>(Phase.LOCATION);
 	const { actions, data } = useStopsDetailContext();
-	console.log('lat', data.form.getValues().latitude);
-	console.log('lon', data.form.getValues().longitude);
+	// console.log('lat', data.form.getValues().latitude);
+	// console.log('lon', data.form.getValues().longitude);
+
+	useEffect(() => {
+		fetch('/data/municipalities.json').then(res => res.json()).then((municipalities) => {
+			for (const municipalityData of municipalities.features) {
+				if (municipalityData.id === data.form.getValues().municipality_id) {
+					setMunicipality(municipalityData.properties.name);
+				}
+			}
+		});
+	}, [data]);
 
 	//
 	// B. Render components
@@ -45,7 +56,7 @@ export function Form() {
 				<Pane>
 					<div className={styles.container}>
 						<Labels phase={phase} />
-						{phase === Phase.LOCATION && <Location data={data} getStopById={getStopById} />}
+						{phase === Phase.LOCATION && <Location data={data} getStopById={getStopById} municipality={municipality} />}
 						{phase === Phase.IDENTIFICATION && <Identification data={data} />}
 						{phase === Phase.CONFIRMATION && <Confirmation data={data} />}
 						<Buttons actions={actions} data={data} phase={phase} setPhase={setPhase} />

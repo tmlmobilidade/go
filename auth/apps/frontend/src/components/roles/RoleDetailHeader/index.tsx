@@ -2,10 +2,9 @@
 
 /* * */
 
-import BackButton from '@/components/common/BackButton';
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { Badge, Button, Spacer } from '@tmlmobilidade/ui';
+import { BackButton, Badge, Button, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 

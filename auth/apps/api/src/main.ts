@@ -1,40 +1,38 @@
 /* * */
 
-import FastifyService from '@/services/fastify.service.js';
-import cookie from '@fastify/cookie';
-import cors from '@fastify/cors';
-import { FastifyServerOptions } from 'fastify';
+import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
+import { getAppConfig } from '@tmlmobilidade/lib';
 
 /* * */
 
-const options: FastifyServerOptions = {
-	ignoreTrailingSlash: true,
-	logger: {
-		level: 'debug',
-		transport: {
-			options: {
-				colorize: true,
+const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
+
+/* * */
+
+(async function () {
+	//
+
+	const options: FastifyServiceOptions = {
+		bodyLimit: MAX_BODY_SIZE,
+		ignoreTrailingSlash: true,
+		logger: {
+			level: 'debug',
+			transport: {
+				options: {
+					colorize: true,
+				},
+				target: 'pino-pretty',
 			},
-			target: 'pino-pretty',
 		},
-	},
-};
+		origin: getAppConfig('auth', 'cookie_domain'),
+		port: getAppConfig('auth', 'api_port'),
+	};
 
-async function main() {
 	// Start Fastify server
+
 	const fastifyService = FastifyService.getInstance(options);
-	await fastifyService.server.register(cookie);
-	const origin
-		= process.env.NODE_ENV === 'development'
-			? /^http:\/\/localhost:\d{1,5}$/
-			: new RegExp(`https://.*\\.${process.env.COOKIE_DOMAIN}$`);
 
-	await fastifyService.server.register(cors, {
-		credentials: true,
-		methods: ['GET', 'PUT', 'POST', 'DELETE'],
-		origin,
-	});
 	await fastifyService.start();
-}
 
-main();
+	//
+})();

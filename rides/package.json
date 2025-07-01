@@ -9,7 +9,8 @@
 		"dev:api": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-rides-api",
 		"dev:frontend": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-rides-frontend",
 		"lint": "turbo lint",
-		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
+		"start": "turbo start"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",

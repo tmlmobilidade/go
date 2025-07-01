@@ -43,6 +43,7 @@ export function StopAdminInformation() {
 						maxLength={255}
 						placeholder="Bairro das Maçãs"
 						{...data.form.getInputProps('locality_id')}
+						disabled
 					/>
 				</Grid>
 
