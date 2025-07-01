@@ -3,8 +3,8 @@
 // import { Background1 } from '@/components/Background1';
 // import { Background2 } from '@/components/Background2';
 // import { Background3 } from '@/components/Background3';
-import { Background4 } from '@/components/Background4';
-import { VerificationForm } from '@/components/VerificationForm';
+import { Background4 } from '@/components/login/Background4';
+import { VerificationForm } from '@/components/login/VerificationForm';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 

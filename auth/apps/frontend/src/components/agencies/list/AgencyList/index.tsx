@@ -28,15 +28,13 @@ export function AgencyList() {
 	if (flags.loading) {
 		return <Loader />;
 	}
-	else if (flags.error) {
+
+	if (flags.error) {
 		return <div>Error: {flags.error.message}</div>;
 	}
 
 	return (
-		<Pane header={[
-			<AgencyListHeader />,
-		]}
-		>
+		<Pane header={[<AgencyListHeader />]}>
 			{data.filtered.map(agency => (
 				<div key={agency._id} className={styles.root} onClick={() => router.push(Routes.AGENCY_DETAIL(agency._id))}>
 					<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">

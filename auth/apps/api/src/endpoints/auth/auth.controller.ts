@@ -1,10 +1,10 @@
 /* * */
 
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
-import { FastifyReply, FastifyRequest } from 'fastify';
 
 /* * */
 

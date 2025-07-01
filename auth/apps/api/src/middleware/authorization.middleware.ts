@@ -1,7 +1,11 @@
+/* * */
+
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { Permission } from '@tmlmobilidade/types';
-import { FastifyReply, FastifyRequest } from 'fastify';
+
+/* * */
 
 declare module 'fastify' {
 	export interface FastifyRequest {
@@ -9,14 +13,10 @@ declare module 'fastify' {
 	}
 }
 
-export default function authorizationMiddleware(
-	scope?: string,
-	action?: string,
-) {
-	return async (
-		request: FastifyRequest,
-		reply: FastifyReply,
-	): Promise<void> => {
+/* * */
+
+export default function authorizationMiddleware(scope?: string, action?: string) {
+	return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
 		const token = request.cookies.session_token;
 
 		if (!token) {

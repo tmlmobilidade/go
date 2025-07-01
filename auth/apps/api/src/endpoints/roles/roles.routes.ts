@@ -2,9 +2,8 @@
 
 import { RolesController } from '@/endpoints/roles/roles.controller.js';
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
-import FastifyService from '@/services/fastify.service.js';
+import { FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
-import { FastifyInstance } from 'fastify';
 
 /* * */
 
@@ -12,7 +11,7 @@ const NAMESPACE = '/roles';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
