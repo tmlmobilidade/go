@@ -52,6 +52,7 @@ async function processValidation(message: ValidationMessage) {
 		});
 
 		logger.success('Validation Finished Successfully');
+		logger.divider();
 	}
 	catch (error) {
 		logger.error('Error processing validation:', error);
