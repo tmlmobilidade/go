@@ -1,6 +1,7 @@
 /* * */
 
-import { type ExtendedFastifyServiceOptions, FastifyService } from '@tmlmobilidade/connectors';
+import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
+import { getAppConfig } from '@tmlmobilidade/lib';
 
 /* * */
 
@@ -9,12 +10,7 @@ const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
 async function main() {
 	//
 
-	const origin
-		= process.env.NODE_ENV === 'development'
-			? '*'
-			: `https://*.${process.env.COOKIE_DOMAIN}`;
-
-	const options: ExtendedFastifyServiceOptions = {
+	const options: FastifyServiceOptions = {
 		bodyLimit: MAX_BODY_SIZE,
 		ignoreTrailingSlash: true,
 		logger: {
@@ -26,10 +22,12 @@ async function main() {
 				target: 'pino-pretty',
 			},
 		},
-		origin: origin,
+		origin: getAppConfig('auth', 'cookie_domain'),
+		port: getAppConfig('auth', 'api_port'),
 	};
 
 	// Start Fastify server
+
 	const fastifyService = FastifyService.getInstance(options);
 
 	await fastifyService.start();

@@ -1,11 +1,9 @@
 /* * */
 
+import { AgenciesController } from '@/endpoints/agencies/agencies.controller.js';
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
-import { FastifyInstance } from 'fastify';
-
-import { AgenciesController } from './agencies.controller.js';
 
 /* * */
 
@@ -14,7 +12,7 @@ const permission = Permissions.agencies;
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {

@@ -2,7 +2,6 @@
 
 import { AuthController } from '@/endpoints/auth/auth.controller.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
-import { FastifyInstance } from 'fastify';
 
 /* * */
 
@@ -10,7 +9,7 @@ const NAMESPACE = '/';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 const controller = new AuthController();
 
 server.register(

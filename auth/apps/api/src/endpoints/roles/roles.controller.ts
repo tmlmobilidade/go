@@ -1,9 +1,9 @@
 /* * */
 
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { roles } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { CreateRoleDto, UpdateRoleDto } from '@tmlmobilidade/types';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { type CreateRoleDto, type UpdateRoleDto } from '@tmlmobilidade/types';
 
 /* * */
 
