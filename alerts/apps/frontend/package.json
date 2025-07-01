@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.34.0",
 		"@tmlmobilidade/lib": "20250701.1620.23",
+		"@tmlmobilidade/tsconfig": "^20250701.1620.23",
 		"@tmlmobilidade/types": "20250701.1620.23",
 		"@tmlmobilidade/ui": "20250701.1620.23",
 		"@tmlmobilidade/utils": "20250701.1620.23",
