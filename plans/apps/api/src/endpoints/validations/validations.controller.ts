@@ -1,10 +1,12 @@
+/* * */
+
 import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
-import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Permission, ProcessingStatus, Validation, ValidationPermission } from '@tmlmobilidade/types';
+import { type CreateValidationDto, type GtfsAgency, type GtfsFeedInfo, type Permission, type ProcessingStatus, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
 import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
-import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * This is an example controller that is using the Validations interface.

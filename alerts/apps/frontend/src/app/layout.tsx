@@ -5,7 +5,6 @@ import '@tmlmobilidade/ui/styles';
 /* * */
 
 import { DataProviders } from '@/components/providers/data-providers';
-import { Routes } from '@/lib/routes';
 import { getAppConfig } from '@tmlmobilidade/lib';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
@@ -27,7 +26,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	// B. Handle actions
 
 	if (!sessionToken) {
-		redirect(`${getAppConfig('auth', 'frontend_url')}/login?redirectTo=${encodeURI(Routes.URL)}`, RedirectType.replace);
+		const authUrl = getAppConfig('auth', 'frontend_url');
+		const appUrl = getAppConfig('alerts', 'frontend_url');
+		redirect(`${authUrl}/login?redirect=${encodeURI(appUrl)}`, RedirectType.replace);
 	}
 
 	//

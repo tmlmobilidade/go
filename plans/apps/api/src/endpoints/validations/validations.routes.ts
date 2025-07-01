@@ -5,11 +5,10 @@ import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
 import { ValidationPermission } from '@tmlmobilidade/types';
-import { FastifyInstance } from 'fastify';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 const namespace = '/validations';
 
 /* * */
