@@ -159,7 +159,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		},
 	);
 	const [filterPublishDateEnd, setFilterPublishDateEnd] = useQueryState<null | string>(
-		'Data-Start',
+		'Data-End',
 		{
 			defaultValue: null,
 			parse: value => (typeof value === 'string' ? value : null),
