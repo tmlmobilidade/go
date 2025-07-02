@@ -15,7 +15,8 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { DateTime } from 'luxon';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { useQueryState } from 'nuqs';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -84,12 +85,55 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 
-	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status.options);
-	const [filterCause, setFilterCause] = useState<string[]>(AlertSchema.shape.cause.options);
-	const [filterEffect, setFilterEffect] = useState<string[]>(AlertSchema.shape.effect.options);
-	const [filterMunicipality, setFilterMunicipality] = useState<string[]>([]);
-	const [filterLine, setFilterLine] = useState<string[]>([]);
-	const [filterStop, setFilterStop] = useState<string[]>([]);
+	const [paramSearch, setParamSearch] = useQueryState('query');
+	const [filterPublishStatus, setFilterPublishStatus] = useQueryState<string[]>(
+		'publishStatus',
+		{
+			defaultValue: AlertSchema.shape.publish_status.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterCause, setFilterCause] = useQueryState<string[]>(
+		'Cause',
+		{
+			defaultValue: AlertSchema.shape.cause.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterEffect, setFilterEffect] = useQueryState<string[]>(
+		'Effect',
+		{
+			defaultValue: AlertSchema.shape.effect.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterMunicipality, setFilterMunicipality] = useQueryState<string[]>(
+		'Municipality',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterLine, setFilterLine] = useQueryState<string[]>(
+		'Line',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterStop, setFilterStop] = useQueryState<string[]>(
+		'Stop',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
 	const [filterValidityDateStart, setFilterValidityDateStart] = useState<null | string>(null);
 	const [filterValidityDateEnd, setFilterValidityDateEnd] = useState<null | string>(null);
 	const [filterPublishDateStart, setFilterPublishDateStart] = useState<null | string>(null);
@@ -257,6 +301,18 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		customSearch,
 		debounce: 500,
 	});
+
+	// Sets URL Params
+	useEffect(() => {
+		setParamSearch(searchQuery);
+	}, [searchQuery]);
+
+	// Sets initial params in useQuerySearchHook
+	useEffect(() => {
+		if (!paramSearch) return;
+
+		setSearchQuery(paramSearch);
+	}, []);
 
 	const filteredAlerts = useMemo(() => {
 		// Quick exits if there's no data

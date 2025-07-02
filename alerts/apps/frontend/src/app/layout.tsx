@@ -9,6 +9,7 @@ import { Routes } from '@/lib/routes';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+import { NuqsAdapter } from 'nuqs/adapters/next';
 import { PropsWithChildren } from 'react';
 
 /* * */
@@ -37,9 +38,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 			<body>
 				<AppProvider>
 					<DataProviders>
-						<AppWrapper>
-							{children}
-						</AppWrapper>
+						<NuqsAdapter>
+							<AppWrapper>
+								{children}
+							</AppWrapper>
+						</NuqsAdapter>
 					</DataProviders>
 				</AppProvider>
 			</body>
