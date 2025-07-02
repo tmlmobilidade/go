@@ -29,7 +29,6 @@ export function AlertsListFilters() {
 }
 
 /* * */
-
 function StateFilter() {
 	const { actions, filters } = useAlertListContext();
 	const hasChanged = AlertSchema.shape.publish_status.options.length !== filters.publish_status.length;
@@ -42,6 +41,23 @@ function StateFilter() {
 				</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
+
+				<Menu.Item closeMenuOnClick={false} p="sm">
+					<div
+						className={styles.filterItem}
+						onClick={actions.toggleAllPublishStatus}
+					>
+						<Checkbox
+							checked={filters.publish_status.length === AlertSchema.shape.publish_status.options.length}
+							indeterminate={
+								filters.publish_status.length > 0
+								&& filters.publish_status.length < AlertSchema.shape.publish_status.options.length
+							}
+						/>
+						<Text className={styles.filterTitle} size="sm" weight="medium">Selecionar tudo</Text>
+					</div>
+				</Menu.Item>
+
 				{AlertSchema.shape.publish_status.options.map(status => (
 					<Menu.Item key={status} closeMenuOnClick={false} p="sm">
 						<div className={styles.filterItem} onClick={() => actions.togglePublishStatus(status)}>
@@ -69,6 +85,21 @@ function CauseFilter() {
 				</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
+				<Menu.Item closeMenuOnClick={false} p="sm">
+					<div
+						className={styles.filterItem}
+						onClick={actions.toggleAllCause}
+					>
+						<Checkbox
+							checked={filters.cause.length === AlertSchema.shape.cause.options.length}
+							indeterminate={
+								filters.cause.length > 0
+								&& filters.cause.length < AlertSchema.shape.cause.options.length
+							}
+						/>
+						<Text className={styles.filterTitle} size="sm" weight="medium">Selecionar tudo</Text>
+					</div>
+				</Menu.Item>
 				{AlertSchema.shape.cause.options.map(cause => (
 					<Menu.Item key={cause} closeMenuOnClick={false} p="sm">
 						<div className={styles.filterItem} onClick={() => actions.toggleCause(cause)}>
@@ -83,7 +114,6 @@ function CauseFilter() {
 }
 
 /* * */
-
 function EffectFilter() {
 	const { actions, filters } = useAlertListContext();
 	const hasChanged = AlertSchema.shape.effect.options.length !== filters.effect.length;
@@ -96,6 +126,22 @@ function EffectFilter() {
 				</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
+				{/* Add this new Menu.Item as the first item */}
+				<Menu.Item closeMenuOnClick={false} p="sm">
+					<div
+						className={styles.filterItem}
+						onClick={actions.toggleAllEffect}
+					>
+						<Checkbox
+							checked={filters.effect.length === AlertSchema.shape.effect.options.length}
+							indeterminate={
+								filters.effect.length > 0
+								&& filters.effect.length < AlertSchema.shape.effect.options.length
+							}
+						/>
+						<Text className={styles.filterTitle} size="sm" weight="medium">Selecionar tudo</Text>
+					</div>
+				</Menu.Item>
 				{AlertSchema.shape.effect.options.map(effect => (
 					<div key={effect} onClick={() => actions.toggleEffect(effect)}>
 						<Menu.Item closeMenuOnClick={false} p="sm">
@@ -132,6 +178,21 @@ function MunicipalityFilter() {
 				</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
+				<Menu.Item closeMenuOnClick={false} p="sm">
+					<div
+						className={styles.filterItem}
+						onClick={actions.toggleAllMunicipality}
+					>
+						<Checkbox
+							checked={filters.municipality.length === filters.municipalityOptions.length}
+							indeterminate={
+								filters.municipality.length > 0
+								&& filters.municipality.length < filters.municipalityOptions.length
+							}
+						/>
+						<Text className={styles.filterTitle} size="sm" weight="medium">Selecionar tudo</Text>
+					</div>
+				</Menu.Item>
 				{filters.municipalityOptions.map(municipality => (
 					<div key={municipality} onClick={() => actions.toggleMunicipality(municipality)}>
 						<Menu.Item closeMenuOnClick={false} p="sm">

@@ -28,6 +28,10 @@ interface AlertListContextState {
 		changeSearchQuery: (query: string) => void
 		changeValidityDateEnd: (date: null | string) => void
 		changeValidityDateStart: (date: null | string) => void
+		toggleAllCause: () => void
+		toggleAllEffect: () => void
+		toggleAllMunicipality: () => void
+		toggleAllPublishStatus: () => void
 		toggleCause: (cause: string) => void
 		toggleEffect: (effect: string) => void
 		toggleLine: (line: string) => void
@@ -315,6 +319,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 			const line = lineMap.get(line_id);
 			return line && line.name.includes(query);
 		});
+
 		// Search by id
 		const lineIdMatch = getAvailableLines(alert).some((line_id) => {
 			const line = lineMap.get(line_id);
@@ -513,6 +518,39 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		setFilterPublishDateEnd(date);
 	}
 
+	// to handle all selections for filters
+	function handleToggleAllPublishStatus() {
+		setFilterPublishStatus(prev =>
+			prev.length === AlertSchema.shape.publish_status.options.length
+				? []
+				: [...AlertSchema.shape.publish_status.options],
+		);
+	}
+
+	function handleToggleAllCause() {
+		setFilterCause(prev =>
+			prev.length === AlertSchema.shape.cause.options.length
+				? []
+				: [...AlertSchema.shape.cause.options],
+		);
+	}
+
+	function handleToggleAllEffect() {
+		setFilterEffect(prev =>
+			prev.length === AlertSchema.shape.effect.options.length
+				? []
+				: [...AlertSchema.shape.effect.options],
+		);
+	}
+
+	function handleToggleAllMunicipality() {
+		setFilterMunicipality(prev =>
+			prev.length === municipalityOptions.length
+				? []
+				: [...municipalityOptions],
+		);
+	}
+
 	//
 	// E. Define context value
 
@@ -523,6 +561,10 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 			changeSearchQuery: setSearchQuery,
 			changeValidityDateEnd: handleChangeValidityDateEnd,
 			changeValidityDateStart: handleChangeValidityDateStart,
+			toggleAllCause: handleToggleAllCause,
+			toggleAllEffect: handleToggleAllEffect,
+			toggleAllMunicipality: handleToggleAllMunicipality,
+			toggleAllPublishStatus: handleToggleAllPublishStatus,
 			toggleCause: handleToggleCause,
 			toggleEffect: handleToggleEffect,
 			toggleLine: handleToggleLine,
