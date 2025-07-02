@@ -337,11 +337,6 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	}, [searchQuery]);
 
 	// Sets initial params in useQuerySearchHook
-	useEffect(() => {
-		if (!paramSearch) return;
-
-		setSearchQuery(paramSearch);
-	}, []);
 
 	const filteredAlerts = useMemo(() => {
 		// Quick exits if there's no data
