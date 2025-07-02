@@ -16,7 +16,7 @@ import { useSearchQuery } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { DateTime } from 'luxon';
 import { useQueryState } from 'nuqs';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -134,10 +134,38 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
 		},
 	);
-	const [filterValidityDateStart, setFilterValidityDateStart] = useState<null | string>(null);
-	const [filterValidityDateEnd, setFilterValidityDateEnd] = useState<null | string>(null);
-	const [filterPublishDateStart, setFilterPublishDateStart] = useState<null | string>(null);
-	const [filterPublishDateEnd, setFilterPublishDateEnd] = useState<null | string>(null);
+	const [filterValidityDateStart, setFilterValidityDateStart] = useQueryState<null | string>(
+		'Validity-Data-Start',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
+	const [filterValidityDateEnd, setFilterValidityDateEnd] = useQueryState<null | string>(
+		'Validity-Data-End',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
+	const [filterPublishDateStart, setFilterPublishDateStart] = useQueryState<null | string>(
+		'Data-Start',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
+	const [filterPublishDateEnd, setFilterPublishDateEnd] = useQueryState<null | string>(
+		'Data-Start',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
 
 	//
 	// B. Fetch data
@@ -304,7 +332,8 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 
 	// Sets URL Params
 	useEffect(() => {
-		setParamSearch(searchQuery);
+		if (paramSearch != searchQuery)
+			setParamSearch(searchQuery);
 	}, [searchQuery]);
 
 	// Sets initial params in useQuerySearchHook
