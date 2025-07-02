@@ -86,12 +86,54 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	const stopsContext = useStopsContext();
 
 	const [paramSearch, setParamSearch] = useQueryState('query');
-	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status.options);
-	const [filterCause, setFilterCause] = useState<string[]>(AlertSchema.shape.cause.options);
-	const [filterEffect, setFilterEffect] = useState<string[]>(AlertSchema.shape.effect.options);
-	const [filterMunicipality, setFilterMunicipality] = useState<string[]>([]);
-	const [filterLine, setFilterLine] = useState<string[]>([]);
-	const [filterStop, setFilterStop] = useState<string[]>([]);
+	const [filterPublishStatus, setFilterPublishStatus] = useQueryState<string[]>(
+		'publishStatus',
+		{
+			defaultValue: AlertSchema.shape.publish_status.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterCause, setFilterCause] = useQueryState<string[]>(
+		'Cause',
+		{
+			defaultValue: AlertSchema.shape.cause.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterEffect, setFilterEffect] = useQueryState<string[]>(
+		'Effect',
+		{
+			defaultValue: AlertSchema.shape.effect.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterMunicipality, setFilterMunicipality] = useQueryState<string[]>(
+		'Municipality',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterLine, setFilterLine] = useQueryState<string[]>(
+		'Line',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterStop, setFilterStop] = useQueryState<string[]>(
+		'Stop',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
 	const [filterValidityDateStart, setFilterValidityDateStart] = useState<null | string>(null);
 	const [filterValidityDateEnd, setFilterValidityDateEnd] = useState<null | string>(null);
 	const [filterPublishDateStart, setFilterPublishDateStart] = useState<null | string>(null);
