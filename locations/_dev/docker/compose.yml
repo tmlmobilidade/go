@@ -8,7 +8,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  localitiesdb:
+  locationsdb:
     image: mongo
     deploy:
       restart_policy:
@@ -22,52 +22,6 @@ services:
       - 37021:27017
     # volumes:
     #   - ./files.dump:/dump/db.dump
-    #   - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
-    environment:
-      - MONGO_INITDB_DATABASE=production
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  municipalitiesdb:
-    image: mongo
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    ports:
-      - 37022:27017
-    # volumes:
-    #   - ./alerts.dump:/dump/db.dump
-    #   - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
-    environment:
-      - MONGO_INITDB_DATABASE=production
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  parishesdb:
-    image: mongo
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    ports:
-      - 37023:27017
-    # volumes:
-    #   - ./alerts.dump:/dump/db.dump
     #   - ./local-setup.sh:/docker-entrypoint-initdb.d/setup.sh
     environment:
       - MONGO_INITDB_DATABASE=production

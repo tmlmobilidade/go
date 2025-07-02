@@ -33,12 +33,14 @@ export function Form() {
 	const { data } = useStopsDetailContext();
 
 	useEffect(() => {
-		fetch('/data/municipalities.json').then(res => res.json()).then((municipalities) => {
-			for (const municipalityData of municipalities.features) {
-				if (municipalityData.id === data.form.getValues().municipality_id) {
-					setMunicipality(municipalityData.properties.name);
-				}
-			}
+		// fetch('/data/municipalities.json').then(res => res.json()).then((municipalities) => {
+		fetch('/data/parishes.json').then(res => res.json()).then((municipalities) => {
+			console.log('Municipalities data loaded:', municipalities);
+			// for (const municipalityData of municipalities.features) {
+			// 	if (municipalityData.id === data.form.getValues().municipality_id) {
+			// 		setMunicipality(municipalityData.properties.name);
+			// 	}
+			// }
 		});
 	}, [data]);
 

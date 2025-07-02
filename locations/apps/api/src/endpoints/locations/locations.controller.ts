@@ -56,7 +56,7 @@ export class LocationsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await alerts.findMany({}, undefined, undefined, { created_at: -1 }));
+			reply.send(await locations.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
