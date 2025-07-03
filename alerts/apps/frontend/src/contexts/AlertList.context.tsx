@@ -373,7 +373,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		const allStops = filterStop.length === stopOptions.length;
 
 		// 4. Single-pass filter
-		return searchFilteredAlerts.filter((alert) => {
+		return searchFilteredAlerts.filter((alert: Alert) => {
 			// 4.1 Publish status
 			if (!allPublishStatuses && !publishStatusSet.has(alert.publish_status)) {
 				return false;
@@ -420,8 +420,8 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 
 			// 4.7 Publish date
 			if (fromPublishStart || fromPublishEnd) {
-				const alertPublishStart = DateTime.fromISO(alert.publish_start_date.toString()).toMillis();
-				const alertPublishEnd = DateTime.fromISO(alert.publish_end_date?.toString() || '').toMillis();
+				const alertPublishStart = alert.publish_start_date;
+				const alertPublishEnd = alert.publish_end_date;
 
 				// If both start and end are defined
 				if (fromPublishStart && fromPublishEnd) {
