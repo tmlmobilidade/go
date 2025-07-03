@@ -14,7 +14,6 @@ import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { DateTime } from 'luxon';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
