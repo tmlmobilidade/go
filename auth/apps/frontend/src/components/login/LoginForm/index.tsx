@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useLogin } from '@/components/LoginForm/use-login';
+import { useLogin } from '@/components/login/LoginForm/use-login';
 import { IconArrowRight } from '@tabler/icons-react';
 import { createEmail } from '@tmlmobilidade/types';
 import { Button, Label, PasswordInput, Section, Surface, TextInput, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';

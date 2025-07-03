@@ -1,1 +1,1 @@
-import './alerts/alerts.routes';
+import '@/endpoints/alerts/alerts.routes';

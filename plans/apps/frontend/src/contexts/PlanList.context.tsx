@@ -2,7 +2,6 @@
 
 /* * */
 
-import { Routes } from '@/lib/routes';
 import { toggleArray } from '@/lib/utils';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { OperationalDate, Plan } from '@tmlmobilidade/types';
@@ -53,13 +52,15 @@ export const PlanListContextProvider = ({ children }: { children: React.ReactNod
 
 	//
 	// A. Setup variables
+
 	const [filterValidFrom, setFilterValidFrom] = useState<null | OperationalDate>(null);
 	const [filterValidUntil, setFilterValidUntil] = useState<null | OperationalDate>(null);
 	const [filterAgencies, setFilterAgencies] = useState<string[]>(AVAILABLE_AGENCIES.map(agency => agency._id));
 
 	//
 	// B. Fetch data
-	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(Routes.API(Routes.PLAN_LIST), swrFetcher);
+
+	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', swrFetcher);
 
 	//
 	// C. Transform data

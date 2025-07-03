@@ -1,10 +1,14 @@
+/* * */
+
 import { fetchLines } from '@/utils/lines';
 import { parseServiceAlert } from '@/utils/service-alert-parser';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
-import { FastifyReply, FastifyRequest } from 'fastify';
+
+/* * */
 
 export class AlertsController {
 	static async create(request: FastifyRequest, reply: FastifyReply) {

@@ -30,7 +30,8 @@ export function PlanList() {
 	if (flags.isLoading) {
 		return <div>Loading...</div>;
 	}
-	else if (flags.error) {
+
+	if (flags.error) {
 		return <div>Error: {flags.error.message}</div>;
 	}
 

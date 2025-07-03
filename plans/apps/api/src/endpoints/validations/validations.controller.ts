@@ -1,10 +1,12 @@
+/* * */
+
 import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
-import { CreateValidationDto, GtfsAgency, GtfsFeedInfo, Permission, Validation, ValidationPermission } from '@tmlmobilidade/types';
+import { type CreateValidationDto, type GtfsAgency, type GtfsFeedInfo, type Permission, type ProcessingStatus, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
 import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
-import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * This is an example controller that is using the Validations interface.
@@ -44,7 +46,7 @@ export class ValidationsController {
 
 			// Convert form fields to Validation data
 			const ValidationData: CreateValidationDto = {
-				feeder_status: fields.feeder_status.value as 'error' | 'processing' | 'success' | 'waiting',
+				feeder_status: fields.feeder_status.value as ProcessingStatus,
 				file_id: '',
 				gtfs_agency: JSON.parse(fields.gtfs_agency.value as string) as GtfsAgency,
 				gtfs_feed_info: JSON.parse(fields.gtfs_feed_info.value as string) as GtfsFeedInfo,

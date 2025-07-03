@@ -16,15 +16,15 @@
 		"path": "^0.12.7"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250418.42.41",
+		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@fastify/multipart": "^9.0.3",
-		"@tmlmobilidade/tsconfig": "20250528.31.35",
+		"@tmlmobilidade/tsconfig": "20250701.1722.33",
 		"dotenv-cli": "8.0.0",
-		"prettier": "3.5.3",
-		"turbo": "2.5.3",
+		"prettier": "3.6.2",
+		"turbo": "2.5.4",
 		"typescript": "5.8.3"
 	},
-	"packageManager": "npm@11.4.1",
+	"packageManager": "npm@11.4.2",
 	"engines": {
 		"node": ">=18"
 	},

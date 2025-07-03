@@ -5,7 +5,7 @@
 import { UploadImage } from '@/components/common/UploadImage';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
-import { Collapsible, Section, TextArea, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -34,7 +34,7 @@ export function AlertDetailSectionTitle() {
 					withAsterisk
 					{...alertDetailContext.data.form.getInputProps('title')}
 				/>
-				<TextArea
+				<Textarea
 					description="Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação."
 					label="Descrição"
 					maxRows={10}

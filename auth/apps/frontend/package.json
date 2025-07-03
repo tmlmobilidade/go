@@ -1,6 +1,6 @@
 {
 	"name": "@tmlmobilidade/sae-auth-frontend",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 		"build": "next build",
@@ -11,10 +11,9 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.34.0",
-		"@tmlmobilidade/lib": "20250627.1437.14",
-		"@tmlmobilidade/types": "20250627.1437.14",
-		"@tmlmobilidade/ui": "20250627.1437.14",
-		"@tmlmobilidade/utils": "20250627.1437.14",
+		"@tmlmobilidade/lib": "20250701.1813.45",
+		"@tmlmobilidade/ui": "20250701.1813.45",
+		"@tmlmobilidade/utils": "20250701.1813.45",
 		"bcryptjs": "3.0.2",
 		"clsx": "2.1.1",
 		"next": "15.3.4",
@@ -24,9 +23,10 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@types/node": "24",
-		"@types/react": "19",
-		"@types/react-dom": "19",
-		"typescript": "5"
+		"@tmlmobilidade/types": "20250701.1813.45",
+		"@types/node": "24.0.8",
+		"@types/react": "19.1.8",
+		"@types/react-dom": "19.1.6",
+		"typescript": "5.8.3"
 	}
 }

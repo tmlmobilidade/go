@@ -1,5 +1,5 @@
 import { Routes } from '@/lib/routes';
-import { Plan, Validation } from '@tmlmobilidade/types';
+import { Plan, ProcessingStatus, Validation } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -78,7 +78,7 @@ export function useCreatePlan(validations: Validation[], validation_id?: string)
 			},
 			data: {
 				selectedValidation,
-				validations: validations.filter(v => v.feeder_status === 'success'),
+				validations: validations.filter(v => v.feeder_status === ProcessingStatus.Complete),
 			},
 			flags: {
 				canCreatePlan: selectedValidation !== null,
