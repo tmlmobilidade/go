@@ -14,8 +14,8 @@ import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearchQuery } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { DateTime } from 'luxon';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { useQueryState } from 'nuqs';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -27,6 +27,10 @@ interface AlertListContextState {
 		changeSearchQuery: (query: string) => void
 		changeValidityDateEnd: (date: null | string) => void
 		changeValidityDateStart: (date: null | string) => void
+		toggleAllCause: () => void
+		toggleAllEffect: () => void
+		toggleAllMunicipality: () => void
+		toggleAllPublishStatus: () => void
 		toggleCause: (cause: string) => void
 		toggleEffect: (effect: string) => void
 		toggleLine: (line: string) => void
@@ -84,16 +88,87 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 
-	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status.options);
-	const [filterCause, setFilterCause] = useState<string[]>(AlertSchema.shape.cause.options);
-	const [filterEffect, setFilterEffect] = useState<string[]>(AlertSchema.shape.effect.options);
-	const [filterMunicipality, setFilterMunicipality] = useState<string[]>([]);
-	const [filterLine, setFilterLine] = useState<string[]>([]);
-	const [filterStop, setFilterStop] = useState<string[]>([]);
-	const [filterValidityDateStart, setFilterValidityDateStart] = useState<null | string>(null);
-	const [filterValidityDateEnd, setFilterValidityDateEnd] = useState<null | string>(null);
-	const [filterPublishDateStart, setFilterPublishDateStart] = useState<null | string>(null);
-	const [filterPublishDateEnd, setFilterPublishDateEnd] = useState<null | string>(null);
+	const [paramSearch, setParamSearch] = useQueryState('query');
+	const [filterPublishStatus, setFilterPublishStatus] = useQueryState<string[]>(
+		'publishStatus',
+		{
+			defaultValue: AlertSchema.shape.publish_status.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterCause, setFilterCause] = useQueryState<string[]>(
+		'Cause',
+		{
+			defaultValue: AlertSchema.shape.cause.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterEffect, setFilterEffect] = useQueryState<string[]>(
+		'Effect',
+		{
+			defaultValue: AlertSchema.shape.effect.options,
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterMunicipality, setFilterMunicipality] = useQueryState<string[]>(
+		'Municipality',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterLine, setFilterLine] = useQueryState<string[]>(
+		'Line',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterStop, setFilterStop] = useQueryState<string[]>(
+		'Stop',
+		{
+			defaultValue: [''],
+			parse: value => (typeof value === 'string' ? value.split(',').filter(Boolean) : []),
+			serialize: value => (Array.isArray(value) ? value.join(',') : ''),
+		},
+	);
+	const [filterValidityDateStart, setFilterValidityDateStart] = useQueryState<null | string>(
+		'Validity-Data-Start',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
+	const [filterValidityDateEnd, setFilterValidityDateEnd] = useQueryState<null | string>(
+		'Validity-Data-End',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
+	const [filterPublishDateStart, setFilterPublishDateStart] = useQueryState<null | string>(
+		'Data-Start',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
+	const [filterPublishDateEnd, setFilterPublishDateEnd] = useQueryState<null | string>(
+		'Data-End',
+		{
+			defaultValue: null,
+			parse: value => (typeof value === 'string' ? value : null),
+			serialize: value => (value === '' ? value : null),
+		},
+	);
 
 	//
 	// B. Fetch data
@@ -243,6 +318,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 			const line = lineMap.get(line_id);
 			return line && line.name.includes(query);
 		});
+
 		// Search by id
 		const lineIdMatch = getAvailableLines(alert).some((line_id) => {
 			const line = lineMap.get(line_id);
@@ -257,6 +333,14 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		customSearch,
 		debounce: 500,
 	});
+
+	// Sets URL Params
+	useEffect(() => {
+		if (paramSearch != searchQuery)
+			setParamSearch(searchQuery);
+	}, [searchQuery]);
+
+	// Sets initial params in useQuerySearchHook
 
 	const filteredAlerts = useMemo(() => {
 		// Quick exits if there's no data
@@ -288,7 +372,7 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		const allStops = filterStop.length === stopOptions.length;
 
 		// 4. Single-pass filter
-		return searchFilteredAlerts.filter((alert) => {
+		return searchFilteredAlerts.filter((alert: Alert) => {
 			// 4.1 Publish status
 			if (!allPublishStatuses && !publishStatusSet.has(alert.publish_status)) {
 				return false;
@@ -335,8 +419,8 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 
 			// 4.7 Publish date
 			if (fromPublishStart || fromPublishEnd) {
-				const alertPublishStart = DateTime.fromISO(alert.publish_start_date.toString()).toMillis();
-				const alertPublishEnd = DateTime.fromISO(alert.publish_end_date?.toString() || '').toMillis();
+				const alertPublishStart = alert.publish_start_date;
+				const alertPublishEnd = alert.publish_end_date;
 
 				// If both start and end are defined
 				if (fromPublishStart && fromPublishEnd) {
@@ -354,8 +438,8 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 
 			// 4.8 Validity date
 			if (fromValidityStart || fromValidityEnd) {
-				const alertValidityStart = DateTime.fromISO(alert.active_period_start_date.toString()).toMillis();
-				const alertValidityEnd = DateTime.fromISO(alert.active_period_end_date?.toString() || '').toMillis();
+				const alertValidityStart = alert.active_period_start_date;
+				const alertValidityEnd = alert.active_period_end_date;
 
 				// If both start and end are defined
 				if (fromValidityStart && fromValidityEnd) {
@@ -433,6 +517,39 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 		setFilterPublishDateEnd(date);
 	}
 
+	// to handle all selections for filters
+	function handleToggleAllPublishStatus() {
+		setFilterPublishStatus(prev =>
+			prev.length === AlertSchema.shape.publish_status.options.length
+				? []
+				: [...AlertSchema.shape.publish_status.options],
+		);
+	}
+
+	function handleToggleAllCause() {
+		setFilterCause(prev =>
+			prev.length === AlertSchema.shape.cause.options.length
+				? []
+				: [...AlertSchema.shape.cause.options],
+		);
+	}
+
+	function handleToggleAllEffect() {
+		setFilterEffect(prev =>
+			prev.length === AlertSchema.shape.effect.options.length
+				? []
+				: [...AlertSchema.shape.effect.options],
+		);
+	}
+
+	function handleToggleAllMunicipality() {
+		setFilterMunicipality(prev =>
+			prev.length === municipalityOptions.length
+				? []
+				: [...municipalityOptions],
+		);
+	}
+
 	//
 	// E. Define context value
 
@@ -443,6 +560,10 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 			changeSearchQuery: setSearchQuery,
 			changeValidityDateEnd: handleChangeValidityDateEnd,
 			changeValidityDateStart: handleChangeValidityDateStart,
+			toggleAllCause: handleToggleAllCause,
+			toggleAllEffect: handleToggleAllEffect,
+			toggleAllMunicipality: handleToggleAllMunicipality,
+			toggleAllPublishStatus: handleToggleAllPublishStatus,
 			toggleCause: handleToggleCause,
 			toggleEffect: handleToggleEffect,
 			toggleLine: handleToggleLine,

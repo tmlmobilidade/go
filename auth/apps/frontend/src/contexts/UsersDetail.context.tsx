@@ -7,6 +7,7 @@ import { Routes } from '@/lib/routes';
 import { CreateUserDto, CreateUserSchema, UpdateUserSchema, User } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject } from '@tmlmobilidade/utils';
+import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -21,6 +22,7 @@ export enum UsersDetailMode {
 interface UsersDetailContextState {
 	actions: {
 		deleteUser: () => void
+		handleChangePassword: (scope: string) => void
 		handlePermissionResourceToggle: (scope: string, action: string, resource: Record<string, unknown>) => void
 		handlePermissionToggle: (scope: string, action: string) => void
 		saveUser: () => void
@@ -196,12 +198,18 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 		form.setFieldValue('permissions', currentPermissions);
 	};
 
+	function handleChangePassword(value: string) {
+		const password_hash = bcrypt.hashSync(value);
+		form.setFieldValue('password_hash', password_hash);
+	}
+
 	//
 	// E. Define context value
 
 	const contextValue: UsersDetailContextState = useMemo(() => ({
 		actions: {
 			deleteUser: handleDeleteUser,
+			handleChangePassword,
 			handlePermissionResourceToggle,
 			handlePermissionToggle,
 			saveUser: handleSaveUser,
