@@ -439,8 +439,8 @@ export const AlertListContextProvider = ({ children }: { children: React.ReactNo
 
 			// 4.8 Validity date
 			if (fromValidityStart || fromValidityEnd) {
-				const alertValidityStart = DateTime.fromISO(alert.active_period_start_date.toString()).toMillis();
-				const alertValidityEnd = DateTime.fromISO(alert.active_period_end_date?.toString() || '').toMillis();
+				const alertValidityStart = alert.active_period_start_date;
+				const alertValidityEnd = alert.active_period_end_date;
 
 				// If both start and end are defined
 				if (fromValidityStart && fromValidityEnd) {
