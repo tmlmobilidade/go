@@ -93,6 +93,18 @@ async function main() {
 	logger.divider('🚀 GTFS Validator service started');
 }
 
-main();
+(async function startMainLoop() {
+	while (true) {
+		try {
+			await main();
+			break; // Exit loop if main resolves without error
+		}
+		catch (err) {
+			console.error('Fatal error in main():', err);
+			console.error('Restarting main() in 5 seconds...');
+			await new Promise(res => setTimeout(res, 5000));
+		}
+	}
+})();
 
 /* * */
