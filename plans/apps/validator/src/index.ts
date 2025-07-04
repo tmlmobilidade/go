@@ -33,6 +33,7 @@ async function processValidation(message: ValidationMessage) {
 		logger.info(`Getting file from MongoDB: ${file._id}`);
 
 		// 3. Download and write file to temp directory for validation
+		logger.info(`Downloading file from ${file.url}`);
 		const fileBuffer = await fetch(file.url).then(res => res.arrayBuffer());
 		const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
 		await writeFile(tempFilePath, Buffer.from(fileBuffer));
