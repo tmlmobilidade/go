@@ -33,7 +33,7 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 
 	const lastWaypoint = sortedWaypoints[sortedWaypoints.length - 1];
 
-	const lastStopGeofence = getGeofenceOnPosition([lastWaypoint.stop_lon, lastWaypoint.stop_lat]);
+	const lastStopGeofence = getGeofenceOnPosition([lastWaypoint.stop_lon, lastWaypoint.stop_lat], 30);
 
 	//
 	// Sort vehicle events by vehicle timestamp
