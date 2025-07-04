@@ -31,46 +31,25 @@ export function detectEndEvent(hashedTripWaypointsData: HashedTripWaypoint[], ve
 		return null;
 	}
 
-	const lastStopGeofence = getGeofenceOnPosition([Number(sortedWaypoints[sortedWaypoints.length - 1].stop_lon), Number(sortedWaypoints[sortedWaypoints.length - 1].stop_lat)]);
-	const lastBeforeLastStopGeofence = getGeofenceOnPosition([Number(sortedWaypoints[sortedWaypoints.length - 2].stop_lon), Number(sortedWaypoints[sortedWaypoints.length - 2].stop_lat)]);
+	const lastWaypoint = sortedWaypoints[sortedWaypoints.length - 1];
+
+	const lastStopGeofence = getGeofenceOnPosition([lastWaypoint.stop_lon, lastWaypoint.stop_lat], 30);
 
 	//
 	// Sort vehicle events by vehicle timestamp
 
-	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at', 'desc');
+	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at', 'asc');
 
 	//
-	// Detect the last event that is inside the geofence of the last before last stop.
-
-	let lastEventInsideLastBeforeLastStop: null | VehicleEvent = null;
-
-	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfLastBeforeLastStop = isPointInPolygon([vehicleEventData.longitude, vehicleEventData.latitude], lastBeforeLastStopGeofence);
-		if (vehicleEventIsInsideGeofenceOfLastBeforeLastStop) {
-			lastEventInsideLastBeforeLastStop = vehicleEventData;
-			break;
-		}
-	}
-
-	if (lastEventInsideLastBeforeLastStop === null) {
-		// throw new Error('No vehicle event was found inside the geofence of the last before last stop.');
-		return null;
-	}
-
-	//
-	// Now detect the first event that is inside the geofence of the last stop,
-	// and that is after one of the events found inside the geofence of the last before last stop.
+	// Detect the first event that is inside the geofence of the last stop.
 
 	let firstEventInsideLastStop: null | VehicleEvent = null;
 
 	for (const vehicleEventData of sortedVehicleEvents) {
-		const vehicleEventIsInsideGeofenceOfFirstStop = isPointInPolygon([vehicleEventData.longitude, vehicleEventData.latitude], lastStopGeofence);
-		if (vehicleEventIsInsideGeofenceOfFirstStop) {
-			// Check if the event is after the last event found inside the geofence of the last before last stop
-			if (vehicleEventData.created_at > lastEventInsideLastBeforeLastStop.created_at) {
-				firstEventInsideLastStop = vehicleEventData;
-			}
-			else break;
+		const isInsideGeofence = isPointInPolygon([vehicleEventData.longitude, vehicleEventData.latitude], lastStopGeofence);
+		if (isInsideGeofence) {
+			firstEventInsideLastStop = vehicleEventData;
+			break;
 		}
 	}
 
