@@ -33,6 +33,7 @@ async function processValidation(message: ValidationMessage) {
 		logger.info(`Getting file from MongoDB: ${file._id}`);
 
 		// 3. Download and write file to temp directory for validation
+		logger.info(`Downloading file from ${file.url}`);
 		const fileBuffer = await fetch(file.url).then(res => res.arrayBuffer());
 		const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
 		await writeFile(tempFilePath, Buffer.from(fileBuffer));
@@ -93,6 +94,18 @@ async function main() {
 	logger.divider('🚀 GTFS Validator service started');
 }
 
-main();
+(async function startMainLoop() {
+	while (true) {
+		try {
+			await main();
+			break; // Exit loop if main resolves without error
+		}
+		catch (err) {
+			console.error('Fatal error in main():', err);
+			console.error('Restarting main() in 5 seconds...');
+			await new Promise(res => setTimeout(res, 5000));
+		}
+	}
+})();
 
 /* * */

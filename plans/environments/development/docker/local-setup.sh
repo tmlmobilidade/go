@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "+----------------------------------------------+"
+echo "|    Initializing MongoDB Entrypoint Script    |"
+echo "+----------------------------------------------+"
+
 mongosh <<EOF
 use admin
 
@@ -21,3 +25,6 @@ EOF
 
 mongorestore production --drop --gzip --archive=/dump/db.dump
 
+echo "+----------------------------------------------+"
+echo "|      MongoDB replica set initialized         |"
+echo "+----------------------------------------------+"
