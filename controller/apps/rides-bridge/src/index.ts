@@ -23,6 +23,26 @@ export async function syncRides() {
 		const globalTimer = new TIMETRACKER();
 
 		//
+		// Prevent syncing if the current minutes are at an exact hour or half-hour,
+		// with a minus-2-minute buffer. This is to avoid syncing during
+		// the exact times when the BRIDGEDB database is being updated.
+
+		const currentMinutes = Dates.now('utc').toFormat('mm');
+		const currentMinutesAsNumber = parseInt(currentMinutes, 10);
+
+		if (currentMinutesAsNumber > 57 || currentMinutesAsNumber < 4) {
+			// Do not sync between 57 minutes past the hour and 4 minutes past the next hour.
+			LOGGER.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
+			return;
+		}
+
+		if (currentMinutesAsNumber > 27 || currentMinutesAsNumber < 34) {
+			// Do not sync between 27 minutes and 34 minutes past the hour.
+			LOGGER.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
+			return;
+		}
+
+		//
 		// Connect to the BRIDGEDB database and drop the existing 'rides' table
 		// if it exists. It is easier, faster and more ecological to just delete
 		// everything and copy everything again than checking if each individual
