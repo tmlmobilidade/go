@@ -17,7 +17,7 @@
 	"dependencies": {
 		"@helperkits/logger": "^20250628.901.58",
 		"@tmlmobilidade/connectors": "20250704.1827.27",
-		"@tmlmobilidade/gtfs-validator": "20250704.1844.37",
+		"@tmlmobilidade/gtfs-validator": "20250704.2244.7",
 		"@tmlmobilidade/interfaces": "20250704.1827.27",
 		"@tmlmobilidade/utils": "20250704.1827.27",
 		"csv-parse": "5.6.0",
