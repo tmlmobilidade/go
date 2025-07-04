@@ -7,7 +7,7 @@ import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlanListContext } from '@/contexts/PlanList.context';
 import { Routes } from '@/lib/routes';
 import { IconArrowRight, IconLock, IconLockOpen } from '@tabler/icons-react';
-import { Pane, Section, Tag } from '@tmlmobilidade/ui';
+import { Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -41,28 +41,41 @@ export function PlanList() {
 			<PlansListFilters />,
 		]}
 		>
-			{data.filtered.map(plan => (
-				<div key={plan._id} className={styles.root} onClick={() => router.push(Routes.PLAN_DETAIL(plan._id))}>
-					<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
-						<Tag label={plan._id} variant="muted" />
-						<Tag label={plan.gtfs_agency.agency_name} variant="secondary" />
-					</Section>
-					<Section alignItems="center" flexDirection="row" gap="md">
-						<Section alignItems="center" flexDirection="row" gap="sm">
-							<Tag label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
-							<IconArrowRight size={16} />
-							<Tag
-								label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)}
-								variant={
-									Dates.now('local').operational_date > Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').operational_date ? 'danger' : 'warning'
-								}
-							/>
-						</Section>
+			{data.filtered.map((plan) => {
+				if (!plan || !plan.gtfs_agency || !plan.gtfs_feed_info) {
+					return (
+						<div key={plan._id} className={styles.root} onClick={() => router.push(Routes.PLAN_DETAIL(plan._id))}>
+							<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
+								<Tag label={plan._id} variant="muted" />
+								<Text>Invalid plan</Text>
+							</Section>
+						</div>
+					);
+				}
 
-						{plan.is_locked ? <IconLock color="var(--color-status-danger-primary)" /> : <IconLockOpen color="var(--color-status-success-primary)" />}
-					</Section>
-				</div>
-			))}
+				return (
+					<div key={plan._id} className={styles.root} onClick={() => router.push(Routes.PLAN_DETAIL(plan._id))}>
+						<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
+							<Tag label={plan._id} variant="muted" />
+							<Tag label={plan.gtfs_agency.agency_name} variant="secondary" />
+						</Section>
+						<Section alignItems="center" flexDirection="row" gap="md">
+							<Section alignItems="center" flexDirection="row" gap="sm">
+								<Tag label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)} variant="success" />
+								<IconArrowRight size={16} />
+								<Tag
+									label={Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_SHORT)}
+									variant={
+										Dates.now('local').operational_date > Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').operational_date ? 'danger' : 'warning'
+									}
+								/>
+							</Section>
+
+							{plan.is_locked ? <IconLock color="var(--color-status-danger-primary)" /> : <IconLockOpen color="var(--color-status-success-primary)" />}
+						</Section>
+					</div>
+				);
+			})}
 		</Pane>
 	);
 
