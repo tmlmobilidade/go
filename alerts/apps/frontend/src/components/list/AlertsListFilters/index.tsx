@@ -5,7 +5,7 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { AlertSchema } from '@tmlmobilidade/types';
-import { Checkbox, DateTimePicker, Label, Menu, Tag, Text } from '@tmlmobilidade/ui';
+import { Badge, Checkbox, DateTimePicker, Label, Menu, Text } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';
@@ -36,7 +36,7 @@ function StateFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Estado" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Estado</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 
@@ -47,6 +47,7 @@ function StateFilter() {
 					>
 						<Checkbox
 							checked={filters.publish_status.length === AlertSchema.shape.publish_status.options.length}
+							onChange={e => e.stopPropagation()}
 							indeterminate={
 								filters.publish_status.length > 0
 								&& filters.publish_status.length < AlertSchema.shape.publish_status.options.length
@@ -59,7 +60,7 @@ function StateFilter() {
 				{AlertSchema.shape.publish_status.options.map(status => (
 					<Menu.Item key={status} closeMenuOnClick={false} p="sm">
 						<div className={styles.filterItem} onClick={() => actions.togglePublishStatus(status)}>
-							<Checkbox checked={filters.publish_status.includes(status)} />
+							<Checkbox checked={filters.publish_status.includes(status)} onChange={e => e.stopPropagation()} />
 							<Text className={styles.filterTitle} size="sm" weight="medium">{status}</Text>
 						</div>
 					</Menu.Item>
@@ -78,7 +79,7 @@ function CauseFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Causa" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Causa</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Menu.Item closeMenuOnClick={false} p="sm">
@@ -99,7 +100,7 @@ function CauseFilter() {
 				{AlertSchema.shape.cause.options.map(cause => (
 					<Menu.Item key={cause} closeMenuOnClick={false} p="sm">
 						<div className={styles.filterItem} onClick={() => actions.toggleCause(cause)}>
-							<Checkbox checked={filters.cause.includes(cause)} />
+							<Checkbox checked={filters.cause.includes(cause)} onChange={e => e.stopPropagation()} />
 							<Text className={styles.filterTitle} size="sm" weight="medium">{cause}</Text>
 						</div>
 					</Menu.Item>
@@ -117,7 +118,7 @@ function EffectFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Efeito" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Efeito</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				{/* Add this new Menu.Item as the first item */}
@@ -140,7 +141,7 @@ function EffectFilter() {
 					<div key={effect} onClick={() => actions.toggleEffect(effect)}>
 						<Menu.Item closeMenuOnClick={false} p="sm">
 							<div className={styles.filterItem}>
-								<Checkbox checked={filters.effect.includes(effect)} />
+								<Checkbox checked={filters.effect.includes(effect)} onChange={e => e.stopPropagation()} />
 								<Text className={styles.filterTitle} size="sm" weight="medium">{effect}</Text>
 							</div>
 						</Menu.Item>
@@ -167,7 +168,7 @@ function MunicipalityFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Municípios" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Municípios</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Menu.Item closeMenuOnClick={false} p="sm">
@@ -189,7 +190,7 @@ function MunicipalityFilter() {
 					<div key={municipality} onClick={() => actions.toggleMunicipality(municipality)}>
 						<Menu.Item closeMenuOnClick={false} p="sm">
 							<div className={styles.filterItem}>
-								<Checkbox checked={filters.municipality.includes(municipality)} />
+								<Checkbox checked={filters.municipality.includes(municipality)} onChange={e => e.stopPropagation()} />
 								<Text className={styles.filterTitle} size="sm" weight="medium">{parseMunicipality(municipality)}</Text>
 							</div>
 						</Menu.Item>
@@ -216,7 +217,7 @@ function LineFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Linhas" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Linhas</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.lineDropdown }}>
 				<ViewportList items={filters.lineOptions}>
@@ -224,7 +225,7 @@ function LineFilter() {
 						<div key={route_id} onClick={() => actions.toggleLine(route_id)}>
 							<Menu.Item closeMenuOnClick={false} p="sm">
 								<div className={styles.filterItem}>
-									<Checkbox checked={filters.line.includes(route_id)} />
+									<Checkbox checked={filters.line.includes(route_id)} onChange={e => e.stopPropagation()} />
 									<Text className={styles.filterTitle} size="sm" weight="medium">{parseLine(route_id)}</Text>
 								</div>
 							</Menu.Item>
@@ -252,7 +253,7 @@ function StopFilter() {
 	return (
 		<Menu trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Paragens" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Paragens</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.stopDropdown }}>
 				<ViewportList items={filters.stopOptions}>
@@ -260,7 +261,7 @@ function StopFilter() {
 						<div key={stop_id} onClick={() => actions.toggleStop(stop_id)}>
 							<Menu.Item closeMenuOnClick={false} p="sm">
 								<div className={styles.filterItem}>
-									<Checkbox checked={filters.stop.includes(stop_id)} />
+									<Checkbox checked={filters.stop.includes(stop_id)} onChange={e => e.stopPropagation()} />
 									<Text className={styles.filterTitle} size="sm" weight="medium">{parseStop(stop_id)}</Text>
 								</div>
 							</Menu.Item>
@@ -282,7 +283,7 @@ function PublishDateFilter() {
 	return (
 		<Menu closeOnClickOutside={false} trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Visibilidade" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Visibilidade</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o alerta é visível nos canais digitais, não necessariamente a data de que é valido (Periodo de vigência)</Text>
@@ -305,7 +306,7 @@ function ValidityDateFilter() {
 	return (
 		<Menu closeOnClickOutside={false} trigger="click-hover" withArrow>
 			<Menu.Target>
-				<Tag label="Vigência" variant={hasChanged ? 'primary' : 'muted'} />
+				<Badge variant={hasChanged ? 'primary' : 'muted'}>Vigência</Badge>
 			</Menu.Target>
 			<Menu.Dropdown classNames={{ dropdown: styles.dropdown }}>
 				<Text className={styles.filterDescription} size="sm" weight="medium">Datas em que o alerta é válido</Text>
