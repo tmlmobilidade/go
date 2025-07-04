@@ -123,7 +123,7 @@ function RowsCell({ rows }: { rows: number[] }) {
 	return (
 		<div className={styles.rowsCell}>
 			{rows.slice(0, MAX_ROWS).map((row) => {
-				return <Badge variant="muted">{row}</Badge>;
+				return <Badge key={row} variant="muted">{row}</Badge>;
 			})}
 			{rows.length > MAX_ROWS && (
 				<Description>
