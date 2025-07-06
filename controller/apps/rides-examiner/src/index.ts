@@ -17,10 +17,11 @@ import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
 
 /* * */
 
-import { atLeastOneEventOnFirstStop } from '@/analyzers/at-least-one-event-on-first-stop.js';
+import { atLeastOneEventOnFirstStopAnalyzer } from '@/analyzers/at-least-one-event-on-first-stop.js';
 import { atMostTwoDriverIdsAnalyzer } from '@/analyzers/at-most-two-driver-ids.analyzer.js';
 import { atMostTwoVehicleIdsAnalyzer } from '@/analyzers/at-most-two-vehicle-ids.analyzer.js';
 import { avgIntervalVehicleEvents } from '@/analyzers/avg-interval-vehicle-events.analyzer.js';
+import { endedAtLastStopAnalyzer } from '@/analyzers/ended-at-last-stop.js';
 import { excessiveVehicleEventDelayAnalyzer } from '@/analyzers/excessive-vehicle-event-delay.analyzer.js';
 import { lessThanTenVehicleEventsAnalyzer } from '@/analyzers/less-than-ten-vehicle-events.analyzer.js';
 import { matchingLocationTransactionsAnalyzer } from '@/analyzers/matching-location-transactions.analyzer.js';
@@ -35,13 +36,15 @@ import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequen
 function runAnalyzers(analysisData: AnalysisData): Ride['analysis'] {
 	return {
 
-		AT_LEAST_ONE_EVENT_ON_FIRST_STOP: atLeastOneEventOnFirstStop(analysisData),
+		AT_LEAST_ONE_EVENT_ON_FIRST_STOP: atLeastOneEventOnFirstStopAnalyzer(analysisData),
 
 		AT_MOST_TWO_DRIVER_IDS: atMostTwoDriverIdsAnalyzer(analysisData),
 
 		AT_MOST_TWO_VEHICLE_IDS: atMostTwoVehicleIdsAnalyzer(analysisData),
 
 		AVG_INTERVAL_VEHICLE_EVENTS: avgIntervalVehicleEvents(analysisData),
+
+		ENDED_AT_LAST_STOP: endedAtLastStopAnalyzer(analysisData),
 
 		EXCESSIVE_VEHICLE_EVENT_DELAY: excessiveVehicleEventDelayAnalyzer(analysisData),
 
