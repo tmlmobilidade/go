@@ -15,7 +15,7 @@ const BUFFER_RADIUS = 50; // meters
  * → PASS = At least one event on the first stop.
  * → FAIL = No events found on the first stop.
  */
-export function atLeastOneEventOnFirstStop(analysisData: AnalysisData): Ride['analysis']['AT_LEAST_ONE_EVENT_ON_FIRST_STOP'] {
+export function atLeastOneEventOnFirstStopAnalyzer(analysisData: AnalysisData): Ride['analysis']['AT_LEAST_ONE_EVENT_ON_FIRST_STOP'] {
 	try {
 		//
 
