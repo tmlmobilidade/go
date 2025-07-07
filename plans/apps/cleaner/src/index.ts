@@ -2,89 +2,114 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { plans } from '@tmlmobilidade/interfaces'; 
+import { plans } from '@tmlmobilidade/interfaces';
+import { OCIStorageClient } from 'bsda'; // Your actual OCI client
 
 /* * */
 
-const RUN_INTERVAL = 86400000; // 24 hours - adjust as needed
-const MAX_AGE_DAYS = 30; // Delete plans older than 30 days
+const RUN_INTERVAL = 86400000; // 24 hours
 
 /* * */
 
 async function cleanOldPlans() {
-  try {
-    LOGGER.init();
+    try {
+        //
 
-    const globalTimer = new TIMETRACKER();
+        LOGGER.init();
 
-    // Calculate the cutoff date (current date minus MAX_AGE_DAYS)
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - MAX_AGE_DAYS);
+        const globalTimer = new TIMETRACKER();
 
-    // Fetch plans older than the cutoff date
-    const fetchTimer = new TIMETRACKER();
-    
-    const oldPlans = await plans.findMany({ 
-      created_at: { $lt: cutoffDate } 
-    });
-    
-    const fetchTimerResult = fetchTimer.get();
-    LOGGER.info(`Found ${oldPlans.length} plans older than ${MAX_AGE_DAYS} days. (${fetchTimerResult})`);
+        //
+        // Calculate cutoff date (30 days ago)
 
-    if (oldPlans.length > 0) {
-      // Delete files from OCI storage
-      const deleteStorageTimer = new TIMETRACKER();
-      let storageDeleteCount = 0;
-      
-      // Assuming each plan has a file reference in a 'file_path' field
-      for (const plan of oldPlans) {
-        if (plan.file_path) {
-          try {
-            await Storage.deleteObject(plan.file_path);
-            storageDeleteCount++;
-          } catch (err) {
-            LOGGER.warn(`Failed to delete file ${plan.file_path}: ${err.message}`);
-          }
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - 30);
+
+        //
+        // Get all plans older than cutoff date
+
+        const fetchTimer = new TIMETRACKER();
+
+        const oldPlans = await plans.findMany({ 
+            created_at: { $lt: cutoffDate } as any // Type assertion if needed
+        });
+
+        const fetchTimerResult = fetchTimer.get();
+
+        LOGGER.info(`Found ${oldPlans.length} plans older than 30 days. (${fetchTimerResult})`);
+
+        //
+        // Initialize OCI client
+
+     const storage = new OCIStorageClient({
+            accessKeyId: '31fce674ca17a4e58e21aa38051367b62ed67a79', // Your actual key
+            secretAccessKey: 'o31k/sf7BNFDNa03OF5L1SfH2FUoghw5m98j0j0WsVk=', // Your actual secret
+            region: 'eu-frankfurt-1',
+            namespace: 'frdvdrigd38a'
+        });
+
+        //
+        // Process deletions
+
+        if (oldPlans.length > 0) {
+            //
+
+            const deleteTimer = new TIMETRACKER();
+            let deletedCount = 0;
+
+               for (const plan of oldPlans) {
+                try {
+                    // Type-safe check for file_path
+                    const filePath = (plan as any).file_path || (plan as unknown as { file_path?: string }).file_path;
+                    
+                    if (filePath) {
+                        await storage.deleteObject({
+                            bucketName: 'tml-sae-development',
+                            objectName: filePath
+                        });
+                    }
+
+                    // Delete from MongoDB
+                    await (await plans.getCollection()).deleteOne({ _id: plan._id });
+                    deletedCount++;
+
+                } catch (err) {
+                    LOGGER.error(`Error cleaning plan ${plan._id}`, err as Error);
+                }
+            }
+
+
+            LOGGER.info(`Deleted ${deletedCount} old plans. (${deleteTimer.get()})`);
+            LOGGER.spacer(1);
+
+            //
+        } else {
+            LOGGER.info(`No old plans found to clean!`);
+            LOGGER.spacer(1);
         }
-      }
-      
-      LOGGER.info(`Deleted ${storageDeleteCount} files from storage. (${deleteStorageTimer.get()})`);
 
-      // Delete plans from MongoDB
-      const deleteDbTimer = new TIMETRACKER();
-      const planIds = oldPlans.map(plan => plan._id);
-      
-      const plansCollection = await plans.getCollection();
-      const deleteResult = await plansCollection.deleteMany({ 
-        _id: { $in: planIds } 
-      });
-      
-      LOGGER.info(`Deleted ${deleteResult.deletedCount} plans from database. (${deleteDbTimer.get()})`);
-    } else {
-      LOGGER.info('No old plans to clean.');
+        //
+
+        LOGGER.terminate(`Cleanup took ${globalTimer.get()}.`);
+
+        //
+    } catch (err) {
+        LOGGER.error('An error occurred. Halting execution.', err as Error);
+        LOGGER.error('Retrying in 10 seconds...');
+        setTimeout(() => {
+            process.exit(0); // End process
+        }, 10000); // after 10 seconds
     }
 
-    LOGGER.terminate(`Cleanup took ${globalTimer.get()}.`);
-  } catch (err) {
-    LOGGER.error('An error occurred during plan cleanup:', err);
-    LOGGER.error('Retrying in 10 seconds...');
-    setTimeout(() => {
-      process.exit(0); // End process
-    }, 10000); // after 10 seconds
-  }
+    //
 }
 
 /* * */
 
 (async function init() {
-  // Initial delay to allow other services to start
-  await new Promise(resolve => setTimeout(resolve, 30000));
-  
-  const runOnInterval = async () => {
-    await cleanOldPlans();
-    setTimeout(runOnInterval, RUN_INTERVAL);
-  };
-  
-  // Run immediately and then on interval
-  runOnInterval();
+    const runOnInterval = async () => {
+        await cleanOldPlans();
+        setTimeout(runOnInterval, RUN_INTERVAL);
+    };
+    runOnInterval();
 })();
