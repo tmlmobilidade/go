@@ -10,15 +10,15 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/utils": "20250701.1722.33",
+		"@tmlmobilidade/utils": "20250706.1950.23",
 		"@turf/turf": "7.2.0",
 		"mongodb": "6.17.0",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250701.1722.33",
-		"@tmlmobilidade/types": "20250701.1722.33",
-		"@types/node": "24.0.8",
+		"@tmlmobilidade/tsconfig": "20250706.1950.23",
+		"@tmlmobilidade/types": "20250706.1950.23",
+		"@types/node": "24.0.10",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.8.3"
 	}

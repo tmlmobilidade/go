@@ -101,6 +101,8 @@ export async function syncRides() {
 
 		await BRIDGEDB.disconnect();
 
+		fetch('https://status.carrismetropolitana.pt/api/push/xdBaFdiO0O42QVTqgp4pZzy66mdhTOYz?status=up&msg=OK&ping=');
+
 		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
