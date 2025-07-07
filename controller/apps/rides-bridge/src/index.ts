@@ -30,13 +30,13 @@ export async function syncRides() {
 		const currentMinutes = Dates.now('utc').toFormat('mm');
 		const currentMinutesAsNumber = parseInt(currentMinutes, 10);
 
-		if (currentMinutesAsNumber > 57 || currentMinutesAsNumber < 4) {
+		if (currentMinutesAsNumber > 57 && currentMinutesAsNumber < 4) {
 			// Do not sync between 57 minutes past the hour and 4 minutes past the next hour.
 			LOGGER.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
 			return;
 		}
 
-		if (currentMinutesAsNumber > 27 || currentMinutesAsNumber < 34) {
+		if (currentMinutesAsNumber > 27 && currentMinutesAsNumber < 34) {
 			// Do not sync between 27 minutes and 34 minutes past the hour.
 			LOGGER.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
 			return;
