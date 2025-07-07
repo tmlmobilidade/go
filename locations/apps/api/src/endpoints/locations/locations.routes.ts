@@ -3,7 +3,7 @@
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import FastifyService from '@/services/fastify.service.js';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { Locality, Municipality, Parish } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
 import { LocationsController } from './locations.controller.js';
@@ -17,64 +17,74 @@ const namespace = '/alerts';
 
 server.register(
 	(instance, opts, next) => {
-		// GET /alerts
+		// GET /municipalities
 		instance.get(
-			'/',
+			'/municipalities',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.list,
+				preHandler: authorizationMiddleware<Municipality>(
+					Permissions.municipalities.scope,
+					Permissions.municipalities.actions.list,
 				),
 			},
-			LocationsController.getAll,
+			LocationsController.getAllMunicipalities,
 		);
 
 		// GET /alerts/:id
 		instance.get(
-			'/:id',
+			'/municipalities/:id',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.read,
+				preHandler: authorizationMiddleware<Municipality>(
+					Permissions.municipalities.scope,
+					Permissions.municipalities.actions.read,
 				),
 			},
-			LocationsController.getById,
+			LocationsController.getMunicipalityById,
+		);
+		// GET /localities
+		instance.get(
+			'/localities',
+			{
+				preHandler: authorizationMiddleware<Locality>(
+					Permissions.localities.scope,
+					Permissions.localities.actions.list,
+				),
+			},
+			LocationsController.getAllLocalities,
 		);
 
-		// POST /alerts
-		instance.post(
-			'/',
+		// GET /localities/:id
+		instance.get(
+			'/localities/:id',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.create,
+				preHandler: authorizationMiddleware<Locality>(
+					Permissions.localities.scope,
+					Permissions.localities.actions.read,
 				),
 			},
-			LocationsController.create,
+			LocationsController.getLocalityById,
+		);
+		// GET /parishes
+		instance.get(
+			'/parishes',
+			{
+				preHandler: authorizationMiddleware<Parish>(
+					Permissions.parishes.scope,
+					Permissions.parishes.actions.list,
+				),
+			},
+			LocationsController.getAllParishes,
 		);
 
-		// PUT /alerts/:id
-		instance.put(
-			'/:id',
+		// GET /parishes/:id
+		instance.get(
+			'/parishes/:id',
 			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.update,
+				preHandler: authorizationMiddleware<Parish>(
+					Permissions.parishes.scope,
+					Permissions.parishes.actions.read,
 				),
 			},
-			LocationsController.update,
-		);
-
-		// DELETE /alerts/:id
-		instance.delete(
-			'/:id',
-			{
-				preHandler: authorizationMiddleware<Alert>(
-					Permissions.alerts.scope,
-					Permissions.alerts.actions.delete,
-				),
-			},
-			LocationsController.delete,
+			LocationsController.getParishById,
 		);
 
 		next();

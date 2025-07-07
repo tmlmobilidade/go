@@ -1,6 +1,6 @@
-import { alerts } from '@tmlmobilidade/interfaces';
+import { localities, municipalities, parishes } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { Locality, Municipality, Parish } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -8,55 +8,13 @@ import { FastifyReply, FastifyRequest } from 'fastify';
  */
 export class LocationsController {
 	/**
-	 * Creates a new alert
-	 * @param request Fastify request containing alert data in body
-	 * @param reply Fastify reply
-	 */
-	static async create(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			const data = request.body as Alert;
-
-			const result = await alerts.insertOne(data);
-
-			reply.send({ data: result, message: 'Alert created' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	/**
-	 * Deletes an alert by ID
-	 * @param request Fastify request containing alert ID in params
-	 * @param reply Fastify reply
-	 */
-	static async delete(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
-			await alerts.deleteById(id);
-
-			reply.send({ message: `Alert with id: ${id} deleted` });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	/**
-	 * Retrieves all alerts, sorted by creation date descending
+	 * Retrieves all localities, sorted by creation date descending
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
+	static async getAllLocalities(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await locations.findMany({}, undefined, undefined, { created_at: -1 }));
+			reply.send(await localities.findMany({}, undefined, undefined, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
@@ -66,25 +24,57 @@ export class LocationsController {
 	}
 
 	/**
-	 * Retrieves a single alert by ID
+	 * Retrieves all municipalities, sorted by creation date descending
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getAllMunicipalities(request: FastifyRequest, reply: FastifyReply) {
+		try {
+			reply.send(await municipalities.findMany({}, undefined, undefined, { created_at: -1 }));
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Retrieves all parishes, sorted by creation date descending
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getAllParishes(request: FastifyRequest, reply: FastifyReply) {
+		try {
+			reply.send(await parishes.findMany({}, undefined, undefined, { created_at: -1 }));
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Retrieves a single locality by ID
 	 * @param request Fastify request containing alert ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(
+	static async getLocalityById(
 		request: FastifyRequest<{ Params: { id: string } }>,
 		reply: FastifyReply,
 	) {
 		try {
 			const { id } = request.params;
 
-			const alert = await alerts.findById(id);
+			const locality = await localities.findById(id);
 
-			if (!alert) {
+			if (!locality) {
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
 				return;
 			}
 
-			reply.send(alert);
+			reply.send(locality);
 		}
 		catch (error) {
 			reply
@@ -94,24 +84,53 @@ export class LocationsController {
 	}
 
 	/**
-	 * Updates an existing alert by ID
-	 * @param request Fastify request containing alert ID in params and update data in body
+	 * Retrieves a single municipality by ID
+	 * @param request Fastify request containing alert ID in params
 	 * @param reply Fastify reply
 	 */
-	static async update(
+	static async getMunicipalityById(
 		request: FastifyRequest<{ Params: { id: string } }>,
 		reply: FastifyReply,
 	) {
 		try {
 			const { id } = request.params;
-			const alertData = request.body as Partial<Alert>;
 
-			await alerts.updateById(id, alertData);
+			const municipality = await municipalities.findById(id);
 
-			reply.send({
-				data: alertData,
-				message: `Alert with id: ${id} updated`,
-			});
+			if (!municipality) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
+				return;
+			}
+
+			reply.send(municipality);
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Retrieves a single parish by ID
+	 * @param request Fastify request containing alert ID in params
+	 * @param reply Fastify reply
+	 */
+	static async getParishById(
+		request: FastifyRequest<{ Params: { id: string } }>,
+		reply: FastifyReply,
+	) {
+		try {
+			const { id } = request.params;
+
+			const parish = await parishes.findById(id);
+
+			if (!parish) {
+				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
+				return;
+			}
+
+			reply.send(parish);
 		}
 		catch (error) {
 			reply
