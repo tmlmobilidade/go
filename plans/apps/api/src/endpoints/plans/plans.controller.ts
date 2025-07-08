@@ -244,9 +244,7 @@ export class PlansController {
 			//
 
 			try {
-				console.log('======= file ========', plan.operation_file_id);
 				const file = await files.findById(plan.operation_file_id);
-				console.log('======= file ========', file);
 				return reply.send({
 					...plan,
 					file,
