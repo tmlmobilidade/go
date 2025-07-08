@@ -69,7 +69,7 @@ export class PlansController {
 				// 2. Upload the operation plan file
 				const fileResult = await (filesCollection as typeof files).clone(
 					validation.file_id,
-					'plans',
+					Permissions.plans.scope,
 					planResult.insertedId.toString(),
 					{ session: filesTransaction.getSession() },
 				);
@@ -217,7 +217,9 @@ export class PlansController {
 			//
 
 			try {
+				console.log('======= file ========', plan.operation_file_id);
 				const file = await files.findById(plan.operation_file_id);
+				console.log('======= file ========', file);
 				return reply.send({
 					...plan,
 					file,

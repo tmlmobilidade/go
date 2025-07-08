@@ -42,8 +42,9 @@ async function processValidation(message: ValidationMessage) {
 
 		// 4. Run GTFS validation
 		logger.info(`Validating file: ${tempFilePath}`);
+		const useRules = false;
 		const validationResult = await GTFSValidator(tempFilePath, {
-			rules_path: join(__dirname, 'tml-rules.json'),
+			rules_path: useRules ? join(__dirname, 'tml-rules.json') : undefined,
 		});
 
 		logger.info(`File validated, updating document in MongoDB`);
