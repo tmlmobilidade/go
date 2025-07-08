@@ -43,7 +43,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// 4. Run GTFS validation
 		logger.info(`Validating file: ${tempFilePath}`);
-		const useRules = getCurrentEnvironment() === 'staging';
+		const useRules = false; // getCurrentEnvironment() === 'staging';
 		const validationResult = await GTFSValidator(tempFilePath, {
 			rules_path: useRules ? join(__dirname, 'tml-rules.json') : undefined,
 		});
