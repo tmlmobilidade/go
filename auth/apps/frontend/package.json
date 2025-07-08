@@ -11,20 +11,20 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.34.0",
-		"@tmlmobilidade/lib": "20250701.1813.45",
-		"@tmlmobilidade/ui": "20250701.1813.45",
-		"@tmlmobilidade/utils": "20250701.1813.45",
+		"@tmlmobilidade/lib": "20250708.1658.52",
+		"@tmlmobilidade/ui": "20250708.1658.52",
+		"@tmlmobilidade/utils": "20250708.1658.52",
 		"bcryptjs": "3.0.2",
 		"clsx": "2.1.1",
-		"next": "15.3.4",
+		"next": "15.3.5",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
-		"swr": "2.3.3"
+		"swr": "2.3.4"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/types": "20250701.1813.45",
-		"@types/node": "24.0.8",
+		"@tmlmobilidade/types": "20250708.1658.52",
+		"@types/node": "24.0.10",
 		"@types/react": "19.1.8",
 		"@types/react-dom": "19.1.6",
 		"typescript": "5.8.3"
