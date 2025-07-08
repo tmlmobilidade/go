@@ -69,7 +69,7 @@ export class PlansController {
 				// 2. Upload the operation plan file
 				const fileResult = await (filesCollection as typeof files).clone(
 					validation.file_id,
-					'plans',
+					Permissions.plans.scope,
 					planResult.insertedId.toString(),
 					{ session: filesTransaction.getSession() },
 				);
@@ -154,15 +154,12 @@ export class PlansController {
 			const permissions = request.permissions as Permission<PlanPermission>;
 
 			// Filter plans by all keys
-			console.log('======= permissions ========', permissions);
 			if (permissions?.resource) {
 				const filter = {
 					...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
 					...(permissions.resource.end_date && { 'gtfs_feed_info.feed_end_date': { $lte: permissions.resource.end_date } }),
 					...(permissions.resource.start_date && { 'gtfs_feed_info.feed_start_date': { $gte: permissions.resource.start_date } }),
 				};
-
-				console.log('======= filter ========', filter);
 
 				const filteredPlans = await plans.findMany(
 					filter,
@@ -171,40 +168,11 @@ export class PlansController {
 					{ created_at: -1 },
 				);
 
-				console.log('======= filteredPlans ========', filteredPlans);
-
 				return reply.send(filteredPlans);
 			}
 
 			// Send all plans
 			return reply.send(await plans.findMany({}, undefined, undefined, { created_at: -1 }));
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	/**
-	 * Retrieves all plans that are approved together with the URL to the operation file
-	 * This method is used to fetch plans that are ready for use in the system.
-	 * @param request Fastify request
-	 * @param reply Fastify reply
-	 */
-	static async getApprovedPlans(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			// Get all plans that are approved
-			const allPlans = await plans.all();
-			// For each plan, get the file URL
-			const plansWithFiles = await Promise.all(
-				allPlans.map(async (plan) => {
-					const file = await files.findById(plan.operation_file_id);
-					return { ...plan, operation_file_url: file.url };
-				}),
-			);
-			// Send all plans
-			return reply.send(plansWithFiles);
 		}
 		catch (error) {
 			reply
@@ -249,7 +217,9 @@ export class PlansController {
 			//
 
 			try {
+				console.log('======= file ========', plan.operation_file_id);
 				const file = await files.findById(plan.operation_file_id);
+				console.log('======= file ========', file);
 				return reply.send({
 					...plan,
 					file,

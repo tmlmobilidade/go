@@ -16,11 +16,6 @@ server.register(
 	(instance, opts, next) => {
 		// GET /plans
 		instance.get(
-			'/approved',
-			PlansController.getApprovedPlans,
-		);
-		// GET /plans
-		instance.get(
 			'/',
 			{
 				preHandler: authorizationMiddleware<PlanPermission>(
