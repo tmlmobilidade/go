@@ -2,6 +2,7 @@
 
 import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
+import { sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
 import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
@@ -54,6 +55,20 @@ async function processValidation(message: ValidationMessage) {
 			feeder_status: validationResult.total_errors > 0 ? ProcessingStatus.Error : ProcessingStatus.Complete,
 			summary: validationResult,
 		});
+
+		// Send email to user
+		try {
+			const latest_validation = await validations.findById(message.validation_id);
+			await sendGtfsValidationEmail({
+				props: {
+					validation: latest_validation,
+				},
+				to: file.created_by,
+			});
+		}
+		catch (error) {
+			logger.error('Error sending email:', error);
+		}
 
 		logger.success('Validation Finished Successfully');
 		logger.divider();
