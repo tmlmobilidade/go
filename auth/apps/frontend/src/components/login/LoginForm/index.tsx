@@ -74,7 +74,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 					<div className={styles.header}>
 						<div className={styles.headerContent}>
 							<Label size="lg">Login no GO+</Label>
-							<Label>Procuramos simplificar a gestão dos transportes públicos com boas ferramentas digitais.</Label>
+							<Label>Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.</Label>
 						</div>
 						<div className={styles.headerLogo}>
 							<Themer dark={<TMLogoDark />} light={<TMLogoLight />} />

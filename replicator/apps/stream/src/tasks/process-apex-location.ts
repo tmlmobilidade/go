@@ -89,4 +89,12 @@ export async function processApexLocation(databaseOperation) {
 	await simplifiedApexLocationsDbWritter.write(newSimplifiedApexLocationDocument, { filter: { _id: newSimplifiedApexLocationDocument._id }, upsert: true }, () => null, flushCallback);
 
 	//
+	// Publish the heartbeats for each agency
+
+	if (newSimplifiedApexLocationDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/lyDgVjnFM9Q0Rmq2XI8rXCNdkTJDF6ap?status=up&msg=OK&ping=');
+	if (newSimplifiedApexLocationDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/tk8zt1vosRuR3Bbq92lBqzRLMdsO47UK?status=up&msg=OK&ping=');
+	if (newSimplifiedApexLocationDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/hyVcJagfcSybkuXq1qgYqMHpRUmPhym8?status=up&msg=OK&ping=');
+	if (newSimplifiedApexLocationDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/pIqJwHHscWTLpG5850CeVFNbwnQGiAyk?status=up&msg=OK&ping=');
+
+	//
 };
