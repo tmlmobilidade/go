@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { plans } from '@tmlmobilidade/interfaces';
-import { OCIStorageClient } from 'bsda'; // Your actual OCI client
+import { OCIStorageClient } from ''; // OCI client
 
 /* * */
 
@@ -23,15 +23,16 @@ async function cleanOldPlans() {
         // Calculate cutoff date (30 days ago)
 
         const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - 30);
+        cutoffDate.setDate(cutoffDate.getDate() - 30); //subtract 30 days
 
         //
         // Get all plans older than cutoff date
+        // Find old plans from DB
 
         const fetchTimer = new TIMETRACKER();
 
         const oldPlans = await plans.findMany({ 
-            created_at: { $lt: cutoffDate } as any // Type assertion if needed
+            created_at: { $lt: cutoffDate } as any 
         });
 
         const fetchTimerResult = fetchTimer.get();
@@ -42,8 +43,8 @@ async function cleanOldPlans() {
         // Initialize OCI client
 
      const storage = new OCIStorageClient({
-            accessKeyId: '31fce674ca17a4e58e21aa38051367b62ed67a79', // Your actual key
-            secretAccessKey: 'o31k/sf7BNFDNa03OF5L1SfH2FUoghw5m98j0j0WsVk=', // Your actual secret
+            accessKeyId: '31fce674ca17a4e58e21aa38051367b62ed67a79', 
+            secretAccessKey: 'o31k/sf7BNFDNa03OF5L1SfH2FUoghw5m98j0j0WsVk=',
             region: 'eu-frankfurt-1',
             namespace: 'frdvdrigd38a'
         });
@@ -64,7 +65,7 @@ async function cleanOldPlans() {
                     
                     if (filePath) {
                         await storage.deleteObject({
-                            bucketName: 'tml-sae-development',
+                            bucketName: 'tmlmobilidade-sae-development',
                             objectName: filePath
                         });
                     }
