@@ -89,4 +89,12 @@ export async function processApexOnBoardSale(databaseOperation) {
 	await simplifiedApexOnBoardSalesDbWritter.write(newSimplifiedApexOnBoardSaleDocument, { filter: { _id: newSimplifiedApexOnBoardSaleDocument._id }, upsert: true }, () => null, flushCallback);
 
 	//
+	// Publish the heartbeats for each agency
+
+	if (newSimplifiedApexOnBoardSaleDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/HgrvaEVk6VISWWZTdAQ0ZOdeH9Oy6FkF?status=up&msg=OK&ping=');
+	if (newSimplifiedApexOnBoardSaleDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/CHni29ZNR6lLd7F5W1H7tEWXm7CC0wwj?status=up&msg=OK&ping=');
+	if (newSimplifiedApexOnBoardSaleDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/HmdyQgowD6Jl9eQDUSqKC3qIWDr0UimO?status=up&msg=OK&ping=');
+	if (newSimplifiedApexOnBoardSaleDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/vsck1MphlVyeUgy6PPnTIjIRPEfNor6t?status=up&msg=OK&ping=');
+
+	//
 };
