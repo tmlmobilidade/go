@@ -4,7 +4,7 @@ import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus } from '@tmlmobilidade/types';
+import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -42,7 +42,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// 4. Run GTFS validation
 		logger.info(`Validating file: ${tempFilePath}`);
-		const useRules = false;
+		const useRules = getCurrentEnvironment() === 'staging';
 		const validationResult = await GTFSValidator(tempFilePath, {
 			rules_path: useRules ? join(__dirname, 'tml-rules.json') : undefined,
 		});
