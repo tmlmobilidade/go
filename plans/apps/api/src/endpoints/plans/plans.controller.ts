@@ -154,7 +154,6 @@ export class PlansController {
 			const permissions = request.permissions as Permission<PlanPermission>;
 
 			// Filter plans by all keys
-			console.log('======= permissions ========', permissions);
 			if (permissions?.resource) {
 				const filter = {
 					...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
@@ -162,16 +161,12 @@ export class PlansController {
 					...(permissions.resource.start_date && { 'gtfs_feed_info.feed_start_date': { $gte: permissions.resource.start_date } }),
 				};
 
-				console.log('======= filter ========', filter);
-
 				const filteredPlans = await plans.findMany(
 					filter,
 					undefined,
 					undefined,
 					{ created_at: -1 },
 				);
-
-				console.log('======= filteredPlans ========', filteredPlans);
 
 				return reply.send(filteredPlans);
 			}
