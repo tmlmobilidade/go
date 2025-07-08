@@ -74,6 +74,12 @@ server.register(
 			PlansController.delete,
 		);
 
+		// GET /plans/approved
+		instance.get(
+			'/approved',
+			PlansController.getApprovedPlans,
+		);
+
 		next();
 	},
 	{ prefix: namespace },
