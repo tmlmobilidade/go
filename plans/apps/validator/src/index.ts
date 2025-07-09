@@ -2,10 +2,11 @@
 
 import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
-import { sendGtfsValidationEmail } from '@tmlmobilidade/emails';
+import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
 import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -61,6 +62,7 @@ async function processValidation(message: ValidationMessage) {
 			const latest_validation = await validations.findById(message.validation_id);
 			await sendGtfsValidationEmail({
 				props: {
+					first_name: '',
 					validation: latest_validation,
 				},
 				to: file.created_by,
@@ -76,14 +78,30 @@ async function processValidation(message: ValidationMessage) {
 	catch (error) {
 		logger.error('Error processing validation:', error);
 
+		// Send email to system
+		try {
+			if (process.env.EMAIL_TO) {
+				await sendFailedBackupEmail({
+					props: {
+						backup_service: 'Validator',
+						failure_time: Dates.now('Europe/Lisbon').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS),
+					},
+					to: process.env.EMAIL_TO,
+				});
+			}
+		}
+		catch (error) {
+			logger.error('Error sending email:', error);
+		}
+
 		// Update validation status to error
 		await validations.updateById(message.validation_id, {
 			feeder_status: ProcessingStatus.Error,
 			summary: {
 				messages: [
 					{
-						field: 'validation',
-						file_name: 'validation.json',
+						field: 'N/A',
+						file_name: 'Erro do sistema',
 						message: error instanceof Error ? error.message : 'Unknown error',
 						rows: [],
 						severity: 'error',

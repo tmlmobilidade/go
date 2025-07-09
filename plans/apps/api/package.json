@@ -15,16 +15,16 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.0.3",
-		"@tmlmobilidade/connectors": "20250708.1715.13",
-		"@tmlmobilidade/interfaces": "20250708.1715.13",
-		"@tmlmobilidade/lib": "20250708.1715.13",
-		"@tmlmobilidade/utils": "20250708.1715.13",
+		"@tmlmobilidade/connectors": "20250709.1616.56",
+		"@tmlmobilidade/interfaces": "20250709.1616.56",
+		"@tmlmobilidade/lib": "20250709.1616.56",
+		"@tmlmobilidade/utils": "20250709.1616.56",
 		"pino-pretty": "13.0.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250708.1715.13",
-		"@tmlmobilidade/types": "20250708.1715.13",
-		"@types/node": "24.0.11",
+		"@tmlmobilidade/tsconfig": "20250709.1616.56",
+		"@tmlmobilidade/types": "20250709.1616.56",
+		"@types/node": "24.0.12",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.3",
 		"typescript": "5.8.3"
