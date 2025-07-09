@@ -2,10 +2,10 @@
 
 /* * */
 
-import type { District, Locality, Municipality, Parish } from '@carrismetropolitana/api-types/locations';
-
 import { Routes } from '@/lib/routes';
 import { ApiResponse } from '@carrismetropolitana/api-types/common';
+import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
+import { normalizeString } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -21,12 +21,16 @@ interface LocationsContextState {
 	data: {
 		district_ids: District['id'][]
 		districts: District[]
+		districts_map: Map<District['id'], District & { name_normalized: string }>
 		localitites: Locality[]
+		localitites_map: Map<Locality['id'], Locality & { name_normalized: string }>
 		locality_ids: Locality['id'][]
 		municipalities: Municipality[]
+		municipalities_map: Map<Municipality['id'], Municipality & { name_normalized: string }>
 		municipality_ids: Municipality['id'][]
 		parish_ids: Parish['id'][]
 		parishes: Parish[]
+		parishes_map: Map<Parish['id'], Parish & { name_normalized: string }>
 	}
 	flags: {
 		is_loading: boolean
@@ -66,42 +70,61 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 		return fetchedDistrictsData.data;
 	}, [fetchedDistrictsData]);
 
+	const allDistrictsMap = useMemo(() => {
+		return new Map(allDistrictsData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
+	}, [allDistrictsData]);
+
+	const allDistrictIds = useMemo(() => {
+		return allDistrictsData.map(item => item.id);
+	}, [allDistrictsData]);
+
+	//
+
 	const allMunicipalitiesData = useMemo(() => {
 		if (fetchedMunicipalitiesData?.status !== 'success') return [];
-
-		const AML = [
-			'Alcochete',
-			'Almada',
-			'Amadora',
-			'Barreiro',
-			'Cascais',
-			'Lisboa',
-			'Loures',
-			'Mafra',
-			'Moita',
-			'Montijo',
-			'Odivelas',
-			'Oeiras',
-			'Palmela',
-			'Seixal',
-			'Sesimbra',
-			'Setúbal',
-			'Sintra',
-			'Vila Franca de Xira',
-		];
-
-		return fetchedMunicipalitiesData.data.filter(municipality => AML.includes(municipality.name)).sort((a, b) => a.name.localeCompare(b.name));
+		const AML = ['Alcochete', 'Almada', 'Amadora', 'Barreiro', 'Cascais', 'Lisboa', 'Loures', 'Mafra', 'Moita', 'Montijo', 'Odivelas', 'Oeiras', 'Palmela', 'Seixal', 'Sesimbra', 'Setúbal', 'Sintra', 'Vila Franca de Xira'];
+		return fetchedMunicipalitiesData.data
+			.filter(item => AML.includes(item.name))
+			.sort((a, b) => a.name.localeCompare(b.name));
 	}, [fetchedMunicipalitiesData]);
+
+	const allMunicipalitiesMap = useMemo(() => {
+		return new Map(allMunicipalitiesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
+	}, [allMunicipalitiesData]);
+
+	const allMunicipalityIds = useMemo(() => {
+		return allMunicipalitiesData.map(item => item.id);
+	}, [allMunicipalitiesData]);
+
+	//
 
 	const allParishesData = useMemo(() => {
 		if (fetchedParishesData?.status !== 'success') return [];
 		return fetchedParishesData.data;
 	}, [fetchedParishesData]);
 
+	const allParishesMap = useMemo(() => {
+		return new Map(allParishesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
+	}, [allParishesData]);
+
+	const allParishIds = useMemo(() => {
+		return allParishesData.map(item => item.id);
+	}, [allParishesData]);
+
+	//
+
 	const allLocalitiesData = useMemo(() => {
 		if (fetchedLocalitiesData?.status !== 'success') return [];
 		return fetchedLocalitiesData.data;
 	}, [fetchedLocalitiesData]);
+
+	const allLocalitiesMap = useMemo(() => {
+		return new Map(allLocalitiesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
+	}, [allLocalitiesData]);
+
+	const allLocalityIds = useMemo(() => {
+		return allLocalitiesData.map(item => item.id);
+	}, [allLocalitiesData]);
 
 	//
 	// C. Handle actions
@@ -133,14 +156,18 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 			getParishById,
 		},
 		data: {
-			district_ids: allDistrictsData.map(item => item.id) || [],
-			districts: allDistrictsData || [],
-			localitites: allLocalitiesData || [],
-			locality_ids: allLocalitiesData.map(item => item.id) || [],
-			municipalities: allMunicipalitiesData || [],
-			municipality_ids: allMunicipalitiesData.map(item => item.id) || [],
-			parish_ids: allParishesData.map(item => item.id) || [],
-			parishes: allParishesData || [],
+			district_ids: allDistrictIds ?? [],
+			districts: allDistrictsData ?? [],
+			districts_map: allDistrictsMap || new Map(),
+			localitites: allLocalitiesData ?? [],
+			localitites_map: allLocalitiesMap || new Map(),
+			locality_ids: allLocalityIds ?? [],
+			municipalities: allMunicipalitiesData ?? [],
+			municipalities_map: allMunicipalitiesMap || new Map(),
+			municipality_ids: allMunicipalityIds ?? [],
+			parish_ids: allParishIds ?? [],
+			parishes: allParishesData ?? [],
+			parishes_map: allParishesMap || new Map(),
 		},
 		flags: {
 			is_loading: fetchedDistrictsLoading || fetchedMunicipalitiesLoading || fetchedParishesLoading || fetchedLocalitiesLoading,

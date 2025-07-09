@@ -3,7 +3,7 @@
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { Routes } from '@/lib/routes';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
-import { Button, Label, SegmentedControl, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { Button, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -30,7 +30,6 @@ export function AlertsListHeader() {
 				value={alertsListContext.filters.search}
 			/>
 			<Button href={Routes.ALERT_DETAIL('new')} label="Novo alerta" leftSection={<IconPlus size={20} />} />
-			<SegmentedControl data={['Planeados', 'Tempo Real']} size="md" />
 		</>
 	);
 

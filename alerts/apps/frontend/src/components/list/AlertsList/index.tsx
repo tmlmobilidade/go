@@ -4,6 +4,10 @@
 
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { DataTable, DataTableColumn } from '@/components/datatable';
+import { AlertsListCellDate } from '@/components/list/AlertsListCellDate';
+import { AlertsListCellLines } from '@/components/list/AlertsListCellLines';
+import { AlertsListCellMunicipalities } from '@/components/list/AlertsListCellMunicipalities';
+import { AlertsListCellStops } from '@/components/list/AlertsListCellStops';
 import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { useAlertListContext } from '@/contexts/AlertList.context';
@@ -12,11 +16,6 @@ import { Routes } from '@/lib/routes';
 import { type Alert } from '@tmlmobilidade/types';
 import { LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-
-import DateCell from '../DateCell';
-import LineCell from '../LineCell';
-import MunicipalityCell from '../MunicipalityCell';
-import StopCell from '../StopCell';
 
 /* * */
 
@@ -43,39 +42,33 @@ export function AlertList() {
 		},
 		{
 			accessor: 'municipality',
-			render: ({ municipality_ids }) => (
-				<MunicipalityCell municipality_ids={municipality_ids} />
-			),
+			render: item => <AlertsListCellMunicipalities values={item.municipality_ids} />,
 			title: 'Municípios',
-			width: 230,
+			width: 300,
+		},
+		{
+			accessor: 'publish_start_date',
+			render: item => <AlertsListCellDate value={item.publish_start_date} />,
+			title: 'Data de início',
+			width: 300,
+		},
+		{
+			accessor: 'publish_end_date',
+			render: item => <AlertsListCellDate value={item.publish_end_date} />,
+			title: 'Data de fim',
+			width: 300,
 		},
 		{
 			accessor: 'lines',
-			render: (alert) => {
-				return <LineCell line_ids={getAvailableLines(alert)} />;
-			},
+			render: item => <AlertsListCellLines values={getAvailableLines(item)} />,
 			title: 'Linhas',
 			width: 300,
 		},
 		{
 			accessor: 'stops',
-			render: (alert) => {
-				return <StopCell stop_ids={getAvailableStops(alert)} />;
-			},
+			render: item => <AlertsListCellStops values={getAvailableStops(item)} />,
 			title: 'Paragens',
-			width: 300,
-		},
-		{
-			accessor: 'publish_start_date',
-			render: ({ publish_end_date, publish_start_date }) => <DateCell date={publish_start_date} endDate={publish_end_date} />,
-			title: 'Data de início',
-			width: 150,
-		},
-		{
-			accessor: 'publish_end_date',
-			render: ({ publish_end_date }) => <DateCell date={publish_end_date} endDate={publish_end_date} />,
-			title: 'Data de fim',
-			width: 150,
+			width: 800,
 		},
 	];
 
