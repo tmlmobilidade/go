@@ -84,6 +84,7 @@ async function processValidation(message: ValidationMessage) {
 				await sendFailedBackupEmail({
 					props: {
 						backup_service: 'Validator',
+						error_message: error instanceof Error ? error.message : JSON.stringify(error),
 						failure_time: Dates.now('Europe/Lisbon').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS),
 					},
 					to: process.env.EMAIL_TO,
