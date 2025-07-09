@@ -17,9 +17,9 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
-		"@tmlmobilidade/interfaces": "file:/Users/samuelsantos/Documents/core/packages/interfaces",
-		"@tmlmobilidade/lib": "file:/Users/samuelsantos/Documents/core/packages/lib",
-		"@tmlmobilidade/types": "file:/Users/samuelsantos/Documents/core/packages/types",
+		"@tmlmobilidade/interfaces": "20250625.1001.16",
+		"@tmlmobilidade/lib": "20250625.1001.16",
+		"@tmlmobilidade/types": "20250625.1001.16",
 		"@tmlmobilidade/utils": "20250625.1001.16",
 		"fastify": "5.2.2",
 		"pino-pretty": "13.0.0",
