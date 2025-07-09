@@ -19,9 +19,13 @@ interface LocationsContextState {
 		getParishById: (parishId: string) => Parish | undefined
 	}
 	data: {
+		district_ids: District['id'][]
 		districts: District[]
 		localitites: Locality[]
+		locality_ids: Locality['id'][]
 		municipalities: Municipality[]
+		municipality_ids: Municipality['id'][]
+		parish_ids: Parish['id'][]
 		parishes: Parish[]
 	}
 	flags: {
@@ -129,9 +133,13 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 			getParishById,
 		},
 		data: {
+			district_ids: allDistrictsData.map(item => item.id) || [],
 			districts: allDistrictsData || [],
 			localitites: allLocalitiesData || [],
+			locality_ids: allLocalitiesData.map(item => item.id) || [],
 			municipalities: allMunicipalitiesData || [],
+			municipality_ids: allMunicipalitiesData.map(item => item.id) || [],
+			parish_ids: allParishesData.map(item => item.id) || [],
 			parishes: allParishesData || [],
 		},
 		flags: {

@@ -2,19 +2,20 @@
 
 /* * */
 
-import { AlertsListFilters } from '@/components/list/AlertsListFilters';
+import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
+import { DataTable, DataTableColumn } from '@/components/datatable';
+import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
 import { type Alert } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, Pane } from '@tmlmobilidade/ui';
+import { LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import DateCell from '../DateCell';
 import LineCell from '../LineCell';
 import MunicipalityCell from '../MunicipalityCell';
-import StatusCell from '../StatusCell';
 import StopCell from '../StopCell';
 
 /* * */
@@ -26,16 +27,20 @@ export function AlertList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data, flags } = useAlertListContext();
+	const alertsListContext = useAlertListContext();
 
 	const columns: DataTableColumn<Alert>[] = [
 		{
 			accessor: 'state',
-			render: ({ publish_status }) => <StatusCell status={publish_status} />,
+			render: item => <AlertTagPublishStatus value={item.publish_status} />,
 			title: 'Estado',
 			width: 150,
 		},
-		{ accessor: 'title', title: 'Título', width: 400 },
+		{
+			accessor: 'title',
+			title: 'Título',
+			width: 600,
+		},
 		{
 			accessor: 'municipality',
 			render: ({ municipality_ids }) => (
@@ -50,6 +55,7 @@ export function AlertList() {
 				return <LineCell line_ids={getAvailableLines(alert)} />;
 			},
 			title: 'Linhas',
+			width: 300,
 		},
 		{
 			accessor: 'stops',
@@ -76,26 +82,25 @@ export function AlertList() {
 	//
 	// B. Render components
 
-	if (flags.isLoading) {
-		return <div>Loading...</div>;
+	if (alertsListContext.flags.isLoading) {
+		return <LoadingOverlay />;
 	}
-	else if (flags.error) {
-		return <div>Error: {flags.error.message}</div>;
+
+	if (alertsListContext.flags.error) {
+		return <div>Error: {alertsListContext.flags.error.message}</div>;
 	}
 
 	return (
 		<Pane header={[
 			<AlertsListHeader />,
-			<AlertsListFilters />,
+			<AlertsListFiltersBar />,
 		]}
 		>
 			<DataTable
 				columns={columns}
-				records={data.filtered}
+				onRowClick={alert => router.push(Routes.ALERT_DETAIL(alert._id))}
+				records={alertsListContext.data.filtered}
 				rowIdAccessor="_id"
-				onRowClick={(alert) => {
-					router.push(Routes.ALERT_DETAIL(alert._id));
-				}}
 			/>
 		</Pane>
 	);
