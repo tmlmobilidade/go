@@ -76,6 +76,7 @@ async function processValidation(message: ValidationMessage) {
 		logger.divider();
 	}
 	catch (error) {
+		console.log('ERROR:', error);
 		logger.error('Error processing validation:', error);
 
 		// Send email to system
