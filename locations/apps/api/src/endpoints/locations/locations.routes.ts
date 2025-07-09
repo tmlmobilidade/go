@@ -11,7 +11,7 @@ import { LocationsController } from './locations.controller.js';
 /* * */
 
 const server: FastifyInstance = FastifyService.getInstance().server;
-const namespace = '/alerts';
+const namespace = '/locations';
 
 /* * */
 
