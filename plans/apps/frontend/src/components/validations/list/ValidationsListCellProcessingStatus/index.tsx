@@ -18,7 +18,7 @@ export function ValidationsListCellProcessingStatus({ value }: ValidationsListCe
 
 	if (value === ProcessingStatus.Error) return <Tag label="Erro" variant="danger" />;
 
-	if (value === ProcessingStatus.Processing) return <Tag label="Em Processamento" variant="primary" />;
+	if (value === ProcessingStatus.Processing) return <Tag label="Em Análise" variant="primary" />;
 
 	if (value === ProcessingStatus.Waiting) return <Tag label="Em Espera" variant="warning" />;
 

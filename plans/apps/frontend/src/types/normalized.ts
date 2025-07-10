@@ -27,7 +27,7 @@ export const validationProcessingStatusValues = Object.values(ProcessingStatus);
 export const validationProcessingStatus = validationProcessingStatusValues.map((item) => {
 	if (item === ProcessingStatus.Complete) return { label: 'Válido', value: item };
 	if (item === ProcessingStatus.Error) return { label: 'Erro', value: item };
-	if (item === ProcessingStatus.Processing) return { label: 'Em Processamento', value: item };
+	if (item === ProcessingStatus.Processing) return { label: 'Em Análise', value: item };
 	if (item === ProcessingStatus.Waiting) return { label: 'Em Espera', value: item };
 	return { label: 'Desconhecido', value: item };
 });

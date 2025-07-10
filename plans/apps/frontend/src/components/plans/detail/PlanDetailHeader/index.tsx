@@ -2,12 +2,11 @@
 
 /* * */
 
-import BackButton from '@/components/common/BackButton';
 import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
-import { Routes } from '@/lib/routes';
 import { IconLock, IconLockOpen, IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { ActionIcon, Button, HasPermission, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { ActionIcon, BackButton, Button, HasPermission, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 /* * */
 
@@ -17,10 +16,19 @@ export function PlanDetailHeader() {
 	//
 	// A. Setup variables
 
+	const router = useRouter();
 	const planDetailContext = usePlanDetailContext();
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleClose = () => {
+		router.push('/plans');
+	};
+
+	//
+	// C. Render components
+
 	const lockButton = useMemo(() => {
 		const is_locked = planDetailContext.data.plan.is_locked;
 		return (
@@ -37,7 +45,7 @@ export function PlanDetailHeader() {
 
 	return (
 		<>
-			<BackButton href={Routes.PLAN_LIST} />
+			<BackButton onClick={handleClose} type="close" />
 			<Tag label={planDetailContext.data.plan._id} variant="muted" />
 			<Label size="lg" caps>{planDetailContext.data.id}</Label>
 			<Spacer />

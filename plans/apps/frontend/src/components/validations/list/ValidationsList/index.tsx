@@ -3,6 +3,7 @@
 /* * */
 
 import { ValidationsListCellAgency } from '@/components/validations/list/ValidationsListCellAgency';
+import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
 import { ValidationsListCellProcessingStatus } from '@/components/validations/list/ValidationsListCellProcessingStatus';
 import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
@@ -28,19 +29,25 @@ export function ValidationsList() {
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
 			title: '#ID',
-			width: 150,
-		},
-		{
-			accessor: 'feeder_status',
-			render: item => <ValidationsListCellProcessingStatus value={item.feeder_status} />,
-			title: 'Estado',
-			width: 220,
+			width: 100,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
 			title: 'Operador',
-			width: 500,
+			width: 300,
+		},
+		{
+			accessor: 'feeder_status',
+			render: item => <ValidationsListCellProcessingStatus value={item.feeder_status} />,
+			title: 'Estado',
+			width: 150,
+		},
+		{
+			accessor: 'created_at',
+			render: item => <ValidationsListCellDate value={item.created_at} />,
+			title: 'Data de Submissão',
+			width: 300,
 		},
 	];
 
