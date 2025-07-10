@@ -16,7 +16,10 @@ const COOKIE_NAME = 'session_token';
 /* * */
 
 export class AuthController {
-	async changepassword(request: FastifyRequest, reply: FastifyReply) {
+	/**
+	 *  Change password on database and delete token
+	*/
+	async changePassword(request: FastifyRequest, reply: FastifyReply) {
 		const { password_hash, token } = request.body as { password_hash: string, token: string };
 
 		const token_result = await verificationTokens.findOne({ token });
@@ -107,30 +110,9 @@ export class AuthController {
 	}
 
 	/**
-	 * Verify - Verify a user's email
-	 */
-	async verify(request: FastifyRequest, reply: FastifyReply) {
-		// Get the token from the request body
-		const { password_hash, token } = request.body as { password_hash: string, token: string };
-
-		// Verify the token
-		const token_result = await verificationTokens.findOne({ token });
-
-		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
-			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
-		}
-
-		// Update the user's password
-		await users.updateOne({ _id: token_result.user_id }, { password_hash });
-
-		// Delete the token
-		await verificationTokens.deleteOne({ token });
-
-		// Return the user
-		return reply.status(HttpStatus.OK).send({ message: 'Password updated successfully' });
-	}
-
-	async verifyEmail(request: FastifyRequest, reply: FastifyReply) {
+	 * Go check email is valid for send link to reset password
+	*/
+	async sendEmailWithResetPasswordURL(request: FastifyRequest, reply: FastifyReply) {
 		const { email } = request.body as { email: string };
 
 		// Search user by Email
@@ -157,5 +139,29 @@ export class AuthController {
 		});
 
 		reply.status(HttpStatus.OK).send({ message: 'Email sent is sucessfull' });
+	}
+
+	/**
+	 * Verify - Verify a user's email
+	 */
+	async verify(request: FastifyRequest, reply: FastifyReply) {
+		// Get the token from the request body
+		const { password_hash, token } = request.body as { password_hash: string, token: string };
+
+		// Verify the token
+		const token_result = await verificationTokens.findOne({ token });
+
+		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
+			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
+		}
+
+		// Update the user's password
+		await users.updateOne({ _id: token_result.user_id }, { password_hash });
+
+		// Delete the token
+		await verificationTokens.deleteOne({ token });
+
+		// Return the user
+		return reply.status(HttpStatus.OK).send({ message: 'Password updated successfully' });
 	}
 }

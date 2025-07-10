@@ -56,10 +56,15 @@ export default function IntroductionNewPassword({ redirect = '/' }: Props) {
 		if (response.status !== 200) {
 			useToast.error({
 				message: response.error ?? 'An error occurred',
-				title: 'failed to sent email',
+				title: 'Ocorreu um erro ao tentar trocar a palavra-passe',
 			});
 			return;
 		}
+
+		useToast.success({
+			message: response.status ?? 'palavra-passe trocada com sucesso',
+			title: 'senha trocada com sucesso',
+		});
 
 		router.replace(redirect);
 	};

@@ -36,12 +36,12 @@ server.register(
 
 		// Verify Email
 		instance.post('/verify-email', async (request, reply) => {
-			return controller.verifyEmail(request, reply);
+			return controller.sendEmailWithResetPasswordURL(request, reply);
 		});
 
 		// Chnage password
 		instance.post('/change-password', async (request, reply) => {
-			return controller.changepassword(request, reply);
+			return controller.changePassword(request, reply);
 		});
 
 		next();
