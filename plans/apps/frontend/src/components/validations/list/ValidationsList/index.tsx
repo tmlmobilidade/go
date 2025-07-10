@@ -63,7 +63,7 @@ export function ValidationsList() {
 		>
 			<DataTable
 				columns={columns}
-				onRowClick={item => router.push(Routes.PLAN_DETAIL(item._id))}
+				onRowClick={item => router.push(Routes.VALIDATION_DETAIL(item._id))}
 				records={validationsListContext.data.filtered}
 				rowIdAccessor="_id"
 			/>
