@@ -1,8 +1,9 @@
 /* * */
 
+import { type PlanNormalized } from '@/types/normalized';
 import { IconArrowRight } from '@tabler/icons-react';
 import { type OperationalDate } from '@tmlmobilidade/types';
-import { Tag } from '@tmlmobilidade/ui';
+import { Indicator, Tag } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
@@ -12,11 +13,12 @@ import styles from './styles.module.css';
 interface PlansListCellFeedDatesProps {
 	endDate: OperationalDate
 	startDate: OperationalDate
+	validityStatus: PlanNormalized['validity_status']
 }
 
 /* * */
 
-export function PlansListCellFeedDates({ endDate, startDate }: PlansListCellFeedDatesProps) {
+export function PlansListCellFeedDates({ endDate, startDate, validityStatus }: PlansListCellFeedDatesProps) {
 	//
 
 	//
@@ -35,6 +37,9 @@ export function PlansListCellFeedDates({ endDate, startDate }: PlansListCellFeed
 
 	return (
 		<div className={styles.wrapper}>
+			{validityStatus === 'expired' && <Indicator variant="danger" />}
+			{validityStatus === 'active' && <Indicator variant="success" filled />}
+			{validityStatus === 'upcoming' && <Indicator variant="primary" filled />}
 			<Tag label={startDateFormatted} variant="secondary" />
 			<IconArrowRight size={16} />
 			<Tag label={endDateFormatted} variant="secondary" />

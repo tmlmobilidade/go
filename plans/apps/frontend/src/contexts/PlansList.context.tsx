@@ -4,7 +4,8 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
-import { type PlanNormalized } from '@/types/normalized';
+import { type PlanNormalized, planValidityStatusValues } from '@/types/normalized';
+import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { type Plan } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
@@ -18,6 +19,7 @@ interface PlansListContextState {
 	actions: {
 		setFilterAgency: (values: string[]) => void
 		setFilterSearch: (values: string) => void
+		setFilterValidityStatus: (values: string[]) => void
 	}
 	data: {
 		filtered: PlanNormalized[]
@@ -26,6 +28,7 @@ interface PlansListContextState {
 	filters: {
 		agency: string[]
 		search: string
+		validity_status: string[]
 	}
 	flags: {
 		error: Error | undefined
@@ -56,7 +59,8 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	const agenciesContext = useAgenciesContext();
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-	const [filterAgency, setFilterAgency] = useQueryState<string[]>('municipality', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
+	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
+	const [filterValidityStatus, setFilterValidityStatus] = useQueryState<string[]>('validity_status', parseAsArrayOfStrings.withDefault(planValidityStatusValues));
 
 	//
 	// B. Fetch data
@@ -74,6 +78,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 			...item,
 			agency_id_normalized: item.gtfs_agency.agency_id,
 			agency_name_normalized: normalizeString(item.gtfs_agency.agency_name),
+			validity_status: getPlanValidityStatus(item.gtfs_feed_info.feed_start_date, item.gtfs_feed_info.feed_end_date),
 		}));
 	}, [allPlansData]);
 
@@ -88,9 +93,12 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
 		const agencySet = new Set(filterAgency);
+		const validityStatusSet = new Set(filterValidityStatus);
 		return searchResultsData.filter((item: PlanNormalized) => {
-			// Filter by publish_status
+			// Filter by agency
 			if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
+			// Filter by validity_status
+			if (!validityStatusSet.has(item.validity_status)) return false;
 			// Return true if all filters pass
 			return true;
 		});
@@ -103,6 +111,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		actions: {
 			setFilterAgency,
 			setFilterSearch,
+			setFilterValidityStatus,
 		},
 		data: {
 			filtered: filterResultsData,
@@ -111,6 +120,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		filters: {
 			agency: filterAgency,
 			search: filterSearch,
+			validity_status: filterValidityStatus,
 		},
 		flags: {
 			error: allPlansError,

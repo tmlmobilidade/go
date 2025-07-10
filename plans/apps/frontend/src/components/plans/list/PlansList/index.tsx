@@ -3,15 +3,15 @@
 /* * */
 
 import { PlansListCellAgency } from '@/components/plans/list/PlansListCellAgency';
+import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListCellIsLocked } from '@/components/plans/list/PlansListCellIsLocked';
+import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlansListContext } from '@/contexts/PlansList.context';
 import { Routes } from '@/lib/routes';
 import { type PlanNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-
-import { PlansListCellFeedDates } from '../PlansListCellFeedDates';
 
 /* * */
 
@@ -45,7 +45,13 @@ export function PlansList() {
 		},
 		{
 			accessor: 'gtfs_feed_info',
-			render: item => <PlansListCellFeedDates endDate={item.gtfs_feed_info.feed_end_date} startDate={item.gtfs_feed_info.feed_start_date} />,
+			render: item => (
+				<PlansListCellFeedDates
+					endDate={item.gtfs_feed_info.feed_end_date}
+					startDate={item.gtfs_feed_info.feed_start_date}
+					validityStatus={item.validity_status}
+				/>
+			),
 			title: 'Datas de Validade',
 			width: 500,
 		},
@@ -65,6 +71,7 @@ export function PlansList() {
 	return (
 		<Pane header={[
 			<PlansListHeader />,
+			<PlansListFiltersBar />,
 		]}
 		>
 			<DataTable
