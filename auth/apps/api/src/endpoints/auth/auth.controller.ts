@@ -25,11 +25,11 @@ export class AuthController {
 			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
 		};
 
-		const user = users.findById(token_result.user_id);
-
-		await users.updateOne({ user }, { password_hash });
+		await users.updateById(token_result.user_id, { password_hash: password_hash });
 
 		reply.status(HttpStatus.OK).send({ message: 'Changed Password' });
+
+		await verificationTokens.deleteOne({ token });
 	}
 
 	/**
@@ -146,7 +146,7 @@ export class AuthController {
 			user_id: user._id,
 		});
 
-		const url = getAppConfig('auth', 'frontend_url') + '/resetpassword?token={token}';
+		const url = getAppConfig('auth', 'frontend_url') + `/resetpassword?token=${token}`;
 
 		await sendResetPasswordEmail({
 			props: {
@@ -156,6 +156,6 @@ export class AuthController {
 			to: email,
 		});
 
-		reply.status(HttpStatus.OK).send({ message: 'Email sent is sucessful' });
+		reply.status(HttpStatus.OK).send({ message: 'Email sent is sucessfull' });
 	}
 }

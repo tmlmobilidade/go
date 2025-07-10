@@ -5,18 +5,19 @@ import { Session } from '@tmlmobilidade/types';
 import { useState } from 'react';
 
 interface UsechangePasswordReturn {
-	changePassword: (password: string) => Promise<HttpResponse<Session>>
+	changePassword: (password_hash: string, token: string) => Promise<HttpResponse<Session>>
 	loading: boolean
 }
 
-export function usechangePassword(): UsechangePasswordReturn {
+export function useChangePassword(): UsechangePasswordReturn {
 	const [loading, setLoading] = useState<boolean>(false);
-	setLoading(true);
-	const changePassword = async (password: string) => {
+
+	const changePassword = async (password_hash: string, token: string) => {
+		setLoading(true);
 		const response = await fetchData<Session>(
 			`/api/change-password`,
 			'POST',
-			{ password },
+			{ password_hash, token },
 		);
 
 		setLoading(false);
