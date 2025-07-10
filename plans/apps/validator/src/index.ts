@@ -5,7 +5,7 @@ import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
-import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
+import { ProcessingStatus } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
@@ -104,7 +104,7 @@ async function processValidation(message: ValidationMessage) {
 					{
 						field: 'N/A',
 						file_name: 'Erro do sistema',
-						message: error instanceof Error ? error.message : 'Unknown error',
+						message: error instanceof Error ? error.message : JSON.stringify(error),
 						rows: [],
 						severity: 'error',
 						validation_id: message.validation_id,
