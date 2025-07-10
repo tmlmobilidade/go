@@ -2,10 +2,10 @@
 
 /* * */
 
-import { swrFetcher } from '@/lib/http';
 import { type UserNormalized } from '@/types/normalized';
 import { type User } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { normalizeString } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';

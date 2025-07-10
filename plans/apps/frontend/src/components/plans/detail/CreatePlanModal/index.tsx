@@ -6,7 +6,7 @@ import { CREATE_PLAN_MODAL_ID, useCreatePlan } from './useCreatePlan';
 
 /* * */
 
-export const OpenCreatePlanModal = (validation_id?: string) => {
+export const openCreatePlanModal = (validation_id?: string) => {
 	openModal({
 		children: (
 			<ValidationListContextProvider>

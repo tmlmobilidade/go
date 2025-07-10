@@ -1,6 +1,6 @@
 /* * */
 
-import { usePlanListContext } from '@/contexts/PlanList.context';
+import { usePlanListContext } from '@/contexts/PlansList.context';
 import { AVAILABLE_AGENCIES } from '@tmlmobilidade/lib';
 import { Button, Checkbox, DatePicker, Grid, Label, Menu, Spacer, Tag, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';

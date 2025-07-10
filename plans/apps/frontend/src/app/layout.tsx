@@ -1,11 +1,13 @@
 /* * */
 
 import '@tmlmobilidade/ui/styles';
+import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { getAppConfig } from '@tmlmobilidade/lib';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -40,7 +42,11 @@ export default async function Layout({ children }: PropsWithChildren) {
 			<body>
 				<AppProvider>
 					<AppWrapper>
-						{children}
+						<NuqsAdapter>
+							<AgenciesContextProvider>
+								{children}
+							</AgenciesContextProvider>
+						</NuqsAdapter>
 					</AppWrapper>
 				</AppProvider>
 			</body>

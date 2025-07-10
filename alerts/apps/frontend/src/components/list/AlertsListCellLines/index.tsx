@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { useLinesContext } from '@/contexts/Lines.context';

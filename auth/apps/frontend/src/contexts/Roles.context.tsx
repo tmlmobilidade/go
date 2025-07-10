@@ -2,8 +2,8 @@
 
 /* * */
 
-import { swrFetcher } from '@/lib/http';
 import { type Role } from '@tmlmobilidade/types';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
