@@ -34,6 +34,16 @@ server.register(
 			return controller.verify(request, reply);
 		});
 
+		// Verify Email
+		instance.post('/verify-email', async (request, reply) => {
+			return controller.verifyEmail(request, reply);
+		});
+
+		// Chnage password
+		instance.post('/change-password', async (request, reply) => {
+			return controller.changepassword(request, reply);
+		});
+
 		next();
 	},
 	{ prefix: NAMESPACE },

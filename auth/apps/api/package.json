@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/connectors": "20250703.1415.56",
+		"@tmlmobilidade/emails": "^20250709.1250.6",
 		"@tmlmobilidade/interfaces": "20250703.1415.56",
 		"@tmlmobilidade/lib": "20250703.1415.56",
 		"@tmlmobilidade/utils": "20250703.1415.56",

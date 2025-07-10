@@ -25,6 +25,7 @@
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@tmlmobilidade/types": "20250703.1415.56",
 		"@types/node": "24.0.10",
+		"@types/nodemailer": "^6.4.17",
 		"@types/react": "19.1.8",
 		"@types/react-dom": "19.1.6",
 		"typescript": "5.8.3"

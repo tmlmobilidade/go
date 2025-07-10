@@ -60,7 +60,6 @@ export function UsersDetailBasicInfo() {
 						label="Change Password"
 						onChange={event => usersDetailContext.actions.handleChangePassword(event.target.value)}
 						placeholder="..."
-						withAsterisk={!CreateUserSchema.shape.password_hash.isOptional()}
 					/>
 				</Grid>
 			</Section>
