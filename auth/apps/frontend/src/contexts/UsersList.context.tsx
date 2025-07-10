@@ -3,9 +3,11 @@
 /* * */
 
 import { swrFetcher } from '@/lib/http';
-import { Routes } from '@/lib/routes';
-import { User } from '@tmlmobilidade/types';
-import { useSearchQuery } from '@tmlmobilidade/ui';
+import { type UserNormalized } from '@/types/normalized';
+import { type User } from '@tmlmobilidade/types';
+import { useSearch } from '@tmlmobilidade/ui';
+import { normalizeString } from '@tmlmobilidade/utils';
+import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -13,14 +15,14 @@ import useSWR from 'swr';
 
 interface UsersListContextState {
 	actions: {
-		changeSearchQuery: (query: string) => void
+		setFilterSearch: (values: string) => void
 	}
 	data: {
-		filtered: User[]
+		filtered: UserNormalized[]
 		raw: User[]
 	}
 	filters: {
-		search_query: string
+		search: string
 	}
 	flags: {
 		error: Error | undefined
@@ -48,39 +50,58 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Setup variables
 
-	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(Routes.API(Routes.USERS), swrFetcher);
-	const rawUsers = useMemo(() => allUsersData || [], [allUsersData]);
+	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 
 	//
-	// B. Transform data
+	// B. Fetch data
 
-	const { filteredData: searchFilteredUsers, searchQuery, setSearchQuery } = useSearchQuery(rawUsers, {
-		accessors: ['first_name', 'last_name', 'email'],
+	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>('/api/users', swrFetcher);
+
+	//
+	// C. Transform data
+
+	const normalizedUsersData: UserNormalized[] = useMemo(() => {
+		// Skip if no data is available
+		if (!allUsersData) return [];
+		// Normalize record fields
+		return allUsersData.map(item => ({
+			...item,
+			first_name_normalized: normalizeString(item.first_name),
+			last_name_normalized: normalizeString(item.last_name),
+		}));
+	}, [allUsersData]);
+
+	const searchResultsData = useSearch<UserNormalized>({
+		accessors: ['first_name_normalized', 'last_name_normalized'],
+		data: normalizedUsersData,
+		query: filterSearch,
 	});
-
-	const filteredUsers = useMemo(() => {
-		return searchFilteredUsers ?? rawUsers;
-	}, [searchFilteredUsers, rawUsers]);
 
 	//
 	// D. Define context value
 
 	const contextValue: UsersListContextState = useMemo(() => ({
 		actions: {
-			changeSearchQuery: setSearchQuery,
+			setFilterSearch,
 		},
 		data: {
-			filtered: filteredUsers,
-			raw: rawUsers,
+			filtered: searchResultsData,
+			raw: allUsersData ?? [],
 		},
 		filters: {
-			search_query: searchQuery ?? '',
+			search: filterSearch,
 		},
 		flags: {
-			error: allUsersError ?? undefined,
+			error: allUsersError,
 			loading: allUsersLoading,
 		},
-	}), [allUsersData, allUsersError, allUsersLoading, filteredUsers, rawUsers, searchQuery]);
+	}), [
+		allUsersData,
+		allUsersError,
+		allUsersLoading,
+		searchResultsData,
+		filterSearch,
+	]);
 
 	//
 	//	E. Render components

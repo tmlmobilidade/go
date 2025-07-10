@@ -1,37 +1,37 @@
 /* * */
 
-import { useUsersListContext } from '@/contexts/UsersList.context';
+import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
 import { Routes } from '@/lib/routes';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { Button, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function UsersListHeader() {
+export function AgenciesListHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const userListContext = useUsersListContext();
+	const agenciesListContext = useAgenciesListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<>
-			<Label size="lg" caps>Utilizadores</Label>
+			<Label size="lg" caps>Agências</Label>
 			<Spacer />
 			<TextInput
 				leftSection={<IconSearch size={20} />}
-				onChange={e => userListContext.actions.setFilterSearch(e.target.value)}
+				onChange={e => agenciesListContext.actions.setFilterSearch(e.target.value)}
 				placeholder="Pesquisar..."
-				value={userListContext.filters.search}
+				value={agenciesListContext.filters.search}
 			/>
 			<Button
-				href={Routes.USER_DETAIL('new')}
+				href={Routes.AGENCY_DETAIL('new')}
 				icon={<IconPlus size={20} />}
-				label="Novo utilizador"
+				label="Nova agência"
 			/>
 		</>
 	);

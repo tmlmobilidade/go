@@ -1,7 +1,7 @@
 /* * */
 
-import { AgenciesList } from '@/components/agencies/list/AgenciesList';
-import { AgenciesListContextProvider } from '@/contexts/AgenciesList.context';
+import { RolesList } from '@/components/roles/list/RolesList';
+import { RolesListContextProvider } from '@/contexts/RolesList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
@@ -11,9 +11,9 @@ export default function Layout({ children }: PropsWithChildren) {
 	return (
 		<PanesManager
 			panes={[
-				<AgenciesListContextProvider>
-					<AgenciesList />
-				</AgenciesListContextProvider>,
+				<RolesListContextProvider>
+					<RolesList />
+				</RolesListContextProvider>,
 				children,
 			]}
 		/>

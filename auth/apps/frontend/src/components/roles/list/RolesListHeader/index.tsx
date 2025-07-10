@@ -2,20 +2,20 @@
 
 /* * */
 
-import { useRoleListContext } from '@/contexts/RoleList.context';
+import { useRolesListContext } from '@/contexts/RolesList.context';
 import { Routes } from '@/lib/routes';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { Button, Label, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function RoleListHeader() {
+export function RolesListHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const roleListContext = useRoleListContext();
+	const roleListContext = useRolesListContext();
 
 	//
 	// B. Render components
@@ -25,12 +25,15 @@ export function RoleListHeader() {
 			<Label size="lg" caps>Roles</Label>
 			<TextInput
 				leftSection={<IconSearch size={20} />}
-				miw={400}
-				onChange={e => roleListContext.actions.changeSearchQuery(e.target.value)}
+				onChange={e => roleListContext.actions.setFilterSearch(e.target.value)}
 				placeholder="Pesquisar role"
-				value={roleListContext.filters.searchQuery}
+				value={roleListContext.filters.search}
 			/>
-			<Button href={Routes.ROLE_DETAIL('new')} icon={<IconPlus size={20} />} label="Novo role" />
+			<Button
+				href={Routes.ROLE_DETAIL('new')}
+				icon={<IconPlus size={20} />}
+				label="Novo role"
+			/>
 		</>
 	);
 

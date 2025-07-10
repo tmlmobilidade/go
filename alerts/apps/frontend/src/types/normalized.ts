@@ -1,6 +1,6 @@
 /* * */
 
-import { Alert } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/types';
 
 /* * */
 

@@ -5,6 +5,7 @@
 import { AgencyDetailMode, useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Section, Spacer, Tag, Text } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -14,14 +15,22 @@ export function AgencyDetailHeader() {
 	//
 	// A. Setup variables
 
+	const router = useRouter();
 	const agencyDetailContext = useAgencyDetailContext();
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleClose = () => {
+		router.push('/users', { scroll: false });
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<>
-			<BackButton />
+			<BackButton onClick={handleClose} type="close" />
 			<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">
 				<Tag label={agencyDetailContext.data.id || 'Nova Agência'} variant="muted" />
 				<Text size="lg">{agencyDetailContext.data.form.values.name}</Text>

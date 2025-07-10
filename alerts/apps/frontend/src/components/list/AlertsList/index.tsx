@@ -75,7 +75,7 @@ export function AlertList() {
 	//
 	// B. Render components
 
-	if (alertsListContext.flags.isLoading) {
+	if (alertsListContext.flags.loading) {
 		return <LoadingOverlay />;
 	}
 

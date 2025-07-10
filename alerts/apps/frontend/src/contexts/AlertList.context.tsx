@@ -36,7 +36,7 @@ interface AlertListContextState {
 	}
 	flags: {
 		error: Error | undefined
-		isLoading: boolean
+		loading: boolean
 	}
 }
 
@@ -90,7 +90,6 @@ export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
 	const searchResultsData = useSearch<AlertNormalized>({
 		accessors: ['title_normalized', 'description_normalized'],
 		data: normalizedAlertsData,
-		debounce: 500,
 		query: filterSearch,
 	});
 
@@ -117,7 +116,7 @@ export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
 	}, [searchResultsData, filterPublishStatus, filterCause, filterEffect, filterMunicipality]);
 
 	//
-	// d. Define context value
+	// D. Define context value
 
 	const contextValue: AlertListContextState = useMemo(() => ({
 		actions: {
@@ -125,7 +124,7 @@ export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
 			setFilterEffect: setFilterEffect,
 			setFilterMunicipality: setFilterMunicipality,
 			setFilterPublishStatus: setFilterPublishStatus,
-			setFilterSearch: setFilterSearch,
+			setFilterSearch,
 		},
 		data: {
 			filtered: filterResultsData,
@@ -140,7 +139,7 @@ export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: allAlertsError,
-			isLoading: allAlertsLoading,
+			loading: allAlertsLoading,
 		},
 	}), [
 		allAlertsData,

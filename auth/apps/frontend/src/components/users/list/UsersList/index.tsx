@@ -2,14 +2,12 @@
 
 /* * */
 
-import { TransparentPane } from '@/components/TransparentPane';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
-import { Loader, Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
+import { type UserNormalized } from '@/types/normalized';
+import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -20,33 +18,49 @@ export function UsersList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data, flags } = useUsersListContext();
+	const usersListContext = useUsersListContext();
+
+	const columns: DataTableColumn<UserNormalized>[] = [
+		{
+			accessor: '_id',
+			render: item => <Tag label={item._id} variant="secondary" />,
+			title: '#ID',
+			width: 300,
+		},
+		{
+			accessor: 'first_name',
+			title: 'Nome',
+			width: 200,
+		},
+		{
+			accessor: 'last_name',
+			title: 'Apelido',
+			width: 200,
+		},
+	];
 
 	//
 	// B. Render components
 
-	if (flags.loading) {
-		return (
-			<TransparentPane>
-				<Loader />
-			</TransparentPane>
-		);
+	if (usersListContext.flags.loading) {
+		return <LoadingOverlay />;
 	}
 
-	if (flags.error) {
-		return <div>Error: {flags.error.message}</div>;
+	if (usersListContext.flags.error) {
+		return <div>Error: {usersListContext.flags.error.message}</div>;
 	}
 
 	return (
-		<Pane header={[<UsersListHeader />]}>
-			{data.filtered.map(user => (
-				<div key={user._id} className={styles.root} onClick={() => router.push(Routes.USER_DETAIL(user._id))}>
-					<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">
-						<Tag label={user._id} variant="muted" />
-						<Text size="lg">{user.first_name} {user.last_name}</Text>
-					</Section>
-				</div>
-			))}
+		<Pane header={[
+			<UsersListHeader />,
+		]}
+		>
+			<DataTable
+				columns={columns}
+				onRowClick={item => router.push(Routes.USER_DETAIL(item._id))}
+				records={usersListContext.data.filtered}
+				rowIdAccessor="_id"
+			/>
 		</Pane>
 	);
 
