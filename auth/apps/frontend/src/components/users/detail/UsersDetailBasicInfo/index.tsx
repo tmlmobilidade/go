@@ -5,7 +5,7 @@
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, PasswordInput, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -54,6 +54,13 @@ export function UsersDetailBasicInfo() {
 						placeholder="912345678"
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...usersDetailContext.data.form.getInputProps('phone')}
+					/>
+					<PasswordInput
+						autoComplete="new-password"
+						label="Change Password"
+						onChange={event => usersDetailContext.actions.handleChangePassword(event.target.value)}
+						placeholder="..."
+						withAsterisk={!CreateUserSchema.shape.password_hash.isOptional()}
 					/>
 				</Grid>
 			</Section>

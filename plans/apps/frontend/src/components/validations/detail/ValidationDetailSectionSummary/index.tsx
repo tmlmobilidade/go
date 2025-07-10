@@ -48,7 +48,7 @@ export function ValidationDetailSectionSummary() {
 					<RowsCell rows={rows} />
 				);
 			},
-			title: 'Linhas',
+			title: 'Linhas do Ficheiro',
 			width: 400,
 		},
 		{
