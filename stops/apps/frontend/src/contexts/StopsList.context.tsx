@@ -3,9 +3,9 @@
 /* * */
 
 import { transformStopDataIntoGeoJsonFeature } from '@/contexts/Stops.context';
-import { swrFetcher } from '@/lib/http';
-import { Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/types';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/ui';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 

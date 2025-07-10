@@ -3,11 +3,11 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { swrFetcher } from '@/lib/http';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type AlertNormalized } from '@/types/normalized';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { normalizeString } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

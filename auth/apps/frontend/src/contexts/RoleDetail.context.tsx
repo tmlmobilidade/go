@@ -1,10 +1,10 @@
 'use client';
 
-import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { Permissions } from '@tmlmobilidade/lib';
 import { CreateRoleDto, Permission, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
