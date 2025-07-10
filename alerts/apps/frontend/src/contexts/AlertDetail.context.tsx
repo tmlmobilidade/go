@@ -87,6 +87,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: alert || emptyAlert,
+		// @ts-expect-error - @carrismetropolitana/api-types uses zod-openapi package for docs, which is not available in this context.
 		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
