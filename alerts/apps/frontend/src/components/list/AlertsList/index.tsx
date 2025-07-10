@@ -3,7 +3,6 @@
 /* * */
 
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
-import { DataTable, DataTableColumn } from '@/components/datatable';
 import { AlertsListCellDate } from '@/components/list/AlertsListCellDate';
 import { AlertsListCellLines } from '@/components/list/AlertsListCellLines';
 import { AlertsListCellMunicipalities } from '@/components/list/AlertsListCellMunicipalities';
@@ -14,7 +13,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
 import { type Alert } from '@tmlmobilidade/types';
-import { LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -30,7 +29,7 @@ export function AlertList() {
 
 	const columns: DataTableColumn<Alert>[] = [
 		{
-			accessor: 'state',
+			accessor: 'publish_status',
 			render: item => <AlertTagPublishStatus value={item.publish_status} />,
 			title: 'Estado',
 			width: 150,
@@ -41,7 +40,7 @@ export function AlertList() {
 			width: 600,
 		},
 		{
-			accessor: 'municipality',
+			accessor: 'municipality_ids',
 			render: item => <AlertsListCellMunicipalities values={item.municipality_ids} />,
 			title: 'Municípios',
 			width: 300,
@@ -59,13 +58,13 @@ export function AlertList() {
 			width: 300,
 		},
 		{
-			accessor: 'lines',
+			accessor: '_id',
 			render: item => <AlertsListCellLines values={getAvailableLines(item)} />,
 			title: 'Linhas',
 			width: 300,
 		},
 		{
-			accessor: 'stops',
+			accessor: '_id',
 			render: item => <AlertsListCellStops values={getAvailableStops(item)} />,
 			title: 'Paragens',
 			width: 800,
