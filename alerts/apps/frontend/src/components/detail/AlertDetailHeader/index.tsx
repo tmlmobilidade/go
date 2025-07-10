@@ -4,7 +4,7 @@
 
 import BackButton from '@/components/common/BackButton';
 import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { IconTrash, IconUpload, IconCopy } from '@tabler/icons-react';
 import { Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -26,6 +26,11 @@ export function AlertDetailHeader() {
 			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 			<Spacer />
+			<Button 
+				label="Duplicar"
+				icon={<IconCopy size={28}/>}
+				variant="secondary"
+			/>
 			<Button
 				label="Salvar como rascunho"
 				onClick={() => alertDetailContext.actions.saveAlert('draft')}
