@@ -24,7 +24,6 @@ export function AlertsListHeader() {
 			<Spacer />
 			<TextInput
 				leftSection={<IconSearch size={20} />}
-				miw={400}
 				onChange={e => alertsListContext.actions.setFilterSearch(e.target.value)}
 				placeholder="Pesquisar..."
 				value={alertsListContext.filters.search}
