@@ -1,11 +1,11 @@
 /* * */
 
-import { AgencyListContextProvider } from '@/contexts/AgencyList.context';
-import { RoleListContextProvider } from '@/contexts/RoleList.context';
+import { AgenciesContextProvider } from '@/contexts/Agencies.context';
+import { RolesContextProvider } from '@/contexts/Roles.context';
 import { AppWrapper, MeContextProvider } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -31,11 +31,11 @@ export default async function Layout({ children }: PropsWithChildren) {
 	return (
 		<MeContextProvider>
 			<AppWrapper>
-				<RoleListContextProvider>
-					<AgencyListContextProvider>
+				<AgenciesContextProvider>
+					<RolesContextProvider>
 						{children}
-					</AgencyListContextProvider>
-				</RoleListContextProvider>
+					</RolesContextProvider>
+				</AgenciesContextProvider>
 			</AppWrapper>
 		</MeContextProvider>
 	);

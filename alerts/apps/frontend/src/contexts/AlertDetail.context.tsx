@@ -1,9 +1,9 @@
 'use client';
 
-import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { fetchData, swrFetcher, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject, Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -87,6 +87,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: alert || emptyAlert,
+		// @ts-expect-error - @carrismetropolitana/api-types uses zod-openapi package for docs, which is not available in this context.
 		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,

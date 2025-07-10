@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRoleListContext } from '@/contexts/RoleList.context';
+import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { Collapsible, Combobox, Grid, Section } from '@tmlmobilidade/ui';
 
@@ -15,7 +15,7 @@ export function UsersDetailRoles() {
 	// A. Setup variables
 
 	const { data } = useUsersDetailContext();
-	const { data: roles } = useRoleListContext();
+	const { data: roles } = useRolesContext();
 
 	//
 	// B. Transform data

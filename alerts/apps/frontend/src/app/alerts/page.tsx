@@ -1,14 +1,15 @@
+'use client';
+
 /* * */
 
-import { AlertList } from '@/components/list/AlertsList';
-import { AlertListContextProvider } from '@/contexts/AlertList.context';
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Page() {
 	return (
-		<AlertListContextProvider>
-			<AlertList />
-		</AlertListContextProvider>
+		<Surface align="center" justify="center" variant="transparent">
+			<NoDataLabel text="Selecione um Alerta" />
+		</Surface>
 	);
 }

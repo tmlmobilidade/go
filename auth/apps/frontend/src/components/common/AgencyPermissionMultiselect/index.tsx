@@ -1,4 +1,4 @@
-import { useAgencyListContext } from '@/contexts/AgencyList.context';
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { ALLOW_ALL_FLAG } from '@tmlmobilidade/lib';
 import { MultiSelect } from '@tmlmobilidade/ui';
 
@@ -15,9 +15,9 @@ export function AgencyPermissionMultiselect({
 	onChange: (value: string[]) => void
 	selected: string[]
 }) {
-	const agencyListContext = useAgencyListContext();
+	const agencyListContext = useAgenciesContext();
 
-	const agencyOptions = agencyListContext.data.filtered.map(agency => ({
+	const agencyOptions = agencyListContext.data.raw.map(agency => ({
 		label: `${agency._id} - ${agency.name}`,
 		value: agency._id,
 	}));

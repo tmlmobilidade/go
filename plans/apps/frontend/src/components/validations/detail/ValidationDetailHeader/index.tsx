@@ -4,7 +4,7 @@
 
 import BackButton from '@/components/common/BackButton';
 import { StatusTag } from '@/components/common/StatusTag';
-import { OpenCreatePlanModal } from '@/components/plans/detail/CreatePlanModal';
+import { openCreatePlanModal } from '@/components/plans/detail/CreatePlanModal';
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
 import { Routes } from '@/lib/routes';
 import { IconTransform } from '@tabler/icons-react';
@@ -43,7 +43,7 @@ export function ValidationDetailHeader() {
 					<Button
 						icon={<IconTransform size={24} />}
 						label="Converter para plano"
-						onClick={() => OpenCreatePlanModal(validationDetailContext.data.validation._id)}
+						onClick={() => openCreatePlanModal(validationDetailContext.data.validation._id)}
 						size="lg"
 						variant="primary"
 					/>

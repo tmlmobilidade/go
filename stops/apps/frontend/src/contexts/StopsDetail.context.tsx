@@ -1,11 +1,11 @@
 'use client';
 
 // Commit: Samuel Santos
-import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { unzipFile } from '@/lib/utils';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { convertObject, multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
