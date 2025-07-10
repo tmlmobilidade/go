@@ -2,51 +2,71 @@
 
 /* * */
 
-import { StatusTag } from '@/components/common/StatusTag';
-import { ValidationsListFilters } from '@/components/validations/list/ValidationsListFilters';
+import { ValidationsListCellAgency } from '@/components/validations/list/ValidationsListCellAgency';
+import { ValidationsListCellProcessingStatus } from '@/components/validations/list/ValidationsListCellProcessingStatus';
+import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
-import { useValidationListContext } from '@/contexts/ValidationList.context';
-import { Pane, Section, Tag } from '@tmlmobilidade/ui';
+import { useValidationsListContext } from '@/contexts/ValidationsList.context';
+import { Routes } from '@/lib/routes';
+import { type ValidationNormalized } from '@/types/normalized';
+import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-
-import styles from './styles.module.css';
 
 /* * */
 
-export function ValidationList() {
+export function ValidationsList() {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data, flags } = useValidationListContext();
+	const validationsListContext = useValidationsListContext();
+
+	const columns: DataTableColumn<ValidationNormalized>[] = [
+		{
+			accessor: '_id',
+			render: item => <Tag label={item._id} variant="secondary" />,
+			title: '#ID',
+			width: 150,
+		},
+		{
+			accessor: 'feeder_status',
+			render: item => <ValidationsListCellProcessingStatus value={item.feeder_status} />,
+			title: 'Estado',
+			width: 220,
+		},
+		{
+			accessor: 'agency_id_normalized',
+			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
+			title: 'Operador',
+			width: 500,
+		},
+	];
 
 	//
 	// B. Render components
 
-	if (flags.isLoading) {
-		return <div>Loading...</div>;
+	if (validationsListContext.flags.loading) {
+		return <LoadingOverlay />;
 	}
-	else if (flags.error) {
-		return <div>Error: {flags.error.message}</div>;
+
+	if (validationsListContext.flags.error) {
+		return <div>Error: {validationsListContext.flags.error.message}</div>;
 	}
 
 	return (
 		<Pane header={[
 			<ValidationsListHeader />,
-			<ValidationsListFilters />,
+			<ValidationsListFiltersBar />,
 		]}
 		>
-			{data.filtered.map(Validation => (
-				<div key={Validation._id} className={styles.root} onClick={() => router.push(`/validations/${Validation._id}`)}>
-					<Section key={Validation._id} alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm">
-						<StatusTag status={Validation.feeder_status} />
-						<Tag label={Validation._id} variant="primary" />
-						<Tag label={Validation.gtfs_agency?.agency_name ? Validation.gtfs_agency.agency_name : 'N/A'} variant="secondary" />
-					</Section>
-				</div>
-			))}
+			<DataTable
+				columns={columns}
+				onRowClick={item => router.push(Routes.PLAN_DETAIL(item._id))}
+				records={validationsListContext.data.filtered}
+				rowIdAccessor="_id"
+			/>
 		</Pane>
 	);
 
