@@ -1,6 +1,6 @@
 /* * */
 
-import { RoleDetail } from '@/components/roles/RoleDetail';
+import { RoleDetail } from '@/components/roles/detail/RoleDetail';
 import { RoleDetailContextProvider } from '@/contexts/RoleDetail.context';
 
 /* * */

@@ -1,14 +1,15 @@
 'use client';
 
-import { NoDataLabel } from '@/components/NoDataLabel';
-import { TransparentPane } from '@/components/TransparentPane';
+/* * */
+
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Page() {
 	return (
-		<TransparentPane>
+		<Surface align="center" justify="center" variant="transparent">
 			<NoDataLabel text="Selecione um Utilizador" />
-		</TransparentPane>
+		</Surface>
 	);
 }

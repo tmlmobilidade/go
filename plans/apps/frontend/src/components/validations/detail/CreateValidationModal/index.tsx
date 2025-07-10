@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 
 export const CREATE_VALIDATION_MODAL_ID = 'create-validation-modal';
 
-export const OpenCreateValidationModal = () => {
+export const openCreateValidationModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
