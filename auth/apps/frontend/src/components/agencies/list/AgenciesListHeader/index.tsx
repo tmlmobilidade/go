@@ -20,7 +20,7 @@ export function AgenciesListHeader() {
 
 	return (
 		<>
-			<Label size="lg" caps>Agências</Label>
+			<Label size="lg" caps singleLine>Operadores</Label>
 			<Spacer />
 			<TextInput
 				leftSection={<IconSearch size={20} />}

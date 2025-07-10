@@ -20,7 +20,7 @@ export function AlertsListHeader() {
 
 	return (
 		<>
-			<Label size="lg" caps>Alertas</Label>
+			<Label size="lg" caps singleLine>Alertas</Label>
 			<Spacer />
 			<TextInput
 				leftSection={<IconSearch size={20} />}

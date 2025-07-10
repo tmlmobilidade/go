@@ -21,7 +21,7 @@ export function PlansListHeader() {
 
 	return (
 		<>
-			<Label size="lg" caps>Planos</Label>
+			<Label size="lg" caps singleLine>Planos</Label>
 			<Spacer />
 			<TextInput
 				leftSection={<IconSearch size={20} />}

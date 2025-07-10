@@ -20,7 +20,7 @@ export function UsersListHeader() {
 
 	return (
 		<>
-			<Label size="lg" caps>Utilizadores</Label>
+			<Label size="lg" caps singleLine>Utilizadores</Label>
 			<Spacer />
 			<TextInput
 				leftSection={<IconSearch size={20} />}

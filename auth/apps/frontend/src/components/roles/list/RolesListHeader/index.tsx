@@ -22,12 +22,12 @@ export function RolesListHeader() {
 
 	return (
 		<>
-			<Label size="lg" caps>Roles</Label>
+			<Label size="lg" caps singleLine>Grupos de Permissões</Label>
 			<Spacer />
 			<TextInput
 				leftSection={<IconSearch size={20} />}
 				onChange={e => roleListContext.actions.setFilterSearch(e.target.value)}
-				placeholder="Pesquisar role"
+				placeholder="Pesquisar..."
 				value={roleListContext.filters.search}
 			/>
 			<Button
