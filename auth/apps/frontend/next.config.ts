@@ -1,5 +1,6 @@
 /* * */
 
+import createMDX from '@next/mdx';
 import { type NextConfig } from 'next';
 
 /* * */
@@ -9,6 +10,7 @@ const nextConfig: NextConfig = {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
 	output: 'standalone',
+	pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 	reactStrictMode: true,
 	async rewrites() {
 		return [
@@ -20,6 +22,11 @@ const nextConfig: NextConfig = {
 	},
 };
 
+const withMDX = createMDX({
+	extension: /\.(md|mdx)$/,
+});
+
 /* * */
 
-export default nextConfig;
+// Merge MDX config with Next.js config
+export default withMDX(nextConfig);
