@@ -91,14 +91,14 @@ interface SeverityConfig {
 	variant: 'active' | 'danger' | 'disabled' | 'info' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
 
-function SeverityBadge({ label, severity }: { label?: string, severity: 'error' | 'info' | 'warning' }) {
+function SeverityBadge({ label, severity }: { label?: string, severity: 'error' | 'ignore' | 'warning' }) {
 	const severityConfig: Record<string, SeverityConfig> = {
 		error: {
 			icon: <IconAlertCircle />,
 			label: 'Erro',
 			variant: 'danger',
 		},
-		info: {
+		ignore: {
 			icon: <IconInfoCircle />,
 			label: 'Informação',
 			variant: 'info',
