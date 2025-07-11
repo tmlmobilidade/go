@@ -1,6 +1,6 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { validations } from '@tmlmobilidade/interfaces';
+import { files, validations } from '@tmlmobilidade/interfaces';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -22,6 +22,21 @@ async function cleanOldValidations() {
 		});
 
 		LOGGER.info(`Found ${oldValidations.length} validations older than ${thirdtyDaysInMilliseconds} days`);
+
+		for (const validation of oldValidations) {
+			// Delete associated files
+			if (validation.file_id) {
+				const fileIds = files.deleteById(validation.file_id);
+				const fileDeletionTimer = new TIMETRACKER();
+				const deleteFilesResult = await files.deleteMany({
+					_id: { fileIds },
+				});
+				LOGGER.info(`Deleted ${deleteFilesResult.deletedCount} files associated with validation ${validation._id}. (${fileDeletionTimer.get()})`);
+			}
+			else {
+				LOGGER.info(`No files associated with validation ${validation._id}`);
+			}
+		}
 
 		// Process deletions
 		if (oldValidations.length > 0) {
