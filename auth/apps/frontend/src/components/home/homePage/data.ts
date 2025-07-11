@@ -8,8 +8,8 @@ export interface QuickLink {
 
 
 export const quickLinks: QuickLink[] = [
-	{ icon: '👤', href: 'https://carrismetropolitana.pt/', title: 'Carris Metropolitana' },
-	{ icon: '⚠️', href: 'http://localhost:51001', title: 'Alertas' },
-	{ icon: '📊', href: 'http://localhost:51002', title: 'Monitorização' },
-	{ icon: '🚌', href: 'http://localhost:51003', title: 'Paragens' },
+	{ icon: '🌐', href: 'https://carrismetropolitana.pt/', title: 'Site' },
+	{ icon: '🐈‍⬛', href: 'https://github.com/carrismetropolitana/', title: 'GitHub' },
+	{ icon: '📖', href: 'https://pt.wikipedia.org/wiki/Carris_Metropolitana', title: 'Wiki' },
+	{ icon: '🐤', href: 'https://x.com/CMetropolitana_?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor', title: 'Twiitter' },
 ];
