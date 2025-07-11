@@ -64,7 +64,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// B. Fetch data
 
-	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<Validation[], Error>('/api/validations', swrFetcher);
+	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<Validation[], Error>('/api/validations', swrFetcher, { refreshInterval: 3_000 });
 
 	//
 	// C. Transform data
