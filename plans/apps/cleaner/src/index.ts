@@ -1,116 +1,97 @@
 /* * */
 
+import 'dotenv/config'; // get variable from .env file
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { plans } from '@tmlmobilidade/interfaces';
-import { OCIStorageClient } from ''; // OCI client
+import { validations } from '@tmlmobilidade/interfaces';
+import { MongoClient } from 'mongodb';
 
 /* * */
 
-const RUN_INTERVAL = 86400000; // 24 hours
+// Configuration
+const CONFIG = {
+  RUN_INTERVAL: 86400000, // 24 hours
+  DAYS: 30,
+  MONGO_URI: process.env.TML_INTERFACE_PLANS || 'mongodb://root:root@localhost:37005/?directConnection=true'
+};
 
 /* * */
 
-async function cleanOldPlans() {
-    try {
-        //
+// MongoDB Connection 
+async function connectToMongo() {
+  const client = new MongoClient(CONFIG.MONGO_URI);
+  try {
+    await client.connect(); // connect to mongodb
+    LOGGER.info('Successfully connected to MongoDB');
+    return client;
+  } catch (err) {
+    LOGGER.error('MongoDB connection failed:', err);
+    process.exit(1);
+  }
+}
 
-        LOGGER.init();
+/* * */
+// Funtion to clean old plans
 
-        const globalTimer = new TIMETRACKER();
+async function cleanOldValidations() {
+  let mongoClient: MongoClient | null = null;
+  
+  try {
 
-        //
-        // Calculate cutoff date (30 days ago)
+    LOGGER.init();
+    const globalTimer = new TIMETRACKER();
 
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - 30); //subtract 30 days
+    //  Connect to MongoDB
+    mongoClient = await connectToMongo();
+    const db = mongoClient.db();
+    const validationsCollection = db.collection('validations'); // Get validations collection
 
-        //
-        // Get all plans older than cutoff date
-        // Find old plans from DB
+    //Calculate cutoff date
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - CONFIG.DAYS);
 
-        const fetchTimer = new TIMETRACKER();
+    // Find old validations
+    const oldValidations = await validationsCollection.find({
 
-        const oldPlans = await plans.findMany({ 
-            created_at: { $lt: cutoffDate } as any 
-        });
+      created_at: { $lt: cutoffDate.getTime() } 
 
-        const fetchTimerResult = fetchTimer.get();
+    }).toArray();
 
-        LOGGER.info(`Found ${oldPlans.length} plans older than 30 days. (${fetchTimerResult})`);
+    LOGGER.info(`Found ${oldValidations.length} validations older than ${CONFIG.DAYS} days`);
 
-        //
-        // Initialize OCI client
+    // Process deletions
+    if (oldValidations.length > 0) {
 
-     const storage = new OCIStorageClient({
-            accessKeyId: '31fce674ca17a4e58e21aa38051367b62ed67a79', 
-            secretAccessKey: 'o31k/sf7BNFDNa03OF5L1SfH2FUoghw5m98j0j0WsVk=',
-            region: 'eu-frankfurt-1',
-            namespace: 'frdvdrigd38a'
-        });
+      const deleteTimer = new TIMETRACKER();
 
-        //
-        // Process deletions
+      const deleteResult = await validationsCollection.deleteMany({
+        _id: { $in: oldValidations.map(v => v._id) }
+      });
 
-        if (oldPlans.length > 0) {
-            //
-
-            const deleteTimer = new TIMETRACKER();
-            let deletedCount = 0;
-
-               for (const plan of oldPlans) {
-                try {
-                    // Type-safe check for file_path
-                    const filePath = (plan as any).file_path || (plan as unknown as { file_path?: string }).file_path;
-                    
-                    if (filePath) {
-                        await storage.deleteObject({
-                            bucketName: 'tmlmobilidade-sae-development',
-                            objectName: filePath
-                        });
-                    }
-
-                    // Delete from MongoDB
-                    await (await plans.getCollection()).deleteOne({ _id: plan._id });
-                    deletedCount++;
-
-                } catch (err) {
-                    LOGGER.error(`Error cleaning plan ${plan._id}`, err as Error);
-                }
-            }
-
-
-            LOGGER.info(`Deleted ${deletedCount} old plans. (${deleteTimer.get()})`);
-            LOGGER.spacer(1);
-
-            //
-        } else {
-            LOGGER.info(`No old plans found to clean!`);
-            LOGGER.spacer(1);
-        }
-
-        //
-
-        LOGGER.terminate(`Cleanup took ${globalTimer.get()}.`);
-
-        //
-    } catch (err) {
-        LOGGER.error('An error occurred. Halting execution.', err as Error);
-        LOGGER.error('Retrying in 10 seconds...');
-        setTimeout(() => {
-            process.exit(0); // End process
-        }, 10000); // after 10 seconds
+      LOGGER.info(`Deleted ${deleteResult.deletedCount} old validations. (${deleteTimer.get()})`);
+    } else {
+      LOGGER.info('No old validations found to clean');
     }
 
-    //
+    LOGGER.terminate(`Cleanup completed in ${globalTimer.get()}`);
+
+  } catch (err) {
+
+    LOGGER.error('Cleanup failed:', err);
+  } finally {
+
+    if (mongoClient) await mongoClient.close();
+  }
 }
 
 /* * */
 
-(async function init() {
-    const runOnInterval = async () => {
-        await cleanOldPlans();
-        setTimeout(runOnInterval, RUN_INTERVAL);
-    };
-    runOnInterval();
+// Startup
+(async () => {
+
+  LOGGER.info(`Configuration: ${CONFIG.DAYS} days retention`);
+
+  // Immediate run then schedule
+  await cleanOldValidations();
+  setInterval(cleanOldValidations, CONFIG.RUN_INTERVAL);
 })();
