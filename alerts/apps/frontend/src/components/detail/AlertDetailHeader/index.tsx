@@ -5,6 +5,7 @@
 import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -22,7 +23,8 @@ export function AlertDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push('/alerts');
+		const destUrl = keepUrlParams('/alerts', window.location.search);
+		router.push(destUrl);
 	};
 
 	//

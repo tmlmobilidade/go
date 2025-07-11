@@ -14,6 +14,7 @@ import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
 import { type Alert } from '@tmlmobilidade/types';
 import { DataTable, type DataTableColumn, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -72,7 +73,15 @@ export function AlertList() {
 	];
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleRowClick = (alert: Alert) => {
+		const destUrl = keepUrlParams(Routes.ALERT_DETAIL(alert._id), window.location.search);
+		router.push(destUrl);
+	};
+
+	//
+	// C. Render components
 
 	if (alertsListContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -90,7 +99,7 @@ export function AlertList() {
 		>
 			<DataTable
 				columns={columns}
-				onRowClick={alert => router.push(Routes.ALERT_DETAIL(alert._id))}
+				onRowClick={handleRowClick}
 				records={alertsListContext.data.filtered}
 				rowIdAccessor="_id"
 			/>
