@@ -30,19 +30,19 @@ export function PlansList() {
 			accessor: 'is_locked',
 			render: item => <PlansListCellIsLocked value={item.is_locked} />,
 			title: 'Lock Status',
-			width: 150,
+			width: 120,
 		},
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
 			title: '#ID',
-			width: 150,
+			width: 100,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PlansListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
 			title: 'Operador',
-			width: 500,
+			width: 300,
 		},
 		{
 			accessor: 'gtfs_feed_info',
@@ -54,7 +54,7 @@ export function PlansList() {
 				/>
 			),
 			title: 'Datas de Validade',
-			width: 500,
+			width: 350,
 		},
 	];
 
