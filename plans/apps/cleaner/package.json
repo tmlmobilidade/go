@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller-cleaner",
+	"name": "@tmlmobilidade/sae-plans-cleaner",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
@@ -16,6 +16,7 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
+		"@tmlmobilidade/utils": "20250701.1722.33",
 		"@tmlmobilidade/interfaces": "20250701.1722.33"
 	},
 	"devDependencies": {
