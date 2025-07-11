@@ -10,7 +10,7 @@ import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlansListContext } from '@/contexts/PlansList.context';
 import { Routes } from '@/lib/routes';
 import { type PlanNormalized } from '@/types/normalized';
-import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -74,7 +74,7 @@ export function PlansList() {
 	}
 
 	if (plansListContext.flags.error) {
-		return <div>Error: {plansListContext.flags.error.message}</div>;
+		return <ErrorDisplay message={plansListContext.flags.error.message} />;
 	}
 
 	return (
