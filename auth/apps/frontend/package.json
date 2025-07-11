@@ -11,9 +11,9 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.34.0",
-		"@tmlmobilidade/lib": "20250711.1751.34",
-		"@tmlmobilidade/ui": "20250711.1751.34",
-		"@tmlmobilidade/utils": "20250711.1751.34",
+		"@tmlmobilidade/lib": "20250711.2217.30",
+		"@tmlmobilidade/ui": "20250711.2217.30",
+		"@tmlmobilidade/utils": "20250711.2217.30",
 		"bcryptjs": "3.0.2",
 		"clsx": "2.1.1",
 		"next": "15.3.5",
@@ -23,8 +23,8 @@
 		"swr": "2.3.4"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250711.1751.34",
-		"@tmlmobilidade/types": "20250711.1751.34",
+		"@tmlmobilidade/tsconfig": "20250711.2217.30",
+		"@tmlmobilidade/types": "20250711.2217.30",
 		"@types/node": "24.0.13",
 		"@types/react": "19.1.8",
 		"@types/react-dom": "19.1.6",

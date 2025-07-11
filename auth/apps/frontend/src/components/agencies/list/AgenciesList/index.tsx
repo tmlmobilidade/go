@@ -6,7 +6,7 @@ import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeade
 import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
 import { Routes } from '@/lib/routes';
 import { type AgencyNormalized } from '@/types/normalized';
-import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -51,7 +51,7 @@ export function AgenciesList() {
 	}
 
 	if (agenciesListContext.flags.error) {
-		return <div>Error: {agenciesListContext.flags.error.message}</div>;
+		return <ErrorDisplay message={agenciesListContext.flags.error.message} />;
 	}
 
 	return (

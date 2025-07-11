@@ -13,7 +13,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
 import { type Alert } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -88,7 +88,7 @@ export function AlertList() {
 	}
 
 	if (alertsListContext.flags.error) {
-		return <div>Error: {alertsListContext.flags.error.message}</div>;
+		return <ErrorDisplay message={alertsListContext.flags.error.message} />;
 	}
 
 	return (

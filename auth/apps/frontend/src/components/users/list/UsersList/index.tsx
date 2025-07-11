@@ -6,7 +6,7 @@ import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
 import { type UserNormalized } from '@/types/normalized';
-import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -44,7 +44,7 @@ export function UsersList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: UserNormalized) => {
-		const destUrl = keepUrlParams(Routes.ROLE_DETAIL(item._id), window.location.search);
+		const destUrl = keepUrlParams(Routes.USER_DETAIL(item._id), window.location.search);
 		router.push(destUrl);
 	};
 
@@ -56,7 +56,7 @@ export function UsersList() {
 	}
 
 	if (usersListContext.flags.error) {
-		return <div>Error: {usersListContext.flags.error.message}</div>;
+		return <ErrorDisplay message={usersListContext.flags.error.message} />;
 	}
 
 	return (
