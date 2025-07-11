@@ -1,4 +1,4 @@
-import { DeleteActionIcon, FileButton, Label, useToast } from '@tmlmobilidade/ui';
+import { DeleteButton, FileButton, Label, useToast } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
@@ -68,10 +68,10 @@ export function UploadImage({
 					<Image alt="Preview" className={styles.image} height={300} src={preview} width={400} />
 					{onDelete && (
 						<div className={styles.deleteContainer}>
-							<DeleteActionIcon
+							<DeleteButton
 								confirmMessage="Tem certeza que deseja apagar a imagem?"
 								confirmTitle="Apagar imagem"
-								onConfirm={handleDelete}
+								onDelete={handleDelete}
 								showConfirmation
 							/>
 						</div>
