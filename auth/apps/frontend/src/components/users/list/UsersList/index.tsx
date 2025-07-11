@@ -7,6 +7,7 @@ import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
 import { type UserNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -40,7 +41,15 @@ export function UsersList() {
 	];
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleRowClick = (item: UserNormalized) => {
+		const destUrl = keepUrlParams(Routes.ROLE_DETAIL(item._id), window.location.search);
+		router.push(destUrl);
+	};
+
+	//
+	// C. Render components
 
 	if (usersListContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -57,7 +66,7 @@ export function UsersList() {
 		>
 			<DataTable
 				columns={columns}
-				onRowClick={item => router.push(Routes.USER_DETAIL(item._id))}
+				onRowClick={handleRowClick}
 				records={usersListContext.data.filtered}
 				rowIdAccessor="_id"
 			/>

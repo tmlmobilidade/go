@@ -7,6 +7,7 @@ import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
 import { Routes } from '@/lib/routes';
 import { type AgencyNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -35,7 +36,15 @@ export function AgenciesList() {
 	];
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleRowClick = (item: AgencyNormalized) => {
+		const destUrl = keepUrlParams(Routes.AGENCY_DETAIL(item._id), window.location.search);
+		router.push(destUrl);
+	};
+
+	//
+	// C. Render components
 
 	if (agenciesListContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -52,7 +61,7 @@ export function AgenciesList() {
 		>
 			<DataTable
 				columns={columns}
-				onRowClick={item => router.push(Routes.AGENCY_DETAIL(item._id))}
+				onRowClick={handleRowClick}
 				records={agenciesListContext.data.filtered}
 				rowIdAccessor="_id"
 			/>

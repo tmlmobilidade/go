@@ -6,6 +6,7 @@ import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { BackButton, Button, HasPermission, LockButton, Spacer, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -23,7 +24,8 @@ export function PlanDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push('/plans');
+		const destUrl = keepUrlParams('/plans', window.location.search);
+		router.push(destUrl);
 	};
 
 	//

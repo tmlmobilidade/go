@@ -75,8 +75,8 @@ export function AlertList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (alert: Alert) => {
-		const destUrl = keepUrlParams(Routes.ALERT_DETAIL(alert._id), window.location.search);
+	const handleRowClick = (item: Alert) => {
+		const destUrl = keepUrlParams(Routes.ALERT_DETAIL(item._id), window.location.search);
 		router.push(destUrl);
 	};
 

@@ -11,6 +11,7 @@ import { usePlansListContext } from '@/contexts/PlansList.context';
 import { Routes } from '@/lib/routes';
 import { type PlanNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -58,7 +59,15 @@ export function PlansList() {
 	];
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleRowClick = (item: PlanNormalized) => {
+		const destUrl = keepUrlParams(Routes.PLAN_DETAIL(item._id), window.location.search);
+		router.push(destUrl);
+	};
+
+	//
+	// C. Render components
 
 	if (plansListContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -76,7 +85,7 @@ export function PlansList() {
 		>
 			<DataTable
 				columns={columns}
-				onRowClick={item => router.push(Routes.PLAN_DETAIL(item._id))}
+				onRowClick={handleRowClick}
 				records={plansListContext.data.filtered}
 				rowIdAccessor="_id"
 			/>

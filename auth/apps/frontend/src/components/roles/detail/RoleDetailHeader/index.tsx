@@ -5,6 +5,7 @@
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Badge, Button, Spacer } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -22,7 +23,8 @@ export function RoleDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push('/roles', { scroll: false });
+		const destUrl = keepUrlParams('/roles', window.location.search);
+		router.push(destUrl);
 	};
 
 	//

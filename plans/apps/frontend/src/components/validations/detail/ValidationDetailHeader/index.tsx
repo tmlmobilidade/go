@@ -9,6 +9,7 @@ import { IconTransform } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { ProcessingStatus } from '@tmlmobilidade/types';
 import { BackButton, Button, HasPermission, Label, Spacer } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -34,7 +35,8 @@ export function ValidationDetailHeader() {
 	// C. Handle actions
 
 	const handleClose = () => {
-		router.push('/validations');
+		const destUrl = keepUrlParams('/validations', window.location.search);
+		router.push(destUrl);
 	};
 
 	//

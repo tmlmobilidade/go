@@ -2,8 +2,8 @@
 
 import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
 import { Routes } from '@/lib/routes';
-import { IconPlus, IconSearch } from '@tabler/icons-react';
-import { Button, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { IconPlus } from '@tabler/icons-react';
+import { Button, Label, SearchInput, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,17 +22,8 @@ export function AgenciesListHeader() {
 		<>
 			<Label size="lg" caps singleLine>Operadores</Label>
 			<Spacer />
-			<TextInput
-				leftSection={<IconSearch size={20} />}
-				onChange={e => agenciesListContext.actions.setFilterSearch(e.target.value)}
-				placeholder="Pesquisar..."
-				value={agenciesListContext.filters.search}
-			/>
-			<Button
-				href={Routes.AGENCY_DETAIL('new')}
-				icon={<IconPlus size={20} />}
-				label="Nova agência"
-			/>
+			<SearchInput onChange={agenciesListContext.actions.setFilterSearch} value={agenciesListContext.filters.search} />
+			<Button href={Routes.AGENCY_DETAIL('new')} icon={<IconPlus size={20} />} label="Nova agência" />
 		</>
 	);
 

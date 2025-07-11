@@ -11,6 +11,7 @@ import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { Routes } from '@/lib/routes';
 import { type ValidationNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -52,7 +53,15 @@ export function ValidationsList() {
 	];
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleRowClick = (item: ValidationNormalized) => {
+		const destUrl = keepUrlParams(Routes.VALIDATION_DETAIL(item._id), window.location.search);
+		router.push(destUrl);
+	};
+
+	//
+	// C. Render components
 
 	if (validationsListContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -70,7 +79,7 @@ export function ValidationsList() {
 		>
 			<DataTable
 				columns={columns}
-				onRowClick={item => router.push(Routes.VALIDATION_DETAIL(item._id))}
+				onRowClick={handleRowClick}
 				records={validationsListContext.data.filtered}
 				rowIdAccessor="_id"
 			/>
