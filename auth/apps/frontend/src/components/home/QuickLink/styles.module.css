@@ -1,17 +1,21 @@
+/* * */
+/* CONTAINER */
 
 .container {
-    text-align: center;
-    max-height: 25%;
-    padding: 100px 0px;
-    padding-bottom: 150px;
-    border: 2px solid;
-    border-radius: 10px;
-    background-color: var(--color-system-background-200);
-    border-color: var(--color-system-border-100);
-    transition: 300ms;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	align-items: center;
+	justify-content: center;
+	padding: 50px;
+	text-align: center;
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 8px;
+	transition: 200ms all ease;
 }
 
 .container:hover {
-    background-color: var(--color-system-background-300);
+	background-color: var(--color-system-background-300);
 }
 
