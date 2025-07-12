@@ -107,7 +107,7 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 			}
 
 			// Update with actual server response
-			mutate(Routes.API(Routes.PLAN_DETAIL(planId)), response.data);
+			// mutate(Routes.API(Routes.PLAN_DETAIL(planId)), response.data);
 			mutate(Routes.API(Routes.PLAN_LIST));
 		}
 		catch (error) {

@@ -2,11 +2,9 @@
 
 /* * */
 
-// import type { Stop } from '@carrismetropolitana/api-types/network';
-import type { Stop } from '@tmlmobilidade/types';
-
-import { swrFetcher } from '@/lib/http';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+import { type Stop } from '@tmlmobilidade/types';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 

@@ -1,25 +1,31 @@
 /* * */
 
-import { OpenCreateValidationModal } from '@/components/validations/detail/CreateValidationModal';
+import { openCreateValidationModal } from '@/components/validations/detail/CreateValidationModal';
+import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Button, HasPermission, Label, Spacer } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, SearchInput, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function ValidationsListHeader() {
 	//
-	// A. Render components
+
+	//
+	// A. Setup variables
+
+	const validationsListContext = useValidationsListContext();
+
+	//
+	// B. Render components
 
 	return (
 		<>
-			<Label size="lg" caps>Validações</Label>
+			<Label size="lg" caps singleLine>Validações GTFS</Label>
 			<Spacer />
-			<HasPermission
-				action={Permissions.validations.actions.create}
-				scope={Permissions.validations.scope}
-			>
-				<Button label="Nova validação" leftSection={<IconPlus size={20} />} onClick={OpenCreateValidationModal} />
+			<SearchInput onChange={validationsListContext.actions.setFilterSearch} value={validationsListContext.filters.search} />
+			<HasPermission action={Permissions.validations.actions.create} scope={Permissions.validations.scope}>
+				<Button label="Nova validação" leftSection={<IconPlus size={20} />} onClick={openCreateValidationModal} />
 			</HasPermission>
 		</>
 	);

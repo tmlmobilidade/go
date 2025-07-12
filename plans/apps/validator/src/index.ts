@@ -2,9 +2,11 @@
 
 import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
+import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
-import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
+import { ProcessingStatus } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -42,7 +44,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// 4. Run GTFS validation
 		logger.info(`Validating file: ${tempFilePath}`);
-		const useRules = getCurrentEnvironment() === 'staging';
+		const useRules = false; // getCurrentEnvironment() === 'staging';
 		const validationResult = await GTFSValidator(tempFilePath, {
 			rules_path: useRules ? join(__dirname, 'tml-rules.json') : undefined,
 		});
@@ -55,11 +57,44 @@ async function processValidation(message: ValidationMessage) {
 			summary: validationResult,
 		});
 
+		// Send email to user
+		try {
+			const latest_validation = await validations.findById(message.validation_id);
+			await sendGtfsValidationEmail({
+				props: {
+					first_name: '',
+					validation: latest_validation,
+				},
+				to: file.created_by,
+			});
+		}
+		catch (error) {
+			logger.error('Error sending email:', error);
+		}
+
 		logger.success('Validation Finished Successfully');
 		logger.divider();
 	}
 	catch (error) {
+		console.log('ERROR:', error);
 		logger.error('Error processing validation:', error);
+
+		// Send email to system
+		try {
+			if (process.env.EMAIL_TO) {
+				await sendFailedBackupEmail({
+					props: {
+						backup_service: 'Validator',
+						error_message: error instanceof Error ? error.message : JSON.stringify(error),
+						failure_time: Dates.now('Europe/Lisbon').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS),
+					},
+					to: process.env.EMAIL_TO,
+				});
+			}
+		}
+		catch (error) {
+			logger.error('Error sending email:', error);
+		}
 
 		// Update validation status to error
 		await validations.updateById(message.validation_id, {
@@ -67,9 +102,9 @@ async function processValidation(message: ValidationMessage) {
 			summary: {
 				messages: [
 					{
-						field: 'validation',
-						file_name: 'validation.json',
-						message: error instanceof Error ? error.message : 'Unknown error',
+						field: 'N/A',
+						file_name: 'Erro do sistema',
+						message: error instanceof Error ? error.message : JSON.stringify(error),
 						rows: [],
 						severity: 'error',
 						validation_id: message.validation_id,

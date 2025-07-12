@@ -17,7 +17,7 @@ export class AlertsController {
 
 			const result = await alerts.insertOne(alertData);
 
-			reply.send({ data: result, message: 'Alert created' });
+			reply.send({ data: { ...result, created_by: request.me._id, updated_by: request.me._id }, message: 'Alert created' });
 		}
 		catch (error) {
 			reply
@@ -177,7 +177,7 @@ export class AlertsController {
 			await alerts.updateById(id, alertData);
 
 			reply.send({
-				data: alertData,
+				data: { ...alertData, updated_by: request.me._id },
 				message: `Alert with id: ${id} updated`,
 			});
 		}
@@ -191,39 +191,51 @@ export class AlertsController {
 	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
 		try {
 			const { id } = request.params;
+			console.debug(`[uploadImage] Received request to upload image for alert id: ${id}`);
 
 			const alert = await alerts.findById(id);
+			console.debug(`[uploadImage] Fetched alert:`, alert);
 
 			if (!alert) {
+				console.debug(`[uploadImage] Alert not found for id: ${id}`);
 				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
 				return;
 			}
 			// Parse the file from the request
 			const data = await request.file();
+			console.debug(`[uploadImage] Received file:`, {
+				filename: data.filename,
+				mimetype: data.mimetype,
+			});
 			const buffer = await data.toBuffer();
 			const size = buffer.buffer.byteLength;
+			console.debug(`[uploadImage] File size: ${size} bytes`);
 
 			const result = await files.upload(buffer, {
-				created_by: 'system', // TODO: Change to user id
+				created_by: request.me._id,
 				name: data.filename,
 				resource_id: id,
 				scope: 'alerts',
 				size: size,
 				type: data.mimetype,
-				updated_by: 'system', // TODO: Change to user id
+				updated_by: request.me._id,
 			});
+			console.debug(`[uploadImage] Uploaded file result:`, result);
 
 			// Delete the old image if it exists
 			try {
 				if (alert.file_id) {
+					console.debug(`[uploadImage] Deleting old file with id: ${alert.file_id}`);
 					await files.deleteById(alert.file_id);
+					console.debug(`[uploadImage] Old file deleted`);
 				}
 			}
 			catch (error) {
-				console.error(error);
+				console.error(`[uploadImage] Error deleting old file:`, error);
 			}
 
 			await alerts.updateById(id, { file_id: result.insertedId.toString() });
+			console.debug(`[uploadImage] Updated alert with new file_id: ${result.insertedId.toString()}`);
 
 			reply.send({
 				data: result,
@@ -231,6 +243,7 @@ export class AlertsController {
 			});
 		}
 		catch (error) {
+			console.error(`[uploadImage] Error:`, error);
 			reply
 				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
 				.send(error);

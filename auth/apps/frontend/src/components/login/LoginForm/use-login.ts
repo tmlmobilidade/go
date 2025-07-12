@@ -1,7 +1,7 @@
 'use client';
 
-import { fetchData, HttpResponse } from '@/lib/http';
 import { LoginDto, Session } from '@tmlmobilidade/types';
+import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
 import { useState } from 'react';
 
 interface UseLoginReturn {
