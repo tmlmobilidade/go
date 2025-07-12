@@ -15,15 +15,15 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "20250711.2217.30",
-		"@tmlmobilidade/interfaces": "20250711.2217.30",
-		"@tmlmobilidade/lib": "20250711.2217.30",
-		"@tmlmobilidade/utils": "20250711.2217.30",
+		"@tmlmobilidade/connectors": "20250712.103.7",
+		"@tmlmobilidade/interfaces": "20250712.103.7",
+		"@tmlmobilidade/lib": "20250712.103.7",
+		"@tmlmobilidade/utils": "20250712.103.7",
 		"pino-pretty": "13.0.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250711.2217.30",
-		"@tmlmobilidade/types": "20250711.2217.30",
+		"@tmlmobilidade/tsconfig": "20250712.103.7",
+		"@tmlmobilidade/types": "20250712.103.7",
 		"@types/node": "24.0.13",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.3",
