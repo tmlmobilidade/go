@@ -16,13 +16,13 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250710.2024.42",
-		"@tmlmobilidade/utils": "20250710.2024.42",
+		"@tmlmobilidade/interfaces": "20250712.103.7",
+		"@tmlmobilidade/utils": "20250712.103.7",
 		"fastify": "5.4.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250710.2024.42",
-		"@tmlmobilidade/types": "20250710.2024.42",
+		"@tmlmobilidade/tsconfig": "20250712.103.7",
+		"@tmlmobilidade/types": "20250712.103.7",
 		"@types/node": "24.0.13",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.3",
