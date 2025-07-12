@@ -2,7 +2,7 @@
 
 /* * */
 
-import { HomePage } from '@/components/home/HomePage';
+import { HomePage } from '@/components/home/HomePage2';
 
 /* * */
 
