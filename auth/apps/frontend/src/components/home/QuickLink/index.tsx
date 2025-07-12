@@ -1,7 +1,6 @@
 /* * */
 
 import { type QuickLink } from '@/types/quick-links';
-import { Label } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -16,8 +15,8 @@ interface QuickLinkButtonProps {
 export function QuickLinkButton({ item }: QuickLinkButtonProps) {
 	return (
 		<a className={styles.container} href={item.href} target="_blank">
-			<Label size="lg">{item.icon}</Label>
-			<Label size="lg">{item.title}</Label>
+			{item.icon}
+			<p className={styles.title}>{item.title}</p>
 		</a>
 	);
 }
