@@ -3,7 +3,7 @@
 /* * */
 
 import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -27,6 +27,12 @@ export function AlertDetailHeader() {
 		router.push(destUrl);
 	};
 
+	const handleDuplicate = () => {
+		const id = alertDetailContext.data.id;
+
+		router.replace(`/alerts/new?copy=${id}`);
+	};
+
 	//
 	// C. Render components
 
@@ -36,6 +42,14 @@ export function AlertDetailHeader() {
 			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 			<Spacer />
+			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
+				<Button
+					icon={<IconCopy size={28} />}
+					label="Duplicar"
+					onClick={handleDuplicate}
+					variant="secondary"
+				/>
+			)}
 			<Button
 				label="Salvar como rascunho"
 				onClick={() => alertDetailContext.actions.saveAlert('draft')}
