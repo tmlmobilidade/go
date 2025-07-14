@@ -1,6 +1,6 @@
 {
 	"agency": {
-		"_file": true,
+		"_file": "error",
 		"agency_email": {
 			"severity": "error"
 		},
@@ -62,7 +62,7 @@
 		}
 	},
 	"attributions": {
-		"_file": false,
+		"_file": "ignore",
 		"agency_id": {
 			"severity": "ignore"
 		},
@@ -98,7 +98,7 @@
 		}
 	},
 	"calendar": {
-		"_file": true,
+		"_file": "ignore",
 		"end_date": {
 			"severity": "error"
 		},
@@ -131,11 +131,23 @@
 		}
 	},
 	"calendar_dates": {
-		"_file": true,
+		"_file": "ignore",
 		"date": {
 			"severity": "error"
 		},
+		"day_type": {
+			"options": ["1", "2", "3"],
+			"severity": "error"
+		},
 		"exception_type": {
+			"severity": "error"
+		},
+		"holiday": {
+			"options": ["0", "1"],
+			"severity": "error"
+		},
+		"period": {
+			"options": ["1", "2", "3"],
 			"severity": "error"
 		},
 		"service_id": {
@@ -143,11 +155,12 @@
 		}
 	},
 	"fare_attributes": {
-		"_file": true,
+		"_file": "warning",
 		"agency_id": {
 			"severity": "error"
 		},
 		"currency_type": {
+			"options": ["EUR"],
 			"severity": "error"
 		},
 		"fare_id": {
@@ -158,7 +171,6 @@
 			"severity": "error"
 		},
 		"price": {
-			"options": ["EUR"],
 			"severity": "error"
 		},
 		"transfer_duration": {
@@ -170,25 +182,25 @@
 		}
 	},
 	"fare_rules": {
-		"_file": true,
+		"_file": "warning",
 		"contains_id": {
-			"severity": "ignore"
+			"severity": "forbidden"
 		},
 		"destination_id": {
-			"severity": "ignore"
+			"severity": "forbidden"
 		},
 		"fare_id": {
 			"severity": "error"
 		},
 		"origin_id": {
-			"severity": "ignore"
+			"severity": "forbidden"
 		},
 		"route_id": {
 			"severity": "error"
 		}
 	},
 	"feed_info": {
-		"_file": true,
+		"_file": "error",
 		"default_lang": {
 			"severity": "error"
 		},
@@ -218,7 +230,7 @@
 			"severity": "error"
 		},
 		"feed_type": {
-			"options": ["0"],
+			"options": ["0", "1", "2"],
 			"severity": "error"
 		},
 		"feed_version": {
@@ -226,7 +238,7 @@
 		}
 	},
 	"frequencies": {
-		"_file": true,
+		"_file": "forbidden",
 		"end_time": {
 			"severity": "error"
 		},
@@ -244,7 +256,7 @@
 		}
 	},
 	"levels": {
-		"_file": false,
+		"_file": "ignore",
 		"level_id": {
 			"severity": "ignore"
 		},
@@ -256,7 +268,7 @@
 		}
 	},
 	"pathways": {
-		"_file": false,
+		"_file": "ignore",
 		"from_stop_id": {
 			"severity": "ignore"
 		},
@@ -295,7 +307,7 @@
 		}
 	},
 	"routes": {
-		"_file": true,
+		"_file": "error",
 		"agency_id": {
 			"severity": "error"
 		},
@@ -354,11 +366,11 @@
 		},
 		"school": {
 			"options": ["0", "1"],
-			"severity": "error"
+			"severity": "warning"
 		}
 	},
 	"shapes": {
-		"_file": true,
+		"_file": "error",
 		"shape_dist_traveled": {
 			"severity": "error"
 		},
@@ -376,7 +388,7 @@
 		}
 	},
 	"stop_times": {
-		"_file": true,
+		"_file": "error",
 		"arrival_time": {
 			"severity": "error"
 		},
@@ -411,7 +423,7 @@
 			"severity": "ignore"
 		},
 		"stop_headsign": {
-			"severity": "ignore"
+			"severity": "forbidden"
 		},
 		"stop_id": {
 			"severity": "error"
@@ -420,23 +432,14 @@
 			"severity": "error"
 		},
 		"timepoint": {
-			"severity": "error"
+			"severity": "warning"
 		},
 		"trip_id": {
 			"severity": "error"
-		},
-		"zone_1": {
-			"severity": "ignore"
-		},
-		"zone_2": {
-			"severity": "ignore"
-		},
-		"zone_3": {
-			"severity": "ignore"
 		}
 	},
 	"stops": {
-		"_file": true,
+		"_file": "error",
 		"has_bench": {
 			"options": ["0", "1", "2", "3"],
 			"severity": "ignore"
@@ -468,20 +471,20 @@
 			"severity": "ignore"
 		},
 		"location_type": {
-			"severity": "error"
+			"severity": "ignore"
 		},
 		"municipality_id": {
 			"options": ["1502", "1503", "1504", "1115", "1105", "1106", "1107", "1109", "1506", "1507", "1116", "1110", "1508", "1510", "1111", "1511", "1512", "1114", "0712", "1102", "1112"],
 			"severity": "error"
 		},
 		"parent_station": {
-			"severity": "error"
+			"severity": "ignore"
 		},
 		"parish_id": {
-			"severity": "error"
+			"severity": "ignore"
 		},
 		"platform_code": {
-			"severity": "error"
+			"severity": "ignore"
 		},
 		"public_visible": {
 			"severity": "ignore"
@@ -528,14 +531,14 @@
 		},
 		"wheelchair_boarding": {
 			"options": ["0", "1", "2"],
-			"severity": "error"
+			"severity": "warning"
 		},
 		"zone_id": {
-			"severity": "error"
+			"severity": "ignore"
 		}
 	},
 	"transfers": {
-		"_file": false,
+		"_file": "ignore",
 		"from_stop_id": {
 			"severity": "ignore"
 		},
@@ -550,7 +553,7 @@
 		}
 	},
 	"translations": {
-		"_file": false,
+		"_file": "ignore",
 		"field_name": {
 			"severity": "ignore"
 		},
@@ -574,9 +577,9 @@
 		}
 	},
 	"trips": {
-		"_file": true,
+		"_file": "error",
 		"bikes_allowed": {
-			"severity": "error"
+			"severity": "warning"
 		},
 		"block_id": {
 			"severity": "ignore"
@@ -609,11 +612,11 @@
 			"severity": "ignore"
 		},
 		"wheelchair_accessible": {
-			"severity": "error"
+			"severity": "warning"
 		}
 	},
 	"vehicles": {
-		"_file": true,
+		"_file": "warning",
 		"agency_id": {
 			"severity": "error"
 		},
