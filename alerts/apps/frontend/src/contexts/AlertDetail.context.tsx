@@ -83,10 +83,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		swrFetcher,
 	);
 
+	const copyURL = new URLSearchParams(window.location.search).get('copy');
+	const { data: alertURL } = useSWR(alertId === copyURL ? null : Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL), swrFetcher);
+
 	//
 	// B. Define form
+
 	const form = useForm<CreateAlertDto>({
-		initialValues: alert || emptyAlert,
+		initialValues: alertURL || emptyAlert,
 		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
@@ -97,21 +101,23 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	// Update form
 	useEffect(() => {
-		if (!alert) return;
+		let myAlert: Alert = alert;
+		if (!alert && !alertURL) return;
+		if (!alert && alertURL) myAlert = alertURL;
 
 		setLoading(true);
 
-		if (!alert.reference_type) {
-			alert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
-			alert.references = [];
+		if (!myAlert.reference_type) {
+			myAlert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
+			myAlert.references = [];
 		}
 
 		form.reset();
-		form.setValues(alert);
+		form.setValues(myAlert);
 		form.resetDirty();
 
 		setLoading(false);
-	}, [alert]);
+	}, [alert, alertURL]);
 
 	useEffect(() => {
 		if (error) {
