@@ -66,7 +66,7 @@ export function AlertDetailHeader() {
 				label={
 					alertDetailContext.flags.mode === AlertDetailMode.CREATE
 						? 'Publicar'
-						: 'Salvar'
+						: 'Salvar/publicar'
 				}
 			/>
 			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
