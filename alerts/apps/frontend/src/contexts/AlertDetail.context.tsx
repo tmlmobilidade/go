@@ -103,7 +103,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	useEffect(() => {
 		let myAlert: Alert = alert;
 		if (!alert && !alertURL) return;
-		if (!alert && alertURL) myAlert = alertURL;
+		if (!alert && alertURL) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { _id, created_at, updated_at, ...rest } = alertURL;
+			myAlert = { ...rest };
+		}
 
 		setLoading(true);
 
