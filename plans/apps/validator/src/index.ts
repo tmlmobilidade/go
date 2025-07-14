@@ -46,11 +46,11 @@ async function processValidation(message: ValidationMessage) {
 		logger.info(`Validating file: ${tempFilePath}`);
 
 		const useRules = true; // getCurrentEnvironment() === 'staging';
+		const rulesPath = '/secrets/tml-rules.json';
 
 		const validationResult = await GTFSValidator(tempFilePath, {
 			lang: 'pt',
-			// out_file: outFilePath,
-			rules_path: useRules ? join(__dirname, 'tml-rules.json') : undefined,
+			rules_path: useRules ? rulesPath : undefined,
 		});
 
 		logger.info(`File validated, updating document in MongoDB`);
