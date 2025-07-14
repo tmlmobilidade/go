@@ -21,5 +21,9 @@
 	"packageManager": "npm@11.4.2",
 	"workspaces": [
 		"apps/*"
-	]
+	],
+	"dependencies": {
+		"nodemailer": "^7.0.5",
+		"react-router-dom": "^7.6.3"
+	}
 }

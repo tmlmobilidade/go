@@ -1,10 +1,11 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
 import { getAppConfig, HttpStatus } from '@tmlmobilidade/lib';
 import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, generateRandomToken } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -12,7 +13,28 @@ const COOKIE_NAME = 'session_token';
 
 /* * */
 
+/* * */
+
 export class AuthController {
+	/**
+	 *  Change password on database and delete token
+	*/
+	async changePassword(request: FastifyRequest, reply: FastifyReply) {
+		const { password_hash, token } = request.body as { password_hash: string, token: string };
+
+		const token_result = await verificationTokens.findOne({ token });
+
+		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
+			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
+		};
+
+		await users.updateById(token_result.user_id, { password_hash: password_hash });
+
+		reply.status(HttpStatus.OK).send({ message: 'Changed Password' });
+
+		await verificationTokens.deleteOne({ token });
+	}
+
 	/**
 	 * Get Permissions - Get the permissions of the current user
 	 */
@@ -73,6 +95,8 @@ export class AuthController {
 		return reply.status(HttpStatus.OK).send(session);
 	}
 
+	/* * */
+
 	/**
 	 * Logout - Remove the session token cookie
 	 */
@@ -83,6 +107,38 @@ export class AuthController {
 
 		reply.clearCookie(COOKIE_NAME);
 		return reply.status(HttpStatus.OK).send();
+	}
+
+	/**
+	 * Go check email is valid for send link to reset password
+	*/
+	async sendEmailWithResetPasswordURL(request: FastifyRequest, reply: FastifyReply) {
+		const { email } = request.body as { email: string };
+
+		// Search user by Email
+		const user = await users.findByEmail(email);
+		if (!user) return reply.status(HttpStatus.NOT_FOUND).send({ message: `User not found with email ${email}` });
+
+		const token = generateRandomToken();
+
+		// Save token in DB
+		await verificationTokens.insertOne({
+			expires_at: Dates.now('utc').plus({ hour: 1 }).unix_timestamp,
+			token: token,
+			user_id: user._id,
+		});
+
+		const url = getAppConfig('auth', 'frontend_url') + `/resetpassword?token=${token}`;
+
+		await sendResetPasswordEmail({
+			props: {
+				first_name: user.first_name,
+				password_reset_link: url,
+			},
+			to: email,
+		});
+
+		reply.status(HttpStatus.OK).send({ message: 'Email sent is sucessfull' });
 	}
 
 	/**
