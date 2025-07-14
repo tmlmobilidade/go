@@ -75,7 +75,12 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
 
-	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new' ? null : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+	const copyURL = new URLSearchParams(window.location.search).get('copy');
+
+	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new'
+		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
+		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+
 	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 		alertId === 'new'
 			? undefined
@@ -86,8 +91,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	//
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
-		initialValues: alert || emptyAlert,
-		// @ts-expect-error - @carrismetropolitana/api-types uses zod-openapi package for docs, which is not available in this context.
+		initialValues: emptyAlert,
 		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
@@ -100,15 +104,23 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	useEffect(() => {
 		if (!alert) return;
 
+		let myAlert: CreateAlertDto = alert;
+
+		if (copyURL) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { _id, created_at, updated_at, ...rest } = alert;
+			myAlert = { ...rest, publish_status: 'DRAFT' };
+		}
+
 		setLoading(true);
 
-		if (!alert.reference_type) {
-			alert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
-			alert.references = [];
+		if (!myAlert.reference_type) {
+			myAlert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
+			myAlert.references = [];
 		}
 
 		form.reset();
-		form.setValues(alert);
+		form.setValues(myAlert);
 		form.resetDirty();
 
 		setLoading(false);
