@@ -1,21 +1,30 @@
+/* * */
+
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { files, validations } from '@tmlmobilidade/interfaces';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
-// Funtion to clean old plans
+/* * */
 
 async function cleanOldValidations() {
 	try {
+		//
+
 		LOGGER.init();
+
 		const globalTimer = new TIMETRACKER();
 
-		// setDate cutoffDate = 30 days in unixtimestamp
+		//
+		// Delete validations older than 30 days
+
 		const thirdtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
-		// Calculate cutoff date
 		const cutoffDate = Dates.now('Europe/Lisbon').unix_timestamp - thirdtyDaysInMilliseconds as UnixTimestamp;
+
+		//
+		// Find validations older than 30 days
 
 		const oldValidations = await validations.findMany({
 			created_at: { $lte: cutoffDate },
@@ -23,36 +32,28 @@ async function cleanOldValidations() {
 
 		LOGGER.info(`Found ${oldValidations.length} validations older than ${thirdtyDaysInMilliseconds} days`);
 
+		//
+		// Delete associated files and validations
+
 		for (const validation of oldValidations) {
 			// Delete associated files
 			if (validation.file_id) {
-				const fileIds = files.deleteById(validation.file_id);
 				const fileDeletionTimer = new TIMETRACKER();
-				const deleteFilesResult = await files.deleteMany({
-					_id: { fileIds },
-				});
-				LOGGER.info(`Deleted ${deleteFilesResult.deletedCount} files associated with validation ${validation._id}. (${fileDeletionTimer.get()})`);
+
+				await files.deleteById(validation.file_id);
+
+				await validations.deleteById(validation._id);
+
+				LOGGER.info(`Deleted files associated with validation ${validation._id}. (${fileDeletionTimer.get()})`);
 			}
 			else {
 				LOGGER.info(`No files associated with validation ${validation._id}`);
 			}
 		}
 
-		// Process deletions
-		if (oldValidations.length > 0) {
-			const deleteTimer = new TIMETRACKER();
-
-			const deleteResult = await validations.deleteMany({
-				_id: { $in: oldValidations.map(v => v._id) },
-			});
-
-			LOGGER.info(`Deleted ${deleteResult.deletedCount} old validations. (${deleteTimer.get()})`);
-		}
-		else {
-			LOGGER.info('No old validations found to clean');
-		}
-
 		LOGGER.terminate(`Cleanup completed in ${globalTimer.get()}`);
+
+		//
 	}
 	catch (err) {
 		console.error('Error during validation cleanup:', err);
