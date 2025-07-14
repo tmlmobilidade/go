@@ -5,7 +5,7 @@
 import BackButton from '@/components/common/BackButton';
 import { AlertDetailContextProvider, AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
-import { Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { ActionIcon, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import AlertDuplicate from '../AlertDuplicate';
@@ -45,12 +45,12 @@ export function AlertDetailHeader() {
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 			<Spacer />
 			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
-				<Button
-					icon={<IconCopy size={28} />}
-					label="Duplicar"
+				<ActionIcon
 					onClick={handleDuplicate}
-					variant="secondary"
-				/>
+					variant="primary"
+				>
+					<IconCopy size={28} />
+				</ActionIcon>
 			)}
 			<Button
 				label="Salvar como rascunho"
@@ -64,9 +64,9 @@ export function AlertDetailHeader() {
 				onClick={() => alertDetailContext.actions.saveAlert('publish')}
 				variant="primary"
 				label={
-					alertDetailContext.flags.mode === AlertDetailMode.CREATE
+					alertDetailContext.flags.mode === AlertDetailMode.CREATE || alertDetailContext.flags.isDraft
 						? 'Publicar'
-						: 'Salvar/publicar'
+						: 'Salvar'
 				}
 			/>
 			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (

@@ -30,7 +30,7 @@ interface AlertDetailContextState {
 	}
 	flags: {
 		canSave: boolean
-		isReadOnly: boolean
+		isDraft: boolean
 		isSaving: boolean
 		loading: boolean
 		mode: AlertDetailMode
@@ -71,7 +71,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
+	const [isDraft, setIsDraft] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
 
@@ -116,6 +116,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			myAlert.references = [];
 		}
 
+		setIsDraft(myAlert.publish_status === 'DRAFT');
 		form.reset();
 		form.setValues(myAlert);
 		form.resetDirty();
@@ -280,7 +281,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		},
 		flags: {
 			canSave,
-			isReadOnly,
+			isDraft,
 			isSaving,
 			loading: isLoading || loading || imageUrlLoading,
 			mode: alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT,
