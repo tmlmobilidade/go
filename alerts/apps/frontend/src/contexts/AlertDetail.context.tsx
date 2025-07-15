@@ -92,7 +92,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
-		// @ts-expect-error - TODO: fix this | zod extended types error
 		validate: zodResolver(alert && alertId !== 'new' ? AlertSchema : CreateAlertSchema) as unknown as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
