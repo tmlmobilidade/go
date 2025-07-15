@@ -5,7 +5,7 @@ import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus } from '@tmlmobilidade/types';
+import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
@@ -45,8 +45,8 @@ async function processValidation(message: ValidationMessage) {
 		// 4. Run GTFS validation
 		logger.info(`Validating file: ${tempFilePath}`);
 
-		const useRules = true; // getCurrentEnvironment() === 'staging';
-		const rulesPath = '/secrets/tml-rules.json';
+		const useRules = true;
+		const rulesPath = getCurrentEnvironment() === 'development' ? undefined : '/secrets/tml-rules.json';
 
 		const validationResult = await GTFSValidator(tempFilePath, {
 			lang: 'pt',
