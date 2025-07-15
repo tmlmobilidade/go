@@ -16,7 +16,7 @@
 		"@tmlmobilidade/utils": "20250714.1636.03",
 		"clsx": "2.1.1",
 		"luxon": "3.7.1",
-		"next": "15.3.5",
+		"next": "15.4.1",
 		"nuqs": "2.4.3",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
@@ -29,7 +29,7 @@
 		"@tmlmobilidade/tsconfig": "20250714.1636.03",
 		"@tmlmobilidade/types": "20250714.1636.03",
 		"@types/luxon": "3.6.2",
-		"@types/node": "24.0.13",
+		"@types/node": "24.0.14",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5"
