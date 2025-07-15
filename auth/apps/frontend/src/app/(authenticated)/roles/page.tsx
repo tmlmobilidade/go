@@ -1,14 +1,15 @@
-/* * */
-
-import { RoleList } from '@/components/roles/RoleList';
-import { RoleListContextProvider } from '@/contexts/RoleList.context';
+'use client';
 
 /* * */
 
-export default function RoleListPage() {
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+
+/* * */
+
+export default function Page() {
 	return (
-		<RoleListContextProvider>
-			<RoleList />
-		</RoleListContextProvider>
+		<Surface align="center" justify="center" variant="transparent">
+			<NoDataLabel text="Selecione um Role" />
+		</Surface>
 	);
 }

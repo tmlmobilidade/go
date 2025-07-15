@@ -17,7 +17,9 @@
 		"@mdx-js/react": "^3.1.0",
 		"@next/mdx": "^15.3.5",
 		"front-matter": "^4.0.2",
-		"fs": "^0.0.1-security"
+		"fs": "^0.0.1-security",
+		"nodemailer": "^7.0.5",
+		"react-router-dom": "^7.6.3"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",

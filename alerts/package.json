@@ -3,10 +3,9 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
-		"clean": "sh cleanup.sh",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start"
 	},
 	"devDependencies": {
@@ -18,8 +17,5 @@
 	"packageManager": "npm@11.4.2",
 	"workspaces": [
 		"apps/*"
-	],
-	"dependencies": {
-		"nuqs": "^2.4.3"
-	}
+	]
 }

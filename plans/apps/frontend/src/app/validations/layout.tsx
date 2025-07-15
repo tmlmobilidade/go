@@ -1,14 +1,19 @@
-import { ValidationList } from '@/components/validations/list/ValidationsList';
-import { ValidationListContextProvider } from '@/contexts/ValidationList.context';
-import { PanesManager } from '@tmlmobilidade/ui';
+/* * */
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+import { ValidationsList } from '@/components/validations/list/ValidationsList';
+import { ValidationsListContextProvider } from '@/contexts/ValidationsList.context';
+import { PanesManager } from '@tmlmobilidade/ui';
+import { type PropsWithChildren } from 'react';
+
+/* * */
+
+export default function Layout({ children }: PropsWithChildren) {
 	return (
 		<PanesManager
 			panes={[
-				<ValidationListContextProvider>
-					<ValidationList />
-				</ValidationListContextProvider>,
+				<ValidationsListContextProvider>
+					<ValidationsList />
+				</ValidationsListContextProvider>,
 				children,
 			]}
 		/>

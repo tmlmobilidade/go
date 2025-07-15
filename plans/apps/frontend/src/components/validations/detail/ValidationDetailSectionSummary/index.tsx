@@ -29,7 +29,7 @@ export function ValidationDetailSectionSummary() {
 				return <div>{field}</div>;
 			},
 			title: 'Campo',
-			width: 200,
+			width: 250,
 		},
 		{
 			accessor: 'severity',
@@ -48,7 +48,7 @@ export function ValidationDetailSectionSummary() {
 					<RowsCell rows={rows} />
 				);
 			},
-			title: 'Linhas',
+			title: 'Linhas do Ficheiro',
 			width: 400,
 		},
 		{
@@ -91,14 +91,19 @@ interface SeverityConfig {
 	variant: 'active' | 'danger' | 'disabled' | 'info' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
 
-function SeverityBadge({ label, severity }: { label?: string, severity: 'error' | 'info' | 'warning' }) {
+function SeverityBadge({ label, severity }: { label?: string, severity: 'error' | 'forbidden' | 'ignore' | 'warning' }) {
 	const severityConfig: Record<string, SeverityConfig> = {
 		error: {
 			icon: <IconAlertCircle />,
 			label: 'Erro',
 			variant: 'danger',
 		},
-		info: {
+		forbidden: {
+			icon: <IconAlertCircle />,
+			label: 'Erro',
+			variant: 'danger',
+		},
+		ignore: {
 			icon: <IconInfoCircle />,
 			label: 'Informação',
 			variant: 'info',

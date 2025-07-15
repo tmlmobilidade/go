@@ -71,7 +71,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	const [validationFile, setValidationFile] = useState<File | null>(null);
 	const [validationError, setValidationError] = useState<Error | null>(null);
 
-	const { data: validation, error, isLoading } = useSWR<Validation>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)), swrFetcher);
+	const { data: validation, error, isLoading } = useSWR<Validation>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)), swrFetcher, { refreshInterval: 3_000 });
 	const { data: file, error: fileError, isLoading: fileLoading } = useSWR<TmlFile>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)) + '/file', swrFetcher);
 	// const { data: agencies, error: agenciesError, isLoading: agenciesLoading } = useSWR<Agency[]>(Routes.API(Routes.AGENCIES), swrFetcher);
 

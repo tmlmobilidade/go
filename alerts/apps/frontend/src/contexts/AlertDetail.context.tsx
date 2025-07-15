@@ -1,9 +1,9 @@
 'use client';
 
-import { fetchData, swrFetcher, uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { fetchData, swrFetcher, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject, Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -30,7 +30,7 @@ interface AlertDetailContextState {
 	}
 	flags: {
 		canSave: boolean
-		isReadOnly: boolean
+		isDraft: boolean
 		isSaving: boolean
 		loading: boolean
 		mode: AlertDetailMode
@@ -71,11 +71,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
+	const [isDraft, setIsDraft] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
 
-	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new' ? null : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+	const copyURL = new URLSearchParams(window.location.search).get('copy');
+
+	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new'
+		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
+		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+
 	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 		alertId === 'new'
 			? undefined
@@ -86,8 +91,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	//
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
-		initialValues: alert || emptyAlert,
-		validate: zodResolver(alert ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
+		initialValues: emptyAlert,
+		// @ts-expect-error - TODO: fix this | zod extended types error
+		validate: zodResolver(alert && alertId !== 'new' ? AlertSchema : CreateAlertSchema) as unknown as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -99,15 +105,24 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	useEffect(() => {
 		if (!alert) return;
 
-		setLoading(true);
+		let myAlert: CreateAlertDto = alert;
 
-		if (!alert.reference_type) {
-			alert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
-			alert.references = [];
+		if (copyURL) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { _id, created_at, updated_at, ...rest } = alert;
+			myAlert = { ...rest, publish_status: 'DRAFT' };
 		}
 
+		setLoading(true);
+
+		if (!myAlert.reference_type) {
+			myAlert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
+			myAlert.references = [];
+		}
+
+		setIsDraft(myAlert.publish_status === 'DRAFT');
 		form.reset();
-		form.setValues(alert);
+		form.setValues(myAlert);
 		form.resetDirty();
 
 		setLoading(false);
@@ -270,7 +285,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		},
 		flags: {
 			canSave,
-			isReadOnly,
+			isDraft,
 			isSaving,
 			loading: isLoading || loading || imageUrlLoading,
 			mode: alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT,

@@ -2,10 +2,10 @@
 
 /* * */
 
-import { fetchData, swrFetcher } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { CreateUserDto, CreateUserSchema, UpdateUserSchema, User } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
