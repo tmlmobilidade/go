@@ -1,6 +1,6 @@
 {
 	"name": "@tmlmobilidade/sae-stops-frontend",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"build": "next build",
@@ -10,22 +10,21 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.34.0",
-		"@tmlmobilidade/lib": "20250701.1722.33",
-		"@tmlmobilidade/types": "20250701.1722.33",
-		"@tmlmobilidade/ui": "20250701.1722.33",
-		"@tmlmobilidade/utils": "20250701.1722.33",
+		"@tabler/icons-react": "3.31.0",
+		"@tmlmobilidade/lib": "20250715.148.37",
+		"@tmlmobilidade/types": "20250715.148.37",
+		"@tmlmobilidade/ui": "20250715.148.37",
+		"@tmlmobilidade/utils": "20250715.148.37",
 		"clsx": "2.1.1",
-		"next": "15.3.4",
-		"react": "19.1.0",
-		"react-dom": "19.1.0",
+		"next": "15.2.4",
+		"react": "19.0.0",
+		"react-dom": "19.0.0",
 		"swr": "2.3.3"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20250628.1141.3",
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20250701.1722.33",
-		"@types/node": "24",
+		"@tmlmobilidade/tsconfig": "20250715.148.37",
+		"@types/node": "22",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5"

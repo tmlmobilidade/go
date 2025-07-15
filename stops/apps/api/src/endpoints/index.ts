@@ -1,1 +1,1 @@
-import './stops/stops.routes';
+import './stops/alerts.routes';

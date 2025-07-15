@@ -3,28 +3,20 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		"clean": "sh cleanup.sh",
+		"clean": "npx @tmlmobilidade/repo-rinse",
 		"dev": "dotenv-run -f ./_dev/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"start": "turbo start"
 	},
-	"dependencies": {
-		"@turf/turf": "^7.2.0",
-		"fs": "^0.0.1-security",
-		"fs.promises": "^0.1.2",
-		"jszip": "^3.10.1",
-		"path": "^0.12.7"
-	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@fastify/multipart": "^9.0.3",
-		"@tmlmobilidade/tsconfig": "20250701.1722.33",
+		"@tmlmobilidade/tsconfig": "20250715.148.37",
 		"dotenv-cli": "8.0.0",
-		"prettier": "3.6.2",
-		"turbo": "2.5.4",
-		"typescript": "5.8.3"
+		"prettier": "3.5.3",
+		"turbo": "2.4.4",
+		"typescript": "5.8.2"
 	},
-	"packageManager": "npm@11.4.2",
+	"packageManager": "npm@11.2.0",
 	"engines": {
 		"node": ">=18"
 	},
