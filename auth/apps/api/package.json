@@ -15,16 +15,16 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "20250715.1010.52",
-		"@tmlmobilidade/emails": "^20250715.1010.52",
-		"@tmlmobilidade/interfaces": "20250715.1010.52",
-		"@tmlmobilidade/lib": "20250715.1010.52",
-		"@tmlmobilidade/utils": "20250715.1010.52",
+		"@tmlmobilidade/connectors": "20250715.1414.3",
+		"@tmlmobilidade/emails": "^20250715.1414.3",
+		"@tmlmobilidade/interfaces": "20250715.1414.3",
+		"@tmlmobilidade/lib": "20250715.1414.3",
+		"@tmlmobilidade/utils": "20250715.1414.3",
 		"pino-pretty": "13.0.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250715.1010.52",
-		"@tmlmobilidade/types": "20250715.1010.52",
+		"@tmlmobilidade/tsconfig": "20250715.1414.3",
+		"@tmlmobilidade/types": "20250715.1414.3",
 		"@types/node": "24.0.14",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.3",
