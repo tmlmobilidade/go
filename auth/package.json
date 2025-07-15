@@ -16,7 +16,8 @@
 		"@mdx-js/loader": "^3.1.0",
 		"@mdx-js/react": "^3.1.0",
 		"@next/mdx": "^15.3.5",
-		"front-matter": "^4.0.2"
+		"front-matter": "^4.0.2",
+		"fs": "^0.0.1-security"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
