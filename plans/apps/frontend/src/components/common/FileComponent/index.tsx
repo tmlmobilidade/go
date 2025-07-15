@@ -38,8 +38,12 @@ export function FileComponent({ file }: { file: File }) {
 		}
 
 		try {
+			const response = await fetch(file.url);
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+
 			const a = document.createElement('a');
-			a.href = file.url;
+			a.href = url;
 			a.download = file.name;
 			a.click();
 
@@ -62,7 +66,7 @@ export function FileComponent({ file }: { file: File }) {
 		<div className={styles.container}>
 			<div className={styles.content} onClick={handleDownload}>
 				{icon}
-				<Label>{file._id}.{file.name.split('.').pop()}</Label>
+				<Label>{file.name}</Label>
 			</div>
 			{file.url && (
 				<span className={styles.tooltip}>
