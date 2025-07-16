@@ -28,7 +28,6 @@ export function StopDetails() {
 					<TextInput
 						label="Código Único da Paragem"
 						placeholder="..."
-						withAsterisk
 						{...stopDetailContext.data.form.getInputProps('_id')}
 					/>
 				</Section>

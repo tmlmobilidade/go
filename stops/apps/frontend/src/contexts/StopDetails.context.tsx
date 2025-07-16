@@ -96,18 +96,13 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		validateInputOnChange: true,
 	});
 
-	// useEffect(() => {
-	// 	if (!stop) return;
+	useEffect(() => {
+		if (!stop) return;
 
-	// 	form.reset();
-	// 	form.setValues(stop);
-	// 	form.resetDirty();
-	// }, [stop]);
-
-	// useEffect(() => {
-	// 	if (stopIdInfo != stopId)
-	// 		setStopIdInfo(stopId);
-	// }, [stopId]);
+		form.reset();
+		form.setValues(stop);
+		form.resetDirty();
+	}, [stop]);
 
 	// Validate form on change
 	useEffect(() => {
