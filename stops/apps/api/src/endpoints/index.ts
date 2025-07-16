@@ -1,1 +1,1 @@
-import './stops/alerts.routes';
+import './stops/stops.routes.js';

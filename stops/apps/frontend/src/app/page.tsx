@@ -1,3 +1,9 @@
+/* * */
+
+import { redirect } from 'next/navigation';
+
+/* * */
+
 export default function Page() {
-	return <div>Jusi was here!</div>;
+	redirect('/stops');
 }

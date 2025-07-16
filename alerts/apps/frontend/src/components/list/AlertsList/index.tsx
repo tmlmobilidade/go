@@ -2,7 +2,7 @@
 
 /* * */
 
-import { AlertsListFilters } from '@/components/list/AlertsListFilters';
+import { AlertsListFilters } from '@/components/list/AlertsList/AlertsListFilters';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
