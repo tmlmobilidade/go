@@ -1,10 +1,9 @@
 /* * */
 
 import { useStopListContext } from '@/contexts/StopList.context';
-// import { Routes } from '@/lib/routes';
+import { Routes } from '@/lib/routes';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
-import { Button, Label, SegmentedControl, Spacer, TextInput } from '@tmlmobilidade/ui';
-// import Link from 'next/link';
+import { Button, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -29,12 +28,8 @@ export function StopListHeader() {
 				onChange={e => stoplistcontext.actions.changeSearchQuery(e.target.value)}
 				placeholder="Pesquisar alerta"
 			/>
-			{/* <Link> */}
-			<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} />
-			{/* </Link> */}
-			<div>
-				<SegmentedControl data={['Planeados', 'Tempo Real']} size="md" />
-			</div>
+			<Button href={Routes.STOPS_NEW} label="Nova Paragem" leftSection={<IconPlus size={20} />} />
+
 		</>
 	);
 

@@ -2,7 +2,7 @@ export const PageRoutes = Object.freeze({
 	ME: '/api/stops',
 	STOPS_DETAIL: (id: string) => `/stops/${id}`,
 	STOPS_LIST: '/stops',
-	STOPS_NEW: './stops/new',
+	STOPS_NEW: '/stops/new',
 });
 
 export const ApiRoutes = Object.freeze({

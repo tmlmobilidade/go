@@ -63,7 +63,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		},
 	}), [stop, allStopsData, allStopsLoading, allStopsError, rawStops]);
 
-	console.log('------->', stop);
+	console.log('------->', stop, '<-------');
 
 	return (
 		<StopListContext.Provider value={contextValue}>
