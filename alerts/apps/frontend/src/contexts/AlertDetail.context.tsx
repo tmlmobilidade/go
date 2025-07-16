@@ -92,7 +92,8 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
-		validate: zodResolver(alert && alertId !== 'new' ? AlertSchema : CreateAlertSchema) as unknown as FormValidateInput<CreateAlertDto>,
+		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
+		validate: zodResolver(alert && alertId !== 'new' ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
