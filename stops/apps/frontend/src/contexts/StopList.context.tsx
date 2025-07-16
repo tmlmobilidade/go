@@ -45,8 +45,8 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	//
 	// A. Setup variables
 
-	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
-	const rawStops = useMemo(() => allStopsData || [], [allStopsData]);
+	const { data: stops, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
+	const rawStops = useMemo(() => stops || [], [stops]);
 
 	const [stop, setStop] = useState('teste');
 
@@ -61,9 +61,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 			error: allStopsError,
 			isLoading: allStopsLoading,
 		},
-	}), [stop, allStopsData, allStopsLoading, allStopsError, rawStops]);
-
-	console.log('------->', stop, '<-------');
+	}), [stop, stops, allStopsLoading, allStopsError, rawStops]);
 
 	return (
 		<StopListContext.Provider value={contextValue}>

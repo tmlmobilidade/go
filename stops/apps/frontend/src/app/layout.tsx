@@ -8,6 +8,7 @@ import { getAppConfig } from '@tmlmobilidade/lib';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+import { NuqsAdapter } from 'nuqs/adapters/next';
 import { PropsWithChildren } from 'react';
 
 /* * */
@@ -36,11 +37,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body>
-				<AppProvider>
-					<AppWrapper>
-						{children}
-					</AppWrapper>
-				</AppProvider>
+				<NuqsAdapter>
+					<AppProvider>
+						<AppWrapper>
+							{children}
+						</AppWrapper>
+					</AppProvider>
+				</NuqsAdapter>
 			</body>
 		</html>
 	);

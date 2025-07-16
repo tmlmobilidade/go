@@ -1,7 +1,7 @@
 /* * */
 
-// import { StopsList } from '@/components/Stops/List/StopsList';
-// import { StopListContextProvider } from '@/contexts/StopList.context';
+import { StopDetails } from '@/components/Stops/Form/Stopdetails';
+import { StopDetailContextProvider } from '@/contexts/StopDetails.context';
 
 /* * */
 
@@ -12,12 +12,10 @@ interface Props {
 /* * */
 
 export default async function Page({ params }: Props) {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { id } = await params;
 	return (
-		// <StopListContextProvider>
-		// 	<StopsList />
-		// </StopListContextProvider>
-		<p>nice</p>
+		<StopDetailContextProvider stopId={id}>
+			<StopDetails />
+		</StopDetailContextProvider>
 	);
 }
