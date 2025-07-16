@@ -4,16 +4,12 @@ import { Routes } from '@/lib/routes';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, zodResolver } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
-import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface StopDetailContextState {
-	actions: {
-		getStopId: (query: string) => void
-	}
 	data: {
 		form: UseFormReturnType<CreateStopDto>
 		id: string | undefined
@@ -28,7 +24,7 @@ interface StopDetailContextState {
 /* * */
 
 const emptyStop: CreateStopDto = {
-	_id: '000000',
+	_id: '',
 	affectation: [],
 	bench_status: 'unknown',
 	comments: [],
@@ -100,33 +96,37 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		validateInputOnChange: true,
 	});
 
-	const [stopIdInfo, setStopIdInfo] = useQueryState('');
+	// useEffect(() => {
+	// 	if (!stop) return;
 
+	// 	form.reset();
+	// 	form.setValues(stop);
+	// 	form.resetDirty();
+	// }, [stop]);
+
+	// useEffect(() => {
+	// 	if (stopIdInfo != stopId)
+	// 		setStopIdInfo(stopId);
+	// }, [stopId]);
+
+	// Validate form on change
 	useEffect(() => {
-		form.reset();
-		form.setValues(stop);
-		form.resetDirty();
-	}, [stop]);
+		console.log('=========>', form.values);
+	}, [form.values]);
 
-	useEffect(() => {
-		if (stopIdInfo != stopId)
-			setStopIdInfo(stopId);
-	}, [stopId, stopIdInfo]);
-
+	//
+	// D. Define actions
 	const contextValue: StopDetailContextState = useMemo(() => ({
-		actions: {
-			getStopId: setStopIdInfo,
-		},
 		data: {
 			form,
-			id: stopIdInfo,
+			id: stopId,
 			raw: stop,
 		},
 		flags: {
 			error: error,
 			isLoading: isLoading,
 		},
-	}), [stopId, stopIdInfo, stop, isLoading, error]);
+	}), [stop, isLoading, error, form]);
 
 	return (
 		<StopDetailContext.Provider value={contextValue}>

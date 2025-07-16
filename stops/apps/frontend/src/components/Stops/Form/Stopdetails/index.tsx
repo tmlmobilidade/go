@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Collapsible, Pane, PanesManager, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Pane, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -28,8 +28,8 @@ export function StopDetails() {
 					<TextInput
 						label="Código Único da Paragem"
 						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('id')}
-
+						withAsterisk
+						{...stopDetailContext.data.form.getInputProps('_id')}
 					/>
 				</Section>
 

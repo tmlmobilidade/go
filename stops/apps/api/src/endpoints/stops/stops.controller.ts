@@ -56,7 +56,7 @@ export class StopsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			reply.send(await stops.findMany({}, undefined, undefined, { created_at: -1 }));
+			reply.send(await stops.findMany({}, 5, 1, { created_at: -1 }));
 		}
 		catch (error) {
 			reply
