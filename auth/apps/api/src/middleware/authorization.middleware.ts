@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider } from '@tmlmobilidade/interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { type Permission } from '@tmlmobilidade/types';
 
 /* * */
@@ -36,6 +36,15 @@ export default function authorizationMiddleware(scope?: string, action?: string)
 			request.permissions = permissions;
 		}
 		catch (error) {
+			reply.clearCookie('session_token', {
+				domain: getAppConfig('auth', 'cookie_domain'),
+				httpOnly: true,
+				maxAge: 0,
+				path: '/',
+				sameSite: 'none',
+				secure: true,
+			});
+
 			reply
 				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
 				.send({
