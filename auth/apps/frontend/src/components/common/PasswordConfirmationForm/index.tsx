@@ -118,7 +118,7 @@ export function PasswordConfirmationForm({ description, loading, onSubmit, title
 							<Button
 								disabled={isDisabled}
 								icon={<IconArrowRight />}
-								label="Submit"
+								label="Confirmar"
 								loading={loading}
 								type="submit"
 								variant="primary"

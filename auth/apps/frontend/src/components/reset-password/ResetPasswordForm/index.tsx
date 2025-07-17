@@ -33,7 +33,7 @@ export function ResetPasswordForm({ token }: Props) {
 	// B. Handle actions
 
 	const handleSubmit = async (password: string) => {
-		const response = await changePassword(token, password);
+		const response = await changePassword(password, token);
 		if (response.status !== HttpStatus.OK) {
 			useToast.error({
 				message: response.error ?? 'Ocorreu um erro ao tentar alterar a password',

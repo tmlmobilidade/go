@@ -28,7 +28,8 @@ export default function IntroductionEmail() {
 	//
 	// B. handle declare
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
 		const response = await verifyEmail(resetEmail);
 
 		if (response.status !== 200) {
@@ -38,6 +39,13 @@ export default function IntroductionEmail() {
 			});
 			return;
 		}
+
+		useToast.success({
+			message: 'Email de recuperação enviado com sucesso',
+			title: 'Sucesso',
+		});
+
+		router.push(Routes.LOGIN);
 	};
 
 	//
@@ -77,7 +85,7 @@ export default function IntroductionEmail() {
 							<Button
 								disabled={resetEmail.length === 0}
 								icon={<IconArrowRight />}
-								label="Send email"
+								label="Enviar email"
 								loading={loading}
 								type="submit"
 								variant="primary"
