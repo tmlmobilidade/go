@@ -2,18 +2,22 @@
 
 import { Session } from '@tmlmobilidade/types';
 import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
+import bcrypt from 'bcryptjs';
 import { useState } from 'react';
 
 interface UsechangePasswordReturn {
-	changePassword: (password_hash: string, token: string) => Promise<HttpResponse<Session>>
+	changePassword: (password: string, token: string) => Promise<HttpResponse<Session>>
 	loading: boolean
 }
 
 export function useChangePassword(): UsechangePasswordReturn {
 	const [loading, setLoading] = useState<boolean>(false);
 
-	const changePassword = async (password_hash: string, token: string) => {
+	const changePassword = async (password: string, token: string) => {
 		setLoading(true);
+
+		const password_hash = bcrypt.hashSync(password);
+
 		const response = await fetchData<Session>(
 			`/api/change-password`,
 			'POST',

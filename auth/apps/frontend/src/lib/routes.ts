@@ -3,8 +3,12 @@ export const PageRoutes = Object.freeze({
 	AGENCY_DETAIL: (id: string) => `/agencies/${id}`,
 	AGENCY_LIST: '/agencies',
 
+	// Auth
 	LOGIN: '/login',
 	LOGOUT: '/logout',
+	RESET_PASSWORD: '/reset-password',
+
+	//
 	ME: '/users/me',
 	ROLE_DETAIL: (id: string) => `/roles/${id}`,
 	ROLES: '/roles',

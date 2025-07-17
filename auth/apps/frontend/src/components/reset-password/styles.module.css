@@ -2,9 +2,9 @@
 /* ROOT */
 
 .root {
+	z-index: 1;
 	width: 100%;
 	max-width: 550px;
-	z-index: 1;
 }
 
 
@@ -15,18 +15,18 @@
 	display: grid;
 	grid-template-columns: 1fr 120px;
 	gap: 20px;
-	width: 100%;
 	align-items: flex-start;
 	justify-content: flex-start;
+	width: 100%;
 	margin-bottom: 20px;
 }
 
 .headerContent {
 	display: flex;
 	flex-direction: column;
+	gap: 5px;
 	align-items: flex-start;
 	justify-content: flex-start;
-	gap: 5px;
 	width: 100%;
 }
 
@@ -40,25 +40,25 @@
 /* FORM */
 
 .form {
-	width: 100%;
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-md);
+	width: 100%;
 }
 
 .formFooter {
 	display: flex;
-	align-items: center;
 	flex-direction: row;
-	justify-content: space-between;
 	gap: var(--size-spacing-lg);
+	align-items: center;
+	justify-content: space-between;
 }
 
 .formFooterLinks {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
 	gap: var(--size-spacing-sm);
+	align-items: center;
 }
 
 /* * */

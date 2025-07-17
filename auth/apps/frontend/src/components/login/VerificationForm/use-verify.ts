@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 interface UseLoginReturn {
 	loading: boolean
-	verify: (token: string, password: string, confirmPassword: string) => Promise<HttpResponse<Session>>
+	verify: (token: string, password: string) => Promise<HttpResponse<Session>>
 }
 
 export function useVerify(): UseLoginReturn {
