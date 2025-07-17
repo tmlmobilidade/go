@@ -17,6 +17,7 @@ declare module 'fastify' {
 
 export default function authorizationMiddleware(scope?: string, action?: string) {
 	return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+		console.log('====> Authorization middleware', request.cookies);
 		const token = request.cookies.session_token;
 
 		if (!token) {
@@ -36,14 +37,16 @@ export default function authorizationMiddleware(scope?: string, action?: string)
 			request.permissions = permissions;
 		}
 		catch (error) {
-			reply.clearCookie('session_token', {
-				domain: getAppConfig('auth', 'cookie_domain'),
-				httpOnly: true,
-				maxAge: 0,
-				path: '/',
-				sameSite: 'none',
-				secure: true,
-			});
+			if (error instanceof HttpException && error.statusCode === HttpStatus.UNAUTHORIZED) {
+				reply.clearCookie('session_token', {
+					domain: getAppConfig('auth', 'cookie_domain'),
+					httpOnly: true,
+					maxAge: 0,
+					path: '/',
+					sameSite: 'none',
+					secure: true,
+				});
+			}
 
 			reply
 				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
