@@ -13,6 +13,5 @@ export default function Page() {
 				<MapViewStops />
 			</MapView>
 		</MapOptionsContextProvider>
-
 	);
 }

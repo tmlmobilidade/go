@@ -3,7 +3,9 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Collapsible, Pane, Section, Spacer, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { Translations } from '@/lib/translations';
+import { operationalStatusSchema } from '@tmlmobilidade/types';
+import { Collapsible, Combobox, Grid, Pane, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,6 +17,11 @@ export function StopDetails() {
 
 	const stopDetailContext = useStopDetailContext();
 
+	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
+		label: Translations.OPERATIONAL_STATUS[value],
+		value: value,
+	}));
+
 	//
 	// B. Render components
 
@@ -24,39 +31,65 @@ export function StopDetails() {
 				description="Detalhes desta Paragem"
 				title="Informações gerais sobre esta paragem."
 			>
-				<Section gap="sm">
-					<TextInput
-						label="Código Único da Paragem"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('_id')}
-					/>
-					<TextInput
-						label="Latitude"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('latitude')}
-					/>
-					<TextInput
-						label="Longitude"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('longitude')}
-					/>
+				<Section>
+					<Grid columns="abc" gap="sm">
+						<TextInput
+							label="Código Único da Paragem"
+							placeholder="..."
+							{...stopDetailContext.data.form.getInputProps('_id')}
+						/>
+						<TextInput
+							label="Latitude"
+							placeholder="..."
+							{...stopDetailContext.data.form.getInputProps('latitude')}
+						/>
+						<TextInput
+							label="Longitude"
+							placeholder="..."
+							{...stopDetailContext.data.form.getInputProps('longitude')}
+						/>
 
+					</Grid>
 				</Section>
 				<Section gap="md">
-					<Spacer />
-					<Textarea
-						label="Antifo Nome da Paragem (p/ alterar)"
-						miw={800}
+					<TextInput
+						label="Antigo Nome da Paragem (p/ alterar)"
+						miw="100%"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('name')}
 					/>
-					<Textarea
+					<TextInput
 						label="Nome da Paragem (depois da correção)"
-						miw={800}
+						miw="100%"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('new_name')}
 					/>
 				</Section>
+				<Section gap="md">
+					<Grid columns="ab" gap="sm">
+						<TextInput
+							label="Nome Curto (Postalete)"
+							miw="100%"
+							placeholder="..."
+							{...stopDetailContext.data.form.getInputProps('short_name')}
+						/>
+						<TextInput
+							label="Nome Falado (Text-to-Speech)"
+							miw="100%"
+							placeholder="..."
+							{...stopDetailContext.data.form.getInputProps('tts_name')}
+						/>
+					</Grid>
+				</Section>
+				<Section gap="md">
+					<Combobox
+						data={operationalStatusItems}
+						label="Estado Operacional"
+						fullWidth
+						{...stopDetailContext.data.form.getInputProps('operational_status')}
+					/>
+				</Section>
+
 			</Collapsible>
 		</Pane>
 	);

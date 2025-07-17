@@ -148,8 +148,9 @@ export function MapView({
 				onMoveEnd={handleOnMoveEnd}
 				onMoveStart={handleOnMoveStart}
 				scrollZoom={scrollZoom}
-				style={{ height: '100%', position: 'absolute', width: '100%' }}
+				style={{ height: '100%', minWidth: '100%', position: 'relative' }}
 			>
+
 				{navigation && <NavigationControl />}
 				{fullscreen && <FullscreenControl />}
 				{geolocate && <GeolocateControl />}
@@ -163,7 +164,6 @@ export function MapView({
 					<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>
 				</div>
 			</Map>
-
 			{toolbar && <MapViewToolbar className={styles.toolbar} onCenterMap={onCenterMap} />}
 		</div>
 	);

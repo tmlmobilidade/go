@@ -80,7 +80,7 @@ export function MapViewStops() {
 								'circle-color': ['case', ['boolean', ['feature-state', 'selected'], false], '#EE4B2B', '#ffdd01'],
 								'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, ['case', ['boolean', ['feature-state', 'selected'], false], 5, 1], 26, ['case', ['boolean', ['feature-state', 'selected'], false], 20, 10]],
 								'circle-stroke-color': '#000000',
-								'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 9, 0.5, 26, 10],
+								'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 9, 0.8, 26, 10],
 							}}
 						/>
 					</Source>
