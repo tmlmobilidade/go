@@ -46,8 +46,6 @@ export function MapViewSingleStop({ stopData }: Props) {
 	return (
 		<Source data={stopMarkerMapData} generateId={true} id="stop-marker" type="geojson">
 			<Layer
-				id="stop-marker-img"
-				source="stop-markers"
 				type="symbol"
 				layout={{
 					'icon-allow-overlap': true,

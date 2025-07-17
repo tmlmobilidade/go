@@ -51,7 +51,6 @@ export function MapViewStops() {
 		if (!feature || !feature.properties || feature.properties.id === null || feature.properties.id === undefined) {
 			return;
 		}
-		console.log('finally work');
 	}
 
 	//
