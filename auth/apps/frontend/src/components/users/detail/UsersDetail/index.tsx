@@ -9,7 +9,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
-import { PermissionSectionGroup } from '@/components/permissions/components/PermissionSectionGroup';
+import { PermissionSectionGroup } from '@/components/permissions/PermissionSectionGroup';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 
 /* * */

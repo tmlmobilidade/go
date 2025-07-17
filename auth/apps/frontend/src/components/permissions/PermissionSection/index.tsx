@@ -3,6 +3,7 @@
 /* * */
 
 import CheckCard from '@/components/common/CheckCard';
+import { PermissionAction } from '@/lib/permissions';
 import { Permission } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
@@ -17,12 +18,6 @@ export type WithResourceToggle<T = unknown, K = Record<string, unknown>> = T & {
 export interface PermissionSectionInputProps<T = unknown> {
 	onToggle: (scope: string, action: string) => void
 	permissions: Permission<T>[]
-}
-
-interface PermissionAction {
-	description: string
-	key: string
-	label: string
 }
 
 interface PermissionsSectionProps {
@@ -59,7 +54,7 @@ export function PermissionsSection({
 		<Collapsible description={description} title={title}>
 			<Section gap="md">
 				<Grid columns="ab" gap="sm">
-					{actions.map(({ description, key, label }) => {
+					{actions.map(({ description, key, label, resources }) => {
 						const { hasPermission } = getPermissionData(key);
 
 						return (
@@ -70,7 +65,7 @@ export function PermissionsSection({
 								label={label}
 								onChange={() => onToggle(scope, key)}
 							>
-								{onResourceToggle && (
+								{onResourceToggle && resources?.includes('AGENCIES') && (
 									<AgencyPermissionMultiselect
 										description="Agências ao qual o utilizador tem acesso a para esta ação"
 										label="Agências"
