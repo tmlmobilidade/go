@@ -1,0 +1,60 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 400px;
+	overflow: hidden;
+	border-radius: 5px;
+}
+
+/* * */
+/* TOOLBAR */
+
+.toolbar {
+	display: flex;
+  	align-items: center;
+  	justify-content: flex-start;
+  	background-color: var(--color-gray-0);
+  	padding: var(--size-sm);
+  	gap: var(--size-md);	
+}
+
+@media (width <= 650px) {
+	.toolbar {
+		padding: var(--size-sm);
+		background-color: var(--color-system-background-100);
+	}
+
+}
+
+/* * */
+/* ATTRIBUTION */
+
+.attributionWrapper {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	gap: var(--size-spacing-5);
+	padding: var(--size-spacing-5) var(--size-spacing-10);
+	font-size: 10px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	color: var(--color-system-text-300);
+	margin: 1px;
+}
+
+.attributionWrapper a:hover {
+	color: var(--color-primary-black);
+	text-decoration: underline;
+}
+
+.map-wrap {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 77px); /* calculate height of the screen minus the heading */
+}
