@@ -17,7 +17,6 @@ declare module 'fastify' {
 
 export default function authorizationMiddleware(scope?: string, action?: string) {
 	return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
-		console.log('====> Authorization middleware', request.cookies);
 		const token = request.cookies.session_token;
 
 		if (!token) {
