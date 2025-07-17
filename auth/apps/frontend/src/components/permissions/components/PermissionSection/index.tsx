@@ -6,6 +6,8 @@ import CheckCard from '@/components/common/CheckCard';
 import { Permission } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
+import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';
+
 /* * */
 
 export type WithResourceToggle<T = unknown, K = Record<string, unknown>> = T & {
@@ -25,9 +27,9 @@ interface PermissionAction {
 
 interface PermissionsSectionProps {
 	actions: PermissionAction[]
-	children?: React.ReactNode
 	currentPermissions: Permission<unknown>[]
 	description: string
+	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
 	onToggle: (scope: string, action: string) => void
 	scope: string
 	title: string
@@ -37,9 +39,9 @@ interface PermissionsSectionProps {
 
 export function PermissionsSection({
 	actions,
-	children,
 	currentPermissions,
 	description,
+	onResourceToggle,
 	onToggle,
 	scope,
 	title,
@@ -68,7 +70,14 @@ export function PermissionsSection({
 								label={label}
 								onChange={() => onToggle(scope, key)}
 							>
-								{children}
+								{onResourceToggle && (
+									<AgencyPermissionMultiselect
+										description="Agências ao qual o utilizador tem acesso a para esta ação"
+										label="Agências"
+										onChange={value => onResourceToggle(scope, key, { agency_ids: value || [] })}
+										selected={(currentPermissions.find(p => p.scope === scope && p.action === key)?.resource as Record<string, unknown>)?.agency_ids as string[] || []}
+									/>
+								)}
 							</CheckCard>
 						);
 					})}

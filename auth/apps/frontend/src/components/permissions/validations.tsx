@@ -1,6 +1,5 @@
 'use client';
 
-import { AgencyPermissionMultiselect } from '@/components/permissions/components/AgencyPermissionMultiselect';
 import { Permissions } from '@tmlmobilidade/lib';
 import { ValidationPermission } from '@tmlmobilidade/types';
 
@@ -21,16 +20,10 @@ export function PermissionsValidations({ onResourceToggle, onToggle, permissions
 			actions={validationActions}
 			currentPermissions={permissions}
 			description="As ações que o utilizador pode realizar na gestão de validações."
+			onResourceToggle={onResourceToggle}
 			onToggle={onToggle}
 			scope={Permissions.validations.scope}
 			title="Permissões de Validações"
-		>
-			<AgencyPermissionMultiselect
-				description="Agências ao qual o utilizador tem acesso a para esta ação"
-				label="Agências"
-				onChange={value => onResourceToggle?.(Permissions.validations.scope, 'update', { agency_ids: value || [] })}
-				selected={permissions.find(p => p.scope === Permissions.validations.scope && p.action === 'update')?.resource?.agency_ids || []}
-			/>
-		</PermissionsSection>
+		/>
 	);
 }
