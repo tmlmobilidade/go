@@ -3,13 +3,16 @@
 /* * */
 
 import { MapView } from '@/components/Map/MapView';
+import { Routes } from '@/lib/routes';
+import { Stop } from '@tmlmobilidade/types';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import useSWR from 'swr';
 
 /* * */
 
-export function MapViewStops({ allSchoolsData, onSelectSchool }) {
+export function MapViewStops() {
 	//
 
 	//
@@ -18,27 +21,27 @@ export function MapViewStops({ allSchoolsData, onSelectSchool }) {
 	//
 	// B. Fetch data
 
-	const { data: allStopsData } = useSWR('https://api.carrismetropolitana.pt/stops');
+	const { data: stops } = useSWR<Stop[]>(Routes.ME, swrFetcher);
 
 	//
 	// C. Transform data
 
-	const allStopsDataAsGeojson = useMemo(() => {
+	const stopsAsGeojson = useMemo(() => {
 		const geoJSON: GeoJSON.FeatureCollection = {
 			features: [],
 			type: 'FeatureCollection',
 		};
-		if (allStopsData) {
-			for (const stop of allStopsData) {
+		if (stops) {
+			for (const stop of stops) {
 				geoJSON.features.push({
-					geometry: { coordinates: [stop.lon, stop.lat], type: 'Point' },
+					geometry: { coordinates: [stop.longitude, stop.latitude], type: 'Point' },
 					properties: {},
 					type: 'Feature',
 				});
 			}
 		}
 		return geoJSON;
-	}, [allStopsData]);
+	}, [stops]);
 
 	//
 	// D. Handle actions
@@ -48,15 +51,13 @@ export function MapViewStops({ allSchoolsData, onSelectSchool }) {
 		if (!feature || !feature.properties || feature.properties.id === null || feature.properties.id === undefined) {
 			return;
 		}
-		const id = feature.properties.id;
-		onSelectSchool(id);
 		console.log('finally work');
 	}
 
 	//
 	// E. Render components
 
-	if (!allSchoolsData || !allStopsData) {
+	if (!stops) {
 		return;
 	}
 
@@ -71,7 +72,7 @@ export function MapViewStops({ allSchoolsData, onSelectSchool }) {
 				toolbar
 			>
 				<>
-					<Source data={allStopsDataAsGeojson} id="allStops" type="geojson">
+					<Source data={stopsAsGeojson} id="allStops" type="geojson">
 						<Layer
 							id="allStops"
 							source="allStops"

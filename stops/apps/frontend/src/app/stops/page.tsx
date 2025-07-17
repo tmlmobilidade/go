@@ -1,14 +1,18 @@
 'use client';
 
-import { TransparentPane } from '@/components/TransparentPane';
-import { NoDataLabel } from '@tmlmobilidade/ui';
+import { MapView } from '@/components/Map/MapView';
+import { MapViewStops } from '@/components/Map/MapViewStops';
+import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 
 /* * */
 
 export default function Page() {
 	return (
-		<TransparentPane>
-			<NoDataLabel text="Selecionar uma paragem" />
-		</TransparentPane>
+		<MapOptionsContextProvider>
+			<MapView>
+				<MapViewStops />
+			</MapView>
+		</MapOptionsContextProvider>
+
 	);
 }

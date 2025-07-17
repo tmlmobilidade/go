@@ -16,7 +16,7 @@ const defaultZoom = 9;
 
 // Min and Max Zoom
 const minZoom = 5;
-const maxZoom = 20;
+const maxZoom = 19;
 
 //
 // MAP STYLES
