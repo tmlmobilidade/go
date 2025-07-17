@@ -1,6 +1,6 @@
 'use client';
 
-import { PermissionSectionGroup } from '@/components/permissions/components/PermissionSectionGroup';
+import { PermissionSectionGroup } from '@/components/permissions/PermissionSectionGroup';
 /* * */
 
 import { RoleDetailBasicInfo } from '@/components/roles/detail/RoleDetailBasicInfo';

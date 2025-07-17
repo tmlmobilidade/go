@@ -3,6 +3,7 @@
 /* * */
 
 import { useLogin } from '@/components/login/LoginForm/use-login';
+import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
 import { createEmail } from '@tmlmobilidade/types';
 import { Button, Label, PasswordInput, Section, Surface, TextInput, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';
@@ -63,7 +64,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 	};
 
 	const handleReset = () => {
-		router.push('/reset');
+		router.push(Routes.RESET_PASSWORD);
 	};
 	//
 	// C. Render components
