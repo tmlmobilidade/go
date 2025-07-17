@@ -3,6 +3,8 @@
 import { Background4 } from '@/components/login/Background4';
 import { ResetPasswordForm } from '@/components/reset-password/ResetPasswordForm';
 import SendResetEmailForm from '@/components/reset-password/SendResetEmailForm';
+import { cookies as nextCookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import styles from './styles.module.css';
 
@@ -17,7 +19,21 @@ interface Props {
 export default async function Page({ searchParams }: Props) {
 	//
 
+	//
+	// A. Setup variables
+
+	const cookies = await nextCookies();
+	const session = cookies.get('session_token');
 	const { token } = await searchParams;
+
+	//
+	// B. Handle actions
+
+	if (session) {
+		// Redirect to the main page
+		// if the user is already logged in.
+		redirect('/');
+	}
 
 	//
 	// C. Render components
