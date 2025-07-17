@@ -85,6 +85,7 @@ export function StopDetails() {
 					<Combobox
 						data={operationalStatusItems}
 						label="Estado Operacional"
+						placeholder="Escolha uma opção"
 						fullWidth
 						{...stopDetailContext.data.form.getInputProps('operational_status')}
 					/>
