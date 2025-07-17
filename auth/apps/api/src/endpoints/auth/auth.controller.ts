@@ -139,7 +139,7 @@ export class AuthController {
 			user_id: user._id,
 		});
 
-		const url = getAppConfig('auth', 'frontend_url') + `/resetpassword?token=${token}`;
+		const url = `${getAppConfig('auth', 'frontend_url')}/reset-password?token=${token}`;
 
 		await sendResetPasswordEmail({
 			props: {

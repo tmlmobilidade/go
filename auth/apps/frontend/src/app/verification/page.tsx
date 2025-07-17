@@ -5,6 +5,7 @@
 // import { Background3 } from '@/components/Background3';
 import { Background4 } from '@/components/login/Background4';
 import { VerificationForm } from '@/components/login/VerificationForm';
+import { Routes } from '@/lib/routes';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -13,7 +14,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface Props {
-	searchParams: Promise<{ redirectTo: string | undefined }>
+	searchParams: Promise<{ token: string | undefined }>
 }
 
 /* * */
@@ -26,7 +27,7 @@ export default async function Page({ searchParams }: Props) {
 
 	const cookies = await nextCookies();
 	const session = cookies.get('session_token');
-	const { redirectTo } = await searchParams;
+	const { token } = await searchParams;
 
 	//
 	// B. Handle actions
@@ -37,20 +38,19 @@ export default async function Page({ searchParams }: Props) {
 		redirect('/');
 	}
 
+	if (!token) {
+		// Redirect to the login page
+		redirect(Routes.LOGIN);
+	}
+
 	//
 	// C. Render components
 
 	return (
 		<div className={styles.root}>
-			{/* <Background1 /> */}
-			{/* <Background2 /> */}
-			{/* <Background3 /> */}
 			<Background4 />
 			<VerificationForm
-				redirect={
-					redirectTo
-					&& new URL(redirectTo).toString()
-				}
+				token={token}
 			/>
 		</div>
 	);

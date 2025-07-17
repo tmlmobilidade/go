@@ -2,119 +2,64 @@
 
 /* * */
 
+import { PasswordConfirmationForm } from '@/components/common/PasswordConfirmationForm';
 import { useChangePassword } from '@/components/reset-password/ResetPasswordForm/use-change-password';
-import { IconArrowRight } from '@tabler/icons-react';
-import { Button, Label, PasswordInput, Section, Surface, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';
-import bcrypt from 'bcryptjs';
+import { Routes } from '@/lib/routes';
+import { HttpStatus } from '@tmlmobilidade/lib';
+import { useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-
-import styles from '../styles.module.css';
 
 /* * */
 
 interface Props {
 
 	/**
-	 * The URL to redirect to after successful login.
-	 * @default "/"
+	 * The token to reset the password.
 	 */
-	redirect?: string
+	token: string
 
 }
 
-export function ResetPasswordForm({ redirect = '/' }: Props) {
+export function ResetPasswordForm({ token }: Props) {
 	//
 
 	//
 	// A. Setup variables
 
-	const { changePassword, loading } = useChangePassword();
-
-	const [password, setPassword] = useState<string>('');
-	const [confirmpassword, setConfirmPassword] = useState<string>('');
-
 	const router = useRouter();
+	const { changePassword, loading } = useChangePassword();
 
 	//
 	// B. Handle actions
 
-	const handleSubmit = async () => {
-		const password_hash = bcrypt.hashSync(confirmpassword);
-		const token = new URLSearchParams(window.location.search).get('token');
-
-		if (!token) {
+	const handleSubmit = async (password: string) => {
+		const response = await changePassword(token, password);
+		if (response.status !== HttpStatus.OK) {
 			useToast.error({
-				message: 'Falta o token',
-				title: 'Token em falta',
-			});
-			return;
-		}
-
-		const response = await changePassword(password_hash, token);
-
-		if (response.status !== 200) {
-			useToast.error({
-				message: response.error ?? 'An error occurred',
-				title: 'Ocorreu um erro ao tentar trocar a palavra-passe',
+				message: response.error ?? 'Ocorreu um erro ao tentar alterar a password',
+				title: 'Erro ao tentar alterar password',
 			});
 			return;
 		}
 
 		useToast.success({
-			message: response.status ?? 'palavra-passe trocada com sucesso',
-			title: 'senha trocada com sucesso',
+			message: 'Password foi alterada com sucesso',
+			title: 'Sucesso',
 		});
 
-		router.replace(redirect);
+		router.replace(Routes.LOGIN);
 	};
 
 	//
 	// C. Render components
 
 	return (
-		<div className={styles.root}>
-			<Surface>
-				<Section>
-
-					<div className={styles.header}>
-						<div className={styles.headerContent}>
-							<Label size="lg">Change Password</Label>
-							<Label>Altere a sua palavra-passe</Label>
-						</div>
-						<div className={styles.headerLogo}>
-							<Themer dark={<TMLogoDark />} light={<TMLogoLight />} />
-						</div>
-					</div>
-
-					<form className={styles.form} onSubmit={handleSubmit}>
-						<PasswordInput
-							onChange={e => setPassword(e.target.value)}
-							placeholder="Password"
-							value={password}
-						/>
-						<PasswordInput
-							autoComplete="new-password"
-							disabled={password.length < 8}
-							onChange={e => setConfirmPassword(e.target.value)}
-							placeholder="Confirm Password"
-							value={confirmpassword}
-						/>
-						<Button
-							disabled={password !== confirmpassword}
-							icon={<IconArrowRight />}
-							label="change"
-							loading={loading}
-							onClick={handleSubmit}
-							type="submit"
-							variant="primary"
-						/>
-
-					</form>
-
-				</Section>
-			</Surface>
-		</div>
+		<PasswordConfirmationForm
+			description="Introduza a sua nova password"
+			loading={loading}
+			onSubmit={handleSubmit}
+			title="Alterar password"
+		/>
 	);
 
 	//
