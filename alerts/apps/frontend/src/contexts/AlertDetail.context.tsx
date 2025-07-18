@@ -75,7 +75,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
 
-	const copyURL = new URLSearchParams().get('copy');
+	const copyURL = new URLSearchParams(window.location.search).get('copy');
 
 	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new'
 		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
