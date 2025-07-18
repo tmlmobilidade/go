@@ -25,8 +25,8 @@ const MAX_BODY_SIZE = 1024 * 1024 * 1024 * 2; // 2GB
 				target: 'pino-pretty',
 			},
 		},
-		origin: getAppConfig('plans', 'cors_origin'),
-		port: getAppConfig('plans', 'api_port'),
+		origin: getAppConfig('auth', 'cors_origin'),
+		port: getAppConfig('auth', 'api_port') + 20,
 	};
 
 	// Start Fastify server
@@ -38,6 +38,8 @@ const MAX_BODY_SIZE = 1024 * 1024 * 1024 * 2; // 2GB
 			fileSize: MAX_BODY_SIZE,
 		},
 	});
+
+	// fastifyService.server.
 
 	await fastifyService.start();
 

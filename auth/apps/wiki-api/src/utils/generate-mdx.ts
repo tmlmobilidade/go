@@ -22,7 +22,7 @@ export function generateWikiMdx(): MarkdownComponent[] {
 	res.forEach((item) => {
 		const file = fs.readFileSync(WIKI_PATH + item, 'utf-8');
 
-		const content = fm<MarkdownComponent>(file);
+		const content = fm.default<MarkdownComponent>(file);
 		markdownComponents.push(
 			{
 				id: item,
