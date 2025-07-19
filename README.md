@@ -35,6 +35,7 @@ Here's what a typical SAE application folder structure looks like:
 |controller | localhost:51002        | localhost:52002   | https://controller.sae.carrismetropolitana.pt | https://controller.sae.carrismetropolitana.pt/api |
 |stops      | localhost:51003        | localhost:52003   | https://stops.sae.carrismetropolitana.pt      | https://stops.sae.carrismetropolitana.pt/api      |
 |plans      | localhost:51004        | localhost:52004   | https://plans.sae.carrismetropolitana.pt      | https://plans.sae.carrismetropolitana.pt/api      |
+| locations | localhost:51005        | localhost:52005   | N/A  | https://locations.sae.carrismetropolitana.pt  |
 
 _* In production the API is redirected through **NGINX** and in local development we use **next.config.ts**_
 
