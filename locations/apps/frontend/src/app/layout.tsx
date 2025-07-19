@@ -2,7 +2,7 @@
 
 import '@tmlmobilidade/ui/styles';
 import { getAppConfig } from '@tmlmobilidade/lib';
-import { AppProvider, AppWrapper, ThemeContextProvider } from '@tmlmobilidade/ui';
+import { ThemeContextProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
