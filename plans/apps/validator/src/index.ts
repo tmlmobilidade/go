@@ -2,9 +2,11 @@
 
 import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
+import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus } from '@tmlmobilidade/types';
+import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -33,6 +35,7 @@ async function processValidation(message: ValidationMessage) {
 		logger.info(`Getting file from MongoDB: ${file._id}`);
 
 		// 3. Download and write file to temp directory for validation
+		logger.info(`Downloading file from ${file.url}`);
 		const fileBuffer = await fetch(file.url).then(res => res.arrayBuffer());
 		const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
 		await writeFile(tempFilePath, Buffer.from(fileBuffer));
@@ -41,7 +44,14 @@ async function processValidation(message: ValidationMessage) {
 
 		// 4. Run GTFS validation
 		logger.info(`Validating file: ${tempFilePath}`);
-		const validationResult = await GTFSValidator(tempFilePath);
+
+		const useRules = true;
+		const rulesPath = getCurrentEnvironment() === 'development' ? undefined : '/secrets/tml-rules.json';
+
+		const validationResult = await GTFSValidator(tempFilePath, {
+			lang: 'pt',
+			rules_path: useRules ? rulesPath : undefined,
+		});
 
 		logger.info(`File validated, updating document in MongoDB`);
 
@@ -51,11 +61,44 @@ async function processValidation(message: ValidationMessage) {
 			summary: validationResult,
 		});
 
+		// Send email to user
+		try {
+			const latest_validation = await validations.findById(message.validation_id);
+			await sendGtfsValidationEmail({
+				props: {
+					first_name: '',
+					validation: latest_validation,
+				},
+				to: file.created_by,
+			});
+		}
+		catch (error) {
+			logger.error('Error sending email:', error);
+		}
+
 		logger.success('Validation Finished Successfully');
 		logger.divider();
 	}
 	catch (error) {
+		console.log('ERROR:', error);
 		logger.error('Error processing validation:', error);
+
+		// Send email to system
+		try {
+			if (process.env.EMAIL_TO) {
+				await sendFailedBackupEmail({
+					props: {
+						backup_service: 'Validator',
+						error_message: error instanceof Error ? error.message : JSON.stringify(error),
+						failure_time: Dates.now('Europe/Lisbon').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS),
+					},
+					to: process.env.EMAIL_TO,
+				});
+			}
+		}
+		catch (error) {
+			logger.error('Error sending email:', error);
+		}
 
 		// Update validation status to error
 		await validations.updateById(message.validation_id, {
@@ -63,9 +106,9 @@ async function processValidation(message: ValidationMessage) {
 			summary: {
 				messages: [
 					{
-						field: 'validation',
-						file_name: 'validation.json',
-						message: error instanceof Error ? error.message : 'Unknown error',
+						field: 'N/A',
+						file_name: 'Erro do sistema',
+						message: error instanceof Error ? error.message : JSON.stringify(error),
 						rows: [],
 						severity: 'error',
 						validation_id: message.validation_id,
@@ -93,6 +136,18 @@ async function main() {
 	logger.divider('🚀 GTFS Validator service started');
 }
 
-main();
+(async function startMainLoop() {
+	while (true) {
+		try {
+			await main();
+			break; // Exit loop if main resolves without error
+		}
+		catch (err) {
+			console.error('Fatal error in main():', err);
+			console.error('Restarting main() in 5 seconds...');
+			await new Promise(res => setTimeout(res, 5000));
+		}
+	}
+})();
 
 /* * */

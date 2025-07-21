@@ -17,12 +17,12 @@
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20250623.2358.3",
-		"@tmlmobilidade/interfaces": "20250701.1722.33",
+		"@tmlmobilidade/interfaces": "20250712.103.7",
 		"@tmlmobilidade/sae-replicator-pckg-parse": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250701.1722.33",
-		"@types/node": "24.0.8",
+		"@tmlmobilidade/tsconfig": "20250712.103.7",
+		"@types/node": "24.0.13",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.3",
 		"typescript": "5.8.3"

@@ -70,7 +70,6 @@ export function PlanDetailSectionInfo() {
 							onChange={(date) => {
 								form.setFieldValue('gtfs_feed_info.feed_start_date', Dates.fromFormat(date, 'yyyy-MM-dd', 'Europe/Lisbon').operational_date);
 							}}
-							fullWidth
 						/>
 					</Section>
 					<Section flexDirection="column" gap="sm" padding="none">

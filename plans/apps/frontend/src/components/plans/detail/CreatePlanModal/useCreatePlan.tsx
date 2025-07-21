@@ -54,7 +54,7 @@ export function useCreatePlan(validations: Validation[], validation_id?: string)
 		}
 
 		useToast.success({
-			message: 'Validação criado com sucesso',
+			message: 'Plano criado com sucesso',
 			title: 'Sucesso',
 		});
 

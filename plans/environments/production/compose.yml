@@ -38,9 +38,6 @@ services:
 
   nginx:
     image: ghcr.io/tmlmobilidade/sae-plans-nginx:production
-    build:
-      args:
-        - NGINX_SERVER_NAME=plans.carrismetropolitana.pt
     deploy:
       restart_policy:
         condition: on-failure
@@ -88,25 +85,8 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  validator:
-    image: ghcr.io/tmlmobilidade/sae-plans-validator:production
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
 

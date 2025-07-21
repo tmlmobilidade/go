@@ -36,7 +36,7 @@ export class ValidationsController {
 				action: Permissions.validations.actions.create,
 				resource_key: 'agency_ids',
 				scope: Permissions.validations.scope,
-				value: fields['gtfs_agency']['agency_id'],
+				value: fields['agency_id'].value,
 			})) {
 				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
 				return;
@@ -70,13 +70,13 @@ export class ValidationsController {
 
 				// 2. Upload the operation Validation file
 				const fileResult = await (filesCollection as typeof files).upload(buffer, {
-					created_by: 'system', // TODO: Change to user id
+					created_by: request.me.email,
 					name: data.filename,
 					resource_id: ValidationResult.insertedId.toString(),
 					scope: 'validations',
 					size: size,
 					type: data.mimetype,
-					updated_by: 'system', // TODO: Change to user id
+					updated_by: request.me.email,
 				}, { session: filesTransaction.getSession() });
 
 				// 3. Update the Validation with the file reference

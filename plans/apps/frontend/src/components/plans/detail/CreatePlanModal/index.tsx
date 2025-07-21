@@ -1,4 +1,4 @@
-import { useValidationListContext, ValidationListContextProvider } from '@/contexts/ValidationList.context';
+import { useValidationsListContext, ValidationsListContextProvider } from '@/contexts/ValidationsList.context';
 import { Button, closeModal, Combobox, Divider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -6,12 +6,12 @@ import { CREATE_PLAN_MODAL_ID, useCreatePlan } from './useCreatePlan';
 
 /* * */
 
-export const OpenCreatePlanModal = (validation_id?: string) => {
+export const openCreatePlanModal = (validation_id?: string) => {
 	openModal({
 		children: (
-			<ValidationListContextProvider>
+			<ValidationsListContextProvider>
 				<CreatePlanModal validation_id={validation_id} />
-			</ValidationListContextProvider>
+			</ValidationsListContextProvider>
 		),
 		modalId: CREATE_PLAN_MODAL_ID,
 		size: 'auto',
@@ -22,8 +22,8 @@ export const OpenCreatePlanModal = (validation_id?: string) => {
 /* * */
 
 export default function CreatePlanModal({ validation_id }: { validation_id?: string }) {
-	const validationListContext = useValidationListContext();
-	const { actions, data, flags } = useCreatePlan(validationListContext.data.raw, validation_id);
+	const validationsListContext = useValidationsListContext();
+	const { actions, data, flags } = useCreatePlan(validationsListContext.data.raw, validation_id);
 
 	const renderFeedInfoSection = () => {
 		return (

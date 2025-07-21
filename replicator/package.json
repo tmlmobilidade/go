@@ -11,6 +11,7 @@
 		"dev:sync-apex-on-board-refunds": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-refunds",
 		"dev:sync-apex-on-board-sales": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-on-board-sales",
 		"dev:sync-apex-validations": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-sync-apex-validations",
+		"helper:dump-vehicle-events": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-replicator-helpers-dump-vehicle-events",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start"
@@ -23,6 +24,7 @@
 	},
 	"workspaces": [
 		"apps/*",
+		"helpers/*",
 		"packages/*"
 	],
 	"packageManager": "npm@11.4.2",

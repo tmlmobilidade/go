@@ -3,10 +3,10 @@
 /* * */
 
 import { useLogin } from '@/components/login/LoginForm/use-login';
+import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
 import { createEmail } from '@tmlmobilidade/types';
 import { Button, Label, PasswordInput, Section, Surface, TextInput, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -63,6 +63,9 @@ export function LoginForm({ redirect = '/' }: Props) {
 		router.replace(redirect);
 	};
 
+	const handleReset = () => {
+		router.push(Routes.RESET_PASSWORD);
+	};
 	//
 	// C. Render components
 
@@ -74,7 +77,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 					<div className={styles.header}>
 						<div className={styles.headerContent}>
 							<Label size="lg">Login no GO+</Label>
-							<Label>Procuramos simplificar a gestão dos transportes públicos com boas ferramentas digitais.</Label>
+							<Label>Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.</Label>
 						</div>
 						<div className={styles.headerLogo}>
 							<Themer dark={<TMLogoDark />} light={<TMLogoLight />} />
@@ -95,11 +98,15 @@ export function LoginForm({ redirect = '/' }: Props) {
 							value={password}
 						/>
 						<div className={styles.formFooter}>
-							<Link href="/reset">
+							<span
+								className={styles.resetLink}
+								onClick={handleReset}
+								style={{ cursor: 'pointer' }}
+							>
 								<Label size="sm" caps>Recuperar password</Label>
-							</Link>
+							</span>
 							<Button
-								disabled={password.length === 0 || username.length === 0}
+								disabled={password.length < 8 || username.length === 0}
 								icon={<IconArrowRight />}
 								label="Login"
 								loading={loading}
