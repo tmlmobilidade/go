@@ -4,8 +4,9 @@
 	"scripts": {
 		"build": "turbo build",
 		"clean": "npx @tmlmobilidade/repo-rinse",
-		"seed": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-locations-seeder",
-		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=!@tmlmobilidade/sae-locations-seeder",
+		"seed:test": "dotenv-run -f ./environments/development/secrets/.env -- tsx apps/sync-locations/src/test.ts",
+		"seed": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-sync-locations",
+		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=!@tmlmobilidade/sae-sync-locations",
 		"lint": "turbo lint",
 		"start": "turbo start"
 	},
@@ -23,5 +24,10 @@
 	},
 	"workspaces": [
 		"apps/*"
-	]
+	],
+	"dependencies": {
+		"@tmlmobilidade/connectors": "^20250717.1418.40",
+		"@turf/boolean-valid": "^7.2.0",
+		"geojson-validation": "^1.0.2"
+	}
 }

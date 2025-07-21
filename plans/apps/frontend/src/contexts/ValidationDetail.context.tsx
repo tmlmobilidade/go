@@ -179,6 +179,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		setIsSaving(true);
 		const uploadFormData = new FormData();
 
+		uploadFormData.append('agency_id', form.values.gtfs_agency.agency_id);
 		uploadFormData.append('gtfs_agency', JSON.stringify(form.values.gtfs_agency));
 		uploadFormData.append('gtfs_feed_info', JSON.stringify(form.values.gtfs_feed_info));
 		uploadFormData.append('feeder_status', form.values.feeder_status);
