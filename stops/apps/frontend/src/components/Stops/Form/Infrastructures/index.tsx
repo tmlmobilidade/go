@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { operationalStatusSchema } from '@tmlmobilidade/types';
+import { hasAnySchema, roadTypeSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -17,8 +17,13 @@ export function Infraestructures() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
-		label: Translations.OPERATIONAL_STATUS[value],
+	const has_this = hasAnySchema.options.map (value => ({
+		label: Translations.HAS_ANY[value],
+		value: value,
+	}));
+
+	const road_relation = roadTypeSchema.options.map (value => ({
+		label: Translations.ROAD_TYPE[value],
 		value: value,
 	}));
 
@@ -34,18 +39,18 @@ export function Infraestructures() {
 				<Grid columns="abc" gap="md">
 
 					<Combobox
-						data={operationalStatusItems}
+						data={has_this}
 						label="Existe Poste?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('pole_status')}
+						{...stopDetailContext.data.form.getInputProps('has_pole')}
 					/>
 					<Combobox
-						data={operationalStatusItems}
+						data={has_this}
 						label="Existe Cobertura?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('has_cover')}
 					/>
 
 				</Grid>
@@ -55,25 +60,25 @@ export function Infraestructures() {
 			<Section>
 				<Grid columns="abc" gap="md">
 					<Combobox
-						data={operationalStatusItems}
+						data={has_this}
 						label="Existe Mupi?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('has_mupi')}
 					/>
 					<Combobox
-						data={operationalStatusItems}
+						data={has_this}
 						label="Existe Banco?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('has_bench')}
 					/>
 					<Combobox
-						data={operationalStatusItems}
+						data={has_this}
 						label="Existe Papeleira?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('has')}
 					/>
 				</Grid>
 				<Spacer />
@@ -82,18 +87,18 @@ export function Infraestructures() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<Combobox
-						data={operationalStatusItems}
+						data={has_this}
 						label="Existe Iluminação?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('has_lighting')}
 					/>
 					<Combobox
-						data={operationalStatusItems}
+						data={has_this}
 						label="Existe Ligação Elétrica?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('has_electricity')}
 					/>
 				</Grid>
 				<Spacer />
@@ -101,11 +106,11 @@ export function Infraestructures() {
 
 			<Section>
 				<Combobox
-					data={operationalStatusItems}
+					data={road_relation}
 					label="Tipo de Relação com a Via"
 					placeholder="..."
 					fullWidth
-					{...stopDetailContext.data.form.getInputProps('')}
+					{...stopDetailContext.data.form.getInputProps('road_type')}
 				/>
 				<Spacer />
 			</Section>
