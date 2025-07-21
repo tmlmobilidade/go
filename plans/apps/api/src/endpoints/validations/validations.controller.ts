@@ -36,7 +36,7 @@ export class ValidationsController {
 				action: Permissions.validations.actions.create,
 				resource_key: 'agency_ids',
 				scope: Permissions.validations.scope,
-				value: fields['gtfs_agency']['agency_id'],
+				value: fields['agency_id'].value,
 			})) {
 				reply.status(HttpStatus.FORBIDDEN).send({ message: 'You are not authorized to perform this action' });
 				return;
