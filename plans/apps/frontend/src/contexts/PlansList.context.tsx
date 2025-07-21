@@ -104,7 +104,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 				return true;
 			})
 			.sort((a, b) => {
-				return a.gtfs_feed_info.feed_start_date.localeCompare(b.gtfs_feed_info.feed_start_date);
+				return b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date);
 			});
 	}, [searchResultsData, filterAgency]);
 
