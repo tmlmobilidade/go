@@ -5,6 +5,8 @@
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"dev:frontend": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-plans-frontend",
+		"dev:production": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev",
+		"dev:staging": "dotenv-run -f ./environments/staging/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start"
