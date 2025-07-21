@@ -17,8 +17,7 @@ const mongo = new MongoConnector(process.env.TML_INTERFACE_LOCATIONS);
 
 /* * */
 
-// const COLLECTIONS = ['census', 'districts', 'localities', 'municipalities', 'parishes'] as const;
-const COLLECTIONS = ['localities'] as const;
+const COLLECTIONS = ['census', 'districts', 'localities', 'municipalities', 'parishes'] as const;
 
 async function seedGeoCollection(filePath: string, collectionName: (typeof COLLECTIONS)[number]) {
 	LOGGER.info(`📖 Reading file from ${filePath}`);
