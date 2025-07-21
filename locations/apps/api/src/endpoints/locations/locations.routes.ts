@@ -1,6 +1,6 @@
 /* * */
 
-import { FastifyReply, FastifyRequest, FastifyService } from '@tmlmobilidade/connectors';
+import { FastifyService } from '@tmlmobilidade/connectors';
 
 import { LocationsController } from './locations.controller.js';
 
