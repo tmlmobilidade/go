@@ -1,11 +1,12 @@
 'use client';
 
+import { useLocationsContext } from '@/contexts/Locations.context';
+import { useStopDetailContext } from '@/contexts/StopDetails.context';
+
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Translations } from '@/lib/translations';
-import { operationalStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, MultiSelect, Section } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -16,11 +17,16 @@ export function Affectation() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const locationsContext = useLocationsContext();
 
-	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
-		label: Translations.OPERATIONAL_STATUS[value],
-		value: value,
-	}));
+	const zonesOptions = useMemo(() => {
+		if (!locationsContext.data.zones) return [];
+
+		return locationsContext.data.zones.map(zone => ({
+			label: zone.municipality.name,
+			value: zone.id,
+		}));
+	}, [locationsContext.data.zones]);
 
 	//
 	// B. Render components
@@ -32,12 +38,13 @@ export function Affectation() {
 		>
 			<Section>
 				<MultiSelect
-					key={stopDetailContext.data.form.key('operational_status')}
-					data={operationalStatusItems}
+					key={stopDetailContext.data.form.key('zones')}
+					data={zonesOptions}
 					label="Aceitação de Passes pré-definida"
-					selected={stopDetailContext.data.form.values.operational_status}
-					{...stopDetailContext.data.form.getInputProps('operational_status')}
+					selected={stopDetailContext.data.form.values.zones || []}
+					{...stopDetailContext.data.form.getInputProps('zones')}
 				/>
+
 			</Section>
 
 		</Collapsible>

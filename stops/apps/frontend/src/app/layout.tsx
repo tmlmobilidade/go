@@ -4,6 +4,7 @@ import '@tmlmobilidade/ui/styles';
 
 /* * */
 
+import { DataProviders } from '@/components/providers/data-providers';
 import { getAppConfig } from '@tmlmobilidade/lib';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { cookies as nextCookies } from 'next/headers';
@@ -40,7 +41,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 				<NuqsAdapter>
 					<AppProvider>
 						<AppWrapper>
-							{children}
+							<DataProviders>
+								{children}
+							</DataProviders>
 						</AppWrapper>
 					</AppProvider>
 				</NuqsAdapter>

@@ -37,17 +37,16 @@ export function AdministratorInfo() {
 						label="Município"
 						placeholder="Escolha uma opção"
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('municipality_id')}
+						{...stopDetailContext.data.form.getInputProps('municipality')}
 					/>
 					<TextInput
 						label="Freguesia"
-						placeholder="..."
+						placeholder="Maçãs"
 						{...stopDetailContext.data.form.getInputProps('parish_id')}
 					/>
 					<TextInput
 						label="Localidade"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('locality_id')}
+						{...stopDetailContext.data.form.getInputProps('locality')}
 					/>
 				</Grid>
 			</Section>

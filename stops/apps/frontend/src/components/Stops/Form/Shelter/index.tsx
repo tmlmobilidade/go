@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { operationalStatusSchema } from '@tmlmobilidade/types';
+import { hasAnySchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -17,8 +17,8 @@ export function Shelter() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
-		label: Translations.OPERATIONAL_STATUS[value],
+	const has_shelter = hasAnySchema.options.map (value => ({
+		label: Translations.HAS_ANY[value],
 		value: value,
 	}));
 
@@ -33,20 +33,20 @@ export function Shelter() {
 			<Section>
 				<Grid columns="abc" gap="md">
 					<Combobox
-						data={operationalStatusItems}
+						data={has_shelter}
 						label="Existe Abrigo?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('shelter_status')}
+						{...stopDetailContext.data.form.getInputProps('has_shelter')}
 					/>
 					<TextInput
-						disabled={!operationalStatusItems}
+						disabled={!has_shelter.some(item => item.value === 'YES')}
 						label="Código do Abrigo"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('shelter_code')}
 					/>
 					<TextInput
-						disabled={!operationalStatusItems}
+						disabled={!has_shelter.some(item => item.value === 'YES')}
 						label="Entidade Gestora do Abrigo"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('shelter_maintainer')}
@@ -57,15 +57,15 @@ export function Shelter() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<TextInput
-						disabled={!operationalStatusItems}
+						disabled={!has_shelter.some(item => item.value === 'YES')}
 						label="Última verificação do estado do abrigo"
-						placeholder="..."
+						placeholder="2023-02-10"
 						{...stopDetailContext.data.form.getInputProps('last_schedules_check')}
 					/>
 					<TextInput
-						disabled={!operationalStatusItems}
+						disabled={!has_shelter.some(item => item.value === 'YES')}
 						label="Data de Instalação do abrigo"
-						placeholder="..."
+						placeholder="2023-02-10"
 						{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
 					/>
 				</Grid>

@@ -10,7 +10,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20250717.1418.40",
+		"@tmlmobilidade/tsconfig": "20250721.1454.6",
 		"dotenv-cli": "8.0.0",
 		"prettier": "3.6.2",
 		"turbo": "2.5.5",
@@ -22,5 +22,8 @@
 	},
 	"workspaces": [
 		"apps/*"
-	]
+	],
+	"dependencies": {
+		"@carrismetropolitana/api-types": "^20250717.940.43"
+	}
 }
