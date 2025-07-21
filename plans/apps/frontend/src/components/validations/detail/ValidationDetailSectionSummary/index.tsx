@@ -78,7 +78,7 @@ export function ValidationDetailSectionSummary() {
 				<Divider />
 				<DataTable
 					columns={columns}
-					records={validationDetailContext.data.form.getValues().summary?.messages ?? []}
+					records={validationDetailContext.data.form.getValues().summary?.messages.filter(message => message.severity !== 'ignore') ?? []}
 				/>
 			</div>
 		</Collapsible>
