@@ -18,7 +18,7 @@
 		"@helperkits/logger": "^20250628.901.58",
 		"@tmlmobilidade/connectors": "20250721.1500.37",
 		"@tmlmobilidade/emails": "20250721.1500.37",
-		"@tmlmobilidade/gtfs-validator": "20250721.1444.52",
+		"@tmlmobilidade/gtfs-validator": "20250721.1534.15",
 		"@tmlmobilidade/interfaces": "20250721.1500.37",
 		"@tmlmobilidade/utils": "20250721.1500.37",
 		"csv-parse": "6.1.0"
