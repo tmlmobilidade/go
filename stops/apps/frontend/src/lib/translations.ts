@@ -11,6 +11,15 @@ export const Translations = {
 		SEASONAL: 'Sazonal',
 		VOIDED: 'Anulada',
 	},
+	PAVEMENT_TYPE: {
+		ASPHALT: 'Asfalto',
+		CONCRETE: 'Betão',
+		DIRT: 'Terra',
+		GRASS: 'Relva',
+		GRAVEL: 'Cascalho',
+		PORTUGUESE_STONES: 'Calçada Portuguesa',
+		UNKNOWN: 'Desconhecido',
+	},
 	ROAD_TYPE: {
 		COMPLEMENTARY_ITINERARY: 'Itinerário Complementar',
 		HIGHWAY: 'Autoestrada',

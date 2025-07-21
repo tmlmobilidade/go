@@ -28,7 +28,7 @@ export function NotesComments() {
 					mih="100px"
 					miw="100%"
 					placeholder="Construção planeada a..."
-					{...stopDetailContext.data.form.getInputProps('')}
+					{...stopDetailContext.data.form.getInputProps('comments')}
 				/>
 			</Section>
 

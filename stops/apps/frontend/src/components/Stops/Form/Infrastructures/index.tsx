@@ -78,7 +78,7 @@ export function Infraestructures() {
 						label="Existe Papeleira?"
 						placeholder="..."
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has')}
+						{...stopDetailContext.data.form.getInputProps('has_trash_bin')}
 					/>
 				</Grid>
 				<Spacer />
