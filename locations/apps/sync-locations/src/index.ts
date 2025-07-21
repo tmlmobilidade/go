@@ -17,7 +17,8 @@ const mongo = new MongoConnector(process.env.TML_INTERFACE_LOCATIONS);
 
 /* * */
 
-const COLLECTIONS = ['census', 'districts', 'localities', 'municipalities', 'parishes'] as const;
+// const COLLECTIONS = ['census', 'districts', 'localities', 'municipalities', 'parishes'] as const;
+const COLLECTIONS = ['localities'] as const;
 
 async function seedGeoCollection(filePath: string, collectionName: (typeof COLLECTIONS)[number]) {
 	LOGGER.info(`📖 Reading file from ${filePath}`);
@@ -43,7 +44,9 @@ async function seedGeoCollection(filePath: string, collectionName: (typeof COLLE
 			// 🚨 Skip invalid features for localities
 			if (collectionName === 'localities' && !booleanValid(feature)) {
 				LOGGER.error(`Invalid feature ${feature.properties.name} (${feature.properties.id})`);
-				continue;
+
+				// Fix Feature
+				// continue;
 			}
 
 			const geojson = turfFeature(feature.geometry, feature.properties);
