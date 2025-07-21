@@ -49,7 +49,7 @@ async function main(id: string) {
 	if (!booleanValid(feature)) {
 		LOGGER.error(`Invalid feature ${feature.properties.name} (${feature.properties.id}) - ${feature.geometry.type}`);
 		// Write to file
-		await fs.writeFile(path.join(__dirname, `../data/localities/${feature.properties.id}.json`), JSON.stringify(feature, null, 2), 'utf-8');
+		// await fs.writeFile(path.join(__dirname, `../data/localities/${feature.properties.id}.json`), JSON.stringify(feature, null, 2), 'utf-8');
 		// await fs.writeFile(path.join(__dirname, `../data/localities/${feature.properties.id}.json`), JSON.stringify(feature, null, 2), 'utf-8');
 	}
 }
