@@ -1,14 +1,16 @@
 /* * */
 
+import { transformMdxToHtml } from '@/utils/transform-mdx-to-html.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { HttpStatus } from '@tmlmobilidade/lib';
 
 /* * */
 
 export class WikiController {
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
+	async getAll(request: FastifyRequest, reply: FastifyReply) {
+		console.log(request, '------>');
 		try {
-			reply.send(await markdownComponents.findMany({}, undefined, undefined, { created_at: -1 }));
+			reply.send(await transformMdxToHtml());
 		}
 		catch (error) {
 			reply

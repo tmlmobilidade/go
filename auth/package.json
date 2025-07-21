@@ -19,7 +19,9 @@
 		"front-matter": "^4.0.2",
 		"fs": "^0.0.1-security",
 		"nodemailer": "^7.0.5",
-		"react-router-dom": "^7.6.3"
+		"react-router-dom": "^7.6.3",
+		"remark-html": "^16.0.1",
+		"to-vfile": "^8.0.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",

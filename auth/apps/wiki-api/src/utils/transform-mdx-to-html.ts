@@ -1,5 +1,12 @@
 /* * */
 
+import remarkHtml from 'remark-html';
+import remarkParse from 'remark-parse';
+import { read } from 'to-vfile';
+import { unified } from 'unified';
+
+/* * */
+
 interface ParsedMdxFile {
 	html: string
 	id: string
@@ -7,11 +14,19 @@ interface ParsedMdxFile {
 	title: string
 }
 
-export function transformMdxToHtml(mdxFilePath: string): ParsedMdxFile {
+const filesBasePath = 'auth/apps/wiki-api/content';
+const file = await unified()
+	.use(remarkParse)
+	.use(remarkHtml)
+	.process(await read('content/home.mdx'));
+
+export function transformMdxToHtml(): ParsedMdxFile {
+	const mdxFilePath = filesBasePath + file.path;
+
 	//
-
-	// .... trasfrom mdx to html ....
-
+	// .... trasfrom frontmatter to json ....
+	// .... trasfrom md to html ....
+	console.log('------------>', mdxFilePath);
 	return {
 		html: '',
 		id: '',

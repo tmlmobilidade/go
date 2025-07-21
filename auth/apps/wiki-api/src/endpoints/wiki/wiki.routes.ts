@@ -3,10 +3,15 @@
 import { generateWikiMdx } from '@/utils/generate-mdx.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 import { FastifyInstance } from 'fastify';
+
+import { WikiController } from './wiki.controller.js';
+
 /* * */
 
+const NAMESPACE = '/';
+
 const server: FastifyInstance = FastifyService.getInstance().server;
-const namespace = '/wiki';
+const controller = new WikiController();
 
 /* * */
 
@@ -14,8 +19,8 @@ server.register(
 	(instance, opts, next) => {
 		// GET /wiki
 		instance.get(
-			'/', (request, response) => {
-				response.send('hey');
+			'/', (request, reply) => {
+				return controller.getAll(request, reply);
 			},
 		);
 
@@ -29,5 +34,5 @@ server.register(
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );
