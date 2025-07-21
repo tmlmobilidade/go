@@ -17,8 +17,8 @@ export function AdministratorInfo() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const  = .options.map (value => ({
-		label: Translations.[value],
+	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
+		label: Translations.OPERATIONAL_STATUS[value],
 		value: value,
 	}));
 
@@ -33,7 +33,7 @@ export function AdministratorInfo() {
 			<Section>
 				<Grid columns="abc" gap="sm">
 					<Combobox
-						data={}
+						data={operationalStatusItems}
 						label="Município"
 						placeholder="Escolha uma opção"
 						fullWidth
