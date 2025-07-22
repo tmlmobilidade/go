@@ -4,13 +4,10 @@ import { generateWikiMdx } from '@/utils/generate-mdx.js';
 import { transformMdxToHtml } from '@/utils/transform-mdx-to-html.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 
-import { WikiController } from './wiki.controller.js';
-
 /* * */
 
 const server = FastifyService.getInstance().server;
 const NAMESPACE = '/wiki';
-const controller = new WikiController();
 
 /* * */
 
