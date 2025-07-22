@@ -1,6 +1,5 @@
 /* * */
 
-import fastifyMultipart from '@fastify/multipart';
 import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
 import { getAppConfig } from '@tmlmobilidade/lib';
 
@@ -32,12 +31,6 @@ const MAX_BODY_SIZE = 1024 * 1024 * 1024 * 2; // 2GB
 	// Start Fastify server
 
 	const fastifyService = FastifyService.getInstance(options);
-
-	await fastifyService.server.register(fastifyMultipart, {
-		limits: {
-			fileSize: MAX_BODY_SIZE,
-		},
-	});
 
 	// fastifyService.server.
 
