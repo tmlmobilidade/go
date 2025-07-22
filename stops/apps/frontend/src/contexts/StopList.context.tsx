@@ -2,9 +2,10 @@
 
 import { Routes } from '@/lib/routes';
 import { Stop } from '@tmlmobilidade/types';
+import { useSearchQuery } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 interface StopListContextState {
@@ -27,51 +28,19 @@ const StopListContext = createContext<StopListContextState | undefined>(undefine
 export const useStopListContext = () => {
 	const context = useContext(StopListContext);
 	if (!context) {
-		throw new Error(
-			'useStopListContext must be used within an StopListContextProvider',
-		);
+		throw new Error('useStopListContext must be used within a StopListContextProvider');
 	}
 	return context;
 };
 
-function useSearchQuery<T>(
-	data: T[],
-	options: {
-		accessors?: (keyof T)[]
-		customSearch?: (item: T, query: string) => boolean
-		debounce?: number
-	},
-) {
-	const [searchQuery, setSearchQuery] = useState('');
-	const filteredData = useMemo(() => {
-		if (!searchQuery) return data;
-
-		if (options.customSearch) {
-			return data.filter(item => options.customSearch(item, searchQuery));
-		}
-
-		if (options.accessors) {
-			return data.filter(item =>
-				options.accessors.some(key =>
-					String(item[key]).toLowerCase().includes(searchQuery.toLowerCase()),
-				),
-			);
-		}
-
-		return data;
-	}, [data, searchQuery, options]);
-
-	return { filteredData, searchQuery, setSearchQuery };
-}
-
 export const StopListContextProvider = ({ children }: { children: React.ReactNode }) => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [paramSearch, setParamSearch] = useQueryState('search');
+	const [paramSearch, setParamSearch] = useQueryState('query');
 
+	// Fetch stops
 	const { data: stops, error, isLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
-
 	const rawStops = useMemo(() => stops || [], [stops]);
 
+	// Normalize fields
 	const normalizedRecords = useMemo(() => {
 		return rawStops.map(stop => ({
 			...stop,
@@ -81,22 +50,32 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		}));
 	}, [rawStops]);
 
+	// Custom search logic
 	const customSearch = (stop: Stop, query: string) => {
-		const q = query.toLowerCase();
-		return (
-			stop._id.toLowerCase().includes(q) || stop.name.toLowerCase().includes(q) || stop.municipality_id.toLowerCase().includes(q)
-		);
+		const normalizedQuery = query.toLowerCase();
+
+		const municipalityMatch = stop.municipality_id.includes(normalizedQuery);
+		const stopNameMatch = stop.name.includes(normalizedQuery);
+		const stopIdMatch = stop._id.includes(normalizedQuery);
+
+		return municipalityMatch || stopNameMatch || stopIdMatch;
 	};
 
+	// Search query with filter
 	const { filteredData: searchFiltered, searchQuery, setSearchQuery } = useSearchQuery<Stop>(normalizedRecords, {
-		accessors: ['municipality_id', 'name', '_id'],
+		accessors: ['_id', 'municipality_id', 'name'],
 		customSearch,
+		debounce: 500,
 	});
 
+	// Keep URL params in sync
 	useEffect(() => {
-		setParamSearch(searchQuery);
+		if (paramSearch !== searchQuery) {
+			setParamSearch(searchQuery);
+		}
 	}, [searchQuery]);
 
+	// Map search results again (optional)
 	const filteredStops = useMemo(() => {
 		return searchFiltered.map(stop => ({
 			...stop,
@@ -106,23 +85,20 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		}));
 	}, [searchFiltered]);
 
-	const contextValue: StopListContextState = useMemo(
-		() => ({
-			actions: {
-				changeSearchQuery: setSearchQuery,
-			},
-			data: {
-				filtered: filteredStops,
-				raw: rawStops,
-				searchQuery,
-			},
-			flags: {
-				error,
-				isLoading,
-			},
-		}),
-		[filteredStops, rawStops, searchQuery, error, isLoading],
-	);
+	const contextValue: StopListContextState = useMemo(() => ({
+		actions: {
+			changeSearchQuery: setSearchQuery,
+		},
+		data: {
+			filtered: filteredStops,
+			raw: rawStops,
+			searchQuery,
+		},
+		flags: {
+			error,
+			isLoading,
+		},
+	}), [rawStops, filteredStops, searchQuery, error, isLoading]);
 
 	return (
 		<StopListContext.Provider value={contextValue}>
