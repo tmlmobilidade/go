@@ -15,7 +15,7 @@ interface QuickLinkButtonProps {
 export function QuickLinkButton({ item }: QuickLinkButtonProps) {
 	return (
 		<a className={styles.container} href={item.href} target="_blank">
-			{item.icon}
+			<p className={styles.icon}>{item.icon}</p>
 			<p className={styles.title}>{item.title}</p>
 		</a>
 	);
