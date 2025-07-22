@@ -34,7 +34,7 @@ export const useStopListContext = () => {
 };
 
 export const StopListContextProvider = ({ children }: { children: React.ReactNode }) => {
-	const [paramSearch, setParamSearch] = useQueryState('query');
+	const [paramSearch, setParamSearch] = useQueryState('search');
 
 	// Fetch stops
 	const { data: stops, error, isLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
