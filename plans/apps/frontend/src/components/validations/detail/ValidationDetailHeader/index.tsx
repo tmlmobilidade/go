@@ -39,6 +39,10 @@ export function ValidationDetailHeader() {
 		router.push(destUrl);
 	};
 
+	const handleConvertToPlan = () => {
+		openCreatePlanModal(validationDetailContext.data.validation._id);
+	};
+
 	//
 	// D. Render components
 
@@ -56,11 +60,9 @@ export function ValidationDetailHeader() {
 					value={validationDetailContext.data.validation.gtfs_agency.agency_id}
 				>
 					<Button
-						icon={<IconTransform size={24} />}
+						icon={<IconTransform />}
 						label="Converter para plano"
-						onClick={() => openCreatePlanModal(validationDetailContext.data.validation._id)}
-						size="lg"
-						variant="primary"
+						onClick={handleConvertToPlan}
 					/>
 				</HasPermission>
 			)}

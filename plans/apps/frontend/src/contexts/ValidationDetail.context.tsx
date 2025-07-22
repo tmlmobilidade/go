@@ -61,7 +61,10 @@ export function useValidationDetailContext() {
 
 export const ValidationDetailContextProvider = ({ children, validationId }: { children: React.ReactNode, validationId: string }) => {
 	//
+
+	//
 	// A. State Management
+
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
 	const me = useMeContext();

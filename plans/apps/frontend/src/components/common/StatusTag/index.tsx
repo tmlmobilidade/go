@@ -19,15 +19,15 @@ export function StatusTag({ status }: StatusTagProps) {
 	}
 
 	if (status === ProcessingStatus.Processing) {
-		return <Tag label="Em Processamento" variant="primary" />;
+		return <Tag label="Em Análise" variant="primary" />;
 	}
 
 	if (status === ProcessingStatus.Complete) {
-		return <Tag label="Processado" variant="success" />;
+		return <Tag label="Válido" variant="success" filled />;
 	}
 
 	if (status === ProcessingStatus.Error) {
-		return <Tag label="Erro" variant="danger" />;
+		return <Tag label="Inválido" variant="danger" />;
 	}
 
 	return <Tag label="Missing feeder_status value" variant="muted" />;
