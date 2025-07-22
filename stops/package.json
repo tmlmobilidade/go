@@ -24,6 +24,7 @@
 		"apps/*"
 	],
 	"dependencies": {
-		"@carrismetropolitana/api-types": "^20250717.940.43"
+		"@carrismetropolitana/api-types": "^20250717.940.43",
+		"react": "^19.1.0"
 	}
 }
