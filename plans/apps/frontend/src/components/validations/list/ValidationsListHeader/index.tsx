@@ -25,7 +25,7 @@ export function ValidationsListHeader() {
 			<Spacer />
 			<SearchInput onChange={validationsListContext.actions.setFilterSearch} value={validationsListContext.filters.search} />
 			<HasPermission action={Permissions.validations.actions.create} scope={Permissions.validations.scope}>
-				<Button label="Nova validação" leftSection={<IconPlus size={20} />} onClick={openCreateValidationModal} />
+				<Button label="Nova validação" leftSection={<IconPlus />} onClick={openCreateValidationModal} />
 			</HasPermission>
 		</>
 	);

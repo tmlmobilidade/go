@@ -26,7 +26,7 @@ export function UsersList() {
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
 			title: '#ID',
-			width: 300,
+			width: 120,
 		},
 		{
 			accessor: 'first_name',
