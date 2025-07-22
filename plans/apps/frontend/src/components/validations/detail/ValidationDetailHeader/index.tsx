@@ -3,9 +3,9 @@
 /* * */
 
 import { StatusTag } from '@/components/common/StatusTag';
-import { openCreatePlanModal } from '@/components/plans/detail/CreatePlanModal';
+import { openCreatePlanModal } from '@/components/validations/detail/CreatePlanModal';
 import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
-import { IconTransform } from '@tabler/icons-react';
+import { IconTransformFilled } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { ProcessingStatus } from '@tmlmobilidade/types';
 import { BackButton, Button, HasPermission, Label, Spacer } from '@tmlmobilidade/ui';
@@ -60,8 +60,8 @@ export function ValidationDetailHeader() {
 					value={validationDetailContext.data.validation.gtfs_agency.agency_id}
 				>
 					<Button
-						icon={<IconTransform />}
-						label="Converter para plano"
+						icon={<IconTransformFilled />}
+						label="Converter para Plano"
 						onClick={handleConvertToPlan}
 					/>
 				</HasPermission>
