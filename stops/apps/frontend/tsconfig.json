@@ -1,6 +1,7 @@
 {
 	"extends": "@tmlmobilidade/tsconfig/nextjs.json",
 	"compilerOptions": {
+		"jsx": "react",
 		"paths": {
 			"@/*": [
 				"./src/*"
