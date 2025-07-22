@@ -1,21 +1,21 @@
 /* * */
 
+import { QuickLink } from '@/types/quick-links';
 import { Grid, Pane, Section } from '@tmlmobilidade/ui';
 
 import { QuickLinkButton } from '../QuickLink';
+import { quickLinks } from '../QuickLink/data';
 
 export function HomePage() {
 	return (
 
 		<Pane>
 			<Section padding="lg">
-				<p>teste</p>
-				{/* <Grid columns="abcd" gap="md">
-					{quickLinks.map(item => (
+				<Grid columns="abcd" gap="md">
+					{quickLinks.map((item: QuickLink) => (
 						<QuickLinkButton key={item.href} item={item} />
 					))}
-				</Grid> */}
-
+				</Grid>
 			</Section>
 		</Pane>
 	);

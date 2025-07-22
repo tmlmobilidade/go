@@ -1,6 +1,5 @@
 /* * */
 
-import { generateWikiMdx } from '@/utils/generate-mdx.js';
 import { transformMdxToHtml } from '@/utils/transform-mdx-to-html.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 
@@ -21,7 +20,7 @@ server.register(
 
 		// GET /wiki:id
 		instance.get('wiki/:id', (request, reply) => {
-			return reply.send(generateWikiMdx);
+			return reply.send(transformMdxToHtml);
 		});
 
 		next();
