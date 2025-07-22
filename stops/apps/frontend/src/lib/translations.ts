@@ -4,6 +4,12 @@ export const Translations = {
 		UNKNOWN: 'Desconhecido',
 		YES: 'Sim',
 	},
+	JURISDICATION: {
+		IP: 'IP',
+		MUNICIPALITY: 'Município',
+		OTHER: 'Outro',
+		UNKNOWN: 'Desconhecido',
+	},
 	OPERATIONAL_STATUS: {
 		ACTIVE: 'Paragem ativa',
 		INACTIVE: 'Paragem inativa',

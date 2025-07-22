@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { operationalStatusSchema } from '@tmlmobilidade/types';
+import { jurisdictionSchema, operationalStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -19,6 +19,11 @@ export function AdministratorInfo() {
 
 	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
 		label: Translations.OPERATIONAL_STATUS[value],
+		value: value,
+	}));
+
+	const jurisdictionItems = jurisdictionSchema.options.map (value => ({
+		label: Translations.JURISDICATION[value],
 		value: value,
 	}));
 
@@ -51,10 +56,12 @@ export function AdministratorInfo() {
 				</Grid>
 			</Section>
 			<Section>
-				<TextInput
+				<Combobox
+					data={jurisdictionItems}
+					defaultValue={Translations.JURISDICATION.UNKNOWN}
 					label="Jusrisdição"
-					miw="100%"
 					placeholder="CM Moita"
+					fullWidth
 					{...stopDetailContext.data.form.getInputProps('jurisdiction')}
 				/>
 			</Section>
