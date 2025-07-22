@@ -15,12 +15,13 @@ import { PublicInformation } from './PublicInformation';
 import { ServedEquipment } from './ServedEquipment';
 import { Shelter } from './Shelter';
 import { StopDetails } from './Stopdetails';
+import { StopHeader } from './StopHeader';
 
 /* * */
 
 export function FormInfos() {
 	return (
-		<Pane>
+		<Pane header={[<StopHeader />]}>
 			<StopDetails />
 			<AdministratorInfo />
 			<Affectation />

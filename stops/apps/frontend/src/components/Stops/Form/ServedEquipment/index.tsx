@@ -63,7 +63,7 @@ export function ServedEquipment() {
 					/>
 					<Checkbox
 						label="Praia"
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('near_beach')}
 					/>
 				</Grid>
 			</Section>
