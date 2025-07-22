@@ -25,6 +25,7 @@
 	],
 	"dependencies": {
 		"@carrismetropolitana/api-types": "^20250717.940.43",
+		"@tmlmobilidade/types": "^20250721.2326.7",
 		"react": "^19.1.0"
 	}
 }
