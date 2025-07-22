@@ -9,17 +9,21 @@ import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, 
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
 /* * */
 
-export enum ValidationDetailMode {
+export enum ValidationsDetailMode {
 	EDIT = 'edit',
 	NEW = 'new',
 }
 
-interface ValidationDetailContextState {
+interface ValidationsDetailContextProviderProps {
+	validationId: string
+}
+
+interface ValidationsDetailContextState {
 	actions: {
 		saveValidation: () => void
 		setValidationFile: (file: File | null) => void
@@ -38,9 +42,11 @@ interface ValidationDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: ValidationDetailMode
+		mode: ValidationsDetailMode
 	}
 }
+
+/* * */
 
 const emptyValidation: CreateValidationDto = {
 	feeder_status: ProcessingStatus.Waiting,
@@ -48,22 +54,26 @@ const emptyValidation: CreateValidationDto = {
 	gtfs_agency: undefined,
 	gtfs_feed_info: undefined,
 };
-const ValidationDetailContext = createContext<undefined | ValidationDetailContextState>(undefined);
 
-export function useValidationDetailContext() {
-	const context = useContext(ValidationDetailContext);
+/* * */
+
+const ValidationsDetailContext = createContext<undefined | ValidationsDetailContextState>(undefined);
+
+export function useValidationsDetailContext() {
+	const context = useContext(ValidationsDetailContext);
 	if (!context) {
-		throw new Error('useValidationDetailContext must be used within a ValidationDetailContextProvider');
+		throw new Error('useValidationsDetailContext must be used within a ValidationsDetailContextProvider');
 	}
-
 	return context;
 }
 
-export const ValidationDetailContextProvider = ({ children, validationId }: { children: React.ReactNode, validationId: string }) => {
+/* * */
+
+export const ValidationsDetailContextProvider = ({ children, validationId }: PropsWithChildren<ValidationsDetailContextProviderProps>) => {
 	//
 
 	//
-	// A. State Management
+	// A. Setup variables
 
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
@@ -81,8 +91,8 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	//
 	// B. Define form
 	const form = useForm<CreateValidationDto>({
-		initialValues: validationId === ValidationDetailMode.NEW ? emptyValidation : validation,
-		validate: zodResolver((validationId === ValidationDetailMode.NEW ? CreateValidationSchema : ValidationSchema)) as unknown,
+		initialValues: validationId === ValidationsDetailMode.NEW ? emptyValidation : validation,
+		validate: zodResolver((validationId === ValidationsDetailMode.NEW ? CreateValidationSchema : ValidationSchema)) as unknown,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -221,7 +231,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	};
 
 	const saveValidation = () => {
-		if (validationId === ValidationDetailMode.NEW) {
+		if (validationId === ValidationsDetailMode.NEW) {
 			createValidation();
 		}
 		else {
@@ -231,7 +241,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 
 	//
 	// E. Define context value
-	const contextValue: ValidationDetailContextState = useMemo(() => {
+	const contextValue: ValidationsDetailContextState = useMemo(() => {
 		return {
 			actions: {
 				saveValidation,
@@ -241,7 +251,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 				agencies: availableAgencies,
 				file,
 				form,
-				id: validationId === ValidationDetailMode.NEW ? undefined : validationId,
+				id: validationId === ValidationsDetailMode.NEW ? undefined : validationId,
 				validation,
 			},
 			flags: {
@@ -251,15 +261,15 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 				isReadOnly: false,
 				isSaving,
 				loading: isLoading || fileLoading,
-				mode: validationId === ValidationDetailMode.NEW ? ValidationDetailMode.NEW : ValidationDetailMode.EDIT,
+				mode: validationId === ValidationsDetailMode.NEW ? ValidationsDetailMode.NEW : ValidationsDetailMode.EDIT,
 			},
 		};
 	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave, file, fileError, error, validation, validationError]);
 
 	// F. Render Components
 	return (
-		<ValidationDetailContext.Provider value={contextValue}>
+		<ValidationsDetailContext.Provider value={contextValue}>
 			{children}
-		</ValidationDetailContext.Provider>
+		</ValidationsDetailContext.Provider>
 	);
 };

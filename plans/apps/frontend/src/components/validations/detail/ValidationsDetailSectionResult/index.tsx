@@ -3,21 +3,21 @@
 /* * */
 
 import { SeverityTag } from '@/components/common/SeverityTag';
-import { ValidationDetailSectionResultCellRows } from '@/components/validations/detail/ValidationDetailSectionResultCellRows';
-import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
-import { type GTFSValidatorMessage } from '@tmlmobilidade/types';
+import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
+import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { type GTFSValidatorMessage, ProcessingStatus } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function ValidationDetailSectionResult() {
+export function ValidationsDetailSectionResult() {
 	//
 
 	//
 	// A. Setup variables
 
-	const validationDetailContext = useValidationDetailContext();
+	const validationsDetailContext = useValidationsDetailContext();
 
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
@@ -43,7 +43,7 @@ export function ValidationDetailSectionResult() {
 		},
 		{
 			accessor: 'rows',
-			render: item => <ValidationDetailSectionResultCellRows rows={item.rows} />,
+			render: item => <ValidationsDetailSectionResultCellRows rows={item.rows} />,
 			title: 'Linhas do Ficheiro',
 			width: 600,
 		},
@@ -53,22 +53,26 @@ export function ValidationDetailSectionResult() {
 	// B. Transform data
 
 	const errorCountLabel = useMemo(() => {
-		const totalErrors = validationDetailContext.data.form.getValues().summary?.total_errors ?? 0;
+		const totalErrors = validationsDetailContext.data.validation?.summary?.total_errors ?? 0;
 		return totalErrors > 1 ? `${totalErrors} Erros` : `${totalErrors} Erro`;
-	}, [validationDetailContext.data.form]);
+	}, [validationsDetailContext.data.validation]);
 
 	const warningCountLabel = useMemo(() => {
-		const totalWarnings = validationDetailContext.data.form.getValues().summary?.total_warnings ?? 0;
+		const totalWarnings = validationsDetailContext.data.validation?.summary?.total_warnings ?? 0;
 		return totalWarnings > 1 ? `${totalWarnings} Avisos` : `${totalWarnings} Aviso`;
-	}, [validationDetailContext.data.form]);
+	}, [validationsDetailContext.data.validation]);
 
 	const filteredMessages = useMemo(() => {
-		const messages = validationDetailContext.data.form.getValues().summary?.messages ?? [];
+		const messages = validationsDetailContext.data.validation?.summary?.messages ?? [];
 		return messages.filter(message => message.severity !== 'ignore');
-	}, [validationDetailContext.data.form]);
+	}, [validationsDetailContext.data.validation]);
 
 	//
 	// C. Render components
+
+	if (validationsDetailContext.data.validation?.feeder_status !== ProcessingStatus.Complete && validationsDetailContext.data.validation?.feeder_status !== ProcessingStatus.Error) {
+		return null;
+	}
 
 	return (
 		<Collapsible

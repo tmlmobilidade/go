@@ -1,22 +1,22 @@
 /* * */
 
-import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
+import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { Collapsible, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function ValidationDetailSectionAgency() {
+export function ValidationsDetailSectionAgency() {
 	//
 
 	//
 	// A. Setup variables
 
-	const validationDetailContext = useValidationDetailContext();
+	const validationsDetailContext = useValidationsDetailContext();
 
 	//
 	// B. Render components
 
-	if (!validationDetailContext.data.validation?.gtfs_agency) {
+	if (!validationsDetailContext.data.validation?.gtfs_agency) {
 		return null;
 	}
 
@@ -29,19 +29,19 @@ export function ValidationDetailSectionAgency() {
 				<Grid columns="abc" gap="sm">
 					<Section padding="none">
 						<Label size="sm" caps>Agência</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_agency.agency_id} - {validationDetailContext.data.validation.gtfs_agency.agency_name ?? 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_agency.agency_id} - {validationsDetailContext.data.validation.gtfs_agency.agency_name ?? 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>URL da agência</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_agency.agency_url ?? 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_agency.agency_url ?? 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Email de contacto</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_agency.agency_email ?? 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_agency.agency_email ?? 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>URL de contacto</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_agency.agency_url ?? 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_agency.agency_url ?? 'N/A'}</Text>
 					</Section>
 				</Grid>
 			</Section>

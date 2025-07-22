@@ -1,24 +1,24 @@
 /* * */
 
 import { FileComponent } from '@/components/common/FileComponent';
-import { useValidationDetailContext } from '@/contexts/ValidationDetail.context';
+import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { Collapsible, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function ValidationDetailSectionFeedInfo() {
+export function ValidationsDetailSectionFeedInfo() {
 	//
 
 	//
 	// A. Setup variables
 
-	const validationDetailContext = useValidationDetailContext();
+	const validationsDetailContext = useValidationsDetailContext();
 
 	//
 	// B. Render components
 
-	if (!validationDetailContext.data.validation?.gtfs_feed_info) {
+	if (!validationsDetailContext.data.validation?.gtfs_feed_info) {
 		return null;
 	}
 
@@ -33,11 +33,11 @@ export function ValidationDetailSectionFeedInfo() {
 				<Grid columns="abc" gap="sm">
 					<Section padding="none">
 						<Label size="sm" caps>Data de início</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_feed_info.feed_start_date ? Dates.fromOperationalDate(validationDetailContext.data.validation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_start_date ? Dates.fromOperationalDate(validationsDetailContext.data.validation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Data de fim</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_feed_info.feed_end_date ? Dates.fromOperationalDate(validationDetailContext.data.validation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_end_date ? Dates.fromOperationalDate(validationsDetailContext.data.validation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
 					</Section>
 				</Grid>
 			</Section>
@@ -47,22 +47,22 @@ export function ValidationDetailSectionFeedInfo() {
 				<Grid columns="abc" gap="sm">
 					<Section padding="none">
 						<Label size="sm" caps>Versão</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_feed_info.feed_version ?? 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_version ?? 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Idioma padrão</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_feed_info.default_lang?.toUpperCase() ?? 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.default_lang?.toUpperCase() ?? 'N/A'}</Text>
 					</Section>
 					<Section padding="none">
 						<Label size="sm" caps>Idioma do feed</Label>
-						<Text size="base">{validationDetailContext.data.validation.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
+						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
 					</Section>
 				</Grid>
 			</Section>
 
 			<Section gap="sm">
-				{validationDetailContext.data.file ? (
-					<FileComponent file={validationDetailContext.data.file} />
+				{validationsDetailContext.data.file ? (
+					<FileComponent file={validationsDetailContext.data.file} />
 				) : (
 					<Label>Nenhum ficheiro selecionado</Label>
 				)}
