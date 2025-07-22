@@ -11,9 +11,9 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.34.1",
-		"@tmlmobilidade/lib": "20250721.1731.34",
-		"@tmlmobilidade/ui": "20250721.1731.34",
-		"@tmlmobilidade/utils": "20250721.1731.34",
+		"@tmlmobilidade/lib": "20250721.2326.7",
+		"@tmlmobilidade/ui": "20250721.2326.7",
+		"@tmlmobilidade/utils": "20250721.2326.7",
 		"bcryptjs": "3.0.2",
 		"clsx": "2.1.1",
 		"next": "15.4.2",
@@ -24,8 +24,8 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20250721.1731.34",
-		"@tmlmobilidade/types": "20250721.1731.34",
+		"@tmlmobilidade/tsconfig": "20250721.2326.7",
+		"@tmlmobilidade/types": "20250721.2326.7",
 		"@types/node": "24.0.15",
 		"@types/nodemailer": "^6.4.17",
 		"@types/react": "19.1.8",
