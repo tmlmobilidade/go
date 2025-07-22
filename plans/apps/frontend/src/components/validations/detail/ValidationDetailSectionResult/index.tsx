@@ -45,7 +45,7 @@ export function ValidationDetailSectionResult() {
 			accessor: 'rows',
 			render: item => <ValidationDetailSectionResultCellRows rows={item.rows} />,
 			title: 'Linhas do Ficheiro',
-			width: 400,
+			width: 600,
 		},
 	];
 
