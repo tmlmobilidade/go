@@ -47,7 +47,7 @@ export function WikiTable() {
 	// B. Handle actions
 
 	const handleRowClick = (file) => {
-		router.push('https://carrismetropolitana.pt/');
+		router.push(`http://localhost:51000/home/${file._id}`);
 	};
 
 	//

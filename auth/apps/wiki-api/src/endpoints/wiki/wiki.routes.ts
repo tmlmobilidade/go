@@ -19,8 +19,13 @@ server.register(
 		});
 
 		// GET /wiki:id
-		instance.get('/:id', (request, reply) => {
-			return reply.send(transformMdxToHtml);
+		instance.get('/:id', async (request, reply) => {
+			const { id } = request.params as { id: string };
+
+			const result = await transformMdxToHtml();
+			const res = result.find(item => item._id === id);
+
+			return reply.send(res);
 		});
 
 		next();
