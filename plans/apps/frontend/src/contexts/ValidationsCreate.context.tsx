@@ -59,7 +59,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	const [validationError, setValidationError] = useState<Error | null>(null);
 
 	//
-	// B. Define form
+	// B. Setup form
 
 	const form = useForm<CreateValidationDto>({
 		validate: zodResolver(CreateValidationSchema) as unknown,
@@ -68,85 +68,53 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	});
 
 	//
-	// C. Transform Data
+	// C. Handle actions
 
-	useEffect(() => {
-		// Reset the form and state
-		// when the validation file changes
-		if (!validationFile) {
+	const handleWorkerMessage = (event: MessageEvent<WorkerMessage>) => {
+		//
+
+		//
+		// If the worker returns an error, display it and reset the form
+
+		if (event.data.error) {
+			useToast.error({ message: event.data.error.message, title: 'Erro ao criar Validação' });
+			return;
+		}
+
+		//
+		// If the worker returns a valid agency and feed info,
+		// update the form values and check permissions
+
+		form.setValues({
+			gtfs_agency: event.data.agency,
+			gtfs_feed_info: event.data.feedInfo,
+		});
+
+		//
+		// Check if the current user has permission
+		// to create validations for the GTFS agency
+
+		const hasPermission = meContext.actions.hasPermissionResource<ValidationPermission>({
+			action: Permissions.validations.actions.create,
+			resource_key: 'agency_ids',
+			scope: Permissions.validations.scope,
+			value: event.data.agency.agency_id,
+		});
+
+		if (!hasPermission) {
 			setCanSave(false);
-			form.reset();
-		}
-	}, [validationFile]);
-
-	useEffect(() => {
-		//
-
-		// Setup a new worker instance to process the GTFS file.
-		// If a worker already exists, terminate it to avoid duplicate processing.
-
-		if (workerRef.current) {
-			workerRef.current.terminate();
+			setValidationError({
+				message: 'Não tem permissão para criar validações para esta agência',
+				name: 'ValidationError',
+			});
+			console.log('validationError', validationError);
+			return;
 		}
 
-		workerRef.current = new Worker(new URL('@/workers/gtfs-info.worker.ts', import.meta.url));
-
-		workerRef.current.postMessage({ file: validationFile });
+		setCanSave(true);
 
 		//
-		// Handle messages from the worker to update the form values
-
-		workerRef.current.onmessage = (event: MessageEvent<WorkerMessage>) => {
-			//
-
-			//
-			// If the worker returns an error, display it and reset the form
-
-			if (event.data.error) {
-				useToast.error({ message: event.data.error.message, title: 'Erro ao criar Validação' });
-				return;
-			}
-
-			//
-			// If the worker returns a valid agency and feed info,
-			// update the form values and check permissions
-
-			form.setValues({
-				gtfs_agency: event.data.agency,
-				gtfs_feed_info: event.data.feedInfo,
-			});
-
-			//
-			// Check if the current user has permission
-			// to create validations for the GTFS agency
-
-			const hasPermission = meContext.actions.hasPermissionResource<ValidationPermission>({
-				action: Permissions.validations.actions.create,
-				resource_key: 'agency_ids',
-				scope: Permissions.validations.scope,
-				value: event.data.agency.agency_id,
-			});
-
-			if (!hasPermission) {
-				setCanSave(false);
-				setValidationError({
-					message: 'Não tem permissão para criar validações para esta agência',
-					name: 'ValidationError',
-				});
-				console.log('validationError', validationError);
-				return;
-			}
-
-			setCanSave(true);
-
-			//
-		};
-
-		//
-	}, [validationFile]);
-
-	//
-	// D. Handle actions
+	};
 
 	const createValidation = async () => {
 		//
@@ -202,6 +170,36 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 
 		//
 	};
+
+	useEffect(() => {
+		//
+
+		//
+		// Reset the form and state
+		// when there is no validation file
+
+		if (!validationFile) {
+			setCanSave(false);
+			form.reset();
+			return;
+		}
+
+		//
+		// Setup a new worker instance to process the GTFS file.
+		// If a worker already exists, terminate it to avoid duplicate processing.
+
+		if (workerRef.current) {
+			workerRef.current.terminate();
+		}
+
+		workerRef.current = new Worker(new URL('@/workers/gtfs-info.worker.ts', import.meta.url));
+
+		workerRef.current.postMessage({ file: validationFile });
+
+		workerRef.current.onmessage = handleWorkerMessage;
+
+		//
+	}, [validationFile]);
 
 	//
 	// E. Define context value
