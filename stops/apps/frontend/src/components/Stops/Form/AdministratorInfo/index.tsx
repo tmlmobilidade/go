@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { jurisdictionSchema, operationalStatusSchema } from '@tmlmobilidade/types';
+import { jurisdictionSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -16,11 +16,6 @@ export function AdministratorInfo() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-
-	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
-		label: Translations.OPERATIONAL_STATUS[value],
-		value: value,
-	}));
 
 	const jurisdictionItems = jurisdictionSchema.options.map (value => ({
 		label: Translations.JURISDICATION[value],
@@ -37,20 +32,21 @@ export function AdministratorInfo() {
 		>
 			<Section>
 				<Grid columns="abc" gap="sm">
-					<Combobox
-						data={operationalStatusItems}
+					<TextInput
 						label="Município"
+						miw="100%"
 						placeholder="Escolha uma opção"
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('municipality')}
+						{...stopDetailContext.data.form.getInputProps('municipality_id')}
 					/>
 					<TextInput
 						label="Freguesia"
+						miw="100%"
 						placeholder="Maçãs"
 						{...stopDetailContext.data.form.getInputProps('parish_id')}
 					/>
 					<TextInput
 						label="Localidade"
+						miw="100%"
 						{...stopDetailContext.data.form.getInputProps('locality')}
 					/>
 				</Grid>
@@ -58,9 +54,8 @@ export function AdministratorInfo() {
 			<Section>
 				<Combobox
 					data={jurisdictionItems}
-					defaultValue={Translations.JURISDICATION.UNKNOWN}
+					defaultValue={Translations.JURISDICATION.unknown}
 					label="Jusrisdição"
-					placeholder="CM Moita"
 					fullWidth
 					{...stopDetailContext.data.form.getInputProps('jurisdiction')}
 				/>

@@ -50,45 +50,6 @@ export function PublicInformation() {
 			</Section>
 
 			<Section>
-				<TextInput
-					label="Tem Moldura?"
-					miw="100%"
-					placeholder="..."
-					{...stopDetailContext.data.form.getInputProps('has_pole_frame')}
-				/>
-			</Section>
-
-			<Section>
-				<Grid columns="ab" gap="md">
-					<Combobox
-						data={has_this}
-						label="Tem PIP Áudio?"
-						placeholder="..."
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_pip_audio')}
-					/>
-					<TextInput
-						disabled={!has_this}
-						label="Código do PIP Áudio"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('pip_audio_code')} // this variable is not existing in the original code
-					/>
-					<Combobox
-						data={has_this}
-						label="Tem PIP Realtime?"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('has_pip_real_time')}
-					/>
-					<TextInput
-						disabled={!has_this}
-						label="Código do PIP Realtime"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('pip_real_time_code')}
-					/>
-				</Grid>
-			</Section>
-
-			<Section>
 				<Combobox
 					data={has_this}
 					label="Tem Sinalização H2OA?"

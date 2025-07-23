@@ -40,14 +40,16 @@ export function Shelter() {
 						{...stopDetailContext.data.form.getInputProps('has_shelter')}
 					/>
 					<TextInput
-						disabled={!has_shelter.some(item => item.value === 'YES')}
+						disabled={has_shelter.some(item => item.value === 'yes')}
 						label="Código do Abrigo"
+						miw="100%"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('shelter_code')}
 					/>
 					<TextInput
-						disabled={!has_shelter.some(item => item.value === 'YES')}
+						disabled={has_shelter.some(item => item.value === 'yes')}
 						label="Entidade Gestora do Abrigo"
+						miw="100%"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('shelter_maintainer')}
 					/>
@@ -55,20 +57,13 @@ export function Shelter() {
 				<Spacer />
 			</Section>
 			<Section>
-				<Grid columns="ab" gap="md">
-					<TextInput
-						disabled={!has_shelter.some(item => item.value === 'YES')}
-						label="Última verificação do estado do abrigo"
-						placeholder="2023-02-10"
-						{...stopDetailContext.data.form.getInputProps('last_schedules_check')}
-					/>
-					<TextInput
-						disabled={!has_shelter.some(item => item.value === 'YES')}
-						label="Data de Instalação do abrigo"
-						placeholder="2023-02-10"
-						{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
-					/>
-				</Grid>
+				<TextInput
+					disabled={has_shelter.some(item => item.value === 'yes')}
+					label="Data de Instalação do abrigo"
+					miw="100%"
+					placeholder="2023-02-10"
+					{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
+				/>
 			</Section>
 
 		</Collapsible>

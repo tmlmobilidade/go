@@ -31,7 +31,7 @@ export function ServedEquipment() {
 					/>
 					<Checkbox
 						label="Hopital"
-						{...stopDetailContext.data.form.getInputProps('near_hospital')}
+						{...stopDetailContext.data.form.getInputProps('near')}
 					/>
 					<Checkbox
 						label="Universidade"

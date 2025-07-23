@@ -83,6 +83,7 @@ export function StopDetails() {
 			<Section gap="md">
 				<Combobox
 					data={operationalStatusItems}
+					defaultValue={Translations.OPERATIONAL_STATUS.voided}
 					label="Estado Operacional"
 					placeholder="Escolha uma opção"
 					fullWidth
