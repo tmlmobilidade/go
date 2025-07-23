@@ -3,7 +3,6 @@
 /* * */
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { Routes } from '@/lib/routes';
 import { Permissions } from '@tmlmobilidade/lib';
 import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, ValidationPermission } from '@tmlmobilidade/types';
@@ -17,11 +16,10 @@ import { mutate } from 'swr';
 
 interface ValidationsCreateContextState {
 	actions: {
-		saveValidation: () => void
+		createValidation: () => void
 		setValidationFile: (file: File | null) => void
 	}
 	data: {
-		agencies: { label: string, value: string }[]
 		form: UseFormReturnType<CreateValidationDto>
 	}
 	flags: {
@@ -53,7 +51,6 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
 	const meContext = useMeContext();
-	const agenciesContext = useAgenciesContext();
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [canSave, setCanSave] = useState(false);
@@ -62,6 +59,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 
 	//
 	// B. Define form
+
 	const form = useForm<CreateValidationDto>({
 		validate: zodResolver(CreateValidationSchema) as unknown,
 		validateInputOnBlur: true,
@@ -71,12 +69,6 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	//
 	// C. Transform Data
 
-	// Validate form on change
-	// useEffect(() => {
-	// 	form.validate();
-	// }, [form.values]);
-
-	// Set canSave
 	useEffect(() => {
 		if (!validationFile) {
 			setCanSave(false);
@@ -132,17 +124,21 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		};
 	}, [validationFile]);
 
-	const availableAgencies = useMemo(() => {
-		return agenciesContext.data.raw.map(agency => ({
-			label: agency.name,
-			value: agency._id,
-		}));
-	}, [agenciesContext.data.raw]);
-
 	//
-	// D. Define actions
+	// D. Handle actions
+
 	const createValidation = async () => {
+		//
+
+		//
+		// Update state to indicate progress
+
 		setIsSaving(true);
+
+		//
+		// Setup a new FormData object to send
+		// the GTFS file and associated metadata
+
 		const uploadFormData = new FormData();
 
 		uploadFormData.append('agency_id', form.values.gtfs_agency.agency_id);
@@ -151,35 +147,39 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		uploadFormData.append('feeder_status', form.values.feeder_status);
 		uploadFormData.append('file', validationFile);
 
-		const response = await multipartFetch(Routes.API(Routes.VALIDATION_LIST), uploadFormData);
+		//
+		// Perform the API request to create the validation
+
+		const response = await multipartFetch('/api/validations', uploadFormData);
+
+		//
+		// Handle the response
 
 		if (response.error) {
-			useToast.error({
-				message: response.error,
-				title: 'Erro ao criar validação',
-			});
+			useToast.error({ message: response.error, title: 'Erro ao criar validação' });
 			setIsSaving(false);
 			return;
 		}
 
-		const { data: { insertedId } } = response.data as { data: { insertedId: string } };
+		const responseData = response.data as { data: { insertedId: string } };
 
-		if (insertedId) {
-			router.push(Routes.VALIDATION_DETAIL(insertedId));
+		if (responseData.data.insertedId) {
+			router.push(`/validations/${responseData.data.insertedId}`);
 		}
 
 		useToast.success({
-			message: 'Validação criado com sucesso',
+			message: 'Validação em progresso.',
 			title: 'Sucesso',
 		});
+
+		//
+		// Reset the form and state
 
 		setIsSaving(false);
 		closeModal(CREATE_VALIDATION_MODAL_ID);
 		mutate(Routes.API(Routes.VALIDATION_LIST));
-	};
 
-	const saveValidation = () => {
-		createValidation();
+		//
 	};
 
 	//
@@ -187,11 +187,10 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	const contextValue: ValidationsCreateContextState = useMemo(() => {
 		return {
 			actions: {
-				saveValidation,
+				createValidation,
 				setValidationFile,
 			},
 			data: {
-				agencies: availableAgencies,
 				form: form,
 			},
 			flags: {
@@ -199,12 +198,21 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 				loading: isSaving,
 			},
 		};
-	}, [availableAgencies, form, isSaving, canSave, validationError]);
+	}, [
+		form,
+		isSaving,
+		canSave,
+		validationError,
+	]);
 
+	//
 	// F. Render Components
+
 	return (
 		<ValidationsCreateContext.Provider value={contextValue}>
 			{children}
 		</ValidationsCreateContext.Provider>
 	);
+
+	//
 };
