@@ -4,8 +4,9 @@
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { Routes } from '@/lib/routes';
+import { type WorkerMessage } from '@/types/worker';
 import { Permissions } from '@tmlmobilidade/lib';
-import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, ValidationPermission } from '@tmlmobilidade/types';
+import { type CreateValidationDto, CreateValidationSchema, type ValidationPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -70,44 +71,60 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	// C. Transform Data
 
 	useEffect(() => {
+		// Reset the form and state
+		// when the validation file changes
 		if (!validationFile) {
 			setCanSave(false);
-			form.setValues({
-				gtfs_agency: undefined,
-				gtfs_feed_info: undefined,
-			});
-			return;
+			form.reset();
 		}
+	}, [validationFile]);
+
+	useEffect(() => {
+		//
+
+		// Setup a new worker instance to process the GTFS file.
+		// If a worker already exists, terminate it to avoid duplicate processing.
 
 		if (workerRef.current) {
 			workerRef.current.terminate();
 		}
 
 		workerRef.current = new Worker(new URL('@/workers/gtfs-info.worker.ts', import.meta.url));
+
 		workerRef.current.postMessage({ file: validationFile });
 
-		workerRef.current.onmessage = (event) => {
+		//
+		// Handle messages from the worker to update the form values
+
+		workerRef.current.onmessage = (event: MessageEvent<WorkerMessage>) => {
+			//
+
+			//
+			// If the worker returns an error, display it and reset the form
+
 			if (event.data.error) {
-				useToast.error({
-					message: event.data.error.message,
-					title: 'Erro ao carregar validação',
-				});
+				useToast.error({ message: event.data.error.message, title: 'Erro ao criar Validação' });
 				return;
 			}
 
-			const { agency, feedInfo } = event.data as { agency: GtfsAgency, feedInfo: GtfsFeedInfo };
+			//
+			// If the worker returns a valid agency and feed info,
+			// update the form values and check permissions
 
 			form.setValues({
-				gtfs_agency: agency,
-				gtfs_feed_info: feedInfo,
+				gtfs_agency: event.data.agency,
+				gtfs_feed_info: event.data.feedInfo,
 			});
 
-			// Check if the agency is in the permissions
+			//
+			// Check if the current user has permission
+			// to create validations for the GTFS agency
+
 			const hasPermission = meContext.actions.hasPermissionResource<ValidationPermission>({
 				action: Permissions.validations.actions.create,
 				resource_key: 'agency_ids',
 				scope: Permissions.validations.scope,
-				value: agency.agency_id,
+				value: event.data.agency.agency_id,
 			});
 
 			if (!hasPermission) {
@@ -121,7 +138,11 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 			}
 
 			setCanSave(true);
+
+			//
 		};
+
+		//
 	}, [validationFile]);
 
 	//
@@ -184,6 +205,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 
 	//
 	// E. Define context value
+
 	const contextValue: ValidationsCreateContextState = useMemo(() => {
 		return {
 			actions: {
@@ -206,7 +228,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	]);
 
 	//
-	// F. Render Components
+	// F. Render components
 
 	return (
 		<ValidationsCreateContext.Provider value={contextValue}>
