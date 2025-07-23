@@ -71,7 +71,7 @@ export function PublicInformation() {
 						disabled={!has_this}
 						label="Código do PIP Áudio"
 						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('')}
+						{...stopDetailContext.data.form.getInputProps('pip_audio_code')} // this variable is not existing in the original code
 					/>
 					<Combobox
 						data={has_this}

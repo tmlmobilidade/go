@@ -2,11 +2,57 @@
 
 import { Routes } from '@/lib/routes';
 import { Stop } from '@tmlmobilidade/types';
-import { useSearchQuery } from '@tmlmobilidade/ui';
+import { useSearch } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
+
+// interface UseSearchQueryOptions<Stop> {
+// 	customSearch?: (stopSearch: Stop, query: string) => boolean
+// 	debounce?: number
+// }
+
+// function useSearchQuery<Stop>(data: Stop[], options: UseSearchQueryOptions<Stop> = {}) {
+// 	const { customSearch, debounce = 300 } = options;
+// 	const [searchQuery, setSearchQuery] = useState('');
+// 	const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+
+// 	// Debounce search
+// 	useEffect(() => {
+// 		const handler = setTimeout(() => {
+// 			setDebouncedQuery(searchQuery);
+// 		}, debounce);
+
+// 		return () => clearTimeout(handler);
+// 	}, [searchQuery, debounce]);
+
+// 	const filteredData = useMemo(() => {
+// 		if (!debouncedQuery) return data;
+
+// 		const query = debouncedQuery.toLowerCase();
+
+// 		return data.filter((stopSearch) => {
+// 			if (customSearch) return customSearch(stopSearch, query);
+
+// 			const _id = stopSearch._id?.toLowerCase?.() || '';
+// 			const name = stopSearch.name?.toLowerCase?.() || '';
+// 			const municipality_id = stopSearch.municipality_id?.toLowerCase?.() || '';
+
+// 			return (
+// 				_id.includes(query)
+// 				|| name.includes(query)
+// 				|| municipality_id.includes(query)
+// 			);
+// 		});
+// 	}, [data, debouncedQuery, customSearch]);
+
+// 	return {
+// 		filteredData,
+// 		searchQuery,
+// 		setSearchQuery,
+// 	};
+// }
 
 interface StopListContextState {
 	actions: {
@@ -15,7 +61,6 @@ interface StopListContextState {
 	data: {
 		filtered: Stop[]
 		raw: Stop[]
-		searchQuery: string
 	}
 	flags: {
 		error: Error | undefined
@@ -28,77 +73,74 @@ const StopListContext = createContext<StopListContextState | undefined>(undefine
 export const useStopListContext = () => {
 	const context = useContext(StopListContext);
 	if (!context) {
-		throw new Error('useStopListContext must be used within a StopListContextProvider');
+		throw new Error(
+			'useStopListContext must be used within a StopListContextProvider',
+		);
 	}
 	return context;
 };
 
 export const StopListContextProvider = ({ children }: { children: React.ReactNode }) => {
-	const [paramSearch, setParamSearch] = useQueryState('search');
-
-	// Fetch stops
-	const { data: stops, error, isLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
-	const rawStops = useMemo(() => stops || [], [stops]);
-
-	// Normalize fields
-	const normalizedRecords = useMemo(() => {
-		return rawStops.map(stop => ({
-			...stop,
-			_id: stop._id.toLowerCase(),
-			municipality_id: stop.municipality_id.toLowerCase(),
-			name: stop.name.toLowerCase(),
-		}));
-	}, [rawStops]);
-
-	// Custom search logic
-	const customSearch = (stop: Stop, query: string) => {
-		const normalizedQuery = query.toLowerCase();
-
-		const municipalityMatch = stop.municipality_id.includes(normalizedQuery);
-		const stopNameMatch = stop.name.includes(normalizedQuery);
-		const stopIdMatch = stop._id.includes(normalizedQuery);
-
-		return municipalityMatch || stopNameMatch || stopIdMatch;
-	};
-
-	// Search query with filter
-	const { filteredData: searchFiltered, searchQuery, setSearchQuery } = useSearchQuery<Stop>(normalizedRecords, {
-		accessors: ['_id', 'municipality_id', 'name'],
-		customSearch,
-		debounce: 500,
+	const [paramSearch, setParamSearch] = useQueryState('search', {
+		defaultValue: '',
 	});
 
-	// Keep URL params in sync
-	useEffect(() => {
-		if (paramSearch !== searchQuery) {
-			setParamSearch(searchQuery);
-		}
-	}, [searchQuery]);
+	const { data: stops, error, isLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
 
-	// Map search results again (optional)
-	const filteredStops = useMemo(() => {
-		return searchFiltered.map(stop => ({
-			...stop,
-			_id: stop._id.toLowerCase(),
-			municipality_id: stop.municipality_id.toLowerCase(),
-			name: stop.name.toLowerCase(),
-		}));
-	}, [searchFiltered]);
+	const rawStops = useMemo(() => stops || [], [stops]);
 
-	const contextValue: StopListContextState = useMemo(() => ({
-		actions: {
-			changeSearchQuery: setSearchQuery,
+	// const normalizedRecords = useMemo(() => {
+	// 	return rawStops.map(stop => ({
+	// 		...stop,
+	// 		_id: stop._id.toLowerCase(),
+	// 		municipality_id: stop.municipality_id.toLowerCase(),
+	// 		name: stop.name.toLowerCase(),
+	// 	}));
+	// }, [rawStops]);
+
+	// const { filteredData: filteredStops, searchQuery, setSearchQuery } = useSearchQuery<Stop>(normalizedRecords, {
+	// 	debounce: 500,
+	// });
+
+	const filteredStops = useSearch<Stop>({
+		customSearch: (stopSearch, query) => {
+			const _id = stopSearch._id?.toLowerCase?.() || '';
+			const name = stopSearch.name?.toLowerCase?.() || '';
+			const municipality_id = stopSearch.municipality_id?.toLowerCase?.() || '';
+
+			return (
+				_id.includes(query)
+				|| name.includes(query)
+				|| municipality_id.includes(query)
+			);
 		},
-		data: {
-			filtered: filteredStops,
-			raw: rawStops,
-			searchQuery,
-		},
-		flags: {
-			error,
-			isLoading,
-		},
-	}), [rawStops, filteredStops, searchQuery, error, isLoading]);
+		data: rawStops,
+		debounce: 500,
+		query: paramSearch,
+	});
+
+	const changeSearchQuery = (query: string) => {
+		setParamSearch(query);
+	};
+
+	console.log('filteredStops', filteredStops);
+
+	const contextValue: StopListContextState = useMemo(
+		() => ({
+			actions: {
+				changeSearchQuery: changeSearchQuery,
+			},
+			data: {
+				filtered: filteredStops,
+				raw: rawStops,
+			},
+			flags: {
+				error,
+				isLoading,
+			},
+		}),
+		[filteredStops, rawStops, error, isLoading],
+	);
 
 	return (
 		<StopListContext.Provider value={contextValue}>

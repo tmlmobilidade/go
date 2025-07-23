@@ -38,11 +38,11 @@ export function Affectation() {
 		>
 			<Section>
 				<MultiSelect
-					key={stopDetailContext.data.form.key('zones')}
+					key={stopDetailContext.data.form.key('')}
 					data={zonesOptions}
 					label="Aceitação de Passes pré-definida"
-					selected={stopDetailContext.data.form.values.zones || []}
-					{...stopDetailContext.data.form.getInputProps('zones')}
+					selected={stopDetailContext.data.form.values || []}
+					{...stopDetailContext.data.form.getInputProps('')}
 				/>
 
 			</Section>

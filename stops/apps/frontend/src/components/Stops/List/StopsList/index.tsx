@@ -31,7 +31,7 @@ export function StopsList() {
 
 	return (
 		<Pane header={[<StopListHeader />]}>
-			{data.raw.map(stop => (
+			{data.filtered.map(stop => (
 				<div
 					key={stop._id}
 					className={styles.root}
