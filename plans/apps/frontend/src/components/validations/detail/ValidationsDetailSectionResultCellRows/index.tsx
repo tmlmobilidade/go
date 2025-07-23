@@ -4,13 +4,13 @@ import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface ValidationDetailSectionResultCellRowsProps {
+interface ValidationsDetailSectionResultCellRowsProps {
 	rows: number[]
 }
 
 /* * */
 
-export function ValidationDetailSectionResultCellRows({ rows }: ValidationDetailSectionResultCellRowsProps) {
+export function ValidationsDetailSectionResultCellRows({ rows }: ValidationsDetailSectionResultCellRowsProps) {
 	//
 
 	//

@@ -1,8 +1,8 @@
 'use client';
 
-import { getAppConfig } from '@tmlmobilidade/lib';
 /* * */
 
+import { getAppConfig } from '@tmlmobilidade/lib';
 import { type Agency } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

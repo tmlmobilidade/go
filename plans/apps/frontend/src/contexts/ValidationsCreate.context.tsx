@@ -3,115 +3,78 @@
 /* * */
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { Routes } from '@/lib/routes';
-import { AVAILABLE_AGENCIES, Permissions } from '@tmlmobilidade/lib';
-import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, ProcessingStatus, File as TmlFile, Validation, ValidationPermission, ValidationSchema } from '@tmlmobilidade/types';
+import { Permissions } from '@tmlmobilidade/lib';
+import { CreateValidationDto, CreateValidationSchema, GtfsAgency, GtfsFeedInfo, ValidationPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { multipartFetch, swrFetcher } from '@tmlmobilidade/utils';
+import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import useSWR, { mutate } from 'swr';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { mutate } from 'swr';
 
 /* * */
 
-export enum ValidationDetailMode {
-	EDIT = 'edit',
-	NEW = 'new',
-}
-
-interface ValidationDetailContextState {
+interface ValidationsCreateContextState {
 	actions: {
 		saveValidation: () => void
 		setValidationFile: (file: File | null) => void
 	}
 	data: {
 		agencies: { label: string, value: string }[]
-		file: null | TmlFile
 		form: UseFormReturnType<CreateValidationDto>
-		id: string | undefined
-		validation: null | Validation
 	}
 	flags: {
-		canSave: boolean
-		data_error: Error | null
 		error: Error | null
-		isReadOnly: boolean
-		isSaving: boolean
 		loading: boolean
-		mode: ValidationDetailMode
 	}
 }
 
-const emptyValidation: CreateValidationDto = {
-	feeder_status: ProcessingStatus.Waiting,
-	file_id: null,
-	gtfs_agency: undefined,
-	gtfs_feed_info: undefined,
-};
-const ValidationDetailContext = createContext<undefined | ValidationDetailContextState>(undefined);
+/* * */
 
-export function useValidationDetailContext() {
-	const context = useContext(ValidationDetailContext);
+const ValidationsCreateContext = createContext<undefined | ValidationsCreateContextState>(undefined);
+
+export function useValidationsCreateContext() {
+	const context = useContext(ValidationsCreateContext);
 	if (!context) {
-		throw new Error('useValidationDetailContext must be used within a ValidationDetailContextProvider');
+		throw new Error('useValidationsCreateContext must be used within a ValidationsCreateContextProvider');
 	}
-
 	return context;
 }
 
-export const ValidationDetailContextProvider = ({ children, validationId }: { children: React.ReactNode, validationId: string }) => {
+/* * */
+
+export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. State Management
+	// A. Setup variables
 
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
-	const me = useMeContext();
+	const meContext = useMeContext();
+	const agenciesContext = useAgenciesContext();
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 	const [validationFile, setValidationFile] = useState<File | null>(null);
 	const [validationError, setValidationError] = useState<Error | null>(null);
 
-	const { data: validation, error, isLoading } = useSWR<Validation>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)), swrFetcher, { refreshInterval: 3_000 });
-	const { data: file, error: fileError, isLoading: fileLoading } = useSWR<TmlFile>(validationId === 'new' ? null : Routes.API(Routes.VALIDATION_DETAIL(validationId)) + '/file', swrFetcher);
-	// const { data: agencies, error: agenciesError, isLoading: agenciesLoading } = useSWR<Agency[]>(Routes.API(Routes.AGENCIES), swrFetcher);
-
 	//
 	// B. Define form
 	const form = useForm<CreateValidationDto>({
-		initialValues: validationId === ValidationDetailMode.NEW ? emptyValidation : validation,
-		validate: zodResolver((validationId === ValidationDetailMode.NEW ? CreateValidationSchema : ValidationSchema)) as unknown,
+		validate: zodResolver(CreateValidationSchema) as unknown,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
 
 	//
 	// C. Transform Data
-	useEffect(() => {
-		if (!validation) return;
-
-		form.reset();
-		form.initialize(validation);
-		form.resetDirty();
-	}, [validation]);
-
-	useEffect(() => {
-		if (!error) return;
-
-		useToast.error({
-			message: error.message,
-			title: 'Erro ao carregar validação',
-		});
-
-		router.replace(Routes.VALIDATION_LIST);
-	}, [isLoading]);
 
 	// Validate form on change
-	useEffect(() => {
-		form.validate();
-	}, [form.values]);
+	// useEffect(() => {
+	// 	form.validate();
+	// }, [form.values]);
 
 	// Set canSave
 	useEffect(() => {
@@ -148,7 +111,7 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 			});
 
 			// Check if the agency is in the permissions
-			const hasPermission = me.actions.hasPermissionResource<ValidationPermission>({
+			const hasPermission = meContext.actions.hasPermissionResource<ValidationPermission>({
 				action: Permissions.validations.actions.create,
 				resource_key: 'agency_ids',
 				scope: Permissions.validations.scope,
@@ -170,11 +133,11 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 	}, [validationFile]);
 
 	const availableAgencies = useMemo(() => {
-		return AVAILABLE_AGENCIES.map(agency => ({
+		return agenciesContext.data.raw.map(agency => ({
 			label: agency.name,
 			value: agency._id,
 		}));
-	}, []);
+	}, [agenciesContext.data.raw]);
 
 	//
 	// D. Define actions
@@ -215,23 +178,13 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 		mutate(Routes.API(Routes.VALIDATION_LIST));
 	};
 
-	const updateValidation = () => {
-		const formData = form.values;
-		console.log('updateValidation', formData);
-	};
-
 	const saveValidation = () => {
-		if (validationId === ValidationDetailMode.NEW) {
-			createValidation();
-		}
-		else {
-			updateValidation();
-		}
+		createValidation();
 	};
 
 	//
 	// E. Define context value
-	const contextValue: ValidationDetailContextState = useMemo(() => {
+	const contextValue: ValidationsCreateContextState = useMemo(() => {
 		return {
 			actions: {
 				saveValidation,
@@ -239,27 +192,19 @@ export const ValidationDetailContextProvider = ({ children, validationId }: { ch
 			},
 			data: {
 				agencies: availableAgencies,
-				file,
-				form,
-				id: validationId === ValidationDetailMode.NEW ? undefined : validationId,
-				validation,
+				form: form,
 			},
 			flags: {
-				canSave,
-				data_error: error,
-				error: fileError || error || validationError,
-				isReadOnly: false,
-				isSaving,
-				loading: isLoading || fileLoading,
-				mode: validationId === ValidationDetailMode.NEW ? ValidationDetailMode.NEW : ValidationDetailMode.EDIT,
+				error: validationError,
+				loading: isSaving,
 			},
 		};
-	}, [availableAgencies, form, isLoading, isSaving, validationId, canSave, file, fileError, error, validation, validationError]);
+	}, [availableAgencies, form, isSaving, canSave, validationError]);
 
 	// F. Render Components
 	return (
-		<ValidationDetailContext.Provider value={contextValue}>
+		<ValidationsCreateContext.Provider value={contextValue}>
 			{children}
-		</ValidationDetailContext.Provider>
+		</ValidationsCreateContext.Provider>
 	);
 };

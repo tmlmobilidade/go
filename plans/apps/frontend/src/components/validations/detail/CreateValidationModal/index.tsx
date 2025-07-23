@@ -1,8 +1,14 @@
+'use client';
+
+/* * */
+
+import { LabelValueCard } from '@/components/common/LabelValueCard';
 import { UploadFile } from '@/components/common/UploadFile';
-import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
+import { useValidationsCreateContext, ValidationsCreateContextProvider } from '@/contexts/ValidationsCreate.context';
 import { IconAlertCircle } from '@tabler/icons-react';
-import { Button, closeModal, Description, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
@@ -10,16 +16,20 @@ import styles from './styles.module.css';
 
 export const CREATE_VALIDATION_MODAL_ID = 'create-validation-modal';
 
+/* * */
+
 export const openCreateValidationModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<ValidationDetailContextProvider validationId={ValidationDetailMode.NEW}>
+				<ValidationsCreateContextProvider>
 					<CreateValidationModal />
-				</ValidationDetailContextProvider>
+				</ValidationsCreateContextProvider>
 			</MeContextProvider>
 		),
+		closeOnClickOutside: false,
 		modalId: CREATE_VALIDATION_MODAL_ID,
+		padding: 0,
 		size: 'auto',
 		withCloseButton: false,
 	});
@@ -28,109 +38,51 @@ export const openCreateValidationModal = () => {
 /* * */
 
 export default function CreateValidationModal() {
-	// A. State Management
-	const validationDetailContext = useValidationDetailContext();
+	//
 
-	// D. Render Components
-	const renderModalHeader = () => (
-		<Section gap="sm" padding="none">
-			<Label size="lg">Criar validação GTFS</Label>
-			<Description>
-				Carregue um arquivo GTFS para efetuar a validação do mesmo.
-			</Description>
-		</Section>
-	);
+	//
+	// A. Setup variables
 
-	const renderFileUploadSection = () => (
-		<Section gap="sm" padding="none">
-			<UploadFile
-				label="Ficheiro GTFS"
-				maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
-				onFileChange={validationDetailContext.actions.setValidationFile}
-			/>
-		</Section>
-	);
+	const validationsCreateContext = useValidationsCreateContext();
 
-	const renderFeedInfoSection = () => {
-		if (!validationDetailContext.data.form.values.gtfs_agency || !validationDetailContext.data.form.values.gtfs_feed_info) return null;
+	//
+	// B. Transform data
 
-		return (
-			<Section gap="sm" padding="none">
-				<Label>Agência</Label>
-				<Grid columns="abc" gap="md">
-					<Section padding="none">
-						<Label size="sm" caps>ID</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_id ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Nome</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_name ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>URL</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Email</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_email ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Telefone</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_phone ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>URL</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
-					</Section>
-				</Grid>
-				<Divider />
-				<Label>Feed Info</Label>
-				<Grid columns="abc" gap="md">
-					<Section padding="none">
-						<Label size="sm" caps>Data de início</Label>
-						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Data de fim</Label>
-						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Linguagem do feed</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Email de contacto</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_email ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>URL de contacto</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_url ?? 'N/A'}</Text>
-					</Section>
-				</Grid>
-			</Section>
-		);
-	};
+	const feedStartDateParsed = useMemo(() => {
+		try {
+			if (!validationsCreateContext.data.form.values.gtfs_feed_info?.feed_start_date) return null;
+			return Dates
+				.fromOperationalDate(validationsCreateContext.data.form.values.gtfs_feed_info?.feed_start_date, 'Europe/Lisbon')
+				.toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR);
+		}
+		catch (error) {
+			console.log(error);
+			return null;
+		}
+	}, [validationsCreateContext.data.form.values.gtfs_feed_info?.feed_start_date]);
 
-	const renderActionButtons = () => (
-		<Grid columns="ab" gap="md">
-			<Button label="Cancelar" onClick={() => closeModal(CREATE_VALIDATION_MODAL_ID)} variant="danger" fullWidth />
-			<Button
-				disabled={!validationDetailContext.flags.canSave || validationDetailContext.flags.isSaving}
-				label="Criar validação"
-				loading={validationDetailContext.flags.isSaving}
-				onClick={validationDetailContext.actions.saveValidation}
-				variant="primary"
-				fullWidth
-			/>
-		</Grid>
-	);
+	const feedEndDateParsed = useMemo(() => {
+		try {
+			if (!validationsCreateContext.data.form.values.gtfs_feed_info?.feed_end_date) return null;
+			return Dates
+				.fromOperationalDate(validationsCreateContext.data.form.values.gtfs_feed_info?.feed_end_date, 'Europe/Lisbon')
+				.toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR);
+		}
+		catch (error) {
+			console.log(error);
+			return null;
+		}
+	}, [validationsCreateContext.data.form.values.gtfs_feed_info?.feed_end_date]);
+
+	//
+	// C. Render Components
 
 	const renderError = () => {
-		if (validationDetailContext.flags.error && validationDetailContext.flags.error.name === 'ValidationError') {
+		if (validationsCreateContext.flags.error && validationsCreateContext.flags.error.name === 'ValidationError') {
 			return (
 				<div className={styles.errorContainer}>
 					<IconAlertCircle size={20} />
-					<Text size="base">{validationDetailContext.flags.error.message}</Text>
+					<Text size="base">{validationsCreateContext.flags.error.message}</Text>
 				</div>
 			);
 		}
@@ -138,14 +90,78 @@ export default function CreateValidationModal() {
 	};
 
 	return (
-		<Section gap="lg">
-			{renderError()}
-			{renderModalHeader()}
-			{renderFeedInfoSection()}
-			{renderFileUploadSection()}
-			{renderActionButtons()}
-		</Section>
-	);
-}
+		<>
 
-/* * */
+			<Section gap="xs">
+				<Label size="lg" caps>Nova Validação GTFS</Label>
+				<Text>Selecione um arquivo GTFS para iniciar a validação.</Text>
+			</Section>
+
+			<Divider />
+
+			{renderError()}
+
+			{validationsCreateContext.flags.error && validationsCreateContext.flags.error.name === 'ValidationError' && (
+				<div className={styles.errorContainer}>
+					<IconAlertCircle size={20} />
+					<Text size="base">{validationsCreateContext.flags.error.message}</Text>
+				</div>
+			)}
+
+			<Section gap="sm">
+				<Label size="lg">agency.txt</Label>
+				<Grid columns="abc" gap="lg">
+					<LabelValueCard label="agency_id" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_id || 'N/A'} />
+					<LabelValueCard label="agency_name" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_name || 'N/A'} />
+					<LabelValueCard label="agency_url" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_url || 'N/A'} />
+					<LabelValueCard label="agency_email" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_email || 'N/A'} />
+					<LabelValueCard label="agency_timezone" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_timezone || 'N/A'} />
+					<LabelValueCard label="agency_fare_url" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_fare_url || 'N/A'} />
+					<LabelValueCard label="agency_lang" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_lang || 'N/A'} />
+					<LabelValueCard label="agency_phone" value={validationsCreateContext.data.form.values.gtfs_agency?.agency_phone || 'N/A'} />
+				</Grid>
+			</Section>
+			<Divider />
+
+			<Section gap="sm">
+				<Label size="lg">feed_info.txt</Label>
+				<Grid columns="abc" gap="lg">
+					<LabelValueCard label="feed_start_date" value={`${feedStartDateParsed} (${validationsCreateContext.data.form.values.gtfs_feed_info?.feed_start_date || 'N/A'})`} />
+					<LabelValueCard label="feed_end_date" value={`${feedEndDateParsed} (${validationsCreateContext.data.form.values.gtfs_feed_info?.feed_end_date || 'N/A'})`} />
+					<LabelValueCard label="feed_lang" value={validationsCreateContext.data.form.values.gtfs_feed_info?.feed_lang || 'N/A'} />
+					<LabelValueCard label="feed_contact_email" value={validationsCreateContext.data.form.values.gtfs_feed_info?.feed_contact_email || 'N/A'} />
+					<LabelValueCard label="feed_contact_url" value={validationsCreateContext.data.form.values.gtfs_feed_info?.feed_contact_url || 'N/A'} />
+				</Grid>
+			</Section>
+			<Divider />
+
+			<Section>
+				<UploadFile
+					label="Ficheiro GTFS"
+					maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
+					onFileChange={validationsCreateContext.actions.setValidationFile}
+				/>
+			</Section>
+
+			<Divider />
+
+			<Section>
+				<Grid columns="ab" gap="md">
+					<Button
+						label="Cancelar"
+						onClick={() => closeModal(CREATE_VALIDATION_MODAL_ID)}
+						variant="secondary"
+					/>
+					<Button
+						label="Criar validação"
+						loading={validationsCreateContext.flags.loading}
+						onClick={validationsCreateContext.actions.saveValidation}
+					/>
+				</Grid>
+			</Section>
+
+		</>
+	);
+
+	//
+}
