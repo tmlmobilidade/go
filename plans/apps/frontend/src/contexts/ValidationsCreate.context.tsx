@@ -24,6 +24,7 @@ interface ValidationsCreateContextState {
 		form: UseFormReturnType<CreateValidationDto>
 	}
 	flags: {
+		can_create: boolean
 		error: Error | null
 		loading: boolean
 	}
@@ -53,8 +54,8 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	const workerRef = useRef<null | Worker>(null);
 	const meContext = useMeContext();
 
-	const [isSaving, setIsSaving] = useState(false);
-	const [canSave, setCanSave] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [canCreate, setCanCreate] = useState(false);
 	const [validationFile, setValidationFile] = useState<File | null>(null);
 	const [validationError, setValidationError] = useState<Error | null>(null);
 
@@ -102,16 +103,15 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		});
 
 		if (!hasPermission) {
-			setCanSave(false);
+			setCanCreate(false);
 			setValidationError({
-				message: 'Não tem permissão para criar validações para esta agência',
+				message: 'Não é permitido criar validações para esta agência.',
 				name: 'ValidationError',
 			});
-			console.log('validationError', validationError);
 			return;
 		}
 
-		setCanSave(true);
+		setCanCreate(true);
 
 		//
 	};
@@ -122,7 +122,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		//
 		// Update state to indicate progress
 
-		setIsSaving(true);
+		setIsLoading(true);
 
 		//
 		// Setup a new FormData object to send
@@ -145,8 +145,8 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		// Handle the response
 
 		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao criar validação' });
-			setIsSaving(false);
+			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
+			setIsLoading(false);
 			return;
 		}
 
@@ -164,7 +164,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		//
 		// Reset the form and state
 
-		setIsSaving(false);
+		setIsLoading(false);
 		closeModal(CREATE_VALIDATION_MODAL_ID);
 		mutate(Routes.API(Routes.VALIDATION_LIST));
 
@@ -179,7 +179,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		// when there is no validation file
 
 		if (!validationFile) {
-			setCanSave(false);
+			setCanCreate(false);
 			form.reset();
 			return;
 		}
@@ -214,14 +214,15 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 				form: form,
 			},
 			flags: {
+				can_create: canCreate,
 				error: validationError,
-				loading: isSaving,
+				loading: isLoading,
 			},
 		};
 	}, [
 		form,
-		isSaving,
-		canSave,
+		isLoading,
+		canCreate,
 		validationError,
 	]);
 
