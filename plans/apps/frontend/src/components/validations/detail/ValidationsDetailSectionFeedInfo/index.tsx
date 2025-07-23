@@ -1,9 +1,11 @@
 /* * */
 
 import { FileComponent } from '@/components/common/FileComponent';
+import { LabelValueCard } from '@/components/common/LabelValueCard';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { Collapsible, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -16,11 +18,36 @@ export function ValidationsDetailSectionFeedInfo() {
 	const validationsDetailContext = useValidationsDetailContext();
 
 	//
-	// B. Render components
+	// B. Transform data
 
-	if (!validationsDetailContext.data.validation?.gtfs_feed_info) {
-		return null;
-	}
+	const feedStartDateParsed = useMemo(() => {
+		try {
+			if (!validationsDetailContext.data.validation?.gtfs_feed_info?.feed_start_date) return null;
+			return Dates
+				.fromOperationalDate(validationsDetailContext.data.validation?.gtfs_feed_info?.feed_start_date, 'Europe/Lisbon')
+				.toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR);
+		}
+		catch (error) {
+			console.log(error);
+			return null;
+		}
+	}, [validationsDetailContext.data.validation?.gtfs_feed_info?.feed_start_date]);
+
+	const feedEndDateParsed = useMemo(() => {
+		try {
+			if (!validationsDetailContext.data.validation?.gtfs_feed_info?.feed_end_date) return null;
+			return Dates
+				.fromOperationalDate(validationsDetailContext.data.validation?.gtfs_feed_info?.feed_end_date, 'Europe/Lisbon')
+				.toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR);
+		}
+		catch (error) {
+			console.log(error);
+			return null;
+		}
+	}, [validationsDetailContext.data.validation?.gtfs_feed_info?.feed_end_date]);
+
+	//
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -29,34 +56,14 @@ export function ValidationsDetailSectionFeedInfo() {
 		>
 
 			<Section gap="sm">
-				<Label caps>Data de vigência</Label>
-				<Grid columns="abc" gap="sm">
-					<Section padding="none">
-						<Label size="sm" caps>Data de início</Label>
-						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_start_date ? Dates.fromOperationalDate(validationsDetailContext.data.validation.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Data de fim</Label>
-						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_end_date ? Dates.fromOperationalDate(validationsDetailContext.data.validation.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toFormat('dd/MM/yyyy') : 'N/A'}</Text>
-					</Section>
-				</Grid>
-			</Section>
-
-			<Section gap="sm">
-				<Label caps>Outras informações</Label>
-				<Grid columns="abc" gap="sm">
-					<Section padding="none">
-						<Label size="sm" caps>Versão</Label>
-						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_version ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Idioma padrão</Label>
-						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.default_lang?.toUpperCase() ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Idioma do feed</Label>
-						<Text size="base">{validationsDetailContext.data.validation.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
-					</Section>
+				<Grid columns="abc" gap="lg">
+					<LabelValueCard label="feed_start_date" value={`${feedStartDateParsed} (${validationsDetailContext.data.validation?.gtfs_feed_info?.feed_start_date || 'N/A'})`} />
+					<LabelValueCard label="feed_end_date" value={`${feedEndDateParsed} (${validationsDetailContext.data.validation?.gtfs_feed_info?.feed_end_date || 'N/A'})`} />
+					<LabelValueCard label="feed_version" value={validationsDetailContext.data.validation?.gtfs_feed_info?.feed_version || 'N/A'} />
+					<LabelValueCard label="feed_contact_email" value={validationsDetailContext.data.validation?.gtfs_feed_info?.feed_contact_email || 'N/A'} />
+					<LabelValueCard label="feed_contact_url" value={validationsDetailContext.data.validation?.gtfs_feed_info?.feed_contact_url || 'N/A'} />
+					<LabelValueCard label="feed_publisher_name" value={validationsDetailContext.data.validation?.gtfs_feed_info?.feed_publisher_name || 'N/A'} />
+					<LabelValueCard label="feed_publisher_url" value={validationsDetailContext.data.validation?.gtfs_feed_info?.feed_publisher_url || 'N/A'} />
 				</Grid>
 			</Section>
 

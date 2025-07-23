@@ -8,7 +8,7 @@ import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.contex
 import { IconTransformFilled } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { ProcessingStatus } from '@tmlmobilidade/types';
-import { BackButton, Button, HasPermission, Label, Spacer } from '@tmlmobilidade/ui';
+import { BackButton, Button, HasPermission, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -50,7 +50,8 @@ export function ValidationsDetailHeader() {
 		<>
 			<BackButton onClick={handleClose} type="close" />
 			<StatusTag status={validationsDetailContext.data.validation?.feeder_status} />
-			<Label size="lg" caps>{validationsDetailContext.data.validation?._id}</Label>
+			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
+			<Label size="md" caps>{validationsDetailContext.data.validation?._id}</Label>
 			<Spacer />
 			{canConvertToPlan && (
 				<HasPermission
