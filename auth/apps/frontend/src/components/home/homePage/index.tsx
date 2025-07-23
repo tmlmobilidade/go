@@ -5,6 +5,7 @@ import { Grid, Pane, Section } from '@tmlmobilidade/ui';
 
 import { QuickLinkButton } from '../QuickLink';
 import { quickLinks } from '../QuickLink/data';
+import { WikiTable } from '../wikiTable';
 
 export function HomePage() {
 	return (
@@ -18,9 +19,7 @@ export function HomePage() {
 				</Grid>
 			</Section>
 
-			<Section>
-				<p>HALLO</p>
-			</Section>
+			<WikiTable />
 		</Pane>
 	);
 }

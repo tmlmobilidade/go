@@ -19,7 +19,7 @@ server.register(
 		});
 
 		// GET /wiki:id
-		instance.get('wiki/:id', (request, reply) => {
+		instance.get('/:id', (request, reply) => {
 			return reply.send(transformMdxToHtml);
 		});
 
