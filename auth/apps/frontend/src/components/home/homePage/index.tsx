@@ -17,6 +17,10 @@ export function HomePage() {
 					))}
 				</Grid>
 			</Section>
+
+			<Section>
+				<p>HALLO</p>
+			</Section>
 		</Pane>
 	);
 }

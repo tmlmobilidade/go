@@ -8,7 +8,6 @@ import { HttpStatus } from '@tmlmobilidade/lib';
 
 export class WikiController {
 	async getAll(request: FastifyRequest, reply: FastifyReply) {
-		console.log('------>', request);
 		try {
 			reply.send(await transformMdxToHtml());
 		}

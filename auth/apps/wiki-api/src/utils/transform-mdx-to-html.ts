@@ -1,6 +1,6 @@
 /* * */
 
-import * as fm from 'front-matter';
+import fm from 'front-matter';
 import fs from 'fs';
 import { dirname, resolve } from 'path';
 import remarkHtml from 'remark-html';
