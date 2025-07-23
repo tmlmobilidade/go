@@ -7,6 +7,11 @@ import { files, TransactionManager, validations } from '@tmlmobilidade/interface
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { type CreateValidationDto, type GtfsAgency, type GtfsFeedInfo, type Permission, type ProcessingStatus, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
 import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { createWriteStream } from 'fs';
+import { readFile, unlink } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { pipeline } from 'stream/promises';
 
 /**
  * This is an example controller that is using the Validations interface.
@@ -18,6 +23,8 @@ export class ValidationsController {
 	 * @param reply Fastify reply
 	 */
 	static async create(request: FastifyRequest, reply: FastifyReply) {
+		const tempFilePath: null | string = null;
+
 		try {
 			const data = await request.file();
 
@@ -52,8 +59,30 @@ export class ValidationsController {
 				gtfs_feed_info: JSON.parse(fields.gtfs_feed_info.value as string) as GtfsFeedInfo,
 			};
 
-			const buffer = await data.toBuffer();
-			const size = buffer.buffer.byteLength;
+			// Stream file to temporary disk location to avoid OOM, then upload
+			let buffer: Buffer;
+			let size: number;
+			let tempFilePath: null | string = null;
+
+			try {
+				// Create temporary file path
+				tempFilePath = join(tmpdir(), `validation-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
+
+				// Stream directly to disk to avoid memory issues
+				const writeStream = createWriteStream(tempFilePath);
+				await pipeline(data.file, writeStream);
+
+				// Read file back as buffer for upload
+				buffer = await readFile(tempFilePath);
+				size = buffer.length;
+			}
+			catch (streamError) {
+				reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+					error: streamError.message,
+					message: 'Error processing file stream',
+				});
+				return;
+			}
 
 			const transactionManager = new TransactionManager([validations, files]);
 
@@ -108,6 +137,17 @@ export class ValidationsController {
 			reply
 				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
 				.send(error);
+		}
+		finally {
+			// Clean up temporary file
+			if (tempFilePath) {
+				try {
+					await unlink(tempFilePath);
+				}
+				catch (cleanupError) {
+					console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
+				}
+			}
 		}
 	}
 
