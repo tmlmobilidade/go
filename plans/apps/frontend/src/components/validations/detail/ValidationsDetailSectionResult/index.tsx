@@ -54,12 +54,12 @@ export function ValidationsDetailSectionResult() {
 
 	const errorCountLabel = useMemo(() => {
 		const totalErrors = validationsDetailContext.data.validation?.summary?.total_errors ?? 0;
-		return totalErrors > 1 ? `${totalErrors} Erros` : `${totalErrors} Erro`;
+		return totalErrors === 1 ? `${totalErrors} Erro` : `${totalErrors} Erros`;
 	}, [validationsDetailContext.data.validation]);
 
 	const warningCountLabel = useMemo(() => {
 		const totalWarnings = validationsDetailContext.data.validation?.summary?.total_warnings ?? 0;
-		return totalWarnings > 1 ? `${totalWarnings} Avisos` : `${totalWarnings} Aviso`;
+		return totalWarnings === 1 ? `${totalWarnings} Aviso` : `${totalWarnings} Avisos`;
 	}, [validationsDetailContext.data.validation]);
 
 	const filteredMessages = useMemo(() => {
