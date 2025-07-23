@@ -4,7 +4,7 @@
 .container {
 	padding: 100px 0px;
 	padding-bottom: 150px;
-	max-height: 25%;
+	height: 50%;
 	text-align: center;
 	border: 2px solid;
     border-radius: 10px;

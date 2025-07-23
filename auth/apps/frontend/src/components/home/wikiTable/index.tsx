@@ -1,8 +1,12 @@
 'use client';
 
-import { DataTable, DataTableColumn, Pane, Section } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import useSWR from 'swr';
+
+import styles from './styles.module.css';
 
 interface ParsedMdxFile {
 	_id: string
@@ -17,18 +21,9 @@ export function WikiTable() {
 
 	//
 	// A. Setup variables
-	const [files, setFiles] = useState([]);
+	const router = useRouter();
 
-	useEffect(() => {
-		fetch('http://localhost:52020/wiki/')
-			.then(res => res.json())
-			.then((data) => {
-				setFiles(data);
-			})
-			.catch((err) => {
-				console.error('fetch files error', err);
-			});
-	}, []);
+	const { data: allwIKIData, error: allwIKIError, isLoading: allwIKILoading } = useSWR<ParsedMdxFile[], Error>('http://localhost:52020/wiki/', swrFetcher);
 
 	const columns: DataTableColumn<ParsedMdxFile>[] = [
 		{
@@ -51,20 +46,30 @@ export function WikiTable() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (files) => {
-		window.open('https://carrismetropolitana.pt/');
+	const handleRowClick = (file) => {
+		router.push('https://carrismetropolitana.pt/');
 	};
 
 	//
 	// C. Render components
 
+	if (allwIKILoading) {
+		return <LoadingOverlay />;
+	}
+
+	if (allwIKIError) {
+		return <ErrorDisplay message={allwIKIError.message} />;
+	}
+
 	return (
-		<Pane>
-			<DataTable
-				columns={columns}
-				onRowClick={handleRowClick}
-				records={files}
-			/>
-		</Pane>
+		<div className={styles.container}>
+			<Pane>
+				<DataTable
+					columns={columns}
+					onRowClick={handleRowClick}
+					records={allwIKIData}
+				/>
+			</Pane>
+		</div>
 	);
 }
