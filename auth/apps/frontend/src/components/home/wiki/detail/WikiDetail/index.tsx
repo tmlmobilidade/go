@@ -1,11 +1,13 @@
 'use client';
 
-import { ErrorDisplay, LoadingOverlay } from '@tmlmobilidade/ui';
-import { swrFetcher } from '@tmlmobilidade/utils';
 /* * */
 
+import { ErrorDisplay, LoadingOverlay, Pane, Section, Text } from '@tmlmobilidade/ui';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { useParams } from 'next/navigation';
 import useSWR from 'swr';
+
+import { WikiHeader } from '../WikiHeader';
 
 /* * */
 
@@ -40,13 +42,21 @@ export function WikiDetail() {
 	}
 
 	return (
-		<div>
-			<h1>{data.title}</h1>
-			<h2>{data.subtitle}</h2>
-			<div dangerouslySetInnerHTML={{ __html: data.html }} />
-			<div>
-				<strong>Tags:</strong> {data.tags.join(', ')}
-			</div>
-		</div>
+		<Pane header={[<WikiHeader />]}>
+			<Section gap="md">
+				<Text mb={20}>
+					<h1>{data.title}</h1>
+					<h3>{data.subtitle}</h3>
+				</Text>
+
+				<div dangerouslySetInnerHTML={{ __html: data.html }} />
+				<Text>
+					<br /><br />
+					<div>
+						<strong>Tags:</strong> {data.tags.join(' , ')}
+					</div>
+				</Text>
+			</Section>
+		</Pane>
 	);
 }

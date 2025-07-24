@@ -1,6 +1,6 @@
 /* * */
 
-import { WikiDetail } from '@/components/home/WikiDetail';
+import { WikiDetail } from '@/components/home/wiki/detail/WikiDetail';
 
 /* * */
 

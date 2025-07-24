@@ -1,6 +1,6 @@
 'use client';
 
-import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, TagGroup } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -38,8 +38,9 @@ export function WikiTable() {
 		},
 		{
 			accessor: 'tags',
+			render: item => <TagGroup limit={10} tags={item.tags.map(tag => ({ label: tag, variant: 'secondary' }))} />,
 			title: 'Categorias',
-			width: 300,
+			width: 600,
 		},
 	];
 
@@ -63,6 +64,8 @@ export function WikiTable() {
 
 	return (
 		<div className={styles.container}>
+			<hr />
+			<h1 className={styles.title}>WIKI</h1>
 			<Pane>
 				<DataTable
 					columns={columns}

@@ -5,7 +5,7 @@ import { Grid, Pane, Section } from '@tmlmobilidade/ui';
 
 import { QuickLinkButton } from '../QuickLink';
 import { quickLinks } from '../QuickLink/data';
-import { WikiTable } from '../wikiTable';
+import { WikiTable } from '../wiki/wikiTable';
 
 export function HomePage() {
 	return (
