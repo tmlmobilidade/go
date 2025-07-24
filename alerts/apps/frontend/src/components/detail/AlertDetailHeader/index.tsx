@@ -2,10 +2,11 @@
 
 /* * */
 
-import BackButton from '@/components/common/BackButton';
 import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
+import { BackButton, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -15,17 +16,40 @@ export function AlertDetailHeader() {
 	//
 	// A. Setup variables
 
+	const router = useRouter();
 	const alertDetailContext = useAlertDetailContext();
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleClose = () => {
+		const destUrl = keepUrlParams('/alerts', window.location.search);
+		router.push(destUrl);
+	};
+
+	const handleDuplicate = () => {
+		const id = alertDetailContext.data.id;
+
+		router.replace(`/alerts/new?copy=${id}`);
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<>
-			<BackButton />
+			<BackButton onClick={handleClose} type="close" />
 			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 			<Spacer />
+			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
+				<Button
+					icon={<IconCopy size={28} />}
+					label="Duplicar"
+					onClick={handleDuplicate}
+					variant="secondary"
+				/>
+			)}
 			<Button
 				label="Salvar como rascunho"
 				onClick={() => alertDetailContext.actions.saveAlert('draft')}

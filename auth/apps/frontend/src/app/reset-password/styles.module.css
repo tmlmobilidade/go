@@ -1,0 +1,13 @@
+.root {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	padding: 0 20%;
+	background-color: var(--color-system-background-200);
+
+	@media (max-width: 768px) {
+		padding: 0 10%;
+	}
+}

@@ -1,5 +1,5 @@
 import { IconFileZip } from '@tabler/icons-react';
-import { ComponentWrapper, DeleteActionIcon, FileButton, Label, Section, useToast } from '@tmlmobilidade/ui';
+import { ComponentWrapper, DeleteButton, FileButton, Label, Section, useToast } from '@tmlmobilidade/ui';
 import React, { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -71,7 +71,7 @@ export function UploadFile({
 			<IconFileZip size={52} />
 			<Label size="sm">{name}</Label>
 			<div className={styles.deleteContainer}>
-				<DeleteActionIcon onClick={handleDelete} />
+				<DeleteButton onDelete={handleDelete} />
 			</div>
 		</Section>
 	);

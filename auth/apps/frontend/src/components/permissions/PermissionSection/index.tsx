@@ -1,0 +1,83 @@
+'use client';
+
+/* * */
+
+import CheckCard from '@/components/common/CheckCard';
+import { PermissionAction } from '@/lib/permissions';
+import { Permission } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+
+import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';
+
+/* * */
+
+export type WithResourceToggle<T = unknown, K = Record<string, unknown>> = T & {
+	onResourceToggle: (scope: string, action: string, resource: Partial<K>) => void
+};
+
+export interface PermissionSectionInputProps<T = unknown> {
+	onToggle: (scope: string, action: string) => void
+	permissions: Permission<T>[]
+}
+
+interface PermissionsSectionProps {
+	actions: PermissionAction[]
+	currentPermissions: Permission<unknown>[]
+	description: string
+	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
+	onToggle: (scope: string, action: string) => void
+	scope: string
+	title: string
+}
+
+/* * */
+
+export function PermissionsSection({
+	actions,
+	currentPermissions,
+	description,
+	onResourceToggle,
+	onToggle,
+	scope,
+	title,
+}: PermissionsSectionProps) {
+	const getPermissionData = (action: string) => {
+		const permission = currentPermissions.find(
+			p => p.scope === scope && p.action === action,
+		);
+		return {
+			hasPermission: !!permission,
+		};
+	};
+
+	return (
+		<Collapsible description={description} title={title}>
+			<Section gap="md">
+				<Grid columns="ab" gap="sm">
+					{actions.map(({ description, key, label, resources }) => {
+						const { hasPermission } = getPermissionData(key);
+
+						return (
+							<CheckCard
+								key={key}
+								checked={hasPermission}
+								description={description}
+								label={label}
+								onChange={() => onToggle(scope, key)}
+							>
+								{onResourceToggle && resources?.includes('AGENCIES') && (
+									<AgencyPermissionMultiselect
+										description="Agências ao qual o utilizador tem acesso a para esta ação"
+										label="Agências"
+										onChange={value => onResourceToggle(scope, key, { agency_ids: value || [] })}
+										selected={(currentPermissions.find(p => p.scope === scope && p.action === key)?.resource as Record<string, unknown>)?.agency_ids as string[] || []}
+									/>
+								)}
+							</CheckCard>
+						);
+					})}
+				</Grid>
+			</Section>
+		</Collapsible>
+	);
+}

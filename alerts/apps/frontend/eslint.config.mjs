@@ -13,5 +13,8 @@ export default [
       'assets/',
       'public/',
     ],
+    rules: {
+      '@typescript-eslint/ban-ts-comment': 'off',
+    },
   },
 ]

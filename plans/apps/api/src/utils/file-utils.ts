@@ -58,7 +58,7 @@ export async function updateFeedInfoDates(file_id: string, feed_start_date?: Ope
 	// Zip all files
 	files_zip.file('feed_info.txt', feed_info_csv_updated);
 
-	const files_zip_updated = await files_zip.generateAsync({ type: 'blob' });
+	const files_zip_updated = await files_zip.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'blob' });
 
 	return {
 		file: Files.blobToFile(files_zip_updated, file_info.name),
