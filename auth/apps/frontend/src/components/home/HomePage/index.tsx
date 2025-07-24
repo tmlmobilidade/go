@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { QuickLinkButton } from '@/components/home/QuickLink';
