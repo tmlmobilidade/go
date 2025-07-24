@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
 import { operationalStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, Grid, NumberInput, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -37,12 +37,12 @@ export function StopDetails() {
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('_id')}
 					/>
-					<TextInput
+					<NumberInput
 						label="Latitude"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('latitude')}
 					/>
-					<TextInput
+					<NumberInput
 						label="Longitude"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('longitude')}

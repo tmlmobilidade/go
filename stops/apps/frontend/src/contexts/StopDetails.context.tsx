@@ -1,9 +1,9 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { CreateStopDto, CreateStopSchema, Stop, StopSchema } from '@tmlmobilidade/types';
+import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { convertObject, fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -69,12 +69,12 @@ const emptyStop: CreateStopDto = {
 	longitude: Number(0),
 	municipality_id: '',
 	name: '',
-	new_name: 'data.stop_name_new',
+	new_name: '',
 	operational_status: 'voided',
 	parish_id: '',
 	pole_status: 'unknown',
 	road_type: 'unknown',
-	shelter_code: 'data.shelter_code',
+	shelter_code: '',
 	shelter_frame_size: undefined,
 	shelter_installation_date: undefined,
 	shelter_maintainer: '',
@@ -115,6 +115,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	const form = useForm<CreateStopDto>({
 		initialValues: stop || emptyStop,
+		// @ts-expect-error - idkhhnggggg
 		validate: zodResolver(stop ? StopSchema : CreateStopSchema) as unknown as FormValidateInput<CreateStopDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
@@ -129,22 +130,28 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	}, [stop]);
 
 	// Validate form on change
-	useEffect(() => {
-		console.log('=========>', form.values);
-	}, [form.values]);
 
 	useEffect(() => {
 		form.validate();
 		setCanSave(form.isValid());
 	}, [form.values]);
 
+	useEffect(() => {
+		console.log('=========>', form.values);
+	}, [form.values]);
 	//
 	// D. Define actions
 
 	const handleSaveUser = async () => {
 		setIsSaving(true);
 
-		const response = await fetchData<Stop>(Routes.API + Routes.STOPS_DETAIL(stopId), 'POST', form.values);
+		const saveStop: CreateStopDto = { ...form.values };
+
+		const method = stopId === 'new' ? 'POST' : 'PUT';
+		const url = stopId === 'new' ? Routes.API + Routes.STOPS_LIST : Routes.API + Routes.STOPS_DETAIL(stopId);
+		const body = stopId === 'new' ? saveStop : convertObject(saveStop, UpdateStopSchema);
+
+		const response = await fetchData<Stop>(url, method, body);
 
 		if (response.error) {
 			if (typeof response.error === 'string') {
@@ -152,6 +159,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 					message: response.error,
 					title: 'Erro ao salvar utilizador',
 				});
+				console.log('---------> aki no if ');
 			}
 			else {
 				const errors = JSON.parse(response.error);
@@ -160,6 +168,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 						message: error.message,
 						title: 'Erro ao salvar utilizador',
 					});
+					console.log('---------> aki no for ');
 				}
 			}
 

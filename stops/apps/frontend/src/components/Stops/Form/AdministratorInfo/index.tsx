@@ -47,7 +47,7 @@ export function AdministratorInfo() {
 					<TextInput
 						label="Localidade"
 						miw="100%"
-						{...stopDetailContext.data.form.getInputProps('locality')}
+						{...stopDetailContext.data.form.getInputProps('locality_id')}
 					/>
 				</Grid>
 			</Section>
