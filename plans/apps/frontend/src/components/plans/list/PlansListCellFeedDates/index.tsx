@@ -37,7 +37,7 @@ export function PlansListCellFeedDates({ endDate, startDate, validityStatus }: P
 
 	return (
 		<div className={styles.wrapper}>
-			{validityStatus === 'expired' && <Indicator variant="danger" />}
+			{validityStatus === 'expired' && <Indicator variant="muted" />}
 			{validityStatus === 'active' && <Indicator variant="success" filled />}
 			{validityStatus === 'upcoming' && <Indicator variant="primary" filled />}
 			<Tag label={startDateFormatted} variant="secondary" />

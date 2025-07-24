@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { authProvider, users } from '@tmlmobilidade/interfaces';
+import { authProvider, roles, users } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { type CreateUserDto, type UpdateUserDto } from '@tmlmobilidade/types';
 
@@ -97,7 +97,12 @@ export class UsersController {
 	 */
 	static async getMe(request: FastifyRequest, reply: FastifyReply) {
 		const session_token = request.cookies[COOKIE_NAME];
+
 		const user = await authProvider.getUser(session_token);
+		const role = await roles.findMany({ _id: { $in: user.role_ids } });
+
+		user.permissions = [...role.flatMap(role => role.permissions), ...user.permissions];
+
 		return reply.status(HttpStatus.OK).send(user);
 	}
 

@@ -6,16 +6,20 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
-		"dev:prod": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev",
+		"dev:production": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start",
 		"yalc": "yalc link @tmlmobilidade/connectors @tmlmobilidade/interfaces @tmlmobilidade/lib @tmlmobilidade/utils @tmlmobilidade/types @tmlmobilidade/ui --no-pure"
 	},
+	"dependencies": {
+		"nodemailer": "^7.0.5",
+		"react-router-dom": "^7.7.0"
+	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@dotenv-run/cli": "1.3.6",
-		"turbo": "2.5.4",
+		"turbo": "2.5.5",
 		"typescript": "5.8.3"
 	},
 	"packageManager": "npm@11.4.2",

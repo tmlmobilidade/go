@@ -2,15 +2,15 @@
 
 /* * */
 
+import { StatusTag } from '@/components/common/StatusTag';
 import { ValidationsListCellAgency } from '@/components/validations/list/ValidationsListCellAgency';
 import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
-import { ValidationsListCellProcessingStatus } from '@/components/validations/list/ValidationsListCellProcessingStatus';
 import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { Routes } from '@/lib/routes';
 import { type ValidationNormalized } from '@/types/normalized';
-import { DataTable, type DataTableColumn, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -27,12 +27,6 @@ export function ValidationsList() {
 
 	const columns: DataTableColumn<ValidationNormalized>[] = [
 		{
-			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
-			width: 100,
-		},
-		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
 			title: 'Operador',
@@ -40,7 +34,7 @@ export function ValidationsList() {
 		},
 		{
 			accessor: 'feeder_status',
-			render: item => <ValidationsListCellProcessingStatus value={item.feeder_status} />,
+			render: item => <StatusTag status={item.feeder_status} />,
 			title: 'Estado',
 			width: 150,
 		},
@@ -68,7 +62,7 @@ export function ValidationsList() {
 	}
 
 	if (validationsListContext.flags.error) {
-		return <div>Error: {validationsListContext.flags.error.message}</div>;
+		return <ErrorDisplay message={validationsListContext.flags.error.message} />;
 	}
 
 	return (

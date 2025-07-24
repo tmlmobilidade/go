@@ -3,8 +3,6 @@
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { RolesContextProvider } from '@/contexts/Roles.context';
 import { AppWrapper, MeContextProvider } from '@tmlmobilidade/ui';
-import { cookies as nextCookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -13,20 +11,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 	//
 
 	//
-	// A. Setup variables
-
-	const cookies = await nextCookies();
-	const session = cookies.get('session_token');
-
-	//
-	// B. Handle actions
-
-	if (!session) {
-		redirect('/login');
-	}
-
-	//
-	// C. Render components
+	// A. Render components
 
 	return (
 		<MeContextProvider>

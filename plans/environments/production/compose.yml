@@ -80,7 +80,7 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 2gb
+          memory: 6gb
     logging:
       options:
         max-size: '1m'
@@ -95,6 +95,25 @@ services:
 
   frontend:
     image: ghcr.io/tmlmobilidade/sae-plans-frontend:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cleaner:
+    image: ghcr.io/tmlmobilidade/sae-plans-cleaner:production
     deploy:
       restart_policy:
         condition: on-failure

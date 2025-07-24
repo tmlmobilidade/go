@@ -94,14 +94,18 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		// 1. Convert filter arrays to sets for O(1) membership checks
 		const agencySet = new Set(filterAgency);
 		const validityStatusSet = new Set(filterValidityStatus);
-		return searchResultsData.filter((item: PlanNormalized) => {
+		return searchResultsData
+			.filter((item: PlanNormalized) => {
 			// Filter by agency
-			if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
-			// Filter by validity_status
-			if (!validityStatusSet.has(item.validity_status)) return false;
-			// Return true if all filters pass
-			return true;
-		});
+				if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
+				// Filter by validity_status
+				if (!validityStatusSet.has(item.validity_status)) return false;
+				// Return true if all filters pass
+				return true;
+			})
+			.sort((a, b) => {
+				return b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date);
+			});
 	}, [searchResultsData, filterAgency]);
 
 	//

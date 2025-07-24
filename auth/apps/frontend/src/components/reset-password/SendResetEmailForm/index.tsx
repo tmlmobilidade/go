@@ -3,8 +3,10 @@
 /* * */
 
 import { useVerifyEmail } from '@/components/reset-password/SendResetEmailForm/use-verify-email';
+import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
 import { Button, Label, Section, Surface, TextInput, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import styles from '../styles.module.css';
@@ -17,8 +19,8 @@ export default function IntroductionEmail() {
 	//
 	// A. Setup variables
 
+	const router = useRouter();
 	const { loading, verifyEmail } = useVerifyEmail();
-
 	const [resetEmail, setResetEmail] = useState<string>('');
 
 	//
@@ -26,7 +28,8 @@ export default function IntroductionEmail() {
 	//
 	// B. handle declare
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
 		const response = await verifyEmail(resetEmail);
 
 		if (response.status !== 200) {
@@ -36,6 +39,13 @@ export default function IntroductionEmail() {
 			});
 			return;
 		}
+
+		useToast.success({
+			message: 'Email de recuperação enviado com sucesso',
+			title: 'Sucesso',
+		});
+
+		router.push(Routes.LOGIN);
 	};
 
 	//
@@ -51,30 +61,37 @@ export default function IntroductionEmail() {
 					<div className={styles.header}>
 						<div className={styles.headerContent}>
 							<Label size="lg">Recuperar password</Label>
-							<Label>Introduza seu email para recuperar a sua palavra-passe : </Label>
+							<Label>Introduza seu email para recuperar a sua palavra-passe</Label>
 						</div>
 						<div className={styles.headerLogo}>
 							<Themer dark={<TMLogoDark />} light={<TMLogoLight />} />
 						</div>
-						<form className={styles.form}>
-							<TextInput
-								onChange={e => setResetEmail(e.target.value)}
-								placeholder="Email de recuperação"
-								value={resetEmail}
-							/>
-							<div className={styles.formFooter}>
-								<Button
-									disabled={resetEmail.length === 0}
-									icon={<IconArrowRight />}
-									label="Send email"
-									loading={loading}
-									onClick={handleSubmit}
-									type="submit"
-									variant="primary"
-								/>
-							</div>
-						</form>
 					</div>
+					<form className={styles.form} onSubmit={handleSubmit}>
+						<TextInput
+							disabled={loading}
+							onChange={e => setResetEmail(e.target.value)}
+							placeholder="Email de recuperação"
+							value={resetEmail}
+						/>
+						<div className={styles.formFooter}>
+							<span
+								className={styles.resetLink}
+								onClick={() => router.push(Routes.LOGIN)}
+								style={{ cursor: 'pointer' }}
+							>
+								<Label size="sm" caps>Voltar ao login</Label>
+							</span>
+							<Button
+								disabled={resetEmail.length === 0}
+								icon={<IconArrowRight />}
+								label="Enviar email"
+								loading={loading}
+								type="submit"
+								variant="primary"
+							/>
+						</div>
+					</form>
 				</Section>
 			</Surface>
 		</div>

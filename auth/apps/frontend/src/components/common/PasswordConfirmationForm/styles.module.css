@@ -1,0 +1,94 @@
+/* * */
+/* ROOT */
+
+.root {
+	z-index: 1;
+	width: 100%;
+	max-width: 550px;
+}
+
+
+/* * */
+/* HEADER */
+
+.header {
+	display: grid;
+	grid-template-columns: 1fr 120px;
+	gap: 20px;
+	align-items: flex-start;
+	justify-content: flex-start;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.headerContent {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	align-items: flex-start;
+	justify-content: flex-start;
+	width: 100%;
+}
+
+.headerLogo {
+	display: flex;
+	padding-top: 5px;
+}
+
+
+/* * */
+/* FORM */
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	width: 100%;
+}
+
+.formFooter {
+	display: flex;
+	flex-direction: row;
+	gap: var(--size-spacing-lg);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.formFooterLinks {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+}
+
+/* * */
+/* FORM / BUTTON */
+.formButton {
+	margin-left: auto;
+}
+
+/* * */
+/* FORM / ERRORS */
+
+.passwordRequirements {
+	display: flex;
+	flex-direction: column;
+	padding-left: var(--size-spacing-xs);
+	margin-top: 0;
+}
+
+.passwordRequirementValue {
+	display: flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+}
+
+.passwordRequirements div {
+	color: var(--color-status-success-primary);
+}
+
+.passwordRequirements div[data-valid="false"] {
+	color: var(--color-status-danger-primary);
+}
+
+

@@ -3,9 +3,9 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
-import { getAppConfig, HttpStatus } from '@tmlmobilidade/lib';
+import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/types';
-import { Dates, generateRandomToken } from '@tmlmobilidade/utils';
+import { Dates, generateRandomToken, HttpResponse } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -100,13 +100,24 @@ export class AuthController {
 	/**
 	 * Logout - Remove the session token cookie
 	 */
-	async logout(request: FastifyRequest, reply: FastifyReply) {
+	async logout(request: FastifyRequest, reply: FastifyReply): Promise<HttpResponse<string>> {
 		const session_token = request.cookies[COOKIE_NAME];
-
 		await authProvider.logout(session_token);
 
-		reply.clearCookie(COOKIE_NAME);
-		return reply.status(HttpStatus.OK).send();
+		reply.setCookie(COOKIE_NAME, '', {
+			domain: getAppConfig('auth', 'cookie_domain'),
+			httpOnly: true,
+			maxAge: 0,
+			path: '/',
+			sameSite: 'none',
+			secure: true,
+		});
+
+		return {
+			data: 'Logged out',
+			error: null,
+			status: HttpStatus.OK,
+		};
 	}
 
 	/**
@@ -128,7 +139,7 @@ export class AuthController {
 			user_id: user._id,
 		});
 
-		const url = getAppConfig('auth', 'frontend_url') + `/resetpassword?token=${token}`;
+		const url = `${getAppConfig('auth', 'frontend_url')}/reset-password?token=${token}`;
 
 		await sendResetPasswordEmail({
 			props: {
@@ -139,6 +150,23 @@ export class AuthController {
 		});
 
 		reply.status(HttpStatus.OK).send({ message: 'Email sent is sucessfull' });
+	}
+
+	/**
+	 * Validate - Validate a user's session
+	 */
+	async validate(request: FastifyRequest, reply: FastifyReply) {
+		const session_token = request.cookies[COOKIE_NAME];
+
+		try {
+			await authProvider.getUser(session_token);
+		}
+		catch (error) {
+			if (error instanceof HttpException) {
+				return reply.status(error.statusCode).send({ message: error.message });
+			}
+			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'An unexpected error occurred' });
+		}
 	}
 
 	/**

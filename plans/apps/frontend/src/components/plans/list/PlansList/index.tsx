@@ -4,7 +4,6 @@
 
 import { PlansListCellAgency } from '@/components/plans/list/PlansListCellAgency';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
-import { PlansListCellIsLocked } from '@/components/plans/list/PlansListCellIsLocked';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlansListContext } from '@/contexts/PlansList.context';
@@ -26,12 +25,6 @@ export function PlansList() {
 	const plansListContext = usePlansListContext();
 
 	const columns: DataTableColumn<PlanNormalized>[] = [
-		{
-			accessor: 'is_locked',
-			render: item => <PlansListCellIsLocked value={item.is_locked} />,
-			title: 'Lock Status',
-			width: 120,
-		},
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
