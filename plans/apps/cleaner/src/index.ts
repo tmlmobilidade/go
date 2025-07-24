@@ -30,7 +30,7 @@ async function cleanOldValidations() {
 
 	const thresholdsByStatus: Record<Validation['feeder_status'], number> = {
 
-		complete: 30 /* days */ * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+		complete: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
 
 		error: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
 
