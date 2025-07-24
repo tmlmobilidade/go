@@ -9,10 +9,6 @@ import useSWR from 'swr';
 
 /* * */
 
-interface ValidationsDetailContextProviderProps {
-	validationId: string
-}
-
 interface ValidationsDetailContextState {
 	actions: {
 		convertToPlan: () => Promise<void>
@@ -42,7 +38,7 @@ export function useValidationsDetailContext() {
 
 /* * */
 
-export const ValidationsDetailContextProvider = ({ children, validationId }: PropsWithChildren<ValidationsDetailContextProviderProps>) => {
+export const ValidationsDetailContextProvider = ({ children, validationId }: PropsWithChildren<{ validationId: string }>) => {
 	//
 
 	//

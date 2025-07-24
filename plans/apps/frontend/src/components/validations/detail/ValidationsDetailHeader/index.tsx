@@ -3,7 +3,7 @@
 /* * */
 
 import { StatusTag } from '@/components/common/StatusTag';
-import { openCreatePlanModal } from '@/components/validations/detail/CreatePlanModal';
+import { openConvertToPlanModalModal } from '@/components/validations/detail/ConvertToPlanModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconTransformFilled } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
@@ -40,7 +40,7 @@ export function ValidationsDetailHeader() {
 	};
 
 	const handleConvertToPlan = () => {
-		openCreatePlanModal(validationsDetailContext.data.validation._id);
+		openConvertToPlanModalModal(validationsDetailContext.data.validation._id);
 	};
 
 	//
