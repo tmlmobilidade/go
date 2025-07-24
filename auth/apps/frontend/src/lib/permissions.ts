@@ -147,7 +147,7 @@ const validationActions: PermissionConfig<typeof Permissions.validations.actions
 		{ description: 'Permite criar uma validação', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
 		{ description: 'Permite atualizar uma validação', key: 'update', label: 'Atualizar', resources: ['AGENCIES'] },
 		{ description: 'Permite eliminar uma validação', key: 'delete', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ description: 'Permite converter uma validação para um plano', key: 'create_plan', label: 'Converter para plano', resources: ['AGENCIES'] },
+		{ description: 'Permite converter uma validação para um plano', key: 'create_plan', label: 'Converter em Plano', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de validações.',
 	scope: Permissions.validations.scope,

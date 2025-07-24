@@ -62,7 +62,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						icon={<IconTransformFilled />}
-						label="Converter para Plano"
+						label="Converter em Plano"
 						onClick={handleConvertToPlan}
 					/>
 				</HasPermission>

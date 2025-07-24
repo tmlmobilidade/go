@@ -80,7 +80,7 @@ export default function ConvertToPlanModalModal() {
 						variant="secondary"
 					/>
 					<Button
-						label="Converter para Plano"
+						label="Converter em Plano"
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.createPlan}
 					/>
