@@ -1,9 +1,10 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
+import { type StopNormalized } from '@/types/normalized';
 import { Stop } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
-import { swrFetcher } from '@tmlmobilidade/utils';
+import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -35,36 +36,55 @@ export const useStopListContext = () => {
 };
 
 export const StopListContextProvider = ({ children }: { children: React.ReactNode }) => {
-	const [paramSearch, setParamSearch] = useQueryState('search', {
+	//
+
+	//
+	// A. Setup variables
+	const [filterSearch, setfilterSearch] = useQueryState('search', {
 		defaultValue: '',
 	});
+
+	//
+	// B. Fetch data
 
 	const { data: stops, error, isLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
 
 	const rawStops = useMemo(() => stops || [], [stops]);
 
-	const filteredStops = useSearch<Stop>({
-		customSearch: (stopSearch, query) => {
-			const _id = stopSearch._id?.toLowerCase?.() || '';
-			const name = stopSearch.name?.toLowerCase?.() || '';
-			const municipality_id = stopSearch.municipality_id?.toLowerCase?.() || '';
+	//
+	// C. Transform data
 
-			return (
-				_id.includes(query)
-				|| name.includes(query)
-				|| municipality_id.includes(query)
-			);
-		},
-		data: rawStops,
-		debounce: 500,
-		query: paramSearch,
+	const normalizedStopData: StopNormalized[] = useMemo(() => {
+		if (!stops) return [];
+
+		return stops.map(item => ({
+			...item,
+			agency_id_normalized: item._id,
+			agency_name_normalized: normalizeString(item.name),
+		}));
+	}, [stops]);
+
+	const searchResultsData = useSearch<StopNormalized>({
+		accessors: ['_id', 'name'],
+		data: normalizedStopData,
+		query: filterSearch,
 	});
 
+	// const filteredStops = useMemo(() => {
+	// 	if (!searchResultsData) return [];
+
+	// 	const filter_id = new Set()
+	// 	return searchResultsData
+	// 		.filter((item: StopNormalized) => {
+	// 			if(!agencySet.)
+	// 	})
+	// });
+
 	const changeSearchQuery = (query: string) => {
-		setParamSearch(query);
+		setfilterSearch(query);
 	};
 
-	console.log('filteredStops', filteredStops);
+	console.log('search', searchResultsData);
 
 	const contextValue: StopListContextState = useMemo(
 		() => ({
@@ -72,7 +92,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 				changeSearchQuery: changeSearchQuery,
 			},
 			data: {
-				filtered: filteredStops,
+				filtered: searchResultsData,
 				raw: rawStops,
 			},
 			flags: {
@@ -80,7 +100,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 				isLoading,
 			},
 		}),
-		[filteredStops, rawStops, error, isLoading],
+		[searchResultsData, rawStops, error, isLoading],
 	);
 
 	return (
