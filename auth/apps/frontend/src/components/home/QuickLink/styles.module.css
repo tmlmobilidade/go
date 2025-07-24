@@ -2,20 +2,28 @@
 /* CONTAINER */
 
 .container {
-	height: 15vw;
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	gap: 15px;
 	align-items: center;
+	justify-content: center;
+	padding: 50px;
 	text-align: center;
-	border: 2px solid;
-    border-radius: 10px;
-    background-color: var(--color-system-background-200);
-    border-color: var(--color-system-border-100);
-	transition: 300ms;
+	background-color: var(--color-system-background-200);
+	border: 2px solid var(--color-system-border-100);
+	border-radius: 8px;
+	transition: 100ms all ease;
 }
 
 .container:hover {
-	background-color: var(--color-system-background-300);
+	color: var(--color-contrast);
+	background-color: var(--color-primary);
+	border-color: var(--color-secondary);
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.container:active {
+	transform: translateY(2px);
 }
 
 /* * */
@@ -26,11 +34,4 @@
 	font-weight: var(--font-weight-bold);
 	text-transform: uppercase;
 	user-select: none;
-}
-
-/* * */
-/* ICON */
-
-.icon {
-	font-size: 25px;
 }
