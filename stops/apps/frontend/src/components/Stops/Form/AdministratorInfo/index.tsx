@@ -31,12 +31,18 @@ export function AdministratorInfo() {
 			title="Informação Administrativa"
 		>
 			<Section>
-				<Grid columns="abc" gap="sm">
+				<Grid columns="ab" gap="sm">
 					<TextInput
 						label="Município"
 						miw="100%"
 						placeholder="Escolha uma opção"
 						{...stopDetailContext.data.form.getInputProps('municipality_id')}
+					/>
+					<TextInput
+						label="distrito"
+						miw="100%"
+						placeholder="..."
+						{...stopDetailContext.data.form.getInputProps('district_id')}
 					/>
 					<TextInput
 						label="Freguesia"

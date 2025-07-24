@@ -5,7 +5,7 @@
 import { Pane } from '@tmlmobilidade/ui';
 
 import { AdministratorInfo } from './AdministratorInfo';
-import { ImagesVideos } from './Images-Videos';
+import { Images } from './Images';
 import { Infraestructures } from './Infrastructures';
 import { IntermodalConnections } from './IntermodalConnections';
 import { NotesComments } from './Notes-Comments';
@@ -27,7 +27,7 @@ export function FormInfos() {
 			<PublicInformation />
 			<ServedEquipment />
 			<IntermodalConnections />
-			<ImagesVideos />
+			<Images />
 			<NotesComments />
 		</Pane>
 	);

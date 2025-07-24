@@ -36,29 +36,7 @@ export function Infraestructures() {
 			title="Infraestrutura"
 		>
 			<Section>
-				<Grid columns="abc" gap="md">
-
-					<Combobox
-						data={has_this}
-						label="Existe Poste?"
-						placeholder="..."
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_pole')}
-					/>
-					<Combobox
-						data={has_this}
-						label="Existe Cobertura?"
-						placeholder="..."
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_cover')}
-					/>
-
-				</Grid>
-				<Spacer />
-			</Section>
-
-			<Section>
-				<Grid columns="abc" gap="md">
+				<Grid columns="ab" gap="md">
 					<Combobox
 						data={has_this}
 						label="Existe Mupi?"
@@ -73,19 +51,6 @@ export function Infraestructures() {
 						fullWidth
 						{...stopDetailContext.data.form.getInputProps('has_bench')}
 					/>
-					<Combobox
-						data={has_this}
-						label="Existe Papeleira?"
-						placeholder="..."
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_trash_bin')}
-					/>
-				</Grid>
-				<Spacer />
-			</Section>
-
-			<Section>
-				<Grid columns="ab" gap="md">
 					<Combobox
 						data={has_this}
 						label="Existe Iluminação?"

@@ -27,6 +27,13 @@ export const Translations = {
 		unknown: 'Desconhecido',
 		yes: 'Sim',
 	},
+	INFRAESTRUCTURES_STATUS: {
+		damaged: 'damaged',
+		missing: 'missing',
+		not_applicable: 'not_applicable',
+		ok: 'ok',
+		unknown: 'unknown',
+	},
 	JURISDICATION: {
 		ip: 'IP',
 		municipality: 'Município',
@@ -39,15 +46,6 @@ export const Translations = {
 		provisional: 'Provisória',
 		seasonal: 'Sazonal',
 		voided: 'Anulada',
-	},
-	PAVEMENT_TYPE: {
-		asphant: 'Asfalto',
-		concrete: 'concreto',
-		dirt: 'Terra',
-		grass: 'Relva',
-		gravel: 'Cascalho',
-		portuguese_stones: 'Calçada Portuguesa',
-		unknown: 'Desconhecido',
 	},
 	ROAD_TYPE: {
 		complementary_itinerary: 'Itinerário Complementar',

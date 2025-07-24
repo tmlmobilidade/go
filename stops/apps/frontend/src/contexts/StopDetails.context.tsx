@@ -1,5 +1,6 @@
 'use client';
 
+import { uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
@@ -19,12 +20,15 @@ export enum StopDetailMode {
 
 interface StopDetailContextState {
 	actions: {
+		deleteImage: () => void
 		deleteStop: () => void
+		fileChanged: (file: File) => void
 		saveStop: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateStopDto>
 		id: string | undefined
+		imageUrl: string | undefined
 		raw: Stop
 	}
 	flags: {
@@ -40,49 +44,49 @@ interface StopDetailContextState {
 /* * */
 
 const emptyStop: CreateStopDto = {
-	_id: '',
+	_id: '', // used
 	bench_status: 'unknown',
-	comments: [],
-	connections: [],
-	district_id: '',
+	comments: [], // used
+	connections: [], // used
+	district_id: '', // used
 	electricity_status: 'unknown',
 	equipment: [],
 	facilities: [],
 	file_ids: [],
-	has_bench: 'unknown',
-	has_mupi: 'unknown',
-	has_network_map: 'unknown',
-	has_schedules: 'unknown',
-	has_shelter: 'unknown',
-	has_stop_sign: 'unknown',
+	has_bench: 'unknown', // used
+	has_mupi: 'unknown', // used
+	has_network_map: 'unknown', // used
+	has_schedules: 'unknown', // used
+	has_shelter: 'unknown', // used
+	has_stop_sign: 'unknown', // used
 	image_ids: [],
 	is_archived: false,
 	is_locked: false,
-	jurisdiction: 'unknown',
-	last_infrastructure_check: undefined,
-	last_infrastructure_maintenance: undefined,
-	last_schedules_check: undefined,
-	last_schedules_maintenance: undefined,
-	latitude: Number(0),
-	legacy_id: '',
-	locality_id: '',
-	longitude: Number(0),
-	municipality_id: '',
-	name: '',
-	new_name: '',
-	operational_status: 'voided',
-	parish_id: '',
+	jurisdiction: 'unknown', // used
+	last_infrastructure_check: undefined, // used
+	last_infrastructure_maintenance: undefined, // used
+	last_schedules_check: undefined, // used
+	last_schedules_maintenance: undefined, // used
+	latitude: Number(0), // used
+	legacy_id: '', // used
+	locality_id: '', // used
+	longitude: Number(0), // used
+	municipality_id: '', // used
+	name: '', // used
+	new_name: '', // used
+	operational_status: 'voided', // used
+	parish_id: '', // used
 	pole_status: 'unknown',
-	road_type: 'unknown',
-	shelter_code: '',
+	road_type: 'unknown', // used
+	shelter_code: '', // used
 	shelter_frame_size: undefined,
-	shelter_installation_date: undefined,
-	shelter_maintainer: '',
+	shelter_installation_date: undefined, // used
+	shelter_maintainer: '', // used
 	shelter_make: undefined,
 	shelter_model: undefined,
-	shelter_status: 'unknown',
-	short_name: '',
-	tts_name: '',
+	shelter_status: 'unknown', // used
+	short_name: '', // used
+	tts_name: '', // used
 };
 
 /* * */
@@ -110,8 +114,15 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
+	const [image, setImage] = useState<File | null>(null);
 
 	const { data: stop, error, isLoading } = useSWR<Stop>(stopId === 'new' ? null : Routes.API + Routes.STOPS_DETAIL(stopId), swrFetcher);
+	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
+		stopId === 'new'
+			? undefined
+			: Routes.API + Routes.STOPS_DETAIL(stopId),
+		swrFetcher,
+	);
 
 	const form = useForm<CreateStopDto>({
 		initialValues: stop || emptyStop,
@@ -157,19 +168,27 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			if (typeof response.error === 'string') {
 				useToast.error({
 					message: response.error,
-					title: 'Erro ao salvar utilizador',
+					title: 'Erro ao salvar paragem',
 				});
-				console.log('---------> aki no if ');
 			}
 			else {
 				const errors = JSON.parse(response.error);
 				for (const error of errors) {
 					useToast.error({
 						message: error.message,
-						title: 'Erro ao salvar utilizador',
+						title: 'Erro ao salvar paragem',
 					});
-					console.log('---------> aki no for ');
 				}
+			}
+
+			const insertedId = stopId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : stopId;
+			if (insertedId) {
+				await uploadImage(insertedId);
+			}
+
+			// If the alert is new, redirect to the detail page
+			if (insertedId && stopId === 'new') {
+				router.replace(Routes.STOPS_DETAIL(insertedId));
 			}
 
 			setIsSaving(false);
@@ -177,7 +196,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		}
 
 		useToast.success({
-			message: 'Utilizador salvo com sucesso',
+			message: 'Paragem salvo com sucesso',
 			title: 'Sucesso',
 		});
 
@@ -187,42 +206,90 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 		setIsSaving(false);
 	};
+
 	const handleDeleterStop = async () => {
 		if (stopId === 'new') return;
 
-		const response = await fetchData<Stop>(Routes.AUTH_API + Routes.STOPS_DETAIL(stopId), 'DELETE', stop);
+		const response = await fetchData<Stop>(Routes.API + Routes.STOPS_DETAIL(stopId), 'DELETE', stop);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
 				useToast.error({
 					message: error.message,
-					title: 'Erro ao apagar utilizador',
+					title: 'Erro ao apagar paragem',
 				});
 			}
 			return;
 		}
 
 		useToast.success({
-			message: 'Utilizador apagado com sucesso',
+			message: 'paragem apagado com sucesso',
 			title: 'Sucesso',
 		});
 
 		router.push(Routes.STOPS_LIST, { scroll: false });
 	};
+
+	const deleteImage = async () => {
+		if (stopId === 'new') return;
+
+		const response = await fetchData<Stop>(Routes.API + Routes.STOPS_DETAIL(stopId), 'DELETE', alert);
+		if (response.error) {
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({
+					message: error.message,
+					title: 'Erro ao apagar imagem',
+				});
+			}
+			return;
+		}
+
+		useToast.success({
+			message: 'Imagem apagada com sucesso',
+			title: 'Sucesso',
+		});
+	};
+
+	const uploadImage = async (stopId: string) => {
+		if (stopId === 'new' || !image) return;
+
+		const response = await uploadFile(
+			Routes.API + Routes.STOPS_DETAIL(stopId),
+			image,
+		);
+
+		if (response.error) {
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao carregar imagem',
+			});
+			return;
+		}
+
+		useToast.success({
+			message: 'A imagem foi carregada com sucesso',
+			title: 'Imagem carregada com sucesso',
+		});
+	};
+
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
+			deleteImage,
 			deleteStop: handleDeleterStop,
+			fileChanged: (file: File) => setImage(file),
 			saveStop: handleSaveUser,
 		},
 		data: {
 			form,
 			id: stopId,
+			imageUrl: imageUrl?.data,
 			raw: stop,
 		},
 		flags: {
 			canSave,
 			error: error,
-			isLoading: isLoading,
+			isLoading: isLoading || imageUrlLoading,
 			isReadOnly,
 			isSaving,
 			mode: stopId === 'new' ? StopDetailMode.CREATE : StopDetailMode.EDIT,

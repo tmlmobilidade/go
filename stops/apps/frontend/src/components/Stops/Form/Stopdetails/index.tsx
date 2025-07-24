@@ -31,11 +31,16 @@ export function StopDetails() {
 			title="Detalhes desta Paragem"
 		>
 			<Section>
-				<Grid columns="abc" gap="sm">
+				<Grid columns="ab" gap="sm">
 					<TextInput
 						label="Código Único da Paragem"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('_id')}
+					/>
+					<TextInput
+						label="Código antigo da paragem"
+						placeholder="..."
+						{...stopDetailContext.data.form.getInputProps('legacy_id')}
 					/>
 					<NumberInput
 						label="Latitude"

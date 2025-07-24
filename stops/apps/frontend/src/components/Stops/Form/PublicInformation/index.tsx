@@ -31,7 +31,7 @@ export function PublicInformation() {
 			title="Informação ao público"
 		>
 			<Section>
-				<Grid columns="ab" gap="md">
+				<Grid columns="a" gap="md">
 					<Combobox
 						data={has_this}
 						label="Tem Postalete?"
@@ -39,28 +39,6 @@ export function PublicInformation() {
 						fullWidth
 						{...stopDetailContext.data.form.getInputProps('has_stop_sign')}
 					/>
-					<TextInput
-						label="Entidade Gestora do Postalete"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('stop_sign_maintainer')}
-					/>
-
-				</Grid>
-				<Spacer />
-			</Section>
-
-			<Section>
-				<Combobox
-					data={has_this}
-					label="Tem Sinalização H2OA?"
-					placeholder="Escolha uma opção"
-					fullWidth
-					{...stopDetailContext.data.form.getInputProps('has_h2oa_signage')}
-				/>
-			</Section>
-
-			<Section>
-				<Grid columns="ab" gap="md">
 					<Combobox
 						data={has_this}
 						label="Tem Horários?"
@@ -70,22 +48,13 @@ export function PublicInformation() {
 					/>
 					<Combobox
 						data={has_this}
-						label="Tem Horários Táteis?"
+						label="Tem Mapa de Rede?"
 						placeholder="Escolha uma opção"
 						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_tactile_schedules')}
+						{...stopDetailContext.data.form.getInputProps('has_network_map')}
 					/>
 				</Grid>
-			</Section>
-
-			<Section>
-				<Combobox
-					data={has_this}
-					label="Tem Mapa de Rede?"
-					placeholder="Escolha uma opção"
-					fullWidth
-					{...stopDetailContext.data.form.getInputProps('has_network_map')}
-				/>
+				<Spacer />
 			</Section>
 
 			<Section>
@@ -101,18 +70,6 @@ export function PublicInformation() {
 						miw="100%"
 						placeholder="2023-02-10"
 						{...stopDetailContext.data.form.getInputProps('last_schedules_check')}
-					/>
-					<TextInput
-						label="Última Manutenção do Postalete?"
-						miw="100%"
-						placeholder="2023-02-10"
-						{...stopDetailContext.data.form.getInputProps('last_stop_sign_maintenance')}
-					/>
-					<TextInput
-						label="Última Manutenção do Postalete?"
-						miw="100%"
-						placeholder="2023-02-10"
-						{...stopDetailContext.data.form.getInputProps('last_stop_sign_check')}
 					/>
 				</Grid>
 			</Section>
