@@ -2,7 +2,6 @@
 
 /* * */
 
-import { StopListHeader } from '@/components/Stops/List/StopListHeader';
 import { useStopListContext } from '@/contexts/StopList.context';
 import { Routes } from '@/lib/routes';
 import { Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
@@ -30,7 +29,7 @@ export function StopsList() {
 	}
 
 	return (
-		<Pane header={[<StopListHeader />]}>
+		<Pane>
 			{data.filtered.map(stop => (
 				<div
 					key={stop._id}
@@ -45,7 +44,6 @@ export function StopsList() {
 				</div>
 			))}
 		</Pane>
-
 	);
 
 	//

@@ -1,4 +1,4 @@
-import { StopsList } from '@/components/Stops/List/StopsList';
+import { List } from '@/components/Stops/List/index';
 import { StopListContextProvider } from '@/contexts/StopList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 
@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 		<PanesManager
 			panes={[
 				<StopListContextProvider>
-					<StopsList />
+					<List />
 				</StopListContextProvider>,
 				children,
 			]}
