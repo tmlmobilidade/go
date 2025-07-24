@@ -4,9 +4,7 @@
 
 import { Pane } from '@tmlmobilidade/ui';
 
-import { Accessibility } from './Accessibility';
 import { AdministratorInfo } from './AdministratorInfo';
-import { Affectation } from './Affectation';
 import { ImagesVideos } from './Images-Videos';
 import { Infraestructures } from './Infrastructures';
 import { IntermodalConnections } from './IntermodalConnections';
@@ -24,11 +22,9 @@ export function FormInfos() {
 		<Pane header={[<StopHeader />]}>
 			<StopDetails />
 			<AdministratorInfo />
-			<Affectation />
 			<Shelter />
 			<Infraestructures />
 			<PublicInformation />
-			<Accessibility />
 			<ServedEquipment />
 			<IntermodalConnections />
 			<ImagesVideos />
