@@ -1,5 +1,5 @@
 // import { stops } from '@tmlmobilidade/interfaces';
-// import { connectionsSchema, CreateStopSchema, equipmentSchema, facilitiesSchema, hasAnySchema, jurisdictionSchema, operationalStatusSchema, Stop } from '@tmlmobilidade/types';
+// import { Connections, connectionsSchema, CreateStopSchema, Equipment, equipmentSchema, Facilities, facilitiesSchema, hasAnySchema, jurisdictionSchema, operationalStatusSchema, Stop } from '@tmlmobilidade/types';
 // import { promises as fs } from 'fs';
 // import path from 'path';
 // import { dirname } from 'path';
@@ -103,18 +103,54 @@
 // 	});
 // }
 
+// interface ReturnNearConvertion { connections: Connections[], equipement: Equipment[], facilities: Facilities[] }
+// function convertNear(data: StopCSV): ReturnNearConvertion {
+// 	const obj = {
+// 		connections: [],
+// 		equipement: [],
+// 		facilities: [],
+// 	};
+
+// 	if (data.near_beach === '1') obj.facilities.push(facilitiesSchema.Values.beach);
+// 	if (data.near_fire_station === '1') obj.facilities.push(facilitiesSchema.Values.fire_station);
+// 	if (data.near_health_clinic === '1') obj.facilities.push(facilitiesSchema.Values.health_clinic);
+// 	if (data.near_historic_building === '1') obj.facilities.push(facilitiesSchema.Values.historic_building);
+// 	if (data.near_hospital === '1') obj.facilities.push(facilitiesSchema.Values.hospital);
+// 	if (data.near_police_station === '1') obj.facilities.push(facilitiesSchema.Values.police_station);
+// 	if (data.near_school === '1') obj.facilities.push(facilitiesSchema.Values.school);
+// 	if (data.near_shopping === '1') obj.facilities.push(facilitiesSchema.Values.shopping);
+// 	if (data.near_transit_office === '1') obj.facilities.push(facilitiesSchema.Values.transit_office);
+// 	if (data.near_university === '1') obj.facilities.push(facilitiesSchema.Values.university);
+
+// 	if (data.airport === '1') obj.connections.push(connectionsSchema.Values.airport);
+// 	if (data.bike_parking === '1') obj.connections.push(connectionsSchema.Values.bike_parking);
+// 	if (data.bike_sharing === '1') obj.connections.push(connectionsSchema.Values.bike_sharing);
+// 	if (data.boat === '1') obj.connections.push(connectionsSchema.Values.boat);
+// 	if (data.car_parking === '1') obj.connections.push(connectionsSchema.Values.car_parking);
+// 	if (data.light_rail === '1') obj.connections.push(connectionsSchema.Values.light_rail);
+// 	if (data.subway === '1') obj.connections.push(connectionsSchema.Values.subway);
+// 	if (data.train === '1') obj.connections.push(connectionsSchema.Values.train);
+
+// 	if (data.has_pip_realtime === '1') obj.equipement.push(equipmentSchema.Values.pip);
+// 	if (data.has_mupi === '1') obj.equipement.push(equipmentSchema.Values.mupi);
+
+// 	return obj;
+// }
+
 // // Converts CSV row to Stop object
 // function parseStopCSV(data: StopCSV): Stop {
+// 	const near = convertNear(data);
+
 // 	return {
 // 		_id: data.stop_code,
 // 		bench_status: 'unknown',
 // 		comments: [],
-// 		connections: connectionsSchema.Enum[data.] ?? [],
+// 		connections: near.connections,
 // 		district_id: data.district_id,
 // 		electricity_status: 'unknown',
-// 		equipment: equipmentSchema.Values[data.] ?? [],
-// 		facilities: facilitiesSchema.Enum[data.] ?? [],
-// 		file_ids: [data.],
+// 		equipment: near.equipement,
+// 		facilities: near.facilities,
+// 		file_ids: [],
 // 		has_bench: hasAnySchema.Enum[data.has_bench] ?? 'unknown',
 // 		has_mupi: hasAnySchema.Enum[data.has_mupi] ?? 'unknown',
 // 		has_network_map: hasAnySchema.Enum[data.has_network_map] ?? 'unknown',
@@ -154,26 +190,33 @@
 
 // async function main() {
 // 	try {
-// 		stops.deleteMany({}); // Clear existing stops
+// 		console.log('Deleting All');
+// 		await stops.deleteMany({}); // Await the deletion
 
 // 		const filePath = path.join(__dirname, 'stops.csv');
 // 		const csvContent = await fs.readFile(filePath, 'utf8');
+
+// 		console.log('Parsing CSV');
 // 		const stopRows = parseCSV(csvContent);
 
-// 		stopRows.map((row) => {
+// 		console.log('Inserting into DB', stopRows.length);
+
+// 		for (const row of stopRows) {
 // 			try {
 // 				const parsed = parseStopCSV(row);
-// 				stops.insertOne(parsed);
+// 				const res = await stops.insertOne(parsed); // Await insert
+// 				console.log('Inserted:', res);
 // 			}
 // 			catch (e) {
-// 				console.warn('Failed to parse row:', row, e);
-// 				return null;
+// 				console.error('Failed to parse row:', row, e);
 // 			}
-// 		});
+// 		}
 // 	}
 // 	catch (err) {
 // 		console.error('Error processing stops CSV:', err);
 // 	}
 // }
 
-// main();
+// main().catch(err => console.error(err)).finally(() => {
+// 	process.exit(0);
+// });
