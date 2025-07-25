@@ -73,16 +73,6 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		query: filterSearch,
 	});
 
-	// const filteredStops = useMemo(() => {
-	// 	if (!searchResultsData) return [];
-
-	// 	const filter_id = new Set()
-	// 	return searchResultsData
-	// 		.filter((item: StopNormalized) => {
-	// 			if(!agencySet.)
-	// 	})
-	// });
-
 	const changeSearchQuery = (query: string) => {
 		setfilterSearch(query);
 	};
