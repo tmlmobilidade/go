@@ -47,6 +47,6 @@ WORKDIR /app
 
 COPY --from=builder /app .
 
-COPY --from=builder /app/apps/${PROJECT}/src/content ./apps/${PROJECT}/src/content
+COPY --from=builder /app/apps/${PROJECT}/src/content ./apps/${PROJECT}/dist/src/content
 
 CMD node apps/${PROJECT}/dist/src/index.js
