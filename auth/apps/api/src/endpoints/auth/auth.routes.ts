@@ -20,7 +20,7 @@ server.register(
 		});
 
 		// Logout route
-		instance.post('/logout', async (request, reply) => {
+		instance.get('/logout', async (request, reply) => {
 			return controller.logout(request, reply);
 		});
 

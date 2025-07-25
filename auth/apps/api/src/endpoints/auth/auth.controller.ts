@@ -99,23 +99,33 @@ export class AuthController {
 	 * Logout - Remove the session token cookie
 	 */
 	async logout(request: FastifyRequest, reply: FastifyReply): Promise<HttpResponse<string>> {
+		//
+
+		//
+		// Extract the session token from the request cookies
+		// and call the authProvider to log out
+
 		const session_token = request.cookies[COOKIE_NAME];
 		await authProvider.logout(session_token);
 
-		reply.setCookie(COOKIE_NAME, '', {
-			domain: getAppConfig('auth', 'cookie_domain'),
-			httpOnly: true,
-			maxAge: 0,
-			path: '/',
-			sameSite: 'none',
-			secure: true,
-		});
+		//
+		// Clear the session token cookie by setting
+		// the maxAge to 0 and sending it back in the response
 
-		return {
-			data: 'Logged out',
-			error: null,
-			status: HttpStatus.OK,
-		};
+		return reply
+			.setCookie(COOKIE_NAME, '', {
+				domain: getAppConfig('auth', 'cookie_domain'),
+				httpOnly: true,
+				maxAge: 0,
+				path: '/',
+				sameSite: 'none',
+				secure: true,
+			})
+			.send({
+				data: 'Logged out',
+				error: null,
+				status: HttpStatus.OK,
+			});
 	}
 
 	/**
