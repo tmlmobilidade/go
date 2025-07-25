@@ -147,9 +147,6 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		setCanSave(form.isValid());
 	}, [form.values]);
 
-	useEffect(() => {
-		console.log('=========>', form.values);
-	}, [form.values]);
 	//
 	// B. Define actions
 
@@ -181,6 +178,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 				}
 			}
 
+			// @ts-expect-error - idkhhnggggg
 			const insertedId = stopId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : stopId;
 			if (insertedId) {
 				await uploadImage(insertedId);

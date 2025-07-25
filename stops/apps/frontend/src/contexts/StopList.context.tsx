@@ -17,6 +17,9 @@ interface StopListContextState {
 		filtered: Stop[]
 		raw: Stop[]
 	}
+	filters: {
+		filteredFacilities: string[]
+	}
 	flags: {
 		error: Error | undefined
 		isLoading: boolean
@@ -84,8 +87,6 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		setfilterSearch(query);
 	};
 
-	console.log('search', searchResultsData);
-
 	const contextValue: StopListContextState = useMemo(
 		() => ({
 			actions: {
@@ -94,6 +95,9 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 			data: {
 				filtered: searchResultsData,
 				raw: rawStops,
+			},
+			filters: {
+				filterFacilities: searchResultsData,
 			},
 			flags: {
 				error,
