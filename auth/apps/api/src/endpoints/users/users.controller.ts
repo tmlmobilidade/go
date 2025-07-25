@@ -125,4 +125,29 @@ export class UsersController {
 				.send(error);
 		}
 	}
+
+	/**
+	 * Get current user - Get the current user from the session token
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object
+	*/
+	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto, Params: { themeId: string } }>, reply: FastifyReply) {
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		console.log('123');
+		const session_token = request.cookies[COOKIE_NAME];
+
+		const user = await authProvider.getUser(session_token);
+		await users.updateById(user._id, { ...request.body });
+	}
 }

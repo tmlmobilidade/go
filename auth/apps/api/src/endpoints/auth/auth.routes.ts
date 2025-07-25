@@ -39,7 +39,7 @@ server.register(
 			return controller.sendEmailWithResetPasswordURL(request, reply);
 		});
 
-		// Chnage password
+		// Change password
 		instance.post('/change-password', async (request, reply) => {
 			return controller.changePassword(request, reply);
 		});
