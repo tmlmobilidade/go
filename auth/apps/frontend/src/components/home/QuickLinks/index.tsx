@@ -4,7 +4,7 @@
 
 import { QuickLinkButton } from '@/components/home/QuickLinkButton';
 import { QuickLink } from '@/types/quick-links';
-import { IconChartBubble, IconEaseOutControlPointFilled, IconFileCertificate, IconFileInfo, IconFileTypeSql, IconFlag, IconListNumbers, IconPlant2, IconTicket, IconTransferIn, IconUmbrella } from '@tabler/icons-react';
+import { IconChartBubble, IconEaseOutControlPointFilled, IconFileCertificate, IconFileInfo, IconFileTypeSql, IconFlag, IconListNumbers, IconMessageUser, IconPlant2, IconTicket, IconTransferIn, IconUmbrella } from '@tabler/icons-react';
 import { Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -21,6 +21,7 @@ const QUICK_LINKS: QuickLink[] = [
 	{ href: 'https://consola.tmlmobilidade.pt/managementconsole/offer-manager/planned-offer', icon: <IconUmbrella size={40} />, title: 'PCGI' },
 	{ href: '#', icon: <IconTransferIn size={40} />, title: 'Intranet' },
 	{ href: 'https://helpdesk.tmlmobilidade.pt', icon: <IconTicket size={40} />, title: 'Helpdesk ITS' },
+	{ href: '#', icon: <IconMessageUser size={40} />, title: 'CRM' },
 ];
 
 /* * */
