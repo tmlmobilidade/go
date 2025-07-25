@@ -18,13 +18,13 @@
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@fastify/multipart": "^9.0.3",
-		"@tmlmobilidade/tsconfig": "20250701.1722.33",
-		"dotenv-cli": "8.0.0",
+		"@tmlmobilidade/tsconfig": "20250725.431.28",
+		"dotenv-cli": "9.0.0",
 		"prettier": "3.6.2",
-		"turbo": "2.5.4",
+		"turbo": "2.5.5",
 		"typescript": "5.8.3"
 	},
-	"packageManager": "npm@11.4.2",
+	"packageManager": "npm@11.5.1",
 	"engines": {
 		"node": ">=18"
 	},
