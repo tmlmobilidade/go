@@ -28,6 +28,7 @@
 		"@carrismetropolitana/api-types": "^20250717.940.43",
 		"@tmlmobilidade/types": "^20250725.1425.7",
 		"@tmlmobilidade/ui": "^20250725.1425.7",
+		"@vis.gl/react-maplibre": "^8.0.4",
 		"react": "^19.1.0"
 	}
 }

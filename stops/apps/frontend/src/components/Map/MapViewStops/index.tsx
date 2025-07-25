@@ -6,8 +6,8 @@ import { MapView } from '@/components/Map/MapView';
 import { Routes } from '@/lib/routes';
 import { Stop } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
+import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useMemo } from 'react';
-import { Layer, Source } from 'react-map-gl/maplibre';
 import useSWR from 'swr';
 
 /* * */

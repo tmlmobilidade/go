@@ -3,8 +3,8 @@
 /* * */
 
 import { Stop } from '@tmlmobilidade/types';
+import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useMemo } from 'react';
-import { Layer, Source } from 'react-map-gl/maplibre';
 
 /* * */
 
