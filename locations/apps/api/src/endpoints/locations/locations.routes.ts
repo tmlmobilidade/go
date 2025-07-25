@@ -12,7 +12,7 @@ const namespace = '/locations';
 /* * */
 
 server.register(
-	(instance, opts, next) => {
+	(instance, _, next) => {
 		// GET /
 		instance.get('/coordinates', LocationsController.findByCoordinates);
 
