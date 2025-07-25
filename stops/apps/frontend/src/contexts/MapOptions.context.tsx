@@ -15,7 +15,7 @@ const LOCAL_STORAGE_KEYS = {
 };
 
 const DEFAULT_OPTIONS = {
-	viewport_height: { max: 1500, min: 300 },
+	viewport_height: { max: 1000, min: 300 },
 };
 
 /* * */

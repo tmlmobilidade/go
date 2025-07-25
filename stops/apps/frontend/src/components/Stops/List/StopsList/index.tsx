@@ -39,7 +39,7 @@ export function StopsList() {
 				>
 					<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">
 						<Tag label={stop._id} variant="muted" />
-						<Text size="lg">{stop.new_name}</Text>
+						<Text size="lg">{stop.name} | lat: {stop.latitude} , lon: {stop.longitude}</Text>
 					</Section>
 				</div>
 			))}
