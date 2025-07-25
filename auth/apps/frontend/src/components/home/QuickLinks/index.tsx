@@ -19,9 +19,9 @@ const QUICK_LINKS: QuickLink[] = [
 	{ href: '#', icon: <IconFileInfo size={40} />, title: 'Loop' },
 	{ href: 'http://filedoc.tmlmobilidade.pt', icon: <IconFileCertificate size={40} />, title: 'Filedoc' },
 	{ href: 'https://consola.tmlmobilidade.pt/managementconsole/offer-manager/planned-offer', icon: <IconUmbrella size={40} />, title: 'PCGI' },
-	{ href: '#', icon: <IconTransferIn size={40} />, title: 'Intranet' },
+	{ href: 'https://intranet.tmlmobilidade.pt', icon: <IconTransferIn size={40} />, title: 'Intranet' },
 	{ href: 'https://helpdesk.tmlmobilidade.pt', icon: <IconTicket size={40} />, title: 'Helpdesk ITS' },
-	{ href: '#', icon: <IconMessageUser size={40} />, title: 'CRM' },
+	{ href: 'https://crm.tmlmobilidade.pt', icon: <IconMessageUser size={40} />, title: 'CRM' },
 ];
 
 /* * */
