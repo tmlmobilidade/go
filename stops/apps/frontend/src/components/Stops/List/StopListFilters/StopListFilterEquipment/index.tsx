@@ -16,27 +16,36 @@ export function StopListFilterEquipment() {
 
 	const stopListContext = useStopListContext();
 
-	const equipmentValues = equipmentSchema.options.map (value => ({
-		label: Translations.EQUIPMENT[value],
-		value: value,
-	}));
-
 	//
 	// B. Transform data
 
-	const parsedOptions = useMemo(() => {
-		if (!stopListContext) return [];
+	const isActive = useMemo(() => {
+		const defaultValues = Array.from(equipmentSchema.options) as string[];
+		const enabledValues = stopListContext.filters.filterEquipment;
 
-		return equipmentValues;
-	}, [equipmentValues]);
+		if (defaultValues.length !== enabledValues.length) return true;
+
+		return !defaultValues.every(item => enabledValues.includes(item));
+	}, [stopListContext.filters.filterEquipment]);
+
+	const parsedOptions = useMemo(() => {
+		if (!equipmentSchema.options?.length) return [];
+
+		return equipmentSchema.options.map(item => ({
+			checked: stopListContext.filters.filterEquipment.includes(item),
+			label: Translations.EQUIPMENT[item],
+			value: item,
+		}));
+	}, [stopListContext.filters.filterEquipment]);
 
 	//
 	// C. Render components
 
 	return (
 		<FilterMenu
+			active={isActive}
 			label="Equipamentos"
-			// onChange={stopListContext.data.filtered}
+			onChange={stopListContext.actions.setFilterEquipment}
 			options={parsedOptions}
 			withToggleAll
 		/>

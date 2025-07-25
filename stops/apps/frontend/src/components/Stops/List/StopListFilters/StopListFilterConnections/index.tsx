@@ -16,27 +16,36 @@ export function StopListFilterConnections() {
 
 	const stopListContext = useStopListContext();
 
-	const connectionsValues = connectionsSchema.options.map (value => ({
-		label: Translations.CONNECTIONS[value],
-		value: value,
-	}));
-
 	//
 	// B. Transform data
 
-	const parsedOptions = useMemo(() => {
-		if (!stopListContext) return [];
+	const isActive = useMemo(() => {
+		const defaultValues = Array.from(connectionsSchema.options) as string[];
+		const enabledValues = stopListContext.filters.filterConnections;
 
-		return connectionsValues;
-	}, [connectionsValues]);
+		if (defaultValues.length !== enabledValues.length) return true;
+
+		return !defaultValues.every(item => enabledValues.includes(item));
+	}, [stopListContext.filters.filterConnections]);
+
+	const parsedOptions = useMemo(() => {
+		if (!connectionsSchema.options?.length) return [];
+
+		return connectionsSchema.options.map(item => ({
+			checked: stopListContext.filters.filterConnections.includes(item),
+			label: Translations.CONNECTIONS[item],
+			value: item,
+		}));
+	}, [stopListContext.filters.filterConnections]);
 
 	//
 	// C. Render components
 
 	return (
 		<FilterMenu
+			active={isActive}
 			label="conexões"
-			// onChange={stopListContext.data.filtered}
+			onChange={stopListContext.actions.setFilterConnections}
 			options={parsedOptions}
 			withToggleAll
 		/>

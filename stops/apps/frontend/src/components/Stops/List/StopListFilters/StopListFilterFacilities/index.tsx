@@ -16,27 +16,36 @@ export function StopListFilterFacilities() {
 
 	const stopListContext = useStopListContext();
 
-	const facilitiesValues = facilitiesSchema.options.map (value => ({
-		label: Translations.FACILITIES[value],
-		value: value,
-	}));
-
 	//
 	// B. Transform data
 
-	const parsedOptions = useMemo(() => {
-		if (!stopListContext) return [];
+	const isActive = useMemo(() => {
+		const defaultValues = Array.from(facilitiesSchema.options) as string[];
+		const enabledValues = stopListContext.filters.filterFacilities;
 
-		return facilitiesValues;
-	}, [facilitiesValues]);
+		if (defaultValues.length !== enabledValues.length) return true;
+
+		return !defaultValues.every(item => enabledValues.includes(item));
+	}, [stopListContext.filters.filterFacilities]);
+
+	const parsedOptions = useMemo(() => {
+		if (!facilitiesSchema.options?.length) return [];
+
+		return facilitiesSchema.options.map(item => ({
+			checked: stopListContext.filters.filterFacilities.includes(item),
+			label: Translations.FACILITIES[item],
+			value: item,
+		}));
+	}, [stopListContext.filters.filterFacilities]);
 
 	//
 	// C. Render components
 
 	return (
 		<FilterMenu
+			active={isActive}
 			label="Serviços"
-			// onChange={stopListContext.data.filtered}
+			onChange={stopListContext.actions.setFilterFacilities}
 			options={parsedOptions}
 			withToggleAll
 		/>
