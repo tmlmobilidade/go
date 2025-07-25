@@ -7,7 +7,8 @@
 	gap: 15px;
 	align-items: center;
 	justify-content: center;
-	padding: 50px;
+	height: 100%;
+	padding: 40px;
 	text-align: center;
 	background-color: var(--color-system-background-200);
 	border: 2px solid var(--color-system-border-100);
@@ -30,7 +31,7 @@
 /* TITLE */
 
 .title {
-	font-size: 20px;
+	font-size: 16px;
 	font-weight: var(--font-weight-bold);
 	text-transform: uppercase;
 	user-select: none;
