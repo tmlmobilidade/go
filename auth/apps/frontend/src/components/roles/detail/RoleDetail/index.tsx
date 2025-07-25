@@ -11,15 +11,15 @@ import { Pane } from '@tmlmobilidade/ui';
 /* * */
 
 export function RoleDetail() {
-	const { actions, data } = useRoleDetailContext();
+	const rolesDetailContext = useRoleDetailContext();
 
 	return (
 		<Pane header={[<RoleDetailHeader />]}>
 			<RoleDetailBasicInfo />
 			<PermissionSectionGroup
-				onResourceToggle={actions.handlePermissionResourceToggle}
-				onToggle={actions.handlePermissionToggle}
-				permissions={data.form.values.permissions}
+				onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
+				onToggle={rolesDetailContext.actions.handlePermissionToggle}
+				permissions={rolesDetailContext.data.form.values.permissions}
 			/>
 		</Pane>
 	);

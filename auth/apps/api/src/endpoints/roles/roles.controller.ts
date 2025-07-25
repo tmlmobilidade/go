@@ -49,8 +49,9 @@ export class RolesController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply) {
 		try {
-			const roleList = await roles.findMany({}, undefined, undefined, { created_at: -1 });
-			reply.send(roleList);
+			const allRolesData = await roles.all();
+			const sortedRolesData = allRolesData.sort((a, b) => a.name.localeCompare(b.name));
+			reply.send(sortedRolesData);
 		}
 		catch (error) {
 			reply
