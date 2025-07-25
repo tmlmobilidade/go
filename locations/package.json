@@ -12,11 +12,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-<<<<<<< HEAD
-		"@tmlmobilidade/tsconfig": "20250725.431.28",
-=======
 		"@tmlmobilidade/tsconfig": "20250725.1425.7",
->>>>>>> 10d2c0d2 (Update package dependencies across locations and apps; upgrade @tmlmobilidade packages to version 20250725.1425.7, update dotenv-cli to version 9.0.0, and enhance eslint configurations for improved linting. Additionally, update next.js to version 15.4.4 and various other dependencies to their latest versions for better performance and compatibility.)
 		"dotenv-cli": "9.0.0",
 		"prettier": "3.6.2",
 		"turbo": "2.5.5",
@@ -30,11 +26,7 @@
 		"apps/*"
 	],
 	"dependencies": {
-<<<<<<< HEAD
-		"@tmlmobilidade/connectors": "^20250725.431.28",
-=======
 		"@tmlmobilidade/connectors": "^20250725.1425.7",
->>>>>>> 10d2c0d2 (Update package dependencies across locations and apps; upgrade @tmlmobilidade packages to version 20250725.1425.7, update dotenv-cli to version 9.0.0, and enhance eslint configurations for improved linting. Additionally, update next.js to version 15.4.4 and various other dependencies to their latest versions for better performance and compatibility.)
 		"@turf/boolean-valid": "^7.2.0",
 		"geojson-validation": "^1.0.2"
 	}
