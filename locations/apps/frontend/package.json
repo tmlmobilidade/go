@@ -11,11 +11,21 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.34.1",
+<<<<<<< HEAD
 		"@tmlmobilidade/lib": "20250725.431.28",
 		"@tmlmobilidade/types": "20250725.431.28",
 		"@tmlmobilidade/ui": "20250725.431.28",
 		"@tmlmobilidade/utils": "20250725.431.28",
 		"clsx": "2.1.1",
+=======
+		"@tmlmobilidade/lib": "20250725.1425.7",
+		"@tmlmobilidade/types": "20250725.1425.7",
+		"@tmlmobilidade/ui": "20250725.1425.7",
+		"@tmlmobilidade/utils": "20250725.1425.7",
+		"@vis.gl/react-maplibre": "^8.0.4",
+		"clsx": "2.1.1",
+		"maplibre-gl": "^5.6.1",
+>>>>>>> 10d2c0d2 (Update package dependencies across locations and apps; upgrade @tmlmobilidade packages to version 20250725.1425.7, update dotenv-cli to version 9.0.0, and enhance eslint configurations for improved linting. Additionally, update next.js to version 15.4.4 and various other dependencies to their latest versions for better performance and compatibility.)
 		"next": "15.4.4",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
@@ -23,7 +33,11 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
+<<<<<<< HEAD
 		"@tmlmobilidade/tsconfig": "20250725.431.28",
+=======
+		"@tmlmobilidade/tsconfig": "20250725.1425.7",
+>>>>>>> 10d2c0d2 (Update package dependencies across locations and apps; upgrade @tmlmobilidade packages to version 20250725.1425.7, update dotenv-cli to version 9.0.0, and enhance eslint configurations for improved linting. Additionally, update next.js to version 15.4.4 and various other dependencies to their latest versions for better performance and compatibility.)
 		"@types/node": "24",
 		"@types/react": "19",
 		"@types/react-dom": "19",
