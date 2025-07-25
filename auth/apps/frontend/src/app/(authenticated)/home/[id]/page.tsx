@@ -1,11 +1,10 @@
 /* * */
 
-import { WikiDetail } from '@/components/home/wiki/detail/WikiDetail';
+import { WikiDetail } from '@/components/home/WikiDetail';
 
 /* * */
 
-/* * */
-
-export default function Page() {
-	return <WikiDetail />;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params;
+	return <WikiDetail id={id} />;
 }
