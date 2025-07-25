@@ -18,7 +18,7 @@ interface StopListContextState {
 		raw: Stop[]
 	}
 	filters: {
-		filteredFacilities: string[]
+		filterFacilities: StopNormalized[]
 	}
 	flags: {
 		error: Error | undefined
