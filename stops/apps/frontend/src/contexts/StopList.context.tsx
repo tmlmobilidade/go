@@ -62,8 +62,8 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 
 		return stops.map(item => ({
 			...item,
-			agency_id_normalized: item._id,
-			agency_name_normalized: normalizeString(item.name),
+			id_normalized: item._id,
+			name_normalized: normalizeString(item.name),
 		}));
 	}, [stops]);
 
