@@ -13,8 +13,6 @@ const COOKIE_NAME = 'session_token';
 
 /* * */
 
-/* * */
-
 export class AuthController {
 	/**
 	 *  Change password on database and delete token
@@ -22,13 +20,13 @@ export class AuthController {
 	async changePassword(request: FastifyRequest, reply: FastifyReply) {
 		const { password_hash, token } = request.body as { password_hash: string, token: string };
 
-		const token_result = await verificationTokens.findOne({ token });
+		const tokenResult = await verificationTokens.findOne({ token: { $eq: token } });
 
-		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
+		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
 		};
 
-		await users.updateById(token_result.user_id, { password_hash: password_hash });
+		await users.updateById(tokenResult.user_id, { password_hash: password_hash });
 
 		reply.status(HttpStatus.OK).send({ message: 'Changed Password' });
 
@@ -177,14 +175,14 @@ export class AuthController {
 		const { password_hash, token } = request.body as { password_hash: string, token: string };
 
 		// Verify the token
-		const token_result = await verificationTokens.findOne({ token });
+		const tokenResult = await verificationTokens.findOne({ token });
 
-		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
+		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
 		}
 
 		// Update the user's password
-		await users.updateOne({ _id: token_result.user_id }, { password_hash });
+		await users.updateOne({ _id: tokenResult.user_id }, { password_hash });
 
 		// Delete the token
 		await verificationTokens.deleteOne({ token });
