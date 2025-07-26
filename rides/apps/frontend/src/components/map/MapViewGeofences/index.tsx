@@ -25,7 +25,6 @@ export function MapViewGeofences({ geofencesData = getBaseGeoJsonFeatureCollecti
 		<>
 
 			<Source data={geofencesData} generateId={true} id={`${viewId}-default-source-geofences-polygons`} type="geojson">
-
 				<Layer
 					beforeId={presentBeforeId}
 					id={`${viewId}-default-layer-geofences-border`}

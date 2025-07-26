@@ -1,0 +1,33 @@
+/* * */
+
+import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
+import { getAppConfig } from '@tmlmobilidade/lib';
+
+/* * */
+
+(async function () {
+	//
+
+	const options: FastifyServiceOptions = {
+		ignoreTrailingSlash: true,
+		logger: {
+			level: 'debug',
+			transport: {
+				options: {
+					colorize: true,
+				},
+				target: 'pino-pretty',
+			},
+		},
+		origin: getAppConfig('rides', 'cors_origin'),
+		port: getAppConfig('rides', 'api_port'),
+	};
+
+	// Start Fastify server
+
+	const fastifyService = FastifyService.getInstance(options);
+
+	await fastifyService.start();
+
+	//
+})();

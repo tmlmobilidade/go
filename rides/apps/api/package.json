@@ -14,15 +14,12 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@fastify/cookie": "11.0.2",
 		"@fastify/websocket": "11.2.0",
-		"@helperkits/logger": "20250628.901.58",
-		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250725.431.28",
-		"@tmlmobilidade/lib": "20250725.431.28",
-		"@tmlmobilidade/sae-rides-pckg-utils": "*",
-		"fastify": "5.4.0",
-		"luxon": "3.7.1"
+		"@tmlmobilidade/connectors": "20250725.1425.7",
+		"@tmlmobilidade/interfaces": "20250725.1425.7",
+		"@tmlmobilidade/lib": "20250725.1425.7",
+		"@tmlmobilidade/utils": "20250725.1425.7",
+		"pino-pretty": "13.0.0"
 	},
 	"devDependencies": {
 		"@types/luxon": "3.6.2",

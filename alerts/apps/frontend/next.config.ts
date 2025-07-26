@@ -1,6 +1,5 @@
 /* * */
 
-import { Routes } from '@/lib/routes';
 import { type NextConfig } from 'next';
 
 /* * */
@@ -32,8 +31,7 @@ const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	async redirects() {
 		return [
-			//
-			{ destination: Routes.ALERT_LIST, permanent: true, source: '/' },
+			{ destination: '/alerts', permanent: true, source: '/' },
 		];
 	},
 	async rewrites() {

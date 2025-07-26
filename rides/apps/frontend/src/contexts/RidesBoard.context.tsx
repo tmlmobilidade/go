@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
-import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesList.context';
 import { getDelayStatus } from '@/utils/get-delay-status';
 import { getOperationalStatus } from '@/utils/get-operational-status';
 import { getSeenStatus } from '@/utils/get-seen-status';

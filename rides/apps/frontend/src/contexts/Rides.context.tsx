@@ -2,23 +2,27 @@
 
 /* * */
 
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { type RideNormalized } from '@/types/normalized';
+import { getRideNormalized } from '@/utils/get-ride-normalized';
 import { useDebouncedState } from '@mantine/hooks';
-import { type RidesExplorerWebSocketMessage, type RidesExplorerWebSocketMessageConfig } from '@tmlmobilidade/sae-controller-pckg-utils';
 import { type Ride, UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
-import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Dates, HttpResponse, swrFetcher } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import useSWR from 'swr';
 
 /* * */
 
 interface RidesContextState {
 	actions: {
-		getRideById: (rideId: string) => Ride | undefined
+		getRideById: (rideId: string) => RideNormalized | undefined
 	}
 	data: {
-		expected_items: number
-		last_update: UnixTimestamp
-		rides: Map<string, Ride>
+		normalized: Map<string, RideNormalized>
+	}
+	flags: {
+		error: Error | null
+		last_update: null | UnixTimestamp
+		loading: boolean
 	}
 }
 
@@ -42,105 +46,30 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const operationalDateContext = useOperationalDateContext();
-
-	const webSocketRef = useRef<null | WebSocket>(null);
-
-	const dataRidesRef = useRef<Map<string, Ride>>(new Map());
-
-	const [dataExpectedItemsState, setDataExpectedItemsState] = useState<number>();
-	const [dataLastUpdateState, setDataLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
+	const [dataRidesNormalized, setDataRidesNormalized] = useState<Map<string, RideNormalized>>(new Map());
+	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	//
 	// B. Fetch data
 
-	useEffect(() => {
-		// This effect runs everytime there is a change in the websocket reference,
-		// as the goal is to always maintain an open connection. If the connection is
-		// already open, there is no need to open a new one, so return early.
-		// If the connection is not open, then try to open a new one.
-		if (webSocketRef.current) return;
-		// Open a new WebSocket connection
-		console.log('Opening WebSocket connection...');
-		webSocketRef.current = new WebSocket(process.env.NODE_ENV === 'development' ? 'ws://localhost:52002/rides' : 'wss://controller.sae.carrismetropolitana.pt/api/rides');
-		// webSocketRef.current = new WebSocket('wss://controller.sae.carrismetropolitana.pt/api/rides');
-		webSocketRef.current.addEventListener('open', handleConfigChangeRequest);
-		// Cleanup on unmount
-		return () => {
-			webSocketRef.current.removeEventListener('open', handleConfigChangeRequest);
-			webSocketRef.current.close();
-			webSocketRef.current = null;
-		};
-	}, []);
-
-	useEffect(() => {
-		// This effect runs everytime there is a change in the operational date context,
-		// as the goal is to always send a new configuration message to the server when
-		// the operational date changes. This is done to ensure that the server is always
-		// aware of the client's current operational date.
-		handleConfigChangeRequest();
-		webSocketRef.current.addEventListener('message', handleIncomingMessage);
-		return () => {
-			dataRidesRef.current.clear();
-			if (!webSocketRef.current) return;
-			webSocketRef.current.removeEventListener('message', handleIncomingMessage);
-		};
-	}, [operationalDateContext.data.selected_date, webSocketRef.current?.readyState]);
+	const { data: ridesBatchData, error: ridesBatchError, isLoading: ridesBatchLoading } = useSWR<HttpResponse<Ride[]>>('/api/rides', swrFetcher);
 
 	//
 	// C. Handle actions
 
-	const handleSendMessage = (message: RidesExplorerWebSocketMessage<RidesExplorerWebSocketMessageConfig>) => {
-		if (!webSocketRef.current) return;
-		if (webSocketRef.current.readyState !== webSocketRef.current.OPEN) return;
-		webSocketRef.current.send(JSON.stringify(message));
-	};
-
-	const handleConfigChangeRequest = () => {
-		handleSendMessage({
-			action: 'config',
-			operational_date: operationalDateContext.data.selected_date,
-			sender: 'client',
-			timestamp: Dates.now().unix_timestamp,
+	useEffect(() => {
+		if (ridesBatchLoading || !ridesBatchData.data) return;
+		const ridesMap = new Map<string, RideNormalized>();
+		ridesBatchData.data.forEach((item) => {
+			const normalized = getRideNormalized(item);
+			ridesMap.set(normalized._id, normalized);
 		});
-	};
+		setDataRidesNormalized(ridesMap);
+		setFlagsLastUpdateState(Dates.now('Europe/Lisbon').unix_timestamp);
+	}, [ridesBatchData, ridesBatchLoading, setFlagsLastUpdateState]);
 
-	const handleIncomingMessage = (event: MessageEvent) => {
-		//
-
-		//
-		// Before any specific action,
-		// try to decode and validate the message.
-
-		const messageData: RidesExplorerWebSocketMessage = JSON.parse(event.data);
-
-		//
-		// Handle the 'config' response message
-
-		if (messageData.action === 'config') {
-			const configMessageData = messageData.data as RidesExplorerWebSocketMessageConfig;
-			setDataExpectedItemsState(configMessageData.total_items);
-			return;
-		}
-
-		//
-		// Handle the 'data' response message
-
-		if (messageData.action === 'data') {
-			const rideData = messageData.data as Ride;
-			if (rideData.operational_date !== operationalDateContext.data.selected_date) return;
-			dataRidesRef.current.set(rideData._id, rideData);
-			setDataLastUpdateState(Dates.now().unix_timestamp);
-			return;
-		}
-
-		console.log('Unknown message:', messageData);
-
-		//
-	};
-
-	const getRideById = (rideId: string): Ride | undefined => {
-		return dataRidesRef.current.get(rideId);
+	const getRideById = (rideId: string): RideNormalized | undefined => {
+		return dataRidesNormalized.get(rideId);
 	};
 
 	//
@@ -151,11 +80,17 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 			getRideById,
 		},
 		data: {
-			expected_items: dataExpectedItemsState,
-			last_update: dataLastUpdateState,
-			rides: dataRidesRef.current,
+			normalized: dataRidesNormalized,
 		},
-	}), [dataExpectedItemsState, dataLastUpdateState, dataRidesRef.current]);
+		flags: {
+			error: ridesBatchError || null,
+			last_update: flagsLastUpdateState,
+			loading: ridesBatchLoading,
+		},
+	}), [
+		flagsLastUpdateState,
+		dataRidesNormalized,
+	]);
 
 	//
 	// E. Render components

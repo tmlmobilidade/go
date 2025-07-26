@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesList.context';
 import { type Ride } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 

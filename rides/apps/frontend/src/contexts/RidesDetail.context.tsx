@@ -4,9 +4,9 @@
 
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
-import { cutLineStringAtLength, getGeofenceOnPoint, getGeoJsonPointFromAny } from '@tmlmobilidade/sae-controller-pckg-utils';
-import { toLineStringFromHashedShape } from '@tmlmobilidade/sae-controller-pckg-utils/src/geojson/conversions';
-import { ApexT11, HashedShape, HashedTrip, Ride, VehicleEvent } from '@tmlmobilidade/types';
+import { cutLineStringAtLength, getGeofenceOnPoint, getGeoJsonPointFromAny } from '@tmlmobilidade/sae-rides-pckg-utils';
+import { toLineStringFromHashedShape } from '@tmlmobilidade/sae-rides-pckg-utils/src/geojson/conversions';
+import { HashedShape, HashedTrip, Ride, SimplifiedApexValidation, VehicleEvent } from '@tmlmobilidade/types';
 import * as turf from '@turf/turf';
 import { type Feature, type FeatureCollection, type Polygon } from 'geojson';
 import { DateTime } from 'luxon';
@@ -17,11 +17,11 @@ import useSWR from 'swr';
 
 interface RidesDetailContextState {
 	data: {
-		apex_t11: ApexT11[]
 		hashed_shape: HashedShape
 		hashed_trip: HashedTrip
 		ride: Ride
 		ride_id: Ride['_id']
+		simplified_apex_validations: SimplifiedApexValidation[]
 		vehicle_events: VehicleEvent[]
 	}
 	geojson: {

@@ -4,9 +4,9 @@
 
 import { FlapLine } from '@/components/FlapLine';
 import { Label } from '@/components/Label';
-import { SeenStatusTag } from '@/components/SeenStatusTag';
+import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { useRidesBoardContext } from '@/contexts/RidesBoard.context';
-import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesList.context';
 
 import styles from './styles.module.css';
 
