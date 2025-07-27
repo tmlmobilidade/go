@@ -4,17 +4,13 @@
 
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
-import { cutLineStringAtLength, getGeofenceOnPoint, getGeoJsonPointFromAny } from '@tmlmobilidade/sae-rides-pckg-utils';
-import { toLineStringFromHashedShape } from '@tmlmobilidade/sae-rides-pckg-utils/src/geojson/conversions';
+import { getGeofenceOnPoint, getGeoJsonPointFromAny } from '@tmlmobilidade/sae-rides-pckg-utils';
 import { HashedShape, HashedTrip, Ride, SimplifiedApexValidation, VehicleEvent } from '@tmlmobilidade/types';
 import { type HttpResponse } from '@tmlmobilidade/utils';
-import * as turf from '@turf/turf';
 import { type Feature, type FeatureCollection, type Polygon } from 'geojson';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
-
-import { useRidesContext } from './Rides.context';
 
 /* * */
 
@@ -54,12 +50,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 
 	//
-	// A. Setup variables
-
-	const ridesContext = useRidesContext();
-
-	//
-	// B. Fetch data
+	// A. Fetch data
 
 	const { data: rideData } = useSWR<HttpResponse<Ride>>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
 	const { data: vehicleEventsData } = useSWR<HttpResponse<VehicleEvent[]>>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
@@ -68,106 +59,103 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	const { data: hashedShapeData } = useSWR<HttpResponse<HashedShape>>(`/api/rides/${rideId}/hashed-shape`);
 
 	//
-	// C. Transform data
+	// B. Transform data
 
 	const observedEventsFC: FeatureCollection = useMemo(() => {
-		const fc = getBaseGeoJsonFeatureCollection();
-		if (!vehicleEventsData?.data) return fc;
-		const colorThemePrimary = getCssVariableValue('--color-primary');
-		const colorThemeContrast = getCssVariableValue('--color-contrast');
-		console.log('vehicleEventsData', vehicleEventsData.data);
-		fc.features = vehicleEventsData.data
-			.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-			.map((vehicleEvent) => {
-				return {
-					geometry: {
-						coordinates: [vehicleEvent.longitude, vehicleEvent.latitude],
-						type: 'Point',
-					},
-					properties: {
-						color: colorThemePrimary,
-						text_color: colorThemeContrast,
-						timestamp: DateTime.fromMillis(vehicleEvent.created_at).toISO(),
-					},
-					type: 'Feature',
-				};
-			});
-		return fc;
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection();
+		// If no vehicle events data, return the empty feature collection
+		if (!vehicleEventsData?.data) return featureCollection;
+		// Prepare the feature collection with vehicle events data
+		featureCollection.features = vehicleEventsData.data
+			.sort((a, b) => a.created_at - b.created_at)
+			.map(vehicleEvent => ({
+				geometry: {
+					coordinates: [vehicleEvent.longitude, vehicleEvent.latitude],
+					type: 'Point',
+				},
+				properties: {
+					color: getCssVariableValue('--color-primary'),
+					text_color: getCssVariableValue('--color-contrast'),
+					timestamp: DateTime.fromMillis(vehicleEvent.created_at).toISO(),
+				},
+				type: 'Feature',
+			}));
+		return featureCollection;
 	}, [vehicleEventsData]);
 
 	const observedShapeFC: FeatureCollection = useMemo(() => {
-		const fc = getBaseGeoJsonFeatureCollection();
-		if (!vehicleEventsData?.data) return fc;
+		// If no vehicle events data, return an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection();
+		// If no vehicle events data, return the empty feature collection
+		if (!vehicleEventsData?.data) return featureCollection;
+		// Prepare the feature collection with vehicle events data
 		const lineString = getBaseGeoJsonFeatureLineString();
 		lineString.geometry.coordinates = vehicleEventsData.data
-			.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+			.sort((a, b) => a.created_at - b.created_at)
 			.map(vehicleEvent => [vehicleEvent.longitude, vehicleEvent.latitude]);
 		lineString.properties['color'] = getCssVariableValue('--color-primary');
-		fc.features = [lineString];
-		return fc;
+		featureCollection.features = [lineString];
+		return featureCollection;
 	}, [vehicleEventsData]);
 
-	const scheduledPathFC: FeatureCollection | undefined = useMemo(() => {
-		if (!hashedTripData?.data?.path) return;
-		const fc = getBaseGeoJsonFeatureCollection();
-		fc.features = hashedTripData.data.path
+	const scheduledPathFC: FeatureCollection = useMemo(() => {
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection();
+		// If no hashed trip data, return the empty feature collection
+		if (!hashedTripData?.data?.path) return featureCollection;
+		// Prepare the feature collection with hashed trip data
+		featureCollection.features = hashedTripData.data.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
-			.map((waypoint) => {
-				return {
-					geometry: {
-						coordinates: [Number(waypoint.stop_lon), Number(waypoint.stop_lat)],
-						type: 'Point',
-					},
-					properties: {
-						color: `#${hashedTripData.data.route_color}`,
-						sequence: waypoint.stop_sequence,
-						text_color: `#${hashedTripData.data.route_text_color}`,
-					},
-					type: 'Feature',
-				};
-			});
-		return fc;
+			.map(waypoint => ({
+				geometry: {
+					coordinates: [waypoint.stop_lon, waypoint.stop_lat],
+					type: 'Point',
+				},
+				properties: {
+					color: `#${hashedTripData.data.route_color}`,
+					sequence: waypoint.stop_sequence,
+					text_color: `#${hashedTripData.data.route_text_color}`,
+				},
+				type: 'Feature',
+			}));
+		return featureCollection;
 	}, [hashedTripData]);
 
-	const scheduledPathGeofencesFC: FeatureCollection | undefined = useMemo(() => {
-		if (!hashedTripData?.data?.path) return;
-		if (!hashedShapeData?.data?.points?.length) return;
-		const fc = getBaseGeoJsonFeatureCollection();
-		fc.features = hashedTripData.data.path
+	const scheduledPathGeofencesFC: FeatureCollection = useMemo(() => {
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection();
+		// If no hashed trip data or hashed shape data, return the empty feature collection
+		if (!hashedTripData?.data?.path) return featureCollection;
+		if (!hashedShapeData?.data?.points?.length) return featureCollection;
+		// Prepare the feature collection with hashed trip data
+		featureCollection.features = hashedTripData.data.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
-				const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
-				const lineStringFromShape = toLineStringFromHashedShape(hashedShapeData.data);
-				// const geofenceData = getPolygon([generateBufferPolygon(lineStringFromShape.geometry.coordinates, 1)]);
-				// const geofenceData = turf.buffer(lineStringFromShape, 50, { units: 'meters' });
-				// const geofenceData = getGeofenceOnLine(lineStringFromShape, 50, 0);
+				const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([waypoint.stop_lon, waypoint.stop_lat]), 50);
 				geofenceData.properties = {
 					color: `#${hashedTripData.data.route_color}`,
 					sequence: waypoint.stop_sequence,
 					text_color: `#${hashedTripData.data.route_text_color}`,
 				};
 				return geofenceData as Feature<Polygon>;
-				const geofenceDataSimple = turf.unkinkPolygon(geofenceData);
-				console.log(geofenceData);
-				return geofenceDataSimple.features[0] as Feature<Polygon>;
 			});
-		return fc;
+		return featureCollection;
 	}, [hashedTripData, hashedShapeData]);
 
-	const scheduledShapeFC: FeatureCollection | undefined = useMemo(() => {
-		if (!hashedShapeData?.data?.points) return;
-		const fc = getBaseGeoJsonFeatureCollection();
+	const scheduledShapeFC: FeatureCollection = useMemo(() => {
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection();
+		// If no hashed shape data, return the empty feature collection
+		if (!hashedShapeData?.data?.points) return featureCollection;
+		// Prepare the feature collection with hashed shape data
 		const lineString = getBaseGeoJsonFeatureLineString();
 		lineString.geometry.coordinates = hashedShapeData.data.points
 			.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
-			.map(shapePoint => [Number(shapePoint.shape_pt_lon), Number(shapePoint.shape_pt_lat)]);
+			.map(shapePoint => [shapePoint.shape_pt_lon, shapePoint.shape_pt_lat]);
 		lineString.properties['color'] = `#${hashedTripData?.data.route_color}`;
-		const lineStringChunk = cutLineStringAtLength(lineString.geometry, 250);
-		const lineStringChunkLength = turf.length(turf.feature(lineStringChunk), { units: 'meters' });
-		console.log('lineStringChunkLength', lineStringChunkLength);
-		fc.features = [turf.feature(lineStringChunk)];
-		console.log('shape changed');
-		return fc;
+		featureCollection.features = [lineString];
+		return featureCollection;
 	}, [hashedShapeData, hashedTripData]);
 
 	//
