@@ -2,13 +2,13 @@
 
 /* * */
 
+import { RideNormalized } from '@/types/normalized';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
+import { getRideNormalized } from '@/utils/get-ride-normalized';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
-import { getGeofenceOnPoint, getGeoJsonPointFromAny } from '@tmlmobilidade/sae-rides-pckg-utils';
 import { HashedShape, HashedTrip, Ride, SimplifiedApexValidation, VehicleEvent } from '@tmlmobilidade/types';
-import { type HttpResponse } from '@tmlmobilidade/utils';
+import { Dates, getGeofenceOnPosition, type HttpResponse } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type Polygon } from 'geojson';
-import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -18,7 +18,7 @@ interface RidesDetailContextState {
 	data: {
 		hashed_shape: HashedShape | null
 		hashed_trip: HashedTrip | null
-		ride: null | Ride
+		ride: null | RideNormalized
 		ride_id: Ride['_id']
 		simplified_apex_validations: SimplifiedApexValidation[]
 		vehicle_events: VehicleEvent[]
@@ -61,6 +61,11 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// B. Transform data
 
+	const rideDataNormalized = useMemo(() => {
+		if (!rideData?.data) return null;
+		return getRideNormalized(rideData.data);
+	}, [rideData]);
+
 	const observedEventsFC: FeatureCollection = useMemo(() => {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection();
@@ -69,6 +74,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		// Prepare the feature collection with vehicle events data
 		featureCollection.features = vehicleEventsData.data
 			.sort((a, b) => a.created_at - b.created_at)
+			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
 			.map(vehicleEvent => ({
 				geometry: {
 					coordinates: [vehicleEvent.longitude, vehicleEvent.latitude],
@@ -77,7 +83,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 				properties: {
 					color: getCssVariableValue('--color-primary'),
 					text_color: getCssVariableValue('--color-contrast'),
-					timestamp: DateTime.fromMillis(vehicleEvent.created_at).toISO(),
+					timestamp: Dates.fromUnixTimestamp(vehicleEvent.created_at).iso,
 				},
 				type: 'Feature',
 			}));
@@ -93,6 +99,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		const lineString = getBaseGeoJsonFeatureLineString();
 		lineString.geometry.coordinates = vehicleEventsData.data
 			.sort((a, b) => a.created_at - b.created_at)
+			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
 			.map(vehicleEvent => [vehicleEvent.longitude, vehicleEvent.latitude]);
 		lineString.properties['color'] = getCssVariableValue('--color-primary');
 		featureCollection.features = [lineString];
@@ -132,7 +139,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		featureCollection.features = hashedTripData.data.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
-				const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([waypoint.stop_lon, waypoint.stop_lat]), 50);
+				const geofenceData = getGeofenceOnPosition([waypoint.stop_lon, waypoint.stop_lat], 50);
 				geofenceData.properties = {
 					color: `#${hashedTripData.data.route_color}`,
 					sequence: waypoint.stop_sequence,
@@ -165,7 +172,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		data: {
 			hashed_shape: hashedShapeData?.data ?? null,
 			hashed_trip: hashedTripData?.data ?? null,
-			ride: rideData?.data ?? null,
+			ride: rideDataNormalized,
 			ride_id: rideId,
 			simplified_apex_validations: simplifiedApexValidationsData?.data ?? [],
 			vehicle_events: vehicleEventsData?.data ?? [],

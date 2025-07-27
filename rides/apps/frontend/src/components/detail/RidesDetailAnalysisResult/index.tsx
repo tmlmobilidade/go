@@ -2,10 +2,10 @@
 
 /* * */
 
-import { type RidesDetailAnalysisResultItem } from '@/components/detail/RidesDetailAnalysisResultItem';
+import { RidesDetailAnalysisResultItem } from '@/components/detail/RidesDetailAnalysisResultItem';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -18,32 +18,30 @@ export function RidesDetailAnalysisResult() {
 	const ridesDetailContext = useRidesDetailContext();
 
 	//
-	// C. Render components
+	// B. Transform data
 
-	if (!ridesDetailContext.data.ride?.analysis) {
-		return (
-			<Collapsible description="Eventos dos veículos mapeados" title="Resultado das Análises">
-				<Section>
-					<Label size="lg" caps>Sem Dados</Label>
-				</Section>
-			</Collapsible>
-		);
-	}
+	const analysisItems = useMemo(() => {
+		// Skip if no analysis data is available
+		if (!ridesDetailContext.data.ride?.analysis) return [];
+		// Transform the analysis data into an array of items
+		return Object.entries(ridesDetailContext.data.ride.analysis).map(([id, item]) => ({ id, ...item }));
+	}, [ridesDetailContext.data.ride?.analysis]);
+
+	//
+	// C. Render components
 
 	return (
 		<Collapsible description="Eventos dos veículos mapeados" title="Resultado das Análises">
 			<Section>
-				<Grid columns="abcd" gap="md">
-					{/* {ridesDetailContext.data.ride?.analysis?.map(item => (
-						<RidesDetailAnalysisResultItem
-							key={item._id}
-							_id={item._id}
-							description={`${item._id}.description`}
-							grade={item.grade}
-							title={`${item._id}.title`}
-						/>
-					))} */}
-				</Grid>
+				{!analysisItems.length ? (
+					<Label size="lg" caps>Sem Dados</Label>
+				) : (
+					<Grid columns="abc" gap="md">
+						{analysisItems.map(item => (
+							<RidesDetailAnalysisResultItem key={item.id} grade={item.grade} id={item.id} />
+						))}
+					</Grid>
+				)}
 			</Section>
 		</Collapsible>
 	);

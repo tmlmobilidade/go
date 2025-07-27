@@ -30,8 +30,8 @@ export function RidesDetailMap() {
 	const [centerMapAutomatically, setCenterMapAutomatically] = useState(true);
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
-	const [showObservedPath, setShowObservedPath] = useState(false);
-	const [showGeofences, setShowGeofences] = useState(true);
+	const [showObservedPath, setShowObservedPath] = useState(true);
+	const [showGeofences, setShowGeofences] = useState(false);
 
 	//
 	// B. Handle actions

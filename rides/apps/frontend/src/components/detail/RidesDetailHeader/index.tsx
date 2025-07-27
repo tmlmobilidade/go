@@ -1,10 +1,11 @@
 'use client';
 
+import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 /* * */
 
+import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { IconRefreshDot } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag } from '@tmlmobilidade/ui';
+import { BackButton, Spacer, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -34,7 +35,8 @@ export function RidesDetailHeader() {
 			<BackButton onClick={handleGoBack} type="close" />
 			<Tag label={ridesDetailContext.data.ride_id} variant="muted" />
 			<Spacer />
-			<Button icon={<IconRefreshDot />} label="Reprocessar" />
+			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.simple_three_vehicle_events_grade} operationalStatus={ridesDetailContext.data.ride?.operational_status} />
+			<OperationalStatusTag value={ridesDetailContext.data.ride?.operational_status} />
 		</>
 	);
 
