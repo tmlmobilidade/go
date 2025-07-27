@@ -1,5 +1,6 @@
 /* * */
 
+import fastifyWs from '@fastify/websocket';
 import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
 import { getAppConfig } from '@tmlmobilidade/lib';
 
@@ -26,6 +27,8 @@ import { getAppConfig } from '@tmlmobilidade/lib';
 	// Start Fastify server
 
 	const fastifyService = FastifyService.getInstance(options);
+
+	await fastifyService.server.register(fastifyWs);
 
 	await fastifyService.start();
 

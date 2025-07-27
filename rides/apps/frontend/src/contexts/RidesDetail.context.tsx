@@ -7,19 +7,22 @@ import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from
 import { cutLineStringAtLength, getGeofenceOnPoint, getGeoJsonPointFromAny } from '@tmlmobilidade/sae-rides-pckg-utils';
 import { toLineStringFromHashedShape } from '@tmlmobilidade/sae-rides-pckg-utils/src/geojson/conversions';
 import { HashedShape, HashedTrip, Ride, SimplifiedApexValidation, VehicleEvent } from '@tmlmobilidade/types';
+import { type HttpResponse } from '@tmlmobilidade/utils';
 import * as turf from '@turf/turf';
 import { type Feature, type FeatureCollection, type Polygon } from 'geojson';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
+import { useRidesContext } from './Rides.context';
+
 /* * */
 
 interface RidesDetailContextState {
 	data: {
-		hashed_shape: HashedShape
-		hashed_trip: HashedTrip
-		ride: Ride
+		hashed_shape: HashedShape | null
+		hashed_trip: HashedTrip | null
+		ride: null | Ride
 		ride_id: Ride['_id']
 		simplified_apex_validations: SimplifiedApexValidation[]
 		vehicle_events: VehicleEvent[]
@@ -53,24 +56,27 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// A. Setup variables
 
+	const ridesContext = useRidesContext();
+
 	//
 	// B. Fetch data
 
-	const { data: rideData } = useSWR<Ride>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
-	const { data: vehicleEventsData } = useSWR<VehicleEvent[]>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
-	const { data: apexT11Data } = useSWR<ApexT11[]>(`/api/rides/${rideId}/apex-t11`, { refreshInterval: 1000 });
-	const { data: hashedTripData } = useSWR<HashedTrip>(`/api/rides/${rideId}/hashed-trip`);
-	const { data: hashedShapeData } = useSWR<HashedShape>(`/api/rides/${rideId}/hashed-shape`);
+	const { data: rideData } = useSWR<HttpResponse<Ride>>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
+	const { data: vehicleEventsData } = useSWR<HttpResponse<VehicleEvent[]>>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
+	const { data: simplifiedApexValidationsData } = useSWR<HttpResponse<SimplifiedApexValidation[]>>(`/api/rides/${rideId}/simplified-apex-validations`, { refreshInterval: 1000 });
+	const { data: hashedTripData } = useSWR<HttpResponse<HashedTrip>>(`/api/rides/${rideId}/hashed-trip`);
+	const { data: hashedShapeData } = useSWR<HttpResponse<HashedShape>>(`/api/rides/${rideId}/hashed-shape`);
 
 	//
 	// C. Transform data
 
 	const observedEventsFC: FeatureCollection = useMemo(() => {
 		const fc = getBaseGeoJsonFeatureCollection();
-		if (!vehicleEventsData) return fc;
+		if (!vehicleEventsData?.data) return fc;
 		const colorThemePrimary = getCssVariableValue('--color-primary');
 		const colorThemeContrast = getCssVariableValue('--color-contrast');
-		fc.features = vehicleEventsData
+		console.log('vehicleEventsData', vehicleEventsData.data);
+		fc.features = vehicleEventsData.data
 			.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
 			.map((vehicleEvent) => {
 				return {
@@ -91,9 +97,9 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 
 	const observedShapeFC: FeatureCollection = useMemo(() => {
 		const fc = getBaseGeoJsonFeatureCollection();
-		if (!vehicleEventsData) return fc;
+		if (!vehicleEventsData?.data) return fc;
 		const lineString = getBaseGeoJsonFeatureLineString();
-		lineString.geometry.coordinates = vehicleEventsData
+		lineString.geometry.coordinates = vehicleEventsData.data
 			.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
 			.map(vehicleEvent => [vehicleEvent.longitude, vehicleEvent.latitude]);
 		lineString.properties['color'] = getCssVariableValue('--color-primary');
@@ -102,9 +108,9 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	}, [vehicleEventsData]);
 
 	const scheduledPathFC: FeatureCollection | undefined = useMemo(() => {
-		if (!hashedTripData?.path) return;
+		if (!hashedTripData?.data?.path) return;
 		const fc = getBaseGeoJsonFeatureCollection();
-		fc.features = hashedTripData.path
+		fc.features = hashedTripData.data.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
 				return {
@@ -113,9 +119,9 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 						type: 'Point',
 					},
 					properties: {
-						color: `#${hashedTripData.route_color}`,
+						color: `#${hashedTripData.data.route_color}`,
 						sequence: waypoint.stop_sequence,
-						text_color: `#${hashedTripData.route_text_color}`,
+						text_color: `#${hashedTripData.data.route_text_color}`,
 					},
 					type: 'Feature',
 				};
@@ -124,21 +130,21 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	}, [hashedTripData]);
 
 	const scheduledPathGeofencesFC: FeatureCollection | undefined = useMemo(() => {
-		if (!hashedTripData?.path) return;
-		if (!hashedShapeData?.points?.length) return;
+		if (!hashedTripData?.data?.path) return;
+		if (!hashedShapeData?.data?.points?.length) return;
 		const fc = getBaseGeoJsonFeatureCollection();
-		fc.features = hashedTripData.path
+		fc.features = hashedTripData.data.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
 				const geofenceData = getGeofenceOnPoint(getGeoJsonPointFromAny([Number(waypoint.stop_lon), Number(waypoint.stop_lat)]), 50);
-				const lineStringFromShape = toLineStringFromHashedShape(hashedShapeData);
+				const lineStringFromShape = toLineStringFromHashedShape(hashedShapeData.data);
 				// const geofenceData = getPolygon([generateBufferPolygon(lineStringFromShape.geometry.coordinates, 1)]);
 				// const geofenceData = turf.buffer(lineStringFromShape, 50, { units: 'meters' });
 				// const geofenceData = getGeofenceOnLine(lineStringFromShape, 50, 0);
 				geofenceData.properties = {
-					color: `#${hashedTripData.route_color}`,
+					color: `#${hashedTripData.data.route_color}`,
 					sequence: waypoint.stop_sequence,
-					text_color: `#${hashedTripData.route_text_color}`,
+					text_color: `#${hashedTripData.data.route_text_color}`,
 				};
 				return geofenceData as Feature<Polygon>;
 				const geofenceDataSimple = turf.unkinkPolygon(geofenceData);
@@ -149,13 +155,13 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	}, [hashedTripData, hashedShapeData]);
 
 	const scheduledShapeFC: FeatureCollection | undefined = useMemo(() => {
-		if (!hashedShapeData?.points) return;
+		if (!hashedShapeData?.data?.points) return;
 		const fc = getBaseGeoJsonFeatureCollection();
 		const lineString = getBaseGeoJsonFeatureLineString();
-		lineString.geometry.coordinates = hashedShapeData.points
+		lineString.geometry.coordinates = hashedShapeData.data.points
 			.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
 			.map(shapePoint => [Number(shapePoint.shape_pt_lon), Number(shapePoint.shape_pt_lat)]);
-		lineString.properties['color'] = `#${hashedTripData?.route_color}`;
+		lineString.properties['color'] = `#${hashedTripData?.data.route_color}`;
 		const lineStringChunk = cutLineStringAtLength(lineString.geometry, 250);
 		const lineStringChunkLength = turf.length(turf.feature(lineStringChunk), { units: 'meters' });
 		console.log('lineStringChunkLength', lineStringChunkLength);
@@ -169,12 +175,12 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 
 	const contextValue: RidesDetailContextState = useMemo(() => ({
 		data: {
-			apex_t11: apexT11Data || [],
-			hashed_shape: hashedShapeData,
-			hashed_trip: hashedTripData,
-			ride: rideData,
+			hashed_shape: hashedShapeData?.data ?? null,
+			hashed_trip: hashedTripData?.data ?? null,
+			ride: rideData?.data ?? null,
 			ride_id: rideId,
-			vehicle_events: vehicleEventsData || [],
+			simplified_apex_validations: simplifiedApexValidationsData?.data ?? [],
+			vehicle_events: vehicleEventsData?.data ?? [],
 		},
 		geojson: {
 			observed_events: observedEventsFC,
@@ -183,7 +189,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			scheduled_path_geofences: scheduledPathGeofencesFC,
 			scheduled_shape: scheduledShapeFC,
 		},
-	}), [rideId, vehicleEventsData, rideData, apexT11Data, scheduledPathGeofencesFC, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
+	}), [rideId, vehicleEventsData, simplifiedApexValidationsData, scheduledPathGeofencesFC, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
 
 	//
 	// D. Render components

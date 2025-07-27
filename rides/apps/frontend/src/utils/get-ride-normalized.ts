@@ -20,7 +20,7 @@ export function getRideNormalized(ride: Ride): RideNormalized {
 		operational_status: getOperationalStatus(ride.start_time_scheduled, ride.seen_last_at),
 		seen_status: getSeenStatus(ride.seen_last_at),
 		simple_three_vehicle_events_grade: ride.analysis.SIMPLE_THREE_VEHICLE_EVENTS?.grade ?? null,
-		start_time_observed_display: ride.start_time_observed ? Dates.fromUnixTimestamp(ride.start_time_observed).toFormat('HH:mm') : null,
-		start_time_scheduled_display: Dates.fromUnixTimestamp(ride.start_time_scheduled).toFormat('HH:mm'),
+		start_time_observed_display: ride.start_time_observed ? Dates.fromUnixTimestamp(ride.start_time_observed).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : null,
+		start_time_scheduled_display: Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'),
 	};
 }

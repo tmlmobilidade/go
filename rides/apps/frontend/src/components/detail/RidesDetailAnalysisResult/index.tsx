@@ -15,8 +15,6 @@ export function RidesDetailAnalysisResult() {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('detail.RidesDetailAnalysisResult');
-
 	const ridesDetailContext = useRidesDetailContext();
 
 	//
@@ -36,15 +34,15 @@ export function RidesDetailAnalysisResult() {
 		<Collapsible description="Eventos dos veículos mapeados" title="Resultado das Análises">
 			<Section>
 				<Grid columns="abcd" gap="md">
-					{ridesDetailContext.data.ride?.analysis?.map(item => (
+					{/* {ridesDetailContext.data.ride?.analysis?.map(item => (
 						<RidesDetailAnalysisResultItem
 							key={item._id}
 							_id={item._id}
-							description={t(`${item._id}.description`)}
+							description={`${item._id}.description`}
 							grade={item.grade}
-							title={t(`${item._id}.title`)}
+							title={`${item._id}.title`}
 						/>
-					))}
+					))} */}
 				</Grid>
 			</Section>
 		</Collapsible>

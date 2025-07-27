@@ -3,8 +3,8 @@
 /* * */
 
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { IconCaretLeftFilled, IconRefreshDot } from '@tabler/icons-react';
-import { Button, Spacer, Tag } from '@tmlmobilidade/ui';
+import { IconRefreshDot } from '@tabler/icons-react';
+import { BackButton, Button, Spacer, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -23,7 +23,7 @@ export function RidesDetailHeader() {
 	// B. Handle actions
 
 	const handleGoBack = () => {
-		router.push(`/`);
+		router.push('/rides');
 	};
 
 	//
@@ -31,7 +31,7 @@ export function RidesDetailHeader() {
 
 	return (
 		<>
-			<Button icon={<IconCaretLeftFilled />} label="Voltar" onClick={handleGoBack} variant="muted" />
+			<BackButton onClick={handleGoBack} type="close" />
 			<Tag label={ridesDetailContext.data.ride_id} variant="muted" />
 			<Spacer />
 			<Button icon={<IconRefreshDot />} label="Reprocessar" />

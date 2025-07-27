@@ -5,9 +5,9 @@
 import { type RideNormalized } from '@/types/normalized';
 import { getRideNormalized } from '@/utils/get-ride-normalized';
 import { useDebouncedState } from '@mantine/hooks';
-import { type Ride, UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates, HttpResponse, swrFetcher } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates, type HttpResponse, swrFetcher } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -17,7 +17,8 @@ interface RidesContextState {
 		getRideById: (rideId: string) => RideNormalized | undefined
 	}
 	data: {
-		normalized: Map<string, RideNormalized>
+		normalized: RideNormalized[]
+		normalized_map: Map<string, RideNormalized>
 	}
 	flags: {
 		error: Error | null
@@ -46,7 +47,11 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const [dataRidesNormalized, setDataRidesNormalized] = useState<Map<string, RideNormalized>>(new Map());
+	const webSocketRef = useRef<null | WebSocket>(null);
+
+	const dataRidesNormalizedMap = useRef<Map<string, RideNormalized> | null>(new Map());
+
+	const [dataRidesNormalized, setDataRidesNormalized] = useState<RideNormalized[]>([]);
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	//
@@ -54,8 +59,45 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { data: ridesBatchData, error: ridesBatchError, isLoading: ridesBatchLoading } = useSWR<HttpResponse<Ride[]>>('/api/rides', swrFetcher);
 
+	useEffect(() => {
+		// This effect runs everytime there is a change in the websocket reference,
+		// as the goal is to always maintain an open connection. If the connection is
+		// already open, there is no need to open a new one, so return early.
+		// If the connection is not open, then try to open a new one.
+		if (webSocketRef.current) return;
+		// Open a new WebSocket connection
+		console.log('Opening WebSocket connection...');
+		webSocketRef.current = new WebSocket('ws://localhost:52002/rides/ws');
+		webSocketRef.current.addEventListener('open', handleWebsocketInit);
+		webSocketRef.current.addEventListener('message', handleIncomingMessage);
+		// Cleanup on unmount
+		return () => {
+			webSocketRef.current.removeEventListener('open', handleWebsocketInit);
+			webSocketRef.current.removeEventListener('message', handleIncomingMessage);
+			// webSocketRef.current.close();
+			webSocketRef.current = null;
+		};
+	}, []);
+
+	const handleWebsocketInit = () => {
+		if (!webSocketRef.current) return;
+		if (webSocketRef.current.readyState !== webSocketRef.current.OPEN) return;
+		webSocketRef.current.send('init');
+	};
+
+	const handleIncomingMessage = (event: MessageEvent<string>) => {
+		// Try to decode the message and extract the Ride data
+		const eventData: HttpResponse<Ride> = JSON.parse(event.data);
+		// If the ride is not in the normalized data, return early
+		if (!dataRidesNormalizedMap.current.has(eventData.data._id)) return;
+		// Normalize the ride data and update the state
+		const normalized = getRideNormalized(eventData.data);
+		dataRidesNormalizedMap.current.set(eventData.data._id, normalized);
+		setFlagsLastUpdateState(Dates.now('Europe/Lisbon').unix_timestamp);
+	};
+
 	//
-	// C. Handle actions
+	// C. Transform data
 
 	useEffect(() => {
 		if (ridesBatchLoading || !ridesBatchData.data) return;
@@ -64,12 +106,27 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 			const normalized = getRideNormalized(item);
 			ridesMap.set(normalized._id, normalized);
 		});
-		setDataRidesNormalized(ridesMap);
+		dataRidesNormalizedMap.current = ridesMap;
 		setFlagsLastUpdateState(Dates.now('Europe/Lisbon').unix_timestamp);
 	}, [ridesBatchData, ridesBatchLoading, setFlagsLastUpdateState]);
 
+	useEffect(() => {
+		const refreshCatalog = () => {
+			const result: RideNormalized[] = Array
+				.from(dataRidesNormalizedMap.current.values())
+				.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled)
+				.map(item => getRideNormalized(item));
+			setDataRidesNormalized(result);
+		};
+		const interval = setInterval(refreshCatalog, 1000);
+		return () => clearInterval(interval);
+	}, [dataRidesNormalizedMap]);
+
+	//
+	// C. Handle actions
+
 	const getRideById = (rideId: string): RideNormalized | undefined => {
-		return dataRidesNormalized.get(rideId);
+		return dataRidesNormalizedMap.current.get(rideId);
 	};
 
 	//
@@ -81,6 +138,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		data: {
 			normalized: dataRidesNormalized,
+			normalized_map: dataRidesNormalizedMap.current,
 		},
 		flags: {
 			error: ridesBatchError || null,
