@@ -43,7 +43,7 @@ export function StopListFilterParish() {
 	return (
 		<FilterMenu
 			active={isActive}
-			label="distritos"
+			label="freguesias"
 			options={parsedOptions}
 			withToggleAll
 		/>

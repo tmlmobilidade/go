@@ -13,7 +13,7 @@ export function StopListFilterBar() {
 			<StopListFilterFacilities />
 			<StopListFilterConnections />
 			<StopListFilterEquipment />
-			{/* <StopListFilterLocations /> */}
+			<StopListFilterLocations />
 		</FiltersBar>
 	);
 }

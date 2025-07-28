@@ -80,6 +80,8 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	// D. Define context value
 
 	const contextValue: LocationsContextState = useMemo(() => {
+		const districtList = Array.isArray(districtData) ? districtData : [];
+
 		return {
 			actions: {
 				getDistrict,
@@ -87,14 +89,14 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 				getParish,
 			},
 			data: {
-				district: districtData,
-				municipality: districtData,
-				parish: districtData,
+				district: districtList,
+				municipality: districtList,
+				parish: districtList,
 			},
 			filters: {
-				filterDistrict: districtData,
-				filterMunicipality: districtData,
-				filterParish: districtData,
+				filterDistrict: districtList,
+				filterMunicipality: districtList,
+				filterParish: districtList,
 			},
 			flags: {
 				is_loading: fetcheddistrictLoading,
