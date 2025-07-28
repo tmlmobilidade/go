@@ -1,21 +1,30 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/RidesList.context';
-
-import styles from './styles.module.css';
+import { type RideNormalized } from '@/types/normalized';
+import { Indicator } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface Props {
-	value?: ExtendedRideDisplay['seen_status']
+	value?: RideNormalized['seen_status']
 }
 
 /* * */
 
 export function SeenStatusTag({ value }: Props) {
-	return (
-		<div className={styles.container} data-status={value}>
-			<div className={styles.indicator} />
-		</div>
-	);
+	//
+
+	if (value === 'unseen') {
+		return <Indicator variant="muted" />;
+	}
+
+	if (value === 'seen') {
+		return <Indicator variant="primary" filled />;
+	}
+
+	if (value === 'gone') {
+		return <Indicator variant="muted" filled />;
+	}
+
+	//
 }
