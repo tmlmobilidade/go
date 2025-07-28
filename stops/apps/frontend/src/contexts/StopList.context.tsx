@@ -149,8 +149,6 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		setFilterConnections(values);
 	};
 
-	console.log('----->', filterResultsData);
-
 	//
 
 	//

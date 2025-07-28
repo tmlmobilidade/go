@@ -2,10 +2,8 @@
 
 /* * */
 
-import type { Municipality } from '@carrismetropolitana/api-types/locations';
-
-import { Routes } from '@/lib/routes';
-import { ApiResponse } from '@carrismetropolitana/api-types/common';
+import { getAppConfig } from '@tmlmobilidade/lib';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -13,13 +11,19 @@ import useSWR from 'swr';
 
 interface LocationsContextState {
 	actions: {
-		getZones: () => Promise<Municipality[]>
+		getDistrict: () => []
+		getMunicipality: () => []
+		getParish: () => []
 	}
 	data: {
-		zones: {
-			id: string
-			municipality: Municipality
-		}[]
+		district: string[]
+		municipality: string[]
+		parish: string[]
+	}
+	filters: {
+		filterDistrict: string[]
+		filterMunicipality: string[]
+		filterParish: string[]
 	}
 	flags: {
 		is_loading: boolean
@@ -46,49 +50,30 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Fetch data
 
-	const { data: zonesData, isLoading: fetchedZonesLoading } = useSWR<ApiResponse<Municipality[]>, Error>(`${Routes.API}/stops/zones`);
+	//
+	// A. Fetch data
+
+	const { data: districtData, isLoading: fetcheddistrictLoading } = useSWR(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`, swrFetcher);
 
 	//
 	// B. Transform data
 
-	const allZonesData = useMemo(() => {
-		if (zonesData?.status !== 'success') return [];
-
-		const AML = [
-			'Alcochete',
-			'Almada',
-			'Amadora',
-			'Barreiro',
-			'Cascais',
-			'Lisboa',
-			'Loures',
-			'Mafra',
-			'Moita',
-			'Montijo',
-			'Odivelas',
-			'Oeiras',
-			'Palmela',
-			'Seixal',
-			'Sesimbra',
-			'Setúbal',
-			'Sintra',
-			'Vila Franca de Xira',
-		];
-
-		return zonesData.data
-			.filter(municipality => AML.includes(municipality.name))
-			.sort((a, b) => a.name.localeCompare(b.name))
-			.map(municipality => ({
-				id: municipality.id,
-				municipality,
-			}));
-	}, [zonesData]);
+	console.log('districtData -> ', districtData);
+	console.log('isloading -> ', fetcheddistrictLoading);
 
 	//
 	// C. Handle actions
 
-	const getZones = async (): Promise<Municipality[]> => {
-		return allZonesData.map(zone => zone.municipality);
+	const getDistrict = async () => {
+		return districtData;
+	};
+
+	const getMunicipality = async () => {
+		return districtData;
+	};
+
+	const getParish = async () => {
+		return districtData;
 	};
 
 	//
@@ -97,16 +82,25 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	const contextValue: LocationsContextState = useMemo(() => {
 		return {
 			actions: {
-				getZones,
+				getDistrict,
+				getMunicipality,
+				getParish,
 			},
 			data: {
-				zones: allZonesData,
+				district: districtData,
+				municipality: districtData,
+				parish: districtData,
+			},
+			filters: {
+				filterDistrict: districtData,
+				filterMunicipality: districtData,
+				filterParish: districtData,
 			},
 			flags: {
-				is_loading: fetchedZonesLoading,
+				is_loading: fetcheddistrictLoading,
 			},
 		};
-	}, [allZonesData, fetchedZonesLoading]);
+	}, [districtData, fetcheddistrictLoading]);
 
 	//
 	// E. Render components

@@ -4,7 +4,7 @@
 
 import { Pane } from '@tmlmobilidade/ui';
 
-import { StopListFilterBar } from './StopListFilters/StoplistFilterBar';
+import { StopListFilterBar } from './StopListFilters/StopListFilterBar';
 import { StopListHeader } from './StopListHeader';
 import { StopsList } from './StopsList';
 
