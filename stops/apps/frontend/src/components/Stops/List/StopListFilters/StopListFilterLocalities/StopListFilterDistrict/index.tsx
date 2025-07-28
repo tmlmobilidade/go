@@ -1,6 +1,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
+import { useStopListContext } from '@/contexts/StopList.context';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -12,29 +13,30 @@ export function StopListFilterDistrict() {
 	//
 	// A. Setup variables
 
+	const stopListContext = useStopListContext();
 	const locations = useLocationsContext();
 
 	//
 	// B. Transform data
 
 	const isActive = useMemo(() => {
-		const defaultValues = Array.from(locations.data.district) as string[];
-		const enabledValues = locations.data.district;
+		const defaultValues = Array.from(locations.data.district_ids) as string[];
+		const enabledValues = stopListContext.filters.filterDistrict;
 
 		if (defaultValues.length !== enabledValues.length) return true;
 
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [locations.data.district]);
+	}, [locations.data.district_ids]);
 
 	const parsedOptions = useMemo(() => {
-		if (!locations.data.district?.length) return [];
+		if (!locations.data.districts?.length) return [];
 
-		return locations.data.district.map(item => ({
-			checked: locations.filters.filterDistrict.includes(item),
-			label: locations.data.district.filter.name,
-			value: item,
+		return locations.data.districts.map(item => ({
+			checked: stopListContext.filters.filterDistrict.includes(item.id),
+			label: item.name,
+			value: item.id,
 		}));
-	}, [locations.data.district, locations.filters.filterDistrict]);
+	}, [locations.data.districts, stopListContext.filters.filterDistrict]);
 
 	//
 	// C. Render components
@@ -43,6 +45,7 @@ export function StopListFilterDistrict() {
 		<FilterMenu
 			active={isActive}
 			label="distritos"
+			onChange={stopListContext.actions.setFilterDistrict}
 			options={parsedOptions}
 			withToggleAll
 		/>

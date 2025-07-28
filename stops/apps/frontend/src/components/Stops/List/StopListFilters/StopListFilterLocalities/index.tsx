@@ -10,8 +10,8 @@ export function StopListFilterLocations() {
 	return (
 		<>
 			<StopListFilterDistrict />
-			<StopListFilterMunicipality />
-			<StopListFilterParish />
+			{/* <StopListFilterMunicipality /> */}
+			{/* <StopListFilterParish /> */}
 		</>
 	);
 }
