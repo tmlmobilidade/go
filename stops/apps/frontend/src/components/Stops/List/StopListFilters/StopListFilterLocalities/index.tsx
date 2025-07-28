@@ -10,10 +10,10 @@ import { StopListFilterParish } from './StopListFilterParishes';
 
 export function StopListFilterLocations() {
 	return (
-		<LocationsContextProvider>
+		<>
 			<StopListFilterDistrict />
 			<StopListFilterMunicipality />
 			<StopListFilterParish />
-		</LocationsContextProvider>
+		</>
 	);
 }
