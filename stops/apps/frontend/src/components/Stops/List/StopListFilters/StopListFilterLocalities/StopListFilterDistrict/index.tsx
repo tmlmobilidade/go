@@ -1,7 +1,6 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { connectionsSchema } from '@tmlmobilidade/types';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -30,12 +29,12 @@ export function StopListFilterDistrict() {
 	const parsedOptions = useMemo(() => {
 		if (!locations.data.district?.length) return [];
 
-		return connectionsSchema.options.map(item => ({
+		return locations.data.district.map(item => ({
 			checked: locations.filters.filterDistrict.includes(item),
 			label: locations.data.district.filter.name,
 			value: item,
 		}));
-	}, [locations.filters.filterDistrict]);
+	}, [locations.data.district, locations.filters.filterDistrict]);
 
 	//
 	// C. Render components

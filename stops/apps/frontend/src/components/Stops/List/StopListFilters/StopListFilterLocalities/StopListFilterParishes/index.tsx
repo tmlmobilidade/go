@@ -1,7 +1,6 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { connectionsSchema } from '@tmlmobilidade/types';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -30,12 +29,12 @@ export function StopListFilterParish() {
 	const parsedOptions = useMemo(() => {
 		if (!locations.data.parish?.length) return [];
 
-		return connectionsSchema.options.map(item => ({
+		return locations.data.parish.map(item => ({
 			checked: locations.filters.filterParish.includes(item),
 			label: locations.data.parish.filter.name,
 			value: item,
 		}));
-	}, [locations.filters.filterParish]);
+	}, [locations.data.parish, locations.filters.filterParish]);
 
 	//
 	// C. Render components

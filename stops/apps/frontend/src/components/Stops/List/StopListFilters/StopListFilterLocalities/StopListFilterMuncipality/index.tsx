@@ -1,7 +1,6 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { connectionsSchema } from '@tmlmobilidade/types';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -30,12 +29,12 @@ export function StopListFilterMunicipality() {
 	const parsedOptions = useMemo(() => {
 		if (!locations.data.municipality?.length) return [];
 
-		return connectionsSchema.options.map(item => ({
+		return locations.data.municipality.map(item => ({
 			checked: locations.filters.filterMunicipality.includes(item),
 			label: locations.data.municipality.filter.name,
 			value: item,
 		}));
-	}, [locations.filters.filterMunicipality]);
+	}, [locations.data.municipality, locations.filters.filterMunicipality]);
 
 	//
 	// C. Render components
