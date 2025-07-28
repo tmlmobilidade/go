@@ -15,10 +15,10 @@
 	},
 	"dependencies": {
 		"@fastify/websocket": "11.2.0",
-		"@tmlmobilidade/connectors": "20250728.948.40",
-		"@tmlmobilidade/interfaces": "20250728.948.40",
-		"@tmlmobilidade/lib": "20250728.948.40",
-		"@tmlmobilidade/utils": "20250728.948.40",
+		"@tmlmobilidade/connectors": "20250728.1548.33",
+		"@tmlmobilidade/interfaces": "20250728.1548.33",
+		"@tmlmobilidade/lib": "20250728.1548.33",
+		"@tmlmobilidade/utils": "20250728.1548.33",
 		"pino-pretty": "13.0.0"
 	},
 	"devDependencies": {

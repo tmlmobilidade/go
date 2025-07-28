@@ -21,6 +21,9 @@ export class RidesController {
 		try {
 			//
 
+			const requestBody = JSON.parse(request.body as string) as { agency?: string[] };
+			console.log('Received request body:', requestBody);
+
 			//
 			// If no query parameters are provided, return a batch of rides from 1 hour ago until 1 hour later.
 
@@ -30,10 +33,12 @@ export class RidesController {
 			//
 			// Fetch rides from the database
 
-			const ridesBatch = await rides.findMany(
-				{ start_time_scheduled: { $gte: pastUnixTimestamp, $lte: futureUnixTimestamp } },
-				{ sort: { start_time_scheduled: 1 } },
-			);
+			const ridesBatch = await rides.findMany({
+				agency_id: { $in: requestBody.agency ?? [] },
+				start_time_scheduled: { $gte: pastUnixTimestamp, $lte: futureUnixTimestamp },
+			});
+
+			console.log('Fetched rides batch:', ridesBatch);
 
 			reply.send({
 				data: ridesBatch,

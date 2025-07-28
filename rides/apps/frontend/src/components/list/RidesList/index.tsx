@@ -6,13 +6,14 @@ import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
+import { DataTable, DataTableColumn } from '@/components/datatable';
 import { RidesListCellHeadsign } from '@/components/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/list/RidesListCellPassengers';
 import { RidesListFiltersBar } from '@/components/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { type RideNormalized } from '@/types/normalized';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -98,6 +99,7 @@ export function RidesList() {
 		]}
 		>
 			<DataTable
+				ref={ridesListContext.refs.datatable}
 				columns={columns}
 				onRowClick={handleRowClick}
 				records={ridesListContext.data.filtered}
