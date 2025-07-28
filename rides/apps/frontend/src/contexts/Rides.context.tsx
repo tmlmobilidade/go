@@ -100,7 +100,7 @@ export const RidesContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Transform data
 
 	useEffect(() => {
-		if (ridesBatchLoading || !ridesBatchData.data) return;
+		if (ridesBatchLoading || !ridesBatchData?.data) return;
 		const ridesMap = new Map<string, RideNormalized>();
 		ridesBatchData.data.forEach((item) => {
 			const normalized = getRideNormalized(item);
