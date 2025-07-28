@@ -1,7 +1,5 @@
 /* * */
 
-import { LocationsContextProvider } from '@/contexts/Locations.context';
-
 import { StopListFilterDistrict } from './StopListFilterDistrict';
 import { StopListFilterMunicipality } from './StopListFilterMuncipality';
 import { StopListFilterParish } from './StopListFilterParishes';
