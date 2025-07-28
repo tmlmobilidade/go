@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider, roles, users } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { type CreateUserDto, type UpdateUserDto } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { type CreateUserDto, type UpdateUserDto, User } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,16 +17,9 @@ export class UsersController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply) {
-		try {
-			await authProvider.register(request.body);
-			reply.send({ message: 'Confirmation email sent' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async create(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<void>) {
+		await authProvider.register(request.body);
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -34,16 +27,9 @@ export class UsersController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			await users.deleteById(request.params.id);
-			reply.send({ message: 'User deleted successfully' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		await users.deleteById(request.params.id);
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -51,18 +37,9 @@ export class UsersController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			const userList = await users.findMany({}, undefined, undefined, {
-				created_at: -1,
-			});
-			reply.send(userList);
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async getAll(request: FastifyRequest, reply: FastifyReply<User[]>) {
+		const userList = await users.findMany({}, { sort: { created_at: -1 } });
+		reply.send({ data: userList, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -70,24 +47,12 @@ export class UsersController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const user = await users.findById(request.params.id);
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
+		const user = await users.findById(request.params.id);
 
-			if (!user) {
-				reply
-					.status(HttpStatus.NOT_FOUND)
-					.send({ message: 'User not found' });
-				return;
-			}
+		if (!user) throw new HttpException(HttpStatus.NOT_FOUND, 'User not found');
 
-			reply.send(user);
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -95,7 +60,7 @@ export class UsersController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async getMe(request: FastifyRequest, reply: FastifyReply) {
+	static async getMe(request: FastifyRequest, reply: FastifyReply<User>) {
 		const session_token = request.cookies[COOKIE_NAME];
 
 		const user = await authProvider.getUser(session_token);
@@ -103,7 +68,7 @@ export class UsersController {
 
 		user.permissions = [...role.flatMap(role => role.permissions), ...user.permissions];
 
-		return reply.status(HttpStatus.OK).send(user);
+		return reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -111,18 +76,8 @@ export class UsersController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async update(request: FastifyRequest<{ Body: UpdateUserDto, Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const user = await users.updateById(
-				request.params.id,
-				request.body,
-			);
-			reply.send({ data: user, message: 'User updated successfully' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async update(request: FastifyRequest<{ Body: UpdateUserDto, Params: { id: string } }>, reply: FastifyReply<User>) {
+		const user = await users.updateById(request.params.id, request.body);
+		reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
 	}
 }
