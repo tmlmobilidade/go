@@ -192,7 +192,14 @@ export class AlertsController {
 		});
 
 		// Delete the old image if it exists
-		if (alert.file_id) await files.deleteById(alert.file_id);
+		if (alert.file_id) {
+			try {
+				await files.deleteById(alert.file_id);
+			}
+			catch (error) {
+				console.error(error);
+			}
+		}
 
 		await alerts.updateById(id, { file_id: result._id.toString() });
 

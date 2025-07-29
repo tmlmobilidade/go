@@ -45,7 +45,7 @@ export function AlertDetailSectionTitle() {
 					{...alertDetailContext.data.form.getInputProps('description')}
 				/>
 				<UploadImage
-					imageUrl={alertDetailContext.data.imageUrl}
+					imageUrl={alertDetailContext.data.imageUrl?.url}
 					label="Imagem"
 					onDelete={alertDetailContext.actions.deleteImage}
 					onFileChange={alertDetailContext.actions.fileChanged}
