@@ -1,11 +1,12 @@
 'use client';
 
-import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 /* * */
 
+import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { BackButton, Spacer, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -24,7 +25,8 @@ export function RidesDetailHeader() {
 	// B. Handle actions
 
 	const handleGoBack = () => {
-		router.push('/rides');
+		const destUrl = keepUrlParams(`/rides`, window.location.search);
+		router.push(destUrl);
 	};
 
 	//

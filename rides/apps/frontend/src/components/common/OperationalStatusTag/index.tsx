@@ -1,18 +1,18 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/RidesList.context';
+import { type RideNormalized } from '@/types/normalized';
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface Props {
-	value?: ExtendedRideDisplay['operational_status']
+interface OperationalStatusTagProps {
+	value?: RideNormalized['operational_status']
 }
 
 /* * */
 
-export function OperationalStatusTag({ value }: Props) {
+export function OperationalStatusTag({ value }: OperationalStatusTagProps) {
 	//
 
 	if (value === 'scheduled') {

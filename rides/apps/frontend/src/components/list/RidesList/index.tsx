@@ -3,6 +3,7 @@
 /* * */
 
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
+import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
@@ -39,6 +40,12 @@ export function RidesList() {
 			accessor: 'operational_status',
 			render: item => <OperationalStatusTag value={item.operational_status} />,
 			title: 'Estado',
+			width: 150,
+		},
+		{
+			accessor: 'operational_date',
+			render: item => <OperationalDateTag value={item.operational_date} />,
+			title: 'Data Operacional',
 			width: 150,
 		},
 		{

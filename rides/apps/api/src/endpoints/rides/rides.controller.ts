@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { hashedShapes, hashedTrips, rides, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { HashedShape, HashedTrip, type Ride, SimplifiedApexValidation, VehicleEvent } from '@tmlmobilidade/types';
+import { HashedShape, HashedTrip, type Ride, SimplifiedApexValidation, UnixTimestamp, VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, HttpResponse } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
@@ -21,7 +21,12 @@ export class RidesController {
 		try {
 			//
 
-			const requestBody = JSON.parse(request.body as string) as { agency?: string[] };
+			const requestBody = JSON.parse(request.body as string) as {
+				agency?: string[]
+				date_end?: number
+				date_start?: number
+				simple_three_vehicle_events?: string[]
+			};
 			console.log('Received request body:', requestBody);
 
 			//
@@ -33,10 +38,14 @@ export class RidesController {
 			//
 			// Fetch rides from the database
 
-			const ridesBatch = await rides.findMany({
-				agency_id: { $in: requestBody.agency ?? [] },
-				start_time_scheduled: { $gte: pastUnixTimestamp, $lte: futureUnixTimestamp },
-			});
+			const ridesBatch = await rides.findMany(
+				{
+					'agency_id': { $in: requestBody.agency ?? [] },
+					'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade': { $in: requestBody.simple_three_vehicle_events ?? [] },
+					'start_time_scheduled': { $gte: requestBody.date_start as UnixTimestamp ?? pastUnixTimestamp, $lte: requestBody.date_end as UnixTimestamp ?? futureUnixTimestamp },
+				},
+				{ limit: 5000 },
+			);
 
 			console.log('Fetched rides batch:', ridesBatch);
 

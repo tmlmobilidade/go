@@ -5,12 +5,12 @@
 import { type DataTableHandle } from '@/components/datatable/DataTableContext';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
-import { type RideNormalized } from '@/types/normalized';
+import { delayStatusValues, gradeValues, operationalStatusValues, type RideNormalized } from '@/types/normalized';
 import { getRideNormalized } from '@/utils/get-ride-normalized';
 import { useDebouncedState } from '@mantine/hooks';
 import { type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates, fetchData, type HttpResponse } from '@tmlmobilidade/utils';
-import { useQueryState } from 'nuqs';
+import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
+import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */
@@ -19,12 +19,22 @@ interface RidesListContextState {
 	actions: {
 		centerListOnNow: () => void
 		setFilterAgency: (values: string[]) => void
+		setFilterDateEnd: (value: number) => void
+		setFilterDateStart: (value: number) => void
+		setFilterDelayStatus: (values: string[]) => void
+		setFilterOperationalStatus: (values: string[]) => void
+		setFilterSimpleThreeVehicleEvents: (values: string[]) => void
 	}
 	data: {
 		filtered: RideNormalized[]
 	}
 	filters: {
 		agency: string[]
+		date_end: number
+		date_start: number
+		delay_status: string[]
+		operational_status: string[]
+		simple_three_vehicle_events: string[]
 	}
 	flags: {
 		error: Error | null
@@ -70,6 +80,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.ids));
+	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(null));
+	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(null));
+	const [filterDelayStatus, setFilterDelayStatus] = useQueryState<string[]>('delay_status', parseAsArrayOfStrings.withDefault(delayStatusValues));
+	const [filterOperationalStatus, setFilterOperationalStatus] = useQueryState<string[]>('operational_status', parseAsArrayOfStrings.withDefault(operationalStatusValues));
+	const [filterSimpleThreeVehicleEvents, setFilterSimpleThreeVehicleEvents] = useQueryState<string[]>('s3ve', parseAsArrayOfStrings.withDefault(gradeValues));
 
 	//
 	// B. Fetch data
@@ -79,11 +94,15 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		(async () => {
 			// Fetch Rides data from the API
 			const response = await fetch('/api/rides', {
-				body: JSON.stringify({ agency: filterAgency }),
+				body: JSON.stringify({
+					agency: filterAgency,
+					date_end: filterDateEnd,
+					date_start: filterDateStart,
+					simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
+				}),
 				method: 'POST',
 			});
 			const responseData: HttpResponse<Ride[]> = await response.json();
-			console.log('Fetched rides data:', responseData);
 			// If there is an error or no data, return early
 			if (!response.ok || !responseData.data) return;
 			// Update the rides map with the fetched data
@@ -91,7 +110,12 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			responseData.data.forEach(item => ridesMap.set(item._id, item));
 			dataRidesMap.current = ridesMap;
 		})();
-	}, [filterAgency]);
+	}, [
+		filterAgency,
+		filterSimpleThreeVehicleEvents,
+		filterDateStart,
+		filterDateEnd,
+	]);
 
 	useEffect(() => {
 		// This effect runs everytime there is a change in the websocket reference,
@@ -137,13 +161,22 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			const result: RideNormalized[] = Array
 				.from(dataRidesMap.current.values())
 				.map(item => getRideNormalized(item))
+				// .filter(item => filterOperationalStatus.includes(item.operational_status))
+				// .filter(item => filterDelayStatus.includes(item.delay_status))
 				.sort((a, b) => a.agency_id.localeCompare(b.agency_id))
 				.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled);
 			setDataRidesNormalized(result);
 		};
 		const interval = setInterval(refreshCatalog, 1000);
 		return () => clearInterval(interval);
-	}, []);
+	}, [
+		filterOperationalStatus,
+		filterDelayStatus,
+		filterSimpleThreeVehicleEvents,
+		filterAgency,
+		filterDateStart,
+		filterDateEnd,
+	]);
 
 	//
 	// B. Handle actions
@@ -175,12 +208,22 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		actions: {
 			centerListOnNow,
 			setFilterAgency,
+			setFilterDateEnd,
+			setFilterDateStart,
+			setFilterDelayStatus,
+			setFilterOperationalStatus,
+			setFilterSimpleThreeVehicleEvents,
 		},
 		data: {
 			filtered: dataRidesNormalized,
 		},
 		filters: {
 			agency: filterAgency,
+			date_end: filterDateEnd,
+			date_start: filterDateStart,
+			delay_status: filterDelayStatus,
+			operational_status: filterOperationalStatus,
+			simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
 		},
 		flags: {
 			error: null,
@@ -194,6 +237,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	}), [
 		dataRidesNormalized,
 		filterAgency,
+		filterDelayStatus,
+		filterOperationalStatus,
+		filterSimpleThreeVehicleEvents,
+		filterDateStart,
+		filterDateEnd,
 		flagsLastUpdateState,
 	]);
 
