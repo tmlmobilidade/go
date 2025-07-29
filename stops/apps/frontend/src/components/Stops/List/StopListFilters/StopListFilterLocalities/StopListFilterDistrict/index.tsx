@@ -2,7 +2,7 @@
 
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopListContext } from '@/contexts/StopList.context';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { Combobox } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -32,7 +32,6 @@ export function StopListFilterDistrict() {
 		if (!locations.data.districts?.length) return [];
 
 		return locations.data.districts.map(item => ({
-			checked: stopListContext.filters.filterDistrict.includes(item.id),
 			label: item.name,
 			value: item.id,
 		}));
@@ -42,12 +41,13 @@ export function StopListFilterDistrict() {
 	// C. Render components
 
 	return (
-		<FilterMenu
-			active={isActive}
-			label="distritos"
-			onChange={stopListContext.actions.setFilterDistrict}
-			options={parsedOptions}
-			withToggleAll
+		<Combobox
+			data={parsedOptions}
+			label="Distrito"
+			placeholder="..."
+			width={300}
+			fullWidth
+			{...stopListContext.actions.setFilterDistrict}
 		/>
 	);
 

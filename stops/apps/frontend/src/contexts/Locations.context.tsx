@@ -2,10 +2,9 @@
 
 /* * */
 
-import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
-import { getAppConfig } from '@tmlmobilidade/lib';
-import { normalizeString } from '@tmlmobilidade/utils';
+import { getAppConfig, HttpStatus } from '@tmlmobilidade/lib';
+import { HttpResponse, normalizeString } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -57,16 +56,17 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Fetch data
 
-	const { data: fetchedDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<ApiResponse<District[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`);
-	const { data: fetchedMunicipalitiesData, isLoading: fetchedMunicipalitiesLoading } = useSWR<ApiResponse<Municipality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities`);
-	const { data: fetchedParishesData, isLoading: fetchedParishesLoading } = useSWR<ApiResponse<Parish[]>, Error>(`$${getAppConfig('locations', 'api_url', 'production')}/locations/parishes`);
-	const { data: fetchedLocalitiesData, isLoading: fetchedLocalitiesLoading } = useSWR<ApiResponse<Locality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities`);
+	const { data: fetchedDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<HttpResponse<District[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`);
+	const { data: fetchedMunicipalitiesData, isLoading: fetchedMunicipalitiesLoading } = useSWR<HttpResponse<Municipality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities`);
+	const { data: fetchedParishesData, isLoading: fetchedParishesLoading } = useSWR<HttpResponse<Parish[]>, Error>(`$${getAppConfig('locations', 'api_url', 'production')}/locations/parishes`);
+	const { data: fetchedLocalitiesData, isLoading: fetchedLocalitiesLoading } = useSWR<HttpResponse<Locality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities`);
 
 	//
 	// B. Transform data
 
 	const allDistrictsData = useMemo(() => {
-		if (fetchedDistrictsData?.status !== 'success') return [];
+		if (fetchedDistrictsData?.status !== HttpStatus.OK) return [];
+
 		return fetchedDistrictsData.data;
 	}, [fetchedDistrictsData]);
 
@@ -81,7 +81,7 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	//
 
 	const allMunicipalitiesData = useMemo(() => {
-		if (fetchedMunicipalitiesData?.status !== 'success') return [];
+		if (fetchedMunicipalitiesData?.status !== HttpStatus.OK) return [];
 		const AML = ['Alcochete', 'Almada', 'Amadora', 'Barreiro', 'Cascais', 'Lisboa', 'Loures', 'Mafra', 'Moita', 'Montijo', 'Odivelas', 'Oeiras', 'Palmela', 'Seixal', 'Sesimbra', 'Setúbal', 'Sintra', 'Vila Franca de Xira'];
 		return fetchedMunicipalitiesData.data
 			.filter(item => AML.includes(item.name))
@@ -99,7 +99,7 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	//
 
 	const allParishesData = useMemo(() => {
-		if (fetchedParishesData?.status !== 'success') return [];
+		if (fetchedParishesData?.status !== HttpStatus.OK) return [];
 		return fetchedParishesData.data;
 	}, [fetchedParishesData]);
 
@@ -114,7 +114,7 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	//
 
 	const allLocalitiesData = useMemo(() => {
-		if (fetchedLocalitiesData?.status !== 'success') return [];
+		if (fetchedLocalitiesData?.status !== HttpStatus.OK) return [];
 		return fetchedLocalitiesData.data;
 	}, [fetchedLocalitiesData]);
 
