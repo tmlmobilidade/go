@@ -131,23 +131,18 @@ export class UsersController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	*/
-	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto, Params: { themeId: string } }>, reply: FastifyReply) {
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
-		console.log('123');
+	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto, Params: { themeId: string } }>) {
 		const session_token = request.cookies[COOKIE_NAME];
 
 		const user = await authProvider.getUser(session_token);
-		await users.updateById(user._id, { ...request.body });
+
+		delete request.body['permissions'];
+		delete request.body['email_verified'];
+		delete request.body['role_ids'];
+		delete request.body['session_ids'];
+		delete request.body['organization_ids'];
+		delete request.body['verification_token_ids'];
+
+		await users.updateById(user._id, request.body);
 	}
 }
