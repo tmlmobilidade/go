@@ -1,27 +1,10 @@
-import { Line } from '@carrismetropolitana/api-types/network';
+import { type Line } from '@carrismetropolitana/api-types/network';
 import { files } from '@tmlmobilidade/interfaces';
+import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
 import { Alert } from '@tmlmobilidade/types';
-import { EntitySelector, Alert as ServiceAlert } from 'gtfs-types';
+import { type EntitySelector } from 'gtfs-types';
 
-interface ServiceAlertExtended extends Omit<ServiceAlert, 'cause' | 'effect'> {
-	cause: string
-	effect: string
-	file_id?: string
-	image?: {
-		localizedImage: {
-			language: string
-			media_type: string
-			url: string
-		}[]
-	}
-}
-
-interface ServiceAlertResponse {
-	alert: ServiceAlertExtended
-	id: string
-}
-
-async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAlertResponse> {
+async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAlertResponseItem> {
 	const informed_entity = (): EntitySelector[] => {
 		const informed_entity: EntitySelector[] = [];
 
