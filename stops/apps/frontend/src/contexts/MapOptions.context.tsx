@@ -1,11 +1,10 @@
 'use client';
 
-// import { MapStyle } from '@/components/map/MapView';
-import { MapRef } from '@vis.gl/react-maplibre';
 /* * */
 
-import { MapStyle } from '@/components/Stop/StopMap/map/MapView';
+import { MapStyle } from '@/components/Map/MapView';
 import * as turf from '@turf/turf';
+import { MapRef } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -16,7 +15,7 @@ const LOCAL_STORAGE_KEYS = {
 };
 
 const DEFAULT_OPTIONS = {
-	viewport_height: { max: 600, min: 300 },
+	viewport_height: { max: 1000, min: 300 },
 };
 
 /* * */
@@ -116,8 +115,6 @@ export const MapOptionsContextProvider = ({ children }) => {
 			bounds,
 			{ padding: 25 },
 		);
-
-		// return;
 	};
 
 	//

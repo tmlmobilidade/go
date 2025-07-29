@@ -3,17 +3,11 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		"clean": "sh cleanup.sh",
-		"dev": "dotenv-run -f ./_dev/secrets/.env -- turbo dev",
+		"clean": "npx @tmlmobilidade/repo-rinse",
+		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
+		"dev:parser": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-stops-parser",
 		"lint": "turbo lint",
 		"start": "turbo start"
-	},
-	"dependencies": {
-		"@turf/turf": "^7.2.0",
-		"fs": "^0.0.1-security",
-		"fs.promises": "^0.1.2",
-		"jszip": "^3.10.1",
-		"path": "^0.12.7"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
@@ -30,5 +24,12 @@
 	},
 	"workspaces": [
 		"apps/*"
-	]
+	],
+	"dependencies": {
+		"@carrismetropolitana/api-types": "^20250717.940.43",
+		"@tmlmobilidade/types": "^20250725.1425.7",
+		"@tmlmobilidade/ui": "^20250725.1425.7",
+		"@vis.gl/react-maplibre": "^8.0.4",
+		"react": "^19.1.0"
+	}
 }

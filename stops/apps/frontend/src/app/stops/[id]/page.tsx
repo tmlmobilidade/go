@@ -1,16 +1,21 @@
-import { Form } from '@/components/Form';
-import Stop from '@/components/Stop';
-import { StopsDetailContextProvider } from '@/contexts/StopsDetail.context';
-import { StopsListContextProvider } from '@/contexts/StopsList.context';
+/* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+import { FormInfos } from '@/components/Stops/Form';
+import { StopDetailContextProvider } from '@/contexts/StopDetails.context';
+
+/* * */
+
+interface Props {
+	params: Promise<{ id: string }>
+}
+
+/* * */
+
+export default async function Page({ params }: Props) {
 	const { id } = await params;
-
 	return (
-		<StopsListContextProvider>
-			<StopsDetailContextProvider stopId={id}>
-				{id == 'new' ? <Form /> : <Stop paramId={id} />}
-			</StopsDetailContextProvider>
-		</StopsListContextProvider>
+		<StopDetailContextProvider stopId={id}>
+			<FormInfos />
+		</StopDetailContextProvider>
 	);
 }

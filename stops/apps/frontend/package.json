@@ -1,10 +1,10 @@
 {
 	"name": "@tmlmobilidade/sae-stops-frontend",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"dev": "next dev -p $FRONTEND_PORT",
+		"dev": "next dev -p 51003",
 		"lint": "eslint . && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src",
 		"start": "next start"
