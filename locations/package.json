@@ -12,13 +12,13 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20250716.1214.55",
-		"dotenv-cli": "8.0.0",
-		"prettier": "3.5.3",
-		"turbo": "2.4.4",
-		"typescript": "5.8.2"
+		"@tmlmobilidade/tsconfig": "20250725.1425.7",
+		"dotenv-cli": "9.0.0",
+		"prettier": "3.6.2",
+		"turbo": "2.5.5",
+		"typescript": "5.8.3"
 	},
-	"packageManager": "npm@11.2.0",
+	"packageManager": "npm@11.5.1",
 	"engines": {
 		"node": ">=18"
 	},
@@ -26,7 +26,7 @@
 		"apps/*"
 	],
 	"dependencies": {
-		"@tmlmobilidade/connectors": "^20250717.1418.40",
+		"@tmlmobilidade/connectors": "^20250725.1425.7",
 		"@turf/boolean-valid": "^7.2.0",
 		"geojson-validation": "^1.0.2"
 	}

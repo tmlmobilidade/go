@@ -1,7 +1,7 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { stops } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { Stop } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { Stop, UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
@@ -12,19 +12,11 @@ export class StopsController {
 	 * @param request Fastify request containing stop data in body
 	 * @param reply Fastify reply
 	 */
-	static async create(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			const data = request.body as Stop;
+	static async create(request: FastifyRequest, reply: FastifyReply<Stop>) {
+		const data = request.body as Stop;
+		const result = await stops.insertOne(data);
 
-			const result = await stops.insertOne(data);
-
-			reply.send({ data: result, message: 'Stop created' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED });
 	}
 
 	/**
@@ -32,21 +24,11 @@ export class StopsController {
 	 * @param request Fastify request containing stop ID in params
 	 * @param reply Fastify reply
 	 */
-	static async delete(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
-			await stops.deleteById(id);
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		const { id } = request.params;
+		await stops.deleteById(id);
 
-			reply.send({ message: `Stop with id: ${id} deleted` });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -54,18 +36,13 @@ export class StopsController {
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			reply.send(await stops.findMany({}, {
-				limit: 5,
-				sort: { created_at: -1 },
-			}));
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async getAll(request: FastifyRequest, reply: FastifyReply<Stop[]>) {
+		const data = await stops.findMany({}, {
+			limit: 5,
+			sort: { created_at: -1 },
+		});
+
+		reply.send({ data, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -73,27 +50,13 @@ export class StopsController {
 	 * @param request Fastify request containing stop ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
+		const { id } = request.params;
+		const stop = await stops.findById(id);
 
-			const stop = await stops.findById(id);
+		if (!stop) throw new HttpException(HttpStatus.NOT_FOUND, 'Stop not found');
 
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			reply.send(stop);
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: stop, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -101,25 +64,10 @@ export class StopsController {
 	 * @param request Fastify request containing stop ID in params and update data in body
 	 * @param reply Fastify reply
 	 */
-	static async update(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
-			const stopData = request.body as Partial<Stop>;
+	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: string } }>, reply: FastifyReply<Stop>) {
+		const { id } = request.params;
+		const data = await stops.updateById(id, request.body);
 
-			await stops.updateById(id, stopData);
-
-			reply.send({
-				data: stopData,
-				message: `Stop with id: ${id} updated`,
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data, error: null, statusCode: HttpStatus.OK });
 	}
 }

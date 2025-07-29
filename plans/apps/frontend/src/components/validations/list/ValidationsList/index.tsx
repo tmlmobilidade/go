@@ -10,7 +10,7 @@ import { ValidationsListHeader } from '@/components/validations/list/Validations
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { Routes } from '@/lib/routes';
 import { type ValidationNormalized } from '@/types/normalized';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -26,12 +26,6 @@ export function ValidationsList() {
 	const validationsListContext = useValidationsListContext();
 
 	const columns: DataTableColumn<ValidationNormalized>[] = [
-		{
-			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
-			width: 100,
-		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,

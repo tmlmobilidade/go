@@ -4,8 +4,8 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connector
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { createEmail, LoginDto, LoginDtoSchema, Session } from '@tmlmobilidade/types';
-import { Dates, generateRandomToken, HttpResponse } from '@tmlmobilidade/utils';
+import { createEmail, LoginDto, LoginDtoSchema, Permission, Session } from '@tmlmobilidade/types';
+import { Dates, generateRandomToken } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -13,43 +13,38 @@ const COOKIE_NAME = 'session_token';
 
 /* * */
 
-/* * */
-
 export class AuthController {
 	/**
 	 *  Change password on database and delete token
 	*/
-	async changePassword(request: FastifyRequest, reply: FastifyReply) {
+	async changePassword(request: FastifyRequest, reply: FastifyReply<void>) {
 		const { password_hash, token } = request.body as { password_hash: string, token: string };
 
-		const token_result = await verificationTokens.findOne({ token });
+		const tokenResult = await verificationTokens.findOne({ token: { $eq: token } });
 
-		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
-			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
+		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid or expired token');
 		};
 
-		await users.updateById(token_result.user_id, { password_hash: password_hash });
+		await users.updateById(tokenResult.user_id, { password_hash: password_hash });
 
-		reply.status(HttpStatus.OK).send({ message: 'Changed Password' });
-
-		await verificationTokens.deleteOne({ token });
+		reply.send({
+			data: undefined,
+			error: null,
+			statusCode: HttpStatus.OK,
+		}).status(HttpStatus.OK);
 	}
 
 	/**
 	 * Get Permissions - Get the permissions of the current user
 	 */
-	async getPermissions(request: FastifyRequest, reply: FastifyReply) {
+	async getPermissions(request: FastifyRequest<{ Querystring: { action: string, resource: string } }>, reply: FastifyReply<Permission<unknown>>) {
 		const session_token = request.cookies[COOKIE_NAME];
 
-		const { action, resource } = request.query as {
-			action: string
-			resource: string
-		};
+		const { action, resource } = request.query;
 
 		if (!resource || !action) {
-			return reply
-				.status(HttpStatus.BAD_REQUEST)
-				.send('Resource and action are required');
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Resource and action are required');
 		}
 
 		const permissions = await authProvider.getPermission(
@@ -57,21 +52,20 @@ export class AuthController {
 			resource,
 			action,
 		);
-		return reply.status(HttpStatus.OK).send(permissions);
+
+		return reply.send({ data: permissions, error: null, statusCode: HttpStatus.OK }).status(HttpStatus.OK);
 	}
 
 	/**
 	 * Login - Login a user and set a cookie with the session token
 	 */
-	async login(request: FastifyRequest, reply: FastifyReply) {
+	async login(request: FastifyRequest, reply: FastifyReply<Session>) {
 		const body = request.body as LoginDto;
 
 		const result = LoginDtoSchema.safeParse(body);
 
 		if (!result.success) {
-			return reply
-				.status(HttpStatus.BAD_REQUEST)
-				.send(result.error.message);
+			throw new HttpException(HttpStatus.BAD_REQUEST, result.error.message);
 		}
 
 		const session: Session = await authProvider.login({
@@ -82,17 +76,17 @@ export class AuthController {
 		reply.setCookie(COOKIE_NAME, session.token, {
 			domain: getAppConfig('auth', 'cookie_domain'),
 			httpOnly: true,
-			maxAge:
-				parseInt(process.env.COOKIE_MAX_AGE_DAYS ?? '30')
-				* 24
-				* 60
-				* 60, // 30 days
+			maxAge: parseInt(process.env.COOKIE_MAX_AGE_DAYS ?? '30') * 24 * 60 * 60, // 30 days
 			path: '/',
 			sameSite: 'none',
 			secure: true,
 		});
 
-		return reply.status(HttpStatus.OK).send(session);
+		return reply.send({
+			data: session,
+			error: null,
+			statusCode: HttpStatus.OK,
+		}).status(HttpStatus.OK);
 	}
 
 	/* * */
@@ -100,35 +94,45 @@ export class AuthController {
 	/**
 	 * Logout - Remove the session token cookie
 	 */
-	async logout(request: FastifyRequest, reply: FastifyReply): Promise<HttpResponse<string>> {
+	async logout(request: FastifyRequest, reply: FastifyReply<void>) {
+		//
+
+		//
+		// Extract the session token from the request cookies
+		// and call the authProvider to log out
+
 		const session_token = request.cookies[COOKIE_NAME];
 		await authProvider.logout(session_token);
 
-		reply.setCookie(COOKIE_NAME, '', {
-			domain: getAppConfig('auth', 'cookie_domain'),
-			httpOnly: true,
-			maxAge: 0,
-			path: '/',
-			sameSite: 'none',
-			secure: true,
-		});
+		//
+		// Clear the session token cookie by setting
+		// the maxAge to 0 and sending it back in the response
 
-		return {
-			data: 'Logged out',
-			error: null,
-			status: HttpStatus.OK,
-		};
+		return reply
+			.setCookie(COOKIE_NAME, '', {
+				domain: getAppConfig('auth', 'cookie_domain'),
+				httpOnly: true,
+				maxAge: 0,
+				path: '/',
+				sameSite: 'none',
+				secure: true,
+			})
+			.send({
+				data: undefined,
+				error: null,
+				statusCode: HttpStatus.OK,
+			});
 	}
 
 	/**
 	 * Go check email is valid for send link to reset password
 	*/
-	async sendEmailWithResetPasswordURL(request: FastifyRequest, reply: FastifyReply) {
+	async sendEmailWithResetPasswordURL(request: FastifyRequest, reply: FastifyReply<void>) {
 		const { email } = request.body as { email: string };
 
 		// Search user by Email
 		const user = await users.findByEmail(email);
-		if (!user) return reply.status(HttpStatus.NOT_FOUND).send({ message: `User not found with email ${email}` });
+		if (!user) throw new HttpException(HttpStatus.NOT_FOUND, `User not found with email ${email}`);
 
 		const token = generateRandomToken();
 
@@ -149,47 +153,30 @@ export class AuthController {
 			to: email,
 		});
 
-		reply.status(HttpStatus.OK).send({ message: 'Email sent is sucessfull' });
-	}
-
-	/**
-	 * Validate - Validate a user's session
-	 */
-	async validate(request: FastifyRequest, reply: FastifyReply) {
-		const session_token = request.cookies[COOKIE_NAME];
-
-		try {
-			await authProvider.getUser(session_token);
-		}
-		catch (error) {
-			if (error instanceof HttpException) {
-				return reply.status(error.statusCode).send({ message: error.message });
-			}
-			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'An unexpected error occurred' });
-		}
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
 	 * Verify - Verify a user's email
 	 */
-	async verify(request: FastifyRequest, reply: FastifyReply) {
+	async verify(request: FastifyRequest, reply: FastifyReply<void>) {
 		// Get the token from the request body
 		const { password_hash, token } = request.body as { password_hash: string, token: string };
 
 		// Verify the token
-		const token_result = await verificationTokens.findOne({ token });
+		const tokenResult = await verificationTokens.findOne({ token });
 
-		if (!token_result || token_result.expires_at < Dates.now('utc').unix_timestamp) {
-			return reply.status(HttpStatus.BAD_REQUEST).send({ message: 'Invalid or expired token' });
+		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid or expired token');
 		}
 
 		// Update the user's password
-		await users.updateOne({ _id: token_result.user_id }, { password_hash });
+		await users.updateOne({ _id: tokenResult.user_id }, { password_hash });
 
 		// Delete the token
 		await verificationTokens.deleteOne({ token });
 
 		// Return the user
-		return reply.status(HttpStatus.OK).send({ message: 'Password updated successfully' });
+		return reply.status(HttpStatus.OK).send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 }

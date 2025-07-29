@@ -1,6 +1,7 @@
 /* * */
 
 import '@tmlmobilidade/ui/styles';
+import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
 import { getAppConfig } from '@tmlmobilidade/lib';
 import { ThemeContextProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
@@ -39,7 +40,9 @@ export default async function Layout({ children }: PropsWithChildren) {
 		<html lang="en" suppressHydrationWarning>
 			<body>
 				<ThemeContextProvider>
-					{children}
+					<MapOptionsContextProvider>
+						{children}
+					</MapOptionsContextProvider>
 				</ThemeContextProvider>
 			</body>
 		</html>

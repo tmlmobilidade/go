@@ -4,249 +4,205 @@ import { fetchLines } from '@/utils/lines';
 import { parseServiceAlert } from '@/utils/service-alert-parser';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { alerts, files } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { type Alert } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { type Alert, type File, ServiceAlertResponse } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
 export class AlertsController {
-	static async create(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			const alertData = request.body as Alert;
+	/**
+	 * Create a new alert - Inserts a new alert into the database
+	 * @param {FastifyRequest} request - The request object containing the alert data in the body
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
+		const result = await alerts.insertOne(request.body);
 
-			const result = await alerts.insertOne(alertData);
-
-			reply.send({ data: { ...result, created_by: request.me._id, updated_by: request.me._id }, message: 'Alert created' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		// Send the created alert with a 201 status code
+		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}
 
-	static async delete(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
-			await alerts.deleteById(id);
+	/**
+	 * Delete an alert - Deletes an alert from the database
+	 * @param {FastifyRequest} request - The request object containing the alert ID in the params
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		const { id } = request.params;
+		await alerts.deleteById(id);
 
-			reply.send({ message: `Alert with id: ${id} deleted` });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
-	static async deleteImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const { id } = request.params;
+	/**
+	 * Delete an alert image - Deletes an alert image from the database
+	 * @param {FastifyRequest} request - The request object containing the alert ID in the params
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async deleteImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		const { id } = request.params;
 
-			const alert = await alerts.findById(id);
+		const alert = await alerts.findById(id);
 
-			if (!alert) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
-				return;
-			}
-
-			if (!alert.file_id) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
-				return;
-			}
-
-			await files.deleteById(alert.file_id);
-			await alerts.updateById(id, { file_id: undefined });
-
-			reply.send({
-				message: 'Image deleted',
-			});
+		if (!alert) {
+			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
+			return;
 		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
+
+		if (!alert.file_id) {
+			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
+			return;
 		}
+
+		await files.deleteById(alert.file_id);
+		await alerts.updateById(id, { file_id: undefined });
+
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			reply.send(await alerts.findMany({}, undefined, undefined, { created_at: -1 }));
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	/**
+	 * Get all alerts - Retrieves all alerts from the database
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async getAll(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
+		const result = await alerts.findMany({}, { sort: { created_at: -1 } });
+
+		reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 
+	/**
+	 * Get an alert by ID - Retrieves an alert from the database by its ID
+	 * @param {FastifyRequest} request - The request object containing the alert ID in the params
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
 	static async getById(
 		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
+		reply: FastifyReply<Alert>,
 	) {
-		try {
-			const { id } = request.params;
+		const { id } = request.params;
 
-			const alert = await alerts.findById(id);
+		const alert = await alerts.findById(id);
 
-			if (!alert) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
-				return;
-			}
+		if (!alert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
 
-			reply.send(alert);
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: alert, error: null, statusCode: HttpStatus.OK });
 	}
 
-	static async getGtfs(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			const result = await alerts.findMany({
-				$and: [
-					{
-						$or: [
-							{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
-							{ publish_end_date: null },
-							{ publish_end_date: undefined },
-							{ publish_end_date: { $exists: false } },
-						],
-						publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
-						publish_status: 'PUBLISHED',
-					},
-				],
-			}, undefined, undefined, { created_at: -1 });
-
-			const lines = await fetchLines();
-			const serviceAlerts = await Promise.all(result.map(async alert => await parseServiceAlert(alert, lines)));
-
-			reply.send({
-				entity: serviceAlerts,
-				header: {
-					gtfs_realtime_version: '2.0',
-					incrementality: 'FULL_DATASET',
-					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+	/**
+	 * Get GTFS alerts - Retrieves GTFS alerts from the database
+	 * @param {FastifyRequest} request - The request object
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async getGtfs(request: FastifyRequest, reply: FastifyReply<ServiceAlertResponse>) {
+		const result = await alerts.findMany({
+			$and: [
+				{
+					$or: [
+						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
+						{ publish_end_date: null },
+						{ publish_end_date: undefined },
+						{ publish_end_date: { $exists: false } },
+					],
+					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+					publish_status: 'PUBLISHED',
 				},
-			});
-		}
-		catch (error) {
-			reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error);
-		}
+			],
+		}, { sort: { created_at: -1 } });
+
+		const lines = await fetchLines();
+		const serviceAlerts = await Promise.all(result.map(async alert => await parseServiceAlert(alert, lines)));
+
+		reply.send({
+			data: {
+				entity: serviceAlerts,
+				header: { gtfs_realtime_version: '2.0', incrementality: 'FULL_DATASET', timestamp: Dates.now('Europe/Lisbon').unix_timestamp },
+			},
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
 	}
 
-	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const { id } = request.params;
+	/**
+	 * Get an alert image - Retrieves an alert image from the database
+	 * @param {FastifyRequest} request - The request object containing the alert ID in the params
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+		const { id } = request.params;
 
-			const alert = await alerts.findById(id);
+		const alert = await alerts.findById(id);
 
-			if (!alert) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
-				return;
-			}
+		if (!alert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
 
-			const url = await files.getFileUrl({ file_id: alert.file_id });
+		const file = await files.findById(alert.file_id);
 
-			reply.send({
-				data: url,
-				message: 'Image retrieved',
-			});
+		if (!file) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
 		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+
+		reply.send({ data: file, error: null, statusCode: HttpStatus.OK });
 	}
 
+	/**
+	 * Update an alert - Updates an alert in the database
+	 * @param {FastifyRequest} request - The request object containing the alert ID in the params and the alert data in the body
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
 	static async update(
 		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
+		reply: FastifyReply<Alert>,
 	) {
-		try {
-			const { id } = request.params;
-			const alertData = request.body as Partial<Alert>;
+		const { id } = request.params;
+		const alertData = request.body as Partial<Alert>;
 
-			await alerts.updateById(id, alertData);
+		const alert = await alerts.updateById(id, alertData);
 
-			reply.send({
-				data: { ...alertData, updated_by: request.me._id },
-				message: `Alert with id: ${id} updated`,
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: alert, error: null, statusCode: HttpStatus.OK });
 	}
 
-	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const { id } = request.params;
-			console.debug(`[uploadImage] Received request to upload image for alert id: ${id}`);
+	/**
+	 * Upload an alert image - Uploads an alert image to the database
+	 * @param {FastifyRequest} request - The request object containing the alert ID in the params and the image file in the body
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+		const { id } = request.params;
 
-			const alert = await alerts.findById(id);
-			console.debug(`[uploadImage] Fetched alert:`, alert);
+		const alert = await alerts.findById(id);
 
-			if (!alert) {
-				console.debug(`[uploadImage] Alert not found for id: ${id}`);
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
-				return;
-			}
-			// Parse the file from the request
-			const data = await request.file();
-			console.debug(`[uploadImage] Received file:`, {
-				filename: data.filename,
-				mimetype: data.mimetype,
-			});
-			const buffer = await data.toBuffer();
-			const size = buffer.buffer.byteLength;
-			console.debug(`[uploadImage] File size: ${size} bytes`);
+		if (!alert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
 
-			const result = await files.upload(buffer, {
-				created_by: request.me._id,
-				name: data.filename,
-				resource_id: id,
-				scope: 'alerts',
-				size: size,
-				type: data.mimetype,
-				updated_by: request.me._id,
-			});
-			console.debug(`[uploadImage] Uploaded file result:`, result);
+		const data = await request.file();
 
-			// Delete the old image if it exists
+		if (!data) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+
+		const buffer = await data.toBuffer();
+		const size = buffer.buffer.byteLength;
+
+		const result = await files.upload(buffer, {
+			created_by: request.me._id,
+			name: data.filename,
+			resource_id: id,
+			scope: 'alerts',
+			size: size,
+			type: data.mimetype,
+			updated_by: request.me._id,
+		});
+
+		// Delete the old image if it exists
+		if (alert.file_id) {
 			try {
-				if (alert.file_id) {
-					console.debug(`[uploadImage] Deleting old file with id: ${alert.file_id}`);
-					await files.deleteById(alert.file_id);
-					console.debug(`[uploadImage] Old file deleted`);
-				}
+				await files.deleteById(alert.file_id);
 			}
 			catch (error) {
-				console.error(`[uploadImage] Error deleting old file:`, error);
+				console.error(error);
 			}
-
-			await alerts.updateById(id, { file_id: result.insertedId.toString() });
-			console.debug(`[uploadImage] Updated alert with new file_id: ${result.insertedId.toString()}`);
-
-			reply.send({
-				data: result,
-				message: 'Image uploaded',
-			});
 		}
-		catch (error) {
-			console.error(`[uploadImage] Error:`, error);
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+
+		await alerts.updateById(id, { file_id: result._id.toString() });
+
+		reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 }

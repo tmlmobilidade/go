@@ -1,25 +1,30 @@
-import { UploadFile } from '@/components/common/UploadFile';
-import { useValidationDetailContext, ValidationDetailContextProvider, ValidationDetailMode } from '@/contexts/ValidationDetail.context';
-import { IconAlertCircle } from '@tabler/icons-react';
-import { Button, closeModal, Description, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
+'use client';
 
-import styles from './styles.module.css';
+/* * */
+
+import { AgencyDisplay } from '@/components/common/AgencyDisplay';
+import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
+import { useValidationsCreateContext, ValidationsCreateContextProvider } from '@/contexts/ValidationsCreate.context';
+import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 
 /* * */
 
 export const CREATE_VALIDATION_MODAL_ID = 'create-validation-modal';
 
+/* * */
+
 export const openCreateValidationModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<ValidationDetailContextProvider validationId={ValidationDetailMode.NEW}>
+				<ValidationsCreateContextProvider>
 					<CreateValidationModal />
-				</ValidationDetailContextProvider>
+				</ValidationsCreateContextProvider>
 			</MeContextProvider>
 		),
+		closeOnClickOutside: false,
 		modalId: CREATE_VALIDATION_MODAL_ID,
+		padding: 0,
 		size: 'auto',
 		withCloseButton: false,
 	});
@@ -28,124 +33,83 @@ export const openCreateValidationModal = () => {
 /* * */
 
 export default function CreateValidationModal() {
-	// A. State Management
-	const validationDetailContext = useValidationDetailContext();
+	//
 
-	// D. Render Components
-	const renderModalHeader = () => (
-		<Section gap="sm" padding="none">
-			<Label size="lg">Criar validação GTFS</Label>
-			<Description>
-				Carregue um arquivo GTFS para efetuar a validação do mesmo.
-			</Description>
-		</Section>
-	);
+	//
+	// A. Setup variables
 
-	const renderFileUploadSection = () => (
-		<Section gap="sm" padding="none">
-			<UploadFile
-				label="Ficheiro GTFS"
-				maxFileSize={5 * 1024 * 1024 * 1024} // 5GB
-				onFileChange={validationDetailContext.actions.setValidationFile}
-			/>
-		</Section>
-	);
+	const validationsCreateContext = useValidationsCreateContext();
 
-	const renderFeedInfoSection = () => {
-		if (!validationDetailContext.data.form.values.gtfs_agency || !validationDetailContext.data.form.values.gtfs_feed_info) return null;
-
-		return (
-			<Section gap="sm" padding="none">
-				<Label>Agência</Label>
-				<Grid columns="abc" gap="md">
-					<Section padding="none">
-						<Label size="sm" caps>ID</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_id ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Nome</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_name ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>URL</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Email</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_email ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Telefone</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_phone ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>URL</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_agency.agency_url ?? 'N/A'}</Text>
-					</Section>
-				</Grid>
-				<Divider />
-				<Label>Feed Info</Label>
-				<Grid columns="abc" gap="md">
-					<Section padding="none">
-						<Label size="sm" caps>Data de início</Label>
-						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Data de fim</Label>
-						<Text size="base">{Dates.fromOperationalDate(validationDetailContext.data.form.values.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR)}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Linguagem do feed</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_lang?.toUpperCase() ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>Email de contacto</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_email ?? 'N/A'}</Text>
-					</Section>
-					<Section padding="none">
-						<Label size="sm" caps>URL de contacto</Label>
-						<Text size="base">{validationDetailContext.data.form.values.gtfs_feed_info.feed_contact_url ?? 'N/A'}</Text>
-					</Section>
-				</Grid>
-			</Section>
-		);
-	};
-
-	const renderActionButtons = () => (
-		<Grid columns="ab" gap="md">
-			<Button label="Cancelar" onClick={() => closeModal(CREATE_VALIDATION_MODAL_ID)} variant="danger" fullWidth />
-			<Button
-				disabled={!validationDetailContext.flags.canSave || validationDetailContext.flags.isSaving}
-				label="Criar validação"
-				loading={validationDetailContext.flags.isSaving}
-				onClick={validationDetailContext.actions.saveValidation}
-				variant="primary"
-				fullWidth
-			/>
-		</Grid>
-	);
-
-	const renderError = () => {
-		if (validationDetailContext.flags.error && validationDetailContext.flags.error.name === 'ValidationError') {
-			return (
-				<div className={styles.errorContainer}>
-					<IconAlertCircle size={20} />
-					<Text size="base">{validationDetailContext.flags.error.message}</Text>
-				</div>
-			);
-		}
-		return null;
-	};
+	//
+	// B. Render Components
 
 	return (
-		<Section gap="lg">
-			{renderError()}
-			{renderModalHeader()}
-			{renderFeedInfoSection()}
-			{renderFileUploadSection()}
-			{renderActionButtons()}
-		</Section>
-	);
-}
+		<>
 
-/* * */
+			<Section gap="xs">
+				<Label size="lg" caps>Nova Validação GTFS</Label>
+				<Text>Selecione um arquivo GTFS para iniciar a validação.</Text>
+			</Section>
+
+			<Divider />
+
+			{validationsCreateContext.flags.error && validationsCreateContext.flags.error.name === 'ValidationError' && (
+				<>
+					<AlertMessage title={validationsCreateContext.flags.error?.message ?? 'odjisodj'} variant="danger" />
+					<Divider />
+				</>
+			)}
+
+			{validationsCreateContext.data.form.values.gtfs_agency && (
+				<>
+					<Section gap="sm">
+						<Label size="lg">agency.txt</Label>
+						<AgencyDisplay data={validationsCreateContext.data.form.values.gtfs_agency} />
+					</Section>
+					<Divider />
+				</>
+			)}
+
+			{validationsCreateContext.data.form.values.gtfs_feed_info && (
+				<>
+					<Section gap="sm">
+						<Label size="lg">feed_info.txt</Label>
+						<FeedInfoDisplay data={validationsCreateContext.data.form.values.gtfs_feed_info} />
+					</Section>
+					<Divider />
+				</>
+			)}
+
+			<Section>
+				<FileUpload
+					accept="application/zip"
+					label="Selecionar Arquivo GTFS"
+					maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
+					onFileChange={validationsCreateContext.actions.setValidationFile}
+				/>
+			</Section>
+
+			<Divider />
+
+			<Section>
+				<Grid columns="ab" gap="md">
+					<Button
+						disabled={validationsCreateContext.flags.loading}
+						label="Cancelar"
+						onClick={() => closeModal(CREATE_VALIDATION_MODAL_ID)}
+						variant="secondary"
+					/>
+					<Button
+						disabled={!validationsCreateContext.flags.can_create}
+						label="Criar validação"
+						loading={validationsCreateContext.flags.loading}
+						onClick={validationsCreateContext.actions.createValidation}
+					/>
+				</Grid>
+			</Section>
+
+		</>
+	);
+
+	//
+}

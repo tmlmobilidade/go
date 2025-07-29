@@ -1,5 +1,3 @@
-'use client';
-
 /* * */
 
 import { HomePage } from '@/components/home/HomePage';

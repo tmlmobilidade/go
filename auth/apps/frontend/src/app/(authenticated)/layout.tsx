@@ -8,11 +8,6 @@ import { type PropsWithChildren } from 'react';
 /* * */
 
 export default async function Layout({ children }: PropsWithChildren) {
-	//
-
-	//
-	// A. Render components
-
 	return (
 		<MeContextProvider>
 			<AppWrapper>
@@ -24,6 +19,4 @@ export default async function Layout({ children }: PropsWithChildren) {
 			</AppWrapper>
 		</MeContextProvider>
 	);
-
-	//
 }
