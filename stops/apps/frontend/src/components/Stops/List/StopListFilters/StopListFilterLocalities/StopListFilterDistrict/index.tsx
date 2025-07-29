@@ -19,15 +19,6 @@ export function StopListFilterDistrict() {
 	//
 	// B. Transform data
 
-	const isActive = useMemo(() => {
-		const defaultValues = Array.from(locations.data.district_ids) as string[];
-		const enabledValues = stopListContext.filters.filterDistrict;
-
-		if (defaultValues.length !== enabledValues.length) return true;
-
-		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [locations.data.district_ids]);
-
 	const parsedOptions = useMemo(() => {
 		if (!locations.data.districts?.length) return [];
 
