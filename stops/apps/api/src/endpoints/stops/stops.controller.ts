@@ -1,392 +1,73 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-
-import { files, stops } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { Stop } from '@tmlmobilidade/types';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { stops } from '@tmlmobilidade/interfaces';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { Stop, UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
  */
 export class StopsController {
 	/**
-     * Creates a new stop
-     * @param request Fastify request containing stop data in body
-     * @param reply Fastify reply
-     */
-	static async create(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			const stopData = request.body as Stop;
+	 * Creates a new stop
+	 * @param request Fastify request containing stop data in body
+	 * @param reply Fastify reply
+	 */
+	static async create(request: FastifyRequest, reply: FastifyReply<Stop>) {
+		const data = request.body as Stop;
+		const result = await stops.insertOne(data);
 
-			// const { comments, ...validStopData } = stopData;
-			const result = await stops.insertOne(stopData);
-
-			reply.send({ data: result, message: 'Stop created' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	// /**
-	//  * Deletes an stop by ID
-	//  * @param request Fastify request containing stop ID in params
-	//  * @param reply Fastify reply
-	//  */
-	// static async delete(
-	// 	request: FastifyRequest<{ Params: { id: string } }>,
-	// 	reply: FastifyReply,
-	// ) {
-	// 	try {
-	// 		const { id } = request.params;
-	// 		await stops.deleteById(id);
-
-	// 		reply.send({ message: `Stop with id: ${id} deleted` });
-	// 	}
-	// 	catch (error) {
-	// 		reply
-	// 			.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-	// 			.send(error);
-	// 	}
-	// }
-
-	static async deleteFile(request: FastifyRequest<{ Params: { file_id: string, id: string } }>, reply: FastifyReply) {
-		try {
-			console.log('===> request.params', request.params);
-			const { file_id, id } = request.params;
-
-			const stop = await stops.findById(id);
-			console.log('===> stop', stop);
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			const index = stop.file_ids.findIndex(fileId => fileId === file_id);
-
-			if (!stop.file_ids.includes(file_id) || index === -1) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
-				return;
-			}
-
-			stop.file_ids.splice(index, 1);
-
-			await files.deleteById(file_id);
-			await stops.updateById(id, { file_ids: stop.file_ids });
-
-			reply.send({
-				message: 'File deleted',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	static async deleteImage(request: FastifyRequest<{ Params: { id: string, image_id: string } }>, reply: FastifyReply) {
-		try {
-			console.log('===> request.params', request.params);
-			const { id, image_id } = request.params;
-
-			const stop = await stops.findById(id);
-			console.log('===> stop', stop);
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			const index = stop.image_ids.findIndex(imageId => imageId === image_id);
-
-			if (!stop.image_ids.includes(image_id) || index === -1) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
-				return;
-			}
-
-			stop.image_ids.splice(index, 1);
-
-			await files.deleteById(image_id);
-			await stops.updateById(id, { image_ids: stop.image_ids });
-
-			reply.send({
-				message: 'Image deleted',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED });
 	}
 
 	/**
-     * Retrieves all stops, sorted by creation date descending
-     * @param request Fastify request
-     * @param reply Fastify reply
-     */
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			reply.send(await stops.findMany({}, undefined, undefined, { created_at: -1 }));
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	 * Deletes an stop by ID
+	 * @param request Fastify request containing stop ID in params
+	 * @param reply Fastify reply
+	 */
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		const { id } = request.params;
+		await stops.deleteById(id);
+
+		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
-     * Retrieves a single stop by ID
-     * @param request Fastify request containing stop ID in params
-     * @param reply Fastify reply
-     */
-	static async getById(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
+	 * Retrieves all stops, sorted by creation date descending
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getAll(request: FastifyRequest, reply: FastifyReply<Stop[]>) {
+		const data = await stops.findMany({}, {
+			limit: 5,
+			sort: { created_at: -1 },
+		});
 
-			const stop = await stops.findById(id);
-
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			reply.send(stop);
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	static async getFile(request: FastifyRequest<{ Params: { fileId: string, id: string } }>, reply: FastifyReply) {
-		try {
-			const { fileId, id } = request.params;
-
-			const stop = await stops.findById(id);
-
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			if (stop.file_ids.indexOf(fileId) == -1) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'File not found' });
-				return;
-			}
-
-			const url = await files.getFileUrl({ file_id: fileId });
-
-			reply.send({
-				data: url,
-				message: 'File retrieved',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	static async getFiles(request: FastifyRequest<{ Params: { fileId: string, id: string } }>, reply: FastifyReply) {
-		try {
-			const { id } = request.params;
-
-			const stop = await stops.findById(id);
-
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			const urls = await Promise.all(stop.file_ids.map(file_id => files.getFileUrl({ file_id: file_id })));
-
-			reply.send({
-				data: urls,
-				message: 'Files retrieved',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	static async getImage(request: FastifyRequest<{ Params: { id: string, imageId: string } }>, reply: FastifyReply) {
-		try {
-			const { id, imageId } = request.params;
-
-			const stop = await stops.findById(id);
-
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			if (stop.image_ids.indexOf(imageId) == -1) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
-				return;
-			}
-
-			const url = await files.getFileUrl({ file_id: imageId });
-
-			reply.send({
-				data: url,
-				message: 'Image retrieved',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	static async getImages(request: FastifyRequest<{ Params: { id: string, imageId: string } }>, reply: FastifyReply) {
-		try {
-			const { id } = request.params;
-
-			const stop = await stops.findById(id);
-
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-
-			// if (stop.image_ids.indexOf(imageId) == -1) {
-			// 	reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
-			// 	return;
-			// }
-
-			const urls = await Promise.all(stop.image_ids.map(image_id => files.getFileUrl({ file_id: image_id })));
-
-			reply.send({
-				data: urls,
-				message: 'Images retrieved',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
-     * Updates an existing stop by ID
-     * @param request Fastify request containing stop ID in params and update data in body
-     * @param reply Fastify reply
-     */
-	static async update(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply,
-	) {
-		try {
-			const { id } = request.params;
-			const stopData = request.body as Partial<Stop>;
+	 * Retrieves a single stop by ID
+	 * @param request Fastify request containing stop ID in params
+	 * @param reply Fastify reply
+	 */
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
+		const { id } = request.params;
+		const stop = await stops.findById(id);
 
-			await stops.updateById(id, stopData);
+		if (!stop) throw new HttpException(HttpStatus.NOT_FOUND, 'Stop not found');
 
-			reply.send({
-				data: stopData,
-				message: `Stop with id: ${id} updated`,
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: stop, error: null, statusCode: HttpStatus.OK });
 	}
 
-	static async uploadFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const { id } = request.params;
+	/**
+	 * Updates an existing stop by ID
+	 * @param request Fastify request containing stop ID in params and update data in body
+	 * @param reply Fastify reply
+	 */
+	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: string } }>, reply: FastifyReply<Stop>) {
+		const { id } = request.params;
+		const data = await stops.updateById(id, request.body);
 
-			const stop = await stops.findById(id);
-
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-			// Parse the file from the request
-			const data = await request.file();
-			const buffer = await data.toBuffer();
-			const size = buffer.buffer.byteLength;
-
-			const result = await files.upload(buffer, {
-				created_by: 'system', // TODO: Change to user id
-				name: data.filename,
-				resource_id: id,
-				scope: 'stops',
-				size: size,
-				type: data.mimetype,
-				updated_by: 'system', // TODO: Change to user id
-			}, {});
-
-			// Image ID to array of Image IDs
-			stop.file_ids.push(result.insertedId.toString());
-			await stops.updateById(id, { file_ids: stop.file_ids });
-
-			reply.send({
-				data: result,
-				message: 'File uploaded',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const { id } = request.params;
-
-			const stop = await stops.findById(id);
-
-			if (!stop) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Stop not found' });
-				return;
-			}
-			// Parse the file from the request
-			const data = await request.file();
-			const buffer = await data.toBuffer();
-			const size = buffer.buffer.byteLength;
-
-			const result = await files.upload(buffer, {
-				created_by: 'system', // TODO: Change to user id
-				name: data.filename,
-				resource_id: id,
-				scope: 'stops',
-				size: size,
-				type: data.mimetype,
-				updated_by: 'system', // TODO: Change to user id
-			}, {});
-
-			// Image ID to array of Image IDs
-			stop.image_ids.push(result.insertedId.toString());
-			await stops.updateById(id, { image_ids: stop.image_ids });
-
-			reply.send({
-				data: result,
-				message: 'Image uploaded',
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data, error: null, statusCode: HttpStatus.OK });
 	}
 }

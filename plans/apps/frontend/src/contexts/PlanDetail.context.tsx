@@ -3,9 +3,9 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { Plan, PlanSchema, UpdatePlanSchema } from '@tmlmobilidade/types';
+import { Plan, UpdatePlanSchema } from '@tmlmobilidade/types';
 import { File } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { convertObject, fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -55,7 +55,6 @@ export const PlanDetailContextProvider = ({ children, planId }: { children: Reac
 	//
 	// B. Define form
 	const form = useForm<Plan & { file: File }>({
-		validate: zodResolver(PlanSchema) as FormValidateInput<Plan & { file: File }>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});

@@ -69,7 +69,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// C. Transform data
 
-	const normalizedAlertsData: ValidationNormalized[] = useMemo(() => {
+	const normalizedValidationsData: ValidationNormalized[] = useMemo(() => {
 		// Skip if no data is available
 		if (!allValidationsData) return [];
 		// Normalize record fields
@@ -82,7 +82,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 
 	const searchResultsData = useSearch<ValidationNormalized>({
 		accessors: ['_id', 'agency_name_normalized'],
-		data: normalizedAlertsData,
+		data: normalizedValidationsData,
 		query: filterSearch,
 	});
 
@@ -92,7 +92,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 		// 1. Convert filter arrays to sets for O(1) membership checks
 		const agencySet = new Set(filterAgency);
 		const validityStatusSet = new Set(filterProcessingStatus);
-		return searchResultsData.filter((item: ValidationNormalized) => {
+		const filteredResultsData = searchResultsData.filter((item: ValidationNormalized) => {
 			// Filter by agency
 			if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
 			// Filter by validity_status
@@ -100,6 +100,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 			// Return true if all filters pass
 			return true;
 		});
+		return filteredResultsData;
 	}, [searchResultsData, filterAgency]);
 
 	//
