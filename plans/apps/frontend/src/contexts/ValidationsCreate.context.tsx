@@ -6,8 +6,8 @@ import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/Crea
 import { Routes } from '@/lib/routes';
 import { type WorkerMessage } from '@/types/worker';
 import { Permissions } from '@tmlmobilidade/lib';
-import { type CreateValidationDto, CreateValidationSchema, Validation, type ValidationPermission } from '@tmlmobilidade/types';
-import { closeModal, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { type CreateValidationDto, Validation, type ValidationPermission } from '@tmlmobilidade/types';
+import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -63,7 +63,6 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	// B. Setup form
 
 	const form = useForm<CreateValidationDto>({
-		validate: zodResolver(CreateValidationSchema) as unknown,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -145,6 +144,12 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		// Handle the response
 
 		if (response.error || !response.data?._id) {
+			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
+			setIsLoading(false);
+			return;
+		}
+
+		if (!response.data?._id) {
 			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
 			setIsLoading(false);
 			return;
