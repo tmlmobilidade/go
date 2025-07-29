@@ -1,7 +1,6 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { useStopListContext } from '@/contexts/StopList.context';
 import { Combobox } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -13,7 +12,6 @@ export function StopListFilterDistrict() {
 	//
 	// A. Setup variables
 
-	const stopListContext = useStopListContext();
 	const locations = useLocationsContext();
 
 	//

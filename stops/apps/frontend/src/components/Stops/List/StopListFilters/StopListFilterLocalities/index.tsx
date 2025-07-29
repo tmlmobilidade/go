@@ -1,11 +1,10 @@
 /* * */
 
-import { Badge, Grid, Menu } from '@tmlmobilidade/ui';
+// import { Badge, Grid, Menu } from '@tmlmobilidade/ui';
 
 import { StopListFilterDistrict } from './StopListFilterDistrict';
 import { StopListFilterMunicipality } from './StopListFilterMuncipality';
-// import { StopListFilterMunicipality } from './StopListFilterMuncipality';
-// import { StopListFilterParish } from './StopListFilterParishes';
+import { StopListFilterParish } from './StopListFilterParishes';
 
 /* * */
 
@@ -14,6 +13,7 @@ export function StopListFilterLocations() {
 		<>
 			<StopListFilterDistrict />
 			<StopListFilterMunicipality />
+			<StopListFilterParish />
 		</>
 		// <Menu trigger="click-hover" withArrow>
 		// 	<Menu.Target>
