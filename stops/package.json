@@ -18,7 +18,7 @@
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@fastify/multipart": "^9.0.3",
-		"@tmlmobilidade/tsconfig": "20250728.2346.41",
+		"@tmlmobilidade/tsconfig": "20250729.122.25",
 		"dotenv-cli": "9.0.0",
 		"prettier": "3.6.2",
 		"turbo": "2.5.5",
