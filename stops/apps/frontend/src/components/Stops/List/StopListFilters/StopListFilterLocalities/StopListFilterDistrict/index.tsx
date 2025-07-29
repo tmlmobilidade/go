@@ -24,9 +24,9 @@ export function StopListFilterDistrict() {
 
 		return locations.data.districts.map(item => ({
 			label: item.name,
-			value: item.id,
+			value: item._id,
 		}));
-	}, [locations.data.districts, stopListContext.filters.filterDistrict]);
+	}, [locations.data.districts]);
 
 	//
 	// C. Render components
@@ -35,10 +35,9 @@ export function StopListFilterDistrict() {
 		<Combobox
 			data={parsedOptions}
 			label="Distrito"
+			onChange={locations.actions.setDistrict}
 			placeholder="..."
-			width={300}
 			fullWidth
-			{...stopListContext.actions.setFilterDistrict}
 		/>
 	);
 

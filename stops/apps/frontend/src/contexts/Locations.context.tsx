@@ -2,34 +2,23 @@
 
 /* * */
 
-import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
-import { getAppConfig, HttpStatus } from '@tmlmobilidade/lib';
-import { HttpResponse, normalizeString } from '@tmlmobilidade/utils';
-import { createContext, useContext, useMemo } from 'react';
+import { getAppConfig } from '@tmlmobilidade/lib';
+import { type District, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
+import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface LocationsContextState {
 	actions: {
-		getDistrictById: (districtId: string) => District | undefined
-		getLocalityById: (localityId: string) => Locality | undefined
-		getMunicipalityById: (municipalityId: string) => Municipality | undefined
-		getParishById: (parishId: string) => Parish | undefined
+		setDistrict: (districtId: string) => void
 	}
 	data: {
-		district_ids: District['id'][]
 		districts: District[]
-		districts_map: Map<District['id'], District & { name_normalized: string }>
-		localitites: Locality[]
-		localitites_map: Map<Locality['id'], Locality & { name_normalized: string }>
-		locality_ids: Locality['id'][]
 		municipalities: Municipality[]
-		municipalities_map: Map<Municipality['id'], Municipality & { name_normalized: string }>
-		municipality_ids: Municipality['id'][]
-		parish_ids: Parish['id'][]
 		parishes: Parish[]
-		parishes_map: Map<Parish['id'], Parish & { name_normalized: string }>
+		selectedLocation: Partial<Location>
 	}
 	flags: {
 		is_loading: boolean
@@ -56,123 +45,55 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Fetch data
 
-	const { data: fetchedDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<HttpResponse<District[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`);
-	const { data: fetchedMunicipalitiesData, isLoading: fetchedMunicipalitiesLoading } = useSWR<HttpResponse<Municipality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities`);
-	const { data: fetchedParishesData, isLoading: fetchedParishesLoading } = useSWR<HttpResponse<Parish[]>, Error>(`$${getAppConfig('locations', 'api_url', 'production')}/locations/parishes`);
-	const { data: fetchedLocalitiesData, isLoading: fetchedLocalitiesLoading } = useSWR<HttpResponse<Locality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities`);
+	const [selectedLocation, setSelectedLocation] = useState<LocationsContextState['data']['selectedLocation']>({});
+	const [allMunicipalitiesData, setAllMunicipalitiesData] = useState<Municipality[]>([]);
+
+	const { data: allDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<HttpResponse<District[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`);
 
 	//
 	// B. Transform data
 
-	const allDistrictsData = useMemo(() => {
-		if (fetchedDistrictsData?.status !== HttpStatus.OK) return [];
-
-		return fetchedDistrictsData.data;
-	}, [fetchedDistrictsData]);
-
-	const allDistrictsMap = useMemo(() => {
-		return new Map(allDistrictsData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allDistrictsData]);
-
-	const allDistrictIds = useMemo(() => {
-		return allDistrictsData.map(item => item.id);
-	}, [allDistrictsData]);
-
 	//
-
-	const allMunicipalitiesData = useMemo(() => {
-		if (fetchedMunicipalitiesData?.status !== HttpStatus.OK) return [];
-		const AML = ['Alcochete', 'Almada', 'Amadora', 'Barreiro', 'Cascais', 'Lisboa', 'Loures', 'Mafra', 'Moita', 'Montijo', 'Odivelas', 'Oeiras', 'Palmela', 'Seixal', 'Sesimbra', 'Setúbal', 'Sintra', 'Vila Franca de Xira'];
-		return fetchedMunicipalitiesData.data
-			.filter(item => AML.includes(item.name))
-			.sort((a, b) => a.name.localeCompare(b.name));
-	}, [fetchedMunicipalitiesData]);
-
-	const allMunicipalitiesMap = useMemo(() => {
-		return new Map(allMunicipalitiesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allMunicipalitiesData]);
-
-	const allMunicipalityIds = useMemo(() => {
-		return allMunicipalitiesData.map(item => item.id);
-	}, [allMunicipalitiesData]);
-
-	//
-
-	const allParishesData = useMemo(() => {
-		if (fetchedParishesData?.status !== HttpStatus.OK) return [];
-		return fetchedParishesData.data;
-	}, [fetchedParishesData]);
-
-	const allParishesMap = useMemo(() => {
-		return new Map(allParishesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allParishesData]);
-
-	const allParishIds = useMemo(() => {
-		return allParishesData.map(item => item.id);
-	}, [allParishesData]);
-
-	//
-
-	const allLocalitiesData = useMemo(() => {
-		if (fetchedLocalitiesData?.status !== HttpStatus.OK) return [];
-		return fetchedLocalitiesData.data;
-	}, [fetchedLocalitiesData]);
-
-	const allLocalitiesMap = useMemo(() => {
-		return new Map(allLocalitiesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allLocalitiesData]);
-
-	const allLocalityIds = useMemo(() => {
-		return allLocalitiesData.map(item => item.id);
-	}, [allLocalitiesData]);
 
 	//
 	// C. Handle actions
 
-	const getDistrictById = (districtId: string): District | undefined => {
-		return allDistrictsData.find(item => item.id === districtId);
-	};
+	async function setDistrict(districtId: string) {
+		selectedLocation.district = allDistrictsData?.data.find(item => item._id === districtId);
+		setSelectedLocation(selectedLocation);
 
-	const getMunicipalityById = (municipalityId: string): Municipality | undefined => {
-		return allMunicipalitiesData.find(item => item.id === municipalityId);
-	};
+		const res = await fetchData<Municipality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities?district_id=${selectedLocation.district._id}`);
+		console.log('====> Res', res, res.isOk());
 
-	const getParishById = (parishId: string): Parish | undefined => {
-		return allParishesData.find(item => item.id === parishId);
-	};
+		if (res.error) {
+			console.error(res.error);
+			return;
+		}
 
-	const getLocalityById = (localityId: string): Locality | undefined => {
-		return allLocalitiesData?.find(item => item.id === localityId);
+		setAllMunicipalitiesData(res.data);
 	};
 
 	//
 	// D. Define context value
 
-	const contextValue: LocationsContextState = {
-		actions: {
-			getDistrictById,
-			getLocalityById,
-			getMunicipalityById,
-			getParishById,
-		},
-		data: {
-			district_ids: allDistrictIds ?? [],
-			districts: allDistrictsData ?? [],
-			districts_map: allDistrictsMap || new Map(),
-			localitites: allLocalitiesData ?? [],
-			localitites_map: allLocalitiesMap || new Map(),
-			locality_ids: allLocalityIds ?? [],
-			municipalities: allMunicipalitiesData ?? [],
-			municipalities_map: allMunicipalitiesMap || new Map(),
-			municipality_ids: allMunicipalityIds ?? [],
-			parish_ids: allParishIds ?? [],
-			parishes: allParishesData ?? [],
-			parishes_map: allParishesMap || new Map(),
-		},
-		flags: {
-			is_loading: fetchedDistrictsLoading || fetchedMunicipalitiesLoading || fetchedParishesLoading || fetchedLocalitiesLoading,
-		},
-	};
+	const contextValue: LocationsContextState = useMemo(() => {
+		return {
+
+			actions: {
+				setDistrict,
+			},
+			data: {
+				districts: allDistrictsData?.data ?? [],
+				municipalities: allMunicipalitiesData,
+				parishes: [],
+				selectedLocation,
+
+			},
+			flags: {
+				is_loading: fetchedDistrictsLoading,
+			},
+		};
+	}, [selectedLocation, allDistrictsData, allMunicipalitiesData]);
 
 	//
 	// E. Render components

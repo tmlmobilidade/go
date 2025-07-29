@@ -30,6 +30,7 @@
 		"@tmlmobilidade/types": "^20250725.1425.7",
 		"@tmlmobilidade/ui": "^20250725.1425.7",
 		"@vis.gl/react-maplibre": "^8.0.4",
+		"nuqs": "^2.4.3",
 		"react": "^19.1.0"
 	}
 }
