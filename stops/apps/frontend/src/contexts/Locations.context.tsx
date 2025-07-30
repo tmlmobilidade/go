@@ -5,6 +5,7 @@
 import { getAppConfig } from '@tmlmobilidade/lib';
 import {
 	type District,
+	Locality,
 	type Location,
 	type Municipality,
 	type Parish,
@@ -19,6 +20,7 @@ interface LocationsContextState {
 	actions: {
 		setDistrict: (districtId: string) => void
 		setMunicipality: (municipalityId: string) => void
+		setParish: (Parish: string) => void
 	}
 	data: {
 		districts: District[]
@@ -54,6 +56,7 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	const [selectedLocation, setSelectedLocation] = useState<LocationsContextState['data']['selectedLocation']>({});
 	const [allMunicipalitiesData, setAllMunicipalitiesData] = useState<Municipality[]>([]);
 	const [allParishesData, setAllParishesData] = useState<Parish[]>([]);
+	const [allLocalitiesData, setAllLocalitiesData] = useState<Locality[]>([]);
 
 	const { data: allDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<HttpResponse<District[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`);
 
@@ -63,15 +66,13 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	// B. Handle actions
 
 	async function setDistrict(districtId: string) {
-		console.log('selectedLocation.district --->', selectedLocation.district);
-
 		selectedLocation.district = allDistrictsData?.data.find(item => item._id === districtId);
 		setSelectedLocation(selectedLocation);
 
 		if (!selectedLocation.district) return;
 
 		const res = await fetchData<Municipality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities?district_id=${selectedLocation.district._id}`);
-		console.log('====> Res', res);
+		console.log('Municipality ------>', res);
 
 		if (res.error) {
 			console.error(res.error);
@@ -79,22 +80,41 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 		}
 
 		setAllMunicipalitiesData(res.data);
+		setAllParishesData([]);
+		setAllLocalitiesData([]);
 	};
 
 	async function setMunicipality(municipalityId: string) {
 		selectedLocation.municipality = allMunicipalitiesData.find(item => item._id === municipalityId);
 		setSelectedLocation(selectedLocation);
 
-		if (!selectedLocation.municipality) return;
+		if (!selectedLocation.district || !selectedLocation.municipality) return;
 
 		const res = await fetchData<Parish[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/parishes?municipality_id=${selectedLocation.municipality._id}`);
-		console.log('------>', res);
+		console.log('Parish ------>', res);
 		if (res.error) {
 			console.error(res.error);
 			return;
 		}
 
 		setAllParishesData(res.data);
+		setAllLocalitiesData([]);
+	}
+
+	async function setParish(parishId: string) {
+		selectedLocation.parish = allLocalitiesData.find(item => item._id === parishId);
+		setSelectedLocation(selectedLocation);
+
+		if (!selectedLocation.district || !selectedLocation.municipality || !selectedLocation.parish) return;
+
+		const res = await fetchData<Locality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities?parish_id=${selectedLocation.parish._id}`);
+		console.log('localities ------>', res);
+		if (res.error) {
+			console.error(res.error);
+			return;
+		}
+
+		setAllLocalitiesData(res.data);
 	}
 
 	//
@@ -108,6 +128,7 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 			actions: {
 				setDistrict,
 				setMunicipality,
+				setParish,
 			},
 			data: {
 				districts: allDistrictsData?.data ?? [],

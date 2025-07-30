@@ -33,6 +33,7 @@ export function StopListFilterParish() {
 		<Combobox
 			data={parsedOptions}
 			label="Freguesia"
+			onChange={locations.actions.setParish}
 			placeholder="..."
 			fullWidth
 		/>
