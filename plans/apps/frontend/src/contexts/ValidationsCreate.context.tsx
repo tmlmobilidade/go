@@ -6,8 +6,8 @@ import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/Crea
 import { Routes } from '@/lib/routes';
 import { type WorkerMessage } from '@/types/worker';
 import { Permissions } from '@tmlmobilidade/lib';
-import { type CreateValidationDto, CreateValidationSchema, type ValidationPermission } from '@tmlmobilidade/types';
-import { closeModal, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { type CreateValidationDto, Validation, type ValidationPermission } from '@tmlmobilidade/types';
+import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -63,7 +63,6 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	// B. Setup form
 
 	const form = useForm<CreateValidationDto>({
-		validate: zodResolver(CreateValidationSchema) as unknown,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -139,22 +138,24 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		//
 		// Perform the API request to create the validation
 
-		const response = await multipartFetch('/api/validations', uploadFormData);
+		const response = await multipartFetch<Validation>('/api/validations', uploadFormData);
 
 		//
 		// Handle the response
 
-		if (response.error) {
+		if (response.error || !response.data?._id) {
 			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
 			setIsLoading(false);
 			return;
 		}
 
-		const responseData = response.data as { data: { insertedId: string } };
-
-		if (responseData.data.insertedId) {
-			router.push(`/validations/${responseData.data.insertedId}`);
+		if (!response.data?._id) {
+			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
+			setIsLoading(false);
+			return;
 		}
+
+		router.push(Routes.VALIDATION_DETAIL(response.data._id));
 
 		useToast.success({
 			message: 'Validação em progresso.',

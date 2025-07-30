@@ -16,14 +16,11 @@ declare module 'fastify' {
 /* * */
 
 export default function authorizationMiddleware(scope?: string, action?: string) {
-	return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+	return async (request: FastifyRequest, reply: FastifyReply<void>): Promise<void> => {
 		const token = request.cookies.session_token;
 
 		if (!token) {
-			throw new HttpException(
-				HttpStatus.UNAUTHORIZED,
-				'Invalid authorization token',
-			);
+			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Invalid authorization token');
 		}
 
 		// If no scope or action is provided, only check if the user is authenticated

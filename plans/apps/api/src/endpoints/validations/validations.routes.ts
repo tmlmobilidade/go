@@ -17,72 +17,42 @@ server.register(
 		// GET /validations
 		instance.get(
 			'/',
-			{
-				preHandler: authorizationMiddleware<ValidationPermission>(
-					Permissions.validations.scope,
-					Permissions.validations.actions.list,
-				),
-			},
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.list) },
 			ValidationsController.getAll,
 		);
 
 		// GET /validations/:id
 		instance.get(
 			'/:id',
-			{
-				preHandler: authorizationMiddleware<ValidationPermission>(
-					Permissions.validations.scope,
-					Permissions.validations.actions.read,
-				),
-			},
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.read) },
 			ValidationsController.getById,
 		);
 
 		// POST /validations
 		instance.post(
 			'/',
-			{
-				preHandler: authorizationMiddleware<ValidationPermission>(
-					Permissions.validations.scope,
-					Permissions.validations.actions.create,
-				),
-			},
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.create) },
 			ValidationsController.create,
 		);
 
 		// PUT /validations/:id
 		instance.put(
 			'/:id',
-			{
-				preHandler: authorizationMiddleware<ValidationPermission>(
-					Permissions.validations.scope,
-					Permissions.validations.actions.update,
-				),
-			},
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.update) },
 			ValidationsController.update,
 		);
 
 		// DELETE /validations/:id
 		instance.delete(
 			'/:id',
-			{
-				preHandler: authorizationMiddleware<ValidationPermission>(
-					Permissions.validations.scope,
-					Permissions.validations.actions.delete,
-				),
-			},
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.delete) },
 			ValidationsController.delete,
 		);
 
 		// GET /validations/:id/file
 		instance.get(
 			'/:id/file',
-			{
-				preHandler: authorizationMiddleware<ValidationPermission>(
-					Permissions.validations.scope,
-					Permissions.validations.actions.read,
-				),
-			},
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.read) },
 			ValidationsController.getFile,
 		);
 

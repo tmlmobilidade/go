@@ -32,18 +32,12 @@ export default function IntroductionEmail() {
 		event.preventDefault();
 		const response = await verifyEmail(resetEmail);
 
-		if (response.status !== 200) {
-			useToast.error({
-				message: response.error ?? 'An error occurred',
-				title: 'failed to sent email',
-			});
+		if (!response.isOk) {
+			useToast.error({ message: response.error ?? 'An error occurred', title: 'failed to sent email' });
 			return;
 		}
 
-		useToast.success({
-			message: 'Email de recuperação enviado com sucesso',
-			title: 'Sucesso',
-		});
+		useToast.success({ message: 'Email de recuperação enviado com sucesso', title: 'Sucesso' });
 
 		router.push(Routes.LOGIN);
 	};

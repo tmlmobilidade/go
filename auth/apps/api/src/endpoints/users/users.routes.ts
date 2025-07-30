@@ -33,6 +33,9 @@ server.register(
 		// GET /users/me
 		instance.get('/me', { preHandler: authorizationMiddleware() }, UsersController.getMe);
 
+		// PUT /users/me
+		instance.put('/me', { preHandler: authorizationMiddleware() }, UsersController.updateMe);
+
 		next();
 	},
 	{ prefix: NAMESPACE },

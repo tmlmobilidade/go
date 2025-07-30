@@ -33,18 +33,12 @@ export function VerificationForm({ token }: Props) {
 
 	const handleSubmit = async (password: string) => {
 		const response = await verify(token, password);
-		if (response.status !== 200) {
-			useToast.error({
-				message: response.error ?? 'An error occurred',
-				title: 'Login failed',
-			});
+		if (!response.isOk) {
+			useToast.error({ message: response.error ?? 'An error occurred', title: 'Login failed' });
 			return;
 		}
 
-		useToast.success({
-			message: undefined,
-			title: 'Login successful',
-		});
+		useToast.success({ message: undefined, title: 'Login successful' });
 
 		router.replace(Routes.LOGIN);
 	};

@@ -1,11 +1,19 @@
-# # # # # # # # #
+# # #
+# PRIMER STAGE
 
-FROM node:22.6-alpine3.20 AS base
+FROM node:lts-alpine AS base
+
 
 ENV MODULE=sae-stops
 ENV PROJECT=frontend
 
+ARG ENVIRONMENT
+
+ENV ENVIRONMENT=${ENVIRONMENT}
+ENV NEXT_PUBLIC_ENVIRONMENT=${ENVIRONMENT}
+
 RUN npm install -g turbo@^2
+
 
 # # # # # # # # #
 
@@ -57,8 +65,6 @@ RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${PROJECT}
 FROM base AS runner
 
 WORKDIR /app
-
-ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

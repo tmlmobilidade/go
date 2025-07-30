@@ -15,34 +15,22 @@ const controller = new AuthController();
 server.register(
 	(instance, opts, next) => {
 		// Login route
-		instance.post('/login', async (request, reply) => {
-			return controller.login(request, reply);
-		});
+		instance.post('/login', controller.login);
 
 		// Logout route
-		instance.get('/logout', async (request, reply) => {
-			return controller.logout(request, reply);
-		});
+		instance.get('/logout', controller.logout);
 
 		// Get permissions route
-		instance.get('/permissions', async (request, reply) => {
-			return controller.getPermissions(request, reply);
-		});
+		instance.get('/permissions', controller.getPermissions);
 
 		// Verify route
-		instance.post('/verify', async (request, reply) => {
-			return controller.verify(request, reply);
-		});
+		instance.post('/verify', controller.verify);
 
 		// Verify Email
-		instance.post('/verify-email', async (request, reply) => {
-			return controller.sendEmailWithResetPasswordURL(request, reply);
-		});
+		instance.post('/verify-email', controller.sendEmailWithResetPasswordURL);
 
-		// Chnage password
-		instance.post('/change-password', async (request, reply) => {
-			return controller.changePassword(request, reply);
-		});
+		// Change password
+		instance.post('/change-password', controller.changePassword);
 
 		next();
 	},

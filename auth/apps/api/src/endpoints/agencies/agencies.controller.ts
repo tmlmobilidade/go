@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { agencies } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { type CreateAgencyDto, type UpdateAgencyDto } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { Agency, type CreateAgencyDto, type UpdateAgencyDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -13,16 +13,9 @@ export class AgenciesController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateAgencyDto }>, reply: FastifyReply) {
-		try {
-			const agency = await agencies.insertOne(request.body);
-			reply.send({ data: agency, message: 'Agency created successfully' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async create(request: FastifyRequest<{ Body: CreateAgencyDto }>, reply: FastifyReply<Agency>) {
+		const agency = await agencies.insertOne(request.body);
+		reply.send({ data: agency, error: null, statusCode: HttpStatus.CREATED });
 	}
 
 	/**
@@ -30,16 +23,9 @@ export class AgenciesController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			await agencies.deleteById(request.params.id);
-			reply.send({ message: 'Agency deleted successfully' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		await agencies.deleteById(request.params.id);
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -47,16 +33,9 @@ export class AgenciesController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
-		try {
-			const agencyList = await agencies.findMany({}, undefined, undefined, { created_at: -1 });
-			reply.send(agencyList);
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async getAll(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
+		const agencyList = await agencies.findMany({}, { sort: { created_at: -1 } });
+		reply.send({ data: agencyList, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -64,22 +43,12 @@ export class AgenciesController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const agency = await agencies.findById(request.params.id);
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
+		const agency = await agencies.findById(request.params.id);
 
-			if (!agency) {
-				reply.status(HttpStatus.NOT_FOUND).send({ message: 'Agency not found' });
-				return;
-			}
+		if (!agency) throw new HttpException(HttpStatus.NOT_FOUND, 'Agency not found');
 
-			reply.send(agency);
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+		reply.send({ data: agency, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -87,15 +56,8 @@ export class AgenciesController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object
 	 */
-	static async update(request: FastifyRequest<{ Body: UpdateAgencyDto, Params: { id: string } }>, reply: FastifyReply) {
-		try {
-			const agency = await agencies.updateById(request.params.id, request.body);
-			reply.send({ data: agency, message: 'Agency updated successfully' });
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
+	static async update(request: FastifyRequest<{ Body: UpdateAgencyDto, Params: { id: string } }>, reply: FastifyReply<Agency>) {
+		const agency = await agencies.updateById(request.params.id, request.body);
+		reply.send({ data: agency, error: null, statusCode: HttpStatus.OK });
 	}
 }
