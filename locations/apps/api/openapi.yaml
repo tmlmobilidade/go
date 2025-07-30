@@ -1,0 +1,529 @@
+openapi: 3.1.0
+
+info:
+  title: Locations API
+  description: API for accessing Portuguese geographic and administrative location data including districts, municipalities, parishes, and localities with optional census information.
+  version: 1.0.0
+
+servers:
+  - url: /
+    description: Local server
+
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/Location'
+            - type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/District'
+                  - $ref: '#/components/schemas/Municipality'
+                  - $ref: '#/components/schemas/Parish'
+                  - $ref: '#/components/schemas/Locality'
+        error:
+          type: string
+          nullable: true
+        status:
+          type: integer
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+      required:
+        - data
+        - error
+        - status
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+      required:
+        - page
+        - limit
+        - total
+
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        district:
+          $ref: '#/components/schemas/District'
+          nullable: true
+        municipality:
+          $ref: '#/components/schemas/Municipality'
+          nullable: true
+        parish:
+          $ref: '#/components/schemas/Parish'
+          nullable: true
+        locality:
+          $ref: '#/components/schemas/Locality'
+          nullable: true
+        census:
+          $ref: '#/components/schemas/Census'
+          nullable: true
+      required:
+        - latitude
+        - longitude
+        - district
+        - municipality
+        - parish
+        - locality
+
+    District:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        area_ha:
+          type: number
+        geojson:
+          $ref: '#/components/schemas/GeoJSONFeature'
+      required:
+        - _id
+        - name
+        - area_ha
+
+    Municipality:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        area_ha:
+          type: number
+        district_id:
+          type: string
+        geojson:
+          $ref: '#/components/schemas/GeoJSONFeature'
+      required:
+        - _id
+        - name
+        - area_ha
+        - district_id
+
+    Parish:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        area_ha:
+          type: number
+        district_id:
+          type: string
+        municipality_id:
+          type: string
+        geojson:
+          $ref: '#/components/schemas/GeoJSONFeature'
+      required:
+        - _id
+        - name
+        - area_ha
+        - district_id
+        - municipality_id
+
+    Locality:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        area_ha:
+          type: number
+        district_id:
+          type: string
+        municipality_id:
+          type: string
+        parish_id:
+          type: string
+        geojson:
+          $ref: '#/components/schemas/GeoJSONFeature'
+      required:
+        - _id
+        - name
+        - area_ha
+        - district_id
+        - municipality_id
+
+    Census:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Feature]
+        geometry:
+          $ref: '#/components/schemas/MultiPolygon'
+        properties:
+          type: object
+          description: Census data with demographic and housing statistics
+          additionalProperties: true
+      required:
+        - type
+        - geometry
+        - properties
+
+    GeoJSONFeature:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Feature]
+        geometry:
+          $ref: '#/components/schemas/Polygon'
+        properties:
+          type: object
+          additionalProperties: true
+      required:
+        - type
+        - geometry
+
+    Polygon:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Polygon]
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+      required:
+        - type
+        - coordinates
+
+    MultiPolygon:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [MultiPolygon]
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: array
+              items:
+                type: array
+                items:
+                  type: number
+                minItems: 2
+                maxItems: 2
+      required:
+        - type
+        - coordinates
+
+    Error:
+      type: object
+      properties:
+        data:
+          type: "null"
+        error:
+          type: string
+        status:
+          type: integer
+      required:
+        - data
+        - error
+        - status
+
+paths:
+  /locations/coordinates:
+    get:
+      summary: Find a location by coordinates
+      description: Find a location by latitude and longitude coordinates, optionally including census data
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: Latitude coordinate
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+        - name: lon
+          in: query
+          required: true
+          description: Longitude coordinate
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+        - name: census
+          in: query
+          required: false
+          description: Whether to include census data in the response
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Location found successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad request - Invalid coordinates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Location not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /locations/districts:
+    get:
+      summary: Get all districts
+      description: Retrieve all Portuguese districts with optional GeoJSON geometry
+      parameters:
+        - name: geojson
+          in: query
+          required: false
+          description: Whether to include GeoJSON geometry in the response
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Districts retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/District'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /locations/municipalities:
+    get:
+      summary: Get all municipalities
+      description: Retrieve municipalities, optionally filtered by district
+      parameters:
+        - name: district_id
+          in: query
+          required: false
+          description: Filter municipalities by district ID
+          schema:
+            type: string
+            nullable: true
+        - name: geojson
+          in: query
+          required: false
+          description: Whether to include GeoJSON geometry in the response
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Municipalities retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Municipality'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /locations/parishes:
+    get:
+      summary: Get all parishes
+      description: Retrieve parishes with pagination, optionally filtered by district and/or municipality
+      parameters:
+        - name: district_id
+          in: query
+          required: false
+          description: Filter parishes by district ID
+          schema:
+            type: string
+            nullable: true
+        - name: municipality_id
+          in: query
+          required: false
+          description: Filter parishes by municipality ID
+          schema:
+            type: string
+            nullable: true
+        - name: page
+          in: query
+          required: false
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: geojson
+          in: query
+          required: false
+          description: Whether to include GeoJSON geometry in the response
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Parishes retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Parish'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /locations/localities:
+    get:
+      summary: Get all localities
+      description: Retrieve localities with pagination, optionally filtered by district, municipality, and/or parish
+      parameters:
+        - name: district_id
+          in: query
+          required: false
+          description: Filter localities by district ID
+          schema:
+            type: string
+            nullable: true
+        - name: municipality_id
+          in: query
+          required: false
+          description: Filter localities by municipality ID
+          schema:
+            type: string
+            nullable: true
+        - name: parish_id
+          in: query
+          required: false
+          description: Filter localities by parish ID
+          schema:
+            type: string
+            nullable: true
+        - name: page
+          in: query
+          required: false
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: geojson
+          in: query
+          required: false
+          description: Whether to include GeoJSON geometry in the response
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Localities retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Locality'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
