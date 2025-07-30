@@ -4,7 +4,6 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
-import { emailProvider } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { ProcessingStatus, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
@@ -29,14 +28,6 @@ export async function processVehicleEvent(databaseOperation) {
 
 	if (databaseOperation.operationType !== 'insert') {
 		LOGGER.error('MAJOR ERROR: processVehicleEvent called with operationType different than "insert".');
-		await emailProvider.send({
-			subject: 'GO ERROR',
-			text: `
-				<h4>processVehicleEvent called with operationType different than "insert".</h4>
-				<pre>${JSON.stringify(databaseOperation)}</pre>
-			`,
-			to: process.env.EMERGENCY_CONTACT,
-		});
 		return;
 	}
 
@@ -75,7 +66,7 @@ export async function processVehicleEvent(databaseOperation) {
 			//
 			// Invalidate all rides that are affected
 
-			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: ProcessingStatus.Waiting });
+			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: ProcessingStatus.Waiting }, { returnResults: false });
 
 			LOGGER.info(`Flush [vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 

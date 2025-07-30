@@ -106,11 +106,13 @@ export async function syncApexValidations() {
 					const updateRidesPromise = rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
 						{ system_status: ProcessingStatus.Waiting },
+						{ returnResults: false },
 					);
 
 					const updateUniqueSamsPromise = uniqueSams.updateMany(
 						{ mac_sam_serial_number: { $in: uniqueSamSerialNumbers } },
 						{ system_status: ProcessingStatus.Waiting },
+						{ returnResults: false },
 					);
 
 					const [updateRidesResult, updateUniqueSamsResult] = await Promise.all([updateRidesPromise, updateUniqueSamsPromise]);
