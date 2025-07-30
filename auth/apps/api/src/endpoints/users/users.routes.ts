@@ -33,7 +33,7 @@ server.register(
 		// GET /users/me
 		instance.get('/me', { preHandler: authorizationMiddleware() }, UsersController.getMe);
 
-		// PATCH /users/me
+		// PUT /users/me
 		instance.put('/me', { preHandler: authorizationMiddleware() }, UsersController.updateMe);
 
 		next();
