@@ -8,17 +8,17 @@ import { Combobox, Description, Grid, Label, Section } from '@tmlmobilidade/ui';
 /* * */
 
 interface LocationSearchItem {
-	id: keyof typeof LOCATION_TYPES
+	id: string
 	label: string
 	placeholder: string
 }
 
-const LOCATION_TYPES = {
-	district: 'Distrito',
-	locality: 'Localidade',
-	municipality: 'Município',
-	parish: 'Freguesia',
-} as const;
+// const LOCATION_TYPES = {
+// 	district: 'Distrito',
+// 	locality: 'Localidade',
+// 	municipality: 'Município',
+// 	parish: 'Freguesia',
+// } as const;
 
 const SEARCH_ITEMS: LocationSearchItem[] = [
 	{ id: 'district', label: 'Distrito', placeholder: 'Selecione um distrito' },
@@ -40,7 +40,7 @@ export function LocationsSearch() {
 	//
 	// B. Transform data
 
-	const getComboboxData = (locationType: keyof typeof LOCATION_TYPES) => {
+	const getComboboxData = (locationType: string) => {
 		const locationData = locationsContext.data.location?.[locationType];
 		if (!locationData?.geojson?.properties?.name) {
 			return [];
@@ -55,7 +55,7 @@ export function LocationsSearch() {
 	//
 	// C. Handle actions
 
-	const handleLocationChange = (locationType: keyof typeof LOCATION_TYPES, value: null | string) => {
+	const handleLocationChange = (locationType: string, value: null | string) => {
 		locationsContext.actions.setSelectedLocation(locationType, value);
 	};
 
