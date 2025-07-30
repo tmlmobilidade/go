@@ -29,7 +29,7 @@ server.register(
 		// Verify Email
 		instance.post('/verify-email', controller.sendEmailWithResetPasswordURL);
 
-		// Chnage password
+		// Change password
 		instance.post('/change-password', controller.changePassword);
 
 		next();
