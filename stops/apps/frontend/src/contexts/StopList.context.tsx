@@ -10,7 +10,7 @@ import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-import { useLocationsContext } from './Locations.context';
+// import { useLocationsContext } from './Locations.context';
 
 interface StopListContextState {
 	actions: {
@@ -58,7 +58,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	//
 	// A. Setup variables
 
-	const locationsContext = useLocationsContext();
+	// const locationsContext = useLocationsContext();
 
 	const [filterSearch, setfilterSearch] = useQueryState('search', { defaultValue: '' });
 
@@ -80,9 +80,9 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	const rawStops = useMemo(() => stops || [], [stops]);
 
 	useEffect(() => {
-		setFilterFacilities(queryFacilities.length === 0 ? queryFacilities : facilitiesSchema.options);
-		setFilterEquipment(queryEquipment.length === 0 ? queryEquipment : equipmentSchema.options);
-		setFilterConnections(queryConnections.length === 0 ? queryConnections : connectionsSchema.options);
+		setFilterFacilities(queryFacilities.length === 0 ? facilitiesSchema.options : queryFacilities);
+		setFilterEquipment(queryEquipment.length === 0 ? equipmentSchema.options : queryEquipment);
+		setFilterConnections(queryConnections.length === 0 ? connectionsSchema.options : queryConnections);
 	}, [queryFacilities, queryEquipment, queryConnections]);
 
 	//
@@ -121,19 +121,11 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		// 2. Filter by query filters
 
 		return searchResultsData.filter((stop: StopNormalized) => {
-			// Filter by facilities
-			stop.facilities.forEach((item) => {
-				if (!filterFacilitiesSet.has(item)) return false;
-			});
-			// Filter by equipment
-			stop.equipment.forEach((item) => {
-				if (!filterEquipmentSet.has(item)) return false;
-			});
-			// Filter by connections
-			stop.connections.forEach((item) => {
-				if (!filterConnectionsSet.has(item)) return false;
-			});
-			return true;
+			const matchesFacilities = queryFacilities.length === 0 || stop.facilities.some(item => filterFacilitiesSet.has(item));
+			const matchesEquipment = queryEquipment.length === 0 || stop.equipment.some(item => filterEquipmentSet.has(item));
+			const matchesConnections = queryConnections.length === 0 || stop.connections.some(item => filterConnectionsSet.has(item));
+
+			return matchesFacilities && matchesEquipment && matchesConnections;
 		});
 	}, [searchResultsData, filterFacilities, filterEquipment, filterConnections, queryConnections, queryEquipment, queryFacilities]);
 

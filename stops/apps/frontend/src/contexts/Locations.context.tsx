@@ -63,6 +63,8 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	// B. Handle actions
 
 	async function setDistrict(districtId: string) {
+		if (!selectedLocation.district) return;
+
 		selectedLocation.district = allDistrictsData?.data.find(item => item._id === districtId);
 		setSelectedLocation(selectedLocation);
 
@@ -78,6 +80,8 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	};
 
 	async function setMunicipality(municipalityId: string) {
+		if (!selectedLocation.district && !selectedLocation.municipality) return;
+
 		selectedLocation.municipality = allMunicipalitiesData.find(item => item._id === municipalityId);
 		setSelectedLocation(selectedLocation);
 

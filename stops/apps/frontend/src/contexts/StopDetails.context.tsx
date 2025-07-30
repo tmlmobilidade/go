@@ -1,9 +1,9 @@
 'use client';
 
-import { uploadFile } from '@/lib/http';
 import { Routes } from '@/lib/routes';
 import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { uploadFile } from '@tmlmobilidade/utils';
 import { convertObject, fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -126,7 +126,6 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	const form = useForm<CreateStopDto>({
 		initialValues: stop || emptyStop,
-		// @ts-expect-error - idkhhnggggg
 		validate: zodResolver(stop ? StopSchema : CreateStopSchema) as unknown as FormValidateInput<CreateStopDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
@@ -178,7 +177,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 				}
 			}
 
-			// @ts-expect-error - idkhhnggggg
+			// @ts-expect-error - idk my friend
 			const insertedId = stopId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : stopId;
 			if (insertedId) {
 				await uploadImage(insertedId);

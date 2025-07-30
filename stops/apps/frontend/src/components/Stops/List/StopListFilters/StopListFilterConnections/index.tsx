@@ -21,22 +21,22 @@ export function StopListFilterConnections() {
 
 	const isActive = useMemo(() => {
 		const defaultValues = Array.from(connectionsSchema.options) as string[];
-		const enabledValues = stopListContext.filters.filterConnections;
+		const enabledValues = stopListContext.filters.Connections;
 
 		if (defaultValues.length !== enabledValues.length) return true;
 
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [stopListContext.filters.filterConnections]);
+	}, [stopListContext.filters.Connections]);
 
 	const parsedOptions = useMemo(() => {
 		if (!connectionsSchema.options?.length) return [];
 
 		return connectionsSchema.options.map(item => ({
-			checked: stopListContext.filters.filterConnections.includes(item),
+			checked: stopListContext.filters.Connections.includes(item),
 			label: Translations.CONNECTIONS[item],
 			value: item,
 		}));
-	}, [stopListContext.filters.filterConnections]);
+	}, [stopListContext.filters.Connections]);
 
 	//
 	// C. Render components
