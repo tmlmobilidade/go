@@ -1,7 +1,8 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Combobox } from '@tmlmobilidade/ui';
+// import { useStopListContext } from '@/contexts/StopList.context';
+import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -12,6 +13,7 @@ export function StopListFilterDistrict() {
 	//
 	// A. Setup variables
 
+	// const stopListContext = useStopListContext();
 	const locations = useLocationsContext();
 
 	//
@@ -30,12 +32,12 @@ export function StopListFilterDistrict() {
 	// C. Render components
 
 	return (
-		<Combobox
+		<MultiSelect
 			data={parsedOptions}
 			label="Distrito"
 			onChange={locations.actions.setDistrict}
-			placeholder="..."
-			fullWidth
+			selected={locations.data.selectedLocation?.districts?.map(item => item._id) ?? []}
+			clearable
 		/>
 	);
 

@@ -33,24 +33,28 @@ export function AdministratorInfo() {
 			<Section>
 				<Grid columns="ab" gap="sm">
 					<TextInput
+						disabled={true}
 						label="Município"
 						miw="100%"
 						placeholder="Escolha uma opção"
 						{...stopDetailContext.data.form.getInputProps('municipality_id')}
 					/>
 					<TextInput
-						label="distrito"
+						disabled={true}
+						label="Distrito"
 						miw="100%"
 						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('district_id')}
 					/>
 					<TextInput
+						disabled={true}
 						label="Freguesia"
 						miw="100%"
 						placeholder="Maçãs"
 						{...stopDetailContext.data.form.getInputProps('parish_id')}
 					/>
 					<TextInput
+						disabled={true}
 						label="Localidade"
 						miw="100%"
 						{...stopDetailContext.data.form.getInputProps('locality_id')}
@@ -61,6 +65,7 @@ export function AdministratorInfo() {
 				<Combobox
 					data={jurisdictionItems}
 					defaultValue={Translations.JURISDICATION.unknown}
+					disabled={true}
 					label="Jusrisdição"
 					fullWidth
 					{...stopDetailContext.data.form.getInputProps('jurisdiction')}

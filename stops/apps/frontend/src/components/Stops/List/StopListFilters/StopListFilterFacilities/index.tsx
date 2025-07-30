@@ -21,22 +21,22 @@ export function StopListFilterFacilities() {
 
 	const isActive = useMemo(() => {
 		const defaultValues = Array.from(facilitiesSchema.options) as string[];
-		const enabledValues = stopListContext.filters.Facilities;
+		const enabledValues = stopListContext.filters.facilities;
 
 		if (defaultValues.length !== enabledValues.length) return true;
 
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [stopListContext.filters.Facilities]);
+	}, [stopListContext.filters.facilities]);
 
 	const parsedOptions = useMemo(() => {
 		if (!facilitiesSchema.options?.length) return [];
 
 		return facilitiesSchema.options.map(item => ({
-			checked: stopListContext.filters.Facilities.includes(item),
+			checked: stopListContext.filters.facilities.includes(item),
 			label: Translations.FACILITIES[item],
 			value: item,
 		}));
-	}, [stopListContext.filters.Facilities]);
+	}, [stopListContext.filters.facilities]);
 
 	//
 	// C. Render components

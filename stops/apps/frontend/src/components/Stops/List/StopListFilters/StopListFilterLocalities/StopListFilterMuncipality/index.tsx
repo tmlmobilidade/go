@@ -1,7 +1,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Combobox } from '@tmlmobilidade/ui';
+import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -30,12 +30,12 @@ export function StopListFilterMunicipality() {
 	// C. Render components
 
 	return (
-		<Combobox
+		<MultiSelect
 			data={parsedOptions}
 			label="Municipio"
 			onChange={locations.actions.setMunicipality}
-			placeholder="..."
-			fullWidth
+			selected={locations.data.selectedLocation?.municipalities?.map(item => item._id) ?? []}
+			clearable
 		/>
 	);
 

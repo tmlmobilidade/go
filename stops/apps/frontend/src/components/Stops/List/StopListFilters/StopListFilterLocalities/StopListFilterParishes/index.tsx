@@ -1,7 +1,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Combobox } from '@tmlmobilidade/ui';
+import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -30,12 +30,12 @@ export function StopListFilterParish() {
 	// C. Render components
 
 	return (
-		<Combobox
+		<MultiSelect
 			data={parsedOptions}
 			label="Freguesia"
 			onChange={locations.actions.setParish}
-			placeholder="..."
-			fullWidth
+			selected={locations.data.selectedLocation?.parishes?.map(item => item._id) ?? []}
+			clearable
 		/>
 	);
 

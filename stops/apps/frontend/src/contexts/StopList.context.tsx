@@ -3,36 +3,30 @@
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { Routes } from '@/lib/routes';
 import { type StopNormalized } from '@/types/normalized';
-import { connectionsSchema, District, equipmentSchema, facilitiesSchema, Municipality, Parish, Stop } from '@tmlmobilidade/types';
+import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-// import { useLocationsContext } from './Locations.context';
+import { useLocationsContext } from './Locations.context';
 
 interface StopListContextState {
 	actions: {
 		changeSearchQuery: (query: string) => void
 		setFilterConnections: (values: string[]) => void
-		setFilterDistrict: (values: string[]) => void
 		setFilterEquipment: (values: string[]) => void
 		setFilterFacilities: (values: string[]) => void
-		setFilterMunicipality: (values: string[]) => void
-		setFilterParish: (values: string[]) => void
 	}
 	data: {
 		filtered: StopNormalized[]
 		raw: Stop[]
 	}
 	filters: {
-		Connections: string[]
-		District: District[]
-		Equipment: string[]
-		Facilities: string[]
-		Municipality: Municipality[]
-		Parish: Parish[]
+		connections: string[]
+		equipment: string[]
+		facilities: string[]
 	}
 	flags: {
 		error: Error | undefined
@@ -58,7 +52,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	//
 	// A. Setup variables
 
-	// const locationsContext = useLocationsContext();
+	const locationsContext = useLocationsContext();
 
 	const [filterSearch, setfilterSearch] = useQueryState('search', { defaultValue: '' });
 
@@ -110,13 +104,23 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 
+		console.log('.districts ->', locationsContext.data.selectedLocation?.districts);
+
 		// Skip if no query filters are set
-		if (queryFacilities.length === 0 && queryEquipment.length === 0 && queryConnections.length === 0) return searchResultsData;
+		if (
+			queryFacilities.length === 0
+			&& queryEquipment.length === 0
+			&& queryConnections.length === 0
+			&& !locationsContext.data.selectedLocation?.districts
+			&& !locationsContext.data.selectedLocation?.municipalities
+			&& !locationsContext.data.selectedLocation?.parishes
+
+		) return searchResultsData;
 
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const filterFacilitiesSet = new Set(filterFacilities);
-		const filterEquipmentSet = new Set(filterEquipment);
-		const filterConnectionsSet = new Set(filterConnections);
+		const filterFacilitiesSet = new Set(queryFacilities);
+		const filterEquipmentSet = new Set(queryEquipment);
+		const filterConnectionsSet = new Set(queryConnections);
 
 		// 2. Filter by query filters
 
@@ -125,9 +129,18 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 			const matchesEquipment = queryEquipment.length === 0 || stop.equipment.some(item => filterEquipmentSet.has(item));
 			const matchesConnections = queryConnections.length === 0 || stop.connections.some(item => filterConnectionsSet.has(item));
 
-			return matchesFacilities && matchesEquipment && matchesConnections;
+			const selectedDistricts = locationsContext.data.selectedLocation?.districts;
+			const matchesDistrict = selectedDistricts?.map(item => item._id === stop.district_id) ?? true;
+
+			const selectedMunicipalities = locationsContext.data.selectedLocation?.municipalities;
+			const matchesMunicipality = selectedMunicipalities?.map(item => item._id === stop.municipality_id) ?? true;
+
+			const selectedParishes = locationsContext.data.selectedLocation?.parishes;
+			const matchesParish = selectedParishes?.map(item => item._id === stop.parish_id) ?? true;
+
+			return matchesFacilities && matchesEquipment && matchesConnections && matchesDistrict && matchesMunicipality && matchesParish;
 		});
-	}, [searchResultsData, filterFacilities, filterEquipment, filterConnections, queryConnections, queryEquipment, queryFacilities]);
+	}, [searchResultsData, filterFacilities, filterEquipment, filterConnections, queryConnections, queryEquipment, queryFacilities, locationsContext.data.selectedLocation]);
 
 	//
 
@@ -170,12 +183,9 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 				raw: rawStops,
 			},
 			filters: {
-				Connections: filterConnections,
-				District: [],
-				Equipment: filterEquipment,
-				Facilities: filterFacilities,
-				Municipality: [],
-				Parish: [],
+				connections: filterConnections,
+				equipment: filterEquipment,
+				facilities: filterFacilities,
 			},
 			flags: {
 				error,
