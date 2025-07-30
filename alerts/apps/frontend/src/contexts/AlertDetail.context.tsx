@@ -1,7 +1,7 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData, swrFetcher, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject, Dates } from '@tmlmobilidade/utils';
@@ -26,7 +26,7 @@ interface AlertDetailContextState {
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
 		id: string | undefined
-		imageUrl: string | undefined
+		imageUrl?: FileType
 	}
 	flags: {
 		canSave: boolean
@@ -68,6 +68,8 @@ export function useAlertDetailContext() {
 export const AlertDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
 	//
 	// A. Setup variables
+	const MODE = alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT;
+
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
@@ -77,12 +79,12 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	const copyURL = new URLSearchParams(window.location.search).get('copy');
 
-	const { data: alert, error, isLoading } = useSWR<Alert>(alertId === 'new'
+	const { data: alert, error, isLoading } = useSWR<Alert>(MODE === AlertDetailMode.CREATE
 		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
 		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
 
-	const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-		alertId === 'new'
+	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(
+		MODE === AlertDetailMode.CREATE
 			? undefined
 			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
 		swrFetcher,
@@ -93,7 +95,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
 		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
-		validate: zodResolver(alert && alertId !== 'new' ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
+		validate: zodResolver(alert && MODE === AlertDetailMode.EDIT ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -128,22 +130,18 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setLoading(false);
 	}, [alert]);
 
+	// Handle error
 	useEffect(() => {
-		if (error) {
-			useToast.error({
-				message: error.message,
-				title: 'Erro ao carregar alerta',
-			});
-			router.replace(Routes.ALERT_LIST);
-		}
+		if (!error) return;
+
+		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
+		router.replace(Routes.ALERT_LIST);
 	}, [error]);
 
 	// Validate form on change
 	useEffect(() => {
 		form.validate();
 		setCanSave(form.isValid());
-
-		console.log(form.errors);
 	}, [form.values]);
 
 	//
@@ -165,106 +163,79 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		// Handle Save Alert
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 
-		const method = alertId === 'new' ? 'POST' : 'PUT';
-		const url = alertId === 'new' ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
-		const body = alertId === 'new' ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
+		const method = MODE === AlertDetailMode.CREATE ? 'POST' : 'PUT';
+		const url = MODE === AlertDetailMode.CREATE ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
+		const body = MODE === AlertDetailMode.CREATE ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
 
-		const response = await fetchData<unknown>(url, method, body);
+		const response = await fetchData<Alert>(url, method, body);
 
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao salvar alerta',
-				});
-			}
+		if (!response.isOk) {
+			useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
 			setIsSaving(false);
 			return;
 		}
 
-		const insertedId = alertId === 'new' ? (response.data as { data: { insertedId: string } }).data.insertedId : alertId;
-		if (insertedId) {
-			await uploadImage(insertedId);
+		// Upload image if the alert is new
+		if (response.data) await uploadImage(response.data._id.toString());
+
+		// Redirect to the detail page if the alert is new
+		if (response.data && MODE === AlertDetailMode.CREATE) {
+			router.replace(Routes.ALERT_DETAIL(response.data._id.toString()));
 		}
 
-		// If the alert is new, redirect to the detail page
-		if (insertedId && alertId === 'new') {
-			router.replace(Routes.ALERT_DETAIL(insertedId));
-		}
-
-		useToast.success({
-			message: 'Alerta salvo com sucesso',
-			title: 'Sucesso',
-		});
+		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
 
 		setIsSaving(false);
 	};
 
 	const deleteAlert = async () => {
-		if (alertId === 'new') return;
+		if (MODE === AlertDetailMode.CREATE) return;
 
 		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao salvar alerta',
-				});
+				useToast.error({ message: error.message, title: 'Erro ao salvar alerta' });
 			}
 			return;
 		}
 
-		useToast.success({
-			message: 'Alerta apagado com sucesso',
-			title: 'Sucesso',
-		});
+		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
 
 		router.replace(Routes.ALERT_LIST);
 	};
 
 	const deleteImage = async () => {
-		if (alertId === 'new') return;
+		if (MODE === AlertDetailMode.CREATE) return;
 
 		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao apagar imagem',
-				});
+				useToast.error({ message: error.message, title: 'Erro ao apagar imagem' });
 			}
 			return;
 		}
 
-		useToast.success({
-			message: 'Imagem apagada com sucesso',
-			title: 'Sucesso',
-		});
+		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
 	};
 
 	const uploadImage = async (alert_id: string) => {
-		if (alert_id === 'new' || !image) return;
+		if (MODE === AlertDetailMode.CREATE || !image) return;
 
-		const response = await uploadFile(
-			Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id),
-			image,
-		);
+		console.log('HERE =======> ', alert_id);
+		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);
+
+		console.log('HERE =======> ', response);
 
 		if (response.error) {
-			useToast.error({
-				message: response.error,
-				title: 'Erro ao carregar imagem',
-			});
+			console.log('HERE =======> ', response.error);
+			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
 			return;
 		}
 
-		useToast.success({
-			message: 'A imagem foi carregada com sucesso',
-			title: 'Imagem carregada com sucesso',
-		});
+		console.log('SUCCESS =======> ', response.data);
+		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
 	};
 
 	//
@@ -280,15 +251,15 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		},
 		data: {
 			form,
-			id: alertId === 'new' ? undefined : alertId,
-			imageUrl: imageUrl?.data,
+			id: MODE === AlertDetailMode.CREATE ? undefined : alertId,
+			imageUrl: alertImage,
 		},
 		flags: {
 			canSave,
 			isDraft,
 			isSaving,
-			loading: isLoading || loading || imageUrlLoading,
-			mode: alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT,
+			loading: isLoading || loading || alertImageLoading,
+			mode: MODE,
 		},
 	};
 

@@ -25,7 +25,7 @@ export function RolesListHeader() {
 			<Label size="lg" caps singleLine>Grupos de Permissões</Label>
 			<Spacer />
 			<SearchInput onChange={roleListContext.actions.setFilterSearch} value={roleListContext.filters.search} />
-			<Button href={Routes.ROLE_DETAIL('new')} icon={<IconPlus size={20} />} label="Novo role" />
+			<Button href={Routes.ROLE_DETAIL('new')} icon={<IconPlus size={20} />} label="Novo Grupo" />
 		</>
 	);
 

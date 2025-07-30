@@ -1,31 +1,18 @@
 export const PageRoutes = Object.freeze({
-	HOME: '/',
-	STOP_DETAIL: (id: string) => `/stops/${id}`,
-	STOP_FILE: (id: string) => `/stops/${id}/file`,
-	STOP_FILES: (id: string) => `/stops/${id}/files`,
-	STOP_IMAGE: (id: string) => `/stops/${id}/image`,
-	STOP_IMAGES: (id: string) => `/stops/${id}/images`,
-	STOP_LIST: '/stops',
-	// Stops
-	// Example: STOP_DETAIL: (id: string) => `/stops/${id}`,
+	ME: '/api/stops',
+	STOPS_DETAIL: (id: string) => `/stops/${id}`,
+	STOPS_LIST: '/stops',
+	STOPS_NEW: '/stops/new',
 });
 
 export const ApiRoutes = Object.freeze({
-	// Common
-	AUTH_API: (process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt') + '/api',
+	API: '/api',
+	AUTH_API: process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
 	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
-	STOPS_API: '/api',
-
-	// Page routes
-	// Example: STOP_DETAIL_API: (id: string) => `/api/stops/${id}`,
 });
 
 export const Routes = Object.freeze({
-	// Common
-	AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
-	URL: process.env.NEXT_PUBLIC_URL ?? 'https://stops.sae.carrismetropolitana.pt',
-
-	// Other
+	URL: process.env.PUBLIC_URL ?? 'https://alerts.sae.carrismetropolitana.pt',
 	...PageRoutes,
 	...ApiRoutes,
 });

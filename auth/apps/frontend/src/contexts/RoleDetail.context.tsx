@@ -130,12 +130,12 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 		}
 
 		useToast.success({
-			message: 'Utilizador salvo com sucesso',
+			message: 'Grupo guardado com sucesso',
 			title: 'Sucesso',
 		});
 
 		if (role_id === 'new' && response.data?._id) {
-			router.replace(Routes.USER_DETAIL(response.data._id));
+			router.replace(Routes.ROLE_DETAIL(response.data._id));
 		}
 
 		setIsSaving(false);

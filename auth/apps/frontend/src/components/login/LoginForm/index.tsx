@@ -47,18 +47,12 @@ export function LoginForm({ redirect = '/' }: Props) {
 			password,
 		});
 
-		if (response.status !== 200) {
-			useToast.error({
-				message: response.error ?? 'An error occurred',
-				title: 'Login failed',
-			});
+		if (!response.isOk) {
+			useToast.error({ message: response.error ?? 'An error occurred', title: 'Login failed' });
 			return;
 		}
 
-		useToast.success({
-			message: undefined,
-			title: 'Login successful',
-		});
+		useToast.success({ message: undefined, title: 'Login successful' });
 
 		router.replace(redirect);
 	};

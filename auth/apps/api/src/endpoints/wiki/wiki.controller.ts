@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 /* * */
 
 export class WikiController {
-	static async getAll(request: FastifyRequest, reply: FastifyReply) {
+	static async getAll(request: FastifyRequest, reply: FastifyReply<WikiArticle[]>) {
 		try {
 			//
 
@@ -61,7 +61,7 @@ export class WikiController {
 			//
 			// Send the response with the parsed articles
 
-			reply.send(sortedWikiArticles);
+			reply.send({ data: sortedWikiArticles, error: null, statusCode: HttpStatus.OK });
 
 			//
 		}
@@ -72,7 +72,7 @@ export class WikiController {
 		}
 	}
 
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<WikiArticle>) {
 		try {
 			//
 
@@ -117,7 +117,7 @@ export class WikiController {
 			//
 			// Send the response to the client
 
-			reply.send(result);
+			reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 
 			//
 		}

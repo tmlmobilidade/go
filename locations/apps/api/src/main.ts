@@ -24,7 +24,7 @@ const MAX_BODY_SIZE = 1024 * 1024 * 1024 * 2; // 2GB
 				target: 'pino-pretty',
 			},
 		},
-		origin: getAppConfig('locations', 'cors_origin'),
+		origin: true,
 		port: getAppConfig('locations', 'api_port'),
 	};
 

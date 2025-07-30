@@ -5,7 +5,6 @@
 import { PasswordConfirmationForm } from '@/components/common/PasswordConfirmationForm';
 import { useChangePassword } from '@/components/reset-password/ResetPasswordForm/use-change-password';
 import { Routes } from '@/lib/routes';
-import { HttpStatus } from '@tmlmobilidade/lib';
 import { useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -34,18 +33,12 @@ export function ResetPasswordForm({ token }: Props) {
 
 	const handleSubmit = async (password: string) => {
 		const response = await changePassword(password, token);
-		if (response.status !== HttpStatus.OK) {
-			useToast.error({
-				message: response.error ?? 'Ocorreu um erro ao tentar alterar a password',
-				title: 'Erro ao tentar alterar password',
-			});
+		if (!response.isOk) {
+			useToast.error({ message: response.error ?? 'Ocorreu um erro ao tentar alterar a password', title: 'Erro ao tentar alterar password' });
 			return;
 		}
 
-		useToast.success({
-			message: 'Password foi alterada com sucesso',
-			title: 'Sucesso',
-		});
+		useToast.success({ message: 'Password foi alterada com sucesso', title: 'Sucesso' });
 
 		router.replace(Routes.LOGIN);
 	};

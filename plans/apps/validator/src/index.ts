@@ -24,7 +24,7 @@ async function processValidation(message: ValidationMessage) {
 			feeder_status: ProcessingStatus.Processing,
 		});
 
-		logger.info(`Validation set to processing: ${validation.acknowledged}`);
+		logger.info(`Validation set to processing: ${validation.feeder_status}`);
 
 		// 2. Get the file from MongoDB
 		const file = await files.findById(message.file_id);

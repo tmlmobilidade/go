@@ -24,7 +24,7 @@ export function WikiDetailHeader({ data }: WikiDetailHeaderProps) {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push('http://localhost:51000/home');
+		router.push('/');
 	};
 
 	//
