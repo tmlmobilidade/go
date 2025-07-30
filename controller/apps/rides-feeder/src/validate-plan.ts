@@ -9,18 +9,10 @@ export function validatePlan(planData: Plan): boolean {
 	//
 
 	//
-	// Return false if its feeder status is other than 'waiting' or 'processing'
+	// Return false if its status is other than 'waiting' or 'processing'
 
-	if (planData.feeder_status !== ProcessingStatus.Waiting && planData.feeder_status !== ProcessingStatus.Processing) {
-		LOGGER.error(`Skip processing: feeder_status is '${planData.feeder_status}'. Only 'waiting' or 'processing' plans will be processed.`);
-		return false;
-	}
-
-	//
-	// Return false if it is not yet approved
-
-	if (!planData.is_approved) {
-		LOGGER.error(`Skip processing: Plan is not approved.`);
+	if (planData.status_controller !== ProcessingStatus.Waiting && planData.status_controller !== ProcessingStatus.Processing) {
+		LOGGER.error(`Skip processing: status_controller is '${planData.status_controller}'. Only 'waiting' or 'processing' plans will be processed.`);
 		return false;
 	}
 
