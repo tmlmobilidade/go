@@ -20,7 +20,7 @@ interface LocationsContextState {
 	actions: {
 		handleSearch: () => Promise<void>
 		setCoordinates: (coordinates: [number, number]) => void
-		setSelectedLocation: (type: keyof SelectedLocations, value: null | string) => void
+		setSelectedLocation: (type: string, value: null | string) => void
 		toggleFilter: (filter: string) => void
 	}
 	data: {
