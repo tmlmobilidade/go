@@ -89,6 +89,7 @@ export class UsersController {
 	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto, Params: { themeId: string } }>) {
 		const session_token = request.cookies[COOKIE_NAME];
 		const user = await authProvider.getUser(session_token);
+		console.log('request.body', request.body);
 		// For now, update only the theme_id
 		await users.updateById(user._id, { theme_id: request.body.theme_id });
 	}
