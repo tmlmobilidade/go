@@ -155,7 +155,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	//
 
 	//
-	// E. render compose
+	// E. render components
 
 	const contextValue: StopListContextState = useMemo(
 		() => ({

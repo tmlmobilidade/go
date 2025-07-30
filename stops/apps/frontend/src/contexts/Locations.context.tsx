@@ -63,10 +63,12 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	// B. Handle actions
 
 	async function setDistrict(districtId: string) {
-		if (!selectedLocation.district) return;
+		console.log('selectedLocation.district --->', selectedLocation.district);
 
 		selectedLocation.district = allDistrictsData?.data.find(item => item._id === districtId);
 		setSelectedLocation(selectedLocation);
+
+		if (!selectedLocation.district) return;
 
 		const res = await fetchData<Municipality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities?district_id=${selectedLocation.district._id}`);
 		console.log('====> Res', res);
@@ -80,10 +82,10 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	};
 
 	async function setMunicipality(municipalityId: string) {
-		if (!selectedLocation.district && !selectedLocation.municipality) return;
-
 		selectedLocation.municipality = allMunicipalitiesData.find(item => item._id === municipalityId);
 		setSelectedLocation(selectedLocation);
+
+		if (!selectedLocation.municipality) return;
 
 		const res = await fetchData<Parish[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/parishes?municipality_id=${selectedLocation.municipality._id}`);
 		console.log('------>', res);
