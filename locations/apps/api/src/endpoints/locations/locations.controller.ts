@@ -73,6 +73,7 @@ export class LocationsController {
 			const filter: Filter<Locality> = {};
 			if (query.district_id) filter.district_id = query.district_id;
 			if (query.municipality_id) filter.municipality_id = query.municipality_id;
+			if (query.parish_id) filter.parish_id = query.parish_id;
 
 			const options: FindOptions = {
 				limit: query.limit,
