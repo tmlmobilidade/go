@@ -46,7 +46,7 @@ async function syncVehicleEvents() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 1 })
+			.splitBy({ hour: 2 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
