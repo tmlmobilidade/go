@@ -30,9 +30,9 @@ export function PlansListFilterValidityStatus() {
 	}, [plansListContext.filters.validity_status, planValidityStatusValues]);
 
 	const parsedOptions = useMemo(() => {
-		// Skip if options are not provided or are empty.
+		// Skip if options are not provided or are empty
 		if (!planValidityStatus?.length) return [];
-		// Parse options to the expected format.
+		// Parse options to the expected format
 		return planValidityStatus.map(item => ({
 			checked: plansListContext.filters.validity_status.includes(item.value),
 			label: item.label,
