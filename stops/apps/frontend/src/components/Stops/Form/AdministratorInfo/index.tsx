@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
 import { jurisdictionSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -32,40 +32,19 @@ export function AdministratorInfo() {
 		>
 			<Section>
 				<Grid columns="ab" gap="sm">
-					<TextInput
-						disabled={true}
-						label="Município"
-						miw="100%"
-						placeholder="Escolha uma opção"
-						{...stopDetailContext.data.form.getInputProps('municipality_id')}
-					/>
-					<TextInput
-						disabled={true}
-						label="Distrito"
-						miw="100%"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('district_id')}
-					/>
-					<TextInput
-						disabled={true}
-						label="Freguesia"
-						miw="100%"
-						placeholder="Maçãs"
-						{...stopDetailContext.data.form.getInputProps('parish_id')}
-					/>
-					<TextInput
-						disabled={true}
-						label="Localidade"
-						miw="100%"
-						{...stopDetailContext.data.form.getInputProps('locality_id')}
-					/>
+					<ValueDisplay label="Distrito" value={stopDetailContext.data.districtName} raised />
+
+					<ValueDisplay label="Municipio" value={stopDetailContext.data.municipalityName} raised />
+
+					<ValueDisplay label="Freguesia" value={stopDetailContext.data.parishName} raised />
+
+					<ValueDisplay label="Localidade" value={stopDetailContext.data.localityName} raised />
 				</Grid>
 			</Section>
 			<Section>
 				<Combobox
 					data={jurisdictionItems}
 					defaultValue={Translations.JURISDICATION.unknown}
-					disabled={true}
 					label="Jusrisdição"
 					fullWidth
 					{...stopDetailContext.data.form.getInputProps('jurisdiction')}

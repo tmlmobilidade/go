@@ -1,9 +1,10 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { CreateStopDto, CreateStopSchema, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
+import { getAppConfig } from '@tmlmobilidade/lib';
+import { CreateStopDto, CreateStopSchema, District, Municipality, Parish, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { uploadFile } from '@tmlmobilidade/utils';
+import { HttpResponse, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject, fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -26,9 +27,13 @@ interface StopDetailContextState {
 		saveStop: () => void
 	}
 	data: {
+		districtName: string
 		form: UseFormReturnType<CreateStopDto>
 		id: string | undefined
 		imageUrl: string | undefined
+		localityName: string
+		municipalityName: string
+		parishName: string
 		raw: Stop
 	}
 	flags: {
@@ -111,6 +116,10 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 
 	const router = useRouter();
 
+	const [districtName, setDistrictName] = useState('');
+	const [municipalityName, setMunicipalityName] = useState('');
+	const [parishName, setParishName] = useState('');
+	const [localityName, setLocalityName] = useState('');
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
@@ -123,6 +132,10 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			: Routes.API + Routes.STOPS_DETAIL(stopId),
 		swrFetcher,
 	);
+
+	const { data: allDistrictsData } = useSWR<HttpResponse<District[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`);
+	const { data: allMunicipalitiesData } = useSWR<HttpResponse<Municipality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities`);
+	const { data: allParishesData } = useSWR<HttpResponse<Parish[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/parishes`);
 
 	const form = useForm<CreateStopDto>({
 		initialValues: stop || emptyStop,
@@ -204,6 +217,8 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		setIsSaving(false);
 	};
 
+	//
+
 	const handleDeleterStop = async () => {
 		if (stopId === 'new') return;
 
@@ -227,6 +242,8 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		router.push(Routes.STOPS_LIST, { scroll: false });
 	};
 
+	//
+
 	const deleteImage = async () => {
 		if (stopId === 'new') return;
 
@@ -247,6 +264,8 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			title: 'Sucesso',
 		});
 	};
+
+	//
 
 	const uploadImage = async (stopId: string) => {
 		if (stopId === 'new' || !image) return;
@@ -270,6 +289,27 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 		});
 	};
 
+	//
+
+	useEffect(() => {
+		if (!stop) return;
+
+		const district = allDistrictsData?.data.find(item => item._id === stop.district_id);
+		setDistrictName(district?.name ?? 'desconhecido');
+
+		const municipality = allMunicipalitiesData?.data.find(item => item._id === stop.municipality_id);
+		setMunicipalityName(municipality?.name ?? 'desconhecido');
+
+		const parish = allParishesData?.data.find(item => item._id === stop.parish_id);
+		setParishName(parish?.name ?? 'desconhecido');
+
+		const locality = stop.locality_id;
+		setLocalityName(locality ?? 'desconhecido');
+	}, [stop, allDistrictsData, allMunicipalitiesData, allParishesData]);
+
+	//
+	//
+
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
 			deleteImage,
@@ -278,9 +318,13 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			saveStop: handleSaveUser,
 		},
 		data: {
+			districtName: districtName,
 			form,
 			id: stopId,
 			imageUrl: imageUrl?.data,
+			localityName: localityName,
+			municipalityName: municipalityName,
+			parishName: parishName,
 			raw: stop,
 		},
 		flags: {
