@@ -4,6 +4,7 @@
 
 import { PlansDetailHeader } from '@/components/plans/detail/PlansDetailHeader';
 import { PlansDetailSectionAgency } from '@/components/plans/detail/PlansDetailSectionAgency';
+import { PlansDetailSectionController } from '@/components/plans/detail/PlansDetailSectionController';
 import { PlansDetailSectionFeedInfo } from '@/components/plans/detail/PlansDetailSectionFeedInfo';
 import { PlansDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
@@ -35,6 +36,7 @@ export function PlansDetail() {
 			<PlansDetailSectionAgency />
 			<PlansDetailSectionFeedInfo />
 			<PlansDetailSectionFiles />
+			<PlansDetailSectionController />
 		</Pane>
 	);
 

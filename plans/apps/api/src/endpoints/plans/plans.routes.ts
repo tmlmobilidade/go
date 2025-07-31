@@ -49,11 +49,18 @@ server.register(
 			PlansController.update,
 		);
 
-		// PUT /plans/:id/toggle-lock
+		// GET /plans/:id/toggle-lock
 		instance.get(
 			'/:id/toggle-lock',
 			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
 			PlansController.toggleLockById,
+		);
+
+		// GET /plans/:id/reprocess
+		instance.get(
+			'/:id/controller-reprocess',
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
+			PlansController.controllerReprocessPlanById,
 		);
 
 		// DELETE /plans/:id

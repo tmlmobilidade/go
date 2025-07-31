@@ -29,8 +29,14 @@ export function PlansDetailSectionFeedInfo() {
 
 			<Section gap="sm">
 				<Grid columns="ab" gap="sm">
-					<DatePicker {...plansDetailContext.data.form.getInputProps('gtfs_feed_info.feed_start_date')} readOnly={plansDetailContext.flags.read_only} />
-					<DatePicker {...plansDetailContext.data.form.getInputProps('gtfs_feed_info.feed_end_date')} readOnly={plansDetailContext.flags.read_only} />
+					<DatePicker
+						{...plansDetailContext.data.form.getInputProps('gtfs_feed_info.feed_start_date')}
+						readOnly={plansDetailContext.flags.read_only}
+					/>
+					<DatePicker
+						{...plansDetailContext.data.form.getInputProps('gtfs_feed_info.feed_end_date')}
+						readOnly={plansDetailContext.flags.read_only}
+					/>
 				</Grid>
 			</Section>
 

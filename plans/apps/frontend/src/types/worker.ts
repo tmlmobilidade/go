@@ -1,11 +1,11 @@
 /* * */
 
-import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface WorkerMessage {
-	agency: GtfsAgency
+	agency: Plan['gtfs_agency']
 	error: Error | null
-	feedInfo: GtfsFeedInfo
+	feed_info: Plan['gtfs_feed_info']
 }

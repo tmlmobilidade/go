@@ -2,11 +2,10 @@
 
 /* * */
 
-import { Routes } from '@/lib/routes';
-import { Plan, UpdatePlanSchema } from '@tmlmobilidade/types';
-import { File } from '@tmlmobilidade/types';
+import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
+import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { convertObject, fetchData, keepUrlParams, swrFetcher } from '@tmlmobilidade/utils';
+import { Dates, fetchData, keepUrlParams, swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -15,11 +14,12 @@ import useSWR from 'swr';
 interface PlansDetailContextState {
 	actions: {
 		approvePlan: () => void
+		controllerReprocessPlan: () => void
 		savePlan: () => void
 		toggleLock: () => void
 	}
 	data: {
-		form: UseFormReturnType<Plan>
+		form: UseFormReturnType<UpdatePlanDto>
 		id: string
 		operation_file: File | null
 		plan: null | Plan
@@ -58,13 +58,13 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 	//
 	// B. Fetch data
 
-	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(`/api/plans/${planId}`, swrFetcher);
-	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading } = useSWR<File>(`/api/plans/${planId}/operation-file`, swrFetcher);
+	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(`/api/plans/${planId}`, swrFetcher, { refreshInterval: 5000 });
+	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: fileMutate } = useSWR<File>(`/api/plans/${planId}/operation-file`, swrFetcher);
 
 	//
 	// C. Setup form
 
-	const form = useForm<Plan>({
+	const form = useForm<UpdatePlanDto>({
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -74,20 +74,90 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 
 	useEffect(() => {
 		if (!planData) return;
-		form.initialize(planData);
+		form.initialize({
+			...planData,
+			gtfs_feed_info: {
+				...planData.gtfs_feed_info,
+				feed_end_date: Dates
+					.fromOperationalDate(planData.gtfs_feed_info.feed_end_date, 'Europe/Lisbon')
+					.toFormat('yyyy-MM-dd') as OperationalDate,
+				feed_start_date: Dates
+					.fromOperationalDate(planData.gtfs_feed_info.feed_start_date, 'Europe/Lisbon')
+					.toFormat('yyyy-MM-dd') as OperationalDate,
+			},
+		});
 	}, [planData]);
 
 	useEffect(() => {
 		if (!planError) return;
 		useToast.error({ message: planError.message, title: 'Erro ao carregar validação' });
-		window.location.href = keepUrlParams('/plans');
+		window.location.href = keepUrlParams('/plans', window.location.search);
 	}, [planLoading]);
 
 	//
-	// E. Define actions
+	// E. Handle actions
 
 	const handleApprovePlan = () => {
 		console.log('approvePlan');
+	};
+
+	const handleControllerReprocessPlan = async () => {
+		setIsSaving(true);
+		try {
+			const response = await fetchData<Plan>(`/api/plans/${planId}/controller-reprocess`);
+			if (response.error) {
+				return useToast.error({
+					message: response.error,
+					title: 'Erro ao reprocessar plano',
+				});
+			}
+		}
+		catch (error) {
+			useToast.error({
+				message: error.message,
+				title: 'Erro ao reprocessar plano',
+			});
+		}
+		planMutate();
+		setIsSaving(false);
+	};
+
+	const handleSavePlan = async () => {
+		setIsSaving(true);
+		const toastId = useToast.loading({
+			message: 'Por favor aguarde...',
+			title: 'A guardar plano',
+		});
+		try {
+			const preparedValues = validatePlanUpdateValues(form.getValues());
+			const response = await fetchData<Plan>(`/api/plans/${planId}`, 'PUT', preparedValues);
+			if (response.error) {
+				return useToast.update(toastId, {
+					loading: false,
+					message: response.error,
+					title: 'Erro ao reprocessar plano',
+					type: 'error',
+				});
+			}
+			useToast.update(toastId, {
+				loading: false,
+				message: 'As alterações serão refletidas em breve.',
+				title: 'Plano guardado com sucesso',
+				type: 'success',
+			});
+			form.resetDirty();
+		}
+		catch (error) {
+			useToast.update(toastId, {
+				loading: false,
+				message: error.message,
+				title: 'Erro ao reprocessar plano',
+				type: 'error',
+			});
+		}
+		planMutate();
+		fileMutate();
+		setIsSaving(false);
 	};
 
 	const handleToggleLock = async () => {
@@ -95,55 +165,29 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 			setIsSaving(true);
 			const response = await fetchData<Plan>(`/api/plans/${planId}/toggle-lock`);
 			if (response.error) {
-				useToast.error({ message: response.error, title: 'Erro ao bloquear plano' });
-				setIsSaving(false);
-				return;
+				return useToast.error({
+					message: response.error,
+					title: 'Erro ao bloquear plano',
+				});
 			}
-			planMutate(response.data);
-			setIsSaving(false);
 		}
 		catch (error) {
-			useToast.error({ message: error.message, title: 'Erro ao bloquear plano' });
-			setIsSaving(false);
-		}
-	};
-
-	const handleSavePlan = async () => {
-		setIsSaving(true);
-
-		const body = convertObject(form.getValues(), UpdatePlanSchema);
-
-		const toastId = useToast.loading({
-			message: 'A guardar plano...',
-			title: 'A guardar plano',
-		});
-
-		const response = await fetchData<Plan>(Routes.API(Routes.PLAN_DETAIL(planId)), 'PUT', body);
-		if (response.error) {
 			useToast.error({
-				message: response.error,
-				title: 'Erro ao guardar plano',
+				message: error.message,
+				title: 'Erro ao bloquear plano',
 			});
-			useToast.hide(toastId);
-			setIsSaving(false);
-			return;
 		}
-
-		useToast.hide(toastId);
-
-		useToast.success({
-			message: 'Plano guardado com sucesso',
-			title: 'Plano guardado',
-		});
-
+		planMutate();
 		setIsSaving(false);
 	};
 
 	//
-	// E. Define context value
+	// F. Define context value
+
 	const contextValue: PlansDetailContextState = useMemo(() => ({
 		actions: {
 			approvePlan: handleApprovePlan,
+			controllerReprocessPlan: handleControllerReprocessPlan,
 			savePlan: handleSavePlan,
 			toggleLock: handleToggleLock,
 		},
@@ -156,7 +200,7 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 		flags: {
 			error: planError || operationFileError,
 			loading: planLoading || operationFileLoading,
-			read_only: planData?.is_locked || planLoading || operationFileLoading,
+			read_only: planData?.is_locked || planLoading || operationFileLoading || isSaving,
 			saving: isSaving,
 		},
 	}), [
@@ -171,7 +215,7 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 	]);
 
 	//
-	// F. Render Components
+	// G. Render components
 
 	return (
 		<PlansDetailContext.Provider value={contextValue}>
