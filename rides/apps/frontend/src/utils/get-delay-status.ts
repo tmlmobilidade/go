@@ -1,14 +1,14 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/RidesList.context';
+import { type RideNormalized } from '@/types/normalized';
 import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This function extract the hour and minute components from a date string.
- * @param timestamp - The date string to extract the hour and minute components from.
+ * @param timestamp The date string to extract the hour and minute components from.
  * @returns The hour and minute components of the date string.
  */
-export function getDelayStatus(startTimeScheduled: Ride['start_time_scheduled'], startTimeObserved: Ride['start_time_observed']): ExtendedRideDisplay['delay_status'] {
+export function getDelayStatus(startTimeScheduled: Ride['start_time_scheduled'], startTimeObserved: Ride['start_time_observed']): RideNormalized['delay_status'] {
 	//
 
 	if (!startTimeScheduled || !startTimeObserved) {

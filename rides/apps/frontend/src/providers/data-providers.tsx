@@ -4,7 +4,6 @@
 
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
-import { OperationalDateContextProvider } from '@/contexts/OperationalDate.context';
 import { MapProvider } from '@vis.gl/react-maplibre';
 import { PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
@@ -34,15 +33,13 @@ export function DataProviders({ children }: PropsWithChildren) {
 
 	return (
 		<SWRConfig value={swrSettings}>
-			<OperationalDateContextProvider>
-				<AgenciesContextProvider>
-					<MapOptionsContextProvider>
-						<MapProvider>
-							{children}
-						</MapProvider>
-					</MapOptionsContextProvider>
-				</AgenciesContextProvider>
-			</OperationalDateContextProvider>
+			<AgenciesContextProvider>
+				<MapOptionsContextProvider>
+					<MapProvider>
+						{children}
+					</MapProvider>
+				</MapOptionsContextProvider>
+			</AgenciesContextProvider>
 		</SWRConfig>
 	);
 
