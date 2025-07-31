@@ -5,13 +5,13 @@ import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface StatusTagProps {
+interface ValidationStatusTagProps {
 	status: ProcessingStatus
 }
 
 /* * */
 
-export function StatusTag({ status }: StatusTagProps) {
+export function ValidationStatusTag({ status }: ValidationStatusTagProps) {
 	//
 
 	if (status === ProcessingStatus.Waiting) {
@@ -27,7 +27,7 @@ export function StatusTag({ status }: StatusTagProps) {
 	}
 
 	if (status === ProcessingStatus.Error) {
-		return <Tag label="Inválido" variant="danger" />;
+		return <Tag label="Inválido" variant="danger" filled />;
 	}
 
 	return <Tag label="Missing feeder_status value" variant="muted" />;

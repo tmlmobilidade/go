@@ -15,18 +15,18 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.0.3",
-		"@tmlmobilidade/connectors": "20250729.1124.7",
-		"@tmlmobilidade/interfaces": "20250729.1124.7",
-		"@tmlmobilidade/lib": "20250729.1124.7",
-		"@tmlmobilidade/utils": "20250729.1124.7",
-		"pino-pretty": "13.0.0"
+		"@tmlmobilidade/connectors": "20250731.1756.8",
+		"@tmlmobilidade/interfaces": "20250731.1756.8",
+		"@tmlmobilidade/lib": "20250731.1756.8",
+		"@tmlmobilidade/utils": "20250731.1756.8",
+		"pino-pretty": "13.1.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250729.1124.7",
-		"@tmlmobilidade/types": "20250729.1124.7",
+		"@tmlmobilidade/tsconfig": "20250731.1756.8",
+		"@tmlmobilidade/types": "20250731.1756.8",
 		"@types/node": "24.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.3",
-		"typescript": "5.8.3"
+		"typescript": "5.9.2"
 	}
 }

@@ -65,7 +65,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', swrFetcher);
+	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', swrFetcher, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data

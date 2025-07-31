@@ -2,7 +2,7 @@
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
-import { StatusTag } from '@/components/common/StatusTag';
+import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
 import { Button, closeModal, Divider, Grid, Label, openModal, Section, Tag } from '@tmlmobilidade/ui';
 
@@ -44,7 +44,7 @@ export default function ConvertToPlanModalModal() {
 		<>
 
 			<Section alignItems="center" flexDirection="row" gap="lg">
-				<StatusTag status={plansCreateContext.data.validation.feeder_status} />
+				<ValidationStatusTag status={plansCreateContext.data.validation.feeder_status} />
 				<Tag label={plansCreateContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
 			</Section>
