@@ -1,11 +1,9 @@
 /* * */
 
 import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ConvertToPlanModal';
-import { Routes } from '@/lib/routes';
 import { type Plan, type Validation } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
@@ -44,7 +42,6 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 	//
 	// A. Setup variables
 
-	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState<null | string>(null);
 
@@ -77,7 +74,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		closeModal(CREATE_PLAN_MODAL_ID);
 
 		if (response.data) {
-			router.push(Routes.PLAN_DETAIL(response.data._id));
+			window.location.href = `/plans/${response.data._id}`;
 		}
 	};
 

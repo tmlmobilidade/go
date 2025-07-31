@@ -2,7 +2,7 @@
 
 /* * */
 
-import { StatusTag } from '@/components/common/StatusTag';
+import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { openConvertToPlanModalModal } from '@/components/validations/detail/ConvertToPlanModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconTransformFilled } from '@tabler/icons-react';
@@ -49,13 +49,13 @@ export function ValidationsDetailHeader() {
 	return (
 		<>
 			<BackButton onClick={handleClose} type="close" />
-			<StatusTag status={validationsDetailContext.data.validation?.feeder_status} />
+			<ValidationStatusTag status={validationsDetailContext.data.validation?.feeder_status} />
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 			<Label size="md" caps>{validationsDetailContext.data.validation?._id}</Label>
 			<Spacer />
 			{canConvertToPlan && (
 				<HasPermission
-					action={Permissions.validations.actions.create_plan}
+					action={Permissions.plans.actions.create}
 					resource_key="agency_ids"
 					scope={Permissions.validations.scope}
 					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}

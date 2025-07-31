@@ -3,10 +3,9 @@
 /* * */
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
-import { Routes } from '@/lib/routes';
 import { type WorkerMessage } from '@/types/worker';
 import { Permissions } from '@tmlmobilidade/lib';
-import { type CreateValidationDto, Validation, type ValidationPermission } from '@tmlmobilidade/types';
+import { type CreateValidationDto, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -87,7 +86,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 
 		form.setValues({
 			gtfs_agency: event.data.agency,
-			gtfs_feed_info: event.data.feedInfo,
+			gtfs_feed_info: event.data.feed_info,
 		});
 
 		//
@@ -155,7 +154,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 			return;
 		}
 
-		router.push(Routes.VALIDATION_DETAIL(response.data._id));
+		router.push(`/validations/${response.data._id}`);
 
 		useToast.success({
 			message: 'Validação em progresso.',
@@ -167,7 +166,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 
 		setIsLoading(false);
 		closeModal(CREATE_VALIDATION_MODAL_ID);
-		mutate(Routes.API(Routes.VALIDATION_LIST));
+		mutate('/api/validations');
 
 		//
 	};
