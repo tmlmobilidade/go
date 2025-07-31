@@ -4,8 +4,8 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
-import { type ValidationNormalized, validationProcessingStatusValues } from '@/types/normalized';
-import { type Validation } from '@tmlmobilidade/types';
+import { type ValidationNormalized } from '@/types/normalized';
+import { PROCESSING_STATUS_OPTIONS, type Validation } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
@@ -59,7 +59,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
-	const [filterProcessingStatus, setFilterProcessingStatus] = useQueryState<string[]>('processing_status', parseAsArrayOfStrings.withDefault(validationProcessingStatusValues));
+	const [filterProcessingStatus, setFilterProcessingStatus] = useQueryState<string[]>('processing_status', parseAsArrayOfStrings.withDefault([...PROCESSING_STATUS_OPTIONS]));
 
 	//
 	// B. Fetch data

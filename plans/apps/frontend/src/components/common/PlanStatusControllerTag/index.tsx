@@ -1,6 +1,6 @@
 /* * */
 
-import { ProcessingStatus } from '@tmlmobilidade/types';
+import { type ProcessingStatus } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,19 +14,19 @@ interface PlanStatusControllerTagProps {
 export function PlanStatusControllerTag({ status }: PlanStatusControllerTagProps) {
 	//
 
-	if (status === ProcessingStatus.Waiting) {
+	if (status === 'waiting') {
 		return <Tag label="Em Espera" variant="primary" />;
 	}
 
-	if (status === ProcessingStatus.Processing) {
+	if (status === 'processing') {
 		return <Tag label="Em Processamento" variant="primary" filled />;
 	}
 
-	if (status === ProcessingStatus.Complete) {
+	if (status === 'complete') {
 		return <Tag label="Finalizado" variant="success" />;
 	}
 
-	if (status === ProcessingStatus.Error) {
+	if (status === 'error') {
 		return <Tag label="Erro" variant="danger" filled />;
 	}
 

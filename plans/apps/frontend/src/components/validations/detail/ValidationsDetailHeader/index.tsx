@@ -7,7 +7,6 @@ import { openConvertToPlanModalModal } from '@/components/validations/detail/Con
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconTransformFilled } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { ProcessingStatus } from '@tmlmobilidade/types';
 import { BackButton, Button, HasPermission, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -28,7 +27,7 @@ export function ValidationsDetailHeader() {
 	// B. Transform data
 
 	const canConvertToPlan = useMemo(() => {
-		return validationsDetailContext.data.validation.feeder_status === ProcessingStatus.Complete;
+		return validationsDetailContext.data.validation.feeder_status === 'complete';
 	}, [validationsDetailContext.data.validation]);
 
 	//

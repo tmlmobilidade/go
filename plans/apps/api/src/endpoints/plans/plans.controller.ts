@@ -4,7 +4,7 @@ import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/lib';
-import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, ProcessingStatus, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
+import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { createHash } from 'node:crypto';
 
@@ -19,7 +19,7 @@ export class PlansController {
 	 * @param reply Fastify reply
 	 */
 	static async controllerReprocessPlanById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
-		const result = await plans.updateById(request.params.id, { status_controller: ProcessingStatus.Waiting });
+		const result = await plans.updateById(request.params.id, { status_controller: 'waiting' });
 		return reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 
@@ -65,8 +65,8 @@ export class PlansController {
 				hash: '',
 				is_locked: false,
 				operation_file_id: '',
-				status_controller: ProcessingStatus.Waiting,
-				status_merger: ProcessingStatus.Waiting,
+				status_controller: 'waiting',
+				status_merger: 'waiting',
 			};
 
 			const planResult = await plansCollection.insertOne(
