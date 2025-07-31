@@ -77,18 +77,14 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 
 	async function setDistricts(ids: string[]) {
 		const districts = allDistrictsData.data.filter(item => ids.includes(item._id));
-		console.log('====>', districts);
-		if (!districts.length) return;
 
 		setSelectedLocation({
-			districts: districts,
+			districts,
 			municipalities: [],
 			parishes: [],
 		});
 
-		console.log('set --->', selectedLocation.districts);
-
-		const res = await fetchData<Municipality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities?district_ids=${selectedLocation.districts.map(item => item._id).join(',')}`);
+		const res = await fetchData<Municipality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities?district_ids=${districts.map(item => item._id).join(',')}`);
 
 		if (res.error) {
 			console.error(res.error);
@@ -98,19 +94,18 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 		setAllMunicipalitiesData(res.data);
 		setAllParishesData([]);
 		setAllLocalitiesData([]);
-	};
+	}
 
 	async function setMunicipalities(ids: string[]) {
 		const municipalities = allMunicipalitiesData.filter(item => ids.includes(item._id));
-		if (!selectedLocation.districts || !selectedLocation.municipalities) return;
 
 		setSelectedLocation(prev => ({
 			...prev,
-			municipalities: municipalities,
+			municipalities,
 			parishes: [],
 		}));
 
-		const res = await fetchData<Parish[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/parishes?municipality_ids=${selectedLocation.municipalities.map(item => item._id).join(',')}`);
+		const res = await fetchData<Parish[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/parishes?municipality_ids=${municipalities.map(item => item._id).join(',')}`);
 
 		if (res.error) {
 			console.error(res.error);
@@ -123,15 +118,14 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 
 	async function setParishes(ids: string[]) {
 		const parishes = allParishesData.filter(item => ids.includes(item._id));
-		if (!selectedLocation.districts || !selectedLocation.municipalities || !selectedLocation.parishes) return;
 
 		setSelectedLocation(prev => ({
 			...prev,
-			parishes: parishes,
+			parishes,
 		}));
 
-		const res = await fetchData<Locality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities?parish_ids=${selectedLocation.parishes.map(item => item._id).join(',')}`);
-		console.log('localities ------>', res);
+		const res = await fetchData<Locality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities?parish_ids=${parishes.map(item => item._id).join(',')}`);
+
 		if (res.error) {
 			console.error(res.error);
 			return;

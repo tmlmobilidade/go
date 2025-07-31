@@ -36,7 +36,7 @@ export function StopListFilterDistrict() {
 			data={parsedOptions}
 			label="Distrito"
 			onChange={locations.actions.setDistricts}
-			selected={locations.data.selectedLocation?.districts?.map(item => item._id) ?? []}
+			selected={locations.data.selectedLocation?.districts?.map(item => item._id)}
 			clearable
 		/>
 	);
