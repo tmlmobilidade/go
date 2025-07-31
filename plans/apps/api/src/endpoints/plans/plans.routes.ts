@@ -3,7 +3,7 @@
 import { PlansController } from '@/endpoints/plans/plans.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
-import { PlanPermission } from '@tmlmobilidade/types';
+import { type PlanPermission } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,6 +14,8 @@ const namespace = '/plans';
 
 server.register(
 	(instance, opts, next) => {
+		//
+
 		// GET /plans
 		instance.get(
 			'/',

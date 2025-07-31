@@ -4,8 +4,9 @@ import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/lib';
-import { type CreateFileDto, type CreatePlanDto, File as FileType, type Permission, type Plan, type PlanPermission, ProcessingStatus, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
+import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, ProcessingStatus, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { createHash } from 'node:crypto';
 
 /* * */;
 
@@ -74,8 +75,8 @@ export class PlansController {
 			);
 
 			//
-			// Make a clone of the validation file
-			// and associate it with the new plan
+			// Make a clone of the validation GTFS file in S3
+			// to keep plan data separate from validations
 
 			const fileResult = await filesCollection.clone(
 				validationData.file_id,
@@ -84,9 +85,28 @@ export class PlansController {
 				{ session: filesTransaction.getSession() },
 			);
 
+			//
+			// Get a hash of all metadata to make it possible
+			// to keep track of changes to the plan
+
+			const hashablePlanMetadata: HashablePlanMetadata = {
+				_id: planResult._id,
+				gtfs_agency: planResult.gtfs_agency,
+				gtfs_feed_info: planResult.gtfs_feed_info,
+				operation_file_id: fileResult._id,
+			};
+
+			const hashValue = createHash('sha256')
+				.update(JSON.stringify(hashablePlanMetadata))
+				.digest('hex');
+
+			//
+			// Associate the cloned file and the hash to the plan object
+			// and return it to the caller
+
 			const finalPlanResult = await plansCollection.updateById(
 				planResult._id,
-				{ operation_file_id: fileResult?._id },
+				{ hash: hashValue, operation_file_id: fileResult._id },
 				{ session: plansTransaction.getSession() },
 			);
 
@@ -344,67 +364,59 @@ export class PlansController {
 		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
 
 		//
-		// Setup the feed info dates and check if they need to be updated
+		// Validate the new feed info dates
 
-		const currentFeedInfoDates = {
-			feed_end_date: planData.gtfs_feed_info?.feed_end_date,
-			feed_start_date: planData.gtfs_feed_info?.feed_start_date,
+		const validatedFeedStartDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_start_date);
+		const validatedFeedEndDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_end_date);
+
+		//
+		// Update the feed info dates in the operation file
+
+		const updateDatesResult = await updateFeedInfoDates(
+			planData.operation_file_id,
+			validatedFeedStartDate,
+			validatedFeedEndDate,
+		);
+
+		//
+		// Prepare the updated file metadata
+
+		const updatedFileData: CreateFileDto = {
+			created_by: updateDatesResult.info.created_by,
+			name: updateDatesResult.info.name,
+			resource_id: updateDatesResult.info.resource_id,
+			scope: updateDatesResult.info.scope,
+			size: updateDatesResult.file.size,
+			type: mimeTypes.zip,
+			updated_by: 'system',
 		};
 
-		const newFeedInfoDates = {
-			feed_end_date: request.body.gtfs_feed_info?.feed_end_date,
-			feed_start_date: request.body.gtfs_feed_info?.feed_start_date,
+		//
+		// Upload updated file and store new file ID
+
+		const updateFileResult = await files.upload(
+			Buffer.from(await updateDatesResult.file.arrayBuffer()),
+			updatedFileData,
+		);
+
+		//
+		// Get a hash of all metadata to make it possible
+		// to keep track of changes to the plan
+
+		const hashablePlanMetadata: HashablePlanMetadata = {
+			_id: planData._id,
+			gtfs_agency: planData.gtfs_agency,
+			gtfs_feed_info: {
+				...planData.gtfs_feed_info,
+				feed_end_date: validatedFeedEndDate,
+				feed_start_date: validatedFeedStartDate,
+			},
+			operation_file_id: updateFileResult._id,
 		};
 
-		const startDateChanged = newFeedInfoDates.feed_start_date && newFeedInfoDates.feed_start_date !== currentFeedInfoDates.feed_start_date;
-		const endDateChanged = newFeedInfoDates.feed_end_date && newFeedInfoDates.feed_end_date !== currentFeedInfoDates.feed_end_date;
-
-		if (startDateChanged || endDateChanged) {
-			//
-
-			//
-			// Validate the new feed info dates
-
-			const validatedFeedStartDate = validateOperationalDate(newFeedInfoDates.feed_start_date);
-			const validatedFeedEndDate = validateOperationalDate(newFeedInfoDates.feed_end_date);
-
-			request.body.gtfs_feed_info.feed_start_date = validatedFeedStartDate;
-			request.body.gtfs_feed_info.feed_end_date = validatedFeedEndDate;
-
-			//
-			// Update the feed info dates in the operation file
-
-			const updateDatesResult = await updateFeedInfoDates(
-				planData.operation_file_id,
-				validatedFeedStartDate,
-				validatedFeedEndDate,
-			);
-
-			//
-			// Prepare the updated file metadata
-
-			const updatedFileData: CreateFileDto = {
-				created_by: updateDatesResult.info.created_by,
-				name: updateDatesResult.info.name,
-				resource_id: updateDatesResult.info.resource_id,
-				scope: updateDatesResult.info.scope,
-				size: updateDatesResult.file.size,
-				type: mimeTypes.zip,
-				updated_by: 'system',
-			};
-
-			//
-			// Upload updated file and store new file ID
-
-			const updateFileResult = await files.upload(
-				Buffer.from(await updateDatesResult.file.arrayBuffer()),
-				updatedFileData,
-			);
-
-			request.body.operation_file_id = updateFileResult._id;
-
-			//
-		}
+		const hashValue = createHash('sha256')
+			.update(JSON.stringify(hashablePlanMetadata))
+			.digest('hex');
 
 		//
 		// Update the plan with the new data
@@ -412,10 +424,11 @@ export class PlansController {
 		const updatedPlan = await plans.updateById(planData._id, {
 			gtfs_feed_info: {
 				...planData.gtfs_feed_info,
-				feed_end_date: request.body.gtfs_feed_info.feed_end_date || currentFeedInfoDates.feed_end_date,
-				feed_start_date: request.body.gtfs_feed_info.feed_start_date || currentFeedInfoDates.feed_start_date,
+				feed_end_date: validatedFeedEndDate,
+				feed_start_date: validatedFeedStartDate,
 			},
-			operation_file_id: request.body.operation_file_id,
+			hash: hashValue,
+			operation_file_id: updateFileResult._id,
 		});
 
 		reply.send({
@@ -426,4 +439,6 @@ export class PlansController {
 
 		//
 	}
+
+	//
 }
