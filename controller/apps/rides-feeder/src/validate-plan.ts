@@ -17,10 +17,19 @@ export function validatePlan(planData: Plan): boolean {
 	}
 
 	//
-	// Return false if its status is other than 'waiting' or 'processing'
+	// Return false if the hash is the same,
+	// as it means the plan did not change since last run
 
-	if (planData.controller.status !== 'waiting' && planData.controller.status !== 'processing') {
-		LOGGER.error(`Skip processing: status_controller is '${planData.controller.status}'. Only 'waiting' or 'processing' plans will be processed.`);
+	if (planData.hash === planData.controller.last_hash) {
+		LOGGER.error(`Skip processing: Hash is the same as last_hash.`);
+		return false;
+	}
+
+	//
+	// Return false if its status is 'error'
+
+	if (planData.controller.status === 'error') {
+		LOGGER.error(`Skip processing: status_controller is 'error'.`);
 		return false;
 	}
 
