@@ -22,6 +22,8 @@ export function Shelter() {
 		value: value,
 	}));
 
+	//
+
 	const shelterStatus = infrastructureStatusSchema.options.map(value => ({
 		label: Translations.INFRAESTRUCTURES_STATUS[value],
 		value: value,

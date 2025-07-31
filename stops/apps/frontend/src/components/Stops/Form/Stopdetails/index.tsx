@@ -69,6 +69,7 @@ export function StopDetails() {
 
 				</Grid>
 			</Section>
+
 			<Section gap="md">
 				<TextInput
 					label="Antigo Nome da Paragem (p/ alterar)"
@@ -100,6 +101,7 @@ export function StopDetails() {
 					)}
 				/>
 			</Section>
+
 			<Section gap="md">
 				<Combobox
 					data={operationalStatusItems}

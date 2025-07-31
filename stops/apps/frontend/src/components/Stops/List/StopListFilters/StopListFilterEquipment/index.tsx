@@ -28,6 +28,8 @@ export function StopListFilterEquipment() {
 		return !defaultValues.every(item => enabledValues.includes(item));
 	}, [stopListContext.filters.equipment]);
 
+	/* * */
+
 	const parsedOptions = useMemo(() => {
 		if (!equipmentSchema.options?.length) return [];
 

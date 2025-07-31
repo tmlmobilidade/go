@@ -28,6 +28,8 @@ export function StopListFilterFacilities() {
 		return !defaultValues.every(item => enabledValues.includes(item));
 	}, [stopListContext.filters.facilities]);
 
+	/* * */
+
 	const parsedOptions = useMemo(() => {
 		if (!facilitiesSchema.options?.length) return [];
 

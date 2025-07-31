@@ -28,6 +28,8 @@ export function StopListFilterConnections() {
 		return !defaultValues.every(item => enabledValues.includes(item));
 	}, [stopListContext.filters.connections]);
 
+	/* * */
+
 	const parsedOptions = useMemo(() => {
 		if (!connectionsSchema.options?.length) return [];
 
