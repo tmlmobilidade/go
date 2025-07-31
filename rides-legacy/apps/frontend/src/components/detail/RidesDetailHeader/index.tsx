@@ -1,0 +1,46 @@
+'use client';
+
+/* * */
+
+import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
+import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
+import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
+import { BackButton, Spacer, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
+
+/* * */
+
+export function RidesDetailHeader() {
+	//
+
+	//
+	// A. Setup variables
+
+	const router = useRouter();
+
+	const ridesDetailContext = useRidesDetailContext();
+
+	//
+	// B. Handle actions
+
+	const handleGoBack = () => {
+		const destUrl = keepUrlParams(`/rides`, window.location.search);
+		router.push(destUrl);
+	};
+
+	//
+	// C. Render components
+
+	return (
+		<>
+			<BackButton onClick={handleGoBack} type="close" />
+			<Tag label={ridesDetailContext.data.ride_id} variant="muted" />
+			<Spacer />
+			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.simple_three_vehicle_events_grade} operationalStatus={ridesDetailContext.data.ride?.operational_status} />
+			<OperationalStatusTag value={ridesDetailContext.data.ride?.operational_status} />
+		</>
+	);
+
+	//
+}
