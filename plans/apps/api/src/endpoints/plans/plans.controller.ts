@@ -4,7 +4,7 @@ import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/lib';
-import { type CreateFileDto, type CreatePlanDto, File as FileType, type Permission, type Plan, type PlanPermission, ProcessingStatus, UpdatePlanDto, UpdatePlanSchema, validateOperationalDate } from '@tmlmobilidade/types';
+import { type CreateFileDto, type CreatePlanDto, File as FileType, type Permission, type Plan, type PlanPermission, ProcessingStatus, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
 
 /* * */;
@@ -344,11 +344,6 @@ export class PlansController {
 		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
 
 		//
-		// Validate the request body against the UpdatePlanDto schema
-
-		const validatedData = UpdatePlanSchema.parse(request.body);
-
-		//
 		// Setup the feed info dates and check if they need to be updated
 
 		const currentFeedInfoDates = {
@@ -357,8 +352,8 @@ export class PlansController {
 		};
 
 		const newFeedInfoDates = {
-			feed_end_date: validatedData.gtfs_feed_info?.feed_end_date,
-			feed_start_date: validatedData.gtfs_feed_info?.feed_start_date,
+			feed_end_date: request.body.gtfs_feed_info?.feed_end_date,
+			feed_start_date: request.body.gtfs_feed_info?.feed_start_date,
 		};
 
 		const startDateChanged = newFeedInfoDates.feed_start_date && newFeedInfoDates.feed_start_date !== currentFeedInfoDates.feed_start_date;
@@ -372,6 +367,9 @@ export class PlansController {
 
 			const validatedFeedStartDate = validateOperationalDate(newFeedInfoDates.feed_start_date);
 			const validatedFeedEndDate = validateOperationalDate(newFeedInfoDates.feed_end_date);
+
+			request.body.gtfs_feed_info.feed_start_date = validatedFeedStartDate;
+			request.body.gtfs_feed_info.feed_end_date = validatedFeedEndDate;
 
 			//
 			// Update the feed info dates in the operation file
@@ -403,7 +401,7 @@ export class PlansController {
 				updatedFileData,
 			);
 
-			validatedData.operation_file_id = updateFileResult._id;
+			request.body.operation_file_id = updateFileResult._id;
 
 			//
 		}
@@ -411,7 +409,14 @@ export class PlansController {
 		//
 		// Update the plan with the new data
 
-		const updatedPlan = await plans.updateById(planData._id, validatedData);
+		const updatedPlan = await plans.updateById(planData._id, {
+			gtfs_feed_info: {
+				...planData.gtfs_feed_info,
+				feed_end_date: request.body.gtfs_feed_info.feed_end_date || currentFeedInfoDates.feed_end_date,
+				feed_start_date: request.body.gtfs_feed_info.feed_start_date || currentFeedInfoDates.feed_start_date,
+			},
+			operation_file_id: request.body.operation_file_id,
+		});
 
 		reply.send({
 			data: updatedPlan,
