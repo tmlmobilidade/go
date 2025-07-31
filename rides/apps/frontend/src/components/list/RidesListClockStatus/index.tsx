@@ -18,13 +18,15 @@ export function RidesListClockStatus() {
 	//
 	// B. Render components
 
-	return (
-		<Button
-			label={ridesListContext.data.is_locked ? 'Agora' : 'Ir para agora'}
-			onClick={() => ridesListContext.actions.setLockStatus()}
-			variant={ridesListContext.data.is_locked ? 'danger' : 'muted'}
-		/>
-	);
+	return null;
+
+	// return (
+	// 	<Button
+	// 		label={ridesListContext.data.is_locked ? 'Agora' : 'Ir para agora'}
+	// 		onClick={() => ridesListContext.actions.setLockStatus()}
+	// 		variant={ridesListContext.data.is_locked ? 'danger' : 'muted'}
+	// 	/>
+	// );
 
 	//
 }

@@ -52,7 +52,7 @@ export class RidesController {
 			reply.send({
 				data: ridesBatch,
 				error: null,
-				status: HttpStatus.OK,
+				statusCode: HttpStatus.OK,
 			});
 		}
 		catch (error) {
@@ -129,7 +129,7 @@ export class RidesController {
 			reply.send({
 				data: hashedShapeData,
 				error: null,
-				status: HttpStatus.OK,
+				statusCode: HttpStatus.OK,
 			});
 		}
 		catch (error) {
@@ -201,7 +201,7 @@ export class RidesController {
 			reply.send({
 				data: hashedTripData,
 				error: null,
-				status: HttpStatus.OK,
+				statusCode: HttpStatus.OK,
 			});
 		}
 		catch (error) {
@@ -257,7 +257,7 @@ export class RidesController {
 			reply.send({
 				data: rideData,
 				error: null,
-				status: HttpStatus.OK,
+				statusCode: HttpStatus.OK,
 			});
 		}
 		catch (error) {
@@ -325,7 +325,7 @@ export class RidesController {
 			reply.send({
 				data: simplifiedApexValidationsData ?? [],
 				error: null,
-				status: HttpStatus.OK,
+				statusCode: HttpStatus.OK,
 			});
 		}
 		catch (error) {
@@ -393,7 +393,7 @@ export class RidesController {
 			reply.send({
 				data: vehicleEventsData ?? [],
 				error: null,
-				status: HttpStatus.OK,
+				statusCode: HttpStatus.OK,
 			});
 		}
 		catch (error) {
@@ -430,7 +430,7 @@ export class RidesController {
 					const message: HttpResponse<Ride> = {
 						data: databaseOperation['fullDocument'],
 						error: null,
-						status: HttpStatus.OK,
+						statusCode: HttpStatus.OK,
 					};
 					socket.send(JSON.stringify(message));
 				});
