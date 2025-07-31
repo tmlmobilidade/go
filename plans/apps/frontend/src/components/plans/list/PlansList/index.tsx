@@ -51,8 +51,8 @@ export function PlansList() {
 			width: 350,
 		},
 		{
-			accessor: 'status_controller',
-			render: item => <PlanStatusControllerTag status={item.status_controller} />,
+			accessor: 'controller',
+			render: item => <PlanStatusControllerTag status={item.controller.status} />,
 			title: 'SLA Status',
 			width: 220,
 		},

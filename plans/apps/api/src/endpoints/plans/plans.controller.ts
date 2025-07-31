@@ -19,7 +19,8 @@ export class PlansController {
 	 * @param reply Fastify reply
 	 */
 	static async controllerReprocessPlanById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
-		const result = await plans.updateById(request.params.id, { status_controller: 'waiting' });
+		const planData = await plans.findById(request.params.id);
+		const result = await plans.updateById(request.params.id, { controller: { ...planData.controller, status: 'waiting' } });
 		return reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 
@@ -60,12 +61,16 @@ export class PlansController {
 			// and save it to the database
 
 			const newPlanData: CreatePlanDto = {
+				controller: {
+					last_hash: null,
+					status: 'waiting',
+					timestamp: null,
+				},
 				gtfs_agency: validationData.gtfs_agency,
 				gtfs_feed_info: validationData.gtfs_feed_info,
 				hash: '',
 				is_locked: false,
 				operation_file_id: '',
-				status_controller: 'waiting',
 				status_merger: 'waiting',
 			};
 

@@ -3,7 +3,6 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { uniqueSams } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -42,7 +41,7 @@ export async function getUniqueSams(): Promise<number[]> {
 	const fetchTimer = new TIMETRACKER();
 
 	const latestWaitingUniqueSams = await uniqueSamsCollection
-		.find({ system_status: ProcessingStatus.Waiting })
+		.find({ system_status: 'waiting' })
 		.limit(batchSize)
 		.toArray();
 
@@ -68,7 +67,7 @@ export async function getUniqueSams(): Promise<number[]> {
 
 	const markTimer = new TIMETRACKER();
 
-	await uniqueSamsCollection.updateMany({ _id: { $in: latestWaitingUniqueSamsIds } }, { $set: { system_status: ProcessingStatus.Processing } });
+	await uniqueSamsCollection.updateMany({ _id: { $in: latestWaitingUniqueSamsIds } }, { $set: { system_status: 'processing' } });
 
 	LOGGER.info(`New batch: Qty ${latestWaitingUniqueSamsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 

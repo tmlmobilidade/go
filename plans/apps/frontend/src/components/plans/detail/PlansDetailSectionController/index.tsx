@@ -26,7 +26,7 @@ export function PlansDetailSectionController() {
 		>
 			<Section gap="sm">
 
-				<PlanStatusControllerTag status={plansDetailContext.data.plan.status_controller} />
+				<PlanStatusControllerTag status={plansDetailContext.data.plan.controller.status} />
 
 				<Tag label={plansDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
 

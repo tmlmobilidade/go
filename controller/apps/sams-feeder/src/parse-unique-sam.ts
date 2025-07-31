@@ -1,7 +1,7 @@
 /* * */
 
 import { type AggregationResultItem } from '@/types.js';
-import { type CreateUniqueSamDto, ProcessingStatus } from '@tmlmobilidade/types';
+import { type CreateUniqueSamDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,7 +14,7 @@ export function parseUniqueSam(item: AggregationResultItem): CreateUniqueSamDto 
 		remarks: null,
 		seen_first_at: null,
 		seen_last_at: null,
-		system_status: ProcessingStatus.Waiting,
+		system_status: 'waiting',
 		transactions_expected: null,
 		transactions_found: null,
 		transactions_missing: null,
