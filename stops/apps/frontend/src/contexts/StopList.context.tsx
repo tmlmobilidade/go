@@ -123,19 +123,18 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		// 2. Filter by query filters
 
 		return searchResultsData.filter((stop: StopNormalized) => {
-			console.log('123');
 			const matchesFacilities = queryFacilities.length === 0 || stop.facilities.some(item => filterFacilitiesSet.has(item));
 			const matchesEquipment = queryEquipment.length === 0 || stop.equipment.some(item => filterEquipmentSet.has(item));
 			const matchesConnections = queryConnections.length === 0 || stop.connections.some(item => filterConnectionsSet.has(item));
 
 			const selectedDistricts = locationsContext.data.selectedLocation?.districts;
-			const matchesDistrict = selectedDistricts?.filter(item => stop.district_id.includes(item._id));
+			const matchesDistrict = !selectedDistricts || selectedDistricts.length === 0 || selectedDistricts.some(item => stop.district_id.includes(item._id));
 
 			const selectedMunicipalities = locationsContext.data.selectedLocation?.municipalities;
-			const matchesMunicipality = selectedMunicipalities?.some(item => stop.municipality_id.includes(item._id));
+			const matchesMunicipality = !selectedMunicipalities || selectedMunicipalities.length === 0 || selectedMunicipalities.some(item => stop.municipality_id.includes(item._id));
 
 			const selectedParishes = locationsContext.data.selectedLocation?.parishes;
-			const matchesParish = selectedParishes?.some(item => stop.parish_id.includes(item._id));
+			const matchesParish = !selectedParishes || selectedParishes.length === 0 || selectedParishes.some(item => stop.parish_id.includes(item._id));
 
 			return matchesFacilities && matchesEquipment && matchesConnections && matchesDistrict && matchesMunicipality && matchesParish;
 		});
