@@ -38,7 +38,6 @@ export class StopsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Stop[]>) {
 		const data = await stops.findMany({}, {
-			limit: 5,
 			sort: { created_at: -1 },
 		});
 

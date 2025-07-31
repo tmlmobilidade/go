@@ -4,10 +4,10 @@
 
 import { useStopListContext } from '@/contexts/StopList.context';
 import { Routes } from '@/lib/routes';
-import { Pane, Section, Tag, Text } from '@tmlmobilidade/ui';
+import { Stop } from '@tmlmobilidade/types';
+import { DataTable, DataTableColumn, Pane } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -21,8 +21,44 @@ export function StopsList() {
 
 	const { data, flags } = useStopListContext();
 
+	const columns: DataTableColumn<Stop>[] = [
+		{
+			accessor: '_id',
+			render: item => item._id,
+			title: 'id',
+			width: 150,
+		},
+		{
+			accessor: 'name',
+			render: item => item.name,
+			title: 'name',
+			width: 500,
+		},
+		{
+			accessor: 'latitude',
+			render: item => item.latitude,
+			title: 'latitude',
+			width: 150,
+		},
+		{
+			accessor: 'longitude',
+			render: item => item.longitude,
+			title: 'longitude',
+			width: 150,
+		},
+
+	];
+
 	//
-	// B. Render components
+	// B. Handle Actions
+
+	const handleRowClick = (item: Stop) => {
+		const destUrl = keepUrlParams(Routes.STOPS_DETAIL(item._id), window.location.search);
+		router.push(destUrl);
+	};
+
+	//
+	// C. Render components
 
 	if (flags.error) {
 		return <div>Error: {flags.error.message}</div>;
@@ -30,19 +66,12 @@ export function StopsList() {
 
 	return (
 		<Pane>
-			{data.filtered.map(stop => (
-				<div
-					key={stop._id}
-					className={styles.root}
-					defaultValue={stop._id}
-					onClick={() => { router.push(Routes.STOPS_DETAIL(stop._id)); }}
-				>
-					<Section alignItems="center" flexDirection="row" flexWrap="nowrap" gap="sm">
-						<Tag label={stop._id} variant="muted" />
-						<Text size="lg">{stop.name} | lat: {stop.latitude} , lon: {stop.longitude}</Text>
-					</Section>
-				</div>
-			))}
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={data.filtered}
+				rowIdAccessor="_id"
+			/>
 		</Pane>
 	);
 

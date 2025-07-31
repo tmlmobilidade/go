@@ -4,8 +4,9 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
+import { IconAB } from '@tabler/icons-react';
 import { operationalStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Grid, NumberInput, Section, TextInput } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Combobox, Grid, NumberInput, Section, TextInput, Tooltip } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,7 +24,20 @@ export function StopDetails() {
 	}));
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handlePlayPhoneticName = async () => {
+		if (typeof window !== 'undefined') {
+			const synth = window.speechSynthesis;
+
+			const utterance = new SpeechSynthesisUtterance(stopDetailContext.data.form.values.tts_name || '');
+			utterance.lang = 'pt';
+			synth.speak(utterance);
+		}
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -68,22 +82,23 @@ export function StopDetails() {
 					placeholder="..."
 					{...stopDetailContext.data.form.getInputProps('new_name')}
 				/>
-			</Section>
-			<Section gap="md">
-				<Grid columns="ab" gap="sm">
-					<TextInput
-						label="Nome Curto (Postalete)"
-						miw="100%"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('short_name')}
-					/>
-					<TextInput
-						label="Nome Falado (Text-to-Speech)"
-						miw="100%"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('tts_name')}
-					/>
-				</Grid>
+				<TextInput
+					label="Nome Curto (Postalete)"
+					miw="100%"
+					placeholder="..."
+					{...stopDetailContext.data.form.getInputProps('short_name')}
+				/>
+				<TextInput
+					label="Nome Falado (Text-to-Speech)"
+					miw="100%"
+					placeholder="..."
+					{...stopDetailContext.data.form.getInputProps('tts_name')}
+					rightSection={(
+						<Tooltip label="tts">
+							<Button icon={<IconAB />} onClick={handlePlayPhoneticName} />
+						</Tooltip>
+					)}
+				/>
 			</Section>
 			<Section gap="md">
 				<Combobox
