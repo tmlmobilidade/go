@@ -35,7 +35,7 @@ export function StopListFilterDistrict() {
 		<MultiSelect
 			data={parsedOptions}
 			label="Distrito"
-			onChange={locations.actions.setDistrict}
+			onChange={locations.actions.setDistricts}
 			selected={locations.data.selectedLocation?.districts?.map(item => item._id) ?? []}
 			clearable
 		/>

@@ -104,8 +104,6 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 
-		console.log('.districts ->', locationsContext.data.selectedLocation?.districts);
-
 		// Skip if no query filters are set
 		if (
 			queryFacilities.length === 0
@@ -130,17 +128,17 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 			const matchesConnections = queryConnections.length === 0 || stop.connections.some(item => filterConnectionsSet.has(item));
 
 			const selectedDistricts = locationsContext.data.selectedLocation?.districts;
-			const matchesDistrict = selectedDistricts?.map(item => item._id === stop.district_id) ?? true;
+			const matchesDistrict = selectedDistricts?.some(item => item._id === stop.district_id);
 
 			const selectedMunicipalities = locationsContext.data.selectedLocation?.municipalities;
-			const matchesMunicipality = selectedMunicipalities?.map(item => item._id === stop.municipality_id) ?? true;
+			const matchesMunicipality = selectedMunicipalities?.some(item => item._id === stop.municipality_id);
 
 			const selectedParishes = locationsContext.data.selectedLocation?.parishes;
-			const matchesParish = selectedParishes?.map(item => item._id === stop.parish_id) ?? true;
+			const matchesParish = selectedParishes?.some(item => item._id === stop.parish_id);
 
 			return matchesFacilities && matchesEquipment && matchesConnections && matchesDistrict && matchesMunicipality && matchesParish;
 		});
-	}, [searchResultsData, filterFacilities, filterEquipment, filterConnections, queryConnections, queryEquipment, queryFacilities, locationsContext.data.selectedLocation]);
+	}, [searchResultsData, filterFacilities, filterEquipment, filterConnections, queryConnections, queryEquipment, queryFacilities, locationsContext.data]);
 
 	//
 

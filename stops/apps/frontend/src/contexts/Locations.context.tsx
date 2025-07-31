@@ -23,9 +23,9 @@ interface SelectedLocations {
 
 interface LocationsContextState {
 	actions: {
-		setDistrict: (districtId: string | string[]) => void
-		setMunicipality: (municipalityId: string | string[]) => void
-		setParish: (Parish: string | string[]) => void
+		setDistricts: (ids: string[]) => void
+		setMunicipalities: (ids: string[]) => void
+		setParishes: (ids: string[]) => void
 	}
 	data: {
 		districts: District[]
@@ -75,13 +75,13 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// B. Handle actions
 
-	async function setDistrict(districtId: string) {
-		const district = allDistrictsData?.data.find(item => item._id === districtId);
-		console.log('------->', districtId);
-		if (!district) return;
+	async function setDistricts(ids: string[]) {
+		const districts = allDistrictsData.data.filter(item => ids.includes(item._id));
+		console.log('====>', districts);
+		if (!districts.length) return;
 
 		setSelectedLocation({
-			districts: [district],
+			districts: districts,
 			municipalities: [],
 			parishes: [],
 		});
@@ -100,13 +100,13 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 		setAllLocalitiesData([]);
 	};
 
-	async function setMunicipality(municipalityId: string) {
-		const municipality = allMunicipalitiesData.find(item => item._id === municipalityId);
+	async function setMunicipalities(ids: string[]) {
+		const municipalities = allMunicipalitiesData.filter(item => ids.includes(item._id));
 		if (!selectedLocation.districts || !selectedLocation.municipalities) return;
 
 		setSelectedLocation(prev => ({
 			...prev,
-			municipalities: [municipality],
+			municipalities: municipalities,
 			parishes: [],
 		}));
 
@@ -121,13 +121,13 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 		setAllLocalitiesData([]);
 	}
 
-	async function setParish(parishId: string) {
-		const parish = allLocalitiesData.find(item => item._id === parishId);
+	async function setParishes(ids: string[]) {
+		const parishes = allParishesData.filter(item => ids.includes(item._id));
 		if (!selectedLocation.districts || !selectedLocation.municipalities || !selectedLocation.parishes) return;
 
 		setSelectedLocation(prev => ({
 			...prev,
-			parishes: [parish],
+			parishes: parishes,
 		}));
 
 		const res = await fetchData<Locality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities?parish_ids=${selectedLocation.parishes.map(item => item._id).join(',')}`);
@@ -149,9 +149,9 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 		return {
 
 			actions: {
-				setDistrict,
-				setMunicipality,
-				setParish,
+				setDistricts,
+				setMunicipalities,
+				setParishes,
 			},
 			data: {
 				districts: allDistrictsData?.data ?? [],

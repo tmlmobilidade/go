@@ -33,7 +33,7 @@ export function StopListFilterParish() {
 		<MultiSelect
 			data={parsedOptions}
 			label="Freguesia"
-			onChange={locations.actions.setParish}
+			onChange={locations.actions.setParishes}
 			selected={locations.data.selectedLocation?.parishes?.map(item => item._id) ?? []}
 			clearable
 		/>
