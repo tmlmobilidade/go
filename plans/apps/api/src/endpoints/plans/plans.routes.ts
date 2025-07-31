@@ -28,6 +28,13 @@ server.register(
 			PlansController.getById,
 		);
 
+		// GET /plans/:id/operation-file
+		instance.get(
+			'/:id/operation-file',
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.read) },
+			PlansController.getPlanOperationFileById,
+		);
+
 		// POST /plans
 		instance.post(
 			'/',
@@ -40,6 +47,13 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
 			PlansController.update,
+		);
+
+		// PUT /plans/:id/toggle-lock
+		instance.get(
+			'/:id/toggle-lock',
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
+			PlansController.toggleLockById,
 		);
 
 		// DELETE /plans/:id

@@ -173,10 +173,7 @@ export class PlansController {
 	 * @param request Fastify request containing plan ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply<Plan & { file: FileType }>,
-	) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan & { file: FileType }>) {
 		const { id } = request.params;
 
 		const plan = await plans.findById(id);
@@ -208,6 +205,85 @@ export class PlansController {
 			console.warn('Error fetching file for plan:', error);
 			return reply.send({ data: { ...plan, file: undefined }, error: null, statusCode: HttpStatus.OK });
 		}
+	}
+
+	/**
+	 * Retrieves the operation file associated with a plan by ID
+	 * @param request Fastify request containing plan ID in params
+	 * @param reply Fastify reply
+	 */
+	static async getPlanOperationFileById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<FileType>) {
+		//
+
+		//
+		// Get the Plan from the database
+
+		const planData = await plans.findById(request.params.id);
+
+		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+
+		//
+		// Check if the user has permission to read the Plan
+
+		const hasPermissionReadPlan = hasAPIResourcePermission<PlanPermission>(request, {
+			action: Permissions.plans.actions.read,
+			resource_key: 'agency_ids',
+			scope: Permissions.plans.scope,
+			value: planData.gtfs_agency.agency_id,
+		});
+
+		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+
+		//
+		// Fetch the file associated with the plan
+
+		const fileData = await files.findById(planData.operation_file_id);
+
+		if (!fileData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan operation file not found');
+
+		return reply.send({
+			data: fileData,
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
+
+		//
+	}
+
+	/**
+	 * Toggles the lock status of a plan by ID
+	 * @param request Fastify request containing plan ID in params
+	 * @param reply Fastify reply
+	 */
+	static async toggleLockById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+		//
+
+		console.log('HEREEEEEE');
+		console.log('HEREEEEEE');
+		console.log('HEREEEEEE');
+		console.log('HEREEEEEE');
+
+		//
+		// Get the Plan from the database
+
+		const planData = await plans.findById(request.params.id);
+
+		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+
+		//
+		// Toggle the lock status of the plan
+
+		const result = await plans.updateById(planData._id, { is_locked: !planData.is_locked });
+
+		console.log('Plan lock toggled:', result);
+
+		return reply.send({
+			data: result,
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
+
+		//
 	}
 
 	/**
