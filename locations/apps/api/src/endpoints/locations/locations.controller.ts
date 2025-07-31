@@ -71,8 +71,9 @@ export class LocationsController {
 
 		try {
 			const filter: Filter<Locality> = {};
-			if (query.district_id) filter.district_id = query.district_id;
-			if (query.municipality_id) filter.municipality_id = query.municipality_id;
+			if (query.district_ids) filter.district_id = { $in: query.district_ids };
+			if (query.municipality_ids) filter.municipality_id = { $in: query.municipality_ids };
+			if (query.parish_ids) filter.parish_id = { $in: query.parish_ids };
 
 			const options: FindOptions = {
 				limit: query.limit,
@@ -115,8 +116,10 @@ export class LocationsController {
 		const query = validateQueryParams<GetAllMunicipalitiesQuery>(request.query, GetAllMunicipalitiesQuerySchema);
 
 		try {
-			const filter: Filter<Municipality> = query.district_id ? { district_id: query.district_id } : {};
+			const filter: Filter<Municipality> = query.district_ids ? { district_id: { $in: query.district_ids } } : {};
 			const options: FindOptions = { projection: { geometry: query.geojson === true ? 1 : 0 } };
+
+			console.log('HERE =======> ', filter);
 
 			const municipalities = await locations.findMunicipalities(filter, options);
 
@@ -148,8 +151,9 @@ export class LocationsController {
 
 		try {
 			const filter: Filter<Parish> = {};
-			if (query.district_id) filter.district_id = query.district_id;
-			if (query.municipality_id) filter.municipality_id = query.municipality_id;
+			if (query.district_ids) filter.district_id = { $in: query.district_ids };
+			if (query.municipality_ids) filter.municipality_id = { $in: query.municipality_ids };
+
 			const options: FindOptions = {
 				limit: query.limit,
 				projection: { geometry: query.geojson === true ? 1 : 0 },

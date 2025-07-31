@@ -69,8 +69,8 @@ export async function processApexOnBoardRefund(databaseOperation) {
 			//
 			// Invalidate all documents that are affected
 
-			const updateRidesPromise = rides.updateMany({ $or: updateRidesOps }, { system_status: ProcessingStatus.Waiting });
-			const updateUniqueSamsPromise = uniqueSams.updateMany({ $or: updateUniqueSamsOps }, { system_status: ProcessingStatus.Waiting });
+			const updateRidesPromise = rides.updateMany({ $or: updateRidesOps }, { system_status: ProcessingStatus.Waiting }, { returnResults: false });
+			const updateUniqueSamsPromise = uniqueSams.updateMany({ $or: updateUniqueSamsOps }, { system_status: ProcessingStatus.Waiting }, { returnResults: false });
 
 			const [updateRidesResult, updateUniqueSamsResult] = await Promise.all([updateRidesPromise, updateUniqueSamsPromise]);
 

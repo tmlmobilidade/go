@@ -806,7 +806,7 @@ export async function parsePlan(planData: Plan) {
 		//
 		// Mark this plan as 'complete' to indicate that it was processed successfully
 
-		await plans.updateById(planData._id, { feeder_status: ProcessingStatus.Complete });
+		await plans.updateById(planData._id, { status_controller: ProcessingStatus.Complete });
 
 		LOGGER.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 
@@ -822,7 +822,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	}
 	catch (error) {
-		await plans.updateById(planData._id, { feeder_status: ProcessingStatus.Error });
+		await plans.updateById(planData._id, { status_controller: ProcessingStatus.Error });
 		LOGGER.error(`Error processing plan ${planData._id}`, error);
 		LOGGER.divider();
 	}

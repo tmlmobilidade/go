@@ -43,7 +43,7 @@ async function main() {
 				// At this point, the plan will be processed.
 				// Mark it as 'processing' to prevent multiple concurrent runs.
 
-				await plans.updateById(currentPlan._id, { feeder_status: ProcessingStatus.Processing });
+				await plans.updateById(currentPlan._id, { status_controller: ProcessingStatus.Processing });
 
 				LOGGER.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
 				LOGGER.spacer(1);
@@ -56,7 +56,7 @@ async function main() {
 				//
 			}
 			catch (error) {
-				await plans.updateById(currentPlan._id, { feeder_status: ProcessingStatus.Error });
+				await plans.updateById(currentPlan._id, { status_controller: ProcessingStatus.Error });
 				LOGGER.error(`Error processing plan ${currentPlan._id}`, error);
 				LOGGER.divider();
 			}
