@@ -35,20 +35,6 @@ server.register(
 			ValidationsController.create,
 		);
 
-		// PUT /validations/:id
-		instance.put(
-			'/:id',
-			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.update) },
-			ValidationsController.update,
-		);
-
-		// DELETE /validations/:id
-		instance.delete(
-			'/:id',
-			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.delete) },
-			ValidationsController.delete,
-		);
-
 		// GET /validations/:id/file
 		instance.get(
 			'/:id/file',
@@ -56,6 +42,12 @@ server.register(
 			ValidationsController.getFile,
 		);
 
+		// POST /validations/:id/request-approval
+		instance.get(
+			'/:id/request-approval',
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.request_approval) },
+			ValidationsController.requestApproval,
+		);
 		next();
 	},
 	{ prefix: namespace },

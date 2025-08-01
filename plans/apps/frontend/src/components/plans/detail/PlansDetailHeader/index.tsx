@@ -2,7 +2,7 @@
 
 /* * */
 
-import { usePlanDetailContext } from '@/contexts/PlanDetail.context';
+import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { BackButton, Button, HasPermission, LockButton, Spacer, Tag } from '@tmlmobilidade/ui';
@@ -11,14 +11,14 @@ import { useRouter } from 'next/navigation';
 
 /* * */
 
-export function PlanDetailHeader() {
+export function PlansDetailHeader() {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const planDetailContext = usePlanDetailContext();
+	const plansDetailContext = usePlansDetailContext();
 
 	//
 	// B. Handle actions
@@ -33,25 +33,34 @@ export function PlanDetailHeader() {
 
 	return (
 		<>
+
 			<BackButton onClick={handleClose} type="close" />
-			<Tag label={planDetailContext.data.plan._id} variant="secondary" />
+
+			<Tag label={plansDetailContext.data.plan._id} variant="secondary" />
+
 			<Spacer />
-			<LockButton isLocked={planDetailContext.data.plan.is_locked} onClick={planDetailContext.actions.toggleLock} />
+
+			<LockButton
+				isLocked={plansDetailContext.data.plan.is_locked}
+				onClick={plansDetailContext.actions.toggleLock}
+			/>
+
 			<HasPermission
 				action={Permissions.plans.actions.update}
 				resource_key="agency_ids"
 				scope={Permissions.plans.scope}
-				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<Button
-					disabled={planDetailContext.flags.isSaving || !planDetailContext.data.form.isDirty()}
+					disabled={plansDetailContext.flags.saving || !plansDetailContext.data.form.isDirty()}
 					icon={<IconUpload size={28} />}
-					label="Salvar"
-					loading={planDetailContext.flags.isSaving}
-					onClick={() => planDetailContext.actions.savePlan()}
+					label="Guardar"
+					loading={plansDetailContext.flags.saving}
+					onClick={plansDetailContext.actions.savePlan}
 					variant="primary"
 				/>
 			</HasPermission>
+
 		</>
 	);
 

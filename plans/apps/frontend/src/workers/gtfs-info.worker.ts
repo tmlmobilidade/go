@@ -36,7 +36,7 @@ self.addEventListener('message', async (event) => {
 		});
 
 		// Return the feed info data
-		self.postMessage({ agency: agencyData.data[0], feedInfo: feedInfoData.data[0] });
+		self.postMessage({ agency: agencyData.data[0], feed_info: feedInfoData.data[0] });
 	}
 	catch (error) {
 		console.error('Error parsing GTFS file:', error);

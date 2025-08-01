@@ -21,10 +21,13 @@ export const getPlanValidityStatus = (startDate: OperationalDate, endDate: Opera
 
 	const startDateUnixTimestamp = Dates
 		.fromOperationalDate(startDate, 'Europe/Lisbon')
+		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
 		.unix_timestamp;
 
 	const endDateUnixTimestamp = Dates
 		.fromOperationalDate(endDate, 'Europe/Lisbon')
+		.plus({ days: 1 })
+		.set({ hour: 3, millisecond: 59, minute: 59, second: 59 })
 		.unix_timestamp;
 
 	//

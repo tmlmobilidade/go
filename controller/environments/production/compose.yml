@@ -2,6 +2,10 @@
 
 name: tmlmobilidade-sae-controller
 
+secrets:
+  ociprivatekey:
+    file: ./secrets/oci-private-key.pem
+
 services:
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -145,6 +149,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    secrets:
+      - ociprivatekey
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

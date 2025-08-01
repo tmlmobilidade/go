@@ -3,7 +3,6 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { rides } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -44,7 +43,7 @@ export async function getRides(): Promise<string[]> {
 	const fetchTimer = new TIMETRACKER();
 
 	const latestWaitingRides = await ridesCollection
-		.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: ProcessingStatus.Waiting })
+		.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
 		.sort({ start_time_scheduled: -1 })
 		.limit(batchSize)
 		.toArray();
@@ -71,7 +70,7 @@ export async function getRides(): Promise<string[]> {
 
 	const markTimer = new TIMETRACKER();
 
-	await ridesCollection.updateMany({ _id: { $in: latestWaitingRidesIds } }, { $set: { system_status: ProcessingStatus.Processing } });
+	await ridesCollection.updateMany({ _id: { $in: latestWaitingRidesIds } }, { $set: { system_status: 'processing' } });
 
 	LOGGER.info(`[rides] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides.pop().start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 

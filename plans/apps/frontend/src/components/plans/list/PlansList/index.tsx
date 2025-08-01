@@ -2,6 +2,7 @@
 
 /* * */
 
+import { PlanStatusControllerTag } from '@/components/common/PlanStatusControllerTag';
 import { PlansListCellAgency } from '@/components/plans/list/PlansListCellAgency';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
@@ -48,6 +49,12 @@ export function PlansList() {
 			),
 			title: 'Datas de Validade',
 			width: 350,
+		},
+		{
+			accessor: 'controller',
+			render: item => <PlanStatusControllerTag status={item.controller.status} />,
+			title: 'SLA Status',
+			width: 220,
 		},
 	];
 

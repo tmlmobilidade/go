@@ -1,7 +1,7 @@
 /* * */
 
 import LOGGER from '@helperkits/logger';
-import { type Plan, ProcessingStatus } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -9,18 +9,27 @@ export function validatePlan(planData: Plan): boolean {
 	//
 
 	//
-	// Return false if its feeder status is other than 'waiting' or 'processing'
+	// Return false if the agency is not for the given operators
 
-	if (planData.feeder_status !== ProcessingStatus.Waiting && planData.feeder_status !== ProcessingStatus.Processing) {
-		LOGGER.error(`Skip processing: feeder_status is '${planData.feeder_status}'. Only 'waiting' or 'processing' plans will be processed.`);
+	if (!['41', '42', '43', '44'].includes(planData.gtfs_agency?.agency_id)) {
+		LOGGER.error(`Skip processing: gtfs_agency is '${planData.gtfs_agency?.agency_id}'. Only '41', '42', '43', or '44' are allowed.`);
 		return false;
 	}
 
 	//
-	// Return false if it is not yet approved
+	// Return false if the hash is the same,
+	// as it means the plan did not change since last run
 
-	if (!planData.is_approved) {
-		LOGGER.error(`Skip processing: Plan is not approved.`);
+	if (planData.hash === planData.controller.last_hash) {
+		LOGGER.error(`Skip processing: Hash is the same as last_hash.`);
+		return false;
+	}
+
+	//
+	// Return false if its status is 'error'
+
+	if (planData.controller.status === 'error') {
+		LOGGER.error(`Skip processing: status_controller is 'error'.`);
 		return false;
 	}
 

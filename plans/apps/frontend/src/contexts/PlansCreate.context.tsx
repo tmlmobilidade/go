@@ -1,11 +1,11 @@
 /* * */
 
-import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ConvertToPlanModal';
+import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
+import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
 import { Routes } from '@/lib/routes';
 import { type Plan, type Validation } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
@@ -14,6 +14,7 @@ import useSWR, { mutate } from 'swr';
 interface PlansCreateContextState {
 	actions: {
 		createPlan: () => Promise<void>
+		requestApproval: () => Promise<void>
 	}
 	data: {
 		validation: null | Validation
@@ -44,7 +45,6 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 	//
 	// A. Setup variables
 
-	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState<null | string>(null);
 
@@ -77,8 +77,27 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		closeModal(CREATE_PLAN_MODAL_ID);
 
 		if (response.data) {
-			router.push(Routes.PLAN_DETAIL(response.data._id));
+			window.location.href = `/plans/${response.data._id}`;
 		}
+	};
+
+	const requestApproval = async () => {
+		setIsLoading(true);
+		setIsError(null);
+
+		const response = await fetchData<Plan>('/api' + Routes.VALIDATION_DETAIL(validationId) + '/request-approval', 'GET');
+
+		if (response.error) {
+			useToast.error({ message: response.error, title: 'Erro ao solicitar aprovação à TML' });
+			setIsLoading(false);
+			setIsError(response.error);
+			return;
+		}
+
+		useToast.success({ message: 'Aprovação à TML solicitada com sucesso', title: 'Sucesso' });
+
+		setIsLoading(false);
+		closeModal(REQUEST_APPROVAL_MODAL_ID);
 	};
 
 	//
@@ -88,6 +107,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		return {
 			actions: {
 				createPlan,
+				requestApproval,
 			},
 			data: {
 				validation: validationData,

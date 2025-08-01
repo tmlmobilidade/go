@@ -5,7 +5,7 @@ import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, validations } from '@tmlmobilidade/interfaces';
-import { getCurrentEnvironment, ProcessingStatus } from '@tmlmobilidade/types';
+import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
@@ -21,10 +21,10 @@ async function processValidation(message: ValidationMessage) {
 		logger.info('Processing validation...');
 		// 1. Update validation status to processing
 		const validation = await validations.updateById(message.validation_id, {
-			feeder_status: ProcessingStatus.Processing,
+			feeder_status: 'processing',
 		});
 
-		logger.info(`Validation set to processing: ${validation.acknowledged}`);
+		logger.info(`Validation set to processing: ${validation.feeder_status}`);
 
 		// 2. Get the file from MongoDB
 		const file = await files.findById(message.file_id);
@@ -57,7 +57,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// 6. Update validation status based on results
 		await validations.updateById(message.validation_id, {
-			feeder_status: validationResult.total_errors > 0 ? ProcessingStatus.Error : ProcessingStatus.Complete,
+			feeder_status: validationResult.total_errors > 0 ? 'error' : 'complete',
 			summary: validationResult,
 		});
 
@@ -102,7 +102,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// Update validation status to error
 		await validations.updateById(message.validation_id, {
-			feeder_status: ProcessingStatus.Error,
+			feeder_status: 'error',
 			summary: {
 				messages: [
 					{

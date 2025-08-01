@@ -3,7 +3,6 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { rides } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -24,7 +23,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerA = new TIMETRACKER();
 
-		const processingRidesA = await rides.findMany({ system_status: { $in: [ProcessingStatus.Processing] } });
+		const processingRidesA = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsA = processingRidesA.map(item => item._id);
 
 		const fetchTimerResultA = fetchTimerA.get();
@@ -44,7 +43,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerB = new TIMETRACKER();
 
-		const processingRidesB = await rides.findMany({ system_status: { $in: [ProcessingStatus.Processing] } });
+		const processingRidesB = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsB = processingRidesB.map(item => item._id);
 
 		const fetchTimerResultB = fetchTimerB.get();
@@ -62,7 +61,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerC = new TIMETRACKER();
 
-		const processingRidesC = await rides.findMany({ system_status: { $in: [ProcessingStatus.Processing] } });
+		const processingRidesC = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsC = processingRidesC.map(item => item._id);
 
 		const fetchTimerResultC = fetchTimerC.get();
@@ -84,7 +83,7 @@ async function reprocessStuckRides() {
 			const updateTimer = new TIMETRACKER();
 
 			const ridesCollection = await rides.getCollection();
-			await ridesCollection.updateMany({ _id: { $in: stuckRideIds } }, { $set: { system_status: ProcessingStatus.Waiting } });
+			await ridesCollection.updateMany({ _id: { $in: stuckRideIds } }, { $set: { system_status: 'waiting' } });
 
 			LOGGER.info(`Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})`);
 			LOGGER.spacer(1);

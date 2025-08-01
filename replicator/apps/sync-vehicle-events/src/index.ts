@@ -46,7 +46,7 @@ async function syncVehicleEvents() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 3 })
+			.splitBy({ hour: 2 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
@@ -102,6 +102,7 @@ async function syncVehicleEvents() {
 					const updateRidesResult = await rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
 						{ system_status: ProcessingStatus.Waiting },
+						{ returnResults: false },
 					);
 
 					LOGGER.info(`Flush [vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);

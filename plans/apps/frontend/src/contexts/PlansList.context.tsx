@@ -65,12 +65,12 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', swrFetcher);
+	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', swrFetcher, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data
 
-	const normalizedAlertsData: PlanNormalized[] = useMemo(() => {
+	const normalizedPlansData: PlanNormalized[] = useMemo(() => {
 		// Skip if no data is available
 		if (!allPlansData) return [];
 		// Normalize record fields
@@ -83,8 +83,8 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	}, [allPlansData]);
 
 	const searchResultsData = useSearch<PlanNormalized>({
-		accessors: ['_id', 'agency_name_normalized'],
-		data: normalizedAlertsData,
+		accessors: ['_id', 'agency_name_normalized', 'agency_id_normalized'],
+		data: normalizedPlansData,
 		query: filterSearch,
 	});
 
@@ -96,7 +96,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		const validityStatusSet = new Set(filterValidityStatus);
 		return searchResultsData
 			.filter((item: PlanNormalized) => {
-			// Filter by agency
+				// Filter by agency
 				if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
 				// Filter by validity_status
 				if (!validityStatusSet.has(item.validity_status)) return false;
@@ -106,7 +106,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 			.sort((a, b) => {
 				return b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date);
 			});
-	}, [searchResultsData, filterAgency]);
+	}, [searchResultsData, filterAgency, filterValidityStatus]);
 
 	//
 	// D. Define context value
@@ -134,6 +134,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		allPlansError,
 		allPlansLoading,
 		filterResultsData,
+		filterValidityStatus,
 		allPlansData,
 		filterAgency,
 		filterSearch,

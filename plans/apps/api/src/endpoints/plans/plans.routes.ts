@@ -3,7 +3,7 @@
 import { PlansController } from '@/endpoints/plans/plans.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
-import { PlanPermission } from '@tmlmobilidade/types';
+import { type PlanPermission } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,6 +14,8 @@ const namespace = '/plans';
 
 server.register(
 	(instance, opts, next) => {
+		//
+
 		// GET /plans
 		instance.get(
 			'/',
@@ -28,6 +30,13 @@ server.register(
 			PlansController.getById,
 		);
 
+		// GET /plans/:id/operation-file
+		instance.get(
+			'/:id/operation-file',
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.read) },
+			PlansController.getPlanOperationFileById,
+		);
+
 		// POST /plans
 		instance.post(
 			'/',
@@ -40,6 +49,20 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
 			PlansController.update,
+		);
+
+		// GET /plans/:id/toggle-lock
+		instance.get(
+			'/:id/toggle-lock',
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
+			PlansController.toggleLockById,
+		);
+
+		// GET /plans/:id/reprocess
+		instance.get(
+			'/:id/controller-reprocess',
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
+			PlansController.controllerReprocessPlanById,
 		);
 
 		// DELETE /plans/:id
