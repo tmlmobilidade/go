@@ -43,7 +43,7 @@ server.register(
 		);
 
 		// POST /validations/:id/request-approval
-		instance.post(
+		instance.get(
 			'/:id/request-approval',
 			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.request_approval) },
 			ValidationsController.requestApproval,

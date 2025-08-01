@@ -5,9 +5,9 @@ import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
-import { ALLOW_ALL_FLAG, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
-import { type CreateValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type Permission, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
-import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
+import { Agency, type CreateValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type Permission, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
+import { fetchData, hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { createWriteStream } from 'fs';
 import { readFile, unlink } from 'fs/promises';
 import { pipeline } from 'node:stream/promises';
@@ -257,18 +257,28 @@ export class ValidationsController {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
 		}
 
-		//
-		// Request approval for the validation
-		const updatedValidation = await validations.updateById(id, { notification_sent: true });
+		// Get Agency TML Contact emails
+		const agency = await fetchData<Agency>(getAppConfig('auth', 'frontend_url') + '/api/agencies/' + Validation.gtfs_agency.agency_id, 'GET', undefined, {
+			Cookie: `session_token=${request.cookies.session_token}`,
+		});
+
+		if (agency.error) {
+			throw new HttpException(agency.statusCode, agency.error);
+		}
+
+		console.log(agency.data);
 
 		await sendPlanApprovalRequestEmail({
 			props: {
 				solicited_by: request.me.first_name + ' ' + request.me.last_name,
-				validation: updatedValidation,
+				validation: Validation,
 			},
-			to: 'test@test.com',
+			to: agency.data.tml_contact_emails || [],
 		});
 
+		//
+		// Request approval for the validation
+		const updatedValidation = await validations.updateById(id, { notification_sent: true });
 		reply.send({ data: updatedValidation, error: null, statusCode: HttpStatus.OK });
 	}
 }
