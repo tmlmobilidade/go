@@ -44,6 +44,7 @@ interface AgencyDetailContextState {
 
 const emptyAgency: CreateAgencyDto = {
 	_id: '',
+	contact_emails: [],
 	email: '',
 	fare_url: '',
 	is_locked: false,
@@ -53,6 +54,7 @@ const emptyAgency: CreateAgencyDto = {
 	phone: '',
 	price_per_km: 0,
 	timezone: '',
+	tml_contact_emails: [],
 	total_vkm_per_year: 0,
 	url: '',
 };

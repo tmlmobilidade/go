@@ -3,14 +3,14 @@
 /* * */
 
 import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
-import { openConvertToPlanModalModal } from '@/components/validations/detail/ConvertToPlanModal';
+import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
+import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { IconTransformFilled } from '@tabler/icons-react';
+import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { BackButton, Button, HasPermission, Label, Spacer, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
 
 /* * */
 
@@ -24,13 +24,6 @@ export function ValidationsDetailHeader() {
 	const validationsDetailContext = useValidationsDetailContext();
 
 	//
-	// B. Transform data
-
-	const canConvertToPlan = useMemo(() => {
-		return validationsDetailContext.data.validation.feeder_status === 'complete';
-	}, [validationsDetailContext.data.validation]);
-
-	//
 	// C. Handle actions
 
 	const handleClose = () => {
@@ -38,8 +31,12 @@ export function ValidationsDetailHeader() {
 		router.push(destUrl);
 	};
 
-	const handleConvertToPlan = () => {
-		openConvertToPlanModalModal(validationsDetailContext.data.validation._id);
+	const handleApprovePlan = () => {
+		openApprovePlanModal(validationsDetailContext.data.validation._id);
+	};
+
+	const handleRequestApproval = () => {
+		openRequestApprovalModalModal(validationsDetailContext.data.validation._id);
 	};
 
 	//
@@ -52,19 +49,37 @@ export function ValidationsDetailHeader() {
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 			<Label size="md" caps>{validationsDetailContext.data.validation?._id}</Label>
 			<Spacer />
-			{canConvertToPlan && (
-				<HasPermission
-					action={Permissions.plans.actions.create}
-					resource_key="agency_ids"
-					scope={Permissions.validations.scope}
-					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
-				>
-					<Button
-						icon={<IconTransformFilled />}
-						label="Converter em Plano"
-						onClick={handleConvertToPlan}
-					/>
-				</HasPermission>
+			{validationsDetailContext.flags.can_approve && (
+				<>
+					<HasPermission
+						action={Permissions.validations.actions.request_approval}
+						resource_key="agency_ids"
+						scope={Permissions.validations.scope}
+						value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
+					>
+						<Button
+							disabled={validationsDetailContext.flags.loading}
+							icon={<IconMailFast />}
+							label="Solicitar aprovação à TML"
+							onClick={handleRequestApproval}
+							variant="secondary"
+						/>
+					</HasPermission>
+					<HasPermission
+						action={Permissions.plans.actions.create}
+						resource_key="agency_ids"
+						scope={Permissions.plans.scope}
+						value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
+					>
+						<Button
+							disabled={validationsDetailContext.flags.loading}
+							icon={<IconRosetteDiscountCheckFilled />}
+							label="Aprovar Plano"
+							loading={validationsDetailContext.flags.loading}
+							onClick={handleApprovePlan}
+						/>
+					</HasPermission>
+				</>
 			)}
 		</>
 	);

@@ -8,19 +8,19 @@ import { Button, closeModal, Divider, Grid, Label, openModal, Section, Tag } fro
 
 /* * */
 
-export const CREATE_PLAN_MODAL_ID = 'create-plan-modal';
+export const REQUEST_APPROVAL_MODAL_ID = 'request-approval-modal';
 
 /* * */
 
-export const openConvertToPlanModalModal = (validation_id?: string) => {
+export const openRequestApprovalModalModal = (validation_id?: string) => {
 	openModal({
 		children: (
 			<PlansCreateContextProvider validationId={validation_id}>
-				<ConvertToPlanModalModal />
+				<RequestApprovalModal />
 			</PlansCreateContextProvider>
 		),
 		closeOnClickOutside: false,
-		modalId: CREATE_PLAN_MODAL_ID,
+		modalId: REQUEST_APPROVAL_MODAL_ID,
 		padding: 0,
 		size: 'auto',
 		withCloseButton: false,
@@ -29,7 +29,7 @@ export const openConvertToPlanModalModal = (validation_id?: string) => {
 
 /* * */
 
-export default function ConvertToPlanModalModal() {
+export default function RequestApprovalModal() {
 	//
 
 	//
@@ -44,7 +44,7 @@ export default function ConvertToPlanModalModal() {
 		<>
 
 			<Section alignItems="center" flexDirection="row" gap="lg">
-				<ValidationStatusTag status={plansCreateContext.data.validation.feeder_status} />
+				<ValidationStatusTag status={plansCreateContext.data.validation?.feeder_status || 'waiting'} />
 				<Tag label={plansCreateContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
 			</Section>
@@ -76,13 +76,13 @@ export default function ConvertToPlanModalModal() {
 					<Button
 						disabled={plansCreateContext.flags.loading}
 						label="Cancelar"
-						onClick={() => closeModal(CREATE_PLAN_MODAL_ID)}
+						onClick={() => closeModal(REQUEST_APPROVAL_MODAL_ID)}
 						variant="secondary"
 					/>
 					<Button
-						label="Converter em Plano"
+						label="Solicitar aprovação à TML"
 						loading={plansCreateContext.flags.loading}
-						onClick={plansCreateContext.actions.createPlan}
+						onClick={plansCreateContext.actions.requestApproval}
 					/>
 				</Grid>
 			</Section>

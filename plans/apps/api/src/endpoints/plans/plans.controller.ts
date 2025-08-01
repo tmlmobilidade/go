@@ -20,7 +20,7 @@ export class PlansController {
 	 */
 	static async controllerReprocessPlanById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		const planData = await plans.findById(request.params.id);
-		const result = await plans.updateById(request.params.id, { controller: { ...planData.controller, status: 'waiting' } });
+		const result = await plans.updateById(request.params.id, { controller: { ...planData.controller, last_hash: null, status: 'waiting' } });
 		return reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 
@@ -86,7 +86,7 @@ export class PlansController {
 			const fileResult = await filesCollection.clone(
 				validationData.file_id,
 				Permissions.plans.scope,
-				planResult._id,
+				planResult._id.toString(),
 				{ session: filesTransaction.getSession() },
 			);
 
