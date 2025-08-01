@@ -207,8 +207,8 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 				router.replace(Routes.STOPS_DETAIL(insertedId));
 			}
 
-			mutate(Routes.API(Routes.STOPS_DETAIL(stopId)), response.data);
-			mutate(Routes.API(Routes.STOPS_LIST));
+			mutate(Routes.STOP_API(Routes.STOPS_DETAIL(stopId)), response.data);
+			mutate(Routes.STOP_API(Routes.STOPS_LIST));
 
 			setIsSaving(false);
 			return;
