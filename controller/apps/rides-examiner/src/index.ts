@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
-import { ProcessingStatus, type Ride } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -220,7 +220,7 @@ export async function validateRides() {
 						seen_first_at: rideData.seen_first_at,
 						seen_last_at: rideData.seen_last_at,
 						start_time_observed: rideData.start_time_observed,
-						system_status: ProcessingStatus.Complete,
+						system_status: 'complete',
 						vehicle_ids: rideData.vehicle_ids,
 					},
 				);
@@ -230,7 +230,7 @@ export async function validateRides() {
 				//
 			}
 			catch (error) {
-				await rides.updateById(rideData._id, { system_status: ProcessingStatus.Error });
+				await rides.updateById(rideData._id, { system_status: 'error' });
 				LOGGER.error('An error occurred while processing a ride.', error);
 			}
 		}

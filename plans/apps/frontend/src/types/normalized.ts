@@ -1,6 +1,6 @@
 /* * */
 
-import { type Plan, ProcessingStatus, type Validation } from '@tmlmobilidade/types';
+import { type Plan, PROCESSING_STATUS_OPTIONS, type Validation } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -22,13 +22,11 @@ export interface PlanNormalized extends Plan {
 
 /* * */
 
-export const validationProcessingStatusValues = Object.values(ProcessingStatus);
-
-export const validationProcessingStatus = validationProcessingStatusValues.map((item) => {
-	if (item === ProcessingStatus.Complete) return { label: 'Válido', value: item };
-	if (item === ProcessingStatus.Error) return { label: 'Erro', value: item };
-	if (item === ProcessingStatus.Processing) return { label: 'Em Análise', value: item };
-	if (item === ProcessingStatus.Waiting) return { label: 'Em Espera', value: item };
+export const validationProcessingStatus = PROCESSING_STATUS_OPTIONS.map((item) => {
+	if (item === 'complete') return { label: 'Válido', value: item };
+	if (item === 'error') return { label: 'Erro', value: item };
+	if (item === 'processing') return { label: 'Em Análise', value: item };
+	if (item === 'waiting') return { label: 'Em Espera', value: item };
 	return { label: 'Desconhecido', value: item };
 });
 

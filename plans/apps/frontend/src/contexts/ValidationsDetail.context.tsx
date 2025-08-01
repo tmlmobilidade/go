@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type File, ProcessingStatus, type Validation } from '@tmlmobilidade/types';
+import { type File, type Validation } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -52,7 +52,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 
 	const canConvert = useMemo(() => {
 		if (!validationData || !fileData) return false;
-		if (validationData.feeder_status !== ProcessingStatus.Complete) return false;
+		if (validationData.feeder_status !== 'complete') return false;
 		return false;
 	}, [validationData, fileData]);
 

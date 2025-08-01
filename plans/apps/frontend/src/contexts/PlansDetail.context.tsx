@@ -162,7 +162,6 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 
 	const handleToggleLock = async () => {
 		try {
-			setIsSaving(true);
 			const response = await fetchData<Plan>(`/api/plans/${planId}/toggle-lock`);
 			if (response.error) {
 				return useToast.error({
@@ -178,7 +177,6 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 			});
 		}
 		planMutate();
-		setIsSaving(false);
 	};
 
 	//

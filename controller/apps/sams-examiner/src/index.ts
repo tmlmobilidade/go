@@ -4,7 +4,7 @@ import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { type CreateUniqueSamDto, ProcessingStatus } from '@tmlmobilidade/types';
+import { type CreateUniqueSamDto } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -110,7 +110,7 @@ async function main() {
 
 				if (sortedTransactions.length === 0) {
 					LOGGER.error(`No transactions found for Unique SAM "${uniqueSamItem._id}". Skipping.`);
-					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'No transactions found for given time range.', system_status: ProcessingStatus.Complete });
+					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'No transactions found for given time range.', system_status: 'complete' });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -121,7 +121,7 @@ async function main() {
 
 				if (!allTransactionsMatch) {
 					LOGGER.error(`Unique SAM ${uniqueSamItem._id} has transactions with different Agency ID.`);
-					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'Transactions with different Agency IDs found.', system_status: ProcessingStatus.Error });
+					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -164,7 +164,7 @@ async function main() {
 					remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.slice(0, 25).join(',')}]`,
 					seen_first_at: firstTransaction.created_at,
 					seen_last_at: latestTransaction.created_at,
-					system_status: ProcessingStatus.Complete,
+					system_status: 'complete',
 					transactions_expected: transactionsExpected,
 					transactions_found: transactionsFound,
 					transactions_missing: transactionsMissing,
@@ -179,7 +179,7 @@ async function main() {
 			}
 			catch (error) {
 				LOGGER.error(`Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`);
-				await uniqueSams.updateById(uniqueSamItem._id, { remarks: `Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`, system_status: ProcessingStatus.Error });
+				await uniqueSams.updateById(uniqueSamItem._id, { remarks: `Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`, system_status: 'error' });
 			}
 		}
 

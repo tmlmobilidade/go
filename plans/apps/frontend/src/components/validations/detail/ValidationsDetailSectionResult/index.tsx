@@ -5,7 +5,7 @@
 import { SeverityTag } from '@/components/common/SeverityTag';
 import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { type GTFSValidatorMessage, ProcessingStatus } from '@tmlmobilidade/types';
+import { type GTFSValidatorMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -70,7 +70,7 @@ export function ValidationsDetailSectionResult() {
 	//
 	// C. Render components
 
-	if (validationsDetailContext.data.validation?.feeder_status !== ProcessingStatus.Complete && validationsDetailContext.data.validation?.feeder_status !== ProcessingStatus.Error) {
+	if (validationsDetailContext.data.validation?.feeder_status !== 'complete' && validationsDetailContext.data.validation?.feeder_status !== 'error') {
 		return null;
 	}
 

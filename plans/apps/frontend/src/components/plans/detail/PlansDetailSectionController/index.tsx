@@ -4,7 +4,7 @@
 
 import { PlanStatusControllerTag } from '@/components/common/PlanStatusControllerTag';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Button, Collapsible, Section } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,12 +21,14 @@ export function PlansDetailSectionController() {
 
 	return (
 		<Collapsible
-			description="Configurações relacionadas à conversão deste plano em circulações."
+			description="Configurações relacionadas com a conversão deste plano em Rides."
 			title="Definições SLA"
 		>
 			<Section gap="sm">
 
-				<PlanStatusControllerTag status={plansDetailContext.data.plan.status_controller} />
+				<PlanStatusControllerTag status={plansDetailContext.data.plan.controller.status} />
+
+				<Tag label={plansDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
 
 				<Button
 					disabled={plansDetailContext.flags.read_only}

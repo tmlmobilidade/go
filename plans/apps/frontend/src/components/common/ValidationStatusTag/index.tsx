@@ -1,6 +1,6 @@
 /* * */
 
-import { ProcessingStatus } from '@tmlmobilidade/types';
+import { type ProcessingStatus } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,19 +14,19 @@ interface ValidationStatusTagProps {
 export function ValidationStatusTag({ status }: ValidationStatusTagProps) {
 	//
 
-	if (status === ProcessingStatus.Waiting) {
+	if (status === 'waiting') {
 		return <Tag label="Em Espera" variant="secondary" />;
 	}
 
-	if (status === ProcessingStatus.Processing) {
+	if (status === 'processing') {
 		return <Tag label="Em Análise" variant="primary" />;
 	}
 
-	if (status === ProcessingStatus.Complete) {
+	if (status === 'complete') {
 		return <Tag label="Válido" variant="success" filled />;
 	}
 
-	if (status === ProcessingStatus.Error) {
+	if (status === 'error') {
 		return <Tag label="Inválido" variant="danger" filled />;
 	}
 
