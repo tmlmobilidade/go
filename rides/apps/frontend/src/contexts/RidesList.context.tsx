@@ -80,8 +80,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.ids));
-	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp));
-	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp));
+	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
+	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
 	const [filterDelayStatus, setFilterDelayStatus] = useQueryState<string[]>('delay_status', parseAsArrayOfStrings.withDefault(delayStatusValues));
 	const [filterOperationalStatus, setFilterOperationalStatus] = useQueryState<string[]>('operational_status', parseAsArrayOfStrings.withDefault(operationalStatusValues));
 	const [filterSimpleThreeVehicleEvents, setFilterSimpleThreeVehicleEvents] = useQueryState<string[]>('s3ve', parseAsArrayOfStrings.withDefault(gradeValues));
@@ -161,8 +161,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			const result: RideNormalized[] = Array
 				.from(dataRidesMap.current.values())
 				.map(item => getRideNormalized(item))
-				// .filter(item => filterOperationalStatus.includes(item.operational_status))
-				// .filter(item => filterDelayStatus.includes(item.delay_status))
+				.filter(item => filterOperationalStatus.includes(item.operational_status))
+				.filter(item => filterDelayStatus.includes(item.delay_status))
 				.sort((a, b) => a.agency_id.localeCompare(b.agency_id))
 				.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled);
 			setDataRidesNormalized(result);
