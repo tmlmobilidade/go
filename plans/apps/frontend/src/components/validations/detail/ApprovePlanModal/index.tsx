@@ -4,6 +4,7 @@ import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
+import { IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { Button, closeModal, Divider, Grid, Label, openModal, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -80,7 +81,8 @@ export default function ApprovePlanModal() {
 						variant="secondary"
 					/>
 					<Button
-						label="Converter em Plano"
+						icon={<IconRosetteDiscountCheckFilled />}
+						label="Aprovar Plano"
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.createPlan}
 					/>

@@ -63,13 +63,13 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		const response = await fetchData<Plan>('/api/plans', 'POST', { validation_id: validationId });
 
 		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao criar validação' });
+			useToast.error({ message: response.error, title: 'Erro ao aprovar plano' });
 			setIsLoading(false);
 			setIsError(response.error);
 			return;
 		}
 
-		useToast.success({ message: 'Plano criado com sucesso', title: 'Sucesso' });
+		useToast.success({ message: 'Plano aprovado com sucesso', title: 'Sucesso' });
 
 		mutate('/api/plans');
 
