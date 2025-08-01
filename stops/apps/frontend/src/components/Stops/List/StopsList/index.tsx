@@ -25,13 +25,13 @@ export function StopsList() {
 		{
 			accessor: '_id',
 			render: item => item._id,
-			title: 'id',
+			title: 'codigo',
 			width: 150,
 		},
 		{
 			accessor: 'name',
 			render: item => item.name,
-			title: 'name',
+			title: 'nome da paragem',
 			width: 500,
 		},
 		{
