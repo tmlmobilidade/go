@@ -14,7 +14,7 @@ import { RidesListFiltersBar } from '@/components/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { type RideNormalized } from '@/types/normalized';
-import { ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -90,8 +90,6 @@ export function RidesList() {
 
 	//
 	// C. Render components
-
-	console.log('ridesListContext.flags.loading', ridesListContext.flags.loading);
 
 	if (ridesListContext.flags.error) {
 		return <ErrorDisplay message={ridesListContext.flags.error.message} />;
