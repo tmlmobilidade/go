@@ -3,6 +3,7 @@
 import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { type CreateValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type Permission, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
@@ -232,5 +233,42 @@ export class ValidationsController {
 		reply.send({ data: file, error: null, statusCode: HttpStatus.OK });
 	}
 
-	//
+	/**
+	 * Requests approval for a Validation by ID
+	 * @param request Fastify request containing Validation ID in params
+	 * @param reply Fastify reply
+	 */
+	static async requestApproval(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Validation>) {
+		const { id } = request.params;
+		const Validation = await validations.findById(id);
+
+		if (!Validation) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
+		}
+
+		//
+		// Check if the user has permission to request approval for the validation
+		if (!hasAPIResourcePermission<ValidationPermission>(request, {
+			action: Permissions.validations.actions.request_approval,
+			resource_key: 'agency_ids',
+			scope: Permissions.validations.scope,
+			value: Validation.gtfs_agency.agency_id,
+		})) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		}
+
+		//
+		// Request approval for the validation
+		const updatedValidation = await validations.updateById(id, { notification_sent: true });
+
+		await sendPlanApprovalRequestEmail({
+			props: {
+				solicited_by: request.me.first_name + ' ' + request.me.last_name,
+				validation: updatedValidation,
+			},
+			to: 'test@test.com',
+		});
+
+		reply.send({ data: updatedValidation, error: null, statusCode: HttpStatus.OK });
+	}
 }

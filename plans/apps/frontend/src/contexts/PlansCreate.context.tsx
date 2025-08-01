@@ -1,6 +1,7 @@
 /* * */
 
-import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ConvertToPlanModal';
+import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
+import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
 import { type Plan, type Validation } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
@@ -12,6 +13,7 @@ import useSWR, { mutate } from 'swr';
 interface PlansCreateContextState {
 	actions: {
 		createPlan: () => Promise<void>
+		requestApproval: () => Promise<void>
 	}
 	data: {
 		validation: null | Validation
@@ -78,6 +80,25 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		}
 	};
 
+	const requestApproval = async () => {
+		setIsLoading(true);
+		setIsError(null);
+
+		const response = await fetchData<Plan>('/api/plans/request-approval', 'POST', { validation_id: validationId });
+
+		if (response.error) {
+			useToast.error({ message: response.error, title: 'Erro ao solicitar aprovação à TML' });
+			setIsLoading(false);
+			setIsError(response.error);
+			return;
+		}
+
+		useToast.success({ message: 'Aprovação à TML solicitada com sucesso', title: 'Sucesso' });
+
+		setIsLoading(false);
+		closeModal(REQUEST_APPROVAL_MODAL_ID);
+	};
+
 	//
 	// D. Define context value
 
@@ -85,6 +106,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		return {
 			actions: {
 				createPlan,
+				requestApproval,
 			},
 			data: {
 				validation: validationData,

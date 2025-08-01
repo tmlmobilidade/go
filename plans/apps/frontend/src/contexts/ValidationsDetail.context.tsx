@@ -11,14 +11,14 @@ import useSWR from 'swr';
 
 interface ValidationsDetailContextState {
 	actions: {
-		convertToPlan: () => Promise<void>
+		approvePlan: () => Promise<void>
 	}
 	data: {
 		file: File | null
 		validation: null | Validation
 	}
 	flags: {
-		can_convert: boolean
+		can_approve: boolean
 		error: Error | null
 		loading: boolean
 	}
@@ -48,18 +48,9 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<File>(validationId && `/api/validations/${validationId}/file`, swrFetcher);
 
 	//
-	// B. Transform data
-
-	const canConvert = useMemo(() => {
-		if (!validationData || !fileData) return false;
-		if (validationData.feeder_status !== 'complete') return false;
-		return false;
-	}, [validationData, fileData]);
-
-	//
 	// C. Handle actions
 
-	const convertToPlan = async () => {
+	const approvePlan = async () => {
 		if (!validationId) return;
 	};
 
@@ -68,14 +59,14 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 
 	const contextValue: ValidationsDetailContextState = useMemo(() => ({
 		actions: {
-			convertToPlan,
+			approvePlan,
 		},
 		data: {
 			file: fileData,
 			validation: validationData,
 		},
 		flags: {
-			can_convert: canConvert,
+			can_approve: validationData?.feeder_status === 'complete',
 			error: validationError || fileError,
 			loading: validationLoading || fileLoading,
 		},
@@ -86,7 +77,6 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 		fileData,
 		fileLoading,
 		fileError,
-		canConvert,
 	]);
 
 	//
