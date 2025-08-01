@@ -266,8 +266,6 @@ export class ValidationsController {
 			throw new HttpException(agency.statusCode, agency.error);
 		}
 
-		console.log(agency.data);
-
 		await sendPlanApprovalRequestEmail({
 			props: {
 				solicited_by: request.me.first_name + ' ' + request.me.last_name,
