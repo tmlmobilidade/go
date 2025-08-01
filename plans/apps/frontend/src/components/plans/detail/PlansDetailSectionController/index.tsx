@@ -29,6 +29,7 @@ export function PlansDetailSectionController() {
 				<PlanStatusControllerTag status={plansDetailContext.data.plan.controller.status} />
 
 				<Tag label={plansDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
+				<Tag label={plansDetailContext.data.plan.controller.last_hash || 'N/A'} variant="secondary" />
 
 				<Button
 					disabled={plansDetailContext.flags.read_only}
