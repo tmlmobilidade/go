@@ -2,13 +2,13 @@
 
 import { Routes } from '@/lib/routes';
 import { getAppConfig } from '@tmlmobilidade/lib';
-import { CreateStopDto, CreateStopSchema, District, Municipality, Parish, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
+import { CreateStopDto, CreateStopSchema, District, Location, Municipality, Parish, Stop, StopSchema, UpdateStopSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { HttpResponse, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject, fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
@@ -162,10 +162,16 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 	//
 	// B. Define actions
 
-	const handleSaveUser = async () => {
+	const handleSaveStop = async () => {
 		setIsSaving(true);
 
 		const saveStop: CreateStopDto = { ...form.values };
+
+		const location = await fetchData<Location>(getAppConfig('locations', 'frontend_url', 'production') + `/api/locations/coordinates?lon=${saveStop.longitude}&lat=${saveStop.latitude}`);
+
+		saveStop.district_id = location.data.district._id;
+		saveStop.municipality_id = location.data.municipality._id;
+		saveStop.parish_id = location.data.parish?._id;
 
 		const method = stopId === 'new' ? 'POST' : 'PUT';
 		const url = stopId === 'new' ? Routes.API + Routes.STOPS_LIST : Routes.API + Routes.STOPS_DETAIL(stopId);
@@ -200,6 +206,9 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			if (insertedId && stopId === 'new') {
 				router.replace(Routes.STOPS_DETAIL(insertedId));
 			}
+
+			mutate(Routes.API(Routes.STOPS_DETAIL(stopId)), response.data);
+			mutate(Routes.API(Routes.STOPS_LIST));
 
 			setIsSaving(false);
 			return;
@@ -315,7 +324,7 @@ export const StopDetailContextProvider = ({ children, stopId }: { children: Reac
 			deleteImage,
 			deleteStop: handleDeleterStop,
 			fileChanged: (file: File) => setImage(file),
-			saveStop: handleSaveUser,
+			saveStop: handleSaveStop,
 		},
 		data: {
 			districtName: districtName,

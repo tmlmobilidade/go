@@ -6,7 +6,8 @@ export const PageRoutes = Object.freeze({
 });
 
 export const ApiRoutes = Object.freeze({
-	API: '/api',
+	// APP
+	API: (path: string) => `/api${path}`,
 	AUTH_API: process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
 	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
 });
