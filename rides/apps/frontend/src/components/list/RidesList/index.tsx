@@ -91,9 +91,7 @@ export function RidesList() {
 	//
 	// C. Render components
 
-	if (ridesListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
+	console.log('ridesListContext.flags.loading', ridesListContext.flags.loading);
 
 	if (ridesListContext.flags.error) {
 		return <ErrorDisplay message={ridesListContext.flags.error.message} />;

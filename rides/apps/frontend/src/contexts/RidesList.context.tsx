@@ -17,7 +17,6 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, 
 
 interface RidesListContextState {
 	actions: {
-		centerListOnNow: () => void
 		setFilterAgency: (values: string[]) => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
@@ -40,7 +39,6 @@ interface RidesListContextState {
 		error: Error | null
 		last_update: null | UnixTimestamp
 		loading: boolean
-		on_now: boolean
 	}
 	refs: {
 		datatable: React.RefObject<DataTableHandle | null>
@@ -72,12 +70,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const webSocketRef = useRef<null | WebSocket>(null);
 	const dataTableRef = useRef<DataTableHandle | null>(null);
 
-	const listIsOnNowRef = useRef<boolean>(false);
-
 	const dataRidesMap = useRef<Map<string, Ride> | null>(new Map());
-
 	const [dataRidesNormalized, setDataRidesNormalized] = useState<RideNormalized[]>([]);
-	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.ids));
 	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
@@ -86,12 +80,16 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [filterOperationalStatus, setFilterOperationalStatus] = useQueryState<string[]>('operational_status', parseAsArrayOfStrings.withDefault(operationalStatusValues));
 	const [filterSimpleThreeVehicleEvents, setFilterSimpleThreeVehicleEvents] = useQueryState<string[]>('s3ve', parseAsArrayOfStrings.withDefault(gradeValues));
 
+	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
+	const [flagsIsLoading, setFlagsIsLoading] = useState<boolean>(false);
+
 	//
 	// B. Fetch data
 
 	useEffect(() => {
 		console.log('Fetching rides data...');
 		(async () => {
+			setFlagsIsLoading(true);
 			// Fetch Rides data from the API
 			const response = await fetch('/api/rides', {
 				body: JSON.stringify({
@@ -109,6 +107,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			const ridesMap = new Map<string, Ride>();
 			responseData.data.forEach(item => ridesMap.set(item._id, item));
 			dataRidesMap.current = ridesMap;
+			setFlagsIsLoading(false);
 		})();
 	}, [
 		filterAgency,
@@ -181,32 +180,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Handle actions
 
-	useEffect(() => {
-		// Skip if no data is available
-		if (!listIsOnNowRef.current) return;
-		// Find out the index of the closest ride to the current time
-		const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
-		const closestRideIndex = dataRidesNormalized.findIndex(ride => ride.start_time_scheduled >= nowUnixTimestamp);
-		// If no ride is found, do nothing
-		if (closestRideIndex === -1) return;
-		// Scroll to the closest ride
-		if (dataTableRef.current) {
-			console.log('Scrolling to closest ride:', closestRideIndex, dataRidesNormalized[closestRideIndex].line_id, dataRidesNormalized[closestRideIndex].headsign);
-			dataTableRef.current.scrollToIndex(closestRideIndex, -2);
-			listIsOnNowRef.current = true;
-		}
-	}, [dataRidesNormalized, listIsOnNowRef.current]);
-
-	const centerListOnNow = () => {
-		listIsOnNowRef.current = false;
-	};
-
 	//
 	// C. Define context value
 
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
-			centerListOnNow,
 			setFilterAgency,
 			setFilterDateEnd,
 			setFilterDateStart,
@@ -228,8 +206,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		flags: {
 			error: null,
 			last_update: flagsLastUpdateState,
-			loading: false,
-			on_now: listIsOnNowRef.current,
+			loading: flagsIsLoading,
 		},
 		refs: {
 			datatable: dataTableRef,
@@ -243,6 +220,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterDateStart,
 		filterDateEnd,
 		flagsLastUpdateState,
+		flagsIsLoading,
+		dataTableRef,
 	]);
 
 	//
