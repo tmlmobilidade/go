@@ -16,17 +16,6 @@
 	},
 	"dependencies": {
 		"@helperkits/logger": "^20250628.901.58",
-<<<<<<< HEAD
-		"@tmlmobilidade/connectors": "20250731.2217.12",
-		"@tmlmobilidade/emails": "20250731.2217.12",
-		"@tmlmobilidade/gtfs-validator": "20250728.1155.18",
-		"@tmlmobilidade/interfaces": "20250731.2217.12",
-		"@tmlmobilidade/utils": "20250731.2217.12",
-		"csv-parse": "6.1.0"
-	},
-	"devDependencies": {
-		"@tmlmobilidade/types": "20250731.2217.12",
-=======
 		"@tmlmobilidade/connectors": "20250730.1746.2",
 		"@tmlmobilidade/emails": "20250730.1746.2",
 		"@tmlmobilidade/gtfs-validator": "20250728.1155.18",
@@ -36,7 +25,6 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/types": "20250730.1746.2",
->>>>>>> staging
 		"@types/node": "24.1.0",
 		"tsx": "4.20.3",
 		"typescript": "5.9.2"
