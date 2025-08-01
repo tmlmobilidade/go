@@ -12,13 +12,13 @@
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@fastify/multipart": "^9.0.3",
-		"@tmlmobilidade/tsconfig": "20250729.1041.1",
-		"dotenv-cli": "9.0.0",
+		"@tmlmobilidade/tsconfig": "20250801.1356.10",
+		"dotenv-cli": "10.0.0",
 		"prettier": "3.6.2",
 		"turbo": "2.5.5",
-		"typescript": "5.8.3"
+		"typescript": "5.9.2"
 	},
-	"packageManager": "npm@11.5.1",
+	"packageManager": "npm@11.5.2",
 	"engines": {
 		"node": ">=18"
 	},
@@ -26,11 +26,11 @@
 		"apps/*"
 	],
 	"dependencies": {
-		"@carrismetropolitana/api-types": "^20250717.940.43",
-		"@tmlmobilidade/types": "^20250725.1425.7",
-		"@tmlmobilidade/ui": "^20250725.1425.7",
+		"@carrismetropolitana/api-types": "^20250730.1209.8",
+		"@tmlmobilidade/types": "^20250801.1356.10",
+		"@tmlmobilidade/ui": "^20250801.1356.10",
 		"@vis.gl/react-maplibre": "^8.0.4",
 		"nuqs": "^2.4.3",
-		"react": "^19.1.0"
+		"react": "^19.1.1"
 	}
 }
