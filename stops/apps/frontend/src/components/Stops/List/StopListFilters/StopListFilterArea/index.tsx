@@ -40,8 +40,8 @@
 // 	return (
 // 		<FilterMenu
 // 			active={isActive}
-// 			label="Equipamentos"
-// 			onChange={stopListContext.actions.setFilterEquipment}
+// 			label=""
+// 			onChange={stopListContext.actions.}
 // 			options={parsedOptions}
 // 			withToggleAll
 // 		/>

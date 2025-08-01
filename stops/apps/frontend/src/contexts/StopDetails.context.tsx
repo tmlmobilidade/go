@@ -49,49 +49,49 @@ interface StopDetailContextState {
 /* * */
 
 const emptyStop: CreateStopDto = {
-	_id: '', // used
+	_id: '',
 	bench_status: 'unknown',
-	comments: [], // used
-	connections: [], // used
-	district_id: '', // used
+	comments: [],
+	connections: [],
+	district_id: '',
 	electricity_status: 'unknown',
 	equipment: [],
 	facilities: [],
 	file_ids: [],
-	has_bench: 'unknown', // used
-	has_mupi: 'unknown', // used
-	has_network_map: 'unknown', // used
-	has_schedules: 'unknown', // used
-	has_shelter: 'unknown', // used
-	has_stop_sign: 'unknown', // used
+	has_bench: 'unknown',
+	has_mupi: 'unknown',
+	has_network_map: 'unknown',
+	has_schedules: 'unknown',
+	has_shelter: 'unknown',
+	has_stop_sign: 'unknown',
 	image_ids: [],
 	is_archived: false,
 	is_locked: false,
-	jurisdiction: 'unknown', // used
-	last_infrastructure_check: undefined, // used
-	last_infrastructure_maintenance: undefined, // used
-	last_schedules_check: undefined, // used
-	last_schedules_maintenance: undefined, // used
-	latitude: Number(0), // used
-	legacy_id: '', // used
-	locality_id: '', // used
-	longitude: Number(0), // used
-	municipality_id: '', // used
-	name: '', // used
-	new_name: '', // used
-	operational_status: 'voided', // used
-	parish_id: '', // used
+	jurisdiction: 'unknown',
+	last_infrastructure_check: undefined,
+	last_infrastructure_maintenance: undefined,
+	last_schedules_check: undefined,
+	last_schedules_maintenance: undefined,
+	latitude: Number(0),
+	legacy_id: '',
+	locality_id: '',
+	longitude: Number(0),
+	municipality_id: '',
+	name: '',
+	new_name: '',
+	operational_status: 'voided',
+	parish_id: '',
 	pole_status: 'unknown',
-	road_type: 'unknown', // used
-	shelter_code: '', // used
+	road_type: 'unknown',
+	shelter_code: '',
 	shelter_frame_size: undefined,
-	shelter_installation_date: undefined, // used
-	shelter_maintainer: '', // used
+	shelter_installation_date: undefined,
+	shelter_maintainer: '',
 	shelter_make: undefined,
 	shelter_model: undefined,
-	shelter_status: 'unknown', // used
-	short_name: '', // used
-	tts_name: '', // used
+	shelter_status: 'unknown',
+	short_name: '',
+	tts_name: '',
 };
 
 /* * */
