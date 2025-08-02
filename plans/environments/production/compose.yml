@@ -10,7 +10,6 @@ secrets:
     file: ./secrets/oci-private-key.pem
 
 services:
-  #
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

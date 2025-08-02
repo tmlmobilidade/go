@@ -2,6 +2,9 @@
 
 name: tmlmobilidade-sae-controller
 
+volumes:
+  certbotdata:
+
 secrets:
   ociprivatekey:
     file: ./secrets/oci-private-key.pem
