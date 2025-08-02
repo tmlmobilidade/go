@@ -47,8 +47,6 @@ services:
         delay: 30s
     ports:
       - 27027:5432
-    volumes:
-      - ./bridge-db-data:/var/lib/postgresql/data
     logging:
       options:
         max-size: '1m'
