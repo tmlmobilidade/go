@@ -23,6 +23,10 @@ interface RidesDetailContextState {
 		simplified_apex_validations: SimplifiedApexValidation[]
 		vehicle_events: VehicleEvent[]
 	}
+	flags: {
+		error: Error | null
+		loading: boolean
+	}
 	geojson: {
 		observed_events: FeatureCollection
 		observed_shape: FeatureCollection
@@ -52,11 +56,11 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// A. Fetch data
 
-	const { data: rideData } = useSWR<HttpResponse<Ride>>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
-	const { data: vehicleEventsData } = useSWR<HttpResponse<VehicleEvent[]>>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
-	const { data: simplifiedApexValidationsData } = useSWR<HttpResponse<SimplifiedApexValidation[]>>(`/api/rides/${rideId}/simplified-apex-validations`, { refreshInterval: 1000 });
-	const { data: hashedTripData } = useSWR<HttpResponse<HashedTrip>>(`/api/rides/${rideId}/hashed-trip`);
-	const { data: hashedShapeData } = useSWR<HttpResponse<HashedShape>>(`/api/rides/${rideId}/hashed-shape`);
+	const { data: rideData, error: rideError, isLoading: rideLoading } = useSWR<HttpResponse<Ride>>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
+	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<HttpResponse<VehicleEvent[]>>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
+	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<HttpResponse<SimplifiedApexValidation[]>>(`/api/rides/${rideId}/simplified-apex-validations`, { refreshInterval: 1000 });
+	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HttpResponse<HashedTrip>>(`/api/rides/${rideId}/hashed-trip`);
+	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HttpResponse<HashedShape>>(`/api/rides/${rideId}/hashed-shape`);
 
 	//
 	// B. Transform data
@@ -177,6 +181,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			simplified_apex_validations: simplifiedApexValidationsData?.data ?? [],
 			vehicle_events: vehicleEventsData?.data ?? [],
 		},
+		flags: {
+			error: rideError || vehicleEventsError || simplifiedApexValidationsError || hashedTripError || hashedShapeError,
+			loading: rideLoading || vehicleEventsLoading || simplifiedApexValidationsLoading || hashedTripLoading || hashedShapeLoading,
+		},
 		geojson: {
 			observed_events: observedEventsFC,
 			observed_shape: observedShapeFC,
@@ -184,7 +192,29 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			scheduled_path_geofences: scheduledPathGeofencesFC,
 			scheduled_shape: scheduledShapeFC,
 		},
-	}), [rideId, vehicleEventsData, simplifiedApexValidationsData, scheduledPathGeofencesFC, hashedTripData, hashedShapeData, observedEventsFC, observedShapeFC, scheduledPathFC, scheduledShapeFC]);
+	}), [
+		rideId,
+		vehicleEventsData,
+		simplifiedApexValidationsData,
+		scheduledPathGeofencesFC,
+		hashedTripData,
+		hashedShapeData,
+		observedEventsFC,
+		observedShapeFC,
+		scheduledPathFC,
+		scheduledShapeFC,
+		rideDataNormalized,
+		rideLoading,
+		rideError,
+		vehicleEventsLoading,
+		vehicleEventsError,
+		simplifiedApexValidationsLoading,
+		simplifiedApexValidationsError,
+		hashedTripLoading,
+		hashedTripError,
+		hashedShapeLoading,
+		hashedShapeError,
+	]);
 
 	//
 	// D. Render components
