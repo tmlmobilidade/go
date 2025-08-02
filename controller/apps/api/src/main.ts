@@ -20,8 +20,8 @@ import { getAppConfig } from '@tmlmobilidade/lib';
 				target: 'pino-pretty',
 			},
 		},
-		origin: getAppConfig('rides', 'cors_origin'),
-		port: getAppConfig('rides', 'api_port'),
+		origin: getAppConfig('controller', 'cors_origin'),
+		port: getAppConfig('controller', 'api_port'),
 	};
 
 	// Start Fastify server
