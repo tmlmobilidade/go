@@ -7,7 +7,7 @@ import '@tmlmobilidade/ui/styles';
 import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { NuqsAdapter } from 'nuqs/adapters/next';
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
 /* * */
 
