@@ -1,12 +1,19 @@
-# # # # # # # # #
+# # #
+# PRIMER STAGE
 
-FROM node:slim AS base
+FROM node:lts-alpine AS base
 
-ENV MODULE=controller
-ENV SCOPE=explorer
+
+ENV MODULE=sae-controller
 ENV PROJECT=frontend
 
+ARG ENVIRONMENT
+
+ENV ENVIRONMENT=${ENVIRONMENT}
+ENV NEXT_PUBLIC_ENVIRONMENT=${ENVIRONMENT}
+
 RUN npm install -g turbo@^2
+
 
 # # # # # # # # #
 
@@ -16,12 +23,15 @@ RUN npm install -g turbo@^2
 
 FROM base AS pruner
 
+RUN apk add --no-cache libc6-compat
+RUN apk update
+
 WORKDIR /app
 
 COPY package.json ./
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${SCOPE}-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/${MODULE}-${PROJECT} --docker
 
 
 # # # # # # # # #
@@ -32,6 +42,9 @@ RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${SCOPE}-${PROJECT} --docke
 
 FROM base AS builder
 
+RUN apk add --no-cache libc6-compat
+RUN apk update
+
 WORKDIR /app
 
 COPY --from=pruner /app/out/json/ .
@@ -40,7 +53,7 @@ RUN npm install
 
 # Build the project
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/sae-${MODULE}-${SCOPE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${PROJECT}
 
 
 # # # # # # # # #
@@ -53,14 +66,11 @@ FROM base AS runner
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/${PROJECT}/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/${PROJECT}/.next/static ./apps/${SCOPE}/${PROJECT}/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/${PROJECT}/public ./apps/${SCOPE}/${PROJECT}/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/.next/static ./apps/${PROJECT}/.next/static
 
-CMD node /app/apps/${SCOPE}/${PROJECT}/server.js
+CMD node /app/apps/${PROJECT}/server.js

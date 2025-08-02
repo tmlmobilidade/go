@@ -1,9 +1,9 @@
 'use client';
 
-import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 /* * */
 
-import { Collapsible, Divider, Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
+import { Collapsible, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 

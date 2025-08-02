@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-rides-frontend",
+	"name": "@tmlmobilidade/sae-controller-frontend",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
@@ -12,9 +12,8 @@
 	"dependencies": {
 		"@mantine/nprogress": "8.2.2",
 		"@tabler/icons-react": "3.34.1",
-		"@tmlmobilidade/sae-rides-pckg-utils": "*",
-		"@tmlmobilidade/types": "20250731.2217.12",
-		"@tmlmobilidade/ui": "20250731.2217.12",
+		"@tmlmobilidade/types": "20250801.1356.10",
+		"@tmlmobilidade/ui": "20250801.1356.10",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.4",
 		"lodash": "4.17.21",
