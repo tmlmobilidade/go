@@ -363,8 +363,9 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    name: frontend (NodeJS)
+    name: frontend (NextJS)
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
@@ -396,3 +397,5 @@ jobs:
           context: ./controller
           file: ./controller/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-controller-frontend:${{ github.ref_name }}
+          build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
