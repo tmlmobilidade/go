@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
+import { type RideNormalized } from '@/types/normalized';
 import { type Ride } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -15,13 +15,13 @@ import { Dates } from '@tmlmobilidade/utils';
  * @param seenLastAt The timestamp of the most recent Vehicle Event for the Ride.
  * @returns The operational status for the Ride.
  */
-export function getOperationalStatus(startTimeScheduled: Ride['start_time_scheduled'], seenLastAt: Ride['seen_last_at']): ExtendedRideDisplay['operational_status'] {
+export function getOperationalStatus(startTimeScheduled: Ride['start_time_scheduled'], seenLastAt: Ride['seen_last_at']): RideNormalized['operational_status'] {
 	//
 
 	//
 	// Check if the ride start time is in the future.
 
-	const nowInUnixMilliseconds = Dates.now().unix_timestamp;
+	const nowInUnixMilliseconds = Dates.now('Europe/Lisbon').unix_timestamp;
 
 	const millisecondsFromRideStartToNow = nowInUnixMilliseconds - startTimeScheduled;
 

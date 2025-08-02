@@ -1,0 +1,32 @@
+{
+	"name": "@tmlmobilidade/sae-rides-api",
+	"version": "1.0.0",
+	"type": "module",
+	"files": ["dist"],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@fastify/websocket": "11.2.0",
+		"@tmlmobilidade/connectors": "20250730.2353.33",
+		"@tmlmobilidade/interfaces": "20250730.2353.33",
+		"@tmlmobilidade/lib": "20250730.2353.33",
+		"@tmlmobilidade/utils": "20250730.2353.33",
+		"pino-pretty": "13.1.1"
+	},
+	"devDependencies": {
+		"@types/luxon": "3.7.1",
+		"@types/node": "24.1.0",
+		"@types/ws": "8.18.1",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.3",
+		"typescript": "5.8.3"
+	}
+}

@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExtendedRideDisplay } from '@/contexts/RidesCatalog.context';
+import { type RideNormalized } from '@/types/normalized';
 import { type Ride } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -12,14 +12,14 @@ import { Dates } from '@tmlmobilidade/utils';
  * @param seenLastAt The timestamp of the most recent event of the ride.
  * @returns The seen status of the ride.
  */
-export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): ExtendedRideDisplay['seen_status'] {
+export function getSeenStatus(seenLastAt?: Ride['seen_last_at']): RideNormalized['seen_status'] {
 	//
 
 	if (!seenLastAt) {
 		return 'unseen';
 	}
 
-	const nowInUnixMilliseconds = Dates.now().unix_timestamp;
+	const nowInUnixMilliseconds = Dates.now('Europe/Lisbon').unix_timestamp;
 
 	const millisecondsFromLastSeenToNow = nowInUnixMilliseconds - seenLastAt;
 

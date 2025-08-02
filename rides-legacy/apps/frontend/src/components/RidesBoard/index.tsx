@@ -1,0 +1,103 @@
+'use client';
+
+/* * */
+
+import { SeenStatusTag } from '@/components/common/SeenStatusTag';
+import { FlapLine } from '@/components/FlapLine';
+import { Label } from '@/components/Label';
+import { useRidesBoardContext } from '@/contexts/RidesBoard.context';
+import { type ExtendedRideDisplay } from '@/contexts/RidesList.context';
+
+import styles from './styles.module.css';
+
+/* * */
+
+export function RidesBoard() {
+	//
+
+	//
+	// A. Setup variables
+
+	const ridesBoardContext = useRidesBoardContext();
+
+	//
+	// B. Render components
+
+	return (
+		<div className={styles.wrapper}>
+
+			<div className={styles.header}>
+
+				<div className={styles.row}>
+					<div className={styles.cell} />
+					<div className={styles.cell}>
+						<Label size="lg" caps>Hora</Label>
+					</div>
+					<div className={styles.cell}>
+						<Label size="lg" caps>Linha</Label>
+					</div>
+					<div className={styles.cell}>
+						<Label size="lg" caps>Destino</Label>
+					</div>
+					<div className={styles.cell}>
+						<Label size="lg" caps>Passageiros</Label>
+					</div>
+					<div className={styles.cell}>
+						<Label size="lg" caps>Estado</Label>
+					</div>
+				</div>
+			</div>
+
+			<div className={styles.body}>
+				{ridesBoardContext.data.slots.map(slot => (
+					<RidesBoardRow key={slot._id} index={slot.index} item={slot.ride} slotId={slot._id} />
+				))}
+			</div>
+
+		</div>
+	);
+
+	//
+}
+
+/* * */
+
+interface RidesBoardRowProps {
+	index: number
+	item: ExtendedRideDisplay | null
+	slotId: string
+}
+
+export function RidesBoardRow({ item }: RidesBoardRowProps) {
+	//
+
+	//
+	// A. Render components
+
+	return (
+		<div className={styles.rowWrapper}>
+			<div className={styles.row}>
+				<div className={styles.cell}>
+					<SeenStatusTag value={item?.seen_status || 'unseen'} />
+				</div>
+				<div className={styles.cell}>
+					<FlapLine characterSets={['time']} count={5} string={item?.start_time_scheduled_display} />
+				</div>
+				<div className={styles.cell}>
+					<FlapLine characterSets={['numeric']} count={4} string={item?.line_id} />
+				</div>
+				<div className={styles.cell}>
+					<FlapLine characterSets={['alphabet', 'numeric', 'special']} count={40} string={item?.headsign} />
+				</div>
+				<div className={styles.cell}>
+					<FlapLine characterSets={['numeric']} count={3} string={`${item?.validations_count ?? ''}`} />
+				</div>
+				<div className={styles.cell}>
+					<FlapLine characterSets={['alphabet']} count={10} string={item?.delay_status} />
+				</div>
+			</div>
+		</div>
+	);
+
+	//
+}

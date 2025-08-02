@@ -2,21 +2,40 @@
 
 /* * */
 
-import { type RidesDetailAnalysisResult } from '@/components/detail/RidesDetailAnalysisResult';
-import { type RidesDetailAudits } from '@/components/detail/RidesDetailAudits';
-import { type RidesDetailDebug } from '@/components/detail/RidesDetailDebug';
-import { type RidesDetailHeader } from '@/components/detail/RidesDetailHeader';
-import { type RidesDetailJustifications } from '@/components/detail/RidesDetailJustifications';
-import { type RidesDetailMap } from '@/components/detail/RidesDetailMap';
-import { type RidesDetailMetadata } from '@/components/detail/RidesDetailMetadata';
-import { type RidesDetailPerformance } from '@/components/detail/RidesDetailPerformance';
-import { type RidesDetailStops } from '@/components/detail/RidesDetailStops';
-import { type RidesDetailSupport } from '@/components/detail/RidesDetailSupport';
-import { Pane } from '@tmlmobilidade/ui';
+import { RidesDetailAnalysisResult } from '@/components/detail/RidesDetailAnalysisResult';
+import { RidesDetailAudits } from '@/components/detail/RidesDetailAudits';
+import { RidesDetailDebug } from '@/components/detail/RidesDetailDebug';
+import { RidesDetailHeader } from '@/components/detail/RidesDetailHeader';
+import { RidesDetailJustifications } from '@/components/detail/RidesDetailJustifications';
+import { RidesDetailMap } from '@/components/detail/RidesDetailMap';
+import { RidesDetailMetadata } from '@/components/detail/RidesDetailMetadata';
+import { RidesDetailPerformance } from '@/components/detail/RidesDetailPerformance';
+import { RidesDetailStops } from '@/components/detail/RidesDetailStops';
+import { RidesDetailSupport } from '@/components/detail/RidesDetailSupport';
+import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
+import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function RidesDetail() {
+	//
+
+	//
+	// A. Setup variables
+
+	const ridesDetailContext = useRidesDetailContext();
+
+	//
+	// B. Render components
+
+	if (ridesDetailContext.flags.loading) {
+		return <LoadingOverlay />;
+	}
+
+	if (ridesDetailContext.flags.error) {
+		return <ErrorDisplay message={ridesDetailContext.flags.error.message} />;
+	}
+
 	return (
 		<Pane header={[<RidesDetailHeader />]}>
 			<RidesDetailMap />
@@ -30,4 +49,6 @@ export function RidesDetail() {
 			<RidesDetailDebug />
 		</Pane>
 	);
+
+	//
 }
