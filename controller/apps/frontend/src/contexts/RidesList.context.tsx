@@ -124,7 +124,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		if (webSocketRef.current) return;
 		// Open a new WebSocket connection
 		console.log('Opening WebSocket connection...');
-		webSocketRef.current = new WebSocket('ws://localhost:52002/rides/ws');
+		const wsProtocol = (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') ? 'wss' : 'ws';
+		webSocketRef.current = new WebSocket(`${wsProtocol}://${window.location.host}/api/rides/ws`);
 		webSocketRef.current.addEventListener('open', handleWebsocketInit);
 		webSocketRef.current.addEventListener('message', handleIncomingMessage);
 		// Cleanup on unmount
