@@ -4,7 +4,7 @@
 
 import { RidesListUpdatedAt } from '@/components/list/RidesListUpdatedAt';
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { Label, Loader, Spacer } from '@tmlmobilidade/ui';
+import { Label, Loader, Spacer, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -24,8 +24,8 @@ export function RidesListHeader() {
 			<Label size="lg" caps>Circulações</Label>
 			{ridesListContext.flags.loading && <Loader size="sm" />}
 			<Spacer />
-			<Label size="lg" caps>{ridesListContext.data.filtered.length}</Label>
 			<RidesListUpdatedAt />
+			<Tag label={`Total ${ridesListContext.data.filtered.length}`} variant="muted" />
 		</>
 	);
 
