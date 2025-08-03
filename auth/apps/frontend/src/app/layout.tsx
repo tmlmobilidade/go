@@ -13,7 +13,7 @@ import { PropsWithChildren } from 'react';
 
 export const metadata: Metadata = {
 	description: 'Ponto de acesso a todos os serviços e aplicações do GO.',
-	title: 'GO | Hub',
+	title: 'GO | Home',
 };
 
 /* * */
