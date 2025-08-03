@@ -74,7 +74,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'simple_three_vehicle_events_grade',
-			render: item => <AnalysisStatusTag grade={item.simple_three_vehicle_events_grade} operationalStatus={item.operational_status} />,
+			render: item => <AnalysisStatusTag grade={item.simple_three_vehicle_events_grade} />,
 			title: '3 Eventos',
 			width: 150,
 		},

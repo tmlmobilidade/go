@@ -9,16 +9,15 @@ import { Tag } from '@tmlmobilidade/ui';
 /* * */
 
 interface AnalysisStatusTagProps {
-	grade?: RideNormalized['analysis']['SIMPLE_THREE_VEHICLE_EVENTS']['grade']
-	operationalStatus?: RideNormalized['operational_status']
+	grade: RideNormalized['simple_three_vehicle_events_grade']
 }
 
 /* * */
 
-export function AnalysisStatusTag({ grade, operationalStatus }: AnalysisStatusTagProps) {
+export function AnalysisStatusTag({ grade }: AnalysisStatusTagProps) {
 	//
 
-	if (operationalStatus === 'scheduled' || operationalStatus === 'running') {
+	if (grade === 'none') {
 		return null;
 	}
 

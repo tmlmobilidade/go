@@ -25,7 +25,6 @@ export class RidesController {
 				agency?: string[]
 				date_end: number
 				date_start: number
-				simple_three_vehicle_events?: string[]
 			};
 
 			//
@@ -39,9 +38,8 @@ export class RidesController {
 
 			const ridesBatch = await rides.findMany(
 				{
-					'agency_id': { $in: requestBody.agency ?? [] },
-					'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade': { $in: requestBody.simple_three_vehicle_events ?? [] },
-					'start_time_scheduled': { $gte: validatedStartDate, $lte: validatedEndDate },
+					agency_id: { $in: requestBody.agency ?? [] },
+					start_time_scheduled: { $gte: validatedStartDate, $lte: validatedEndDate },
 				},
 				{ limit: 5000 },
 			);

@@ -24,6 +24,7 @@ export function RidesListHeader() {
 			<Label size="lg" caps>Circulações</Label>
 			{ridesListContext.flags.loading && <Loader size="sm" />}
 			<Spacer />
+			<Label size="lg" caps>{ridesListContext.data.filtered.length}</Label>
 			<RidesListUpdatedAt />
 		</>
 	);

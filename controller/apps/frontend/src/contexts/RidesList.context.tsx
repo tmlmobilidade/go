@@ -6,7 +6,7 @@ import { type DataTableHandle } from '@/components/datatable/DataTableContext';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { delayStatusValues, gradeValues, operationalStatusValues, type RideNormalized } from '@/types/normalized';
-import { getRideNormalized } from '@/utils/get-ride-normalized';
+import { ParseRidesWorkerOutgoingMessage } from '@/workers/parse-rides.worker';
 import { useDebouncedState } from '@mantine/hooks';
 import { type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
@@ -69,6 +69,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const webSocketRef = useRef<null | WebSocket>(null);
 	const dataTableRef = useRef<DataTableHandle | null>(null);
+	const workerRef = useRef<null | Worker>(null);
 
 	const dataRidesMap = useRef<Map<string, Ride> | null>(new Map());
 	const [dataRidesNormalized, setDataRidesNormalized] = useState<RideNormalized[]>([]);
@@ -96,7 +97,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 					agency: filterAgency,
 					date_end: filterDateEnd,
 					date_start: filterDateStart,
-					simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
 				}),
 				method: 'POST',
 			});
@@ -158,15 +158,23 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		const refreshCatalog = () => {
-			const result: RideNormalized[] = Array
-				.from(dataRidesMap.current.values())
-				.map(item => getRideNormalized(item))
-				.filter(item => filterOperationalStatus.includes(item.operational_status))
-				.filter(item => filterDelayStatus.includes(item.delay_status))
-				.sort((a, b) => a.agency_id.localeCompare(b.agency_id))
-				.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled);
-			setDataRidesNormalized(result);
+			// Setup a new worker instance to process the GTFS file.
+			// If a worker already exists, terminate it to avoid duplicate processing.
+			if (workerRef.current) workerRef.current.terminate();
+			workerRef.current = new Worker(new URL('@/workers/parse-rides.worker.ts', import.meta.url));
+			workerRef.current.postMessage({
+				filters: {
+					delay_status: filterDelayStatus,
+					operational_status: filterOperationalStatus,
+					simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
+				},
+				rides: dataRidesMap.current,
+			});
+			workerRef.current.onmessage = (event: MessageEvent<ParseRidesWorkerOutgoingMessage>) => {
+				setDataRidesNormalized(event.data.result ?? []);
+			};
 		};
+		refreshCatalog();
 		const interval = setInterval(refreshCatalog, 1000);
 		return () => clearInterval(interval);
 	}, [

@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -9,7 +9,7 @@ export const operationalStatusValues = [...operationalStatusOptions];
 
 /* * */
 
-const delayStatusOptions = ['delayed', 'early', 'ontime'] as const;
+const delayStatusOptions = ['delayed', 'early', 'ontime', 'none'] as const;
 export const delayStatusValues = [...delayStatusOptions];
 
 /* * */
@@ -19,7 +19,7 @@ export const seenStatusValues = [...seenStatusOptions];
 
 /* * */
 
-export const gradeOptions: RideAnalysis['grade'][] = ['pass', 'fail', 'error'] as const;
+export const gradeOptions = ['pass', 'fail', 'error', 'none'] as const;
 export const gradeValues = [...gradeOptions];
 
 /* * */
