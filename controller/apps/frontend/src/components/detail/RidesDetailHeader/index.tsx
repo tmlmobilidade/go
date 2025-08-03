@@ -37,7 +37,7 @@ export function RidesDetailHeader() {
 			<BackButton onClick={handleGoBack} type="close" />
 			<Tag label={ridesDetailContext.data.ride_id} variant="muted" />
 			<Spacer />
-			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.simple_three_vehicle_events_grade} operationalStatus={ridesDetailContext.data.ride?.operational_status} />
+			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.simple_three_vehicle_events_grade} />
 			<OperationalStatusTag value={ridesDetailContext.data.ride?.operational_status} />
 		</>
 	);
