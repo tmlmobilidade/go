@@ -7,7 +7,7 @@ import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { ProcessingStatus, type VehicleEvent } from '@tmlmobilidade/types';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
@@ -101,7 +101,7 @@ async function syncVehicleEvents() {
 
 					const updateRidesResult = await rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
-						{ system_status: ProcessingStatus.Waiting },
+						{ system_status: 'waiting' },
 						{ returnResults: false },
 					);
 

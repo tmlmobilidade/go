@@ -7,7 +7,7 @@ import { rides, simplifiedApexLocations, uniqueSams } from '@tmlmobilidade/inter
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { ProcessingStatus, type SimplifiedApexLocation } from '@tmlmobilidade/types';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
@@ -103,13 +103,13 @@ async function syncApexLocations() {
 
 					const updateRidesPromise = rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
-						{ system_status: ProcessingStatus.Waiting },
+						{ system_status: 'waiting' },
 						{ returnResults: false },
 					);
 
 					const updateUniqueSamsPromise = uniqueSams.updateMany(
 						{ mac_sam_serial_number: { $in: uniqueSamSerialNumbers } },
-						{ system_status: ProcessingStatus.Waiting },
+						{ system_status: 'waiting' },
 						{ returnResults: false },
 					);
 
