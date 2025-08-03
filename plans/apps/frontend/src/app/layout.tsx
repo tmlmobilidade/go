@@ -13,8 +13,8 @@ import { type PropsWithChildren } from 'react';
 /* * */
 
 export const metadata: Metadata = {
-	description: 'Plano de Exploração',
-	title: 'PLANOS | SAE | TML',
+	description: 'Validação e gestão de Planos de Operação.',
+	title: 'GO | Planos',
 };
 
 /* * */
