@@ -71,7 +71,7 @@ export default function CreateStopModal() {
 
 			<Section gap="md">
 				<TextInput
-					label="latitude da Paragem"
+					label="Latitude da Paragem"
 					miw="100%"
 					value={stopCreateContext.data.form.values.latitude}
 				/>

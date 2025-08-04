@@ -6,7 +6,6 @@ import { Permissions } from '@tmlmobilidade/lib';
 import { Button, HasPermission, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 import { openCreateStopMapModal } from '../../Detail/CreateStopModal/CreateStopMap';
-import { openCreateStopInfosModal } from '../../Detail/CreateStopModal/CreateStopName';
 
 /* * */
 
