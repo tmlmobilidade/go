@@ -12,7 +12,7 @@ import { NotesComments } from './Notes-Comments';
 import { PublicInformation } from './PublicInformation';
 import { ServedEquipment } from './ServedEquipment';
 import { Shelter } from './Shelter';
-import { StopDetails } from './Stopdetails';
+import { StopDetailsBasic } from './StopDetailsBasic';
 import { StopHeader } from './StopHeader';
 
 /* * */
@@ -20,7 +20,7 @@ import { StopHeader } from './StopHeader';
 export function FormInfos() {
 	return (
 		<Pane header={[<StopHeader />]}>
-			<StopDetails />
+			<StopDetailsBasic />
 			<AdministratorInfo />
 			<Shelter />
 			<Infraestructures />
