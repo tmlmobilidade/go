@@ -2,26 +2,25 @@
 
 /* * */
 
-import { Stop } from '@tmlmobilidade/types';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useMemo } from 'react';
 
 /* * */
 
 interface Props {
-	stopData: Stop
+	stopLoc: [number, number]
 }
 
 /* * */
 
-export function MapViewSingleStop({ stopData }: Props) {
+export function MapViewSingleStop({ stopLoc }: Props) {
 	//
 
 	//
 	// A. Transform data
 
 	const stopMarkerMapData: GeoJSON.FeatureCollection = useMemo(() => {
-		if (!stopData || !stopData.latitude || !stopData.longitude) {
+		if (!stopLoc) {
 			return {
 				features: [],
 				type: 'FeatureCollection',
@@ -30,7 +29,7 @@ export function MapViewSingleStop({ stopData }: Props) {
 		return {
 			features: [{
 				geometry: {
-					coordinates: [parseFloat(`${stopData.longitude}`), parseFloat(`${stopData.latitude}`)],
+					coordinates: [parseFloat(`${stopLoc[1]}`), parseFloat(`${stopLoc[0]}`)],
 					type: 'Point',
 				},
 				properties: {},
@@ -38,7 +37,7 @@ export function MapViewSingleStop({ stopData }: Props) {
 			}],
 			type: 'FeatureCollection',
 		};
-	}, [stopData]);
+	}, [stopLoc]);
 
 	//
 	// B. Render components

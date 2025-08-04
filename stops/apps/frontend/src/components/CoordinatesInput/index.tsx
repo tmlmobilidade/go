@@ -3,7 +3,7 @@
 /* * */
 
 import { NumberInput } from '@tmlmobilidade/ui';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 /* * */
 
@@ -11,7 +11,7 @@ interface CoordinatesInputProps {
 	disabled?: boolean
 	label1?: string
 	label2?: string
-	onChange?: (selected: string[]) => void
+	onChange?: (changed: [number, number]) => void
 	onPaste?: (pastedValues: string[]) => void
 	setValue?: (coordinate: [number, number]) => void
 	value?: [number, number]
@@ -23,10 +23,8 @@ export default function CoordinatesInput({
 	disabled,
 	label1,
 	label2,
-	onChange,
 	onPaste,
 	setValue,
-	value,
 }: CoordinatesInputProps) {
 	//
 
@@ -63,14 +61,31 @@ export default function CoordinatesInput({
 				label={label1}
 				onPaste={handlePaste}
 				style={{ width: '100%' }}
-				value={coordinates && coordinates[0]}
+				value={coordinates?.[0]}
+				onChange={(value) => {
+					const newCoordinates: [number, number] = [
+						Number(value),
+						coordinates?.[1],
+					];
+					setCoordinates(newCoordinates);
+					setValue?.(newCoordinates);
+				}}
 			/>
+
 			<NumberInput
 				disabled={disabled}
 				label={label2}
 				onPaste={handlePaste}
 				style={{ width: '100%' }}
-				value={coordinates && coordinates[1]}
+				value={coordinates?.[1]}
+				onChange={(value) => {
+					const newCoordinates: [number, number] = [
+						coordinates?.[0],
+						Number(value),
+					];
+					setCoordinates(newCoordinates);
+					setValue?.(newCoordinates);
+				}}
 			/>
 		</>
 	);

@@ -6,6 +6,7 @@ import { MapViewStops } from '@/components/Map/MapViewStops';
 import CoordinatesInput from '@/components/CoordinatesInput';
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
 import { AlertMessage, Button, closeModal, Divider, Grid, Label, MapOptionsContextProvider, MapView, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 import { openCreateStopInfosModal } from '../CreateStopName';
 
@@ -46,13 +47,38 @@ export default function CreateStopModal() {
 	const stopCreateContext = useStopCreateContext();
 
 	//
+
+	const handleSelectInMap = (value) => {
+		console.log('valor ---->', value);
+		useMemo(() => {
+			if (!value) {
+				return {
+					features: [],
+					type: 'FeatureCollection',
+				};
+			}
+			return {
+				features: [{
+					geometry: {
+						coordinates: [parseFloat(`${value[1]}`), parseFloat(`${value[0]}`)],
+						type: 'Point',
+					},
+					properties: {},
+					type: 'Feature',
+				}],
+				type: 'FeatureCollection',
+			};
+		}, [value]);
+	};
+
+	//
 	// B. Render Components
 
 	return (
 		<Section padding="lg">
 			<Section gap="xs">
 				<Label size="lg" caps>Nova Paragem</Label>
-				<Text>selecione no mapa a localização da paragem</Text>
+				<Text>selecione no mapa a localização da paragem que pretende criar</Text>
 			</Section>
 
 			<Divider />
@@ -76,6 +102,7 @@ export default function CreateStopModal() {
 					<CoordinatesInput
 						label1="Latitude"
 						label2="Longitude"
+						onChange={handleSelectInMap}
 					/>
 				</Grid>
 			</Section>
