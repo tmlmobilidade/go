@@ -3,8 +3,9 @@
 import { MapViewStops } from '@/components/Map/MapViewStops';
 /* * */
 
+import CoordinatesInput from '@/components/CoordinatesInput';
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, closeModal, Divider, Grid, Label, MapOptionsContextProvider, MapView, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, Grid, Label, MapOptionsContextProvider, MapView, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 
 import { openCreateStopInfosModal } from '../CreateStopName';
 
@@ -71,16 +72,12 @@ export default function CreateStopModal() {
 			<Divider />
 
 			<Section gap="md">
-				<TextInput
-					label="Latitude da Paragem"
-					miw="100%"
-					value={stopCreateContext.data.form.values.latitude}
-				/>
-				<TextInput
-					label="Longitude da Paragem"
-					miw="100%"
-					value={stopCreateContext.data.form.values.longitude}
-				/>
+				<Grid columns="ab" gap="sm">
+					<CoordinatesInput
+						label1="Latitude"
+						label2="Longitude"
+					/>
+				</Grid>
 			</Section>
 			<Divider />
 
