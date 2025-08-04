@@ -28,6 +28,7 @@ export const openCreateStopMapModal = () => {
 		closeOnClickOutside: false,
 		modalId: CREATE_STOP_MODAL_ID,
 		padding: 0,
+		radius: 15,
 		size: 'xl',
 		withCloseButton: false,
 	});
