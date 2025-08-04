@@ -3,7 +3,7 @@
 /* * */
 
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, ValueDisplay } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -52,29 +52,33 @@ export default function CreateStopModal() {
 
 			{stopCreateContext.flags.error && stopCreateContext.flags.error.name === 'StopError' && (
 				<>
-					<AlertMessage title={stopCreateContext.flags.error?.message ?? 'odjisodj'} variant="danger" />
+					<AlertMessage title={stopCreateContext.flags.error?.message ?? 'haaaaaaa'} variant="danger" />
 					<Divider />
 				</>
 			)}
 
-			{stopCreateContext.data.form.values.name && (
-				<>
-					<Section gap="sm">
-						<ValueDisplay label="Nome da Paragem" value={stopCreateContext.data.form.values.name} />
-					</Section>
-					<Divider />
-				</>
-			)}
+			<Section gap="sm">
+				<TextInput
+					label="Nome da Paragem"
+					miw="100%"
+					value={stopCreateContext.data.form.values.name}
+				/>
+			</Section>
+			<Divider />
 
-			{stopCreateContext.data.form.values.latitude && stopCreateContext.data.form.values.longitude && (
-				<>
-					<Section gap="sm">
-						<ValueDisplay label="latitude da Paragem" value={stopCreateContext.data.form.values.latitude} />
-						<ValueDisplay label="Longitude da Paragem" value={stopCreateContext.data.form.values.longitude} />
-					</Section>
-					<Divider />
-				</>
-			)}
+			<Section gap="sm">
+				<TextInput
+					label="latitude da Paragem"
+					miw="100%"
+					value={stopCreateContext.data.form.values.latitude}
+				/>
+				<TextInput
+					label="Longitude da Paragem"
+					miw="100%"
+					value={stopCreateContext.data.form.values.longitude}
+				/>
+			</Section>
+			<Divider />
 
 			<Section>
 				<Grid columns="ab" gap="md">
