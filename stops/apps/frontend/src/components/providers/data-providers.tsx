@@ -3,16 +3,19 @@
 /* * */
 
 import { LocationsContextProvider } from '@/contexts/Locations.context';
+import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { StopListContextProvider } from '@/contexts/StopList.context';
 
 /* * */
 
 export function DataProviders({ children }: { children: React.ReactNode }) {
 	return (
-		<LocationsContextProvider>
-			<StopListContextProvider>
-				{children}
-			</StopListContextProvider>
-		</LocationsContextProvider>
+		<MapOptionsContextProvider>
+			<LocationsContextProvider>
+				<StopListContextProvider>
+					{children}
+				</StopListContextProvider>
+			</LocationsContextProvider>
+		</MapOptionsContextProvider>
 	);
 }

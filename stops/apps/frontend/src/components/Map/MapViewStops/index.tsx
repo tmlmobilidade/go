@@ -64,7 +64,7 @@ export function MapViewStops() {
 		<div style={{ height: 400, width: '100%' }}>
 			<MapView
 				id="selectSchoolMap"
-				interactiveLayerIds={['allSchools']}
+				interactiveLayerIds={['allStops']}
 				onClick={handleMapClick}
 				scale
 				scrollZoom

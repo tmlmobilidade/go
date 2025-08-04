@@ -3,7 +3,7 @@
 /* * */
 
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -11,7 +11,7 @@ export const CREATE_STOP_MODAL_ID = 'create-stop-modal';
 
 /* * */
 
-export const openCreateStopModal = () => {
+export const openCreateStopInfosModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
@@ -63,20 +63,7 @@ export default function CreateStopModal() {
 					miw="100%"
 					value={stopCreateContext.data.form.values.name}
 				/>
-			</Section>
-			<Divider />
-
-			<Section gap="sm">
-				<TextInput
-					label="latitude da Paragem"
-					miw="100%"
-					value={stopCreateContext.data.form.values.latitude}
-				/>
-				<TextInput
-					label="Longitude da Paragem"
-					miw="100%"
-					value={stopCreateContext.data.form.values.longitude}
-				/>
+				<ValueDisplay label="short name" value={stopCreateContext.data.form.values.name} />
 			</Section>
 			<Divider />
 

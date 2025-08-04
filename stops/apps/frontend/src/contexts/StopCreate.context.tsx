@@ -2,7 +2,7 @@
 
 /* * */
 
-import { CREATE_STOP_MODAL_ID } from '@/components/Stops/Detail/CreateStopModal';
+import { CREATE_STOP_MODAL_ID } from '@/components/Stops/Detail/CreateStopModal/CreateStopName';
 import { type WorkerMessage } from '@/types/worker';
 import { Permissions } from '@tmlmobilidade/lib';
 import { CreateStopDto, Stop, StopPermission } from '@tmlmobilidade/types';

@@ -5,7 +5,8 @@ import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { Button, HasPermission, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
 
-import { openCreateStopModal } from '../../Detail/CreateStopModal';
+import { openCreateStopMapModal } from '../../Detail/CreateStopModal/CreateStopMap';
+import { openCreateStopInfosModal } from '../../Detail/CreateStopModal/CreateStopName';
 
 /* * */
 
@@ -31,7 +32,7 @@ export function StopListHeader() {
 				placeholder="Pesquisar alerta"
 			/>
 			<HasPermission action={Permissions.stops.actions.create} scope={Permissions.stops.scope}>
-				<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={openCreateStopModal} />
+				<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={openCreateStopMapModal} />
 			</HasPermission>
 		</>
 	);

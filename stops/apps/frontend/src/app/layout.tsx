@@ -39,13 +39,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 		<html lang="en" suppressHydrationWarning>
 			<body>
 				<NuqsAdapter>
-					<AppProvider>
-						<AppWrapper>
-							<DataProviders>
+					<DataProviders>
+						<AppProvider>
+							<AppWrapper>
 								{children}
-							</DataProviders>
-						</AppWrapper>
-					</AppProvider>
+							</AppWrapper>
+						</AppProvider>
+					</DataProviders>
 				</NuqsAdapter>
 			</body>
 		</html>
