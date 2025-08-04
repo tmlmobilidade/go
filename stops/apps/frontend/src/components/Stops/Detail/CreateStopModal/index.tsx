@@ -3,7 +3,7 @@
 /* * */
 
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Divider, Label, MeContextProvider, openModal, Section, Text, ValueDisplay } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -75,6 +75,23 @@ export default function CreateStopModal() {
 					<Divider />
 				</>
 			)}
+
+			<Section>
+				<Grid columns="ab" gap="md">
+					<Button
+						disabled={stopCreateContext.flags.loading}
+						label="Cancelar"
+						onClick={() => closeModal(CREATE_STOP_MODAL_ID)}
+						variant="secondary"
+					/>
+					<Button
+						disabled={!stopCreateContext.flags.can_create}
+						label="Criar Paragem"
+						loading={stopCreateContext.flags.loading}
+						onClick={stopCreateContext.actions.createStop}
+					/>
+				</Grid>
+			</Section>
 		</>
 	);
 }
