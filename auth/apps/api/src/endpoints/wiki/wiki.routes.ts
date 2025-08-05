@@ -15,7 +15,7 @@ const NAMESPACE = '/wiki';
 server.register(
 	(instance, opts, next) => {
 		// GET /wiki
-		instance.get('/', { preHandler: authorizationMiddleware(Permissions.agencies.scope, Permissions.agencies.actions.list) }, WikiController.getAll);
+		instance.get('/', { preHandler: authorizationMiddleware(Permissions.agencies.scope, Permissions.agencies.actions.read) }, WikiController.getAll);
 
 		// GET /wiki/:id
 		instance.get('/:id', { preHandler: authorizationMiddleware(Permissions.agencies.scope, Permissions.agencies.actions.read) }, WikiController.getById);

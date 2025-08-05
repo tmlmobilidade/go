@@ -18,7 +18,7 @@ server.register(
 	// GET /rides
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.list) },
+			{ preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.read) },
 			RidesController.getBatch,
 		);
 
@@ -26,7 +26,7 @@ server.register(
 		instance.get(
 			'/ws',
 			{
-				preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.list),
+				preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.read),
 				websocket: true,
 			},
 			RidesController.websocket,

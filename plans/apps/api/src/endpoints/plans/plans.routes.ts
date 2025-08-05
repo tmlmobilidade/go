@@ -19,7 +19,7 @@ server.register(
 		// GET /plans
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.list) },
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.read) },
 			PlansController.getAll,
 		);
 
