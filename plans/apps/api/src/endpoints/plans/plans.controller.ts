@@ -71,6 +71,7 @@ export class PlansController {
 				hash: '',
 				is_locked: false,
 				operation_file_id: '',
+				pcgi_legacy: null,
 				status_merger: 'waiting',
 			};
 
@@ -178,8 +179,6 @@ export class PlansController {
 		if (permissions?.resource) {
 			const filter = {
 				...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
-				...(permissions.resource.end_date && { 'gtfs_feed_info.feed_end_date': { $lte: permissions.resource.end_date } }),
-				...(permissions.resource.start_date && { 'gtfs_feed_info.feed_start_date': { $gte: permissions.resource.start_date } }),
 			};
 
 			const filteredPlans = await plans.findMany(filter, { sort: { created_at: -1 } });
