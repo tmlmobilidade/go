@@ -1,11 +1,7 @@
 'use client';
 
-/* * */
-
 import { NumberInput } from '@tmlmobilidade/ui';
-import React, { useState } from 'react';
-
-/* * */
+import React, { useEffect, useState } from 'react';
 
 interface CoordinatesInputProps {
 	disabled?: boolean
@@ -17,41 +13,53 @@ interface CoordinatesInputProps {
 	value?: [number, number]
 }
 
-/* * */
-
 export default function CoordinatesInput({
 	disabled,
-	label1,
-	label2,
+	label1 = 'Latitude',
+	label2 = 'Longitude',
+	onChange,
 	onPaste,
 	setValue,
+	value,
 }: CoordinatesInputProps) {
-	//
+	// Internal state mirrors the external value
+	const [coordinates, setCoordinates] = useState<[number, number]>(value ?? [0, 0]);
 
-	//
-	// A. setup variables
-	const [coordinates, setCoordinates] = useState<[number, number] | undefined>();
+	// Keep internal state in sync with external value
+	useEffect(() => {
+		if (value && (value[0] !== coordinates[0] || value[1] !== coordinates[1])) {
+			setCoordinates(value);
+		}
+	}, [value]);
 
-	//
-	// B. handle action
+	// Unified update function
+	const updateCoordinates = (newCoordinates: [number, number]) => {
+		setCoordinates(newCoordinates);
+		onChange?.(newCoordinates);
+		setValue?.(newCoordinates);
+	};
 
+	// Handle paste
 	const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
 		event.preventDefault();
 
 		const pastedText = event.clipboardData.getData('text');
 		if (!pastedText.trim()) return;
 
-		// Split by common delimiters: comma, semicolon, newline, tab
 		const pastedValues = pastedText
-			.split(/[,;\n\t]+/)
+			.split(/[,]+/)
 			.map(val => val.trim())
 			.filter(val => val.length > 0);
 
-		// Call custom onPaste handler if provided
 		onPaste?.(pastedValues);
 
-		//
-		setCoordinates([Number(pastedValues[0]), Number(pastedValues[1])]);
+		if (pastedValues.length >= 2) {
+			const newCoords: [number, number] = [
+				Number(pastedValues[0]),
+				Number(pastedValues[1]),
+			];
+			updateCoordinates(newCoords);
+		}
 	};
 
 	return (
@@ -61,14 +69,10 @@ export default function CoordinatesInput({
 				label={label1}
 				onPaste={handlePaste}
 				style={{ width: '100%' }}
-				value={coordinates?.[0]}
+				value={coordinates[0]}
 				onChange={(value) => {
-					const newCoordinates: [number, number] = [
-						Number(value),
-						coordinates?.[1],
-					];
-					setCoordinates(newCoordinates);
-					setValue?.(newCoordinates);
+					const newCoords: [number, number] = [Number(value), coordinates[1]];
+					updateCoordinates(newCoords);
 				}}
 			/>
 
@@ -77,14 +81,10 @@ export default function CoordinatesInput({
 				label={label2}
 				onPaste={handlePaste}
 				style={{ width: '100%' }}
-				value={coordinates?.[1]}
+				value={coordinates[1]}
 				onChange={(value) => {
-					const newCoordinates: [number, number] = [
-						coordinates?.[0],
-						Number(value),
-					];
-					setCoordinates(newCoordinates);
-					setValue?.(newCoordinates);
+					const newCoords: [number, number] = [coordinates[0], Number(value)];
+					updateCoordinates(newCoords);
 				}}
 			/>
 		</>
