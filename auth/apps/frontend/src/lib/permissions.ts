@@ -25,102 +25,49 @@ export interface PermissionConfig<T = any> {
 
 const agencyActions: PermissionConfig<typeof Permissions.agencies.actions> = {
 	actions: [
-		{ description: 'Permite listar agências', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar uma agência específica', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar uma agência', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar uma agência', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar uma agência', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite ver operadores', key: 'read', label: 'Ver' },
+		{ description: 'Permite criar um operador', key: 'create', label: 'Criar' },
+		{ description: 'Permite editar um operador', key: 'update', label: 'Editar' },
+		{ description: 'Permite eliminar um operador', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite bloquear/desbloquear um operador', key: 'toggle_lock', label: 'Bloquear/Desbloquear' },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de agências.',
+	description: 'As ações que o utilizador pode realizar na gestão de operadores.',
 	scope: Permissions.agencies.scope,
-	title: 'Permissões de Agências',
+	title: 'Permissões de Operadores',
 };
 
 const alertActions: PermissionConfig<typeof Permissions.alerts.actions> = {
 	actions: [
-		{ description: 'Permite listar alertas', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar um alerta específico', key: 'read', label: 'Ver' },
+		{ description: 'Permite ver alertas', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar um alerta', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar um alerta', key: 'update', label: 'Atualizar' },
+		{ description: 'Permite editar um alerta', key: 'update', label: 'Editar' },
 		{ description: 'Permite eliminar um alerta', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite bloquear/desbloquear um alerta', key: 'toggle_lock', label: 'Bloquear/Desbloquear' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
 	scope: Permissions.alerts.scope,
 	title: 'Permissões de Alertas',
 };
 
-const fileActions: PermissionConfig<typeof Permissions.files.actions> = {
+const homeActions: PermissionConfig<typeof Permissions.home.actions> = {
 	actions: [
-		{ description: 'Permite listar ficheiros', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar um ficheiro específico', key: 'read', label: 'Ver' },
-		{ description: 'Permite carregar um ficheiro', key: 'create', label: 'Carregar' },
-		{ description: 'Permite atualizar um ficheiro', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar um ficheiro', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite ver Quick Links', key: 'read_links', label: 'Ver Quick Links' },
+		{ description: 'Permite ver Wiki', key: 'read_wiki', label: 'Ver Wiki' },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de ficheiros.',
-	scope: Permissions.files.scope,
-	title: 'Permissões de Ficheiros',
-};
-
-const hashedShapeActions: PermissionConfig<typeof Permissions.hashedShapes.actions> = {
-	actions: [
-		{ description: 'Permite listar formas codificadas', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar uma forma codificada específica', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar uma forma codificada', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar uma forma codificada', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar uma forma codificada', key: 'delete', label: 'Eliminar' },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de formas codificadas.',
-	scope: Permissions.hashedShapes.scope,
-	title: 'Permissões de Formas Codificadas',
-};
-
-const hashedTripActions: PermissionConfig<typeof Permissions.hashedTrips.actions> = {
-	actions: [
-		{ description: 'Permite listar viagens codificadas', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar uma viagem codificada específica', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar uma viagem codificada', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar uma viagem codificada', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar uma viagem codificada', key: 'delete', label: 'Eliminar' },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de viagens codificadas.',
-	scope: Permissions.hashedTrips.scope,
-	title: 'Permissões de Viagens Codificadas',
-};
-
-const municipalityActions: PermissionConfig<typeof Permissions.municipalities.actions> = {
-	actions: [
-		{ description: 'Permite listar municípios', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar um município específico', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar um município', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar um município', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar um município', key: 'delete', label: 'Eliminar' },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de municípios.',
-	scope: Permissions.municipalities.scope,
-	title: 'Permissões de Municípios',
-};
-
-const organizationActions: PermissionConfig<typeof Permissions.organizations.actions> = {
-	actions: [
-		{ description: 'Permite listar organizações', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar uma organização específica', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar uma organização', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar uma organização', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar uma organização', key: 'delete', label: 'Eliminar' },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de organizações.',
-	scope: Permissions.organizations.scope,
-	title: 'Permissões de Organizações',
+	description: 'As ações que o utilizador pode realizar na home.',
+	scope: Permissions.home.scope,
+	title: 'Permissões da Home',
 };
 
 const planActions: PermissionConfig<typeof Permissions.plans.actions> = {
 	actions: [
-		{ description: 'Permite listar planos', key: 'list', label: 'Listar', resources: ['AGENCIES'] },
-		{ description: 'Permite visualizar um plano específico', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
+		{ description: 'Permite ver um plano específico', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite criar um plano', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
-		{ description: 'Permite atualizar um plano', key: 'update', label: 'Atualizar', resources: ['AGENCIES'] },
+		{ description: 'Permite editar um plano', key: 'update', label: 'Editar', resources: ['AGENCIES'] },
 		{ description: 'Permite eliminar um plano', key: 'delete', label: 'Eliminar', resources: ['AGENCIES'] },
+		{ description: 'Permite editar o controlador de um plano', key: 'update_controller', label: 'Editar Controlador', resources: ['AGENCIES'] },
+		{ description: 'Permite editar as datas de informação do feed', key: 'update_feed_info_dates', label: 'Editar Datas de Feed', resources: ['AGENCIES'] },
+		{ description: 'Permite editar o PCGI legado de um plano', key: 'update_pcgi_legacy', label: 'Editar PCGI Legado', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de planos.',
 	scope: Permissions.plans.scope,
@@ -129,10 +76,9 @@ const planActions: PermissionConfig<typeof Permissions.plans.actions> = {
 
 const userActions: PermissionConfig<typeof Permissions.users.actions> = {
 	actions: [
-		{ description: 'Permite listar utilizadores', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar um utilizador específico', key: 'read', label: 'Ver' },
+		{ description: 'Permite ver utilizadores', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar um utilizador', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar um utilizador', key: 'update', label: 'Atualizar' },
+		{ description: 'Permite editar um utilizador', key: 'update', label: 'Editar' },
 		{ description: 'Permite eliminar um utilizador', key: 'delete', label: 'Eliminar' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de utilizadores.',
@@ -142,8 +88,7 @@ const userActions: PermissionConfig<typeof Permissions.users.actions> = {
 
 const validationActions: PermissionConfig<typeof Permissions.validations.actions> = {
 	actions: [
-		{ description: 'Permite listar validações', key: 'list', label: 'Listar', resources: ['AGENCIES'] },
-		{ description: 'Permite visualizar uma validação específica', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
+		{ description: 'Permite ver validações', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite criar uma validação', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
 		{ description: 'Permite solicitar aprovação de uma validação', key: 'request_approval', label: 'Solicitar aprovação', resources: ['AGENCIES'] },
 	],
@@ -154,37 +99,23 @@ const validationActions: PermissionConfig<typeof Permissions.validations.actions
 
 const roleActions: PermissionConfig<typeof Permissions.roles.actions> = {
 	actions: [
-		{ description: 'Permite listar papéis', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar um papel específico', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar um papel', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar um papel', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar um papel', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite ver organizações', key: 'read', label: 'Ver' },
+		{ description: 'Permite criar uma organização', key: 'create', label: 'Criar' },
+		{ description: 'Permite editar uma organização', key: 'update', label: 'Editar' },
+		{ description: 'Permite eliminar uma organização', key: 'delete', label: 'Eliminar' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de papéis.',
 	scope: Permissions.roles.scope,
-	title: 'Permissões de Papéis',
-};
-
-const sessionActions: PermissionConfig<typeof Permissions.sessions.actions> = {
-	actions: [
-		{ description: 'Permite listar sessões', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar uma sessão específica', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar uma sessão', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar uma sessão', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar uma sessão', key: 'delete', label: 'Eliminar' },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de sessões.',
-	scope: Permissions.sessions.scope,
-	title: 'Permissões de Sessões',
+	title: 'Permissões de Organizações',
 };
 
 const stopActions: PermissionConfig<typeof Permissions.stops.actions> = {
 	actions: [
-		{ description: 'Permite listar paragens', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar uma paragem específica', key: 'read', label: 'Ver' },
+		{ description: 'Permite ver paragens', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar uma paragem', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar uma paragem', key: 'update', label: 'Atualizar' },
+		{ description: 'Permite editar uma paragem', key: 'update', label: 'Editar' },
 		{ description: 'Permite eliminar uma paragem', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite bloquear/desbloquear uma paragem', key: 'toggle_lock', label: 'Bloquear/Desbloquear' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de paragens.',
 	scope: Permissions.stops.scope,
@@ -193,11 +124,9 @@ const stopActions: PermissionConfig<typeof Permissions.stops.actions> = {
 
 const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
 	actions: [
-		{ description: 'Permite listar viagens', key: 'list', label: 'Listar' },
-		{ description: 'Permite visualizar uma viagem específica', key: 'read', label: 'Ver' },
-		{ description: 'Permite criar uma viagem', key: 'create', label: 'Criar' },
-		{ description: 'Permite atualizar uma viagem', key: 'update', label: 'Atualizar' },
-		{ description: 'Permite eliminar uma viagem', key: 'delete', label: 'Eliminar' },
+		{ description: 'Permite ver viagens', key: 'read', label: 'Ver' },
+		{ description: 'Permite editar uma viagem', key: 'update', label: 'Editar' },
+		{ description: 'Permite bloquear/desbloquear uma viagem', key: 'toggle_lock', label: 'Bloquear/Desbloquear' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de viagens.',
 	scope: Permissions.rides.scope,
@@ -209,16 +138,11 @@ const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
 export const permissionsConfig: PermissionConfig[] = [
 	agencyActions,
 	alertActions,
-	fileActions,
-	hashedShapeActions,
-	hashedTripActions,
-	municipalityActions,
-	organizationActions,
+	homeActions,
 	planActions,
 	userActions,
 	validationActions,
 	roleActions,
-	sessionActions,
 	stopActions,
 	rideActions,
 ];
