@@ -9,7 +9,7 @@ import { type Permission } from '@tmlmobilidade/types';
 
 declare module 'fastify' {
 	export interface FastifyRequest {
-		permissions: null | Permission<unknown>
+		permissions: Permission<unknown>[]
 	}
 }
 
@@ -29,7 +29,7 @@ export default function authorizationMiddleware(scope?: string, action?: string)
 		}
 
 		try {
-			const permissions = await authProvider.getPermission(token, scope, action);
+			const permissions = await authProvider.getPermissions(token);
 			request.permissions = permissions;
 		}
 		catch (error) {
