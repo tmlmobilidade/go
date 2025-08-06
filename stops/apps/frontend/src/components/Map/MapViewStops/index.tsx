@@ -2,17 +2,17 @@
 
 /* * */
 
-import { MapView } from '@/components/Map/MapView';
 import { Routes } from '@/lib/routes';
 import { Stop } from '@tmlmobilidade/types';
+import { MapView } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { Layer, Source } from '@vis.gl/react-maplibre';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-export function MapViewStops() {
+export function MapViewStops({ children }: { children: React.ReactNode }) {
 	//
 
 	//
@@ -63,12 +63,9 @@ export function MapViewStops() {
 	return (
 		<div style={{ height: 400, width: '100%' }}>
 			<MapView
-				id="selectSchoolMap"
+				id="allStops"
 				interactiveLayerIds={['allStops']}
 				onClick={handleMapClick}
-				scale
-				scrollZoom
-				toolbar
 			>
 				<>
 					<Source data={stopsAsGeojson} id="allStops" type="geojson">
@@ -85,6 +82,7 @@ export function MapViewStops() {
 						/>
 					</Source>
 
+					{children}
 				</>
 
 			</MapView>

@@ -9,7 +9,6 @@ interface CoordinatesInputProps {
 	label2?: string
 	onChange?: (changed: [number, number]) => void
 	onPaste?: (pastedValues: string[]) => void
-	setValue?: (coordinate: [number, number]) => void
 	value?: [number, number]
 }
 
@@ -19,25 +18,32 @@ export default function CoordinatesInput({
 	label2 = 'Longitude',
 	onChange,
 	onPaste,
-	setValue,
 	value,
 }: CoordinatesInputProps) {
-	// Internal state mirrors the external value
+	//
+
+	//
+	// A. setup variables
+
 	const [coordinates, setCoordinates] = useState<[number, number]>(value ?? [0, 0]);
 
-	// Keep internal state in sync with external value
+	//
+	// B. fetch data
+
 	useEffect(() => {
 		if (value && (value[0] !== coordinates[0] || value[1] !== coordinates[1])) {
 			setCoordinates(value);
 		}
 	}, [value]);
 
-	// Unified update function
+	//
+
 	const updateCoordinates = (newCoordinates: [number, number]) => {
 		setCoordinates(newCoordinates);
-		onChange?.(newCoordinates);
-		setValue?.(newCoordinates);
+		console.log('coordinates', coordinates, '| value', value);
 	};
+
+	//
 
 	// Handle paste
 	const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
@@ -73,6 +79,7 @@ export default function CoordinatesInput({
 				onChange={(value) => {
 					const newCoords: [number, number] = [Number(value), coordinates[1]];
 					updateCoordinates(newCoords);
+					onChange?.(coordinates);
 				}}
 			/>
 
@@ -85,6 +92,7 @@ export default function CoordinatesInput({
 				onChange={(value) => {
 					const newCoords: [number, number] = [coordinates[0], Number(value)];
 					updateCoordinates(newCoords);
+					onChange?.(coordinates);
 				}}
 			/>
 		</>
