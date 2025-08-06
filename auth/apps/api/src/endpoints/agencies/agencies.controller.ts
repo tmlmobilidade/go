@@ -34,8 +34,8 @@ export class AgenciesController {
 	 * @param {FastifyReply} reply - The reply object
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
-		const agencyList = await agencies.findMany({}, { sort: { _id: 1 } });
-		reply.send({ data: agencyList, error: null, statusCode: HttpStatus.OK });
+		const allAgencies = await agencies.findMany({}, { sort: { _id: 1 } });
+		reply.send({ data: allAgencies, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
