@@ -12,7 +12,7 @@ import useSWR from 'swr';
 
 /* * */
 
-export function MapViewStops({ children }: { children: React.ReactNode }) {
+export function MapViewStops({ children, onClick }: { children: React.ReactNode, onClick: (event) => void }) {
 	//
 
 	//
@@ -44,17 +44,7 @@ export function MapViewStops({ children }: { children: React.ReactNode }) {
 	}, [stops]);
 
 	//
-	// D. Handle actions
-
-	function handleMapClick(event: { features?: { properties?: { id?: number } }[] }) {
-		const feature = event.features && event.features[0];
-		if (!feature || !feature.properties || feature.properties.id === null || feature.properties.id === undefined) {
-			return;
-		}
-	}
-
-	//
-	// E. Render components
+	// D. Render components
 
 	if (!stops) {
 		return;
@@ -65,7 +55,8 @@ export function MapViewStops({ children }: { children: React.ReactNode }) {
 			<MapView
 				id="allStops"
 				interactiveLayerIds={['allStops']}
-				onClick={handleMapClick}
+				onClick={onClick}
+				scrollZoom
 			>
 				<>
 					<Source data={stopsAsGeojson} id="allStops" type="geojson">

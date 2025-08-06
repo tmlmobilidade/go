@@ -50,13 +50,11 @@ export default function CreateStopModal() {
 	//
 
 	const handleSelectInMap = (value: [number, number]) => {
-		console.log('00000000000000');
 		stopCreateContext.data.form.setFieldValue('latitude', value[0]);
 		stopCreateContext.data.form.setFieldValue('longitude', value[1]);
 	};
 
 	const selectedCoordinatesMapData = useMemo(() => {
-		console.log('LOOK AT ME', stopCreateContext.data.form.values.latitude && stopCreateContext.data.form.values.longitude);
 		if (stopCreateContext.data.form.values.latitude && stopCreateContext.data.form.values.longitude) {
 			const geojson = {
 				geometry: {
@@ -67,15 +65,19 @@ export default function CreateStopModal() {
 				type: 'Feature',
 			};
 
-			console.log('========', geojson);
-
 			return geojson;
 		}
 		return null;
 	}, [stopCreateContext.data.form.values]);
 
 	//
-	// B. Render Components
+	// B. Hnadle actions
+	const handleMapClick = (event) => {
+		stopCreateContext.actions.createStopCoordinates(event.lngLat.lat, event.lngLat.lng);
+	};
+
+	//
+	// C. Render Components
 
 	return (
 		<Section padding="lg">
@@ -94,7 +96,7 @@ export default function CreateStopModal() {
 			)}
 
 			<Section gap="md">
-				<MapViewStops>
+				<MapViewStops onClick={handleMapClick}>
 					{/* @ts-expect-error: 1234567890 */}
 					<Source data={selectedCoordinatesMapData} generateId={true} id="selected-coordinates" type="geojson">
 						<Layer
@@ -134,7 +136,6 @@ export default function CreateStopModal() {
 						variant="secondary"
 					/>
 					<Button
-						disabled={!stopCreateContext.flags.can_create}
 						label="Proxima pagina"
 						loading={stopCreateContext.flags.loading}
 						onClick={openCreateStopInfosModal}

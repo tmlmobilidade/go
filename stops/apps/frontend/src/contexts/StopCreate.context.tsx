@@ -3,20 +3,36 @@
 /* * */
 
 import { CREATE_STOP_MODAL_ID } from '@/components/Stops/Detail/CreateStopModal/CreateStopName';
+import { StopOptions } from '@/schemas/options';
 import { type WorkerMessage } from '@/types/worker';
-import { Permissions } from '@tmlmobilidade/lib';
-import { CreateStopDto, Stop, StopPermission } from '@tmlmobilidade/types';
+import { getAppConfig, Permissions } from '@tmlmobilidade/lib';
+import { CreateStopDto, Municipality, Stop, StopPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
-import { multipartFetch } from '@tmlmobilidade/utils';
+import { HttpResponse, multipartFetch } from '@tmlmobilidade/utils';
+import * as turf from '@turf/turf';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { mutate } from 'swr';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
+const initialNewStopState = {
+	latitude: null,
+	locality: '',
+	longitude: null,
+	municipality: null,
+	//
+	name: '',
+	short_name: '',
+	tts_name: '',
+	//
+};
+
 interface StopCreateContextState {
 	actions: {
+		abbreviationsShortName: (name: string) => void
 		createStop: () => void
+		createStopCoordinates: (latitude: number, longitude: number) => void
 	}
 	data: {
 		form: UseFormReturnType<CreateStopDto>
@@ -55,6 +71,10 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [canCreate, setCanCreate] = useState(false);
 	const [stopError, setStopError] = useState<Error | null>(null);
+
+	const [newStopState, setNewStopState] = useState(initialNewStopState);
+
+	const { data: allMunicipalitiesData } = useSWR<HttpResponse<Municipality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities`);
 
 	//
 	// B. Setup form
@@ -154,6 +174,60 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 
+	const setNewStopCoordinates = useCallback(
+		(latitude, longitude) => {
+			if (!allMunicipalitiesData.data.length) return;
+			// Round coordinates to 6 decimal digits
+			const sixDigitsLatitude = Math.round(latitude);
+			const sixDigitsLongitude = Math.round(longitude);
+			// Discover to which municipality this stop belongs to
+			let municipalityDataForThisStop;
+			for (const municipalityData of allMunicipalitiesData.data) {
+				// Skip if no geometry is set for this municipality
+				if (!municipalityData.geojson?.geometry?.coordinates.length) continue;
+				// Check if this stop is inside this municipality boundary
+				const isStopInThisMunicipality = turf.booleanPointInPolygon([sixDigitsLongitude, sixDigitsLatitude], municipalityData.geojson);
+				// If it is, add this municipality id to the stop
+				if (isStopInThisMunicipality) {
+					municipalityDataForThisStop = municipalityData;
+					break;
+				}
+				//
+			}
+			console.log(latitude, longitude);
+			// Set new stop info
+			setNewStopState(prev => ({ ...prev, latitude: sixDigitsLatitude, longitude: sixDigitsLongitude, municipality: municipalityDataForThisStop }));
+
+			form.setValues({
+				latitude: latitude,
+				longitude: longitude,
+			});
+		},
+		[allMunicipalitiesData],
+	);
+
+	//
+
+	const setNewStopName = useCallback((name) => {
+		// Remove double spaces
+		const parsedStopName = name.replace(/\s\s+/g, ' ');
+		// Copy the name first
+		let shortenedStopName = parsedStopName;
+		// Shorten the stop name
+		StopOptions.name_abbreviations
+			.filter(abbreviation => abbreviation.enabled)
+			.forEach((abbreviation) => {
+				shortenedStopName = shortenedStopName.replace(abbreviation.phrase, abbreviation.replacement);
+			});
+		// Set new stop info
+		setNewStopState(prev => ({ ...prev, name: parsedStopName, short_name: shortenedStopName }));
+		form.setValues({
+			short_name: shortenedStopName,
+		});
+	}, []);
+
+	//
+
 	useEffect(() => {
 	// Reset form and flags if there's an error
 		if (stopError) {
@@ -186,7 +260,9 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: StopCreateContextState = useMemo(() => {
 		return {
 			actions: {
+				abbreviationsShortName: setNewStopName,
 				createStop,
+				createStopCoordinates: setNewStopCoordinates,
 			},
 			data: {
 				form: form,
@@ -202,6 +278,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		isLoading,
 		canCreate,
 		stopError,
+		newStopState,
 	]);
 
 	//
