@@ -7,7 +7,7 @@ import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { Agency, type CreateValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type Permission, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
-import { fetchData, hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { fetchData, getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { createWriteStream } from 'fs';
 import { readFile, unlink } from 'fs/promises';
 import { pipeline } from 'node:stream/promises';
@@ -139,27 +139,34 @@ export class ValidationsController {
 	 * @param reply Fastify reply
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Validation[]>) {
-		const permissions = request.permissions as Permission<ValidationPermission>;
+		//
 
-		// Filter validations by all keys
-		if (permissions?.resource) {
+		//
+		// Extract permissions from the request
+
+		const validationPermission: Permission<ValidationPermission> = getPermission(request.permissions, Permissions.plans.scope, Permissions.plans.actions.read);
+
+		//
+		// Filter validations based on permissions for the current user
+
+		if (validationPermission?.resource) {
 			const filters = {
-				...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
+				...(validationPermission.resource.agency_ids && !validationPermission.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: validationPermission.resource.agency_ids } }),
 			};
 
-			console.log(filters);
-
-			const filteredValidations = await validations.findMany(
-				filters,
-				{ sort: { created_at: -1 } },
-			);
+			const filteredValidations = await validations.findMany(filters, { sort: { created_at: -1 } });
 
 			return reply.send({ data: filteredValidations, error: null, statusCode: HttpStatus.OK });
 		}
 
-		// Send all validations
+		//
+		// If no specific permissions are set, return all validations
+
 		const allValidations = await validations.findMany({}, { sort: { created_at: -1 } });
+
 		return reply.send({ data: allValidations, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
 
 	/**
