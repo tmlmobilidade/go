@@ -136,7 +136,7 @@ export default function CreateStopModal() {
 						variant="secondary"
 					/>
 					<Button
-						label="Proxima pagina"
+						label="Próximo passo"
 						loading={stopCreateContext.flags.loading}
 						onClick={openCreateStopInfosModal}
 					/>

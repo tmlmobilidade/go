@@ -6,10 +6,9 @@ import { CREATE_STOP_MODAL_ID } from '@/components/Stops/Detail/CreateStopModal/
 import { StopOptions } from '@/schemas/options';
 import { type WorkerMessage } from '@/types/worker';
 import { getAppConfig, Permissions } from '@tmlmobilidade/lib';
-import { CreateStopDto, Municipality, Stop, StopPermission } from '@tmlmobilidade/types';
+import { CreateStopDto, Location, Municipality, Stop, StopPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
-import { HttpResponse, multipartFetch } from '@tmlmobilidade/utils';
-import * as turf from '@turf/turf';
+import { fetchData, HttpResponse, multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -17,10 +16,12 @@ import useSWR, { mutate } from 'swr';
 /* * */
 
 const initialNewStopState = {
+	district: null,
 	latitude: null,
 	locality: '',
 	longitude: null,
 	municipality: null,
+	parish: null,
 	//
 	name: '',
 	short_name: '',
@@ -175,35 +176,36 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	const setNewStopCoordinates = useCallback(
-		(latitude, longitude) => {
-			if (!allMunicipalitiesData.data.length) return;
-			// Round coordinates to 6 decimal digits
-			const sixDigitsLatitude = Math.round(latitude);
-			const sixDigitsLongitude = Math.round(longitude);
-			// Discover to which municipality this stop belongs to
-			let municipalityDataForThisStop;
-			for (const municipalityData of allMunicipalitiesData.data) {
-				// Skip if no geometry is set for this municipality
-				if (!municipalityData.geojson?.geometry?.coordinates.length) continue;
-				// Check if this stop is inside this municipality boundary
-				const isStopInThisMunicipality = turf.booleanPointInPolygon([sixDigitsLongitude, sixDigitsLatitude], municipalityData.geojson);
-				// If it is, add this municipality id to the stop
-				if (isStopInThisMunicipality) {
-					municipalityDataForThisStop = municipalityData;
-					break;
-				}
-				//
-			}
-			console.log(latitude, longitude);
-			// Set new stop info
-			setNewStopState(prev => ({ ...prev, latitude: sixDigitsLatitude, longitude: sixDigitsLongitude, municipality: municipalityDataForThisStop }));
+		async (latitude: number, longitude: number) => {
+			try {
+				if (!allMunicipalitiesData?.data?.length) return;
 
-			form.setValues({
-				latitude: latitude,
-				longitude: longitude,
-			});
+				const location = await fetchData<Location>(
+					`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/coordinates?lon=${longitude}&lat=${latitude}`,
+				);
+
+				setNewStopState(prev => ({
+					...prev,
+					district: location.data.district.name,
+					latitude: latitude,
+					longitude: longitude,
+					municipality: location.data.municipality.name,
+					parish: location.data.parish.name,
+				}));
+
+				form.setValues({
+					district_id: location.data.district._id,
+					latitude: latitude,
+					longitude: longitude,
+					municipality_id: location.data.municipality._id,
+					parish_id: location.data.parish._id,
+				});
+			}
+			catch (error) {
+				console.error('Error:', error);
+			}
 		},
-		[allMunicipalitiesData],
+		[allMunicipalitiesData, form],
 	);
 
 	//
@@ -266,6 +268,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			},
 			data: {
 				form: form,
+				newStopState: newStopState,
 			},
 			flags: {
 				can_create: canCreate,

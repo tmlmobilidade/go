@@ -5,6 +5,8 @@
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
 import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
 
+import { openCreateStopComfirmInfosModal } from '../CreateStopComfirm';
+
 /* * */
 
 export const CREATE_STOP_MODAL_ID = 'create-stop-modal';
@@ -23,7 +25,8 @@ export const openCreateStopInfosModal = () => {
 		closeOnClickOutside: false,
 		modalId: CREATE_STOP_MODAL_ID,
 		padding: 0,
-		size: 'auto',
+		radius: 15,
+		size: 'xl',
 		withCloseButton: false,
 	});
 };
@@ -83,9 +86,9 @@ export default function CreateStopModal() {
 					/>
 					<Button
 						disabled={!stopCreateContext.flags.can_create}
-						label="Criar Paragem"
+						label="Próximo passo"
 						loading={stopCreateContext.flags.loading}
-						onClick={stopCreateContext.actions.createStop}
+						onClick={openCreateStopComfirmInfosModal}
 					/>
 				</Grid>
 			</Section>
