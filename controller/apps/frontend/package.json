@@ -12,13 +12,13 @@
 	"dependencies": {
 		"@mantine/nprogress": "8.2.3",
 		"@tabler/icons-react": "3.34.1",
-		"@tmlmobilidade/types": "20250805.1617.9",
-		"@tmlmobilidade/ui": "20250805.1617.9",
+		"@tmlmobilidade/types": "20250806.1833.36",
+		"@tmlmobilidade/ui": "20250806.1833.36",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.4",
 		"lodash": "4.17.21",
 		"luxon": "3.7.1",
-		"maplibre-gl": "5.6.1",
+		"maplibre-gl": "5.6.2",
 		"next": "15.4.5",
 		"next-intl": "4.3.4",
 		"nuqs": "2.4.3",
@@ -30,7 +30,7 @@
 		"swr": "2.3.4"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250805.1617.9",
+		"@tmlmobilidade/tsconfig": "20250806.1833.36",
 		"@types/geojson": "7946.0.16",
 		"@types/lodash": "4.17.20",
 		"@types/luxon": "3.7.1",
