@@ -18,5 +18,6 @@ export interface RoleNormalized extends Role {
 
 export interface UserNormalized extends User {
 	first_name_normalized: string
+	full_name: string
 	last_name_normalized: string
 }

@@ -67,6 +67,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		return allUsersData.map(item => ({
 			...item,
 			first_name_normalized: normalizeString(item.first_name),
+			full_name: `${item.first_name} ${item.last_name}`,
 			last_name_normalized: normalizeString(item.last_name),
 		}));
 	}, [allUsersData]);
