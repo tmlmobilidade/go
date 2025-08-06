@@ -3,7 +3,7 @@
 /* * */
 
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -61,9 +61,15 @@ export default function CreateStopModal() {
 				<TextInput
 					label="Nome da Paragem"
 					miw="100%"
+					onChange={event => stopCreateContext.actions.abbreviationsShortName(event.currentTarget.value)}
 					value={stopCreateContext.data.form.values.name}
 				/>
-				<ValueDisplay label="short name" value={stopCreateContext.data.form.values.name} />
+				<TextInput
+					label="nome curto"
+					miw="100%"
+					readOnly={true}
+					value={stopCreateContext.data.form.values.short_name}
+				/>
 			</Section>
 			<Divider />
 
