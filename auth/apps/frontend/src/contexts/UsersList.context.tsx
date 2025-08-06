@@ -64,12 +64,17 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		// Skip if no data is available
 		if (!allUsersData) return [];
 		// Normalize record fields
-		return allUsersData.map(item => ({
-			...item,
-			first_name_normalized: normalizeString(item.first_name),
-			full_name: `${item.first_name} ${item.last_name}`,
-			last_name_normalized: normalizeString(item.last_name),
-		}));
+		return allUsersData
+			.map(item => ({
+				...item,
+				first_name_normalized: normalizeString(item.first_name),
+				full_name: `${item.first_name} ${item.last_name}`,
+				full_name_normalized: normalizeString(`${item.first_name} ${item.last_name}`),
+				last_name_normalized: normalizeString(item.last_name),
+			}))
+			.sort((a, b) => {
+				return a.full_name_normalized.localeCompare(b.full_name_normalized);
+			});
 	}, [allUsersData]);
 
 	const searchResultsData = useSearch<UserNormalized>({
