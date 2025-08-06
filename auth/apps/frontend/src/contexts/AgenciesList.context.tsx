@@ -60,7 +60,7 @@ export const AgenciesListContextProvider = ({ children }: PropsWithChildren) => 
 		// Normalize record fields
 		return agenciesContext.data.raw
 			.map(item => ({ ...item, name_normalized: normalizeString(item.name) }))
-			.sort((a, b) => a._id.localeCompare(b._id));
+			.sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	}, [agenciesContext.data.raw]);
 
 	const searchResultsData = useSearch<AgencyNormalized>({
