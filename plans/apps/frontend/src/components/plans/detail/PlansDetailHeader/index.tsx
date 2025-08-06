@@ -40,10 +40,17 @@ export function PlansDetailHeader() {
 
 			<Spacer />
 
-			<LockButton
-				isLocked={plansDetailContext.data.plan.is_locked}
-				onClick={plansDetailContext.actions.toggleLock}
-			/>
+			<HasPermission
+				action={Permissions.plans.actions.toggle_lock}
+				resource_key="agency_ids"
+				scope={Permissions.plans.scope}
+				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
+			>
+				<LockButton
+					isLocked={plansDetailContext.data.plan.is_locked}
+					onClick={plansDetailContext.actions.toggleLock}
+				/>
+			</HasPermission>
 
 			<HasPermission
 				action={Permissions.plans.actions.update}

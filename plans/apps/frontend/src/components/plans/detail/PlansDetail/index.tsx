@@ -7,8 +7,10 @@ import { PlansDetailSectionAgency } from '@/components/plans/detail/PlansDetailS
 import { PlansDetailSectionController } from '@/components/plans/detail/PlansDetailSectionController';
 import { PlansDetailSectionFeedInfo } from '@/components/plans/detail/PlansDetailSectionFeedInfo';
 import { PlansDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
+import { PlansDetailSectionPcgiLegacy } from '@/components/plans/detail/PlansDetailSectionPcgiLegacy';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { Permissions } from '@tmlmobilidade/lib';
+import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,25 +20,44 @@ export function PlansDetail() {
 	//
 	// A. Setup variables
 
-	const plansContext = usePlansDetailContext();
+	const plansDetailContext = usePlansDetailContext();
 
 	//
 	// B. Render components
 
-	if (plansContext.flags.loading) {
+	if (plansDetailContext.flags.loading) {
 		return <LoadingOverlay />;
 	}
 
-	if (plansContext.flags.error) {
-		return <ErrorDisplay message={plansContext.flags.error.message} />;
+	if (plansDetailContext.flags.error) {
+		return <ErrorDisplay message={plansDetailContext.flags.error.message} />;
 	}
 
 	return (
 		<Pane header={[<PlansDetailHeader />]}>
+
 			<PlansDetailSectionAgency />
 			<PlansDetailSectionFeedInfo />
 			<PlansDetailSectionFiles />
-			<PlansDetailSectionController />
+
+			<HasPermission
+				action={Permissions.plans.actions.update_pcgi_legacy}
+				resource_key="agency_ids"
+				scope={Permissions.plans.scope}
+				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
+			>
+				<PlansDetailSectionPcgiLegacy />
+			</HasPermission>
+
+			<HasPermission
+				action={Permissions.plans.actions.update_controller}
+				resource_key="agency_ids"
+				scope={Permissions.plans.scope}
+				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
+			>
+				<PlansDetailSectionController />
+			</HasPermission>
+
 		</Pane>
 	);
 
