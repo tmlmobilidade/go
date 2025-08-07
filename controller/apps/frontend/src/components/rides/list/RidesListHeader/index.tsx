@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesListUpdatedAt } from '@/components/list/RidesListUpdatedAt';
+import { RidesListUpdatedAt } from '@/components/rides/list/RidesListUpdatedAt';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { Label, Loader, Spacer, Tag } from '@tmlmobilidade/ui';
 
