@@ -6,7 +6,7 @@ import { RideNormalized } from '@/types/normalized';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getRideNormalized } from '@/utils/get-ride-normalized';
 import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
-import { HashedShape, HashedTrip, Ride, SimplifiedApexValidation, VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, getGeofenceOnPosition, type HttpResponse } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type Polygon } from 'geojson';
 import { createContext, useContext, useMemo } from 'react';
@@ -20,6 +20,8 @@ interface RidesDetailContextState {
 		hashed_trip: HashedTrip | null
 		ride: null | RideNormalized
 		ride_id: Ride['_id']
+		simplified_apex_on_board_refunds: SimplifiedApexOnBoardRefund[]
+		simplified_apex_on_board_sales: SimplifiedApexOnBoardSale[]
 		simplified_apex_validations: SimplifiedApexValidation[]
 		vehicle_events: VehicleEvent[]
 	}
@@ -59,6 +61,8 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	const { data: rideData, error: rideError, isLoading: rideLoading } = useSWR<HttpResponse<Ride>>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
 	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<HttpResponse<VehicleEvent[]>>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
 	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<HttpResponse<SimplifiedApexValidation[]>>(`/api/rides/${rideId}/simplified-apex-validations`, { refreshInterval: 1000 });
+	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<HttpResponse<SimplifiedApexOnBoardSale[]>>(`/api/rides/${rideId}/simplified-apex-on-board-sales`, { refreshInterval: 1000 });
+	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<HttpResponse<SimplifiedApexOnBoardRefund[]>>(`/api/rides/${rideId}/simplified-apex-on-board-refunds`, { refreshInterval: 1000 });
 	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HttpResponse<HashedTrip>>(`/api/rides/${rideId}/hashed-trip`);
 	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HttpResponse<HashedShape>>(`/api/rides/${rideId}/hashed-shape`);
 
@@ -178,12 +182,14 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			hashed_trip: hashedTripData?.data ?? null,
 			ride: rideDataNormalized,
 			ride_id: rideId,
+			simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData?.data ?? [],
+			simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData?.data ?? [],
 			simplified_apex_validations: simplifiedApexValidationsData?.data ?? [],
 			vehicle_events: vehicleEventsData?.data ?? [],
 		},
 		flags: {
-			error: rideError || vehicleEventsError || simplifiedApexValidationsError || hashedTripError || hashedShapeError,
-			loading: rideLoading || vehicleEventsLoading || simplifiedApexValidationsLoading || hashedTripLoading || hashedShapeLoading,
+			error: rideError || vehicleEventsError || simplifiedApexValidationsError || hashedTripError || hashedShapeError || simplifiedApexOnBoardSalesError || simplifiedApexOnBoardRefundsError,
+			loading: rideLoading || vehicleEventsLoading || simplifiedApexValidationsLoading || hashedTripLoading || hashedShapeLoading || simplifiedApexOnBoardSalesLoading || simplifiedApexOnBoardRefundsLoading,
 		},
 		geojson: {
 			observed_events: observedEventsFC,
@@ -214,6 +220,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		hashedTripError,
 		hashedShapeLoading,
 		hashedShapeError,
+		simplifiedApexOnBoardSalesLoading,
+		simplifiedApexOnBoardSalesError,
+		simplifiedApexOnBoardRefundsLoading,
+		simplifiedApexOnBoardRefundsError,
 	]);
 
 	//

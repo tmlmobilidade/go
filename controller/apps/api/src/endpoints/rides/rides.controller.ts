@@ -1,9 +1,9 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { hashedShapes, hashedTrips, rides, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { hashedShapes, hashedTrips, rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { HashedShape, HashedTrip, type Ride, SimplifiedApexValidation, validateUnixTimestamp, VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, validateUnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, HttpResponse } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
@@ -251,6 +251,142 @@ export class RidesController {
 
 			reply.send({
 				data: rideData,
+				error: null,
+				statusCode: HttpStatus.OK,
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Get a Ride by ID.
+	 * @param request
+	 * @param reply
+	 * @returns
+	 */
+	static async getSimplifiedApexOnBoardRefundsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexOnBoardRefund[]>) {
+		try {
+			//
+
+			//
+			// Validate the request parameters
+
+			const rideId = request.params['id'];
+
+			if (!rideId) {
+				return reply
+					.status(HttpStatus.BAD_REQUEST)
+					.send({
+						data: null,
+						error: 'Missing ride_id parameter.',
+						status: HttpStatus.BAD_REQUEST,
+					});
+			}
+
+			//
+			// Fetch the ride data from the database
+
+			const rideData = await rides.findById(rideId);
+
+			if (!rideData) {
+				return reply
+					.status(HttpStatus.NOT_FOUND)
+					.send({
+						data: null,
+						error: 'Ride not found.',
+						status: HttpStatus.NOT_FOUND,
+					});
+			}
+
+			//
+			// Fetch the corresponding vehicle events data
+			// and send it back to the client
+
+			const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+
+			const simplifiedApexOnBoardRefundsData = await simplifiedApexOnBoardRefunds.findMany({
+				created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+				extra_trip_id: null,
+				trip_id: rideData.trip_id,
+			});
+
+			//
+			// Send the ride data back to the client
+
+			reply.send({
+				data: simplifiedApexOnBoardRefundsData ?? [],
+				error: null,
+				statusCode: HttpStatus.OK,
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Get a Ride by ID.
+	 * @param request
+	 * @param reply
+	 * @returns
+	 */
+	static async getSimplifiedApexOnBoardSalesByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexOnBoardSale[]>) {
+		try {
+			//
+
+			//
+			// Validate the request parameters
+
+			const rideId = request.params['id'];
+
+			if (!rideId) {
+				return reply
+					.status(HttpStatus.BAD_REQUEST)
+					.send({
+						data: null,
+						error: 'Missing ride_id parameter.',
+						status: HttpStatus.BAD_REQUEST,
+					});
+			}
+
+			//
+			// Fetch the ride data from the database
+
+			const rideData = await rides.findById(rideId);
+
+			if (!rideData) {
+				return reply
+					.status(HttpStatus.NOT_FOUND)
+					.send({
+						data: null,
+						error: 'Ride not found.',
+						status: HttpStatus.NOT_FOUND,
+					});
+			}
+
+			//
+			// Fetch the corresponding vehicle events data
+			// and send it back to the client
+
+			const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+
+			const simplifiedApexOnBoardSalesData = await simplifiedApexOnBoardSales.findMany({
+				created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+				extra_trip_id: null,
+				trip_id: rideData.trip_id,
+			});
+
+			//
+			// Send the ride data back to the client
+
+			reply.send({
+				data: simplifiedApexOnBoardSalesData ?? [],
 				error: null,
 				statusCode: HttpStatus.OK,
 			});

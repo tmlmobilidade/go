@@ -3,7 +3,7 @@
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
 /* * */
@@ -65,6 +65,20 @@ server.register(
 			'/:id/simplified-apex-validations',
 			{ preHandler: authorizationMiddleware<SimplifiedApexValidation>(Permissions.rides.scope, Permissions.rides.actions.read) },
 			RidesController.getSimplifiedApexValidationsByRideId,
+		);
+
+		// GET /rides/:id/simplified-apex-on-board-sales
+		instance.get(
+			'/:id/simplified-apex-on-board-sales',
+			{ preHandler: authorizationMiddleware<SimplifiedApexOnBoardSale>(Permissions.rides.scope, Permissions.rides.actions.read) },
+			RidesController.getSimplifiedApexOnBoardSalesByRideId,
+		);
+
+		// GET /rides/:id/simplified-apex-on-board-refunds
+		instance.get(
+			'/:id/simplified-apex-on-board-refunds',
+			{ preHandler: authorizationMiddleware<SimplifiedApexOnBoardRefund>(Permissions.rides.scope, Permissions.rides.actions.read) },
+			RidesController.getSimplifiedApexOnBoardRefundsByRideId,
 		);
 
 		next();
