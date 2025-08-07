@@ -38,13 +38,13 @@ export function StopsList() {
 			accessor: 'latitude',
 			render: item => item.latitude,
 			title: 'latitude',
-			width: 150,
+			width: 200,
 		},
 		{
 			accessor: 'longitude',
 			render: item => item.longitude,
 			title: 'longitude',
-			width: 150,
+			width: 200,
 		},
 
 	];
