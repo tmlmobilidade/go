@@ -3,7 +3,9 @@
 /* * */
 
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, ValueDisplay } from '@tmlmobilidade/ui';
+
+import { openCreateStopInfosModal } from '../CreateStopName';
 
 /* * */
 
@@ -59,19 +61,16 @@ export default function CreateStopModal() {
 			)}
 
 			<Section gap="sm">
-				<Grid columns="abc">
-					<TextInput
-						label="Nome da Paragem"
-						miw="100%"
-						onChange={event => stopCreateContext.actions.abbreviationsShortName(event.currentTarget.value)}
-						value={stopCreateContext.data.form.values.name}
-					/>
-					<TextInput
-						label="nome curto"
-						miw="100%"
-						readOnly={true}
-						value={stopCreateContext.data.form.values.short_name}
-					/>
+				<Grid columns="abcd">
+					<ValueDisplay label="Nome da Paragem" value={stopCreateContext.data.newStopState.name} raised />
+					<ValueDisplay label="Nome curto" value={stopCreateContext.data.newStopState.short_name} raised />
+					<ValueDisplay label="Nome tts" value={stopCreateContext.data.newStopState.tts_name} raised />
+					<ValueDisplay label="Latitude" value={stopCreateContext.data.newStopState.latitude} raised />
+					<ValueDisplay label="Longitude" value={stopCreateContext.data.newStopState.longitude} raised />
+					<ValueDisplay label="Distrito" value={stopCreateContext.data.newStopState.district} raised />
+					<ValueDisplay label="Municipio" value={stopCreateContext.data.newStopState.municipality} raised />
+					<ValueDisplay label="Freguesia" value={stopCreateContext.data.newStopState.parish} raised />
+
 				</Grid>
 			</Section>
 			<Divider />
@@ -80,8 +79,8 @@ export default function CreateStopModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={stopCreateContext.flags.loading}
-						label="Cancelar"
-						onClick={() => closeModal(CREATE_STOP_MODAL_ID)}
+						label="Voltar"
+						onClick={openCreateStopInfosModal}
 						variant="secondary"
 					/>
 					<Button

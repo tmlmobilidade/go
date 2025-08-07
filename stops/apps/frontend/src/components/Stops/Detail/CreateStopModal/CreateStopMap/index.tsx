@@ -7,7 +7,7 @@ import CoordinatesInput from '@/components/CoordinatesInput';
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
 import { AlertMessage, Button, closeModal, Divider, Grid, Label, MapOptionsContextProvider, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Layer, Source } from '@vis.gl/react-maplibre';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { openCreateStopInfosModal } from '../CreateStopName';
 

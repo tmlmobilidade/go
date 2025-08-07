@@ -16,18 +16,31 @@ import { mutate } from 'swr';
 /* * */
 
 const initialNewStopState = {
-	district: null,
+	district: '',
 	latitude: null,
 	locality: '',
 	longitude: null,
-	municipality: null,
-	parish: null,
+	municipality: '',
+	parish: '',
 	//
 	name: '',
 	short_name: '',
 	tts_name: '',
 	//
 };
+
+interface initialNewStopStateProps {
+	district: string
+	latitude: number
+	locality: string
+	longitude: number
+	municipality: string
+	//
+	name: string
+	parish: string
+	short_name: string
+	tts_name: string
+}
 
 interface StopCreateContextState {
 	actions: {
@@ -37,6 +50,7 @@ interface StopCreateContextState {
 	}
 	data: {
 		form: UseFormReturnType<CreateStopDto>
+		newStopState: initialNewStopStateProps
 	}
 	flags: {
 		can_create: boolean
@@ -61,21 +75,34 @@ export function useStopCreateContext() {
 
 export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
-
-	//
-	// A. Setup variables
-
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
 	const meContext = useMeContext();
 
 	const [isLoading, setIsLoading] = useState(false);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [hasRun, setHasRun] = useState(false);
 	const [canCreate, setCanCreate] = useState(false);
 	const [stopError, setStopError] = useState<Error | null>(null);
 
-	const [newStopState, setNewStopState] = useState(initialNewStopState);
+	const [newStopState, setNewStopState] = useState<initialNewStopStateProps>(() => {
+		if (typeof window !== 'undefined') {
+			const stored = localStorage.getItem('newStopState');
+			if (stored) {
+				try {
+					return JSON.parse(stored);
+				}
+				catch {
+					return initialNewStopState;
+				}
+			}
+		}
+		return initialNewStopState;
+	});
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('newStopState', JSON.stringify(newStopState));
+		}
+	}, [newStopState]);
 
 	//
 	// B. Setup form
@@ -89,22 +116,16 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Handle actions
 
 	const handleWorkerMessage = (event: MessageEvent<WorkerMessage>) => {
-		//
-
 		if (event.data.error) {
 			useToast.error({ message: event.data.error.message, title: 'Erro ao criar Paragem' });
 			return;
 		}
-
-		//
 
 		form.setValues({
 			latitude: event.data.stop.stop_lat,
 			longitude: event.data.stop.stop_lon,
 			name: event.data.stop.stop_name,
 		});
-
-		//
 
 		const hasPermission = meContext.actions.hasPermissionResource<StopPermission>({
 			action: Permissions.stops.actions.create,
@@ -123,16 +144,10 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		}
 
 		setCanCreate(true);
-
-		//
 	};
 
 	const createStop = async () => {
-		//
-
 		setIsLoading(true);
-
-		//
 
 		const uploadFormData = new FormData();
 
@@ -140,19 +155,9 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		uploadFormData.append('stop_lat', JSON.stringify(form.values.latitude));
 		uploadFormData.append('stop_lon', JSON.stringify(form.values.longitude));
 
-		//
-
 		const response = await multipartFetch<Stop>('/api/stops', uploadFormData);
 
-		//
-
 		if (response.error || !response.data?._id) {
-			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
-			setIsLoading(false);
-			return;
-		}
-
-		if (!response.data?._id) {
 			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
 			setIsLoading(false);
 			return;
@@ -165,8 +170,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			title: 'Sucesso',
 		});
 
-		//
-		// Reset the form and state
+		localStorage.removeItem('newStopState');
 
 		setIsLoading(false);
 		closeModal(CREATE_STOP_MODAL_ID);
@@ -174,11 +178,8 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	//
-
 	const setNewStopAndLocation = useCallback(
 		async (latitude: number, longitude: number) => {
-			setHasRun(true);
-
 			setNewStopState(prev => ({
 				...prev,
 				latitude: latitude,
@@ -189,8 +190,6 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 				latitude: latitude,
 				longitude: longitude,
 			});
-
-			setHasRun(false);
 
 			try {
 				const location = await fetchData<Location>(
@@ -216,40 +215,40 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 				console.error('Error:', error);
 			}
 		},
-		[form],
+		[],
 	);
 
-	//
-
 	const setNewStopName = useCallback((name) => {
-		// Remove double spaces
 		const parsedStopName = name.replace(/\s\s+/g, ' ');
-		// Copy the name first
 		let shortenedStopName = parsedStopName;
-		// Shorten the stop name
+
 		StopOptions.name_abbreviations
 			.filter(abbreviation => abbreviation.enabled)
 			.forEach((abbreviation) => {
 				shortenedStopName = shortenedStopName.replace(abbreviation.phrase, abbreviation.replacement);
 			});
-		// Set new stop info
-		setNewStopState(prev => ({ ...prev, name: parsedStopName, short_name: shortenedStopName }));
-		form.setValues({
+
+		setNewStopState(prev => ({
+			...prev,
+			name: parsedStopName,
 			short_name: shortenedStopName,
+			tts_name: parsedStopName,
+		}));
+
+		form.setValues({
+			name: name,
+			short_name: shortenedStopName,
+			tts_name: name,
 		});
 	}, []);
 
-	//
-
 	useEffect(() => {
-	// Reset form and flags if there's an error
 		if (stopError) {
 			setCanCreate(false);
 			form.reset();
 			return;
 		}
 
-		// Clean up any existing worker
 		if (workerRef.current) {
 			workerRef.current.terminate();
 		}
@@ -269,6 +268,8 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// E. Define context value
+
+	console.log(newStopState);
 
 	const contextValue: StopCreateContextState = useMemo(() => {
 		return {

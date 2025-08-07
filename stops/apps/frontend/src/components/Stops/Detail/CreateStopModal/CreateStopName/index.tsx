@@ -3,9 +3,10 @@
 /* * */
 
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
 
 import { openCreateStopComfirmInfosModal } from '../CreateStopComfirm';
+import { openCreateStopMapModal } from '../CreateStopMap';
 
 /* * */
 
@@ -80,12 +81,11 @@ export default function CreateStopModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={stopCreateContext.flags.loading}
-						label="Cancelar"
-						onClick={() => closeModal(CREATE_STOP_MODAL_ID)}
+						label="Voltar"
+						onClick={openCreateStopMapModal}
 						variant="secondary"
 					/>
 					<Button
-						disabled={!stopCreateContext.flags.can_create}
 						label="Próximo passo"
 						loading={stopCreateContext.flags.loading}
 						onClick={openCreateStopComfirmInfosModal}
