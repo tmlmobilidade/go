@@ -6,12 +6,12 @@ import { CREATE_STOP_MODAL_ID } from '@/components/Stops/Detail/CreateStopModal/
 import { StopOptions } from '@/schemas/options';
 import { type WorkerMessage } from '@/types/worker';
 import { getAppConfig, Permissions } from '@tmlmobilidade/lib';
-import { CreateStopDto, Location, Municipality, Stop, StopPermission } from '@tmlmobilidade/types';
+import { CreateStopDto, Location, Stop, StopPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
-import { fetchData, HttpResponse, multipartFetch } from '@tmlmobilidade/utils';
+import { fetchData, multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import useSWR, { mutate } from 'swr';
+import { mutate } from 'swr';
 
 /* * */
 
@@ -70,12 +70,12 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const meContext = useMeContext();
 
 	const [isLoading, setIsLoading] = useState(false);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [hasRun, setHasRun] = useState(false);
 	const [canCreate, setCanCreate] = useState(false);
 	const [stopError, setStopError] = useState<Error | null>(null);
 
 	const [newStopState, setNewStopState] = useState(initialNewStopState);
-
-	const { data: allMunicipalitiesData } = useSWR<HttpResponse<Municipality[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities`);
 
 	//
 	// B. Setup form
@@ -175,28 +175,39 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 
-	const setNewStopCoordinates = useCallback(
+	const setNewStopAndLocation = useCallback(
 		async (latitude: number, longitude: number) => {
-			try {
-				if (!allMunicipalitiesData?.data?.length) return;
+			setHasRun(true);
 
+			setNewStopState(prev => ({
+				...prev,
+				latitude: latitude,
+				longitude: longitude,
+			}));
+
+			form.setValues({
+				latitude: latitude,
+				longitude: longitude,
+			});
+
+			setHasRun(false);
+
+			try {
 				const location = await fetchData<Location>(
 					`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/coordinates?lon=${longitude}&lat=${latitude}`,
 				);
 
+				if (!location?.data) return;
+
 				setNewStopState(prev => ({
 					...prev,
 					district: location.data.district.name,
-					latitude: latitude,
-					longitude: longitude,
 					municipality: location.data.municipality.name,
 					parish: location.data.parish.name,
 				}));
 
 				form.setValues({
 					district_id: location.data.district._id,
-					latitude: latitude,
-					longitude: longitude,
 					municipality_id: location.data.municipality._id,
 					parish_id: location.data.parish._id,
 				});
@@ -205,7 +216,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 				console.error('Error:', error);
 			}
 		},
-		[allMunicipalitiesData, form],
+		[form],
 	);
 
 	//
@@ -264,7 +275,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			actions: {
 				abbreviationsShortName: setNewStopName,
 				createStop,
-				createStopCoordinates: setNewStopCoordinates,
+				createStopCoordinates: setNewStopAndLocation,
 			},
 			data: {
 				form: form,
