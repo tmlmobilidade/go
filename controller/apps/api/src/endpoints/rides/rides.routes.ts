@@ -15,7 +15,9 @@ const namespace = '/rides';
 
 server.register(
 	(instance, opts, next) => {
-	// GET /rides
+		//
+
+		// GET /rides
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.read) },

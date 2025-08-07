@@ -9,7 +9,7 @@ import { delayStatusValues, gradeValues, operationalStatusValues, type RideNorma
 import { ParseRidesWorkerOutgoingMessage } from '@/workers/parse-rides.worker';
 import { useDebouncedState } from '@mantine/hooks';
 import { type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
+import { Dates, fetchData, type HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -22,6 +22,7 @@ interface RidesListContextState {
 		setFilterDateStart: (value: number) => void
 		setFilterDelayStatus: (values: string[]) => void
 		setFilterOperationalStatus: (values: string[]) => void
+		setFilterSearch: (values: string) => void
 		setFilterSimpleThreeVehicleEvents: (values: string[]) => void
 	}
 	data: {
@@ -33,6 +34,7 @@ interface RidesListContextState {
 		date_start: number
 		delay_status: string[]
 		operational_status: string[]
+		search: string
 		simple_three_vehicle_events: string[]
 	}
 	flags: {
@@ -74,6 +76,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const dataRidesMap = useRef<Map<string, Ride> | null>(new Map());
 	const [dataRidesNormalized, setDataRidesNormalized] = useState<RideNormalized[]>([]);
 
+	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.ids));
 	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
 	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
@@ -88,30 +91,27 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Fetch data
 
 	useEffect(() => {
-		console.log('Fetching rides data...');
 		(async () => {
+			console.log('Fetching rides data...');
 			setFlagsIsLoading(true);
 			// Fetch Rides data from the API
-			const response = await fetch('/api/rides', {
-				body: JSON.stringify({
-					agency: filterAgency,
-					date_end: filterDateEnd,
-					date_start: filterDateStart,
-				}),
-				method: 'POST',
+			const response = await fetchData<Ride[]>('/api/rides', 'POST', {
+				agency: filterAgency,
+				date_end: filterDateEnd,
+				date_start: filterDateStart,
+				search: filterSearch,
 			});
-			const responseData: HttpResponse<Ride[]> = await response.json();
 			// If there is an error or no data, return early
-			if (!response.ok || !responseData.data) return;
+			if (!response.data) return;
 			// Update the rides map with the fetched data
 			const ridesMap = new Map<string, Ride>();
-			responseData.data.forEach(item => ridesMap.set(item._id, item));
+			response.data.forEach(item => ridesMap.set(item._id, item));
 			dataRidesMap.current = ridesMap;
 			setFlagsIsLoading(false);
 		})();
 	}, [
 		filterAgency,
-		filterSimpleThreeVehicleEvents,
+		filterSearch,
 		filterDateStart,
 		filterDateEnd,
 	]);
@@ -199,6 +199,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			setFilterDateStart,
 			setFilterDelayStatus,
 			setFilterOperationalStatus,
+			setFilterSearch,
 			setFilterSimpleThreeVehicleEvents,
 		},
 		data: {
@@ -210,6 +211,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			date_start: filterDateStart,
 			delay_status: filterDelayStatus,
 			operational_status: filterOperationalStatus,
+			search: filterSearch,
 			simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
 		},
 		flags: {
@@ -223,11 +225,12 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	}), [
 		dataRidesNormalized,
 		filterAgency,
+		filterDateEnd,
+		filterDateStart,
 		filterDelayStatus,
 		filterOperationalStatus,
+		filterSearch,
 		filterSimpleThreeVehicleEvents,
-		filterDateStart,
-		filterDateEnd,
 		flagsLastUpdateState,
 		flagsIsLoading,
 		dataTableRef,

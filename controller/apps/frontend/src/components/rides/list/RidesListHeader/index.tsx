@@ -4,7 +4,7 @@
 
 import { RidesListUpdatedAt } from '@/components/rides/list/RidesListUpdatedAt';
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { Label, Loader, Spacer, Tag } from '@tmlmobilidade/ui';
+import { Label, Loader, SearchInput, Spacer, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -26,6 +26,7 @@ export function RidesListHeader() {
 			<Spacer />
 			<RidesListUpdatedAt />
 			<Tag label={`Total ${ridesListContext.data.filtered.length}`} variant="muted" />
+			<SearchInput onChange={ridesListContext.actions.setFilterSearch} value={ridesListContext.filters.search} />
 		</>
 	);
 

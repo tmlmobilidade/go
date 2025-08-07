@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { hashedShapes, hashedTrips, rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { type Filter, hashedShapes, hashedTrips, rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, validateUnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, HttpResponse } from '@tmlmobilidade/utils';
@@ -17,49 +17,54 @@ export class RidesController {
 	 * @param request
 	 * @param reply
 	 */
-	static async getBatch(request: FastifyRequest, reply: FastifyReply<Ride[]>) {
-		try {
-			//
+	static async getBatch(request: FastifyRequest<{ Body: { agency?: string[], date_end: number, date_start: number, search?: string } }>, reply: FastifyReply<Ride[]>) {
+		//
 
-			const requestBody = JSON.parse(request.body as string) as {
-				agency?: string[]
-				date_end: number
-				date_start: number
-			};
+		//
+		// If a search query is provided, search for rides in two steps, ignoring other fields.
+		// First try an exact _id match, and then use the text index from MongoDB.
 
-			//
-			// If no query parameters are provided, return a batch of rides from 1 hour ago until 1 hour later.
-
-			const validatedStartDate = validateUnixTimestamp(requestBody.date_start);
-			const validatedEndDate = validateUnixTimestamp(requestBody.date_end);
-
-			//
-			// Fetch rides from the database
-
-			const ridesBatch = await rides.findMany(
-				{
-					agency_id: { $in: requestBody.agency ?? [] },
-					start_time_scheduled: { $gte: validatedStartDate, $lte: validatedEndDate },
-				},
-				{ limit: 5000 },
-			);
-
-			reply.send({
-				data: ridesBatch,
-				error: null,
-				statusCode: HttpStatus.OK,
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send({
-					data: null,
-					error: error.message,
-					status: HttpStatus.INTERNAL_SERVER_ERROR,
+		if (request.body.search?.length > 0) {
+			const exactIdMatch = await rides.findById(request.body.search);
+			if (exactIdMatch) {
+				return reply.send({
+					data: [exactIdMatch],
+					error: null,
+					statusCode: HttpStatus.OK,
 				});
-			//
+			}
 		}
+
+		//
+		// If no search query is provided, use the other fields to filter the rides.
+		// Validate the date_start and date_end fields to ensure they are valid UnixTimestamp values.
+
+		const validatedStartDate = validateUnixTimestamp(request.body.date_start);
+		const validatedEndDate = validateUnixTimestamp(request.body.date_end);
+
+		//
+		// Build the filter object based on the provided fields.
+
+		const filterQuery: Filter<Ride> = {
+			$text: { $search: request.body.search ?? '' },
+			agency_id: { $in: request.body.agency ?? [] },
+			start_time_scheduled: { $gte: validatedStartDate, $lte: validatedEndDate },
+		};
+
+		if (!request.body.search?.length) delete filterQuery.$text;
+
+		//
+		// Fetch rides from the database
+
+		const ridesBatch = await rides.findMany(filterQuery, { limit: 5000 });
+
+		reply.send({
+			data: ridesBatch ?? [],
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
+
+		//
 	}
 
 	/**
