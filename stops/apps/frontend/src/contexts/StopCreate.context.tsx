@@ -45,6 +45,7 @@ interface initialNewStopStateProps {
 interface StopCreateContextState {
 	actions: {
 		abbreviationsShortName: (name: string) => void
+		closeCreateStopModalAndReset: () => void
 		createStop: () => void
 		createStopCoordinates: (latitude: number, longitude: number) => void
 	}
@@ -242,6 +243,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		});
 	}, []);
 
+	const closeCreateStopModalAndReset = () => {
+		closeModal(CREATE_STOP_MODAL_ID);
+		setNewStopState(initialNewStopState);
+		localStorage.removeItem('newStopState');
+		form.reset();
+	};
+
 	useEffect(() => {
 		if (stopError) {
 			setCanCreate(false);
@@ -275,6 +283,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		return {
 			actions: {
 				abbreviationsShortName: setNewStopName,
+				closeCreateStopModalAndReset,
 				createStop,
 				createStopCoordinates: setNewStopAndLocation,
 			},

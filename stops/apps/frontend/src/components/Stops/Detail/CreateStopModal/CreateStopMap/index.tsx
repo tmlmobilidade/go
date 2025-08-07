@@ -5,7 +5,7 @@ import { MapViewStops } from '@/components/Map/MapViewStops';
 
 import CoordinatesInput from '@/components/CoordinatesInput';
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, closeModal, Divider, Grid, Label, MapOptionsContextProvider, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, Divider, Grid, Label, MapOptionsContextProvider, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useMemo } from 'react';
 
@@ -132,7 +132,7 @@ export default function CreateStopModal() {
 					<Button
 						disabled={stopCreateContext.flags.loading}
 						label="Cancelar"
-						onClick={() => closeModal(CREATE_STOP_MODAL_ID)}
+						onClick={stopCreateContext.actions.closeCreateStopModalAndReset}
 						variant="secondary"
 					/>
 					<Button
