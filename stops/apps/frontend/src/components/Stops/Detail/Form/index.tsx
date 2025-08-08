@@ -2,6 +2,7 @@
 
 /* * */
 
+import { MapViewOneStop } from '@/components/Map/MapViewOneStop';
 import { Pane } from '@tmlmobilidade/ui';
 
 import { AdministratorInfo } from './AdministratorInfo';
@@ -20,6 +21,7 @@ import { StopHeader } from './StopHeader';
 export function FormInfos() {
 	return (
 		<Pane header={[<StopHeader />]}>
+			<MapViewOneStop />
 			<StopDetailsBasic />
 			<AdministratorInfo />
 			<Shelter />
