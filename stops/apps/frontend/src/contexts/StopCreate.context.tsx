@@ -221,7 +221,6 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			return value !== null && value !== undefined;
 		});
 		setCanCreate(allFieldsFilled && !stopError);
-		console.log('form --> ', form.values);
 	}, [newStopState, stopError]);
 
 	// 6. Worker handling
@@ -294,7 +293,6 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.setValues({ _id });
 
 		const saveStop = { ...form.values };
-		console.log(saveStop);
 
 		const method = saveStop._id ? 'POST' : 'PUT';
 		const url = saveStop._id ? Routes.API + Routes.STOPS_LIST : Routes.STOPS_DETAIL(saveStop._id);
@@ -302,7 +300,6 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		const body = saveStop._id ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
 		const response = await fetchData<Stop>(url, method, body);
-		console.log(response);
 
 		if (response.error || !response.data?._id) {
 			useToast.error({
