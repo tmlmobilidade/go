@@ -56,7 +56,7 @@ interface initialNewStopStateProps {
 }
 
 const emptyStop: CreateStopDto = {
-	_id: 'new',
+	_id: '',
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],
