@@ -71,6 +71,7 @@ export default function CreateStopModal() {
 				<TextInput
 					label="nome curto"
 					miw="100%"
+					onChange={event => stopCreateContext.actions.abbreviationsShortName(event.currentTarget.value)}
 					readOnly={true}
 					value={stopCreateContext.data.form.values.short_name}
 				/>

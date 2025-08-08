@@ -40,7 +40,7 @@ export default function CreateStopModal() {
 	// A. Setup variables
 
 	const stopCreateContext = useStopCreateContext();
-
+	console.log(stopCreateContext.flags.can_create);
 	//
 	// B. Render Components
 

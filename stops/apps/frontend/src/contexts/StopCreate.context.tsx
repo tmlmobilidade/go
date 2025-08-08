@@ -18,7 +18,6 @@ import { mutate } from 'swr';
 const initialNewStopState = {
 	district: '',
 	latitude: null,
-	locality: '',
 	longitude: null,
 	municipality: '',
 	parish: '',
@@ -32,7 +31,6 @@ const initialNewStopState = {
 interface initialNewStopStateProps {
 	district: string
 	latitude: number
-	locality: string
 	longitude: number
 	municipality: string
 	//
@@ -149,6 +147,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const createStop = async () => {
 		setIsLoading(true);
+		console.log(form.values);
 
 		const uploadFormData = new FormData();
 
@@ -273,6 +272,21 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			}
 		};
 	}, [stopError]);
+
+	//
+
+	useEffect(() => {
+		const allFieldsFilled = Object.values(newStopState).every((value) => {
+			if (typeof value === 'string') {
+				return value.trim() !== '';
+			}
+			if (typeof value === 'number') {
+				return !isNaN(value);
+			}
+			return value !== null && value !== undefined;
+		});
+		setCanCreate(allFieldsFilled);
+	}, [newStopState]);
 
 	//
 	// E. Define context value
