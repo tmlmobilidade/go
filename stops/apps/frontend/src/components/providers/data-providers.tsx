@@ -12,19 +12,19 @@ import { MeContextProvider, ThemeContextProvider } from '@tmlmobilidade/ui';
 
 export function DataProviders({ children }: { children: React.ReactNode }) {
 	return (
-		<MapOptionsContextProvider>
-			<LocationsContextProvider>
-				<StopListContextProvider>
-					<ThemeContextProvider>
-						<MeContextProvider>
+		<ThemeContextProvider>
+			<MeContextProvider>
+				<MapOptionsContextProvider>
+					<LocationsContextProvider>
+						<StopListContextProvider>
 							<StopCreateContextProvider>
 								{children}
 							</StopCreateContextProvider>
-						</MeContextProvider>
-					</ThemeContextProvider>
-				</StopListContextProvider>
-			</LocationsContextProvider>
-		</MapOptionsContextProvider>
+						</StopListContextProvider>
+					</LocationsContextProvider>
+				</MapOptionsContextProvider>
+			</MeContextProvider>
+		</ThemeContextProvider>
 
 	);
 }

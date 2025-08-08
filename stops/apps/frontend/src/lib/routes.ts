@@ -14,7 +14,7 @@ export const ApiRoutes = Object.freeze({
 });
 
 export const Routes = Object.freeze({
-	URL: process.env.PUBLIC_URL ?? 'https://alerts.sae.carrismetropolitana.pt',
+	URL: process.env.PUBLIC_URL ?? 'https://stops.sae.carrismetropolitana.pt',
 	...PageRoutes,
 	...ApiRoutes,
 });
