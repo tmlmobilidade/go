@@ -30,6 +30,7 @@ export function StopListFilterMunicipality() {
 	// C. Render components
 
 	return (
+
 		<MultiSelect
 			data={parsedOptions}
 			label="Municipio"

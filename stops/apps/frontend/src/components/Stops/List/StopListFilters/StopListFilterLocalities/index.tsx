@@ -15,20 +15,21 @@ export function StopListFilterLocations() {
 			<StopListFilterMunicipality />
 			<StopListFilterParish />
 		</>
-		// <Menu trigger="click-hover" withArrow>
-		// 	<Menu.Target>
-		// 		<Badge>Paragens</Badge>
-		// 	</Menu.Target>
-		// 	<Menu.Dropdown>
-		// 		<Menu.Item p="sm">
-		// 			<div>
-		// 				<Grid columns="a" gap="sm">
-		// 					<StopListFilterDistrict />
-		// 				</Grid>
-		// 			</div>
-		// 		</Menu.Item>
-		// 	</Menu.Dropdown>
-		// </Menu>
+
+	// <Menu trigger="click-hover" withArrow>
+	// 	<Menu.Target>
+	// 		<Badge>Paragens</Badge>
+	// 	</Menu.Target>
+	// 	<Menu.Dropdown>
+	// 		<Menu.Item p="sm">
+	// 			<div>
+	// 				<Grid columns="a" gap="sm">
+	// 					<StopListFilterDistrict />
+	// 				</Grid>
+	// 			</div>
+	// 		</Menu.Item>
+	// 	</Menu.Dropdown>
+	// </Menu>
 
 	);
 }

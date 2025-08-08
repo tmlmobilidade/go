@@ -1,7 +1,6 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-// import { useStopListContext } from '@/contexts/StopList.context';
 import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
