@@ -18,7 +18,6 @@ import {
 	zodResolver,
 } from '@tmlmobilidade/ui';
 import { convertObject, fetchData } from '@tmlmobilidade/utils';
-import { generateRandomNumber } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import {
 	createContext,
@@ -57,7 +56,7 @@ interface initialNewStopStateProps {
 }
 
 const emptyStop: CreateStopDto = {
-	_id: '',
+	_id: 'new',
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],
@@ -118,6 +117,15 @@ interface StopCreateContextState {
 		error: Error | null
 		loading: boolean
 	}
+}
+
+/* * */
+
+// function for create id with 12 digits
+function generate12DigitNumber(): number {
+	const min = 100000000000;
+	const max = 999999999999;
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /* * */
@@ -273,36 +281,37 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [stopError]);
 
 	// 7. Stop creation logic
-	const createStop = async (_id: string) => {
+	const createStop = async (_id) => {
 		setIsLoading(true);
 
 		const allStops = await fetchData<Stop[]>(Routes.ME);
 		const existingIds = allStops?.data?.map(stop => stop._id) || [];
 
 		do {
-			_id = String(696969);
+			_id = String(generate12DigitNumber());
 		} while (existingIds.includes(_id));
 
-		const saveStop: CreateStopDto = {
-			...form.values,
-			_id: _id,
-		};
+		form.setValues({ _id });
 
-		const method = 'POST';
-		const url = Routes.STOPS_DETAIL(saveStop._id);
-		const body = convertObject(saveStop, UpdateStopSchema);
+		const saveStop = { ...form.values };
+		console.log(saveStop);
+
+		const method = saveStop._id ? 'POST' : 'PUT';
+		const url = saveStop._id ? Routes.API + Routes.STOPS_LIST : Routes.STOPS_DETAIL(saveStop._id);
+
+		const body = saveStop._id ? saveStop : convertObject(saveStop, UpdateStopSchema);
 
 		const response = await fetchData<Stop>(url, method, body);
-
 		console.log(response);
 
 		if (response.error || !response.data?._id) {
-			useToast.error({ message: response.error, title: 'Erro ao iniciar Validação' });
+			useToast.error({
+				message: response.error,
+				title: 'Erro ao iniciar Validação',
+			});
 			setIsLoading(false);
 			return;
 		}
-
-		router.push(`/stops/${response.data._id}`);
 
 		useToast.success({
 			message: 'Paragem criada com sucesso.',
@@ -312,6 +321,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		localStorage.removeItem('newStopState');
 		localStorage.removeItem('createStopFormValues');
 
+		router.push(`/stops/${response.data._id}`);
 		setIsLoading(false);
 		closeModal(CREATE_STOP_MODAL_ID);
 		mutate(`/api/stops/${saveStop._id}`);
