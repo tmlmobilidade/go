@@ -17,7 +17,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    name: frontend (NextJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -57,7 +56,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    name: api (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -95,7 +93,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    name: cleaner (NodeJS)
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
     permissions:
@@ -134,7 +131,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    name: nginx
     runs-on: ubuntu-latest
     permissions:
       contents: read
