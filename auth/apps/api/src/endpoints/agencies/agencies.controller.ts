@@ -37,9 +37,9 @@ export class AgenciesController {
 	 * @param reply The reply object
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateAgencyDto, Params: { id: string } }>, reply: FastifyReply<Agency>) {
-		// const validatedAgency = UpdateAgencySchema.safeParse(request.body);
-		// if (!validatedAgency.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid agency data', validatedAgency.error);
-		const updatedAgencyData = await agencies.updateById(request.params.id, request.body);
+		const validatedAgency = UpdateAgencySchema.strip().safeParse(request.body);
+		if (!validatedAgency.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Dados inválidos', validatedAgency.error);
+		const updatedAgencyData = await agencies.updateById(request.params.id, validatedAgency.data);
 		reply.send({ data: updatedAgencyData, error: null, statusCode: HttpStatus.OK });
 	}
 
