@@ -44,13 +44,13 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 12gb
+          memory: 14gb
     logging:
       options:
         max-size: '1m'
         max-file: '1'
     environment:
-      - GOMEMLIMIT=8GiB
+      - GOMEMLIMIT=14GiB
     volumes:
       - ./secrets:/secrets
     env_file:
