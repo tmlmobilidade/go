@@ -246,44 +246,56 @@ export class ValidationsController {
 	 * @param reply Fastify reply
 	 */
 	static async requestApproval(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Validation>) {
-		const { id } = request.params;
-		const Validation = await validations.findById(id);
-
-		if (!Validation) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
-		}
+		//
 
 		//
-		// Check if the user has permission to request approval for the validation
-		if (!hasAPIResourcePermission<ValidationPermission>(request, {
+		// Get the requested Validation data
+
+		const validationData = await validations.findById(request.params.id);
+
+		if (!validationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
+
+		//
+		// Check if the user has permission to request approval for this Validation
+
+		const hasPermissionRequestApproval = hasAPIResourcePermission<ValidationPermission>(request, {
 			action: Permissions.validations.actions.request_approval,
 			resource_key: 'agency_ids',
 			scope: Permissions.validations.scope,
-			value: Validation.gtfs_agency.agency_id,
-		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
-		}
+			value: validationData.gtfs_agency.agency_id,
+		});
 
-		// Get Agency TML Contact emails
-		const agency = await fetchData<Agency>(getAppConfig('auth', 'frontend_url') + '/api/agencies/' + Validation.gtfs_agency.agency_id, 'GET', undefined, {
+		if (!hasPermissionRequestApproval) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+
+		//
+		// Get the TML contact emails for this Agency
+
+		const agencyData = await fetchData<Agency>(getAppConfig('auth', 'frontend_url') + '/api/agencies/' + validationData.gtfs_agency.agency_id, 'GET', undefined, {
 			Cookie: `session_token=${request.cookies.session_token}`,
 		});
 
-		if (agency.error) {
-			throw new HttpException(agency.statusCode, agency.error);
+		if (!agencyData?.data || agencyData?.error) {
+			throw new HttpException(agencyData.statusCode, agencyData.error);
 		}
+
+		//
+		// Send the approval request email
 
 		await sendPlanApprovalRequestEmail({
 			props: {
 				solicited_by: request.me.first_name + ' ' + request.me.last_name,
-				validation: Validation,
+				validation: validationData,
 			},
-			to: agency.data.tml_contact_emails || [],
+			to: agencyData.data.tml_contact_emails || [],
 		});
 
 		//
-		// Request approval for the validation
-		const updatedValidation = await validations.updateById(id, { notification_sent: true });
+		// Update the Validation document and send it to caller
+
+		const updatedValidation = await validations.updateById(validationData._id, { notification_sent: true });
+
 		reply.send({ data: updatedValidation, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
 }

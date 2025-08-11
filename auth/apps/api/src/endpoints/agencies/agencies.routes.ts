@@ -16,20 +16,16 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
+		//
+
 		// GET /agencies
 		instance.get('/', AgenciesController.getAll);
 
 		// GET /agencies/:id
 		instance.get('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.read) }, AgenciesController.getById);
 
-		// POST /agencies
-		instance.post('/', { preHandler: authorizationMiddleware(permission.scope, permission.actions.create) }, AgenciesController.create);
-
 		// PUT /agencies/:id
 		instance.put('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.update) }, AgenciesController.update);
-
-		// DELETE /agencies/:id
-		instance.delete('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.delete) }, AgenciesController.delete);
 
 		next();
 	},

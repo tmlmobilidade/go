@@ -13,8 +13,6 @@ export function AgencySectionContacts() {
 	//
 
 	//
-
-	//
 	// A. Setup variables
 
 	const agencyDetailContext = useAgencyDetailContext();
@@ -28,14 +26,14 @@ export function AgencySectionContacts() {
 			title="Informação de contatos"
 		>
 			<Section gap="lg">
+
 				<PillsInput
 					description="Notificações serão enviadas para os emails de contacto da agência."
-					label="Emails de contacto da agência"
-					values={agencyDetailContext.data.form.values.contact_emails}
-					withAsterisk={!CreateAgencySchema.shape.contact_emails.isOptional()}
+					label="Emails de contacto do Operador"
+					values={agencyDetailContext.data.form.values.contact_emails_pto}
+					withAsterisk={!CreateAgencySchema.shape.contact_emails_pto.isOptional()}
 					onChange={(value) => {
-						console.log(value);
-						agencyDetailContext.data.form.setFieldValue('contact_emails', value);
+						agencyDetailContext.data.form.setFieldValue('contact_emails_pto', value);
 					}}
 					validate={{
 						message: 'Insira um email válido',
@@ -44,12 +42,11 @@ export function AgencySectionContacts() {
 				/>
 				<PillsInput
 					description="Notificações serão enviadas para os emails de contacto da TML."
-					label="Emails de contacto da TML"
-					values={agencyDetailContext.data.form.values.tml_contact_emails}
-					withAsterisk={!CreateAgencySchema.shape.tml_contact_emails.isOptional()}
+					label="Emails de contacto da Autoridade"
+					values={agencyDetailContext.data.form.values.contact_emails_pta}
+					withAsterisk={!CreateAgencySchema.shape.contact_emails_pta.isOptional()}
 					onChange={(value) => {
-						console.log(value);
-						agencyDetailContext.data.form.setFieldValue('tml_contact_emails', value);
+						agencyDetailContext.data.form.setFieldValue('contact_emails_pta', value);
 					}}
 					validate={{
 						message: 'Insira um email válido',

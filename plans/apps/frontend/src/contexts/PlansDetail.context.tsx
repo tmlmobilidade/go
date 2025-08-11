@@ -6,7 +6,7 @@ import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
 import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { Dates, fetchData, swrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -41,13 +41,12 @@ export function usePlansDetailContext() {
 	if (!context) {
 		throw new Error('usePlansDetailContext must be used within a PlansDetailContextProvider');
 	}
-
 	return context;
 }
 
 /* * */
 
-export const PlansDetailContextProvider = ({ children, planId }: { children: React.ReactNode, planId: string }) => {
+export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildren<{ planId: string }>) => {
 	//
 
 	//

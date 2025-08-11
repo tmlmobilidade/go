@@ -21,7 +21,7 @@
 		"papaparse": "5.5.3",
 		"react": "19.1.1",
 		"react-dom": "19.1.1",
-		"swr": "2.3.5"
+		"swr": "2.3.6"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
