@@ -9,7 +9,7 @@ import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } 
 import { Agency, type CreateValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type Permission, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
 import { fetchData, getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { createWriteStream } from 'fs';
-import { readFile, unlink } from 'fs/promises';
+import { readFileSync, unlinkSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -71,7 +71,7 @@ export class ValidationsController {
 			await pipeline(data.file, writeStream);
 
 			// Read file back as buffer for upload
-			buffer = await readFile(tempFilePath);
+			buffer = readFileSync(tempFilePath);
 			size = buffer.length;
 		}
 		catch (streamError) {
@@ -123,7 +123,7 @@ export class ValidationsController {
 		// Clean up temporary file
 		if (tempFilePath) {
 			try {
-				await unlink(tempFilePath);
+				unlinkSync(tempFilePath);
 			}
 			catch (cleanupError) {
 				console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
