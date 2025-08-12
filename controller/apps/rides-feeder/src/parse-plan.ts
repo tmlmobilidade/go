@@ -1,6 +1,7 @@
 /* * */
 
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
+import { SQLiteMap } from '@/sqlite-map.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
@@ -39,12 +40,12 @@ export async function parsePlan(planData: Plan) {
 		const referencedRouteIds = new Set<string>();
 		const referencedShapeIds = new Set<string>();
 
-		const savedCalendarDates = new Map<string, OperationalDate[]>();
-		const savedTrips = new Map<string, GTFS_Trip_Extended>();
-		const savedStops = new Map<string, GTFS_Stop_Extended>();
-		const savedRoutes = new Map<string, Partial<GTFS_Route_Extended>>();
-		const savedShapes = new Map<string, GTFS_Shape[]>();
-		const savedStopTimes = new Map<string, GTFS_StopTime[]>();
+		const savedCalendarDates = new SQLiteMap<string, OperationalDate[]>();
+		const savedTrips = new SQLiteMap<string, GTFS_Trip_Extended>();
+		const savedStops = new SQLiteMap<string, GTFS_Stop_Extended>();
+		const savedRoutes = new SQLiteMap<string, Partial<GTFS_Route_Extended>>();
+		const savedShapes = new SQLiteMap<string, GTFS_Shape[]>();
+		const savedStopTimes = new SQLiteMap<string, GTFS_StopTime[]>();
 
 		let calendarDatesCounter = 0;
 		let stopTimesCounter = 0;
@@ -775,12 +776,6 @@ export async function parsePlan(planData: Plan) {
 				}
 
 				//
-				// Delete the current trip to free up memory sooner
-
-				savedTrips.delete(currentTrip.trip_id);
-				savedStopTimes.delete(currentTrip.trip_id);
-
-				//
 			}
 
 			//
@@ -790,6 +785,17 @@ export async function parsePlan(planData: Plan) {
 			await hashedTripsDbWritter.flush();
 			await hashedShapesDbWritter.flush();
 			await ridesDbWritter.flush();
+
+			//
+			// Cleanup the saved entities to avoid
+			// storing so much data on disk.
+
+			savedCalendarDates.clear();
+			savedTrips.clear();
+			savedStops.clear();
+			savedRoutes.clear();
+			savedShapes.clear();
+			savedStopTimes.clear();
 
 			//
 		}

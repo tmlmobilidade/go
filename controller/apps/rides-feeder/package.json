@@ -19,6 +19,7 @@
 		"@helperkits/writer": "20250623.2358.3",
 		"@tmlmobilidade/interfaces": "20250811.2224.4",
 		"@tmlmobilidade/utils": "20250811.2224.4",
+		"better-sqlite3": "12.2.0",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0"
@@ -26,6 +27,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250811.2224.4",
 		"@tmlmobilidade/types": "20250811.2224.4",
+		"@types/better-sqlite3": "7.6.13",
 		"@types/node": "24.2.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.4",
