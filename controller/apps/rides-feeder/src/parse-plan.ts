@@ -362,7 +362,7 @@ export async function parsePlan(planData: Plan) {
 				if (!referencedShapeIds.has(validatedData.shape_id)) return;
 				// Save the exported row
 				const savedShape = savedShapes.get(validatedData.shape_id);
-				if (savedShape) savedShapes.set(validatedData.shape_id, [...savedShape, validatedData]);
+				if (savedShape) savedShape.push(validatedData);
 				else savedShapes.set(validatedData.shape_id, [validatedData]);
 			};
 
@@ -453,7 +453,7 @@ export async function parsePlan(planData: Plan) {
 
 				const savedStopTime = savedStopTimes.get(validatedData.trip_id);
 
-				if (savedStopTime) savedStopTimes.set(validatedData.trip_id, [...savedStopTime, validatedData]);
+				if (savedStopTime) savedStopTime.push(validatedData);
 				else savedStopTimes.set(validatedData.trip_id, [validatedData]);
 
 				stopTimesCounter++;
