@@ -30,7 +30,7 @@
 		"@tmlmobilidade/types": "20250811.2224.4",
 		"@types/node": "24.2.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.3",
+		"tsx": "4.20.4",
 		"typescript": "5.9.2"
 	}
 }

@@ -144,7 +144,7 @@ export class ValidationsController {
 		//
 		// Extract permissions from the request
 
-		const validationPermission: Permission<ValidationPermission> = getPermission(request.permissions, Permissions.plans.scope, Permissions.plans.actions.read);
+		const validationPermission: Permission<ValidationPermission> = getPermission(request.permissions, Permissions.validations.scope, Permissions.validations.actions.read);
 
 		//
 		// Filter validations based on permissions for the current user
@@ -286,7 +286,7 @@ export class ValidationsController {
 				solicited_by: request.me.first_name + ' ' + request.me.last_name,
 				validation: validationData,
 			},
-			to: agencyData.data.tml_contact_emails || [],
+			to: agencyData.data.contact_emails_pta || [],
 		});
 
 		//

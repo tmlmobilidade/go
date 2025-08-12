@@ -1,10 +1,9 @@
 /* * */
 
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
-import { FastifyInstance } from 'fastify';
 
 /* * */
 
@@ -29,6 +28,7 @@ server.register(
 			'/ws',
 			{
 				preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.read),
+				// @ts-expect-error - mismatch between types from core and fastifyWs
 				websocket: true,
 			},
 			RidesController.websocket,
