@@ -48,6 +48,7 @@ export async function parsePlan(planData: Plan) {
 		const savedStopTimes = new SQLiteMap<string, GTFS_StopTime[]>();
 
 		let calendarDatesCounter = 0;
+		let tripsCounter = 0;
 		let stopTimesCounter = 0;
 
 		//
@@ -290,6 +291,8 @@ export async function parsePlan(planData: Plan) {
 				// Reference the associated entities to filter them later.
 				referencedRouteIds.add(validatedData.route_id);
 				referencedShapeIds.add(validatedData.shape_id);
+				// Increment the trips counter
+				tripsCounter++;
 			};
 
 			//
@@ -491,7 +494,7 @@ export async function parsePlan(planData: Plan) {
 			LOGGER.title(`Generating HashedTrips, HashedShapes and Rides:`);
 
 			LOGGER.info(`Dates: ${calendarDatesCounter} for ${savedCalendarDates.size} service_ids`);
-			LOGGER.info(`Trips: ${savedTrips.size}`);
+			LOGGER.info(`Trips: ${tripsCounter}`);
 			LOGGER.info(`Routes: ${savedRoutes.size}`);
 			LOGGER.info(`Shapes: ${savedShapes.size}`);
 			LOGGER.info(`Stops: ${savedStops.size}`);
@@ -501,9 +504,9 @@ export async function parsePlan(planData: Plan) {
 				//
 
 				//
-				// Log every 10000 trips processed
+				// Log every 10000 rides processed
 
-				if (savedTrips.size % 10000 === 0) LOGGER.title(`${savedTrips.size} trips left. Generated ${savedRideIds.size} Rides so far.`);
+				if (savedRideIds.size % 10000 === 0) LOGGER.title(`Generated ${savedRideIds.size} Rides so far. ${tripsCounter} trips left. ${stopTimesCounter} stop_times left.`);
 
 				//
 				// Get associated data from previously saved entities,
@@ -774,6 +777,13 @@ export async function parsePlan(planData: Plan) {
 
 					//
 				}
+
+				//
+				// Decrement the trips and stop times counters
+				// to keep track of progress in the logs
+
+				tripsCounter--;
+				stopTimesCounter--;
 
 				//
 			}
