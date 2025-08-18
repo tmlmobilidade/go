@@ -2,7 +2,7 @@
 
 /* * */
 
-import { MapViewOneStop } from '@/components/Map/MapViewOneStop';
+import { MapViewOneStop } from '@/components/map/overlays/MapViewOneStop';
 import { StopDetailHeader } from '@/components/stops/detail/StopDetailHeader';
 import { StopDetailsSectionAdministrative } from '@/components/stops/detail/StopDetailsSectionAdministrative';
 import { StopDetailsSectionConnections } from '@/components/stops/detail/StopDetailsSectionConnections';

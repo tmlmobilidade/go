@@ -3,7 +3,7 @@
 /* * */
 
 import TextPopover from '@/components/Common/TextPopover';
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
+import { useMapOptionsContext } from '@/components/map/view/MapOptions.context';
 import { SegmentedControl, SegmentedControlItem } from '@mantine/core';
 import { IconArrowsMinimize, IconMapShare } from '@tabler/icons-react';
 

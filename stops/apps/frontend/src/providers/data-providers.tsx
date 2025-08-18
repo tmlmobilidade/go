@@ -3,7 +3,7 @@
 /* * */
 
 import { LocationsContextProvider } from '@/contexts/Locations.context';
-import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
+import { MapOptionsContextProvider } from '@/components/map/view/MapOptions.context';
 import { StopCreateContextProvider } from '@/contexts/StopCreate.context';
 import { MeContextProvider, ThemeContextProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';

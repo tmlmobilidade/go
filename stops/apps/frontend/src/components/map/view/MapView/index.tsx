@@ -3,9 +3,9 @@
 
 /* * */
 
-import mapDefaults from '@/components/Map/MapConfig';
-import { MapViewToolbar } from '@/components/Map/MapViewToolbar';
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
+import mapDefaults from '@/components/map/view/MapConfig';
+import { useMapOptionsContext } from '@/components/map/view/MapOptions.context';
+import { MapViewToolbar } from '@/components/map/view/MapViewToolbar';
 import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
 import { useCallback, useEffect, useState } from 'react';
 

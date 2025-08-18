@@ -1,6 +1,6 @@
 'use client';
 
-import { MapViewStops } from '@/components/Map/MapViewStops';
+import { MapViewStops } from '@/components/map/overlays/MapViewStops';
 /* * */
 
 import CoordinatesInput from '@/components/CoordinatesInput';

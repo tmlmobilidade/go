@@ -2,7 +2,7 @@
 
 /* * */
 
-import { MapStyle } from '@/components/Map/MapView';
+import { MapStyle } from '@/components/map/view/MapView';
 import * as turf from '@turf/turf';
 import { MapRef } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';

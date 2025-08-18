@@ -2,7 +2,7 @@
 
 /* * */
 
-import { MapView } from '@/components/Map/MapView';
+import { MapView } from '@/components/map/view/MapView';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Stop } from '@tmlmobilidade/types';
 import { MapOptionsContextProvider } from '@tmlmobilidade/ui';
