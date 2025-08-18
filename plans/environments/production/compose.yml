@@ -5,10 +5,6 @@ name: tmlmobilidade-sae-plans
 volumes:
   certbotdata:
 
-secrets:
-  ociprivatekey:
-    file: ./secrets/oci-private-key.pem
-
 services:
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -88,10 +84,10 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
-    secrets:
-      - ociprivatekey
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -128,7 +124,7 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
-    secrets:
-      - ociprivatekey
