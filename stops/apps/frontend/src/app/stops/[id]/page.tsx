@@ -1,6 +1,6 @@
 /* * */
 
-import { FormInfos } from '@/components/Stops/Detail/Form';
+import { FormInfos } from '@/components/stops2/Detail/Form';
 import { StopDetailContextProvider } from '@/contexts/StopDetails.context';
 
 /* * */

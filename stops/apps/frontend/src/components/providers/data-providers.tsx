@@ -7,10 +7,11 @@ import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { StopCreateContextProvider } from '@/contexts/StopCreate.context';
 import { StopListContextProvider } from '@/contexts/StopList.context';
 import { MeContextProvider, ThemeContextProvider } from '@tmlmobilidade/ui';
+import { type PropsWithChildren } from 'react';
 
 /* * */
 
-export function DataProviders({ children }: { children: React.ReactNode }) {
+export function DataProviders({ children }: PropsWithChildren) {
 	return (
 		<ThemeContextProvider>
 			<MeContextProvider>

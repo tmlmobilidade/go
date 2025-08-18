@@ -1,4 +1,4 @@
-import { List } from '@/components/Stops/List/index';
+import { List } from '@/components/stops2/List/index';
 import { StopListContextProvider } from '@/contexts/StopList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 
