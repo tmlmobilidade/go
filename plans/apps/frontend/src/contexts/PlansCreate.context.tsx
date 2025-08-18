@@ -3,7 +3,7 @@
 import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
 import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
 import { Routes } from '@/lib/routes';
-import { type Plan, type Validation } from '@tmlmobilidade/types';
+import { type GtfsValidation, type Plan } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -17,7 +17,7 @@ interface PlansCreateContextState {
 		requestApproval: () => Promise<void>
 	}
 	data: {
-		validation: null | Validation
+		validation: GtfsValidation | null
 	}
 	flags: {
 		canCreatePlan: boolean
@@ -51,7 +51,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 	//
 	// B. Fetch data
 
-	const { data: validationData, error: validationError } = useSWR<Validation>(validationId && `/api/validations/${validationId}`, swrFetcher);
+	const { data: validationData, error: validationError } = useSWR<GtfsValidation>(validationId && `/api/validations/${validationId}`, swrFetcher);
 
 	//
 	// C. Handle actions

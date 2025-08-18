@@ -5,7 +5,7 @@
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { type WorkerMessage } from '@/types/worker';
 import { Permissions } from '@tmlmobilidade/lib';
-import { type CreateValidationDto, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
+import { type CreateGtfsValidationDto, type GtfsValidation, type GtfsValidationPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -20,7 +20,7 @@ interface ValidationsCreateContextState {
 		setValidationFile: (file: File | null) => void
 	}
 	data: {
-		form: UseFormReturnType<CreateValidationDto>
+		form: UseFormReturnType<CreateGtfsValidationDto>
 	}
 	flags: {
 		can_create: boolean
@@ -61,7 +61,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	//
 	// B. Setup form
 
-	const form = useForm<CreateValidationDto>({
+	const form = useForm<CreateGtfsValidationDto>({
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -93,7 +93,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		// Check if the current user has permission
 		// to create validations for the GTFS agency
 
-		const hasPermission = meContext.actions.hasPermissionResource<ValidationPermission>({
+		const hasPermission = meContext.actions.hasPermissionResource<GtfsValidationPermission>({
 			action: Permissions.validations.actions.create,
 			resource_key: 'agency_ids',
 			scope: Permissions.validations.scope,
@@ -137,7 +137,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		//
 		// Perform the API request to create the validation
 
-		const response = await multipartFetch<Validation>('/api/validations', uploadFormData);
+		const response = await multipartFetch<GtfsValidation>('/api/validations', uploadFormData);
 
 		//
 		// Handle the response
