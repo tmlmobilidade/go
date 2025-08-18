@@ -1,0 +1,31 @@
+{
+	"name": "@tmlmobilidade/sae-stops-organizer",
+	"version": "1.0.0",
+	"type": "module",
+	"files": ["dist"],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@helperkits/logger": "20250628.901.58",
+		"@helperkits/timer": "20240627.34.23",
+		"@tmlmobilidade/interfaces": "20250818.956.32",
+		"@tmlmobilidade/lib": "20250818.956.32",
+		"@tmlmobilidade/utils": "20250818.956.32"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "20250818.956.32",
+		"@tmlmobilidade/types": "20250818.956.32",
+		"@types/node": "24.3.0",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.4",
+		"typescript": "5.9.2"
+	}
+}

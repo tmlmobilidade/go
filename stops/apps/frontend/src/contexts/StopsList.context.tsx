@@ -1,23 +1,29 @@
 'use client';
 
+/* * */
+
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
-import { Routes } from '@/lib/routes';
 import { type StopNormalized } from '@/types/normalized';
 import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useLocationsContext } from './Locations.context';
+/* * */
 
 interface StopsListContextState {
 	actions: {
-		changeSearchQuery: (query: string) => void
 		setFilterConnections: (values: string[]) => void
+		setFilterDistricts: (values: string[]) => void
 		setFilterEquipment: (values: string[]) => void
 		setFilterFacilities: (values: string[]) => void
+		setFilterLocalities: (values: string[]) => void
+		setFilterMunicipalities: (values: string[]) => void
+		setFilterParishes: (values: string[]) => void
+		setFilterSearch: (value: string) => void
 	}
 	data: {
 		filtered: StopNormalized[]
@@ -25,26 +31,33 @@ interface StopsListContextState {
 	}
 	filters: {
 		connections: string[]
+		districts: string[]
 		equipment: string[]
 		facilities: string[]
+		localities: string[]
+		municipalities: string[]
+		parishes: string[]
+		search: string
 	}
 	flags: {
 		error: Error | undefined
-		isLoading: boolean
+		loading: boolean
 	}
 }
+
+/* * */
 
 const StopsListContext = createContext<StopsListContextState | undefined>(undefined);
 
 export const useStopsListContext = () => {
 	const context = useContext(StopsListContext);
 	if (!context) {
-		throw new Error(
-			'useStopsListContext must be used within a StopsListContextProvider',
-		);
+		throw new Error('useStopsListContext must be used within a StopsListContextProvider');
 	}
 	return context;
 };
+
+/* * */
 
 export const StopsListContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
@@ -54,148 +67,132 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 
 	const locationsContext = useLocationsContext();
 
-	const [filterSearch, setfilterSearch] = useQueryState('search', { defaultValue: '' });
-
-	const [filterFacilities, setFilterFacilities] = useState<string[]>(facilitiesSchema.options);
-	const [filterEquipment, setFilterEquipment] = useState<string[]>(equipmentSchema.options);
-	const [filterConnections, setFilterConnections] = useState<string[]>(connectionsSchema.options);
-
-	const [queryFacilities, setQueryFacilities] = useQueryState<string[]>('facilities', parseAsArrayOfStrings.withDefault([]));
-	const [queryEquipment, setQueryEquipment] = useQueryState<string[]>('equipment', parseAsArrayOfStrings.withDefault([]));
-	const [queryConnections, setQueryConnections] = useQueryState<string[]>('connections', parseAsArrayOfStrings.withDefault([]));
-
-	//
+	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+	const [filterDistricts, setFilterDistricts] = useQueryState<string[]>('districts', parseAsArrayOfStrings.withDefault(locationsContext.data.district_ids));
+	const [filterMunicipalities, setFilterMunicipalities] = useQueryState<string[]>('municipalities', parseAsArrayOfStrings.withDefault(locationsContext.data.municipality_ids));
+	const [filterParishes, setFilterParishes] = useQueryState<string[]>('parishes', parseAsArrayOfStrings.withDefault(locationsContext.data.parish_ids));
+	const [filterLocalities, setFilterLocalities] = useQueryState<string[]>('localities', parseAsArrayOfStrings.withDefault(locationsContext.data.locality_ids));
+	const [filterFacilities, setFilterFacilities] = useQueryState<string[]>('facilities', parseAsArrayOfStrings.withDefault(facilitiesSchema.options));
+	const [filterEquipment, setFilterEquipment] = useQueryState<string[]>('equipment', parseAsArrayOfStrings.withDefault(equipmentSchema.options));
+	const [filterConnections, setFilterConnections] = useQueryState<string[]>('connections', parseAsArrayOfStrings.withDefault(connectionsSchema.options));
 
 	//
 	// B. Fetch data
 
-	const { data: stops, error, isLoading } = useSWR<Stop[], Error>(Routes.ME, swrFetcher);
-
-	const rawStops = useMemo(() => stops || [], [stops]);
-
-	useEffect(() => {
-		setFilterFacilities(queryFacilities.length === 0 ? facilitiesSchema.options : queryFacilities);
-		setFilterEquipment(queryEquipment.length === 0 ? equipmentSchema.options : queryEquipment);
-		setFilterConnections(queryConnections.length === 0 ? connectionsSchema.options : queryConnections);
-	}, [queryFacilities, queryEquipment, queryConnections]);
-
-	//
+	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>('/api/stops', swrFetcher);
 
 	//
 	// C. Transform data
 
-	const normalizedStopData: StopNormalized[] = useMemo(() => {
-		if (!stops) return [];
-
-		return stops.map(item => ({
+	const normalizedStopsData: StopNormalized[] = useMemo(() => {
+		// Skip if no data is available
+		if (!allStopsData?.length) return [];
+		// Normalize record fields
+		return allStopsData.map(item => ({
 			...item,
-			id_normalized: item._id,
+			district_name: locationsContext.data.districts_map.get(item.district_id)?.name ?? '',
+			locality_name: locationsContext.data.localities_map.get(item.locality_id)?.name ?? '',
+			municipality_name: locationsContext.data.municipalities_map.get(item.municipality_id)?.name ?? '',
 			name_normalized: normalizeString(item.name),
+			new_name_normalized: normalizeString(item.new_name),
+			parish_name: locationsContext.data.parishes_map.get(item.parish_id)?.name ?? '',
 		}));
-	}, [stops]);
+	}, [allStopsData]);
 
 	const searchResultsData = useSearch<StopNormalized>({
-		accessors: ['_id', 'name'],
-		data: normalizedStopData,
+		accessors: ['_id', 'name_normalized', 'new_name_normalized'],
+		data: normalizedStopsData,
 		query: filterSearch,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
-
-		// Skip if no query filters are set
-		if (
-			queryFacilities.length === 0
-			&& queryEquipment.length === 0
-			&& queryConnections.length === 0
-			&& locationsContext.data.selectedLocation?.districts.length === 0
-			&& locationsContext.data.selectedLocation?.municipalities.length === 0
-			&& locationsContext.data.selectedLocation?.parishes.length === 0
-
-		) return searchResultsData;
-
-		// 1. Convert filter arrays to sets for O(1) membership checks
-		const filterFacilitiesSet = new Set(queryFacilities);
-		const filterEquipmentSet = new Set(queryEquipment);
-		const filterConnectionsSet = new Set(queryConnections);
-
-		// 2. Filter by query filters
-
-		return searchResultsData.filter((stop: StopNormalized) => {
-			const matchesFacilities = queryFacilities.length === 0 || stop.facilities.some(item => filterFacilitiesSet.has(item));
-			const matchesEquipment = queryEquipment.length === 0 || stop.equipment.some(item => filterEquipmentSet.has(item));
-			const matchesConnections = queryConnections.length === 0 || stop.connections.some(item => filterConnectionsSet.has(item));
-
-			const selectedDistricts = locationsContext.data.selectedLocation?.districts;
-			const matchesDistrict = !selectedDistricts || selectedDistricts.length === 0 || selectedDistricts.some(item => stop.district_id.includes(item._id));
-
-			const selectedMunicipalities = locationsContext.data.selectedLocation?.municipalities;
-			const matchesMunicipality = !selectedMunicipalities || selectedMunicipalities.length === 0 || selectedMunicipalities.some(item => stop.municipality_id.includes(item._id));
-
-			const selectedParishes = locationsContext.data.selectedLocation?.parishes;
-			const matchesParish = !selectedParishes || selectedParishes.length === 0 || selectedParishes.some(item => stop.parish_id.includes(item._id));
-
-			return matchesFacilities && matchesEquipment && matchesConnections && matchesDistrict && matchesMunicipality && matchesParish;
+		// Convert filter arrays to sets for O(1) membership checks
+		const filterDistrictsSet = new Set(filterDistricts);
+		const filterMunicipalitiesSet = new Set(filterMunicipalities);
+		// const filterParishesSet = new Set(filterParishes);
+		// const filterLocalitiesSet = new Set(filterLocalities);
+		// const filterFacilitiesSet = new Set(filterFacilities);
+		// const filterEquipmentSet = new Set(filterEquipment);
+		// const filterConnectionsSet = new Set(filterConnections);
+		// Apply filter values
+		return searchResultsData.filter((stopData: StopNormalized) => {
+			const matchesDistrict = filterDistrictsSet.has(stopData.district_id);
+			const matchesMunicipality = filterMunicipalitiesSet.has(stopData.municipality_id);
+			const matchesParish = true; // filterParishesSet.has(stopData.parish_id);
+			const matchesLocality = true; //  filterLocalitiesSet.has(stopData.locality_id);
+			const matchesFacilities = true; // stopData.facilities.some(item => filterFacilitiesSet.has(item));
+			const matchesEquipment = true; // stopData.equipment.some(item => filterEquipmentSet.has(item));
+			const matchesConnections = true; // stopData.connections.some(item => filterConnectionsSet.has(item));
+			// Evaluate conditions
+			return matchesDistrict && matchesMunicipality && matchesParish && matchesLocality && matchesFacilities && matchesEquipment && matchesConnections;
 		});
-	}, [searchResultsData, filterFacilities, filterEquipment, filterConnections, queryConnections, queryEquipment, queryFacilities, locationsContext.data]);
+	}, [
+		searchResultsData,
+		filterDistricts,
+		filterMunicipalities,
+		filterParishes,
+		filterLocalities,
+		filterFacilities,
+		filterEquipment,
+		filterConnections,
+	]);
 
 	//
+	// D. Define context value
+
+	const contextValue: StopsListContextState = useMemo(() => ({
+		actions: {
+			setFilterConnections,
+			setFilterDistricts,
+			setFilterEquipment,
+			setFilterFacilities,
+			setFilterLocalities,
+			setFilterMunicipalities,
+			setFilterParishes,
+			setFilterSearch,
+		},
+		data: {
+			filtered: filterResultsData,
+			raw: allStopsData ?? [],
+		},
+		filters: {
+			connections: filterConnections,
+			districts: filterDistricts,
+			equipment: filterEquipment,
+			facilities: filterFacilities,
+			localities: filterLocalities,
+			municipalities: filterMunicipalities,
+			parishes: filterParishes,
+			search: filterSearch,
+		},
+		flags: {
+			error: allStopsError,
+			loading: allStopsLoading,
+		},
+	}), [
+		allStopsError,
+		allStopsLoading,
+		filterResultsData,
+		filterConnections,
+		filterDistricts,
+		filterEquipment,
+		filterFacilities,
+		filterLocalities,
+		filterMunicipalities,
+		filterParishes,
+		filterSearch,
+	]);
 
 	//
-	// D. handle declarated
-	const changeSearchQuery = (query: string) => {
-		setfilterSearch(query);
-	};
-
-	const handleSetFilterFacilities = (values: string[]) => {
-		setQueryFacilities(values.length === facilitiesSchema.options.length ? [] : values);
-		setFilterFacilities(values);
-	};
-
-	const handleSetfilterEquipment = (values: string[]) => {
-		setQueryEquipment(values.length === equipmentSchema.options.length ? [] : values);
-		setFilterEquipment(values);
-	};
-
-	const handleSetFilterConnections = (values: string[]) => {
-		setQueryConnections(values.length === connectionsSchema.options.length ? [] : values);
-		setFilterConnections(values);
-	};
-
-	//
-
-	//
-	// E. render components
-
-	const contextValue: StopsListContextState = useMemo(
-		() => ({
-			actions: {
-				changeSearchQuery: changeSearchQuery,
-				setFilterConnections: handleSetFilterConnections,
-				setFilterEquipment: handleSetfilterEquipment,
-				setFilterFacilities: handleSetFilterFacilities,
-			},
-			data: {
-				filtered: filterResultsData,
-				raw: rawStops,
-			},
-			filters: {
-				connections: filterConnections,
-				equipment: filterEquipment,
-				facilities: filterFacilities,
-			},
-			flags: {
-				error,
-				isLoading,
-			},
-		}),
-		[filterResultsData, rawStops, error, isLoading, filterConnections, filterEquipment, filterFacilities],
-	);
+	// E. Render components
 
 	return (
 		<StopsListContext.Provider value={contextValue}>
 			{children}
 		</StopsListContext.Provider>
 	);
+
+	//
 };

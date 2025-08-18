@@ -3,39 +3,35 @@
 /* * */
 
 import { getAppConfig } from '@tmlmobilidade/lib';
-import {
-	type District,
-	Locality,
-	type Municipality,
-	type Parish,
-} from '@tmlmobilidade/types';
-import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/types';
+import { swrFetcher } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface SelectedLocations {
-	districts: District[]
-	municipalities: Municipality[]
-	parishes: Parish[]
-}
+// const AML_DISTRICT_IDS = ['11', '15'];
+
+/* * */
 
 interface LocationsContextState {
-	actions: {
-		setDistricts: (ids: string[]) => void
-		setMunicipalities: (ids: string[]) => void
-		setParishes: (ids: string[]) => void
-	}
 	data: {
+		district_ids: string[]
 		districts: District[]
+		districts_map: Map<string, District>
 		localities: Locality[]
+		localities_map: Map<string, Locality>
+		locality_ids: string[]
 		municipalities: Municipality[]
+		municipalities_map: Map<string, Municipality>
+		municipality_ids: string[]
+		parish_ids: string[]
 		parishes: Parish[]
-		selectedLocation: SelectedLocations
+		parishes_map: Map<string, Parish>
 	}
 	flags: {
-		is_loading: boolean
+		error: Error | null
+		loading: boolean
 	}
 }
 
@@ -53,115 +49,76 @@ export function useLocationsContext() {
 
 /* * */
 
-export const LocationsContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
+
+	//
+	// A. Setup variables
+
+	const allDistrictsMap = useRef<Map<string, District>>(new Map());
+	const allMunicipalitiesMap = useRef<Map<string, Municipality>>(new Map());
+	const allParishesMap = useRef<Map<string, Parish>>(new Map());
+	const allLocalitiesMap = useRef<Map<string, Locality>>(new Map());
 
 	//
 	// A. Fetch data
 
-	const [selectedLocation, setSelectedLocation] = useState<LocationsContextState['data']['selectedLocation']>({
-		districts: [],
-		municipalities: [],
-		parishes: [],
-	});
-	const [allMunicipalitiesData, setAllMunicipalitiesData] = useState<Municipality[]>([]);
-	const [allParishesData, setAllParishesData] = useState<Parish[]>([]);
-	const [allLocalitiesData, setAllLocalitiesData] = useState<Locality[]>([]);
-
-	const { data: allDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<HttpResponse<District[]>, Error>(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`);
+	const { data: allDistrictsData, error: allDistrictsError, isLoading: allDistrictsLoading } = useSWR<District[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/districts`, swrFetcher);
+	const { data: allMunicipalitiesData, error: allMunicipalitiesError, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/municipalities`, swrFetcher);
+	const { data: allParishesData, error: allParishesError, isLoading: allParishesLoading } = useSWR<Parish[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/parishes`, swrFetcher);
+	const { data: allLocalitiesData, error: allLocalitiesError, isLoading: allLocalitiesLoading } = useSWR<Locality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/localities`, swrFetcher);
 
 	//
+	// B. Transform data
 
-	//
-	// B. Handle actions
+	useEffect(() => {
+		allDistrictsData?.forEach(item => allDistrictsMap.current.set(item._id, item));
+	}, [allDistrictsData]);
 
-	async function setDistricts(ids: string[]) {
-		const districts = allDistrictsData.data.filter(item => ids.includes(item._id));
+	useEffect(() => {
+		allMunicipalitiesData?.forEach(item => allMunicipalitiesMap.current.set(item._id, item));
+	}, [allMunicipalitiesData]);
 
-		setSelectedLocation({
-			districts,
-			municipalities: [],
-			parishes: [],
-		});
+	useEffect(() => {
+		allParishesData?.forEach(item => allParishesMap.current.set(item._id, item));
+	}, [allParishesData]);
 
-		const res = await fetchData<Municipality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/municipalities?district_ids=${districts.map(item => item._id).join(',')}`);
-
-		if (res.error) {
-			console.error(res.error);
-			return;
-		}
-
-		setAllMunicipalitiesData(res.data);
-		setAllParishesData([]);
-		setAllLocalitiesData([]);
-	}
-
-	async function setMunicipalities(ids: string[]) {
-		const municipalities = allMunicipalitiesData.filter(item => ids.includes(item._id));
-
-		setSelectedLocation(prev => ({
-			...prev,
-			municipalities,
-			parishes: [],
-		}));
-
-		const res = await fetchData<Parish[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/parishes?municipality_ids=${municipalities.map(item => item._id).join(',')}`);
-
-		if (res.error) {
-			console.error(res.error);
-			return;
-		}
-
-		setAllParishesData(res.data);
-		setAllLocalitiesData([]);
-	}
-
-	async function setParishes(ids: string[]) {
-		const parishes = allParishesData.filter(item => ids.includes(item._id));
-
-		setSelectedLocation(prev => ({
-			...prev,
-			parishes,
-		}));
-
-		const res = await fetchData<Locality[]>(`${getAppConfig('locations', 'api_url', 'production')}/locations/localities?parish_ids=${parishes.map(item => item._id).join(',')}`);
-
-		if (res.error) {
-			console.error(res.error);
-			return;
-		}
-
-		setAllLocalitiesData(res.data);
-	}
-
-	//
+	useEffect(() => {
+		allLocalitiesData?.forEach(item => allLocalitiesMap.current.set(item._id, item));
+	}, [allLocalitiesData]);
 
 	//
 	// C. Define context value
 
-	const contextValue: LocationsContextState = useMemo(() => {
-		return {
-
-			actions: {
-				setDistricts,
-				setMunicipalities,
-				setParishes,
-			},
-			data: {
-				districts: allDistrictsData?.data ?? [],
-				localities: allLocalitiesData,
-				municipalities: allMunicipalitiesData,
-				parishes: allParishesData,
-				selectedLocation,
-
-			},
-			flags: {
-				is_loading: fetchedDistrictsLoading,
-			},
-		};
-	}, [selectedLocation, allDistrictsData, allMunicipalitiesData, allParishesData]);
-
-	//
+	const contextValue: LocationsContextState = useMemo(() => ({
+		data: {
+			district_ids: Array.from(allDistrictsMap.current.keys()),
+			districts: allDistrictsData ?? [],
+			districts_map: allDistrictsMap.current,
+			localities: allLocalitiesData ?? [],
+			localities_map: allLocalitiesMap.current,
+			locality_ids: Array.from(allLocalitiesMap.current.keys()),
+			municipalities: allMunicipalitiesData ?? [],
+			municipalities_map: allMunicipalitiesMap.current,
+			municipality_ids: Array.from(allMunicipalitiesMap.current.keys()),
+			parish_ids: Array.from(allParishesMap.current.keys()),
+			parishes: allParishesData ?? [],
+			parishes_map: allParishesMap.current,
+		},
+		flags: {
+			error: allDistrictsError || allMunicipalitiesError || allParishesError || allLocalitiesError,
+			loading: allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading,
+		},
+	}), [
+		allDistrictsData,
+		allDistrictsMap.current,
+		allMunicipalitiesData,
+		allMunicipalitiesMap.current,
+		allParishesData,
+		allParishesMap.current,
+		allLocalitiesData,
+		allLocalitiesMap.current,
+	]);
 
 	//
 	// D. Render components

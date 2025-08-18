@@ -1,6 +1,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
+import { useStopsListContext } from '@/contexts/StopsList.context';
 import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -13,6 +14,7 @@ export function StopsListFilterParish() {
 	// A. Setup variables
 
 	const locationsContext = useLocationsContext();
+	const stopsListContext = useStopsListContext();
 
 	//
 	// B. Transform data
@@ -32,8 +34,8 @@ export function StopsListFilterParish() {
 		<MultiSelect
 			data={parsedOptions}
 			label="Freguesia"
-			onChange={locationsContext.actions.setParishes}
-			selected={locationsContext.data.selectedLocation?.parishes?.map(item => item._id) ?? []}
+			onChange={stopsListContext.actions.setFilterParishes}
+			selected={stopsListContext.filters.parishes}
 			clearable
 		/>
 	);

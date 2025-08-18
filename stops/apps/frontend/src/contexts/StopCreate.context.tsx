@@ -8,27 +8,10 @@ import { StopOptions } from '@/schemas/options';
 import { type WorkerMessage } from '@/types/worker';
 import { getAppConfig, Permissions } from '@tmlmobilidade/lib';
 import { CreateStopDto, CreateStopSchema, Location, Stop, StopPermission, UpdateStopSchema } from '@tmlmobilidade/types';
-import {
-	closeModal,
-	FormValidateInput,
-	useForm,
-	UseFormReturnType,
-	useMeContext,
-	useToast,
-	zodResolver,
-} from '@tmlmobilidade/ui';
+import { closeModal, FormValidateInput, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import {
-	createContext,
-	type PropsWithChildren,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { mutate } from 'swr';
 
 /* * */
@@ -121,7 +104,6 @@ interface StopCreateContextState {
 
 /* * */
 
-// function for create id with 12 digits
 function generate12DigitNumber(): number {
 	const min = 100000000000;
 	const max = 999999999999;
@@ -143,6 +125,11 @@ export function useStopCreateContext() {
 /* * */
 
 export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
+	//
+
+	//
+	// A. Setup variables
+
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
 	const meContext = useMeContext();

@@ -3,6 +3,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
+import { useStopsListContext } from '@/contexts/StopsList.context';
 import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -15,6 +16,7 @@ export function StopsListFilterDistrict() {
 	// A. Setup variables
 
 	const locationsContext = useLocationsContext();
+	const stopsListContext = useStopsListContext();
 
 	//
 	// B. Transform data
@@ -34,8 +36,8 @@ export function StopsListFilterDistrict() {
 		<MultiSelect
 			data={parsedOptions}
 			label="Distrito"
-			onChange={locationsContext.actions.setDistricts}
-			selected={locationsContext.data.selectedLocation?.districts?.map(item => item._id)}
+			onChange={stopsListContext.actions.setFilterDistricts}
+			selected={stopsListContext.filters.districts}
 			clearable
 		/>
 	);
