@@ -28,10 +28,10 @@
 		"@tmlmobilidade/tsconfig": "20250811.2224.4",
 		"@tmlmobilidade/types": "20250811.2224.4",
 		"@types/luxon": "3.7.1",
-		"@types/node": "24",
+		"@types/node": "24.3.0",
 		"@types/papaparse": "5.3.16",
-		"@types/react": "19",
-		"@types/react-dom": "19",
-		"typescript": "5"
+		"@types/react": "19.1.10",
+		"@types/react-dom": "19.1.7",
+		"typescript": "5.9.2"
 	}
 }
