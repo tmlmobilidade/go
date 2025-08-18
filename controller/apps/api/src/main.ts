@@ -28,7 +28,6 @@ import { getAppConfig } from '@tmlmobilidade/lib';
 
 	const fastifyService = FastifyService.getInstance(options);
 
-	// @ts-expect-error - mismatch between types from core and fastifyWs
 	await fastifyService.server.register(fastifyWs);
 
 	await fastifyService.start();
