@@ -6,25 +6,24 @@ import { useMemo } from 'react';
 
 /* * */
 
-export function StopListFilterParish() {
+export function StopsListFilterParish() {
 	//
 
 	//
 	// A. Setup variables
 
-	const locations = useLocationsContext();
+	const locationsContext = useLocationsContext();
 
 	//
 	// B. Transform data
 
 	const parsedOptions = useMemo(() => {
-		if (!locations.data.parishes?.length) return [];
-
-		return locations.data.parishes.map(item => ({
+		if (!locationsContext.data.parishes?.length) return [];
+		return locationsContext.data.parishes.map(item => ({
 			label: item.name,
 			value: item._id,
 		}));
-	}, [locations.data.parishes]);
+	}, [locationsContext.data.parishes]);
 
 	//
 	// C. Render components
@@ -33,8 +32,8 @@ export function StopListFilterParish() {
 		<MultiSelect
 			data={parsedOptions}
 			label="Freguesia"
-			onChange={locations.actions.setParishes}
-			selected={locations.data.selectedLocation?.parishes?.map(item => item._id) ?? []}
+			onChange={locationsContext.actions.setParishes}
+			selected={locationsContext.data.selectedLocation?.parishes?.map(item => item._id) ?? []}
 			clearable
 		/>
 	);

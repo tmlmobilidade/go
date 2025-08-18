@@ -12,7 +12,7 @@ import useSWR from 'swr';
 
 import { useLocationsContext } from './Locations.context';
 
-interface StopListContextState {
+interface StopsListContextState {
 	actions: {
 		changeSearchQuery: (query: string) => void
 		setFilterConnections: (values: string[]) => void
@@ -34,19 +34,19 @@ interface StopListContextState {
 	}
 }
 
-const StopListContext = createContext<StopListContextState | undefined>(undefined);
+const StopsListContext = createContext<StopsListContextState | undefined>(undefined);
 
-export const useStopListContext = () => {
-	const context = useContext(StopListContext);
+export const useStopsListContext = () => {
+	const context = useContext(StopsListContext);
 	if (!context) {
 		throw new Error(
-			'useStopListContext must be used within a StopListContextProvider',
+			'useStopsListContext must be used within a StopsListContextProvider',
 		);
 	}
 	return context;
 };
 
-export const StopListContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const StopsListContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 
 	//
@@ -168,7 +168,7 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	//
 	// E. render components
 
-	const contextValue: StopListContextState = useMemo(
+	const contextValue: StopsListContextState = useMemo(
 		() => ({
 			actions: {
 				changeSearchQuery: changeSearchQuery,
@@ -194,8 +194,8 @@ export const StopListContextProvider = ({ children }: { children: React.ReactNod
 	);
 
 	return (
-		<StopListContext.Provider value={contextValue}>
+		<StopsListContext.Provider value={contextValue}>
 			{children}
-		</StopListContext.Provider>
+		</StopsListContext.Provider>
 	);
 };

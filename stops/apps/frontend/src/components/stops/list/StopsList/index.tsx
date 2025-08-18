@@ -2,10 +2,11 @@
 
 /* * */
 
-import { useStopListContext } from '@/contexts/StopList.context';
-import { Routes } from '@/lib/routes';
-import { Stop } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, Pane } from '@tmlmobilidade/ui';
+import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
+import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
+import { useStopsListContext } from '@/contexts/StopsList.context';
+import { type Stop } from '@tmlmobilidade/types';
+import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -19,7 +20,7 @@ export function StopsList() {
 
 	const router = useRouter();
 
-	const { data, flags } = useStopListContext();
+	const stopsListContext = useStopsListContext();
 
 	const columns: DataTableColumn<Stop>[] = [
 		{
@@ -50,26 +51,34 @@ export function StopsList() {
 	];
 
 	//
-	// B. Handle Actions
+	// B. Handle actions
 
 	const handleRowClick = (item: Stop) => {
-		const destUrl = keepUrlParams(Routes.STOPS_DETAIL(item._id), window.location.search);
+		const destUrl = keepUrlParams(`/stops/${item._id}`, window.location.search);
 		router.push(destUrl);
 	};
 
 	//
 	// C. Render components
 
-	if (flags.error) {
-		return <div>Error: {flags.error.message}</div>;
+	if (stopsListContext.flags.isLoading) {
+		return <LoadingOverlay />;
+	}
+
+	if (stopsListContext.flags.error) {
+		return <ErrorDisplay message={stopsListContext.flags.error.message} />;
 	}
 
 	return (
-		<Pane>
+		<Pane header={[
+			<StopsListHeader />,
+			<StopsListFilterBar />,
+		]}
+		>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={data.filtered}
+				records={stopsListContext.data.filtered}
 				rowIdAccessor="_id"
 			/>
 		</Pane>

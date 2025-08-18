@@ -1,21 +1,21 @@
 /* * */
 
-import { useStopListContext } from '@/contexts/StopList.context';
+import { useStopsListContext } from '@/contexts/StopsList.context';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { Button, HasPermission, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
 
-import { openCreateStopMapModal } from '../../Detail/CreateStopModal/CreateStopMap';
+import { openCreateStopMapModal } from '../../create/CreateStopMap';
 
 /* * */
 
-export function StopListHeader() {
+export function StopsListHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const stoplistcontext = useStopListContext();
+	const stopsListContext = useStopsListContext();
 
 	//
 	// B. Render components
@@ -27,7 +27,7 @@ export function StopListHeader() {
 			<TextInput
 				leftSection={<IconSearch size={20} />}
 				miw={400}
-				onChange={e => stoplistcontext.actions.changeSearchQuery(e.target.value)}
+				onChange={e => stopsListContext.actions.changeSearchQuery(e.target.value)}
 				placeholder="Pesquisar alerta"
 			/>
 			<HasPermission action={Permissions.stops.actions.create} scope={Permissions.stops.scope}>

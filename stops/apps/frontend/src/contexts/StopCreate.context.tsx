@@ -2,7 +2,7 @@
 
 /* * */
 
-import { CREATE_STOP_MODAL_ID } from '@/components/stops2/Detail/CreateStopModal/CreateStopName';
+import { CREATE_STOP_MODAL_ID } from '@/components/stops/create/CreateStopName';
 import { Routes } from '@/lib/routes';
 import { StopOptions } from '@/schemas/options';
 import { type WorkerMessage } from '@/types/worker';

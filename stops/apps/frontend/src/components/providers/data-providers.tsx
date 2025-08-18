@@ -5,7 +5,6 @@
 import { LocationsContextProvider } from '@/contexts/Locations.context';
 import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { StopCreateContextProvider } from '@/contexts/StopCreate.context';
-import { StopListContextProvider } from '@/contexts/StopList.context';
 import { MeContextProvider, ThemeContextProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
@@ -17,15 +16,12 @@ export function DataProviders({ children }: PropsWithChildren) {
 			<MeContextProvider>
 				<MapOptionsContextProvider>
 					<LocationsContextProvider>
-						<StopListContextProvider>
-							<StopCreateContextProvider>
-								{children}
-							</StopCreateContextProvider>
-						</StopListContextProvider>
+						<StopCreateContextProvider>
+							{children}
+						</StopCreateContextProvider>
 					</LocationsContextProvider>
 				</MapOptionsContextProvider>
 			</MeContextProvider>
 		</ThemeContextProvider>
-
 	);
 }
