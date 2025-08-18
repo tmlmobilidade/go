@@ -1,6 +1,6 @@
 /* * */
 
-import { type Plan, PROCESSING_STATUS_OPTIONS, type Validation } from '@tmlmobilidade/types';
+import { type GtfsValidation, type Plan, PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -32,7 +32,7 @@ export const validationProcessingStatus = PROCESSING_STATUS_OPTIONS.map((item) =
 
 /* * */
 
-export interface ValidationNormalized extends Validation {
+export interface ValidationNormalized extends GtfsValidation {
 	agency_id_normalized: string
 	agency_name_normalized: string
 }

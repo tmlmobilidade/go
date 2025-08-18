@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type File, type Validation } from '@tmlmobilidade/types';
+import { type File, type GtfsValidation } from '@tmlmobilidade/types';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -15,7 +15,7 @@ interface ValidationsDetailContextState {
 	}
 	data: {
 		file: File | null
-		validation: null | Validation
+		validation: GtfsValidation | null
 	}
 	flags: {
 		can_approve: boolean
@@ -44,7 +44,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	//
 	// A. Fetch data
 
-	const { data: validationData, error: validationError, isLoading: validationLoading } = useSWR<Validation>(validationId && `/api/validations/${validationId}`, swrFetcher, { refreshInterval: 3_000 });
+	const { data: validationData, error: validationError, isLoading: validationLoading } = useSWR<GtfsValidation>(validationId && `/api/validations/${validationId}`, swrFetcher, { refreshInterval: 3_000 });
 	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<File>(validationId && `/api/validations/${validationId}/file`, swrFetcher);
 
 	//
