@@ -12,8 +12,8 @@ import { type PropsWithChildren } from 'react';
 /* * */
 
 export const metadata: Metadata = {
-	description: 'Plano de Exploração',
-	title: 'PLANOS | SAE | TML',
+	description: 'Gestor de localizações.',
+	title: 'GO | Locais',
 };
 
 /* * */

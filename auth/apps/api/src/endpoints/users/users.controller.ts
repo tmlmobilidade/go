@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider, roles, users } from '@tmlmobilidade/interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { type CreateUserDto, type UpdateUserDto, User } from '@tmlmobilidade/types';
 
 /* * */
@@ -56,19 +56,68 @@ export class UsersController {
 	}
 
 	/**
-	 * Get current user - Get the current user from the session token
+	 * Get the current user from the session token.
 	 * @param request The request object
 	 * @param reply The reply object
 	 */
 	static async getMe(request: FastifyRequest, reply: FastifyReply<User>) {
-		const session_token = request.cookies[COOKIE_NAME];
+		//
 
-		const user = await authProvider.getUser(session_token);
-		const role = await roles.findMany({ _id: { $in: user.role_ids } });
+		//
+		// Extract the session token from authentication cookie
 
-		user.permissions = [...role.flatMap(role => role.permissions), ...user.permissions];
+		const sessionToken = request.cookies[COOKIE_NAME];
 
-		return reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
+		if (!sessionToken) {
+			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session token is missing');
+		}
+
+		//
+		// Retrieve user data using the session token.
+		// If the user is not found, log out the session token
+		// and return an error response. Do this to force the user
+		// to log in again and to avoid an infinite loop of trying
+		// to get user data with an invalid session token.
+
+		let userData: User;
+
+		try {
+			userData = await authProvider.getUser(sessionToken);
+			if (!userData) throw new Error('User not found');
+		}
+		catch (error) {
+			console.error('Error retrieving user data:', error);
+			await authProvider.logout(sessionToken);
+			return reply
+				.setCookie(COOKIE_NAME, '', {
+					domain: getAppConfig('auth', 'cookie_domain'),
+					httpOnly: true,
+					maxAge: 0,
+					path: '/',
+					sameSite: 'none',
+					secure: true,
+				})
+				.send({
+					data: undefined,
+					error: null,
+					statusCode: HttpStatus.OK,
+				});
+		}
+
+		//
+		// Retrieve roles and permissions for the user
+		// and merge them into the user data.
+
+		const role = await roles.findMany({ _id: { $in: userData.role_ids } });
+
+		userData.permissions = [...role.flatMap(role => role.permissions), ...userData.permissions];
+
+		//
+		// Send the user data back in the response.
+
+		return reply.send({ data: userData, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
 
 	/**
@@ -89,7 +138,6 @@ export class UsersController {
 	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto, Params: { themeId: string } }>) {
 		const session_token = request.cookies[COOKIE_NAME];
 		const user = await authProvider.getUser(session_token);
-		console.log('request.body', request.body);
 		// For now, update only the theme_id
 		await users.updateById(user._id, { theme_id: request.body.theme_id });
 	}

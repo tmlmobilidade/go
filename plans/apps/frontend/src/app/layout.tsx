@@ -1,6 +1,9 @@
 /* * */
 
 import '@tmlmobilidade/ui/styles';
+
+/* * */
+
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
@@ -10,18 +13,13 @@ import { type PropsWithChildren } from 'react';
 /* * */
 
 export const metadata: Metadata = {
-	description: 'Plano de Exploração',
-	title: 'PLANOS | SAE | TML',
+	description: 'Validação e gestão de Planos de Operação.',
+	title: 'GO | Planos',
 };
 
 /* * */
 
-export default async function Layout({ children }: PropsWithChildren) {
-	//
-
-	//
-	// A. Render components
-
+export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body>
@@ -37,6 +35,4 @@ export default async function Layout({ children }: PropsWithChildren) {
 			</body>
 		</html>
 	);
-
-	//
 }

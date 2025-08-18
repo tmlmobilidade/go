@@ -5,7 +5,7 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { ProcessingStatus, type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -69,8 +69,8 @@ export async function processApexValidation(databaseOperation) {
 			//
 			// Invalidate all documents that are affected
 
-			const updateRidesPromise = rides.updateMany({ $or: updateRidesOps }, { system_status: ProcessingStatus.Waiting }, { returnResults: false });
-			const updateUniqueSamsPromise = uniqueSams.updateMany({ $or: updateUniqueSamsOps }, { system_status: ProcessingStatus.Waiting }, { returnResults: false });
+			const updateRidesPromise = rides.updateMany({ $or: updateRidesOps }, { system_status: 'waiting' }, { returnResults: false });
+			const updateUniqueSamsPromise = uniqueSams.updateMany({ $or: updateUniqueSamsOps }, { system_status: 'waiting' }, { returnResults: false });
 
 			const [updateRidesResult, updateUniqueSamsResult] = await Promise.all([updateRidesPromise, updateUniqueSamsPromise]);
 

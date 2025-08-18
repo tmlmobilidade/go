@@ -86,7 +86,7 @@ export class PlansController {
 			const fileResult = await filesCollection.clone(
 				validationData.file_id,
 				Permissions.plans.scope,
-				planResult._id,
+				planResult._id.toString(),
 				{ session: filesTransaction.getSession() },
 			);
 

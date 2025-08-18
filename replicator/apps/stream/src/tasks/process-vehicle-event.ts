@@ -5,7 +5,7 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { ProcessingStatus, type VehicleEvent } from '@tmlmobilidade/types';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -66,7 +66,7 @@ export async function processVehicleEvent(databaseOperation) {
 			//
 			// Invalidate all rides that are affected
 
-			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: ProcessingStatus.Waiting }, { returnResults: false });
+			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: 'waiting' }, { returnResults: false });
 
 			LOGGER.info(`Flush [vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 

@@ -4,19 +4,22 @@ import '@tmlmobilidade/ui/styles';
 
 /* * */
 
-import { DataProviders } from '@/components/providers/data-providers';
+import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
+import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
+
+/* * */
+
+export const metadata: Metadata = {
+	description: 'Gestor de avisos e alertas ao público.',
+	title: 'GO | Alertas',
+};
 
 /* * */
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-	//
-
-	//
-	// C. Render components
-
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body>
@@ -32,6 +35,4 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 			</body>
 		</html>
 	);
-
-	//
 }
