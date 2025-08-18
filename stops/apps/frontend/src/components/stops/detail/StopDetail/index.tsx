@@ -2,7 +2,6 @@
 
 /* * */
 
-import { MapViewOneStop } from '@/components/map/overlays/MapViewOneStop';
 import { StopDetailHeader } from '@/components/stops/detail/StopDetailHeader';
 import { StopDetailsSectionAdministrative } from '@/components/stops/detail/StopDetailsSectionAdministrative';
 import { StopDetailsSectionConnections } from '@/components/stops/detail/StopDetailsSectionConnections';
@@ -20,7 +19,6 @@ import { Pane } from '@tmlmobilidade/ui';
 export function StopDetail() {
 	return (
 		<Pane header={[<StopDetailHeader />]}>
-			<MapViewOneStop />
 			<StopDetailsSectionGeneral />
 			<StopDetailsSectionAdministrative />
 			<StopDetailsSectionShelter />

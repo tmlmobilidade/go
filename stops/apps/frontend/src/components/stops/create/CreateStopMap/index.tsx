@@ -1,13 +1,11 @@
 'use client';
 
-import { MapViewStops } from '@/components/map/overlays/MapViewStops';
 /* * */
 
 import CoordinatesInput from '@/components/CoordinatesInput';
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, Divider, Grid, Label, MapOptionsContextProvider, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
-import { Layer, Source } from '@vis.gl/react-maplibre';
-import { useMemo } from 'react';
+import { AlertMessage, Button, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+// import { useMemo } from 'react';
 
 import { openCreateStopInfosModal } from '../CreateStopName';
 
@@ -21,11 +19,9 @@ export const openCreateStopMapModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<MapOptionsContextProvider>
-					<StopCreateContextProvider>
-						<CreateStopModal />
-					</StopCreateContextProvider>
-				</MapOptionsContextProvider>
+				<StopCreateContextProvider>
+					<CreateStopModal />
+				</StopCreateContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
@@ -54,27 +50,28 @@ export default function CreateStopModal() {
 		stopCreateContext.data.form.setFieldValue('longitude', value[1]);
 	};
 
-	const selectedCoordinatesMapData = useMemo(() => {
-		if (stopCreateContext.data.form.values.latitude && stopCreateContext.data.form.values.longitude) {
-			const geojson = {
-				geometry: {
-					coordinates: [stopCreateContext.data.form.values.longitude, stopCreateContext.data.form.values.latitude],
-					type: 'Point',
-				},
-				properties: {},
-				type: 'Feature',
-			};
+	// const selectedCoordinatesMapData = useMemo(() => {
+	// 	if (stopCreateContext.data.form.values.latitude && stopCreateContext.data.form.values.longitude) {
+	// 		const geojson = {
+	// 			geometry: {
+	// 				coordinates: [stopCreateContext.data.form.values.longitude, stopCreateContext.data.form.values.latitude],
+	// 				type: 'Point',
+	// 			},
+	// 			properties: {},
+	// 			type: 'Feature',
+	// 		};
 
-			return geojson;
-		}
-		return null;
-	}, [stopCreateContext.data.form.values]);
+	// 		return geojson;
+	// 	}
+	// 	return null;
+	// }, [stopCreateContext.data.form.values]);
 
 	//
-	// B. Hnadle actions
-	const handleMapClick = (event) => {
-		stopCreateContext.actions.createStopCoordinates(event.lngLat.lat, event.lngLat.lng);
-	};
+	// B. Handle actions
+
+	// const handleMapClick = (event) => {
+	// 	stopCreateContext.actions.createStopCoordinates(event.lngLat.lat, event.lngLat.lng);
+	// };
 
 	//
 	// C. Render Components
@@ -96,8 +93,8 @@ export default function CreateStopModal() {
 			)}
 
 			<Section gap="md">
-				<MapViewStops onClick={handleMapClick}>
-					{/* @ts-expect-error: 1234567890 */}
+				Map here
+				{/* <MapViewStops onClick={handleMapClick}>
 					<Source data={selectedCoordinatesMapData} generateId={true} id="selected-coordinates" type="geojson">
 						<Layer
 							id="selected-coordinates"
@@ -111,7 +108,7 @@ export default function CreateStopModal() {
 							}}
 						/>
 					</Source>
-				</MapViewStops>
+				</MapViewStops> */}
 			</Section>
 			<Divider />
 

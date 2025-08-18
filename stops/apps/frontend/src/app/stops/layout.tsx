@@ -11,6 +11,7 @@ export default function Layout({ children }: PropsWithChildren) {
 	return (
 		<StopsListContextProvider>
 			<PanesManager
+				id="stops-list"
 				panes={[
 					<StopsList />,
 					children,

@@ -15,6 +15,8 @@ import { fetchData } from '@tmlmobilidade/utils';
 async function cleanOldValidations() {
 	//
 
+	return;
+
 	LOGGER.init();
 
 	const globalTimer = new TIMETRACKER();

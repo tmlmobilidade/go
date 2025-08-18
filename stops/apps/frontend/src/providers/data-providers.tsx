@@ -3,9 +3,8 @@
 /* * */
 
 import { LocationsContextProvider } from '@/contexts/Locations.context';
-import { MapOptionsContextProvider } from '@/components/map/view/MapOptions.context';
 import { StopCreateContextProvider } from '@/contexts/StopCreate.context';
-import { MeContextProvider, ThemeContextProvider } from '@tmlmobilidade/ui';
+import { MapContextProvider, MeContextProvider, ThemeContextProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -14,13 +13,13 @@ export function DataProviders({ children }: PropsWithChildren) {
 	return (
 		<ThemeContextProvider>
 			<MeContextProvider>
-				<MapOptionsContextProvider>
+				<MapContextProvider>
 					<LocationsContextProvider>
 						<StopCreateContextProvider>
 							{children}
 						</StopCreateContextProvider>
 					</LocationsContextProvider>
-				</MapOptionsContextProvider>
+				</MapContextProvider>
 			</MeContextProvider>
 		</ThemeContextProvider>
 	);
