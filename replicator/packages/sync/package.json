@@ -15,7 +15,7 @@
 		"@helperkits/writer": "20250623.2358.3"
 	},
 	"devDependencies": {
-		"@types/node": "24.1.0",
+		"@types/node": "24.2.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.2"
 	}

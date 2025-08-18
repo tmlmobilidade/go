@@ -48,14 +48,14 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<File>(validationId && `/api/validations/${validationId}/file`, swrFetcher);
 
 	//
-	// C. Handle actions
+	// B. Handle actions
 
 	const approvePlan = async () => {
 		if (!validationId) return;
 	};
 
 	//
-	// D. Define context value
+	// C. Define context value
 
 	const contextValue: ValidationsDetailContextState = useMemo(() => ({
 		actions: {
@@ -80,7 +80,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	]);
 
 	//
-	// E. Render Components
+	// D. Render components
 
 	return (
 		<ValidationsDetailContext.Provider value={contextValue}>

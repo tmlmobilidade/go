@@ -5,8 +5,8 @@
 import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
 import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { Dates, fetchData, keepUrlParams, swrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { Dates, fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -41,13 +41,12 @@ export function usePlansDetailContext() {
 	if (!context) {
 		throw new Error('usePlansDetailContext must be used within a PlansDetailContextProvider');
 	}
-
 	return context;
 }
 
 /* * */
 
-export const PlansDetailContextProvider = ({ children, planId }: { children: React.ReactNode, planId: string }) => {
+export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildren<{ planId: string }>) => {
 	//
 
 	//
@@ -90,8 +89,7 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 
 	useEffect(() => {
 		if (!planError) return;
-		useToast.error({ message: planError.message, title: 'Erro ao carregar validação' });
-		window.location.href = keepUrlParams('/plans', window.location.search);
+		useToast.error({ message: planError.message, title: 'Erro ao abrir plano' });
 	}, [planLoading]);
 
 	//
@@ -102,8 +100,8 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 	};
 
 	const handleControllerReprocessPlan = async () => {
-		setIsSaving(true);
 		try {
+			setIsSaving(true);
 			const response = await fetchData<Plan>(`/api/plans/${planId}/controller-reprocess`);
 			if (response.error) {
 				return useToast.error({
@@ -118,8 +116,10 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 				title: 'Erro ao reprocessar plano',
 			});
 		}
-		planMutate();
-		setIsSaving(false);
+		finally {
+			planMutate();
+			setIsSaving(false);
+		}
 	};
 
 	const handleSavePlan = async () => {
@@ -135,7 +135,7 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 				return useToast.update(toastId, {
 					loading: false,
 					message: response.error,
-					title: 'Erro ao reprocessar plano',
+					title: 'Erro ao guardar alterações',
 					type: 'error',
 				});
 			}
@@ -151,13 +151,15 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 			useToast.update(toastId, {
 				loading: false,
 				message: error.message,
-				title: 'Erro ao reprocessar plano',
+				title: 'Erro ao guardar alterações',
 				type: 'error',
 			});
 		}
-		planMutate();
-		fileMutate();
-		setIsSaving(false);
+		finally {
+			planMutate();
+			fileMutate();
+			setIsSaving(false);
+		}
 	};
 
 	const handleToggleLock = async () => {
@@ -176,7 +178,9 @@ export const PlansDetailContextProvider = ({ children, planId }: { children: Rea
 				title: 'Erro ao bloquear plano',
 			});
 		}
-		planMutate();
+		finally {
+			planMutate();
+		}
 	};
 
 	//

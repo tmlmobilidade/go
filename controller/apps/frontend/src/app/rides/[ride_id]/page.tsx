@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesDetail } from '@/components/detail/RidesDetail';
+import { RidesDetail } from '@/components/rides/detail/RidesDetail';
 
 /* * */
 

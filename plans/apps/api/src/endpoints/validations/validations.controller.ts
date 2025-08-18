@@ -7,9 +7,9 @@ import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { files, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { Agency, type CreateValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type Permission, type Validation, type ValidationPermission } from '@tmlmobilidade/types';
-import { fetchData, hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { fetchData, getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { createWriteStream } from 'fs';
-import { readFile, unlink } from 'fs/promises';
+import { readFileSync, unlinkSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
@@ -71,7 +71,7 @@ export class ValidationsController {
 			await pipeline(data.file, writeStream);
 
 			// Read file back as buffer for upload
-			buffer = await readFile(tempFilePath);
+			buffer = readFileSync(tempFilePath);
 			size = buffer.length;
 		}
 		catch (streamError) {
@@ -123,7 +123,7 @@ export class ValidationsController {
 		// Clean up temporary file
 		if (tempFilePath) {
 			try {
-				await unlink(tempFilePath);
+				unlinkSync(tempFilePath);
 			}
 			catch (cleanupError) {
 				console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
@@ -139,27 +139,34 @@ export class ValidationsController {
 	 * @param reply Fastify reply
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Validation[]>) {
-		const permissions = request.permissions as Permission<ValidationPermission>;
+		//
 
-		// Filter validations by all keys
-		if (permissions?.resource) {
+		//
+		// Extract permissions from the request
+
+		const validationPermission: Permission<ValidationPermission> = getPermission(request.permissions, Permissions.validations.scope, Permissions.validations.actions.read);
+
+		//
+		// Filter validations based on permissions for the current user
+
+		if (validationPermission?.resource) {
 			const filters = {
-				...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
+				...(validationPermission.resource.agency_ids && !validationPermission.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: validationPermission.resource.agency_ids } }),
 			};
 
-			console.log(filters);
-
-			const filteredValidations = await validations.findMany(
-				filters,
-				{ sort: { created_at: -1 } },
-			);
+			const filteredValidations = await validations.findMany(filters, { sort: { created_at: -1 } });
 
 			return reply.send({ data: filteredValidations, error: null, statusCode: HttpStatus.OK });
 		}
 
-		// Send all validations
+		//
+		// If no specific permissions are set, return all validations
+
 		const allValidations = await validations.findMany({}, { sort: { created_at: -1 } });
+
 		return reply.send({ data: allValidations, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
 
 	/**
@@ -239,44 +246,63 @@ export class ValidationsController {
 	 * @param reply Fastify reply
 	 */
 	static async requestApproval(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Validation>) {
-		const { id } = request.params;
-		const Validation = await validations.findById(id);
+		//
 
-		if (!Validation) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
+		//
+		// Get the requested Validation data
+
+		const validationData = await validations.findById(request.params.id);
+
+		if (!validationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
+
+		//
+		// Check if the notification has already been sent
+
+		if (validationData.notification_sent) {
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Notification has already been sent');
 		}
 
 		//
-		// Check if the user has permission to request approval for the validation
-		if (!hasAPIResourcePermission<ValidationPermission>(request, {
+		// Check if the user has permission to request approval for this Validation
+
+		const hasPermissionRequestApproval = hasAPIResourcePermission<ValidationPermission>(request, {
 			action: Permissions.validations.actions.request_approval,
 			resource_key: 'agency_ids',
 			scope: Permissions.validations.scope,
-			value: Validation.gtfs_agency.agency_id,
-		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
-		}
+			value: validationData.gtfs_agency.agency_id,
+		});
 
-		// Get Agency TML Contact emails
-		const agency = await fetchData<Agency>(getAppConfig('auth', 'frontend_url') + '/api/agencies/' + Validation.gtfs_agency.agency_id, 'GET', undefined, {
+		if (!hasPermissionRequestApproval) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+
+		//
+		// Get the TML contact emails for this Agency
+
+		const agencyData = await fetchData<Agency>(getAppConfig('auth', 'frontend_url') + '/api/agencies/' + validationData.gtfs_agency.agency_id, 'GET', undefined, {
 			Cookie: `session_token=${request.cookies.session_token}`,
 		});
 
-		if (agency.error) {
-			throw new HttpException(agency.statusCode, agency.error);
+		if (!agencyData?.data || agencyData?.error) {
+			throw new HttpException(agencyData.statusCode, agencyData.error);
 		}
+
+		//
+		// Send the approval request email
 
 		await sendPlanApprovalRequestEmail({
 			props: {
 				solicited_by: request.me.first_name + ' ' + request.me.last_name,
-				validation: Validation,
+				validation: validationData,
 			},
-			to: agency.data.tml_contact_emails || [],
+			to: agencyData.data.contact_emails_pta || [],
 		});
 
 		//
-		// Request approval for the validation
-		const updatedValidation = await validations.updateById(id, { notification_sent: true });
+		// Update the Validation document and send it to caller
+
+		const updatedValidation = await validations.updateById(validationData._id, { notification_sent: true });
+
 		reply.send({ data: updatedValidation, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
 }

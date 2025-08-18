@@ -19,7 +19,7 @@ server.register(
 		// GET /plans
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.list) },
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.read) },
 			PlansController.getAll,
 		);
 
@@ -54,14 +54,14 @@ server.register(
 		// GET /plans/:id/toggle-lock
 		instance.get(
 			'/:id/toggle-lock',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.toggle_lock) },
 			PlansController.toggleLockById,
 		);
 
 		// GET /plans/:id/reprocess
 		instance.get(
 			'/:id/controller-reprocess',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update_controller) },
 			PlansController.controllerReprocessPlanById,
 		);
 

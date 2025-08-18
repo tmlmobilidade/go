@@ -5,7 +5,7 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connector
 import { files, plans, TransactionManager, validations } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/lib';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
-import { hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';
 import { createHash } from 'node:crypto';
 
 /* * */;
@@ -71,6 +71,9 @@ export class PlansController {
 				hash: '',
 				is_locked: false,
 				operation_file_id: '',
+				pcgi_legacy: {
+					operation_plan_id: '',
+				},
 				status_merger: 'waiting',
 			};
 
@@ -170,16 +173,14 @@ export class PlansController {
 		//
 		// Extract permissions from the request
 
-		const permissions = request.permissions as Permission<PlanPermission>;
+		const planPermission: Permission<PlanPermission> = getPermission(request.permissions, Permissions.plans.scope, Permissions.plans.actions.read);
 
 		//
 		// Filter plans based on permissions for the current user
 
-		if (permissions?.resource) {
+		if (planPermission?.resource) {
 			const filter = {
-				...(permissions.resource.agency_ids && !permissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: permissions.resource.agency_ids } }),
-				...(permissions.resource.end_date && { 'gtfs_feed_info.feed_end_date': { $lte: permissions.resource.end_date } }),
-				...(permissions.resource.start_date && { 'gtfs_feed_info.feed_start_date': { $gte: permissions.resource.start_date } }),
+				...(planPermission.resource.agency_ids && !planPermission.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: planPermission.resource.agency_ids } }),
 			};
 
 			const filteredPlans = await plans.findMany(filter, { sort: { created_at: -1 } });
@@ -319,7 +320,7 @@ export class PlansController {
 		// Check if the user has permission to toggle lock the Plan
 
 		const hasPermissionToggleLockPlan = hasAPIResourcePermission<PlanPermission>(request, {
-			action: Permissions.plans.actions.update,
+			action: Permissions.plans.actions.toggle_lock,
 			resource_key: 'agency_ids',
 			scope: Permissions.plans.scope,
 			value: planData.gtfs_agency.agency_id,
@@ -352,12 +353,12 @@ export class PlansController {
 		//
 		// Get the Plan from the database
 
-		const planData = await plans.findById(request.params.id);
+		let planData = await plans.findById(request.params.id);
 
 		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
 
 		//
-		// Check if the user has permission to read the Plan
+		// Check if the user has permission to update the Plan
 
 		const hasPermissionReadPlan = hasAPIResourcePermission<PlanPermission>(request, {
 			action: Permissions.plans.actions.update,
@@ -366,7 +367,7 @@ export class PlansController {
 			value: planData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this plan.');
 
 		//
 		// Validate the new feed info dates
@@ -374,70 +375,126 @@ export class PlansController {
 		const validatedFeedStartDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_start_date);
 		const validatedFeedEndDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_end_date);
 
-		//
-		// Update the feed info dates in the operation file
-
-		const updateDatesResult = await updateFeedInfoDates(
-			planData.operation_file_id,
-			validatedFeedStartDate,
-			validatedFeedEndDate,
-		);
+		if (validatedFeedStartDate > validatedFeedEndDate) {
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Feed start date cannot be after feed end date');
+		}
 
 		//
-		// Prepare the updated file metadata
+		// Check if the dates actually changed
+		// to avoid unnecessary file updates
 
-		const updatedFileData: CreateFileDto = {
-			created_by: updateDatesResult.info.created_by,
-			name: updateDatesResult.info.name,
-			resource_id: updateDatesResult.info.resource_id,
-			scope: updateDatesResult.info.scope,
-			size: updateDatesResult.file.size,
-			type: mimeTypes.zip,
-			updated_by: 'system',
-		};
+		if (planData.gtfs_feed_info.feed_start_date !== validatedFeedStartDate || planData.gtfs_feed_info.feed_end_date !== validatedFeedEndDate) {
+			//
+
+			//
+			// Check if the user has permission to update the PCGI legacy field
+
+			const hasPermissionUpdateFeedInfoDates = hasAPIResourcePermission<PlanPermission>(request, {
+				action: Permissions.plans.actions.update_feed_info_dates,
+				resource_key: 'agency_ids',
+				scope: Permissions.plans.scope,
+				value: planData.gtfs_agency.agency_id,
+			});
+
+			if (!hasPermissionUpdateFeedInfoDates) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update the feed info dates.');
+
+			//
+			// Update the feed info dates in the operation file
+
+			const updateDatesResult = await updateFeedInfoDates(
+				planData.operation_file_id,
+				validatedFeedStartDate,
+				validatedFeedEndDate,
+			);
+
+			//
+			// Prepare the updated file metadata
+
+			const updatedFileData: CreateFileDto = {
+				created_by: updateDatesResult.info.created_by,
+				name: updateDatesResult.info.name,
+				resource_id: updateDatesResult.info.resource_id,
+				scope: updateDatesResult.info.scope,
+				size: updateDatesResult.file.size,
+				type: mimeTypes.zip,
+				updated_by: 'system',
+			};
+
+			//
+			// Upload updated file and store new file ID
+
+			const updateFileResult = await files.upload(
+				Buffer.from(await updateDatesResult.file.arrayBuffer()),
+				updatedFileData,
+			);
+
+			//
+			// Get a hash of all metadata to make it possible
+			// to keep track of changes to the plan
+
+			const hashablePlanMetadata: HashablePlanMetadata = {
+				_id: planData._id,
+				gtfs_agency: planData.gtfs_agency,
+				gtfs_feed_info: {
+					...planData.gtfs_feed_info,
+					feed_end_date: validatedFeedEndDate,
+					feed_start_date: validatedFeedStartDate,
+				},
+				operation_file_id: updateFileResult._id,
+			};
+
+			const hashValue = createHash('sha256')
+				.update(JSON.stringify(hashablePlanMetadata))
+				.digest('hex');
+
+			planData = await plans.updateById(planData._id, {
+				gtfs_feed_info: {
+					...planData.gtfs_feed_info,
+					feed_end_date: validatedFeedEndDate,
+					feed_start_date: validatedFeedStartDate,
+				},
+				hash: hashValue,
+				operation_file_id: updateFileResult._id,
+			});
+
+			//
+		}
 
 		//
-		// Upload updated file and store new file ID
+		// Check if the PCGI legacy field is being updated
 
-		const updateFileResult = await files.upload(
-			Buffer.from(await updateDatesResult.file.arrayBuffer()),
-			updatedFileData,
-		);
+		if (request.body.pcgi_legacy?.operation_plan_id && request.body.pcgi_legacy?.operation_plan_id !== planData.pcgi_legacy?.operation_plan_id) {
+			//
+
+			//
+			// Check if the user has permission to update the PCGI legacy field
+
+			const hasPermissionUpdatePcgiLegacy = hasAPIResourcePermission<PlanPermission>(request, {
+				action: Permissions.plans.actions.update_pcgi_legacy,
+				resource_key: 'agency_ids',
+				scope: Permissions.plans.scope,
+				value: planData.gtfs_agency.agency_id,
+			});
+
+			if (!hasPermissionUpdatePcgiLegacy) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
+
+			//
+			// Update the plan with the new data
+
+			planData = await plans.updateById(planData._id, {
+				pcgi_legacy: {
+					operation_plan_id: request.body.pcgi_legacy.operation_plan_id,
+				},
+			});
+
+			//
+		}
 
 		//
-		// Get a hash of all metadata to make it possible
-		// to keep track of changes to the plan
-
-		const hashablePlanMetadata: HashablePlanMetadata = {
-			_id: planData._id,
-			gtfs_agency: planData.gtfs_agency,
-			gtfs_feed_info: {
-				...planData.gtfs_feed_info,
-				feed_end_date: validatedFeedEndDate,
-				feed_start_date: validatedFeedStartDate,
-			},
-			operation_file_id: updateFileResult._id,
-		};
-
-		const hashValue = createHash('sha256')
-			.update(JSON.stringify(hashablePlanMetadata))
-			.digest('hex');
-
-		//
-		// Update the plan with the new data
-
-		const updatedPlan = await plans.updateById(planData._id, {
-			gtfs_feed_info: {
-				...planData.gtfs_feed_info,
-				feed_end_date: validatedFeedEndDate,
-				feed_start_date: validatedFeedStartDate,
-			},
-			hash: hashValue,
-			operation_file_id: updateFileResult._id,
-		});
+		// Send the updated plan data as the response
 
 		reply.send({
-			data: updatedPlan,
+			data: planData,
 			error: null,
 			statusCode: HttpStatus.OK,
 		});

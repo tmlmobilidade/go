@@ -21,7 +21,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    name: cleaner (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -59,7 +58,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   coordinator:
-    name: coordinator (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -97,7 +95,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-bridge:
-    name: rides-bridge (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -135,7 +132,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-examiner:
-    name: rides-examiner (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -173,7 +169,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-feeder:
-    name: rides-feeder (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -211,7 +206,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   sams-examiner:
-    name: sams-examiner (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -249,7 +243,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   sams-feeder:
-    name: sams-feeder (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -287,7 +280,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    name: nginx (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -325,7 +317,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    name: api (NodeJS)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -363,7 +354,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    name: frontend (NextJS)
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
     permissions:

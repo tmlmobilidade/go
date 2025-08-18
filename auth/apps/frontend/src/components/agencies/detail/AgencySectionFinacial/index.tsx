@@ -12,8 +12,6 @@ export function AgencySectionFinacial() {
 	//
 
 	//
-
-	//
 	// A. Setup variables
 
 	const agencyDetailContext = useAgencyDetailContext();
@@ -33,15 +31,15 @@ export function AgencySectionFinacial() {
 						placeholder="1.50"
 						step="0.01"
 						type="number"
-						withAsterisk={!CreateAgencySchema.shape.price_per_km.isOptional()}
-						{...agencyDetailContext.data.form.getInputProps('price_per_km')}
+						withAsterisk={!CreateAgencySchema.shape.financials.shape.price_per_km.isOptional()}
+						{...agencyDetailContext.data.form.getInputProps('financials.price_per_km')}
 					/>
 					<TextInput
 						label="Total de km por ano"
 						placeholder="1000000"
 						type="number"
-						withAsterisk={!CreateAgencySchema.shape.total_vkm_per_year.isOptional()}
-						{...agencyDetailContext.data.form.getInputProps('total_vkm_per_year')}
+						withAsterisk={!CreateAgencySchema.shape.financials.shape.total_vkm_per_year.isOptional()}
+						{...agencyDetailContext.data.form.getInputProps('financials.total_vkm_per_year')}
 					/>
 				</Grid>
 			</Section>

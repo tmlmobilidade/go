@@ -18,7 +18,7 @@ server.register(
 		// GET /stops
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.list) },
+			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.read) },
 			StopsController.getAll,
 		);
 

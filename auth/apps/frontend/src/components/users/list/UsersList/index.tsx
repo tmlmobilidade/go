@@ -29,14 +29,9 @@ export function UsersList() {
 			width: 120,
 		},
 		{
-			accessor: 'first_name',
+			accessor: 'full_name',
 			title: 'Nome',
-			width: 200,
-		},
-		{
-			accessor: 'last_name',
-			title: 'Apelido',
-			width: 200,
+			width: 400,
 		},
 	];
 

@@ -15,22 +15,22 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "20250805.1546.58",
-		"@tmlmobilidade/emails": "20250805.1546.58",
-		"@tmlmobilidade/interfaces": "20250805.1546.58",
-		"@tmlmobilidade/lib": "20250805.1546.58",
-		"@tmlmobilidade/utils": "20250805.1546.58",
+		"@tmlmobilidade/connectors": "20250811.2224.4",
+		"@tmlmobilidade/emails": "20250811.2224.4",
+		"@tmlmobilidade/interfaces": "20250811.2224.4",
+		"@tmlmobilidade/lib": "20250811.2224.4",
+		"@tmlmobilidade/utils": "20250811.2224.4",
 		"gray-matter": "4.0.3",
 		"pino-pretty": "13.1.1",
 		"remark-html": "16.0.1",
 		"remark-parse": "11.0.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250805.1546.58",
-		"@tmlmobilidade/types": "20250805.1546.58",
-		"@types/node": "24.2.0",
+		"@tmlmobilidade/tsconfig": "20250811.2224.4",
+		"@tmlmobilidade/types": "20250811.2224.4",
+		"@types/node": "24.3.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.3",
+		"tsx": "4.20.4",
 		"typescript": "5.9.2"
 	}
 }

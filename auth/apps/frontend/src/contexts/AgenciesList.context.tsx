@@ -58,10 +58,9 @@ export const AgenciesListContextProvider = ({ children }: PropsWithChildren) => 
 		// Skip if no data is available
 		if (!agenciesContext.data.raw) return [];
 		// Normalize record fields
-		return agenciesContext.data.raw.map(item => ({
-			...item,
-			name_normalized: normalizeString(item.name),
-		}));
+		return agenciesContext.data.raw
+			.map(item => ({ ...item, name_normalized: normalizeString(item.name) }))
+			.sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	}, [agenciesContext.data.raw]);
 
 	const searchResultsData = useSearch<AgencyNormalized>({

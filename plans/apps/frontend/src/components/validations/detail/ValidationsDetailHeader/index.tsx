@@ -49,38 +49,41 @@ export function ValidationsDetailHeader() {
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 			<Label size="md" caps>{validationsDetailContext.data.validation?._id}</Label>
 			<Spacer />
-			{validationsDetailContext.flags.can_approve && (
-				<>
-					<HasPermission
-						action={Permissions.validations.actions.request_approval}
-						resource_key="agency_ids"
-						scope={Permissions.validations.scope}
-						value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
-					>
-						<Button
-							disabled={validationsDetailContext.flags.loading}
-							icon={<IconMailFast />}
-							label="Solicitar aprovação à TML"
-							onClick={handleRequestApproval}
-							variant="secondary"
-						/>
-					</HasPermission>
-					<HasPermission
-						action={Permissions.plans.actions.create}
-						resource_key="agency_ids"
-						scope={Permissions.plans.scope}
-						value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
-					>
-						<Button
-							disabled={validationsDetailContext.flags.loading}
-							icon={<IconRosetteDiscountCheckFilled />}
-							label="Aprovar Plano"
-							loading={validationsDetailContext.flags.loading}
-							onClick={handleApprovePlan}
-						/>
-					</HasPermission>
-				</>
+
+			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+				<HasPermission
+					action={Permissions.validations.actions.request_approval}
+					resource_key="agency_ids"
+					scope={Permissions.validations.scope}
+					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
+				>
+					<Button
+						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
+						icon={<IconMailFast />}
+						label="Solicitar aprovação à TML"
+						onClick={handleRequestApproval}
+						variant="secondary"
+					/>
+				</HasPermission>
 			)}
+
+			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+				<HasPermission
+					action={Permissions.plans.actions.create}
+					resource_key="agency_ids"
+					scope={Permissions.plans.scope}
+					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
+				>
+					<Button
+						disabled={validationsDetailContext.flags.loading}
+						icon={<IconRosetteDiscountCheckFilled />}
+						label="Aprovar Plano"
+						loading={validationsDetailContext.flags.loading}
+						onClick={handleApprovePlan}
+					/>
+				</HasPermission>
+			)}
+
 		</>
 	);
 

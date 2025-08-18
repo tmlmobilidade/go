@@ -18,7 +18,7 @@ server.register(
 		// GET /alerts
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<Alert>(Permissions.alerts.scope, Permissions.alerts.actions.list) },
+			{ preHandler: authorizationMiddleware<Alert>(Permissions.alerts.scope, Permissions.alerts.actions.read) },
 			AlertsController.getAll,
 		);
 

@@ -16,7 +16,7 @@ const server = FastifyService.getInstance().server;
 server.register(
 	(instance, opts, next) => {
 		// GET /users
-		instance.get('/', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.list) }, UsersController.getAll);
+		instance.get('/', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.read) }, UsersController.getAll);
 
 		// GET /users/:id
 		instance.get('/:id', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.read) }, UsersController.getById);

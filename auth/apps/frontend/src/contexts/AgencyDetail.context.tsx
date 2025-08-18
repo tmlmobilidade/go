@@ -1,19 +1,15 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
+/* * */
+
 import { Permissions } from '@tmlmobilidade/lib';
-import { Agency, AgencySchema, CreateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
+import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
-import { convertObject, Dates } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-export enum AgencyDetailMode {
-	CREATE = 'create',
-	EDIT = 'edit',
-}
+/* * */
 
 export const availablePermissions = Object.entries(Permissions).map(([scope, value]) => ({
 	children: Object.entries(value.actions).map(([action]) => ({
@@ -24,40 +20,26 @@ export const availablePermissions = Object.entries(Permissions).map(([scope, val
 	value: scope,
 }));
 
+/* * */
+
 interface AgencyDetailContextState {
 	actions: {
-		deleteAgency: () => void
 		saveAgency: () => void
 	}
 	data: {
-		form: UseFormReturnType<CreateAgencyDto>
-		id: string | undefined
+		agency: Agency | null
+		form: UseFormReturnType<UpdateAgencyDto>
+		id: string
 	}
 	flags: {
-		canSave: boolean
-		isReadOnly: boolean
-		isSaving: boolean
+		error: Error | null
 		loading: boolean
-		mode: AgencyDetailMode
+		read_only: boolean
+		saving: boolean
 	}
 }
 
-const emptyAgency: CreateAgencyDto = {
-	_id: '',
-	contact_emails: [],
-	email: '',
-	fare_url: '',
-	is_locked: false,
-	lang: '',
-	name: '',
-	operation_start_date: Dates.now('Europe/Lisbon').operational_date,
-	phone: '',
-	price_per_km: 0,
-	timezone: '',
-	tml_contact_emails: [],
-	total_vkm_per_year: 0,
-	url: '',
-};
+/* * */
 
 const AgencyDetailContext = createContext<AgencyDetailContextState | undefined>(undefined);
 
@@ -69,126 +51,117 @@ export function useAgencyDetailContext() {
 	return context;
 }
 
-export const AgencyDetailContextProvider = ({ agency_id, children }: { agency_id: string, children: React.ReactNode }) => {
+/* * */
+
+export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChildren<{ agencyId: string }>) => {
+	//
+
 	//
 	// A. Setup variables
-	const router = useRouter();
-	const [loading, setLoading] = useState(false);
-	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
-	const [canSave, setCanSave] = useState(false);
 
-	const { data: agency, isLoading } = useSWR<Agency>(agency_id === 'new' ? null : Routes.API(Routes.AGENCY_DETAIL(agency_id)), swrFetcher);
+	const [isReady, setIsReady] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
 
 	//
-	// B. Define form
-	const form = useForm<CreateAgencyDto>({
-		initialValues: agency || emptyAgency,
-		validate: zodResolver(AgencySchema) as unknown as FormValidateInput<CreateAgencyDto>,
+	// B. Fetch data
+
+	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(`/api/agencies/${agencyId}`, swrFetcher);
+
+	//
+	// C. Setup form
+
+	const form = useForm<UpdateAgencyDto>({
+		validate: zodResolver(UpdateAgencySchema) as unknown as FormValidateInput<UpdateAgencyDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
 
-	// Update form
+	//
+	// D. Transform data
+
 	useEffect(() => {
-		if (!agency) return;
-
-		setLoading(true);
-
-		form.initialize(agency);
-
-		setLoading(false);
-	}, [agency]);
+		if (!agencyData) return;
+		const initialValues = UpdateAgencySchema.strip().parse(agencyData);
+		form.initialize(initialValues);
+		setIsReady(true);
+	}, [agencyData]);
 
 	//
-	// C. Transform Data
-	// Validate form on change
-	useEffect(() => {
-		form.validate();
-		setCanSave(form.isValid());
-	}, [form.values]);
+	// E. Handle actions
 
-	//
-	// D. Handle actions
 	const handleSaveAgency = async () => {
 		setIsSaving(true);
-		const method = agency_id === 'new' ? 'POST' : 'PUT';
-		const url = agency_id === 'new' ? Routes.API(Routes.AGENCY_LIST) : Routes.API(Routes.AGENCY_DETAIL(agency_id));
-		const body = agency_id === 'new' ? form.values : convertObject(form.values, UpdateAgencySchema);
-		const response = await fetchData<Agency>(url, method, body);
-
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao salvar utilizador',
+		const toastId = useToast.loading({
+			message: 'Por favor aguarde...',
+			title: 'A guardar operador',
+		});
+		try {
+			const response = await fetchData<Agency>(`/api/agencies/${agencyId}`, 'PUT', form.getValues());
+			if (response.error) {
+				return useToast.update(toastId, {
+					loading: false,
+					message: response.error,
+					title: 'Erro ao guardar alterações',
+					type: 'error',
 				});
 			}
-
-			return;
+			useToast.update(toastId, {
+				loading: false,
+				message: 'As alterações serão refletidas em breve.',
+				title: 'Operador guardado com sucesso',
+				type: 'success',
+			});
+			form.resetDirty();
 		}
-
-		useToast.success({
-			message: 'Utilizador salvo com sucesso',
-			title: 'Sucesso',
-		});
-
-		if (agency_id === 'new' && response.data?._id) {
-			router.replace(Routes.AGENCY_DETAIL(response.data._id));
+		catch (error) {
+			useToast.update(toastId, {
+				loading: false,
+				message: error.message,
+				title: 'Erro ao guardar alterações',
+				type: 'error',
+			});
 		}
-
-		setIsSaving(false);
-	};
-
-	const handleDeleteAgency = async () => {
-		if (agency_id === 'new') return;
-
-		const response = await fetchData<Agency>(Routes.API(Routes.AGENCY_DETAIL(agency_id)), 'DELETE', agency);
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao apagar utilizador',
-				});
-			}
-			return;
+		finally {
+			agencyMutate();
+			setIsSaving(false);
 		}
-
-		useToast.success({
-			message: 'Utilizador apagado com sucesso',
-			title: 'Sucesso',
-		});
-
-		router.replace(Routes.AGENCY_LIST);
 	};
 
 	//
-	// E. Define context value
-	const contextValue: AgencyDetailContextState = {
+	// F. Define context value
+
+	const contextValue: AgencyDetailContextState = useMemo(() => ({
 		actions: {
-			deleteAgency: handleDeleteAgency,
 			saveAgency: handleSaveAgency,
 		},
 		data: {
+			agency: agencyData,
 			form,
-			id: agency_id === 'new' ? undefined : agency_id,
+			id: agencyId,
 		},
 		flags: {
-			canSave,
-			isReadOnly,
-			isSaving,
-			loading: isLoading || loading,
-			mode: agency_id === 'new' ? AgencyDetailMode.CREATE : AgencyDetailMode.EDIT,
+			error: agencyError,
+			loading: agencyLoading || !isReady,
+			read_only: agencyLoading || isSaving,
+			saving: isSaving,
 		},
-	};
+	}), [
+		agencyData,
+		agencyError,
+		agencyLoading,
+		form,
+		agencyId,
+		isSaving,
+	]);
 
 	//
-	// F. Render components
+	// G. Render components
+
 	return (
 		<AgencyDetailContext.Provider value={contextValue}>
 			{children}
 		</AgencyDetailContext.Provider>
 	);
+
+	//
 };

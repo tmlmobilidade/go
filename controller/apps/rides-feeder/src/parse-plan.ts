@@ -1,6 +1,7 @@
 /* * */
 
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
+import { SQLiteMap } from '@/sqlite-map.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
@@ -39,15 +40,19 @@ export async function parsePlan(planData: Plan) {
 		const referencedRouteIds = new Set<string>();
 		const referencedShapeIds = new Set<string>();
 
-		const savedCalendarDates = new Map<string, OperationalDate[]>();
-		const savedTrips = new Map<string, GTFS_Trip_Extended>();
-		const savedStops = new Map<string, GTFS_Stop_Extended>();
-		const savedRoutes = new Map<string, Partial<GTFS_Route_Extended>>();
-		const savedShapes = new Map<string, GTFS_Shape[]>();
-		const savedStopTimes = new Map<string, GTFS_StopTime[]>();
+		const savedCalendarDates = new SQLiteMap<string, OperationalDate[]>();
+		const savedTrips = new SQLiteMap<string, GTFS_Trip_Extended>();
+		const savedStops = new SQLiteMap<string, GTFS_Stop_Extended>();
+		const savedRoutes = new SQLiteMap<string, Partial<GTFS_Route_Extended>>();
+		const savedShapes = new SQLiteMap<string, GTFS_Shape[]>();
+		const savedStopTimes = new SQLiteMap<string, GTFS_StopTime[]>();
 
 		let calendarDatesCounter = 0;
+		let tripsCounter = 0;
 		let stopTimesCounter = 0;
+
+		let hashedShapesCounter = 0;
+		let hashedTripsCounter = 0;
 
 		//
 		// Prepare the working directories to work with the zip file
@@ -117,6 +122,8 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
+			const calendarParseTimer = new TIMETRACKER();
+
 			LOGGER.info(`Reading zip entry "calendar.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Calendar_Raw) => {
@@ -174,7 +181,7 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} service_ids saved.`, 1);
+				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} service_ids saved in ${calendarParseTimer.get()}.`, 1);
 			}
 			else {
 				LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
@@ -197,6 +204,8 @@ export async function parsePlan(planData: Plan) {
 
 		try {
 			//
+
+			const calendarDatesParseTimer = new TIMETRACKER();
 
 			LOGGER.info(`Reading zip entry "calendar_dates.txt"...`);
 
@@ -252,7 +261,7 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} service_ids saved.`, 1);
+				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} service_ids saved in ${calendarDatesParseTimer.get()}.`, 1);
 			}
 			else {
 				LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
@@ -276,6 +285,8 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
+			const tripsParseTimer = new TIMETRACKER();
+
 			LOGGER.info(`Reading zip entry "trips.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
@@ -289,6 +300,10 @@ export async function parsePlan(planData: Plan) {
 				// Reference the associated entities to filter them later.
 				referencedRouteIds.add(validatedData.route_id);
 				referencedShapeIds.add(validatedData.shape_id);
+				// Log progress
+				if (tripsCounter % 1000 === 0) LOGGER.info(`Parsed ${tripsCounter} trips.txt rows so far.`);
+				// Increment the counter
+				tripsCounter++;
 			};
 
 			//
@@ -296,7 +311,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/trips.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} trips saved.`, 1);
+			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} trips saved in ${tripsParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -315,6 +330,8 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
+			const routesParseTimer = new TIMETRACKER();
+
 			LOGGER.info(`Reading zip entry "routes.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
@@ -332,7 +349,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/routes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} routes saved.`, 1);
+			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} routes saved in ${routesParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -351,6 +368,8 @@ export async function parsePlan(planData: Plan) {
 
 		try {
 			//
+
+			const shapesParseTimer = new TIMETRACKER();
 
 			LOGGER.info(`Reading zip entry "shapes.txt"...`);
 
@@ -371,7 +390,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/shapes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} shapes saved.`, 1);
+			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} shapes saved in ${shapesParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -391,6 +410,8 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
+			const stopsParseTimer = new TIMETRACKER();
+
 			LOGGER.info(`Reading zip entry "stops.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
@@ -405,7 +426,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/stops.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} stops saved.`, 1);
+			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} stops saved in ${stopsParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -426,39 +447,28 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
+			const stopTimesParseTimer = new TIMETRACKER();
+
 			LOGGER.info(`Reading zip entry "stop_times.txt"...`);
 
 			const parseEachRow = async (data: GTFS_StopTime_Raw) => {
-				//
-
-				//
 				// Validate the current row against the proper type
-
 				const validatedData = validateGtfsStopTime(data);
-
-				//
-				// For each stopTime of each trip, check if the associated trip_id was saved
-				// in the previous step or not. Skip if this row's trip_id was not saved before.
-				// Also, check if the stop_id is valid and was saved before.
-
+				// Skip if this row's trip_id was not saved before.
 				const tripData = savedTrips.get(validatedData.trip_id);
 				if (!tripData) return;
-
+				// Also, check if the stop_id is valid and was saved before.
 				const stopData = savedStops.get(validatedData.stop_id);
 				if (!stopData) return;
-
-				//
 				// Format the exported row. Only include the minimum required data
 				// to prevent memory bloat later on, and include the stop data right away.
-
 				const savedStopTime = savedStopTimes.get(validatedData.trip_id);
-
 				if (savedStopTime) savedStopTimes.set(validatedData.trip_id, [...savedStopTime, validatedData]);
 				else savedStopTimes.set(validatedData.trip_id, [validatedData]);
-
+				// Log progress
+				if (stopTimesCounter % 1000 === 0) LOGGER.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
+				// Increment the counter
 				stopTimesCounter++;
-
-				//
 			};
 
 			//
@@ -466,7 +476,7 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/stop_times.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved.`, 1);
+			LOGGER.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -487,10 +497,12 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
+			const outputsTimer = new TIMETRACKER();
+
 			LOGGER.title(`Generating HashedTrips, HashedShapes and Rides:`);
 
 			LOGGER.info(`Dates: ${calendarDatesCounter} for ${savedCalendarDates.size} service_ids`);
-			LOGGER.info(`Trips: ${savedTrips.size}`);
+			LOGGER.info(`Trips: ${tripsCounter}`);
 			LOGGER.info(`Routes: ${savedRoutes.size}`);
 			LOGGER.info(`Shapes: ${savedShapes.size}`);
 			LOGGER.info(`Stops: ${savedStops.size}`);
@@ -500,9 +512,9 @@ export async function parsePlan(planData: Plan) {
 				//
 
 				//
-				// Log every 10000 trips processed
+				// Log every 10000 rides processed
 
-				if (savedTrips.size % 10000 === 0) LOGGER.title(`${savedTrips.size} trips left. Generated ${savedRideIds.size} Rides so far.`);
+				if (tripsCounter % 10000 === 0) LOGGER.title(`${tripsCounter} trips left. ${stopTimesCounter} stop_times left. Generated ${savedRideIds.size} Rides so far. `);
 
 				//
 				// Get associated data from previously saved entities,
@@ -620,6 +632,7 @@ export async function parsePlan(planData: Plan) {
 
 				if (!currentHashedTripAlreadyExists) {
 					await hashedTripsDbWritter.write(finalHashedTrip, { filter: { _id: finalHashedTrip._id }, upsert: true });
+					hashedTripsCounter++;
 				}
 
 				/* * */
@@ -674,6 +687,7 @@ export async function parsePlan(planData: Plan) {
 
 				if (!currentHashedShapeAlreadyExists) {
 					await hashedShapesDbWritter.write(finalHashedShape, { filter: { _id: finalHashedShape._id }, upsert: true });
+					hashedShapesCounter++;
 				}
 
 				/* * */
@@ -775,10 +789,11 @@ export async function parsePlan(planData: Plan) {
 				}
 
 				//
-				// Delete the current trip to free up memory sooner
+				// Decrement the trips and stop times counters
+				// to keep track of progress in the logs
 
-				savedTrips.delete(currentTrip.trip_id);
-				savedStopTimes.delete(currentTrip.trip_id);
+				tripsCounter--;
+				stopTimesCounter--;
 
 				//
 			}
@@ -790,6 +805,22 @@ export async function parsePlan(planData: Plan) {
 			await hashedTripsDbWritter.flush();
 			await hashedShapesDbWritter.flush();
 			await ridesDbWritter.flush();
+
+			//
+			// Cleanup the saved entities to avoid
+			// storing so much data on disk.
+
+			savedCalendarDates.clear();
+			savedTrips.clear();
+			savedStops.clear();
+			savedRoutes.clear();
+			savedShapes.clear();
+			savedStopTimes.clear();
+
+			//
+			// Log progress
+
+			LOGGER.info(`Saved ${savedRideIds.size} Rides, ${hashedTripsCounter} Trips, ${hashedShapesCounter} Shapes in ${outputsTimer.get()}.`);
 
 			//
 		}

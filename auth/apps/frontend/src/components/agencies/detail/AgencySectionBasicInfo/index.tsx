@@ -8,9 +8,8 @@ import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
-export function AgencyDetailBasicInfo() {
-	//
 
+export function AgencyDetailBasicInfo() {
 	//
 
 	//
@@ -23,17 +22,24 @@ export function AgencyDetailBasicInfo() {
 
 	return (
 		<Collapsible
-			description="Informação básica da agência"
-			title="Informação Básica"
+			description="Detalhes como nome, email, telefone, URL e timezone da agência."
+			title="Informações gerais"
 		>
 			<Section gap="lg">
-				<Grid columns="a">
+				<Grid columns="aab" gap="lg">
 					<TextInput
-						label="Nome da agência"
+						label="Nome do Operador"
 						maxLength={255}
 						placeholder="Carris Metropolitana"
 						withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('name')}
+					/>
+					<TextInput
+						label="Nome Curto"
+						maxLength={3}
+						placeholder="CM"
+						withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}
+						{...agencyDetailContext.data.form.getInputProps('short_name')}
 					/>
 				</Grid>
 				<Grid columns="abc" gap="lg">
@@ -41,8 +47,8 @@ export function AgencyDetailBasicInfo() {
 						label="Email da agência"
 						placeholder="email@example.com"
 						type="email"
-						withAsterisk={!CreateAgencySchema.shape.email.isOptional()}
-						{...agencyDetailContext.data.form.getInputProps('email')}
+						withAsterisk={!CreateAgencySchema.shape.public_email.isOptional()}
+						{...agencyDetailContext.data.form.getInputProps('public_email')}
 					/>
 					<TextInput
 						label="Telemóvel da agência"
@@ -55,8 +61,8 @@ export function AgencyDetailBasicInfo() {
 						label="URL da agência"
 						placeholder="https://www.carrismetropolitana.pt"
 						type="url"
-						withAsterisk={!CreateAgencySchema.shape.url.isOptional()}
-						{...agencyDetailContext.data.form.getInputProps('url')}
+						withAsterisk={!CreateAgencySchema.shape.website_url.isOptional()}
+						{...agencyDetailContext.data.form.getInputProps('website_url')}
 					/>
 					<TextInput
 						label="URL de tarifário da agência"
@@ -69,6 +75,7 @@ export function AgencyDetailBasicInfo() {
 						data={Dates.TIMEZONE_LIST as unknown as string[]}
 						label="Timezone da agência"
 						{...agencyDetailContext.data.form.getInputProps('timezone')}
+						searchable
 					/>
 				</Grid>
 			</Section>

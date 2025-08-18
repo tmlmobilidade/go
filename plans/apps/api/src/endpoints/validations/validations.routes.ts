@@ -17,7 +17,7 @@ server.register(
 		// GET /validations
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.list) },
+			{ preHandler: authorizationMiddleware<ValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.read) },
 			ValidationsController.getAll,
 		);
 
