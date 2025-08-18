@@ -28,7 +28,6 @@ server.register(
 			'/ws',
 			{
 				preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.read),
-				// @ts-expect-error - mismatch between types from core and fastifyWs
 				websocket: true,
 			},
 			RidesController.websocket,
