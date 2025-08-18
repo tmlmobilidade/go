@@ -2,14 +2,14 @@
 
 /* * */
 
-import { StopDetailMode, useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Spacer, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
 
-export function StopHeader() {
+export function StopDetailHeader() {
 	//
 
 	//
@@ -36,19 +36,17 @@ export function StopHeader() {
 			<Button
 				disabled={!stopDetailContext.flags.canSave}
 				icon={<IconUpload size={28} />}
-				label={stopDetailContext.flags.mode === StopDetailMode.CREATE ? 'Publicar' : 'Guardar'}
+				label="Guardar"
 				loading={stopDetailContext.flags.isSaving}
 				onClick={stopDetailContext.actions.saveStop}
 				variant="primary"
 			/>
-			{stopDetailContext.flags.mode === StopDetailMode.EDIT && (
-				<Button
-					icon={<IconTrash size={28} />}
-					label="Apagar"
-					onClick={stopDetailContext.actions.deleteStop}
-					variant="danger"
-				/>
-			)}
+			<Button
+				icon={<IconTrash size={28} />}
+				label="Eliminar"
+				onClick={stopDetailContext.actions.deleteStop}
+				variant="danger"
+			/>
 		</>
 	);
 

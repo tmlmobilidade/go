@@ -10,7 +10,7 @@ import { Button, Collapsible, Combobox, Grid, NumberInput, Section, TextInput, T
 
 /* * */
 
-export function StopDetailsBasic() {
+export function StopDetailsSectionBasic() {
 	//
 
 	//
@@ -18,18 +18,20 @@ export function StopDetailsBasic() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const operationalStatusItems = operationalStatusSchema.options.map (value => ({
+	//
+	// B. Transform data
+
+	const operationalStatusItems = operationalStatusSchema.options.map(value => ({
 		label: Translations.OPERATIONAL_STATUS[value],
 		value: value,
 	}));
 
 	//
-	// B. Handle actions
+	// C. Handle actions
 
 	const handlePlayPhoneticName = async () => {
 		if (typeof window !== 'undefined') {
 			const synth = window.speechSynthesis;
-
 			const utterance = new SpeechSynthesisUtterance(stopDetailContext.data.form.values.tts_name || '');
 			utterance.lang = 'pt';
 			synth.speak(utterance);
@@ -37,13 +39,14 @@ export function StopDetailsBasic() {
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Collapsible
 			description="Informações gerais sobre esta paragem."
 			title="Detalhes desta Paragem"
 		>
+
 			<Section>
 				<Grid columns="ab" gap="sm">
 					<TextInput

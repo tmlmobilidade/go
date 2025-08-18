@@ -9,7 +9,7 @@ import { Collapsible, Combobox, Grid, Section, ValueDisplay } from '@tmlmobilida
 
 /* * */
 
-export function AdministratorInfo() {
+export function StopDetailsSectionAdministrative() {
 	//
 
 	//
@@ -17,7 +17,7 @@ export function AdministratorInfo() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const jurisdictionItems = jurisdictionSchema.options.map (value => ({
+	const jurisdictionItems = jurisdictionSchema.options.map(value => ({
 		label: Translations.JURISDICATION[value],
 		value: value,
 	}));
