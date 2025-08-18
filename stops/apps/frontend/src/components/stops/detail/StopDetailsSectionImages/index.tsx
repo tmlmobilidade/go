@@ -8,7 +8,7 @@ import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function Images() {
+export function StopDetailsSectionImages() {
 	//
 
 	//
@@ -32,7 +32,6 @@ export function Images() {
 					onFileChange={stopDetailContext.actions.fileChanged}
 				/>
 			</Section>
-
 		</Collapsible>
 	);
 

@@ -9,7 +9,7 @@ import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmob
 
 /* * */
 
-export function PublicInformation() {
+export function StopDetailsSectionPublicInformation() {
 	//
 
 	//
@@ -17,13 +17,16 @@ export function PublicInformation() {
 
 	const stopDetailContext = useStopDetailContext();
 
+	//
+	// B. Transform data
+
 	const has_this = hasAnySchema.options.map (value => ({
 		label: Translations.HAS_ANY[value],
 		value: value,
 	}));
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -56,7 +59,6 @@ export function PublicInformation() {
 				</Grid>
 				<Spacer />
 			</Section>
-
 			<Section>
 				<Grid columns="ab" gap="md">
 					<TextInput
@@ -73,7 +75,6 @@ export function PublicInformation() {
 					/>
 				</Grid>
 			</Section>
-
 		</Collapsible>
 	);
 

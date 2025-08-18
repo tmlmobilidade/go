@@ -3,24 +3,17 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-// import { Translations } from '@/lib/translations';
-// import { connectionsSchema } from '@tmlmobilidade/types';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function IntermodalConnections() {
+export function StopDetailsSectionConnections() {
 	//
 
 	//
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-
-	// const connectionsItems = connectionsSchema.options.map(value => ({
-	// 	label: Translations.CONNECTIONS[value],
-	// 	value: value,
-	// }));
 
 	//
 	// B. Render components
@@ -66,7 +59,6 @@ export function IntermodalConnections() {
 					/>
 				</Grid>
 			</Section>
-
 		</Collapsible>
 	);
 

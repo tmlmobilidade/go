@@ -7,7 +7,7 @@ import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function ServedEquipment() {
+export function StopDetailsSectionEquipment() {
 	//
 
 	//
@@ -67,7 +67,6 @@ export function ServedEquipment() {
 					/>
 				</Grid>
 			</Section>
-
 		</Collapsible>
 	);
 

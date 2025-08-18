@@ -7,7 +7,7 @@ import { Collapsible, Section, Textarea } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function NotesComments() {
+export function StopDetailsSectionNotes() {
 	//
 
 	//
@@ -31,7 +31,6 @@ export function NotesComments() {
 					{...stopDetailContext.data.form.getInputProps('comments')}
 				/>
 			</Section>
-
 		</Collapsible>
 	);
 
