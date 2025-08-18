@@ -10,7 +10,7 @@ import { Button, Collapsible, Combobox, Grid, NumberInput, Section, TextInput, T
 
 /* * */
 
-export function StopDetailsSectionBasic() {
+export function StopDetailsSectionGeneral() {
 	//
 
 	//

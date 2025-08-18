@@ -9,7 +9,7 @@ import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmob
 
 /* * */
 
-export function Infraestructures() {
+export function StopDetailsSectionInfrastructure() {
 	//
 
 	//
@@ -17,18 +17,21 @@ export function Infraestructures() {
 
 	const stopDetailContext = useStopDetailContext();
 
-	const has_this = hasAnySchema.options.map (value => ({
+	//
+	// B. Transform data
+
+	const has_this = hasAnySchema.options.map(value => ({
 		label: Translations.HAS_ANY[value],
 		value: value,
 	}));
 
-	const road_relation = roadTypeSchema.options.map (value => ({
+	const road_relation = roadTypeSchema.options.map(value => ({
 		label: Translations.ROAD_TYPE[value],
 		value: value,
 	}));
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Collapsible

@@ -17,13 +17,16 @@ export function StopDetailsSectionAdministrative() {
 
 	const stopDetailContext = useStopDetailContext();
 
+	//
+	// B. Transform data
+
 	const jurisdictionItems = jurisdictionSchema.options.map(value => ({
 		label: Translations.JURISDICATION[value],
 		value: value,
 	}));
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -33,11 +36,8 @@ export function StopDetailsSectionAdministrative() {
 			<Section>
 				<Grid columns="ab" gap="sm">
 					<ValueDisplay label="Distrito" value={stopDetailContext.data.districtName} raised />
-
 					<ValueDisplay label="Municipio" value={stopDetailContext.data.municipalityName} raised />
-
 					<ValueDisplay label="Freguesia" value={stopDetailContext.data.parishName} raised />
-
 					<ValueDisplay label="Localidade" value={stopDetailContext.data.localityName} raised />
 				</Grid>
 			</Section>
@@ -45,12 +45,11 @@ export function StopDetailsSectionAdministrative() {
 				<Combobox
 					data={jurisdictionItems}
 					defaultValue={Translations.JURISDICATION.unknown}
-					label="Jusrisdição"
+					label="Jurisdição"
 					fullWidth
 					{...stopDetailContext.data.form.getInputProps('jurisdiction')}
 				/>
 			</Section>
-
 		</Collapsible>
 	);
 

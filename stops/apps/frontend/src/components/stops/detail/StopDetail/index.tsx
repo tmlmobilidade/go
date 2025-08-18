@@ -5,16 +5,16 @@
 import { MapViewOneStop } from '@/components/Map/MapViewOneStop';
 import { StopDetailHeader } from '@/components/stops/detail/StopDetailHeader';
 import { StopDetailsSectionAdministrative } from '@/components/stops/detail/StopDetailsSectionAdministrative';
-import { StopDetailsSectionBasic } from '@/components/stops/detail/StopDetailsSectionBasic';
+import { StopDetailsSectionGeneral } from '@/components/stops/detail/StopDetailsSectionGeneral';
+import { StopDetailsSectionInfrastructure } from '@/components/stops/detail/StopDetailsSectionInfrastructure';
+import { StopDetailsSectionShelter } from '@/components/stops/detail/StopDetailsSectionShelter';
 import { Pane } from '@tmlmobilidade/ui';
 
 import { Images } from '../Images';
-import { Infraestructures } from '../Infrastructures';
 import { IntermodalConnections } from '../IntermodalConnections';
 import { NotesComments } from '../Notes-Comments';
 import { PublicInformation } from '../PublicInformation';
 import { ServedEquipment } from '../ServedEquipment';
-import { Shelter } from '../Shelter';
 
 /* * */
 
@@ -22,10 +22,10 @@ export function StopDetail() {
 	return (
 		<Pane header={[<StopDetailHeader />]}>
 			<MapViewOneStop />
-			<StopDetailsSectionBasic />
+			<StopDetailsSectionGeneral />
 			<StopDetailsSectionAdministrative />
-			<Shelter />
-			<Infraestructures />
+			<StopDetailsSectionShelter />
+			<StopDetailsSectionInfrastructure />
 			<PublicInformation />
 			<ServedEquipment />
 			<IntermodalConnections />

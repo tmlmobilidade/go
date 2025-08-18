@@ -9,7 +9,7 @@ import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmob
 
 /* * */
 
-export function Shelter() {
+export function StopDetailsSectionShelter() {
 	//
 
 	//
@@ -17,12 +17,13 @@ export function Shelter() {
 
 	const stopDetailContext = useStopDetailContext();
 
+	//
+	// B. Transform data
+
 	const has_shelter = hasAnySchema.options.map (value => ({
 		label: Translations.HAS_ANY[value],
 		value: value,
 	}));
-
-	//
 
 	const shelterStatus = infrastructureStatusSchema.options.map(value => ({
 		label: Translations.INFRAESTRUCTURES_STATUS[value],
@@ -30,7 +31,7 @@ export function Shelter() {
 	}));
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -78,7 +79,6 @@ export function Shelter() {
 					{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
 				/>
 			</Section>
-
 		</Collapsible>
 	);
 
