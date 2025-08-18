@@ -256,6 +256,13 @@ export class ValidationsController {
 		if (!validationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
 
 		//
+		// Check if the notification has already been sent
+
+		if (validationData.notification_sent) {
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Notification has already been sent');
+		}
+
+		//
 		// Check if the user has permission to request approval for this Validation
 
 		const hasPermissionRequestApproval = hasAPIResourcePermission<ValidationPermission>(request, {
