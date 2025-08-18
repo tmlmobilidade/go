@@ -2,8 +2,8 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { files, validations } from '@tmlmobilidade/interfaces';
-import { type UnixTimestamp, type Validation } from '@tmlmobilidade/types';
+import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /**
@@ -21,14 +21,14 @@ async function cleanOldValidations() {
 	//
 	// Get all GTFS Validation documents from the database
 
-	const allValidations = await validations.all();
+	const allValidations = await gtfsValidations.all();
 
 	LOGGER.info(`Found ${allValidations.length} validations.`);
 
 	//
 	// Set the threshold for deletion (30 days)
 
-	const thresholdsByStatus: Record<Validation['feeder_status'], number> = {
+	const thresholdsByStatus: Record<GtfsValidation['feeder_status'], number> = {
 
 		complete: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
 
@@ -83,7 +83,7 @@ async function cleanOldValidations() {
 
 		try {
 			await files.deleteById(validation.file_id);
-			await validations.deleteById(validation._id);
+			await gtfsValidations.deleteById(validation._id);
 			LOGGER.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
 		}
 		catch (error) {
