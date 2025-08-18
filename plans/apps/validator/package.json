@@ -15,7 +15,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
-		"@helperkits/logger": "^20250628.901.58",
+		"@helperkits/logger": "20250628.901.58",
 		"@tmlmobilidade/connectors": "20250811.2224.4",
 		"@tmlmobilidade/emails": "20250811.2224.4",
 		"@tmlmobilidade/gtfs-validator": "20250811.1516.59",
