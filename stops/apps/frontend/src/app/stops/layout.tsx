@@ -9,13 +9,13 @@ import { type PropsWithChildren } from 'react';
 
 export default function Layout({ children }: PropsWithChildren) {
 	return (
-		<PanesManager
-			panes={[
-				<StopsListContextProvider>
-					<StopsList />
-				</StopsListContextProvider>,
-				children,
-			]}
-		/>
+		<StopsListContextProvider>
+			<PanesManager
+				panes={[
+					<StopsList />,
+					children,
+				]}
+			/>
+		</StopsListContextProvider>
 	);
 }

@@ -3,56 +3,47 @@
 /* * */
 
 import { MapView } from '@/components/Map/MapView';
-import { Routes } from '@/lib/routes';
+import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Stop } from '@tmlmobilidade/types';
-import { swrFetcher } from '@tmlmobilidade/utils';
+import { MapOptionsContextProvider } from '@tmlmobilidade/ui';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import React, { useMemo } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
-export function MapOnlyViewStops() {
+export function StopsListMap() {
 	//
-	// A. Fetch data
 
-	const { data: stops } = useSWR<Stop[]>(Routes.ME, swrFetcher);
+	//
+	// A. Setup variables
+
+	const stopsListContext = useStopsListContext();
 
 	//
 	// B. Transform data
 
-	const stopsAsGeojson = useMemo(() => {
-		const geoJSON: GeoJSON.FeatureCollection = {
-			features: [],
+	const stopsAsGeojson: GeoJSON.FeatureCollection = useMemo(() => {
+		return {
+			features: stopsListContext.data.filtered.map((stop: Stop) => ({
+				geometry: { coordinates: [stop.longitude, stop.latitude], type: 'Point' },
+				properties: {},
+				type: 'Feature',
+			})),
 			type: 'FeatureCollection',
 		};
-		if (stops) {
-			for (const stop of stops) {
-				geoJSON.features.push({
-					geometry: { coordinates: [stop.longitude, stop.latitude], type: 'Point' },
-					properties: {},
-					type: 'Feature',
-				});
-			}
-		}
-		return geoJSON;
-	}, [stops]);
+	}, [stopsListContext.data.filtered]);
 
 	//
 	// C. Render components
 
-	if (!stops) {
-		return;
-	}
-
 	return (
-		<div style={{ height: 400, width: '100%' }}>
-			<MapView
-				id="allStops"
-				interactiveLayerIds={['allStops']}
-				scrollZoom
-			>
-				<>
+		<MapOptionsContextProvider>
+			<div style={{ height: 400, width: '100%' }}>
+				<MapView
+					id="allStops"
+					interactiveLayerIds={['allStops']}
+					scrollZoom
+				>
 					<Source data={stopsAsGeojson} id="allStops" type="geojson">
 						<Layer
 							id="allStops"
@@ -66,10 +57,9 @@ export function MapOnlyViewStops() {
 							}}
 						/>
 					</Source>
-				</>
-
-			</MapView>
-		</div>
+				</MapView>
+			</div>
+		</MapOptionsContextProvider>
 	);
 
 	//

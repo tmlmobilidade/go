@@ -46,22 +46,22 @@ export function StopsList() {
 		{
 			accessor: 'district_name',
 			title: 'Distrito',
-			width: 150,
+			width: 250,
 		},
 		{
 			accessor: 'municipality_name',
 			title: 'Município',
-			width: 150,
+			width: 250,
 		},
 		{
 			accessor: 'parish_name',
 			title: 'Freguesia',
-			width: 150,
+			width: 250,
 		},
 		{
 			accessor: 'locality_name',
 			title: 'Localidade',
-			width: 150,
+			width: 250,
 		},
 	];
 

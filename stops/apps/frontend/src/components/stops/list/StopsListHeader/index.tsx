@@ -27,7 +27,7 @@ export function StopsListHeader() {
 			<TextInput
 				leftSection={<IconSearch size={20} />}
 				miw={400}
-				onChange={e => stopsListContext.actions.changeSearchQuery(e.target.value)}
+				onChange={e => stopsListContext.actions.setFilterSearch(e.target.value)}
 				placeholder="Pesquisar alerta"
 			/>
 			<HasPermission action={Permissions.stops.actions.create} scope={Permissions.stops.scope}>

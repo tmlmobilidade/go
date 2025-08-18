@@ -117,17 +117,21 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		// const filterEquipmentSet = new Set(filterEquipment);
 		// const filterConnectionsSet = new Set(filterConnections);
 		// Apply filter values
-		return searchResultsData.filter((stopData: StopNormalized) => {
-			const matchesDistrict = filterDistrictsSet.has(stopData.district_id);
-			const matchesMunicipality = filterMunicipalitiesSet.has(stopData.municipality_id);
-			const matchesParish = true; // filterParishesSet.has(stopData.parish_id);
-			const matchesLocality = true; //  filterLocalitiesSet.has(stopData.locality_id);
-			const matchesFacilities = true; // stopData.facilities.some(item => filterFacilitiesSet.has(item));
-			const matchesEquipment = true; // stopData.equipment.some(item => filterEquipmentSet.has(item));
-			const matchesConnections = true; // stopData.connections.some(item => filterConnectionsSet.has(item));
-			// Evaluate conditions
-			return matchesDistrict && matchesMunicipality && matchesParish && matchesLocality && matchesFacilities && matchesEquipment && matchesConnections;
-		});
+		return searchResultsData
+			.filter((stopData: StopNormalized) => {
+				const matchesDistrict = filterDistrictsSet.has(stopData.district_id);
+				const matchesMunicipality = filterMunicipalitiesSet.has(stopData.municipality_id);
+				const matchesParish = true; // filterParishesSet.has(stopData.parish_id);
+				const matchesLocality = true; //  filterLocalitiesSet.has(stopData.locality_id);
+				const matchesFacilities = true; // stopData.facilities.some(item => filterFacilitiesSet.has(item));
+				const matchesEquipment = true; // stopData.equipment.some(item => filterEquipmentSet.has(item));
+				const matchesConnections = true; // stopData.connections.some(item => filterConnectionsSet.has(item));
+				// Evaluate conditions
+				return matchesDistrict && matchesMunicipality && matchesParish && matchesLocality && matchesFacilities && matchesEquipment && matchesConnections;
+			})
+			.sort((a, b) => {
+				return a._id.localeCompare(b._id);
+			});
 	}, [
 		searchResultsData,
 		filterDistricts,

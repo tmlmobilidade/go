@@ -1,19 +1,9 @@
-'use client';
-
 /* * */
 
-import { MapOnlyViewStops } from '@/components/Map/MapOnlyViewStops';
-import { MapView } from '@/components/Map/MapView';
-import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
+import { StopsListMap } from '@/components/stops/list/StopsListMap';
 
 /* * */
 
 export default function Page() {
-	return (
-		<MapOptionsContextProvider>
-			<MapView>
-				<MapOnlyViewStops />
-			</MapView>
-		</MapOptionsContextProvider>
-	);
+	return <StopsListMap />;
 }
