@@ -131,7 +131,6 @@ export function MapView({
 
 	return (
 		<div className={styles.container}>
-
 			<Map
 				attributionControl={false}
 				cursor={cursor}
