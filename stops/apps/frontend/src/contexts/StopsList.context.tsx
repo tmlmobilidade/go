@@ -84,6 +84,8 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// C. Transform data
 
+	console.log('locationsContext.data.localities_map', locationsContext.data.localities_map);
+
 	const normalizedStopsData: StopNormalized[] = useMemo(() => {
 		// Skip if no data is available
 		if (!allStopsData?.length) return [];
@@ -91,7 +93,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		return allStopsData.map(item => ({
 			...item,
 			district_name: locationsContext.data.districts_map.get(item.district_id)?.name ?? '',
-			locality_name: locationsContext.data.localities_map.get(item.locality_id)?.name ?? '',
+			locality_name: locationsContext.data.localities_map.get(item.locality_id)?.name ?? 'N/A',
 			municipality_name: locationsContext.data.municipalities_map.get(item.municipality_id)?.name ?? '',
 			name_normalized: normalizeString(item.name),
 			new_name_normalized: normalizeString(item.new_name),
@@ -107,10 +109,10 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
-		if (!searchResultsData) return [];
+		if (!searchResultsData?.length) return [];
 		// Convert filter arrays to sets for O(1) membership checks
-		const filterDistrictsSet = new Set(filterDistricts);
-		const filterMunicipalitiesSet = new Set(filterMunicipalities);
+		// const filterDistrictsSet = new Set(filterDistricts);
+		// const filterMunicipalitiesSet = new Set(filterMunicipalities);
 		// const filterParishesSet = new Set(filterParishes);
 		// const filterLocalitiesSet = new Set(filterLocalities);
 		// const filterFacilitiesSet = new Set(filterFacilities);
@@ -119,8 +121,8 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		// Apply filter values
 		return searchResultsData
 			.filter((stopData: StopNormalized) => {
-				const matchesDistrict = filterDistrictsSet.has(stopData.district_id);
-				const matchesMunicipality = filterMunicipalitiesSet.has(stopData.municipality_id);
+				const matchesDistrict = true; // filterDistrictsSet.has(stopData.district_id);
+				const matchesMunicipality = true;// filterMunicipalitiesSet.has(stopData.municipality_id);
 				const matchesParish = true; // filterParishesSet.has(stopData.parish_id);
 				const matchesLocality = true; //  filterLocalitiesSet.has(stopData.locality_id);
 				const matchesFacilities = true; // stopData.facilities.some(item => filterFacilitiesSet.has(item));

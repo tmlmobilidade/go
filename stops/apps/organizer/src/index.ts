@@ -15,8 +15,6 @@ import { fetchData } from '@tmlmobilidade/utils';
 async function cleanOldValidations() {
 	//
 
-	return;
-
 	LOGGER.init();
 
 	const globalTimer = new TIMETRACKER();
@@ -61,7 +59,7 @@ async function cleanOldValidations() {
 			parish_id: locationsData.parish?._id ?? null,
 		});
 
-		LOGGER.success(`Updated stop ${stopData._id}: District ${locationsData.district?._id ?? null} | Municipality ${locationsData.municipality?._id ?? null} | Parish ${locationsData.parish?._id ?? null} | Locality ${locationsData.locality?._id ?? null}`);
+		LOGGER.success(`Updated stop ${stopData._id}: District ${locationsData.district?._id ?? null} | Municipality ${locationsData.municipality?._id ?? null} | Parish ${locationsData.parish?._id ?? null} | Locality ${locationsData.locality?._id ?? null} ${locationsData.locality?.name ?? null}`);
 
 		//
 	}
