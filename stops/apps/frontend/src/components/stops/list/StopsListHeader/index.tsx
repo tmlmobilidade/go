@@ -1,9 +1,9 @@
 /* * */
 
 import { useStopsListContext } from '@/contexts/StopsList.context';
-import { IconPlus, IconSearch } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Button, HasPermission, Label, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, SearchInput, Spacer } from '@tmlmobilidade/ui';
 
 import { openCreateStopMapModal } from '../../create/CreateStopMap';
 
@@ -24,12 +24,7 @@ export function StopsListHeader() {
 		<>
 			<Label size="lg" caps>Paragens</Label>
 			<Spacer />
-			<TextInput
-				leftSection={<IconSearch size={20} />}
-				miw={400}
-				onChange={e => stopsListContext.actions.setFilterSearch(e.target.value)}
-				placeholder="Pesquisar alerta"
-			/>
+			<SearchInput onChange={stopsListContext.actions.setFilterSearch} value={stopsListContext.filters.search} />
 			<HasPermission action={Permissions.stops.actions.create} scope={Permissions.stops.scope}>
 				<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={openCreateStopMapModal} />
 			</HasPermission>
