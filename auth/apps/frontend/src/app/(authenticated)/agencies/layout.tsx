@@ -10,6 +10,7 @@ import { type PropsWithChildren } from 'react';
 export default function Layout({ children }: PropsWithChildren) {
 	return (
 		<PanesManager
+			id="agencies"
 			panes={[
 				<AgenciesListContextProvider>
 					<AgenciesList />
