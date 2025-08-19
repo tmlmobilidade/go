@@ -79,6 +79,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				},
 			],
 			cause: alert.cause,
+			coordinates: alert.coordinates,
 			description_text: {
 				translation: [
 					{
