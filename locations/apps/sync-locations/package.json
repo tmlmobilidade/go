@@ -16,17 +16,17 @@
 	},
 	"dependencies": {
 		"@helperkits/logger": "^20250628.901.58",
-		"@tmlmobilidade/interfaces": "^20250801.1018.47",
+		"@tmlmobilidade/interfaces": "^20250819.1347.37",
 		"@turf/turf": "^7.2.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "^20250622.1204.50",
 		"@dotenv-run/cli": "^1.3.6",
-		"@tmlmobilidade/tsconfig": "^20250801.1018.47",
-		"@tmlmobilidade/types": "^20250801.1018.47",
-		"@types/node": "^24.1.0",
+		"@tmlmobilidade/tsconfig": "^20250819.1347.37",
+		"@tmlmobilidade/types": "^20250819.1347.37",
+		"@types/node": "^24.3.0",
 		"ts-node": "^10.9.2",
-		"tsx": "^4.20.3",
+		"tsx": "^4.20.4",
 		"typescript": "^5.9.2"
 	}
 }
