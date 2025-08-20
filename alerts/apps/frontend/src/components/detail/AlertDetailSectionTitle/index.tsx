@@ -5,7 +5,7 @@
 import { UploadImage } from '@/components/common/UploadImage';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
-import { Collapsible, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -49,6 +49,10 @@ export function AlertDetailSectionTitle() {
 					label="Imagem"
 					onDelete={alertDetailContext.actions.deleteImage}
 					onFileChange={alertDetailContext.actions.fileChanged}
+				/>
+				<CoordinatesInput
+					description="Ponto de referência do alerta, para que seja possível localizar o alerta no mapa."
+					{...alertDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput
 					description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"

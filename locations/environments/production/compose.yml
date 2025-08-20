@@ -72,30 +72,6 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  locations-db:
-    image: mongo:latest
-    restart: always
-    ports:
-      - 27017:27017
-    volumes:
-      - ./locations-entrypoint.sh:/docker-entrypoint-initdb.d/init.sh:ro
-      - ./secrets/locations-keyfile.key:/data/replica.key
-      - ./locations-db-data:/data/db
-      - ./locations.dump:/dump/db.dump
-    env_file:
-      - ./secrets/.env
-    entrypoint:
-      - bash
-      - -c
-      - |
-          chmod 400 /data/replica.key
-          chown 999:999 /data/replica.key
-          exec docker-entrypoint.sh $$@
-    command: mongod --bind_ip_all --auth --replSet rs0 --keyFile /data/replica.key --port 27017
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
   api:
     image: ghcr.io/tmlmobilidade/sae-locations-api:production
     deploy:

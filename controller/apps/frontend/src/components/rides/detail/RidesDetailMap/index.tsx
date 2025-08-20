@@ -2,13 +2,12 @@
 
 /* * */
 
-import { MapView } from '@/components/map/MapView';
 import { MapViewGeofences } from '@/components/map/MapViewGeofences';
 import { MapViewStylePath } from '@/components/map/MapViewStylePath';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { centerMap } from '@/utils/map.utils';
 import { IconCrosshair, IconPlayerPlayFilled } from '@tabler/icons-react';
-import { Button, Collapsible, Divider, Label, Section, SegmentedControl, Slider, Spacer, Switch } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Divider, Label, MapView, Section, SegmentedControl, Slider, Spacer, Switch } from '@tmlmobilidade/ui';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useState } from 'react';
 
@@ -60,7 +59,7 @@ export function RidesDetailMap() {
 	return (
 		<Collapsible description="Eventos dos veículos mapeados" title="Visão Geográfica" defaultOpen>
 			<div className={styles.mapWrapper}>
-				<MapView id="ridesDetailMap" onDragEnd={() => setCenterMapAutomatically(false)} scrollZoom={isZoomEnabled}>
+				<MapView id="ridesDetailMap" onDragEnd={() => setCenterMapAutomatically(false)}>
 					{showScheduledPath && <MapViewStylePath shapeData={ridesDetailContext.geojson.scheduled_shape} viewId="scheduled" waypointsData={ridesDetailContext.geojson.scheduled_path} />}
 					{showGeofences && <MapViewGeofences geofencesData={ridesDetailContext.geojson.scheduled_path_geofences} viewId="geofences" />}
 					{showObservedPath && <MapViewStylePath shapeData={ridesDetailContext.geojson.observed_shape} viewId="observed" waypointsData={ridesDetailContext.geojson.observed_events} />}
@@ -71,9 +70,7 @@ export function RidesDetailMap() {
 				<Switch checked={showObservedPath} label="Percurso Observado" onChange={() => setShowObservedPath(prev => !prev)} />
 				<Switch checked={showGeofences} label="Geofences" onChange={() => setShowGeofences(prev => !prev)} />
 				<Spacer />
-				<Switch checked={isZoomEnabled} label="Permitir Zoom" onChange={() => setIsZoomEnabled(prev => !prev)} />
 				<Button icon={<IconCrosshair />} label="Centrar" onClick={handleCenterMap} />
-				<SegmentedControl data={[{ label: 'Mapa', value: 'map' }, { label: 'Satélite', value: 'satelite' }]} />
 			</Section>
 			<Divider />
 			<Section alignItems="center" flexDirection="row" gap="md">
