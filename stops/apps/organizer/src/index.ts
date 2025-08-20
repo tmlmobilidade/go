@@ -74,7 +74,7 @@ async function cleanOldValidations() {
 (async function init() {
 	const runOnInterval = async () => {
 		await cleanOldValidations();
-		setTimeout(runOnInterval, 60_000); // 60 seconds in milliseconds
+		setTimeout(runOnInterval, 300_000); // 5 minutes in milliseconds
 	};
 	runOnInterval();
 })();

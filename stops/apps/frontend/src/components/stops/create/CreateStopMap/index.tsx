@@ -2,10 +2,8 @@
 
 /* * */
 
-import CoordinatesInput from '@/components/CoordinatesInput';
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
-// import { useMemo } from 'react';
+import { AlertMessage, Button, CoordinatesInput, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
 
 import { openCreateStopInfosModal } from '../CreateStopName';
 
@@ -115,8 +113,6 @@ export default function CreateStopModal() {
 			<Section gap="md">
 				<Grid columns="ab" gap="sm">
 					<CoordinatesInput
-						label1="Latitude"
-						label2="Longitude"
 						onChange={handleSelectInMap}
 						value={[stopCreateContext.data.form.values.latitude, stopCreateContext.data.form.values.longitude]}
 					/>
