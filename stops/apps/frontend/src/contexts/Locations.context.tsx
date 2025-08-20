@@ -63,10 +63,10 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allDistrictsData, error: allDistrictsError, isLoading: allDistrictsLoading } = useSWR<District[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/districts`, swrFetcher);
-	const { data: allMunicipalitiesData, error: allMunicipalitiesError, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/municipalities`, swrFetcher);
-	const { data: allParishesData, error: allParishesError, isLoading: allParishesLoading } = useSWR<Parish[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/parishes`, swrFetcher);
-	const { data: allLocalitiesData, error: allLocalitiesError, isLoading: allLocalitiesLoading } = useSWR<Locality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/localities`, swrFetcher);
+	const { data: allDistrictsData, error: allDistrictsError, isLoading: allDistrictsLoading } = useSWR<District[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/districts?limit=999999`, swrFetcher);
+	const { data: allMunicipalitiesData, error: allMunicipalitiesError, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/municipalities?limit=999999`, swrFetcher);
+	const { data: allParishesData, error: allParishesError, isLoading: allParishesLoading } = useSWR<Parish[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/parishes?limit=999999`, swrFetcher);
+	const { data: allLocalitiesData, error: allLocalitiesError, isLoading: allLocalitiesLoading } = useSWR<Locality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/localities?limit=999999`, swrFetcher);
 
 	//
 	// B. Transform data
