@@ -2,13 +2,13 @@
 
 /* * */
 
-import { RideNormalized } from '@/types/normalized';
+import { type RideNormalized } from '@/types/normalized';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getRideNormalized } from '@/utils/get-ride-normalized';
-import { getBaseGeoJsonFeatureCollection, getBaseGeoJsonFeatureLineString } from '@/utils/map.utils';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
-import { Dates, getGeofenceOnPosition, type HttpResponse } from '@tmlmobilidade/utils';
-import { type Feature, type FeatureCollection, type Polygon } from 'geojson';
+import { type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
+import { Dates, getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition, type HttpResponse } from '@tmlmobilidade/utils';
+import { type Feature, type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -30,11 +30,11 @@ interface RidesDetailContextState {
 		loading: boolean
 	}
 	geojson: {
-		observed_events: FeatureCollection
-		observed_shape: FeatureCollection
-		scheduled_path: FeatureCollection
+		observed_events: FeatureCollection<Point, MapOverlayObservedPathPointsDataProps>
+		observed_shape: FeatureCollection<LineString, MapOverlayObservedPathLineDataProps>
+		scheduled_path: FeatureCollection<Point, MapOverlayScheduledPathPointsDataProps>
 		scheduled_path_geofences: FeatureCollection
-		scheduled_shape: FeatureCollection
+		scheduled_shape: FeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>
 	}
 }
 
@@ -74,37 +74,44 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return getRideNormalized(rideData.data);
 	}, [rideData]);
 
-	const observedEventsFC: FeatureCollection = useMemo(() => {
+	const observedEventsFC: FeatureCollection<Point, MapOverlayObservedPathPointsDataProps> = useMemo(() => {
 		// Setup an empty feature collection
-		const featureCollection = getBaseGeoJsonFeatureCollection();
+		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayObservedPathPointsDataProps>();
 		// If no vehicle events data, return the empty feature collection
 		if (!vehicleEventsData?.data) return featureCollection;
 		// Prepare the feature collection with vehicle events data
 		featureCollection.features = vehicleEventsData.data
 			.sort((a, b) => a.created_at - b.created_at)
 			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
-			.map(vehicleEvent => ({
+			.map((vehicleEvent, index) => ({
 				geometry: {
 					coordinates: [vehicleEvent.longitude, vehicleEvent.latitude],
 					type: 'Point',
 				},
 				properties: {
-					color: getCssVariableValue('--color-primary'),
-					text_color: getCssVariableValue('--color-contrast'),
-					timestamp: Dates.fromUnixTimestamp(vehicleEvent.created_at).iso,
+					id: vehicleEvent._id,
+					stop_id: vehicleEvent.stop_id,
+					trigger_door: vehicleEvent.trigger_door,
+					// color: getCssVariableValue('--color-primary'),
+					// text_color: getCssVariableValue('--color-contrast'),
+					sequence: index,
+					timestamp: Dates
+						.fromUnixTimestamp(vehicleEvent.created_at)
+						.setZone('Europe/Lisbon', 'offset_only')
+						.toFormat('dd/MM/yyyy HH:mm:ss'),
 				},
 				type: 'Feature',
 			}));
 		return featureCollection;
 	}, [vehicleEventsData]);
 
-	const observedShapeFC: FeatureCollection = useMemo(() => {
+	const observedShapeFC: FeatureCollection<LineString, MapOverlayObservedPathLineDataProps> = useMemo(() => {
 		// If no vehicle events data, return an empty feature collection
-		const featureCollection = getBaseGeoJsonFeatureCollection();
+		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayObservedPathLineDataProps>();
 		// If no vehicle events data, return the empty feature collection
 		if (!vehicleEventsData?.data) return featureCollection;
 		// Prepare the feature collection with vehicle events data
-		const lineString = getBaseGeoJsonFeatureLineString();
+		const lineString = getBaseGeoJsonFeature<LineString, MapOverlayObservedPathLineDataProps>('LineString');
 		lineString.geometry.coordinates = vehicleEventsData.data
 			.sort((a, b) => a.created_at - b.created_at)
 			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
@@ -114,9 +121,9 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return featureCollection;
 	}, [vehicleEventsData]);
 
-	const scheduledPathFC: FeatureCollection = useMemo(() => {
+	const scheduledPathFC: FeatureCollection<Point, MapOverlayScheduledPathPointsDataProps> = useMemo(() => {
 		// Setup an empty feature collection
-		const featureCollection = getBaseGeoJsonFeatureCollection();
+		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayScheduledPathPointsDataProps>();
 		// If no hashed trip data, return the empty feature collection
 		if (!hashedTripData?.data?.path) return featureCollection;
 		// Prepare the feature collection with hashed trip data
@@ -128,9 +135,12 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 					type: 'Point',
 				},
 				properties: {
-					color: `#${hashedTripData.data.route_color}`,
+					arrival_time: waypoint.arrival_time,
+					id: waypoint.stop_id,
+					name: waypoint.stop_name,
+					// color: `#${hashedTripData.data.route_color}`,
 					sequence: waypoint.stop_sequence,
-					text_color: `#${hashedTripData.data.route_text_color}`,
+					// text_color: `#${hashedTripData.data.route_text_color}`,
 				},
 				type: 'Feature',
 			}));
@@ -158,18 +168,19 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return featureCollection;
 	}, [hashedTripData, hashedShapeData]);
 
-	const scheduledShapeFC: FeatureCollection = useMemo(() => {
+	const scheduledShapeFC: FeatureCollection<LineString, MapOverlayScheduledPathLineDataProps> = useMemo(() => {
 		// Setup an empty feature collection
-		const featureCollection = getBaseGeoJsonFeatureCollection();
+		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>();
 		// If no hashed shape data, return the empty feature collection
 		if (!hashedShapeData?.data?.points) return featureCollection;
 		// Prepare the feature collection with hashed shape data
-		const lineString = getBaseGeoJsonFeatureLineString();
+		const lineString = getBaseGeoJsonFeature<LineString, MapOverlayScheduledPathLineDataProps>('LineString');
 		lineString.geometry.coordinates = hashedShapeData.data.points
 			.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
 			.map(shapePoint => [shapePoint.shape_pt_lon, shapePoint.shape_pt_lat]);
-		lineString.properties['color'] = `#${hashedTripData?.data.route_color}`;
-		featureCollection.features = [lineString];
+		lineString.properties.id = hashedShapeData.data._id;
+		// lineString.properties['color'] = `#${hashedTripData?.data.route_color}`;
+		featureCollection.features.push(lineString);
 		return featureCollection;
 	}, [hashedShapeData, hashedTripData]);
 
