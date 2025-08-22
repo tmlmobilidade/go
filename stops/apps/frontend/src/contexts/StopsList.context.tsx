@@ -84,8 +84,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// C. Transform data
 
-	console.log('locationsContext.data.localities_map', locationsContext.data.localities_map);
-
 	const normalizedStopsData: StopNormalized[] = useMemo(() => {
 		// Skip if no data is available
 		if (!allStopsData?.length) return [];
