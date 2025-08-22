@@ -6,9 +6,9 @@ import { type RideNormalized } from '@/types/normalized';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getRideNormalized } from '@/utils/get-ride-normalized';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
-import { type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
+import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
 import { Dates, getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition, type HttpResponse } from '@tmlmobilidade/utils';
-import { type Feature, type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
+import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +33,7 @@ interface RidesDetailContextState {
 		observed_events: FeatureCollection<Point, MapOverlayObservedPathPointsDataProps>
 		observed_shape: FeatureCollection<LineString, MapOverlayObservedPathLineDataProps>
 		scheduled_path: FeatureCollection<Point, MapOverlayScheduledPathPointsDataProps>
-		scheduled_path_geofences: FeatureCollection
+		scheduled_path_geofences: FeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps>
 		scheduled_shape: FeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>
 	}
 }
@@ -147,9 +147,9 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		return featureCollection;
 	}, [hashedTripData]);
 
-	const scheduledPathGeofencesFC: FeatureCollection = useMemo(() => {
+	const scheduledPathGeofencesFC: FeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps> = useMemo(() => {
 		// Setup an empty feature collection
-		const featureCollection = getBaseGeoJsonFeatureCollection();
+		const featureCollection = getBaseGeoJsonFeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps>();
 		// If no hashed trip data or hashed shape data, return the empty feature collection
 		if (!hashedTripData?.data?.path) return featureCollection;
 		if (!hashedShapeData?.data?.points?.length) return featureCollection;
@@ -158,12 +158,12 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
 				const geofenceData = getGeofenceOnPosition([waypoint.stop_lon, waypoint.stop_lat], 50);
-				geofenceData.properties = {
-					color: `#${hashedTripData.data.route_color}`,
-					sequence: waypoint.stop_sequence,
-					text_color: `#${hashedTripData.data.route_text_color}`,
+				return {
+					...geofenceData,
+					properties: {
+						id: waypoint.stop_id,
+					},
 				};
-				return geofenceData as Feature<Polygon>;
 			});
 		return featureCollection;
 	}, [hashedTripData, hashedShapeData]);

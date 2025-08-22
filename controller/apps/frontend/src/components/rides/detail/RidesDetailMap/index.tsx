@@ -2,10 +2,9 @@
 
 /* * */
 
-import { MapViewGeofences } from '@/components/map/MapViewGeofences';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { IconPlayerPlayFilled } from '@tabler/icons-react';
-import { Button, Collapsible, Divider, Label, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, SegmentedControl, Slider, Switch } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Divider, Label, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, SegmentedControl, Slider, Switch } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
@@ -22,7 +21,7 @@ export function RidesDetailMap() {
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
 	const [showObservedPath, setShowObservedPath] = useState(true);
-	const [showGeofences, setShowGeofences] = useState(false);
+	const [showGeofences, setShowGeofences] = useState(true);
 
 	//
 	// B. Render components
@@ -31,12 +30,6 @@ export function RidesDetailMap() {
 		<Collapsible description="Eventos dos veículos mapeados" title="Visão Geográfica" defaultOpen>
 			<div className={styles.mapWrapper}>
 				<MapView id="ridesDetailMap">
-					{showGeofences && (
-						<MapViewGeofences
-							geofencesData={ridesDetailContext.geojson.scheduled_path_geofences}
-							viewId="geofences"
-						/>
-					)}
 					<MapOverlayScheduledPath
 						id="2"
 						lineData={ridesDetailContext.geojson.scheduled_shape}
@@ -48,6 +41,11 @@ export function RidesDetailMap() {
 						lineData={ridesDetailContext.geojson.observed_shape}
 						pointsData={ridesDetailContext.geojson.observed_events}
 						visible={showObservedPath}
+					/>
+					<MapOverlayGeofences
+						geofencesData={ridesDetailContext.geojson.scheduled_path_geofences}
+						id="geofences"
+						visible={showGeofences}
 					/>
 				</MapView>
 			</div>
