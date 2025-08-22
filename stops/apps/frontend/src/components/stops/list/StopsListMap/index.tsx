@@ -3,9 +3,11 @@
 /* * */
 
 import { useStopsListContext } from '@/contexts/StopsList.context';
-import { type Stop } from '@tmlmobilidade/types';
-import { MapOverlayMultipleStops, MapOverlayMultipleStopsInteractiveLayerIds, MapView, Pane } from '@tmlmobilidade/ui';
+import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView, Pane } from '@tmlmobilidade/ui';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/utils';
+import { type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -19,24 +21,47 @@ export function StopsListMap() {
 	const stopsListContext = useStopsListContext();
 
 	//
-	// B. Handle actions
+	// B. Transform data
 
-	const handleStopClick = (value: Stop) => {
-		router.push(`/stops/${value._id}`);
+	const stopsAsGeojsonFC = useMemo(() => {
+		// Prepare an empty feature collection
+		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
+		// Skip if no data is provided
+		if (!stopsListContext.data.filtered) return baseGeoJson;
+		// Add the features to the base GeoJSON
+		baseGeoJson.features = stopsListContext.data.filtered.map(item => ({
+			geometry: {
+				coordinates: [item.longitude, item.latitude],
+				type: 'Point',
+			},
+			properties: {
+				id: item._id,
+				name: item.name,
+			},
+			type: 'Feature',
+		}));
+		// Return the collection
+		return baseGeoJson;
+	}, [stopsListContext.data.filtered]);
+
+	//
+	// C. Handle actions
+
+	const handleStopClick = (value: MapOverlayMultipleStopsDataProps) => {
+		router.push(`/stops/${value.id}`);
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Pane>
-			<MapView
-				id="stops-list"
-				interactiveLayerIds={[...MapOverlayMultipleStopsInteractiveLayerIds]}
-			>
+			<MapView id="stops-list">
 				<MapOverlayMultipleStops
-					data={stopsListContext.data.filtered}
+					data={stopsAsGeojsonFC}
+					id="stops-list"
 					onClick={handleStopClick}
+					visible
 				/>
 			</MapView>
 		</Pane>
