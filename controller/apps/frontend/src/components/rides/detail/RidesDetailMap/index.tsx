@@ -21,7 +21,7 @@ export function RidesDetailMap() {
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
 	const [showObservedPath, setShowObservedPath] = useState(true);
-	const [showGeofences, setShowGeofences] = useState(true);
+	const [showGeofences, setShowGeofences] = useState(false);
 
 	//
 	// B. Render components
