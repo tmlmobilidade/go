@@ -4,7 +4,7 @@
 
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { BackButton, Badge, Button, Spacer } from '@tmlmobilidade/ui';
+import { BackButton, Badge, Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -31,7 +31,7 @@ export function RoleDetailHeader() {
 	// C. Render components
 
 	return (
-		<>
+		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
 			<Badge variant="muted">{roleDetailContext.data.id || 'Novo Utilizador'}</Badge>
 			<Spacer />
@@ -51,7 +51,7 @@ export function RoleDetailHeader() {
 					variant="danger"
 				/>
 			)}
-		</>
+		</Toolbar>
 	);
 
 	//

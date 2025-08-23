@@ -4,7 +4,7 @@
 
 import { UsersDetailMode, useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag } from '@tmlmobilidade/ui';
+import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -31,7 +31,7 @@ export function UsersDetailHeader() {
 	// C. Render components
 
 	return (
-		<>
+		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
 			<Tag label={usersDetailContext.data.id || 'Novo Utilizador'} variant="muted" />
 			<Spacer />
@@ -51,7 +51,7 @@ export function UsersDetailHeader() {
 					variant="danger"
 				/>
 			)}
-		</>
+		</Toolbar>
 	);
 
 	//

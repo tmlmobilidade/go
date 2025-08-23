@@ -5,7 +5,7 @@
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { BackButton, Spacer, Tag } from '@tmlmobilidade/ui';
+import { BackButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -33,13 +33,13 @@ export function RidesDetailHeader() {
 	// C. Render components
 
 	return (
-		<>
+		<Toolbar>
 			<BackButton onClick={handleGoBack} type="close" />
 			<Tag label={ridesDetailContext.data.ride_id} variant="muted" />
 			<Spacer />
 			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.simple_three_vehicle_events_grade} />
 			<OperationalStatusTag value={ridesDetailContext.data.ride?.operational_status} />
-		</>
+		</Toolbar>
 	);
 
 	//

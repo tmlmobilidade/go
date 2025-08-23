@@ -5,7 +5,7 @@
 import { useRolesListContext } from '@/contexts/RolesList.context';
 import { Routes } from '@/lib/routes';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, SearchInput, Spacer } from '@tmlmobilidade/ui';
+import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,12 +21,12 @@ export function RolesListHeader() {
 	// B. Render components
 
 	return (
-		<>
+		<Toolbar>
 			<Label size="lg" caps singleLine>Grupos de Permissões</Label>
 			<Spacer />
 			<SearchInput onChange={roleListContext.actions.setFilterSearch} value={roleListContext.filters.search} />
 			<Button href={Routes.ROLE_DETAIL('new')} icon={<IconPlus size={20} />} label="Novo Grupo" />
-		</>
+		</Toolbar>
 	);
 
 	//
