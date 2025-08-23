@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag } from '@tmlmobilidade/ui';
+import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -29,7 +29,7 @@ export function StopDetailHeader() {
 	// C. Render components
 
 	return (
-		<>
+		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
 			<Tag label={stopDetailContext.data.id} variant="secondary" />
 			<Spacer />
@@ -47,7 +47,7 @@ export function StopDetailHeader() {
 				onClick={stopDetailContext.actions.deleteStop}
 				variant="danger"
 			/>
-		</>
+		</Toolbar>
 	);
 
 	//
