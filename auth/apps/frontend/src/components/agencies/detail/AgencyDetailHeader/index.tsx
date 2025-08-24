@@ -4,7 +4,7 @@
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Label, Spacer, Tag } from '@tmlmobilidade/ui';
+import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -31,7 +31,7 @@ export function AgencyDetailHeader() {
 	// C. Render components
 
 	return (
-		<>
+		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
 			<Tag label={agencyDetailContext.data.id} variant="secondary" />
 			<Label size="lg" singleLine>{agencyDetailContext.data.form.values.name}</Label>
@@ -44,7 +44,7 @@ export function AgencyDetailHeader() {
 				onClick={agencyDetailContext.actions.saveAgency}
 				variant="primary"
 			/>
-		</>
+		</Toolbar>
 	);
 
 	//

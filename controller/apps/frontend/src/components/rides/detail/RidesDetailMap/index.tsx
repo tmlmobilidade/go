@@ -21,7 +21,7 @@ export function RidesDetailMap() {
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
 	const [showObservedPath, setShowObservedPath] = useState(true);
-	const [showGeofences, setShowGeofences] = useState(true);
+	const [showGeofences, setShowGeofences] = useState(false);
 
 	//
 	// B. Render components
@@ -49,6 +49,7 @@ export function RidesDetailMap() {
 					/>
 				</MapView>
 			</div>
+			<Divider />
 			<Section alignItems="center" flexDirection="row" gap="md">
 				<Switch checked={showScheduledPath} label="Percurso Planeado" onChange={() => setShowScheduledPath(prev => !prev)} />
 				<Switch checked={showObservedPath} label="Percurso Observado" onChange={() => setShowObservedPath(prev => !prev)} />
