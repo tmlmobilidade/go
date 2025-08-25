@@ -7,7 +7,7 @@ import { StopOptions } from '@/schemas/options';
 import { type WorkerMessage } from '@/types/worker';
 import { getAppConfig, Permissions } from '@tmlmobilidade/lib';
 import { CreateStopDto, CreateStopSchema, Location, Stop, StopPermission, UpdateStopSchema } from '@tmlmobilidade/types';
-import { closeModal, FormValidateInput, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { FormValidateInput, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -101,6 +101,8 @@ interface StopCreateContextState {
 	}
 	modal: {
 		current_step: number
+		nextStep: () => void
+		previousStep: () => void
 	}
 }
 
@@ -141,6 +143,26 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const [stopError, setStopError] = useState<Error | null>(null);
 
 	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
+
+	//
+	// B. Transform data
+
+	//
+	// C. Handle actions
+
+	const previousStep = () => {
+		setModalCurrentStepState((prev) => {
+			if (prev > 1) return prev - 1;
+			return 1;
+		});
+	};
+
+	const nextStep = () => {
+		setModalCurrentStepState((prev) => {
+			if (prev < 3) return prev + 1;
+			return 3;
+		});
+	};
 
 	// 1. Load newStopState from localStorage
 	const [newStopState, setNewStopState] = useState<initialNewStopStateProps>(() => {
@@ -410,6 +432,8 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		modal: {
 			current_step: modalCurrentStepState,
+			nextStep,
+			previousStep,
 		},
 	}), [
 		form,
