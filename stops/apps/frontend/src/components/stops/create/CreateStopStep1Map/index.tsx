@@ -5,7 +5,7 @@
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
-import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/utils';
+import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/utils';
 import { type Point } from 'geojson';
 import { useMemo } from 'react';
 
@@ -48,8 +48,8 @@ export function CreateStopStep1Map() {
 		// Prepare an empty feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayPinsPointDataProps>();
 		// Skip if no data is provided
-		if (!stopCreateContext.data.form.values.latitude) return baseGeoJson;
-		if (!stopCreateContext.data.form.values.longitude) return baseGeoJson;
+		if (!isValidLatitude(stopCreateContext.data.form.values.latitude)) return baseGeoJson;
+		if (!isValidLongitude(stopCreateContext.data.form.values.longitude)) return baseGeoJson;
 		// Add the features to the base GeoJSON
 		baseGeoJson.features = [{
 			geometry: {
@@ -69,26 +69,24 @@ export function CreateStopStep1Map() {
 	// C. Handle actions
 
 	const handleMapClick = (event) => {
-		stopCreateContext.actions.createStopCoordinates(event.lngLat.lat, event.lngLat.lng);
+		stopCreateContext.actions.setLatLng(event.lngLat.lat, event.lngLat.lng);
 	};
 
 	//
 	// D. Render components
 
 	return (
-		<div style={{ height: '400px' }}>
-			<MapView cursor="crosshair" id="create-stop-map" onClick={handleMapClick}>
-				<MapOverlayMultipleStops
-					data={stopsAsGeojsonFC}
-					id="stops-list"
-					visible
-				/>
-				<MapOverlayPins
-					id="selected-coordinates"
-					pinsData={selectedCoordinatesMapData}
-				/>
-			</MapView>
-		</div>
+		<MapView cursor="crosshair" height={400} id="create-stop-map" onClick={handleMapClick}>
+			<MapOverlayMultipleStops
+				data={stopsAsGeojsonFC}
+				id="stops-list"
+				visible
+			/>
+			<MapOverlayPins
+				id="selected-coordinates"
+				pinsData={selectedCoordinatesMapData}
+			/>
+		</MapView>
 	);
 
 	//

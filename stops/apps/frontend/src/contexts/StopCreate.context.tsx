@@ -2,40 +2,18 @@
 
 /* * */
 
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { Routes } from '@/lib/routes';
 import { StopOptions } from '@/schemas/options';
-import { type WorkerMessage } from '@/types/worker';
-import { getAppConfig, Permissions } from '@tmlmobilidade/lib';
-import { CreateStopDto, CreateStopSchema, Location, Stop, StopPermission, UpdateStopSchema } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { convertObject, fetchData } from '@tmlmobilidade/utils';
+import { abbreviateName } from '@/utils/abreviate-stop-name';
+import { type CreateStopDto, Stop, UpdateStopSchema } from '@tmlmobilidade/types';
+import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { convertObject, fetchData, isValidLatitude, isValidLongitude } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 
 /* * */
-
-const initialNewStopState = {
-	district: '',
-	latitude: null,
-	longitude: null,
-	municipality: '',
-	name: '',
-	parish: '',
-	short_name: '',
-	tts_name: '',
-};
-
-interface initialNewStopStateProps {
-	district: string
-	latitude: number
-	longitude: number
-	municipality: string
-	name: string
-	parish: string
-	short_name: string
-	tts_name: string
-}
 
 const emptyStop: CreateStopDto = {
 	_id: '',
@@ -85,14 +63,14 @@ const emptyStop: CreateStopDto = {
 
 interface StopCreateContextState {
 	actions: {
-		abbreviationsShortName: (name: string) => void
-		closeCreateStopModalAndReset: () => void
-		createStop: () => void
-		createStopCoordinates: (latitude: number, longitude: number) => void
+		// abbreviationsShortName: (name: string) => void
+		// closeCreateStopModalAndReset: () => void
+		// createStop: () => void
+		// createStopCoordinates: (latitude: number, longitude: number) => void
+		setLatLng: (latitude: number, longitude: number) => void
 	}
 	data: {
 		form: UseFormReturnType<CreateStopDto>
-		newStopState: initialNewStopStateProps
 	}
 	flags: {
 		can_create: boolean
@@ -101,6 +79,7 @@ interface StopCreateContextState {
 	}
 	modal: {
 		current_step: number
+		current_step_valid: boolean
 		nextStep: () => void
 		previousStep: () => void
 	}
@@ -135,17 +114,29 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const router = useRouter();
-	const workerRef = useRef<null | Worker>(null);
-	const meContext = useMeContext();
 
-	const [isLoading, setIsLoading] = useState(false);
-	const [canCreate, setCanCreate] = useState(false);
-	const [stopError, setStopError] = useState<Error | null>(null);
+	const locationsContext = useLocationsContext();
+
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isError, setIsError] = useState<Error | null>(null);
+
+	const [canCreate, setCanCreate] = useState<boolean>(false);
 
 	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
+	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
 
 	//
 	// B. Transform data
+
+	//
+	// C. Setup form
+
+	const form = useForm<CreateStopDto>({
+		initialValues: emptyStop,
+		// validate: validationSchema,
+		validateInputOnBlur: true,
+		validateInputOnChange: true,
+	});
 
 	//
 	// C. Handle actions
@@ -164,133 +155,74 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		});
 	};
 
-	// 1. Load newStopState from localStorage
-	const [newStopState, setNewStopState] = useState<initialNewStopStateProps>(() => {
-		if (typeof window !== 'undefined') {
-			const stored = localStorage.getItem('newStopState');
-			if (stored) {
-				try {
-					return JSON.parse(stored);
-				}
-				catch {
-					return initialNewStopState;
-				}
-			}
-		}
-		return initialNewStopState;
-	});
-
-	// 2. Persist newStopState to localStorage
-	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			localStorage.setItem('newStopState', JSON.stringify(newStopState));
-		}
-	}, [newStopState]);
-
-	// 3. Load form values from localStorage
-	const storedFormValues = useMemo(() => {
-		if (typeof window !== 'undefined') {
-			const saved = localStorage.getItem('createStopFormValues');
-			if (saved) {
-				try {
-					return JSON.parse(saved);
-				}
-				catch {
-					return emptyStop;
-				}
-			}
-		}
-		return emptyStop;
-	}, []);
-
-	const validationSchema = useMemo(
-		() => zodResolver(CreateStopSchema) as unknown as FormValidateInput<CreateStopDto>,
-		[],
-	);
-
-	const form = useForm<CreateStopDto>({
-		initialValues: storedFormValues,
-		validate: validationSchema,
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
-
-	// 4. Persist form values to localStorage
-	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			localStorage.setItem('createStopFormValues', JSON.stringify(form.values));
-		}
-	}, [form.values]);
-
-	// 5. Check if all required fields are filled
-	useEffect(() => {
-		const allFieldsFilled = Object.values(newStopState).every((value) => {
-			if (typeof value === 'string') {
-				return value.trim() !== '';
-			}
-			if (typeof value === 'number') {
-				return !isNaN(value);
-			}
-			return value !== null && value !== undefined;
-		});
-		setCanCreate(allFieldsFilled && !stopError);
-	}, [newStopState, stopError]);
-
-	// 6. Worker handling
-	const handleWorkerMessage = (event: MessageEvent<WorkerMessage>) => {
-		if (event.data.error) {
-			useToast.error({ message: event.data.error.message, title: 'Erro ao criar Paragem' });
+	const setLatLng = (latitude: number, longitude: number) => {
+		// Reset any existing errors
+		setIsError(null);
+		// Validate the input values
+		const validatedLatitude = isValidLatitude(latitude);
+		const validatedLongitude = isValidLongitude(longitude);
+		// If they are invalid set field errors
+		if (!validatedLatitude || !validatedLongitude) {
+			setIsError(new Error('Coordenadas inválidas. Por favor verifique os valores introduzidos.'));
 			return;
 		}
-
-		form.setValues({
-			latitude: event.data.stop.stop_lat,
-			longitude: event.data.stop.stop_lon,
-			name: event.data.stop.stop_name,
-		});
-
-		const hasPermission = meContext.actions.hasPermissionResource<StopPermission>({
-			action: Permissions.stops.actions.create,
-			resource_key: 'agency_ids',
-			scope: Permissions.stops.scope,
-			value: event.data.stop,
-		});
-
-		if (!hasPermission) {
-			setCanCreate(false);
-			setStopError({
-				message: 'Não é permitido criar uma paragem.',
-				name: 'StopError',
-			});
-			return;
-		}
-
-		setCanCreate(true);
+		// Update the form with the validated values
+		form.setValues({ latitude: validatedLatitude, longitude: validatedLongitude });
 	};
 
 	useEffect(() => {
-		if (stopError) {
-			setCanCreate(false);
-			form.reset();
-			return;
+		// By default, set the step as invalid
+		setModalCurrentStepValidState(false);
+		// Validate Step 1
+		if (modalCurrentStepState === 1) {
+			const hasValidLatitude = isValidLatitude(form.values.latitude);
+			const hasValidLongitude = isValidLongitude(form.values.longitude);
+			const hasValidDistrict = form.values.district_id !== undefined;
+			const hasValidMunicipality = form.values.municipality_id !== undefined;
+			const hasValidParish = true; // form.values.parish_id !== undefined; // TODO - Verify missing parishes
+			setModalCurrentStepValidState(hasValidLatitude && hasValidLongitude && hasValidDistrict && hasValidMunicipality && hasValidParish);
 		}
-
-		if (workerRef.current) {
-			workerRef.current.terminate();
+		// Validate Step 2
+		if (modalCurrentStepState === 2) {
+			const hasNameWithinLimits = form.values.name.length >= StopOptions.stop_name_min_length && form.values.name.length <= StopOptions.stop_name_max_length;
+			const hasShortNameWithinLimits = form.values.short_name.length >= StopOptions.stop_short_name_min_length && form.values.short_name.length <= StopOptions.stop_short_name_max_length;
+			setModalCurrentStepValidState(hasNameWithinLimits && hasShortNameWithinLimits);
 		}
+	}, [
+		modalCurrentStepState,
+		form.values.latitude,
+		form.values.longitude,
+		form.values.district_id,
+		form.values.municipality_id,
+		form.values.parish_id,
+		form.values.name,
+		form.values.short_name,
+	]);
 
-		const worker = new Worker(new URL('@/types/worker.ts', import.meta.url));
-		workerRef.current = worker;
+	useEffect(() => {
+		// Skip if no coordinates are set
+		if (!form.values.latitude || !form.values.longitude) return;
+		// Fetch the locations API for the given coordinates
+		(async () => {
+			const locationData = await locationsContext.actions.queryLocations(form.values.latitude, form.values.longitude);
+			form.setValues({
+				district_id: locationData?.district?._id,
+				locality_id: locationData?.locality?._id,
+				municipality_id: locationData?.municipality?._id,
+				parish_id: locationData?.parish?._id,
+			});
+		})();
+	}, [form.values.latitude, form.values.longitude]);
 
-		workerRef.current.onmessage = handleWorkerMessage;
-
-		return () => {
-			if (workerRef.current) {
-				workerRef.current.terminate();
-				workerRef.current = null;
-			}
-		};
-	}, [stopError]);
+	useEffect(() => {
+		// Skip if no name is set
+		if (typeof form.values.name !== 'string') return;
+		// Build the abreviated and TTS names
+		const shortName = abbreviateName(form.values.name);
+		const ttsName = form.values.name.replace(/\s+/g, ' ').trim();
+		// Set the form values
+		form.setValues({ short_name: shortName, tts_name: ttsName });
+	}, [form.values.name]);
 
 	// 7. Stop creation logic
 	const createStop = async (_id) => {
@@ -336,102 +268,29 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		mutate(`/api/stops/${saveStop._id}`);
 	};
 
-	// 8. Set coordinates and reverse-geocode location
-	const setNewStopAndLocation = useCallback(async (latitude: number, longitude: number, district_id: string, municipality_id: string, parish_id: string) => {
-		setNewStopState(prev => ({
-			...prev,
-			latitude,
-			longitude,
-		}));
-
-		form.setValues({
-			latitude,
-			longitude,
-		});
-
-		try {
-			const location = await fetchData<Location>(
-				`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/coordinates?lon=${longitude}&lat=${latitude}`,
-			);
-
-			if (!location?.data) return;
-
-			district_id = location.data.district._id;
-			municipality_id = location.data.municipality._id;
-			parish_id = location.data.parish._id;
-
-			setNewStopState(prev => ({
-				...prev,
-				district: location.data.district.name,
-				municipality: location.data.municipality.name,
-				parish: location.data.parish.name,
-			}));
-
-			form.setValues({
-				district_id,
-				municipality_id,
-				parish_id,
-			});
-		}
-		catch (error) {
-			console.error('Error:', error);
-		}
-	}, []);
-
-	// 9. Set stop name with abbreviations
-	const setNewStopName = useCallback((name: string) => {
-		const parsedStopName = name.replace(/\s\s+/g, ' ');
-		let shortenedStopName = parsedStopName;
-
-		StopOptions.name_abbreviations
-			.filter(abbreviation => abbreviation.enabled)
-			.forEach((abbreviation) => {
-				shortenedStopName = shortenedStopName.replace(abbreviation.phrase, abbreviation.replacement);
-			});
-
-		setNewStopState(prev => ({
-			...prev,
-			name: parsedStopName,
-			short_name: shortenedStopName,
-			tts_name: parsedStopName,
-		}));
-
-		form.setValues({
-			name,
-			short_name: shortenedStopName,
-			tts_name: name,
-		});
-	}, []);
-
-	// 10. Close modal and reset all data + clear localStorage
-	const closeCreateStopModalAndReset = () => {
-		setNewStopState(initialNewStopState);
-		localStorage.removeItem('newStopState');
-		localStorage.removeItem('createStopFormValues');
-		form.reset();
-	};
-
 	//
 	// D. Define context value
 
 	const contextValue: StopCreateContextState = useMemo(() => ({
 		actions: {
-			abbreviationsShortName: setNewStopName,
-			closeCreateStopModalAndReset,
-			createStop,
-			createStopCoordinates: setNewStopAndLocation,
+			// abbreviationsShortName: setNewStopName,
+			// closeCreateStopModalAndReset,
+			// createStop,
+			// createStopCoordinates: setNewStopAndLocation,
+			setLatLng,
 		},
 		data: {
 			form,
-			newStopState,
+			// newStopState,
 		},
 		flags: {
 			can_create: canCreate,
-			error: stopError,
+			error: isError,
 			loading: isLoading,
 		},
 		modal: {
 			current_step: modalCurrentStepState,
+			current_step_valid: modalCurrentStepValidState,
 			nextStep,
 			previousStep,
 		},
@@ -439,8 +298,6 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form,
 		isLoading,
 		canCreate,
-		stopError,
-		newStopState,
 		modalCurrentStepState,
 	]);
 

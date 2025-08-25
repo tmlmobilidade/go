@@ -3,6 +3,7 @@
 /* * */
 
 import { CreateStopStep1 } from '@/components/stops/create/CreateStopStep1';
+import { CreateStopStep2 } from '@/components/stops/create/CreateStopStep2';
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
 import { ErrorDisplay } from '@tmlmobilidade/ui';
 
@@ -23,9 +24,9 @@ export function CreateStopModalSwitch() {
 		return <CreateStopStep1 />;
 	}
 
-	// if (stopCreateContext.modal.current_step === 2) {
-	// 	return <CreateStopStep2 />;
-	// }
+	if (stopCreateContext.modal.current_step === 2) {
+		return <CreateStopStep2 />;
+	}
 
 	return <ErrorDisplay message={`Invalid modal step: ${stopCreateContext.modal.current_step}`} />;
 

@@ -25,18 +25,27 @@ export function CreateStopModalControls({ onClose }: CreateStopModalControlsProp
 	// B. Render components
 
 	return (
-		<Section>
+		<Section gap="md">
 			<Grid columns="ab" gap="md">
+				<Button
+					disabled={stopCreateContext.flags.loading || stopCreateContext.modal.current_step === 1}
+					label="Voltar"
+					loading={stopCreateContext.flags.loading}
+					onClick={stopCreateContext.modal.previousStep}
+				/>
+				<Button
+					disabled={!stopCreateContext.modal.current_step_valid}
+					label="Próximo Passo"
+					loading={stopCreateContext.flags.loading}
+					onClick={stopCreateContext.modal.nextStep}
+				/>
+			</Grid>
+			<Grid columns="a" gap="md">
 				<Button
 					disabled={stopCreateContext.flags.loading}
 					label="Cancelar"
 					onClick={onClose}
 					variant="danger"
-				/>
-				<Button
-					label="Próximo passo"
-					loading={stopCreateContext.flags.loading}
-					// onClick={stopCreateContext.modal.advance}
 				/>
 			</Grid>
 		</Section>

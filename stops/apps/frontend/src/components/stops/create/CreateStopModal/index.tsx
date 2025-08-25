@@ -2,6 +2,7 @@
 
 /* * */
 
+import { CreateStopModalAlerts } from '@/components/stops/create/CreateStopModalAlerts';
 import { CreateStopModalControls } from '@/components/stops/create/CreateStopModalControls';
 import { CreateStopModalHeader } from '@/components/stops/create/CreateStopModalHeader';
 import { CreateStopModalSwitch } from '@/components/stops/create/CreateStopModalSwitch';
@@ -31,6 +32,7 @@ export function CreateStopModal({ onClose, opened }: CreateStopModalProps) {
 		>
 			<StopCreateContextProvider>
 				<Pane header={[<CreateStopModalHeader />]}>
+					<CreateStopModalAlerts />
 					<CreateStopModalSwitch />
 					<Divider />
 					<CreateStopModalControls onClose={onClose} />

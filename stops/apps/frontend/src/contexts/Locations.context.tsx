@@ -3,9 +3,9 @@
 /* * */
 
 import { getAppConfig } from '@tmlmobilidade/lib';
-import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/types';
-import { swrFetcher } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
+import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -15,6 +15,9 @@ import useSWR from 'swr';
 /* * */
 
 interface LocationsContextState {
+	actions: {
+		queryLocations: (latitude: number, longitude: number) => Promise<Location | null>
+	}
 	data: {
 		district_ids: string[]
 		districts: District[]
@@ -55,13 +58,15 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
+	const [isLoading, setIsLoading] = useState(false);
+
 	const allDistrictsMap = useRef<Map<string, District>>(new Map());
 	const allMunicipalitiesMap = useRef<Map<string, Municipality>>(new Map());
 	const allParishesMap = useRef<Map<string, Parish>>(new Map());
 	const allLocalitiesMap = useRef<Map<string, Locality>>(new Map());
 
 	//
-	// A. Fetch data
+	// B. Fetch data
 
 	const { data: allDistrictsData, error: allDistrictsError, isLoading: allDistrictsLoading } = useSWR<District[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/districts?limit=999999`, swrFetcher);
 	const { data: allMunicipalitiesData, error: allMunicipalitiesError, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/municipalities?limit=999999`, swrFetcher);
@@ -69,7 +74,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	const { data: allLocalitiesData, error: allLocalitiesError, isLoading: allLocalitiesLoading } = useSWR<Locality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/localities?limit=999999`, swrFetcher);
 
 	//
-	// B. Transform data
+	// C. Transform data
 
 	useEffect(() => {
 		allDistrictsData?.forEach(item => allDistrictsMap.current.set(item._id, item));
@@ -88,9 +93,22 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	}, [allLocalitiesData]);
 
 	//
-	// C. Define context value
+	// D. Handle actions
+
+	const queryLocations = async (latitude: number, longitude: number) => {
+		setIsLoading(true);
+		const result = await fetchData<Location>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/coordinates?lat=${latitude}&lon=${longitude}`);
+		setIsLoading(false);
+		return result.data ?? null;
+	};
+
+	//
+	// E. Define context value
 
 	const contextValue: LocationsContextState = useMemo(() => ({
+		actions: {
+			queryLocations,
+		},
 		data: {
 			district_ids: Array.from(allDistrictsMap.current.keys()),
 			districts: allDistrictsData ?? [],
@@ -107,7 +125,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: allDistrictsError || allMunicipalitiesError || allParishesError || allLocalitiesError,
-			loading: allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading,
+			loading: isLoading || allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading,
 		},
 	}), [
 		allDistrictsData,
@@ -121,7 +139,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	//
-	// D. Render components
+	// F. Render components
 
 	return (
 		<LocationsContext.Provider value={contextValue}>
