@@ -2,10 +2,9 @@
 
 /* * */
 
+import { CreateStopStep1 } from '@/components/stops/create/CreateStopStep1';
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
 import { ErrorDisplay } from '@tmlmobilidade/ui';
-
-import CreateStopStep1 from '../CreateStopStep1';
 
 /* * */
 
@@ -18,7 +17,7 @@ export function CreateStopModalSwitch() {
 	const stopCreateContext = useStopCreateContext();
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	if (stopCreateContext.modal.current_step === 1) {
 		return <CreateStopStep1 />;

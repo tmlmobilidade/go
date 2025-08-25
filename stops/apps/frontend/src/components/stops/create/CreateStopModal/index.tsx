@@ -2,10 +2,11 @@
 
 /* * */
 
+import { CreateStopModalControls } from '@/components/stops/create/CreateStopModalControls';
 import { CreateStopModalHeader } from '@/components/stops/create/CreateStopModalHeader';
 import { CreateStopModalSwitch } from '@/components/stops/create/CreateStopModalSwitch';
 import { StopCreateContextProvider } from '@/contexts/StopCreate.context';
-import { Modal, Pane } from '@tmlmobilidade/ui';
+import { Divider, Modal, Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -31,6 +32,8 @@ export function CreateStopModal({ onClose, opened }: CreateStopModalProps) {
 			<StopCreateContextProvider>
 				<Pane header={[<CreateStopModalHeader />]}>
 					<CreateStopModalSwitch />
+					<Divider />
+					<CreateStopModalControls onClose={onClose} />
 				</Pane>
 			</StopCreateContextProvider>
 		</Modal>

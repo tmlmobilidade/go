@@ -2,14 +2,13 @@
 
 /* * */
 
+import { CreateStopStep1Map } from '@/components/stops/create/CreateStopStep1Map';
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage, Button, CoordinatesInput, Divider, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
-
-import CreateStopStep1Map from '../CreateStopStep1Map';
+import { AlertMessage, CoordinatesInput, Divider, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export default function CreateStopStep1() {
+export function CreateStopStep1() {
 	//
 
 	//
@@ -18,46 +17,18 @@ export default function CreateStopStep1() {
 	const stopCreateContext = useStopCreateContext();
 
 	//
+	// B. Handle actions
 
 	const handleSelectInMap = (value: [number, number]) => {
 		stopCreateContext.data.form.setFieldValue('latitude', value[0]);
 		stopCreateContext.data.form.setFieldValue('longitude', value[1]);
 	};
 
-	// const selectedCoordinatesMapData = useMemo(() => {
-	// 	if (stopCreateContext.data.form.values.latitude && stopCreateContext.data.form.values.longitude) {
-	// 		const geojson = {
-	// 			geometry: {
-	// 				coordinates: [stopCreateContext.data.form.values.longitude, stopCreateContext.data.form.values.latitude],
-	// 				type: 'Point',
-	// 			},
-	// 			properties: {},
-	// 			type: 'Feature',
-	// 		};
-
-	// 		return geojson;
-	// 	}
-	// 	return null;
-	// }, [stopCreateContext.data.form.values]);
-
 	//
-	// B. Handle actions
-
-	// const handleMapClick = (event) => {
-	// 	stopCreateContext.actions.createStopCoordinates(event.lngLat.lat, event.lngLat.lng);
-	// };
-
-	//
-	// C. Render Components
+	// C. Render components
 
 	return (
 		<>
-
-			<Section gap="xs">
-				<Text>Selecione a localização da paragem que pretende criar:</Text>
-			</Section>
-
-			<Divider />
 
 			{stopCreateContext.flags.error && stopCreateContext.flags.error.name === 'StopError' && (
 				<>
@@ -77,24 +48,8 @@ export default function CreateStopStep1() {
 				/>
 			</Section>
 
-			<Divider />
-
-			<Section>
-				<Grid columns="ab" gap="md">
-					<Button
-						disabled={stopCreateContext.flags.loading}
-						label="Cancelar"
-						onClick={stopCreateContext.actions.closeCreateStopModalAndReset}
-						variant="secondary"
-					/>
-					{/* <Button
-						label="Próximo passo"
-						loading={stopCreateContext.flags.loading}
-						onClick={openCreateStopInfosModal}
-					/> */}
-				</Grid>
-			</Section>
-
 		</>
 	);
+
+	//
 }

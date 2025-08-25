@@ -16,13 +16,13 @@ export function CreateStopModalHeader() {
 	const stopCreateContext = useStopCreateContext();
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	return (
 		<Toolbar>
 			<Label size="lg" singleLine>Nova paragem</Label>
 			<Spacer />
-			<Label size="md" caps singleLine>Passo {stopCreateContext.modal.current_step + 1} de 3</Label>
+			<Label size="md" caps singleLine>Passo {stopCreateContext.modal.current_step} de 3</Label>
 		</Toolbar>
 	);
 

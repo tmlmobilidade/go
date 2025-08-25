@@ -16,7 +16,7 @@ export default function CreateStopModalName() {
 	const stopCreateContext = useStopCreateContext();
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	return (
 		<>

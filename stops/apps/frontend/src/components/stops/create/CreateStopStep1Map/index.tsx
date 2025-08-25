@@ -4,14 +4,14 @@
 
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
-import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
+import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/utils';
 import { type Point } from 'geojson';
 import { useMemo } from 'react';
 
 /* * */
 
-export default function CreateStopStep1Map() {
+export function CreateStopStep1Map() {
 	//
 
 	//
@@ -73,11 +73,11 @@ export default function CreateStopStep1Map() {
 	};
 
 	//
-	// D. Render Components
+	// D. Render components
 
 	return (
 		<div style={{ height: '400px' }}>
-			<MapView id="create-stop-map" onClick={handleMapClick}>
+			<MapView cursor="crosshair" id="create-stop-map" onClick={handleMapClick}>
 				<MapOverlayMultipleStops
 					data={stopsAsGeojsonFC}
 					id="stops-list"
