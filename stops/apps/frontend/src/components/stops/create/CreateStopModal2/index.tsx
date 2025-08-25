@@ -5,42 +5,16 @@
 import { StopCreateContextProvider, useStopCreateContext } from '@/contexts/StopCreate.context';
 import { AlertMessage, Button, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, ValueDisplay } from '@tmlmobilidade/ui';
 
-import { openCreateStopInfosModal } from '../CreateStopName';
-
 /* * */
 
-export const CREATE_STOP_MODAL_ID = 'create-stop-modal';
-
-/* * */
-
-export const openCreateStopComfirmInfosModal = () => {
-	openModal({
-		children: (
-			<MeContextProvider>
-				<StopCreateContextProvider>
-					<CreateStopModal />
-				</StopCreateContextProvider>
-			</MeContextProvider>
-		),
-		closeOnClickOutside: false,
-		modalId: CREATE_STOP_MODAL_ID,
-		padding: 0,
-		radius: 15,
-		size: 'xl',
-		withCloseButton: false,
-	});
-};
-
-/* * */
-
-export default function CreateStopModal() {
+export default function CreateStopModal2() {
 	//
 
 	//
 	// A. Setup variables
 
 	const stopCreateContext = useStopCreateContext();
-	console.log(stopCreateContext.flags.can_create);
+
 	//
 	// B. Render Components
 

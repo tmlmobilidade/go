@@ -2,7 +2,6 @@
 
 /* * */
 
-import { CREATE_STOP_MODAL_ID } from '@/components/stops/create/CreateStopName';
 import { Routes } from '@/lib/routes';
 import { StopOptions } from '@/schemas/options';
 import { type WorkerMessage } from '@/types/worker';
@@ -100,6 +99,9 @@ interface StopCreateContextState {
 		error: Error | null
 		loading: boolean
 	}
+	modal: {
+		current_step: number
+	}
 }
 
 /* * */
@@ -137,6 +139,8 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [canCreate, setCanCreate] = useState(false);
 	const [stopError, setStopError] = useState<Error | null>(null);
+
+	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
 
 	// 1. Load newStopState from localStorage
 	const [newStopState, setNewStopState] = useState<initialNewStopStateProps>(() => {
@@ -307,7 +311,6 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 		router.push(`/stops/${response.data._id}`);
 		setIsLoading(false);
-		closeModal(CREATE_STOP_MODAL_ID);
 		mutate(`/api/stops/${saveStop._id}`);
 	};
 
@@ -380,38 +383,51 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	// 10. Close modal and reset all data + clear localStorage
 	const closeCreateStopModalAndReset = () => {
-		closeModal(CREATE_STOP_MODAL_ID);
 		setNewStopState(initialNewStopState);
 		localStorage.removeItem('newStopState');
 		localStorage.removeItem('createStopFormValues');
 		form.reset();
 	};
 
-	// 11. Memoize context value
-	// @ts-expect-error - stupid error because types
-	const contextValue: StopCreateContextState = useMemo(() => {
-		return {
-			actions: {
-				abbreviationsShortName: setNewStopName,
-				closeCreateStopModalAndReset,
-				createStop,
-				createStopCoordinates: setNewStopAndLocation,
-			},
-			data: {
-				form,
-				newStopState,
-			},
-			flags: {
-				can_create: canCreate,
-				error: stopError,
-				loading: isLoading,
-			},
-		};
-	}, [form, isLoading, canCreate, stopError, newStopState]);
+	//
+	// D. Define context value
+
+	const contextValue: StopCreateContextState = useMemo(() => ({
+		actions: {
+			abbreviationsShortName: setNewStopName,
+			closeCreateStopModalAndReset,
+			createStop,
+			createStopCoordinates: setNewStopAndLocation,
+		},
+		data: {
+			form,
+			newStopState,
+		},
+		flags: {
+			can_create: canCreate,
+			error: stopError,
+			loading: isLoading,
+		},
+		modal: {
+			current_step: modalCurrentStepState,
+		},
+	}), [
+		form,
+		isLoading,
+		canCreate,
+		stopError,
+		newStopState,
+		modalCurrentStepState,
+	]);
+
+	//
+	// D. Render components
 
 	return (
 		<StopCreateContext.Provider value={contextValue}>
 			{children}
 		</StopCreateContext.Provider>
 	);
+
+	//
 };
