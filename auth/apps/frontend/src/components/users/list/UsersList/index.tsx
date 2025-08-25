@@ -2,6 +2,7 @@
 
 /* * */
 
+import { UsersListFieldRole } from '@/components/users/list/UsersListFieldRole';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
@@ -32,6 +33,12 @@ export function UsersList() {
 			accessor: 'full_name',
 			title: 'Nome',
 			width: 400,
+		},
+		{
+			accessor: 'role_ids',
+			render: item => item.role_ids.map(role => <UsersListFieldRole key={role} role_id={role} />),
+			title: 'Grupos',
+			width: 200,
 		},
 	];
 
