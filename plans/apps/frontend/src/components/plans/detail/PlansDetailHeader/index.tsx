@@ -5,7 +5,7 @@
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { BackButton, Button, HasPermission, LockButton, Spacer, Tag } from '@tmlmobilidade/ui';
+import { BackButton, Button, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -32,7 +32,7 @@ export function PlansDetailHeader() {
 	// C. Render components
 
 	return (
-		<>
+		<Toolbar>
 
 			<BackButton onClick={handleClose} type="close" />
 
@@ -68,7 +68,7 @@ export function PlansDetailHeader() {
 				/>
 			</HasPermission>
 
-		</>
+		</Toolbar>
 	);
 
 	//

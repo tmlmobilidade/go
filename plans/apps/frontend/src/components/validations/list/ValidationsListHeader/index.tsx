@@ -4,7 +4,7 @@ import { openCreateValidationModal } from '@/components/validations/detail/Creat
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Button, HasPermission, Label, SearchInput, Spacer } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,14 +20,14 @@ export function ValidationsListHeader() {
 	// B. Render components
 
 	return (
-		<>
+		<Toolbar>
 			<Label size="lg" caps singleLine>Validações GTFS</Label>
 			<Spacer />
 			<SearchInput onChange={validationsListContext.actions.setFilterSearch} value={validationsListContext.filters.search} />
 			<HasPermission action={Permissions.validations.actions.create} scope={Permissions.validations.scope}>
 				<Button label="Nova validação" leftSection={<IconPlus />} onClick={openCreateValidationModal} />
 			</HasPermission>
-		</>
+		</Toolbar>
 	);
 
 	//
