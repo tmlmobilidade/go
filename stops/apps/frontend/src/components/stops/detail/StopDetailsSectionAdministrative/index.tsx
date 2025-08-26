@@ -2,10 +2,12 @@
 
 /* * */
 
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
 import { jurisdictionSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -15,6 +17,7 @@ export function StopDetailsSectionAdministrative() {
 	//
 	// A. Setup variables
 
+	const locationsContext = useLocationsContext();
 	const stopDetailContext = useStopDetailContext();
 
 	//
@@ -25,6 +28,62 @@ export function StopDetailsSectionAdministrative() {
 		value: value,
 	}));
 
+	const associatedDistrict = useMemo(() => {
+		// Skip if districts are unavailable
+		if (!locationsContext.data.districts_map) return;
+		// Skip if stop does not yet have a district
+		if (!stopDetailContext.data.stop?.district_id) return;
+		// Get the district from the map
+		const districtId = stopDetailContext.data.stop.district_id;
+		const matchingDistrictData = locationsContext.data.districts_map.get(districtId);
+		// Return if no matching district data is found
+		if (!matchingDistrictData) return;
+		// Return the matching data
+		return matchingDistrictData;
+	}, [stopDetailContext.data.stop, locationsContext.data.districts_map]);
+
+	const associatedMunicipality = useMemo(() => {
+		// Skip if municipalities are unavailable
+		if (!locationsContext.data.municipalities_map) return;
+		// Skip if stop does not yet have a municipality
+		if (!stopDetailContext.data.stop?.municipality_id) return;
+		// Get the municipality from the map
+		const municipalityId = stopDetailContext.data.stop.municipality_id;
+		const matchingMunicipalityData = locationsContext.data.municipalities_map.get(municipalityId);
+		// Return if no matching municipality data is found
+		if (!matchingMunicipalityData) return;
+		// Return the matching data
+		return matchingMunicipalityData;
+	}, [stopDetailContext.data.stop, locationsContext.data.municipalities_map]);
+
+	const associatedParish = useMemo(() => {
+		// Skip if parishes are unavailable
+		if (!locationsContext.data.parishes_map) return;
+		// Skip if stop does not yet have a parish
+		if (!stopDetailContext.data.stop?.parish_id) return;
+		// Get the parish from the map
+		const parishId = stopDetailContext.data.stop.parish_id;
+		const matchingParishData = locationsContext.data.parishes_map.get(parishId);
+		// Return if no matching parish data is found
+		if (!matchingParishData) return;
+		// Return the matching data
+		return matchingParishData;
+	}, [stopDetailContext.data.stop, locationsContext.data.parishes_map]);
+
+	const associatedLocality = useMemo(() => {
+		// Skip if localities are unavailable
+		if (!locationsContext.data.localities_map) return;
+		// Skip if stop does not yet have a locality
+		if (!stopDetailContext.data.stop?.locality_id) return;
+		// Get the locality from the map
+		const localityId = stopDetailContext.data.stop.locality_id;
+		const matchingLocalityData = locationsContext.data.localities_map.get(localityId);
+		// Return if no matching locality data is found
+		if (!matchingLocalityData) return;
+		// Return the matching data
+		return matchingLocalityData;
+	}, [stopDetailContext.data.stop, locationsContext.data.localities_map]);
+
 	//
 	// C. Render components
 
@@ -34,14 +93,6 @@ export function StopDetailsSectionAdministrative() {
 			title="Informação Administrativa"
 		>
 			<Section>
-				<Grid columns="ab" gap="sm">
-					<ValueDisplay label="Distrito" value={stopDetailContext.data.districtName} raised />
-					<ValueDisplay label="Municipio" value={stopDetailContext.data.municipalityName} raised />
-					<ValueDisplay label="Freguesia" value={stopDetailContext.data.parishName} raised />
-					<ValueDisplay label="Localidade" value={stopDetailContext.data.localityName} raised />
-				</Grid>
-			</Section>
-			<Section>
 				<Combobox
 					data={jurisdictionItems}
 					defaultValue={Translations.JURISDICATION.unknown}
@@ -49,6 +100,14 @@ export function StopDetailsSectionAdministrative() {
 					fullWidth
 					{...stopDetailContext.data.form.getInputProps('jurisdiction')}
 				/>
+			</Section>
+			<Section>
+				<Grid columns="ab" gap="md">
+					<ValueDisplay label="Distrito" value={associatedDistrict?.name ?? 'N/A'} bordered />
+					<ValueDisplay label="Municipio" value={associatedMunicipality?.name ?? 'N/A'} bordered />
+					<ValueDisplay label="Freguesia" value={associatedParish?.name ?? 'N/A'} bordered />
+					<ValueDisplay label="Localidade" value={associatedLocality?.name ?? 'N/A'} bordered />
+				</Grid>
 			</Section>
 		</Collapsible>
 	);

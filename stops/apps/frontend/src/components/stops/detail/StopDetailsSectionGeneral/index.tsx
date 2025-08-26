@@ -4,9 +4,8 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { IconAB } from '@tabler/icons-react';
 import { operationalStatusSchema } from '@tmlmobilidade/types';
-import { Button, Collapsible, Combobox, Grid, NumberInput, Section, TextInput, Tooltip } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -48,72 +47,41 @@ export function StopDetailsSectionGeneral() {
 		>
 
 			<Section>
-				<Grid columns="ab" gap="sm">
-					<TextInput
-						label="Código Único da Paragem"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('_id')}
-					/>
-					<TextInput
-						label="Código antigo da paragem"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('legacy_id')}
-					/>
-					<NumberInput
-						label="Latitude"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('latitude')}
-					/>
-					<NumberInput
-						label="Longitude"
-						placeholder="..."
-						{...stopDetailContext.data.form.getInputProps('longitude')}
-					/>
-
+				<Grid columns="abcd" gap="md">
+					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
+					<ValueDisplay label="Código do Operador (legacy)" value={stopDetailContext.data.stop?.legacy_id ?? 'N/A'} bordered />
+					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
+					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 
 			<Section gap="md">
-				<TextInput
-					label="Antigo Nome da Paragem (p/ alterar)"
-					miw="100%"
-					placeholder="..."
-					{...stopDetailContext.data.form.getInputProps('name')}
-				/>
-				<TextInput
-					label="Nome da Paragem (depois da correção)"
-					miw="100%"
-					placeholder="..."
-					{...stopDetailContext.data.form.getInputProps('new_name')}
-				/>
-				<TextInput
-					label="Nome Curto (Postalete)"
-					miw="100%"
-					placeholder="..."
-					{...stopDetailContext.data.form.getInputProps('short_name')}
-				/>
-				<TextInput
-					label="Nome Falado (Text-to-Speech)"
-					miw="100%"
-					placeholder="..."
-					{...stopDetailContext.data.form.getInputProps('tts_name')}
-					rightSection={(
-						<Tooltip label="tts">
-							<Button icon={<IconAB />} onClick={handlePlayPhoneticName} />
-						</Tooltip>
-					)}
+				<SegmentedControl
+					data={operationalStatusItems}
+					onChange={(value: typeof operationalStatusSchema.options[number]) => stopDetailContext.data.form.setFieldValue('operational_status', value)}
+					value={stopDetailContext.data.form.values.operational_status}
+					fullWidth
 				/>
 			</Section>
 
-			<Section gap="md">
-				<Combobox
-					data={operationalStatusItems}
-					defaultValue={Translations.OPERATIONAL_STATUS.voided}
-					label="Estado Operacional"
-					placeholder="Escolha uma opção"
-					fullWidth
-					{...stopDetailContext.data.form.getInputProps('operational_status')}
-				/>
+			<Section>
+				<Grid columns="a" gap="md">
+					<TextInput
+						label="Antigo Nome da Paragem (p/ alterar)"
+						{...stopDetailContext.data.form.getInputProps('name')}
+					/>
+					<TextInput
+						label="Nome da Paragem (depois da correção)"
+						{...stopDetailContext.data.form.getInputProps('new_name')}
+					/>
+				</Grid>
+			</Section>
+
+			<Section>
+				<Grid columns="ab" gap="md">
+					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.stop?.short_name ?? 'N/A'} bordered />
+					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.stop?.tts_name ?? 'N/A'} bordered />
+				</Grid>
 			</Section>
 
 		</Collapsible>

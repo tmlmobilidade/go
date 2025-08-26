@@ -31,13 +31,13 @@ export function StopDetailHeader() {
 	return (
 		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
-			<Tag label={stopDetailContext.data.id} variant="secondary" />
+			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
 			<Spacer />
 			<Button
-				disabled={!stopDetailContext.flags.canSave}
+				disabled={!stopDetailContext.flags.can_save}
 				icon={<IconUpload size={28} />}
 				label="Guardar"
-				loading={stopDetailContext.flags.isSaving}
+				loading={stopDetailContext.flags.saving}
 				onClick={stopDetailContext.actions.saveStop}
 				variant="primary"
 			/>
