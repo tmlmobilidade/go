@@ -4,7 +4,7 @@
 FROM node:alpine AS base
 
 ENV MODULE=stops
-ENV PROJECT=cleaner
+ENV PROJECT=organizer
 
 RUN npm install -g turbo@^2
 
