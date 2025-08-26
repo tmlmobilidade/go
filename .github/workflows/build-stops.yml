@@ -17,8 +17,8 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    name: frontend (NextJS)
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
@@ -47,16 +47,18 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./stops
-          file: ./stops/apps/frontend/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-stops-frontend:${{ github.ref_name }}
+          context: ./plans
+          file: ./plans/apps/frontend/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-plans-frontend:${{ github.ref_name }}
+          build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    name: api (NodeJS)
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
@@ -85,16 +87,16 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./stops
-          file: ./stops/apps/api/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-stops-api:${{ github.ref_name }}
+          context: ./plans
+          file: ./plans/apps/api/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-plans-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    name: nginx
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
