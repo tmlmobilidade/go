@@ -38,6 +38,9 @@ export function FileComponent({ file }: { file: File }) {
 		}
 
 		try {
+			// Open file.url in a new window
+			window.open(file.url, '_blank');
+			return;
 			const response = await fetch(file.url);
 			const blob = await response.blob();
 			const url = window.URL.createObjectURL(blob);
