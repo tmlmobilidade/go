@@ -3,15 +3,13 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Routes } from '@/lib/routes';
 import { StopOptions } from '@/schemas/options';
 import { abbreviateName } from '@/utils/abreviate-stop-name';
-import { type CreateStopDto, Stop, UpdateStopSchema } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { convertObject, fetchData, isValidLatitude, isValidLongitude } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
+import { type CreateStopDto, Stop } from '@tmlmobilidade/types';
+import { useForm, UseFormReturnType } from '@tmlmobilidade/ui';
+import { fetchData, isValidLatitude, isValidLongitude, keepUrlParams } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
-import { mutate } from 'swr';
+import useSWR from 'swr';
 
 /* * */
 
@@ -61,19 +59,17 @@ const emptyStop: CreateStopDto = {
 	tts_name: '',
 };
 
+/* * */
+
 interface StopCreateContextState {
 	actions: {
-		// abbreviationsShortName: (name: string) => void
-		// closeCreateStopModalAndReset: () => void
-		// createStop: () => void
-		// createStopCoordinates: (latitude: number, longitude: number) => void
+		createNewStop: () => void
 		setLatLng: (latitude: number, longitude: number) => void
 	}
 	data: {
 		form: UseFormReturnType<CreateStopDto>
 	}
 	flags: {
-		can_create: boolean
 		error: Error | null
 		loading: boolean
 	}
@@ -83,14 +79,6 @@ interface StopCreateContextState {
 		nextStep: () => void
 		previousStep: () => void
 	}
-}
-
-/* * */
-
-function generate12DigitNumber(): number {
-	const min = 100000000000;
-	const max = 999999999999;
-	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /* * */
@@ -113,20 +101,18 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const router = useRouter();
-
 	const locationsContext = useLocationsContext();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isError, setIsError] = useState<Error | null>(null);
 
-	const [canCreate, setCanCreate] = useState<boolean>(false);
-
 	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
 	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
 
 	//
-	// B. Transform data
+	// B. Fetch data
+
+	const { mutate: allStopsMutate } = useSWR<Stop[]>('/api/stops');
 
 	//
 	// C. Setup form
@@ -139,7 +125,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	//
-	// C. Handle actions
+	// D. Handle actions
 
 	const previousStep = () => {
 		setModalCurrentStepState((prev) => {
@@ -171,7 +157,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	useEffect(() => {
-		// By default, set the step as invalid
+		// By default, set the current step as invalid
 		setModalCurrentStepValidState(false);
 		// Validate Step 1
 		if (modalCurrentStepState === 1) {
@@ -187,6 +173,10 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			const hasNameWithinLimits = form.values.name.length >= StopOptions.stop_name_min_length && form.values.name.length <= StopOptions.stop_name_max_length;
 			const hasShortNameWithinLimits = form.values.short_name.length >= StopOptions.stop_short_name_min_length && form.values.short_name.length <= StopOptions.stop_short_name_max_length;
 			setModalCurrentStepValidState(hasNameWithinLimits && hasShortNameWithinLimits);
+		}
+		// Validate Step 3
+		if (modalCurrentStepState === 3) {
+			setModalCurrentStepValidState(true);
 		}
 	}, [
 		modalCurrentStepState,
@@ -224,67 +214,34 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.setValues({ short_name: shortName, tts_name: ttsName });
 	}, [form.values.name]);
 
-	// 7. Stop creation logic
-	const createStop = async (_id) => {
+	const createNewStop = async () => {
+		// Update UI
 		setIsLoading(true);
-
-		const allStops = await fetchData<Stop[]>(Routes.ME);
-		const existingIds = allStops?.data?.map(stop => stop._id) || [];
-
-		do {
-			_id = String(generate12DigitNumber());
-		} while (existingIds.includes(_id));
-
-		form.setValues({ _id });
-
-		const saveStop = { ...form.values };
-
-		const method = saveStop._id ? 'POST' : 'PUT';
-		const url = saveStop._id ? Routes.API + Routes.STOPS_LIST : Routes.STOPS_DETAIL(saveStop._id);
-
-		const body = saveStop._id ? saveStop : convertObject(saveStop, UpdateStopSchema);
-
-		const response = await fetchData<Stop>(url, method, body);
-
-		if (response.error || !response.data?._id) {
-			useToast.error({
-				message: response.error,
-				title: 'Erro ao iniciar Validação',
-			});
+		// Fetch the API with the new stop data
+		const response = await fetchData<Stop>('/api/stops', 'POST', form.getValues());
+		// Handle the API response error
+		if (response.error) {
+			setIsError(new Error(response.error));
 			setIsLoading(false);
 			return;
 		}
-
-		useToast.success({
-			message: 'Paragem criada com sucesso.',
-			title: 'Sucesso',
-		});
-
-		localStorage.removeItem('newStopState');
-		localStorage.removeItem('createStopFormValues');
-
-		router.push(`/stops/${response.data._id}`);
-		setIsLoading(false);
-		mutate(`/api/stops/${saveStop._id}`);
+		// Handle the success
+		allStopsMutate();
+		window.location.href = keepUrlParams(`/stops/${response.data._id}`, window.location.search);
 	};
 
 	//
-	// D. Define context value
+	// E. Define context value
 
 	const contextValue: StopCreateContextState = useMemo(() => ({
 		actions: {
-			// abbreviationsShortName: setNewStopName,
-			// closeCreateStopModalAndReset,
-			// createStop,
-			// createStopCoordinates: setNewStopAndLocation,
+			createNewStop,
 			setLatLng,
 		},
 		data: {
 			form,
-			// newStopState,
 		},
 		flags: {
-			can_create: canCreate,
 			error: isError,
 			loading: isLoading,
 		},
@@ -296,13 +253,14 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		},
 	}), [
 		form,
+		isError,
 		isLoading,
-		canCreate,
 		modalCurrentStepState,
+		modalCurrentStepValidState,
 	]);
 
 	//
-	// D. Render components
+	// F. Render components
 
 	return (
 		<StopCreateContext.Provider value={contextValue}>

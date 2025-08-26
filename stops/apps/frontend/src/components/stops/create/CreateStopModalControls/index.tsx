@@ -35,9 +35,9 @@ export function CreateStopModalControls({ onClose }: CreateStopModalControlsProp
 				/>
 				<Button
 					disabled={!stopCreateContext.modal.current_step_valid}
-					label="Próximo Passo"
+					label={stopCreateContext.modal.current_step === 3 ? 'Criar Paragem' : 'Próximo Passo'}
 					loading={stopCreateContext.flags.loading}
-					onClick={stopCreateContext.modal.nextStep}
+					onClick={stopCreateContext.modal.current_step === 3 ? stopCreateContext.actions.createNewStop : stopCreateContext.modal.nextStep}
 				/>
 			</Grid>
 			<Grid columns="a" gap="md">
