@@ -1,17 +1,14 @@
 /* * */
 
-import { type Stop, type Validation } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface StopNormalized extends Stop {
-	id_normalized: string
+	district_name: string
+	locality_name: string
+	municipality_name: string
 	name_normalized: string
-}
-
-/* * */
-
-export interface ValidationNormalized extends Validation {
-	id_normalized: string
-	name_normalized: string
+	new_name_normalized: string
+	parish_name: string
 }

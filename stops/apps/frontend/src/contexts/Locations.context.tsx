@@ -3,30 +3,38 @@
 /* * */
 
 import { getAppConfig } from '@tmlmobilidade/lib';
-import { swrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useContext, useMemo } from 'react';
+import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
+
+/* * */
+
+// const AML_DISTRICT_IDS = ['11', '15'];
 
 /* * */
 
 interface LocationsContextState {
 	actions: {
-		getDistrict: () => []
-		getMunicipality: () => []
-		getParish: () => []
+		queryLocations: (latitude: number, longitude: number) => Promise<Location | null>
 	}
 	data: {
-		district: string[]
-		municipality: string[]
-		parish: string[]
-	}
-	filters: {
-		filterDistrict: string[]
-		filterMunicipality: string[]
-		filterParish: string[]
+		district_ids: string[]
+		districts: District[]
+		districts_map: Map<string, District>
+		localities: Locality[]
+		localities_map: Map<string, Locality>
+		locality_ids: string[]
+		municipalities: Municipality[]
+		municipalities_map: Map<string, Municipality>
+		municipality_ids: string[]
+		parish_ids: string[]
+		parishes: Parish[]
+		parishes_map: Map<string, Parish>
 	}
 	flags: {
-		is_loading: boolean
+		error: Error | null
+		loading: boolean
 	}
 }
 
@@ -44,68 +52,94 @@ export function useLocationsContext() {
 
 /* * */
 
-export const LocationsContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Fetch data
+	// A. Setup variables
+
+	const [isLoading, setIsLoading] = useState(false);
+
+	const allDistrictsMap = useRef<Map<string, District>>(new Map());
+	const allMunicipalitiesMap = useRef<Map<string, Municipality>>(new Map());
+	const allParishesMap = useRef<Map<string, Parish>>(new Map());
+	const allLocalitiesMap = useRef<Map<string, Locality>>(new Map());
 
 	//
-	// A. Fetch data
+	// B. Fetch data
 
-	const { data: districtData, isLoading: fetcheddistrictLoading } = useSWR(`${getAppConfig('locations', 'api_url', 'production')}/locations/districts`, swrFetcher);
-
-	//
-	// B. Transform data
-
-	console.log('districtData -> ', districtData);
-	console.log('isloading -> ', fetcheddistrictLoading);
+	const { data: allDistrictsData, error: allDistrictsError, isLoading: allDistrictsLoading } = useSWR<District[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/districts?limit=999999`, swrFetcher);
+	const { data: allMunicipalitiesData, error: allMunicipalitiesError, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/municipalities?limit=999999`, swrFetcher);
+	const { data: allParishesData, error: allParishesError, isLoading: allParishesLoading } = useSWR<Parish[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/parishes?limit=999999`, swrFetcher);
+	const { data: allLocalitiesData, error: allLocalitiesError, isLoading: allLocalitiesLoading } = useSWR<Locality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/localities?limit=999999`, swrFetcher);
 
 	//
-	// C. Handle actions
+	// C. Transform data
 
-	const getDistrict = async () => {
-		return districtData;
+	useEffect(() => {
+		allDistrictsData?.forEach(item => allDistrictsMap.current.set(item._id, item));
+	}, [allDistrictsData]);
+
+	useEffect(() => {
+		allMunicipalitiesData?.forEach(item => allMunicipalitiesMap.current.set(item._id, item));
+	}, [allMunicipalitiesData]);
+
+	useEffect(() => {
+		allParishesData?.forEach(item => allParishesMap.current.set(item._id, item));
+	}, [allParishesData]);
+
+	useEffect(() => {
+		allLocalitiesData?.forEach(item => allLocalitiesMap.current.set(item._id, item));
+	}, [allLocalitiesData]);
+
+	//
+	// D. Handle actions
+
+	const queryLocations = async (latitude: number, longitude: number) => {
+		setIsLoading(true);
+		const result = await fetchData<Location>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/coordinates?lat=${latitude}&lon=${longitude}`);
+		setIsLoading(false);
+		return result.data ?? null;
 	};
 
-	const getMunicipality = async () => {
-		return districtData;
-	};
+	//
+	// E. Define context value
 
-	const getParish = async () => {
-		return districtData;
-	};
+	const contextValue: LocationsContextState = useMemo(() => ({
+		actions: {
+			queryLocations,
+		},
+		data: {
+			district_ids: Array.from(allDistrictsMap.current.keys()),
+			districts: allDistrictsData ?? [],
+			districts_map: allDistrictsMap.current,
+			localities: allLocalitiesData ?? [],
+			localities_map: allLocalitiesMap.current,
+			locality_ids: Array.from(allLocalitiesMap.current.keys()),
+			municipalities: allMunicipalitiesData ?? [],
+			municipalities_map: allMunicipalitiesMap.current,
+			municipality_ids: Array.from(allMunicipalitiesMap.current.keys()),
+			parish_ids: Array.from(allParishesMap.current.keys()),
+			parishes: allParishesData ?? [],
+			parishes_map: allParishesMap.current,
+		},
+		flags: {
+			error: allDistrictsError || allMunicipalitiesError || allParishesError || allLocalitiesError,
+			loading: isLoading || allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading,
+		},
+	}), [
+		allDistrictsData,
+		allDistrictsMap.current,
+		allMunicipalitiesData,
+		allMunicipalitiesMap.current,
+		allParishesData,
+		allParishesMap.current,
+		allLocalitiesData,
+		allLocalitiesMap.current,
+	]);
 
 	//
-	// D. Define context value
-
-	const contextValue: LocationsContextState = useMemo(() => {
-		const districtList = Array.isArray(districtData) ? districtData : [];
-
-		return {
-			actions: {
-				getDistrict,
-				getMunicipality,
-				getParish,
-			},
-			data: {
-				district: districtList,
-				municipality: districtList,
-				parish: districtList,
-			},
-			filters: {
-				filterDistrict: districtList,
-				filterMunicipality: districtList,
-				filterParish: districtList,
-			},
-			flags: {
-				is_loading: fetcheddistrictLoading,
-			},
-		};
-	}, [districtData, fetcheddistrictLoading]);
-
-	//
-	// E. Render components
+	// F. Render components
 
 	return (
 		<LocationsContext.Provider value={contextValue}>

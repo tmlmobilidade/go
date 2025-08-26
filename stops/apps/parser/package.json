@@ -1,29 +1,28 @@
 {
 	"name": "@tmlmobilidade/sae-stops-parser",
-	"description": "",
 	"version": "1.0.0",
-	"author": "",
-	"license": "ISC",
-	"keywords": [],
-	"type": "commonjs",
-	"main": "index.js",
+	"type": "module",
+	"files": ["dist"],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc",
-		"dev": "tsx src/index.ts",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/interfaces": "^20250725.1425.7",
-		"@tmlmobilidade/types": "^20250725.1425.7",
-		"@tmlmobilidade/utils": "^20250725.1425.7"
+		"@tmlmobilidade/interfaces": "20250825.2314.37",
+		"@tmlmobilidade/utils": "20250825.2314.37"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "^20250622.1204.50",
-		"@dotenv-run/cli": "^1.3.6",
-		"@tmlmobilidade/tsconfig": "^20250725.1425.7",
-		"@types/node": "^24.1.0",
-		"ts-node": "^10.9.2",
-		"tsx": "^4.20.3",
-		"typescript": "^5.8.3"
+		"@tmlmobilidade/tsconfig": "20250825.2314.37",
+		"@tmlmobilidade/types": "20250825.2314.37",
+		"@types/node": "24.3.0",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.5",
+		"typescript": "5.9.2"
 	}
 }

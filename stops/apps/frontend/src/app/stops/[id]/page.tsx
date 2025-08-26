@@ -1,21 +1,15 @@
 /* * */
 
-import { FormInfos } from '@/components/Stops/Form';
+import { StopDetail } from '@/components/stops/detail/StopDetail';
 import { StopDetailContextProvider } from '@/contexts/StopDetails.context';
 
 /* * */
 
-interface Props {
-	params: Promise<{ id: string }>
-}
-
-/* * */
-
-export default async function Page({ params }: Props) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	return (
 		<StopDetailContextProvider stopId={id}>
-			<FormInfos />
+			<StopDetail />
 		</StopDetailContextProvider>
 	);
 }

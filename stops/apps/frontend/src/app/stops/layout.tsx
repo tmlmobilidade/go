@@ -1,17 +1,22 @@
-import { List } from '@/components/Stops/List/index';
-import { StopListContextProvider } from '@/contexts/StopList.context';
+/* * */
+
+import { StopsList } from '@/components/stops/list/StopsList';
+import { StopsListContextProvider } from '@/contexts/StopsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
+import { type PropsWithChildren } from 'react';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+/* * */
+
+export default function Layout({ children }: PropsWithChildren) {
 	return (
-		<PanesManager
-			panes={[
-				<StopListContextProvider>
-					<List />
-				</StopListContextProvider>,
-				children,
-			]}
-		/>
-
+		<StopsListContextProvider>
+			<PanesManager
+				id="stops-list"
+				panes={[
+					<StopsList />,
+					children,
+				]}
+			/>
+		</StopsListContextProvider>
 	);
 }

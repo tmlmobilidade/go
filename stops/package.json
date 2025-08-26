@@ -3,33 +3,24 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		"clean": "npx @tmlmobilidade/repo-rinse",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"dev:parser": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-stops-parser",
+		"dev:ui": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-stops-api --filter=@tmlmobilidade/sae-stops-frontend",
 		"lint": "turbo lint",
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@fastify/multipart": "^9.0.3",
-		"@tmlmobilidade/tsconfig": "20250729.1041.1",
-		"dotenv-cli": "9.0.0",
-		"prettier": "3.6.2",
-		"turbo": "2.5.5",
-		"typescript": "5.8.3"
+		"@dotenv-run/cli": "1.3.6",
+		"turbo": "2.5.6",
+		"typescript": "5.9.2"
 	},
-	"packageManager": "npm@11.5.1",
+	"packageManager": "npm@11.5.2",
 	"engines": {
 		"node": ">=18"
 	},
 	"workspaces": [
 		"apps/*"
-	],
-	"dependencies": {
-		"@carrismetropolitana/api-types": "^20250717.940.43",
-		"@tmlmobilidade/types": "^20250725.1425.7",
-		"@tmlmobilidade/ui": "^20250725.1425.7",
-		"@vis.gl/react-maplibre": "^8.0.4",
-		"react": "^19.1.0"
-	}
+	]
 }
