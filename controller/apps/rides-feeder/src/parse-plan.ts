@@ -49,6 +49,7 @@ export async function parsePlan(planData: Plan) {
 
 		let calendarDatesCounter = 0;
 		let tripsCounter = 0;
+		let shapesCounter = 0;
 		let stopTimesCounter = 0;
 
 		let hashedShapesCounter = 0;
@@ -383,6 +384,10 @@ export async function parsePlan(planData: Plan) {
 				const savedShape = savedShapes.get(validatedData.shape_id);
 				if (savedShape) savedShapes.set(validatedData.shape_id, [...savedShape, validatedData]);
 				else savedShapes.set(validatedData.shape_id, [validatedData]);
+				// Log progress
+				if (shapesCounter % 1000 === 0) LOGGER.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
+				// Increment the counter
+				shapesCounter++;
 			};
 
 			//
