@@ -385,7 +385,7 @@ export async function parsePlan(planData: Plan) {
 				if (savedShape) savedShapes.set(validatedData.shape_id, [...savedShape, validatedData]);
 				else savedShapes.set(validatedData.shape_id, [validatedData]);
 				// Log progress
-				if (shapesCounter % 1000 === 0) LOGGER.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
+				if (shapesCounter % 10000 === 0) LOGGER.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
 				// Increment the counter
 				shapesCounter++;
 			};
@@ -471,7 +471,7 @@ export async function parsePlan(planData: Plan) {
 				if (savedStopTime) savedStopTimes.set(validatedData.trip_id, [...savedStopTime, validatedData]);
 				else savedStopTimes.set(validatedData.trip_id, [validatedData]);
 				// Log progress
-				if (stopTimesCounter % 1000 === 0) LOGGER.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
+				if (stopTimesCounter % 10000 === 0) LOGGER.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
 				// Increment the counter
 				stopTimesCounter++;
 			};
