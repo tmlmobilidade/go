@@ -5,10 +5,10 @@ import '@tmlmobilidade/ui/styles';
 /* * */
 
 import { DataProviders } from '@/providers/data-providers';
-import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
+import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -21,18 +21,16 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body>
+		<BaseProvider>
+			<AppProvider>
 				<NuqsAdapter>
 					<DataProviders>
-						<AppProvider>
-							<AppWrapper>
-								{children}
-							</AppWrapper>
-						</AppProvider>
+						<AppWrapper>
+							{children}
+						</AppWrapper>
 					</DataProviders>
 				</NuqsAdapter>
-			</body>
-		</html>
+			</AppProvider>
+		</BaseProvider>
 	);
 }
