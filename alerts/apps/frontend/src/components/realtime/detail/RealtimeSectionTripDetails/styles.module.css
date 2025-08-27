@@ -1,0 +1,36 @@
+/* * */
+/* FOUND TRIPS CONTAINER */
+.foundTripsContainer {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	width: 100%;
+	height: 240px;
+	padding: var(--size-spacing-sm);
+	overflow-y: scroll;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	box-shadow: 2px 2px 5px 1px rgb(0 0 0 / 7%);
+}
+
+/* * */
+/* FOUND TRIPS ACTIONS CONTAINER */
+.foundTripsActionsContainer {
+	display: flex;
+	gap: var(--size-spacing-sm);
+}
+
+
+/* * */
+/* SELECTED TRIPS CONTAINER */
+.selectedTripsContainer {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-sm);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	box-shadow: 2px 2px 5px 1px rgb(0 0 0 / 7%);
+}

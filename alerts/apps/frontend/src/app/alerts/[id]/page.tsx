@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertDetail } from '@/components/detail/AlertDetail';
+import { AlertDetail } from '@/components/scheduled/detail/AlertDetail';
 import { AlertDetailContextProvider } from '@/contexts/AlertDetail.context';
 
 /* * */
