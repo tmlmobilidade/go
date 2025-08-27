@@ -4,6 +4,7 @@ import '@tmlmobilidade/ui/styles';
 
 /* * */
 
+import { BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { PropsWithChildren } from 'react';
@@ -19,12 +20,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html>
-			<body>
-				<NuqsAdapter>
-					{children}
-				</NuqsAdapter>
-			</body>
-		</html>
+		<BaseProvider>
+			<NuqsAdapter>
+				{children}
+			</NuqsAdapter>
+		</BaseProvider>
 	);
 }
