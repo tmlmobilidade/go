@@ -43,6 +43,7 @@ export class RidesController {
 			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
 			aggregationPipeline.push({
 				$match: {
+					// @ts-expect-error - TODO: Fix this
 					_id: { $options: 'i', $regex: pattern },
 				},
 			});
@@ -61,6 +62,15 @@ export class RidesController {
 				},
 			});
 		}
+
+		//
+		// Add Stops from Hashed Trip
+		aggregationPipeline.push(
+			{ $lookup: { as: 'shape_details', foreignField: '_id', from: 'hashed_trips', localField: 'hashed_trip_id' } },
+			{ $unwind: '$shape_details' },
+			{ $addFields: { stop_ids: '$shape_details.path.stop_id' } },
+			{ $project: { shape_details: 0 } },
+		);
 
 		//
 		// Fetch rides from the database
