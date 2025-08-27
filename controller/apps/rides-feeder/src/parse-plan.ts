@@ -1,13 +1,12 @@
 /* * */
 
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
-import { SQLiteMap } from '@/sqlite-map.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
-import { Dates, getOperationalDatesFromRange, toMetersFromKilometersOrMeters } from '@tmlmobilidade/utils';
+import { Dates, getOperationalDatesFromRange, SQLiteWriter, toMetersFromKilometersOrMeters } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -22,6 +21,22 @@ export async function parsePlan(planData: Plan) {
 		const globalTimer = new TIMETRACKER();
 
 		//
+		// Setup variables to save formatted entities found in this Plan
+
+		const savedRideIds = new Set<string>();
+
+		const referencedRouteIds = new Set<string>();
+		const referencedShapeIds = new Set<string>();
+
+		let calendarDatesCounter = 0;
+		let tripsCounter = 0;
+		let shapesCounter = 0;
+		let stopTimesCounter = 0;
+
+		let hashedShapesCounter = 0;
+		let hashedTripsCounter = 0;
+
+		//
 		// Connect to databases and setup MongoDB Writers
 
 		const hashedShapesCollection = await hashedShapes.getCollection();
@@ -33,27 +48,115 @@ export async function parsePlan(planData: Plan) {
 		const ridesDbWritter = new MongoDbWriter<Ride>({ batch_size: 10000, collection: ridesCollection });
 
 		//
-		// Setup variables to save formatted entities found in this Plan
+		// Setup Maps and SQLite writers to temporarily store data
 
-		const savedRideIds = new Set<string>();
+		const savedCalendarDates = new Map<string, OperationalDate[]>();
 
-		const referencedRouteIds = new Set<string>();
-		const referencedShapeIds = new Set<string>();
+		const savedTrips = new SQLiteWriter<GTFS_Trip_Extended>({
+			batch_size: 10000,
+			columns: [
+				{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
+				{ indexed: false, name: 'bikes_allowed', type: 'INTEGER' },
+				{ indexed: false, name: 'block_id', type: 'TEXT' },
+				{ indexed: false, name: 'direction_id', not_null: true, type: 'INTEGER' },
+				{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'service_id', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'trip_headsign', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'trip_short_name', type: 'TEXT' },
+				{ indexed: false, name: 'wheelchair_accessible', type: 'INTEGER' },
+				{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
+			],
+		});
 
-		const savedCalendarDates = new SQLiteMap<string, OperationalDate[]>();
-		const savedTrips = new SQLiteMap<string, GTFS_Trip_Extended>();
-		const savedStops = new SQLiteMap<string, GTFS_Stop_Extended>();
-		const savedRoutes = new SQLiteMap<string, Partial<GTFS_Route_Extended>>();
-		const savedShapes = new SQLiteMap<string, GTFS_Shape[]>();
-		const savedStopTimes = new SQLiteMap<string, GTFS_StopTime[]>();
+		const savedRoutes = new SQLiteWriter<Partial<GTFS_Route_Extended>>({
+			batch_size: 10000,
+			columns: [
+				{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'continuous_drop_off', type: 'INTEGER' },
+				{ indexed: false, name: 'continuous_pickup', type: 'INTEGER' },
+				{ indexed: false, name: 'route_color', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'route_desc', type: 'TEXT' },
+				{ indexed: true, name: 'route_id', not_null: true, primary_key: true, type: 'TEXT' },
+				{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'route_sort_order', type: 'INTEGER' },
+				{ indexed: false, name: 'route_text_color', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'route_type', not_null: true, type: 'INTEGER' },
+				{ indexed: false, name: 'route_url', type: 'TEXT' },
+				{ indexed: false, name: 'circular', type: 'INTEGER' },
+				{ indexed: false, name: 'line_id', not_null: true, type: 'INTEGER' },
+				{ indexed: false, name: 'line_long_name', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'line_short_name', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'path_type', type: 'INTEGER' },
+				{ indexed: false, name: 'route_remarks', type: 'TEXT' },
+				{ indexed: false, name: 'school', type: 'INTEGER' },
+			],
+		});
 
-		let calendarDatesCounter = 0;
-		let tripsCounter = 0;
-		let shapesCounter = 0;
-		let stopTimesCounter = 0;
+		const savedShapes = new SQLiteWriter<GTFS_Shape>({
+			batch_size: 100000,
+			columns: [
+				{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'shape_pt_lat', not_null: true, type: 'REAL' },
+				{ indexed: false, name: 'shape_pt_lon', not_null: true, type: 'REAL' },
+				{ indexed: false, name: 'shape_pt_sequence', not_null: true, type: 'INTEGER' },
+				{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
+			],
+		});
 
-		let hashedShapesCounter = 0;
-		let hashedTripsCounter = 0;
+		const savedStops = new SQLiteWriter<GTFS_Stop_Extended>({
+			batch_size: 10000,
+			columns: [
+				{ indexed: false, name: 'level_id', type: 'TEXT' },
+				{ indexed: false, name: 'location_type', type: 'INTEGER' },
+				{ indexed: false, name: 'parent_station', type: 'TEXT' },
+				{ indexed: false, name: 'platform_code', type: 'TEXT' },
+				{ indexed: false, name: 'stop_code', type: 'TEXT' },
+				{ indexed: false, name: 'stop_desc', type: 'TEXT' },
+				{ indexed: true, name: 'stop_id', not_null: true, primary_key: true, type: 'TEXT' },
+				{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
+				{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
+				{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'stop_timezone', type: 'TEXT' },
+				{ indexed: false, name: 'stop_url', type: 'TEXT' },
+				{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
+				{ indexed: false, name: 'zone_id', type: 'TEXT' },
+				{ indexed: false, name: 'has_bench', type: 'INTEGER' },
+				{ indexed: false, name: 'has_network_map', type: 'INTEGER' },
+				{ indexed: false, name: 'has_pip_real_time', type: 'INTEGER' },
+				{ indexed: false, name: 'has_schedules', type: 'INTEGER' },
+				{ indexed: false, name: 'has_shelter', type: 'INTEGER' },
+				{ indexed: false, name: 'has_stop_sign', type: 'INTEGER' },
+				{ indexed: false, name: 'has_tariffs_information', type: 'INTEGER' },
+				{ indexed: false, name: 'municipality_id', type: 'TEXT' },
+				{ indexed: false, name: 'parish_id', type: 'TEXT' },
+				{ indexed: false, name: 'public_visible', type: 'INTEGER' },
+				{ indexed: false, name: 'region_id', type: 'TEXT' },
+				{ indexed: false, name: 'shelter_code', type: 'TEXT' },
+				{ indexed: false, name: 'shelter_maintainer', type: 'TEXT' },
+				{ indexed: false, name: 'stop_short_name', type: 'TEXT' },
+				{ indexed: false, name: 'tts_stop_name', type: 'TEXT' },
+			],
+		});
+
+		const savedStopTimes = new SQLiteWriter<GTFS_StopTime>({
+			batch_size: 100000,
+			columns: [
+				{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'continuous_drop_off', type: 'INTEGER' },
+				{ indexed: false, name: 'continuous_pickup', type: 'INTEGER' },
+				{ indexed: false, name: 'departure_time', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
+				{ indexed: false, name: 'pickup_type', type: 'INTEGER' },
+				{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
+				{ indexed: false, name: 'stop_headsign', type: 'TEXT' },
+				{ indexed: true, name: 'stop_id', not_null: true, type: 'TEXT' },
+				{ indexed: true, name: 'trip_id', not_null: true, type: 'TEXT' },
+				{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
+				{ indexed: false, name: 'timepoint', type: 'INTEGER' },
+			],
+		});
 
 		//
 		// Prepare the working directories to work with the zip file
@@ -182,7 +285,7 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} service_ids saved in ${calendarParseTimer.get()}.`, 1);
+				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
 			}
 			else {
 				LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
@@ -262,7 +365,7 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} service_ids saved in ${calendarDatesParseTimer.get()}.`, 1);
+				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
 			}
 			else {
 				LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
@@ -297,7 +400,7 @@ export async function parsePlan(planData: Plan) {
 				// in the previous step or not. Include it if yes, skip otherwise.
 				if (!savedCalendarDates.has(validatedData.service_id)) return;
 				// Save the exported row
-				savedTrips.set(validatedData.trip_id, validatedData);
+				savedTrips.write(validatedData);
 				// Reference the associated entities to filter them later.
 				referencedRouteIds.add(validatedData.route_id);
 				referencedShapeIds.add(validatedData.shape_id);
@@ -312,7 +415,9 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/trips.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} trips saved in ${tripsParseTimer.get()}.`, 1);
+			savedTrips.flush();
+
+			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -342,7 +447,7 @@ export async function parsePlan(planData: Plan) {
 				// by the previously saved trips.
 				if (!referencedRouteIds.has(validatedData.route_id)) return;
 				// Save the exported row
-				savedRoutes.set(validatedData.route_id, validatedData);
+				savedRoutes.write(validatedData);
 			};
 
 			//
@@ -350,7 +455,9 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/routes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} routes saved in ${routesParseTimer.get()}.`, 1);
+			savedRoutes.flush();
+
+			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} rows saved in ${routesParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -381,9 +488,7 @@ export async function parsePlan(planData: Plan) {
 				// by the previously saved trips.
 				if (!referencedShapeIds.has(validatedData.shape_id)) return;
 				// Save the exported row
-				const savedShape = savedShapes.get(validatedData.shape_id);
-				if (savedShape) savedShapes.set(validatedData.shape_id, [...savedShape, validatedData]);
-				else savedShapes.set(validatedData.shape_id, [validatedData]);
+				savedShapes.write(validatedData);
 				// Log progress
 				if (shapesCounter % 10000 === 0) LOGGER.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
 				// Increment the counter
@@ -395,7 +500,9 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/shapes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} shapes saved in ${shapesParseTimer.get()}.`, 1);
+			savedShapes.flush();
+
+			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -423,7 +530,7 @@ export async function parsePlan(planData: Plan) {
 				// Validate the current row against the proper type
 				const validatedData = validateGtfsStopExtended(data);
 				// Save the exported row
-				savedStops.set(validatedData.stop_id, validatedData);
+				savedStops.write(validatedData);
 			};
 
 			//
@@ -431,7 +538,9 @@ export async function parsePlan(planData: Plan) {
 
 			await parseCsvFile(`${extractDirPath}/stops.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} stops saved in ${stopsParseTimer.get()}.`, 1);
+			savedStops.flush();
+
+			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
 
 			//
 		}
@@ -460,16 +569,13 @@ export async function parsePlan(planData: Plan) {
 				// Validate the current row against the proper type
 				const validatedData = validateGtfsStopTime(data);
 				// Skip if this row's trip_id was not saved before.
-				const tripData = savedTrips.get(validatedData.trip_id);
+				const tripData = savedTrips.get('trip_id', validatedData.trip_id);
 				if (!tripData) return;
 				// Also, check if the stop_id is valid and was saved before.
-				const stopData = savedStops.get(validatedData.stop_id);
+				const stopData = savedStops.get('stop_id', validatedData.stop_id);
 				if (!stopData) return;
-				// Format the exported row. Only include the minimum required data
-				// to prevent memory bloat later on, and include the stop data right away.
-				const savedStopTime = savedStopTimes.get(validatedData.trip_id);
-				if (savedStopTime) savedStopTimes.set(validatedData.trip_id, [...savedStopTime, validatedData]);
-				else savedStopTimes.set(validatedData.trip_id, [validatedData]);
+				// Save the exported row
+				savedStopTimes.write(validatedData);
 				// Log progress
 				if (stopTimesCounter % 10000 === 0) LOGGER.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
 				// Increment the counter
@@ -480,6 +586,8 @@ export async function parsePlan(planData: Plan) {
 			// Setup the CSV parsing operation
 
 			await parseCsvFile(`${extractDirPath}/stop_times.txt`, parseEachRow);
+
+			savedStopTimes.flush();
 
 			LOGGER.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
@@ -513,7 +621,7 @@ export async function parsePlan(planData: Plan) {
 			LOGGER.info(`Stops: ${savedStops.size}`);
 			LOGGER.info(`StopTimes: ${stopTimesCounter} rows`, 1);
 
-			for (const currentTrip of savedTrips.values()) {
+			for (const currentTrip of savedTrips.all()) {
 				//
 
 				//
@@ -526,9 +634,9 @@ export async function parsePlan(planData: Plan) {
 				// as well as other commonly used variables in the next steps.
 
 				const calendarDatesData = savedCalendarDates.get(currentTrip.service_id);
-				const stopTimesData = savedStopTimes.get(currentTrip.trip_id);
-				const routeData = savedRoutes.get(currentTrip.route_id);
-				const shapeData = savedShapes.get(currentTrip.shape_id);
+				const stopTimesData = savedStopTimes.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
+				const routeData = savedRoutes.get('route_id', currentTrip.route_id);
+				const shapeData = savedShapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
 
 				//
 				// Validate the required data for this trip
@@ -571,7 +679,7 @@ export async function parsePlan(planData: Plan) {
 
 				const formattedHashedTripPath: HashedTripWaypoint[] = sortedStopTimesData.map((stopTime) => {
 					// Get the stop data for this stop_time
-					const stopData = savedStops.get(stopTime.stop_id);
+					const stopData = savedStops.get('stop_id', stopTime.stop_id);
 					if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
 					// Normalize the shape_dist_traveled to meters, if necessary
 					const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
