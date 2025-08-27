@@ -18,10 +18,6 @@ export class RidesController {
 	static async getBatch(request: FastifyRequest<{ Querystring: { search?: string } }>, reply: FastifyReply<Ride[]>) {
 		//
 
-		const pipeline: AggregationPipeline<Ride> = [
-			{ $match: { agency_id: { $gte: todayStartDate, $lte: todayEndDate } } },
-		];
-
 		//
 		// Base Rides Filter
 		const todayStartDate = Dates.now('Europe/Lisbon').startOf('day').plus({ hours: 4 }).unix_timestamp;
@@ -30,7 +26,7 @@ export class RidesController {
 		const aggregationPipeline: AggregationPipeline<Ride> = [
 			{
 				$match: {
-					agency_id: { $gte: todayStartDate, $lte: todayEndDate },
+					start_time_scheduled: { $gte: todayStartDate, $lte: todayEndDate },
 				},
 			},
 		];
@@ -69,11 +65,11 @@ export class RidesController {
 		//
 		// Fetch rides from the database
 
-		const ridesBatch = await rides.aggregate(aggregationPipeline.push({ $limit: 2000 }));
+		const ridesBatch = await rides.aggregate(aggregationPipeline);
 
 		reply.send({
 			data: ridesBatch ?? [],
-			error: JSON.stringify(filter),
+			error: null,
 			statusCode: HttpStatus.OK,
 		});
 
