@@ -135,10 +135,10 @@ export class UsersController {
 	 * @param request The request object
 	 * @param reply The reply object
 	*/
-	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto, Params: { themeId: string } }>) {
+	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto }>, reply: FastifyReply<User>) {
 		const session_token = request.cookies[COOKIE_NAME];
 		const user = await authProvider.getUser(session_token);
-		// For now, update only the theme_id
-		await users.updateById(user._id, { theme_id: request.body.theme_id });
+		const updatedUser = await users.updateById(user._id, request.body);
+		reply.send({ data: updatedUser, error: null, statusCode: HttpStatus.OK });
 	}
 }

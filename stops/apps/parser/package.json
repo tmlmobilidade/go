@@ -14,12 +14,12 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/interfaces": "20250826.1102.48",
-		"@tmlmobilidade/utils": "20250826.1102.48"
+		"@tmlmobilidade/interfaces": "20250827.49.41",
+		"@tmlmobilidade/utils": "20250827.49.41"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250826.1102.48",
-		"@tmlmobilidade/types": "20250826.1102.48",
+		"@tmlmobilidade/tsconfig": "20250827.49.41",
+		"@tmlmobilidade/types": "20250827.49.41",
 		"@types/node": "24.3.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.5",
