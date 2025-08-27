@@ -1,7 +1,7 @@
 /* * */
 
-import { AlertList } from '@/components/scheduled/list/AlertsList';
-import { AlertListContextProvider } from '@/contexts/AlertList.context';
+import { RealtimeList } from '@/components/realtime/list/RealtimeList';
+import { RealtimeListContextProvider } from '@/contexts/RealtimeList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
@@ -12,9 +12,9 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="alerts"
 			panes={[
-				<AlertListContextProvider>
-					<AlertList />
-				</AlertListContextProvider>,
+				<RealtimeListContextProvider>
+					<RealtimeList />
+				</RealtimeListContextProvider>,
 				children,
 			]}
 		/>
