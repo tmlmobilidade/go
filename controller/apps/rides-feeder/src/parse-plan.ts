@@ -4,9 +4,10 @@ import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
+import { SQLiteWriter } from '@tmlmobilidade/connectors';
 import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
-import { Dates, getOperationalDatesFromRange, SQLiteWriter, toMetersFromKilometersOrMeters } from '@tmlmobilidade/utils';
+import { Dates, getOperationalDatesFromRange, toMetersFromKilometersOrMeters } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -405,7 +406,7 @@ export async function parsePlan(planData: Plan) {
 				referencedRouteIds.add(validatedData.route_id);
 				referencedShapeIds.add(validatedData.shape_id);
 				// Log progress
-				if (tripsCounter % 1000 === 0) LOGGER.info(`Parsed ${tripsCounter} trips.txt rows so far.`);
+				if (tripsCounter % 10000 === 0) LOGGER.info(`Parsed ${tripsCounter} trips.txt rows so far.`);
 				// Increment the counter
 				tripsCounter++;
 			};
@@ -490,7 +491,7 @@ export async function parsePlan(planData: Plan) {
 				// Save the exported row
 				savedShapes.write(validatedData);
 				// Log progress
-				if (shapesCounter % 10000 === 0) LOGGER.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
+				if (shapesCounter % 100000 === 0) LOGGER.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
 				// Increment the counter
 				shapesCounter++;
 			};
@@ -577,7 +578,7 @@ export async function parsePlan(planData: Plan) {
 				// Save the exported row
 				savedStopTimes.write(validatedData);
 				// Log progress
-				if (stopTimesCounter % 10000 === 0) LOGGER.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
+				if (stopTimesCounter % 100000 === 0) LOGGER.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
 				// Increment the counter
 				stopTimesCounter++;
 			};
