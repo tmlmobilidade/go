@@ -5,7 +5,7 @@
 import { useVerifyEmail } from '@/components/reset-password/SendResetEmailForm/use-verify-email';
 import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
-import { Button, Label, Section, Surface, TextInput, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';
+import { Button, Label, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -58,7 +58,7 @@ export default function IntroductionEmail() {
 							<Label>Introduza seu email para recuperar a sua palavra-passe</Label>
 						</div>
 						<div className={styles.headerLogo}>
-							<Themer dark={<TMLogoDark />} light={<TMLogoLight />} />
+							<WhenMode dark={<TMLogoDark />} light={<TMLogoLight />} />
 						</div>
 					</div>
 					<form className={styles.form} onSubmit={handleSubmit}>
