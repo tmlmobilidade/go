@@ -185,9 +185,9 @@ export async function validateRides() {
 				rideData.apex_on_board_refunds_qty = simplifiedApexOnBoardRefundsData.length;
 				rideData.apex_on_board_sales_amount = simplifiedApexOnBoardSalesData.reduce((acc, item) => acc + (item.price || 0), 0);
 				rideData.apex_on_board_sales_qty = simplifiedApexOnBoardSalesData.length;
-				rideData.apex_on_board_sales_validations_qty = simplifiedApexValidationsData.filter(item => !!item.on_board_sale_id && item.is_passenger).length;
-				rideData.apex_validations_prepaid_amount = simplifiedApexValidationsData.filter(item => !!item.units_qty && item.is_passenger).reduce((acc, item) => acc + (item.units_qty || 0), 0);
-				rideData.apex_validations_prepaid_qty = simplifiedApexValidationsData.filter(item => !!item.units_qty && item.is_passenger).length;
+				rideData.apex_on_board_sales_validations_qty = simplifiedApexValidationsData.filter(item => item.on_board_sale_id !== undefined && item.is_passenger).length;
+				rideData.apex_validations_prepaid_amount = simplifiedApexValidationsData.filter(item => item.units_qty !== undefined && item.is_passenger).reduce((acc, item) => acc + (item.units_qty || 0), 0);
+				rideData.apex_validations_prepaid_qty = simplifiedApexValidationsData.filter(item => item.units_qty !== undefined && item.is_passenger).length;
 				rideData.apex_validations_subscription_qty = simplifiedApexValidationsData.filter(item => !item.on_board_sale_id && !item.units_qty && item.is_passenger).length;
 				rideData.apex_validations_qty = simplifiedApexValidationsData.length;
 
