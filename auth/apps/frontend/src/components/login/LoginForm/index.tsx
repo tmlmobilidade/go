@@ -6,7 +6,7 @@ import { useLogin } from '@/components/login/LoginForm/use-login';
 import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
 import { createEmail } from '@tmlmobilidade/types';
-import { Button, Label, PasswordInput, Section, Surface, TextInput, Themer, TMLogoDark, TMLogoLight, useToast } from '@tmlmobilidade/ui';
+import { Button, Label, PasswordInput, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -74,7 +74,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 							<Label>Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.</Label>
 						</div>
 						<div className={styles.headerLogo}>
-							<Themer dark={<TMLogoDark />} light={<TMLogoLight />} />
+							<WhenMode dark={<TMLogoDark />} light={<TMLogoLight />} />
 						</div>
 					</div>
 
