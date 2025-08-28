@@ -160,8 +160,13 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		const refreshCatalog = () => {
 			// Setup a new worker instance to process the GTFS file.
 			// If a worker already exists, terminate it to avoid duplicate processing.
-			if (workerRef.current) workerRef.current.terminate();
-			workerRef.current = new Worker(new URL('@/workers/parse-rides.worker.ts', import.meta.url));
+			// if (!workerRef.current) workerRef.current.terminate();
+			if (!workerRef.current) {
+				workerRef.current = new Worker(new URL('@/workers/parse-rides.worker.ts', import.meta.url));
+				workerRef.current.onmessage = (event: MessageEvent<ParseRidesWorkerOutgoingMessage>) => {
+					setDataRidesNormalized(event.data.result ?? []);
+				};
+			}
 			workerRef.current.postMessage({
 				filters: {
 					delay_status: filterDelayStatus,
@@ -170,9 +175,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 				},
 				rides: dataRidesMap.current,
 			});
-			workerRef.current.onmessage = (event: MessageEvent<ParseRidesWorkerOutgoingMessage>) => {
-				setDataRidesNormalized(event.data.result ?? []);
-			};
 		};
 		refreshCatalog();
 		const interval = setInterval(refreshCatalog, 1000);
