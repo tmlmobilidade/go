@@ -5,7 +5,7 @@
 import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
 import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { Dates, fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { Dates, fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -57,8 +57,8 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 	//
 	// B. Fetch data
 
-	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(`/api/plans/${planId}`, swrFetcher, { refreshInterval: 5000 });
-	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: fileMutate } = useSWR<File>(`/api/plans/${planId}/operation-file`, swrFetcher);
+	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(`/api/plans/${planId}`, { refreshInterval: 5000 });
+	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: fileMutate } = useSWR<File>(`/api/plans/${planId}/operation-file`);
 
 	//
 	// C. Setup form

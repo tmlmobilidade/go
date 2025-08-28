@@ -4,7 +4,7 @@ import { Routes } from '@/lib/routes';
 import { Permissions } from '@tmlmobilidade/lib';
 import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -68,7 +68,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 
-	const { data: role, isLoading } = useSWR<Role>(role_id === 'new' ? null : Routes.API(Routes.ROLE_DETAIL(role_id)), swrFetcher);
+	const { data: role, isLoading } = useSWR<Role>(role_id === 'new' ? null : Routes.API(Routes.ROLE_DETAIL(role_id)));
 
 	//
 	// B. Define form

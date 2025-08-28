@@ -5,7 +5,7 @@
 import { Permissions } from '@tmlmobilidade/lib';
 import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -65,7 +65,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// B. Fetch data
 
-	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(`/api/agencies/${agencyId}`, swrFetcher);
+	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(`/api/agencies/${agencyId}`);
 
 	//
 	// C. Setup form

@@ -5,7 +5,7 @@ import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/Reque
 import { Routes } from '@/lib/routes';
 import { type GtfsValidation, type Plan } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
@@ -51,7 +51,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 	//
 	// B. Fetch data
 
-	const { data: validationData, error: validationError } = useSWR<GtfsValidation>(validationId && `/api/validations/${validationId}`, swrFetcher);
+	const { data: validationData, error: validationError } = useSWR<GtfsValidation>(validationId && `/api/validations/${validationId}`);
 
 	//
 	// C. Handle actions

@@ -7,7 +7,7 @@ import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type StopNormalized } from '@/types/normalized';
 import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
-import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
+import { normalizeString } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -79,7 +79,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// B. Fetch data
 
-	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>('/api/stops', swrFetcher);
+	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>('/api/stops');
 
 	//
 	// C. Transform data

@@ -5,7 +5,6 @@
 import { type UserNormalized } from '@/types/normalized';
 import { type User } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import { normalizeString } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
@@ -55,7 +54,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// B. Fetch data
 
-	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>('/api/users', swrFetcher);
+	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>('/api/users');
 
 	//
 	// C. Transform data
