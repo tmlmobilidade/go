@@ -13,7 +13,7 @@ export class RidesController {
 	/**
 	 * Gets a batch of Rides built with an aggregation pipeline.
 	 */
-	static async getBatch(request: FastifyRequest<{ Querystring: { search?: string } }>, reply: FastifyReply<Ride[]>) {
+	static async getBatch(request: FastifyRequest<{ Querystring: { lineId?: string, search?: string, stopId?: string } }>, reply: FastifyReply<Ride[]>) {
 		//
 
 		const pipeline: AggregationPipeline<Ride> = [];
@@ -26,7 +26,14 @@ export class RidesController {
 		pipeline.push({ $match: { start_time_scheduled: { $gte: todayStartDate, $lte: todayEndDate } } });
 
 		//
-		// 2. If search is provided, match rides by ID
+
+		// 2. Filter rides by line ID & stop ID
+		if (request.query.lineId) {
+			pipeline.push({ $match: { line_id: Number(request.query.lineId) } });
+		}
+
+		//
+		// 3. If search is provided, match rides by ID
 		const search = request.query.search?.trim() ?? '';
 		if (search) {
 			const keywords = search.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -37,18 +44,18 @@ export class RidesController {
 		}
 
 		//
-		// 3. Filter rides based on permissions for the current user
+		// 4. Filter rides based on permissions for the current user
 		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.read);
 
 		if (ridePermission?.resource) {
-			// 3.1. Filter rides based on agency IDs
+			// 4.1. Filter rides based on agency IDs
 			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
 				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
 			}
 		}
 
 		//
-		// 4. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
+		// 5. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
 		pipeline.push(
 			{ $lookup: { as: 'shape_details', foreignField: '_id', from: 'hashed_trips', localField: 'hashed_trip_id' } },
 			{ $unwind: '$shape_details' },
@@ -58,11 +65,17 @@ export class RidesController {
 		);
 
 		//
-		// 5. Final pipeline stages
+		// 6. Filter rides by stop ID
+		if (request.query.stopId) {
+			pipeline.push({ $match: { stop_ids: request.query.stopId } });
+		}
+
+		//
+		// 7. Final pipeline stages
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
 		//
-		// 6. Fetch rides from the database
+		// 8. Fetch rides from the database
 		const ridesBatch = await rides.aggregate(pipeline);
 
 		//
