@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
-import { Button, Grid, Label, LineSelect, PillGroup, SearchInput, Section, Separator, Spacer, StopSelect } from '@tmlmobilidade/ui';
+import { Button, Grid, Label, LineSelect, PillGroup, SearchInput, Section, Separator, StopSelect } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
