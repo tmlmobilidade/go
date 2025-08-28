@@ -57,6 +57,7 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			agency_id: pcgiDoc.transaction.operatorLongID,
 			apex_version: pcgiDoc.transaction.apexVersion,
 			card_serial_number: pcgiDoc.transaction.cardSerialNumber,
+			category: getSimplifiedApexValidationCategory(pcgiDoc.transaction.unitsQuantity, null),
 			created_at: transactionDate,
 			device_id: pcgiDoc.transaction.deviceID,
 			event_type: pcgiDoc.transaction.eventType,
@@ -71,7 +72,7 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			received_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			stop_id: pcgiDoc.transaction.stopLongID,
 			trip_id: pcgiDoc.transaction.journeyID,
-			units_qty: null,
+			units_qty: pcgiDoc.transaction.unitsQuantity ?? null,
 			updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			validation_status: pcgiDoc.transaction.validationStatus,
 			vehicle_id: pcgiDoc.transaction.vehicleID,
@@ -90,4 +91,14 @@ export function validateIfSimplifiedApexValidationIsPassenger(validationStatus: 
 	const hasValidEventType = true; // eventType === 'VALIDAR ESTE CAMPO';
 	const hasNoRefund = refundId === null;
 	return hasValidValidationStatus && hasValidEventType && hasNoRefund;
+}
+
+/* * */
+
+export function getSimplifiedApexValidationCategory(unitsQuantity: null | number, onBoardSaleId: null | string): SimplifiedApexValidation['category'] {
+	const hasUnitsQuantityField = !!unitsQuantity;
+	const hasOnBoardSaleId = !!onBoardSaleId;
+	if (hasUnitsQuantityField) return 'prepaid';
+	if (hasOnBoardSaleId) return 'on_board_sale';
+	return 'subscription';
 }

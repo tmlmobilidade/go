@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
 
 /**
  * This function links Refunds with Sales and Validation transactions.
@@ -54,6 +54,7 @@ async function linkRefundsToSalesToValidations() {
 			// their corresponding IDs and additional information.
 			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
+					category: getSimplifiedApexValidationCategory(validationTransaction.units_qty, onBoardSaleTransaction._id),
 					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, onBoardRefund._id),
 					on_board_refund_id: onBoardRefund._id,
 					on_board_sale_id: onBoardSaleTransaction._id,
@@ -149,6 +150,7 @@ async function linkSalesToValidations() {
 			// their corresponding IDs and additional information.
 			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
+					category: getSimplifiedApexValidationCategory(validationTransaction.units_qty, onBoardSale._id),
 					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, null),
 					on_board_sale_id: onBoardSale._id,
 				},
