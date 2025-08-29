@@ -87,13 +87,13 @@ async function linkRefundsToSalesToValidations() {
 			);
 			//
 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardRefund.created_at).std_window;
-			await rides.updateOne(
+			await rides.updateMany(
 				{
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 					trip_id: onBoardRefund.trip_id,
 				},
 				{ system_status: 'waiting' },
-				{ returnResult: false },
+				{ returnResults: false },
 			);
 			//
 			totalLinkedOnBoardRefunds++;
@@ -181,13 +181,13 @@ async function linkSalesToValidations() {
 			);
 			//
 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardSale.created_at).std_window;
-			await rides.updateOne(
+			await rides.updateMany(
 				{
 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 					trip_id: validationTransaction.trip_id,
 				},
 				{ system_status: 'waiting' },
-				{ returnResult: false },
+				{ returnResults: false },
 			);
 			//
 			totalLinkedOnBoardSales++;
