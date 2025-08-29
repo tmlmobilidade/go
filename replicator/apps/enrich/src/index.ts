@@ -149,7 +149,7 @@ async function linkSalesToValidations() {
 		const unlinkedOnBoardSalesBatch = simplifiedApexOnBoardSalesCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			// .limit(5000)
+			.limit(200000)
 			.stream();
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
