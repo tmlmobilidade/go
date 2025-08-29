@@ -7,7 +7,7 @@ import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type ValidationNormalized } from '@/types/normalized';
 import { type GtfsValidation, PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
-import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
+import { normalizeString } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -64,7 +64,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// B. Fetch data
 
-	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>('/api/validations', swrFetcher, { refreshInterval: 3_000 });
+	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>('/api/validations', { refreshInterval: 3_000 });
 
 	//
 	// C. Transform data

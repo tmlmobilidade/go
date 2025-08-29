@@ -8,7 +8,7 @@ import { type PlanNormalized, planValidityStatusValues } from '@/types/normalize
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { type Plan } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
-import { normalizeString, swrFetcher } from '@tmlmobilidade/utils';
+import { normalizeString } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -65,7 +65,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', swrFetcher, { refreshInterval: 5000 });
+	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', { refreshInterval: 5000 });
 
 	//
 	// C. Transform data
