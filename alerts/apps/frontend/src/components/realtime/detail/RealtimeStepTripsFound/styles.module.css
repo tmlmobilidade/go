@@ -1,9 +1,11 @@
 /* * */
 /* FOUND TRIPS CONTAINER */
 .tripsContainer {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 	gap: var(--size-spacing-sm);
 	width: 100%;
-	height: 240px;
+	height: 500px;
 	padding: var(--size-spacing-sm);
 	overflow-y: scroll;
 	background-color: var(--color-system-background-100);

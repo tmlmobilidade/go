@@ -3,9 +3,11 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
-import { Button, Label, PillGroup, Section } from '@tmlmobilidade/ui';
+import { Button, Label, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
+
+import { RideCard } from '../RideCard';
 
 /* * */
 
@@ -42,12 +44,9 @@ export function RealtimeStepTripsFound() {
 			</Section>
 
 			<div className={styles.tripsContainer}>
-				<PillGroup
-					data={ridesContext.data.rides.map(ride => ride._id)}
-					onChange={ridesContext.actions.setSelectedRidesIds}
-					selected={ridesContext.data.selectedRidesIds}
-					size="xl"
-				/>
+				{ridesContext.data.rides.map(ride => (
+					<RideCard key={ride._id} ride={ride} />
+				))}
 			</div>
 		</Section>
 	);
