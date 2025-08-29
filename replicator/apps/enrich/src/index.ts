@@ -2,8 +2,9 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { Dates } from '@tmlmobilidade/utils';
 
 /**
  * This function links Refunds with Sales and Validation transactions.
@@ -87,6 +88,16 @@ async function linkRefundsToSalesToValidations() {
 			//
 			totalLinkedOnBoardRefunds++;
 			//
+			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardRefund.created_at).std_window;
+			await rides.updateOne(
+				{
+					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+					trip_id: onBoardRefund.trip_id,
+				},
+				{ system_status: 'waiting' },
+				{ returnResult: false },
+			);
+			//
 		}
 
 		//
@@ -169,6 +180,16 @@ async function linkSalesToValidations() {
 			);
 			//
 			totalLinkedOnBoardSales++;
+			//
+			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardSale.created_at).std_window;
+			await rides.updateOne(
+				{
+					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+					trip_id: validationTransaction.trip_id,
+				},
+				{ system_status: 'waiting' },
+				{ returnResult: false },
+			);
 			//
 		}
 
