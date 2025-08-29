@@ -18,6 +18,7 @@ export function getRideNormalized(ride: Ride): RideNormalized {
 	return {
 		...ride,
 		delay_status: delayStatusValue,
+		delay_value_display: getDelayValueDisplay(ride.start_time_scheduled, ride.start_time_observed),
 		operational_status: operationalStatusValue,
 		seen_status: seenStatusValue,
 		simple_three_vehicle_events_grade: simpleThreeVehicleEventsGrade,
@@ -39,6 +40,28 @@ export function getSimpleThreeEventsGrade(operationalStatus: RideNormalized['ope
 	}
 
 	return grade ?? 'none';
+
+	//
+}
+
+/**
+ * This function extract the hour and minute components from a date string.
+ * @param timestamp The date string to extract the hour and minute components from.
+ * @returns The hour and minute components of the date string.
+ */
+export function getDelayValueDisplay(startTimeScheduled: Ride['start_time_scheduled'], startTimeObserved: Ride['start_time_observed']): RideNormalized['delay_value_display'] {
+	//
+
+	if (!startTimeScheduled || !startTimeObserved) {
+		return 'N/A';
+	}
+
+	const difference = startTimeObserved - startTimeScheduled;
+
+	// Transform milliseconds difference to time string
+	const minutes = Math.floor(difference / 60000);
+	const seconds = Math.floor((difference % 60000) / 1000);
+	return `${minutes}m ${seconds}s`;
 
 	//
 }

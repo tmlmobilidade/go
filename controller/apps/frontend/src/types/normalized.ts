@@ -26,6 +26,7 @@ export const gradeValues = [...gradeOptions];
 
 export interface RideNormalized extends Ride {
 	delay_status: typeof delayStatusValues[number]
+	delay_value_display: null | string
 	operational_status: typeof operationalStatusValues[number]
 	seen_status: typeof seenStatusValues[number]
 	simple_three_vehicle_events_grade: typeof gradeValues[number]

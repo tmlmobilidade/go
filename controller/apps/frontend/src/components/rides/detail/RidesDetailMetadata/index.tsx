@@ -29,7 +29,7 @@ export function RidesDetailMetadata() {
 					<ValueDisplay label="Driver IDs" value={ridesDetailContext.data.ride?.driver_ids.join(', ') ?? 'N/A'} bordered />
 					<ValueDisplay label="Hora de Início Planeada" value={`${ridesDetailContext.data.ride?.start_time_scheduled_display} (${ridesDetailContext.data.ride?.start_time_scheduled})`} bordered />
 					<ValueDisplay label="Hora de Início Observada" value={`${ridesDetailContext.data.ride?.start_time_observed_display} (${ridesDetailContext.data.ride?.start_time_observed})`} bordered />
-					<ValueDisplay label="Atraso à Partida" value={ridesDetailContext.data.ride?.start_time_observed - ridesDetailContext.data.ride?.start_time_scheduled} bordered />
+					<ValueDisplay label="Atraso à Partida" value={ridesDetailContext.data.ride?.delay_value_display ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 			<Divider />
