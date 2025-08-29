@@ -3,7 +3,6 @@
 /* * */
 
 import { type Role } from '@tmlmobilidade/types';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -39,7 +38,7 @@ export const RolesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allRolesData, error: allRolesError, isLoading: allRolesLoading } = useSWR<Role[], Error>('/api/roles', swrFetcher);
+	const { data: allRolesData, error: allRolesError, isLoading: allRolesLoading } = useSWR<Role[], Error>('/api/roles');
 
 	//
 	// B. Define context value

@@ -47,7 +47,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 			password,
 		});
 
-		if (!response.isOk) {
+		if (response.error) {
 			useToast.error({ message: response.error ?? 'An error occurred', title: 'Login failed' });
 			return;
 		}

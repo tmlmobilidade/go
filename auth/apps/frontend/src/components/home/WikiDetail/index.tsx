@@ -5,7 +5,6 @@
 import { WikiDetailHeader } from '@/components/home/WikiDetailHeader';
 import { type WikiArticle } from '@tmlmobilidade/types';
 import { ErrorDisplay, LoadingOverlay, Pane, Section } from '@tmlmobilidade/ui';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import useSWR from 'swr';
 
 /* * */
@@ -22,7 +21,7 @@ export function WikiDetail({ id }: WikiDetailProps) {
 	//
 	// A. Setup Variables
 
-	const { data: wikiArticleData, error: wikiArticleError, isLoading: wikiArticleLoading } = useSWR<WikiArticle, Error>(`/api/wiki/${id}`, swrFetcher);
+	const { data: wikiArticleData, error: wikiArticleError, isLoading: wikiArticleLoading } = useSWR<WikiArticle, Error>(`/api/wiki/${id}`);
 
 	//
 	// B. Render components

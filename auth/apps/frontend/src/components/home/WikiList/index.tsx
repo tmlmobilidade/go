@@ -4,7 +4,6 @@
 
 import { type WikiArticle } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@tmlmobilidade/ui';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 
@@ -35,7 +34,7 @@ export function WikiList() {
 	//
 	// B. Fetch data
 
-	const { data: allWikiData, error: allWikiError, isLoading: allWikiLoading } = useSWR<WikiArticle[], Error>('/api/wiki', swrFetcher);
+	const { data: allWikiData, error: allWikiError, isLoading: allWikiLoading } = useSWR<WikiArticle[], Error>('/api/wiki');
 
 	//
 	// C. Handle actions
