@@ -43,6 +43,7 @@ async function linkRefundsToSalesToValidations() {
 
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
 			totalUnlinkedOnBoardRefunds++;
+			if (totalUnlinkedOnBoardRefunds % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.`);
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardRefund.card_serial_number });
@@ -97,7 +98,6 @@ async function linkRefundsToSalesToValidations() {
 			);
 			//
 			totalLinkedOnBoardRefunds++;
-			if (totalUnlinkedOnBoardRefunds % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardRefunds} OnBoardRefunds so far. Linked ${totalLinkedOnBoardRefunds} of them to OnBoardSales and Validations.`);
 			//
 		}
 
@@ -154,6 +154,7 @@ async function linkSalesToValidations() {
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
 			totalUnlinkedOnBoardSales++;
+			if (totalUnlinkedOnBoardSales % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.`);
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
@@ -191,7 +192,6 @@ async function linkSalesToValidations() {
 			);
 			//
 			totalLinkedOnBoardSales++;
-			if (totalUnlinkedOnBoardSales % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far. Linked ${totalLinkedOnBoardSales} of them to Validations.`);
 			//
 		}
 
