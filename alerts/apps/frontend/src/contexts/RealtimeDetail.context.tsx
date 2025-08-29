@@ -1,58 +1,28 @@
 'use client';
 
+/* * */
+
+import { RealtimeStepCause } from '@/components/realtime/detail/RealtimeStepCause';
+import { RealtimeStepTripDetails } from '@/components/realtime/detail/RealtimeStepTripDetails';
+import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher, uploadFile } from '@tmlmobilidade/utils';
-import { convertObject, Dates } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
+import { Dates, fetchData } from '@tmlmobilidade/utils';
+import { createContext, useContext, useMemo, useState } from 'react';
 
-export enum RealtimeDetailMode {
-	CREATE = 'create',
-	EDIT = 'edit',
-}
+/* * */
 
-interface RealtimeDetailContextState {
+type RealtimeDetailContextState = UseMultiStepFormState & {
 	actions: {
-		addReference: () => void
-		deleteAlert: () => void
-		deleteImage: () => void
-		fileChanged: (file: File) => void
-		removeReference: (index: number) => void
-		saveAlert: (type: 'draft' | 'publish') => void
+		saveAlert: () => Promise<void>
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
-		id: string | undefined
-		imageUrl?: FileType
 	}
 	flags: {
-		canSave: boolean
-		isDraft: boolean
 		isSaving: boolean
-		loading: boolean
-		mode: RealtimeDetailMode
 	}
-}
-
-const emptyAlert: CreateAlertDto = {
-	active_period_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
-	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(causeSchema.Enum)[0],
-	created_by: 'temp',
-	description: '',
-	effect: Object.values(effectSchema.Enum)[0],
-	modified_by: 'temp',
-	municipality_ids: [],
-	publish_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
-	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	publish_status: 'DRAFT',
-	reference_type: Object.values(referenceTypeSchema.Enum)[0],
-	references: [],
-	title: '',
-	type: 'REALTIME',
 };
 
 const RealtimeDetailContext = createContext<RealtimeDetailContextState | undefined>(undefined);
@@ -65,200 +35,110 @@ export function useRealtimeDetailContext() {
 	return context;
 }
 
-export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
+/* * */
+
+const STEPS: Step[] = [
+	{
+		component: RealtimeStepCause,
+		id: 'cause',
+	},
+	{
+		component: RealtimeStepTripDetails,
+		id: 'trip-details',
+	},
+];
+
+const emptyAlert: CreateAlertDto = {
+	active_period_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
+	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
+	cause: Object.values(causeSchema.Enum)[0],
+	created_by: 'temp',
+	description: '',
+	effect: Object.values(effectSchema.Enum)[0],
+	modified_by: 'temp',
+	municipality_ids: [],
+	publish_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
+	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
+	publish_status: 'PUBLISHED',
+	reference_type: Object.values(referenceTypeSchema.Enum)[0],
+	references: [],
+	title: '',
+	type: 'REALTIME',
+};
+
+/* * */
+
+export const RealtimeDetailContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 	// A. Setup variables
-	const MODE = alertId === 'new' ? RealtimeDetailMode.CREATE : RealtimeDetailMode.EDIT;
 
-	const router = useRouter();
-	const [loading, setLoading] = useState(false);
+	const multiStepForm = useMultiStepForm({ steps: STEPS });
 	const [isSaving, setIsSaving] = useState(false);
-	const [isDraft, setIsDraft] = useState(false);
-	const [canSave, setCanSave] = useState(false);
-	const [image, setImage] = useState<File | null>(null);
-
-	const copyURL = new URLSearchParams(window.location.search).get('copy');
-
-	const { data: alert, error, isLoading } = useSWR<Alert>(MODE === RealtimeDetailMode.CREATE
-		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
-		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
-
-	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(
-		MODE === RealtimeDetailMode.CREATE
-			? undefined
-			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
-		swrFetcher,
-	);
 
 	//
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
 		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
-		validate: zodResolver(alert && MODE === RealtimeDetailMode.EDIT ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
+		validate: zodResolver(CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
 
 	//
-	// C. Transform Data
+	// C. Handle actions
 
-	// Update form
-	useEffect(() => {
-		if (!alert) return;
-
-		let myAlert: CreateAlertDto = alert;
-
-		if (copyURL) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { _id, created_at, updated_at, ...rest } = alert;
-			myAlert = { ...rest, publish_status: 'DRAFT' };
-		}
-
-		setLoading(true);
-
-		if (!myAlert.reference_type) {
-			myAlert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
-			myAlert.references = [];
-		}
-
-		setIsDraft(myAlert.publish_status === 'DRAFT');
-		form.reset();
-		form.setValues(myAlert);
-		form.resetDirty();
-
-		setLoading(false);
-	}, [alert]);
-
-	// Handle error
-	useEffect(() => {
-		if (!error) return;
-
-		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
-		router.replace(Routes.ALERT_LIST);
-	}, [error]);
-
-	// Validate form on change
-	useEffect(() => {
-		form.validate();
-		setCanSave(form.isValid());
-	}, [form.values]);
-
-	//
-	// D. Define actions
-	const addReference = () => {
-		const currentReferences = form.values.references || [];
-		currentReferences.push({ child_ids: [], parent_id: '' });
-		form.setFieldValue('references', currentReferences);
-	};
-
-	const removeReference = (index: number) => {
-		const currentReferences = form.values.references || [];
-		form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
-	};
-
-	const saveAlert = async (type: 'draft' | 'publish') => {
+	async function saveAlert() {
 		setIsSaving(true);
 
-		// Handle Save Alert
-		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
-
-		const method = MODE === RealtimeDetailMode.CREATE ? 'POST' : 'PUT';
-		const url = MODE === RealtimeDetailMode.CREATE ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
-		const body = MODE === RealtimeDetailMode.CREATE ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
-
-		const response = await fetchData<Alert>(url, method, body);
-
-		if (!response.isOk) {
-			useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
+		// Validate form
+		const validation = form.validate();
+		if (validation.hasErrors) {
+			useToast.error({ message: 'Por favor, preencha todos os campos obrigatórios', title: 'Erro ao salvar alerta' });
 			setIsSaving(false);
 			return;
 		}
 
-		// Upload image if the alert is new
-		if (response.data) await uploadImage(response.data._id.toString());
-
-		// Redirect to the detail page if the alert is new
-		if (response.data && MODE === RealtimeDetailMode.CREATE) {
-			router.replace(Routes.ALERT_DETAIL(response.data._id.toString()));
-		}
-
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
-
 		setIsSaving(false);
-	};
 
-	const deleteAlert = async () => {
-		if (MODE === RealtimeDetailMode.CREATE) return;
+		// // Handle Save Alert
+		// const saveAlert: CreateAlertDto = { ...form.values };
+		// const url = Routes.ALERTS_API + Routes.ALERT_LIST;
+		// const body = saveAlert;
 
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), 'DELETE', alert);
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao salvar alerta' });
-			}
-			return;
-		}
+		// const response = await fetchData<Alert>(url, 'POST', body);
 
-		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
+		// if (!response.isOk) {
+		// 	useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
+		// 	setIsSaving(false);
+		// 	return;
+		// }
 
-		router.replace(Routes.ALERT_LIST);
-	};
-
-	const deleteImage = async () => {
-		if (MODE === RealtimeDetailMode.CREATE) return;
-
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao apagar imagem' });
-			}
-			return;
-		}
-
-		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
-	};
-
-	const uploadImage = async (alert_id: string) => {
-		if (MODE === RealtimeDetailMode.CREATE || !image) return;
-
-		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);
-
-		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
-			return;
-		}
-		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
+		// useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
+		// setIsSaving(false);
 	};
 
 	//
-	// E. Define context value
-	const contextValue: RealtimeDetailContextState = {
+	// D. Define State
+
+	const contextValue: RealtimeDetailContextState = useMemo(() => ({
 		actions: {
-			addReference,
-			deleteAlert,
-			deleteImage,
-			fileChanged: (file: File) => setImage(file),
-			removeReference,
-			saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
+			saveAlert,
+			...multiStepForm.actions,
 		},
 		data: {
 			form,
-			id: MODE === RealtimeDetailMode.CREATE ? undefined : alertId,
-			imageUrl: alertImage,
+			...multiStepForm.data,
 		},
 		flags: {
-			canSave,
-			isDraft,
 			isSaving,
-			loading: isLoading || loading || alertImageLoading,
-			mode: MODE,
+			...multiStepForm.flags,
 		},
-	};
+	}), [form, multiStepForm]);
 
 	//
-	// F. Render components
+	// C. Return state
 	return (
 		<RealtimeDetailContext.Provider value={contextValue}>
 			{children}

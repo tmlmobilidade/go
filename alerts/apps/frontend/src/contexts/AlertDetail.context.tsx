@@ -3,7 +3,7 @@
 import { Routes } from '@/lib/routes';
 import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher, uploadFile } from '@tmlmobilidade/utils';
+import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject, Dates } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -81,13 +81,12 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	const { data: alert, error, isLoading } = useSWR<Alert>(MODE === AlertDetailMode.CREATE
 		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
-		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
+		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId));
 
 	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(
 		MODE === AlertDetailMode.CREATE
 			? undefined
 			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
-		swrFetcher,
 	);
 
 	//

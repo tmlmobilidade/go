@@ -1,5 +1,6 @@
 /* * */
 
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { Cause } from '@tmlmobilidade/types';
@@ -15,7 +16,7 @@ interface CauseItem {
 	value: Cause
 }
 
-export function RealtimeSectionCauseSelection() {
+export function RealtimeStepCause() {
 	//
 	// A. Setup variables
 
@@ -44,8 +45,21 @@ export function RealtimeSectionCauseSelection() {
 }
 
 function CauseItem({ cause }: { cause: CauseItem }) {
+	//
+	// A. Setup variables
+	const realtimeContext = useRealtimeDetailContext();
+
+	//
+	// B. Handle Actions
+	const handleCauseSelection = () => {
+		realtimeContext.data.form.setFieldValue('cause', cause.value);
+		realtimeContext.actions.nextStep();
+	};
+
+	//
+	// C. Render components
 	return (
-		<div className={styles.causeItem}>
+		<div className={styles.causeItem} onClick={handleCauseSelection}>
 			<div className={styles.causeItemIcon}>{cause.icon}</div>
 			<div className={styles.causeItemLabel}>{cause.label}</div>
 		</div>
