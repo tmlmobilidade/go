@@ -97,7 +97,7 @@ async function linkRefundsToSalesToValidations() {
 			);
 			//
 			totalLinkedOnBoardRefunds++;
-			if (totalLinkedOnBoardRefunds % 10000 === 0) LOGGER.info(`Linked ${totalLinkedOnBoardRefunds} OnBoardRefunds to OnBoardSales and Validations so far...`);
+			if (totalUnlinkedOnBoardRefunds % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardRefunds} OnBoardRefunds so far. Linked ${totalLinkedOnBoardRefunds} of them to OnBoardSales and Validations.`);
 			//
 		}
 
@@ -191,7 +191,7 @@ async function linkSalesToValidations() {
 			);
 			//
 			totalLinkedOnBoardSales++;
-			if (totalLinkedOnBoardSales % 10000 === 0) LOGGER.info(`Linked ${totalLinkedOnBoardSales} OnBoardSales to Validations so far...`);
+			if (totalUnlinkedOnBoardSales % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far. Linked ${totalLinkedOnBoardSales} of them to Validations.`);
 			//
 		}
 
