@@ -1,49 +1,98 @@
 /* * */
 
-import { useLinesContext } from '@/contexts/Lines.context';
 import { RidesData } from '@/contexts/Rides.context';
-import { cn } from '@/lib/utils';
-import { Grid, Label } from '@tmlmobilidade/ui';
+import { Badge, Label, Section, Spacer, Tag } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import { useState } from 'react';
 
 import styles from './styles.module.css';
+
+/**
+ * This function extract the hour and minute components from a date string.
+ * @param timestamp The date string to extract the hour and minute components from.
+ * @returns The hour and minute components of the date string.
+ */
+export function getDelayStatus(startTimeScheduled: RidesData['start_time_scheduled'], startTimeObserved: RidesData['start_time_observed']): string {
+	//
+
+	if (!startTimeScheduled || !startTimeObserved) {
+		return 'none';
+	}
+
+	const difference = startTimeObserved - startTimeScheduled;
+
+	// 5 minutes late
+	if (difference > 300000) {
+		return 'delayed';
+	}
+
+	// 1 minute early
+	if (difference < -60000) {
+		return 'early';
+	}
+
+	return 'ontime';
+
+	//
+}
+
+function StartTimeStatusTag({ startTimeObserved, status }: { startTimeObserved: string, status: string }) {
+	//
+
+	if (status === 'none') {
+		return (
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+				<Tag label={startTimeObserved} variant="secondary" />
+			</Section>
+		);
+	}
+
+	if (status === 'ontime') {
+		return (
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+				<Tag label={startTimeObserved} variant="secondary" />
+				<Tag label="Ontime" variant="success" />
+			</Section>
+		);
+	}
+
+	if (status === 'delayed') {
+		return (
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+				<Tag label={startTimeObserved} variant="warning" />
+				<Tag label="Delayed" variant="warning" />
+			</Section>
+		);
+	}
+
+	if (status === 'early') {
+		return (
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+				<Tag label={startTimeObserved} variant="danger" />
+				<Tag label="Early" variant="danger" />
+			</Section>
+		);
+	}
+
+	//
+}
 
 /* * */
 export function RideCard({ ride }: { ride: RidesData }) {
 	//
-	// A. Setup variables
-
-	const linesContext = useLinesContext();
-	const line = linesContext.data.lines.find(line => line.id === ride.line_id.toString());
-	const [isHovered, setIsHovered] = useState(false);
-
-	//
-	// B. Setup functions
-
-	//
 	// C. Render components
-	const overlay = (
-		<div className={styles.overlay}>
-			<Label size="md">Selecionado</Label>
-		</div>
-	);
 
 	return (
-		<div className={styles.rideCard} onMouseLeave={() => setIsHovered(false)} onMouseOver={() => setIsHovered(true)}>
+		<div className={styles.rideCard}>
 			<Label size="md">{ride._id}</Label>
-			<Grid columns="ab" gap="xs">
-				<Label size="sm">Linha: <span className={cn(styles.value, styles.line)} style={{ backgroundColor: line?.color }}>{line?.id}</span></Label>
-				<Label size="sm">Percurso: <span className={styles.value}>{ride.headsign}</span></Label>
-				<Label size="sm">Início: <span className={styles.value}>{Dates.fromUnixTimestamp(ride.start_time_scheduled).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt')}</span></Label>
-				<Label size="sm">Fim: <span className={styles.value}>{Dates.fromUnixTimestamp(ride.end_time_scheduled).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt')}</span></Label>
-				<Label size="sm">Motorista: <span className={styles.value}>{ride.vehicle_ids[0] ?? 'N/A'}</span></Label>
-				<Label size="sm">Veículo: <span className={styles.value}>{ride.vehicle_ids[0]}</span></Label>
-				<Label size="sm">Status: <span className={styles.value}>{ride.system_status}</span></Label>
-				<Label size="sm">ID do Plano: <span className={styles.value}>{ride.trip_id}</span></Label>
-			</Grid>
-
-			{isHovered && overlay}
+			<Section alignItems="center" flexDirection="row" gap="xs" justifyContent="flex-start" padding="none">
+				<Badge size="xl" variant="secondary">{ride.line_id.toString()}</Badge>
+				<Label size="lg" singleLine>{ride.headsign}</Label>
+				<Spacer />
+				<StartTimeStatusTag
+					startTimeObserved={Dates.fromUnixTimestamp(ride.start_time_scheduled).toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt')}
+					status={getDelayStatus(ride.start_time_scheduled, ride.start_time_observed)}
+				/>
+			</Section>
 		</div>
 	);
 }

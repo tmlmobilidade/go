@@ -1,4 +1,5 @@
 .rideCard {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-sm);
@@ -7,10 +8,11 @@
 	user-select: none;
 	background-color: var(--color-background-secondary);
 	border: 2px solid var(--color-system-border-200);
-	border-radius: 10px;
+	border-radius: var(--border-radius-md);
 	box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
 
 	&:hover:not([data-selected="true"]) {
+		background-color: rgb(from var(--color-status-success-primary) r g b / 10%);
 		border-color: var(--color-status-success-primary);		
 		border-style: dashed;
 	}
@@ -21,24 +23,8 @@
 	}
 }
 
-.value {
-	font-weight: 600;
-	color: var(--color-system-text-100);
-}
-
-.line {
-	padding: 0 var(--size-spacing-xs);
-	color: white;
-	border-radius: 20px;
-}
-
-.overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 10;
-	width: 100%;
-	height: 100%;
-	background-color: rgb(0 0 0 / 50%);
-	backdrop-filter: blur(10px);
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
 }
