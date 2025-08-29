@@ -38,17 +38,9 @@ export class AuthController {
 	/**
 	 * Get Permissions - Get the permissions of the current user
 	 */
-	async getPermissions(request: FastifyRequest<{ Querystring: { action: string, resource: string } }>, reply: FastifyReply<Permission<unknown>[]>) {
+	async getPermissions(request: FastifyRequest, reply: FastifyReply<Permission<unknown>[]>) {
 		const session_token = request.cookies[COOKIE_NAME];
-
-		const { action, resource } = request.query;
-
-		if (!resource || !action) {
-			throw new HttpException(HttpStatus.BAD_REQUEST, 'Resource and action are required');
-		}
-
 		const permissions = await authProvider.getPermissions(session_token);
-
 		return reply.send({ data: permissions, error: null, statusCode: HttpStatus.OK }).status(HttpStatus.OK);
 	}
 
