@@ -58,10 +58,16 @@ export function getDelayValueDisplay(startTimeScheduled: Ride['start_time_schedu
 
 	const difference = startTimeObserved - startTimeScheduled;
 
-	// Transform milliseconds difference to time string
-	const minutes = Math.floor(difference / 60000);
-	const seconds = Math.floor((difference % 60000) / 1000);
-	return `${minutes}m ${seconds}s`;
+	const sign = difference < 0 ? '-' : '';
+	const absDiff = Math.abs(difference);
+
+	const minutes = Math.floor(absDiff / 60000);
+	const seconds = Math.floor((absDiff % 60000) / 1000);
+
+	if (minutes === 0) {
+		return `${sign}${seconds}s`;
+	}
+	return `${sign}${minutes}m ${seconds}s`;
 
 	//
 }
