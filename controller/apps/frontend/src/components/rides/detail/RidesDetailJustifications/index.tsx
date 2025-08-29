@@ -2,15 +2,16 @@
 
 /* * */
 
-import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Section, Textarea } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function RidesDetailJustifications() {
 	return (
-		<Collapsible description="O que o operador entendeu sobre esta circulação" title="Justifcações do Operador">
-			<Section>
-				<Label size="lg" caps>Sem Dados</Label>
+		<Collapsible description="O que aconteceu com esta circulação." title="Justificações">
+			<Section gap="lg">
+				<Textarea resize="vertical" size="lg" w="100%" autosize />
+				<Button label="Submeter Justificação" />
 			</Section>
 		</Collapsible>
 	);
