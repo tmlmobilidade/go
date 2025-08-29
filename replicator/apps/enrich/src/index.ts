@@ -86,8 +86,6 @@ async function linkRefundsToSalesToValidations() {
 				},
 			);
 			//
-			totalLinkedOnBoardRefunds++;
-			//
 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardRefund.created_at).std_window;
 			await rides.updateOne(
 				{
@@ -97,6 +95,9 @@ async function linkRefundsToSalesToValidations() {
 				{ system_status: 'waiting' },
 				{ returnResult: false },
 			);
+			//
+			totalLinkedOnBoardRefunds++;
+			if (totalLinkedOnBoardRefunds % 10000 === 0) LOGGER.info(`Linked ${totalLinkedOnBoardRefunds} OnBoardRefunds to OnBoardSales and Validations so far...`);
 			//
 		}
 
@@ -179,8 +180,6 @@ async function linkSalesToValidations() {
 				},
 			);
 			//
-			totalLinkedOnBoardSales++;
-			//
 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardSale.created_at).std_window;
 			await rides.updateOne(
 				{
@@ -190,6 +189,9 @@ async function linkSalesToValidations() {
 				{ system_status: 'waiting' },
 				{ returnResult: false },
 			);
+			//
+			totalLinkedOnBoardSales++;
+			if (totalLinkedOnBoardSales % 10000 === 0) LOGGER.info(`Linked ${totalLinkedOnBoardSales} OnBoardSales to Validations so far...`);
 			//
 		}
 
