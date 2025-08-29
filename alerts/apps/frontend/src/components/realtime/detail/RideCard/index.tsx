@@ -1,7 +1,7 @@
 /* * */
 
 import { RidesData } from '@/contexts/Rides.context';
-import { Badge, Label, Section, Spacer, Tag } from '@tmlmobilidade/ui';
+import { Badge, Label, Section, Tag } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
@@ -77,17 +77,15 @@ function StartTimeStatusTag({ startTimeObserved, status }: { startTimeObserved: 
 }
 
 /* * */
-export function RideCard({ ride }: { ride: RidesData }) {
+export function RideCard({ onSelect, ride, selected }: { onSelect: () => void, ride: RidesData, selected: boolean }) {
 	//
-	// C. Render components
-
+	// B. Render components
 	return (
-		<div className={styles.rideCard}>
+		<div className={styles.rideCard} data-selected={selected} onClick={onSelect}>
 			<Label size="md">{ride._id}</Label>
 			<Section alignItems="center" flexDirection="row" gap="xs" justifyContent="flex-start" padding="none">
 				<Badge size="xl" variant="secondary">{ride.line_id.toString()}</Badge>
 				<Label size="lg" singleLine>{ride.headsign}</Label>
-				<Spacer />
 				<StartTimeStatusTag
 					startTimeObserved={Dates.fromUnixTimestamp(ride.start_time_scheduled).toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt')}
 					status={getDelayStatus(ride.start_time_scheduled, ride.start_time_observed)}
