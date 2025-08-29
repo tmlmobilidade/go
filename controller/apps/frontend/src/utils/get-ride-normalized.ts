@@ -1,7 +1,7 @@
 /* * */
 
 import { type RideNormalized } from '@/types/normalized';
-import { type Ride } from '@tmlmobilidade/types';
+import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /**
@@ -14,25 +14,28 @@ export function getRideNormalized(ride: Ride): RideNormalized {
 	const delayStatusValue = getDelayStatus(ride.start_time_scheduled, ride.start_time_observed);
 	const operationalStatusValue = getOperationalStatus(ride.start_time_scheduled, ride.seen_last_at);
 	const seenStatusValue = getSeenStatus(ride.seen_last_at);
-	const simpleThreeVehicleEventsGrade = getSimpleThreeEventsGrade(operationalStatusValue, ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade);
+	const simpleThreeVehicleEventsGrade = getAnalysisGrade(operationalStatusValue, ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade);
+	const endedAtLastStopGrade = getAnalysisGrade(operationalStatusValue, ride.analysis?.ENDED_AT_LAST_STOP?.grade);
 	return {
 		...ride,
+		analysis_ended_at_last_stop_grade: endedAtLastStopGrade,
+		analysis_simple_three_vehicle_events_grade: simpleThreeVehicleEventsGrade,
 		delay_status: delayStatusValue,
 		delay_value_display: getDelayValueDisplay(ride.start_time_scheduled, ride.start_time_observed),
 		operational_status: operationalStatusValue,
 		seen_status: seenStatusValue,
-		simple_three_vehicle_events_grade: simpleThreeVehicleEventsGrade,
 		start_time_observed_display: ride.start_time_observed ? Dates.fromUnixTimestamp(ride.start_time_observed).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : null,
 		start_time_scheduled_display: Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'),
 	};
 }
 
 /**
- * This function extract the hour and minute components from a date string.
- * @param timestamp The date string to extract the hour and minute components from.
- * @returns The hour and minute components of the date string.
+ * This function returns the analysis grade for a given Ride, based on its operational status and the provided grade.
+ * @param operationalStatus The operational status of the Ride.
+ * @param grade The grade to return if the operational status is not 'scheduled' or 'running'.
+ * @returns The analysis grade for the Ride.
  */
-export function getSimpleThreeEventsGrade(operationalStatus: RideNormalized['operational_status'], grade?: Ride['analysis']['SIMPLE_THREE_VEHICLE_EVENTS']['grade']): RideNormalized['simple_three_vehicle_events_grade'] {
+export function getAnalysisGrade(operationalStatus: RideNormalized['operational_status'], grade?: Ride['analysis']['SIMPLE_THREE_VEHICLE_EVENTS']['grade']): 'none' | RideAnalysis['grade'] {
 	//
 
 	if (operationalStatus === 'scheduled' || operationalStatus === 'running') {

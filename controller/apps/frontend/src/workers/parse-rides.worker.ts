@@ -7,22 +7,23 @@ import { getRideNormalized } from '@/utils/get-ride-normalized';
 
 /* * */
 
-export interface ParseRidesWorkerIncomingMessage {
+export interface ParseRidesWorkerRequestMessage {
 	filters: {
+		analysis_ended_at_last_stop: string[]
+		analysis_simple_three_vehicle_events: string[]
 		delay_status: string[]
 		operational_status: string[]
-		simple_three_vehicle_events: string[]
 	}
 	rides: Map<string, RideNormalized>
 }
 
-export interface ParseRidesWorkerOutgoingMessage {
+export interface ParseRidesWorkerResponseMessage {
 	result: RideNormalized[]
 }
 
 /* * */
 
-self.addEventListener('message', async (event: MessageEvent<ParseRidesWorkerIncomingMessage>) => {
+self.addEventListener('message', async (event: MessageEvent<ParseRidesWorkerRequestMessage>) => {
 	//
 
 	//
@@ -33,7 +34,8 @@ self.addEventListener('message', async (event: MessageEvent<ParseRidesWorkerInco
 		.map(item => getRideNormalized(item))
 		.filter(item => event.data.filters.operational_status.includes(item.operational_status))
 		.filter(item => event.data.filters.delay_status.includes(item.delay_status))
-		.filter(item => event.data.filters.simple_three_vehicle_events.includes(item.simple_three_vehicle_events_grade))
+		.filter(item => event.data.filters.analysis_simple_three_vehicle_events.includes(item.analysis_simple_three_vehicle_events_grade))
+		.filter(item => event.data.filters.analysis_ended_at_last_stop.includes(item.analysis_ended_at_last_stop_grade))
 		.sort((a, b) => a.agency_id.localeCompare(b.agency_id))
 		.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled);
 
