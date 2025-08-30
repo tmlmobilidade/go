@@ -540,6 +540,62 @@ export class RidesController {
 	}
 
 	/**
+	 * Get a Ride by ID.
+	 * @param request
+	 * @param reply
+	 * @returns
+	 */
+	static async reprocessRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
+		try {
+			//
+
+			//
+			// Validate the request parameters
+
+			const rideId = request.params['id'];
+
+			if (!rideId) {
+				return reply
+					.status(HttpStatus.BAD_REQUEST)
+					.send({
+						data: null,
+						error: 'Missing ride_id parameter.',
+						status: HttpStatus.BAD_REQUEST,
+					});
+			}
+
+			//
+			// Fetch the ride data from the database
+
+			const rideData = await rides.updateById(rideId, { system_status: 'waiting' });
+
+			if (!rideData) {
+				return reply
+					.status(HttpStatus.NOT_FOUND)
+					.send({
+						data: null,
+						error: 'Ride not found.',
+						status: HttpStatus.NOT_FOUND,
+					});
+			}
+
+			//
+			// Send the ride data back to the client
+
+			reply.send({
+				data: rideData,
+				error: null,
+				statusCode: HttpStatus.OK,
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
 	 * WebSocket event handler.
 	 * @param socket
 	 */

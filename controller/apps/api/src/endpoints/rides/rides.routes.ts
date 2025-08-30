@@ -82,6 +82,13 @@ server.register(
 			RidesController.getSimplifiedApexOnBoardRefundsByRideId,
 		);
 
+		// GET /rides/:id/reprocess
+		instance.get(
+			'/:id/reprocess',
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.update) },
+			RidesController.reprocessRideById,
+		);
+
 		next();
 	},
 	{ prefix: namespace },
