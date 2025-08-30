@@ -60,6 +60,11 @@ export function RidesDetailApexValidations() {
 			width: 150,
 		},
 		{
+			accessor: 'vehicle_id',
+			title: 'Vehicle ID',
+			width: 150,
+		},
+		{
 			accessor: '_id',
 			title: 'ID Validation',
 			width: 400,
