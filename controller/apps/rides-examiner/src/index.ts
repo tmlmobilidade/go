@@ -8,7 +8,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.type.js';
+import { type AnalysisData } from '@/types/analysis-data.js';
 import { detectEndEvent } from '@/utils/detect-end-event.util.js';
 import { detectFirstEvent } from '@/utils/detect-first-event.util.js';
 import { detectLastEvent } from '@/utils/detect-last-event.util.js';

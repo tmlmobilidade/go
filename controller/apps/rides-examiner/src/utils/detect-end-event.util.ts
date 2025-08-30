@@ -1,6 +1,6 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.type.js';
+import { type AnalysisData } from '@/types/analysis-data.js';
 import { type VehicleEvent } from '@tmlmobilidade/types';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, sortByUnixTimestamp, toLineStringFromHashedShape } from '@tmlmobilidade/utils';
 
