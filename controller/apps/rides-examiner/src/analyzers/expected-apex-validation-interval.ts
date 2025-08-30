@@ -10,17 +10,17 @@ import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
  * → PASS = Interval between Validation transactions is greater than or equal to 3 seconds.
  * → FAIL = Interval between Validation transactions is less than 3 seconds.
  */
-export function normalValidationInterval(analysisData: AnalysisData): Ride['analysis']['NORMAL_VALIDATION_INTERVAL'] {
+export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_APEX_VALIDATION_INTERVAL'] {
 	try {
 		//
 
 		//
 		// Skip if there are no validation transactions
 
-		if (analysisData.simplified_apex_validations.length === 0) {
+		if (!analysisData.simplified_apex_validations.length) {
 			return {
 				grade: 'skip',
-				reason: 'NO_VALIDATIONS_FOUND',
+				reason: 'NO_APEX_VALIDATIONS',
 				value: null,
 			};
 		}
@@ -49,22 +49,22 @@ export function normalValidationInterval(analysisData: AnalysisData): Ride['anal
 		if (countOfAbnormalIntervalsBetweenSequentialValidations > 0) {
 			return {
 				grade: 'fail',
-				reason: 'ABNORMAL_VALIDATION_INTERVALS',
+				reason: 'UNEXPECTED_VALIDATION_INTERVALS',
 				value: countOfAbnormalIntervalsBetweenSequentialValidations,
 			};
 		}
 
 		return {
 			grade: 'pass',
-			reason: 'NORMAL_VALIDATION_INTERVALS',
+			reason: 'EXPECTED_VALIDATION_INTERVALS',
 			value: countOfAbnormalIntervalsBetweenSequentialValidations,
 		};
 
 		//
 	}
 	catch (error) {
-		console.log('normalValidationInterval():', error.message);
 		return {
+			error_message: error.message,
 			grade: 'error',
 			reason: null,
 			value: null,

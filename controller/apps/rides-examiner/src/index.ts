@@ -17,51 +17,41 @@ import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
 
 /* * */
 
-import { atLeastOneEventOnFirstStopAnalyzer } from '@/analyzers/at-least-one-event-on-first-stop.js';
-import { atMostTwoDriverIdsAnalyzer } from '@/analyzers/at-most-two-driver-ids.analyzer.js';
-import { atMostTwoVehicleIdsAnalyzer } from '@/analyzers/at-most-two-vehicle-ids.analyzer.js';
-import { avgIntervalVehicleEvents } from '@/analyzers/avg-interval-vehicle-events.analyzer.js';
+import { atLeastOneVehicleEventOnFirstStopAnalyzer } from '@/analyzers/at-least-one-vehicle-event-on-first-stop.js';
 import { endedAtLastStopAnalyzer } from '@/analyzers/ended-at-last-stop.js';
-import { excessiveVehicleEventDelayAnalyzer } from '@/analyzers/excessive-vehicle-event-delay.analyzer.js';
-import { lessThanTenVehicleEventsAnalyzer } from '@/analyzers/less-than-ten-vehicle-events.analyzer.js';
-import { matchingLocationTransactionsAnalyzer } from '@/analyzers/matching-location-transactions.analyzer.js';
-import { ontimeStartAnalyzer } from '@/analyzers/ontime-start.analyzer.js';
-import { simpleOneValidationTransactionAnalyzer } from '@/analyzers/simple-one-validation-transaction.analyzer.js';
-import { simpleOneVehicleEventOrValidationTransactionAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-validation-transaction.analyzer.js';
-import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.analyzer.js';
-import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.analyzer.js';
+import { expectedApexValidationIntervalAnalyzer } from '@/analyzers/expected-apex-validation-interval.js';
+import { expectedDriverIdQtyAnalyzer } from '@/analyzers/expected-driver-id-qty.js';
+import { expectedStartTimeAnalyzer } from '@/analyzers/expected-start-time.js';
+import { expectedVehicleEventDelayAnalyzer } from '@/analyzers/expected-vehicle-event-delay.js';
+import { expectedVehicleEventIntervalAnalyzer } from '@/analyzers/expected-vehicle-event-interval.js';
+import { expectedVehicleEventQtyAnalyzer } from '@/analyzers/expected-vehicle-event-qty.js';
+import { expectedVehicleIdQtyAnalyzer } from '@/analyzers/expected-vehicle-id-qty.js';
+import { matchingApexLocationsAnalyzer } from '@/analyzers/matching-apex-locations.js';
+import { matchingVehicleIdsAnalyzer } from '@/analyzers/matching-vehicle-ids.analyzer.js';
+import { simpleOneApexValidationAnalyzer } from '@/analyzers/simple-one-apex-validation.js';
+import { simpleOneVehicleEventOrApexValidationAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-apex-validation.js';
+import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.js';
+import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.js';
 
 /* * */
 
 function runAnalyzers(analysisData: AnalysisData): Ride['analysis'] {
 	return {
-
-		AT_LEAST_ONE_EVENT_ON_FIRST_STOP: atLeastOneEventOnFirstStopAnalyzer(analysisData),
-
-		AT_MOST_TWO_DRIVER_IDS: atMostTwoDriverIdsAnalyzer(analysisData),
-
-		AT_MOST_TWO_VEHICLE_IDS: atMostTwoVehicleIdsAnalyzer(analysisData),
-
-		AVG_INTERVAL_VEHICLE_EVENTS: avgIntervalVehicleEvents(analysisData),
-
+		AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData),
 		ENDED_AT_LAST_STOP: endedAtLastStopAnalyzer(analysisData),
-
-		EXCESSIVE_VEHICLE_EVENT_DELAY: excessiveVehicleEventDelayAnalyzer(analysisData),
-
-		LESS_THAN_TEN_VEHICLE_EVENTS: lessThanTenVehicleEventsAnalyzer(analysisData),
-
-		MATCHING_LOCATION_TRANSACTIONS: matchingLocationTransactionsAnalyzer(analysisData),
-
-		ONTIME_START: ontimeStartAnalyzer(analysisData),
-
-		SIMPLE_ONE_VALIDATION_TRANSACTION: simpleOneValidationTransactionAnalyzer(analysisData),
-
-		SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION: simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisData),
-
+		EXPECTED_APEX_VALIDATION_INTERVAL: expectedApexValidationIntervalAnalyzer(analysisData),
+		EXPECTED_DRIVER_ID_QTY: expectedDriverIdQtyAnalyzer(analysisData),
+		EXPECTED_START_TIME: expectedStartTimeAnalyzer(analysisData),
+		EXPECTED_VEHICLE_EVENT_DELAY: expectedVehicleEventDelayAnalyzer(analysisData),
+		EXPECTED_VEHICLE_EVENT_INTERVAL: expectedVehicleEventIntervalAnalyzer(analysisData),
+		EXPECTED_VEHICLE_EVENT_QTY: expectedVehicleEventQtyAnalyzer(analysisData),
+		EXPECTED_VEHICLE_ID_QTY: expectedVehicleIdQtyAnalyzer(analysisData),
+		MATCHING_APEX_LOCATIONS: matchingApexLocationsAnalyzer(analysisData),
+		MATCHING_VEHICLE_IDS: matchingVehicleIdsAnalyzer(analysisData),
+		SIMPLE_ONE_APEX_VALIDATION: simpleOneApexValidationAnalyzer(analysisData),
+		SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: simpleOneVehicleEventOrApexValidationAnalyzer(analysisData),
 		SIMPLE_THREE_VEHICLE_EVENTS: simpleThreeVehicleEventsAnalyzer(analysisData),
-
 		TRANSACTION_SEQUENTIALITY: transactionSequentialityAnalyzer(analysisData),
-
 	};
 }
 
@@ -102,11 +92,6 @@ export async function validateRides() {
 				//
 
 				const rideAnalysisTimer = new TIMETRACKER();
-
-				//
-				// Skip if the Ride is lockd
-
-				if (rideData.is_locked) continue;
 
 				//
 				// For this ride, fetch all the necessary data for analysis.
@@ -263,7 +248,7 @@ export async function validateRides() {
 (async function init() {
 	const runOnInterval = async () => {
 		await validateRides();
-		setTimeout(runOnInterval, 1_000); // Run every 1 second
+		setTimeout(runOnInterval, 100_000); // Run every 1 second
 	};
 	runOnInterval();
 })();

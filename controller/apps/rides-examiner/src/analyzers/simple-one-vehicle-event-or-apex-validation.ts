@@ -10,7 +10,7 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = At least one Vehicle Event OR one Validation Transaction is found for the trip.
  * → FAIL = No Vehicle Events OR Validation Transactions found for the trip.
  */
-export function simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisData: AnalysisData): Ride['analysis']['SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION'] {
+export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: AnalysisData): Ride['analysis']['SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION'] {
 	try {
 		//
 
@@ -20,27 +20,22 @@ export function simpleOneVehicleEventOrValidationTransactionAnalyzer(analysisDat
 		if (analysisData.vehicle_events.length > 0 || analysisData.simplified_apex_validations.length > 0) {
 			return {
 				grade: 'pass',
-				message: `Found ${analysisData.vehicle_events.length} Vehicle Events and ${analysisData.simplified_apex_validations.length} Validation Transactions for this trip.`,
-				reason: 'FOUND_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION',
-				value: null,
+				reason: 'FOUND_VEHICLE_EVENT_OR_APEX_VALIDATION',
 			};
 		}
 
 		return {
 			grade: 'fail',
-			message: 'No Vehicle Events or Validation Transactions found for this trip.',
-			reason: 'NO_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION_FOUND',
-			value: null,
+			reason: 'NO_VEHICLE_EVENTS_OR_APEX_VALIDATIONS',
 		};
 
 		//
 	}
 	catch (error) {
 		return {
+			error_message: error.message,
 			grade: 'error',
-			message: error.message,
 			reason: null,
-			value: null,
 		};
 	}
 };

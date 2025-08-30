@@ -10,32 +10,29 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = At least one Vehicle, and maximum two Vehicle IDs for the trip.
  * → FAIL = No Vehicle or more than two Vehicle IDs for the trip.
  */
-export function atMostTwoVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['analysis']['AT_MOST_TWO_VEHICLE_IDS'] {
+export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_VEHICLE_ID_QTY'] {
 	try {
 		//
 
-		if (analysisData.ride.vehicle_ids.length === 0) {
+		if (!analysisData.vehicle_events.length) {
 			return {
 				grade: 'fail',
-				message: 'No Vehicle IDs found for this trip.',
-				reason: 'NO_VEHICLE_ID_FOUND',
-				value: 0,
+				reason: 'NO_VEHICLE_EVENTS',
+				value: null,
 			};
 		}
 
 		if (analysisData.ride.vehicle_ids.length > 2) {
 			return {
 				grade: 'fail',
-				message: `Found ${analysisData.ride.vehicle_ids.length} Vehicle IDs for this trip.`,
-				reason: 'FOUND_MORE_THAN_2_VEHICLE_IDS',
+				reason: 'UNEXPECTED_VEHICLE_ID_QTY',
 				value: analysisData.ride.vehicle_ids.length,
 			};
 		}
 
 		return {
 			grade: 'pass',
-			message: `Found ${analysisData.ride.vehicle_ids.length} Vehicle IDs for this trip.`,
-			reason: 'FOUND_ONE_OR_TWO_VEHICLE_IDS',
+			reason: 'EXPECTED_VEHICLE_ID_QTY',
 			value: analysisData.ride.vehicle_ids.length,
 		};
 
@@ -43,8 +40,8 @@ export function atMostTwoVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['a
 	}
 	catch (error) {
 		return {
+			error_message: error.message,
 			grade: 'error',
-			message: error.message,
 			reason: null,
 			value: null,
 		};

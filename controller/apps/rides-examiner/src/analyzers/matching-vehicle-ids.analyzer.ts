@@ -16,14 +16,14 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['an
 		if (!analysisData.simplified_apex_validations.length && !analysisData.simplified_apex_locations.length) {
 			return {
 				grade: 'skip',
-				reason: 'NO_APEX_TRANSACTIONS_FOUND',
+				reason: 'NO_APEX_TRANSACTIONS',
 			};
 		}
 
 		if (!analysisData.vehicle_events.length) {
 			return {
 				grade: 'skip',
-				reason: 'NO_VEHICLE_EVENTS_FOUND',
+				reason: 'NO_VEHICLE_EVENTS',
 			};
 		}
 
@@ -67,8 +67,8 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['an
 		//
 	}
 	catch (error) {
-		console.log('matchingVehicleIdsAnalyzer():', error.message);
 		return {
+			error_message: error.message,
 			grade: 'error',
 			reason: null,
 		};

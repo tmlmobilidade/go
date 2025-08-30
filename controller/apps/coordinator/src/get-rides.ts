@@ -43,7 +43,8 @@ export async function getRides(): Promise<string[]> {
 	const fetchTimer = new TIMETRACKER();
 
 	const latestWaitingRides = await ridesCollection
-		.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
+		// .find({ start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
+		.find({ _id: 'UTT6U-43-20250829-3706_0_1_2700_2729_0_VER_DU' })
 		.sort({ start_time_scheduled: -1 })
 		.limit(batchSize)
 		.toArray();

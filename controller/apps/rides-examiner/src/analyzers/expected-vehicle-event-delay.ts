@@ -10,41 +10,39 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = Delay between Vehicle and PCGI timestamps is less than 10 seconds.
  * → FAIL = Delay between Vehicle and PCGI timestamps is equal to or higher than 10 seconds.
  */
-export function excessiveVehicleEventDelayAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXCESSIVE_VEHICLE_EVENT_DELAY'] {
+export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_VEHICLE_EVENT_DELAY'] {
 	try {
 		//
 
-		// 1.
-		// Initiate a counting variable
+		if (!analysisData.vehicle_events.length) {
+			return {
+				grade: 'fail',
+				reason: 'NO_VEHICLE_EVENTS',
+				value: null,
+			};
+		}
+
+		//
+		// Evaluate each vehicle event
 
 		let countOfEventsWithDelay = 0;
 
-		// 2.
-		// Evaluate each vehicle event
-
 		for (const vehicleEvent of analysisData.vehicle_events) {
-			//
 			const delayInMilliseconds = vehicleEvent.received_at - vehicleEvent.created_at;
-			//
-			if (delayInMilliseconds >= 10000) {
-				countOfEventsWithDelay++;
-			}
-			//
+			if (delayInMilliseconds >= 10000) countOfEventsWithDelay++;
 		}
 
-		if (countOfEventsWithDelay === 0) {
+		if (countOfEventsWithDelay > 0) {
 			return {
-				grade: 'pass',
-				message: 'All vehicle events are within delay limits.',
-				reason: 'ALL_VEHICLE_EVENTS_ARE_WITHIN_DELAY_LIMITS',
-				value: 0,
+				grade: 'fail',
+				reason: 'UNEXPECTED_VEHICLE_EVENTS_DELAY',
+				value: countOfEventsWithDelay,
 			};
 		}
 
 		return {
-			grade: 'fail',
-			message: `Found ${countOfEventsWithDelay} vehicle events with excessive delay.`,
-			reason: `THERE_ARE_VEHICLE_EVENTS_WITH_EXCESSIVE_DELAY`,
+			grade: 'pass',
+			reason: `EXPECTED_VEHICLE_EVENTS_DELAY`,
 			value: countOfEventsWithDelay,
 		};
 
@@ -52,8 +50,8 @@ export function excessiveVehicleEventDelayAnalyzer(analysisData: AnalysisData): 
 	}
 	catch (error) {
 		return {
+			error_message: error.message,
 			grade: 'error',
-			message: error.message,
 			reason: null,
 			value: null,
 		};
