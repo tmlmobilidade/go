@@ -8,7 +8,7 @@ import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@/types/normalized';
 import { ParseRidesWorkerResponseMessage } from '@/workers/parse-rides.worker';
 import { useDebouncedState } from '@mantine/hooks';
-import { ANALYSIS_GRADE_OPTIONS, type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Ride, RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates, fetchData, type HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -84,8 +84,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
 	const [filterDelayStatus, setFilterDelayStatus] = useQueryState<string[]>('delay_status', parseAsArrayOfStrings.withDefault(delayStatusValues));
 	const [filterOperationalStatus, setFilterOperationalStatus] = useQueryState<string[]>('operational_status', parseAsArrayOfStrings.withDefault(operationalStatusValues));
-	const [filterAnalysisSimpleThreeVehicleEvents, setFilterAnalysisSimpleThreeVehicleEvents] = useQueryState<string[]>('analysis_simple_three_vehicle_events', parseAsArrayOfStrings.withDefault([...ANALYSIS_GRADE_OPTIONS, 'none']));
-	const [filterAnalysisEndedAtLastStop, setFilterAnalysisEndedAtLastStop] = useQueryState<string[]>('analysis_ended_at_last_stop', parseAsArrayOfStrings.withDefault([...ANALYSIS_GRADE_OPTIONS, 'none']));
+	const [filterAnalysisSimpleThreeVehicleEvents, setFilterAnalysisSimpleThreeVehicleEvents] = useQueryState<string[]>('analysis_simple_three_vehicle_events', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
+	const [filterAnalysisEndedAtLastStop, setFilterAnalysisEndedAtLastStop] = useQueryState<string[]>('analysis_ended_at_last_stop', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 	const [flagsIsLoading, setFlagsIsLoading] = useState<boolean>(false);

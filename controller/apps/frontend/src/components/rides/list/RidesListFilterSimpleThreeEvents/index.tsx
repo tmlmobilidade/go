@@ -1,7 +1,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
+import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -20,7 +20,7 @@ export function RidesListFilterSimpleThreeEvents() {
 
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
-		const defaultValues = [...ANALYSIS_GRADE_OPTIONS, 'none'];
+		const defaultValues = [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'];
 		const enabledValues = ridesListContext.filters.analysis_simple_three_vehicle_events_grade;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
@@ -31,7 +31,7 @@ export function RidesListFilterSimpleThreeEvents() {
 
 	const parsedOptions = useMemo(() => {
 		// Parse options to the expected format.
-		return [...ANALYSIS_GRADE_OPTIONS, 'none'].map(value => ({
+		return [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(value => ({
 			checked: ridesListContext.filters.analysis_simple_three_vehicle_events_grade.includes(value),
 			label: value,
 			value: value,

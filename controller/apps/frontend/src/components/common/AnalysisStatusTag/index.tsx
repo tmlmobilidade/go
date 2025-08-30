@@ -2,14 +2,14 @@
 
 /* * */
 
-import { type RideNormalized } from '@/types/normalized';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import { type RideAnalysis } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface AnalysisStatusTagProps {
-	grade: RideNormalized['simple_three_vehicle_events_grade']
+	grade: 'none' | RideAnalysis['grade']
 }
 
 /* * */
