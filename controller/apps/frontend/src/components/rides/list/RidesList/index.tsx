@@ -81,7 +81,13 @@ export function RidesList() {
 		{
 			accessor: 'analysis_ended_at_last_stop_grade',
 			render: item => <AnalysisStatusTag grade={item.analysis_ended_at_last_stop_grade} />,
-			title: '3 Eventos',
+			title: 'Fim na 1ª Paragem',
+			width: 150,
+		},
+		{
+			accessor: 'analysis_expected_apex_validation_interval',
+			render: item => <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval} />,
+			title: 'Intervalo Validações',
 			width: 150,
 		},
 	];

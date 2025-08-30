@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-export function RidesListFilterSimpleThreeEvents() {
+export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 	//
 
 	//
@@ -21,22 +21,22 @@ export function RidesListFilterSimpleThreeEvents() {
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
 		const defaultValues = [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'];
-		const enabledValues = ridesListContext.filters.analysis_simple_three_vehicle_events_grade;
+		const enabledValues = ridesListContext.filters.analysis_expected_apex_validation_interval;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
 		// If the length is the same ensure they're equal by also
 		// checking if every item in one array is included in the other.
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [ridesListContext.filters.analysis_simple_three_vehicle_events_grade]);
+	}, [ridesListContext.filters.analysis_expected_apex_validation_interval]);
 
 	const parsedOptions = useMemo(() => {
 		// Parse options to the expected format.
 		return [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(value => ({
-			checked: ridesListContext.filters.analysis_simple_three_vehicle_events_grade.includes(value),
+			checked: ridesListContext.filters.analysis_expected_apex_validation_interval.includes(value),
 			label: value,
 			value: value,
 		}));
-	}, [ridesListContext.filters.analysis_simple_three_vehicle_events_grade]);
+	}, [ridesListContext.filters.analysis_expected_apex_validation_interval]);
 
 	//
 	// C. Render components
@@ -44,7 +44,7 @@ export function RidesListFilterSimpleThreeEvents() {
 	return (
 		<FilterMenu
 			active={isActive}
-			label="3 Momentos"
+			label="Intervalo Validações"
 			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
 			options={parsedOptions}
 			withToggleAll
