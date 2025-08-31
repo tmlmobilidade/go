@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { Tag } from '@tmlmobilidade/ui';
+import { Tag, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -13,10 +13,15 @@ export function RidesDetailSystemStatus() {
 	//
 	// A. Setup variables
 
+	const meContext = useMeContext();
 	const ridesDetailContext = useRidesDetailContext();
 
 	//
-	// C. Render components
+	// B. Render components
+
+	if (!meContext.actions.hasPermission('rides', 'update')) {
+		return null;
+	}
 
 	if (ridesDetailContext.data.ride?.system_status === 'waiting') {
 		return <Tag label="Em espera" variant="primary" />;
