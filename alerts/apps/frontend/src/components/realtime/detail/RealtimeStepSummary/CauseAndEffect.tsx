@@ -16,7 +16,7 @@ export function CauseAndEffect() {
 				</Section>
 				<Section flexDirection="row" gap="md" padding="none">
 					{EffectIcons[realtimeContext.data.form.values.effect]}
-					{Translations.CAUSE[realtimeContext.data.form.values.effect]}
+					{Translations.EFFECT[realtimeContext.data.form.values.effect]}
 				</Section>
 			</Section>
 		</Section>

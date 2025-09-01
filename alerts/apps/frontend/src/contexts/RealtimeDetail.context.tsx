@@ -3,8 +3,12 @@
 /* * */
 
 import { RealtimeStepCause } from '@/components/realtime/detail/RealtimeStepCause';
+import { RealtimeStepEffect } from '@/components/realtime/detail/RealtimeStepEffect';
 import { RealtimeStepSummary } from '@/components/realtime/detail/RealtimeStepSummary';
 import { RealtimeStepTrips } from '@/components/realtime/detail/RealtimeStepTrips';
+
+/* * */
+
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
@@ -47,6 +51,10 @@ const STEPS: Step[] = [
 	{
 		component: RealtimeStepCause,
 		id: 'cause',
+	},
+	{
+		component: RealtimeStepEffect,
+		id: 'effect',
 	},
 	{
 		component: RealtimeStepTrips,
