@@ -18,7 +18,6 @@ export type RidesData = Ride & { stop_ids: string[] };
 
 interface RidesContextState {
 	actions: {
-		addAllRides: () => void
 		clearFilters: () => void
 		removeAllRides: () => void
 		setFilterLineId: (value: string) => void

@@ -5,19 +5,25 @@
 import { RealtimeStepCause } from '@/components/realtime/detail/RealtimeStepCause';
 import { RealtimeStepTrips } from '@/components/realtime/detail/RealtimeStepTrips';
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
-import { causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, referenceTypeSchema } from '@tmlmobilidade/types';
+import { causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
+
+import { RidesData } from './Rides.context';
 
 /* * */
 
 type RealtimeDetailContextState = UseMultiStepFormState & {
 	actions: {
+		addAllTrips: (trips: RidesData[]) => void
+		removeAllRides: () => void
 		saveAlert: () => Promise<void>
+		toggleTripReference: (trip: RidesData) => void
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
+		selectedRides: RidesData[]
 	}
 	flags: {
 		isSaving: boolean
@@ -59,7 +65,7 @@ const emptyAlert: CreateAlertDto = {
 	publish_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
 	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	publish_status: 'PUBLISHED',
-	reference_type: Object.values(referenceTypeSchema.Enum)[0],
+	reference_type: 'TRIP',
 	references: [],
 	title: '',
 	type: 'REALTIME',
@@ -73,6 +79,7 @@ export const RealtimeDetailContextProvider = ({ children }: { children: React.Re
 
 	const multiStepForm = useMultiStepForm({ steps: STEPS });
 	const [isSaving, setIsSaving] = useState(false);
+	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
 
 	//
 	// B. Define form
@@ -86,6 +93,28 @@ export const RealtimeDetailContextProvider = ({ children }: { children: React.Re
 
 	//
 	// C. Handle actions
+
+	const addAllTrips = (trips: RidesData[]) => {
+		setSelectedRides(trips);
+		form.setFieldValue('references', trips.map(trip => ({ child_ids: [], parent_id: trip._id })));
+	};
+
+	const toggleTripReference = (trip: RidesData) => {
+		if (form.values.references.some(reference => reference.parent_id === trip._id)) {
+			form.setFieldValue('references', form.values.references.filter(reference => reference.parent_id !== trip._id));
+			setSelectedRides(selectedRides.filter(ride => ride._id !== trip._id));
+		}
+		else {
+			form.setFieldValue('references', [...form.values.references, { child_ids: [], parent_id: trip._id }]);
+			setSelectedRides([...selectedRides, trip]);
+		}
+		form.values.references.push({ child_ids: [], parent_id: trip._id });
+	};
+
+	const removeAllRides = () => {
+		setSelectedRides([]);
+		form.setFieldValue('references', []);
+	};
 
 	async function saveAlert() {
 		setIsSaving(true);
@@ -123,11 +152,15 @@ export const RealtimeDetailContextProvider = ({ children }: { children: React.Re
 
 	const contextValue: RealtimeDetailContextState = useMemo(() => ({
 		actions: {
+			addAllTrips,
+			removeAllRides,
 			saveAlert,
+			toggleTripReference,
 			...multiStepForm.actions,
 		},
 		data: {
 			form,
+			selectedRides,
 			...multiStepForm.data,
 		},
 		flags: {
