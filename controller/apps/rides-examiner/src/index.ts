@@ -1,10 +1,9 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { type Ride } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -61,7 +60,7 @@ export async function validateRides() {
 	try {
 		//
 
-		LOGGER.init();
+		Logs.init();
 
 		const globalTimer = new TIMETRACKER();
 
@@ -82,7 +81,7 @@ export async function validateRides() {
 
 		const ridesBatch = await rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
-		LOGGER.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, 1);
+		Logs.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, 1);
 
 		//
 		// Process each Ride
@@ -184,9 +183,10 @@ export async function validateRides() {
 
 				rideData.analysis = runAnalyzers(analysisData);
 
+				const skipAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'skip').map(([key]) => key);
 				const passAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'pass').map(([key]) => key);
-				const errorAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'error').map(([key]) => key);
 				const failAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'fail').map(([key]) => key);
+				const errorAnalysisCount = Object.entries(rideData.analysis).filter(([, value]) => value.grade === 'error').map(([key]) => key);
 
 				//
 				// Update the current Ride with the analysis result
@@ -214,13 +214,22 @@ export async function validateRides() {
 					},
 				);
 
-				LOGGER.success(`[${ridesBatch.length - rideIndex}/${ridesBatch.length}] ${rideData._id} (fetch: ${fetchAnalysisDataTime} | total: ${rideAnalysisTimer.get()}) | PASS: ${passAnalysisCount.length} | FAIL: ${failAnalysisCount.length} | ERROR: ${errorAnalysisCount.length} [${errorAnalysisCount.join('|')}]`);
+				Logs.info([
+					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
+					' F: ', { c: 5, t: fetchAnalysisDataTime },
+					' T: ', { c: 7, t: rideAnalysisTimer.get() },
+					{ c: 50, t: rideData._id },
+					{ c: 10, t: `SKIP: ${skipAnalysisCount.length} ` },
+					{ c: 10, t: `PASS: ${passAnalysisCount.length} ` },
+					{ c: 10, t: `FAIL: ${failAnalysisCount.length} ` },
+					{ c: 12, t: `ERROR: ${errorAnalysisCount.length} [${errorAnalysisCount.join('|')}]` },
+				]);
 
 				//
 			}
 			catch (error) {
 				await rides.updateById(rideData._id, { system_status: 'error' });
-				LOGGER.error('An error occurred while processing a ride.', error);
+				Logs.error('An error occurred while processing a ride.', error);
 			}
 		}
 
@@ -228,13 +237,13 @@ export async function validateRides() {
 
 		fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb?status=up&msg=OK&ping=');
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+		Logs.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
 	}
 	catch (err) {
-		LOGGER.error('An error occurred. Halting execution.', err);
-		LOGGER.error('Retrying in 10 seconds...');
+		Logs.error('An error occurred. Halting execution.', err);
+		Logs.error('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds
