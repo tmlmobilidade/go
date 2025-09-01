@@ -1,7 +1,7 @@
 import { getDelayStatus, StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { RidesData } from '@/contexts/Rides.context';
-import { DataTable, DataTableColumn, Label, Separator } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, Label, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 export function AffectedRides() {
@@ -32,9 +32,8 @@ export function AffectedRides() {
 	];
 
 	return (
-		<>
-			<Separator />
-			<Label size="sm" caps>Viagens afetadas</Label>
+		<Section gap="md">
+			<Label size="md" caps>Viagens afetadas</Label>
 			<div style={{ overflowX: 'scroll', width: '100%' }}>
 				<DataTable
 					columns={columns as DataTableColumn<unknown>[]}
@@ -42,6 +41,6 @@ export function AffectedRides() {
 					rowIdAccessor="_id"
 				/>
 			</div>
-		</>
+		</Section>
 	);
 }
