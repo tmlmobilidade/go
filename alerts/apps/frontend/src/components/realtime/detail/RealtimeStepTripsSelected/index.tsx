@@ -3,7 +3,7 @@
 /* * */
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
-import { IconIdOff, IconListCheck } from '@tabler/icons-react';
+import { IconListCheck } from '@tabler/icons-react';
 import { Button, Label, Section } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';
 
