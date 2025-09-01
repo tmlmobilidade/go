@@ -95,8 +95,14 @@ export const RealtimeDetailContextProvider = ({ children }: { children: React.Re
 	// C. Handle actions
 
 	const addAllTrips = (trips: RidesData[]) => {
-		setSelectedRides(trips);
-		form.setFieldValue('references', trips.map(trip => ({ child_ids: [], parent_id: trip._id })));
+		const newRides = trips.filter(trip => !selectedRides.some(ride => ride._id === trip._id));
+		if (newRides.length > 0) {
+			setSelectedRides(prevRides => [...prevRides, ...newRides]);
+			form.setFieldValue('references', [
+				...form.values.references,
+				...newRides.map(trip => ({ child_ids: [], parent_id: trip._id })),
+			]);
+		}
 	};
 
 	const toggleTripReference = (trip: RidesData) => {
