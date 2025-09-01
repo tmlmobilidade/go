@@ -61,6 +61,13 @@ server.register(
 			RidesController.getVehicleEventsByRideId,
 		);
 
+		// GET /rides/:id/simplified-apex-locations
+		instance.get(
+			'/:id/simplified-apex-locations',
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.read) },
+			RidesController.getSimplifiedApexLocationsByRideId,
+		);
+
 		// GET /rides/:id/simplified-apex-validations
 		instance.get(
 			'/:id/simplified-apex-validations',
