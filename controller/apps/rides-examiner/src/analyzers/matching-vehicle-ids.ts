@@ -30,9 +30,9 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['an
 		//
 		// Get all unique Vehicle IDs from Apex Transactions and Vehicle Events
 
-		const uniqueIdsFromApexLocations = new Set(analysisData.simplified_apex_locations.map(item => item.vehicle_id));
-		const uniqueIdsFromApexValidations = new Set(analysisData.simplified_apex_validations.map(item => item.vehicle_id));
-		const uniqueIdsFromVehicleEvents = new Set(analysisData.vehicle_events.map(item => item.vehicle_id));
+		const uniqueIdsFromApexLocations = new Set(analysisData.simplified_apex_locations.map(item => String(item.vehicle_id)));
+		const uniqueIdsFromApexValidations = new Set(analysisData.simplified_apex_validations.map(item => String(item.vehicle_id)));
+		const uniqueIdsFromVehicleEvents = new Set(analysisData.vehicle_events.map(item => String(item.vehicle_id)));
 
 		//
 		// Combine all IDs and check if the size of the
@@ -44,9 +44,9 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['an
 			...uniqueIdsFromVehicleEvents.values(),
 		]);
 
-		const mismatchApexLocations = combinedUniqueVehicleIds.size !== uniqueIdsFromApexLocations.size;
-		const mismatchApexValidations = combinedUniqueVehicleIds.size !== uniqueIdsFromApexValidations.size;
-		const mismatchVehicleEvents = combinedUniqueVehicleIds.size !== uniqueIdsFromVehicleEvents.size;
+		const mismatchApexLocations = analysisData.simplified_apex_locations.length > 0 && combinedUniqueVehicleIds.size !== uniqueIdsFromApexLocations.size;
+		const mismatchApexValidations = analysisData.simplified_apex_validations.length > 0 && combinedUniqueVehicleIds.size !== uniqueIdsFromApexValidations.size;
+		const mismatchVehicleEvents = analysisData.vehicle_events.length > 0 && combinedUniqueVehicleIds.size !== uniqueIdsFromVehicleEvents.size;
 
 		if (mismatchApexLocations || mismatchApexValidations || mismatchVehicleEvents) {
 			return {

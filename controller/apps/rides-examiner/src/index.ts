@@ -27,7 +27,7 @@ import { expectedVehicleEventIntervalAnalyzer } from '@/analyzers/expected-vehic
 import { expectedVehicleEventQtyAnalyzer } from '@/analyzers/expected-vehicle-event-qty.js';
 import { expectedVehicleIdQtyAnalyzer } from '@/analyzers/expected-vehicle-id-qty.js';
 import { matchingApexLocationsAnalyzer } from '@/analyzers/matching-apex-locations.js';
-import { matchingVehicleIdsAnalyzer } from '@/analyzers/matching-vehicle-ids.analyzer.js';
+import { matchingVehicleIdsAnalyzer } from '@/analyzers/matching-vehicle-ids.js';
 import { simpleOneApexValidationAnalyzer } from '@/analyzers/simple-one-apex-validation.js';
 import { simpleOneVehicleEventOrApexValidationAnalyzer } from '@/analyzers/simple-one-vehicle-event-or-apex-validation.js';
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.js';
