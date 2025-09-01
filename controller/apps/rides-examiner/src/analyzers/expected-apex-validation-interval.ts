@@ -1,8 +1,12 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
-import { coefficientOfVariation, entropy, roundNumberBias, sortByUnixTimestamp } from '@tmlmobilidade/utils';
+import { type Ride, SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
+
+/* * */
+
+const MIN_ALLOWED_INTERVAL_MS = 2000;
 
 /**
  * This analyzer tests if the interval between validations is normal or not.
@@ -32,70 +36,50 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		}
 
 		//
-		// Sort validations by created_at timestamp
+		// Separate validations by SAM Serial Number
+		// and sort them by created_at timestamp
 
-		const sortedValidations = sortByUnixTimestamp(analysisData.simplified_apex_validations, 'created_at', 'asc');
+		const groupedValidations = analysisData.simplified_apex_validations.reduce((acc, validation) => {
+			if (!acc.has(validation.mac_sam_serial_number)) acc.set(validation.mac_sam_serial_number, []);
+			acc.get(validation.mac_sam_serial_number).push(validation);
+			return acc;
+		}, new Map<number, SimplifiedApexValidation[]>());
 
-		//
-		// Evaluate the interval between each validation
-
-		let tooShortIntervalsQty = 0;
-		const observedDelays: number[] = [];
-
-		let previousValidationTimestamp = sortedValidations[0].created_at;
-
-		for (let index = 1; index < sortedValidations.length; index++) {
-			const delayInMilliseconds = sortedValidations[index].created_at - previousValidationTimestamp;
-			observedDelays.push(delayInMilliseconds);
-			if (delayInMilliseconds < 3000) tooShortIntervalsQty++;
-			previousValidationTimestamp = sortedValidations[index].created_at;
+		for (const [samSerialNumber, validations] of groupedValidations.entries()) {
+			const sortedValidations = sortByUnixTimestamp(validations, 'created_at', 'asc');
+			groupedValidations.set(samSerialNumber, sortedValidations);
 		}
 
 		//
-		// Fail the test if at least one was found
+		// For each group, evaluate the interval between each validation.
+		// Fail the test if at least one suspicious interval was found.
 
-		if (tooShortIntervalsQty > 0) {
-			return {
-				grade: 'fail',
-				reason: 'INTERVALS_TOO_SHORT',
-			};
+		for (const sortedValidations of groupedValidations.values()) {
+			//
+
+			let tooShortIntervalsQty = 0;
+			const observedDelays: number[] = [];
+
+			let previousValidationTimestamp = sortedValidations[0].created_at;
+			for (let index = 1; index < sortedValidations.length; index++) {
+				const delayInMilliseconds = sortedValidations[index].created_at - previousValidationTimestamp;
+				observedDelays.push(delayInMilliseconds);
+				if (delayInMilliseconds < MIN_ALLOWED_INTERVAL_MS) tooShortIntervalsQty++;
+				previousValidationTimestamp = sortedValidations[index].created_at;
+			}
+
+			if (tooShortIntervalsQty > 0) {
+				return {
+					grade: 'fail',
+					reason: 'INTERVALS_TOO_SHORT',
+				};
+			}
+
+			//
 		}
 
 		//
-		// The following checks require at least 10 APEX validations
-
-		if (analysisData.simplified_apex_validations.length < 10) {
-			return {
-				grade: 'pass',
-				reason: 'EXPECTED_VALIDATION_INTERVALS',
-			};
-		}
-
-		//
-		// Check if all observed delays are organic
-
-		let syntheticScore = 0;
-
-		const coefficientOfVariationResult = coefficientOfVariation(observedDelays);
-		if (coefficientOfVariationResult < 0.05) syntheticScore += 3;
-		else if (coefficientOfVariationResult > 1.5) syntheticScore += 2;
-
-		const entropyResult = entropy(observedDelays);
-		if (entropyResult < 1) syntheticScore += 2;
-		else if (entropyResult > 5) syntheticScore += 2;
-
-		const roundNumberBiasResult = roundNumberBias(observedDelays);
-		if (roundNumberBiasResult > 0.6) syntheticScore += 2;
-
-		if (syntheticScore >= 4) {
-			return {
-				grade: 'fail',
-				reason: 'NON_ORGANIC_INTERVALS',
-			};
-		}
-
-		//
-		// Return a passing grade
+		// Return a passing grade otherwise
 
 		return {
 			grade: 'pass',

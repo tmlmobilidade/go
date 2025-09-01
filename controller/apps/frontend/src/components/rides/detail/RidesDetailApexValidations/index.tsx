@@ -62,7 +62,12 @@ export function RidesDetailApexValidations() {
 		{
 			accessor: 'vehicle_id',
 			title: 'Vehicle ID',
-			width: 150,
+			width: 120,
+		},
+		{
+			accessor: 'mac_sam_serial_number',
+			title: 'SAM SN',
+			width: 160,
 		},
 		{
 			accessor: '_id',
