@@ -40,7 +40,7 @@ function StartTimeStatusTag({ startTimeObserved, status }: { startTimeObserved: 
 
 	if (status === 'none') {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none" width="fit-content">
 				<Tag label={startTimeObserved} variant="secondary" />
 			</Section>
 		);
@@ -48,7 +48,7 @@ function StartTimeStatusTag({ startTimeObserved, status }: { startTimeObserved: 
 
 	if (status === 'ontime') {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none" width="fit-content">
 				<Tag label={startTimeObserved} variant="secondary" />
 				<Tag label="Ontime" variant="success" />
 			</Section>
@@ -57,7 +57,7 @@ function StartTimeStatusTag({ startTimeObserved, status }: { startTimeObserved: 
 
 	if (status === 'delayed') {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none" width="fit-content">
 				<Tag label={startTimeObserved} variant="warning" />
 				<Tag label="Delayed" variant="warning" />
 			</Section>
@@ -66,7 +66,7 @@ function StartTimeStatusTag({ startTimeObserved, status }: { startTimeObserved: 
 
 	if (status === 'early') {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none">
+			<Section alignItems="center" flexDirection="row" gap="sm" justifyContent="flex-end" padding="none" width="fit-content">
 				<Tag label={startTimeObserved} variant="danger" />
 				<Tag label="Early" variant="danger" />
 			</Section>
@@ -83,9 +83,11 @@ export function RideCard({ onSelect, ride, selected }: { onSelect: () => void, r
 	return (
 		<div className={styles.rideCard} data-selected={selected} onClick={onSelect}>
 			<Label size="md">{ride._id}</Label>
-			<Section alignItems="center" flexDirection="row" gap="xs" justifyContent="flex-start" padding="none">
-				<Badge size="xl" variant="secondary">{ride.line_id.toString()}</Badge>
-				<Label size="lg" singleLine>{ride.headsign}</Label>
+			<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="xs" justifyContent="space-between" padding="none">
+				<Section alignItems="center" flexDirection="row" gap="xs" padding="none" width="fit-content">
+					<Badge size="xl" variant="secondary">{ride.line_id.toString()}</Badge>
+					<Label size="lg" singleLine>{ride.headsign}</Label>
+				</Section>
 				<StartTimeStatusTag
 					startTimeObserved={Dates.fromUnixTimestamp(ride.start_time_scheduled).toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt')}
 					status={getDelayStatus(ride.start_time_scheduled, ride.start_time_observed)}
