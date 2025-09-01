@@ -3,6 +3,7 @@
 /* * */
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
+import { IconIdOff, IconListCheck } from '@tabler/icons-react';
 import { Button, Label, Section } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';
 
@@ -38,17 +39,24 @@ export function RealtimeStepTripsSelected() {
 					/>
 				</div>
 			</Section>
-			<div className={styles.tripsContainer}>
-				<ViewportList items={realtimeContext.data.selectedRides}>
-					{(ride, index) => (
-						<RideCard
-							key={index}
-							onSelect={() => { realtimeContext.actions.toggleTripReference(ride); }}
-							ride={ride}
-							selected={index === realtimeContext.data.selectedRides.indexOf(ride)}
-						/>
-					)}
-				</ViewportList>
+			<div className={styles.tripsContainer} data-empty={realtimeContext.data.selectedRides.length === 0}>
+				{realtimeContext.data.selectedRides.length > 0 ? (
+					<ViewportList items={realtimeContext.data.selectedRides}>
+						{(ride, index) => (
+							<RideCard
+								key={index}
+								onSelect={() => { realtimeContext.actions.toggleTripReference(ride); }}
+								ride={ride}
+								selected={index === realtimeContext.data.selectedRides.indexOf(ride)}
+							/>
+						)}
+					</ViewportList>
+				) : (
+					<div className={styles.tripsContainerEmpty}>
+						<IconListCheck size={56} />
+						<Label size="lg" caps>Nenhuma viagem selecionada</Label>
+					</div>
+				)}
 			</div>
 		</Section>
 	);
