@@ -49,6 +49,19 @@ const alertActions: PermissionConfig<typeof Permissions.alerts.actions> = {
 	title: 'Permissões de Alertas',
 };
 
+const realtimeActions: PermissionConfig<typeof Permissions.alerts_realtime.actions> = {
+	actions: [
+		{ description: 'Permite ver alertas de tempo real', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
+		{ description: 'Permite criar um alerta de tempo real', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
+		{ description: 'Permite editar um alerta de tempo real', key: 'update', label: 'Editar', resources: ['AGENCIES'] },
+		{ description: 'Permite eliminar um alerta de tempo real', key: 'delete', label: 'Eliminar', resources: ['AGENCIES'] },
+		{ description: 'Permite bloquear/desbloquear um alerta de tempo real', key: 'toggle_lock', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de alertas de tempo real.',
+	scope: Permissions.alerts_realtime.scope,
+	title: 'Permissões de Alertas de Tempo Real',
+};
+
 const homeActions: PermissionConfig<typeof Permissions.home.actions> = {
 	actions: [
 		{ description: 'Permite ver Quick Links', key: 'read_links', label: 'Ver Quick Links' },
@@ -141,6 +154,7 @@ const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
 export const permissionsConfig: PermissionConfig[] = [
 	agencyActions,
 	alertActions,
+	realtimeActions,
 	homeActions,
 	planActions,
 	userActions,
