@@ -21,7 +21,8 @@ export function RealtimeStepSummary() {
 	// B. Transform data
 
 	useEffect(() => {
-		const { description, title } = getAlertTitleAndDescription(form.values.cause, form.values.effect, selectedRides.map(ride => ride.line_id).join(', '));
+		const uniqueLineIds = Array.from(new Set(selectedRides.map(ride => ride.line_id)));
+		const { description, title } = getAlertTitleAndDescription(form.values.cause, form.values.effect, uniqueLineIds.join(', '));
 		form.setFieldValue('title', title);
 		form.setFieldValue('description', description);
 	}, []);

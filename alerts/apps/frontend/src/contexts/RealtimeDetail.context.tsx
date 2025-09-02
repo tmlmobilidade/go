@@ -71,7 +71,7 @@ const STEPS: Step[] = [
 ];
 
 const emptyAlert: CreateAlertDto = {
-	active_period_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
+	active_period_end_date: Dates.now('Europe/Lisbon').plus({ hours: Dates.STANDARD_WINDOW_HOURS }).unix_timestamp,
 	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	cause: Object.values(causeSchema.Enum)[0],
 	created_by: 'temp',
@@ -79,7 +79,7 @@ const emptyAlert: CreateAlertDto = {
 	effect: Object.values(effectSchema.Enum)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
-	publish_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
+	publish_end_date: Dates.now('Europe/Lisbon').plus({ hours: Dates.STANDARD_WINDOW_HOURS }).unix_timestamp,
 	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	publish_status: 'PUBLISHED',
 	reference_type: 'TRIP',
