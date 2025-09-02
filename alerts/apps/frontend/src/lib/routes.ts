@@ -3,6 +3,7 @@ export const PageRoutes = Object.freeze({
 	ALERT_IMAGE: (id: string) => `/alerts/${id}/image`,
 	ALERT_LIST: '/alerts',
 
+	REALTIME_DETAIL: (id: string) => `/realtime/${id}`,
 	REALTIME_LIST: '/realtime',
 });
 

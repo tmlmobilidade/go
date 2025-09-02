@@ -23,7 +23,7 @@ export function AlertDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams('/alerts', window.location.search);
+		const destUrl = keepUrlParams(window.location.pathname.includes('realtime') ? '/realtime' : '/alerts', window.location.search);
 		router.push(destUrl);
 	};
 
