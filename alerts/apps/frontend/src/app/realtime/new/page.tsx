@@ -1,14 +1,14 @@
 /* * */
 
-import { RealtimeDetail } from '@/components/realtime/detail/RealtimeDetail';
-import { RealtimeDetailContextProvider } from '@/contexts/RealtimeCreate.context';
+import { RealtimeCreate } from '@/components/realtime/create/RealtimeCreate';
+import { RealtimeCreateContextProvider } from '@/contexts/RealtimeCreate.context';
 
 /* * */
 
 export default async function Page() {
 	return (
-		<RealtimeDetailContextProvider>
-			<RealtimeDetail />
-		</RealtimeDetailContextProvider>
+		<RealtimeCreateContextProvider>
+			<RealtimeCreate />
+		</RealtimeCreateContextProvider>
 	);
 }

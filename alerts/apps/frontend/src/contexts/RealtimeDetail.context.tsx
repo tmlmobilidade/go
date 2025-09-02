@@ -1,10 +1,10 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, CreateAlertDto, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, uploadFile } from '@tmlmobilidade/utils';
-import { convertObject, Dates } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
+import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -31,23 +31,7 @@ interface RealtimeDetailContextState {
 	}
 }
 
-const emptyAlert: CreateAlertDto = {
-	active_period_end_date: undefined,
-	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(causeSchema.Enum)[0],
-	created_by: 'temp',
-	description: '',
-	effect: Object.values(effectSchema.Enum)[0],
-	modified_by: 'temp',
-	municipality_ids: [],
-	publish_end_date: undefined,
-	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	publish_status: 'DRAFT',
-	reference_type: Object.values(referenceTypeSchema.Enum)[0],
-	references: [],
-	title: '',
-	type: 'PLANNED',
-};
+/* * */
 
 const RealtimeDetailContext = createContext<RealtimeDetailContextState | undefined>(undefined);
 
@@ -58,6 +42,8 @@ export function useRealtimeDetailContext() {
 	}
 	return context;
 }
+
+/* * */
 
 export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
 	//
@@ -76,7 +62,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	//
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
-		initialValues: emptyAlert,
 		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
 		validate: zodResolver(AlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
@@ -116,7 +101,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		if (!error) return;
 
 		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
-		router.replace(Routes.ALERT_LIST);
+		router.replace(Routes.REALTIME_LIST);
 	}, [error]);
 
 	// Validate form on change
@@ -156,21 +141,13 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 			return;
 		}
 
-		// Upload image if the alert is new
-		if (response.data) await uploadImage(response.data._id.toString());
-
-		// Redirect to the detail page if the alert is new
-		if (response.data) {
-			router.replace(Routes.ALERT_DETAIL(response.data._id.toString()));
-		}
-
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
 
 		setIsSaving(false);
 	};
 
 	const deleteAlert = async () => {
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), 'DELETE', alert);
+		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId) + '?realtime=true', 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -181,11 +158,11 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 
 		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
 
-		router.replace(Routes.ALERT_LIST);
+		router.replace(Routes.REALTIME_LIST);
 	};
 
 	const deleteImage = async () => {
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
+		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId) + '?realtime=true', 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -195,24 +172,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
-	};
-
-	const uploadImage = async (alert_id: string) => {
-		if (!image) return;
-
-		console.log('HERE =======> ', alert_id);
-		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);
-
-		console.log('HERE =======> ', response);
-
-		if (response.error) {
-			console.log('HERE =======> ', response.error);
-			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
-			return;
-		}
-
-		console.log('SUCCESS =======> ', response.data);
-		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
 	};
 
 	//

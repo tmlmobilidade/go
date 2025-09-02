@@ -2,8 +2,8 @@
 
 /* * */
 
-import { RealtimeDetailMode, useRealtimeDetailContext } from '@/contexts/RealtimeCreate.context';
-import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
+import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -27,12 +27,6 @@ export function RealtimeDetailHeader() {
 		router.push(destUrl);
 	};
 
-	const handleDuplicate = () => {
-		const id = realtimeDetailContext.data.id;
-
-		router.replace(`/realtimes/new?copy=${id}`);
-	};
-
 	//
 	// C. Render components
 
@@ -42,40 +36,21 @@ export function RealtimeDetailHeader() {
 			<Tag label={realtimeDetailContext.data.form.getValues().publish_status} variant={realtimeDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
 			<Label size="lg" caps>{realtimeDetailContext.data.id}</Label>
 			<Spacer />
-			{realtimeDetailContext.flags.mode === RealtimeDetailMode.EDIT && (
-				<Button
-					icon={<IconCopy size={28} />}
-					label="Duplicar"
-					onClick={handleDuplicate}
-					variant="secondary"
-				/>
-			)}
-			<Button
-				label="Salvar como rascunho"
-				onClick={() => realtimeDetailContext.actions.saveRealtime('draft')}
-				variant="secondary"
-			/>
 			<Button
 				disabled={!realtimeDetailContext.flags.canSave || realtimeDetailContext.flags.isSaving}
 				icon={<IconUpload size={28} />}
+				label="Publicar"
 				loading={realtimeDetailContext.flags.isSaving}
-				onClick={() => realtimeDetailContext.actions.saveRealtime('publish')}
+				onClick={() => realtimeDetailContext.actions.saveAlert()}
 				variant="primary"
-				label={
-					realtimeDetailContext.flags.mode === RealtimeDetailMode.CREATE
-						? 'Publicar'
-						: 'Salvar'
-				}
 			/>
-			{realtimeDetailContext.flags.mode === RealtimeDetailMode.EDIT && (
-				<Button
-					disabled={realtimeDetailContext.flags.isSaving}
-					icon={<IconTrash size={28} />}
-					label="Apagar"
-					onClick={realtimeDetailContext.actions.deleteRealtime}
-					variant="danger"
-				/>
-			)}
+			<Button
+				disabled={realtimeDetailContext.flags.isSaving}
+				icon={<IconTrash size={28} />}
+				label="Apagar"
+				onClick={realtimeDetailContext.actions.deleteAlert}
+				variant="danger"
+			/>
 		</Toolbar>
 	);
 

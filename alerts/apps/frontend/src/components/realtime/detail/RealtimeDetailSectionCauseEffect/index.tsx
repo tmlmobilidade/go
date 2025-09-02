@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRealtimeDetailContext } from '@/contexts/RealtimeCreate.context';
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { causeSchema, effectSchema } from '@tmlmobilidade/types';

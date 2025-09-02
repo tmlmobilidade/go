@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRealtimeDetailContext } from '@/contexts/RealtimeCreate.context';
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconCornerDownRight, IconPlus, IconTrash } from '@tabler/icons-react';

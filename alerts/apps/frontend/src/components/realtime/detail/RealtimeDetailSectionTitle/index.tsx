@@ -3,7 +3,7 @@
 /* * */
 
 import { UploadImage } from '@/components/common/UploadImage';
-import { useRealtimeDetailContext } from '@/contexts/RealtimeCreate.context';
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 

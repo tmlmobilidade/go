@@ -5,9 +5,9 @@
 import { RealtimeReferencesAgencies } from '@/components/realtime/detail/RealtimeReferencesAgencies';
 import { RealtimeReferencesLines } from '@/components/realtime/detail/RealtimeReferencesRoutes';
 import { RealtimeReferencesStops } from '@/components/realtime/detail/RealtimeReferencesStops';
-import { useRealtimeDetailContext } from '@/contexts/RealtimeCreate.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Realtime, RealtimeSchema, referenceTypeSchema } from '@tmlmobilidade/types';
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
+import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/types';
 import { Collapsible, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -41,7 +41,7 @@ export function RealtimeDetailSectionReferences() {
 	//
 	// C. Handle actions
 
-	const parseOptionsLabel = (value: Realtime['reference_type']) => {
+	const parseOptionsLabel = (value: Alert['reference_type']) => {
 		switch (value) {
 			case 'AGENCY':
 				return { label: 'Agências', value };
@@ -54,7 +54,7 @@ export function RealtimeDetailSectionReferences() {
 		}
 	};
 
-	const handleSegmentedControlChange = (value: Realtime['reference_type']) => {
+	const handleSegmentedControlChange = (value: Alert['reference_type']) => {
 		if (references.length > 0) {
 			openConfirmModal({
 				centered: true,
@@ -97,8 +97,8 @@ export function RealtimeDetailSectionReferences() {
 				/>
 
 				<SegmentedControl
-					data={RealtimeSchema.shape.reference_type.options.map(parseOptionsLabel).filter(option => option.value !== referenceTypeSchema.Values.TRIP)}
-					onChange={(value: string) => handleSegmentedControlChange(value as Realtime['reference_type'])}
+					data={AlertSchema.shape.reference_type.options.map(parseOptionsLabel).filter(option => option.value !== referenceTypeSchema.Values.TRIP)}
+					onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
 					value={realtimeDetailContext.data.form.values.reference_type}
 					fullWidth
 				/>
