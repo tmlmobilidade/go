@@ -2,8 +2,9 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
+import { Dates } from '@tmlmobilidade/utils';
 
 /**
  * This function links Refunds with Sales and Validation transactions.
@@ -37,11 +38,12 @@ async function linkRefundsToSalesToValidations() {
 		const unlinkedOnBoardRefundsBatch = simplifiedApexOnBoardRefundsCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			.limit(5000)
+			// .limit(5000)
 			.stream();
 
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
 			totalUnlinkedOnBoardRefunds++;
+			if (totalUnlinkedOnBoardRefunds % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.`);
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardRefund.card_serial_number });
@@ -54,6 +56,7 @@ async function linkRefundsToSalesToValidations() {
 			// their corresponding IDs and additional information.
 			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
+					category: getSimplifiedApexValidationCategory(validationTransaction.units_qty, onBoardSaleTransaction._id),
 					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, onBoardRefund._id),
 					on_board_refund_id: onBoardRefund._id,
 					on_board_sale_id: onBoardSaleTransaction._id,
@@ -82,6 +85,16 @@ async function linkRefundsToSalesToValidations() {
 					validation_id: validationTransaction._id,
 					vehicle_id: validationTransaction.vehicle_id,
 				},
+			);
+			//
+			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardRefund.created_at).std_window;
+			await rides.updateMany(
+				{
+					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+					trip_id: onBoardRefund.trip_id,
+				},
+				{ system_status: 'waiting' },
+				{ returnResults: false },
 			);
 			//
 			totalLinkedOnBoardRefunds++;
@@ -136,11 +149,12 @@ async function linkSalesToValidations() {
 		const unlinkedOnBoardSalesBatch = simplifiedApexOnBoardSalesCollection
 			.find({ validation_id: null })
 			.sort({ created_at: -1 })
-			.limit(5000)
+			.limit(200000)
 			.stream();
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
 			totalUnlinkedOnBoardSales++;
+			if (totalUnlinkedOnBoardSales % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.`);
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
@@ -149,6 +163,7 @@ async function linkSalesToValidations() {
 			// their corresponding IDs and additional information.
 			await simplifiedApexValidations.updateById(validationTransaction._id,
 				{
+					category: getSimplifiedApexValidationCategory(validationTransaction.units_qty, onBoardSale._id),
 					is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationTransaction.validation_status, validationTransaction.event_type, null),
 					on_board_sale_id: onBoardSale._id,
 				},
@@ -164,6 +179,16 @@ async function linkSalesToValidations() {
 					validation_id: validationTransaction._id,
 					vehicle_id: validationTransaction.vehicle_id,
 				},
+			);
+			//
+			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardSale.created_at).std_window;
+			await rides.updateMany(
+				{
+					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+					trip_id: validationTransaction.trip_id,
+				},
+				{ system_status: 'waiting' },
+				{ returnResults: false },
 			);
 			//
 			totalLinkedOnBoardSales++;
