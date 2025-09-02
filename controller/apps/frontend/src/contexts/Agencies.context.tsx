@@ -4,7 +4,6 @@
 
 import { getAppConfig } from '@tmlmobilidade/lib';
 import { type Agency } from '@tmlmobilidade/types';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -41,7 +40,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(`${getAppConfig('auth', 'frontend_url')}/api/agencies`, swrFetcher);
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(`${getAppConfig('auth', 'frontend_url')}/api/agencies`);
 
 	//
 	// B. Define context value

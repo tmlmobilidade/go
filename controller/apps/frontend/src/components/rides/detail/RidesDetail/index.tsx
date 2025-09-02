@@ -8,6 +8,7 @@ import { RidesDetailApexOnBoardRefunds } from '@/components/rides/detail/RidesDe
 import { RidesDetailApexOnBoardSales } from '@/components/rides/detail/RidesDetailApexOnBoardSales';
 import { RidesDetailApexValidations } from '@/components/rides/detail/RidesDetailApexValidations';
 import { RidesDetailHeader } from '@/components/rides/detail/RidesDetailHeader';
+import { RidesDetailJustifications } from '@/components/rides/detail/RidesDetailJustifications';
 import { RidesDetailMap } from '@/components/rides/detail/RidesDetailMap';
 import { RidesDetailMetadata } from '@/components/rides/detail/RidesDetailMetadata';
 import { RidesDetailVehicleEvents } from '@/components/rides/detail/RidesDetailVehicleEvents';
@@ -40,6 +41,7 @@ export function RidesDetail() {
 			<RidesDetailMap />
 			<RidesDetailMetadata />
 			<RidesDetailAnalysisResult />
+			<RidesDetailJustifications />
 			<RidesDetailVehicleEvents />
 			<RidesDetailApexValidations />
 			<RidesDetailApexOnBoardSales />

@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride } from '@tmlmobilidade/types';
+import { type Ride, RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,19 +19,14 @@ export const seenStatusValues = [...seenStatusOptions];
 
 /* * */
 
-export const gradeOptions = ['pass', 'fail', 'error', 'none'] as const;
-export const gradeValues = [...gradeOptions];
-
-/* * */
-
 export interface RideNormalized extends Ride {
 	analysis_ended_at_last_stop_grade: 'none' | RideAnalysis['grade']
 	analysis_expected_apex_validation_interval: 'none' | RideAnalysis['grade']
 	analysis_simple_three_vehicle_events_grade: 'none' | RideAnalysis['grade']
 	delay_status: typeof delayStatusValues[number]
+	delay_value_display: null | string
 	operational_status: typeof operationalStatusValues[number]
 	seen_status: typeof seenStatusValues[number]
-	simple_three_vehicle_events_grade: typeof gradeValues[number]
 	start_time_observed_display: null | string
 	start_time_scheduled_display: string
 }

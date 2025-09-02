@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { type RideNormalized } from '@/types/normalized';
@@ -6,25 +8,24 @@ import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
-export interface ParseRidesWorkerIncomingMessage {
+export interface ParseRidesWorkerRequestMessage {
 	filters: {
 		analysis_ended_at_last_stop: string[]
 		analysis_expected_apex_validation_interval: string[]
 		analysis_simple_three_vehicle_events: string[]
 		delay_status: string[]
 		operational_status: string[]
-		simple_three_vehicle_events: string[]
 	}
 	rides: Map<string, Ride>
 }
 
-export interface ParseRidesWorkerOutgoingMessage {
+export interface ParseRidesWorkerResponseMessage {
 	result: RideNormalized[]
 }
 
 /* * */
 
-self.addEventListener('message', async (event: MessageEvent<ParseRidesWorkerIncomingMessage>) => {
+self.addEventListener('message', async (event: MessageEvent<ParseRidesWorkerRequestMessage>) => {
 	//
 
 	//

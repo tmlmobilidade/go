@@ -184,7 +184,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
 			.map(shapePoint => [shapePoint.shape_pt_lon, shapePoint.shape_pt_lat]);
 		lineString.properties.id = hashedShapeData._id;
-		// lineString.properties['color'] = `#${hashedTripData.route_color}`;
+		// lineString.properties['color'] = `#${hashedTripData?.data.route_color}`;
 		featureCollection.features.push(lineString);
 		return featureCollection;
 	}, [hashedShapeData, hashedTripData]);

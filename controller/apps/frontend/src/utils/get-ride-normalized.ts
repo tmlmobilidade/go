@@ -1,7 +1,7 @@
 /* * */
 
 import { type RideNormalized } from '@/types/normalized';
-import { type Ride } from '@tmlmobilidade/types';
+import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /**
@@ -27,11 +27,12 @@ export function getRideNormalized(ride: Ride): RideNormalized {
 }
 
 /**
- * This function extract the hour and minute components from a date string.
- * @param timestamp The date string to extract the hour and minute components from.
- * @returns The hour and minute components of the date string.
+ * This function returns the analysis grade for a given Ride, based on its operational status and the provided grade.
+ * @param operationalStatus The operational status of the Ride.
+ * @param grade The grade to return if the operational status is not 'scheduled' or 'running'.
+ * @returns The analysis grade for the Ride.
  */
-export function getSimpleThreeEventsGrade(operationalStatus: RideNormalized['operational_status'], grade?: Ride['analysis']['SIMPLE_THREE_VEHICLE_EVENTS']['grade']): RideNormalized['simple_three_vehicle_events_grade'] {
+export function getAnalysisGrade(operationalStatus: RideNormalized['operational_status'], grade?: Ride['analysis']['SIMPLE_THREE_VEHICLE_EVENTS']['grade']): 'none' | RideAnalysis['grade'] {
 	//
 
 	if (operationalStatus === 'scheduled' || operationalStatus === 'running') {
@@ -39,6 +40,34 @@ export function getSimpleThreeEventsGrade(operationalStatus: RideNormalized['ope
 	}
 
 	return grade ?? 'none';
+
+	//
+}
+
+/**
+ * This function extract the hour and minute components from a date string.
+ * @param timestamp The date string to extract the hour and minute components from.
+ * @returns The hour and minute components of the date string.
+ */
+export function getDelayValueDisplay(startTimeScheduled: Ride['start_time_scheduled'], startTimeObserved: Ride['start_time_observed']): RideNormalized['delay_value_display'] {
+	//
+
+	if (!startTimeScheduled || !startTimeObserved) {
+		return 'N/A';
+	}
+
+	const difference = startTimeObserved - startTimeScheduled;
+
+	const sign = difference < 0 ? '-' : '';
+	const absDiff = Math.abs(difference);
+
+	const minutes = Math.floor(absDiff / 60000);
+	const seconds = Math.floor((absDiff % 60000) / 1000);
+
+	if (minutes === 0) {
+		return `${sign}${seconds}s`;
+	}
+	return `${sign}${minutes}m ${seconds}s`;
 
 	//
 }
