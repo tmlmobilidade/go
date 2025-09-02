@@ -75,17 +75,17 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	// B. Transform data
 
 	const rideDataNormalized = useMemo(() => {
-		if (!rideData?.data) return null;
-		return getRideNormalized(rideData.data);
+		if (!rideData) return null;
+		return getRideNormalized(rideData);
 	}, [rideData]);
 
 	const observedEventsFC: FeatureCollection<Point, MapOverlayObservedPathPointsDataProps> = useMemo(() => {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayObservedPathPointsDataProps>();
 		// If no vehicle events data, return the empty feature collection
-		if (!vehicleEventsData?.data) return featureCollection;
+		if (!vehicleEventsData) return featureCollection;
 		// Prepare the feature collection with vehicle events data
-		featureCollection.features = vehicleEventsData.data
+		featureCollection.features = vehicleEventsData
 			.sort((a, b) => a.created_at - b.created_at)
 			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
 			.map((vehicleEvent, index) => ({
@@ -114,10 +114,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		// If no vehicle events data, return an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayObservedPathLineDataProps>();
 		// If no vehicle events data, return the empty feature collection
-		if (!vehicleEventsData?.data) return featureCollection;
+		if (!vehicleEventsData) return featureCollection;
 		// Prepare the feature collection with vehicle events data
 		const lineString = getBaseGeoJsonFeature<LineString, MapOverlayObservedPathLineDataProps>('LineString');
-		lineString.geometry.coordinates = vehicleEventsData.data
+		lineString.geometry.coordinates = vehicleEventsData
 			.sort((a, b) => a.created_at - b.created_at)
 			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
 			.map(vehicleEvent => [vehicleEvent.longitude, vehicleEvent.latitude]);
@@ -130,9 +130,9 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayScheduledPathPointsDataProps>();
 		// If no hashed trip data, return the empty feature collection
-		if (!hashedTripData?.data?.path) return featureCollection;
+		if (!hashedTripData?.path) return featureCollection;
 		// Prepare the feature collection with hashed trip data
-		featureCollection.features = hashedTripData.data.path
+		featureCollection.features = hashedTripData.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map(waypoint => ({
 				geometry: {
@@ -156,10 +156,10 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps>();
 		// If no hashed trip data or hashed shape data, return the empty feature collection
-		if (!hashedTripData?.data?.path) return featureCollection;
-		if (!hashedShapeData?.data?.points?.length) return featureCollection;
+		if (!hashedTripData?.path) return featureCollection;
+		if (!hashedShapeData?.points?.length) return featureCollection;
 		// Prepare the feature collection with hashed trip data
-		featureCollection.features = hashedTripData.data.path
+		featureCollection.features = hashedTripData.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((waypoint) => {
 				const geofenceData = getGeofenceOnPosition([waypoint.stop_lon, waypoint.stop_lat], 50);
@@ -177,14 +177,14 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>();
 		// If no hashed shape data, return the empty feature collection
-		if (!hashedShapeData?.data?.points) return featureCollection;
+		if (!hashedShapeData?.points) return featureCollection;
 		// Prepare the feature collection with hashed shape data
 		const lineString = getBaseGeoJsonFeature<LineString, MapOverlayScheduledPathLineDataProps>('LineString');
-		lineString.geometry.coordinates = hashedShapeData.data.points
+		lineString.geometry.coordinates = hashedShapeData.points
 			.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence)
 			.map(shapePoint => [shapePoint.shape_pt_lon, shapePoint.shape_pt_lat]);
-		lineString.properties.id = hashedShapeData.data._id;
-		// lineString.properties['color'] = `#${hashedTripData?.data.route_color}`;
+		lineString.properties.id = hashedShapeData._id;
+		// lineString.properties['color'] = `#${hashedTripData.route_color}`;
 		featureCollection.features.push(lineString);
 		return featureCollection;
 	}, [hashedShapeData, hashedTripData]);
@@ -205,8 +205,8 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 			reprocessRide,
 		},
 		data: {
-			hashed_shape: hashedShapeData?.data ?? null,
-			hashed_trip: hashedTripData?.data ?? null,
+			hashed_shape: hashedShapeData ?? null,
+			hashed_trip: hashedTripData ?? null,
 			ride: rideDataNormalized,
 			ride_id: rideId,
 			simplified_apex_locations: simplifiedApexLocationsData ?? [],
