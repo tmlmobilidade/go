@@ -19,11 +19,10 @@ server.register(
 		// GET /alerts
 		instance.get(
 			'/',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.read)(request);
-				done();
 			} },
 			AlertsController.getAll,
 		);
@@ -31,11 +30,10 @@ server.register(
 		// GET /alerts/:id
 		instance.get(
 			'/:id',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.read)(request);
-				done();
 			} },
 			AlertsController.getById,
 		);
@@ -43,11 +41,10 @@ server.register(
 		// GET /alerts/:id/image
 		instance.get(
 			'/:id/image',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.read)(request);
-				done();
 			} },
 			AlertsController.getImage,
 		);
@@ -55,11 +52,10 @@ server.register(
 		// POST /alerts
 		instance.post(
 			'/',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.create)(request);
-				done();
 			} },
 			AlertsController.create,
 		);
@@ -67,11 +63,10 @@ server.register(
 		// PUT /alerts/:id
 		instance.put(
 			'/:id',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.update)(request);
-				done();
 			} },
 			AlertsController.update,
 		);
@@ -79,11 +74,10 @@ server.register(
 		// DELETE /alerts/:id
 		instance.delete(
 			'/:id',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.delete)(request);
-				done();
 			} },
 			AlertsController.delete,
 		);
@@ -91,11 +85,10 @@ server.register(
 		// POST /alerts/:id/image
 		instance.post(
 			'/:id/image',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.update)(request);
-				done();
 			} },
 			AlertsController.uploadImage,
 		);
@@ -103,11 +96,10 @@ server.register(
 		// DELETE /alerts/:id/image
 		instance.delete(
 			'/:id/image',
-			{ preHandler: async (request, reply, done) => {
+			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
 				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
 				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.update)(request);
-				done();
 			} },
 			AlertsController.deleteImage,
 		);
