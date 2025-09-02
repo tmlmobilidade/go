@@ -4,6 +4,7 @@ import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import TIMETRACKER from '@helperkits/timer';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { UpdateRideSchema } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
@@ -120,10 +121,12 @@ export async function validateRides() {
 				// Update the current Ride with the analysis result
 				// and 'complete' status to indicate that the ride has been processed.
 
+				const validatedRide = UpdateRideSchema.parse(augmentedRideData);
+
 				await rides.updateById(
 					rideData._id,
 					{
-						...augmentedRideData,
+						...validatedRide,
 						system_status: 'complete',
 					},
 				);
