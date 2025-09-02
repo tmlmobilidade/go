@@ -10,10 +10,13 @@ import { RealtimeStepTrips } from '@/components/realtime/detail/RealtimeStepTrip
 /* * */
 
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
-import { causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema } from '@tmlmobilidade/types';
+import { Routes } from '@/lib/routes';
+import { Alert, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, fetchData } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
 import { createContext, useContext, useMemo, useState } from 'react';
+import { mutate } from 'swr';
 
 import { RidesData } from './Rides.context';
 
@@ -91,6 +94,7 @@ export const RealtimeDetailContextProvider = ({ children }: { children: React.Re
 	//
 	// A. Setup variables
 
+	const router = useRouter();
 	const multiStepForm = useMultiStepForm({ steps: STEPS });
 	const [isSaving, setIsSaving] = useState(false);
 	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
@@ -147,24 +151,23 @@ export const RealtimeDetailContextProvider = ({ children }: { children: React.Re
 			return;
 		}
 
+		// Handle Save Alert
+		const saveAlert: CreateAlertDto = { ...form.values };
+		const url = Routes.ALERTS_API + Routes.ALERT_LIST;
+		const body = saveAlert;
+
+		const response = await fetchData<Alert>(url, 'POST', body);
+
+		if (response.error) {
+			useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
+			setIsSaving(false);
+			return;
+		}
+
+		router.replace(Routes.REALTIME_LIST);
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
+		mutate(Routes.REALTIME_LIST);
 		setIsSaving(false);
-
-		// // Handle Save Alert
-		// const saveAlert: CreateAlertDto = { ...form.values };
-		// const url = Routes.ALERTS_API + Routes.ALERT_LIST;
-		// const body = saveAlert;
-
-		// const response = await fetchData<Alert>(url, 'POST', body);
-
-		// if (!response.isOk) {
-		// 	useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
-		// 	setIsSaving(false);
-		// 	return;
-		// }
-
-		// useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
-		// setIsSaving(false);
 	};
 
 	//
