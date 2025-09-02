@@ -81,7 +81,6 @@ export interface FlatRide {
 	system_status: string
 	trip_id: string
 	updated_at: number
-	validations_count: null | number
 	vehicle_ids: null | string
 }
 
@@ -164,7 +163,6 @@ export const sampleRide: FlatRide = {
 	system_status: 'string',
 	trip_id: 'string',
 	updated_at: 0,
-	validations_count: 0, // Legacy field
 	vehicle_ids: 'vehicle1|vehicle2',
 };
 
@@ -248,7 +246,6 @@ export function parseRide(ride: Ride): FlatRide {
 		system_status: ride.system_status,
 		trip_id: ride.trip_id,
 		updated_at: ride.updated_at,
-		validations_count: ride.passengers_observed,
 		vehicle_ids: (ride.vehicle_ids ?? []).join('|'),
 	};
 }
