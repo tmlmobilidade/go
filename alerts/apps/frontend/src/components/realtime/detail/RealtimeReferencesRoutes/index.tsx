@@ -2,8 +2,8 @@
 
 /* * */
 
-import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { useLinesContext } from '@/contexts/Lines.context';
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconCornerDownRight, IconPlus, IconTrash } from '@tabler/icons-react';
 import { Button, Combobox, Label, MultiSelect, Section, Surface } from '@tmlmobilidade/ui';

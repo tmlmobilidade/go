@@ -5,6 +5,7 @@
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
+		"lint:fix": "turbo lint:fix",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start"
 	},
