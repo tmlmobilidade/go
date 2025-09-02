@@ -8,7 +8,7 @@ import type { DemandMetricsByLine, ServiceMetrics } from '@carrismetropolitana/a
 import type { Line } from '@carrismetropolitana/api-types/network';
 
 import { standardSwrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -49,7 +49,7 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<Line[]>(`${Routes.CMET_API}/lines`, standardSwrFetcher);
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[]>(`${Routes.CMET_API}/lines`, standardSwrFetcher);
 	const { data: demandByLineData, isLoading: demandByLineDataLoading } = useSWR<DemandMetricsByLine[]>(`${Routes.CMET_API}/metrics/demand/by_line`, standardSwrFetcher);
 	const { data: serviceMetricsData, isLoading: serviceMetricsLoading } = useSWR<CachedResource<ServiceMetrics[]>>(`${Routes.CMET_API}/metrics/service/all`, standardSwrFetcher);
 
@@ -65,12 +65,8 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	};
 
 	const getServiceMetricsByLineId = (lineId: string) => {
-		return serviceMetricsData?.data.filter(serviceMetrics => serviceMetrics.line_id === lineId);
+		return serviceMetricsData?.data.filter(serviceMetrics => serviceMetrics.line_id === Number(lineId));
 	};
-
-	useEffect(() => {
-		console.log('HERE =======> ', allLinesData, allLinesError, allLinesLoading);
-	}, [allLinesData]);
 
 	//
 	// C. Define context value
