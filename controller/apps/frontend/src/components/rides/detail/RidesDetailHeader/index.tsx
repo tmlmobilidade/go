@@ -4,6 +4,7 @@
 
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
+import { RidesDetailSystemStatus } from '@/components/rides/detail/RidesDetailSystemStatus';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { BackButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
@@ -37,7 +38,8 @@ export function RidesDetailHeader() {
 			<BackButton onClick={handleGoBack} type="close" />
 			<Tag label={ridesDetailContext.data.ride_id} variant="muted" />
 			<Spacer />
-			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.simple_three_vehicle_events_grade} />
+			<RidesDetailSystemStatus />
+			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.analysis_simple_three_vehicle_events_grade} />
 			<OperationalStatusTag value={ridesDetailContext.data.ride?.operational_status} />
 		</Toolbar>
 	);

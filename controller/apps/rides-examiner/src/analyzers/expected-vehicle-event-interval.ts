@@ -1,6 +1,6 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.type.js';
+import { type AnalysisData } from '@/types/analysis-data.js';
 import { type Ride } from '@tmlmobilidade/types';
 import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
@@ -11,18 +11,17 @@ import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
  * → PASS = Average interval between Vehicle events is less than or equal to 20 seconds.
  * → FAIL = Average interval between Vehicle events is higher than 20 seconds.
  */
-export function avgIntervalVehicleEvents(analysisData: AnalysisData): Ride['analysis']['AVG_INTERVAL_VEHICLE_EVENTS'] {
+export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_VEHICLE_EVENT_INTERVAL'] {
 	try {
 		//
 
 		//
 		// Return a fail grade if there are no vehicle events
 
-		if (analysisData.vehicle_events.length === 0) {
+		if (!analysisData.vehicle_events.length) {
 			return {
-				grade: 'fail',
-				message: 'No vehicle events found.',
-				reason: 'NO_VEHICLE_EVENTS_FOUND',
+				grade: 'skip',
+				reason: 'NO_VEHICLE_EVENTS',
 				value: null,
 			};
 		}
@@ -39,14 +38,10 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): Ride['anal
 
 		let previousEventTimestamp = sortedVehicleEvents[0].created_at;
 
-		for (const vehicleEvent of sortedVehicleEvents) {
-			//
-			const delayInSeconds = vehicleEvent.created_at - previousEventTimestamp;
-			//
+		for (let index = 1; index < sortedVehicleEvents.length; index++) {
+			const delayInSeconds = sortedVehicleEvents[index].created_at - previousEventTimestamp;
 			totalIntervalBetweenEvents += delayInSeconds;
-			//
-			previousEventTimestamp = vehicleEvent.created_at;
-			//
+			previousEventTimestamp = sortedVehicleEvents[index].created_at;
 		}
 
 		//
@@ -57,16 +52,14 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): Ride['anal
 		if (avgIntervalBetweenEvents <= 20000) {
 			return {
 				grade: 'pass',
-				message: 'Average interval between events is within limits.',
-				reason: 'AVG_INTERVAL_LOWER_THAN_OR_EQUAL_TO_20_SECONDS',
+				reason: 'EXPECTED_VEHICLE_EVENT_INTERVAL',
 				value: avgIntervalBetweenEvents,
 			};
 		}
 
 		return {
 			grade: 'fail',
-			message: 'Average interval between events is higher than limit.',
-			reason: 'AVG_INTERVAL_HIGHER_THAN_20_SECONDS',
+			reason: 'UNEXPECTED_VEHICLE_EVENT_INTERVAL',
 			value: avgIntervalBetweenEvents,
 		};
 
@@ -74,8 +67,8 @@ export function avgIntervalVehicleEvents(analysisData: AnalysisData): Ride['anal
 	}
 	catch (error) {
 		return {
+			error_message: error.message,
 			grade: 'error',
-			message: error.message,
 			reason: null,
 			value: null,
 		};

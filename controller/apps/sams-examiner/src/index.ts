@@ -4,7 +4,7 @@ import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { type CreateUniqueSamDto } from '@tmlmobilidade/types';
+import { type CreateSamDto } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -38,11 +38,11 @@ async function main() {
 		//
 		// With the list of Unique SAM IDs, fetch the actual Unique SAM documents to be processsed
 
-		const fetchUniqueSamDocumentsTimer = new TIMETRACKER();
+		const fetchSamDocumentsTimer = new TIMETRACKER();
 
 		const uniqueSamsBatch = await uniqueSams.findMany({ _id: { $in: uniqueSamIdsBatch || [] } });
 
-		LOGGER.info(`Processing ${uniqueSamsBatch.length} Unique SAMs... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchUniqueSamDocumentsTimer.get()})`, 1);
+		LOGGER.info(`Processing ${uniqueSamsBatch.length} Unique SAMs... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchSamDocumentsTimer.get()})`, 1);
 
 		//
 		// For each Unique SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
@@ -156,7 +156,7 @@ async function main() {
 				//
 				// Update the Unique SAM with the new data.
 
-				const updatedSamData: CreateUniqueSamDto = {
+				const updatedSamData: CreateSamDto = {
 					_id: uniqueSamItem._id,
 					agency_id: agencyId,
 					device_ids: Array.from(foundDeviceIds),

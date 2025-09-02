@@ -5,9 +5,9 @@
 import { type RideNormalized } from '@/types/normalized';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getRideNormalized } from '@/utils/get-ride-normalized';
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
-import { Dates, getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition, type HttpResponse } from '@tmlmobilidade/utils';
+import { Dates, fetchData, getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -15,11 +15,15 @@ import useSWR from 'swr';
 /* * */
 
 interface RidesDetailContextState {
+	actions: {
+		reprocessRide: () => Promise<void>
+	}
 	data: {
 		hashed_shape: HashedShape | null
 		hashed_trip: HashedTrip | null
 		ride: null | RideNormalized
 		ride_id: Ride['_id']
+		simplified_apex_locations: SimplifiedApexLocation[]
 		simplified_apex_on_board_refunds: SimplifiedApexOnBoardRefund[]
 		simplified_apex_on_board_sales: SimplifiedApexOnBoardSale[]
 		simplified_apex_validations: SimplifiedApexValidation[]
@@ -58,13 +62,14 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// A. Fetch data
 
-	const { data: rideData, error: rideError, isLoading: rideLoading } = useSWR<HttpResponse<Ride>>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
-	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<HttpResponse<VehicleEvent[]>>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
-	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<HttpResponse<SimplifiedApexValidation[]>>(`/api/rides/${rideId}/simplified-apex-validations`, { refreshInterval: 1000 });
-	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<HttpResponse<SimplifiedApexOnBoardSale[]>>(`/api/rides/${rideId}/simplified-apex-on-board-sales`, { refreshInterval: 1000 });
-	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<HttpResponse<SimplifiedApexOnBoardRefund[]>>(`/api/rides/${rideId}/simplified-apex-on-board-refunds`, { refreshInterval: 1000 });
-	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HttpResponse<HashedTrip>>(`/api/rides/${rideId}/hashed-trip`);
-	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HttpResponse<HashedShape>>(`/api/rides/${rideId}/hashed-shape`);
+	const { data: rideData, error: rideError, isLoading: rideLoading, mutate: rideMutate } = useSWR<Ride>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
+	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<VehicleEvent[]>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
+	const { data: simplifiedApexLocationsData, error: simplifiedApexLocationsError, isLoading: simplifiedApexLocationsLoading } = useSWR<SimplifiedApexLocation[]>(`/api/rides/${rideId}/simplified-apex-locations`, { refreshInterval: 1000 });
+	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<SimplifiedApexValidation[]>(`/api/rides/${rideId}/simplified-apex-validations`, { refreshInterval: 1000 });
+	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<SimplifiedApexOnBoardSale[]>(`/api/rides/${rideId}/simplified-apex-on-board-sales`, { refreshInterval: 1000 });
+	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<SimplifiedApexOnBoardRefund[]>(`/api/rides/${rideId}/simplified-apex-on-board-refunds`, { refreshInterval: 1000 });
+	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HashedTrip>(`/api/rides/${rideId}/hashed-trip`);
+	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HashedShape>(`/api/rides/${rideId}/hashed-shape`);
 
 	//
 	// B. Transform data
@@ -185,22 +190,34 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	}, [hashedShapeData, hashedTripData]);
 
 	//
+	// C. Handle actions
+
+	const reprocessRide = async () => {
+		const result = await fetchData<Ride>(`/api/rides/${rideId}/reprocess`);
+		rideMutate(result.data);
+	};
+
+	//
 	// C. Define context value
 
 	const contextValue: RidesDetailContextState = useMemo(() => ({
+		actions: {
+			reprocessRide,
+		},
 		data: {
 			hashed_shape: hashedShapeData?.data ?? null,
 			hashed_trip: hashedTripData?.data ?? null,
 			ride: rideDataNormalized,
 			ride_id: rideId,
-			simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData?.data ?? [],
-			simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData?.data ?? [],
-			simplified_apex_validations: simplifiedApexValidationsData?.data ?? [],
-			vehicle_events: vehicleEventsData?.data ?? [],
+			simplified_apex_locations: simplifiedApexLocationsData ?? [],
+			simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData ?? [],
+			simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData ?? [],
+			simplified_apex_validations: simplifiedApexValidationsData ?? [],
+			vehicle_events: vehicleEventsData ?? [],
 		},
 		flags: {
-			error: rideError || vehicleEventsError || simplifiedApexValidationsError || hashedTripError || hashedShapeError || simplifiedApexOnBoardSalesError || simplifiedApexOnBoardRefundsError,
-			loading: rideLoading || vehicleEventsLoading || simplifiedApexValidationsLoading || hashedTripLoading || hashedShapeLoading || simplifiedApexOnBoardSalesLoading || simplifiedApexOnBoardRefundsLoading,
+			error: rideError || vehicleEventsError || simplifiedApexLocationsError || simplifiedApexValidationsError || hashedTripError || hashedShapeError || simplifiedApexOnBoardSalesError || simplifiedApexOnBoardRefundsError,
+			loading: rideLoading || vehicleEventsLoading || simplifiedApexLocationsLoading || simplifiedApexValidationsLoading || hashedTripLoading || hashedShapeLoading || simplifiedApexOnBoardSalesLoading || simplifiedApexOnBoardRefundsLoading,
 		},
 		geojson: {
 			observed_events: observedEventsFC,
@@ -225,6 +242,12 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		rideError,
 		vehicleEventsLoading,
 		vehicleEventsError,
+		simplifiedApexLocationsData,
+		simplifiedApexLocationsError,
+		simplifiedApexOnBoardRefundsData,
+		simplifiedApexOnBoardRefundsLoading,
+		simplifiedApexOnBoardRefundsError,
+		simplifiedApexLocationsLoading,
 		simplifiedApexValidationsLoading,
 		simplifiedApexValidationsError,
 		hashedTripLoading,
@@ -233,7 +256,6 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		hashedShapeError,
 		simplifiedApexOnBoardSalesLoading,
 		simplifiedApexOnBoardSalesError,
-		simplifiedApexOnBoardRefundsLoading,
 		simplifiedApexOnBoardRefundsError,
 	]);
 

@@ -11,16 +11,16 @@ import { Dates } from '@tmlmobilidade/utils';
  * @returns The normalized Ride object.
  */
 export function getRideNormalized(ride: Ride): RideNormalized {
-	const delayStatusValue = getDelayStatus(ride.start_time_scheduled, ride.start_time_observed);
 	const operationalStatusValue = getOperationalStatus(ride.start_time_scheduled, ride.seen_last_at);
-	const seenStatusValue = getSeenStatus(ride.seen_last_at);
-	const simpleThreeVehicleEventsGrade = getSimpleThreeEventsGrade(operationalStatusValue, ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade);
 	return {
 		...ride,
-		delay_status: delayStatusValue,
+		analysis_ended_at_last_stop_grade: getAnalysisGrade(operationalStatusValue, ride.analysis?.ENDED_AT_LAST_STOP?.grade),
+		analysis_expected_apex_validation_interval: getAnalysisGrade(operationalStatusValue, ride.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade),
+		analysis_simple_three_vehicle_events_grade: getAnalysisGrade(operationalStatusValue, ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade),
+		delay_status: getDelayStatus(ride.start_time_scheduled, ride.start_time_observed),
+		delay_value_display: getDelayValueDisplay(ride.start_time_scheduled, ride.start_time_observed),
 		operational_status: operationalStatusValue,
-		seen_status: seenStatusValue,
-		simple_three_vehicle_events_grade: simpleThreeVehicleEventsGrade,
+		seen_status: getSeenStatus(ride.seen_last_at),
 		start_time_observed_display: ride.start_time_observed ? Dates.fromUnixTimestamp(ride.start_time_observed).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : null,
 		start_time_scheduled_display: Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'),
 	};

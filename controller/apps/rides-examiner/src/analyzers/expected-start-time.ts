@@ -1,6 +1,6 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.type.js';
+import { type AnalysisData } from '@/types/analysis-data.js';
 import { type Ride } from '@tmlmobilidade/types';
 
 /**
@@ -12,7 +12,7 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = Ride start time delay is less than or equal to five minutes.
  * → FAIL = Ride start time delay is greater than five minutes.
  */
-export function ontimeStartAnalyzer(analysisData: AnalysisData): Ride['analysis']['ONTIME_START'] {
+export function expectedStartTimeAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_START_TIME'] {
 	try {
 		//
 
@@ -21,18 +21,24 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): Ride['analysis'
 
 		if (!analysisData.ride.start_time_scheduled) {
 			return {
+				grade: 'skip',
+				reason: 'NO_START_TIME_SCHEDULED',
+				value: null,
+			};
+		}
+
+		if (!analysisData.vehicle_events.length) {
+			return {
 				grade: 'fail',
-				message: 'Ride has no scheduled start_time.',
-				reason: 'NO_SCHEDULED_START_TIME',
+				reason: 'NO_VEHICLE_EVENTS',
 				value: null,
 			};
 		}
 
 		if (!analysisData.ride.start_time_observed) {
 			return {
-				grade: 'fail',
-				message: 'Ride has no observed start_time.',
-				reason: 'NO_OBSERVED_START_TIME',
+				grade: 'skip',
+				reason: 'UNKNOWN_START',
 				value: null,
 			};
 		}
@@ -48,8 +54,7 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): Ride['analysis'
 		if (delayInMinutes < 0) {
 			return {
 				grade: 'fail',
-				message: `Ride started ${delayInMinutes} minutes early.`,
-				reason: 'RIDE_STARTED_EARLY',
+				reason: 'EARLY_START',
 				value: delayInMinutes,
 			};
 		}
@@ -57,8 +62,7 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): Ride['analysis'
 		if (delayInMinutes >= 0 && delayInMinutes <= 5) {
 			return {
 				grade: 'pass',
-				message: `Ride started ${delayInMinutes} minutes late.`,
-				reason: 'RIDE_STARTED_ZERO_TO_FIVE_MINUTES_LATE',
+				reason: 'START_ON_TIME',
 				value: delayInMinutes,
 			};
 		}
@@ -66,8 +70,7 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): Ride['analysis'
 		if (delayInMinutes > 5) {
 			return {
 				grade: 'fail',
-				message: `Ride started ${delayInMinutes} minutes late.`,
-				reason: 'RIDE_STARTED_MORE_THAN_FIVE_MINUTES_LATE',
+				reason: 'LATE_START',
 				value: delayInMinutes,
 			};
 		}
@@ -76,8 +79,8 @@ export function ontimeStartAnalyzer(analysisData: AnalysisData): Ride['analysis'
 	}
 	catch (error) {
 		return {
+			error_message: error.message,
 			grade: 'error',
-			message: error.message,
 			reason: null,
 			value: null,
 		};

@@ -1,6 +1,6 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.type.js';
+import { type AnalysisData } from '@/types/analysis-data.js';
 import { type Ride } from '@tmlmobilidade/types';
 import { getDistanceBetweenPositions } from '@tmlmobilidade/utils';
 
@@ -15,28 +15,34 @@ const BUFFER_RADIUS = 50; // meters
  * → PASS = At least one event on the first stop.
  * → FAIL = No events found on the first stop.
  */
-export function atLeastOneEventOnFirstStopAnalyzer(analysisData: AnalysisData): Ride['analysis']['AT_LEAST_ONE_EVENT_ON_FIRST_STOP'] {
+export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: AnalysisData): Ride['analysis']['AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP'] {
 	try {
 		//
 
 		//
-		// Exit if the ride has no events.
+		// Skip if the hashed trip is empty
 
-		if (!analysisData.vehicle_events.length) {
+		if (!analysisData.hashed_trip.path.length) {
 			return {
-				grade: 'fail',
-				message: 'Ride has no events.',
-				reason: 'NO_EVENTS_FOUND_ON_FIRST_STOP',
-				value: 0,
+				grade: 'skip',
+				reason: 'NO_PATH_DATA',
+				value: null,
 			};
 		}
 
 		//
-		// Exit if the hashed trip is empty.
+		// Skip if the ride has no events
 
-		if (!analysisData.hashed_trip.path.length) {
-			throw new Error('Hashed Trip is empty.');
+		if (!analysisData.vehicle_events.length) {
+			return {
+				grade: 'skip',
+				reason: 'NO_VEHICLE_EVENTS',
+				value: null,
+			};
 		}
+
+		//
+		// Sort waypoints by stop sequence
 
 		const sortedWaypoints = analysisData.hashed_trip.path.sort((a, b) => {
 			return a.stop_sequence - b.stop_sequence;
@@ -54,25 +60,23 @@ export function atLeastOneEventOnFirstStopAnalyzer(analysisData: AnalysisData): 
 		if (eventsFoundOnFirstStop > 0) {
 			return {
 				grade: 'pass',
-				message: 'Found at least one event on the first stop.',
-				reason: 'FOUND_ONE_OR_MORE_EVENTS_ON_FIRST_STOP',
+				reason: 'ONE_OR_MORE_VEHICLE_EVENTS_ON_FIRST_STOP',
 				value: eventsFoundOnFirstStop,
 			};
 		}
 
 		return {
 			grade: 'fail',
-			message: `No events found on the first stop.`,
-			reason: 'NO_EVENTS_FOUND_ON_FIRST_STOP',
-			value: 0,
+			reason: 'NO_VEHICLE_EVENTS_ON_FIRST_STOP',
+			value: eventsFoundOnFirstStop,
 		};
 
 		//
 	}
 	catch (error) {
 		return {
+			error_message: error.message,
 			grade: 'error',
-			message: error.message,
 			reason: null,
 			value: null,
 		};

@@ -5,10 +5,10 @@
 import { type DataTableHandle } from '@/components/datatable/DataTableContext';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
-import { delayStatusValues, gradeValues, operationalStatusValues, type RideNormalized } from '@/types/normalized';
-import { ParseRidesWorkerOutgoingMessage } from '@/workers/parse-rides.worker';
+import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@/types/normalized';
+import { ParseRidesWorkerRequestMessage, ParseRidesWorkerResponseMessage } from '@/workers/parse-rides.worker';
 import { useDebouncedState } from '@mantine/hooks';
-import { type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Ride, RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates, fetchData, type HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -18,6 +18,9 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, 
 interface RidesListContextState {
 	actions: {
 		setFilterAgency: (values: string[]) => void
+		setFilterAnalysisEndedAtLastStop: (values: string[]) => void
+		setFilterAnalysisExpectedApexValidationInterval: (values: string[]) => void
+		setFilterAnalysisSimpleThreeVehicleEvents: (values: string[]) => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
 		setFilterDelayStatus: (values: string[]) => void
@@ -30,6 +33,9 @@ interface RidesListContextState {
 	}
 	filters: {
 		agency: string[]
+		analysis_ended_at_last_stop: string[]
+		analysis_expected_apex_validation_interval: string[]
+		analysis_simple_three_vehicle_events_grade: string[]
 		date_end: number
 		date_start: number
 		delay_status: string[]
@@ -82,7 +88,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
 	const [filterDelayStatus, setFilterDelayStatus] = useQueryState<string[]>('delay_status', parseAsArrayOfStrings.withDefault(delayStatusValues));
 	const [filterOperationalStatus, setFilterOperationalStatus] = useQueryState<string[]>('operational_status', parseAsArrayOfStrings.withDefault(operationalStatusValues));
-	const [filterSimpleThreeVehicleEvents, setFilterSimpleThreeVehicleEvents] = useQueryState<string[]>('s3ve', parseAsArrayOfStrings.withDefault(gradeValues));
+	const [filterAnalysisSimpleThreeVehicleEvents, setFilterAnalysisSimpleThreeVehicleEvents] = useQueryState<string[]>('analysis_simple_three_vehicle_events', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
+	const [filterAnalysisEndedAtLastStop, setFilterAnalysisEndedAtLastStop] = useQueryState<string[]>('analysis_ended_at_last_stop', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
+	const [filterAnalysisExpectedApexValidationInterval, setFilterAnalysisExpectedApexValidationInterval] = useQueryState<string[]>('analysis_expected_apex_validation_interval', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 	const [flagsIsLoading, setFlagsIsLoading] = useState<boolean>(false);
@@ -160,19 +168,25 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		const refreshCatalog = () => {
 			// Setup a new worker instance to process the GTFS file.
 			// If a worker already exists, terminate it to avoid duplicate processing.
-			if (workerRef.current) workerRef.current.terminate();
-			workerRef.current = new Worker(new URL('@/workers/parse-rides.worker.ts', import.meta.url));
-			workerRef.current.postMessage({
+			// if (!workerRef.current) workerRef.current.terminate();
+			if (!workerRef.current) {
+				workerRef.current = new Worker(new URL('@/workers/parse-rides.worker.ts', import.meta.url));
+				workerRef.current.onmessage = (event: MessageEvent<ParseRidesWorkerResponseMessage>) => {
+					setDataRidesNormalized(event.data.result ?? []);
+				};
+			}
+			const requestMessage: ParseRidesWorkerRequestMessage = {
 				filters: {
+					analysis_ended_at_last_stop: filterAnalysisEndedAtLastStop,
+					analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval,
+					analysis_simple_three_vehicle_events: filterAnalysisSimpleThreeVehicleEvents,
 					delay_status: filterDelayStatus,
 					operational_status: filterOperationalStatus,
 					simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
 				},
 				rides: dataRidesMap.current,
-			});
-			workerRef.current.onmessage = (event: MessageEvent<ParseRidesWorkerOutgoingMessage>) => {
-				setDataRidesNormalized(event.data.result ?? []);
 			};
+			workerRef.current.postMessage(requestMessage);
 		};
 		refreshCatalog();
 		const interval = setInterval(refreshCatalog, 1000);
@@ -195,6 +209,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
 			setFilterAgency,
+			setFilterAnalysisEndedAtLastStop,
+			setFilterAnalysisExpectedApexValidationInterval,
+			setFilterAnalysisSimpleThreeVehicleEvents,
 			setFilterDateEnd,
 			setFilterDateStart,
 			setFilterDelayStatus,
@@ -207,6 +224,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		filters: {
 			agency: filterAgency,
+			analysis_ended_at_last_stop: filterAnalysisEndedAtLastStop,
+			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval,
+			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents,
 			date_end: filterDateEnd,
 			date_start: filterDateStart,
 			delay_status: filterDelayStatus,
@@ -230,7 +250,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterDelayStatus,
 		filterOperationalStatus,
 		filterSearch,
-		filterSimpleThreeVehicleEvents,
+		filterAnalysisSimpleThreeVehicleEvents,
+		filterAnalysisExpectedApexValidationInterval,
+		filterAnalysisEndedAtLastStop,
 		flagsLastUpdateState,
 		flagsIsLoading,
 		dataTableRef,

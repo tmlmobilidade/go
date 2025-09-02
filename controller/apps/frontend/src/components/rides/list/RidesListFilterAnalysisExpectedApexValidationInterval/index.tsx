@@ -1,13 +1,13 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { gradeValues } from '@/types/normalized';
+import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function RidesListFilterSimpleThreeEvents() {
+export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 	//
 
 	//
@@ -20,23 +20,23 @@ export function RidesListFilterSimpleThreeEvents() {
 
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
-		const defaultValues = gradeValues;
-		const enabledValues = ridesListContext.filters.simple_three_vehicle_events;
+		const defaultValues = [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'];
+		const enabledValues = ridesListContext.filters.analysis_expected_apex_validation_interval;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
 		// If the length is the same ensure they're equal by also
 		// checking if every item in one array is included in the other.
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [ridesListContext.filters.simple_three_vehicle_events]);
+	}, [ridesListContext.filters.analysis_expected_apex_validation_interval]);
 
 	const parsedOptions = useMemo(() => {
 		// Parse options to the expected format.
-		return gradeValues.map(value => ({
-			checked: ridesListContext.filters.simple_three_vehicle_events.includes(value),
+		return [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(value => ({
+			checked: ridesListContext.filters.analysis_expected_apex_validation_interval.includes(value),
 			label: value,
 			value: value,
 		}));
-	}, [ridesListContext.filters.simple_three_vehicle_events]);
+	}, [ridesListContext.filters.analysis_expected_apex_validation_interval]);
 
 	//
 	// C. Render components
@@ -44,8 +44,8 @@ export function RidesListFilterSimpleThreeEvents() {
 	return (
 		<FilterMenu
 			active={isActive}
-			label="3 Momentos"
-			onChange={ridesListContext.actions.setFilterSimpleThreeVehicleEvents}
+			label="Intervalo Validações"
+			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
 			options={parsedOptions}
 			withToggleAll
 		/>

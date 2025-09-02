@@ -10,7 +10,7 @@ let isBusy = false;
 
 /* * */
 
-export async function getUniqueSams(): Promise<number[]> {
+export async function getSams(): Promise<number[]> {
 	//
 
 	const uniqueSamsCollection = await uniqueSams.getCollection();
@@ -40,22 +40,22 @@ export async function getUniqueSams(): Promise<number[]> {
 
 	const fetchTimer = new TIMETRACKER();
 
-	const latestWaitingUniqueSams = await uniqueSamsCollection
+	const latestWaitingSams = await uniqueSamsCollection
 		.find({ system_status: 'waiting' })
 		.limit(batchSize)
 		.toArray();
 
 	/* === FOR TESTING === */
-	// const latestWaitingUniqueSams = await uniqueSamsCollection
+	// const latestWaitingSams = await uniqueSamsCollection
 	// 	.find({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
 	// 	.toArray();
 	/* === FOR TESTING === */
 
-	const latestWaitingUniqueSamsIds = latestWaitingUniqueSams.map(item => item._id);
+	const latestWaitingSamsIds = latestWaitingSams.map(item => item._id);
 
 	const fetchTimerResult = fetchTimer.get();
 
-	if (latestWaitingUniqueSamsIds.length === 0) {
+	if (latestWaitingSamsIds.length === 0) {
 		LOGGER.info(`[unique-sams] No documents waiting (fetch: ${fetchTimerResult})`);
 		isBusy = false;
 		return [];
@@ -67,13 +67,13 @@ export async function getUniqueSams(): Promise<number[]> {
 
 	const markTimer = new TIMETRACKER();
 
-	await uniqueSamsCollection.updateMany({ _id: { $in: latestWaitingUniqueSamsIds } }, { $set: { system_status: 'processing' } });
+	await uniqueSamsCollection.updateMany({ _id: { $in: latestWaitingSamsIds } }, { $set: { system_status: 'processing' } });
 
-	LOGGER.info(`New batch: Qty ${latestWaitingUniqueSamsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+	LOGGER.info(`New batch: Qty ${latestWaitingSamsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
 	isBusy = false;
 
-	return latestWaitingUniqueSamsIds;
+	return latestWaitingSamsIds;
 
 	//
 }

@@ -21,7 +21,10 @@ export function TimestampTag({ value }: TimestampTagProps) {
 
 	const formattedTimestamp = useMemo(() => {
 		if (!value) return 'N/A';
-		return Dates.fromUnixTimestamp(value).iso;
+		return Dates
+			.fromUnixTimestamp(value)
+			.setZone('Europe/Lisbon', 'offset_only')
+			.iso;
 	}, [value]);
 
 	//

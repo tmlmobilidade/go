@@ -23,15 +23,11 @@ export function RidesDetailMetadata() {
 			<Section gap="md">
 
 				<Grid columns="abc" gap="md">
-					<ValueDisplay label="Operador" value={ridesDetailContext.data.ride?.agency_id ?? 'N/A'} />
-					<ValueDisplay label="Plano" value={ridesDetailContext.data.ride?.plan_id ?? 'N/A'} />
-					<ValueDisplay label="Dia Operacional" value={ridesDetailContext.data.ride?.operational_date ?? 'N/A'} />
-					<ValueDisplay label="Pattern ID" value={ridesDetailContext.data.ride?.pattern_id ?? 'N/A'} />
-					<ValueDisplay label="Vehicle IDs" value={ridesDetailContext.data.ride?.vehicle_ids.join(', ') ?? 'N/A'} />
-					<ValueDisplay label="Driver IDs" value={ridesDetailContext.data.ride?.driver_ids.join(', ') ?? 'N/A'} />
-					<ValueDisplay label="Hora de Início Planeada" value={ridesDetailContext.data.ride?.start_time_scheduled_display ?? 'N/A'} />
-					<ValueDisplay label="Hora de Início Observada" value={ridesDetailContext.data.ride?.start_time_observed_display ?? 'N/A'} />
-					<ValueDisplay label="Atraso à Partida" value={ridesDetailContext.data.ride?.start_time_observed - ridesDetailContext.data.ride?.start_time_scheduled} />
+					<ValueDisplay label="Passageiros" value={ridesDetailContext.data.ride?.passengers_observed ?? 'N/A'} bordered />
+					<ValueDisplay label="Validações (APEX TXs)" value={ridesDetailContext.data.ride?.apex_validations_qty ?? 'N/A'} bordered />
+					<ValueDisplay label="Validações Passes" value={`${ridesDetailContext.data.ride?.passengers_observed_subscription_qty ?? 0}`} bordered />
+					<ValueDisplay label="Vendas a Bordo" value={`${(ridesDetailContext.data.ride?.passengers_observed_on_board_sales_amount ?? 0) / 100}€ (${ridesDetailContext.data.ride?.passengers_observed_on_board_sales_qty ?? 'N/A'})`} bordered />
+					<ValueDisplay label="Validações Pré-Pago" value={`${ridesDetailContext.data.ride?.passengers_observed_prepaid_amount ?? 0} units (${ridesDetailContext.data.ride?.passengers_observed_prepaid_qty ?? 'N/A'})`} bordered />
 				</Grid>
 
 			</Section>

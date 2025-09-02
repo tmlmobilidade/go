@@ -1,6 +1,6 @@
 /* * */
 
-import { parseUniqueSam } from '@/parse-unique-sam.js';
+import { parseSam } from '@/parse-unique-sam.js';
 import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
@@ -43,11 +43,11 @@ async function main() {
 
 		let uniqueSamsForLocationsCounter = 0;
 
-		const allUniqueSamsForApexLocations = simplifiedApexLocationsCollection
+		const allSamsForApexLocations = simplifiedApexLocationsCollection
 			.aggregate(agregationPipeline)
 			.stream();
 
-		for await (const item of allUniqueSamsForApexLocations) {
+		for await (const item of allSamsForApexLocations) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
@@ -59,9 +59,9 @@ async function main() {
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
 			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
-			const parsedUniqueSam = parseUniqueSam(item);
+			const parsedSam = parseSam(item);
 			// Create a new Unique SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForLocationsCounter++;
 		}
@@ -77,11 +77,11 @@ async function main() {
 
 		let uniqueSamsForOnBoardRefundsCounter = 0;
 
-		const allUniqueSamsForApexOnBoardRefunds = simplifiedApexOnBoardRefundsCollection
+		const allSamsForApexOnBoardRefunds = simplifiedApexOnBoardRefundsCollection
 			.aggregate(agregationPipeline)
 			.stream();
 
-		for await (const item of allUniqueSamsForApexOnBoardRefunds) {
+		for await (const item of allSamsForApexOnBoardRefunds) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
@@ -93,9 +93,9 @@ async function main() {
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
 			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
-			const parsedUniqueSam = parseUniqueSam(item);
+			const parsedSam = parseSam(item);
 			// Create a new Unique SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForOnBoardRefundsCounter++;
 		}
@@ -111,11 +111,11 @@ async function main() {
 
 		let uniqueSamsForOnBoardSalesCounter = 0;
 
-		const allUniqueSamsForApexOnBoardSales = simplifiedApexOnBoardSalesCollection
+		const allSamsForApexOnBoardSales = simplifiedApexOnBoardSalesCollection
 			.aggregate(agregationPipeline)
 			.stream();
 
-		for await (const item of allUniqueSamsForApexOnBoardSales) {
+		for await (const item of allSamsForApexOnBoardSales) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
@@ -127,9 +127,9 @@ async function main() {
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
 			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
-			const parsedUniqueSam = parseUniqueSam(item);
+			const parsedSam = parseSam(item);
 			// Create a new Unique SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForOnBoardSalesCounter++;
 		}
@@ -145,11 +145,11 @@ async function main() {
 
 		let uniqueSamsForValidationsCounter = 0;
 
-		const allUniqueSamsForApexValidations = simplifiedApexValidationsCollection
+		const allSamsForApexValidations = simplifiedApexValidationsCollection
 			.aggregate(agregationPipeline)
 			.stream();
 
-		for await (const item of allUniqueSamsForApexValidations) {
+		for await (const item of allSamsForApexValidations) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
 			// Validate if the Unique SAM Serial Number is a number
@@ -161,9 +161,9 @@ async function main() {
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
 			if (uniqueSamAlreadyExists) continue;
 			// Parse the Unique SAM data
-			const parsedUniqueSam = parseUniqueSam(item);
+			const parsedSam = parseSam(item);
 			// Create a new Unique SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedUniqueSam, { upsert: true });
+			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForValidationsCounter++;
 		}

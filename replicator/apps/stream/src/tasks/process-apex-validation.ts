@@ -62,7 +62,7 @@ export async function processApexValidation(databaseOperation) {
 				};
 			});
 
-			const updateUniqueSamsOps = flushedData.map((writeOp) => {
+			const updateSamsOps = flushedData.map((writeOp) => {
 				return { _id: writeOp.data.mac_sam_serial_number };
 			});
 
@@ -70,11 +70,11 @@ export async function processApexValidation(databaseOperation) {
 			// Invalidate all documents that are affected
 
 			const updateRidesPromise = rides.updateMany({ $or: updateRidesOps }, { system_status: 'waiting' }, { returnResults: false });
-			const updateUniqueSamsPromise = uniqueSams.updateMany({ $or: updateUniqueSamsOps }, { system_status: 'waiting' }, { returnResults: false });
+			const updateSamsPromise = uniqueSams.updateMany({ $or: updateSamsOps }, { system_status: 'waiting' }, { returnResults: false });
 
-			const [updateRidesResult, updateUniqueSamsResult] = await Promise.all([updateRidesPromise, updateUniqueSamsPromise]);
+			const [updateRidesResult, updateSamsResult] = await Promise.all([updateRidesPromise, updateSamsPromise]);
 
-			LOGGER.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateUniqueSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
+			LOGGER.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
 
 			//
 		}

@@ -1,9 +1,9 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { type Filter, hashedShapes, hashedTrips, rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { type Filter, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, validateUnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, validateUnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, HttpResponse } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
@@ -256,6 +256,74 @@ export class RidesController {
 
 			reply.send({
 				data: rideData,
+				error: null,
+				statusCode: HttpStatus.OK,
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Get a Ride by ID.
+	 * @param request
+	 * @param reply
+	 * @returns
+	 */
+	static async getSimplifiedApexLocationsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexLocation[]>) {
+		try {
+			//
+
+			//
+			// Validate the request parameters
+
+			const rideId = request.params['id'];
+
+			if (!rideId) {
+				return reply
+					.status(HttpStatus.BAD_REQUEST)
+					.send({
+						data: null,
+						error: 'Missing ride_id parameter.',
+						status: HttpStatus.BAD_REQUEST,
+					});
+			}
+
+			//
+			// Fetch the ride data from the database
+
+			const rideData = await rides.findById(rideId);
+
+			if (!rideData) {
+				return reply
+					.status(HttpStatus.NOT_FOUND)
+					.send({
+						data: null,
+						error: 'Ride not found.',
+						status: HttpStatus.NOT_FOUND,
+					});
+			}
+
+			//
+			// Fetch the corresponding vehicle events data
+			// and send it back to the client
+
+			const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+
+			const simplifiedApexLocationsData = await simplifiedApexLocations.findMany({
+				created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+				extra_trip_id: null,
+				trip_id: rideData.trip_id,
+			});
+
+			//
+			// Send the ride data back to the client
+
+			reply.send({
+				data: simplifiedApexLocationsData ?? [],
 				error: null,
 				statusCode: HttpStatus.OK,
 			});
@@ -528,6 +596,62 @@ export class RidesController {
 
 			reply.send({
 				data: vehicleEventsData ?? [],
+				error: null,
+				statusCode: HttpStatus.OK,
+			});
+		}
+		catch (error) {
+			reply
+				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.send(error);
+		}
+	}
+
+	/**
+	 * Get a Ride by ID.
+	 * @param request
+	 * @param reply
+	 * @returns
+	 */
+	static async reprocessRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
+		try {
+			//
+
+			//
+			// Validate the request parameters
+
+			const rideId = request.params['id'];
+
+			if (!rideId) {
+				return reply
+					.status(HttpStatus.BAD_REQUEST)
+					.send({
+						data: null,
+						error: 'Missing ride_id parameter.',
+						status: HttpStatus.BAD_REQUEST,
+					});
+			}
+
+			//
+			// Fetch the ride data from the database
+
+			const rideData = await rides.updateById(rideId, { system_status: 'waiting' });
+
+			if (!rideData) {
+				return reply
+					.status(HttpStatus.NOT_FOUND)
+					.send({
+						data: null,
+						error: 'Ride not found.',
+						status: HttpStatus.NOT_FOUND,
+					});
+			}
+
+			//
+			// Send the ride data back to the client
+
+			reply.send({
+				data: rideData,
 				error: null,
 				statusCode: HttpStatus.OK,
 			});

@@ -1,7 +1,7 @@
 /* * */
 
 import { getRides } from '@/get-rides.js';
-import { getUniqueSams } from '@/get-unique-sams.js';
+import { getSams } from '@/get-unique-sams.js';
 import LOGGER from '@helperkits/logger';
 import Fastify from 'fastify';
 
@@ -20,7 +20,7 @@ import Fastify from 'fastify';
 
 	fastify.get('/rides', getRides);
 
-	fastify.get('/unique-sams', getUniqueSams);
+	fastify.get('/unique-sams', getSams);
 
 	//
 	// Start the API service

@@ -1,7 +1,6 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.type.js';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type VehicleEvent } from '@tmlmobilidade/types';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, sortByUnixTimestamp, toLineStringFromHashedShape } from '@tmlmobilidade/utils';
 
 /* * */
@@ -16,29 +15,29 @@ const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(analysisData: AnalysisData): null | VehicleEvent {
+export function detectStartEvent(vehicleEventsData: VehicleEvent[], hashedTripData: HashedTrip, hashedShapeData: HashedShape): null | VehicleEvent {
 	//
 
 	//
 	// Ensure that there are at least two vehicle events.
 	// Sort them by vehicle timestamp.
 
-	if (analysisData.vehicle_events.length < 2) {
+	if (vehicleEventsData.length < 2) {
 		// throw new Error('There must be at least two Vehicle Events.');
 		return null;
 	}
 
-	const sortedVehicleEvents = sortByUnixTimestamp(analysisData.vehicle_events, 'created_at');
+	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at');
 
 	//
 	// Ensure that the hashed trip is not empty.
 
-	if (!analysisData.hashed_trip?.path?.length) {
+	if (!hashedTripData?.path?.length) {
 		// throw new Error('Hashed Trip is empty.');
 		return null;
 	}
 
-	const sortedWaypoints = analysisData.hashed_trip.path.sort((a, b) => {
+	const sortedWaypoints = hashedTripData.path.sort((a, b) => {
 		return a.stop_sequence - b.stop_sequence;
 	});
 
@@ -49,12 +48,12 @@ export function detectStartEvent(analysisData: AnalysisData): null | VehicleEven
 	// Transform the GTFS shape points into a GeoJSON LineString
 	// and cut it at 500 meters.
 
-	if (analysisData.hashed_shape?.points?.length < 2) {
+	if (hashedShapeData?.points?.length < 2) {
 		// throw new Error('Hashed Shape must have at least two points.');
 		return null;
 	}
 
-	const shapeAsLineString = toLineStringFromHashedShape(analysisData.hashed_shape);
+	const shapeAsLineString = toLineStringFromHashedShape(hashedShapeData);
 
 	const initialSegmentOfShape = cutLineStringAtLength(shapeAsLineString, INITIAL_SEGMENT_LENGTH);
 

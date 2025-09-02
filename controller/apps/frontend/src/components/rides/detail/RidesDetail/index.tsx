@@ -3,6 +3,7 @@
 /* * */
 
 import { RidesDetailAnalysisResult } from '@/components/rides/detail/RidesDetailAnalysisResult';
+import { RidesDetailApexLocations } from '@/components/rides/detail/RidesDetailApexLocations';
 import { RidesDetailApexOnBoardRefunds } from '@/components/rides/detail/RidesDetailApexOnBoardRefunds';
 import { RidesDetailApexOnBoardSales } from '@/components/rides/detail/RidesDetailApexOnBoardSales';
 import { RidesDetailApexValidations } from '@/components/rides/detail/RidesDetailApexValidations';
@@ -43,6 +44,7 @@ export function RidesDetail() {
 			<RidesDetailApexValidations />
 			<RidesDetailApexOnBoardSales />
 			<RidesDetailApexOnBoardRefunds />
+			<RidesDetailApexLocations />
 		</Pane>
 	);
 

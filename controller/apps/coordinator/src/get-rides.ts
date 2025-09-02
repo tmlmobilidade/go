@@ -43,7 +43,7 @@ export async function getRides(): Promise<string[]> {
 	const fetchTimer = new TIMETRACKER();
 
 	const latestWaitingRides = await ridesCollection
-		.find({ is_locked: false, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
+		.find({ start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
 		.sort({ start_time_scheduled: -1 })
 		.limit(batchSize)
 		.toArray();

@@ -61,6 +61,13 @@ server.register(
 			RidesController.getVehicleEventsByRideId,
 		);
 
+		// GET /rides/:id/simplified-apex-locations
+		instance.get(
+			'/:id/simplified-apex-locations',
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.read) },
+			RidesController.getSimplifiedApexLocationsByRideId,
+		);
+
 		// GET /rides/:id/simplified-apex-validations
 		instance.get(
 			'/:id/simplified-apex-validations',
@@ -80,6 +87,13 @@ server.register(
 			'/:id/simplified-apex-on-board-refunds',
 			{ preHandler: authorizationMiddleware<SimplifiedApexOnBoardRefund>(Permissions.rides.scope, Permissions.rides.actions.read) },
 			RidesController.getSimplifiedApexOnBoardRefundsByRideId,
+		);
+
+		// GET /rides/:id/reprocess
+		instance.get(
+			'/:id/reprocess',
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.update) },
+			RidesController.reprocessRideById,
 		);
 
 		next();

@@ -1,6 +1,6 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.type.js';
+import { type AnalysisData } from '@/types/analysis-data.js';
 import { type Ride } from '@tmlmobilidade/types';
 
 /**
@@ -10,16 +10,21 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = At least one Location Transaction for each stop of the trip.
  * → FAIL = Missing Location Transaction for any stop of the trip.
  */
-export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData): Ride['analysis']['MATCHING_LOCATION_TRANSACTIONS'] {
+export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): Ride['analysis']['MATCHING_APEX_LOCATIONS'] {
 	try {
 		//
 
-		if (!analysisData.hashed_trip?.path) {
+		if (!analysisData.hashed_trip?.path?.length) {
 			return {
 				grade: 'fail',
-				message: 'No trip path data available.',
 				reason: 'NO_PATH_DATA',
-				value: null,
+			};
+		}
+
+		if (!analysisData.simplified_apex_locations.length) {
+			return {
+				grade: 'fail',
+				reason: 'NO_APEX_LOCATIONS',
 			};
 		}
 
@@ -57,27 +62,22 @@ export function matchingLocationTransactionsAnalyzer(analysisData: AnalysisData)
 		if (missingStopIds.size > 0) {
 			return {
 				grade: 'fail',
-				message: `At least one Stop ID was not found in Location Transactions. Missing Stop IDs: [${Array.from(missingStopIds).join('|')}]`,
-				reason: 'MISSING_LOCATION_TRANSACTION_FOR_AT_LEAST_ONE_STOP',
-				value: null,
+				reason: 'MISSING_APEX_LOCATION_FOR_AT_LEAST_ONE_STOP',
 			};
 		}
 
 		return {
 			grade: 'pass',
-			message: `Found ${locationTransactionsStopIds.size} Location Transactions for ${pathStopIds.size} Stop IDs.`,
-			reason: 'ALL_STOPS_HAVE_LOCATION_TRANSACTIONS',
-			value: null,
+			reason: 'MATCHING_APEX_LOCATIONS',
 		};
 
 		//
 	}
 	catch (error) {
 		return {
+			error_message: error.message,
 			grade: 'error',
-			message: error.message,
 			reason: null,
-			value: null,
 		};
 	}
 };
