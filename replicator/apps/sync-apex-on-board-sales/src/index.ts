@@ -107,15 +107,15 @@ async function syncApexOnBoardSales() {
 						{ returnResults: false },
 					);
 
-					const updateUniqueSamsPromise = uniqueSams.updateMany(
+					const updateSamsPromise = uniqueSams.updateMany(
 						{ mac_sam_serial_number: { $in: uniqueSamSerialNumbers } },
 						{ system_status: 'waiting' },
 						{ returnResults: false },
 					);
 
-					const [updateRidesResult, updateUniqueSamsResult] = await Promise.all([updateRidesPromise, updateUniqueSamsPromise]);
+					const [updateRidesResult, updateSamsResult] = await Promise.all([updateRidesPromise, updateSamsPromise]);
 
-					LOGGER.info(`Flush [apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateUniqueSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush [apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
 
 					//
 				}

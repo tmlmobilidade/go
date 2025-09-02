@@ -1,11 +1,11 @@
 /* * */
 
 import { type AggregationResultItem } from '@/types.js';
-import { type CreateUniqueSamDto } from '@tmlmobilidade/types';
+import { type CreateSamDto } from '@tmlmobilidade/types';
 
 /* * */
 
-export function parseUniqueSam(item: AggregationResultItem): CreateUniqueSamDto {
+export function parseSam(item: AggregationResultItem): CreateSamDto {
 	return {
 		_id: item.mac_sam_serial_number,
 		agency_id: item.agency_id,

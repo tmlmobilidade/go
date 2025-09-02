@@ -51,11 +51,7 @@ export interface FlatRide {
 	apex_on_board_refunds_qty: null | number
 	apex_on_board_sales_amount: null | number
 	apex_on_board_sales_qty: null | number
-	apex_on_board_sales_validations_qty: null | number
-	apex_validations_prepaid_amount: null | number
-	apex_validations_prepaid_qty: null | number
 	apex_validations_qty: null | number
-	apex_validations_subscription_qty: null | number
 	created_at: number
 	driver_ids: null | string
 	end_time_observed: null | number
@@ -71,6 +67,11 @@ export interface FlatRide {
 	operational_date: string
 	passengers_estimated: null | number
 	passengers_observed: null | number
+	passengers_observed_on_board_sales_amount: null | number
+	passengers_observed_on_board_sales_qty: null | number
+	passengers_observed_prepaid_amount: null | number
+	passengers_observed_prepaid_qty: null | number
+	passengers_observed_subscription_qty: null | number
 	pattern_id: string
 	plan_id: string
 	route_id: string
@@ -133,11 +134,7 @@ export const sampleRide: FlatRide = {
 	apex_on_board_refunds_qty: 0,
 	apex_on_board_sales_amount: 0,
 	apex_on_board_sales_qty: 0,
-	apex_on_board_sales_validations_qty: 0,
-	apex_validations_prepaid_amount: 0,
-	apex_validations_prepaid_qty: 0,
 	apex_validations_qty: 0,
-	apex_validations_subscription_qty: 0,
 	created_at: 0,
 	driver_ids: 'string',
 	end_time_observed: 0,
@@ -153,6 +150,11 @@ export const sampleRide: FlatRide = {
 	operational_date: 'string',
 	passengers_estimated: 0,
 	passengers_observed: 0,
+	passengers_observed_on_board_sales_amount: 0,
+	passengers_observed_on_board_sales_qty: 0,
+	passengers_observed_prepaid_amount: 0,
+	passengers_observed_prepaid_qty: 0,
+	passengers_observed_subscription_qty: 0,
 	pattern_id: 'string',
 	plan_id: 'string',
 	route_id: 'string',
@@ -216,11 +218,7 @@ export function parseRide(ride: Ride): FlatRide {
 		apex_on_board_refunds_qty: ride.apex_on_board_refunds_qty,
 		apex_on_board_sales_amount: ride.apex_on_board_sales_amount,
 		apex_on_board_sales_qty: ride.apex_on_board_sales_qty,
-		apex_on_board_sales_validations_qty: ride.apex_on_board_sales_validations_qty,
-		apex_validations_prepaid_amount: ride.apex_validations_prepaid_amount,
-		apex_validations_prepaid_qty: ride.apex_validations_prepaid_qty,
 		apex_validations_qty: ride.apex_validations_qty,
-		apex_validations_subscription_qty: ride.apex_validations_subscription_qty,
 		created_at: ride.created_at,
 		driver_ids: (ride.driver_ids ?? []).join('|'),
 		end_time_observed: ride.end_time_observed,
@@ -236,6 +234,11 @@ export function parseRide(ride: Ride): FlatRide {
 		operational_date: ride.operational_date,
 		passengers_estimated: ride.passengers_estimated,
 		passengers_observed: ride.passengers_observed,
+		passengers_observed_on_board_sales_amount: ride.passengers_observed_on_board_sales_amount,
+		passengers_observed_on_board_sales_qty: ride.passengers_observed_on_board_sales_qty,
+		passengers_observed_prepaid_amount: ride.passengers_observed_prepaid_amount,
+		passengers_observed_prepaid_qty: ride.passengers_observed_prepaid_qty,
+		passengers_observed_subscription_qty: ride.passengers_observed_subscription_qty,
 		pattern_id: ride.pattern_id,
 		plan_id: ride.plan_id,
 		route_id: ride.route_id,
