@@ -20,12 +20,12 @@ export class RidesController {
 
 		//
 		// 1. Match rides between today's start and end date
-		// const todayStartDate = Dates.now('Europe/Lisbon').startOf('day').plus({ hours: 4 }).unix_timestamp;
-		// const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
+		const todayStartDate = Dates.now('Europe/Lisbon').startOf('day').plus({ hours: 4 }).unix_timestamp;
+		const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
 
-		// ! WARNING: THIS IS FOR DEVELOPMENT PURPOSES ONLY
-		const todayStartDate = Dates.fromISO('2025-08-28T00:00:00Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
-		const todayEndDate = Dates.fromISO('2025-08-28T23:59:59Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
+		// // ! WARNING: THIS IS FOR DEVELOPMENT PURPOSES ONLY
+		// const todayStartDate = Dates.fromISO('2025-08-28T00:00:00Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
+		// const todayEndDate = Dates.fromISO('2025-08-28T23:59:59Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
 
 		pipeline.push({ $match: { start_time_scheduled: { $gte: todayStartDate, $lte: todayEndDate } } });
 
