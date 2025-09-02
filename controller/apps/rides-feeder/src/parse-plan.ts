@@ -861,7 +861,6 @@ export async function parsePlan(planData: Plan) {
 						driver_ids: [],
 						end_time_observed: null,
 						end_time_scheduled: endTimeScheduledDate,
-						execution_status: null,
 						extension_observed: null,
 						extension_scheduled: extensionScheduledInMeters,
 						hashed_shape_id: finalHashedShape._id,
