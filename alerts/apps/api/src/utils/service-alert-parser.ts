@@ -1,7 +1,7 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
 import { files } from '@tmlmobilidade/interfaces';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
-import { Alert } from '@tmlmobilidade/types';
+import { Alert, File } from '@tmlmobilidade/types';
 import { type EntitySelector } from 'gtfs-types';
 
 async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAlertResponseItem> {
@@ -62,7 +62,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 		return informed_entity;
 	};
 
-	let file = undefined;
+	let file: File | null = null;
 	try {
 		file = await files.findById(alert.file_id);
 	}
@@ -79,7 +79,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				},
 			],
 			cause: alert.cause,
-			coordinates: alert.coordinates,
+			coordinates: alert.coordinates ?? undefined,
 			description_text: {
 				translation: [
 					{
@@ -97,7 +97,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 					},
 				],
 			},
-			image: file && {
+			image: file ? {
 				localizedImage: [
 					{
 						language: 'pt-PT',
@@ -105,7 +105,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 						url: file.url ?? '',
 					},
 				],
-			},
+			} : undefined,
 			informed_entity: informed_entity(),
 			url: {
 				translation: [

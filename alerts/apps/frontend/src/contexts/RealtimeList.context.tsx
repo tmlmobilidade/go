@@ -76,7 +76,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// B. Fetch data
 
-	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>('/api/realtime', swrFetcher);
+	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>('/api/alerts?realtime=true', swrFetcher);
 
 	//
 	// C. Transform data

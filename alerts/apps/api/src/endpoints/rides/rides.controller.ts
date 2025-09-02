@@ -11,72 +11,79 @@ import { Dates, getPermission } from '@tmlmobilidade/utils';
 
 export class RidesController {
 	/**
-	 * Get a batch of Rides.
-	 * @param request
-	 * @param reply
+	 * Gets a batch of Rides built with an aggregation pipeline.
 	 */
-	static async getBatch(request: FastifyRequest<{ Querystring: { search?: string } }>, reply: FastifyReply<Ride[]>) {
+	static async getBatch(request: FastifyRequest<{ Querystring: { lineId?: string, search?: string, stopId?: string } }>, reply: FastifyReply<Ride[]>) {
 		//
 
+		const pipeline: AggregationPipeline<Ride> = [];
+
 		//
-		// Base Rides Filter
+		// 1. Match rides between today's start and end date
 		const todayStartDate = Dates.now('Europe/Lisbon').startOf('day').plus({ hours: 4 }).unix_timestamp;
 		const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
 
-		const aggregationPipeline: AggregationPipeline<Ride> = [
-			{
-				$match: {
-					start_time_scheduled: { $gte: todayStartDate, $lte: todayEndDate },
-				},
-			},
-		];
+		// // ! WARNING: THIS IS FOR DEVELOPMENT PURPOSES ONLY
+		// const todayStartDate = Dates.fromISO('2025-08-28T00:00:00Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
+		// const todayEndDate = Dates.fromISO('2025-08-28T23:59:59Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
 
-		function escapeRegex(input: string): string {
-			return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		pipeline.push({ $match: { start_time_scheduled: { $gte: todayStartDate, $lte: todayEndDate } } });
+
+		//
+
+		// 2. Filter rides by line ID & stop ID
+		if (request.query.lineId) {
+			pipeline.push({ $match: { line_id: Number(request.query.lineId) } });
 		}
 
 		//
-		// Search for rides by ID
+		// 3. If search is provided, match rides by ID
 		const search = request.query.search?.trim() ?? '';
 		if (search) {
-			const keywords = search.split(/\s+/).map(escapeRegex);
+			const keywords = search.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
-			aggregationPipeline.push({
-				$match: {
-					// @ts-expect-error - TODO: Fix this
-					_id: { $options: 'i', $regex: pattern },
-				},
+			pipeline.push({
+				$match: { _id: { $options: 'i', $regex: pattern } },
 			});
 		}
 
 		//
-		// Extract permissions from the request
+		// 4. Filter rides based on permissions for the current user
 		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.read);
 
-		//
-		// Filter rides based on permissions for the current user
 		if (ridePermission?.resource) {
-			aggregationPipeline.push({
-				$match: {
-					...(ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { agency_id: { $in: ridePermission.resource.agency_ids } }),
-				},
-			});
+			// 4.1. Filter rides based on agency IDs
+			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
+				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
+			}
 		}
 
 		//
-		// Add Stops from Hashed Trip
-		aggregationPipeline.push(
+		// 5. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
+		pipeline.push(
 			{ $lookup: { as: 'shape_details', foreignField: '_id', from: 'hashed_trips', localField: 'hashed_trip_id' } },
 			{ $unwind: '$shape_details' },
 			{ $addFields: { stop_ids: '$shape_details.path.stop_id' } },
 			{ $project: { shape_details: 0 } },
+			{ $sort: { start_time_scheduled: 1 } },
 		);
 
 		//
-		// Fetch rides from the database
+		// 6. Filter rides by stop ID
+		if (request.query.stopId) {
+			pipeline.push({ $match: { stop_ids: request.query.stopId } });
+		}
 
-		const ridesBatch = await rides.aggregate(aggregationPipeline);
+		//
+		// 7. Final pipeline stages
+		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
+		//
+		// 8. Fetch rides from the database
+		const ridesBatch = await rides.aggregate(pipeline);
+
+		//
+		// Send the response
 		reply.send({
 			data: ridesBatch ?? [],
 			error: null,

@@ -2,7 +2,7 @@
 
 import { type CreateStopDto, type Stop } from '@tmlmobilidade/types';
 import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -108,13 +108,14 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: allStopsMutate } = useSWR<Stop[]>('/api/stops');
-	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(`/api/stops/${stopId}`);
+	const { mutate: allStopsMutate } = useSWR<Stop[]>('/api/stops', swrFetcher);
+	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(`/api/stops/${stopId}`, swrFetcher);
 
 	// const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 	// 	stopId === 'new'
 	// 		? undefined
 	// 		: Routes.API + Routes.STOPS_DETAIL(stopId),
+	// 	swrFetcher,
 	// );
 
 	//

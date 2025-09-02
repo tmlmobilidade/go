@@ -2,9 +2,11 @@
 
 /* * */
 
-import { RealtimeDetailMode, useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -14,37 +16,41 @@ export function RealtimeDetailHeader() {
 	//
 	// A. Setup variables
 
+	const router = useRouter();
 	const realtimeDetailContext = useRealtimeDetailContext();
+
+	//
+	// B. Handle actions
+
+	const handleClose = () => {
+		const destUrl = keepUrlParams('/realtimes', window.location.search);
+		router.push(destUrl);
+	};
 
 	//
 	// C. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps>{realtimeDetailContext.data.id}</Label>
+			<BackButton onClick={handleClose} type="close" />
 			<Tag label={realtimeDetailContext.data.form.getValues().publish_status} variant={realtimeDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
+			<Label size="lg" caps>{realtimeDetailContext.data.id}</Label>
 			<Spacer />
 			<Button
 				disabled={!realtimeDetailContext.flags.canSave || realtimeDetailContext.flags.isSaving}
 				icon={<IconUpload size={28} />}
+				label="Publicar"
 				loading={realtimeDetailContext.flags.isSaving}
-				onClick={() => realtimeDetailContext.actions.saveAlert('publish')}
+				onClick={() => realtimeDetailContext.actions.saveAlert()}
 				variant="primary"
-				label={
-					realtimeDetailContext.flags.mode === RealtimeDetailMode.CREATE
-						? 'Publicar'
-						: 'Salvar'
-				}
 			/>
-			{realtimeDetailContext.flags.mode === RealtimeDetailMode.EDIT && (
-				<Button
-					disabled={realtimeDetailContext.flags.isSaving}
-					icon={<IconTrash size={28} />}
-					label="Apagar"
-					onClick={realtimeDetailContext.actions.deleteAlert}
-					variant="danger"
-				/>
-			)}
+			<Button
+				disabled={realtimeDetailContext.flags.isSaving}
+				icon={<IconTrash size={28} />}
+				label="Apagar"
+				onClick={realtimeDetailContext.actions.deleteAlert}
+				variant="danger"
+			/>
 		</Toolbar>
 	);
 

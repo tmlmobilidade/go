@@ -10,8 +10,8 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20250828.1519.39",
-		"@tmlmobilidade/utils": "20250828.1519.39"
+		"@tmlmobilidade/types": "20250827.1523.9",
+		"@tmlmobilidade/utils": "20250827.1523.9"
 	},
 	"devDependencies": {
 		"@types/node": "24.3.0",

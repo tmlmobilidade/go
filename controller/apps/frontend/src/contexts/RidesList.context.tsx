@@ -26,6 +26,7 @@ interface RidesListContextState {
 		setFilterDelayStatus: (values: string[]) => void
 		setFilterOperationalStatus: (values: string[]) => void
 		setFilterSearch: (values: string) => void
+		setFilterSimpleThreeVehicleEvents: (values: string[]) => void
 	}
 	data: {
 		filtered: RideNormalized[]
@@ -40,6 +41,7 @@ interface RidesListContextState {
 		delay_status: string[]
 		operational_status: string[]
 		search: string
+		simple_three_vehicle_events: string[]
 	}
 	flags: {
 		error: Error | null
@@ -180,6 +182,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 					analysis_simple_three_vehicle_events: filterAnalysisSimpleThreeVehicleEvents,
 					delay_status: filterDelayStatus,
 					operational_status: filterOperationalStatus,
+					simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
 				},
 				rides: dataRidesMap.current,
 			};
@@ -191,8 +194,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	}, [
 		filterOperationalStatus,
 		filterDelayStatus,
-		filterAnalysisSimpleThreeVehicleEvents,
-		filterAnalysisEndedAtLastStop,
+		filterSimpleThreeVehicleEvents,
 		filterAgency,
 		filterDateStart,
 		filterDateEnd,
@@ -215,6 +217,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			setFilterDelayStatus,
 			setFilterOperationalStatus,
 			setFilterSearch,
+			setFilterSimpleThreeVehicleEvents,
 		},
 		data: {
 			filtered: dataRidesNormalized,
@@ -229,6 +232,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			delay_status: filterDelayStatus,
 			operational_status: filterOperationalStatus,
 			search: filterSearch,
+			simple_three_vehicle_events: filterSimpleThreeVehicleEvents,
 		},
 		flags: {
 			error: null,

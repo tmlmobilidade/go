@@ -5,8 +5,8 @@ import { parseServiceAlert } from '@/utils/service-alert-parser';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { type Alert, type File, ServiceAlertResponse } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@tmlmobilidade/types';
+import { Dates, validateQueryParams } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -66,8 +66,9 @@ export class AlertsController {
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
-		const result = await alerts.findMany({}, { sort: { created_at: -1 } });
+	static async getAll(request: FastifyRequest<{ Querystring: GetAllAlertsQuery }>, reply: FastifyReply<Alert[]>) {
+		const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
+		const result = await alerts.findMany({ type: parsedQuery.realtime === true ? 'REALTIME' : 'PLANNED' }, { sort: { created_at: -1 } });
 
 		reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}

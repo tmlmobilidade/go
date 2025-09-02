@@ -27,7 +27,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 		// If the length is the same ensure they're equal by also
 		// checking if every item in one array is included in the other.
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [ridesListContext.filters.analysis_simple_three_vehicle_events_grade]);
+	}, [ridesListContext.filters.simple_three_vehicle_events]);
 
 	const parsedOptions = useMemo(() => {
 		// Parse options to the expected format.
@@ -36,7 +36,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 			label: value,
 			value: value,
 		}));
-	}, [ridesListContext.filters.analysis_simple_three_vehicle_events_grade]);
+	}, [ridesListContext.filters.simple_three_vehicle_events]);
 
 	//
 	// C. Render components
@@ -45,7 +45,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 		<FilterMenu
 			active={isActive}
 			label="3 Momentos"
-			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
+			onChange={ridesListContext.actions.setFilterSimpleThreeVehicleEvents}
 			options={parsedOptions}
 			withToggleAll
 		/>

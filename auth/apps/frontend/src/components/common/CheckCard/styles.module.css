@@ -2,13 +2,13 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-md);
+	height: 100%;
+	padding: var(--size-spacing-lg);
 	cursor: pointer;
+	background-color: var(--color-system-background-200);
 	border: 1px solid var(--color-system-border-100);
 	border-radius: var(--border-radius-sm);
-	padding: var(--size-spacing-lg);
-	background-color: var(--color-system-background-200);
-	transition: all 0.3s ease-in-out;
-	height: 100%;
+	transition: all 300ms ease-in-out;
 
 	& * {
 		user-select: none;
@@ -27,8 +27,8 @@
 }
 
 .root.disabled {
-	opacity: 0.5;
 	cursor: not-allowed;
+	opacity: 0.5;
 
 	&[aria-checked="false"]:hover {
 		background-color: var(--color-system-background-200);
@@ -44,15 +44,15 @@
 }
 
 .content {
-	width: 100%;
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-xs);
+	width: 100%;
 }
 
 .children {
 	opacity: 1;
-	transition: all 0.3s ease-in-out;
+	transition: all 300ms ease-in-out;
 
 	&[aria-disabled="true"] {
 		opacity: 0.2;

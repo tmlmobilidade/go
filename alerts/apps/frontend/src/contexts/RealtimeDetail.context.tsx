@@ -1,18 +1,13 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, causeSchema, CreateAlertDto, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher, uploadFile } from '@tmlmobilidade/utils';
-import { convertObject, Dates } from '@tmlmobilidade/utils';
+import { Dates, fetchData } from '@tmlmobilidade/utils';
+import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
-
-export enum RealtimeDetailMode {
-	CREATE = 'create',
-	EDIT = 'edit',
-}
+import useSWR, { mutate } from 'swr';
 
 interface RealtimeDetailContextState {
 	actions: {
@@ -21,7 +16,7 @@ interface RealtimeDetailContextState {
 		deleteImage: () => void
 		fileChanged: (file: File) => void
 		removeReference: (index: number) => void
-		saveAlert: (type: 'draft' | 'publish') => void
+		saveAlert: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
@@ -33,12 +28,25 @@ interface RealtimeDetailContextState {
 		isDraft: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: RealtimeDetailMode
 	}
 }
 
+/* * */
+
+const RealtimeDetailContext = createContext<RealtimeDetailContextState | undefined>(undefined);
+
+export function useRealtimeDetailContext() {
+	const context = useContext(RealtimeDetailContext);
+	if (!context) {
+		throw new Error('RealtimeDetailContext must be used within a RealtimeDetailContextProvider');
+	}
+	return context;
+}
+
+/* * */
+
 const emptyAlert: CreateAlertDto = {
-	active_period_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
+	active_period_end_date: undefined,
 	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	cause: Object.values(causeSchema.Enum)[0],
 	created_by: 'temp',
@@ -46,7 +54,7 @@ const emptyAlert: CreateAlertDto = {
 	effect: Object.values(effectSchema.Enum)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
-	publish_end_date: Dates.now('Europe/Lisbon').plus({ days: 1 }).unix_timestamp,
+	publish_end_date: undefined,
 	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	publish_status: 'DRAFT',
 	reference_type: Object.values(referenceTypeSchema.Enum)[0],
@@ -55,20 +63,9 @@ const emptyAlert: CreateAlertDto = {
 	type: 'REALTIME',
 };
 
-const RealtimeDetailContext = createContext<RealtimeDetailContextState | undefined>(undefined);
-
-export function useRealtimeDetailContext() {
-	const context = useContext(RealtimeDetailContext);
-	if (!context) {
-		throw new Error('useRealtimeDetailContext must be used within a RealtimeDetailContextProvider');
-	}
-	return context;
-}
-
 export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
 	//
 	// A. Setup variables
-	const MODE = alertId === 'new' ? RealtimeDetailMode.CREATE : RealtimeDetailMode.EDIT;
 
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
@@ -77,25 +74,15 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
 
-	const copyURL = new URLSearchParams(window.location.search).get('copy');
-
-	const { data: alert, error, isLoading } = useSWR<Alert>(MODE === RealtimeDetailMode.CREATE
-		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
-		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), swrFetcher);
-
-	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(
-		MODE === RealtimeDetailMode.CREATE
-			? undefined
-			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
-		swrFetcher,
-	);
+	const { data: alert, error, isLoading } = useSWR<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId));
+	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId));
 
 	//
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
 		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
-		validate: zodResolver(alert && MODE === RealtimeDetailMode.EDIT ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
+		validate: zodResolver(AlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -109,11 +96,9 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 
 		let myAlert: CreateAlertDto = alert;
 
-		if (copyURL) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { _id, created_at, updated_at, ...rest } = alert;
-			myAlert = { ...rest, publish_status: 'DRAFT' };
-		}
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { _id, created_at, updated_at, ...rest } = alert;
+		myAlert = { ...rest, publish_status: 'DRAFT' };
 
 		setLoading(true);
 
@@ -135,7 +120,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		if (!error) return;
 
 		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
-		router.replace(Routes.ALERT_LIST);
+		router.replace(Routes.REALTIME_LIST);
 	}, [error]);
 
 	// Validate form on change
@@ -157,15 +142,15 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
 	};
 
-	const saveAlert = async (type: 'draft' | 'publish') => {
+	const saveAlert = async () => {
 		setIsSaving(true);
 
 		// Handle Save Alert
-		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
+		const saveAlert: CreateAlertDto = { ...form.values, publish_status: 'PUBLISHED' };
 
-		const method = MODE === RealtimeDetailMode.CREATE ? 'POST' : 'PUT';
-		const url = MODE === RealtimeDetailMode.CREATE ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
-		const body = MODE === RealtimeDetailMode.CREATE ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
+		const method = 'PUT';
+		const url = Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
+		const body = convertObject(saveAlert, UpdateAlertSchema);
 
 		const response = await fetchData<Alert>(url, method, body);
 
@@ -175,23 +160,14 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 			return;
 		}
 
-		// Upload image if the alert is new
-		if (response.data) await uploadImage(response.data._id.toString());
-
-		// Redirect to the detail page if the alert is new
-		if (response.data && MODE === RealtimeDetailMode.CREATE) {
-			router.replace(Routes.ALERT_DETAIL(response.data._id.toString()));
-		}
-
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
+		mutate(Routes.ALERT_LIST);
 
 		setIsSaving(false);
 	};
 
 	const deleteAlert = async () => {
-		if (MODE === RealtimeDetailMode.CREATE) return;
-
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), 'DELETE', alert);
+		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId) + '?realtime=true', 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -201,14 +177,14 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
+		mutate('/api/alerts?realtime=true');
+		router.replace(Routes.REALTIME_LIST);
 
-		router.replace(Routes.ALERT_LIST);
+		setIsSaving(false);
 	};
 
 	const deleteImage = async () => {
-		if (MODE === RealtimeDetailMode.CREATE) return;
-
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
+		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId) + '?realtime=true', 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -220,18 +196,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
 	};
 
-	const uploadImage = async (alert_id: string) => {
-		if (MODE === RealtimeDetailMode.CREATE || !image) return;
-
-		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);
-
-		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
-			return;
-		}
-		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
-	};
-
 	//
 	// E. Define context value
 	const contextValue: RealtimeDetailContextState = {
@@ -241,11 +205,11 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 			deleteImage,
 			fileChanged: (file: File) => setImage(file),
 			removeReference,
-			saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
+			saveAlert: () => saveAlert(),
 		},
 		data: {
 			form,
-			id: MODE === RealtimeDetailMode.CREATE ? undefined : alertId,
+			id: alertId,
 			imageUrl: alertImage,
 		},
 		flags: {
@@ -253,7 +217,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 			isDraft,
 			isSaving,
 			loading: isLoading || loading || alertImageLoading,
-			mode: MODE,
 		},
 	};
 

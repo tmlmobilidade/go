@@ -14,16 +14,16 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.0.3",
-		"@tmlmobilidade/connectors": "20250827.1623.16",
-		"@tmlmobilidade/interfaces": "20250827.1623.16",
-		"@tmlmobilidade/lib": "20250827.1623.16",
-		"@tmlmobilidade/utils": "20250827.1623.16",
+		"@tmlmobilidade/connectors": "20250902.1546.20",
+		"@tmlmobilidade/interfaces": "20250902.1546.20",
+		"@tmlmobilidade/lib": "20250902.1546.20",
+		"@tmlmobilidade/utils": "20250902.1546.20",
 		"pino-pretty": "13.1.1"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20250826.1442.52",
-		"@tmlmobilidade/tsconfig": "20250827.1623.16",
-		"@tmlmobilidade/types": "20250827.1623.16",
+		"@carrismetropolitana/api-types": "20250830.445.32",
+		"@tmlmobilidade/tsconfig": "20250902.1546.20",
+		"@tmlmobilidade/types": "20250902.1546.20",
 		"@types/node": "24.3.0",
 		"gtfs-types": "5.1.0",
 		"resolve-tspaths": "0.8.23",

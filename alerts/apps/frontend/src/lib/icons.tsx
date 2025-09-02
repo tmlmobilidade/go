@@ -1,4 +1,4 @@
-import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, IconCalendarEvent, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconInfoTriangle, IconRouteAltRight, IconSpeakerphone, IconTool } from '@tabler/icons-react';
+import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, IconCalendarEvent, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconInfoTriangle, IconRouteAltRight, IconShieldChevron, IconSpeakerphone, IconTool } from '@tabler/icons-react';
 
 export const CauseIcons = {
 	ACCIDENT: <IconCarCrash />,
@@ -8,9 +8,9 @@ export const CauseIcons = {
 	MAINTENANCE: <IconTool />,
 	MEDICAL_EMERGENCY: <IconAmbulance />,
 	OTHER_CAUSE: <IconInfoTriangle />,
-	POLICE_ACTIVITY: <IconAmbulance />,
+	POLICE_ACTIVITY: <IconShieldChevron />,
 	STRIKE: <IconSpeakerphone />,
-	TECHNICAL_PROBLEM: <IconCarCrash />,
+	TECHNICAL_PROBLEM: <IconTool />,
 	UNKNOWN_CAUSE: <IconInfoTriangle />,
 	WEATHER: <IconCloudStorm />,
 };

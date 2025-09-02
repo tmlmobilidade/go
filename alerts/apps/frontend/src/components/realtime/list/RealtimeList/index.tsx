@@ -82,7 +82,7 @@ export function RealtimeList() {
 			router.push(destUrl);
 		}
 		else {
-			const destUrl = keepUrlParams(Routes.ALERT_DETAIL(item._id), window.location.search);
+			const destUrl = keepUrlParams(Routes.REALTIME_DETAIL(item._id), window.location.search);
 			router.push(destUrl);
 		}
 	};

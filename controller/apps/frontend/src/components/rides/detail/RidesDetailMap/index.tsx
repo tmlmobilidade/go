@@ -55,8 +55,8 @@ export function RidesDetailMap() {
 				<Switch checked={showObservedPath} label="Percurso Observado" onChange={() => setShowObservedPath(prev => !prev)} />
 				<Switch checked={showGeofences} label="Geofences" onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
-			{/* <Divider /> */}
-			{/* <Section alignItems="center" flexDirection="row" gap="md">
+			<Divider />
+			<Section alignItems="center" flexDirection="row" gap="md">
 				<Button icon={<IconPlayerPlayFilled />} label="Play" />
 				<Slider />
 				<Label size="sm" caps singleLine>Ordenar eventos por</Label>
@@ -68,7 +68,7 @@ export function RidesDetailMap() {
 						{ label: 'Veículo', value: 'created_at' },
 					]}
 				/>
-			</Section> */}
+			</Section>
 		</Collapsible>
 	);
 
