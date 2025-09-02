@@ -29,6 +29,7 @@ type RealtimeDetailContextState = UseMultiStepFormState & {
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
 		selectedRides: RidesData[]
+		steps: Step[]
 	}
 	flags: {
 		isSaving: boolean
@@ -181,6 +182,7 @@ export const RealtimeDetailContextProvider = ({ children }: { children: React.Re
 			form,
 			selectedRides,
 			...multiStepForm.data,
+			steps: STEPS,
 		},
 		flags: {
 			isSaving,

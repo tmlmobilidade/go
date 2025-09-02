@@ -23,10 +23,57 @@ export function RealtimeDetailHeader() {
 			{!realtimeDetailContext.flags.isFirst && <BackButton onClick={() => realtimeDetailContext.actions.prevStep()} />}
 			<Tag label="Criar alerta" variant="primary" />
 			<Spacer />
-			{!realtimeDetailContext.flags.isLast && !realtimeDetailContext.flags.isFirst && <Button label="Seguinte" onClick={() => realtimeDetailContext.actions.nextStep()} variant="primary" />}
-			{realtimeDetailContext.flags.isLast && <Button label="Salvar" variant="primary" />}
+			<TripNextButton />
+			<SaveButton />
 		</Toolbar>
 	);
 
 	//
+}
+
+function TripNextButton() {
+	//
+
+	//
+	// A. Setup variables
+
+	const realtimeDetailContext = useRealtimeDetailContext();
+	const isTripStep = realtimeDetailContext.flags.currentIndex === realtimeDetailContext.data.steps.findIndex(step => step.id === 'trip');
+
+	//
+	// C. Render components
+
+	if (!isTripStep) return null;
+
+	return (
+		<Button
+			disabled={realtimeDetailContext.data.selectedRides.length === 0}
+			label="Seguinte"
+			onClick={() => realtimeDetailContext.actions.nextStep()}
+			variant="primary"
+		/>
+	);
+}
+
+function SaveButton() {
+	//
+
+	//
+	// A. Setup variables
+
+	const realtimeDetailContext = useRealtimeDetailContext();
+
+	//
+	// C. Render components
+
+	if (!realtimeDetailContext.flags.isLast) return null;
+
+	return (
+		<Button
+			label="Salvar"
+			loading={realtimeDetailContext.flags.isSaving}
+			onClick={() => realtimeDetailContext.actions.saveAlert()}
+			variant="primary"
+		/>
+	);
 }

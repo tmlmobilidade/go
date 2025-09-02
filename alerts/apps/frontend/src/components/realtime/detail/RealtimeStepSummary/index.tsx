@@ -1,6 +1,9 @@
 /* * */
 
+import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
+import { getAlertTitleAndDescription } from '@/lib/translations';
 import { Separator } from '@tmlmobilidade/ui';
+import { useEffect } from 'react';
 
 import { AffectedRides } from './AffectedRides';
 import { AlertBasicInfo } from './AlertBasicInfo';
@@ -9,6 +12,20 @@ import { CauseAndEffect } from './CauseAndEffect';
 /* * */
 
 export function RealtimeStepSummary() {
+	//
+	// A. Setup variables
+
+	const { data: { form, selectedRides } } = useRealtimeDetailContext();
+
+	//
+	// B. Transform data
+
+	useEffect(() => {
+		const { description, title } = getAlertTitleAndDescription(form.values.cause, form.values.effect, selectedRides.map(ride => ride.line_id).join(', '));
+		form.setFieldValue('title', title);
+		form.setFieldValue('description', description);
+	}, []);
+
 	return (
 		<div style={{ overflowX: 'hidden', width: '100%' }}>
 
