@@ -1,7 +1,7 @@
 /* * */
 
 import { RealtimeDetail } from '@/components/realtime/detail/RealtimeDetail';
-import { RealtimeDetailContextProvider } from '@/contexts/RealtimeDetail.context';
+import { RealtimeDetailContextProvider } from '@/contexts/RealtimeCreate.context';
 
 /* * */
 
