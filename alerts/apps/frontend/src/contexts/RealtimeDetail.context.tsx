@@ -177,9 +177,10 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
-		mutate(Routes.ALERT_LIST);
-
+		mutate('/api/alerts?realtime=true');
 		router.replace(Routes.REALTIME_LIST);
+
+		setIsSaving(false);
 	};
 
 	const deleteImage = async () => {

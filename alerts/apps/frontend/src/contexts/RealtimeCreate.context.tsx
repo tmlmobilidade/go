@@ -14,7 +14,6 @@ import { Routes } from '@/lib/routes';
 import { Alert, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { Dates, fetchData } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 
@@ -94,7 +93,6 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 	//
 	// A. Setup variables
 
-	const router = useRouter();
 	const multiStepForm = useMultiStepForm({ steps: STEPS });
 	const [isSaving, setIsSaving] = useState(false);
 	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
@@ -140,6 +138,14 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 		form.setFieldValue('references', []);
 	};
 
+	async function reset() {
+		form.reset();
+		form.resetDirty();
+		form.setFieldValue('references', []);
+		multiStepForm.actions.goToStep(0);
+		setSelectedRides([]);
+	}
+
 	async function saveAlert() {
 		setIsSaving(true);
 
@@ -165,9 +171,10 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 			return;
 		}
 
-		router.replace(Routes.REALTIME_LIST);
+		mutate('/api/alerts?realtime=true');
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
-		mutate(Routes.ALERT_LIST);
+
+		reset();
 		setIsSaving(false);
 	};
 
