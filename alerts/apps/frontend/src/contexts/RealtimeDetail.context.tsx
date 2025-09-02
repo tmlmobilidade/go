@@ -1,13 +1,13 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, CreateAlertDto, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, causeSchema, CreateAlertDto, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { Dates, fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 interface RealtimeDetailContextState {
 	actions: {
@@ -45,6 +45,24 @@ export function useRealtimeDetailContext() {
 
 /* * */
 
+const emptyAlert: CreateAlertDto = {
+	active_period_end_date: undefined,
+	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
+	cause: Object.values(causeSchema.Enum)[0],
+	created_by: 'temp',
+	description: '',
+	effect: Object.values(effectSchema.Enum)[0],
+	modified_by: 'temp',
+	municipality_ids: [],
+	publish_end_date: undefined,
+	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
+	publish_status: 'DRAFT',
+	reference_type: Object.values(referenceTypeSchema.Enum)[0],
+	references: [],
+	title: '',
+	type: 'REALTIME',
+};
+
 export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
 	//
 	// A. Setup variables
@@ -62,6 +80,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	//
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
+		initialValues: emptyAlert,
 		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
 		validate: zodResolver(AlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
@@ -142,6 +161,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
+		mutate(Routes.ALERT_LIST);
 
 		setIsSaving(false);
 	};
@@ -157,6 +177,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
+		mutate(Routes.ALERT_LIST);
 
 		router.replace(Routes.REALTIME_LIST);
 	};

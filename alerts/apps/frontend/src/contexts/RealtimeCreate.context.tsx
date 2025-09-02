@@ -152,10 +152,11 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 		}
 
 		// Handle Save Alert
-		const saveAlert: CreateAlertDto = { ...form.values };
+		const saveAlert: CreateAlertDto = { ...form.values, publish_status: 'PUBLISHED' };
 		const url = Routes.ALERTS_API + Routes.ALERT_LIST;
 		const body = saveAlert;
 
+		console.log('HERE =======> ', url, body);
 		const response = await fetchData<Alert>(url, 'POST', body);
 
 		if (response.error) {
@@ -166,7 +167,7 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 
 		router.replace(Routes.REALTIME_LIST);
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
-		mutate(Routes.REALTIME_LIST);
+		mutate(Routes.ALERT_LIST);
 		setIsSaving(false);
 	};
 
