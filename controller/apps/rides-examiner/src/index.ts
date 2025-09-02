@@ -121,15 +121,12 @@ export async function validateRides() {
 				// Update the current Ride with the analysis result
 				// and 'complete' status to indicate that the ride has been processed.
 
-				const validatedRide = UpdateRideSchema.parse(augmentedRideData);
+				const validatedRide = UpdateRideSchema.strip().parse(augmentedRideData);
 
-				await rides.updateById(
-					rideData._id,
-					{
-						...validatedRide,
-						system_status: 'complete',
-					},
-				);
+				await rides.updateById(rideData._id, {
+					...validatedRide,
+					system_status: 'complete',
+				});
 
 				Logs.info([
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
