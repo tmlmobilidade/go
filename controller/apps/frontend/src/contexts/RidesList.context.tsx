@@ -7,11 +7,12 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@/types/normalized';
 import { ParseRidesWorkerRequestMessage, ParseRidesWorkerResponseMessage } from '@/workers/parse-rides.worker';
-import { useDebouncedState } from '@mantine/hooks';
+import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 import { type Ride, RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates, fetchData, type HttpResponse } from '@tmlmobilidade/utils';
+import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import useSWR from 'swr';
 
 /* * */
 
@@ -77,10 +78,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const dataTableRef = useRef<DataTableHandle | null>(null);
 	const workerRef = useRef<null | Worker>(null);
 
-	const dataRidesMap = useRef<Map<string, Ride> | null>(new Map());
 	const [dataRidesNormalized, setDataRidesNormalized] = useState<RideNormalized[]>([]);
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.trim(), 500);
+
 	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.ids));
 	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
 	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
@@ -91,37 +93,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [filterAnalysisExpectedApexValidationInterval, setFilterAnalysisExpectedApexValidationInterval] = useQueryState<string[]>('analysis_expected_apex_validation_interval', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
-	const [flagsIsLoading, setFlagsIsLoading] = useState<boolean>(false);
+
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<Ride[], Error>(`/api/rides?search=${debouncedFilterSearch}&agency=${filterAgency}&date_start=${filterDateStart}&date_end=${filterDateEnd}`);
 
 	//
 	// B. Fetch data
-
-	useEffect(() => {
-		(async () => {
-			console.log('Fetching rides data...');
-			setFlagsIsLoading(true);
-			// Fetch Rides data from the API
-			const response = await fetchData<Ride[]>('/api/rides', 'POST', {
-				agency: filterAgency,
-				date_end: filterDateEnd,
-				date_start: filterDateStart,
-				search: filterSearch,
-			});
-			// If there is an error or no data, return early
-			if (!response.data) return;
-			// Update the rides map with the fetched data
-			const ridesMap = new Map<string, Ride>();
-			response.data.forEach(item => ridesMap.set(item._id, item));
-			dataRidesMap.current = ridesMap;
-			setFlagsIsLoading(false);
-		})();
-	}, [
-		filterAgency,
-		filterSearch,
-		filterDateStart,
-		filterDateEnd,
-	]);
-
 	useEffect(() => {
 		// This effect runs everytime there is a change in the websocket reference,
 		// as the goal is to always maintain an open connection. If the connection is
@@ -153,9 +129,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		// Try to decode the message and extract the Ride data
 		const eventData: HttpResponse<Ride> = JSON.parse(event.data);
 		// If the ride is not in the normalized data, return early
-		if (!dataRidesMap.current.has(eventData.data._id)) return;
+		if (!ridesData?.some(ride => ride._id === eventData.data._id)) return;
 		// Normalize the ride data and update the state
-		dataRidesMap.current.set(eventData.data._id, eventData.data);
+		ridesData.push(eventData.data);
 		setFlagsLastUpdateState(Dates.now('Europe/Lisbon').unix_timestamp);
 	};
 
@@ -181,7 +157,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 					delay_status: filterDelayStatus,
 					operational_status: filterOperationalStatus,
 				},
-				rides: dataRidesMap.current,
+				rides: ridesData ?? [],
 			};
 			workerRef.current.postMessage(requestMessage);
 		};
@@ -189,6 +165,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		const interval = setInterval(refreshCatalog, 1000);
 		return () => clearInterval(interval);
 	}, [
+		ridesData,
 		filterOperationalStatus,
 		filterDelayStatus,
 		filterAnalysisSimpleThreeVehicleEvents,
@@ -231,14 +208,15 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			search: filterSearch,
 		},
 		flags: {
-			error: null,
+			error: ridesError,
 			last_update: flagsLastUpdateState,
-			loading: flagsIsLoading,
+			loading: ridesLoading,
 		},
 		refs: {
 			datatable: dataTableRef,
 		},
 	}), [
+		ridesData,
 		dataRidesNormalized,
 		filterAgency,
 		filterDateEnd,
@@ -250,7 +228,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAnalysisExpectedApexValidationInterval,
 		filterAnalysisEndedAtLastStop,
 		flagsLastUpdateState,
-		flagsIsLoading,
+		ridesLoading,
+		ridesError,
 		dataTableRef,
 	]);
 

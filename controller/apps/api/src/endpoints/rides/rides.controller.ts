@@ -1,10 +1,10 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { type Filter, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, validateUnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
-import { Dates, HttpResponse } from '@tmlmobilidade/utils';
+import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
+import { type HashedShape, type HashedTrip, Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, UnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
+import { Dates, getPermission, HttpResponse } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
 /* * */
@@ -13,51 +13,77 @@ export class RidesController {
 	//
 
 	/**
-	 * Get a batch of Rides.
-	 * @param request
-	 * @param reply
+	 * Gets a batch of Rides built with an aggregation pipeline.
 	 */
-	static async getBatch(request: FastifyRequest<{ Body: { agency?: string[], date_end: number, date_start: number, search?: string } }>, reply: FastifyReply<Ride[]>) {
+	static async getBatch(request: FastifyRequest<{ Querystring: { agency?: string, date_end: number, date_start: number, lineId?: string, search?: string, stopId?: string } }>, reply: FastifyReply<Ride[]>) {
 		//
 
-		//
-		// If a search query is provided, search for rides in two steps, ignoring other fields.
-		// First try an exact _id match, and then use the text index from MongoDB.
+		const pipeline: AggregationPipeline<Ride> = [];
 
-		if (request.body.search?.length > 0) {
-			const exactIdMatch = await rides.findById(request.body.search);
-			if (exactIdMatch) {
-				return reply.send({
-					data: [exactIdMatch],
-					error: null,
-					statusCode: HttpStatus.OK,
-				});
+		//
+		// 1. Match rides between start and end date
+		pipeline.push({ $match: { start_time_scheduled: { $gte: Number(request.query.date_start) as UnixTimestamp, $lte: Number(request.query.date_end) as UnixTimestamp } } });
+
+		//
+
+		// 2. Filter rides by line ID & stop ID
+		if (request.query.lineId) {
+			pipeline.push({ $match: { line_id: Number(request.query.lineId) } });
+		}
+
+		// 3. Filter rides by agency ID
+		if (request.query.agency) {
+			pipeline.push({ $match: { agency_id: { $in: request.query.agency.split(',') } } });
+		}
+
+		//
+		// 3. If search is provided, match rides by ID
+		const search = request.query.search?.trim() ?? '';
+		if (search) {
+			const keywords = search.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
+			pipeline.push({
+				$match: { _id: { $options: 'i', $regex: pattern } },
+			});
+		}
+
+		//
+		// 4. Filter rides based on permissions for the current user
+		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.read);
+
+		if (ridePermission?.resource) {
+			// 4.1. Filter rides based on agency IDs
+			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
+				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
 			}
 		}
 
 		//
-		// If no search query is provided, use the other fields to filter the rides.
-		// Validate the date_start and date_end fields to ensure they are valid UnixTimestamp values.
-
-		const validatedStartDate = validateUnixTimestamp(request.body.date_start);
-		const validatedEndDate = validateUnixTimestamp(request.body.date_end);
-
-		//
-		// Build the filter object based on the provided fields.
-
-		const filterQuery: Filter<Ride> = {
-			$text: { $search: request.body.search ?? '' },
-			agency_id: { $in: request.body.agency ?? [] },
-			start_time_scheduled: { $gte: validatedStartDate, $lte: validatedEndDate },
-		};
-
-		if (!request.body.search?.length) delete filterQuery.$text;
+		// 5. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
+		pipeline.push(
+			{ $lookup: { as: 'shape_details', foreignField: '_id', from: 'hashed_trips', localField: 'hashed_trip_id' } },
+			{ $unwind: '$shape_details' },
+			{ $addFields: { stop_ids: '$shape_details.path.stop_id' } },
+			{ $project: { shape_details: 0 } },
+			{ $sort: { start_time_scheduled: 1 } },
+		);
 
 		//
-		// Fetch rides from the database
+		// 6. Filter rides by stop ID
+		if (request.query.stopId) {
+			pipeline.push({ $match: { stop_ids: request.query.stopId } });
+		}
 
-		const ridesBatch = await rides.findMany(filterQuery, { limit: 5000 });
+		//
+		// 7. Final pipeline stages
+		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
+		//
+		// 8. Fetch rides from the database
+		const ridesBatch = await rides.aggregate(pipeline);
+
+		//
+		// Send the response
 		reply.send({
 			data: ridesBatch ?? [],
 			error: null,
