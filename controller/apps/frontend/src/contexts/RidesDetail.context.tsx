@@ -2,9 +2,8 @@
 
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
-import { getRideNormalized } from '@/utils/get-ride-normalized';
+import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
 import { Dates, fetchData, getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/utils';
@@ -76,7 +75,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 
 	const rideDataNormalized = useMemo(() => {
 		if (!rideData) return null;
-		return getRideNormalized(rideData);
+		return normalizeRide(rideData);
 	}, [rideData]);
 
 	const observedEventsFC: FeatureCollection<Point, MapOverlayObservedPathPointsDataProps> = useMemo(() => {

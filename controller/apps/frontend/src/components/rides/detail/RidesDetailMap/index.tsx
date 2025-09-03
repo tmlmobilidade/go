@@ -3,8 +3,7 @@
 /* * */
 
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { IconPlayerPlayFilled } from '@tabler/icons-react';
-import { Button, Collapsible, Divider, Label, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, SegmentedControl, Slider, Switch } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
