@@ -3,6 +3,7 @@
 /* * */
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
+import { Routes } from '@/lib/routes';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
@@ -23,7 +24,7 @@ export function RealtimeDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams('/realtimes', window.location.search);
+		const destUrl = keepUrlParams(Routes.REALTIME_LIST, window.location.search);
 		router.push(destUrl);
 	};
 
