@@ -94,7 +94,30 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<Ride[], Error>(`/api/rides?search=${debouncedFilterSearch}&agency=${filterAgency}&date_start=${filterDateStart}&date_end=${filterDateEnd}`);
+	const queryParamsString: string = useMemo(() => {
+		const params = {
+			agency_ids: filterAgency.join(','),
+			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
+			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
+			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
+			date_end: filterDateEnd,
+			date_start: filterDateStart,
+			search: debouncedFilterSearch,
+			/* * */
+			line_ids: undefined,
+			stop_ids: undefined,
+		};
+
+		const stringParams: Record<string, string> = Object.fromEntries(
+			Object.entries(params)
+				.filter(([_, value]) => value !== undefined)
+				.map(([key, value]) => [key, Array.isArray(value) ? value.join(',') : String(value)]),
+		);
+
+		return new URLSearchParams(stringParams).toString();
+	}, [debouncedFilterSearch, filterAgency, filterDateStart, filterDateEnd, filterAnalysisEndedAtLastStop, filterAnalysisExpectedApexValidationInterval, filterAnalysisSimpleThreeVehicleEvents]);
+
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<Ride[], Error>(`/api/rides?${queryParamsString}`);
 
 	//
 	// B. Fetch data

@@ -3,8 +3,8 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
-import { type HashedShape, type HashedTrip, Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, UnixTimestamp, type VehicleEvent } from '@tmlmobilidade/types';
-import { Dates, getPermission, HttpResponse } from '@tmlmobilidade/utils';
+import { GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedShape, type HashedTrip, Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { Dates, getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
 /* * */
@@ -15,30 +15,34 @@ export class RidesController {
 	/**
 	 * Gets a batch of Rides built with an aggregation pipeline.
 	 */
-	static async getBatch(request: FastifyRequest<{ Querystring: { agency?: string, date_end: number, date_start: number, lineId?: string, search?: string, stopId?: string } }>, reply: FastifyReply<Ride[]>) {
+	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<Ride[]>) {
 		//
+		console.log('Getting rides batch...');
+		console.log('Request query:', request.query);
+		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
 
 		const pipeline: AggregationPipeline<Ride> = [];
 
 		//
 		// 1. Match rides between start and end date
-		pipeline.push({ $match: { start_time_scheduled: { $gte: Number(request.query.date_start) as UnixTimestamp, $lte: Number(request.query.date_end) as UnixTimestamp } } });
+		pipeline.push({ $match: { start_time_scheduled: { $gte: parsedQuery.date_start, $lte: parsedQuery.date_end } } });
 
 		//
 
 		// 2. Filter rides by line ID & stop ID
-		if (request.query.lineId) {
-			pipeline.push({ $match: { line_id: Number(request.query.lineId) } });
+		if (parsedQuery.line_ids) {
+			pipeline.push({ $match: { $in: { line_id: parsedQuery.line_ids } } });
 		}
 
 		// 3. Filter rides by agency ID
-		if (request.query.agency) {
-			pipeline.push({ $match: { agency_id: { $in: request.query.agency.split(',') } } });
+		console.log('Filtering rides by agency:', parsedQuery.agency_ids);
+		if (parsedQuery.agency_ids) {
+			pipeline.push({ $match: { agency_id: { $in: parsedQuery.agency_ids } } });
 		}
 
 		//
 		// 3. If search is provided, match rides by ID
-		const search = request.query.search?.trim() ?? '';
+		const search = parsedQuery.search?.trim() ?? '';
 		if (search) {
 			const keywords = search.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
@@ -59,6 +63,24 @@ export class RidesController {
 		}
 
 		//
+		// Filter rides by delay status
+		if (parsedQuery.analysis_ended_at_last_stop_grade) {
+			pipeline.push({ $match: { 'analysis.ENDED_AT_LAST_STOP.grade': { $in: parsedQuery.analysis_ended_at_last_stop_grade } } });
+		}
+
+		//
+		// Filter rides by analysis expected apex validation interval grade
+		if (parsedQuery.analysis_expected_apex_validation_interval) {
+			pipeline.push({ $match: { 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade': { $in: parsedQuery.analysis_expected_apex_validation_interval } } });
+		}
+
+		//
+		// Filter rides by analysis simple three vehicle events grade
+		if (parsedQuery.analysis_simple_three_vehicle_events_grade) {
+			pipeline.push({ $match: { 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade': { $in: parsedQuery.analysis_simple_three_vehicle_events_grade } } });
+		}
+
+		//
 		// 5. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
 		pipeline.push(
 			{ $lookup: { as: 'shape_details', foreignField: '_id', from: 'hashed_trips', localField: 'hashed_trip_id' } },
@@ -70,8 +92,8 @@ export class RidesController {
 
 		//
 		// 6. Filter rides by stop ID
-		if (request.query.stopId) {
-			pipeline.push({ $match: { stop_ids: request.query.stopId } });
+		if (parsedQuery.stop_ids) {
+			pipeline.push({ $match: { stop_ids: { $in: parsedQuery.stop_ids } } });
 		}
 
 		//
