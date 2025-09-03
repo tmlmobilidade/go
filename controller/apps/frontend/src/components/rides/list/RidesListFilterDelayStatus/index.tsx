@@ -1,7 +1,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { delayStatusValues } from '@/types/normalized';
+import { delayStatusValues } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

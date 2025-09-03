@@ -5,13 +5,12 @@
 import { type DataTableHandle } from '@/components/datatable/DataTableContext';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
-import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@/types/normalized';
-import { ParseRidesWorkerRequestMessage, ParseRidesWorkerResponseMessage } from '@/workers/parse-rides.worker';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
-import { type Ride, RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
+import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
+import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -76,9 +75,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const webSocketRef = useRef<null | WebSocket>(null);
 	const dataTableRef = useRef<DataTableHandle | null>(null);
-	const workerRef = useRef<null | Worker>(null);
-
-	const [dataRidesNormalized, setDataRidesNormalized] = useState<RideNormalized[]>([]);
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.trim(), 500);
@@ -97,12 +93,16 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const queryParamsString: string = useMemo(() => {
 		const params = {
 			agency_ids: filterAgency.join(','),
-			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
-			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
-			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
 			date_end: filterDateEnd,
 			date_start: filterDateStart,
 			search: debouncedFilterSearch,
+			/* * */
+			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
+			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
+			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
+			/* * */
+			delay_statuses: filterDelayStatus.join(','),
+			operational_statuses: filterOperationalStatus.join(','),
 			/* * */
 			line_ids: undefined,
 			stop_ids: undefined,
@@ -110,14 +110,14 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 		const stringParams: Record<string, string> = Object.fromEntries(
 			Object.entries(params)
-				.filter(([_, value]) => value !== undefined)
+				.filter(([, value]) => value !== undefined)
 				.map(([key, value]) => [key, Array.isArray(value) ? value.join(',') : String(value)]),
 		);
 
 		return new URLSearchParams(stringParams).toString();
-	}, [debouncedFilterSearch, filterAgency, filterDateStart, filterDateEnd, filterAnalysisEndedAtLastStop, filterAnalysisExpectedApexValidationInterval, filterAnalysisSimpleThreeVehicleEvents]);
+	}, [debouncedFilterSearch, filterAgency, filterDateStart, filterDateEnd, filterAnalysisEndedAtLastStop, filterAnalysisExpectedApexValidationInterval, filterAnalysisSimpleThreeVehicleEvents, filterDelayStatus, filterOperationalStatus]);
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<Ride[], Error>(`/api/rides?${queryParamsString}`);
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(`/api/rides?${queryParamsString}`);
 
 	//
 	// B. Fetch data
@@ -150,53 +150,13 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const handleIncomingMessage = (event: MessageEvent<string>) => {
 		// Try to decode the message and extract the Ride data
-		const eventData: HttpResponse<Ride> = JSON.parse(event.data);
+		const eventData: HttpResponse<RideNormalized> = JSON.parse(event.data);
 		// If the ride is not in the normalized data, return early
 		if (!ridesData?.some(ride => ride._id === eventData.data._id)) return;
 		// Normalize the ride data and update the state
 		ridesData.push(eventData.data);
 		setFlagsLastUpdateState(Dates.now('Europe/Lisbon').unix_timestamp);
 	};
-
-	//
-	// C. Transform data
-
-	useEffect(() => {
-		const refreshCatalog = () => {
-			// Setup a new worker instance to process the GTFS file.
-			// If a worker already exists, terminate it to avoid duplicate processing.
-			// if (!workerRef.current) workerRef.current.terminate();
-			if (!workerRef.current) {
-				workerRef.current = new Worker(new URL('@/workers/parse-rides.worker.ts', import.meta.url));
-				workerRef.current.onmessage = (event: MessageEvent<ParseRidesWorkerResponseMessage>) => {
-					setDataRidesNormalized(event.data.result ?? []);
-				};
-			}
-			const requestMessage: ParseRidesWorkerRequestMessage = {
-				filters: {
-					analysis_ended_at_last_stop: filterAnalysisEndedAtLastStop,
-					analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval,
-					analysis_simple_three_vehicle_events: filterAnalysisSimpleThreeVehicleEvents,
-					delay_status: filterDelayStatus,
-					operational_status: filterOperationalStatus,
-				},
-				rides: ridesData ?? [],
-			};
-			workerRef.current.postMessage(requestMessage);
-		};
-		refreshCatalog();
-		const interval = setInterval(refreshCatalog, 1000);
-		return () => clearInterval(interval);
-	}, [
-		ridesData,
-		filterOperationalStatus,
-		filterDelayStatus,
-		filterAnalysisSimpleThreeVehicleEvents,
-		filterAnalysisEndedAtLastStop,
-		filterAgency,
-		filterDateStart,
-		filterDateEnd,
-	]);
 
 	//
 	// B. Handle actions
@@ -217,7 +177,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			setFilterSearch,
 		},
 		data: {
-			filtered: dataRidesNormalized,
+			filtered: ridesData ?? [],
 		},
 		filters: {
 			agency: filterAgency,
@@ -240,7 +200,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 	}), [
 		ridesData,
-		dataRidesNormalized,
 		filterAgency,
 		filterDateEnd,
 		filterDateStart,

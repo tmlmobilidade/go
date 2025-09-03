@@ -1,8 +1,9 @@
 /* * */
 
-import { type RideNormalized } from '@/types/normalized';
 import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
+
+import { type RideNormalized } from './ride-normalized.js';
 
 /**
  * This function normalizes a Ride object by adding additional properties
@@ -10,7 +11,7 @@ import { Dates } from '@tmlmobilidade/utils';
  * @param ride The Ride object to normalize.
  * @returns The normalized Ride object.
  */
-export function getRideNormalized(ride: Ride): RideNormalized {
+export function normalizeRide(ride: Ride): RideNormalized {
 	const operationalStatusValue = getOperationalStatus(ride.start_time_scheduled, ride.seen_last_at);
 	return {
 		...ride,

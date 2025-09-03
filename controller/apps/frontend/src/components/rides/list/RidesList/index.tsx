@@ -13,7 +13,7 @@ import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPa
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { type RideNormalized } from '@/types/normalized';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

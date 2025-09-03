@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type RideNormalized } from '@/types/normalized';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { getRideNormalized } from '@/utils/get-ride-normalized';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';

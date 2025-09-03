@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RideNormalized } from '@/types/normalized';
+import { RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { Label, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */

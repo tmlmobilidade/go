@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideNormalized } from '@/types/normalized';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { Tag } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 

@@ -3,6 +3,7 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
+import { normalizeRide, RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedShape, type HashedTrip, Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
@@ -15,10 +16,8 @@ export class RidesController {
 	/**
 	 * Gets a batch of Rides built with an aggregation pipeline.
 	 */
-	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<Ride[]>) {
+	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) {
 		//
-		console.log('Getting rides batch...');
-		console.log('Request query:', request.query);
 		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
 
 		const pipeline: AggregationPipeline<Ride> = [];
@@ -35,7 +34,6 @@ export class RidesController {
 		}
 
 		// 3. Filter rides by agency ID
-		console.log('Filtering rides by agency:', parsedQuery.agency_ids);
 		if (parsedQuery.agency_ids) {
 			pipeline.push({ $match: { agency_id: { $in: parsedQuery.agency_ids } } });
 		}
@@ -63,22 +61,14 @@ export class RidesController {
 		}
 
 		//
-		// Filter rides by delay status
-		if (parsedQuery.analysis_ended_at_last_stop_grade) {
-			pipeline.push({ $match: { 'analysis.ENDED_AT_LAST_STOP.grade': { $in: parsedQuery.analysis_ended_at_last_stop_grade } } });
-		}
+		// 5. Filter by analysis
+		const analysisFilters: { field: keyof GetRidesBatchQuery, path: string }[] = [
+			{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
+			{ field: 'analysis_expected_apex_validation_interval', path: 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade' },
+			{ field: 'analysis_simple_three_vehicle_events_grade', path: 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade' },
+		];
 
-		//
-		// Filter rides by analysis expected apex validation interval grade
-		if (parsedQuery.analysis_expected_apex_validation_interval) {
-			pipeline.push({ $match: { 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade': { $in: parsedQuery.analysis_expected_apex_validation_interval } } });
-		}
-
-		//
-		// Filter rides by analysis simple three vehicle events grade
-		if (parsedQuery.analysis_simple_three_vehicle_events_grade) {
-			pipeline.push({ $match: { 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade': { $in: parsedQuery.analysis_simple_three_vehicle_events_grade } } });
-		}
+		analysisFilters.forEach(({ field, path }) => parsedQuery[field] && pipeline.push({ $match: { [path]: { $in: parsedQuery[field] } } }));
 
 		//
 		// 5. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
@@ -105,9 +95,25 @@ export class RidesController {
 		const ridesBatch = await rides.aggregate(pipeline);
 
 		//
+		// 9. Normalize the rides
+		let normalizedRidesBatch = ridesBatch.map(ride => normalizeRide(ride));
+
+		//
+		// 10. Filter by statuses
+		if (parsedQuery.delay_statuses) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.delay_statuses.includes(ride.delay_status));
+		}
+		if (parsedQuery.operational_statuses) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.operational_statuses.includes(ride.operational_status));
+		}
+		if (parsedQuery.seen_statuses) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.seen_statuses.includes(ride.seen_status));
+		}
+
+		//
 		// Send the response
 		reply.send({
-			data: ridesBatch ?? [],
+			data: normalizedRidesBatch ?? [],
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
@@ -735,7 +741,7 @@ export class RidesController {
 						console.log('Undefined document:', databaseOperation);
 						return;
 					}
-					const message: HttpResponse<Ride> = {
+					const message: HttpResponse<RideNormalized> = {
 						data: databaseOperation['fullDocument'],
 						error: null,
 						statusCode: HttpStatus.OK,
