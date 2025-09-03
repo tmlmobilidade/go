@@ -4,17 +4,17 @@ import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 
-const operationalStatusOptions = ['ended', 'missed', 'running', 'scheduled'] as const;
+export const operationalStatusOptions = ['ended', 'missed', 'running', 'scheduled'] as const;
 export const operationalStatusValues = [...operationalStatusOptions];
 
 /* * */
 
-const delayStatusOptions = ['delayed', 'early', 'ontime', 'none'] as const;
+export const delayStatusOptions = ['delayed', 'early', 'ontime', 'none'] as const;
 export const delayStatusValues = [...delayStatusOptions];
 
 /* * */
 
-const seenStatusOptions = ['gone', 'seen', 'unseen'] as const;
+export const seenStatusOptions = ['gone', 'seen', 'unseen'] as const;
 export const seenStatusValues = [...seenStatusOptions];
 
 /* * */

@@ -4,9 +4,11 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connector
 import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { normalizeRide, RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
-import { GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedShape, type HashedTrip, Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
+
+import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from './schema.js';
 
 /* * */
 
