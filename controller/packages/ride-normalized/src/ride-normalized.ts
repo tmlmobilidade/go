@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride, RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 

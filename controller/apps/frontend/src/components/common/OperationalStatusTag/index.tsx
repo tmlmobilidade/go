@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideNormalized } from '@/types/normalized';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
 import { Tag } from '@tmlmobilidade/ui';
 
