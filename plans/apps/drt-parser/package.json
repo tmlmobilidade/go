@@ -1,25 +1,28 @@
 {
-	"name": "@tmlmobilidade/sae-plans-api",
+	"name": "@tmlmobilidade/sae-plans-drt-parser",
 	"version": "1.0.0",
-	"author": "",
-	"license": "ISC",
-	"keywords": [],
 	"type": "module",
-	"main": "index.js",
+	"files": ["dist"],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "npm run clean && tsc && resolve-tspaths",
 		"clean": "rm -rf dist",
-		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@fastify/multipart": "9.2.1",
+		"@helperkits/logger": "20250628.901.58",
+		"@helperkits/timer": "20240627.34.23",
+		"@helperkits/writer": "20250623.2358.3",
 		"@tmlmobilidade/connectors": "20250904.1639.52",
 		"@tmlmobilidade/interfaces": "20250904.1639.52",
-		"@tmlmobilidade/lib": "20250904.1639.52",
 		"@tmlmobilidade/utils": "20250904.1639.52",
-		"pino-pretty": "13.1.1"
+		"csv-parse": "6.1.0",
+		"extract-zip": "2.0.1",
+		"gtfs-types": "5.1.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250904.1639.52",
