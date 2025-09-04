@@ -84,6 +84,10 @@ interface SamExport {
 	//
 	// Parse the array with Papaparse and write it to a file
 
+	if (!fs.existsSync('output')) {
+		fs.mkdirSync('output');
+	}
+
 	const outputTxt = Papa.unparse(output);
 	fs.writeFileSync('output/sams-41.csv', outputTxt);
 
