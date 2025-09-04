@@ -21,7 +21,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250904.940.39",
 		"@tmlmobilidade/types": "20250904.940.39",
-		"@types/node": "24.3.0",
+		"@types/node": "24.3.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.5",
 		"typescript": "5.9.2"
