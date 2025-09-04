@@ -37,7 +37,7 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX LOCATIONS */
 
-		LOGGER.info('Adding Unique SAMs from Simplified Apex Locations...');
+		LOGGER.info('Adding SAMs from Simplified APEX Locations...');
 
 		const uniqueSamsForLocationsTimer = new TIMETRACKER();
 
@@ -50,28 +50,28 @@ async function main() {
 		for await (const item of allSamsForApexLocations) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
-			// Validate if the Unique SAM Serial Number is a number
+			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Skip if the Unique SAM already exists
+			// Skip if the SAM already exists
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
 			if (uniqueSamAlreadyExists) continue;
-			// Parse the Unique SAM data
+			// Parse the SAM data
 			const parsedSam = parseSam(item);
-			// Create a new Unique SAM document
+			// Create a new SAM document
 			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForLocationsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified Apex Locations. (${uniqueSamsForLocationsTimer.get()})`, 1);
+		LOGGER.success(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${uniqueSamsForLocationsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
 
-		LOGGER.info('Adding Unique SAMs from Simplified Apex On Board Refunds...');
+		LOGGER.info('Adding SAMs from Simplified APEX On Board Refunds...');
 
 		const uniqueSamsForOnBoardRefundsTimer = new TIMETRACKER();
 
@@ -84,28 +84,28 @@ async function main() {
 		for await (const item of allSamsForApexOnBoardRefunds) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
-			// Validate if the Unique SAM Serial Number is a number
+			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Skip if the Unique SAM already exists
+			// Skip if the SAM already exists
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
 			if (uniqueSamAlreadyExists) continue;
-			// Parse the Unique SAM data
+			// Parse the SAM data
 			const parsedSam = parseSam(item);
-			// Create a new Unique SAM document
+			// Create a new SAM document
 			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForOnBoardRefundsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified Apex OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`, 1);
+		LOGGER.success(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD SALES */
 
-		LOGGER.info('Adding Unique SAMs from Simplified Apex On Board Sales...');
+		LOGGER.info('Adding SAMs from Simplified APEX On Board Sales...');
 
 		const uniqueSamsForOnBoardSalesTimer = new TIMETRACKER();
 
@@ -118,28 +118,28 @@ async function main() {
 		for await (const item of allSamsForApexOnBoardSales) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
-			// Validate if the Unique SAM Serial Number is a number
+			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Skip if the Unique SAM already exists
+			// Skip if the SAM already exists
 			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
 			if (uniqueSamAlreadyExists) continue;
-			// Parse the Unique SAM data
+			// Parse the SAM data
 			const parsedSam = parseSam(item);
-			// Create a new Unique SAM document
+			// Create a new SAM document
 			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			uniqueSamsForOnBoardSalesCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified Apex OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`, 1);
+		LOGGER.success(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX VALIDATIONS */
 
-		LOGGER.info('Adding Unique SAMs from Simplified Apex Validations...');
+		LOGGER.info('Adding Unique SAMs from Simplified APEX Validations...');
 
 		const uniqueSamsForValidationsTimer = new TIMETRACKER();
 
@@ -168,7 +168,7 @@ async function main() {
 			uniqueSamsForValidationsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForValidationsCounter} Unique SAMs from Simplified Apex Validations. (${uniqueSamsForValidationsTimer.get()})`, 1);
+		LOGGER.success(`Added ${uniqueSamsForValidationsCounter} Unique SAMs from Simplified APEX Validations. (${uniqueSamsForValidationsTimer.get()})`, 1);
 
 		//
 

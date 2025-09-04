@@ -9,15 +9,13 @@ export function parseSam(item: AggregationResultItem): CreateSamDto {
 	return {
 		_id: item.mac_sam_serial_number,
 		agency_id: item.agency_id,
-		device_ids: null,
+		analysis: [],
 		latest_apex_version: null,
-		remarks: null,
 		seen_first_at: null,
 		seen_last_at: null,
 		system_status: 'waiting',
 		transactions_expected: null,
 		transactions_found: null,
 		transactions_missing: null,
-		vehicle_ids: null,
 	};
 }

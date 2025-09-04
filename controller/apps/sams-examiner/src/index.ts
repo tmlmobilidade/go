@@ -3,8 +3,8 @@
 import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
-import { type CreateSamDto } from '@tmlmobilidade/types';
+import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { type CreateSamDto, SamAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -26,26 +26,27 @@ async function main() {
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
 
 		//
-		// Ask the coordinator for a batch of Unique SAM IDs to process
+		// Ask the coordinator for a batch of SAM IDs to process
 
 		const fetchCoordinatorTimer = new TIMETRACKER();
 
-		const uniqueSamIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/unique-sams');
-		const uniqueSamIdsBatch = await uniqueSamIdsBatchResponse.json() as number[];
+		const samIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/unique-sams');
+		const samIdsBatch = await samIdsBatchResponse.json() as number[];
 
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
 
 		//
-		// With the list of Unique SAM IDs, fetch the actual Unique SAM documents to be processsed
+		// With the list of SAM IDs,
+		// fetch the actual SAM documents to be processsed
 
 		const fetchSamDocumentsTimer = new TIMETRACKER();
 
-		const uniqueSamsBatch = await uniqueSams.findMany({ _id: { $in: uniqueSamIdsBatch || [] } });
+		const samsBatch = await sams.findMany({ _id: { $in: samIdsBatch || [] } });
 
-		LOGGER.info(`Processing ${uniqueSamsBatch.length} Unique SAMs... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchSamDocumentsTimer.get()})`, 1);
+		LOGGER.info(`Processing ${samsBatch.length} SAMs... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchSamDocumentsTimer.get()})`, 1);
 
 		//
-		// For each Unique SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
+		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
 		const searchTimestampEnd = Dates
@@ -55,18 +56,18 @@ async function main() {
 			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 2, second: 0, year: 2025 })
 			.unix_timestamp;
 
-		for (const [uniqueSamIndex, uniqueSamItem] of uniqueSamsBatch.entries()) {
+		for (const [samIndex, samItem] of samsBatch.entries()) {
 			try {
 			//
 
-				LOGGER.divider(`[${uniqueSamsBatch.length - uniqueSamIndex}/${uniqueSamsBatch.length}] [${uniqueSamItem.agency_id}] Unique SAM ${uniqueSamItem._id}`);
+				LOGGER.divider(`[${samsBatch.length - samIndex}/${samsBatch.length}] [${samItem.agency_id}] SAM ${samItem._id}`);
 
 				//
-				// Get all APEX transactions for the current Unique SAM in parallel.
+				// Get all APEX transactions for the current SAM in parallel.
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
 
 				const aggregationPipeline = [
-					{ $match: { created_at: { $lt: searchTimestampEnd }, mac_sam_serial_number: uniqueSamItem._id } },
+					{ $match: { created_at: { $lt: searchTimestampEnd }, mac_sam_serial_number: samItem._id } },
 					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1, vehicle_id: 1 } },
 				];
 
@@ -109,8 +110,8 @@ async function main() {
 				// same Agency ID and the same Device ID.
 
 				if (sortedTransactions.length === 0) {
-					LOGGER.error(`No transactions found for Unique SAM "${uniqueSamItem._id}". Skipping.`);
-					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'No transactions found for given time range.', system_status: 'complete' });
+					LOGGER.error(`No transactions found for SAM "${samItem._id}". Skipping.`);
+					await sams.updateById(samItem._id, { remarks: 'No transactions found for given time range.', system_status: 'complete' });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -120,14 +121,83 @@ async function main() {
 				const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 				if (!allTransactionsMatch) {
-					LOGGER.error(`Unique SAM ${uniqueSamItem._id} has transactions with different Agency ID.`);
-					await uniqueSams.updateById(uniqueSamItem._id, { remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
+					LOGGER.error(`SAM ${samItem._id} has transactions with different Agency ID.`);
+					await sams.updateById(samItem._id, { remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
 					LOGGER.spacer(1);
 					continue;
 				}
 
 				//
-				// Update the Unique SAM with the latest ASE Counter Value
+				// Create groups of continuous sequentiality
+				// for the same device and vehicle.
+
+				const samAnalysisGroups: SamAnalysis[] = [];
+
+				let currentGroup: SamAnalysis = {
+					apex_version: sortedTransactions[0].apex_version,
+					device_id: sortedTransactions[0].device_id,
+					end_time: sortedTransactions[0].created_at,
+					start_time: sortedTransactions[0].created_at,
+					transactions_expected: 1,
+					transactions_found: 1,
+					transactions_missing: 0,
+					vehicle_id: sortedTransactions[0].vehicle_id,
+				};
+
+				for (let i = 1; i < sortedTransactions.length; i++) {
+					// Setup variables
+					const previousTx = sortedTransactions[i - 1];
+					const currentTx = sortedTransactions[i];
+					// Compare transaction properties
+					const hasSameDeviceId = currentTx.device_id === previousTx.device_id;
+					const hasSameVehicleId = currentTx.vehicle_id === previousTx.vehicle_id;
+					const hasSameApexVersion = currentTx.apex_version === previousTx.apex_version;
+					const aseCounterIsSequential = currentTx.mac_ase_counter_value === previousTx.mac_ase_counter_value + 1;
+					// If all checks pass, we can consider them part of the same group
+					if (hasSameDeviceId && hasSameVehicleId && hasSameApexVersion && aseCounterIsSequential) {
+						// Update the current group with
+						// the latest transaction details
+						currentGroup.end_time = currentTx.created_at;
+						currentGroup.transactions_expected++;
+						currentGroup.transactions_found++;
+					}
+					else {
+						// If any of the checks fail, we need
+						// to save the current group...
+						samAnalysisGroups.push(currentGroup);
+						// ...create a new one with the gap...
+						samAnalysisGroups.push({
+							apex_version: null,
+							device_id: null,
+							end_time: currentTx.created_at,
+							start_time: previousTx.created_at,
+							transactions_expected: currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value - 1,
+							transactions_found: 0,
+							transactions_missing: currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value - 1,
+							vehicle_id: null,
+						});
+						// ...and initiate a new current group
+						// with the current transaction
+						currentGroup = {
+							apex_version: currentTx.apex_version,
+							device_id: currentTx.device_id,
+							end_time: currentTx.created_at,
+							start_time: currentTx.created_at,
+							transactions_expected: 1,
+							transactions_found: 1,
+							transactions_missing: 0,
+							vehicle_id: currentTx.vehicle_id,
+						};
+					}
+				}
+
+				//
+				// Save the final group
+
+				samAnalysisGroups.push(currentGroup);
+
+				//
+				// Update the SAM with the latest ASE Counter Value
 				// and the number of transactions.
 
 				const firstTransaction = sortedTransactions[0];
@@ -137,49 +207,32 @@ async function main() {
 				const transactionsExpected = latestTransaction.mac_ase_counter_value - firstTransaction.mac_ase_counter_value + 1;
 				const transactionsMissing = transactionsExpected - transactionsFound;
 
-				const foundDeviceIds = new Set(sortedTransactions.map(item => item.device_id).filter(id => !!id));
-				const foundVehicleIds = new Set(sortedTransactions.map(item => item.vehicle_id).filter(id => !!id));
-
 				//
-				// Get the aseCounterValues missing
-
-				const aseCounterValues = sortedTransactions.map(t => t.mac_ase_counter_value);
-				const aseCounterValuesSet = new Set(aseCounterValues);
-				const missingAseCounterValues = [];
-
-				for (let i = firstTransaction.mac_ase_counter_value; i <= latestTransaction.mac_ase_counter_value; i++) {
-					if (!aseCounterValuesSet.has(i)) {
-						missingAseCounterValues.push(i);
-					}
-				}
-
-				//
-				// Update the Unique SAM with the new data.
+				// Update the SAM with the new data.
 
 				const updatedSamData: CreateSamDto = {
-					_id: uniqueSamItem._id,
+					_id: samItem._id,
 					agency_id: agencyId,
-					device_ids: Array.from(foundDeviceIds),
+					analysis: samAnalysisGroups,
 					latest_apex_version: latestTransaction.apex_version,
-					remarks: transactionsMissing === 0 ? 'All transactions found.' : `Missing ${transactionsMissing} transactions. [${missingAseCounterValues.slice(0, 25).join(',')}]`,
+					remarks: null,
 					seen_first_at: firstTransaction.created_at,
 					seen_last_at: latestTransaction.created_at,
 					system_status: 'complete',
 					transactions_expected: transactionsExpected,
 					transactions_found: transactionsFound,
 					transactions_missing: transactionsMissing,
-					vehicle_ids: Array.from(foundVehicleIds),
 				};
 
-				await uniqueSams.updateById(uniqueSamItem._id, updatedSamData);
+				await sams.updateById(samItem._id, updatedSamData);
 
 				LOGGER.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
 
 			//
 			}
 			catch (error) {
-				LOGGER.error(`Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`);
-				await uniqueSams.updateById(uniqueSamItem._id, { remarks: `Error processing Unique SAM "${uniqueSamItem._id}": ${error.message}`, system_status: 'error' });
+				LOGGER.error(`Error processing SAM "${samItem._id}": ${error.message}`);
+				await sams.updateById(samItem._id, { remarks: `Error processing SAM "${samItem._id}": ${error.message}`, system_status: 'error' });
 			}
 		}
 
