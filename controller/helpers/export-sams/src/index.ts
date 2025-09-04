@@ -88,8 +88,14 @@ interface SamExport {
 		fs.mkdirSync('output');
 	}
 
+	console.log(`Exporting ${output.length} rows...`);
+
 	const outputTxt = Papa.unparse(output);
 	fs.writeFileSync('output/sams-41.csv', outputTxt);
+
+	console.log('Done.');
+
+	process.exit(0);
 
 	//
 })();
