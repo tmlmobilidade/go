@@ -13,8 +13,8 @@
 		"@mantine/nprogress": "8.2.8",
 		"@tabler/icons-react": "3.34.1",
 		"@tmlmobilidade/sae-controller-ride-normalized": "*",
-		"@tmlmobilidade/types": "20250903.1543.8",
-		"@tmlmobilidade/ui": "20250903.1543.8",
+		"@tmlmobilidade/types": "20250904.1.6",
+		"@tmlmobilidade/ui": "20250904.1.6",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.4",
 		"lodash": "4.17.21",
@@ -31,7 +31,7 @@
 		"swr": "2.3.6"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250903.1543.8",
+		"@tmlmobilidade/tsconfig": "20250904.1.6",
 		"@types/geojson": "7946.0.16",
 		"@types/lodash": "4.17.20",
 		"@types/luxon": "3.7.1",
