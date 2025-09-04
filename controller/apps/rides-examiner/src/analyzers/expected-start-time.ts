@@ -51,7 +51,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): Ride['ana
 		//
 		// Classify the delay
 
-		if (delayInMinutes < 0) {
+		if (delayInMinutes <= -1) {
 			return {
 				grade: 'fail',
 				reason: 'EARLY_START',
@@ -59,7 +59,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): Ride['ana
 			};
 		}
 
-		if (delayInMinutes >= 0 && delayInMinutes <= 5) {
+		if (delayInMinutes > -1 && delayInMinutes <= 5) {
 			return {
 				grade: 'pass',
 				reason: 'START_ON_TIME',
