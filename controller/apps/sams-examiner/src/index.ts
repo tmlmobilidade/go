@@ -51,9 +51,9 @@ async function main() {
 
 		const searchTimestampEnd = Dates
 			.now('Europe/Lisbon')
-			// .minus({ days: 15 })
+			.minus({ days: 5 })
 			// .startOf('day')
-			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 2, second: 0, year: 2025 })
+			// .set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 2, second: 0, year: 2025 })
 			.unix_timestamp;
 
 		for (const [samIndex, samItem] of samsBatch.entries()) {
