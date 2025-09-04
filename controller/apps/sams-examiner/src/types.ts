@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/types';
+import { type SimplifiedApexType, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -11,5 +11,6 @@ export interface AggregationResultItem {
 	created_at: UnixTimestamp
 	device_id: string
 	mac_ase_counter_value: number
+	transaction_type: SimplifiedApexType
 	vehicle_id: null | number
 }

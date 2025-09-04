@@ -5,6 +5,7 @@ import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -28,8 +29,14 @@ async function main() {
 		// Prepare the agregation pipeline to extract all unique SAM Serial Numbers
 		// from simplified Apex Transactions. The pipeline is common to all transaction types.
 
+		const searchTimestampStart = Dates
+			.now('Europe/Lisbon')
+			.startOf('day')
+			.set({ day: 1, hour: 4, month: 7, year: 2025 })
+			.unix_timestamp;
+
 		const agregationPipeline = [
-			{ $match: { agency_id: { $in: ['41', '42', '43', '44'] } } },
+			{ $match: { agency_id: { $in: ['41', '42', '43', '44'] }, created_at: { $gte: searchTimestampStart } } },
 			{ $group: { _id: { agency_id: '$agency_id', mac_sam_serial_number: '$mac_sam_serial_number' } } },
 			{ $project: { _id: false, agency_id: '$_id.agency_id', mac_sam_serial_number: '$_id.mac_sam_serial_number' } },
 		];

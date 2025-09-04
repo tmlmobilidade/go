@@ -49,18 +49,6 @@ async function main() {
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		const searchTimestampStart = Dates
-			.now('Europe/Lisbon')
-			.startOf('day')
-			.set({ day: 1, hour: 4, month: 7, year: 2025 })
-			.unix_timestamp;
-
-		const searchTimestampEnd = Dates
-			.now('Europe/Lisbon')
-			.startOf('day')
-			.minus({ days: 5 })
-			.unix_timestamp;
-
 		for (const [samIndex, samItem] of samsBatch.entries()) {
 			try {
 			//
@@ -70,6 +58,18 @@ async function main() {
 				//
 				// Get all APEX transactions for the current SAM in parallel.
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
+
+				const searchTimestampStart = Dates
+					.now('Europe/Lisbon')
+					.startOf('day')
+					.set({ day: 1, hour: 4, month: 7, year: 2025 })
+					.unix_timestamp;
+
+				const searchTimestampEnd = Dates
+					.now('Europe/Lisbon')
+					.startOf('day')
+					.minus({ days: 5 })
+					.unix_timestamp;
 
 				const aggregationPipeline = [
 					{ $match: { created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: samItem._id } },
@@ -99,11 +99,16 @@ async function main() {
 				// Now merge all transactions into a single variable
 				// and sort them by ASE Counter Value.
 
+				const preparedLocationTransactions = locationTransactionsData.map(item => ({ ...item, transaction_type: 'location' })) as AggregationResultItem[];
+				const preparedOnBoardRefundsTransactions = onBoardRefundsTransactionsData.map(item => ({ ...item, transaction_type: 'on_board_refund' })) as AggregationResultItem[];
+				const preparedOnBoardSalesTransactions = onBoardSalesTransactionsData.map(item => ({ ...item, transaction_type: 'on_board_sale' })) as AggregationResultItem[];
+				const preparedValidationsTransactions = validationsTransactionsData.map(item => ({ ...item, transaction_type: 'validation' })) as AggregationResultItem[];
+
 				const allSimplifiedTransactions: AggregationResultItem[] = [
-					...locationTransactionsData as AggregationResultItem[],
-					...onBoardRefundsTransactionsData as AggregationResultItem[],
-					...onBoardSalesTransactionsData as AggregationResultItem[],
-					...validationsTransactionsData as AggregationResultItem[],
+					...preparedLocationTransactions,
+					...preparedOnBoardRefundsTransactions,
+					...preparedOnBoardSalesTransactions,
+					...preparedValidationsTransactions,
 				];
 
 				const sortedTransactions = allSimplifiedTransactions
@@ -142,6 +147,10 @@ async function main() {
 					apex_version: sortedTransactions[0].apex_version,
 					device_id: sortedTransactions[0].device_id,
 					end_time: sortedTransactions[0].created_at,
+					first_transaction_id: sortedTransactions[0]._id,
+					first_transaction_type: sortedTransactions[0].transaction_type,
+					last_transaction_id: sortedTransactions[0]._id,
+					last_transaction_type: sortedTransactions[0].transaction_type,
 					start_time: sortedTransactions[0].created_at,
 					transactions_expected: 1,
 					transactions_found: 1,
@@ -163,6 +172,8 @@ async function main() {
 						// Update the current group with
 						// the latest transaction details
 						currentGroup.end_time = currentTx.created_at;
+						currentGroup.last_transaction_id = currentTx._id;
+						currentGroup.last_transaction_type = currentTx.transaction_type;
 						currentGroup.transactions_expected++;
 						currentGroup.transactions_found++;
 					}
@@ -175,6 +186,10 @@ async function main() {
 							apex_version: null,
 							device_id: null,
 							end_time: currentTx.created_at,
+							first_transaction_id: null,
+							first_transaction_type: null,
+							last_transaction_id: null,
+							last_transaction_type: null,
 							start_time: previousTx.created_at,
 							transactions_expected: currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value - 1,
 							transactions_found: 0,
@@ -187,6 +202,10 @@ async function main() {
 							apex_version: currentTx.apex_version,
 							device_id: currentTx.device_id,
 							end_time: currentTx.created_at,
+							first_transaction_id: currentTx._id,
+							first_transaction_type: currentTx.transaction_type,
+							last_transaction_id: currentTx._id,
+							last_transaction_type: currentTx.transaction_type,
 							start_time: currentTx.created_at,
 							transactions_expected: 1,
 							transactions_found: 1,
