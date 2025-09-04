@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { uniqueSams } from '@tmlmobilidade/interfaces';
+import { sams } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -13,7 +13,7 @@ let isBusy = false;
 export async function getSams(): Promise<number[]> {
 	//
 
-	const uniqueSamsCollection = await uniqueSams.getCollection();
+	const samsCollection = await sams.getCollection();
 
 	//
 	// The whole point of a coordinator is to prevent multiple instances
@@ -22,7 +22,7 @@ export async function getSams(): Promise<number[]> {
 	// sequentially. To do that, we implement a simple lock mechanism.
 
 	while (isBusy) {
-		LOGGER.info('[unique-sams] Waiting for another request to complete...');
+		LOGGER.info('[sams] Waiting for another request to complete...');
 		await new Promise(resolve => setTimeout(resolve, 500));
 	}
 
@@ -40,13 +40,13 @@ export async function getSams(): Promise<number[]> {
 
 	const fetchTimer = new TIMETRACKER();
 
-	const latestWaitingSams = await uniqueSamsCollection
+	const latestWaitingSams = await samsCollection
 		.find({ system_status: 'waiting' })
 		.limit(batchSize)
 		.toArray();
 
 	/* === FOR TESTING === */
-	// const latestWaitingSams = await uniqueSamsCollection
+	// const latestWaitingSams = await samsCollection
 	// 	.find({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
 	// 	.toArray();
 	/* === FOR TESTING === */
@@ -56,7 +56,7 @@ export async function getSams(): Promise<number[]> {
 	const fetchTimerResult = fetchTimer.get();
 
 	if (latestWaitingSamsIds.length === 0) {
-		LOGGER.info(`[unique-sams] No documents waiting (fetch: ${fetchTimerResult})`);
+		LOGGER.info(`[sams] No documents waiting (fetch: ${fetchTimerResult})`);
 		isBusy = false;
 		return [];
 	}
@@ -67,9 +67,9 @@ export async function getSams(): Promise<number[]> {
 
 	const markTimer = new TIMETRACKER();
 
-	await uniqueSamsCollection.updateMany({ _id: { $in: latestWaitingSamsIds } }, { $set: { system_status: 'processing' } });
+	await samsCollection.updateMany({ _id: { $in: latestWaitingSamsIds } }, { $set: { system_status: 'processing' } });
 
-	LOGGER.info(`New batch: Qty ${latestWaitingSamsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+	LOGGER.info(`[sams] New batch: Qty ${latestWaitingSamsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
 	isBusy = false;
 

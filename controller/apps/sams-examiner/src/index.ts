@@ -30,7 +30,7 @@ async function main() {
 
 		const fetchCoordinatorTimer = new TIMETRACKER();
 
-		const samIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/unique-sams');
+		const samIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/sams');
 		const samIdsBatch = await samIdsBatchResponse.json() as number[];
 
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();

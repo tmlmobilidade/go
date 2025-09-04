@@ -11,6 +11,7 @@ export function parseSam(item: AggregationResultItem): CreateSamDto {
 		agency_id: item.agency_id,
 		analysis: [],
 		latest_apex_version: null,
+		remarks: null,
 		seen_first_at: null,
 		seen_last_at: null,
 		system_status: 'waiting',

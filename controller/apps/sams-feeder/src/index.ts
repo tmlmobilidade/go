@@ -1,10 +1,10 @@
 /* * */
 
-import { parseSam } from '@/parse-unique-sam.js';
+import { parseSam } from '@/parse-sam.js';
 import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, uniqueSams } from '@tmlmobilidade/interfaces';
+import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -39,9 +39,9 @@ async function main() {
 
 		LOGGER.info('Adding SAMs from Simplified APEX Locations...');
 
-		const uniqueSamsForLocationsTimer = new TIMETRACKER();
+		const samsForLocationsTimer = new TIMETRACKER();
 
-		let uniqueSamsForLocationsCounter = 0;
+		let samsForLocationsCounter = 0;
 
 		const allSamsForApexLocations = simplifiedApexLocationsCollection
 			.aggregate(agregationPipeline)
@@ -56,26 +56,26 @@ async function main() {
 				continue;
 			}
 			// Skip if the SAM already exists
-			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) continue;
+			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			if (samAlreadyExists) continue;
 			// Parse the SAM data
 			const parsedSam = parseSam(item);
 			// Create a new SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
-			uniqueSamsForLocationsCounter++;
+			samsForLocationsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${uniqueSamsForLocationsTimer.get()})`, 1);
+		LOGGER.success(`Added ${samsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${samsForLocationsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
 
 		LOGGER.info('Adding SAMs from Simplified APEX On Board Refunds...');
 
-		const uniqueSamsForOnBoardRefundsTimer = new TIMETRACKER();
+		const samsForOnBoardRefundsTimer = new TIMETRACKER();
 
-		let uniqueSamsForOnBoardRefundsCounter = 0;
+		let samsForOnBoardRefundsCounter = 0;
 
 		const allSamsForApexOnBoardRefunds = simplifiedApexOnBoardRefundsCollection
 			.aggregate(agregationPipeline)
@@ -90,26 +90,26 @@ async function main() {
 				continue;
 			}
 			// Skip if the SAM already exists
-			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) continue;
+			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			if (samAlreadyExists) continue;
 			// Parse the SAM data
 			const parsedSam = parseSam(item);
 			// Create a new SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
-			uniqueSamsForOnBoardRefundsCounter++;
+			samsForOnBoardRefundsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${uniqueSamsForOnBoardRefundsTimer.get()})`, 1);
+		LOGGER.success(`Added ${samsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${samsForOnBoardRefundsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD SALES */
 
 		LOGGER.info('Adding SAMs from Simplified APEX On Board Sales...');
 
-		const uniqueSamsForOnBoardSalesTimer = new TIMETRACKER();
+		const samsForOnBoardSalesTimer = new TIMETRACKER();
 
-		let uniqueSamsForOnBoardSalesCounter = 0;
+		let samsForOnBoardSalesCounter = 0;
 
 		const allSamsForApexOnBoardSales = simplifiedApexOnBoardSalesCollection
 			.aggregate(agregationPipeline)
@@ -124,26 +124,26 @@ async function main() {
 				continue;
 			}
 			// Skip if the SAM already exists
-			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) continue;
+			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			if (samAlreadyExists) continue;
 			// Parse the SAM data
 			const parsedSam = parseSam(item);
 			// Create a new SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
-			uniqueSamsForOnBoardSalesCounter++;
+			samsForOnBoardSalesCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${uniqueSamsForOnBoardSalesTimer.get()})`, 1);
+		LOGGER.success(`Added ${samsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${samsForOnBoardSalesTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX VALIDATIONS */
 
-		LOGGER.info('Adding Unique SAMs from Simplified APEX Validations...');
+		LOGGER.info('Adding SAMs from Simplified APEX Validations...');
 
-		const uniqueSamsForValidationsTimer = new TIMETRACKER();
+		const samsForValidationsTimer = new TIMETRACKER();
 
-		let uniqueSamsForValidationsCounter = 0;
+		let samsForValidationsCounter = 0;
 
 		const allSamsForApexValidations = simplifiedApexValidationsCollection
 			.aggregate(agregationPipeline)
@@ -152,23 +152,23 @@ async function main() {
 		for await (const item of allSamsForApexValidations) {
 			// Set the type of item
 			const itemData = item as AggregationResultItem;
-			// Validate if the Unique SAM Serial Number is a number
+			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for Unique SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
-			// Skip if the Unique SAM already exists
-			const uniqueSamAlreadyExists = await uniqueSams.existsById(itemData.mac_sam_serial_number);
-			if (uniqueSamAlreadyExists) continue;
-			// Parse the Unique SAM data
+			// Skip if the SAM already exists
+			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			if (samAlreadyExists) continue;
+			// Parse the SAM data
 			const parsedSam = parseSam(item);
-			// Create a new Unique SAM document
-			await uniqueSams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			// Create a new SAM document
+			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
-			uniqueSamsForValidationsCounter++;
+			samsForValidationsCounter++;
 		}
 
-		LOGGER.success(`Added ${uniqueSamsForValidationsCounter} Unique SAMs from Simplified APEX Validations. (${uniqueSamsForValidationsTimer.get()})`, 1);
+		LOGGER.success(`Added ${samsForValidationsCounter} SAMs from Simplified APEX Validations. (${samsForValidationsTimer.get()})`, 1);
 
 		//
 
