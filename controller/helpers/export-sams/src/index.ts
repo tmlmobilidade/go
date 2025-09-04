@@ -42,7 +42,7 @@ interface SamExport {
 
 	const samsCollection = await sams.getCollection();
 
-	const allSamsStream = samsCollection.find({ agency_id: '41' }).stream();
+	const allSamsStream = samsCollection.find({ agency_id: '41', system_status: 'complete' }).stream();
 
 	//
 	// Stream all sams
