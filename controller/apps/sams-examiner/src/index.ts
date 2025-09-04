@@ -49,11 +49,16 @@ async function main() {
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
+		const searchTimestampStart = Dates
+			.now('Europe/Lisbon')
+			.startOf('day')
+			.set({ day: 1, hour: 4, month: 7, year: 2025 })
+			.unix_timestamp;
+
 		const searchTimestampEnd = Dates
 			.now('Europe/Lisbon')
+			.startOf('day')
 			.minus({ days: 5 })
-			// .startOf('day')
-			// .set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 2, second: 0, year: 2025 })
 			.unix_timestamp;
 
 		for (const [samIndex, samItem] of samsBatch.entries()) {
@@ -67,7 +72,7 @@ async function main() {
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
 
 				const aggregationPipeline = [
-					{ $match: { created_at: { $lt: searchTimestampEnd }, mac_sam_serial_number: samItem._id } },
+					{ $match: { created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: samItem._id } },
 					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1, vehicle_id: 1 } },
 				];
 
