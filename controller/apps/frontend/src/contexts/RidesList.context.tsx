@@ -90,12 +90,12 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
-	const [queryStringParams, setQueryStringParams] = useDebouncedState('', 500);
+	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
 
 	//
 	// B. Fetch data
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(`/api/rides?${queryStringParams}`);
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(queryStringParams && `/api/rides?${queryStringParams}`);
 
 	useEffect(() => {
 		// This effect runs every time there is a change in the websocket reference,
