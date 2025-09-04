@@ -90,39 +90,15 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
-	const queryParamsString: string = useMemo(() => {
-		const params = {
-			agency_ids: filterAgency.join(','),
-			date_end: filterDateEnd,
-			date_start: filterDateStart,
-			search: debouncedFilterSearch,
-			/* * */
-			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
-			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
-			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
-			/* * */
-			delay_statuses: filterDelayStatus.join(','),
-			operational_statuses: filterOperationalStatus.join(','),
-			/* * */
-			line_ids: undefined,
-			stop_ids: undefined,
-		};
-
-		const stringParams: Record<string, string> = Object.fromEntries(
-			Object.entries(params)
-				.filter(([, value]) => value !== undefined)
-				.map(([key, value]) => [key, Array.isArray(value) ? value.join(',') : String(value)]),
-		);
-
-		return new URLSearchParams(stringParams).toString();
-	}, [debouncedFilterSearch, filterAgency, filterDateStart, filterDateEnd, filterAnalysisEndedAtLastStop, filterAnalysisExpectedApexValidationInterval, filterAnalysisSimpleThreeVehicleEvents, filterDelayStatus, filterOperationalStatus]);
-
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(`/api/rides?${queryParamsString}`);
+	const [queryStringParams, setQueryStringParams] = useDebouncedState('', 500);
 
 	//
 	// B. Fetch data
+
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(`/api/rides?${queryStringParams}`);
+
 	useEffect(() => {
-		// This effect runs everytime there is a change in the websocket reference,
+		// This effect runs every time there is a change in the websocket reference,
 		// as the goal is to always maintain an open connection. If the connection is
 		// already open, there is no need to open a new one, so return early.
 		// If the connection is not open, then try to open a new one.
@@ -159,10 +135,47 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	//
-	// B. Handle actions
+	// C. Transform data
+
+	useEffect(() => {
+		const params = {
+			agency_ids: filterAgency.join(','),
+			date_end: filterDateEnd,
+			date_start: filterDateStart,
+			search: debouncedFilterSearch,
+			/* * */
+			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
+			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
+			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
+			/* * */
+			delay_statuses: filterDelayStatus.join(','),
+			operational_statuses: filterOperationalStatus.join(','),
+			/* * */
+			line_ids: undefined,
+			stop_ids: undefined,
+		};
+		const stringParams: Record<string, string> = Object.fromEntries(
+			Object
+				.entries(params)
+				.filter(([, value]) => value !== undefined)
+				.map(([key, value]) => [key, Array.isArray(value) ? value.join(',') : String(value)]),
+		);
+		const result = new URLSearchParams(stringParams).toString();
+		setQueryStringParams(result);
+	}, [
+		debouncedFilterSearch,
+		filterAgency,
+		filterDateStart,
+		filterDateEnd,
+		filterAnalysisEndedAtLastStop,
+		filterAnalysisExpectedApexValidationInterval,
+		filterAnalysisSimpleThreeVehicleEvents,
+		filterDelayStatus,
+		filterOperationalStatus,
+	]);
 
 	//
-	// C. Define context value
+	// D. Define context value
 
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
@@ -216,7 +229,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	//
-	// D. Render components
+	// E. Render components
 
 	return (
 		<RidesListContext.Provider value={contextValue}>
