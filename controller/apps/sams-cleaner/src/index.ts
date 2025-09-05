@@ -6,7 +6,7 @@ import { sams } from '@tmlmobilidade/interfaces';
 
 /* * */
 
-async function reprocessallSams() {
+async function reprocessAllSams() {
 	try {
 		//
 
@@ -38,7 +38,7 @@ async function reprocessallSams() {
 
 (async function init() {
 	const runOnInterval = async () => {
-		await reprocessallSams();
+		await reprocessAllSams();
 		setTimeout(runOnInterval, 43_200_000); // 12 hours
 	};
 	runOnInterval();
