@@ -4,7 +4,7 @@ import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type CreateSamDto, SamAnalysis } from '@tmlmobilidade/types';
+import { type CreateSamDto, type SamAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -59,11 +59,19 @@ async function main() {
 				// Get all APEX transactions for the current SAM in parallel.
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
 
-				const searchTimestampStart = Dates
+				let searchTimestampStart = Dates
 					.now('Europe/Lisbon')
 					.startOf('day')
-					.set({ day: 1, hour: 4, month: 7, year: 2025 })
+					.set({ day: 1, hour: 4, month: 1, year: 2025 })
 					.unix_timestamp;
+
+				if (samItem.agency_id === '41' || samItem.agency_id === '42' || samItem.agency_id === '43') {
+					searchTimestampStart = Dates
+						.now('Europe/Lisbon')
+						.startOf('day')
+						.set({ day: 28, hour: 4, month: 8, year: 2025 })
+						.unix_timestamp;
+				}
 
 				const searchTimestampEnd = Dates
 					.now('Europe/Lisbon')
@@ -191,9 +199,9 @@ async function main() {
 							last_transaction_id: null,
 							last_transaction_type: null,
 							start_time: previousTx.created_at,
-							transactions_expected: currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value - 1,
+							transactions_expected: (currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value) - 1,
 							transactions_found: 0,
-							transactions_missing: currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value - 1,
+							transactions_missing: (currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value) - 1,
 							vehicle_id: null,
 						});
 						// ...and initiate a new current group

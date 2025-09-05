@@ -1,7 +1,8 @@
 /* * */
 
 import { sams } from '@tmlmobilidade/interfaces';
-import { type Sam, UnixTimestamp } from '@tmlmobilidade/types';
+import { type Sam } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 
@@ -12,25 +13,16 @@ interface SamExport {
 	agency_id: string
 	analysis_apex_version: null | string
 	analysis_device_id: null | string
-	analysis_end_time: null | UnixTimestamp
+	analysis_end_time: null | string
 	analysis_first_transaction_id: null | string
 	analysis_first_transaction_type: null | string
 	analysis_last_transaction_id: null | string
 	analysis_last_transaction_type: null | string
-	analysis_start_time: null | UnixTimestamp
+	analysis_start_time: null | string
 	analysis_transactions_expected: null | number
 	analysis_transactions_found: null | number
 	analysis_transactions_missing: null | number
 	analysis_vehicle_id: null | number
-	latest_apex_version: null | string
-	remarks: null | string
-	seen_first_at: null | number
-	seen_last_at: null | number
-	system_status: string
-	transactions_expected: null | number
-	transactions_found: null | number
-	transactions_missing: null | number
-	updated_at: number
 }
 
 /* * */
@@ -58,25 +50,16 @@ interface SamExport {
 				agency_id: samData.agency_id,
 				analysis_apex_version: analysisGroup.apex_version ?? null,
 				analysis_device_id: analysisGroup.device_id ?? null,
-				analysis_end_time: analysisGroup.end_time ?? null,
+				analysis_end_time: analysisGroup.end_time ? Dates.fromUnixTimestamp(analysisGroup.end_time).iso : null,
 				analysis_first_transaction_id: analysisGroup.first_transaction_id ?? null,
 				analysis_first_transaction_type: analysisGroup.first_transaction_type ?? null,
 				analysis_last_transaction_id: analysisGroup.last_transaction_id ?? null,
 				analysis_last_transaction_type: analysisGroup.last_transaction_type ?? null,
-				analysis_start_time: analysisGroup.start_time ?? null,
+				analysis_start_time: analysisGroup.start_time ? Dates.fromUnixTimestamp(analysisGroup.start_time).iso : null,
 				analysis_transactions_expected: analysisGroup.transactions_expected ?? null,
 				analysis_transactions_found: analysisGroup.transactions_found ?? null,
 				analysis_transactions_missing: analysisGroup.transactions_missing ?? null,
 				analysis_vehicle_id: analysisGroup.vehicle_id ?? null,
-				latest_apex_version: samData.latest_apex_version ?? null,
-				remarks: samData.remarks ?? null,
-				seen_first_at: samData.seen_first_at ?? null,
-				seen_last_at: samData.seen_last_at ?? null,
-				system_status: samData.system_status ?? null,
-				transactions_expected: samData.transactions_expected ?? null,
-				transactions_found: samData.transactions_found ?? null,
-				transactions_missing: samData.transactions_missing ?? null,
-				updated_at: samData.updated_at ?? null,
 			});
 		}
 	}

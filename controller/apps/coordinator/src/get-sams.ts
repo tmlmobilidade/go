@@ -3,6 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { sams } from '@tmlmobilidade/interfaces';
+import { type Sam } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -36,12 +37,13 @@ export async function getSams(): Promise<number[]> {
 	// Find all Unique SAM IDs that are waiting analysis and which started before the current time,
 	// sorted in descending order to prioritize the most recent Unique SAMs.
 
-	const batchSize = 1000;
+	const batchSize = 5;
 
 	const fetchTimer = new TIMETRACKER();
 
 	const latestWaitingSams = await samsCollection
 		.find({ system_status: 'waiting' })
+		.project({ _id: 1 })
 		.limit(batchSize)
 		.toArray();
 
@@ -51,7 +53,7 @@ export async function getSams(): Promise<number[]> {
 	// 	.toArray();
 	/* === FOR TESTING === */
 
-	const latestWaitingSamsIds = latestWaitingSams.map(item => item._id);
+	const latestWaitingSamsIds = latestWaitingSams.map((item: Sam) => item._id);
 
 	const fetchTimerResult = fetchTimer.get();
 
@@ -69,7 +71,7 @@ export async function getSams(): Promise<number[]> {
 
 	await samsCollection.updateMany({ _id: { $in: latestWaitingSamsIds } }, { $set: { system_status: 'processing' } });
 
-	LOGGER.info(`[sams] New batch: Qty ${latestWaitingSamsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+	LOGGER.info(`[sams] New batch: Qty ${latestWaitingSamsIds.length} (fetch: ${fetchTimerResult} | mark: ${markTimer.get()})`);
 
 	isBusy = false;
 
