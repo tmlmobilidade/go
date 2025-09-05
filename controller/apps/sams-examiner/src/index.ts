@@ -290,7 +290,7 @@ async function main() {
 (async function init() {
 	const runOnInterval = async () => {
 		await main();
-		setTimeout(runOnInterval, 10_000); // 10 seconds
+		setTimeout(runOnInterval, 1000); // 1 second
 	};
 	runOnInterval();
 })();
