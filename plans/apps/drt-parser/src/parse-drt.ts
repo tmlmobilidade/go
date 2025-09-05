@@ -11,7 +11,7 @@ import { GtfsSQLTables } from './import-gtfs-to-database.js';
 
 /* * */
 
-interface DrtTables {
+export interface DrtTables {
 	journeys: SQLiteTableInstance<DrtJourneys>
 	patternPoints: SQLiteTableInstance<DrtPatternPoints>
 	patterns: SQLiteTableInstance<DrtPatterns>
@@ -20,13 +20,10 @@ interface DrtTables {
 	stops: SQLiteTableInstance<DrtStops>
 }
 
-interface ParseDrtOptions {
+interface Context {
 	database: InstanceType<typeof SQLiteDatabase>
 	gtfs: GtfsSQLTables
 	plan: Plan
-}
-
-interface Context extends ParseDrtOptions {
 	tables: DrtTables
 }
 
@@ -34,17 +31,16 @@ interface Context extends ParseDrtOptions {
 
 /* * */
 /* MAIN FUNCTION */
-export async function parseGtfsToDrt(options: ParseDrtOptions) {
+export async function parseGtfsToDrt(options: Context) {
 	try {
 		const globalTimer = new TIMETRACKER();
 
-		LOGGER.info(`Converting GTFS to DRT Schema...`);
+		LOGGER.title(`Converting GTFS to DRT Schema...`);
 
 		//
 		//
 		// Initialize Context, Database and Tables
-		const context: Context = { tables: undefined, ...options };
-		context.tables = intializeSQLTables(context.database);
+		const context: Context = { ...options };
 
 		//
 		LOGGER.terminate(`Finished GTFS to DRT Schema in ${globalTimer.get()}.`);
@@ -62,7 +58,7 @@ export async function parseGtfsToDrt(options: ParseDrtOptions) {
 			//
 			// Log every 10000 rides processed
 
-			if (index % 10000 === 0) LOGGER.title(`${index} trips left. ${context.gtfs.stopTimes.size} stop_times left. Generated ${context.tables.journeys.size} Rides so far. `);
+			if (index % 1000 === 0) LOGGER.info(`Processing Trip ${index} of ${context.gtfs.trips.size}`);
 
 			//
 			// Get associated data from previously saved entities,
@@ -116,191 +112,14 @@ export async function parseGtfsToDrt(options: ParseDrtOptions) {
 			// Parse Journeys
 			await parseJourneys(context, currentTrip, selectedRoute, selectedStopTime);
 		}
+
+		LOGGER.success(`Finished converting GTFS to DRT Schema in ${globalTimer.get()}.`, 1);
+		return;
 	}
 	catch (error) {
 		LOGGER.error('Error converting GTFS to DRT Schema.', error);
 		throw error;
 	}
-}
-
-/* INITIALIZE SQL TABLES */
-function intializeSQLTables(database: Context['database']): Context['tables'] {
-	//
-	// Setup Tables
-
-	const journeys = database.registerTable<DrtJourneys>('journeys', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: false, name: 'operator_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'operation_plan_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'date', not_null: true, type: 'TEXT' },
-			{ indexed: true, name: 'journey_id', not_null: true, primary_key: true, type: 'INTEGER' },
-			{ indexed: false, name: 'day_type_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'holiday', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'period', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'block_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'start_shift_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'end_shift_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'trip_headsign', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'trip_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'trip_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'start_stop_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'start_stop_sequence', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'start_departure_time', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'end_stop_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'end_stop_sequence', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'end_arrival_time', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'va_trip_number', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'da_trip_number', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_origin', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_destination', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_desc', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'line_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'line_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'line_long_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'direction_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'pattern_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'journey_metric', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'run_type', not_null: true, type: 'TEXT' },
-
-		],
-	});
-
-	const routes = database.registerTable<DrtRoutes>('routes', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: false, name: 'operator_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'operation_plan_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'line_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'line_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'line_long_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_origin', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_destination', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_url', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_color', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_text_color', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_sort_order', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'route_desc', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'variant_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'variant_description', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'direction_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'school', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'continuous_pickup', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'continuous_drop_off', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'sample_trip_id', not_null: true, type: 'TEXT' },
-		],
-	});
-
-	const stops = database.registerTable<DrtStops>('stops', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: false, name: 'operator_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'operation_plan_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_code', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_desc', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'stop_lng', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'zone_shift', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_url', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'location_type', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'parent_station', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_timezone', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'wheelchair_boarding', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'platform_code', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'entrance_restriction', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'exit_restriction', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'slot', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'signalling', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'shelter', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'bench', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'network_map', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'schedule', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'real_time_information', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'tariff', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'preservation_state', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'equipment', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'observations', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'region', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'municipality', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'municipality_fare_1', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'municipality_fare_2', not_null: true, type: 'TEXT' },
-		],
-	});
-
-	const patternPoints = database.registerTable<DrtPatternPoints>('pattern_points', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: false, name: 'operator_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'operation_plan_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'ordinal', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'stop_code', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'lat', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'lng', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'is_stop', not_null: true, type: 'BOOLEAN' },
-			{ indexed: false, name: 'is_waypoint', not_null: true, type: 'BOOLEAN' },
-			{ indexed: false, name: 'meters_from_start', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_to_end', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_from_previous_stop', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_to_next_stop', not_null: true, type: 'REAL' },
-		],
-	});
-
-	const patternStops = database.registerTable<DrtPatternStops>('pattern_stops', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: false, name: 'operator_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'operation_plan_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'ordinal', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'stop_headsign', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'fare_info', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_code', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'lat', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'lng', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_from_start', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_to_end', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_from_previous_stop', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_to_next_stop', not_null: true, type: 'REAL' },
-		],
-	});
-
-	const patterns = database.registerTable<DrtPatterns>('patterns', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: false, name: 'operator_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'operation_plan_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'metric', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'start_stop_code', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'end_stop_code', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'serial_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'encoded_path', not_null: true, type: 'TEXT' },
-		],
-	});
-
-	return {
-		journeys,
-		patternPoints,
-		patterns,
-		patternStops,
-		routes,
-		stops,
-	};
 }
 
 /* * */
@@ -315,11 +134,6 @@ async function parseStops(context: Context) {
 
 	try {
 		//
-
-		const stopsParseTimer = new TIMETRACKER();
-
-		LOGGER.title(`Converting SQLite STOPS to DRT STOPS:`);
-		LOGGER.info(`Total Stops: ${context.gtfs.stops.size}`);
 
 		for (const stop of context.gtfs.stops.all()) {
 			const drtStop: DrtStops = {
@@ -361,8 +175,6 @@ async function parseStops(context: Context) {
 		}
 
 		context.tables.stops.flush();
-
-		LOGGER.success(`Finished converting SQLite STOPS to DRT STOPS: ${context.tables.stops.all().length} rows saved in ${stopsParseTimer.get()}.`, 1);
 	}
 	catch (error) {
 		LOGGER.error('Error parsing GTFS stops.', error);
@@ -378,11 +190,6 @@ async function parseRoutes(context: Context) {
 
 	try {
 		//
-
-		const routesParseTimer = new TIMETRACKER();
-
-		LOGGER.title(`Converting SQLite ROUTES to DRT ROUTES:`);
-		LOGGER.info(`Total Routes: ${context.gtfs.routes.size}`);
 
 		for (const route of context.gtfs.routes.all()) {
 			const drtRoute: DrtRoutes = {
@@ -415,8 +222,6 @@ async function parseRoutes(context: Context) {
 		}
 
 		context.tables.routes.flush();
-
-		LOGGER.success(`Finished converting SQLite ROUTES to DRT ROUTES: ${context.tables.routes.all().length} rows saved in ${routesParseTimer.get()}.`, 1);
 	}
 	catch (error) {
 		LOGGER.error('Error parsing GTFS routes.', error);
@@ -434,11 +239,6 @@ async function parsePatterns(context: Context, selectedTrip: GTFS_Trip_Extended,
 	try {
 		//
 
-		const patternsParseTimer = new TIMETRACKER();
-
-		LOGGER.title(`Converting SQLite PATTERNS to DRT PATTERNS:`);
-		LOGGER.info(`Total Patterns: ${stopTimesData.length}`);
-
 		for (const stopTime of stopTimesData) {
 			const drtPattern: DrtPatterns = {
 				encoded_path: '',
@@ -455,8 +255,6 @@ async function parsePatterns(context: Context, selectedTrip: GTFS_Trip_Extended,
 		}
 
 		context.tables.patterns.flush();
-
-		LOGGER.success(`Finished converting SQLite PATTERNS to DRT PATTERNS: ${context.tables.patterns.all().length} rows saved in ${patternsParseTimer.get()}.`, 1);
 	}
 	catch (error) {
 		LOGGER.error('Error parsing GTFS patterns.', error);
@@ -469,11 +267,6 @@ async function parsePatterns(context: Context, selectedTrip: GTFS_Trip_Extended,
 async function parsePatternPoints(context: Context, stopTimesData: GTFS_StopTime[], lastStopTime: GTFS_StopTime) {
 	try {
 		//
-
-		const patternStopsParseTimer = new TIMETRACKER();
-
-		LOGGER.title(`Converting SQLite PATTERN STOPS to DRT PATTERN STOPS:`);
-		LOGGER.info(`Total Pattern Stops: ${stopTimesData.length}`);
 
 		//
 		// Build the HashedTrip data, including formatting the path data by combining
@@ -520,8 +313,6 @@ async function parsePatternPoints(context: Context, stopTimesData: GTFS_StopTime
 		}
 
 		context.tables.patternPoints.flush();
-
-		LOGGER.success(`Finished converting SQLite PATTERN STOPS to DRT PATTERN STOPS: ${context.tables.patternStops.all().length} rows saved in ${patternStopsParseTimer.get()}.`, 1);
 	}
 	catch (error) {
 		LOGGER.error('Error parsing GTFS pattern stops.', error);
@@ -534,11 +325,6 @@ async function parsePatternPoints(context: Context, stopTimesData: GTFS_StopTime
 async function parsePatternStops(context: Context, stopTimesData: GTFS_StopTime[], lastStopTime: GTFS_StopTime) {
 	try {
 		//
-
-		const patternStopsParseTimer = new TIMETRACKER();
-
-		LOGGER.title(`Converting SQLite PATTERN STOPS to DRT PATTERN STOPS:`);
-		LOGGER.info(`Total Pattern Stops: ${stopTimesData.length}`);
 
 		//
 		// Build the HashedTrip data, including formatting the path data by combining
@@ -586,8 +372,6 @@ async function parsePatternStops(context: Context, stopTimesData: GTFS_StopTime[
 		}
 
 		context.tables.patternStops.flush();
-
-		LOGGER.success(`Finished converting SQLite PATTERN STOPS to DRT PATTERN STOPS: ${context.tables.patternStops.all().length} rows saved in ${patternStopsParseTimer.get()}.`, 1);
 	}
 	catch (error) {
 		LOGGER.error('Error parsing GTFS pattern stops.', error);
@@ -603,11 +387,6 @@ async function parseJourneys(context: Context, selectedTrip: GTFS_Trip_Extended,
 
 	try {
 		//
-
-		const journeysParseTimer = new TIMETRACKER();
-
-		LOGGER.title(`Converting SQLite JOURNEYS to DRT JOURNEYS:`);
-		LOGGER.info(`Total Journeys: ${context.gtfs.trips.size}`);
 
 		//
 		// Get the first and last stop times for this trip
@@ -664,8 +443,6 @@ async function parseJourneys(context: Context, selectedTrip: GTFS_Trip_Extended,
 		}
 
 		context.tables.journeys.flush();
-
-		LOGGER.success(`Finished converting SQLite JOURNEYS to DRT JOURNEYS: ${context.tables.journeys.size} rows saved in ${journeysParseTimer.get()}.`, 1);
 	}
 	catch (error) {
 		LOGGER.error('Error parsing GTFS journeys.', error);
