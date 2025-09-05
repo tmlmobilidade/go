@@ -111,6 +111,15 @@ export class RidesController {
 		if (parsedQuery.seen_statuses) {
 			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.seen_statuses.includes(ride.seen_status));
 		}
+		if (parsedQuery.analysis_ended_at_last_stop_grade) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_ended_at_last_stop_grade.includes(ride.analysis_ended_at_last_stop_grade));
+		}
+		if (parsedQuery.analysis_expected_apex_validation_interval) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_expected_apex_validation_interval.includes(ride.analysis_expected_apex_validation_interval));
+		}
+		if (parsedQuery.analysis_simple_three_vehicle_events_grade) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_simple_three_vehicle_events_grade.includes(ride.analysis_simple_three_vehicle_events_grade));
+		}
 
 		//
 		// Send the response
