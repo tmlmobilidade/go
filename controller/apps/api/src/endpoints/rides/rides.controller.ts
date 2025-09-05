@@ -1,14 +1,13 @@
 /* * */
 
+import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { normalizeRide, RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { type HashedShape, type HashedTrip, Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates, getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
-
-import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from './schema.js';
 
 /* * */
 
@@ -20,31 +19,46 @@ export class RidesController {
 	 */
 	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) {
 		//
+
+		//
+		//  Validate the request query parameters
+
 		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
+
+		//
+		// If search is provided, immediately try to find the ride by ID,
+		// and if found, return it right away.
+
+		const searchQuery = parsedQuery.search?.trim() ?? '';
+
+		const foundRideById = await rides.findById(searchQuery);
+
+		if (foundRideById) {
+			const normalizedRide = normalizeRide(foundRideById);
+			return reply.send({
+				data: [normalizedRide],
+				error: null,
+				statusCode: HttpStatus.OK,
+			});
+		}
+
+		//
+		// Setup an aggregation pipeline to filter data
+		// based on the provided parameters.
 
 		const pipeline: AggregationPipeline<Ride> = [];
 
-		//
-		// 1. Match rides between start and end date
 		pipeline.push({ $match: { start_time_scheduled: { $gte: parsedQuery.date_start, $lte: parsedQuery.date_end } } });
 
-		//
+		if (parsedQuery.line_ids) pipeline.push({ $match: { $in: { line_id: parsedQuery.line_ids } } });
 
-		// 2. Filter rides by line ID & stop ID
-		if (parsedQuery.line_ids) {
-			pipeline.push({ $match: { $in: { line_id: parsedQuery.line_ids } } });
-		}
-
-		// 3. Filter rides by agency ID
-		if (parsedQuery.agency_ids) {
-			pipeline.push({ $match: { agency_id: { $in: parsedQuery.agency_ids } } });
-		}
+		if (parsedQuery.agency_ids) pipeline.push({ $match: { agency_id: { $in: parsedQuery.agency_ids } } });
 
 		//
-		// 3. If search is provided, match rides by ID
-		const search = parsedQuery.search?.trim() ?? '';
-		if (search) {
-			const keywords = search.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+		// If search is provided, match rides by ID
+
+		if (searchQuery) {
+			const keywords = searchQuery.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
 			pipeline.push({
 				$match: { _id: { $options: 'i', $regex: pattern } },
@@ -52,18 +66,19 @@ export class RidesController {
 		}
 
 		//
-		// 4. Filter rides based on permissions for the current user
+		// Filter rides based on permissions for the current user
+
 		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.read);
 
 		if (ridePermission?.resource) {
-			// 4.1. Filter rides based on agency IDs
 			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
 				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
 			}
 		}
 
 		//
-		// 5. Filter by analysis
+		// Filter by analysis_* items
+
 		const analysisFilters: { field: keyof GetRidesBatchQuery, path: string }[] = [
 			{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
 			{ field: 'analysis_expected_apex_validation_interval', path: 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade' },
@@ -73,35 +88,23 @@ export class RidesController {
 		analysisFilters.forEach(({ field, path }) => parsedQuery[field] && pipeline.push({ $match: { [path]: { $in: parsedQuery[field] } } }));
 
 		//
-		// 5. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
-		pipeline.push(
-			{ $lookup: { as: 'shape_details', foreignField: '_id', from: 'hashed_trips', localField: 'hashed_trip_id' } },
-			{ $unwind: '$shape_details' },
-			{ $addFields: { stop_ids: '$shape_details.path.stop_id' } },
-			{ $project: { shape_details: 0 } },
-			{ $sort: { start_time_scheduled: 1 } },
-		);
+		// Impose a hard limit to the number of rides returned
+		// to avoid performance issues.
 
-		//
-		// 6. Filter rides by stop ID
-		if (parsedQuery.stop_ids) {
-			pipeline.push({ $match: { stop_ids: { $in: parsedQuery.stop_ids } } });
-		}
-
-		//
-		// 7. Final pipeline stages
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
 		//
-		// 8. Fetch rides from the database
+		// Run the aggregation pipeline to fetch the rides data,
+		// and normalize them before sending it to the client.
+
 		const ridesBatch = await rides.aggregate(pipeline);
 
-		//
-		// 9. Normalize the rides
 		let normalizedRidesBatch = ridesBatch.map(ride => normalizeRide(ride));
 
 		//
-		// 10. Filter by statuses
+		// Apply additional filtering on the normalized data
+		// to match non-persisted fields like delay_status and operational_status.
+
 		if (parsedQuery.delay_statuses) {
 			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.delay_statuses.includes(ride.delay_status));
 		}
@@ -126,6 +129,7 @@ export class RidesController {
 
 		//
 		// Send the response
+
 		reply.send({
 			data: normalizedRidesBatch ?? [],
 			error: null,
