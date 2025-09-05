@@ -70,7 +70,7 @@ export async function parsePlan(planData: Plan) {
 			],
 		});
 
-		const savedRoutes = new SQLiteWriter<Partial<GTFS_Route_Extended>>({
+		const savedRoutes = new SQLiteWriter<GTFS_Route_Extended>({
 			batch_size: 10000,
 			columns: [
 				{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
