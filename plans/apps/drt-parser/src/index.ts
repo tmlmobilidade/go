@@ -8,7 +8,7 @@ import { Dates } from '@tmlmobilidade/utils';
 
 import { DrtJourneys, DrtPatternPoints, DrtPatterns, DrtPatternStops, DrtRoutes, DrtStops } from './drt.types.js';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig } from './import-gtfs-to-database.js';
-import { DrtTables, parseGtfsToDrt } from './parse-drt.js';
+import { DrtTables, parseGtfsToDrt } from './parse-gtfs-to-drt.js';
 
 const DAYS_TO_ADD = 3;
 
