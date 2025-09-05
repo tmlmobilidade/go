@@ -48,6 +48,57 @@ interface Context {
 }
 
 /* * */
+
+/* * */
+/* MAIN FUNCTION */
+
+export async function importGtfsToDatabase(plans: Plan[], config: ImportGtfsToDatabaseConfig = {}): Promise<GtfsSQLWriters> {
+	try {
+		const globalTimer = new TIMETRACKER();
+
+		LOGGER.info(`Importing ${plans.length} GTFS to database...`);
+
+		const sqlWriters = intializeSQLWriters();
+
+		for (const [planIndex, planData] of plans.entries()) {
+			// Initialize context for the current plan
+			const context: Context = {
+				counters: { calendarDates: 0, hashedShapes: 0, hashedTrips: 0, shapes: 0, stopTimes: 0, trips: 0 },
+				planData: planData,
+				referencedRouteIds: new Set<string>(),
+				referencedShapeIds: new Set<string>(),
+				workdir: await downloadAndExtractGtfs(planData),
+				writers: sqlWriters,
+			};
+
+			// Process GTFS files in the correct order
+			const { endDate, startDate } = config;
+
+			await processCalendarFile(context, startDate ?? planData.gtfs_feed_info.feed_start_date, endDate ?? planData.gtfs_feed_info.feed_end_date);
+			await processCalendarDatesFile(context, startDate ?? planData.gtfs_feed_info.feed_start_date, endDate ?? planData.gtfs_feed_info.feed_end_date);
+
+			/* * */
+			await processTripsFile(context);
+			await processRoutesFile(context);
+			await processShapesFile(context);
+			await processStopsFile(context);
+			await processStopTimesFile(context);
+
+			LOGGER.success(`[${planIndex + 1}/${plans.length}] - Finished importing GTFS to database for plan "${planData._id}" in ${globalTimer.get()}.`, 0);
+			LOGGER.divider();
+		}
+
+		LOGGER.terminate(`Finished importing ${plans.length} GTFS to database in ${globalTimer.get()}.`);
+
+		return sqlWriters;
+	}
+	catch (error) {
+		LOGGER.error('Error parsing plan.', error);
+		throw error;
+	}
+}
+
+/* * */
 /* INITIALIZE SQL WRITERS */
 function intializeSQLWriters(): Context['writers'] {
 	//
@@ -625,54 +676,5 @@ async function processStopTimesFile(context: Context): Promise<void> {
 	catch (error) {
 		LOGGER.error('Error processing "stop_times.txt" file.', error);
 		throw new Error('✖︎ Error processing "stop_times.txt" file.');
-	}
-}
-
-/* * */
-/* MAIN FUNCTION */
-
-export async function importGtfsToDatabase(plans: Plan[], config: ImportGtfsToDatabaseConfig = {}): Promise<GtfsSQLWriters> {
-	try {
-		const globalTimer = new TIMETRACKER();
-
-		LOGGER.info(`Importing ${plans.length} GTFS to database...`);
-
-		const sqlWriters = intializeSQLWriters();
-
-		for (const [planIndex, planData] of plans.entries()) {
-			// Initialize context for the current plan
-			const context: Context = {
-				counters: { calendarDates: 0, hashedShapes: 0, hashedTrips: 0, shapes: 0, stopTimes: 0, trips: 0 },
-				planData: planData,
-				referencedRouteIds: new Set<string>(),
-				referencedShapeIds: new Set<string>(),
-				workdir: await downloadAndExtractGtfs(planData),
-				writers: sqlWriters,
-			};
-
-			// Process GTFS files in the correct order
-			const { endDate, startDate } = config;
-
-			await processCalendarFile(context, startDate ?? planData.gtfs_feed_info.feed_start_date, endDate ?? planData.gtfs_feed_info.feed_end_date);
-			await processCalendarDatesFile(context, startDate ?? planData.gtfs_feed_info.feed_start_date, endDate ?? planData.gtfs_feed_info.feed_end_date);
-
-			/* * */
-			await processTripsFile(context);
-			await processRoutesFile(context);
-			await processShapesFile(context);
-			await processStopsFile(context);
-			await processStopTimesFile(context);
-
-			LOGGER.success(`[${planIndex + 1}/${plans.length}] - Finished importing GTFS to database for plan "${planData._id}" in ${globalTimer.get()}.`, 0);
-			LOGGER.divider();
-		}
-
-		LOGGER.terminate(`Finished importing ${plans.length} GTFS to database in ${globalTimer.get()}.`);
-
-		return sqlWriters;
-	}
-	catch (error) {
-		LOGGER.error('Error parsing plan.', error);
-		throw error;
 	}
 }
