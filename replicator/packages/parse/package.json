@@ -10,11 +10,11 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20250902.1546.20",
-		"@tmlmobilidade/utils": "20250902.1546.20"
+		"@tmlmobilidade/types": "20250905.1650.58",
+		"@tmlmobilidade/utils": "20250905.1650.58"
 	},
 	"devDependencies": {
-		"@types/node": "24.3.0",
+		"@types/node": "24.3.1",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.2"
 	}

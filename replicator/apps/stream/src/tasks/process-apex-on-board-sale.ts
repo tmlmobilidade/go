@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexOnBoardSales, uniqueSams } from '@tmlmobilidade/interfaces';
+import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
@@ -62,19 +62,12 @@ export async function processApexOnBoardSale(databaseOperation) {
 				};
 			});
 
-			const updateSamsOps = flushedData.map((writeOp) => {
-				return { _id: writeOp.data.mac_sam_serial_number };
-			});
-
 			//
 			// Invalidate all documents that are affected
 
-			const updateRidesPromise = rides.updateMany({ $or: updateRidesOps }, { system_status: 'waiting' }, { returnResults: false });
-			const updateSamsPromise = uniqueSams.updateMany({ $or: updateSamsOps }, { system_status: 'waiting' }, { returnResults: false });
+			const updateRidesResult = await rides.updateMany({ $or: updateRidesOps }, { system_status: 'waiting' }, { returnResults: false });
 
-			const [updateRidesResult, updateSamsResult] = await Promise.all([updateRidesPromise, updateSamsPromise]);
-
-			LOGGER.info(`Flush [simplified_apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
+			LOGGER.info(`Flush [simplified_apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
 		}

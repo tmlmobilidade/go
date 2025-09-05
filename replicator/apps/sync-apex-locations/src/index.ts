@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexLocations, uniqueSams } from '@tmlmobilidade/interfaces';
+import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
@@ -87,7 +87,6 @@ async function syncApexLocations() {
 					// the unique sam serial numbers associated with those transactions.
 
 					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
-					const uniqueSamSerialNumbers: number[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.mac_sam_serial_number)));
 
 					//
 					// Create a standard window interval based on the earliest and latest timestamps
@@ -101,21 +100,13 @@ async function syncApexLocations() {
 					//
 					// Invalidate all rides that are affected
 
-					const updateRidesPromise = rides.updateMany(
+					const updateRidesResult = await rides.updateMany(
 						{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
 						{ system_status: 'waiting' },
 						{ returnResults: false },
 					);
 
-					const updateSamsPromise = uniqueSams.updateMany(
-						{ mac_sam_serial_number: { $in: uniqueSamSerialNumbers } },
-						{ system_status: 'waiting' },
-						{ returnResults: false },
-					);
-
-					const [updateRidesResult, updateSamsResult] = await Promise.all([updateRidesPromise, updateSamsPromise]);
-
-					LOGGER.info(`Flush [simplified_apex_locations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides | ${updateSamsResult.modifiedCount} Unique SAMS (${invalidationTimer.get()})`);
+					LOGGER.info(`Flush [simplified_apex_locations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 					//
 				}
