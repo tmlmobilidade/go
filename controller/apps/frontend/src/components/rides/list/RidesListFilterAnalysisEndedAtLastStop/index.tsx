@@ -45,7 +45,7 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 		<FilterMenu
 			active={isActive}
 			label="Fim na Útlima Paragem"
-			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
+			onChange={ridesListContext.actions.setFilterAnalysisEndedAtLastStop}
 			options={parsedOptions}
 			withToggleAll
 		/>

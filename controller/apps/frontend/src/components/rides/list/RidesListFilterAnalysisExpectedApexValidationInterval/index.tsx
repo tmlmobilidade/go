@@ -45,7 +45,7 @@ export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 		<FilterMenu
 			active={isActive}
 			label="Intervalo Validações"
-			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
+			onChange={ridesListContext.actions.setFilterAnalysisExpectedApexValidationInterval}
 			options={parsedOptions}
 			withToggleAll
 		/>
