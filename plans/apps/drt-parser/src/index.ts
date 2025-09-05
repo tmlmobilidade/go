@@ -2,11 +2,12 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SQLiteWriter } from '@tmlmobilidade/connectors';
+import { SQLiteDatabase } from '@tmlmobilidade/connectors';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/utils';
 
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig } from './import-gtfs-to-database.js';
+import { parseGtfsToDrt } from './parse-drt.js';
 
 const DAYS_TO_ADD = 3;
 
@@ -45,20 +46,20 @@ async function main() {
 
 		//
 		// Insert All plans to the local SQLite database
-
 		const importConfig: ImportGtfsToDatabaseConfig = {
 			endDate: endDate.plus({ days: DAYS_TO_ADD }).operational_date,
 			startDate: startDate.operational_date,
 		};
-		const sqlWriters = await importGtfsToDatabase(foundPlans, importConfig);
 
 		//
-		// Log the SQL writers
+		// Initialize the SQLite database
+		const database = new SQLiteDatabase('drt-parser');
 
-		for (const sqlWriter of Object.values(sqlWriters)) {
-			if (sqlWriter instanceof SQLiteWriter) {
-				LOGGER.info(`SQLite writer instance path: ${sqlWriter.instancePath}`);
-			}
+		//
+		// Import the GTFS to the SQLite database and parse to DRT Database
+		for (const plan of foundPlans) {
+			const sqlGtfs = await importGtfsToDatabase(plan, importConfig);
+			parseGtfsToDrt({ database: database, gtfs: sqlGtfs, plan: plan });
 		}
 
 		//

@@ -18,13 +18,13 @@ export interface ImportGtfsToDatabaseConfig {
 	startDate?: OperationalDate
 }
 
-export interface GtfsSQLWriters {
-	savedCalendarDates: Map<string, OperationalDate[]>
-	savedRoutes: SQLiteWriter<Partial<GTFS_Route_Extended>>
-	savedShapes: SQLiteWriter<GTFS_Shape>
-	savedStops: SQLiteWriter<GTFS_Stop_Extended>
-	savedStopTimes: SQLiteWriter<GTFS_StopTime>
-	savedTrips: SQLiteWriter<GTFS_Trip_Extended>
+export interface GtfsSQLTables {
+	calendarDates: Map<string, OperationalDate[]>
+	routes: SQLiteWriter<GTFS_Route_Extended>
+	shapes: SQLiteWriter<GTFS_Shape>
+	stops: SQLiteWriter<GTFS_Stop_Extended>
+	stopTimes: SQLiteWriter<GTFS_StopTime>
+	trips: SQLiteWriter<GTFS_Trip_Extended>
 }
 
 interface Context {
@@ -36,7 +36,8 @@ interface Context {
 		stopTimes: number
 		trips: number
 	}
-	planData: Plan
+	gtfs: GtfsSQLTables
+	plan: Plan
 	referencedRouteIds: Set<string>
 	referencedShapeIds: Set<string>
 	workdir: {
@@ -44,53 +45,48 @@ interface Context {
 		extractDirPath: string
 		path: string
 	}
-	writers: GtfsSQLWriters
 }
 
-/* * */
+/* *
 
 /* * */
 /* MAIN FUNCTION */
 
-export async function importGtfsToDatabase(plans: Plan[], config: ImportGtfsToDatabaseConfig = {}): Promise<GtfsSQLWriters> {
+export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatabaseConfig = {}): Promise<GtfsSQLTables> {
 	try {
 		const globalTimer = new TIMETRACKER();
 
-		LOGGER.info(`Importing ${plans.length} GTFS to database...`);
+		LOGGER.info(`Importing ${plan._id} GTFS to database...`);
 
-		const sqlWriters = intializeSQLWriters();
+		// Initialize context for the current plan
+		const context: Context = {
+			counters: { calendarDates: 0, hashedShapes: 0, hashedTrips: 0, shapes: 0, stopTimes: 0, trips: 0 },
+			gtfs: intializeSQLgtfs(),
+			plan: plan,
+			referencedRouteIds: new Set<string>(),
+			referencedShapeIds: new Set<string>(),
+			workdir: await downloadAndExtractGtfs(plan),
+		};
 
-		for (const [planIndex, planData] of plans.entries()) {
-			// Initialize context for the current plan
-			const context: Context = {
-				counters: { calendarDates: 0, hashedShapes: 0, hashedTrips: 0, shapes: 0, stopTimes: 0, trips: 0 },
-				planData: planData,
-				referencedRouteIds: new Set<string>(),
-				referencedShapeIds: new Set<string>(),
-				workdir: await downloadAndExtractGtfs(planData),
-				writers: sqlWriters,
-			};
+		// Process GTFS files in the correct order
+		const { endDate, startDate } = config;
 
-			// Process GTFS files in the correct order
-			const { endDate, startDate } = config;
+		await processCalendarFile(context, startDate ?? plan.gtfs_feed_info.feed_start_date, endDate ?? plan.gtfs_feed_info.feed_end_date);
+		await processCalendarDatesFile(context, startDate ?? plan.gtfs_feed_info.feed_start_date, endDate ?? plan.gtfs_feed_info.feed_end_date);
 
-			await processCalendarFile(context, startDate ?? planData.gtfs_feed_info.feed_start_date, endDate ?? planData.gtfs_feed_info.feed_end_date);
-			await processCalendarDatesFile(context, startDate ?? planData.gtfs_feed_info.feed_start_date, endDate ?? planData.gtfs_feed_info.feed_end_date);
+		/* * */
+		await processTripsFile(context);
+		await processRoutesFile(context);
+		await processShapesFile(context);
+		await processStopsFile(context);
+		await processStopTimesFile(context);
 
-			/* * */
-			await processTripsFile(context);
-			await processRoutesFile(context);
-			await processShapesFile(context);
-			await processStopsFile(context);
-			await processStopTimesFile(context);
+		LOGGER.success(`Finished importing GTFS to database for plan "${plan._id}" in ${globalTimer.get()}.`, 0);
+		LOGGER.divider();
 
-			LOGGER.success(`[${planIndex + 1}/${plans.length}] - Finished importing GTFS to database for plan "${planData._id}" in ${globalTimer.get()}.`, 0);
-			LOGGER.divider();
-		}
+		LOGGER.terminate(`Finished importing GTFS to database in ${globalTimer.get()}.`);
 
-		LOGGER.terminate(`Finished importing ${plans.length} GTFS to database in ${globalTimer.get()}.`);
-
-		return sqlWriters;
+		return context.gtfs;
 	}
 	catch (error) {
 		LOGGER.error('Error parsing plan.', error);
@@ -99,14 +95,14 @@ export async function importGtfsToDatabase(plans: Plan[], config: ImportGtfsToDa
 }
 
 /* * */
-/* INITIALIZE SQL WRITERS */
-function intializeSQLWriters(): Context['writers'] {
+/* INITIALIZE SQL GTFS */
+function intializeSQLgtfs(): Context['gtfs'] {
 	//
-	// Setup Maps and SQLite writers to temporarily store data
+	// Setup Maps and SQLite GTFS to temporarily store data
 
-	const savedCalendarDates = new Map<string, OperationalDate[]>();
+	const calendarDates = new Map<string, OperationalDate[]>();
 
-	const savedTrips = new SQLiteWriter<GTFS_Trip_Extended>({
+	const trips = new SQLiteWriter<GTFS_Trip_Extended>({
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
@@ -123,7 +119,7 @@ function intializeSQLWriters(): Context['writers'] {
 		],
 	});
 
-	const savedRoutes = new SQLiteWriter<Partial<GTFS_Route_Extended>>({
+	const routes = new SQLiteWriter<GTFS_Route_Extended>({
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
@@ -148,7 +144,7 @@ function intializeSQLWriters(): Context['writers'] {
 		],
 	});
 
-	const savedShapes = new SQLiteWriter<GTFS_Shape>({
+	const shapes = new SQLiteWriter<GTFS_Shape>({
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -159,7 +155,7 @@ function intializeSQLWriters(): Context['writers'] {
 		],
 	});
 
-	const savedStops = new SQLiteWriter<GTFS_Stop_Extended>({
+	const stops = new SQLiteWriter<GTFS_Stop_Extended>({
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'level_id', type: 'TEXT' },
@@ -194,7 +190,7 @@ function intializeSQLWriters(): Context['writers'] {
 		],
 	});
 
-	const savedStopTimes = new SQLiteWriter<GTFS_StopTime>({
+	const stopTimes = new SQLiteWriter<GTFS_StopTime>({
 		batch_size: 100000,
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
@@ -213,32 +209,32 @@ function intializeSQLWriters(): Context['writers'] {
 	});
 
 	return {
-		savedCalendarDates,
-		savedRoutes,
-		savedShapes,
-		savedStops,
-		savedStopTimes,
-		savedTrips,
+		calendarDates,
+		routes,
+		shapes,
+		stops,
+		stopTimes,
+		trips,
 	};
 }
 
 /* * */
 /* DOWNLOAD AND EXTRACT GTFS FILE */
-async function downloadAndExtractGtfs(planData: Plan): Promise<Context['workdir']> {
+async function downloadAndExtractGtfs(plan: Plan): Promise<Context['workdir']> {
 	//
 
 	// Return early if no operation file is found
 
-	if (!planData.operation_file_id) {
-		LOGGER.error(`No operation file found for plan "${planData._id}".`);
+	if (!plan.operation_file_id) {
+		LOGGER.error(`No operation file found for plan "${plan._id}".`);
 		process.exit(1);
 	}
 
 	//
 	// Prepare the working directory
 
-	const workdirPath = `/tmp/${planData._id}`;
-	const downloadFilePath = `${workdirPath}/${planData.operation_file_id}.zip`;
+	const workdirPath = `/tmp/${plan._id}`;
+	const downloadFilePath = `${workdirPath}/${plan.operation_file_id}.zip`;
 	const extractDirPath = `${workdirPath}/extracted`;
 
 	try {
@@ -256,9 +252,9 @@ async function downloadAndExtractGtfs(planData: Plan): Promise<Context['workdir'
 	// Get the associated Operation GTFS archive URL,
 	// and try to download, save and unzip it.
 
-	const operationFileData = await files.findById(planData.operation_file_id);
+	const operationFileData = await files.findById(plan.operation_file_id);
 	if (!operationFileData || !operationFileData.url) {
-		LOGGER.error(`No operation file found for plan "${planData._id}".`);
+		LOGGER.error(`No operation file found for plan "${plan._id}".`);
 		process.exit(1);
 	}
 
@@ -345,7 +341,7 @@ async function processCalendarFile(context: Context, startDate: OperationalDate,
 			//
 			// Save the valid operational dates for this service_id
 
-			context.writers.savedCalendarDates.set(validatedData.service_id, Array.from(validOperationalDates));
+			context.gtfs.calendarDates.set(validatedData.service_id, Array.from(validOperationalDates));
 
 			context.counters.calendarDates += validOperationalDates.size;
 
@@ -357,7 +353,7 @@ async function processCalendarFile(context: Context, startDate: OperationalDate,
 
 		if (fs.existsSync(`${context.workdir.extractDirPath}/calendar.txt`)) {
 			await parseCsvFile(`${context.workdir.extractDirPath}/calendar.txt`, parseEachRow);
-			LOGGER.success(`Finished processing "calendar.txt": ${context.writers.savedCalendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
+			LOGGER.success(`Finished processing "calendar.txt": ${context.gtfs.calendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
 		}
 		else {
 			LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
@@ -403,7 +399,7 @@ async function processCalendarDatesFile(context: Context, startDate: Operational
 			// If we're here, it means the service_id is valid between the given dates.
 			// Get the previously saved calendars and check if it exists for this service_id.
 
-			const savedCalendar = context.writers.savedCalendarDates.get(validatedData.service_id);
+			const savedCalendar = context.gtfs.calendarDates.get(validatedData.service_id);
 
 			if (savedCalendar) {
 				// Create a new Set to avoid duplicated dates
@@ -419,13 +415,13 @@ async function processCalendarDatesFile(context: Context, startDate: Operational
 					context.counters.calendarDates--;
 				}
 				// Update the service_id with the new dates
-				context.writers.savedCalendarDates.set(validatedData.service_id, Array.from(updatedCalendar));
+				context.gtfs.calendarDates.set(validatedData.service_id, Array.from(updatedCalendar));
 			}
 			else {
 				// If this is the first time we're seeing this service_id, then it is only necessary
 				// to initiate a new dates array if it is a service addition
 				if (validatedData.exception_type === 1) {
-					context.writers.savedCalendarDates.set(validatedData.service_id, [validatedData.date]);
+					context.gtfs.calendarDates.set(validatedData.service_id, [validatedData.date]);
 					context.counters.calendarDates++;
 				}
 			}
@@ -438,7 +434,7 @@ async function processCalendarDatesFile(context: Context, startDate: Operational
 
 		if (fs.existsSync(`${context.workdir.extractDirPath}/calendar_dates.txt`)) {
 			await parseCsvFile(`${context.workdir.extractDirPath}/calendar_dates.txt`, parseEachRow);
-			LOGGER.success(`Finished processing "calendar_dates.txt": ${context.writers.savedCalendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
+			LOGGER.success(`Finished processing "calendar_dates.txt": ${context.gtfs.calendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
 		}
 		else {
 			LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
@@ -472,9 +468,9 @@ async function processTripsFile(context: Context): Promise<void> {
 			const validatedData = validateGtfsTripExtended(data);
 			// For each trip, check if the associated service_id was saved
 			// in the previous step or not. Include it if yes, skip otherwise.
-			if (!context.writers.savedCalendarDates.has(validatedData.service_id)) return;
+			if (!context.gtfs.calendarDates.has(validatedData.service_id)) return;
 			// Save the exported row
-			context.writers.savedTrips.write(validatedData);
+			context.gtfs.trips.write(validatedData);
 			// Reference the associated entities to filter them later.
 			context.referencedRouteIds.add(validatedData.route_id);
 			context.referencedShapeIds.add(validatedData.shape_id);
@@ -489,9 +485,9 @@ async function processTripsFile(context: Context): Promise<void> {
 
 		await parseCsvFile(`${context.workdir.extractDirPath}/trips.txt`, parseEachRow);
 
-		context.writers.savedTrips.flush();
+		context.gtfs.trips.flush();
 
-		LOGGER.success(`Finished processing "trips.txt": ${context.writers.savedTrips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
+		LOGGER.success(`Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
 
 		//
 	}
@@ -522,7 +518,7 @@ async function processRoutesFile(context: Context): Promise<void> {
 			// by the previously saved trips.
 			if (!context.referencedRouteIds.has(validatedData.route_id)) return;
 			// Save the exported row
-			context.writers.savedRoutes.write(validatedData);
+			context.gtfs.routes.write(validatedData);
 		};
 
 		//
@@ -530,9 +526,9 @@ async function processRoutesFile(context: Context): Promise<void> {
 
 		await parseCsvFile(`${context.workdir.extractDirPath}/routes.txt`, parseEachRow);
 
-		context.writers.savedRoutes.flush();
+		context.gtfs.routes.flush();
 
-		LOGGER.success(`Finished processing "routes.txt": ${context.writers.savedRoutes.size} rows saved in ${routesParseTimer.get()}.`, 1);
+		LOGGER.success(`Finished processing "routes.txt": ${context.gtfs.routes.size} rows saved in ${routesParseTimer.get()}.`, 1);
 
 		//
 	}
@@ -564,7 +560,7 @@ async function processShapesFile(context: Context): Promise<void> {
 			// by the previously saved trips.
 			if (!context.referencedShapeIds.has(validatedData.shape_id)) return;
 			// Save the exported row
-			context.writers.savedShapes.write(validatedData);
+			context.gtfs.shapes.write(validatedData);
 			// Log progress
 			if (context.counters.shapes % 100000 === 0) LOGGER.info(`Parsed ${context.counters.shapes} shapes.txt rows so far.`);
 			// Increment the counter
@@ -576,9 +572,9 @@ async function processShapesFile(context: Context): Promise<void> {
 
 		await parseCsvFile(`${context.workdir.extractDirPath}/shapes.txt`, parseEachRow);
 
-		context.writers.savedShapes.flush();
+		context.gtfs.shapes.flush();
 
-		LOGGER.success(`Finished processing "shapes.txt": ${context.writers.savedShapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
+		LOGGER.success(`Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
 
 		//
 	}
@@ -607,9 +603,9 @@ async function processStopsFile(context: Context): Promise<void> {
 			// Validate the current row against the proper type
 			const validatedData = validateGtfsStopExtended(data);
 			// Skip if stop already exists
-			if (context.writers.savedStops.get('stop_id', validatedData.stop_id)) return;
+			if (context.gtfs.stops.get('stop_id', validatedData.stop_id)) return;
 			// Save the exported row
-			context.writers.savedStops.write(validatedData);
+			context.gtfs.stops.write(validatedData);
 		};
 
 		//
@@ -617,9 +613,9 @@ async function processStopsFile(context: Context): Promise<void> {
 
 		await parseCsvFile(`${context.workdir.extractDirPath}/stops.txt`, parseEachRow);
 
-		context.writers.savedStops.flush();
+		context.gtfs.stops.flush();
 
-		LOGGER.success(`Finished processing "stops.txt": ${context.writers.savedStops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
+		LOGGER.success(`Finished processing "stops.txt": ${context.gtfs.stops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
 
 		//
 	}
@@ -649,13 +645,13 @@ async function processStopTimesFile(context: Context): Promise<void> {
 			// Validate the current row against the proper type
 			const validatedData = validateGtfsStopTime(data);
 			// Skip if this row's trip_id was not saved before.
-			const tripData = context.writers.savedTrips.get('trip_id', validatedData.trip_id);
+			const tripData = context.gtfs.trips.get('trip_id', validatedData.trip_id);
 			if (!tripData) return;
 			// Also, check if the stop_id is valid and was saved before.
-			const stopData = context.writers.savedStops.get('stop_id', validatedData.stop_id);
+			const stopData = context.gtfs.stops.get('stop_id', validatedData.stop_id);
 			if (!stopData) return;
 			// Save the exported row
-			context.writers.savedStopTimes.write(validatedData);
+			context.gtfs.stopTimes.write(validatedData);
 			// Log progress
 			if (context.counters.stopTimes % 100000 === 0) LOGGER.info(`Parsed ${context.counters.stopTimes} stop_times.txt rows so far.`);
 			// Increment the counter
@@ -667,7 +663,7 @@ async function processStopTimesFile(context: Context): Promise<void> {
 
 		await parseCsvFile(`${context.workdir.extractDirPath}/stop_times.txt`, parseEachRow);
 
-		context.writers.savedStopTimes.flush();
+		context.gtfs.stopTimes.flush();
 
 		LOGGER.success(`Finished processing "stop_times.txt": ${context.counters.stopTimes} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
