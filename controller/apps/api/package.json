@@ -17,7 +17,7 @@
 		"@tmlmobilidade/connectors": "20250904.1835.59",
 		"@tmlmobilidade/interfaces": "20250904.1835.59",
 		"@tmlmobilidade/lib": "20250904.1835.59",
-		"@tmlmobilidade/sae-controller-ride-normalized": "*",
+		"@tmlmobilidade/sae-controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/utils": "20250904.1835.59",
 		"pino-pretty": "13.1.1"
 	},

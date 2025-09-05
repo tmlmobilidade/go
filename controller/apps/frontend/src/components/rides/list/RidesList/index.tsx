@@ -13,7 +13,7 @@ import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPa
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -58,37 +58,43 @@ export function RidesList() {
 			accessor: 'start_time_scheduled_display',
 			render: item => <Tag label={item.start_time_scheduled_display} variant="muted" />,
 			title: 'Partida',
-			width: 100,
+			width: 80,
 		},
 		{
 			accessor: 'start_time_observed_display',
 			render: item => <StartTimeStatusTag startTimeObserved={item.start_time_observed_display} status={item.delay_status} />,
 			title: 'Observado',
-			width: 180,
+			width: 200,
 		},
 		{
 			accessor: 'passengers_observed',
 			render: item => <RidesListCellPassengers value={item.passengers_observed} />,
-			title: 'Validações',
-			width: 100,
+			title: 'Passageiros',
+			width: 120,
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',
 			render: item => <AnalysisStatusTag grade={item.analysis_simple_three_vehicle_events_grade} />,
 			title: '3 Eventos',
-			width: 150,
+			width: 120,
 		},
 		{
 			accessor: 'analysis_ended_at_last_stop_grade',
 			render: item => <AnalysisStatusTag grade={item.analysis_ended_at_last_stop_grade} />,
-			title: 'Fim na 1ª Paragem',
-			width: 150,
+			title: 'Last Stop',
+			width: 120,
 		},
 		{
 			accessor: 'analysis_expected_apex_validation_interval',
 			render: item => <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval} />,
-			title: 'Intervalo Validações',
-			width: 150,
+			title: 'Int. APEX',
+			width: 120,
+		},
+		{
+			accessor: 'analysis_transaction_sequentiality',
+			render: item => <AnalysisStatusTag grade={item.analysis_transaction_sequentiality} />,
+			title: 'Seq. APEX',
+			width: 120,
 		},
 	];
 

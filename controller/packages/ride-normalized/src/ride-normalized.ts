@@ -23,6 +23,7 @@ export interface RideNormalized extends Ride {
 	analysis_ended_at_last_stop_grade: 'none' | RideAnalysis['grade']
 	analysis_expected_apex_validation_interval: 'none' | RideAnalysis['grade']
 	analysis_simple_three_vehicle_events_grade: 'none' | RideAnalysis['grade']
+	analysis_transaction_sequentiality: 'none' | RideAnalysis['grade']
 	delay_status: typeof delayStatusValues[number]
 	delay_value_display: null | string
 	operational_status: typeof operationalStatusValues[number]

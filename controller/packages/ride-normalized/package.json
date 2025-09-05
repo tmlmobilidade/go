@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller-ride-normalized",
+	"name": "@tmlmobilidade/sae-controller-pckg-ride-normalized",
 	"private": true,
 	"type": "module",
 	"files": [

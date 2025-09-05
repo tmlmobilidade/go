@@ -2,8 +2,8 @@
 
 /* * */
 
-import { IconCreditCardPay } from '@tabler/icons-react';
-import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
+import { IconUserFilled } from '@tabler/icons-react';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -21,7 +21,7 @@ export function RidesListCellPassengers({ value }: RidesListCellPassengersProps)
 		return null;
 	}
 
-	return <Tag icon={<IconCreditCardPay />} label={value} variant="secondary" />;
+	return <Tag icon={<IconUserFilled />} label={value} variant="secondary" />;
 
 	//
 }

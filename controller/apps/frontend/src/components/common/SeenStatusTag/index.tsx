@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { Indicator } from '@tmlmobilidade/ui';
 
 /* * */

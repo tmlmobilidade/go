@@ -1,6 +1,6 @@
 /* * */
 
-import { delayStatusOptions, operationalStatusOptions, seenStatusOptions } from '@tmlmobilidade/sae-controller-ride-normalized';
+import { delayStatusOptions, operationalStatusOptions, seenStatusOptions } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { RideAnalysisGradeSchema, validateUnixTimestamp } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
@@ -15,6 +15,7 @@ export const GetRidesBatchQuerySchema = z.object({
 	analysis_ended_at_last_stop_grade: z.preprocess((val: string) => val ? val.split(',').map(grade => grade.trim()) : [], z.array(RideAnalysisGradeWithNoneSchema)).optional(),
 	analysis_expected_apex_validation_interval: z.preprocess((val: string) => val ? val.split(',').map(grade => grade.trim()) : [], z.array(RideAnalysisGradeWithNoneSchema)).optional(),
 	analysis_simple_three_vehicle_events_grade: z.preprocess((val: string) => val ? val.split(',').map(grade => grade.trim()) : [], z.array(RideAnalysisGradeWithNoneSchema)).optional(),
+	analysis_transaction_sequentiality: z.preprocess((val: string) => val ? val.split(',').map(grade => grade.trim()) : [], z.array(RideAnalysisGradeWithNoneSchema)).optional(),
 
 	/* * */
 

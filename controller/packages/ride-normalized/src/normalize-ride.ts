@@ -18,6 +18,7 @@ export function normalizeRide(ride: Ride): RideNormalized {
 		analysis_ended_at_last_stop_grade: getAnalysisGrade(operationalStatusValue, ride.analysis?.ENDED_AT_LAST_STOP?.grade),
 		analysis_expected_apex_validation_interval: getAnalysisGrade(operationalStatusValue, ride.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade),
 		analysis_simple_three_vehicle_events_grade: getAnalysisGrade(operationalStatusValue, ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade),
+		analysis_transaction_sequentiality: getAnalysisGrade(operationalStatusValue, ride.analysis?.TRANSACTION_SEQUENTIALITY?.grade),
 		delay_status: getDelayStatus(ride.start_time_scheduled, ride.start_time_observed),
 		delay_value_display: getDelayValueDisplay(ride.start_time_scheduled, ride.start_time_observed),
 		operational_status: operationalStatusValue,

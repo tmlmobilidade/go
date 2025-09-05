@@ -1,13 +1,13 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { delayStatusValues } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
+import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function RidesListFilterDelayStatus() {
+export function RidesListFilterAnalysisTransactionSequentiality() {
 	//
 
 	//
@@ -20,23 +20,23 @@ export function RidesListFilterDelayStatus() {
 
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
-		const defaultValues = delayStatusValues;
-		const enabledValues = ridesListContext.filters.delay_status;
+		const defaultValues = [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'];
+		const enabledValues = ridesListContext.filters.analysis_transaction_sequentiality;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
 		// If the length is the same ensure they're equal by also
 		// checking if every item in one array is included in the other.
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [ridesListContext.filters.delay_status]);
+	}, [ridesListContext.filters.analysis_transaction_sequentiality]);
 
 	const parsedOptions = useMemo(() => {
 		// Parse options to the expected format.
-		return delayStatusValues.map(value => ({
-			checked: ridesListContext.filters.delay_status.includes(value),
+		return [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(value => ({
+			checked: ridesListContext.filters.analysis_transaction_sequentiality.includes(value),
 			label: value,
 			value: value,
 		}));
-	}, [ridesListContext.filters.delay_status]);
+	}, [ridesListContext.filters.analysis_transaction_sequentiality]);
 
 	//
 	// C. Render components
@@ -44,8 +44,8 @@ export function RidesListFilterDelayStatus() {
 	return (
 		<FilterMenu
 			active={isActive}
-			label="Atraso"
-			onChange={ridesListContext.actions.setFilterDelayStatus}
+			label="Sequencialidade APEX"
+			onChange={ridesListContext.actions.setFilterAnalysisTransactionSequentiality}
 			options={parsedOptions}
 			withToggleAll
 		/>

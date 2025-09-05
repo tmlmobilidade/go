@@ -6,7 +6,7 @@ import { type DataTableHandle } from '@/components/datatable/DataTableContext';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
-import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/sae-controller-ride-normalized';
+import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
@@ -21,6 +21,7 @@ interface RidesListContextState {
 		setFilterAnalysisEndedAtLastStop: (values: string[]) => void
 		setFilterAnalysisExpectedApexValidationInterval: (values: string[]) => void
 		setFilterAnalysisSimpleThreeVehicleEvents: (values: string[]) => void
+		setFilterAnalysisTransactionSequentiality: (values: string[]) => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
 		setFilterDelayStatus: (values: string[]) => void
@@ -35,6 +36,7 @@ interface RidesListContextState {
 		analysis_ended_at_last_stop: string[]
 		analysis_expected_apex_validation_interval: string[]
 		analysis_simple_three_vehicle_events_grade: string[]
+		analysis_transaction_sequentiality: string[]
 		date_end: number
 		date_start: number
 		delay_status: string[]
@@ -87,6 +89,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [filterAnalysisSimpleThreeVehicleEvents, setFilterAnalysisSimpleThreeVehicleEvents] = useQueryState<string[]>('analysis_simple_three_vehicle_events', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 	const [filterAnalysisEndedAtLastStop, setFilterAnalysisEndedAtLastStop] = useQueryState<string[]>('analysis_ended_at_last_stop', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 	const [filterAnalysisExpectedApexValidationInterval, setFilterAnalysisExpectedApexValidationInterval] = useQueryState<string[]>('analysis_expected_apex_validation_interval', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
+	const [filterAnalysisTransactionSequentiality, setFilterAnalysisTransactionSequentiality] = useQueryState<string[]>('analysis_transaction_sequentiality', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
@@ -147,6 +150,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
 			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
 			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
+			analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality.join(','),
 			/* * */
 			delay_statuses: filterDelayStatus.join(','),
 			operational_statuses: filterOperationalStatus.join(','),
@@ -170,6 +174,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAnalysisEndedAtLastStop,
 		filterAnalysisExpectedApexValidationInterval,
 		filterAnalysisSimpleThreeVehicleEvents,
+		filterAnalysisTransactionSequentiality,
 		filterDelayStatus,
 		filterOperationalStatus,
 	]);
@@ -183,6 +188,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			setFilterAnalysisEndedAtLastStop,
 			setFilterAnalysisExpectedApexValidationInterval,
 			setFilterAnalysisSimpleThreeVehicleEvents,
+			setFilterAnalysisTransactionSequentiality,
 			setFilterDateEnd,
 			setFilterDateStart,
 			setFilterDelayStatus,
@@ -197,6 +203,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			analysis_ended_at_last_stop: filterAnalysisEndedAtLastStop,
 			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval,
 			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents,
+			analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality,
 			date_end: filterDateEnd,
 			date_start: filterDateStart,
 			delay_status: filterDelayStatus,
@@ -220,6 +227,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterOperationalStatus,
 		filterSearch,
 		filterAnalysisSimpleThreeVehicleEvents,
+		filterAnalysisTransactionSequentiality,
 		filterAnalysisExpectedApexValidationInterval,
 		filterAnalysisEndedAtLastStop,
 		flagsLastUpdateState,

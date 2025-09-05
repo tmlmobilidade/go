@@ -1,7 +1,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { operationalStatusValues } from '@tmlmobilidade/sae-controller-ride-normalized';
+import { operationalStatusValues } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { FilterMenu } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
