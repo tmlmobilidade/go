@@ -57,25 +57,6 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cleaner:
-    image: ghcr.io/tmlmobilidade/sae-controller-cleaner:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
   coordinator:
     image: ghcr.io/tmlmobilidade/sae-controller-coordinator:production
     deploy:
@@ -152,6 +133,25 @@ services:
       - ./secrets/.env
     secrets:
       - ociprivatekey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  rides-cleaner:
+    image: ghcr.io/tmlmobilidade/sae-controller-rides-cleaner:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

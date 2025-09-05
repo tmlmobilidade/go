@@ -20,7 +20,7 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cleaner:
+  rides-cleaner:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -51,8 +51,8 @@ jobs:
         with:
           push: true
           context: ./controller
-          file: ./controller/apps/cleaner/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-cleaner:${{ github.ref_name }}
+          file: ./controller/apps/rides-cleaner/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-controller-rides-cleaner:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

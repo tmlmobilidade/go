@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller-cleaner",
+	"name": "@tmlmobilidade/sae-controller-rides-cleaner",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
