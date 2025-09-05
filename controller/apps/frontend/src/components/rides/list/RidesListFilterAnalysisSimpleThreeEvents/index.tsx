@@ -2,7 +2,7 @@
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -42,7 +42,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="3 Momentos"
 			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}

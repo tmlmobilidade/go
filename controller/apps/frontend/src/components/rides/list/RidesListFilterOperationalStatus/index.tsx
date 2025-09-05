@@ -2,7 +2,7 @@
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { operationalStatusValues } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -42,7 +42,7 @@ export function RidesListFilterOperationalStatus() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="Estado"
 			onChange={ridesListContext.actions.setFilterOperationalStatus}
