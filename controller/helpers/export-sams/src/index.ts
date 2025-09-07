@@ -11,18 +11,20 @@ import Papa from 'papaparse';
 interface SamExport {
 	_id: number
 	agency_id: string
-	analysis_apex_version: null | string
-	analysis_device_id: null | string
-	analysis_end_time: null | string
-	analysis_first_transaction_id: null | string
-	analysis_first_transaction_type: null | string
-	analysis_last_transaction_id: null | string
-	analysis_last_transaction_type: null | string
-	analysis_start_time: null | string
-	analysis_transactions_expected: null | number
-	analysis_transactions_found: null | number
-	analysis_transactions_missing: null | number
-	analysis_vehicle_id: null | number
+	apex_version: null | string
+	device_id: null | string
+	end_time: null | string
+	first_transaction_ase_counter_value: null | number
+	first_transaction_id: null | string
+	first_transaction_type: null | string
+	last_transaction_ase_counter_value: null | number
+	last_transaction_id: null | string
+	last_transaction_type: null | string
+	start_time: null | string
+	transactions_expected: null | number
+	transactions_found: null | number
+	transactions_missing: null | number
+	vehicle_id: null | number
 }
 
 /* * */
@@ -34,7 +36,7 @@ interface SamExport {
 
 	const samsCollection = await sams.getCollection();
 
-	const allSamsStream = samsCollection.find({ agency_id: '41', system_status: 'complete' }).stream();
+	const allSamsStream = samsCollection.find({ agency_id: '44', system_status: 'complete' }).stream();
 
 	//
 	// Stream all sams
@@ -48,18 +50,20 @@ interface SamExport {
 			output.push({
 				_id: samData._id,
 				agency_id: samData.agency_id,
-				analysis_apex_version: analysisGroup.apex_version ?? null,
-				analysis_device_id: analysisGroup.device_id ?? null,
-				analysis_end_time: analysisGroup.end_time ? Dates.fromUnixTimestamp(analysisGroup.end_time).iso : null,
-				analysis_first_transaction_id: analysisGroup.first_transaction_id ?? null,
-				analysis_first_transaction_type: analysisGroup.first_transaction_type ?? null,
-				analysis_last_transaction_id: analysisGroup.last_transaction_id ?? null,
-				analysis_last_transaction_type: analysisGroup.last_transaction_type ?? null,
-				analysis_start_time: analysisGroup.start_time ? Dates.fromUnixTimestamp(analysisGroup.start_time).iso : null,
-				analysis_transactions_expected: analysisGroup.transactions_expected ?? null,
-				analysis_transactions_found: analysisGroup.transactions_found ?? null,
-				analysis_transactions_missing: analysisGroup.transactions_missing ?? null,
-				analysis_vehicle_id: analysisGroup.vehicle_id ?? null,
+				apex_version: analysisGroup.apex_version ?? null,
+				device_id: analysisGroup.device_id ?? null,
+				end_time: analysisGroup.end_time ? Dates.fromUnixTimestamp(analysisGroup.end_time).iso : null,
+				first_transaction_ase_counter_value: analysisGroup.first_transaction_ase_counter_value ?? null,
+				first_transaction_id: analysisGroup.first_transaction_id ?? null,
+				first_transaction_type: analysisGroup.first_transaction_type ?? null,
+				last_transaction_ase_counter_value: analysisGroup.last_transaction_ase_counter_value ?? null,
+				last_transaction_id: analysisGroup.last_transaction_id ?? null,
+				last_transaction_type: analysisGroup.last_transaction_type ?? null,
+				start_time: analysisGroup.start_time ? Dates.fromUnixTimestamp(analysisGroup.start_time).iso : null,
+				transactions_expected: analysisGroup.transactions_expected ?? null,
+				transactions_found: analysisGroup.transactions_found ?? null,
+				transactions_missing: analysisGroup.transactions_missing ?? null,
+				vehicle_id: analysisGroup.vehicle_id ?? null,
 			});
 		}
 	}
@@ -74,7 +78,7 @@ interface SamExport {
 	console.log(`Exporting ${output.length} rows...`);
 
 	const outputTxt = Papa.unparse(output);
-	fs.writeFileSync('output/sams-41.csv', outputTxt);
+	fs.writeFileSync('output/sams-44.csv', outputTxt);
 
 	console.log('Done.');
 
