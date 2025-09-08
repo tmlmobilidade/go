@@ -121,7 +121,7 @@ async function main() {
 
 				if (sortedTransactions.length === 0) {
 					LOGGER.error(`No transactions found for SAM "${samData._id}". Skipping.`);
-					await sams.updateById(samData._id, { remarks: 'No transactions found for given time range.', system_status: 'complete' });
+					await sams.updateById(samData._id, { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete' });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -132,7 +132,7 @@ async function main() {
 
 				if (!allTransactionsMatch) {
 					LOGGER.error(`SAM ${samData._id} has transactions with different Agency ID.`);
-					await sams.updateById(samData._id, { remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
+					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -145,7 +145,7 @@ async function main() {
 
 				if (!allMacAseCounterValuesValid) {
 					LOGGER.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value.`);
-					await sams.updateById(samData._id, { remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error' });
+					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error' });
 					LOGGER.spacer(1);
 					continue;
 				}

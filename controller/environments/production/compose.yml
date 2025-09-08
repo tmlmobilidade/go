@@ -99,7 +99,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-rides-examiner:production
     deploy:
       mode: replicated
-      replicas: 10
+      replicas: 5
       restart_policy:
         condition: any
         delay: 30s
