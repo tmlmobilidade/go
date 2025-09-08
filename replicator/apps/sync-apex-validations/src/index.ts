@@ -48,7 +48,7 @@ export async function syncApexValidations() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 5 })
+			.splitBy({ hour: 4 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
