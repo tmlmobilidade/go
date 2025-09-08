@@ -64,8 +64,6 @@ async function main() {
 			try {
 				//
 
-				LOGGER.divider(`[${counter}] [${samData.agency_id}] SAM ${samData._id}`);
-
 				//
 				// Get all APEX transactions for the current SAM in parallel.
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
@@ -75,25 +73,27 @@ async function main() {
 				let searchTimestampStart = Dates
 					.now('Europe/Lisbon')
 					.startOf('day')
-					.set({ day: 1, hour: 4, month: 1, year: 2025 })
-					.unix_timestamp;
+					.set({ day: 1, hour: 4, month: 1, year: 2025 });
 
 				if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
 					searchTimestampStart = Dates
 						.now('Europe/Lisbon')
 						.startOf('day')
-						.set({ day: 22, hour: 4, month: 8, year: 2025 })
-						.unix_timestamp;
+						.set({ day: 22, hour: 4, month: 8, year: 2025 });
 				}
 
 				const searchTimestampEnd = Dates
 					.now('Europe/Lisbon')
 					.startOf('day')
-					.minus({ days: 5 })
-					.unix_timestamp;
+					.minus({ days: 5 });
+
+				LOGGER.divider(`[${counter}] [${samData.agency_id}] SAM ${samData._id} ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
+
+				//
+				// Prepare the aggregation pipeline for APEX transactions.
 
 				const aggregationPipeline = [
-					{ $match: { created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: samData._id } },
+					{ $match: { created_at: { $gte: searchTimestampStart.unix_timestamp, $lte: searchTimestampEnd.unix_timestamp }, mac_sam_serial_number: samData._id } },
 					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1, vehicle_id: 1 } },
 				];
 
