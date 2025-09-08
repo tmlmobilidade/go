@@ -28,28 +28,49 @@ async function main() {
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
 
 		//
+		// Mark all SAMs as "processing" to indicate that they are being analyzed.
+
+		const setAsProcessingTimer = new TIMETRACKER();
+
+		await sams.updateMany(
+			{ /* ALL DOCUMENTS */ },
+			{ system_status: 'processing' },
+			{ returnResults: false },
+		);
+
+		LOGGER.success(`Marked all SAMs as "processing" (${setAsProcessingTimer.get()})`);
+
+		//
 		// Stream the full collection of SAMs
 		// and process them sequentially.
 
-		const samsStream = samsCollection.find().stream();
+		const samsStream = samsCollection
+			.find({ agency_id: { $in: ['41', '42', '43'] } })
+			.stream();
 
 		//
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
+		let counter = 0;
+
 		for await (const samItem of samsStream) {
 			//
+
+			counter++;
 
 			const samData: Sam = samItem;
 
 			try {
 				//
 
-				LOGGER.divider(`[${samData.agency_id}] SAM ${samData._id}`);
+				LOGGER.divider(`[${counter}] [${samData.agency_id}] SAM ${samData._id}`);
 
 				//
 				// Get all APEX transactions for the current SAM in parallel.
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
+
+				const aggregationTimer = new TIMETRACKER();
 
 				let searchTimestampStart = Dates
 					.now('Europe/Lisbon')
@@ -61,7 +82,7 @@ async function main() {
 					searchTimestampStart = Dates
 						.now('Europe/Lisbon')
 						.startOf('day')
-						.set({ day: 28, hour: 4, month: 8, year: 2025 })
+						.set({ day: 22, hour: 4, month: 8, year: 2025 })
 						.unix_timestamp;
 				}
 
@@ -93,11 +114,13 @@ async function main() {
 					validationsTransactionsPromise,
 				]);
 
-				LOGGER.info(`Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length}`);
+				LOGGER.info(`Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length} (${aggregationTimer.get()})`);
 
 				//
 				// Now merge all transactions into a single variable
 				// and sort them by ASE Counter Value.
+
+				const analysisTimer = new TIMETRACKER();
 
 				const preparedLocationTransactions = locationTransactionsData.map(item => ({ ...item, transaction_type: 'location' })) as AggregationResultItem[];
 				const preparedOnBoardRefundsTransactions = onBoardRefundsTransactionsData.map(item => ({ ...item, transaction_type: 'on_board_refund' })) as AggregationResultItem[];
@@ -120,7 +143,7 @@ async function main() {
 				// same Agency ID and the same Device ID.
 
 				if (sortedTransactions.length === 0) {
-					LOGGER.error(`No transactions found for SAM "${samData._id}". Skipping.`);
+					LOGGER.error(`No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete' });
 					LOGGER.spacer(1);
 					continue;
@@ -131,7 +154,7 @@ async function main() {
 				const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 				if (!allTransactionsMatch) {
-					LOGGER.error(`SAM ${samData._id} has transactions with different Agency ID.`);
+					LOGGER.error(`SAM ${samData._id} has transactions with different Agency ID. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
 					LOGGER.spacer(1);
 					continue;
@@ -144,7 +167,7 @@ async function main() {
 				const allMacAseCounterValuesValid = sortedTransactions.every(transaction => transaction.mac_ase_counter_value > 0 && transaction.mac_ase_counter_value !== null && transaction.mac_ase_counter_value !== undefined);
 
 				if (!allMacAseCounterValuesValid) {
-					LOGGER.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value.`);
+					LOGGER.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error' });
 					LOGGER.spacer(1);
 					continue;
@@ -269,7 +292,7 @@ async function main() {
 
 				await sams.updateById(samData._id, updatedSamData);
 
-				LOGGER.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
+				LOGGER.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
 
 			//
 			}
