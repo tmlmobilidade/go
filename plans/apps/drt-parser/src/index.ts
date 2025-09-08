@@ -59,6 +59,7 @@ async function main() {
 
 		//
 		// Import the GTFS to the SQLite database and parse to DRT Database
+		LOGGER.info(`[${globalTimer.get()}] Importing the GTFS to the SQLite database and parsing to DRT Database...`);
 		for (const plan of foundPlans) {
 			const sqlGtfs = await importGtfsToDatabase(plan, importConfig);
 			await parseGtfsToDrt({ database: database, gtfs: sqlGtfs, plan: plan, tables: tables });
@@ -67,19 +68,22 @@ async function main() {
 		//
 		// Save the SQLite database
 
-		LOGGER.info(`Saving the SQLite database to the storage service...`);
+		LOGGER.info(`[${globalTimer.get()}] Saving the SQLite database to the storage service...`);
 
 		try {
-			const file: Buffer = fs.readFileSync(database.instancePath);
-			const fileResult = await files.upload(file, {
+			const fileStats = fs.statSync(database.instancePath);
+			const fileStream = fs.createReadStream(database.instancePath);
+
+			const fileResult = await files.upload(fileStream, {
+				_id: 'drt-model',
 				created_by: 'system	',
-				name: `drt-plan.db`,
-				resource_id: 'drt-parser',
+				name: 'drt-model.db',
+				resource_id: 'Demand-Response-Transportation',
 				scope: 'plans',
-				size: file.length,
+				size: fileStats.size,
 				type: mimeTypes.sqlite,
 				updated_by: 'system',
-			});
+			}, { override: true });
 
 			LOGGER.success(`SQLite database saved to the storage service.` + `(${fileResult._id})`, 0);
 			LOGGER.divider();
