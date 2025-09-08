@@ -31,7 +31,7 @@ services:
       - WATCHTOWER_CLEANUP=TRUE
       - WATCHTOWER_INCLUDE_STOPPED=TRUE
       - WATCHTOWER_REVIVE_STOPPED=TRUE
-      - WATCHTOWER_ROLLING_RESTART=TRUE
+      - WATCHTOWER_ROLLING_RESTART=FALSE
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
