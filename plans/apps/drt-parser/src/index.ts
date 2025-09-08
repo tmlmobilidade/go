@@ -3,16 +3,18 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteDatabase } from '@tmlmobilidade/connectors';
-import { plans } from '@tmlmobilidade/interfaces';
+import { files, plans } from '@tmlmobilidade/interfaces';
+import { mimeTypes } from '@tmlmobilidade/lib';
 import { Dates } from '@tmlmobilidade/utils';
+import fs from 'fs';
 
 import { DrtJourneys, DrtPatternPoints, DrtPatterns, DrtPatternStops, DrtRoutes, DrtStops } from './drt.types.js';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig } from './import-gtfs-to-database.js';
 import { DrtTables, parseGtfsToDrt } from './parse-gtfs-to-drt.js';
 
-const DAYS_TO_ADD = 3;
-
 /* * */
+
+const DAYS_TO_ADD = 3;
 
 async function main() {
 	try {
@@ -27,16 +29,14 @@ async function main() {
 		const startDate = Dates.now('Europe/Lisbon');
 		const endDate = Dates.now('Europe/Lisbon').plus({ days: DAYS_TO_ADD });
 
-		const foundPlans = await plans.findMany({
-			// 'gtfs_feed_info.feed_start_date': { $gte: Dates.now('Europe/Lisbon').unix_timestamp },
-			// /* * */
-			// 'gtfs_feed_info.feed_end_date': { $lte: Dates.now('Europe/Lisbon').plus({ days: DAYS_TO_ADD }).unix_timestamp },
-			// ! DEBUG
-			$or: [
-				{ _id: 'BD1BD' },
-				{ _id: 'L2FV7' },
-			],
-		}, { sort: { 'gtfs_feed_info.feed_start_date': -1 } });
+		const filter = {
+			'gtfs_feed_info.feed_end_date': { $gte: startDate.operational_date },
+			'gtfs_feed_info.feed_start_date': { $lte: startDate.operational_date },
+		};
+
+		console.log(filter);
+
+		const foundPlans = await plans.findMany(filter, { sort: { 'gtfs_feed_info.feed_start_date': -1 } });
 
 		LOGGER.info(`Found ${foundPlans.length} Plans to process...`);
 
@@ -54,7 +54,7 @@ async function main() {
 
 		//
 		// Initialize the SQLite database
-		const database = new SQLiteDatabase('drt-parser');
+		const database = new SQLiteDatabase('drt-model');
 		const tables = intializeDrtSQLTables(database);
 
 		//
@@ -66,13 +66,33 @@ async function main() {
 
 		//
 		// Save the SQLite database
-		console.log('THE SQLite database is saved at:', database.instancePath);
+
+		LOGGER.info(`Saving the SQLite database to the storage service...`);
+
+		try {
+			const file: Buffer = fs.readFileSync(database.instancePath);
+			const fileResult = await files.upload(file, {
+				created_by: 'system	',
+				name: `drt-plan.db`,
+				resource_id: 'drt-parser',
+				scope: 'plans',
+				size: file.length,
+				type: mimeTypes.sqlite,
+				updated_by: 'system',
+			});
+
+			LOGGER.success(`SQLite database saved to the storage service.` + `(${fileResult._id})`, 0);
+			LOGGER.divider();
+		}
+		catch (error) {
+			LOGGER.error(`Error saving the SQLite database to the storage service.`, error);
+			LOGGER.divider();
+			process.exit(1);
+		}
 
 		//
 
 		LOGGER.terminate(`Run took ${globalTimer.get()}`);
-
-		await new Promise(resolve => setTimeout(resolve, 600_000)); // 10 minutes
 
 		//
 	}
