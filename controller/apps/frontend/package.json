@@ -10,11 +10,11 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/nprogress": "8.2.8",
+		"@mantine/nprogress": "8.3.0",
 		"@tabler/icons-react": "3.34.1",
 		"@tmlmobilidade/sae-controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/types": "20250906.141.55",
-		"@tmlmobilidade/ui": "20250905.1650.58",
+		"@tmlmobilidade/ui": "20250906.141.55",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.0.4",
 		"lodash": "4.17.21",
