@@ -324,7 +324,7 @@ async function main() {
 (async function init() {
 	const runOnInterval = async () => {
 		await main();
-		setTimeout(runOnInterval, 20000); // 20 seconds
+		setTimeout(runOnInterval, 18_000_000); // 5 hours
 	};
 	runOnInterval();
 })();
