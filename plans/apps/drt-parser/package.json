@@ -2,7 +2,9 @@
 	"name": "@tmlmobilidade/sae-plans-drt-parser",
 	"version": "1.0.0",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
@@ -22,7 +24,8 @@
 		"@tmlmobilidade/utils": "20250908.1551.9",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",
-		"gtfs-types": "5.1.0"
+		"gtfs-types": "5.1.0",
+		"node-cron": "^4.2.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20250908.1551.9",

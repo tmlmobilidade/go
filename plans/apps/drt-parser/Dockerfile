@@ -3,8 +3,8 @@
 
 FROM node:alpine AS base
 
-ENV MODULE=controller
-ENV PROJECT=rides-feeder
+ENV MODULE=plans
+ENV PROJECT=drt-parser
 
 RUN npm install -g turbo@^2
 

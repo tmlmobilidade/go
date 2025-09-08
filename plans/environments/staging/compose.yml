@@ -127,3 +127,16 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  drt-parser:
+    image: ghcr.io/tmlmobilidade/sae-plans-drt-parser:staging
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb

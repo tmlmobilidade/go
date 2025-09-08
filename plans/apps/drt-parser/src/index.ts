@@ -7,6 +7,7 @@ import { files, plans } from '@tmlmobilidade/interfaces';
 import { mimeTypes } from '@tmlmobilidade/lib';
 import { Dates } from '@tmlmobilidade/utils';
 import fs from 'fs';
+import cron from 'node-cron';
 
 import { DrtJourneys, DrtPatternPoints, DrtPatterns, DrtPatternStops, DrtRoutes, DrtStops } from './drt.types.js';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig } from './import-gtfs-to-database.js';
@@ -290,9 +291,11 @@ function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
 /* * */
 
 (async function init() {
-	const runOnInterval = async () => {
+	// Run at launch
+	await main();
+
+	// Run at 1 AM every day
+	cron.schedule('0 1 * * *', async () => {
 		await main();
-		setTimeout(runOnInterval, 86_400_000); // 1 Day
-	};
-	runOnInterval();
+	});
 })();
