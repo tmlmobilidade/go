@@ -37,15 +37,14 @@ export async function getRides(): Promise<string[]> {
 	// Find all Ride IDs that are waiting analysis and which started before the current time,
 	// sorted in descending order to prioritize the most recent Rides.
 
-	const batchSize = 750;
-	const standardWindowInterval = Dates.now('utc').std_window;
-
 	const fetchTimer = new TIMETRACKER();
+
+	const standardWindowInterval = Dates.now('utc').std_window;
 
 	const latestWaitingRides = await ridesCollection
 		.find({ start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
 		.sort({ start_time_scheduled: -1 })
-		.limit(batchSize)
+		.limit(750)
 		.toArray();
 
 	/* === FOR TESTING === */

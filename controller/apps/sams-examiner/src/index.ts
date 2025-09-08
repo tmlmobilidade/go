@@ -4,7 +4,7 @@ import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type CreateSamDto, type SamAnalysis } from '@tmlmobilidade/types';
+import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
@@ -20,40 +20,32 @@ async function main() {
 		//
 		// Connect to databases
 
+		const samsCollection = await sams.getCollection();
+
 		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
 		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
 		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
 
 		//
-		// Ask the coordinator for a batch of SAM IDs to process
+		// Stream the full collection of SAMs
+		// and process them sequentially.
 
-		const fetchCoordinatorTimer = new TIMETRACKER();
-
-		const samIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/sams');
-		const samIdsBatch = await samIdsBatchResponse.json() as number[];
-
-		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
-
-		//
-		// With the list of SAM IDs,
-		// fetch the actual SAM documents to be processsed
-
-		const fetchSamDocumentsTimer = new TIMETRACKER();
-
-		const samsBatch = await sams.findMany({ _id: { $in: samIdsBatch || [] } });
-
-		LOGGER.info(`Processing ${samsBatch.length} SAMs... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchSamDocumentsTimer.get()})`, 1);
+		const samsStream = samsCollection.find().stream();
 
 		//
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		for (const [samIndex, samItem] of samsBatch.entries()) {
-			try {
+		for await (const samItem of samsStream) {
 			//
 
-				LOGGER.divider(`[${samsBatch.length - samIndex}/${samsBatch.length}] [${samItem.agency_id}] SAM ${samItem._id}`);
+			const samData: Sam = samItem;
+
+			try {
+				//
+
+				LOGGER.divider(`[${samData.agency_id}] SAM ${samData._id}`);
 
 				//
 				// Get all APEX transactions for the current SAM in parallel.
@@ -65,7 +57,7 @@ async function main() {
 					.set({ day: 1, hour: 4, month: 1, year: 2025 })
 					.unix_timestamp;
 
-				if (samItem.agency_id === '41' || samItem.agency_id === '42' || samItem.agency_id === '43') {
+				if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
 					searchTimestampStart = Dates
 						.now('Europe/Lisbon')
 						.startOf('day')
@@ -80,7 +72,7 @@ async function main() {
 					.unix_timestamp;
 
 				const aggregationPipeline = [
-					{ $match: { created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: samItem._id } },
+					{ $match: { created_at: { $gte: searchTimestampStart, $lte: searchTimestampEnd }, mac_sam_serial_number: samData._id } },
 					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1, vehicle_id: 1 } },
 				];
 
@@ -128,8 +120,8 @@ async function main() {
 				// same Agency ID and the same Device ID.
 
 				if (sortedTransactions.length === 0) {
-					LOGGER.error(`No transactions found for SAM "${samItem._id}". Skipping.`);
-					await sams.updateById(samItem._id, { remarks: 'No transactions found for given time range.', system_status: 'complete' });
+					LOGGER.error(`No transactions found for SAM "${samData._id}". Skipping.`);
+					await sams.updateById(samData._id, { remarks: 'No transactions found for given time range.', system_status: 'complete' });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -139,8 +131,21 @@ async function main() {
 				const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 				if (!allTransactionsMatch) {
-					LOGGER.error(`SAM ${samItem._id} has transactions with different Agency ID.`);
-					await sams.updateById(samItem._id, { remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
+					LOGGER.error(`SAM ${samData._id} has transactions with different Agency ID.`);
+					await sams.updateById(samData._id, { remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
+					LOGGER.spacer(1);
+					continue;
+				}
+
+				//
+				// Validate if there are transactions with invalid
+				// mac_ase_counter_value values, such as = 0 or null.
+
+				const allMacAseCounterValuesValid = sortedTransactions.every(transaction => transaction.mac_ase_counter_value > 0 && transaction.mac_ase_counter_value !== null && transaction.mac_ase_counter_value !== undefined);
+
+				if (!allMacAseCounterValuesValid) {
+					LOGGER.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value.`);
+					await sams.updateById(samData._id, { remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error' });
 					LOGGER.spacer(1);
 					continue;
 				}
@@ -249,7 +254,7 @@ async function main() {
 				// Update the SAM with the new data.
 
 				const updatedSamData: CreateSamDto = {
-					_id: samItem._id,
+					_id: samData._id,
 					agency_id: agencyId,
 					analysis: samAnalysisGroups,
 					latest_apex_version: latestTransaction.apex_version,
@@ -262,15 +267,15 @@ async function main() {
 					transactions_missing: transactionsMissing,
 				};
 
-				await sams.updateById(samItem._id, updatedSamData);
+				await sams.updateById(samData._id, updatedSamData);
 
 				LOGGER.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing}`, 1);
 
 			//
 			}
 			catch (error) {
-				LOGGER.error(`Error processing SAM "${samItem._id}": ${error.message}`);
-				await sams.updateById(samItem._id, { remarks: `Error processing SAM "${samItem._id}": ${error.message}`, system_status: 'error' });
+				LOGGER.error(`Error processing SAM "${samData._id}": ${error.message}`);
+				await sams.updateById(samData._id, { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error' });
 			}
 		}
 
@@ -296,7 +301,7 @@ async function main() {
 (async function init() {
 	const runOnInterval = async () => {
 		await main();
-		setTimeout(runOnInterval, 1000); // 1 second
+		setTimeout(runOnInterval, 20000); // 20 seconds
 	};
 	runOnInterval();
 })();

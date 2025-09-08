@@ -36,7 +36,9 @@ interface SamExport {
 
 	const samsCollection = await sams.getCollection();
 
-	const allSamsStream = samsCollection.find({ agency_id: '44', system_status: 'complete' }).stream();
+	const allSamsStream = samsCollection.find({ agency_id: '41', system_status: 'complete' }).stream();
+
+	let totalMissing = 0;
 
 	//
 	// Stream all sams
@@ -45,8 +47,9 @@ interface SamExport {
 
 	for await (const sam of allSamsStream) {
 		const samData = sam as Sam;
-		console.log('Streaming sam:', samData._id, samData.agency_id);
+		console.log('Streaming sam:', samData._id, samData.agency_id, samData.transactions_expected, samData.transactions_found, samData.transactions_missing);
 		for (const analysisGroup of samData.analysis) {
+			totalMissing += analysisGroup.transactions_missing ?? 0;
 			output.push({
 				_id: samData._id,
 				agency_id: samData.agency_id,
@@ -81,6 +84,8 @@ interface SamExport {
 	fs.writeFileSync('output/sams-44.csv', outputTxt);
 
 	console.log('Done.');
+
+	console.log('Total missing:', totalMissing);
 
 	process.exit(0);
 
