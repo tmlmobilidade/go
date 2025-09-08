@@ -45,7 +45,7 @@ async function main() {
 		// and process them sequentially.
 
 		const samsStream = samsCollection
-			.find({ agency_id: { $in: ['41', '42', '43'] } })
+			.find()
 			.stream();
 
 		//

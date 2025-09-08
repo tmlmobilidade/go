@@ -36,7 +36,7 @@ interface SamExport {
 
 	const samsCollection = await sams.getCollection();
 
-	const allSamsStream = samsCollection.find({ agency_id: '42', system_status: 'complete' }).stream();
+	const allSamsStream = samsCollection.find({ agency_id: '41', system_status: 'complete' }).stream();
 
 	let totalMissing = 0;
 
@@ -81,7 +81,7 @@ interface SamExport {
 	console.log(`Exporting ${output.length} rows...`);
 
 	const outputTxt = Papa.unparse(output);
-	fs.writeFileSync('output/sams-44.csv', outputTxt);
+	fs.writeFileSync('output/sams-41.csv', outputTxt);
 
 	console.log('Done.');
 
