@@ -36,7 +36,7 @@ interface SamExport {
 
 	const samsCollection = await sams.getCollection();
 
-	const allSamsStream = samsCollection.find({ agency_id: '41', system_status: 'complete' }).stream();
+	const allSamsStream = samsCollection.find({ agency_id: '42', system_status: 'complete' }).stream();
 
 	let totalMissing = 0;
 

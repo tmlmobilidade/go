@@ -87,7 +87,7 @@ async function main() {
 					.startOf('day')
 					.minus({ days: 5 });
 
-				LOGGER.divider(`[${counter}] [${samData.agency_id}] SAM ${samData._id} ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
+				LOGGER.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
 
 				//
 				// Prepare the aggregation pipeline for APEX transactions.
