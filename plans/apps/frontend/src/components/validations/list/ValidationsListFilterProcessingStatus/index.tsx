@@ -3,7 +3,7 @@
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { validationProcessingStatus } from '@/types/normalized';
 import { PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -45,7 +45,7 @@ export function ValidationsListFilterProcessingStatus() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="Estado"
 			onChange={validationsListContext.actions.setFilterProcessingStatus}

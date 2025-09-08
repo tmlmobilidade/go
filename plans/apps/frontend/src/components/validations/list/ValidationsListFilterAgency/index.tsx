@@ -2,7 +2,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -45,7 +45,7 @@ export function ValidationsListFilterAgency() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="Operador"
 			onChange={validationsListContext.actions.setFilterAgency}

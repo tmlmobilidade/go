@@ -2,7 +2,7 @@
 
 import { usePlansListContext } from '@/contexts/PlansList.context';
 import { planValidityStatus, planValidityStatusValues } from '@/types/normalized';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -44,7 +44,7 @@ export function PlansListFilterValidityStatus() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="Estado de Validade"
 			onChange={plansListContext.actions.setFilterValidityStatus}
