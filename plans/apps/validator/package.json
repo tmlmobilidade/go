@@ -16,15 +16,15 @@
 	},
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
-		"@tmlmobilidade/connectors": "20250909.1404.58",
-		"@tmlmobilidade/emails": "20250909.1404.58",
+		"@tmlmobilidade/connectors": "20250909.1559.44",
+		"@tmlmobilidade/emails": "20250909.1559.44",
 		"@tmlmobilidade/gtfs-validator": "20250827.1411.32",
-		"@tmlmobilidade/interfaces": "20250909.1404.58",
-		"@tmlmobilidade/utils": "20250909.1404.58",
+		"@tmlmobilidade/interfaces": "20250909.1559.44",
+		"@tmlmobilidade/utils": "20250909.1559.44",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/types": "20250909.1404.58",
+		"@tmlmobilidade/types": "20250909.1559.44",
 		"@types/node": "24.3.1",
 		"tsx": "4.20.5",
 		"typescript": "5.9.2"
