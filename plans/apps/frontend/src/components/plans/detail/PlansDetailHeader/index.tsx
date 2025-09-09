@@ -3,9 +3,9 @@
 /* * */
 
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { IconUpload } from '@tabler/icons-react';
+import { IconRecycle, IconRefresh, IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { BackButton, Button, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -49,6 +49,20 @@ export function PlansDetailHeader() {
 				<LockButton
 					isLocked={plansDetailContext.data.plan.is_locked}
 					onClick={plansDetailContext.actions.toggleLock}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={Permissions.plans.actions.create}
+				resource_key="agency_ids"
+				scope={Permissions.plans.scope}
+				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
+			>
+				<IconButton
+					disabled={plansDetailContext.data.plan.is_locked}
+					icon={<IconRefresh />}
+					onClick={() => console.log('')}
+					tooltip="Alterar Plano"
 				/>
 			</HasPermission>
 
