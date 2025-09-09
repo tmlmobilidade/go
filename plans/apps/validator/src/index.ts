@@ -3,17 +3,81 @@
 import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
-import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
+import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
-import { writeFile } from 'fs/promises';
+import { access, constants, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
 interface ValidationMessage {
 	file_id: string
 	validation_id: string
+}
+
+async function validateFile(filePath: string): Promise<GTFSValidatorResult['summary']> {
+	//
+
+	//
+	// Get the environment and rules path
+	const environment = getCurrentEnvironment();
+	const rulesPath = environment === 'development' ? undefined : '/secrets/tml-rules.json';
+
+	//
+	// Check if the file exists
+	// Validate rules file exists in production
+	if (environment !== 'development' && rulesPath) {
+		try {
+			await access(rulesPath, constants.F_OK | constants.R_OK);
+			logger.info(`Using custom validation rules: ${rulesPath}`);
+		}
+		catch (err) {
+			const msg = `Custom rules file not accessible: ${rulesPath}. Falling back to default rules. Error: ${err instanceof Error ? err.message : String(err)}`;
+			logger.error(msg);
+			throw new Error(msg);
+		}
+	}
+
+	try {
+		const validationResult = await GTFSValidator(filePath, {
+			lang: 'pt',
+			rules_path: rulesPath,
+			timeout: 1000 * 60 * 15, // 15 minutes for large feeds
+		});
+
+		return validationResult.summary;
+	}
+	catch (err) {
+		if (err instanceof GTFSValidatorError) {
+			switch (err.code) {
+				case 'BINARY_NOT_FOUND':
+					logger.error(`GTFS validator binary not found for platform ${process.platform}-${process.arch}`);
+					break;
+				case 'INPUT_NOT_ACCESSIBLE':
+					logger.error(`Cannot access GTFS file: ${filePath}`);
+					break;
+				case 'VALIDATION_TIMEOUT':
+					logger.error(`GTFS validation timed out - feed may be too large or complex`);
+					break;
+				case 'VALIDATOR_ERROR':
+					logger.error(`GTFS validator failed with error: ${err.message}`);
+					if (err.stderr) {
+						logger.error(`Validator stderr: ${err.stderr}`);
+					}
+					break;
+				default:
+					logger.error(`GTFS validation failed: ${err.message}`);
+			}
+
+			// Re-throw to let calling code handle the failure
+			throw err;
+		}
+		else {
+			logger.error(`Unexpected error during GTFS validation: ${err instanceof Error ? err.message : String(err)}`);
+			throw err;
+		}
+	}
 }
 
 async function processValidation(message: ValidationMessage) {
@@ -45,13 +109,26 @@ async function processValidation(message: ValidationMessage) {
 		// 4. Run GTFS validation
 		logger.info(`Validating file: ${tempFilePath}`);
 
-		const useRules = true;
-		const rulesPath = getCurrentEnvironment() === 'development' ? undefined : '/secrets/tml-rules.json';
-
-		const validationResult = await GTFSValidator(tempFilePath, {
-			lang: 'pt',
-			rules_path: useRules ? rulesPath : undefined,
-		});
+		let validationResult: GTFSValidatorResult['summary'];
+		try {
+			validationResult = await validateFile(tempFilePath);
+		}
+		catch (error) {
+			validationResult = {
+				messages: [
+					{
+						field: 'N/A',
+						file_name: 'Erro do sistema',
+						message: error instanceof Error ? error.message : String(error),
+						rows: [],
+						severity: 'error',
+						validation_id: message.validation_id,
+					},
+				],
+				total_errors: 1,
+				total_warnings: 0,
+			};
+		}
 
 		logger.info(`File validated, updating document in MongoDB`);
 
@@ -143,8 +220,8 @@ async function main() {
 			break; // Exit loop if main resolves without error
 		}
 		catch (err) {
-			console.error('Fatal error in main():', err);
-			console.error('Restarting main() in 5 seconds...');
+			logger.error('Fatal error in main():', err);
+			logger.info('Restarting main() in 5 seconds...');
 			await new Promise(res => setTimeout(res, 5000));
 		}
 	}
