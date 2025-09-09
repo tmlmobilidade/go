@@ -259,6 +259,19 @@ export class PlansController {
 	}
 
 	/**
+	 * Retrieves the DRT model file
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getDrtModel(request: FastifyRequest, reply: FastifyReply<void>) {
+		const file = await files.findById('drt-model');
+		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'DRT model file not found');
+
+		// Redirect to the file download url
+		return reply.redirect(file.url);
+	}
+
+	/**
 	 * Retrieves the operation file associated with a plan by ID
 	 * @param request Fastify request containing plan ID in params
 	 * @param reply Fastify reply

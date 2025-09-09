@@ -75,6 +75,9 @@ server.register(
 		// GET /plans/approved
 		instance.get('/approved', PlansController.getApprovedPlans);
 
+		// GET /plans/drt-model.db
+		instance.get('/drt-model.db', PlansController.getDrtModel);
+
 		next();
 	},
 	{ prefix: namespace },
