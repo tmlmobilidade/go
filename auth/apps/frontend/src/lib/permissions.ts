@@ -84,6 +84,7 @@ const planActions: PermissionConfig<typeof Permissions.plans.actions> = {
 		{ description: 'Permite editar os dados da PCGI Legacy', key: 'update_pcgi_legacy', label: 'Editar PCGI Legacy', resources: ['AGENCIES'] },
 		{ description: 'Permite bloquear/desbloquear um plano', key: 'toggle_lock', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 		{ description: 'Permite eliminar um plano', key: 'delete', label: 'Eliminar', resources: ['AGENCIES'] },
+		{ description: 'Permite alterar o GTFS de um plano', key: 'update_gtfs_plan', label: 'Alterar GTFS', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de planos.',
 	scope: Permissions.plans.scope,
