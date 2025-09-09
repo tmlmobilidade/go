@@ -3,7 +3,7 @@
 /* * */
 
 import { GtfsValidation, type Plan } from '@tmlmobilidade/types';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -11,13 +11,14 @@ import useSWR from 'swr';
 interface ChangePlanContextState {
 	actions: {
 		confirmChange: () => Promise<void>
+		setSelectedValidation: (value: string) => void
 	}
 	data: {
-		available: GtfsValidation[]
+		availableValidations: GtfsValidation[]
 		current: Plan
+		selectedValidation: GtfsValidation | undefined
 	}
 	flags: {
-		can_confirm: boolean
 		error: Error | undefined
 		loading: boolean
 	}
@@ -42,12 +43,28 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 
 	//
 	// A. Setup variables
+	const [selectedValidation, setSelectedValidation] = useState<GtfsValidation | undefined>(undefined);
 	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>('/api/validations');
 
-	const availablePlans = useMemo(() => {
+	//
+	// B. Transform data
+
+	const availableValidations = useMemo(() => {
 		if (!allValidationsData) return [];
 		return allValidationsData.filter(item => item.gtfs_agency.agency_id === plan?.gtfs_agency.agency_id);
 	}, [allValidationsData, plan]);
+
+	//
+	// C. Handle actions
+
+	const handleSetSelectedValidation = (id: string) => {
+		setSelectedValidation(availableValidations.find(item => item._id === id));
+	};
+
+	const confirmChange = async () => {
+		if (!selectedValidation) return;
+		console.log(selectedValidation);
+	};
 
 	//
 	// D. Define context value
@@ -55,19 +72,20 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 	const contextValue: ChangePlanContextState = useMemo(() => {
 		return {
 			actions: {
-				confirmChange: () => Promise.resolve(),
+				confirmChange,
+				setSelectedValidation: handleSetSelectedValidation,
 			},
 			data: {
-				available: availablePlans,
+				availableValidations,
 				current: plan,
+				selectedValidation,
 			},
 			flags: {
-				can_confirm: plan !== null,
 				error: allValidationsError,
 				loading: allValidationsLoading,
 			},
 		};
-	}, [availablePlans, plan, allValidationsError, allValidationsLoading]);
+	}, [availableValidations, plan, allValidationsError, allValidationsLoading, selectedValidation]);
 
 	//
 	// E. Render components

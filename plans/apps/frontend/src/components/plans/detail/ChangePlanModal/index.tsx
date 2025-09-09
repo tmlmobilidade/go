@@ -3,9 +3,10 @@
 /* * */
 
 import { ChangePlanContextProvider, useChangePlanContext } from '@/contexts/ChangePlan.context';
-import { IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
+import { IconRefresh } from '@tabler/icons-react';
 import { type Plan } from '@tmlmobilidade/types';
-import { Button, closeModal, Combobox, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { Button, closeModal, Combobox, Divider, Grid, Label, MeContextProvider, openModal, Section, Tag, Text } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -56,10 +57,15 @@ export default function ChangePlanModal() {
 			<Section>
 				<Combobox
 					placeholder="Selecione o plano"
-					data={changePlanContext.data.available.map(item => ({
-						label: item._id,
+					value={changePlanContext.data.selectedValidation?._id}
+					data={changePlanContext.data.availableValidations.map(item => ({
+						icon: <Tag label={item._id} variant="secondary" />,
+						label: Dates.fromUnixTimestamp(item.created_at).setZone('Europe/Lisbon', 'offset_only').toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT'),
 						value: item._id,
 					}))}
+					onChange={(value) => {
+						changePlanContext.actions.setSelectedValidation(value);
+					}}
 					fullWidth
 				/>
 			</Section>
@@ -75,8 +81,9 @@ export default function ChangePlanModal() {
 						variant="secondary"
 					/>
 					<Button
-						icon={<IconRosetteDiscountCheckFilled />}
-						label="Aprovar Plano"
+						disabled={!changePlanContext.data.selectedValidation}
+						icon={<IconRefresh />}
+						label="Alterar Plano"
 						loading={changePlanContext.flags.loading}
 						onClick={changePlanContext.actions.confirmChange}
 					/>
