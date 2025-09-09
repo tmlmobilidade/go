@@ -54,7 +54,7 @@ export function PlansDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={Permissions.plans.actions.create}
+				action={Permissions.plans.actions.update_gtfs_plan}
 				resource_key="agency_ids"
 				scope={Permissions.plans.scope}
 				value={plansDetailContext.data.plan.gtfs_agency.agency_id}

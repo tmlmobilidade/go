@@ -72,6 +72,13 @@ server.register(
 			PlansController.delete,
 		);
 
+		// PUT /plans/:id/
+		instance.post(
+			'/:id/change-gtfs',
+			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update_gtfs_plan) },
+			PlansController.changeGtfsPlan,
+		);
+
 		// GET /plans/approved
 		instance.get('/approved', PlansController.getApprovedPlans);
 

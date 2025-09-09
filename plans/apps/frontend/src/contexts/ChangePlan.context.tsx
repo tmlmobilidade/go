@@ -1,10 +1,13 @@
 'use client';
 
+import { CHANGE_PLAN_MODAL_ID } from '@/components/plans/detail/ChangePlanModal';
 /* * */
 
 import { GtfsValidation, type Plan } from '@tmlmobilidade/types';
+import { closeModal, useToast } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 /* * */
 
@@ -38,11 +41,12 @@ export function useChangePlanContext() {
 
 /* * */
 
-export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<{ plan?: Plan }>) => {
+export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<{ plan: Plan }>) => {
 	//
 
 	//
 	// A. Setup variables
+	const [isLoading, setIsLoading] = useState(false);
 	const [selectedValidation, setSelectedValidation] = useState<GtfsValidation | undefined>(undefined);
 	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>('/api/validations');
 
@@ -63,7 +67,38 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 
 	const confirmChange = async () => {
 		if (!selectedValidation) return;
-		console.log(selectedValidation);
+		setIsLoading(true);
+
+		//
+		// Change the GTFS of the plan
+		const response = await fetchData(`/api/plans/${plan._id}/change-gtfs`, 'POST', {
+			validation_id: selectedValidation._id,
+		});
+
+		if (response.error) {
+			useToast.error({ message: response.error, title: 'Erro ao alterar plano' });
+			setIsLoading(false);
+			return;
+		}
+
+		useToast.success({ message: 'Plano alterado com sucesso', title: 'Sucesso' });
+
+		//
+		// Mutate the plans list
+
+		mutate('/api/plans');
+
+		//
+		// Close the modal
+
+		closeModal(CHANGE_PLAN_MODAL_ID);
+
+		//
+		// Reset the state
+
+		setIsLoading(false);
+
+		//
 	};
 
 	//
@@ -82,7 +117,7 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 			},
 			flags: {
 				error: allValidationsError,
-				loading: allValidationsLoading,
+				loading: allValidationsLoading || isLoading,
 			},
 		};
 	}, [availableValidations, plan, allValidationsError, allValidationsLoading, selectedValidation]);
