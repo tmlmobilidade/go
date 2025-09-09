@@ -2,8 +2,9 @@
 
 /* * */
 
+import { openChangePlanModal } from '@/components/plans/detail/ChangePlanModal';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { IconRecycle, IconRefresh, IconUpload } from '@tabler/icons-react';
+import { IconRefresh, IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
@@ -61,7 +62,7 @@ export function PlansDetailHeader() {
 				<IconButton
 					disabled={plansDetailContext.data.plan.is_locked}
 					icon={<IconRefresh />}
-					onClick={() => console.log('')}
+					onClick={() => openChangePlanModal(plansDetailContext.data.plan)}
 					tooltip="Alterar Plano"
 				/>
 			</HasPermission>
