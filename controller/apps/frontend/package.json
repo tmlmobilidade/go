@@ -5,8 +5,8 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev -p 51002",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
 		"start": "next start"
 	},
 	"dependencies": {
