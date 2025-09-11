@@ -3,12 +3,13 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { authProvider } from '@tmlmobilidade/interfaces';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { type Permission } from '@tmlmobilidade/types';
+import { type Permission, type User } from '@tmlmobilidade/types';
 
 /* * */
 
 declare module 'fastify' {
 	export interface FastifyRequest {
+		me: User
 		permissions: Permission<unknown>[]
 	}
 }
@@ -29,6 +30,8 @@ export default function authorizationMiddleware(scope?: string, action?: string)
 		}
 
 		try {
+			const user = await authProvider.getUser(token);
+			request.me = user;
 			const permissions = await authProvider.getPermissions(token);
 			request.permissions = permissions;
 		}
