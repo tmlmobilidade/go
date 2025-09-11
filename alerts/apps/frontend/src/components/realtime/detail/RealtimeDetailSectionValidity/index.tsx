@@ -4,9 +4,6 @@
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -24,9 +21,6 @@ export function RealtimeDetailSectionValidity() {
 	const startDateValue = realtimeDetailContext.data.form.getValues().active_period_start_date;
 	const endDateValue = realtimeDetailContext.data.form.getValues().active_period_end_date;
 
-	const startDate = new Date(startDateValue);
-	const endDate = endDateValue ? new Date(endDateValue) : null;
-
 	//
 	// C. Render components
 
@@ -37,24 +31,22 @@ export function RealtimeDetailSectionValidity() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					className={styles.datePicker}
-					description="Data de início do realtimea"
 					label="Data de Início"
+					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('active_period_start_date')}
-					value={startDate}
+					value={startDateValue}
 					onChange={(date) => {
-						realtimeDetailContext.data.form.setFieldValue('active_period_start_date', Dates.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp);
+						realtimeDetailContext.data.form.setFieldValue('active_period_start_date', date);
 					}}
 				/>
 				<DateTimePicker
-					className={styles.datePicker}
-					description="Data de fim do realtimea"
 					label="Data de Fim"
 					clearable
+					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('active_period_end_date')}
-					value={endDate}
+					value={endDateValue}
 					onChange={(date) => {
-						realtimeDetailContext.data.form.setFieldValue('active_period_end_date', date ? Dates.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp : null);
+						realtimeDetailContext.data.form.setFieldValue('active_period_end_date', date);
 					}}
 				/>
 			</Section>

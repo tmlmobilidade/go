@@ -2,7 +2,7 @@
 
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { AlertSchema } from '@tmlmobilidade/types';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -44,7 +44,7 @@ export function AlertsListFilterPublishStatus() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="Estado"
 			onChange={alertsListContext.actions.setFilterPublishStatus}

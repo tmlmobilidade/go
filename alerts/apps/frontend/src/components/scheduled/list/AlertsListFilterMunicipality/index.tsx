@@ -2,7 +2,7 @@
 
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -45,7 +45,7 @@ export function AlertsListFilterMunicipality() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="Município"
 			onChange={alertsListContext.actions.setFilterMunicipality}

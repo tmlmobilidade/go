@@ -5,7 +5,7 @@
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Translations } from '@/lib/translations';
 import { equipmentSchema } from '@tmlmobilidade/types';
-import { FilterMenu } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -41,7 +41,7 @@ export function StopsListFilterEquipment() {
 	// C. Render components
 
 	return (
-		<FilterMenu
+		<FilterTypeList
 			active={isActive}
 			label="Equipamentos"
 			onChange={stopsListContext.actions.setFilterEquipment}

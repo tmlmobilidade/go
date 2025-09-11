@@ -4,9 +4,6 @@
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -24,9 +21,6 @@ export function AlertDetailSectionVisibility() {
 	const startDateValue = alertDetailContext.data.form.getValues().publish_start_date;
 	const endDateValue = alertDetailContext.data.form.getValues().publish_end_date;
 
-	const startDate = new Date(startDateValue);
-	const endDate = endDateValue ? new Date(endDateValue) : null;
-
 	//
 	// C. Render components
 
@@ -37,24 +31,22 @@ export function AlertDetailSectionVisibility() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					className={styles.datePicker}
-					description="Data de início do alerta"
 					label="Data de Início"
+					fullWidth
 					{...alertDetailContext.data.form.getInputProps('publish_start_date')}
-					value={startDate}
+					value={startDateValue}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('publish_start_date', Dates.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp);
+						alertDetailContext.data.form.setFieldValue('publish_start_date', date);
 					}}
 				/>
 				<DateTimePicker
-					className={styles.datePicker}
-					description="Data de fim do alerta"
 					label="Data de Fim"
 					clearable
+					fullWidth
 					{...alertDetailContext.data.form.getInputProps('publish_end_date')}
-					value={endDate}
+					value={endDateValue}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('publish_end_date', date ? Dates.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp : null);
+						alertDetailContext.data.form.setFieldValue('publish_end_date', date);
 					}}
 				/>
 			</Section>
