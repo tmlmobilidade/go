@@ -39,6 +39,12 @@ export class AgenciesController {
 	static async update(request: FastifyRequest<{ Body: UpdateAgencyDto, Params: { id: string } }>, reply: FastifyReply<Agency>) {
 		const validatedAgency = UpdateAgencySchema.strip().safeParse(request.body);
 		if (!validatedAgency.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Dados inválidos', validatedAgency.error);
+
+		//
+		// Set the updated_by field to the current user's id
+		request.body.updated_by = request.me._id;
+
+		//
 		const updatedAgencyData = await agencies.updateById(request.params.id, validatedAgency.data);
 		reply.send({ data: updatedAgencyData, error: null, statusCode: HttpStatus.OK });
 	}
