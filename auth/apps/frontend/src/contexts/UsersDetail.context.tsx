@@ -41,6 +41,7 @@ interface UsersDetailContextState {
 }
 
 const emptyUser: CreateUserDto = {
+	created_by: '',
 	email: '',
 	first_name: '',
 	last_name: '',
@@ -49,6 +50,7 @@ const emptyUser: CreateUserDto = {
 	phone: '',
 	role_ids: [],
 	session_ids: [],
+	updated_by: '',
 	verification_token_ids: [],
 };
 

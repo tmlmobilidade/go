@@ -45,8 +45,10 @@ interface RoleDetailContextState {
 }
 
 const emptyRole: CreateRoleDto = {
+	created_by: '',
 	name: '',
 	permissions: [],
+	updated_by: '',
 };
 
 const RoleDetailContext = createContext<RoleDetailContextState | undefined>(undefined);

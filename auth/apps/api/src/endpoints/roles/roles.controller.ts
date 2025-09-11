@@ -14,6 +14,13 @@ export class RolesController {
 	 * @param {FastifyReply} reply - The reply object
 	 */
 	static async create(request: FastifyRequest<{ Body: CreateRoleDto }>, reply: FastifyReply<Role>) {
+		//
+
+		//
+		// Set the created_by and updated_by fields to the current user's id
+		request.body.created_by = request.me._id;
+		request.body.updated_by = request.me._id;
+
 		const role = await roles.insertOne(request.body);
 		reply.send({ data: role, error: null, statusCode: HttpStatus.CREATED });
 	}
@@ -57,6 +64,12 @@ export class RolesController {
 	 * @param {FastifyReply} reply - The reply object
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateRoleDto, Params: { id: string } }>, reply: FastifyReply<Role>) {
+		//
+
+		//
+		// Set the updated_by field to the current user's id
+		request.body.updated_by = request.me._id;
+
 		const role = await roles.updateById(request.params.id, request.body);
 		reply.send({ data: role, error: null, statusCode: HttpStatus.OK });
 	}

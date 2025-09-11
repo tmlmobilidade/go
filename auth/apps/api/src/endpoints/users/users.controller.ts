@@ -18,6 +18,14 @@ export class UsersController {
 	 * @param reply The reply object
 	 */
 	static async create(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<void>) {
+		//
+
+		//
+		// Set the created_by and updated_by fields to the current user's id
+		request.body.created_by = request.me._id;
+		request.body.updated_by = request.me._id;
+
+		//
 		await authProvider.register(request.body);
 		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
@@ -126,6 +134,13 @@ export class UsersController {
 	 * @param reply The reply object
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateUserDto, Params: { id: string } }>, reply: FastifyReply<User>) {
+		//
+
+		//
+		// Set the updated_by field to the current user's id
+		request.body.updated_by = request.me._id;
+
+		//
 		const user = await users.updateById(request.params.id, request.body);
 		reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
 	}
