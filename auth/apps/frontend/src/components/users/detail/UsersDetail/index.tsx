@@ -4,12 +4,12 @@
 
 import { UsersDetailBasicInfo } from '@/components/users/detail/UsersDetailBasicInfo';
 import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
-import { UsersDetailRoles } from '@/components/users/detail/UsersDetailRoles';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
 import { PermissionSectionGroup } from '@/components/permissions/PermissionSectionGroup';
+import { UsersDetailRolesAndOrganization } from '@/components/users/detail/UsersDetailRolesAndOrganization';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 
 /* * */
@@ -20,7 +20,7 @@ export function UsersDetail() {
 	return (
 		<Pane header={[<UsersDetailHeader />]}>
 			<UsersDetailBasicInfo />
-			<UsersDetailRoles />
+			<UsersDetailRolesAndOrganization />
 			<PermissionSectionGroup
 				onResourceToggle={actions.handlePermissionResourceToggle}
 				onToggle={actions.handlePermissionToggle}

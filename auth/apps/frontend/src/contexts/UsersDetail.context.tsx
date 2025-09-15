@@ -45,7 +45,7 @@ const emptyUser: CreateUserDto = {
 	email: '',
 	first_name: '',
 	last_name: '',
-	organization_ids: [],
+	organization_id: '',
 	permissions: [],
 	phone: '',
 	role_ids: [],
@@ -97,7 +97,6 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 
 	useEffect(() => {
 		if (!user) return;
-
 		setLoading(true);
 		form.initialize(convertObject(user, CreateUserSchema));
 		setLoading(false);
