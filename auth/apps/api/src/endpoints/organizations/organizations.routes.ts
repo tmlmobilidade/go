@@ -25,6 +25,9 @@ server.register(
 		// GET /organization/:id
 		instance.get('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.read) }, OrganizationsController.getById);
 
+		// PUT /organizations/:id
+		instance.put('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.update) }, OrganizationsController.update);
+
 		next();
 	},
 	{ prefix: NAMESPACE },
