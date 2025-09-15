@@ -3,25 +3,46 @@
 /* * */
 
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
+import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
 import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
 import { Dates, fetchData, getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
+export const RidesDetailViewOptions = {
+	ANALYSIS: {
+		icon: IconPresentationAnalytics,
+		label: 'Análise',
+		value: 'ANALYSIS',
+	},
+	AUDIT: {
+		icon: IconClipboardSearch,
+		label: 'Auditoria',
+		value: 'AUDIT',
+	},
+	JUSTIFICATIONS: {
+		icon: IconChecks,
+		label: 'Justificação',
+		value: 'JUSTIFICATIONS',
+	},
+} as const;
+
 interface RidesDetailContextState {
 	actions: {
 		reprocessRide: () => Promise<void>
+		setSelectedView: (value: keyof typeof RidesDetailViewOptions) => void
 	}
 	data: {
 		hashed_shape: HashedShape | null
 		hashed_trip: HashedTrip | null
 		ride: null | RideNormalized
 		ride_id: Ride['_id']
+		selected_view: keyof typeof RidesDetailViewOptions
 		simplified_apex_locations: SimplifiedApexLocation[]
 		simplified_apex_on_board_refunds: SimplifiedApexOnBoardRefund[]
 		simplified_apex_on_board_sales: SimplifiedApexOnBoardSale[]
@@ -69,6 +90,8 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<SimplifiedApexOnBoardRefund[]>(`/api/rides/${rideId}/simplified-apex-on-board-refunds`, { refreshInterval: 1000 });
 	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HashedTrip>(`/api/rides/${rideId}/hashed-trip`);
 	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HashedShape>(`/api/rides/${rideId}/hashed-shape`);
+
+	const [selectedView, setSelectedView] = useState<keyof typeof RidesDetailViewOptions>(Object.keys(RidesDetailViewOptions)[0] as keyof typeof RidesDetailViewOptions);
 
 	//
 	// B. Transform data
@@ -202,12 +225,14 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	const contextValue: RidesDetailContextState = useMemo(() => ({
 		actions: {
 			reprocessRide,
+			setSelectedView,
 		},
 		data: {
 			hashed_shape: hashedShapeData ?? null,
 			hashed_trip: hashedTripData ?? null,
 			ride: rideDataNormalized,
 			ride_id: rideId,
+			selected_view: selectedView,
 			simplified_apex_locations: simplifiedApexLocationsData ?? [],
 			simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData ?? [],
 			simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData ?? [],
@@ -241,6 +266,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 		rideError,
 		vehicleEventsLoading,
 		vehicleEventsError,
+		selectedView,
 		simplifiedApexLocationsData,
 		simplifiedApexLocationsError,
 		simplifiedApexOnBoardRefundsData,
