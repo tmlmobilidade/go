@@ -4,7 +4,7 @@
 
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
-import { RidesDetailSystemStatus } from '@/components/rides/detail/RidesDetailSystemStatus';
+import { RidesDetailSystemStatus } from '@/components/rides/detail/RidesDetail/RidesDetailSystemStatus';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { BackButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
