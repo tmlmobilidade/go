@@ -1,10 +1,11 @@
 'use client';
 
+import { UploadImage } from '@/components/common/UploadImage';
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
 /* * */
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/types';
-import { Collapsible, FileUpload, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -41,13 +42,19 @@ export function OrganizationDetailBasicInfo() {
 						{...organizationDetailContext.data.form.getInputProps('short_name')}
 					/>
 				</Grid>
-				<Grid columns="abc" gap="lg">
-					<FileUpload
-						accept="image/png, image/jpeg"
+				<Grid columns="aab" gap="lg">
+					<UploadImage
 						label="Selecionar logótipo"
-						maxFileSize={5 * 1024 * 1024} // 5 MB
-						onFileChange={organizationDetailContext.actions.setValidationFile}	
+						maxFileSize={50 * 1024 * 1024} // 50 MB
+						onFileChange={organizationDetailContext.actions.setValidationFile}
 					/>
+					{/* <Combobox
+						data={organizationItems}
+						label="Organizações"
+						value={userDetailsContext.data.form.values.organization_id}
+						fullWidth
+						{...userDetailsContext.data.form.getInputProps('organization_id')}
+					/> */}
 				</Grid>
 			</Section>
 		</Collapsible>
