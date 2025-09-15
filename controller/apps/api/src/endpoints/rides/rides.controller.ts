@@ -68,7 +68,7 @@ export class RidesController {
 		//
 		// Filter rides based on permissions for the current user
 
-		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.read);
+		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.analysis_read);
 
 		if (ridePermission?.resource) {
 			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
