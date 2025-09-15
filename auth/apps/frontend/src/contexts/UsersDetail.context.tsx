@@ -97,7 +97,6 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 
 	useEffect(() => {
 		if (!user) return;
-		console.log('USER =======> ', user);
 		setLoading(true);
 		form.initialize(convertObject(user, CreateUserSchema));
 		setLoading(false);

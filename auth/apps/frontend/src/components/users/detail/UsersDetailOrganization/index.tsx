@@ -1,4 +1,5 @@
 'use client';
+
 /* * */
 
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
@@ -20,7 +21,7 @@ export function UsersDetailOrganization() {
 	// B. Transform data
 
 	const organizationItems = organizations.raw.map(organization => ({
-		label: organization.abbreviation,
+		label: organization.longname,
 		value: organization._id,
 	}));
 

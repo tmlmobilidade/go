@@ -40,8 +40,6 @@ export const OrganizationsContextProvider = ({ children }: PropsWithChildren) =>
 
 	const { data: allOrganizationsData, error: allOrganizationsError, isLoading: allOrganizationsLoading } = useSWR<Organization[], Error>('/api/organizations');
 
-	console.log(allOrganizationsData);
-
 	//
 	// B. Define context value
 
