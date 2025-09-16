@@ -8,6 +8,7 @@ import { HomeLink } from '@tmlmobilidade/types';
 import { iconMap } from '@/lib/icons';
 import { Collapsible, DataTable, DataTableColumn, Section, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import React from 'react';
 
 import { OrganizationDetailQuickLinksActions } from '../OrganizationSectionQuickLinksActions';
 
