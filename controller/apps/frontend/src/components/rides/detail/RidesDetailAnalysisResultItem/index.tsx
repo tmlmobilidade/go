@@ -18,12 +18,14 @@ interface Props {
 
 export function RidesDetailAnalysisResultItem({ grade, id }: Props) {
 	return (
-		<Surface>
-			<Section gap="xs" padding="sm">
-				{id && <Label size="sm">{id}</Label>}
+		<Surface height="full">
+			<Section gap="xs" height="100%" justifyContent="space-between" padding="sm">
 				<div>
-					{rideAnalysisLabels[id]?.title && <Label>{rideAnalysisLabels[id].title}</Label>}
-					{rideAnalysisLabels[id]?.description && <Text size="sm">{rideAnalysisLabels[id].description}</Text>}
+					{id && <Label size="sm">{id}</Label>}
+					<div>
+						{rideAnalysisLabels[id]?.title && <Label>{rideAnalysisLabels[id].title}</Label>}
+						{rideAnalysisLabels[id]?.description && <Text size="sm">{rideAnalysisLabels[id].description}</Text>}
+					</div>
 				</div>
 				{grade === 'error' && <Tag label="Erro" variant="danger" filled />}
 				{grade === 'fail' && <Tag label="Fail" variant="danger" />}

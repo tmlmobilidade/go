@@ -1,6 +1,6 @@
 'use client';
 
-import { type CreateCommentDto, type RideJustification } from '@tmlmobilidade/types';
+import { type RideAcceptance } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
@@ -12,13 +12,13 @@ import useSWR, { mutate } from 'swr';
 
 interface RidesDetailJustificationContextState {
 	actions: {
-		addComment: (comment: CreateCommentDto) => void
-		changeStatus: (status: RideJustification['acceptance_status']) => void
-		justify: (message: RideJustification['pto_message']) => void
-		toggleLock: (is_locked: RideJustification['is_locked']) => void
+		addComment: (comment: RideAcceptance['comments'][number]) => void
+		changeStatus: (status: RideAcceptance['acceptance_status']) => void
+		justify: (message: string) => void
+		toggleLock: (is_locked: RideAcceptance['is_locked']) => void
 	}
 	data: {
-		justification: null | RideJustification
+		justification: null | RideAcceptance
 	}
 	flags: {
 		error: Error | null
@@ -40,29 +40,29 @@ export function useRidesDetailJustificationContext() {
 
 /* * */
 
-const BASE_URL = (trip_id: string) => `/rides/${trip_id}/justification`;
-export const RidesDetailJustificationContextProvider = ({ children, trip_id }) => {
+const BASE_URL = (rideId: string) => `/api/rides/${rideId}/justification`;
+export const RidesDetailJustificationContextProvider = ({ children, rideId }) => {
 	//
 
 	//
 	// A. Setup variables
-	const { data: justificationData, error: justificationError, isLoading: justificationLoading } = useSWR<RideJustification>(BASE_URL(trip_id));
+	const { data: justificationData, error: justificationError, isLoading: justificationLoading } = useSWR<RideAcceptance>(BASE_URL(rideId));
 
 	//
 	// B. Transform data
 
 	//
 	// C. Handle actions
-	async function addComment(comment: CreateCommentDto) {
+	async function addComment(comment: RideAcceptance['comments'][number]) {
 		try {
-			const res = await fetchData(BASE_URL(trip_id), 'POST', comment);
+			const res = await fetchData(BASE_URL(rideId), 'POST', comment);
 
 			if (res.error) {
 				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
 				return;
 			}
 
-			mutate(BASE_URL(trip_id));
+			mutate(BASE_URL(rideId));
 		}
 		catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao adicionar comentário' });
@@ -70,30 +70,30 @@ export const RidesDetailJustificationContextProvider = ({ children, trip_id }) =
 	}
 
 	//
-	async function changeStatus(status: RideJustification['acceptance_status']) {
+	async function changeStatus(status: RideAcceptance['acceptance_status']) {
 		try {
-			const statusResponse = await fetchData(BASE_URL(trip_id), 'PUT', { acceptance_status: status });
+			const statusResponse = await fetchData(BASE_URL(rideId), 'PUT', { acceptance_status: status });
 
 			if (statusResponse.error) {
 				useToast.error({ message: statusResponse.error, title: 'Erro ao alterar status' });
 				return;
 			}
 
-			mutate(BASE_URL(trip_id));
+			mutate(BASE_URL(rideId));
 		}
 		catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao alterar status' });
 		}
 	}
 
-	function justify(message: RideJustification['pto_message']) {
-		const response = fetchData(BASE_URL(trip_id), 'PUT', { pto_message: message });
+	function justify(message: string) {
+		const response = fetchData(BASE_URL(rideId), 'PUT', { pto_message: message });
 		console.log('justify', response);
 	}
 
 	//
-	async function toggleLock(is_locked: RideJustification['is_locked']) {
-		const response = fetchData(BASE_URL(trip_id), 'PUT', { is_locked });
+	async function toggleLock(is_locked: RideAcceptance['is_locked']) {
+		const response = fetchData(BASE_URL(rideId), 'PUT', { is_locked });
 		console.log('toggleLock', response);
 	}
 

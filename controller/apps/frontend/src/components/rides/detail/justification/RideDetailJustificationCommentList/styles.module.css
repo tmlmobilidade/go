@@ -1,0 +1,17 @@
+
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-spacing-md);
+}
+
+.path {
+    position: absolute;
+    top: 14px;
+    bottom: 20px;
+    left: 15px;
+    z-index: 1;
+    width: 2px;
+    background-color: var(--color-system-border-100);
+}
