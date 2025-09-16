@@ -9,13 +9,13 @@ import { Dates, generateRandomString } from '@tmlmobilidade/utils';
 
 /* * */
 
-export class JustificationsController {
+export class RideAcceptanceController {
 	/**
-	 * Changes the status of a justification by trip ID
+	 * Changes the status of a ride acceptance by trip ID
 	 */
 	static async changeStatus(request: FastifyRequest<{ Body: { acceptance_status: UpdateRideAcceptanceDto['acceptance_status'] }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
-		const oldJustificationData = await rideAcceptances.findByRideId(request.params.trip_id);
+		const oldRideAcceptanceData = await rideAcceptances.findByRideId(request.params.trip_id);
 
 		const comment: FieldChangedComment<RideAcceptance, 'acceptance_status'> = {
 			_id: generateRandomString(),
@@ -24,7 +24,7 @@ export class JustificationsController {
 			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			updated_by: request.me._id,
 			/* * */
-			curr_value: oldJustificationData.acceptance_status,
+			curr_value: oldRideAcceptanceData.acceptance_status,
 			field: 'acceptance_status',
 			prev_value: request.body.acceptance_status,
 			type: CommentTypeSchema.Values.field_changed,
@@ -32,7 +32,7 @@ export class JustificationsController {
 
 		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
 			acceptance_status: request.body.acceptance_status,
-			comments: [...oldJustificationData.comments, comment],
+			comments: [...oldRideAcceptanceData.comments, comment],
 		});
 
 		return reply.send({
@@ -43,24 +43,24 @@ export class JustificationsController {
 	}
 
 	/**
-	 * Adds a comment to a justification by trip ID
+	 * Adds a comment to a ride acceptance by trip ID
 	 */
 	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
 
-		const justificationData = await rideAcceptances.findByRideId(request.params.trip_id);
+		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.trip_id);
 
-		if (!justificationData) {
+		if (!rideAcceptanceData) {
 			return reply.status(HttpStatus.NOT_FOUND).send({
 				data: null,
-				error: 'Justification not found.',
+				error: 'Ride acceptance not found.',
 				statusCode: HttpStatus.NOT_FOUND,
 			});
 		}
 
 		const updateResult = await rideAcceptances.updateByRideId(
 			request.params.trip_id,
-			{ comments: [...justificationData.comments, request.body] },
+			{ comments: [...rideAcceptanceData.comments, request.body] },
 		);
 
 		return reply.send({
@@ -71,26 +71,26 @@ export class JustificationsController {
 	}
 
 	/**
-	 * Gets a justification by trip ID
+	 * Gets a ride acceptance by trip ID
 	 */
 	static async get(request: FastifyRequest<{ Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
 
-		const justificationData = await rideAcceptances.findByRideId(request.params.trip_id);
+		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.trip_id);
 
-		if (!justificationData) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Esta viagem não ainda não tem uma justificação.');
+		if (!rideAcceptanceData) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Esta viagem não ainda não tem uma aprovação.');
 		}
 
 		return reply.send({
-			data: justificationData,
+			data: rideAcceptanceData,
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
 	}
 
 	/**
-	 * Justifies a justification by trip ID
+	 * Justifies a ride acceptance by trip ID
 	 */
 	static async justify(request: FastifyRequest<{ Body: { pto_message: string }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		throw new HttpException(HttpStatus.NOT_IMPLEMENTED, 'Not implemented');

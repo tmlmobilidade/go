@@ -20,15 +20,16 @@ export const RidesDetailViewOptions = {
 		label: 'Análise',
 		value: 'ANALYSIS',
 	},
+	// eslint-disable-next-line perfectionist/sort-objects
+	ACCEPTANCE: {
+		icon: IconChecks,
+		label: 'Aceitação',
+		value: 'ACCEPTANCE',
+	},
 	AUDIT: {
 		icon: IconClipboardSearch,
 		label: 'Auditoria',
 		value: 'AUDIT',
-	},
-	JUSTIFICATIONS: {
-		icon: IconChecks,
-		label: 'Justificação',
-		value: 'JUSTIFICATIONS',
 	},
 } as const;
 

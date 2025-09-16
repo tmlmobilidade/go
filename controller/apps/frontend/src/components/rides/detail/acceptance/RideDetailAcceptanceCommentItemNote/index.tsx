@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RidesDetailJustificationCommentItemNote({ comment }: { comment: NoteComment }) {
+export function RidesDetailAcceptanceCommentItemNote({ comment }: { comment: NoteComment }) {
 	return (
 		<div className={styles.label}>
 			{comment.message}

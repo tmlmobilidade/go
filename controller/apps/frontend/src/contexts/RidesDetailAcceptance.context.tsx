@@ -10,7 +10,7 @@ import useSWR, { mutate } from 'swr';
 
 /* * */
 
-interface RidesDetailJustificationContextState {
+interface RidesDetailAcceptanceContextState {
 	actions: {
 		addComment: (comment: RideAcceptance['comments'][number]) => void
 		changeStatus: (status: RideAcceptance['acceptance_status']) => void
@@ -18,7 +18,7 @@ interface RidesDetailJustificationContextState {
 		toggleLock: (is_locked: RideAcceptance['is_locked']) => void
 	}
 	data: {
-		justification: null | RideAcceptance
+		acceptance: null | RideAcceptance
 	}
 	flags: {
 		error: Error | null
@@ -28,25 +28,25 @@ interface RidesDetailJustificationContextState {
 
 /* * */
 
-const RidesDetailJustificationContext = createContext<RidesDetailJustificationContextState | undefined>(undefined);
+const RidesDetailAcceptanceContext = createContext<RidesDetailAcceptanceContextState | undefined>(undefined);
 
-export function useRidesDetailJustificationContext() {
-	const context = useContext(RidesDetailJustificationContext);
+export function useRidesDetailAcceptanceContext() {
+	const context = useContext(RidesDetailAcceptanceContext);
 	if (!context) {
-		throw new Error('useRidesDetailJustificationContext must be used within a RidesDetailJustificationContextProvider');
+		throw new Error('useRidesDetailAcceptanceContext must be used within a RidesDetailAcceptanceContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-const BASE_URL = (rideId: string) => `/api/rides/${rideId}/justification`;
-export const RidesDetailJustificationContextProvider = ({ children, rideId }) => {
+const BASE_URL = (rideId: string) => `/api/rides/${rideId}/acceptance`;
+export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 	//
 
 	//
 	// A. Setup variables
-	const { data: justificationData, error: justificationError, isLoading: justificationLoading } = useSWR<RideAcceptance>(BASE_URL(rideId));
+	const { data: acceptanceData, error: acceptanceError, isLoading: acceptanceLoading } = useSWR<RideAcceptance>(BASE_URL(rideId));
 
 	//
 	// B. Transform data
@@ -99,7 +99,7 @@ export const RidesDetailJustificationContextProvider = ({ children, rideId }) =>
 
 	// D. Define context value
 
-	const contextValue: RidesDetailJustificationContextState = useMemo(() => ({
+	const contextValue: RidesDetailAcceptanceContextState = useMemo(() => ({
 		actions: {
 			addComment,
 			changeStatus,
@@ -107,25 +107,25 @@ export const RidesDetailJustificationContextProvider = ({ children, rideId }) =>
 			toggleLock,
 		},
 		data: {
-			justification: justificationData,
+			acceptance: acceptanceData,
 		},
 		flags: {
-			error: justificationError,
-			loading: justificationLoading,
+			error: acceptanceError,
+			loading: acceptanceLoading,
 		},
 	}), [
-		justificationData,
-		justificationError,
-		justificationLoading,
+		acceptanceData,
+		acceptanceError,
+		acceptanceLoading,
 	]);
 
 	//
 	// D. Render components
 
 	return (
-		<RidesDetailJustificationContext.Provider value={contextValue}>
+		<RidesDetailAcceptanceContext.Provider value={contextValue}>
 			{children}
-		</RidesDetailJustificationContext.Provider>
+		</RidesDetailAcceptanceContext.Provider>
 	);
 
 	//

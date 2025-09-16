@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RidesDetailJustificationChangelogLock({ comment }: { comment: FieldChangedComment<RideAcceptance, 'is_locked'> }) {
+export function RidesDetailAcceptanceChangelogLock({ comment }: { comment: FieldChangedComment<RideAcceptance, 'is_locked'> }) {
 	if (comment.field === 'is_locked') return null;
 
 	function getVariant(status: RideAcceptance['is_locked']) {

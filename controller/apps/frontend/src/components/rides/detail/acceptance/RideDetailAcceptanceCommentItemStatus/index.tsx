@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RidesDetailJustificationChangelogAcceptanceStatusChanged({ comment }: { comment: FieldChangedComment<RideAcceptance, 'acceptance_status'> }) {
+export function RidesDetailAcceptanceChangelogAcceptanceStatusChanged({ comment }: { comment: FieldChangedComment<RideAcceptance, 'acceptance_status'> }) {
 	if (comment.field !== 'acceptance_status') return null;
 
 	function getVariant(status: RideAcceptance['acceptance_status']) {

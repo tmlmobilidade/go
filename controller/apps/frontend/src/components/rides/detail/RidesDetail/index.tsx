@@ -7,9 +7,9 @@ import { RidesDetailViewNavigation } from '@/components/rides/detail/RidesDetail
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
+import { RidesDetailAcceptance } from '../acceptance';
 import { RidesDetailAnalysis } from '../analysis';
 import { RidesDetailAudit } from '../audit';
-import { RidesDetailJustification } from '../justification';
 
 /* * */
 
@@ -36,7 +36,7 @@ export function RidesDetail() {
 		<Pane header={[<RidesDetailHeader />, <RidesDetailViewNavigation />]}>
 			{ridesDetailContext.data.selected_view === 'ANALYSIS' && <RidesDetailAnalysis />}
 			{ridesDetailContext.data.selected_view === 'AUDIT' && <RidesDetailAudit />}
-			{ridesDetailContext.data.selected_view === 'JUSTIFICATIONS' && <RidesDetailJustification />}
+			{ridesDetailContext.data.selected_view === 'ACCEPTANCE' && <RidesDetailAcceptance />}
 		</Pane>
 	);
 

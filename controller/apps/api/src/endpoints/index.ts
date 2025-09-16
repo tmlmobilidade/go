@@ -1,2 +1,2 @@
 import '@/endpoints/rides/rides.routes';
-import '@/endpoints/justifications/justifications.routes';
+import '@/endpoints/ride-acceptance/ride-acceptance.routes';
