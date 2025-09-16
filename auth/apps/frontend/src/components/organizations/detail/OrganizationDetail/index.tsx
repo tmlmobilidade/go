@@ -2,10 +2,10 @@
 
 /* * */
 
+import { OrganizationDetailHeader } from '@/components/organizations/detail/OrganizationDetailHeader';
+import { OrganizationDetailBasicInfo } from '@/components/organizations/detail/OrganizationSectionBasicInfo';
+import { OrganizationDetailQuickLinks } from '@/components/organizations/detail/OrganizationSectionQuickLinks';
 import { Pane } from '@tmlmobilidade/ui';
-
-import { OrganizationDetailHeader } from '../OrganizationDetailHeader';
-import { OrganizationDetailBasicInfo } from '../OrganizationSectionBasicInfo';
 
 /* * */
 
@@ -13,6 +13,7 @@ export function OrganizationDetail() {
 	return (
 		<Pane header={[<OrganizationDetailHeader />]}>
 			<OrganizationDetailBasicInfo />
+			<OrganizationDetailQuickLinks />
 		</Pane>
 	);
 }

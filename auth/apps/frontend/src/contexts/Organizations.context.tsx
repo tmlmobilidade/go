@@ -41,11 +41,14 @@ export const OrganizationsContextProvider = ({ children }: PropsWithChildren) =>
 	const { data: allOrganizationsData, error: allOrganizationsError, isLoading: allOrganizationsLoading } = useSWR<Organization[], Error>('/api/organizations');
 
 	//
-	// B. Define context value
+	// B. Handle Actions
+
+	//
+	// C. Define context value
 
 	const contextValue: OrganizationsContextState = useMemo(() => ({
 		data: {
-			raw: allOrganizationsData ?? [],
+			raw: allOrganizationsData,
 		},
 		flags: {
 			error: allOrganizationsError,

@@ -3,7 +3,7 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { CreateOrganizationDto, CreateOrganizationSchema, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationDto, CreateOrganizationSchema, Organization, QuickLink, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
@@ -26,7 +26,9 @@ interface OrganizationsDetailContextState {
 	}
 	data: {
 		form: UseFormReturnType<CreateOrganizationDto>
+		home_links: QuickLink[]
 		id: string | undefined
+		organization: Organization
 	}
 	flags: {
 		canSave: boolean
@@ -71,7 +73,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
-	const [validationFile, setValidationFile] = useState<File | null>(null);
+	const [validationFile, setValidationFile] = useState<File | null>(null); // FINISH FILE UPLOAD
+	const [allOrganizationHomeLinks, setAllOrganizationHomeLinks] = useState<QuickLink[]>([]);
 
 	//
 	// B. Fetch data
@@ -106,6 +109,13 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	//
 	// D. Handle actions
+
+	useEffect(() => {
+		console.log('organization', organization);
+		if (!organization) return;
+		const links: QuickLink[] = organization?.home_links || [];
+		setAllOrganizationHomeLinks(links);
+	}, [organization]);
 
 	const handleSaveOrganization = async () => {
 		setIsSaving(true);
@@ -181,7 +191,9 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		},
 		data: {
 			form,
+			home_links: allOrganizationHomeLinks,
 			id: organization_id === 'new' ? undefined : organization_id,
+			organization: organization,
 		},
 		flags: {
 			canSave,
