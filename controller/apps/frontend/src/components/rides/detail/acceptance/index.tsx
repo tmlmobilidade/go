@@ -8,6 +8,7 @@ import { ErrorDisplay, Grid, LoadingOverlay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { RidesDetailAcceptanceCommentList } from './RideDetailAcceptanceCommentList';
+import { RidesDetailAcceptanceJustification } from './RideDetailAcceptanceJustification';
 
 /* * */
 
@@ -44,10 +45,10 @@ export function RidesDetailAcceptance() {
 	return (
 		<>
 			<Grid columns="aab" gap="md">
-				<RidesDetailAcceptanceCommentList items={justificationContext.data.acceptance.comments} />
-				<RidesDetailAcceptanceCommentList items={justificationContext.data.acceptance.comments} />
+				<RidesDetailAcceptanceJustification />
+				<RidesDetailAcceptanceCommentList />
 			</Grid>
-			<RidesDetailAnalysisResult items={analysisItems} />
+			<RidesDetailAnalysisResult defaultOpen={true} items={analysisItems} />
 		</>
 	);
 }

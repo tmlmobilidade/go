@@ -8,14 +8,19 @@ import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function RidesDetailAnalysisResult({ items }: { items: (RideAnalysis & { id: string })[] }) {
+interface Props {
+	defaultOpen?: boolean
+	items: (RideAnalysis & { id: string })[]
+}
+
+export function RidesDetailAnalysisResult({ defaultOpen = false, items }: Props) {
 	//
 
 	//
 	// A. Render components
 
 	return (
-		<Collapsible description="Eventos dos veículos mapeados" title="Resultado das Análises">
+		<Collapsible defaultOpen={defaultOpen} description="Eventos dos veículos mapeados" title="Resultado das Análises">
 			<Section>
 				{!items.length ? (
 					<Label size="lg" caps>Sem Dados</Label>
