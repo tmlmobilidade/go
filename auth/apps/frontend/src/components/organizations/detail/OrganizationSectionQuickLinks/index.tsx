@@ -1,11 +1,15 @@
 'use client';
 
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
-import { QuickLink } from '@tmlmobilidade/types';
+import { HomeLink } from '@tmlmobilidade/types';
 
 /* * */
 
-import { Collapsible, DataTable, DataTableColumn, Grid, Section, Tag } from '@tmlmobilidade/ui';
+import { iconMap } from '@/lib/icons';
+import { Collapsible, DataTable, DataTableColumn, Section, Tag } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+
+import { OrganizationDetailQuickLinksActions } from '../OrganizationSectionQuickLinksActions';
 
 /* * */
 
@@ -17,13 +21,14 @@ export function OrganizationDetailQuickLinks() {
 
 	const organizationDetailContext = useOrganizationsDetailContext();
 
-	const columns: DataTableColumn<QuickLink>[] = [
-		{
-			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
-			width: 50,
-		},
+	const quickLinkOptions = useMemo(() => {
+		return organizationDetailContext.data.home_links.map(link => ({
+			...link,
+			actions: <OrganizationDetailQuickLinksActions />,
+		}));
+	}, [organizationDetailContext.data.home_links]);
+
+	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
 			title: 'Nome',
@@ -31,25 +36,22 @@ export function OrganizationDetailQuickLinks() {
 		},
 		{
 			accessor: 'href',
-			title: 'Nome',
+			title: 'Link',
 			width: 600,
 		},
 		{
 			accessor: 'icon',
-			title: 'Nome',
-			width: 600,
+			render: item => iconMap[item.icon],
+			title: 'Ícone',
+			width: 300,
+		},
+		{
+			accessor: 'actions',
+			render: item => item.actions,
+			title: 'Ações',
+			width: 300,
 		},
 	];
-
-	//
-	// B. Handle actions
-
-	const handleAddQuickLink = (item: QuickLink) => {
-		const exists = organizationDetailContext.data.form.values.home_links.find(link => link._id === item._id);
-		if (!exists) {
-			organizationDetailContext.data.form.insertListItem('home_links', item);
-		}
-	};
 
 	//
 	// C. Render components
@@ -60,13 +62,11 @@ export function OrganizationDetailQuickLinks() {
 			title="Links rápidos"
 		>
 			<Section gap="lg">
-				<Grid columns="ab" gap="lg">
-					<DataTable
-						columns={columns}
-						records={organizationDetailContext.data.home_links}
-						rowIdAccessor="_id"
-					/>
-				</Grid>
+				<DataTable
+					columns={columns}
+					records={quickLinkOptions}
+					rowIdAccessor="href"
+				/>
 			</Section>
 		</Collapsible>
 	);
