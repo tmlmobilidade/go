@@ -1,9 +1,14 @@
 /* * */
 
 import { HomePage } from '@/components/home/HomePage';
+import { QuickLinksContextProvider } from '@/contexts/QuickLinks';
 
 /* * */
 
 export default function Page() {
-	return <HomePage />;
+	return (
+		<QuickLinksContextProvider>
+			<HomePage />
+		</QuickLinksContextProvider>
+	);
 }

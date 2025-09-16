@@ -2,6 +2,7 @@
 
 import { OrganizationDetail } from '@/components/organizations/detail/OrganizationDetail';
 import { OrganizationsDetailContextProvider } from '@/contexts/OrganizationDetail.context';
+import { QuickLinksContextProvider } from '@/contexts/QuickLinks';
 
 /* * */
 
@@ -15,7 +16,9 @@ export default async function Page({ params }: Props) {
 	const { id } = await params;
 	return (
 		<OrganizationsDetailContextProvider organization_id={id}>
-			<OrganizationDetail />
+			<QuickLinksContextProvider>
+				<OrganizationDetail />
+			</QuickLinksContextProvider>
 		</OrganizationsDetailContextProvider>
 	);
 }

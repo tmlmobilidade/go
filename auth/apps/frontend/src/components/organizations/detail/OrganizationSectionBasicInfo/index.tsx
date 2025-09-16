@@ -2,6 +2,7 @@
 
 import { UploadImage } from '@/components/common/UploadImage';
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
+import { useQuickLinksContext } from '@/contexts/QuickLinks';
 /* * */
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/types';
@@ -16,9 +17,18 @@ export function OrganizationDetailBasicInfo() {
 	// A. Setup variables
 
 	const organizationDetailContext = useOrganizationsDetailContext();
+	const { data: quickLinks } = useQuickLinksContext();
 
 	//
-	// B. Render components
+	// B. Transform data
+
+	const organizationItems = quickLinks.raw.map(organization => ({
+		label: organization.title,
+		value: organization._id,
+	}));
+
+	//
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -42,19 +52,20 @@ export function OrganizationDetailBasicInfo() {
 						{...organizationDetailContext.data.form.getInputProps('short_name')}
 					/>
 				</Grid>
-				<Grid columns="aab" gap="lg">
+				<Grid columns="ab" gap="lg">
 					<UploadImage
 						label="Selecionar logótipo"
 						maxFileSize={50 * 1024 * 1024} // 50 MB
 						onFileChange={organizationDetailContext.actions.setValidationFile}
 					/>
-					{/* <Combobox
+					<Combobox
 						data={organizationItems}
-						label="Organizações"
-						value={userDetailsContext.data.form.values.organization_id}
+						label="Links rápidos"
+						value={organizationDetailContext.data.form.values.home_links}
 						fullWidth
-						{...userDetailsContext.data.form.getInputProps('organization_id')}
-					/> */}
+						multiple
+						{...organizationDetailContext.data.form.getInputProps('home_links', { multiple: true })}
+					/>
 				</Grid>
 			</Section>
 		</Collapsible>
