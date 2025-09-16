@@ -4,7 +4,7 @@
 
 import { RidesDetailAnalysisResult } from '@/components/rides/detail/RidesDetailAnalysisResult';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
-import { ErrorDisplay, Grid, LoadingOverlay } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, LoadingOverlay, Section, Separator } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { RidesDetailAcceptanceCommentList } from './RideDetailAcceptanceCommentList';
@@ -43,12 +43,15 @@ export function RidesDetailAcceptance() {
 	// C. Render components
 
 	return (
-		<>
+		<Section gap="lg" padding="none">
 			<Grid columns="aab" gap="md">
-				<RidesDetailAcceptanceJustification />
 				<RidesDetailAcceptanceCommentList />
+				<RidesDetailAcceptanceJustification />
 			</Grid>
-			<RidesDetailAnalysisResult defaultOpen={true} items={analysisItems} />
-		</>
+			<div style={{ width: '100%' }}>
+				<Separator />
+				<RidesDetailAnalysisResult defaultOpen={true} items={analysisItems} />
+			</div>
+		</Section>
 	);
 }

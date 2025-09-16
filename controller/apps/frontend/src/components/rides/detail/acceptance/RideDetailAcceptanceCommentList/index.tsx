@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
-import { Label, Section } from '@tmlmobilidade/ui';
+import { Label, Section, Textarea } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -25,8 +25,8 @@ export function RidesDetailAcceptanceCommentList() {
 	if (!acceptance) return null;
 
 	return (
-		<Section>
-			<Label size="lg" caps>Comments</Label>
+		<Section gap="md" width="100%">
+			<Label size="lg" caps>Atividade</Label>
 			<div className={styles.container}>
 				<div className={styles.path} />
 				{acceptance.comments.map(comment => (
@@ -35,6 +35,12 @@ export function RidesDetailAcceptanceCommentList() {
 					</div>
 				))}
 			</div>
+			<Textarea
+				minRows={2}
+				placeholder="Adicionar comentário"
+				w="100%"
+				autosize
+			/>
 		</Section>
 	);
 }
