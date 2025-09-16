@@ -1,6 +1,6 @@
 /* * */
 
-import { type Agency, Organization, type Role, type User } from '@tmlmobilidade/types';
+import { type Agency, Organization, QuickLink, type Role, type User } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -9,6 +9,10 @@ export interface AgencyNormalized extends Agency {
 }
 
 export interface OrganizationNormalized extends Organization {
+	long_name_normalized: string
+}
+
+export interface QuickLinkNormalized extends QuickLink {
 	long_name_normalized: string
 }
 

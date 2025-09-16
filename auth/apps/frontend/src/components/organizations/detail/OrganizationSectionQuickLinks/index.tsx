@@ -1,12 +1,11 @@
 'use client';
 
-import CheckCard from '@/components/common/CheckCard';
-import { IconChooser } from '@/components/common/IconChooser';
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
+import { QuickLink } from '@tmlmobilidade/types';
 
 /* * */
 
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, Grid, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,13 +17,39 @@ export function OrganizationDetailQuickLinks() {
 
 	const organizationDetailContext = useOrganizationsDetailContext();
 
-	//
-	// B. Transform data
+	const columns: DataTableColumn<QuickLink>[] = [
+		{
+			accessor: '_id',
+			render: item => <Tag label={item._id} variant="secondary" />,
+			title: '#ID',
+			width: 50,
+		},
+		{
+			accessor: 'title',
+			title: 'Nome',
+			width: 600,
+		},
+		{
+			accessor: 'href',
+			title: 'Nome',
+			width: 600,
+		},
+		{
+			accessor: 'icon',
+			title: 'Nome',
+			width: 600,
+		},
+	];
 
-	const organizationItems = organizationDetailContext.data.home_links.map(organization => ({
-		label: organization.title,
-		value: organization._id,
-	}));
+	//
+	// B. Handle actions
+
+	const handleAddQuickLink = (item: QuickLink) => {
+		const exists = organizationDetailContext.data.form.values.home_links.find(link => link._id === item._id);
+		if (!exists) {
+			organizationDetailContext.data.form.insertListItem('home_links', item);
+		}
+	};
 
 	//
 	// C. Render components
@@ -36,17 +61,11 @@ export function OrganizationDetailQuickLinks() {
 		>
 			<Section gap="lg">
 				<Grid columns="ab" gap="lg">
-					{organizationItems.map(({ label, value }) => (
-						<CheckCard
-							key={value}
-							checked={organizationDetailContext.data.form.values.home_links.map(value => value._id).includes(value)}
-							description={label}
-							label={label}
-							onChange={() => console.log('changed')}
-						>
-							<IconChooser />
-						</CheckCard>
-					))}
+					<DataTable
+						columns={columns}
+						records={organizationDetailContext.data.home_links}
+						rowIdAccessor="_id"
+					/>
 				</Grid>
 			</Section>
 		</Collapsible>
