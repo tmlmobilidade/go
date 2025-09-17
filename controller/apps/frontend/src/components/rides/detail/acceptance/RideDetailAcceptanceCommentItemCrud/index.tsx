@@ -4,6 +4,8 @@
 
 import { IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX } from '@tabler/icons-react';
 import { CrudComment } from '@tmlmobilidade/types';
+import { Label, Section } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 import { createElement } from 'react';
 
 import styles from '../styles.module.css';
@@ -42,7 +44,10 @@ export function RidesDetailAcceptanceCommentItemCrud({ comment }: { comment: Cru
 	return (
 		<>
 			{createElement(Icons[comment.action].icon, { style: { backgroundColor: 'var(--color-system-background-100)', zIndex: 2, ...Icons[comment.action].style } })}
-			<div className={styles.label}>{Icons[comment.action].label.replace('${by}', comment.updated_by)}</div>
+			<Section flexDirection="column" gap="xs" padding="none">
+				<div className={styles.label}>{Icons[comment.action].label.replace('${by}', comment.updated_by)}</div>
+				<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+			</Section>
 		</>
 	);
 }
