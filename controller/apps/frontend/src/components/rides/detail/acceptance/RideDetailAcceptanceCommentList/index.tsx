@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
-import { Label, Section, Textarea } from '@tmlmobilidade/ui';
+import { CommentBox, Label, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -35,11 +35,9 @@ export function RidesDetailAcceptanceCommentList() {
 					</div>
 				))}
 			</div>
-			<Textarea
-				minRows={2}
-				placeholder="Adicionar comentário"
-				w="100%"
-				autosize
+			<CommentBox
+				disabled={acceptance.is_locked}
+				onSubmit={v => alert(v)}
 			/>
 		</Section>
 	);
