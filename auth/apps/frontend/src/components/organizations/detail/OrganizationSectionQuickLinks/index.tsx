@@ -23,14 +23,6 @@ export function OrganizationDetailQuickLinks() {
 
 	const organizationDetailContext = useOrganizationsDetailContext();
 
-	const quickLinkOptions = useMemo(() => {
-		console.log('USE MEMO RUNNING');
-		return organizationDetailContext.data.form.values.home_links.map(link => ({
-			...link,
-			actions: <OrganizationDetailQuickLinksActions link={link} organization_id={organizationDetailContext.data.id} />,
-		}));
-	}, [organizationDetailContext.data.form]);
-
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
@@ -65,6 +57,24 @@ export function OrganizationDetailQuickLinks() {
 		organizationDetailContext.data.form.values.home_links = updatedLinks;
 		organizationDetailContext.actions.saveOrganization();
 	};
+
+	const handleDelete = (link: HomeLink) => {
+		if (!organizationDetailContext.data.form) return;
+		const updatedLinks = organizationDetailContext.data.form.values.home_links.filter(l => l.title !== link.title);
+		organizationDetailContext.data.form.values.home_links = updatedLinks;
+		organizationDetailContext.actions.saveOrganization();
+	};
+
+	const handleEdit = (link: HomeLink) => {
+		openOrganizationQuickLinksModal({ link, organization_id: organizationDetailContext.data.id });
+	};
+
+	const quickLinkOptions = useMemo(() => {
+		return organizationDetailContext.data.form.values.home_links.map(link => ({
+			...link,
+			actions: <OrganizationDetailQuickLinksActions handleDelete={handleDelete} handleEdit={handleEdit} link={link} />,
+		}));
+	}, [organizationDetailContext.data.form]);
 
 	//
 	// C. Render components

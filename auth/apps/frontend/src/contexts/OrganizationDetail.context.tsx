@@ -3,14 +3,13 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { CreateOrganizationDto, CreateOrganizationSchema, HomeLink, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationDto, CreateOrganizationSchema, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
-import useSWRMutation from 'swr/mutation';
 
 /* * */
 
@@ -91,6 +90,12 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	});
 
 	useEffect(() => {
+		if (form.isValid() && !isSaving) {
+			handleSaveOrganization();
+		}
+	}, [form.values.home_links]);
+
+	useEffect(() => {
 		if (!organization) return;
 		setLoading(true);
 		form.initialize(convertObject(organization, CreateOrganizationSchema));
@@ -99,17 +104,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	//
 	// C. Transform Data
-
-	// Update the home links ref to the most recent one
-	// const prevHomeLinksRef = useRef<HomeLink[]>(form.values.home_links);
-	// useEffect(() => {
-	// 	const prev = prevHomeLinksRef.current;
-	// 	const curr = form.values.home_links;
-	// 	if (prev.length !== curr.length) {
-	// 		handleSaveOrganization();
-	// 	}
-	// 	prevHomeLinksRef.current = curr;
-	// }, [form.values.home_links]);
 
 	// Validate form on change
 	useEffect(() => {

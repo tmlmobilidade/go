@@ -44,10 +44,11 @@ export default function QuickLinksModal({ link, onSubmit }: { link?: HomeLink, o
 	// A. Setup variables
 
 	const [newLink, setNewLink] = useState<HomeLink>(link || { href: '', icon: '', title: '' });
-	const [selectedIcon, setSelectedIcon] = useState<string | undefined>(link.icon || '');
+	const [selectedIcon, setSelectedIcon] = useState<'' | string>(link?.icon || '');
 
 	//
 	// B. Handle actions
+
 	const handleSave = () => {
 		closeModal(QUICK_LINKS_MODAL_ID);
 		onSubmit(newLink);
@@ -60,6 +61,7 @@ export default function QuickLinksModal({ link, onSubmit }: { link?: HomeLink, o
 
 	//
 	// C. Render components
+
 	return (
 		<Section flexDirection="column" gap="sm" padding="lg">
 			<TextInput
@@ -90,4 +92,6 @@ export default function QuickLinksModal({ link, onSubmit }: { link?: HomeLink, o
 			</Grid>
 		</Section>
 	);
+
+	//
 }
