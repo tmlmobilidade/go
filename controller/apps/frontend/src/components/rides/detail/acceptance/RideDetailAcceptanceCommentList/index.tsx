@@ -4,6 +4,7 @@
 
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
 import { CommentBox, Label, Section } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
 
@@ -18,25 +19,31 @@ export function RidesDetailAcceptanceCommentList() {
 	//
 	// A. Setup variables
 
-	const { data: { acceptance } } = useRidesDetailAcceptanceContext();
+	const acceptanceContext = useRidesDetailAcceptanceContext();
 
 	//
-	// B. Render components
+	// B. Handle actions
 
-	if (!acceptance) return null;
+	function addComment(comment: string) {
+		acceptanceContext.actions.addComment({
+			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			message: comment,
+			type: 'note',
+			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+		});
+	}
+
+	//
+	// C. Render components
+
+	if (!acceptanceContext.data.acceptance) return null;
 
 	return (
 		<Section gap="md" width="100%">
 			<Label size="lg" caps>Atividade</Label>
 			<div className={styles.container}>
 				<div className={styles.path} />
-				{acceptance.comments.map(comment => (
-					<div key={comment._id} className={styles.item}>
-						{comment.type === 'note' && <RidesDetailAcceptanceCommentItemNote comment={comment} />}
-						{comment.type === 'crud' && <RidesDetailAcceptanceCommentItemCrud comment={comment} />}
-					</div>
-				))}
-				{acceptance.comments.map(comment => (
+				{acceptanceContext.data.acceptance.comments.map(comment => (
 					<div key={comment._id} className={styles.item}>
 						{comment.type === 'note' && <RidesDetailAcceptanceCommentItemNote comment={comment} />}
 						{comment.type === 'crud' && <RidesDetailAcceptanceCommentItemCrud comment={comment} />}
@@ -44,8 +51,8 @@ export function RidesDetailAcceptanceCommentList() {
 				))}
 			</div>
 			<CommentBox
-				disabled={acceptance.is_locked}
-				onSubmit={v => alert(v)}
+				disabled={acceptanceContext.data.acceptance.is_locked}
+				onSubmit={addComment}
 			/>
 		</Section>
 	);

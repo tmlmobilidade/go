@@ -55,7 +55,7 @@ export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 	// C. Handle actions
 	async function addComment(comment: RideAcceptance['comments'][number]) {
 		try {
-			const res = await fetchData(BASE_URL(rideId), 'POST', comment);
+			const res = await fetchData(BASE_URL(rideId) + '/comment', 'POST', comment);
 
 			if (res.error) {
 				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
