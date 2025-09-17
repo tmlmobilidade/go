@@ -3,13 +3,16 @@
 /* * */
 
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
+import { FieldChangedComment, RideAcceptance } from '@tmlmobilidade/types';
 import { CommentBox, Label, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
 
 import { RidesDetailAcceptanceCommentItemCrud } from '../RideDetailAcceptanceCommentItemCrud';
+import { RidesDetailAcceptanceCommentItemLock } from '../RideDetailAcceptanceCommentItemLock';
 import { RidesDetailAcceptanceCommentItemNote } from '../RideDetailAcceptanceCommentItemNote';
+import { RidesDetailAcceptanceCommentItemStatus } from '../RideDetailAcceptanceCommentItemStatus';
 
 /* * */
 
@@ -47,6 +50,8 @@ export function RidesDetailAcceptanceCommentList() {
 					<div key={comment._id} className={styles.item}>
 						{comment.type === 'note' && <RidesDetailAcceptanceCommentItemNote comment={comment} />}
 						{comment.type === 'crud' && <RidesDetailAcceptanceCommentItemCrud comment={comment} />}
+						{comment.type === 'field_changed' && comment.field === 'acceptance_status' && <RidesDetailAcceptanceCommentItemStatus comment={comment as FieldChangedComment<RideAcceptance, 'acceptance_status'>} />}
+						{comment.type === 'field_changed' && comment.field === 'is_locked' && <RidesDetailAcceptanceCommentItemLock comment={comment as FieldChangedComment<RideAcceptance, 'is_locked'>} />}
 					</div>
 				))}
 			</div>

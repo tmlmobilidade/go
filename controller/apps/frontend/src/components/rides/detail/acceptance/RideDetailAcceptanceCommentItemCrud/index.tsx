@@ -4,7 +4,6 @@
 
 import { IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX } from '@tabler/icons-react';
 import { CrudComment } from '@tmlmobilidade/types';
-import { Section } from '@tmlmobilidade/ui';
 import { createElement } from 'react';
 
 import styles from '../styles.module.css';
@@ -41,9 +40,9 @@ const Icons = {
 
 export function RidesDetailAcceptanceCommentItemCrud({ comment }: { comment: CrudComment }) {
 	return (
-		<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+		<>
 			{createElement(Icons[comment.action].icon, { style: { backgroundColor: 'var(--color-system-background-100)', zIndex: 2, ...Icons[comment.action].style } })}
 			<div className={styles.label}>{Icons[comment.action].label.replace('${by}', comment.updated_by)}</div>
-		</Section>
+		</>
 	);
 }

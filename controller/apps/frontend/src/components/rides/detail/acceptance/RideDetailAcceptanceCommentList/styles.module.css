@@ -15,3 +15,10 @@
     width: 2px;
     background-color: var(--color-system-border-100);
 }
+
+.item {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: var(--size-spacing-sm);
+    align-items: flex-start;
+ }
