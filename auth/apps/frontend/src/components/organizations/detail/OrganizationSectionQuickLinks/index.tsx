@@ -25,7 +25,7 @@ export function OrganizationDetailQuickLinks() {
 	const quickLinkOptions = useMemo(() => {
 		return organizationDetailContext.data.home_links.map(link => ({
 			...link,
-			actions: <OrganizationDetailQuickLinksActions />,
+			actions: <OrganizationDetailQuickLinksActions organization_id={organizationDetailContext.data.id} row_id={link.title} />,
 		}));
 	}, [organizationDetailContext.data.home_links]);
 
@@ -33,12 +33,12 @@ export function OrganizationDetailQuickLinks() {
 		{
 			accessor: 'title',
 			title: 'Nome',
-			width: 600,
+			width: 250,
 		},
 		{
 			accessor: 'href',
 			title: 'Link',
-			width: 600,
+			width: 400,
 		},
 		{
 			accessor: 'icon',
@@ -66,10 +66,11 @@ export function OrganizationDetailQuickLinks() {
 				<DataTable
 					columns={columns}
 					records={quickLinkOptions}
-					rowIdAccessor="href"
+					rowIdAccessor="title"
 				/>
 			</Section>
 		</Collapsible>
+
 	);
 
 	//

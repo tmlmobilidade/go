@@ -3,12 +3,12 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { CreateOrganizationDto, CreateOrganizationSchema, Organization, HomeLink, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationDto, CreateOrganizationSchema, HomeLink, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -74,7 +74,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 	const [validationFile, setValidationFile] = useState<File | null>(null); // FINISH FILE UPLOAD
-	const [allOrganizationHomeLinks, setAllOrganizationHomeLinks] = useState<HomeLink[]>([]);
 
 	//
 	// B. Fetch data
@@ -101,6 +100,18 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	//
 	// C. Transform Data
 
+	// Update the home links ref to the most recent one
+	const prevHomeLinksRef = useRef<HomeLink[]>(form.values.home_links);
+	useEffect(() => {
+		const prev = prevHomeLinksRef.current;
+		const curr = form.values.home_links;
+		if (prev.length > curr.length) {
+			// A link was deleted
+			handleSaveOrganization();
+		}
+		prevHomeLinksRef.current = curr;
+	}, [form.values.home_links]);
+
 	// Validate form on change
 	useEffect(() => {
 		form.validate();
@@ -109,13 +120,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	//
 	// D. Handle actions
-
-	useEffect(() => {
-		console.log('organization', organization);
-		if (!organization) return;
-		const links: HomeLink[] = organization?.home_links || [];
-		setAllOrganizationHomeLinks(links);
-	}, [organization]);
 
 	const handleSaveOrganization = async () => {
 		setIsSaving(true);
@@ -191,7 +195,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		},
 		data: {
 			form,
-			home_links: allOrganizationHomeLinks,
+			home_links: form.values.home_links,
 			id: organization_id === 'new' ? undefined : organization_id,
 			organization: organization,
 		},
