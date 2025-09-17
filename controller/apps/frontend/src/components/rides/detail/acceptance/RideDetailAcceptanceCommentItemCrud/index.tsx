@@ -15,7 +15,7 @@ import styles from '../styles.module.css';
 const Icons = {
 	archive: {
 		icon: IconCircleDashedMinus,
-		label: 'A aceitação foi arquivada por ${by}',
+		label: 'A aceitação foi arquivada',
 		style: { color: 'var(--color-status-warning-primary)' },
 	},
 	create: {
@@ -25,17 +25,17 @@ const Icons = {
 	},
 	delete: {
 		icon: IconCircleDashedX,
-		label: 'A aceitação foi apagada por ${by}',
+		label: 'A aceitação foi apagada',
 		style: { color: 'var(--color-status-danger-primary)' },
 	},
 	restore: {
 		icon: IconCircleDashedLetterR,
-		label: 'A aceitação foi restaurada por ${by}',
+		label: 'A aceitação foi restaurada',
 		style: { color: 'var(--color-status-success-primary)' },
 	},
 	update: {
 		icon: IconCircleDashedLetterU,
-		label: 'A aceitação foi atualizada por ${by}',
+		label: 'A aceitação foi atualizada',
 		style: { color: 'var(--color-status-warning-primary)' },
 	},
 };
@@ -45,7 +45,7 @@ export function RidesDetailAcceptanceCommentItemCrud({ comment }: { comment: Cru
 		<>
 			{createElement(Icons[comment.action].icon, { style: { backgroundColor: 'var(--color-system-background-100)', zIndex: 2, ...Icons[comment.action].style } })}
 			<Section flexDirection="column" gap="xs" padding="none">
-				<div className={styles.label}>{Icons[comment.action].label.replace('${by}', comment.updated_by)}</div>
+				<div className={styles.label}>{Icons[comment.action].label}</div>
 				<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
 			</Section>
 		</>

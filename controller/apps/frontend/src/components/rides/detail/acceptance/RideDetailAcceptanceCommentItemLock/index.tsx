@@ -23,7 +23,7 @@ export function RidesDetailAcceptanceCommentItemLock({ comment }: { comment: Fie
 					: <IconLockOpen color="var(--color-status-success-primary)" style={{ backgroundColor: 'var(--color-system-background-100)', zIndex: 2 }} />
 			}
 			<Section flexDirection="column" gap="xs" padding="none">
-				<div className={styles.label}>{comment.curr_value ? 'A aceitação foi bloqueada por ${by}' : 'A aceitação foi desbloqueada por ${by}'}</div>
+				<div className={styles.label}>{comment.curr_value ? 'A aceitação foi bloqueada' : 'A aceitação foi desbloqueada'}</div>
 				<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
 			</Section>
 		</>
