@@ -7,6 +7,7 @@ import { CommentBox, Label, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
+import { RidesDetailAcceptanceCommentItemCrud } from '../RideDetailAcceptanceCommentItemCrud';
 import { RidesDetailAcceptanceCommentItemNote } from '../RideDetailAcceptanceCommentItemNote';
 
 /* * */
@@ -30,8 +31,15 @@ export function RidesDetailAcceptanceCommentList() {
 			<div className={styles.container}>
 				<div className={styles.path} />
 				{acceptance.comments.map(comment => (
-					<div className={styles.item}>
-						{comment.type === 'note' && <RidesDetailAcceptanceCommentItemNote key={comment._id} comment={comment} />}
+					<div key={comment._id} className={styles.item}>
+						{comment.type === 'note' && <RidesDetailAcceptanceCommentItemNote comment={comment} />}
+						{comment.type === 'crud' && <RidesDetailAcceptanceCommentItemCrud comment={comment} />}
+					</div>
+				))}
+				{acceptance.comments.map(comment => (
+					<div key={comment._id} className={styles.item}>
+						{comment.type === 'note' && <RidesDetailAcceptanceCommentItemNote comment={comment} />}
+						{comment.type === 'crud' && <RidesDetailAcceptanceCommentItemCrud comment={comment} />}
 					</div>
 				))}
 			</div>

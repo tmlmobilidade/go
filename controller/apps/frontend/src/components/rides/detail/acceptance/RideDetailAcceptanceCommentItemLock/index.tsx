@@ -2,28 +2,26 @@
 
 /* * */
 
+import { IconLock, IconLockOpen } from '@tabler/icons-react';
 import { FieldChangedComment, RideAcceptance } from '@tmlmobilidade/types';
+import { Section } from '@tmlmobilidade/ui';
 
-import styles from './styles.module.css';
+import styles from '../styles.module.css';
 
 /* * */
 
-export function RidesDetailAcceptanceChangelogLock({ comment }: { comment: FieldChangedComment<RideAcceptance, 'is_locked'> }) {
-	if (comment.field === 'is_locked') return null;
-
-	function getVariant(status: RideAcceptance['is_locked']) {
-		switch (status) {
-			case false:
-				return 'success';
-			case true:
-				return 'danger';
-		}
-	}
+export function RidesDetailAcceptanceCommentItemLock({ comment }: { comment: FieldChangedComment<RideAcceptance, 'is_locked'> }) {
+	//
+	// A. Render components
 
 	return (
-		<div className={styles.label}>
-			{comment.updated_by}
-			<span data-variant={getVariant(comment.prev_value as RideAcceptance['is_locked'])}>{comment.prev_value ? 'bloqueou' : 'desbloqueou'}</span> a análise para alterações
-		</div>
+		<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+			{
+				comment.curr_value
+					? <IconLock color="var(--color-status-danger-primary)" style={{ backgroundColor: 'var(--color-system-background-100)', zIndex: 2 }} />
+					: <IconLockOpen color="var(--color-status-success-primary)" style={{ backgroundColor: 'var(--color-system-background-100)', zIndex: 2 }} />
+			}
+			<div className={styles.label}>{comment.curr_value ? 'A aceitação foi bloqueada por ${by}' : 'A aceitação foi desbloqueada por ${by}'}</div>
+		</Section>
 	);
 }

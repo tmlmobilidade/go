@@ -2,31 +2,23 @@
 
 /* * */
 
+import { AcceptanceStatusProps } from '@/components/common/AcceptanceStatusTag';
 import { FieldChangedComment, RideAcceptance } from '@tmlmobilidade/types';
+import { Section } from '@tmlmobilidade/ui';
+import { cloneElement } from 'react';
 
 import styles from './styles.module.css';
 
 /* * */
 
 export function RidesDetailAcceptanceChangelogAcceptanceStatusChanged({ comment }: { comment: FieldChangedComment<RideAcceptance, 'acceptance_status'> }) {
-	if (comment.field !== 'acceptance_status') return null;
-
-	function getVariant(status: RideAcceptance['acceptance_status']) {
-		switch (status) {
-			case 'accepted':
-				return 'success';
-			case 'justification_required':
-				return 'danger';
-			case 'under_review':
-				return 'warning';
-			default:
-				return 'default';
-		}
-	}
+	//
+	// A. Render components
 
 	return (
-		<div className={styles.label}>
-			<strong>{comment.created_by}</strong> alterou o estado de aprovação de <span data-variant={getVariant(comment.prev_value)}>{comment.prev_value}</span> para <span data-variant={getVariant(comment.curr_value)}>{comment.curr_value}</span>
-		</div>
+		<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+			{cloneElement(AcceptanceStatusProps[comment.curr_value].icon, { style: { backgroundColor: 'var(--color-system-background-100)', zIndex: 2 } })}
+			<div className={styles.label}>{comment.curr_value ? 'A aceitação foi bloqueada por ${by}' : 'A aceitação foi desbloqueada por ${by}'}</div>
+		</Section>
 	);
 }

@@ -4,7 +4,7 @@
 
 import { IconAlertCircle, IconCheck, IconClock, IconX } from '@tabler/icons-react';
 import { RideAcceptanceStatus } from '@tmlmobilidade/types';
-import { Tag } from '@tmlmobilidade/ui';
+import { Tag, TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,6 +14,29 @@ interface AcceptanceStatusTagProps {
 
 /* * */
 
+export const AcceptanceStatusProps = Object.freeze({
+	accepted: {
+		icon: <IconCheck />,
+		label: 'Aceite',
+		variant: 'success',
+	},
+	justification_required: {
+		icon: <IconAlertCircle />,
+		label: 'Justificação Necessária',
+		variant: 'warning',
+	},
+	rejected: {
+		icon: <IconX />,
+		label: 'Rejeitada',
+		variant: 'danger',
+	},
+	under_review: {
+		icon: <IconClock />,
+		label: 'Em Revisão',
+		variant: 'secondary',
+	},
+});
+
 export function AcceptanceStatusTag({ grade }: AcceptanceStatusTagProps) {
 	//
 
@@ -22,19 +45,19 @@ export function AcceptanceStatusTag({ grade }: AcceptanceStatusTagProps) {
 	}
 
 	if (grade === 'accepted') {
-		return <Tag icon={<IconCheck />} label="Aceite" variant="success" />;
+		return <Tag icon={AcceptanceStatusProps.accepted.icon} label={AcceptanceStatusProps.accepted.label} variant={AcceptanceStatusProps.accepted.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'under_review') {
-		return <Tag icon={<IconClock />} label="Em Revisão" variant="secondary" />;
+		return <Tag icon={AcceptanceStatusProps.under_review.icon} label={AcceptanceStatusProps.under_review.label} variant={AcceptanceStatusProps.under_review.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'justification_required') {
-		return <Tag icon={<IconAlertCircle />} label="Justificação Necessária" variant="warning" />;
+		return <Tag icon={AcceptanceStatusProps.justification_required.icon} label={AcceptanceStatusProps.justification_required.label} variant={AcceptanceStatusProps.justification_required.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'rejected') {
-		return <Tag icon={<IconX stroke={4} />} label="Rejeitada" variant="danger" />;
+		return <Tag icon={AcceptanceStatusProps.rejected.icon} label={AcceptanceStatusProps.rejected.label} variant={AcceptanceStatusProps.rejected.variant as TagProps['variant']} />;
 	}
 
 	//
