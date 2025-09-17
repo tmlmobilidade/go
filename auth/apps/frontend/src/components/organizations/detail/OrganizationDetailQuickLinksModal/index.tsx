@@ -1,7 +1,6 @@
 'use client';
 
 import { IconChooser } from '@/components/common/IconChooser';
-import { OrganizationsDetailContextProvider, useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
 import { HomeLink } from '@tmlmobilidade/types';
 /* * */
 
@@ -15,17 +14,16 @@ export const QUICK_LINKS_MODAL_ID = 'quick-links-modal';
 /* * */
 
 export interface QuickLinksModalProps {
+	handleSubmit?: (link: HomeLink) => void
 	link?: HomeLink
-	onSubmit?: (link: HomeLink) => void
-	organization_id: string
 }
 
 /* * */
 
-export const openOrganizationQuickLinksModal = ({ link }: QuickLinksModalProps) => {
+export const openOrganizationQuickLinksModal = ({ handleSubmit, link }: QuickLinksModalProps) => {
 	openModal({
 		children: (
-			<QuickLinksModal link={link} onSubmit={link => console.log(link)} />
+			<QuickLinksModal handleSubmit={handleSubmit} link={link} />
 		),
 		closeOnClickOutside: false,
 		modalId: QUICK_LINKS_MODAL_ID,
@@ -37,7 +35,7 @@ export const openOrganizationQuickLinksModal = ({ link }: QuickLinksModalProps) 
 
 /* * */
 
-export default function QuickLinksModal({ link, onSubmit }: { link?: HomeLink, onSubmit?: (link: HomeLink) => void }) {
+export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?: (link: HomeLink) => void, link?: HomeLink }) {
 	//
 
 	//
@@ -51,7 +49,7 @@ export default function QuickLinksModal({ link, onSubmit }: { link?: HomeLink, o
 
 	const handleSave = () => {
 		closeModal(QUICK_LINKS_MODAL_ID);
-		onSubmit(newLink);
+		handleSubmit(newLink);
 	};
 
 	const handleIconChange = (icon) => {

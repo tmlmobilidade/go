@@ -51,9 +51,12 @@ export function OrganizationDetailQuickLinks() {
 	// B. Handle actions
 	//
 
-	const onSubmit = (link: HomeLink) => {
+	const handleSubmit = (link: HomeLink) => {
 		if (!organizationDetailContext.data.form) return;
-		const updatedLinks = organizationDetailContext.data.form.values.home_links.map(l => l.title === link.title ? link : l);
+
+		console.log('savin link ', organizationDetailContext.data.form.values.home_links);
+		const updatedLinks = organizationDetailContext.data.form.values.home_links.concat(link);
+		console.log(updatedLinks);
 		organizationDetailContext.data.form.values.home_links = updatedLinks;
 		organizationDetailContext.actions.saveOrganization();
 	};
@@ -66,7 +69,7 @@ export function OrganizationDetailQuickLinks() {
 	};
 
 	const handleEdit = (link: HomeLink) => {
-		openOrganizationQuickLinksModal({ link, organization_id: organizationDetailContext.data.id });
+		openOrganizationQuickLinksModal({ handleSubmit: handleSubmit, link });
 	};
 
 	const quickLinkOptions = useMemo(() => {
@@ -87,7 +90,7 @@ export function OrganizationDetailQuickLinks() {
 			<Section gap="lg">
 				<Button
 					label="Adicionar link rápido"
-					onClick={() => openOrganizationQuickLinksModal({ onSubmit, organization_id: organizationDetailContext.data.id })}
+					onClick={() => openOrganizationQuickLinksModal({ handleSubmit, organization_id: organizationDetailContext.data.id })}
 					variant="primary"
 				/>
 				<DataTable
