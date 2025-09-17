@@ -6,10 +6,11 @@ import { HomeLink } from '@tmlmobilidade/types';
 /* * */
 
 import { iconMap } from '@/lib/icons';
-import { Collapsible, DataTable, DataTableColumn, Section, Tag } from '@tmlmobilidade/ui';
+import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import React from 'react';
 
+import { openOrganizationQuickLinksModal } from '../OrganizationDetailQuickLinksModal';
 import { OrganizationDetailQuickLinksActions } from '../OrganizationSectionQuickLinksActions';
 
 /* * */
@@ -23,16 +24,17 @@ export function OrganizationDetailQuickLinks() {
 	const organizationDetailContext = useOrganizationsDetailContext();
 
 	const quickLinkOptions = useMemo(() => {
-		return organizationDetailContext.data.home_links.map(link => ({
+		console.log('USE MEMO RUNNING');
+		return organizationDetailContext.data.form.values.home_links.map(link => ({
 			...link,
-			actions: <OrganizationDetailQuickLinksActions organization_id={organizationDetailContext.data.id} row_id={link.title} />,
+			actions: <OrganizationDetailQuickLinksActions link={link} organization_id={organizationDetailContext.data.id} />,
 		}));
-	}, [organizationDetailContext.data.home_links]);
+	}, [organizationDetailContext.data.form]);
 
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
-			title: 'Nome',
+			title: 'Nomer',
 			width: 250,
 		},
 		{
@@ -54,6 +56,16 @@ export function OrganizationDetailQuickLinks() {
 		},
 	];
 
+	// B. Handle actions
+	//
+
+	const onSubmit = (link: HomeLink) => {
+		if (!organizationDetailContext.data.form) return;
+		const updatedLinks = organizationDetailContext.data.form.values.home_links.map(l => l.title === link.title ? link : l);
+		organizationDetailContext.data.form.values.home_links = updatedLinks;
+		organizationDetailContext.actions.saveOrganization();
+	};
+
 	//
 	// C. Render components
 
@@ -63,6 +75,11 @@ export function OrganizationDetailQuickLinks() {
 			title="Links rápidos"
 		>
 			<Section gap="lg">
+				<Button
+					label="Adicionar link rápido"
+					onClick={() => openOrganizationQuickLinksModal({ onSubmit, organization_id: organizationDetailContext.data.id })}
+					variant="primary"
+				/>
 				<DataTable
 					columns={columns}
 					records={quickLinkOptions}

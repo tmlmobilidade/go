@@ -10,6 +10,7 @@ import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
 
 /* * */
 
@@ -26,9 +27,7 @@ interface OrganizationsDetailContextState {
 	}
 	data: {
 		form: UseFormReturnType<CreateOrganizationDto>
-		home_links: HomeLink[]
 		id: string | undefined
-		organization: Organization
 	}
 	flags: {
 		canSave: boolean
@@ -78,7 +77,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	//
 	// B. Fetch data
 
-	const { data: organization, isLoading } = useSWR<Organization>(organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_DETAIL(organization_id));
+	const orgDetailKey = organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_DETAIL(organization_id);
+	const { data: organization, isLoading, mutate } = useSWR<Organization>(orgDetailKey);
 
 	//
 	// C. Initialize form
@@ -101,16 +101,15 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	// C. Transform Data
 
 	// Update the home links ref to the most recent one
-	const prevHomeLinksRef = useRef<HomeLink[]>(form.values.home_links);
-	useEffect(() => {
-		const prev = prevHomeLinksRef.current;
-		const curr = form.values.home_links;
-		if (prev.length > curr.length) {
-			// A link was deleted
-			handleSaveOrganization();
-		}
-		prevHomeLinksRef.current = curr;
-	}, [form.values.home_links]);
+	// const prevHomeLinksRef = useRef<HomeLink[]>(form.values.home_links);
+	// useEffect(() => {
+	// 	const prev = prevHomeLinksRef.current;
+	// 	const curr = form.values.home_links;
+	// 	if (prev.length !== curr.length) {
+	// 		handleSaveOrganization();
+	// 	}
+	// 	prevHomeLinksRef.current = curr;
+	// }, [form.values.home_links]);
 
 	// Validate form on change
 	useEffect(() => {
@@ -123,9 +122,11 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	const handleSaveOrganization = async () => {
 		setIsSaving(true);
+
 		const method = organization_id === 'new' ? 'POST' : 'PUT';
 		const url = organization_id === 'new' ? Routes.API(Routes.ORGANIZATION_LIST) : Routes.API(Routes.ORGANIZATION_DETAIL(organization_id));
 		const body = organization_id === 'new' ? form.values : convertObject(form.values, UpdateOrganizationSchema);
+		console.log('SAVING', body);
 		const response = await fetchData<Organization>(url, method, body);
 
 		if (response.error) {
@@ -153,6 +154,11 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			message: 'Organização salva com sucesso',
 			title: 'Sucesso',
 		});
+
+		// Always revalidate organization after save
+		if (orgDetailKey) {
+			mutate();
+		}
 
 		if (organization_id === 'new' && response.data?._id) {
 			router.replace(Routes.ORGANIZATION_DETAIL(response.data._id));
@@ -195,9 +201,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		},
 		data: {
 			form,
-			home_links: form.values.home_links,
 			id: organization_id === 'new' ? undefined : organization_id,
-			organization: organization,
 		},
 		flags: {
 			canSave,

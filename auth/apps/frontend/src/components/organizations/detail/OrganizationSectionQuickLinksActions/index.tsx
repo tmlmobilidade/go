@@ -4,11 +4,12 @@
 
 import { openOrganizationQuickLinksModal } from '@/components/organizations/detail/OrganizationDetailQuickLinksModal';
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
+import { HomeLink } from '@tmlmobilidade/types';
 import { Button, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function OrganizationDetailQuickLinksActions({ organization_id, row_id }: { organization_id: string, row_id: string }) {
+export function OrganizationDetailQuickLinksActions({ link, organization_id }: { link: HomeLink, organization_id: string }) {
 	//
 
 	//
@@ -21,13 +22,12 @@ export function OrganizationDetailQuickLinksActions({ organization_id, row_id }:
 
 	const handleDelete = () => {
 		if (!organizationDetailsContext.data.form) return;
-		const currentHomeLinks = organizationDetailsContext.data.form.values.home_links;
-		const newHomeLinks = currentHomeLinks.filter(link => link.title !== row_id);
-		organizationDetailsContext.data.form.setFieldValue('home_links', newHomeLinks);
+		const updatedLinks = organizationDetailsContext.data.form.values.home_links.filter(l => l.title !== link.title);
+		organizationDetailsContext.data.form.values.home_links = updatedLinks;
 	};
 
 	const handleEdit = () => {
-		openOrganizationQuickLinksModal({ organization_id });
+		openOrganizationQuickLinksModal({ link, organization_id });
 	};
 
 	//

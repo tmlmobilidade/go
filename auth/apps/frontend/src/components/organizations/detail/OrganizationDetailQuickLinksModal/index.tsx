@@ -2,10 +2,11 @@
 
 import { IconChooser } from '@/components/common/IconChooser';
 import { OrganizationsDetailContextProvider, useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
-import { CreateOrganizationSchema } from '@tmlmobilidade/types';
+import { HomeLink } from '@tmlmobilidade/types';
 /* * */
 
-import { Button, closeModal, Divider, Grid, Label, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
+import { useState } from 'react';
 
 /* * */
 
@@ -13,12 +14,18 @@ export const QUICK_LINKS_MODAL_ID = 'quick-links-modal';
 
 /* * */
 
-export const openOrganizationQuickLinksModal = ({ organization_id }: { organization_id: string }) => {
+export interface QuickLinksModalProps {
+	link?: HomeLink
+	onSubmit?: (link: HomeLink) => void
+	organization_id: string
+}
+
+/* * */
+
+export const openOrganizationQuickLinksModal = ({ link }: QuickLinksModalProps) => {
 	openModal({
 		children: (
-			<OrganizationsDetailContextProvider organization_id={organization_id}>
-				<QuickLinksModal />
-			</OrganizationsDetailContextProvider>
+			<QuickLinksModal link={link} onSubmit={link => console.log(link)} />
 		),
 		closeOnClickOutside: false,
 		modalId: QUICK_LINKS_MODAL_ID,
@@ -30,67 +37,57 @@ export const openOrganizationQuickLinksModal = ({ organization_id }: { organizat
 
 /* * */
 
-export default function QuickLinksModal() {
+export default function QuickLinksModal({ link, onSubmit }: { link?: HomeLink, onSubmit?: (link: HomeLink) => void }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const organizationsDetailsContext = useOrganizationsDetailContext();
+	const [newLink, setNewLink] = useState<HomeLink>(link || { href: '', icon: '', title: '' });
+	const [selectedIcon, setSelectedIcon] = useState<string | undefined>(link.icon || '');
 
 	//
-	// B. Render Components
+	// B. Handle actions
+	const handleSave = () => {
+		closeModal(QUICK_LINKS_MODAL_ID);
+		onSubmit(newLink);
+	};
 
+	const handleIconChange = (icon) => {
+		newLink.icon = icon;
+		setSelectedIcon(icon);
+	};
+
+	//
+	// C. Render components
 	return (
-		<>
-			<Section gap="xs">
-				<Label size="lg" caps>Novo link rápido</Label>
-				<Text>Crie um novo link rápido para a organização</Text>
-			</Section>
-
+		<Section flexDirection="column" gap="sm" padding="lg">
+			<TextInput
+				label="Nome"
+				onChange={e => setNewLink(prev => ({ ...prev, title: e.target.value }))}
+				value={newLink.title}
+			/>
+			<TextInput
+				label="Link"
+				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
+				value={newLink.href}
+			/>
+			<IconChooser selectedIcon={selectedIcon} setSelectedIcon={handleIconChange} />
 			<Divider />
-
-			<Section>
-				<TextInput
-					label="Nome do link rápido"
-					maxLength={255}
-					placeholder="GO"
-					withAsterisk={!CreateOrganizationSchema.shape.home_links}
-					required
-					{...organizationsDetailsContext.data.form.getInputProps('home_links.title')}
+			<Grid columns="ab" gap="sm">
+				<Button
+					label="Cancel"
+					onClick={() => closeModal(QUICK_LINKS_MODAL_ID)}
+					variant="secondary"
+					fullWidth
 				/>
-				<TextInput
-					label="Link"
-					maxLength={255}
-					placeholder="https://www.carrismetropolitana.pt"
-					withAsterisk={!CreateOrganizationSchema.shape.home_links}
-					required
-					{...organizationsDetailsContext.data.form.getInputProps('home_links.href')}
+				<Button
+					label="Save"
+					onClick={handleSave}
+					variant="primary"
+					fullWidth
 				/>
-				<IconChooser />
-			</Section>
-
-			<Divider />
-
-			<Section>
-				<Grid columns="ab" gap="md">
-					<Button
-						disabled={organizationsDetailsContext.flags.loading}
-						label="Cancelar"
-						onClick={() => closeModal(QUICK_LINKS_MODAL_ID)}
-						variant="secondary"
-					/>
-					<Button
-						// disabled={!organizationsDetailsContext.flags.canSave}
-						label="Criar link rápido"
-						loading={organizationsDetailsContext.flags.loading}
-						onClick={organizationsDetailsContext.actions.saveOrganization}
-					/>
-				</Grid>
-			</Section>
-
-		</>
+			</Grid>
+		</Section>
 	);
-
-	//
 }
