@@ -109,9 +109,9 @@ const validationActions: PermissionConfig<typeof Permissions.validations.actions
 		{ description: 'Permite criar uma validação', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
 		{ description: 'Permite solicitar aprovação de uma validação', key: 'request_approval', label: 'Solicitar aprovação', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de validações.',
+	description: 'As ações que o utilizador pode realizar na gestão de validações GTFS.',
 	scope: Permissions.validations.scope,
-	title: 'Permissões de Validações',
+	title: 'Permissões de Validações (GTFS)',
 };
 
 const roleActions: PermissionConfig<typeof Permissions.roles.actions> = {
@@ -141,18 +141,20 @@ const stopActions: PermissionConfig<typeof Permissions.stops.actions> = {
 
 const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
 	actions: [
+		/* Análise */
 		{ description: 'Permite bloquear/desbloquear uma análise de uma viagem', key: 'analsys_lock', label: 'Análise - Bloquear/Desbloquear', resources: ['AGENCIES'] },
-		{ description: 'Permite bloquear/desbloquear uma auditoria de uma viagem', key: 'analysis_lock', label: 'Análise - Bloquear/Desbloquear', resources: ['AGENCIES'] },
 		{ description: 'Permite ver uma análise de uma viagem', key: 'analysis_read', label: 'Análise - Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite reprocessar uma análise de uma viagem', key: 'analysis_reprocess', label: 'Análise - Reprocessar', resources: ['AGENCIES'] },
+		/* Auditoria */
 		{ description: 'Permite editar uma análise de uma viagem', key: 'analysis_update', label: 'Análise - Editar', resources: ['AGENCIES'] },
 		{ description: 'Permite bloquear/desbloquear uma auditoria de uma viagem', key: 'audit_lock', label: 'Auditoria - Bloquear/Desbloquear', resources: ['AGENCIES'] },
 		{ description: 'Permite ver uma auditoria de uma viagem', key: 'audit_read', label: 'Auditoria - Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite editar uma auditoria de uma viagem', key: 'audit_update', label: 'Auditoria - Editar', resources: ['AGENCIES'] },
-		{ description: 'Permite alterar o estado de uma justificação de uma viagem', key: 'justification_change_status', label: 'Justificação - Alterar estado', resources: ['AGENCIES'] },
-		{ description: 'Permite justificar uma viagem', key: 'justification_justify', label: 'Justificação - Justificar', resources: ['AGENCIES'] },
-		{ description: 'Permite bloquear/desbloquear uma justificação de uma viagem', key: 'justification_lock', label: 'Justificação - Bloquear/Desbloquear', resources: ['AGENCIES'] },
-		{ description: 'Permite ver uma justificação de uma viagem', key: 'justification_read', label: 'Justificação - Ver', resources: ['AGENCIES'] },
+		/* Aceitação */
+		{ description: 'Permite alterar o estado de uma justificação de uma viagem', key: 'justification_change_status', label: 'Aceitação - Alterar estado', resources: ['AGENCIES'] },
+		{ description: 'Permite justificar uma viagem', key: 'justification_justify', label: 'Aceitação - Justificar', resources: ['AGENCIES'] },
+		{ description: 'Permite bloquear/desbloquear uma justificação de uma viagem', key: 'justification_lock', label: 'Aceitação - Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ description: 'Permite ver uma justificação de uma viagem', key: 'justification_read', label: 'Aceitação - Ver', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de viagens.',
 	scope: Permissions.rides.scope,
