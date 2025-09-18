@@ -4,13 +4,11 @@
 
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleX, IconClock, IconLock, IconLockOpen } from '@tabler/icons-react';
-import { CommentBox, Label, Section } from '@tmlmobilidade/ui';
+import { CommentInput, CommentItemProps, CommentList, Label, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
-import React, { createElement } from 'react';
+import React, { createElement, useMemo } from 'react';
 
 import styles from './styles.module.css';
-
-import { RideDetailAcceptanceCommentItemWrapper } from '../RideDetailAcceptanceCommentItemWrapper';
 
 /* * */
 
@@ -96,6 +94,40 @@ export function RidesDetailAcceptanceCommentList() {
 
 	const acceptanceContext = useRidesDetailAcceptanceContext();
 
+	const commentItems = useMemo(() => {
+		return acceptanceContext.data.acceptance.comments.map((comment) => {
+			const item: CommentItemProps = { content: null, created_at: comment.created_at, created_by: comment.created_by, icon: null };
+
+			if (comment.type === 'field_changed' && comment.field === 'acceptance_status') {
+				item.icon = createElement(CommentAcceptanceStatusProps[comment.curr_value].icon, { color: CommentAcceptanceStatusProps[comment.curr_value].color });
+				item.content = CommentAcceptanceStatusProps[comment.curr_value].label;
+			}
+
+			if (comment.type === 'field_changed' && comment.field === 'is_locked') {
+				item.icon = createElement(CommentLockProps[comment.curr_value ? 'lock' : 'unlock'].icon, { color: CommentLockProps[comment.curr_value ? 'lock' : 'unlock'].color });
+				item.content = CommentLockProps[comment.curr_value ? 'lock' : 'unlock'].label;
+			}
+
+			if (comment.type === 'note') {
+				item.icon = createElement(CommentNoteProps.icon, { color: CommentNoteProps.color });
+				item.iconTopMargin = 25;
+				item.content = (
+					<div className={styles.messageContainer}>
+						<div className={styles.label}>{comment.message}</div>
+						<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+					</div>
+				);
+			}
+
+			if (comment.type === 'crud') {
+				item.icon = createElement(CommentCrudProps[comment.action].icon, { color: CommentCrudProps[comment.action].color });
+				item.content = CommentCrudProps[comment.action].label;
+			}
+
+			return item;
+		});
+	}, [acceptanceContext.data.acceptance.comments]);
+
 	//
 	// B. Handle actions
 
@@ -116,45 +148,8 @@ export function RidesDetailAcceptanceCommentList() {
 	return (
 		<Section gap="md" width="100%">
 			<Label size="lg" caps>Atividade</Label>
-			<div className={styles.container}>
-				{acceptanceContext.data.acceptance.comments.map((comment, index) => {
-					let icon: React.ReactNode;
-					let content: React.ReactNode | string;
-					let iconTopMargin: number;
-
-					if (comment.type === 'field_changed' && comment.field === 'acceptance_status') {
-						const iconKey = comment.curr_value;
-						icon = createElement(CommentAcceptanceStatusProps[iconKey].icon, { color: CommentAcceptanceStatusProps[iconKey].color });
-						content = CommentAcceptanceStatusProps[iconKey].label;
-					}
-					if (comment.type === 'field_changed' && comment.field === 'is_locked') {
-						const iconKey = comment.curr_value ? 'lock' : 'unlock';
-						icon = createElement(CommentLockProps[iconKey].icon, { color: CommentLockProps[iconKey].color });
-						content = CommentLockProps[iconKey].label;
-					}
-					if (comment.type === 'note') {
-						icon = createElement(CommentNoteProps.icon, { color: CommentNoteProps.color });
-						iconTopMargin = 25;
-						content = (
-							<div className={styles.messageContainer}>
-								<div className={styles.label}>{comment.message}</div>
-								<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
-							</div>
-						);
-					}
-					if (comment.type === 'crud') {
-						icon = createElement(CommentCrudProps[comment.action].icon, { color: CommentCrudProps[comment.action].color });
-						content = CommentCrudProps[comment.action].label;
-					}
-
-					if (!icon || !content) return null;
-
-					return (
-						<RideDetailAcceptanceCommentItemWrapper key={index} content={content} created_at={comment.created_at} created_by={comment.created_by} icon={icon} iconTopMargin={iconTopMargin} />
-					);
-				})}
-			</div>
-			<CommentBox
+			<CommentList data={commentItems} />
+			<CommentInput
 				disabled={acceptanceContext.data.acceptance.is_locked}
 				onSubmit={addComment}
 			/>
