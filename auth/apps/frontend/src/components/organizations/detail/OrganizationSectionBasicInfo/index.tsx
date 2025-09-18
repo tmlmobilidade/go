@@ -17,6 +17,7 @@ export function OrganizationDetailBasicInfo() {
 	// A. Setup variables
 
 	const organizationDetailContext = useOrganizationsDetailContext();
+	console.log('logo', organizationDetailContext.data.imageDarkUrl, organizationDetailContext.data.imageLightUrl);
 
 	//
 	// C. Render components
@@ -43,20 +44,22 @@ export function OrganizationDetailBasicInfo() {
 						{...organizationDetailContext.data.form.getInputProps('short_name')}
 					/>
 				</Grid>
-				<Grid columns="a" gap="lg">
-					{/* <UploadImage
-					imageUrl={organizationDetailContext.data.form.values.logo || ''}
-					label="Imagem"
-					onDelete={organizationDetailContext.actions.deleteImage}
-					 onFileChange={organizationDetailContext.actions.fileChanged}
-					{/* /> */}
-					{/* <UploadImage
-					imageUrl={organizationDetailContext.data.form.values.logo || ''}
-					label="Imagem"
-					onDelete={organizationDetailContext.actions.deleteImage}
-					 onFileChange={organizationDetailContext.actions.fileChanged}
-					{/* /> */}
-				</Grid>
+				<Section>
+					<Grid columns="ab" gap="lg">
+						<UploadImage
+							imageUrl={organizationDetailContext.data.imageDarkUrl?.url}
+							label="Logótipo em Modo Escuro"
+							onDelete={organizationDetailContext.actions.deleteImage}
+							onFileChange={organizationDetailContext.actions.fileChangedDark}
+						/>
+						<UploadImage
+							imageUrl={organizationDetailContext.data.imageLightUrl?.url}
+							label="Logótipo em Modo Claro"
+							onDelete={organizationDetailContext.actions.deleteImage}
+							onFileChange={organizationDetailContext.actions.fileChangedLight}
+						/>
+					</Grid>
+				</Section>
 			</Section>
 		</Collapsible>
 	);

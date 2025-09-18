@@ -3,7 +3,7 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { CreateOrganizationDto, CreateOrganizationSchema, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationDto, CreateOrganizationSchema, File as FileType, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
@@ -20,12 +20,17 @@ export enum OrganizationsDetailMode {
 
 interface OrganizationsDetailContextState {
 	actions: {
+		deleteImage: () => void
 		deleteOrganization: () => void
+		fileChangedDark: (file: File) => void
+		fileChangedLight: (file: File) => void
 		saveOrganization: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateOrganizationDto>
 		id: string | undefined
+		imageDarkUrl?: FileType
+		imageLightUrl?: FileType
 	}
 	flags: {
 		canSave: boolean
@@ -39,7 +44,8 @@ interface OrganizationsDetailContextState {
 const emptyOrganization: CreateOrganizationDto = {
 	home_links: [],
 	home_wikis: [],
-	logo: '',
+	logo_dark: '',
+	logo_light: '',
 	long_name: '',
 	short_name: '',
 	theme: '',
@@ -71,12 +77,23 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
-	const [image, setImage] = useState<File | null>(null);
+	const [imageDark, setImageDark] = useState<File | null>(null);
+	const [imageLight, setImageLight] = useState<File | null>(null);
 
 	//
 	// B. Fetch data
 
 	const orgDetailKey = organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_DETAIL(organization_id);
+	const { data: organizationImageLight } = useSWR<FileType | undefined>(
+		MODE === OrganizationsDetailMode.CREATE
+			? undefined
+			: Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, 'light'),
+	);
+	const { data: organizationImageDark } = useSWR<FileType | undefined>(
+		MODE === OrganizationsDetailMode.CREATE
+			? undefined
+			: Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, 'dark'),
+	);
 	const { data: organization, isLoading, mutate } = useSWR<Organization>(orgDetailKey);
 
 	//
@@ -138,7 +155,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 					});
 				}
 			}
-			// Upload image if the alert is new
+			// Upload image if the homeLink is new
 			if (response.data) await uploadImage(response.data._id.toString());
 			setIsSaving(false);
 			return;
@@ -185,11 +202,12 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	};
 
 	const uploadImage = async (organization_id: string) => {
-		console.log(MODE, organization_id, image);
+		console.log('UPLOAD IMAGE', organization_id, MODE, imageDark, imageLight);
+		const image = MODE ? imageLight || '' : imageDark || '';
 		if (MODE === OrganizationsDetailMode.CREATE || !image) return;
 
 		console.log('HERE =======> ', organization_id);
-		const response = await uploadFile(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id), image);
+		const response = await uploadFile(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, MODE), image);
 
 		console.log('HERE =======> ', response);
 
@@ -203,17 +221,35 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
 	};
 
+	const deleteImage = async () => {
+		const response = await fetchData<Organization>(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, MODE) + '?realtime=true', 'DELETE', organization);
+		if (response.error) {
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({ message: error.message, title: 'Erro ao apagar imagem' });
+			}
+			return;
+		}
+
+		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
+	};
+
 	//
 	// E. Define context value
 
 	const contextValue: OrganizationsDetailContextState = useMemo(() => ({
 		actions: {
+			deleteImage: deleteImage,
 			deleteOrganization: handleDeleteOrganization,
+			fileChangedDark: (file: File) => setImageDark(file),
+			fileChangedLight: (file: File) => setImageLight(file),
 			saveOrganization: handleSaveOrganization,
 		},
 		data: {
 			form,
 			id: organization_id === 'new' ? undefined : organization_id,
+			imageDarkUrl: organizationImageDark,
+			imageLightUrl: organizationImageLight,
 		},
 		flags: {
 			canSave,

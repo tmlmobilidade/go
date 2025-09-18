@@ -19,7 +19,7 @@ interface UploadImageProps {
 export function UploadImage({
 	imageUrl,
 	label,
-	maxFileSize = 6 * 1024 * 1024, // 5MB default
+	maxFileSize = 6 * 1024 * 1024, // 6MB default
 	maxHeight = 300,
 	maxWidth = 400,
 	onDelete,

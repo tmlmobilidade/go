@@ -8,15 +8,25 @@ import { type Organization, UpdateOrganizationDto, UpdateOrganizationSchema } fr
 /* * */
 
 export class OrganizationsController {
-	//
+	/**
+	 * Create a new organization - Inserts a new organization into the database
+	 * @param {FastifyRequest} request - The request object containing the organization data in the body
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async create(request: FastifyRequest<{ Body: Organization }>, reply: FastifyReply<Organization>) {
+		const result = await organizations.insertOne(request.body);
+
+		// Send the created alert with a 201 status code
+		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
+	}
 
 	/**
 	 * Delete an organization logo - Deletes an organization logo from the database
 	 * @param {FastifyRequest} request - The request object containing the organization ID in the params
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
-	static async deleteImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		const { id } = request.params;
+	static async deleteImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<void>) {
+		const { id, theme } = request.params;
 
 		const organization = await organizations.findById(id);
 
@@ -25,13 +35,17 @@ export class OrganizationsController {
 			return;
 		}
 
-		if (!organization.logo) {
-			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
+		const logoField = theme === 'dark' ? organization.logo_dark : organization.logo_light;
+
+		if (!logoField) {
+			reply.status(HttpStatus.NOT_FOUND).send({ message: `Logo not found for theme: ${theme}` });
 			return;
 		}
+		await files.deleteById(logoField);
 
-		await files.deleteById(organization.logo);
-		await organizations.updateById(id, { logo: undefined });
+		const updateField = theme === 'dark' ? { logo_dark: null } : { logo_light: null };
+
+		await organizations.updateById(id, updateField);
 
 		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
@@ -58,6 +72,35 @@ export class OrganizationsController {
 	}
 
 	/**
+	 * Get an organization image - Retrieves an organization image from the database
+	 * @param {FastifyRequest} request - The request object containing the organization ID in the params
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async getImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<string>) {
+		const { id, theme } = request.params;
+
+		const organization = await organizations.findById(id);
+
+		if (!organization) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+		}
+
+		const logoField = theme === 'dark' ? organization.logo_dark : organization.logo_light;
+
+		if (!logoField) {
+			throw new HttpException(HttpStatus.NOT_FOUND, `Logo not found for theme: ${theme}`);
+		}
+
+		const file = await files.findById(logoField);
+
+		if (!file) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		}
+
+		reply.send({ data: file.url, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
 	* Updates an Organization in the database
 	* @param request The request object
 	* @param reply The reply object
@@ -80,16 +123,20 @@ export class OrganizationsController {
 	 * @param {FastifyRequest} request - The request object containing the organization ID in the params and the image file in the body
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
-	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
-		const { id } = request.params;
+	static async uploadImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<string>) {
+		const { id, theme } = request.params;
 
 		const organization = await organizations.findById(id);
 
-		if (!organization) throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+		if (!organization) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+		}
 
 		const data = await request.file();
 
-		if (!data) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		if (!data) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		}
 
 		const buffer = await data.toBuffer();
 		const size = buffer.buffer.byteLength;
@@ -98,23 +145,24 @@ export class OrganizationsController {
 			created_by: request.me._id,
 			name: data.filename,
 			resource_id: id,
-			scope: 'alerts',
+			scope: 'organizations',
 			size: size,
 			type: data.mimetype,
 			updated_by: request.me._id,
 		});
 
-		// Delete the old image if it exists
-		if (organization.logo) {
+		const logoField = theme === 'dark' ? organization.logo_dark : organization.logo_light;
+		if (logoField) {
 			try {
-				await files.deleteById(organization.logo);
+				await files.deleteById(logoField);
 			}
 			catch (error) {
 				console.error(error);
 			}
 		}
 
-		await organizations.updateById(id, { logo: result.url });
+		const updateField = theme === 'dark' ? { logo_dark: result.url } : { logo_light: result.url };
+		await organizations.updateById(id, updateField);
 
 		reply.send({ data: result.url, error: null, statusCode: HttpStatus.OK });
 	}
