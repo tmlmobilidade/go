@@ -3,22 +3,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--size-spacing-md);
+
+    /* gap: var(--size-spacing-md); */
 }
 
-.path {
-    position: absolute;
-    top: 14px;
-    bottom: 20px;
-    left: 11px;
-    z-index: 1;
-    width: 2px;
-    background-color: var(--color-system-border-100);
+.box:nth-last-child(1) > .item > .itemWrapper > .icon {
+    background-color: green;
 }
-
-.item {
-    display: grid;
-    grid-template-columns: 24px 1fr;
-    gap: var(--size-spacing-sm);
-    align-items: flex-start;
- }

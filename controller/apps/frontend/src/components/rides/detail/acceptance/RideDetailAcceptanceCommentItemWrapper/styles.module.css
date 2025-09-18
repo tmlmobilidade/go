@@ -1,0 +1,23 @@
+.itemWrapper {
+    display: grid;
+    grid-template-rows: 24px 1fr;
+    align-items: center;
+}
+
+.item {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: var(--size-spacing-sm);
+}
+
+.icon {
+    z-index: 2;
+    background-color: var(--color-system-background-100);
+}
+
+.path {
+    width: 2px;
+    height: 100%;
+    margin: auto;
+    background-color: var(--color-system-border-100);
+}

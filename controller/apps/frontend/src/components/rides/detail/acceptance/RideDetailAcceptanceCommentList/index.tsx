@@ -6,6 +6,7 @@ import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptanc
 import { FieldChangedComment, RideAcceptance } from '@tmlmobilidade/types';
 import { CommentBox, Label, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
+import React from 'react';
 
 import styles from './styles.module.css';
 
@@ -45,14 +46,13 @@ export function RidesDetailAcceptanceCommentList() {
 		<Section gap="md" width="100%">
 			<Label size="lg" caps>Atividade</Label>
 			<div className={styles.container}>
-				<div className={styles.path} />
-				{acceptanceContext.data.acceptance.comments.map(comment => (
-					<div key={comment._id} className={styles.item}>
+				{acceptanceContext.data.acceptance.comments.map((comment, index) => (
+					<React.Fragment key={index}>
 						{comment.type === 'note' && <RidesDetailAcceptanceCommentItemNote comment={comment} />}
 						{comment.type === 'crud' && <RidesDetailAcceptanceCommentItemCrud comment={comment} />}
 						{comment.type === 'field_changed' && comment.field === 'acceptance_status' && <RidesDetailAcceptanceCommentItemStatus comment={comment as FieldChangedComment<RideAcceptance, 'acceptance_status'>} />}
 						{comment.type === 'field_changed' && comment.field === 'is_locked' && <RidesDetailAcceptanceCommentItemLock comment={comment as FieldChangedComment<RideAcceptance, 'is_locked'>} />}
-					</div>
+					</React.Fragment>
 				))}
 			</div>
 			<CommentBox

@@ -10,28 +10,30 @@ import { createElement } from 'react';
 
 import styles from '../styles.module.css';
 
+import { RideDetailAcceptanceCommentItemWrapper } from '../RideDetailAcceptanceCommentItemWrapper';
+
 /* * */
 
-const AcceptanceStatusProps: Record<RideAcceptance['acceptance_status'], { icon: React.ComponentType<IconProps>, label: string, style: { color: string } }> = Object.freeze({
+const AcceptanceStatusProps: Record<RideAcceptance['acceptance_status'], { color: string, icon: React.ComponentType<IconProps>, label: string }> = Object.freeze({
 	accepted: {
+		color: 'var(--color-status-success-primary)',
 		icon: IconCircleCheck,
 		label: 'A aceitação está aceite',
-		style: { color: 'var(--color-status-success-primary)' },
 	},
 	justification_required: {
+		color: 'var(--color-status-warning-primary)',
 		icon: IconAlertCircle,
 		label: 'É necessário justificar a aceitação',
-		style: { color: 'var(--color-status-warning-primary)' },
 	},
 	rejected: {
+		color: 'var(--color-status-danger-primary)',
 		icon: IconCircleX,
 		label: 'A aceitação está rejeitada',
-		style: { color: 'var(--color-status-danger-primary)' },
 	},
 	under_review: {
+		color: 'var(--color-status-warning-primary)',
 		icon: IconClock,
 		label: 'A aceitação está em revisão',
-		style: { color: 'var(--color-status-warning-primary)' },
 	},
 });
 
@@ -40,13 +42,11 @@ export function RidesDetailAcceptanceCommentItemStatus({ comment }: { comment: F
 	// A. Render components
 
 	return (
-		<>
-			{createElement(AcceptanceStatusProps[comment.curr_value].icon, { style: { backgroundColor: 'var(--color-system-background-100)', zIndex: 2, ...AcceptanceStatusProps[comment.curr_value].style } })}
-
+		<RideDetailAcceptanceCommentItemWrapper icon={createElement(AcceptanceStatusProps[comment.curr_value].icon, { color: AcceptanceStatusProps[comment.curr_value].color })}>
 			<Section flexDirection="column" gap="xs" padding="none">
 				<div className={styles.label}>{AcceptanceStatusProps[comment.curr_value].label}</div>
 				<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
 			</Section>
-		</>
+		</RideDetailAcceptanceCommentItemWrapper>
 	);
 }
