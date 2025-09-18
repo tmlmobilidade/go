@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { rideAcceptances } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { CommentTypeSchema, FieldChangedComment, NoteComment, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
+import { CommentTypeSchema, FieldChangedComment, NoteComment, RideJustificationCause, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 import { RideAcceptance } from '@tmlmobilidade/types';
 import { Dates, generateRandomString } from '@tmlmobilidade/utils';
 
@@ -60,7 +60,7 @@ export class RideAcceptanceController {
 
 		const updateResult = await rideAcceptances.updateByRideId(
 			request.params.trip_id,
-			{ comments: [...rideAcceptanceData.comments, request.body] },
+			{ comments: [...rideAcceptanceData.comments, request.body], updated_by: request.me._id },
 		);
 
 		return reply.send({
@@ -92,32 +92,25 @@ export class RideAcceptanceController {
 	/**
 	 * Justifies a ride acceptance by trip ID
 	 */
-	static async justify(request: FastifyRequest<{ Body: { pto_message: string }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
-		throw new HttpException(HttpStatus.NOT_IMPLEMENTED, 'Not implemented');
-		// //
+	static async justify(request: FastifyRequest<{ Body: { justification_cause: RideJustificationCause, pto_message: string }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
+		//
 
-		// const oldJustificationData = await rideAcceptances.findByRideId(request.params.trip_id);
-		// const comment: FieldChangedComment<RideAcceptance, 'pto_message'> = {
-		// 	_id: generateRandomString(),
-		// 	created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-		// 	created_by: 'system',
-		// 	updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-		// 	updated_by: 'system',
-		// 	/* * */
-		// 	curr_value: request.body.pto_message,
-		// 	field: 'pto_message',
-		// 	prev_value: oldJustificationData.justification.pto_message,
-		// 	type: CommentTypeSchema.Values.field_changed,
-		// };
-		// const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
-		// 	comments: [...oldJustificationData.comments, comment],
-		// });
+		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
+			justification: {
+				created_at: Dates.now('utc').unix_timestamp,
+				created_by: request.me._id,
+				justification_cause: request.body.justification_cause,
+				justification_source: 'MANUAL',
+				pto_message: request.body.pto_message,
+				updated_at: Dates.now('utc').unix_timestamp,
+			},
+		});
 
-		// return reply.send({
-		// 	data: updateResult,
-		// 	error: null,
-		// 	statusCode: HttpStatus.OK,
-		// });
+		return reply.send({
+			data: updateResult,
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
 	}
 
 	/**
@@ -135,23 +128,7 @@ export class RideAcceptanceController {
 			});
 		}
 
-		const comment: FieldChangedComment<RideAcceptance, 'is_locked'> = {
-			_id: generateRandomString(),
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			created_by: request.me._id,
-			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			updated_by: request.me._id,
-			/* * */
-			curr_value: oldJustificationData.is_locked,
-			field: 'is_locked',
-			prev_value: request.body.is_locked,
-			type: CommentTypeSchema.Values.field_changed,
-		};
-
-		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
-			comments: [...oldJustificationData.comments, comment],
-			is_locked: request.body.is_locked,
-		});
+		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, { is_locked: request.body.is_locked, updated_by: request.me._id });
 
 		return reply.send({
 			data: updateResult,
