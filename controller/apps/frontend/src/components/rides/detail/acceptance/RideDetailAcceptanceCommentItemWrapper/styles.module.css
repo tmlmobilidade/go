@@ -21,3 +21,33 @@
     margin: auto;
     background-color: var(--color-system-border-100);
 }
+
+.item:last-child .path {
+    display: none;
+}
+
+.label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    
+    & > span {
+        &[data-variant='success'] {
+            color: var(--color-status-success-primary);
+        }
+
+        &[data-variant='danger'] {
+            color: var(--color-status-danger-primary);
+        }
+
+        &[data-variant='warning'] {
+            color: var(--color-status-warning-primary);
+        }
+    }
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-spacing-xs);
+    padding-bottom: var(--size-spacing-md);
+}
