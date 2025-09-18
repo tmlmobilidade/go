@@ -5,6 +5,7 @@ export const PageRoutes = Object.freeze({
 
 	// Organizations
 	ORGANIZATION_DETAIL: (id: string) => `/organizations/${id}`,
+	ORGANIZATION_IMAGE: (id: string) => `/organizations/${id}/image`,
 	ORGANIZATION_LIST: '/organizations',
 
 	// Auth

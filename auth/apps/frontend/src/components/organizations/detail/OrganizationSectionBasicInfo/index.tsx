@@ -44,11 +44,18 @@ export function OrganizationDetailBasicInfo() {
 					/>
 				</Grid>
 				<Grid columns="a" gap="lg">
-					<UploadImage
-						label="Selecionar logótipo"
-						maxFileSize={50 * 1024 * 1024} // 50 MB
-						onFileChange={organizationDetailContext.actions.setValidationFile}
-					/>
+					{/* <UploadImage
+					imageUrl={organizationDetailContext.data.form.values.logo || ''}
+					label="Imagem"
+					onDelete={organizationDetailContext.actions.deleteImage}
+					 onFileChange={organizationDetailContext.actions.fileChanged}
+					{/* /> */}
+					{/* <UploadImage
+					imageUrl={organizationDetailContext.data.form.values.logo || ''}
+					label="Imagem"
+					onDelete={organizationDetailContext.actions.deleteImage}
+					 onFileChange={organizationDetailContext.actions.fileChanged}
+					{/* /> */}
 				</Grid>
 			</Section>
 		</Collapsible>

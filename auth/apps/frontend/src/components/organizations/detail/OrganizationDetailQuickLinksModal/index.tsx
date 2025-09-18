@@ -35,13 +35,13 @@ export const openOrganizationQuickLinksModal = ({ handleSubmit, link }: QuickLin
 
 /* * */
 
-export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?: (link: HomeLink) => void, link?: HomeLink }) {
+export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?: (link: Omit<HomeLink, 'order'>) => void, link?: HomeLink }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const [newLink, setNewLink] = useState<HomeLink>(link || { href: '', icon: '', title: '' });
+	const [newLink, setNewLink] = useState<Omit<HomeLink, 'order'>>(link || { href: '', icon: '', title: '' });
 	const [selectedIcon, setSelectedIcon] = useState<'' | string>(link?.icon || '');
 
 	//

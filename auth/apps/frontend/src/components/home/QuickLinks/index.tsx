@@ -19,7 +19,7 @@ export function QuickLinks() {
 
 	const organizationDetailContext = useOrganizationsDetailContext();
 
-	const quickLinks: HomeLink[] = organizationDetailContext.data?.home_links.map(item => ({
+	const quickLinks: HomeLink[] = organizationDetailContext.data?.form.values.home_links.map(item => ({
 		href: item.href,
 		icon: iconMap[item.icon] || <IconFileInfo size={40} />,
 		title: item.title,

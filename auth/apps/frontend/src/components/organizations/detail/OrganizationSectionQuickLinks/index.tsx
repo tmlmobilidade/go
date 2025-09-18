@@ -55,14 +55,16 @@ export function OrganizationDetailQuickLinks() {
 		if (!organizationDetailContext.data.form) return;
 
 		const links = organizationDetailContext.data.form.values.home_links;
-		const existingIndex = links.findIndex(l => l.title === link.title);
+		const existingIndex = links.findIndex(l => l.order === link.order);
 
 		if (existingIndex === -1) {
-			organizationDetailContext.data.form.setFieldValue('home_links', [...links, link]);
+			link.order = links.length;
+			console.log('=======>', organizationDetailContext.data.form?.values.home_links);
+			organizationDetailContext.data.form.values.home_links = [...links, link];
 		}
 		else {
 			const updatedLinks = links.map((l, idx) => idx === existingIndex ? link : l);
-			organizationDetailContext.data.form.setFieldValue('home_links', updatedLinks);
+			organizationDetailContext.data.form.values.home_links = updatedLinks;
 		}
 
 		organizationDetailContext.actions.saveOrganization();

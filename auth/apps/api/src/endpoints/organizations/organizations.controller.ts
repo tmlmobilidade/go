@@ -31,7 +31,7 @@ export class OrganizationsController {
 		}
 
 		await files.deleteById(organization.logo);
-		await organization.updateById(id, { logo: undefined });
+		await organizations.updateById(id, { logo: undefined });
 
 		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
@@ -80,7 +80,7 @@ export class OrganizationsController {
 	 * @param {FastifyRequest} request - The request object containing the organization ID in the params and the image file in the body
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
-	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 		const { id } = request.params;
 
 		const organization = await organizations.findById(id);
@@ -114,9 +114,9 @@ export class OrganizationsController {
 			}
 		}
 
-		await organization.updateById(id, { file_id: result._id.toString() });
+		await organizations.updateById(id, { logo: result.url });
 
-		reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: result.url, error: null, statusCode: HttpStatus.OK });
 	}
 
 	//

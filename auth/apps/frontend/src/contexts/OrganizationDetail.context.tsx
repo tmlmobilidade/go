@@ -5,7 +5,7 @@
 import { Routes } from '@/lib/routes';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -22,7 +22,6 @@ interface OrganizationsDetailContextState {
 	actions: {
 		deleteOrganization: () => void
 		saveOrganization: () => void
-		setValidationFile: (file: File | null) => void
 	}
 	data: {
 		form: UseFormReturnType<CreateOrganizationDto>
@@ -65,13 +64,14 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	//
 	// A. Setup variables
+	const MODE = organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT;
 
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
-	const [validationFile, setValidationFile] = useState<File | null>(null); // FINISH FILE UPLOAD
+	const [image, setImage] = useState<File | null>(null);
 
 	//
 	// B. Fetch data
@@ -120,7 +120,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		const method = organization_id === 'new' ? 'POST' : 'PUT';
 		const url = organization_id === 'new' ? Routes.API(Routes.ORGANIZATION_LIST) : Routes.API(Routes.ORGANIZATION_DETAIL(organization_id));
 		const body = organization_id === 'new' ? form.values : convertObject(form.values, UpdateOrganizationSchema);
-		console.log('SAVING', body);
 		const response = await fetchData<Organization>(url, method, body);
 
 		if (response.error) {
@@ -139,7 +138,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 					});
 				}
 			}
-
+			// Upload image if the alert is new
+			if (response.data) await uploadImage(response.data._id.toString());
 			setIsSaving(false);
 			return;
 		}
@@ -184,6 +184,25 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		router.replace(Routes.ORGANIZATION_LIST);
 	};
 
+	const uploadImage = async (organization_id: string) => {
+		console.log(MODE, organization_id, image);
+		if (MODE === OrganizationsDetailMode.CREATE || !image) return;
+
+		console.log('HERE =======> ', organization_id);
+		const response = await uploadFile(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id), image);
+
+		console.log('HERE =======> ', response);
+
+		if (response.error) {
+			console.log('HERE =======> ', response.error);
+			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
+			return;
+		}
+
+		console.log('SUCCESS =======> ', response.data);
+		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
+	};
+
 	//
 	// E. Define context value
 
@@ -191,7 +210,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		actions: {
 			deleteOrganization: handleDeleteOrganization,
 			saveOrganization: handleSaveOrganization,
-			setValidationFile,
 		},
 		data: {
 			form,
