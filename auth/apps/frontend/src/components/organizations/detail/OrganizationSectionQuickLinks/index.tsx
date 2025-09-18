@@ -26,7 +26,7 @@ export function OrganizationDetailQuickLinks() {
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
-			title: 'Nomer',
+			title: 'Nome',
 			width: 250,
 		},
 		{
@@ -54,10 +54,17 @@ export function OrganizationDetailQuickLinks() {
 	const handleSubmit = (link: HomeLink) => {
 		if (!organizationDetailContext.data.form) return;
 
-		console.log('savin link ', organizationDetailContext.data.form.values.home_links);
-		const updatedLinks = organizationDetailContext.data.form.values.home_links.concat(link);
-		console.log(updatedLinks);
-		organizationDetailContext.data.form.values.home_links = updatedLinks;
+		const links = organizationDetailContext.data.form.values.home_links;
+		const existingIndex = links.findIndex(l => l.title === link.title);
+
+		if (existingIndex === -1) {
+			organizationDetailContext.data.form.setFieldValue('home_links', [...links, link]);
+		}
+		else {
+			const updatedLinks = links.map((l, idx) => idx === existingIndex ? link : l);
+			organizationDetailContext.data.form.setFieldValue('home_links', updatedLinks);
+		}
+
 		organizationDetailContext.actions.saveOrganization();
 	};
 
@@ -77,7 +84,7 @@ export function OrganizationDetailQuickLinks() {
 			...link,
 			actions: <OrganizationDetailQuickLinksActions handleDelete={handleDelete} handleEdit={handleEdit} link={link} />,
 		}));
-	}, [organizationDetailContext.data.form]);
+	}, [organizationDetailContext.data.form.values.home_links]);
 
 	//
 	// C. Render components
@@ -90,7 +97,7 @@ export function OrganizationDetailQuickLinks() {
 			<Section gap="lg">
 				<Button
 					label="Adicionar link rápido"
-					onClick={() => openOrganizationQuickLinksModal({ handleSubmit, organization_id: organizationDetailContext.data.id })}
+					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
 				<DataTable
