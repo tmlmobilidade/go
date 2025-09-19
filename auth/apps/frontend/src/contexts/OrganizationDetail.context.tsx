@@ -71,7 +71,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	//
 	// A. Setup variables
 
-	const MODE = organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT;
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
@@ -117,9 +116,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	const handleSaveOrganization = async () => {
 		setIsSaving(true);
-
-		delete organization.logo_dark;
-		delete organization.logo_light;
 
 		const method = organization_id === 'new' ? 'POST' : 'PUT';
 		const url = organization_id === 'new' ? Routes.API(Routes.ORGANIZATION_LIST) : Routes.API(Routes.ORGANIZATION_DETAIL(organization_id));
