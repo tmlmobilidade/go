@@ -1,6 +1,6 @@
 'use client';
 
-import { type RideAcceptance } from '@tmlmobilidade/types';
+import { type RideAcceptance, RideJustificationCause } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
@@ -14,7 +14,7 @@ interface RidesDetailAcceptanceContextState {
 	actions: {
 		addComment: (comment: RideAcceptance['comments'][number]) => void
 		changeStatus: (status: RideAcceptance['acceptance_status']) => void
-		justify: (message: string) => void
+		justify: (pto_message: string, justification_cause: RideJustificationCause) => void
 		toggleLock: (is_locked: RideAcceptance['is_locked']) => void
 	}
 	data: {
@@ -47,9 +47,6 @@ export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 	//
 	// A. Setup variables
 	const { data: acceptanceData, error: acceptanceError, isLoading: acceptanceLoading } = useSWR<RideAcceptance>(BASE_URL(rideId));
-
-	//
-	// B. Transform data
 
 	//
 	// C. Handle actions
@@ -86,8 +83,8 @@ export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 		}
 	}
 
-	function justify(message: string) {
-		const response = fetchData(BASE_URL(rideId), 'PUT', { pto_message: message });
+	function justify(message: string, cause: RideJustificationCause) {
+		const response = fetchData(BASE_URL(rideId) + '/justify', 'PUT', { justification_cause: cause, pto_message: message });
 		console.log('justify', response);
 	}
 

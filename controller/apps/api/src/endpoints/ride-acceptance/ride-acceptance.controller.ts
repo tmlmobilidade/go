@@ -106,11 +106,13 @@ export class RideAcceptanceController {
 			},
 		});
 
-		return reply.send({
+		reply.send({
 			data: updateResult,
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
+
+		process.exit(0);
 	}
 
 	/**

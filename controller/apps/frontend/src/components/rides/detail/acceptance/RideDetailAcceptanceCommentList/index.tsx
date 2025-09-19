@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
-import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleX, IconClock, IconLock, IconLockOpen } from '@tabler/icons-react';
+import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleX, IconClock, IconLock, IconLockOpen, IconMessageCircle } from '@tabler/icons-react';
 import { CommentInput, CommentItemProps, CommentList, Label, Section } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import React, { createElement, useMemo } from 'react';
@@ -86,6 +86,12 @@ const CommentNoteProps = Object.freeze({
 
 });
 
+const CommentJustificationProps = Object.freeze({
+	color: 'var(--color-status-danger-primary)',
+	icon: IconMessageCircle,
+	label: 'A justificação foi atualizada',
+});
+
 export function RidesDetailAcceptanceCommentList() {
 	//
 
@@ -106,6 +112,11 @@ export function RidesDetailAcceptanceCommentList() {
 			if (comment.type === 'field_changed' && comment.field === 'is_locked') {
 				item.icon = createElement(CommentLockProps[comment.curr_value ? 'lock' : 'unlock'].icon, { color: CommentLockProps[comment.curr_value ? 'lock' : 'unlock'].color });
 				item.content = CommentLockProps[comment.curr_value ? 'lock' : 'unlock'].label;
+			}
+
+			if (comment.type === 'field_changed' && comment.field === 'justification') {
+				item.icon = createElement(CommentJustificationProps.icon, { color: CommentJustificationProps.color });
+				item.content = CommentJustificationProps.label;
 			}
 
 			if (comment.type === 'note') {
