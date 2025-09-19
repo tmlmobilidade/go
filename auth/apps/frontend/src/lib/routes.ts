@@ -8,6 +8,7 @@ export const PageRoutes = Object.freeze({
 	ORGANIZATION_IMAGE: (id: string, theme: string) => `/organizations/${id}/${theme}/image`,
 	ORGANIZATION_IMAGE_NO_THEME: (id: string) => `/organizations/${id}/image`,
 	ORGANIZATION_LIST: '/organizations',
+	ORGANIZATION_LOGO: (id: string) => `/organizations/${id}/logo`,
 
 	// Auth
 	LOGIN: '/login',

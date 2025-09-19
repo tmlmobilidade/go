@@ -3,7 +3,7 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { CreateOrganizationDto, CreateOrganizationSchema, File as FileType, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationDto, CreateOrganizationSchema, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
@@ -29,8 +29,8 @@ interface OrganizationsDetailContextState {
 	data: {
 		form: UseFormReturnType<CreateOrganizationDto>
 		id: string | undefined
-		imageDarkUrl?: string
-		imageLightUrl?: string
+		logoDarkUrl: null | string
+		logoLightUrl: null | string
 	}
 	flags: {
 		canSave: boolean
@@ -84,7 +84,9 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	// B. Fetch data
 
 	const orgDetailKey = organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_DETAIL(organization_id);
+	const orgLogoKey = organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_LOGO(organization_id);
 	const { data: organization, isLoading, mutate } = useSWR<Organization>(orgDetailKey);
+	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(orgLogoKey);
 
 	//
 	// C. Initialize form
@@ -251,8 +253,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		data: {
 			form,
 			id: organization_id === 'new' ? undefined : organization_id,
-			imageDarkUrl: organization?.logo_dark,
-			imageLightUrl: organization?.logo_light,
+			logoDarkUrl: logo?.logo_dark,
+			logoLightUrl: logo?.logo_light,
 		},
 		flags: {
 			canSave,
@@ -261,7 +263,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			loading: isLoading || loading,
 			mode: organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT,
 		},
-	}), [form, handleDeleteOrganization, handleSaveOrganization, isLoading, isReadOnly, isSaving, loading, organization_id]);
+	}), [form, handleDeleteOrganization, handleSaveOrganization, isLoading, isLogoLoading, isReadOnly, isSaving, loading, organization_id]);
 
 	//
 	// F. Render components

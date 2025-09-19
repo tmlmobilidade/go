@@ -45,13 +45,13 @@ export function OrganizationDetailBasicInfo() {
 				<Section>
 					<Grid columns="ab" gap="lg">
 						<UploadImage
-							imageUrl={organizationDetailContext.data.form.values.logo_dark.toString()}
+							imageUrl={organizationDetailContext.data.logoDarkUrl}
 							label="Logótipo em Modo Escuro"
 							onDelete={organizationDetailContext.actions.deleteImage}
 							onFileChange={organizationDetailContext.actions.fileChangedDark}
 						/>
 						<UploadImage
-							imageUrl={organizationDetailContext.data.form.values.logo_light.toString()}
+							imageUrl={organizationDetailContext.data.logoLightUrl}
 							label="Logótipo em Modo Claro"
 							onDelete={organizationDetailContext.actions.deleteImage}
 							onFileChange={organizationDetailContext.actions.fileChangedLight}

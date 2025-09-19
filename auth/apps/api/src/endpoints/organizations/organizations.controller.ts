@@ -57,11 +57,6 @@ export class OrganizationsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Organization[]>) {
 		const allOrganizations = await organizations.findMany({}, { sort: { _id: 1 } });
-		for (const org of allOrganizations) {
-			org.logo_dark = org.logo_dark ? (await files.findById(org.logo_dark))?.url : undefined;
-			org.logo_light = org.logo_light ? (await files.findById(org.logo_light))?.url : undefined;
-		}
-
 		reply.send({ data: allOrganizations, error: null, statusCode: HttpStatus.OK });
 	}
 
@@ -72,13 +67,28 @@ export class OrganizationsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
 		const organizationData = await organizations.findById(request.params.id);
-
 		if (!organizationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
-
-		organizationData.logo_dark = organizationData.logo_dark ? (await files.findById(organizationData.logo_dark))?.url : undefined;
-		organizationData.logo_light = organizationData.logo_light ? (await files.findById(organizationData.logo_light))?.url : undefined;
-
 		reply.send({ data: organizationData, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
+	 * Get organization logo - Gets organization logo from the database
+	 * @param {FastifyRequest} request - The request object containing the organization ID in the params and the image files in the body
+	 * @param {FastifyReply} reply - The reply object used to send the response
+	 */
+	static async getLogo(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
+		const { id } = request.params;
+
+		const organization = await organizations.findById(id);
+
+		if (!organization) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+		}
+
+		const logoDark = await files.findById(organization.logo_dark);
+		const logoLight = await files.findById(organization.logo_light);
+
+		reply.send({ data: { logo_dark: logoDark?.url ?? null, logo_light: logoLight?.url ?? null }, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**

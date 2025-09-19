@@ -3,7 +3,6 @@
 import authorizationMiddleware from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Organization } from '@tmlmobilidade/types';
 
 import { OrganizationsController } from './organizations.controller.js';
 
@@ -42,6 +41,9 @@ server.register(
 		instance.delete(
 			'/:id/:theme/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.delete) }, OrganizationsController.deleteImage,
 		);
+
+		// GET /organizations/:id/logos
+		instance.get('/:id/logo', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.read) }, OrganizationsController.getLogo);
 
 		next();
 	},
