@@ -29,11 +29,6 @@ server.register(
 		// PUT /organizations/:id
 		instance.put('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.update) }, OrganizationsController.update);
 
-		// GET /organizations/:id/image
-		instance.get(
-			'/:id/:theme/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.read) }, OrganizationsController.getImage,
-		);
-
 		// POST /organizations/:id/image
 		instance.post(
 			'/:id/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.update) }, OrganizationsController.uploadImage,

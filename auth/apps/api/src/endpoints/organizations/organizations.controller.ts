@@ -82,35 +82,6 @@ export class OrganizationsController {
 	}
 
 	/**
-	 * Get an organization image - Retrieves an organization image from the database
-	 * @param {FastifyRequest} request - The request object containing the organization ID in the params
-	 * @param {FastifyReply} reply - The reply object used to send the response
-	 */
-	static async getImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<string>) {
-		const { id, theme } = request.params;
-
-		const organization = await organizations.findById(id);
-
-		if (!organization) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
-		}
-
-		const logoField = theme === 'dark' ? organization.logo_dark : organization.logo_light;
-
-		if (!logoField) {
-			throw new HttpException(HttpStatus.NOT_FOUND, `Logo not found for theme: ${theme}`);
-		}
-
-		const file = await files.findById(logoField);
-
-		if (!file) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-		}
-
-		reply.send({ data: file.url, error: null, statusCode: HttpStatus.OK });
-	}
-
-	/**
 	* Updates an Organization in the database
 	* @param request The request object
 	* @param reply The reply object

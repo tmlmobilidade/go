@@ -50,6 +50,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 
 	const handleSave = () => {
 		if (!newLink.title || !newLink.href || !newLink.icon) alert('Please preencha todos os campos');
+		if (!newLink.href.match(/^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/)) return alert('Por favor, insira uma URL válida');
 		closeModal(QUICK_LINKS_MODAL_ID);
 		handleSubmit(newLink);
 	};
@@ -71,6 +72,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 				required
 			/>
 			<TextInput
+
 				label="Link"
 				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
 				value={newLink.href}
