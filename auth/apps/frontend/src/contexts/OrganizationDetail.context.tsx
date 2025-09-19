@@ -20,7 +20,7 @@ export enum OrganizationsDetailMode {
 
 interface OrganizationsDetailContextState {
 	actions: {
-		deleteImage: () => void
+		deleteImage: (theme: 'dark' | 'light') => void
 		deleteOrganization: () => void
 		fileChangedDark: (file: File) => void
 		fileChangedLight: (file: File) => void
@@ -226,8 +226,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		}
 	};
 
-	const deleteImage = async () => {
-		const response = await fetchData<Organization>(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, MODE) + '?realtime=true', 'DELETE', organization);
+	const deleteImage = async (theme: 'dark' | 'light') => {
+		const response = await fetchData<Organization>(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, theme) + '?realtime=true', 'DELETE', organization);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {

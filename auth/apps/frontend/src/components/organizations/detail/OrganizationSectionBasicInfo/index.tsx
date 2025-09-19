@@ -47,13 +47,13 @@ export function OrganizationDetailBasicInfo() {
 						<UploadImage
 							imageUrl={organizationDetailContext.data.logoDarkUrl}
 							label="Logótipo em Modo Escuro"
-							onDelete={organizationDetailContext.actions.deleteImage}
+							onDelete={() => organizationDetailContext.actions.deleteImage('dark')}
 							onFileChange={organizationDetailContext.actions.fileChangedDark}
 						/>
 						<UploadImage
 							imageUrl={organizationDetailContext.data.logoLightUrl}
 							label="Logótipo em Modo Claro"
-							onDelete={organizationDetailContext.actions.deleteImage}
+							onDelete={() => organizationDetailContext.actions.deleteImage('light')}
 							onFileChange={organizationDetailContext.actions.fileChangedLight}
 						/>
 					</Grid>
