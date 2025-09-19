@@ -1,13 +1,13 @@
 /* * */
 
-import { type QuickLink } from '@/types/quick-links';
+import { type HomeLink } from '@/types/quick-links';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface QuickLinkButtonProps {
-	item: QuickLink
+	item: HomeLink
 }
 
 /* * */

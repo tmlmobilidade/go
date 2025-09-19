@@ -21,7 +21,7 @@ export function UsersDetailOrganization() {
 	// B. Transform data
 
 	const organizationItems = organizations.raw.map(organization => ({
-		label: organization.longname,
+		label: organization.long_name,
 		value: organization._id,
 	}));
 
