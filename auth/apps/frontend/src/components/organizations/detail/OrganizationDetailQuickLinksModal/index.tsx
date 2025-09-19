@@ -48,6 +48,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 	// B. Handle actions
 
 	const handleSave = () => {
+		if (!newLink.title || !newLink.href || !newLink.icon) alert('Please fill all fields');
 		closeModal(QUICK_LINKS_MODAL_ID);
 		handleSubmit(newLink);
 	};
@@ -66,11 +67,13 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 				label="Nome"
 				onChange={e => setNewLink(prev => ({ ...prev, title: e.target.value }))}
 				value={newLink.title}
+				required
 			/>
 			<TextInput
 				label="Link"
 				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
 				value={newLink.href}
+				required
 			/>
 			<IconChooser selectedIcon={selectedIcon} setSelectedIcon={handleIconChange} />
 			<Divider />
@@ -82,6 +85,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 					fullWidth
 				/>
 				<Button
+					disabled={!newLink.title || !newLink.href || !newLink.icon}
 					label="Save"
 					onClick={handleSave}
 					variant="primary"

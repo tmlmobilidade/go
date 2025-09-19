@@ -19,25 +19,22 @@ export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps)
 	//
 
 	//
-	// A. Setup variables
-
-	//
-	// B. Handle actions
+	// A. Handle actions
 
 	const handleIconChange = (icon) => {
-		console.log(icon);
 		setSelectedIcon(icon);
 	};
 
 	//
 	//
-	// C. Render components
+	// B. Render components
 	return (
 		<Combobox
 			data={iconData}
 			label="Ícones"
 			onChange={handleIconChange}
 			value={iconData.find(item => item.value === selectedIcon)?.value}
+			clearable
 			fullWidth
 		/>
 	);

@@ -13,7 +13,7 @@ export class OrganizationsController {
 	 * @param {FastifyRequest} request - The request object containing the organization data in the body
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
-	static async create(request: FastifyRequest<{ Body: Organization }>, reply: FastifyReply<Organization>) {
+	static async create(request: FastifyRequest<{ Body: Omit<Organization, '_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by'> }>, reply: FastifyReply<Organization>) {
 		const result = await organizations.insertOne(request.body);
 
 		// Send the created alert with a 201 status code
@@ -119,12 +119,12 @@ export class OrganizationsController {
 	}
 
 	/**
-	 * Upload an organization logo - Uploads an organization logo to the database
-	 * @param {FastifyRequest} request - The request object containing the organization ID in the params and the image file in the body
+	 * Upload organization logos - Uploads organization logos to the database
+	 * @param {FastifyRequest} request - The request object containing the organization ID in the params and the image files in the body
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
-	static async uploadImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<string>) {
-		const { id, theme } = request.params;
+	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
+		const { id } = request.params;
 
 		const organization = await organizations.findById(id);
 
@@ -132,39 +132,61 @@ export class OrganizationsController {
 			throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
 		}
 
-		const data = await request.file();
+		const updateFields: Partial<{ logo_dark: string, logo_light: string }> = {};
+		const uploadedFiles: { logo_dark?: string, logo_light?: string } = {};
 
-		if (!data) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		// Process all uploaded files
+		for await (const file of request.files()) {
+			const buffer = await file.toBuffer();
+			const size = buffer.buffer.byteLength;
+
+			const result = await files.upload(buffer, {
+				created_by: request.me._id,
+				name: file.filename,
+				resource_id: id,
+				scope: 'organizations',
+				size: size,
+				type: file.mimetype,
+				updated_by: request.me._id,
+			});
+
+			// Determine which logo to update based on fieldname
+			if (file.fieldname === 'dark') {
+				// Delete old dark logo if it exists
+				if (organization.logo_dark) {
+					try {
+						await files.deleteById(organization.logo_dark);
+					}
+					catch (error) {
+						console.error('Error deleting old dark logo:', error);
+					}
+				}
+				updateFields.logo_dark = result._id;
+				uploadedFiles.logo_dark = result._id;
+			}
+			else if (file.fieldname === 'light') {
+				// Delete old light logo if it exists
+				if (organization.logo_light) {
+					try {
+						await files.deleteById(organization.logo_light);
+					}
+					catch (error) {
+						console.error('Error deleting old light logo:', error);
+					}
+				}
+				updateFields.logo_light = result._id;
+				uploadedFiles.logo_light = result._id;
+			}
 		}
 
-		const buffer = await data.toBuffer();
-		const size = buffer.buffer.byteLength;
-
-		const result = await files.upload(buffer, {
-			created_by: request.me._id,
-			name: data.filename,
-			resource_id: id,
-			scope: 'organizations',
-			size: size,
-			type: data.mimetype,
-			updated_by: request.me._id,
-		});
-
-		const logoField = theme === 'dark' ? organization.logo_dark : organization.logo_light;
-		if (logoField) {
-			try {
-				await files.deleteById(logoField);
-			}
-			catch (error) {
-				console.error(error);
-			}
+		if (Object.keys(updateFields).length === 0) {
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'No valid files provided');
 		}
 
-		const updateField = theme === 'dark' ? { logo_dark: result.url } : { logo_light: result.url };
-		await organizations.updateById(id, updateField);
+		// Update organization with new logo IDs
+		await organizations.updateById(id, updateFields);
 
-		reply.send({ data: result.url, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: uploadedFiles, error: null, statusCode: HttpStatus.OK });
 	}
 
 	//

@@ -220,7 +220,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	};
 
 	const uploadImage = async (alert_id: string) => {
-		if (MODE === AlertDetailMode.CREATE || !image) return;
+		if (!image) return;
 
 		console.log('HERE =======> ', alert_id);
 		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);

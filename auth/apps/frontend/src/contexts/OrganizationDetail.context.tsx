@@ -4,7 +4,7 @@
 
 import { Routes } from '@/lib/routes';
 import { CreateOrganizationDto, CreateOrganizationSchema, File as FileType, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { FormValidateInput, useForm, UseFormReturnType, useThemeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -71,6 +71,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	//
 	// A. Setup variables
 	const MODE = organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT;
+	const theme = useThemeContext();
 
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
@@ -107,19 +108,11 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	});
 
 	useEffect(() => {
-		if (form.isValid() && !isSaving) {
-			handleSaveOrganization();
-		}
-	}, [form.values.home_links]);
-
-	useEffect(() => {
 		if (!organization) return;
 		setLoading(true);
 		form.initialize(convertObject(organization, CreateOrganizationSchema));
 		setLoading(false);
-	}, [organization]);
-
-	//
+	}, [organization]); //
 	// C. Transform Data
 
 	// Validate form on change
@@ -155,18 +148,18 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 					});
 				}
 			}
-			// Upload image if the homeLink is new
-			if (response.data) await uploadImage(response.data._id.toString());
+
 			setIsSaving(false);
 			return;
 		}
+
+		if (response.data) await uploadImages(response.data._id.toString());
 
 		useToast.success({
 			message: 'Organização salva com sucesso',
 			title: 'Sucesso',
 		});
 
-		// Always revalidate organization after save
 		if (orgDetailKey) {
 			mutate();
 		}
@@ -201,24 +194,42 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		router.replace(Routes.ORGANIZATION_LIST);
 	};
 
-	const uploadImage = async (organization_id: string) => {
-		console.log('UPLOAD IMAGE', organization_id, MODE, imageDark, imageLight);
-		const image = MODE ? imageLight || '' : imageDark || '';
-		if (MODE === OrganizationsDetailMode.CREATE || !image) return;
+	const uploadImages = async (organization_id: string) => {
+		const imagesToUpload: { dark?: File, light?: File } = {};
 
-		console.log('HERE =======> ', organization_id);
-		const response = await uploadFile(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, MODE), image);
-
-		console.log('HERE =======> ', response);
-
-		if (response.error) {
-			console.log('HERE =======> ', response.error);
-			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
-			return;
+		if (imageLight) {
+			imagesToUpload.light = imageLight;
 		}
 
-		console.log('SUCCESS =======> ', response.data);
-		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
+		if (imageDark) {
+			imagesToUpload.dark = imageDark;
+		}
+
+		if (Object.keys(imagesToUpload).length === 0) return;
+
+		const formData = new FormData();
+
+		if (imagesToUpload.dark) {
+			formData.append('dark', imagesToUpload.dark);
+		}
+
+		if (imagesToUpload.light) {
+			formData.append('light', imagesToUpload.light);
+		}
+
+		const response = await fetch(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE_NO_THEME(organization_id), {
+			body: formData,
+			method: 'POST',
+		});
+
+		const result = await response.json();
+
+		if (response.ok) {
+			useToast.success({ message: 'As imagens foram carregadas com sucesso', title: 'Sucesso' });
+		}
+		else {
+			useToast.error({ message: result.error || 'Erro ao carregar imagens', title: 'Erro' });
+		}
 	};
 
 	const deleteImage = async () => {

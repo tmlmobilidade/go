@@ -29,22 +29,21 @@ server.register(
 		// PUT /organizations/:id
 		instance.put('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.update) }, OrganizationsController.update);
 
-		// GET /alerts/:id/image
+		// GET /organizations/:id/image
 		instance.get(
 			'/:id/:theme/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.read) }, OrganizationsController.getImage,
 		);
 
-		// POST /alerts/:id/image
+		// POST /organizations/:id/image
 		instance.post(
-			'/:id/:theme/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.update) }, OrganizationsController.uploadImage,
+			'/:id/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.update) }, OrganizationsController.uploadImage,
 		);
 
-		// POST /alerts
+		// POST /organizations
 		instance.post(
-			'/',
-			{ preHandler: authorizationMiddleware(Permissions.organizations.scope, Permissions.organizations.actions.create) }, OrganizationsController.create);
+			'/', { preHandler: authorizationMiddleware(Permissions.organizations.scope, Permissions.organizations.actions.create) }, OrganizationsController.create);
 
-		// DELETE /alerts/:id/image
+		// DELETE /organizations/:id/image
 		instance.delete(
 			'/:id/:theme/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.delete) }, OrganizationsController.deleteImage,
 		);

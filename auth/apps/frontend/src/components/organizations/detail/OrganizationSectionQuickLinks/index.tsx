@@ -22,6 +22,7 @@ export function OrganizationDetailQuickLinks() {
 	// A. Setup variables
 
 	const organizationDetailContext = useOrganizationsDetailContext();
+	console.log('quick links', organizationDetailContext.data.id);
 
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
@@ -98,15 +99,21 @@ export function OrganizationDetailQuickLinks() {
 		>
 			<Section gap="lg">
 				<Button
+					disabled={!organizationDetailContext.data.id}
 					label="Adicionar link rápido"
 					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
-				<DataTable
-					columns={columns}
-					records={quickLinkOptions}
-					rowIdAccessor="title"
-				/>
+				{!organizationDetailContext.data.id && (
+					<p>Crie primeiro a organização para adicionar links rápidos.</p>
+				)}
+				{organizationDetailContext.data.id && (
+					<DataTable
+						columns={columns}
+						records={quickLinkOptions}
+						rowIdAccessor="title"
+					/>
+				)}
 			</Section>
 		</Collapsible>
 
