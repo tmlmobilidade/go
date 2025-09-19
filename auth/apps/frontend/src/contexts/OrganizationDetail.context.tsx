@@ -29,8 +29,8 @@ interface OrganizationsDetailContextState {
 	data: {
 		form: UseFormReturnType<CreateOrganizationDto>
 		id: string | undefined
-		imageDarkUrl?: FileType
-		imageLightUrl?: FileType
+		imageDarkUrl?: string
+		imageLightUrl?: string
 	}
 	flags: {
 		canSave: boolean
@@ -84,16 +84,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	// B. Fetch data
 
 	const orgDetailKey = organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_DETAIL(organization_id);
-	const { data: organizationImageLight } = useSWR<FileType | undefined>(
-		MODE === OrganizationsDetailMode.CREATE
-			? undefined
-			: Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, 'light'),
-	);
-	const { data: organizationImageDark } = useSWR<FileType | undefined>(
-		MODE === OrganizationsDetailMode.CREATE
-			? undefined
-			: Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, 'dark'),
-	);
 	const { data: organization, isLoading, mutate } = useSWR<Organization>(orgDetailKey);
 
 	//
@@ -125,6 +115,9 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	const handleSaveOrganization = async () => {
 		setIsSaving(true);
+
+		delete organization.logo_dark;
+		delete organization.logo_light;
 
 		const method = organization_id === 'new' ? 'POST' : 'PUT';
 		const url = organization_id === 'new' ? Routes.API(Routes.ORGANIZATION_LIST) : Routes.API(Routes.ORGANIZATION_DETAIL(organization_id));
@@ -258,8 +251,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		data: {
 			form,
 			id: organization_id === 'new' ? undefined : organization_id,
-			imageDarkUrl: organizationImageDark,
-			imageLightUrl: organizationImageLight,
+			imageDarkUrl: organization?.logo_dark,
+			imageLightUrl: organization?.logo_light,
 		},
 		flags: {
 			canSave,

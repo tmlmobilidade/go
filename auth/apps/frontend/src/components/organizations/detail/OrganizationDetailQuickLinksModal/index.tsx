@@ -6,6 +6,7 @@ import { HomeLink } from '@tmlmobilidade/types';
 /* * */
 
 import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
+import { isUrl } from '@tmlmobilidade/utils';
 import { useState } from 'react';
 
 /* * */
@@ -30,6 +31,7 @@ export const openOrganizationQuickLinksModal = ({ handleSubmit, link }: QuickLin
 		modalId: QUICK_LINKS_MODAL_ID,
 		padding: 0,
 		size: 'auto',
+		styles: { content: { overflow: 'unset' } },
 		withCloseButton: false,
 	});
 };
@@ -50,7 +52,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 
 	const handleSave = () => {
 		if (!newLink.title || !newLink.href || !newLink.icon) alert('Please preencha todos os campos');
-		if (!newLink.href.match(/^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/)) return alert('Por favor, insira uma URL válida');
+		if (!newLink.href) return alert('Por favor, insira uma URL válida');
 		closeModal(QUICK_LINKS_MODAL_ID);
 		handleSubmit(newLink);
 	};
@@ -72,7 +74,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 				required
 			/>
 			<TextInput
-
+				error={isUrl(newLink.href) ? null : 'Por favor, insira um URL válido'}
 				label="Link"
 				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
 				value={newLink.href}
@@ -88,7 +90,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 					fullWidth
 				/>
 				<Button
-					disabled={!newLink.title || !newLink.href || !newLink.icon}
+					disabled={!newLink.title || !newLink.href || !newLink.icon || isUrl(newLink.href) === false}
 					label="Save"
 					onClick={handleSave}
 					variant="primary"
