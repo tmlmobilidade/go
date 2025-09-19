@@ -2,6 +2,7 @@
 
 import { IconChooser } from '@/components/common/IconChooser';
 import { HomeLink } from '@tmlmobilidade/types';
+
 /* * */
 
 import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
@@ -48,7 +49,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 	// B. Handle actions
 
 	const handleSave = () => {
-		if (!newLink.title || !newLink.href || !newLink.icon) alert('Please fill all fields');
+		if (!newLink.title || !newLink.href || !newLink.icon) alert('Please preencha todos os campos');
 		closeModal(QUICK_LINKS_MODAL_ID);
 		handleSubmit(newLink);
 	};

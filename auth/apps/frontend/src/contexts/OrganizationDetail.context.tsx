@@ -4,8 +4,8 @@
 
 import { Routes } from '@/lib/routes';
 import { CreateOrganizationDto, CreateOrganizationSchema, File as FileType, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useThemeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, uploadFile } from '@tmlmobilidade/utils';
+import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -70,9 +70,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	//
 	// A. Setup variables
-	const MODE = organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT;
-	const theme = useThemeContext();
 
+	const MODE = organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT;
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
@@ -112,10 +111,10 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		setLoading(true);
 		form.initialize(convertObject(organization, CreateOrganizationSchema));
 		setLoading(false);
-	}, [organization]); //
+	}, [organization]);
+
 	// C. Transform Data
 
-	// Validate form on change
 	useEffect(() => {
 		form.validate();
 		setCanSave(form.isValid());

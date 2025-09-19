@@ -15,8 +15,6 @@ export function useLogin(): UseLoginReturn {
 	const login = async (credentials: LoginDto) => {
 		setLoading(true);
 
-		console.log(`/api/login`);
-
 		const response = await fetchData<Session>(
 			`/api/login`,
 			'POST',

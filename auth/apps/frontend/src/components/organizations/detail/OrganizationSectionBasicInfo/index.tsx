@@ -1,10 +1,9 @@
 'use client';
 
-import { UploadImage } from '@/components/common/UploadImage';
-import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
-
 /* * */
 
+import { UploadImage } from '@/components/common/UploadImage';
+import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
 import { CreateOrganizationSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
@@ -17,7 +16,6 @@ export function OrganizationDetailBasicInfo() {
 	// A. Setup variables
 
 	const organizationDetailContext = useOrganizationsDetailContext();
-	console.log('logo', organizationDetailContext.data.imageDarkUrl, organizationDetailContext.data.imageLightUrl);
 
 	//
 	// C. Render components
@@ -47,13 +45,13 @@ export function OrganizationDetailBasicInfo() {
 				<Section>
 					<Grid columns="ab" gap="lg">
 						<UploadImage
-							imageUrl={organizationDetailContext.data.imageDarkUrl?.url}
+							imageUrl={organizationDetailContext.data.form.values.logo_dark.toString()}
 							label="Logótipo em Modo Escuro"
 							onDelete={organizationDetailContext.actions.deleteImage}
 							onFileChange={organizationDetailContext.actions.fileChangedDark}
 						/>
 						<UploadImage
-							imageUrl={organizationDetailContext.data.imageLightUrl?.url}
+							imageUrl={organizationDetailContext.data.form.values.logo_light.toString()}
 							label="Logótipo em Modo Claro"
 							onDelete={organizationDetailContext.actions.deleteImage}
 							onFileChange={organizationDetailContext.actions.fileChangedLight}

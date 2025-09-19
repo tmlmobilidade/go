@@ -22,7 +22,6 @@ export function OrganizationDetailQuickLinks() {
 	// A. Setup variables
 
 	const organizationDetailContext = useOrganizationsDetailContext();
-	console.log('quick links', organizationDetailContext.data.id);
 
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
@@ -60,7 +59,6 @@ export function OrganizationDetailQuickLinks() {
 
 		if (existingIndex === -1) {
 			link.order = links.length;
-			console.log('=======>', organizationDetailContext.data.form?.values.home_links);
 			organizationDetailContext.data.form.values.home_links = [...links, link];
 		}
 		else {

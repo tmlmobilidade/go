@@ -81,7 +81,7 @@ export function UploadImage({
 				</ComponentWrapper>
 			) : (
 				<FileButton
-					accept="image/*"
+					accept="image/png,image/jpeg,image/jpg"
 					label="Carregar imagem"
 					onFileChange={handleFileChange}
 				/>

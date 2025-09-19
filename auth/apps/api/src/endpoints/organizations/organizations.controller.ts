@@ -57,6 +57,11 @@ export class OrganizationsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Organization[]>) {
 		const allOrganizations = await organizations.findMany({}, { sort: { _id: 1 } });
+		for (const org of allOrganizations) {
+			org.logo_dark = org.logo_dark ? (await files.findById(org.logo_dark))?.url : undefined;
+			org.logo_light = org.logo_light ? (await files.findById(org.logo_light))?.url : undefined;
+		}
+
 		reply.send({ data: allOrganizations, error: null, statusCode: HttpStatus.OK });
 	}
 
@@ -67,7 +72,12 @@ export class OrganizationsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
 		const organizationData = await organizations.findById(request.params.id);
+
 		if (!organizationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+
+		organizationData.logo_dark = organizationData.logo_dark ? (await files.findById(organizationData.logo_dark))?.url : undefined;
+		organizationData.logo_light = organizationData.logo_light ? (await files.findById(organizationData.logo_light))?.url : undefined;
+
 		reply.send({ data: organizationData, error: null, statusCode: HttpStatus.OK });
 	}
 
