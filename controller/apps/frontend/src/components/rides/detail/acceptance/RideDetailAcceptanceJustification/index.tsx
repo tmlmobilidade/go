@@ -1,39 +1,37 @@
 'use client';
 
-/* * */
-
 import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
+import { Permissions } from '@tmlmobilidade/lib';
 import { RideJustificationCause, RideJustificationCauseSchema } from '@tmlmobilidade/types';
-import { Button, Combobox, Label, Section, Textarea } from '@tmlmobilidade/ui';
-import { useState } from 'react';
+import { Button, Combobox, HasPermission, Label, Section, Text, Textarea } from '@tmlmobilidade/ui';
+import { useMemo, useState } from 'react';
 
 /* * */
 
-export function RidesDetailAcceptanceJustification() {
-	//
-	// A. Setup variables
-
-	const acceptanceContext = useRidesDetailAcceptanceContext();
-	const [message, setMessage] = useState(acceptanceContext.data.acceptance?.justification?.pto_message);
-	const [cause, setCause] = useState<RideJustificationCause | undefined>(acceptanceContext.data.acceptance?.justification?.justification_cause);
-
-	// const message = useMemo(() => acceptanceContext.data.acceptance?.justification?.pto_message, [acceptanceContext.data.acceptance?.justification?.pto_message]);
-	// const cause = useMemo<RideJustificationCause | undefined>(() => acceptanceContext.data.acceptance?.justification?.justification_cause, [acceptanceContext.data.acceptance?.justification?.justification_cause]);
-
-	//
-	// B. Render components
-
-	if (!acceptanceContext.data.acceptance) return null;
-
+function JustificationReadOnly({ cause, message }: { cause?: string, message?: string }) {
 	return (
-		<Section gap="md" width="100%">
+		<>
 			<Label size="lg" caps>Justificação</Label>
-			<AcceptanceStatusTag grade={acceptanceContext.data.acceptance.acceptance_status} />
+			<Section gap="xs" padding="none">
+				<Label>Motivo da justificação</Label>
+				<Text>{cause || '—'}</Text>
+			</Section>
+			<Section gap="xs" padding="none">
+				<Label>Mensagem de justificação</Label>
+				<Text>{message || '—'}</Text>
+			</Section>
+		</>
+	);
+}
+
+function JustificationEditable({ cause, message, onSubmit, setCause, setMessage }: { cause?: RideJustificationCause, message: string, onSubmit: () => void, setCause: (v: RideJustificationCause) => void, setMessage: (v: string) => void }) {
+	return (
+		<>
 			<Combobox
 				data={RideJustificationCauseSchema.options}
 				label="Motivo da justificação"
-				onChange={v => setCause(v)}
+				onChange={setCause}
 				placeholder="Selecione o motivo da justificação"
 				value={cause}
 				fullWidth
@@ -42,17 +40,48 @@ export function RidesDetailAcceptanceJustification() {
 			<Textarea
 				label="Mensagem de justificação"
 				minRows={2}
-				onChange={event => setMessage(event.target.value)}
+				onChange={e => setMessage(e.target.value)}
 				value={message}
 				w="100%"
 				autosize
 			/>
-			<Button
-				label="Justificar"
-				onClick={() => {
-					acceptanceContext.actions.justify(message, cause);
-				}}
-			/>
+			<Button label="Justificar" onClick={onSubmit} fullWidth />
+		</>
+	);
+}
+
+export function RidesDetailAcceptanceJustification() {
+	const { actions, data } = useRidesDetailAcceptanceContext();
+	const { acceptance } = data;
+
+	if (!acceptance) return null;
+
+	const { acceptance_status, justification } = acceptance;
+
+	const [message, setMessage] = useState(justification?.pto_message ?? '');
+	const [cause, setCause] = useState<RideJustificationCause | undefined>(justification?.justification_cause);
+
+	const handleSubmit = () => actions.justify(message, cause);
+
+	const fallback = useMemo(() => <JustificationReadOnly cause={cause} message={message} />, [cause, message]);
+
+	return (
+		<Section gap="md" width="100%">
+			<Label size="lg" caps>Justificação</Label>
+			<AcceptanceStatusTag grade={acceptance_status} />
+			<HasPermission
+				action={Permissions.rides.actions.justification_justify}
+				fallback={fallback}
+				scope={Permissions.rides.scope}
+			>
+				<JustificationEditable
+					cause={cause}
+					message={message}
+					onSubmit={handleSubmit}
+					setCause={setCause}
+					setMessage={setMessage}
+				/>
+			</HasPermission>
 		</Section>
 	);
 }
