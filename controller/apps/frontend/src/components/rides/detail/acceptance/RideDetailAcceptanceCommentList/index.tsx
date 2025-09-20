@@ -159,7 +159,7 @@ export function RidesDetailAcceptanceCommentList() {
 	return (
 		<Section gap="md" width="100%">
 			<Label size="lg" caps>Atividade</Label>
-			<CommentList data={commentItems} />
+			<CommentList data={commentItems} maxHeight={500} reverse />
 			<CommentInput
 				disabled={acceptanceContext.data.acceptance.is_locked}
 				onSubmit={addComment}
