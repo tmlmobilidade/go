@@ -51,7 +51,7 @@ function JustificationEditable({ cause, message, onSubmit, setCause, setMessage 
 	);
 }
 
-function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_status'] }) {
+export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_status'] }) {
 	//
 	// A. Setup variables
 	const { actions } = useRidesDetailAcceptanceContext();
@@ -59,46 +59,58 @@ function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_status'
 	const [status, setStatus] = useState<RideAcceptance['acceptance_status']>(grade);
 
 	//
-	// C. Handle actions
-
-	async function handleSubmit() {
+	// B. Handle actions
+	const handleSubmit = async () => {
 		try {
 			await actions.changeStatus(status);
 			setIsEditing(false);
 		}
 		catch (error) {
-			useToast.error({ message: error.message, title: 'Erro ao alterar estado da aceitação' });
+			useToast.error({
+				message: error.message,
+				title: 'Erro ao alterar estado da aceitação',
+			});
 		}
-	}
+	};
 
 	//
-	// B. Render components
+	// C. Render components
+
+	if (isEditing) {
+		return (
+			<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
+				<Combobox
+					data={RideAcceptanceStatusSchema.options}
+					label="Status da justificação"
+					onChange={value => setStatus(value as RideAcceptance['acceptance_status'])}
+					value={status}
+					fullWidth
+				/>
+				<IconButton
+					aria-label="Confirmar novo estado"
+					icon={<IconCheck />}
+					onClick={handleSubmit}
+					variant="subtle"
+				/>
+			</Section>
+		);
+	}
 
 	return (
-		<>
-			{isEditing ? (
-				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-					<Combobox
-						data={RideAcceptanceStatusSchema.options}
-						label="Status da justificação"
-						onChange={value => setStatus(value as RideAcceptance['acceptance_status'])}
-						value={status}
-						fullWidth
-					/>
-					<IconButton icon={<IconCheck />} onClick={handleSubmit} variant="subtle" />
-				</Section>
-			) : (
-				<Section alignItems="center" flexDirection="row" gap="xs"	padding="none">
-					<AcceptanceStatusTag grade={grade} />
-					<HasPermission
-						action={Permissions.rides.actions.justification_change_status}
-						scope={Permissions.rides.scope}
-					>
-						<IconButton icon={<IconEdit />} onClick={() => setIsEditing(true)} variant="subtle" />
-					</HasPermission>
-				</Section>
-			)}
-		</>
+		<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
+			<AcceptanceStatusTag grade={grade} />
+			<HasPermission
+				action={Permissions.rides.actions.justification_change_status}
+				scope={Permissions.rides.scope}
+			>
+				<IconButton
+					aria-label="Editar estado"
+					icon={<IconEdit />}
+					onClick={() => setIsEditing(true)}
+					variant="subtle"
+				/>
+			</HasPermission>
+		</Section>
 	);
 }
 
@@ -122,7 +134,7 @@ export function RidesDetailAcceptanceJustification() {
 			<Label size="lg" caps>Justificação</Label>
 			<AcceptanceStatus grade={acceptance_status} />
 			<HasPermission
-				action={Permissions.rides.actions.justification_justify}
+				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : Permissions.rides.actions.justification_change_status}
 				fallback={fallback}
 				scope={Permissions.rides.scope}
 			>

@@ -83,15 +83,25 @@ export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 		}
 	}
 
-	function justify(message: string, cause: RideJustificationCause) {
-		const response = fetchData(BASE_URL(rideId) + '/justify', 'PUT', { justification_cause: cause, pto_message: message });
-		console.log('justify', response);
+	async function justify(message: string, cause: RideJustificationCause) {
+		const response = await fetchData(BASE_URL(rideId) + '/justify', 'PUT', { justification_cause: cause, pto_message: message });
+		if (response.error) {
+			useToast.error({ message: response.error, title: 'Erro ao justificar' });
+			return;
+		}
+
+		mutate(BASE_URL(rideId));
 	}
 
 	//
 	async function toggleLock(is_locked: RideAcceptance['is_locked']) {
-		const response = fetchData(BASE_URL(rideId), 'PUT', { is_locked });
-		console.log('toggleLock', response);
+		const response = await fetchData(BASE_URL(rideId), 'PUT', { is_locked });
+		if (response.error) {
+			useToast.error({ message: response.error, title: 'Erro ao bloquear justificação' });
+			return;
+		}
+
+		mutate(BASE_URL(rideId));
 	}
 
 	// D. Define context value
