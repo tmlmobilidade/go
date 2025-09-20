@@ -1,7 +1,8 @@
 'use client';
 
-import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
+import { AcceptanceStatusProps, AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
+import { Translations } from '@/lib/translations';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
 import { RideAcceptance, RideAcceptanceStatusSchema, RideJustificationCause, RideJustificationCauseSchema } from '@tmlmobilidade/types';
@@ -30,11 +31,14 @@ function JustificationEditable({ cause, message, onSubmit, setCause, setMessage 
 	return (
 		<>
 			<Combobox
-				data={RideJustificationCauseSchema.options}
 				label="Motivo da justificação"
 				onChange={setCause}
 				placeholder="Selecione o motivo da justificação"
 				value={cause}
+				data={RideJustificationCauseSchema.options.map(cause => ({
+					label: Translations.CAUSE[cause],
+					value: cause,
+				}))}
 				fullWidth
 				searchable
 			/>
@@ -80,10 +84,14 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 		return (
 			<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
 				<Combobox
-					data={RideAcceptanceStatusSchema.options}
 					label="Status da justificação"
 					onChange={value => setStatus(value as RideAcceptance['acceptance_status'])}
 					value={status}
+					data={RideAcceptanceStatusSchema.options.map(status => ({
+						icon: AcceptanceStatusProps[status].icon,
+						label: AcceptanceStatusProps[status].label,
+						value: status,
+					}))}
 					fullWidth
 				/>
 				<IconButton

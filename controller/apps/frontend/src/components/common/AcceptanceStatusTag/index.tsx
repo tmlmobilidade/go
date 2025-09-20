@@ -14,7 +14,7 @@ interface AcceptanceStatusTagProps {
 
 /* * */
 
-const AcceptanceStatusProps = Object.freeze({
+export const AcceptanceStatusProps = Object.freeze({
 	accepted: {
 		icon: <IconCheck />,
 		label: 'Aceite',
