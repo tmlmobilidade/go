@@ -69,7 +69,7 @@ export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 	//
 	async function changeStatus(status: RideAcceptance['acceptance_status']) {
 		try {
-			const statusResponse = await fetchData(BASE_URL(rideId), 'PUT', { acceptance_status: status });
+			const statusResponse = await fetchData(BASE_URL(rideId) + '/change-status', 'PUT', { acceptance_status: status });
 
 			if (statusResponse.error) {
 				useToast.error({ message: statusResponse.error, title: 'Erro ao alterar status' });

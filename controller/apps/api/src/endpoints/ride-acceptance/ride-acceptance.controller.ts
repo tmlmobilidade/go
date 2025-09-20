@@ -3,9 +3,9 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { rideAcceptances } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { CommentTypeSchema, FieldChangedComment, NoteComment, RideJustificationCause, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
+import { NoteComment, RideAcceptanceStatusSchema, RideJustificationCause, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 import { RideAcceptance } from '@tmlmobilidade/types';
-import { Dates, generateRandomString } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -15,24 +15,10 @@ export class RideAcceptanceController {
 	 */
 	static async changeStatus(request: FastifyRequest<{ Body: { acceptance_status: UpdateRideAcceptanceDto['acceptance_status'] }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
-		const oldRideAcceptanceData = await rideAcceptances.findByRideId(request.params.trip_id);
-
-		const comment: FieldChangedComment<RideAcceptance, 'acceptance_status'> = {
-			_id: generateRandomString(),
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			created_by: request.me._id,
-			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			updated_by: request.me._id,
-			/* * */
-			curr_value: oldRideAcceptanceData.acceptance_status,
-			field: 'acceptance_status',
-			prev_value: request.body.acceptance_status,
-			type: CommentTypeSchema.Values.field_changed,
-		};
 
 		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
 			acceptance_status: request.body.acceptance_status,
-			comments: [...oldRideAcceptanceData.comments, comment],
+			updated_by: request.me._id,
 		});
 
 		return reply.send({
@@ -96,6 +82,7 @@ export class RideAcceptanceController {
 		//
 
 		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
+			acceptance_status: RideAcceptanceStatusSchema.Values.under_review,
 			justification: {
 				created_at: Dates.now('utc').unix_timestamp,
 				created_by: request.me._id,
@@ -104,15 +91,14 @@ export class RideAcceptanceController {
 				pto_message: request.body.pto_message,
 				updated_at: Dates.now('utc').unix_timestamp,
 			},
+			updated_by: request.me._id,
 		});
 
-		reply.send({
+		return reply.send({
 			data: updateResult,
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
-
-		process.exit(0);
 	}
 
 	/**
