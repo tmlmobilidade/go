@@ -35,3 +35,10 @@
     border-radius: var(--border-radius-sm);
     box-shadow: 2px 2px 5px 1px rgb(0 0 0 / 4%);
 }
+
+.analysisSummaryMessageContainer {
+    display: flex;
+    flex-direction: row;
+    gap: var(--size-spacing-sm);
+    margin: var(--size-spacing-sm) 0;
+}

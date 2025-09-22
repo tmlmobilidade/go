@@ -2,9 +2,11 @@
 
 /* * */
 
+import { RidesDetailAnalysisResultItem } from '@/components/rides/detail/RidesDetailAnalysisResultItem';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
-import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleX, IconClock, IconLock, IconLockOpen, IconMessageCircle } from '@tabler/icons-react';
-import { CommentInput, CommentItemProps, CommentList, Label, Section } from '@tmlmobilidade/ui';
+import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
+import { RideAcceptance } from '@tmlmobilidade/types';
+import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import React, { createElement, useMemo } from 'react';
 
@@ -87,9 +89,15 @@ const CommentNoteProps = Object.freeze({
 });
 
 const CommentJustificationProps = Object.freeze({
-	color: 'var(--color-status-danger-primary)',
+	color: 'var(--color-primary)',
 	icon: IconMessageCircle,
 	label: 'A justificação foi atualizada',
+});
+
+const CommentAnalysisSummaryProps = Object.freeze({
+	color: 'var(--color-primary)',
+	icon: IconMathMaxMin,
+	label: 'Foi realizada uma nova análise da viagem',
 });
 
 export function RidesDetailAcceptanceCommentList() {
@@ -117,6 +125,38 @@ export function RidesDetailAcceptanceCommentList() {
 			if (comment.type === 'field_changed' && comment.field === 'justification') {
 				item.icon = createElement(CommentJustificationProps.icon, { color: CommentJustificationProps.color });
 				item.content = CommentJustificationProps.label;
+			}
+
+			if (comment.type === 'field_changed' && comment.field === 'analysis_summary') {
+				item.iconTopMargin = 25;
+				item.icon = createElement(CommentAnalysisSummaryProps.icon, { color: CommentAnalysisSummaryProps.color });
+
+				const analysisSummary = comment.curr_value as RideAcceptance['analysis_summary'];
+				const analysisItems = Object.entries(analysisSummary).map(([id, item]) => ({ id, ...item }));
+
+				item.content = (
+					<div className={styles.messageContainer}>
+						<div className={styles.label}>{CommentAnalysisSummaryProps.label}</div>
+						<Section flexDirection="row" gap="xs" padding="none">
+							{analysisItems.map(item => (
+								<Tooltip
+									key={item.id}
+									label={<RidesDetailAnalysisResultItem grade={item.grade} id={item.id} />}
+									p={0}
+									radius="md"
+								>
+									<IconCircleFilled
+										size={18}
+										color={(item.grade === 'fail' || item.grade === 'error')
+											? 'var(--color-status-danger-primary)'
+											: 'var(--color-status-success-primary)'}
+									/>
+								</Tooltip>
+							))}
+						</Section>
+						<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+					</div>
+				);
 			}
 
 			if (comment.type === 'note') {
