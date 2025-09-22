@@ -5,6 +5,7 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { Combobox, Grid, Section } from '@tmlmobilidade/ui';
+import { useEffect } from 'react';
 
 /* * */
 
@@ -20,10 +21,10 @@ export function UsersDetailOrganization() {
 	//
 	// B. Transform data
 
-	const organizationItems = organizations.raw.map(organization => ({
+	const organizationItems = organizations.raw?.map(organization => ({
 		label: organization.long_name,
 		value: organization._id,
-	}));
+	})) || [];
 
 	//
 	// B. Render components
