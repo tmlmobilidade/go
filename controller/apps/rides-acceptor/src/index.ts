@@ -1,97 +1,60 @@
-/* * */
+import { type ChangeStreamDocument, rides } from '@tmlmobilidade/interfaces';
+import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
+import { Ride, RideAnalysis, RideAnalysisSummary } from '@tmlmobilidade/types';
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
-import { AggregationPipeline, rideAnnotations, rides } from '@tmlmobilidade/interfaces';
-import { type CreateRideAnnotationDto, Ride } from '@tmlmobilidade/types';
-import { Dates, generateRandomString } from '@tmlmobilidade/utils';
-
-/* * */
-
-async function lockRides() {
-	try {
-		//
-
-		LOGGER.init();
-
-		//
-		// Fetch all Ride IDs with end date 10h before now
-
-		const fetchTimer = new TIMETRACKER();
-
-		const tenHoursAgo = Dates
-			.now('Europe/Lisbon')
-			.minus({ hours: 10 })
-			.unix_timestamp;
-
-		const pipeline: AggregationPipeline<Ride> = [];
-
-		pipeline.push(
-			{ $match: { end_time_scheduled: { $lte: tenHoursAgo }, system_status: 'complete' } },
-			{ $lookup: { as: 'ride_annotation', foreignField: 'ride_id', from: 'ride_annotations', localField: '_id' } },
-			{ $unwind: '$ride_annotation' },
-			{ $addFields: { stop_ids: '$shape_details.path.stop_id' } },
-			{ $project: { shape_details: 0 } },
-			{ $sort: { start_time_scheduled: 1 } },
-		);
-
-		const matchingRides = await rides.aggregate(pipeline);
-
-		for (const rideData of matchingRides) {
-			// Check if a ride annotation already exists
-			const associatedRideAnnotation = await rideAnnotations.findByRideId(rideData._id);
-			if (associatedRideAnnotation) continue;
-
-			/* * * * * * */
-
-			// For the system to be able to consider a Ride it needs to have
-			// the Ride data and the Ride needs to be analyzed, and it needs
-			// the Alerts data for the given Ride, if any. The question is how
-			// to make this at scale...
-
-			/* * * * * * */
-
-			// Create a new annotation for this ride
-			const newAnnotation: CreateRideAnnotationDto = {
-				_id: generateRandomString(),
-				acceptance: [{
-					_id: generateRandomString(),
-					analysis_summary: {},
-					created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-					created_by: null,
-					mode: 'auto',
-					status: 'accepted',
-				}],
-				is_locked: false,
-				justification: null,
-				overrides: {
-					trip_id: null,
-				},
-				ride_id: rideData._id,
-			};
-		}
-
-		LOGGER.terminate(`Updated ${result.modifiedCount} SAMs. (${fetchTimer.get()})`);
-
-		//
-	}
-	catch (err) {
-		LOGGER.error('An error occurred. Halting execution.', err);
-		LOGGER.error('Retrying in 10 seconds...');
-		setTimeout(() => {
-			process.exit(0); // End process
-		}, 10000); // after 10 seconds
-	}
-
+async function main() {
 	//
-};
+	console.log('Starting Rides Acceptor...');
 
-/* * */
+	// 1. Check if ride as ended
 
-(async function init() {
-	const runOnInterval = async () => {
-		await lockRides();
-		setTimeout(runOnInterval, 43_200_000); // 12 hours
-	};
-	runOnInterval();
-})();
+	const ridesCollection = await rides.getCollection();
+
+	ridesCollection
+		.watch([], { fullDocument: 'updateLookup' })
+		.on('change', (operation: ChangeStreamDocument<Ride>) => {
+			if (operation.operationType !== 'update') {
+				return;
+			}
+
+			console.log('Ride Updated: ', operation.fullDocument._id);
+
+			const normalizedRide: RideNormalized = normalizeRide(operation.fullDocument);
+
+			if (normalizedRide.operational_status === 'scheduled' || normalizedRide.operational_status === 'running') {
+				return;
+			}
+
+			console.log('Ride Ended: ', normalizedRide._id);
+
+			// Test
+			function testRide(ride: RideNormalized, requiredTests: string[]): [boolean, RideAnalysisSummary] {
+				const summaryEntries: [string, RideAnalysis][] = [];
+
+				for (const test of requiredTests) {
+					const analysis = ride.analysis[test] ?? { grade: 'fail', message: 'Test was not found for this ride', reason: test };
+					summaryEntries.push([test, analysis]);
+				}
+
+				const requiredTestsSummary: RideAnalysisSummary = Object.fromEntries(summaryEntries);
+
+				const allRequiredTestsArePass = requiredTests.every((test) => {
+					const analysis = ride.analysis[test];
+					return analysis?.grade === 'pass';
+				});
+
+				return [allRequiredTestsArePass, requiredTestsSummary];
+			}
+
+			const [allRequiredTestsArePass, requiredTestsSummary] = testRide(normalizedRide, ['AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP', 'SIMPLE_THREE_VEHICLE_EVENTS', 'SIMPLE_ONE_APEX_VALIDATION']);
+			console.log('Ride Acceptance: ', normalizedRide._id, ' - ', allRequiredTestsArePass);
+			console.log('Ride Acceptance Summary: ', requiredTestsSummary);
+		});
+}
+
+//
+
+main().catch((err) => {
+	console.error(err);
+	process.exit(1);
+});

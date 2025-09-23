@@ -14,6 +14,7 @@
 		"dev": "npm run build:packages && dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"dev:cleaner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-cleaner",
 		"dev:coordinator": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-coordinator",
+		"dev:rides-acceptor": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-acceptor",
 		"dev:rides-bridge": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-bridge",
 		"dev:rides-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-coordinator --filter=@tmlmobilidade/sae-controller-rides-examiner",
 		"dev:rides-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-feeder",
