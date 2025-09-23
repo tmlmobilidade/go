@@ -131,7 +131,7 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  rides-locker:
+  rides-acceptor:
     runs-on: ubuntu-latest
     permissions:
       contents: read

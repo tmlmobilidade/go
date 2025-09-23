@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-controller-rides-locker",
+	"name": "@tmlmobilidade/sae-controller-rides-acceptor",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
