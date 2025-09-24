@@ -178,7 +178,7 @@ async function realtimeAlertJustification() {
 
 		//
 		//
-		const foundRideAcceptances = await rideAcceptances.findMany({ created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 3 }).unix_timestamp } });
+		const foundRideAcceptances = await rideAcceptances.findMany({ created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 3 }).unix_timestamp }, justification: { $eq: null } });
 		const foundAlerts = await alerts.findMany({
 			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 3 }).unix_timestamp },
 			type: 'REALTIME',
