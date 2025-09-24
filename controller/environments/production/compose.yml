@@ -152,25 +152,6 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-  
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  rides-acceptor:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-acceptor:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -233,6 +214,9 @@ services:
       - 80:80
       - 443:443
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    depends_on:
+      - api
+      - frontend
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
