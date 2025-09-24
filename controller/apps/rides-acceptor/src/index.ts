@@ -131,7 +131,6 @@ async function updateAcceptanceOnAnalysis() {
 			.watch(pipeline, { fullDocument: 'updateLookup' })
 			.on('change', async (operation: ChangeStreamDocument<Ride>) => {
 				//
-				console.log('HERE =======> ', JSON.stringify(operation, null, 2));
 
 				//
 				// If the operation is not an update, return.
