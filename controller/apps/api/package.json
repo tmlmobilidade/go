@@ -14,16 +14,16 @@
 	},
 	"dependencies": {
 		"@fastify/websocket": "11.2.0",
-		"@tmlmobilidade/connectors": "20250924.1603.53",
-		"@tmlmobilidade/interfaces": "20250924.1603.53",
-		"@tmlmobilidade/lib": "20250924.1603.53",
+		"@tmlmobilidade/connectors": "20250924.1708.22",
+		"@tmlmobilidade/interfaces": "20250924.1708.22",
+		"@tmlmobilidade/lib": "20250924.1708.22",
 		"@tmlmobilidade/sae-controller-pckg-ride-normalized": "*",
-		"@tmlmobilidade/utils": "20250924.1603.53",
+		"@tmlmobilidade/utils": "20250924.1708.22",
 		"pino-pretty": "13.1.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250924.1603.53",
-		"@tmlmobilidade/types": "20250924.1603.53",
+		"@tmlmobilidade/tsconfig": "20250924.1708.22",
+		"@tmlmobilidade/types": "20250924.1708.22",
 		"@types/node": "24.5.2",
 		"@types/ws": "8.18.1",
 		"resolve-tspaths": "0.8.23",

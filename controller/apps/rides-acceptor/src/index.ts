@@ -2,18 +2,18 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { AggregationPipeline, ChangeStreamDocument, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
+import { AggregationPipeline, alerts, ChangeStreamDocument, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { Ride } from '@tmlmobilidade/types';
+import { Ride, RideJustificationCause } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
 import { testRide } from './utils.js';
 
 /* * */
 
-const RUN_INTERVAL = 600_000; // 10 minutes in milliseconds
+const RUN_INTERVAL = 10_000; // 10 minutes in milliseconds
 
-async function main() {
+async function processRideAcceptances() {
 	try {
 		//
 
@@ -38,12 +38,12 @@ async function main() {
 		//
 		// Fetch the rides.
 
-		LOGGER.info(`Fetching rides between ${Dates.fromUnixTimestamp(startTimeScheduledMinLimit).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS)} (${startTimeScheduledMinLimit}) and ${Dates.fromUnixTimestamp(startTimeScheduledMaxLimit).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS)} (${startTimeScheduledMaxLimit})...`);
+		LOGGER.info(`[Rides Acceptor] Fetching rides between ${Dates.fromUnixTimestamp(startTimeScheduledMinLimit).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS)} (${startTimeScheduledMinLimit}) and ${Dates.fromUnixTimestamp(startTimeScheduledMaxLimit).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS)} (${startTimeScheduledMaxLimit})...`);
 
 		const fetchTimer = new TIMETRACKER();
 		const ridesBatch = await rides.aggregate(pipeline);
 
-		LOGGER.info(`Found ${ridesBatch.length} rides. (${fetchTimer.get()})`);
+		LOGGER.info(`[Rides Acceptor] Found ${ridesBatch.length} rides. (${fetchTimer.get()})`);
 
 		for (const ride of ridesBatch) {
 			//
@@ -71,17 +71,17 @@ async function main() {
 
 			//
 			// Log the ride acceptance.
-			LOGGER.info(`Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+			LOGGER.info(`[Rides Acceptor] Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
 		}
 
 		//
 		// Log the number of rides found.
 
-		LOGGER.success(`Processed ${ridesBatch.length} rides. (${globalTimer.get()})`);
+		LOGGER.success(`[Rides Acceptor] Processed ${ridesBatch.length} rides. (${globalTimer.get()})`);
 	}
 	catch (error) {
-		LOGGER.error('An error occurred. Halting execution.', error);
-		LOGGER.info('Retrying in 10 seconds...');
+		LOGGER.error('[Rides Acceptor] An error occurred. Halting execution.', error);
+		LOGGER.info('[Rides Acceptor] Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds
@@ -98,7 +98,7 @@ async function updateAcceptanceOnAnalysis() {
 		//
 		//
 		const rideAcceptancesFound = await rideAcceptances.findMany({ created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 3 }).unix_timestamp } });
-		LOGGER.info(`Watching for changes in the rides collection for ${rideAcceptancesFound.length} ride acceptances...`);
+		LOGGER.info(`[Analysis Watcher] Watching for changes in the rides collection for ${rideAcceptancesFound.length} ride acceptances...`);
 
 		//
 		// Pipeline to listen to changes in the rides collection.
@@ -157,18 +157,65 @@ async function updateAcceptanceOnAnalysis() {
 
 				//
 				// Log the ride acceptance.
-				LOGGER.info(`Updated acceptance for ride ${operation.fullDocument._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+				LOGGER.info(`[Analysis Watcher] Updated acceptance for ride ${operation.fullDocument._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
 			});
 	}
 	catch (error) {
-		LOGGER.error('An error occurred. Halting execution.', error);
-		LOGGER.info('Retrying in 10 seconds...');
+		LOGGER.error('[Analysis Watcher] An error occurred. Halting execution.', error);
+		LOGGER.info('[Analysis Watcher] Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds
 	}
 
 	//
+}
+
+async function realtimeAlertJustification() {
+	try {
+		//
+		LOGGER.title(`[Realtime Alert Justification] Checking for realtime alerts to justify ride acceptances...`);
+
+		//
+		//
+		const foundRideAcceptances = await rideAcceptances.findMany({ created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 3 }).unix_timestamp } });
+		const foundAlerts = await alerts.findMany({
+			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 3 }).unix_timestamp },
+			type: 'REALTIME',
+		});
+
+		LOGGER.info(`[Realtime Alert Justification] Found ${foundAlerts.length} realtime alerts and ${foundRideAcceptances.length} ride acceptances.`);
+
+		let countUpdatedRideAcceptances = 0;
+		for (const alert of foundAlerts) {
+			//
+
+			//
+			// If the alert is not ended or missed, skip it.
+			const rideIdReferencedByAlert = alert.references.find(reference => foundRideAcceptances.some(rideAcceptance => rideAcceptance.ride_id === reference.parent_id))?.parent_id;
+			if (!rideIdReferencedByAlert) continue;
+
+			await rideAcceptances.updateByRideId(rideIdReferencedByAlert, {
+				acceptance_status: 'under_review',
+				justification: {
+					created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+					created_by: alert.created_by,
+					justification_cause: alert.cause as RideJustificationCause,
+					justification_source: 'ALERT',
+					pto_message: alert.description,
+					updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
+			});
+
+			countUpdatedRideAcceptances++;
+		}
+
+		LOGGER.info(`[Realtime Alert Justification] Updated ${countUpdatedRideAcceptances} ride acceptances.`);
+	}
+	catch (error) {
+		LOGGER.error('[Realtime Alert Justification] An error occurred. Halting execution.', error);
+		LOGGER.info('[Realtime Alert Justification] Retrying in 10 seconds...');
+	}
 }
 
 //
@@ -182,7 +229,8 @@ async function updateAcceptanceOnAnalysis() {
 	// Run the main function on interval.
 	const runOnInterval = async () => {
 		updateAcceptanceOnAnalysis(); // Watch for changes in the rides collection.
-		await main();
+		await processRideAcceptances();
+		await realtimeAlertJustification();
 		setTimeout(runOnInterval, RUN_INTERVAL);
 	};
 	runOnInterval();
