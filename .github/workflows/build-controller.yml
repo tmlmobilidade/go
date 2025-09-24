@@ -5,7 +5,7 @@ name: 'Controller | Build & Test'
 # # #
 
 on:
-
+  workflow_dispatch:
   push:
     paths:
       - 'controller/**'
