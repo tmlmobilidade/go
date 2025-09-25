@@ -29,3 +29,19 @@ export function testRide(ride_analysis: Ride['analysis']): [boolean, RideAnalysi
 
 	return [allRequiredTestsArePass, requiredTestsSummary];
 }
+
+/**
+ * Checks if an object is empty.
+ * An object is considered empty if it has no own enumerable properties.
+ *
+ * @param obj - The object to check for emptiness.
+ * @returns {boolean} - Returns true if the object is empty, otherwise false.
+ */
+export function isEmpty(obj) {
+	for (const prop in obj) {
+		if (Object.hasOwn(obj, prop)) {
+			return false;
+		}
+	}
+	return true;
+}

@@ -6,6 +6,7 @@
 		"build:cleaner": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-cleaner",
 		"build:coordinator": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-coordinator",
 		"build:packages": "turbo build --filter=./packages/*",
+		"build:rides-acceptor": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-rides-acceptor",
 		"build:rides-bridge": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-rides-bridge",
 		"build:rides-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-rides-examiner",
 		"build:rides-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo build --filter=@tmlmobilidade/sae-controller-rides-feeder",
@@ -15,6 +16,7 @@
 		"dev:cleaner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-cleaner",
 		"dev:coordinator": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-coordinator",
 		"dev:rides-acceptor": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-acceptor",
+		"dev:rides-acceptor:prod": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-acceptor",
 		"dev:rides-bridge": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-bridge",
 		"dev:rides-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-coordinator --filter=@tmlmobilidade/sae-controller-rides-examiner",
 		"dev:rides-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-rides-feeder",
@@ -35,7 +37,7 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "npm@11.6.0",
+	"packageManager": "npm@11.6.1",
 	"engines": {
 		"node": ">=18"
 	}
