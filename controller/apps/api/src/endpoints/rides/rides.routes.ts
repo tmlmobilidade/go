@@ -28,6 +28,7 @@ server.register(
 			'/ws',
 			{
 				preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.analysis_read),
+				// @ts-expect-error - @fastify/websocket types are not correct, conflicting with @tmlmobilidade/connectors
 				websocket: true,
 			},
 			RidesController.websocket,
