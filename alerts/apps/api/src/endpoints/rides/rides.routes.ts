@@ -18,7 +18,7 @@ server.register(
 		// GET /rides
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.read) },
+			{ preHandler: authorizationMiddleware<Ride>(Permissions.rides.scope, Permissions.rides.actions.analysis_read) },
 			RidesController.getBatch,
 		);
 
