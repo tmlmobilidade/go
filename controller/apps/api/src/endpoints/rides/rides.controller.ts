@@ -77,12 +77,22 @@ export class RidesController {
 		}
 
 		//
+		// Add acceptance status to the pipeline
+		pipeline.push(
+			{ $lookup: { as: 'acceptance', foreignField: 'ride_id', from: 'ride_acceptances', localField: '_id' } },
+			{ $unwind: '$acceptance' },
+			{ $addFields: { acceptance_status: '$acceptance.acceptance_status' } },
+			{ $project: { acceptance: 0 } },
+		);
+
+		//
 		// Filter by analysis_* items
 
 		const analysisFilters: { field: keyof GetRidesBatchQuery, path: string }[] = [
 			{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
 			{ field: 'analysis_expected_apex_validation_interval', path: 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade' },
 			{ field: 'analysis_simple_three_vehicle_events_grade', path: 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade' },
+			{ field: 'acceptance_status', path: 'acceptance_status' },
 		];
 
 		analysisFilters.forEach(({ field, path }) => parsedQuery[field] && pipeline.push({ $match: { [path]: { $in: parsedQuery[field] } } }));
@@ -92,7 +102,6 @@ export class RidesController {
 		// to avoid performance issues.
 
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
-
 		//
 		// Run the aggregation pipeline to fetch the rides data,
 		// and normalize them before sending it to the client.
@@ -125,6 +134,9 @@ export class RidesController {
 		}
 		if (parsedQuery.analysis_transaction_sequentiality) {
 			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_transaction_sequentiality.includes(ride.analysis_transaction_sequentiality));
+		}
+		if (parsedQuery.acceptance_status) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.acceptance_status.includes(ride['acceptance_status']));
 		}
 
 		//
