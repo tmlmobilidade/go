@@ -3,31 +3,31 @@
 /* * */
 
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { type RideAnalysis } from '@tmlmobilidade/types';
+import { RideAcceptance } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface AnalysisStatusTagProps {
-	grade: 'none' | RideAnalysis['grade']
+	analysis?: RideAcceptance['analysis_summary']
 }
 
 /* * */
 
-export function AnalysisStatusTag({ grade }: AnalysisStatusTagProps) {
+export function AnalysisStatusTag({ analysis }: AnalysisStatusTagProps) {
 	//
 
-	if (grade === 'none') {
+	if (!analysis) {
 		return null;
 	}
 
-	if (grade === 'pass') {
-		return <Tag icon={<IconCheck />} label="Pass" variant="success" />;
+	for (const item of Object.values(analysis)) {
+		if (item.grade === 'fail') {
+			return <Tag icon={<IconX stroke={4} />} label="Fail" variant="danger" />;
+		}
 	}
 
-	if (grade === 'fail') {
-		return <Tag icon={<IconX stroke={4} />} label="Fail" variant="danger" />;
-	}
+	return <Tag icon={<IconCheck />} label="Pass" variant="success" />;
 
 	//
 }

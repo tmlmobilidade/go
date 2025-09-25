@@ -6,6 +6,7 @@ import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { RidesDetailSystemStatus } from '@/components/rides/detail/RidesDetail/RidesDetailSystemStatus';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
+import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
 import { BackButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -21,6 +22,7 @@ export function RidesDetailHeader() {
 	const router = useRouter();
 
 	const ridesDetailContext = useRidesDetailContext();
+	const acceptance = useRidesDetailAcceptanceContext();
 
 	//
 	// B. Handle actions
@@ -39,7 +41,7 @@ export function RidesDetailHeader() {
 			<Tag label={ridesDetailContext.data.ride_id} variant="muted" />
 			<Spacer />
 			<RidesDetailSystemStatus />
-			<AnalysisStatusTag grade={ridesDetailContext.data.ride?.analysis_simple_three_vehicle_events_grade} />
+			<AnalysisStatusTag analysis={acceptance.data.acceptance?.analysis_summary} />
 			<OperationalStatusTag value={ridesDetailContext.data.ride?.operational_status} />
 		</Toolbar>
 	);
