@@ -3,8 +3,8 @@
 import { fetchLines } from '@/utils/lines';
 import { parseServiceAlert } from '@/utils/service-alert-parser';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { alerts, files } from '@tmlmobilidade/interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
+import { HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@tmlmobilidade/types';
 import { Dates, validateQueryParams } from '@tmlmobilidade/utils';
 
@@ -18,8 +18,16 @@ export class AlertsController {
 	 */
 	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
 		const result = await alerts.insertOne(request.body);
-
-		// Send the created alert with a 201 status code
+		notifications.sendNotification({
+			payload: {
+				body: 'Um novo alerta foi criado.',
+				href: `/alerts/${result._id}`,
+				icon: '',
+				title: result.title ?? 'Novo alerta',
+			},
+			scope: Permissions.alerts.scope,
+			topic: Permissions.topics.actions.created_alert,
+		});
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}
 

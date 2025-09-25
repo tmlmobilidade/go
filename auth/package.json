@@ -23,6 +23,8 @@
 		"apps/*"
 	],
 	"dependencies": {
-		"@fastify/multipart": "^9.2.1"
+		"@fastify/multipart": "^9.2.1",
+		"@tmlmobilidade/lib": "file:.yalc/@tmlmobilidade/lib",
+		"@tmlmobilidade/types": "file:.yalc/@tmlmobilidade/types"
 	}
 }
