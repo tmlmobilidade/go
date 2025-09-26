@@ -20,7 +20,7 @@ export function RidesListFilterAcceptanceStatus() {
 
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
-		const defaultValues = RideAcceptanceStatusSchema.options;
+		const defaultValues = [...RideAcceptanceStatusSchema.options, 'none'];
 		const enabledValues = ridesListContext.filters.acceptance_status;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
@@ -31,7 +31,7 @@ export function RidesListFilterAcceptanceStatus() {
 
 	const parsedOptions = useMemo(() => {
 		// Parse options to the expected format.
-		return RideAcceptanceStatusSchema.options.map(value => ({
+		return [...RideAcceptanceStatusSchema.options, 'none'].map(value => ({
 			checked: ridesListContext.filters.acceptance_status.includes(value),
 			label: value,
 			value: value,

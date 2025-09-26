@@ -23,6 +23,7 @@
 		"dev:sams-examiner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-coordinator --filter=@tmlmobilidade/sae-controller-sams-examiner",
 		"dev:sams-feeder": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-sams-feeder",
 		"dev:ui": "npm run build:packages && dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-api --filter=@tmlmobilidade/sae-controller-frontend",
+		"dev:ui:prod": "npm run build:packages && dotenv-run -f ./environments/production/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-controller-api --filter=@tmlmobilidade/sae-controller-frontend",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"start": "turbo start"

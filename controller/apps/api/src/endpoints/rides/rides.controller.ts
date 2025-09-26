@@ -80,8 +80,8 @@ export class RidesController {
 		// Add acceptance status to the pipeline
 		pipeline.push(
 			{ $lookup: { as: 'acceptance', foreignField: 'ride_id', from: 'ride_acceptances', localField: '_id' } },
-			{ $unwind: '$acceptance' },
-			{ $addFields: { acceptance_status: '$acceptance.acceptance_status' } },
+			{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
+			{ $addFields: { acceptance_status: { $ifNull: ['$acceptance.acceptance_status', null] } } },
 			{ $project: { acceptance: 0 } },
 		);
 
@@ -92,16 +92,29 @@ export class RidesController {
 			{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
 			{ field: 'analysis_expected_apex_validation_interval', path: 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade' },
 			{ field: 'analysis_simple_three_vehicle_events_grade', path: 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade' },
-			{ field: 'acceptance_status', path: 'acceptance_status' },
 		];
 
 		analysisFilters.forEach(({ field, path }) => parsedQuery[field] && pipeline.push({ $match: { [path]: { $in: parsedQuery[field] } } }));
+
+		//
+		// If ride has acceptance_status, filter by it
+		if (
+			parsedQuery.acceptance_status
+			&& parsedQuery.acceptance_status.length > 0
+			&& !parsedQuery.acceptance_status.includes('none')
+		) {
+			pipeline.push(
+				{ $match: { acceptance_status: { $exists: true } } },
+				{ $match: { acceptance_status: { $in: parsedQuery.acceptance_status } } },
+			);
+		}
 
 		//
 		// Impose a hard limit to the number of rides returned
 		// to avoid performance issues.
 
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
+
 		//
 		// Run the aggregation pipeline to fetch the rides data,
 		// and normalize them before sending it to the client.
@@ -113,6 +126,8 @@ export class RidesController {
 		//
 		// Apply additional filtering on the normalized data
 		// to match non-persisted fields like delay_status and operational_status.
+
+		// console.log('HERE =======> ', normalizedRidesBatch.find(ride => ride.operational_status === 'scheduled'));
 
 		if (parsedQuery.delay_statuses) {
 			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.delay_statuses.includes(ride.delay_status));

@@ -34,7 +34,7 @@ export const GetRidesBatchQuerySchema = z.object({
 	stop_ids: z.preprocess((val: string) => val ? val.split(',').map(id => id.trim()) : [], z.array(z.string())).optional(),
 
 	/* * */
-	acceptance_status: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(z.enum(RideAcceptanceStatusSchema.options))).optional(),
+	acceptance_status: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none']))).optional(),
 });
 
 export type GetRidesBatchQuery = z.infer<typeof GetRidesBatchQuerySchema>;

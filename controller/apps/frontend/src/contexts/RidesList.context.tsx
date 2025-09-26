@@ -92,7 +92,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [filterAnalysisEndedAtLastStop, setFilterAnalysisEndedAtLastStop] = useQueryState<string[]>('analysis_ended_at_last_stop', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 	const [filterAnalysisExpectedApexValidationInterval, setFilterAnalysisExpectedApexValidationInterval] = useQueryState<string[]>('analysis_expected_apex_validation_interval', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 	const [filterAnalysisTransactionSequentiality, setFilterAnalysisTransactionSequentiality] = useQueryState<string[]>('analysis_transaction_sequentiality', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
-	const [filterAcceptanceStatus, setFilterAcceptanceStatus] = useQueryState<string[]>('acceptance_status', parseAsArrayOfStrings.withDefault(RideAcceptanceStatusSchema.options));
+	const [filterAcceptanceStatus, setFilterAcceptanceStatus] = useQueryState<string[]>('acceptance_status', parseAsArrayOfStrings.withDefault([...RideAcceptanceStatusSchema.options, 'none']));
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
