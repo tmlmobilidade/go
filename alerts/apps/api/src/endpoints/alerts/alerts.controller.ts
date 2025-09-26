@@ -21,7 +21,7 @@ export class AlertsController {
 		notifications.sendNotification({
 			payload: {
 				body: 'Um novo alerta foi criado.',
-				href: `/alerts/${result._id}`,
+				href: `http://localhost:51001/alerts/${result._id}`,
 				icon: '',
 				title: result.title ?? 'Novo alerta',
 			},
