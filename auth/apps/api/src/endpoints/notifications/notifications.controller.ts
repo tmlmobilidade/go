@@ -34,11 +34,13 @@ export class NotificationsController {
 	 * @param request The request object
 	 * @param reply The reply object
 	 */
-	static async markAsRead(request: FastifyRequest<{ Params: { notifications_id: string } }>, reply: FastifyReply<Notification>) {
-		const { notifications_id } = request.params;
-		console.log('Marking notification as read from context:', notifications_id);
-		const notificationData = await notifications.markAsRead(notifications_id);
-		reply.send({ data: notificationData, error: null, statusCode: HttpStatus.OK });
+	static async markAsRead(request: FastifyRequest<{ Body: Notification, Params: { id: string } }>, reply: FastifyReply<Notification>) {
+		request.body.is_read = true;
+		request.body.needs_email = false;
+
+		console.log('Marking notification as read:', request.body);
+		const updatedNotificationData = await notifications.updateById(request.params.id, request.body);
+		reply.send({ data: updatedNotificationData, error: null, statusCode: HttpStatus.OK });
 	}
 
 	//
