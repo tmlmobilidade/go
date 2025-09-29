@@ -11,8 +11,8 @@ import { type PropsWithChildren } from 'react';
 export default async function Layout({ children }: PropsWithChildren) {
 	return (
 		<AppProvider>
-			<AppWrapper>
-				<NotificationsContextProvider>
+			<NotificationsContextProvider>
+				<AppWrapper>
 					<AgenciesContextProvider>
 						<RolesContextProvider>
 							<OrganizationsContextProvider>
@@ -20,8 +20,9 @@ export default async function Layout({ children }: PropsWithChildren) {
 							</OrganizationsContextProvider>
 						</RolesContextProvider>
 					</AgenciesContextProvider>
-				</NotificationsContextProvider>
-			</AppWrapper>
+
+				</AppWrapper>
+			</NotificationsContextProvider>
 		</AppProvider>
 	);
 }

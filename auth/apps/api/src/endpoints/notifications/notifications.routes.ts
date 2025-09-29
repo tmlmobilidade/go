@@ -12,6 +12,8 @@ const NAMESPACE = '/notifications';
 
 const server = FastifyService.getInstance().server;
 
+/* * */
+
 server.register(
 	(instance, opts, next) => {
 		//
@@ -21,6 +23,9 @@ server.register(
 
 		// GET /notifications/:id
 		instance.get('/:id', NotificationsController.getById);
+
+		// Put /notifications/:id
+		instance.put('/:id', NotificationsController.markAsRead);
 		next();
 	},
 	{ prefix: NAMESPACE },

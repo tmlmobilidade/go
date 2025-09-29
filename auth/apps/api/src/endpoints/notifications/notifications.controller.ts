@@ -29,5 +29,17 @@ export class NotificationsController {
 		reply.send({ data: notificationData, error: null, statusCode: HttpStatus.OK });
 	}
 
+	/**
+	 * Marks a Notification as read.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async markAsRead(request: FastifyRequest<{ Params: { notifications_id: string } }>, reply: FastifyReply<Notification>) {
+		const { notifications_id } = request.params;
+		console.log('Marking notification as read from context:', notifications_id);
+		const notificationData = await notifications.markAsRead(notifications_id);
+		reply.send({ data: notificationData, error: null, statusCode: HttpStatus.OK });
+	}
+
 	//
 }
