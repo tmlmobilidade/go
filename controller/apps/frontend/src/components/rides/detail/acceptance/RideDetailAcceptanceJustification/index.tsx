@@ -40,7 +40,6 @@ function JustificationEditable({ cause, message, onSubmit, setCause, setMessage 
 					value: cause,
 				}))}
 				fullWidth
-				searchable
 			/>
 			<Textarea
 				label="Mensagem de justificação"
