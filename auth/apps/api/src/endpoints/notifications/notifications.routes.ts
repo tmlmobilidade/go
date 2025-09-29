@@ -25,7 +25,7 @@ server.register(
 		instance.get('/:id', NotificationsController.getById);
 
 		// Put /notifications/:id
-		instance.put('/:id', NotificationsController.markAsRead);
+		instance.put('/mark-as-read/:id', NotificationsController.markAsRead);
 		next();
 	},
 	{ prefix: NAMESPACE },

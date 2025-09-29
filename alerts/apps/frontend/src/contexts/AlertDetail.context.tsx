@@ -214,19 +214,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	const uploadImage = async (alert_id: string) => {
 		if (!image) return;
-
-		console.log('HERE =======> ', alert_id);
 		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);
-
-		console.log('HERE =======> ', response);
-
 		if (response.error) {
-			console.log('HERE =======> ', response.error);
 			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
 			return;
 		}
-
-		console.log('SUCCESS =======> ', response.data);
 		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
 	};
 

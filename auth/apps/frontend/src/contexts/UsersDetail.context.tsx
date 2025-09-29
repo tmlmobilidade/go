@@ -183,7 +183,6 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 		const currentPermissions = form.values.permissions;
 
 		if (scope === 'notifications') {
-			console.log('notification permission');
 			form.setFieldValue(
 				'subscribed_topics',
 				currentPermissions

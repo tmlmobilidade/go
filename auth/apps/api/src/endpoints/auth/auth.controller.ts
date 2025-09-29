@@ -55,7 +55,6 @@ export class AuthController {
 		if (!result.success) {
 			throw new HttpException(HttpStatus.BAD_REQUEST, result.error.message);
 		}
-		console.log('yoyoy', result.data);
 
 		const session: Session = await authProvider.login({
 			email: createEmail(result.data.email),
