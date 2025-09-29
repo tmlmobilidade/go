@@ -26,6 +26,9 @@ server.register(
 
 		// Put /notifications/mark-as-read/:id
 		instance.put('/mark-as-read/:id', NotificationsController.markAsRead);
+
+		// Delete /notifications/:id
+		instance.delete('/:id', NotificationsController.delete);
 		next();
 	},
 	{ prefix: NAMESPACE },

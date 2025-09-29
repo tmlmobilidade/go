@@ -9,6 +9,16 @@ import { type Notification } from '@tmlmobilidade/types';
 
 export class NotificationsController {
 	/**
+	* Delete a notification - Delete a notification from the database
+ 	* @param {FastifyRequest} request - The request object
+	* @param {FastifyReply} reply - The reply object
+	*/
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		await notifications.deleteById(request.params.id);
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
 	 * Returns all Notifications sorted by ID.
 	 * @param request The request object
 	 * @param reply The reply object
@@ -37,8 +47,6 @@ export class NotificationsController {
 	static async markAsRead(request: FastifyRequest<{ Body: Notification, Params: { id: string } }>, reply: FastifyReply<Notification>) {
 		request.body.is_read = true;
 		request.body.needs_email = false;
-
-		console.log('Marking notification as read:', request.body);
 		const updatedNotificationData = await notifications.updateById(request.params.id, request.body);
 		reply.send({ data: updatedNotificationData, error: null, statusCode: HttpStatus.OK });
 	}
