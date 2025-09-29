@@ -17,7 +17,7 @@ function JustificationReadOnly({ cause, message }: { cause?: string, message?: s
 			<Label size="lg" caps>Justificação</Label>
 			<Section gap="xs" padding="none">
 				<Label>Motivo da justificação</Label>
-				<Text>{cause || '—'}</Text>
+				<Text>{Translations.CAUSE[cause] || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
 				<Label>Mensagem de justificação</Label>
