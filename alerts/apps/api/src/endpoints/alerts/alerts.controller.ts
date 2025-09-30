@@ -108,6 +108,7 @@ export class AlertsController {
 					],
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'PUBLISHED',
+					type: 'PLANNED',
 				},
 			],
 		}, { sort: { created_at: -1 } });
