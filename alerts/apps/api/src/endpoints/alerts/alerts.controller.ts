@@ -22,7 +22,7 @@ export class AlertsController {
 			payload: {
 				body: 'Um novo alerta foi criado.',
 				href: `http://localhost:51001/alerts/${result._id}`,
-				icon: 'icon_alerts',
+				icon: 'alerts',
 				title: result.title ?? 'Novo alerta',
 			},
 			scope: Permissions.alerts.scope,
