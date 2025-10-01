@@ -4,9 +4,10 @@ import { fetchLines } from '@/utils/lines';
 import { parseServiceAlert } from '@/utils/service-alert-parser';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
-import { HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
+import { getAppConfig, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@tmlmobilidade/types';
 import { Dates, validateQueryParams } from '@tmlmobilidade/utils';
+import { get } from 'http';
 
 /* * */
 
@@ -17,14 +18,12 @@ export class AlertsController {
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
 	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
-		console.log('Before insertOne');
 		const result = await alerts.insertOne(request.body);
-		console.log('after insertOne');
 		notifications.sendNotification({
 			needs_email: false,
 			payload: {
-				body: 'Um novo alerta foi criado.',
-				href: `/alerts/${result._id}`,
+				body: request.body.description ?? 'Um novo alerta foi criado.',
+				href: `${getAppConfig('auth', 'frontend_url')}/alerts/${result._id}`,
 				icon: 'alerts',
 				title: result.title ?? 'Novo alerta',
 			},
