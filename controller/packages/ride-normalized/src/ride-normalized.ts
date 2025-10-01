@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride, RideAcceptanceStatusSchema, type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -20,6 +20,7 @@ export const seenStatusValues = [...seenStatusOptions];
 /* * */
 
 export interface RideNormalized extends Ride {
+	acceptance_status: typeof RideAcceptanceStatusSchema.options[number]
 	analysis_ended_at_last_stop_grade: 'none' | RideAnalysis['grade']
 	analysis_expected_apex_validation_interval: 'none' | RideAnalysis['grade']
 	analysis_simple_three_vehicle_events_grade: 'none' | RideAnalysis['grade']

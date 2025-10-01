@@ -24,7 +24,7 @@ export function UsersDetailOrganization() {
 	const organizationItems = organizations.raw?.map(organization => ({
 		label: organization.long_name,
 		value: organization._id,
-	})) || [];
+	})) ?? [];
 
 	//
 	// B. Render components

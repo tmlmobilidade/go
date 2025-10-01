@@ -1,7 +1,7 @@
 /* * */
 
 import { delayStatusOptions, operationalStatusOptions, seenStatusOptions } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { RideAnalysisGradeSchema, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { RideAcceptanceStatusSchema, RideAnalysisGradeSchema, validateUnixTimestamp } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 const RideAnalysisGradeWithNoneSchema = RideAnalysisGradeSchema.or(z.literal('none'));
@@ -32,6 +32,9 @@ export const GetRidesBatchQuerySchema = z.object({
 
 	line_ids: z.preprocess((val: string) => val ? val.split(',').map(id => id.trim()) : [], z.array(z.string())).optional(),
 	stop_ids: z.preprocess((val: string) => val ? val.split(',').map(id => id.trim()) : [], z.array(z.string())).optional(),
+
+	/* * */
+	acceptance_status: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none']))).optional(),
 });
 
 export type GetRidesBatchQuery = z.infer<typeof GetRidesBatchQuerySchema>;

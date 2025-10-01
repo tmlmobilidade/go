@@ -1,5 +1,6 @@
 /* * */
 
+import { RidesListFilterAcceptanceStatus } from '@/components/rides/list/RidesListFilterAcceptanceStatus';
 import { RidesListFilterAgency } from '@/components/rides/list/RidesListFilterAgency';
 import { RidesListFilterAnalysisEndedAtLastStop } from '@/components/rides/list/RidesListFilterAnalysisEndedAtLastStop';
 import { RidesListFilterAnalysisExpectedApexValidationInterval } from '@/components/rides/list/RidesListFilterAnalysisExpectedApexValidationInterval';
@@ -19,6 +20,7 @@ export function RidesListFiltersBar() {
 			<RidesListFilterAgency />
 			<RidesListFilterOperationalStatus />
 			<RidesListFilterDelayStatus />
+			<RidesListFilterAcceptanceStatus />
 			<RidesListFilterAnalysisSimpleThreeEvents />
 			<RidesListFilterAnalysisEndedAtLastStop />
 			<RidesListFilterAnalysisExpectedApexValidationInterval />

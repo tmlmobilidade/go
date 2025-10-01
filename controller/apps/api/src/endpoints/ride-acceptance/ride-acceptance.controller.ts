@@ -46,7 +46,7 @@ export class RideAcceptanceController {
 
 		const updateResult = await rideAcceptances.updateByRideId(
 			request.params.trip_id,
-			{ comments: [...rideAcceptanceData.comments, request.body], updated_by: request.me._id },
+			{ comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }], updated_by: request.me._id },
 		);
 
 		return reply.send({

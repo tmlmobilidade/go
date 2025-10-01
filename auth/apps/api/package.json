@@ -15,23 +15,22 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "file:.yalc/@tmlmobilidade/connectors",
-		"@tmlmobilidade/emails": "20250919.1536.28",
-		"@tmlmobilidade/interfaces": "file:.yalc/@tmlmobilidade/interfaces",
-		"@tmlmobilidade/lib": "file:.yalc/@tmlmobilidade/lib",
-		"@tmlmobilidade/ui": "file:.yalc/@tmlmobilidade/ui",
-		"@tmlmobilidade/utils": "file:.yalc/@tmlmobilidade/utils",
+		"@tmlmobilidade/connectors": "20251001.1147.43",
+		"@tmlmobilidade/emails": "20251001.1147.43",
+		"@tmlmobilidade/interfaces": "20251001.1147.43",
+		"@tmlmobilidade/lib": "20251001.1147.43",
+		"@tmlmobilidade/utils": "20251001.1147.43",
 		"gray-matter": "4.0.3",
 		"pino-pretty": "13.1.1",
 		"remark-html": "16.0.1",
 		"remark-parse": "11.0.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250919.1536.28",
-		"@tmlmobilidade/types": "file:.yalc/@tmlmobilidade/types",
-		"@types/node": "24.5.2",
+		"@tmlmobilidade/tsconfig": "20251001.1147.43",
+		"@tmlmobilidade/types": "20251001.1147.43",
+		"@types/node": "24.6.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.5",
-		"typescript": "5.9.2"
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
 	}
 }

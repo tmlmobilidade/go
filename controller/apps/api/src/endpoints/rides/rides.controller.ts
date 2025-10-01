@@ -77,6 +77,15 @@ export class RidesController {
 		}
 
 		//
+		// Add acceptance status to the pipeline
+		pipeline.push(
+			{ $lookup: { as: 'acceptance', foreignField: 'ride_id', from: 'ride_acceptances', localField: '_id' } },
+			{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
+			{ $addFields: { acceptance_status: { $ifNull: ['$acceptance.acceptance_status', null] } } },
+			{ $project: { acceptance: 0 } },
+		);
+
+		//
 		// Filter by analysis_* items
 
 		const analysisFilters: { field: keyof GetRidesBatchQuery, path: string }[] = [
@@ -86,6 +95,19 @@ export class RidesController {
 		];
 
 		analysisFilters.forEach(({ field, path }) => parsedQuery[field] && pipeline.push({ $match: { [path]: { $in: parsedQuery[field] } } }));
+
+		//
+		// If ride has acceptance_status, filter by it
+		if (
+			parsedQuery.acceptance_status
+			&& parsedQuery.acceptance_status.length > 0
+			&& !parsedQuery.acceptance_status.includes('none')
+		) {
+			pipeline.push(
+				{ $match: { acceptance_status: { $exists: true } } },
+				{ $match: { acceptance_status: { $in: parsedQuery.acceptance_status } } },
+			);
+		}
 
 		//
 		// Impose a hard limit to the number of rides returned
@@ -104,6 +126,8 @@ export class RidesController {
 		//
 		// Apply additional filtering on the normalized data
 		// to match non-persisted fields like delay_status and operational_status.
+
+		// console.log('HERE =======> ', normalizedRidesBatch.find(ride => ride.operational_status === 'scheduled'));
 
 		if (parsedQuery.delay_statuses) {
 			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.delay_statuses.includes(ride.delay_status));
@@ -125,6 +149,9 @@ export class RidesController {
 		}
 		if (parsedQuery.analysis_transaction_sequentiality) {
 			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_transaction_sequentiality.includes(ride.analysis_transaction_sequentiality));
+		}
+		if (parsedQuery.acceptance_status) {
+			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.acceptance_status.includes(ride['acceptance_status']));
 		}
 
 		//

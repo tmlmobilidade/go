@@ -7,7 +7,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
+import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
@@ -17,6 +17,7 @@ import useSWR from 'swr';
 
 interface RidesListContextState {
 	actions: {
+		setFilterAcceptanceStatus: (values: string[]) => void
 		setFilterAgency: (values: string[]) => void
 		setFilterAnalysisEndedAtLastStop: (values: string[]) => void
 		setFilterAnalysisExpectedApexValidationInterval: (values: string[]) => void
@@ -32,6 +33,7 @@ interface RidesListContextState {
 		filtered: RideNormalized[]
 	}
 	filters: {
+		acceptance_status: string[]
 		agency: string[]
 		analysis_ended_at_last_stop: string[]
 		analysis_expected_apex_validation_interval: string[]
@@ -90,6 +92,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [filterAnalysisEndedAtLastStop, setFilterAnalysisEndedAtLastStop] = useQueryState<string[]>('analysis_ended_at_last_stop', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 	const [filterAnalysisExpectedApexValidationInterval, setFilterAnalysisExpectedApexValidationInterval] = useQueryState<string[]>('analysis_expected_apex_validation_interval', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
 	const [filterAnalysisTransactionSequentiality, setFilterAnalysisTransactionSequentiality] = useQueryState<string[]>('analysis_transaction_sequentiality', parseAsArrayOfStrings.withDefault([...RIDE_ANALYSIS_GRADE_OPTIONS, 'none']));
+	const [filterAcceptanceStatus, setFilterAcceptanceStatus] = useQueryState<string[]>('acceptance_status', parseAsArrayOfStrings.withDefault([...RideAcceptanceStatusSchema.options, 'none']));
 
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
@@ -147,6 +150,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			date_start: filterDateStart,
 			search: debouncedFilterSearch,
 			/* * */
+			acceptance_status: filterAcceptanceStatus.join(','),
 			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
 			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
 			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
@@ -171,6 +175,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAgency,
 		filterDateStart,
 		filterDateEnd,
+		filterAcceptanceStatus,
 		filterAnalysisEndedAtLastStop,
 		filterAnalysisExpectedApexValidationInterval,
 		filterAnalysisSimpleThreeVehicleEvents,
@@ -184,6 +189,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
+			setFilterAcceptanceStatus,
 			setFilterAgency,
 			setFilterAnalysisEndedAtLastStop,
 			setFilterAnalysisExpectedApexValidationInterval,
@@ -199,6 +205,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			filtered: ridesData ?? [],
 		},
 		filters: {
+			acceptance_status: filterAcceptanceStatus,
 			agency: filterAgency,
 			analysis_ended_at_last_stop: filterAnalysisEndedAtLastStop,
 			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval,
@@ -229,6 +236,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAnalysisSimpleThreeVehicleEvents,
 		filterAnalysisTransactionSequentiality,
 		filterAnalysisExpectedApexValidationInterval,
+		filterAcceptanceStatus,
 		filterAnalysisEndedAtLastStop,
 		flagsLastUpdateState,
 		ridesLoading,

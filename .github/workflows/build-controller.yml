@@ -5,7 +5,7 @@ name: 'Controller | Build & Test'
 # # #
 
 on:
-
+  workflow_dispatch:
   push:
     paths:
       - 'controller/**'
@@ -131,7 +131,7 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  rides-locker:
+  rides-acceptor:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -162,8 +162,8 @@ jobs:
         with:
           push: true
           context: ./controller
-          file: ./controller/apps/rides-examiner/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-rides-examiner:${{ github.ref_name }}
+          file: ./controller/apps/rides-acceptor/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-controller-rides-acceptor:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
