@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.2.1",
-		"@tmlmobilidade/connectors": "file:.yalc/@tmlmobilidade/connectors",
+		"@tmlmobilidade/connectors": "20250924.1708.22",
 		"@tmlmobilidade/interfaces": "file:.yalc/@tmlmobilidade/interfaces",
 		"@tmlmobilidade/lib": "file:.yalc/@tmlmobilidade/lib",
 		"@tmlmobilidade/utils": "file:.yalc/@tmlmobilidade/utils",

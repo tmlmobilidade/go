@@ -17,11 +17,14 @@ export class AlertsController {
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
 	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
+		console.log('Before insertOne');
 		const result = await alerts.insertOne(request.body);
+		console.log('after insertOne');
 		notifications.sendNotification({
+			needs_email: false,
 			payload: {
 				body: 'Um novo alerta foi criado.',
-				href: `http://localhost:51001/alerts/${result._id}`,
+				href: `/alerts/${result._id}`,
 				icon: 'alerts',
 				title: result.title ?? 'Novo alerta',
 			},
