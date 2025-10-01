@@ -19,7 +19,10 @@ export class AlertsController {
 	 */
 	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
 		const result = await alerts.insertOne(request.body);
+
 		notifications.sendNotification({
+			created_by: request.me._id,
+			is_read: false,
 			needs_email: false,
 			payload: {
 				body: request.body.description ?? 'Um novo alerta foi criado.',
@@ -27,8 +30,10 @@ export class AlertsController {
 				icon: 'alerts',
 				title: result.title ?? 'Novo alerta',
 			},
+			priority: 'high',
 			scope: Permissions.alerts.scope,
 			topic: Permissions.topics.actions.created_alert,
+			updated_by: request.me._id,
 		});
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}
