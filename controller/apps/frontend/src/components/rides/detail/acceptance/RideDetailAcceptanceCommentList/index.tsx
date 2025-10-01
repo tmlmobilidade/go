@@ -23,7 +23,7 @@ const CommentAcceptanceStatusProps = Object.freeze({
 	justification_required: {
 		color: 'var(--color-status-warning-primary)',
 		icon: IconAlertCircle,
-		label: 'É necessário justificar a aceitação',
+		label: 'É necessário justificar a circulação',
 	},
 	rejected: {
 		color: 'var(--color-status-danger-primary)',
