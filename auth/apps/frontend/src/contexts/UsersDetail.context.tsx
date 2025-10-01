@@ -41,6 +41,7 @@ interface UsersDetailContextState {
 }
 
 const emptyUser: CreateUserDto = {
+	active_notifications: [],
 	created_by: '',
 	email: '',
 	first_name: '',
@@ -50,6 +51,7 @@ const emptyUser: CreateUserDto = {
 	phone: '',
 	role_ids: [],
 	session_ids: [],
+	subscribed_topics: [],
 	updated_by: '',
 	verification_token_ids: [],
 };
@@ -178,8 +180,16 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	};
 
 	const handlePermissionToggle = (scope: string, action: string) => {
-		console.log('HERE =======> ', 'permission');
 		const currentPermissions = form.values.permissions;
+
+		if (scope === 'notifications') {
+			form.setFieldValue(
+				'subscribed_topics',
+				currentPermissions
+					.filter(p => p.scope === 'notifications')
+					.map(p => p.action),
+			);
+		};
 
 		if (currentPermissions.find(permission => permission.scope === scope && permission.action === action)) {
 			form.setFieldValue('permissions', currentPermissions.filter(permission => permission.scope !== scope || permission.action !== action));

@@ -90,6 +90,25 @@ const planActions: PermissionConfig<typeof Permissions.plans.actions> = {
 	scope: Permissions.plans.scope,
 	title: 'Permissões de Planos',
 };
+const topicActions: PermissionConfig<typeof Permissions.topics.actions> = {
+	actions: [
+		{ description: 'Permite ver tópicos', key: 'acceptance_state_modified', label: `Estado da aceitação modificado` },
+		{ description: 'Permite criar um tópico', key: 'active_plan', label: 'Plano Ativo' },
+		{ description: 'Permite editar um tópico', key: 'approved_plan', label: 'Plano Aprovado' },
+		{ description: 'Permite eliminar um tópico', key: 'approved_validation', label: 'Validação Aprovada' },
+		{ description: 'Permite eliminar um tópico', key: 'concluded_validation', label: 'Validação Concluida' },
+		{ description: 'Permite eliminar um tópico', key: 'created_alert', label: 'Alerta Criado' },
+		{ description: 'Permite eliminar um tópico', key: 'created_plan', label: 'Plano Criado' },
+		{ description: 'Permite eliminar um tópico', key: 'new_comentary_network_acceptance', label: 'Novo comentário na Aceitação da Ride' },
+		{ description: 'Permite eliminar um tópico', key: 'ride_requires_justification', label: 'Ride requer justificação' },
+		{ description: 'Permite eliminar um tópico', key: 'sent_validation', label: 'Validação Enviada' },
+		{ description: 'Permite eliminar um tópico', key: 'justification_submit', label: 'Justificação Submetida' },
+		{ description: 'Permite eliminar um tópico', key: 'plan_submit', label: 'Plano submetido' },
+	],
+	description: 'Os tópicos que o utilizador pode subscrever.',
+	scope: Permissions.topics.scope,
+	title: 'Subscrição de Tópicos',
+};
 
 const userActions: PermissionConfig<typeof Permissions.users.actions> = {
 	actions: [
@@ -174,4 +193,5 @@ export const permissionsConfig: PermissionConfig[] = [
 	roleActions,
 	stopActions,
 	rideActions,
+	topicActions,
 ];

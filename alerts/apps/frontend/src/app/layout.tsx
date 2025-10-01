@@ -5,7 +5,7 @@ import '@tmlmobilidade/ui/styles';
 /* * */
 
 import { DataProviders } from '@/providers/data-providers';
-import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
+import { AppProvider, AppWrapper, BaseProvider, NotificationsContextProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
@@ -24,11 +24,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 		<BaseProvider>
 			<AppProvider>
 				<NuqsAdapter>
-					<DataProviders>
-						<AppWrapper>
-							{children}
-						</AppWrapper>
-					</DataProviders>
+					<NotificationsContextProvider>
+						<DataProviders>
+							<AppWrapper>
+								{children}
+							</AppWrapper>
+						</DataProviders>
+					</NotificationsContextProvider>
 				</NuqsAdapter>
 			</AppProvider>
 		</BaseProvider>

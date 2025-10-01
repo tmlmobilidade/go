@@ -5,6 +5,7 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { Combobox, Grid, Section } from '@tmlmobilidade/ui';
+import { useEffect } from 'react';
 
 /* * */
 

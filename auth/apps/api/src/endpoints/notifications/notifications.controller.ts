@@ -1,0 +1,55 @@
+/* * */
+
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { notifications } from '@tmlmobilidade/interfaces';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { type Notification } from '@tmlmobilidade/types';
+
+/* * */
+
+export class NotificationsController {
+	/**
+	* Delete a notification - Delete a notification from the database
+ 	* @param {FastifyRequest} request - The request object
+	* @param {FastifyReply} reply - The reply object
+	*/
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		await notifications.deleteById(request.params.id);
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
+	 * Returns all Notifications sorted by ID.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async getAll(request: FastifyRequest, reply: FastifyReply<Notification[]>) {
+		const allNotifications = await notifications.findMany({}, { sort: { _id: 1 } });
+		reply.send({ data: allNotifications, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
+	 * Returns a Notification by ID.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Notification>) {
+		const notificationData = await notifications.findById(request.params.id);
+		if (!notificationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Notification not found');
+		reply.send({ data: notificationData, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
+	 * Marks a Notification as read.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async markAsRead(request: FastifyRequest<{ Body: Notification, Params: { id: string } }>, reply: FastifyReply<Notification>) {
+		request.body.is_read = true;
+		request.body.needs_email = false;
+		const updatedNotificationData = await notifications.updateById(request.params.id, request.body);
+		reply.send({ data: updatedNotificationData, error: null, statusCode: HttpStatus.OK });
+	}
+
+	//
+}
