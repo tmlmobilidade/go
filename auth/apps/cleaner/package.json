@@ -22,7 +22,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20251002.1112.25-staging.0",
 		"@tmlmobilidade/types": "20251002.1112.25-staging.0",
-		"@types/node": "24.6.1",
+		"@types/node": "24.6.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

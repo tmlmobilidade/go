@@ -18,8 +18,8 @@
 		"luxon": "3.7.2",
 		"next": "15.5.4",
 		"nuqs": "2.7.0",
-		"react": "19.1.1",
-		"react-dom": "19.1.1",
+		"react": "19.2.0",
+		"react-dom": "19.2.0",
 		"react-viewport-list": "7.1.2",
 		"swr": "2.3.6"
 	},
@@ -29,7 +29,7 @@
 		"@tmlmobilidade/tsconfig": "20251002.1112.25-staging.0",
 		"@tmlmobilidade/types": "20251002.1112.25-staging.0",
 		"@types/luxon": "3.7.1",
-		"@types/node": "24.6.1",
+		"@types/node": "24.6.2",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5"
