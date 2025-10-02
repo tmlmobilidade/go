@@ -7,7 +7,6 @@ import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
 import { getAppConfig, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@tmlmobilidade/types';
 import { Dates, validateQueryParams } from '@tmlmobilidade/utils';
-import { get } from 'http';
 
 /* * */
 
@@ -35,6 +34,9 @@ export class AlertsController {
 			topic: Permissions.topics.actions.created_alert,
 			updated_by: request.me._id,
 		});
+
+		console.log('in here');
+
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}
 
