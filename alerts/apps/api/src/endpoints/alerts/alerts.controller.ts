@@ -35,8 +35,6 @@ export class AlertsController {
 			updated_by: request.me._id,
 		});
 
-		console.log('in here');
-
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}
 
