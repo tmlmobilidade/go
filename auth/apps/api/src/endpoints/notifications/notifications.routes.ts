@@ -24,8 +24,8 @@ server.register(
 		// GET /notifications/:id
 		instance.get('/:id', NotificationsController.getById);
 
-		// Put /notifications/mark-as-read/:id
-		instance.put('/mark-as-read/:id', NotificationsController.markAsRead);
+		// GET /notifications/:id/mark-as-read
+		instance.get('/:id/mark-as-read', NotificationsController.markAsRead);
 
 		// Delete /notifications/:id
 		instance.delete('/:id', NotificationsController.delete);
