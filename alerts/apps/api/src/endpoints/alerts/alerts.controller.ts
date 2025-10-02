@@ -25,7 +25,7 @@ export class AlertsController {
 			needs_email: false,
 			payload: {
 				body: request.body.description ?? 'Um novo alerta foi criado.',
-				href: `${getAppConfig('auth', 'frontend_url')}/alerts/${result._id}`,
+				href: `${getAppConfig('alerts', 'frontend_url')}/alerts/${result._id}`,
 				icon: 'alerts',
 				title: result.title ?? 'Novo alerta',
 			},
