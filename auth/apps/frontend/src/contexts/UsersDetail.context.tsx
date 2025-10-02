@@ -180,15 +180,6 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	const handlePermissionToggle = (scope: string, action: string) => {
 		const currentPermissions = form.values.permissions;
 
-		if (scope === 'notifications') {
-			form.setFieldValue(
-				'subscribed_topics',
-				currentPermissions
-					.filter(p => p.scope === 'notifications')
-					.map(p => p.action),
-			);
-		};
-
 		if (currentPermissions.find(permission => permission.scope === scope && permission.action === action)) {
 			form.setFieldValue('permissions', currentPermissions.filter(permission => permission.scope !== scope || permission.action !== action));
 		}
