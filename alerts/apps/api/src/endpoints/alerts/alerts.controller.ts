@@ -18,6 +18,7 @@ export class AlertsController {
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
 	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
+		const email = request.me.email;
 		const result = await alerts.insertOne(request.body);
 
 		await notifications.sendNotification({
@@ -37,12 +38,15 @@ export class AlertsController {
 		});
 
 		await sendNotificationEmail({
-			body: request.body.description ?? 'Um novo alerta foi criado.',
-			href: `${getAppConfig('alerts', 'frontend_url')}/alerts/${result._id}`,
-			priority: 'high',
-			scope: Permissions.alerts.scope,
-			title: result.title ?? 'Novo alerta',
-			topic: Permissions.topics.actions.created_alert,
+			props: {
+				body: request.body.description ?? 'Um novo alerta foi criado.',
+				href: `${getAppConfig('alerts', 'frontend_url')}/alerts/${result._id}`,
+				priority: 'high',
+				scope: Permissions.alerts.scope,
+				title: result.title ?? 'Novo alerta',
+				topic: Permissions.topics.actions.created_alert,
+			},
+			to: email,
 		});
 
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
