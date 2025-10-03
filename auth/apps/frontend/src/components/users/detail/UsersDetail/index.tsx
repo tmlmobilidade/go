@@ -20,6 +20,7 @@ export function UsersDetail() {
 			<UsersDetailRolesAndOrganization />
 			<PermissionSectionGroup
 				onResourceToggle={actions.handlePermissionResourceToggle}
+				onSendEmailToggle={actions.handlePermissionSendEmailToggle}
 				onToggle={actions.handlePermissionToggle}
 				permissions={data.form.values.permissions}
 			/>

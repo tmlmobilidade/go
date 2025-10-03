@@ -8,11 +8,13 @@ import { Permission } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';
+import { EnableEmailNotificationsSwitch } from '../EnableEmailNotificationsSwitch';
 
 /* * */
 
 export type WithResourceToggle<T = unknown, K = Record<string, unknown>> = T & {
 	onResourceToggle: (scope: string, action: string, resource: Partial<K>) => void
+	onSendEmailToggle?: (scope: string, action: string, send_email: boolean) => void
 };
 
 export interface PermissionSectionInputProps<T = unknown> {
@@ -25,7 +27,8 @@ interface PermissionsSectionProps {
 	currentPermissions: Permission<unknown>[]
 	description: string
 	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
-	onToggle: (scope: string, action: string) => void
+	onSendEmailToggle?: (scope: string, action: string, send_email: boolean) => void
+	onToggle: (scope: string, action: string, send_email?: boolean) => void
 	scope: string
 	title: string
 }
@@ -37,6 +40,7 @@ export function PermissionsSection({
 	currentPermissions,
 	description,
 	onResourceToggle,
+	onSendEmailToggle,
 	onToggle,
 	scope,
 	title,
@@ -56,7 +60,6 @@ export function PermissionsSection({
 				<Grid columns="ab" gap="sm">
 					{actions.map(({ description, key, label, resources }) => {
 						const { hasPermission } = getPermissionData(key);
-
 						return (
 							<CheckCard
 								key={key}
@@ -71,6 +74,14 @@ export function PermissionsSection({
 										label="Agências"
 										onChange={value => onResourceToggle(scope, key, { agency_ids: value || [] })}
 										selected={(currentPermissions.find(p => p.scope === scope && p.action === key)?.resource as Record<string, unknown>)?.agency_ids as string[] || []}
+									/>
+								)}
+								{onResourceToggle && resources?.includes('EMAIL_NOTIFICATIONS') && (
+									<EnableEmailNotificationsSwitch
+										checked={(currentPermissions.find(p => p.scope === scope && p.action === key)?.send_email || false)}
+										description="Notificações por email para esta ação"
+										label="Notificações por Email"
+										onChange={value => onSendEmailToggle(scope, key, value)}
 									/>
 								)}
 							</CheckCard>

@@ -24,6 +24,7 @@ interface UsersDetailContextState {
 		deleteUser: () => void
 		handleChangePassword: (scope: string) => void
 		handlePermissionResourceToggle: (scope: string, action: string, resource: Record<string, unknown>) => void
+		handlePermissionSendEmailToggle: (scope: string, action: string, send_email: boolean) => void
 		handlePermissionToggle: (scope: string, action: string) => void
 		saveUser: () => void
 	}
@@ -188,6 +189,16 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 		}
 	};
 
+	const handlePermissionSendEmailToggle = (scope: string, action: string, send_email: boolean) => {
+		const currentPermissions = form.values.permissions;
+		const permission = currentPermissions.find(permission => permission.scope === scope && permission.action === action);
+
+		if (!permission) return;
+
+		permission.send_email = send_email;
+		form.setFieldValue('permissions', currentPermissions);
+	};
+
 	const handlePermissionResourceToggle = (scope: string, action: string, resource: Record<string, unknown>) => {
 		const currentPermissions = form.values.permissions;
 		const permission = currentPermissions.find(permission => permission.scope === scope && permission.action === action);
@@ -211,6 +222,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 			deleteUser: handleDeleteUser,
 			handleChangePassword,
 			handlePermissionResourceToggle,
+			handlePermissionSendEmailToggle,
 			handlePermissionToggle,
 			saveUser: handleSaveUser,
 		},
