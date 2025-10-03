@@ -15,6 +15,7 @@
 	"dependencies": {
 		"@fastify/multipart": "9.2.1",
 		"@tmlmobilidade/connectors": "20251003.1053.54-staging.0",
+		"@tmlmobilidade/emails": "20251003.1053.54-staging.0",
 		"@tmlmobilidade/interfaces": "20251003.1053.54-staging.0",
 		"@tmlmobilidade/lib": "20251003.1053.54-staging.0",
 		"@tmlmobilidade/utils": "20251003.1053.54-staging.0",
