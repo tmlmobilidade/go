@@ -2,7 +2,7 @@ import { Ride, RideAnalysis, RideAnalysisSummary } from '@tmlmobilidade/types';
 
 /* * */
 
-export const REQUIRED_TESTS = ['AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP', 'SIMPLE_THREE_VEHICLE_EVENTS', 'SIMPLE_ONE_APEX_VALIDATION'];
+export const REQUIRED_TESTS = ['SIMPLE_THREE_VEHICLE_EVENTS'];
 
 /* * */
 
