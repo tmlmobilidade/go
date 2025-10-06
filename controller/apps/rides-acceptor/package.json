@@ -18,14 +18,14 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20251002.1508.28",
+		"@tmlmobilidade/interfaces": "20251006.1126.43",
 		"@tmlmobilidade/sae-controller-pckg-ride-normalized": "*",
 		"luxon": "^3.7.2"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251002.1508.28",
-		"@tmlmobilidade/types": "20251002.1508.28",
-		"@types/node": "24.6.2",
+		"@tmlmobilidade/tsconfig": "20251006.1126.43",
+		"@tmlmobilidade/types": "20251006.1126.43",
+		"@types/node": "24.7.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"
