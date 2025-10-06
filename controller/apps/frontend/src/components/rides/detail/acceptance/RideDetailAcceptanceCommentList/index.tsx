@@ -5,7 +5,7 @@
 import { RidesDetailAnalysisResultItem } from '@/components/rides/detail/RidesDetailAnalysisResultItem';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
-import { RideAcceptance } from '@tmlmobilidade/types';
+import { RideAcceptance, UserDisplay } from '@tmlmobilidade/types';
 import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import React, { createElement, useMemo } from 'react';
@@ -110,7 +110,8 @@ export function RidesDetailAcceptanceCommentList() {
 
 	const commentItems = useMemo(() => {
 		return acceptanceContext.data.acceptance.comments.map((comment) => {
-			const item: CommentItemProps = { content: null, created_at: comment.created_at, created_by: comment.created_by, icon: null };
+			const createdBy = comment.created_by === 'system' ? 'Sistema' : (comment.created_by as unknown as UserDisplay)?.first_name + ' ' + (comment.created_by as unknown as UserDisplay)?.last_name;
+			const item: CommentItemProps = { content: null, created_at: comment.created_at, created_by: createdBy, icon: null };
 
 			if (comment.type === 'field_changed' && comment.field === 'acceptance_status') {
 				item.icon = createElement(CommentAcceptanceStatusProps[comment.curr_value].icon, { color: CommentAcceptanceStatusProps[comment.curr_value].color });
@@ -154,7 +155,7 @@ export function RidesDetailAcceptanceCommentList() {
 								</Tooltip>
 							))}
 						</Section>
-						<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+						<Label size="sm">{createdBy} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
 					</div>
 				);
 			}
@@ -165,7 +166,7 @@ export function RidesDetailAcceptanceCommentList() {
 				item.content = (
 					<div className={styles.messageContainer}>
 						<div className={styles.label}>{comment.message}</div>
-						<Label size="sm">{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+						<Label size="sm">{createdBy} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
 					</div>
 				);
 			}
