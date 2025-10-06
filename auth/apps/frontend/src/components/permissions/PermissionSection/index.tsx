@@ -14,7 +14,7 @@ import { EnableEmailNotificationsSwitch } from '../EnableEmailNotificationsSwitc
 
 export type WithResourceToggle<T = unknown, K = Record<string, unknown>> = T & {
 	onResourceToggle: (scope: string, action: string, resource: Partial<K>) => void
-	onSendEmailToggle?: (scope: string, action: string, send_email: boolean) => void
+	onSendEmailToggle?: (scope: string, action: string, resource: Partial<K>) => void
 };
 
 export interface PermissionSectionInputProps<T = unknown> {
@@ -27,7 +27,6 @@ interface PermissionsSectionProps {
 	currentPermissions: Permission<unknown>[]
 	description: string
 	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
-	onSendEmailToggle?: (scope: string, action: string, send_email: boolean) => void
 	onToggle: (scope: string, action: string, send_email?: boolean) => void
 	scope: string
 	title: string
@@ -40,7 +39,6 @@ export function PermissionsSection({
 	currentPermissions,
 	description,
 	onResourceToggle,
-	onSendEmailToggle,
 	onToggle,
 	scope,
 	title,
@@ -78,10 +76,10 @@ export function PermissionsSection({
 								)}
 								{onResourceToggle && resources?.includes('EMAIL_NOTIFICATIONS') && (
 									<EnableEmailNotificationsSwitch
-										checked={(currentPermissions.find(p => p.scope === scope && p.action === key)?.send_email || false)}
+										checked={(currentPermissions.find(p => p.scope === scope && p.action === key)?.resource as Record<string, unknown>)?.send_mail as boolean || false}
 										description="Notificações por email para esta ação"
 										label="Notificações por Email"
-										onChange={value => onSendEmailToggle(scope, key, value)}
+										onChange={value => onResourceToggle(scope, key, { send_mail: value || false })}
 									/>
 								)}
 							</CheckCard>

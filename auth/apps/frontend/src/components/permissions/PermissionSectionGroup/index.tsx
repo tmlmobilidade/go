@@ -7,7 +7,7 @@ import { PermissionSectionInputProps, PermissionsSection, WithResourceToggle } f
 
 /* * */
 
-export function PermissionSectionGroup({ onResourceToggle, onSendEmailToggle, onToggle, permissions }: WithResourceToggle<PermissionSectionInputProps, Permission<unknown>>) {
+export function PermissionSectionGroup({ onResourceToggle, onToggle, permissions }: WithResourceToggle<PermissionSectionInputProps, Permission<unknown>>) {
 	return (
 		<>
 			{permissionsConfig.map(permission => (
@@ -17,7 +17,6 @@ export function PermissionSectionGroup({ onResourceToggle, onSendEmailToggle, on
 					currentPermissions={permissions}
 					description={permission.description}
 					onResourceToggle={onResourceToggle}
-					onSendEmailToggle={onSendEmailToggle}
 					onToggle={onToggle}
 					scope={permission.scope}
 					title={permission.title}
