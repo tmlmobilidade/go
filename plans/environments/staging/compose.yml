@@ -131,8 +131,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  drt-parser:
-    image: ghcr.io/tmlmobilidade/sae-plans-drt-parser:staging
+  export-drt:
+    image: ghcr.io/tmlmobilidade/sae-plans-export-drt:staging
     deploy:
       restart_policy:
         condition: on-failure

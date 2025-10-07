@@ -210,7 +210,7 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  drt-parser:
+  export-drt:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -241,5 +241,5 @@ jobs:
         with:
           push: true
           context: ./plans
-          file: ./plans/apps/drt-parser/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-plans-drt-parser:${{ github.ref_name }}
+          file: ./plans/apps/export-drt/Dockerfile
+          tags: ghcr.io/tmlmobilidade/sae-plans-export-drt:${{ github.ref_name }}

@@ -4,7 +4,7 @@
 FROM node:alpine AS base
 
 ENV MODULE=plans
-ENV PROJECT=drt-parser
+ENV PROJECT=export-drt
 
 RUN npm install -g turbo@^2
 
