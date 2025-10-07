@@ -44,8 +44,8 @@ export class NotificationsController {
 	 * @param request The request object
 	 * @param reply The reply object
 	 */
-	static async markAsRead(request: FastifyRequest<{ Params: { id: string, needs_email?: boolean } }>, reply: FastifyReply<Notification>) {
-		const updatedNotificationData = await notifications.updateById(request.params.id, { is_read: true, needs_email: request.params.needs_email || false });
+	static async markAsRead(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Notification>) {
+		const updatedNotificationData = await notifications.updateById(request.params.id, { is_read: true });
 		reply.send({ data: updatedNotificationData, error: null, statusCode: HttpStatus.OK });
 	}
 
