@@ -12,6 +12,15 @@
 		"start": "turbo start",
 		"yalc": "yalc link @tmlmobilidade/connectors @tmlmobilidade/interfaces @tmlmobilidade/lib @tmlmobilidade/utils @tmlmobilidade/types @tmlmobilidade/ui --no-pure"
 	},
+	"dependencies": {
+		"@fastify/multipart": "^9.2.1",
+		"@tmlmobilidade/connectors": "20251008.1444.19",
+		"@tmlmobilidade/interfaces": "20251008.1444.19",
+		"@tmlmobilidade/lib": "20251008.1444.19",
+		"@tmlmobilidade/types": "20251008.1444.19",
+		"@tmlmobilidade/ui": "20251008.1444.19",
+		"@tmlmobilidade/utils": "20251008.1444.19"
+	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@dotenv-run/cli": "1.3.6",
@@ -21,8 +30,5 @@
 	"packageManager": "npm@11.6.1",
 	"workspaces": [
 		"apps/*"
-	],
-	"dependencies": {
-		"@fastify/multipart": "^9.2.1"
-	}
+	]
 }
