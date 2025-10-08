@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertsController } from '@/endpoints/alerts/alerts.controller';
+import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
 import { Alert, GetAllAlertsQuery, GetAllAlertsQuerySchema } from '@tmlmobilidade/types';
