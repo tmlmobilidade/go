@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@fastify/websocket": "^11.2.0",
 		"@tmlmobilidade/connectors": "20251008.1444.19",
+		"@tmlmobilidade/emails": "20251008.1444.19",
 		"@tmlmobilidade/interfaces": "20251008.1444.19",
 		"@tmlmobilidade/lib": "20251008.1444.19",
 		"@tmlmobilidade/sae-controller-pckg-ride-normalized": "*",
