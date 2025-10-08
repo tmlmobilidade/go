@@ -5,7 +5,7 @@
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
 		"dev:cleaner": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-plans-cleaner",
-		"dev:drt-parser": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-plans-drt-parser",
+		"dev:export-drt": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-plans-export-drt",
 		"dev:production": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev",
 		"dev:staging": "dotenv-run -f ./environments/staging/secrets/.env -- turbo dev",
 		"dev:ui": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-plans-frontend --filter=@tmlmobilidade/sae-plans-api",
