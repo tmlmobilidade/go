@@ -4,7 +4,7 @@
 FROM node:alpine AS base
 
 ENV MODULE=plans
-ENV PROJECT=export-bilboards
+ENV PROJECT=export-merged
 
 RUN npm install -g turbo@^2
 
