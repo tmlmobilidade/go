@@ -161,6 +161,15 @@ const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
 	title: 'Permissões de Viagens',
 };
 
+const performanceActions: PermissionConfig<typeof Permissions.performance.actions> = {
+	actions: [
+		{ description: 'Permite ver métricas', key: 'read', label: 'Ver' },
+	],
+	description: 'As ações que o utilizador pode realizar na visualização de métricas.',
+	scope: Permissions.performance.scope,
+	title: 'Permissões de Métricas',
+};
+
 /* * */
 
 export const permissionsConfig: PermissionConfig[] = [
@@ -174,4 +183,5 @@ export const permissionsConfig: PermissionConfig[] = [
 	roleActions,
 	stopActions,
 	rideActions,
+	performanceActions,
 ];
