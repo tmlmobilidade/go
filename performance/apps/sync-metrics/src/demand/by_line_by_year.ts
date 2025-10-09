@@ -44,7 +44,6 @@ export const syncDemandByLineByYear = async () => {
 				interval: 300_000,
 				line_id: lineId,
 			},
-			scope: 'demand',
 		};
 
 		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
