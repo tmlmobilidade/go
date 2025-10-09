@@ -17,12 +17,12 @@
 		"lint:fix": "eslint --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20251009.1728.21"
+		"@tmlmobilidade/types": "20251009.1744.12"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20251009.1728.21",
-		"@types/node": "24.7.0",
+		"@tmlmobilidade/tsconfig": "20251009.1744.12",
+		"@types/node": "24.7.1",
 		"resolve-tspaths": "0.8.23",
 		"rimraf": "6.0.1",
 		"typescript": "5.9.3"
