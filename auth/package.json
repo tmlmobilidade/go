@@ -14,12 +14,12 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "^9.2.1",
-		"@tmlmobilidade/connectors": "20251008.1444.19",
-		"@tmlmobilidade/interfaces": "20251008.1444.19",
-		"@tmlmobilidade/lib": "20251008.1444.19",
-		"@tmlmobilidade/types": "20251008.1444.19",
-		"@tmlmobilidade/ui": "20251008.1444.19",
-		"@tmlmobilidade/utils": "20251008.1444.19"
+		"@tmlmobilidade/connectors": "20251009.1728.21",
+		"@tmlmobilidade/interfaces": "20251009.1728.21",
+		"@tmlmobilidade/lib": "20251009.1728.21",
+		"@tmlmobilidade/types": "20251009.1728.21",
+		"@tmlmobilidade/ui": "20251009.1728.21",
+		"@tmlmobilidade/utils": "20251009.1728.21"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
@@ -27,7 +27,7 @@
 		"turbo": "2.5.8",
 		"typescript": "5.9.3"
 	},
-	"packageManager": "npm@11.6.1",
+	"packageManager": "npm@11.6.2",
 	"workspaces": [
 		"apps/*"
 	]

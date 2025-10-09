@@ -40,7 +40,7 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "npm@11.6.1",
+	"packageManager": "npm@11.6.2",
 	"engines": {
 		"node": ">=18"
 	}
