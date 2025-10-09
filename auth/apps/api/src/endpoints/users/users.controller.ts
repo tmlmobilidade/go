@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { authProvider, roles, users } from '@tmlmobilidade/interfaces';
+import { authProvider, users } from '@tmlmobilidade/interfaces';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { type CreateUserDto, type UpdateUserDto, User } from '@tmlmobilidade/types';
 
@@ -115,10 +115,7 @@ export class UsersController {
 		//
 		// Retrieve roles and permissions for the user
 		// and merge them into the user data.
-
-		const role = await roles.findMany({ _id: { $in: userData.role_ids } });
-
-		userData.permissions = [...role.flatMap(role => role.permissions), ...userData.permissions];
+		userData.permissions = await authProvider.getPermissions(sessionToken);
 
 		//
 		// Send the user data back in the response.

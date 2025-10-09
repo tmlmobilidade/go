@@ -1,0 +1,38 @@
+{
+	"name": "@tmlmobilidade/sae-plans-export-drt",
+	"version": "1.0.0",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@helperkits/logger": "20250628.901.58",
+		"@helperkits/timer": "20240627.34.23",
+		"@helperkits/writer": "20250623.2358.3",
+		"@tmlmobilidade/connectors": "20251008.1444.19",
+		"@tmlmobilidade/interfaces": "20251008.1444.19",
+		"@tmlmobilidade/utils": "20251008.1444.19",
+		"csv-parse": "6.1.0",
+		"extract-zip": "2.0.1",
+		"gtfs-types": "5.1.0",
+		"node-cron": "^4.2.1"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "20251008.1444.19",
+		"@tmlmobilidade/types": "20251008.1444.19",
+		"@types/node": "24.7.0",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
+	}
+}

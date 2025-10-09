@@ -4,6 +4,7 @@ import { Permissions } from '@tmlmobilidade/lib';
 
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
+	'EMAIL_NOTIFICATIONS',
 ] as const;
 
 export interface PermissionAction<T = unknown> {
@@ -89,6 +90,25 @@ const planActions: PermissionConfig<typeof Permissions.plans.actions> = {
 	description: 'As ações que o utilizador pode realizar na gestão de planos.',
 	scope: Permissions.plans.scope,
 	title: 'Permissões de Planos',
+};
+const topicActions: PermissionConfig<typeof Permissions.topics.actions> = {
+	actions: [
+		{ description: 'Notificações para alterações no estado da aceitação', key: 'acceptance_state_modified', label: `Estado da aceitação modificado`, resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando um plano for ativado', key: 'active_plan', label: 'Plano Ativo', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando um plano for aprovado', key: 'approved_plan', label: 'Plano Aprovado', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando uma validação for aprovada', key: 'approved_validation', label: 'Validação Aprovada', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando uma validação for concluída', key: 'concluded_validation', label: 'Validação Concluida', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando um alerta for criado', key: 'created_alert', label: 'Alerta Criado', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando um plano for criado', key: 'created_plan', label: 'Plano Criado', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando um novo comentário na Aceitação da Ride for criado', key: 'new_comentary_network_acceptance', label: 'Novo comentário na Aceitação da Ride', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando uma ride requer justificação', key: 'ride_requires_justification', label: 'Ride requer justificação', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando uma validação for enviada', key: 'sent_validation', label: 'Validação Enviada', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando uma justificação for submetida', key: 'justification_submit', label: 'Justificação Submetida', resources: ['EMAIL_NOTIFICATIONS'] },
+		{ description: 'Notificações para quando um plano for submetido', key: 'plan_submit', label: 'Plano submetido', resources: ['EMAIL_NOTIFICATIONS'] },
+	],
+	description: 'Os tópicos que o utilizador pode subscrever.',
+	scope: Permissions.topics.scope,
+	title: 'Subscrição de Tópicos',
 };
 
 const userActions: PermissionConfig<typeof Permissions.users.actions> = {
@@ -184,4 +204,5 @@ export const permissionsConfig: PermissionConfig[] = [
 	stopActions,
 	rideActions,
 	performanceActions,
+	topicActions,
 ];
