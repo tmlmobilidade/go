@@ -21,9 +21,9 @@
 		"luxon": "^3.7.2"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/interfaces": "20251009.1628.1",
-		"@tmlmobilidade/tsconfig": "20251009.1628.1",
-		"@tmlmobilidade/types": "20251009.1628.1",
+		"@tmlmobilidade/interfaces": "20251009.1648.44",
+		"@tmlmobilidade/tsconfig": "20251009.1648.44",
+		"@tmlmobilidade/types": "20251009.1648.44",
 		"@types/node": "24.7.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
