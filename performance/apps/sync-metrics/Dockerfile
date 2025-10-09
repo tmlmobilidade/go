@@ -4,7 +4,7 @@
 FROM node:alpine AS base
 
 ENV MODULE=performance
-ENV PROJECT=metrics
+ENV PROJECT=sync-metrics
 
 RUN npm install -g turbo@^2
 
