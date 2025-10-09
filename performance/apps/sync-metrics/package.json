@@ -21,12 +21,12 @@
 		"luxon": "^3.7.2"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/interfaces": "20250925.1818.18",
-		"@tmlmobilidade/tsconfig": "20250925.1818.18",
-		"@tmlmobilidade/types": "20250925.1818.18",
-		"@types/node": "24.5.2",
+		"@tmlmobilidade/interfaces": "20251009.1628.1",
+		"@tmlmobilidade/tsconfig": "20251009.1628.1",
+		"@tmlmobilidade/types": "20251009.1628.1",
+		"@types/node": "24.7.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.5",
-		"typescript": "5.9.2"
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
 	}
 }
