@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
 import { operationalStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, InputWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -66,10 +66,15 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="a" gap="md">
-					<TextInput
+					<InputWrapper
 						label="Antigo Nome da Paragem (p/ alterar)"
-						{...stopDetailContext.data.form.getInputProps('name')}
-					/>
+						name="test"
+						scope="stops"
+						status="pending"
+					>
+						<TextInput {...stopDetailContext.data.form.getInputProps('name')} />
+					</InputWrapper>
+
 					<TextInput
 						label="Nome da Paragem (depois da correção)"
 						{...stopDetailContext.data.form.getInputProps('new_name')}

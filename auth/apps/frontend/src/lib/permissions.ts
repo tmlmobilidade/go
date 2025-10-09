@@ -111,6 +111,20 @@ const topicActions: PermissionConfig<typeof Permissions.topics.actions> = {
 	title: 'Subscrição de Tópicos',
 };
 
+const proposedChangesActions: PermissionConfig<typeof Permissions.proposed_changes.actions> = {
+	actions: [
+		{ description: 'Criar Proposta de Alterações', key: 'create', label: `Criar Proposta de Alterações` },
+		{ description: 'Aprovar as Alterações Propostas', key: 'approve', label: 'Aprovar Alterações Propostas' },
+		{ description: 'Rejeitar as Alterações Propostas', key: 'reject', label: 'Rejeitar Alterações Propostas' },
+		{ description: 'Eliminar as Alterações Propostas', key: 'delete', label: 'Eliminar Alterações Propostas' },
+		{ description: 'Comentar as Alterações Propostas', key: 'comment', label: 'Comentar Alterações Propostas' },
+		{ description: 'Consultar Alterações Propostas', key: 'read', label: 'Consultar Alterações Propostas' },
+	],
+	description: 'As acções que o utilizador pode realizar na gestão de alterações propostas.',
+	scope: Permissions.proposed_changes.scope,
+	title: 'Permissões de Alterações Propostas',
+};
+
 const userActions: PermissionConfig<typeof Permissions.users.actions> = {
 	actions: [
 		{ description: 'Permite ver utilizadores', key: 'read', label: 'Ver' },
@@ -195,4 +209,5 @@ export const permissionsConfig: PermissionConfig[] = [
 	stopActions,
 	rideActions,
 	topicActions,
+	proposedChangesActions,
 ];
