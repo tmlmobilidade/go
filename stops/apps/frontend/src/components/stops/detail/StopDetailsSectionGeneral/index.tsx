@@ -17,7 +17,7 @@ export function StopDetailsSectionGeneral() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	const scopeOption: ScopeOption = 'stops';
+	const scopeOption: ScopeOption = 'stop';
 
 	//
 	// B. Transform data

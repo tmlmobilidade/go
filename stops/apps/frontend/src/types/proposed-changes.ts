@@ -1,1 +1,1 @@
-export type ScopeOption = 'lines' | 'stops';
+export type ScopeOption = 'lines' | 'stop';
