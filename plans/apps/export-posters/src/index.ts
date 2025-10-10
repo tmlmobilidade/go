@@ -12,6 +12,7 @@ import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobil
 import { plans } from '@tmlmobilidade/interfaces';
 import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
+import fs from 'node:fs';
 
 /* * */
 
@@ -26,7 +27,7 @@ import { Logs } from '@tmlmobilidade/utils';
 		//
 		// Get single plan to process
 
-		const planData = await plans.findById('FPTD0');
+		const planData = await plans.findById('BYBGK');
 
 		Logs.info(`Found Plan to process: ${planData._id}`);
 
@@ -40,19 +41,28 @@ import { Logs } from '@tmlmobilidade/utils';
 
 		const exportConfig: ExportToHitouchConfig = {
 			day_types: {
-				DT_ESC_DOM: validateOperationalDate('20250101'),
-				DT_ESC_DU: validateOperationalDate('20250101'),
-				DT_ESC_SAB: validateOperationalDate('20250101'),
+
+				DT_ESC_DOM: validateOperationalDate('20251012'),
+				DT_ESC_DU: validateOperationalDate('20251010'),
+				DT_ESC_SAB: validateOperationalDate('20251011'),
+
 				DT_FER_DOM: validateOperationalDate('20250101'),
 				DT_FER_DU: validateOperationalDate('20250101'),
 				DT_FER_SAB: validateOperationalDate('20250101'),
-				DT_VER_DOM: validateOperationalDate('20250101'),
-				DT_VER_DU: validateOperationalDate('20250101'),
-				DT_VER_SAB: validateOperationalDate('20250101'),
+
+				DT_VER_DOM: validateOperationalDate('20251221'),
+				DT_VER_DU: validateOperationalDate('20251222'),
+				DT_VER_SAB: validateOperationalDate('20251220'),
+
 			},
 			output: 'export-hitouch.zip',
-			workdir: './exports/hitouch',
+			workdir: '/tmp/hitouch',
 		};
+
+		if (fs.existsSync(exportConfig.output)) {
+			fs.rmSync(exportConfig.output);
+		}
+		fs.mkdirSync(exportConfig.workdir, { recursive: true });
 
 		//
 		// Import the Plan into a local SQLite database
@@ -70,12 +80,12 @@ import { Logs } from '@tmlmobilidade/utils';
 
 		const exportTimer = new TIMETRACKER();
 
-		exportCalendarFiles(sqlGtfs, exportConfig);
-		exportTripFile(sqlGtfs, exportConfig);
-		exportRoutesFile(sqlGtfs, exportConfig);
-		exportShapesFile(sqlGtfs, exportConfig);
-		exportStopTimesFile(sqlGtfs, exportConfig);
-		exportStopsFile(sqlGtfs, exportConfig);
+		await exportCalendarFiles(sqlGtfs, exportConfig);
+		await exportTripFile(sqlGtfs, exportConfig);
+		await exportRoutesFile(sqlGtfs, exportConfig);
+		await exportShapesFile(sqlGtfs, exportConfig);
+		await exportStopTimesFile(sqlGtfs, exportConfig);
+		await exportStopsFile(sqlGtfs, exportConfig);
 
 		Logs.info(`Exported files in ${exportTimer.get()} seconds`);
 

@@ -8,7 +8,7 @@ import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function exportTripFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportTripFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export calendar-related files
 
@@ -24,10 +24,10 @@ export function exportTripFile(sqlTables: GtfsSQLTables, exportConfig: ExportToH
 			trip_id: tripData.trip_id,
 			wheelchair_accessible: tripData.wheelchair_accessible,
 		};
-		tripsCsv.write(data);
+		await tripsCsv.write(data);
 	}
 
-	tripsCsv.flush();
+	await tripsCsv.flush();
 
 	Logs.info('Exported trip.txt file.');
 }

@@ -8,7 +8,7 @@ import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function exportShapesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportShapesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export calendar-related files
 
@@ -22,10 +22,10 @@ export function exportShapesFile(sqlTables: GtfsSQLTables, exportConfig: ExportT
 			shape_pt_lon: shapeData.shape_pt_lon,
 			shape_pt_sequence: shapeData.shape_pt_sequence,
 		};
-		shapesCsv.write(data);
+		await shapesCsv.write(data);
 	}
 
-	shapesCsv.flush();
+	await shapesCsv.flush();
 
 	Logs.info('Exported shapes.txt file.');
 }

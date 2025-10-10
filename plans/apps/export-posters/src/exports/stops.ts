@@ -8,7 +8,7 @@ import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export calendar-related files
 
@@ -29,10 +29,10 @@ export function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: ExportTo
 			stop_url: stopData.stop_url,
 			wheelchair_boarding: stopData.wheelchair_boarding,
 		};
-		stopsCsv.write(data);
+		await stopsCsv.write(data);
 	}
 
-	stopsCsv.flush();
+	await stopsCsv.flush();
 
 	Logs.info('Exported stops.txt file.');
 }

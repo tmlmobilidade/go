@@ -9,7 +9,7 @@ import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export calendar-related files
 
@@ -18,7 +18,7 @@ export function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: Expo
 	const calendarAssignmentsExtCsv = new CsvWriter('calendar_assignmentsExt.txt', `${exportConfig.workdir}/calendar_assignmentsExt.txt`, { batch_size: 1000 });
 
 	for (const dayType of DAY_TYPES) {
-		dayTypesExtCsv.write(dayType);
+		await dayTypesExtCsv.write(dayType);
 	}
 
 	for (const [currentServiceId, currentServiceIdDates] of sqlTables.calendar_dates.entries()) {
@@ -29,7 +29,7 @@ export function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: Expo
 				exception_type: 1,
 				service_id: currentServiceId,
 			};
-			calendarDatesCsv.write(data);
+			await calendarDatesCsv.write(data);
 		}
 		// Calendar-assignmentsExt.txt
 		for (const [dayTypeId, dayTypeOperationalDate] of Object.entries(exportConfig.day_types)) {
@@ -38,14 +38,14 @@ export function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: Expo
 					day_type_id: dayTypeId,
 					service_id: currentServiceId,
 				};
-				calendarAssignmentsExtCsv.write(data);
+				await calendarAssignmentsExtCsv.write(data);
 			}
 		}
 	}
 
-	dayTypesExtCsv.flush();
-	calendarDatesCsv.flush();
-	calendarAssignmentsExtCsv.flush();
+	await dayTypesExtCsv.flush();
+	await calendarDatesCsv.flush();
+	await calendarAssignmentsExtCsv.flush();
 
 	Logs.info('Exported calendar-related files');
 }

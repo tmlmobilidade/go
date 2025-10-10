@@ -8,7 +8,7 @@ import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export calendar-related files
 
@@ -26,10 +26,10 @@ export function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: ExportT
 			route_type: routeData.route_type,
 			route_url: routeData.route_url,
 		};
-		routesCsv.write(data);
+		await routesCsv.write(data);
 	}
 
-	routesCsv.flush();
+	await routesCsv.flush();
 
 	Logs.info('Exported routes.txt file.');
 }

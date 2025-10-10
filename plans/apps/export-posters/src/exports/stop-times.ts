@@ -8,7 +8,7 @@ import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function exportStopTimesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportStopTimesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export calendar-related files
 
@@ -27,10 +27,10 @@ export function exportStopTimesFile(sqlTables: GtfsSQLTables, exportConfig: Expo
 			timepoint: stopTimeData.timepoint,
 			trip_id: stopTimeData.trip_id,
 		};
-		stopTimesCsv.write(data);
+		await stopTimesCsv.write(data);
 	}
 
-	stopTimesCsv.flush();
+	await stopTimesCsv.flush();
 
 	Logs.info('Exported stop_times.txt file.');
 }
