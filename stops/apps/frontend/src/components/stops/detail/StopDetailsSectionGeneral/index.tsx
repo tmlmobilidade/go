@@ -4,6 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
+import { ScopeOption } from '@/types/proposed-changes';
 import { operationalStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
@@ -16,6 +17,7 @@ export function StopDetailsSectionGeneral() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const scopeOption: ScopeOption = 'stops';
 
 	//
 	// B. Transform data
@@ -69,10 +71,10 @@ export function StopDetailsSectionGeneral() {
 
 					<ProposedChangesWrapper
 						actualValue={stopDetailContext.data.stop?.name}
-						inputName="test"
+						inputName="name"
 						label="Antigo Nome da Paragem (p/ alterar)"
-						scope="stops"
-						status="pending"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
 					>
 						<TextInput {...stopDetailContext.data.form.getInputProps('name')} />
 					</ProposedChangesWrapper>

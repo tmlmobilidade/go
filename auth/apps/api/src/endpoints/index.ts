@@ -5,4 +5,4 @@ import '@/endpoints/users/users.routes';
 import '@/endpoints/wiki/wiki.routes';
 import '@/endpoints/organizations/organizations.routes';
 import '@/endpoints/notifications/notifications.routes';
-import '@/endpoints/proposedChanges.routes';
+import '@/endpoints/proposed-changes/proposed-changes.routes';

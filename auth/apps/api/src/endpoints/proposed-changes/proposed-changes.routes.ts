@@ -9,44 +9,44 @@ import { ProposedChangesController } from './proposed-changes.controller.js';
 /* * */
 
 const server = FastifyService.getInstance().server;
-const namespace = '/stops';
+const namespace = '/proposed-changes';
 
 /* * */
 
 server.register(
 	(instance, opts, next) => {
-		// GET /stops
+		// GET /proposed-changes
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.read) },
+			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.read) },
 			ProposedChangesController.getAll,
 		);
 
-		// GET /stops/:id
+		// GET /proposed-changes/:id
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.read) },
+			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.read) },
 			ProposedChangesController.getById,
 		);
 
-		// POST /stops
+		// POST /proposed-changes
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.create) },
+			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.create) },
 			ProposedChangesController.create,
 		);
 
-		// PUT /stops/:id
+		// PUT /proposed-changes/:id
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.update) },
+			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.approve) },
 			ProposedChangesController.update,
 		);
 
-		// DELETE /stops/:id
+		// DELETE /proposed-changes/:id
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.delete) },
+			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.reject) },
 			ProposedChangesController.delete,
 		);
 
