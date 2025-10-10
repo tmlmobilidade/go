@@ -1,16 +1,40 @@
 /* * */
 
 import { DAY_TYPES } from '@/day-types.js';
-import { type CalendarAssignmentsExt, CalendarExt, type ExportToHitouchConfig } from '@/types.js';
+import { type CalendarAssignmentsExt, type CalendarExt, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { type GTFS_CalendarDate } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
+import fs from 'node:fs';
+import Papa from 'papaparse';
 
 /* * */
 
 export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
+
+	//
+	// Import the dates.txt file into a map of date strings and their associated categorizations
+
+	if (!fs.existsSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt')) {
+		Logs.error(`Missing dates.txt file in ${process.cwd()}`);
+	}
+
+	const datesCat = Papa.parse<GTFS_Date>(fs.readFileSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
+		header: true,
+		skipEmptyLines: true,
+	});
+
+	//
+	// Group dates by period, day_type, and holiday status
+
+	for (const dayTypeConfig of DAY_TYPES) {
+		dayTypeConfig.dates = datesCat.data
+			.filter(d => d.period === dayTypeConfig.period && d.day_type === dayTypeConfig.day_type)
+			.map(d => d.date)
+			.sort();
+	}
 
 	//
 	// Export calendar-related files
@@ -28,12 +52,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	}
 
 	//
-	// Map service IDs to day_types based on their operational dates.
-	// If a service_id operates on dates that belong to a specific day_type,
-	// it should be assigned to that day_type in the calendar_assignmentsExt.txt file.
+	// Export service IDs to calendar_dates.txt
 
 	for (const [currentServiceId, currentServiceIdDates] of sqlTables.calendar_dates.entries()) {
-		// Calendar-dates.txt
 		for (const operationalDate of currentServiceIdDates) {
 			const data: GTFS_CalendarDate = {
 				date: operationalDate,
@@ -42,17 +63,31 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			};
 			await calendarDatesCsv.write(data);
 		}
+	}
+
+	//
+	// Map service IDs to day_types based on their operational dates.
+	// If a service_id operates on dates that belong to a specific day_type,
+	// it should be assigned to that day_type in the calendar_assignmentsExt.txt file.
+
+	for (const [currentServiceId, currentServiceIdDates] of sqlTables.calendar_dates.entries()) {
+		// Calendar-dates.txt
+		const dayTypesAssigned: string[] = [];
 		// Calendar-assignmentsExt.txt
-		for (const [dayTypeId, dates] of Object.entries(exportConfig.day_types)) {
-			for (const dayTypeOperationalDate of dates) {
-				if (currentServiceIdDates.includes(dayTypeOperationalDate)) {
-					const data: CalendarAssignmentsExt = {
-						day_type_id: dayTypeId,
-						service_id: currentServiceId,
-					};
-					await calendarAssignmentsExtCsv.write(data);
-				}
-			}
+		for (const dayTypeConfig of DAY_TYPES) {
+			//
+			// Check if this service_id operates on any dates that belong to this day_type
+			if (dayTypesAssigned.includes(dayTypeConfig._id)) continue;
+			const hasMatchingDate = dayTypeConfig.dates.some(date => currentServiceIdDates.includes(date));
+			if (!hasMatchingDate) continue;
+			dayTypesAssigned.push(dayTypeConfig._id);
+		}
+		for (const dayTypeId of dayTypesAssigned) {
+			const assignment: CalendarAssignmentsExt = {
+				day_type_id: dayTypeId,
+				service_id: currentServiceId,
+			};
+			await calendarAssignmentsExtCsv.write(assignment);
 		}
 	}
 
@@ -72,6 +107,8 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			const weekday = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
 				.toFormat('c'); // '1' (Mon) to '7' (Sun)
+			const dateCategory = datesCat.data.find(d => d.date === date);
+			if (!dateCategory || dateCategory.holiday) continue;
 			weekdaysSet.add(weekday);
 		}
 		const weekdays = Array.from(weekdaysSet).sort();
@@ -80,17 +117,11 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// Check if this set of weekdays matches any of the standard day_types.
 		// If it does, no need to create an exception in calendarExt.txt
 
-		const isExactDayTypeMatch = DAY_TYPES.find(dt =>
-			dt.monday === weekdays.includes('1')
-			&& dt.tuesday === weekdays.includes('2')
-			&& dt.wednesday === weekdays.includes('3')
-			&& dt.thursday === weekdays.includes('4')
-			&& dt.friday === weekdays.includes('5')
-			&& dt.saturday === weekdays.includes('6')
-			&& dt.sunday === weekdays.includes('7'),
-		);
+		const isNormalWeek = weekdays.includes('1') && weekdays.includes('2') && weekdays.includes('3') && weekdays.includes('4') && weekdays.includes('5') && !weekdays.includes('6') && !weekdays.includes('7');
+		const isSaturdayOnly = weekdays.length === 1 && weekdays.includes('6');
+		const isSundayOnly = weekdays.length === 1 && weekdays.includes('7');
 
-		if (isExactDayTypeMatch) continue;
+		if (isNormalWeek || isSaturdayOnly || isSundayOnly) continue;
 
 		//
 		// Create a comment for this exception based on the weekdays it operates on
@@ -108,7 +139,11 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			}
 		});
 
-		const comment = `Exceção: Apenas às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')}`;
+		if (!weekdayNames.length) continue;
+
+		console.log('weekdayNames', weekdayNames);
+
+		const comment = `Apenas às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')}`;
 
 		const calendarException: CalendarExt = {
 			comment: comment,

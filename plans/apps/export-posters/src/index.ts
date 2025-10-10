@@ -2,7 +2,6 @@
 
 import { exportCalendarFiles } from '@/exports/calendar-files.js';
 import { exportRoutesFile } from '@/exports/routes.js';
-import { exportShapesFile } from '@/exports/shapes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripFile } from '@/exports/trips.js';
@@ -52,10 +51,10 @@ import { mergeServiceIds } from './merge-calendars.js';
 				],
 				DT_ESC_DU: [
 					validateOperationalDate('20251006'),
-					validateOperationalDate('20251007'),
-					validateOperationalDate('20251008'),
-					validateOperationalDate('20251009'),
-					validateOperationalDate('20251010'),
+					// validateOperationalDate('20251007'),
+					// validateOperationalDate('20251008'),
+					// validateOperationalDate('20251009'),
+					// validateOperationalDate('20251010'),
 				],
 				DT_ESC_SAB: [
 					validateOperationalDate('20251011'),
@@ -69,10 +68,10 @@ import { mergeServiceIds } from './merge-calendars.js';
 				],
 				DT_FER_DU: [
 					validateOperationalDate('20251222'),
-					validateOperationalDate('20251223'),
-					validateOperationalDate('20251224'),
-					validateOperationalDate('20251225'),
-					validateOperationalDate('20251226'),
+					// validateOperationalDate('20251223'),
+					// validateOperationalDate('20251224'),
+					// validateOperationalDate('20251225'),
+					// validateOperationalDate('20251226'),
 				],
 				DT_FER_SAB: [
 					validateOperationalDate('20251220'),
@@ -86,10 +85,10 @@ import { mergeServiceIds } from './merge-calendars.js';
 				],
 				DT_VER_DU: [
 					validateOperationalDate('20250804'),
-					validateOperationalDate('20250805'),
-					validateOperationalDate('20250806'),
-					validateOperationalDate('20250807'),
-					validateOperationalDate('20250808'),
+					// validateOperationalDate('20250805'),
+					// validateOperationalDate('20250806'),
+					// validateOperationalDate('20250807'),
+					// validateOperationalDate('20250808'),
 				],
 				DT_VER_SAB: [
 					validateOperationalDate('20250802'),
@@ -104,7 +103,10 @@ import { mergeServiceIds } from './merge-calendars.js';
 		// Import the Plan into a local SQLite database
 
 		const importConfig: ImportGtfsToDatabaseConfig = {
-			discrete_dates: Array.from(new Set(Object.values(exportConfig.day_types).flat())),
+			date_range: {
+				end: validateOperationalDate('20501231'),
+				start: validateOperationalDate('20010101'),
+			},
 		};
 
 		const sqlGtfs = await importGtfsToDatabase(planData, importConfig);
@@ -129,7 +131,6 @@ import { mergeServiceIds } from './merge-calendars.js';
 		await exportCalendarFiles(sqlGtfs, exportConfig);
 		await exportTripFile(sqlGtfs, exportConfig);
 		await exportRoutesFile(sqlGtfs, exportConfig);
-		await exportShapesFile(sqlGtfs, exportConfig);
 		await exportStopTimesFile(sqlGtfs, exportConfig);
 		await exportStopsFile(sqlGtfs, exportConfig);
 

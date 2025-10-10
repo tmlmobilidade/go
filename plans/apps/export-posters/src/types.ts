@@ -35,3 +35,21 @@ export interface DayTypesExt {
 	tuesday: boolean
 	wednesday: boolean
 }
+
+export interface DayTypeConfig {
+	_id: string
+	dates: OperationalDate[]
+	day_type: '1' | '2' | '3'
+	index: number
+	name: string
+	period: '1' | '2' | '3'
+
+}
+
+export interface GTFS_Date {
+	date: OperationalDate
+	day_type: '1' | '2' | '3'
+	holiday: '0' | '1'
+	notes?: string
+	period: '1' | '2' | '3'
+}

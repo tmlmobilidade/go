@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
 import { generateRandomString, Logs } from '@tmlmobilidade/utils';
 
 /* * */
@@ -35,7 +35,7 @@ export function mergeServiceIds(sqlTables: GtfsSQLTables) {
 		//
 		// Group trips by start_time
 
-		const tripsByStartTime: Record<string, typeof tripsWithPattern> = {};
+		const tripsByStartTime: Record<string, GTFS_Trip_Extended[]> = {};
 
 		for (const trip of tripsWithPattern) {
 			// Get stop_times for this trip to determine start_time
@@ -63,14 +63,14 @@ export function mergeServiceIds(sqlTables: GtfsSQLTables) {
 			if (uniqueServiceIds.length <= 1) continue;
 
 			//
-			// Merge all dates from all service_ids into the first one
+			// Merge all dates from all service_ids into a single one
 
-			const allDates = new Set<OperationalDate>();
+			const combinedDates = new Set<OperationalDate>();
 
 			for (const serviceId of uniqueServiceIds) {
-				const associatedDates = sqlTables.calendar_dates.get(serviceId);
-				if (!associatedDates.length) continue;
-				associatedDates.forEach(date => allDates.add(date));
+				const serviceDates = sqlTables.calendar_dates.get(serviceId);
+				if (!serviceDates.length) continue;
+				serviceDates.forEach(date => combinedDates.add(date));
 			}
 
 			//
@@ -79,33 +79,34 @@ export function mergeServiceIds(sqlTables: GtfsSQLTables) {
 			// check if the new randomly generated ID already exists (very unlikely but possible).
 			// If it does, generate a new one until we find a unique ID.
 
-			let existingServiceId = null;
+			let newServiceId = null;
 
 			for (const [existingId, existingDates] of Object.entries(finalServiceIdMap)) {
 				// Skip if number of dates differ
-				if (existingDates.length !== allDates.size) continue;
+				if (existingDates.length !== combinedDates.size) continue;
 				// Check if all dates match
-				const allMatch = existingDates.every(d => allDates.has(d));
-				if (allMatch) {
-					existingServiceId = existingId;
+				const stringifiedExistingDates = JSON.stringify(existingDates.sort());
+				const stringifiedAllDates = JSON.stringify(Array.from(combinedDates).sort());
+				if (stringifiedExistingDates === stringifiedAllDates) {
+					newServiceId = existingId;
 					break;
 				}
 			}
 
-			if (!existingServiceId) {
+			if (!newServiceId) {
 				let uniqueCheckId = generateRandomString();
 				while (finalServiceIdMap[uniqueCheckId]) {
 					uniqueCheckId = generateRandomString();
 				}
-				finalServiceIdMap[uniqueCheckId] = Array.from(allDates).sort();
-				existingServiceId = uniqueCheckId;
+				finalServiceIdMap[uniqueCheckId] = Array.from(combinedDates).sort();
+				newServiceId = uniqueCheckId;
 			}
 
 			//
 			// Finally, update all trips in this group to use the merged service_id
 
 			similarTrips.forEach((trip) => {
-				sqlTables.trips.query('UPDATE trips SET service_id = ? WHERE trip_id = ?', [existingServiceId, trip.trip_id]);
+				sqlTables.trips.query('UPDATE trips SET service_id = ? WHERE trip_id = ?', [newServiceId, trip.trip_id]);
 			});
 
 			//
