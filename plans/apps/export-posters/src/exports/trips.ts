@@ -12,7 +12,7 @@ export async function exportTripFile(sqlTables: GtfsSQLTables, exportConfig: Exp
 	//
 	// Export calendar-related files
 
-	const tripsCsv = new CsvWriter('trips.txt', `${exportConfig.workdir}/trips.txt`, { batch_size: 100000 });
+	const tripsCsv = new CsvWriter('trips.txt', `${exportConfig.workdir}/trips.txt`, { batch_size: 10000 });
 
 	for (const tripData of sqlTables.trips.all()) {
 		const data: GTFS_Trip = {

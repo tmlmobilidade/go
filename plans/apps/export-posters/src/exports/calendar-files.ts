@@ -1,7 +1,7 @@
 /* * */
 
 import { DAY_TYPES } from '@/day-types.js';
-import { type CalendarAssignmentsExt, type CalendarExt, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
+import { type CalendarAssignmentsExt, type CalendarExt, DayTypesExt, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { type GTFS_CalendarDate } from '@tmlmobilidade/types';
@@ -48,14 +48,27 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	// Export the day_typesExt.txt file as it is a static file.
 
 	for (const dayType of DAY_TYPES) {
-		await dayTypesExtCsv.write(dayType);
+		const parsedDayType: DayTypesExt = {
+			day_type_id: dayType._id,
+			friday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
+			monday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
+			name: dayType.name,
+			saturday: [2, 5, 8].includes(dayType.index) ? true : false,
+			sequence_number: dayType.index,
+			sunday: [3, 6, 9].includes(dayType.index) ? true : false,
+			thursday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
+			tuesday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
+			wednesday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
+		};
+		await dayTypesExtCsv.write(parsedDayType);
 	}
 
 	//
 	// Export service IDs to calendar_dates.txt
 
 	for (const [currentServiceId, currentServiceIdDates] of sqlTables.calendar_dates.entries()) {
-		for (const operationalDate of currentServiceIdDates) {
+		const sortedDates = currentServiceIdDates.sort();
+		for (const operationalDate of sortedDates) {
 			const data: GTFS_CalendarDate = {
 				date: operationalDate,
 				exception_type: 1,
@@ -99,6 +112,10 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	// as an exception to the general day_type rules.
 
 	for (const [currentServiceId, currentServiceIdDates] of sqlTables.calendar_dates.entries()) {
+		//
+
+		console.log('Processing service_id:', currentServiceId);
+
 		//
 		// Get the weekdays this service_id operates on
 
