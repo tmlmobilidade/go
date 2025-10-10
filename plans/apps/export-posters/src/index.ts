@@ -42,17 +42,56 @@ import fs from 'node:fs';
 		const exportConfig: ExportToHitouchConfig = {
 			day_types: {
 
-				DT_ESC_DOM: validateOperationalDate('20251012'),
-				DT_ESC_DU: validateOperationalDate('20251010'),
-				DT_ESC_SAB: validateOperationalDate('20251011'),
+				//
+				// School dates
 
-				DT_FER_DOM: validateOperationalDate('20250101'),
-				DT_FER_DU: validateOperationalDate('20250101'),
-				DT_FER_SAB: validateOperationalDate('20250101'),
+				DT_ESC_DOM: [
+					validateOperationalDate('20251012'),
+				],
+				DT_ESC_DU: [
+					validateOperationalDate('20251006'),
+					validateOperationalDate('20251007'),
+					validateOperationalDate('20251008'),
+					validateOperationalDate('20251009'),
+					validateOperationalDate('20251010'),
+				],
+				DT_ESC_SAB: [
+					validateOperationalDate('20251011'),
+				],
 
-				DT_VER_DOM: validateOperationalDate('20251221'),
-				DT_VER_DU: validateOperationalDate('20251222'),
-				DT_VER_SAB: validateOperationalDate('20251220'),
+				//
+				// Holiday dates
+
+				DT_FER_DOM: [
+					validateOperationalDate('20251221'),
+				],
+				DT_FER_DU: [
+					validateOperationalDate('20251222'),
+					validateOperationalDate('20251223'),
+					validateOperationalDate('20251224'),
+					validateOperationalDate('20251225'),
+					validateOperationalDate('20251226'),
+				],
+				DT_FER_SAB: [
+					validateOperationalDate('20251220'),
+				],
+
+				//
+				// Summer dates
+
+				DT_VER_DOM: [
+					validateOperationalDate('20250803'),
+				],
+				DT_VER_DU: [
+					validateOperationalDate('20250804'),
+					validateOperationalDate('20250805'),
+					validateOperationalDate('20250806'),
+					validateOperationalDate('20250807'),
+					validateOperationalDate('20250808'),
+				],
+				DT_VER_SAB: [
+					validateOperationalDate('20250802'),
+				],
 
 			},
 			output: 'export-hitouch.zip',
@@ -68,7 +107,7 @@ import fs from 'node:fs';
 		// Import the Plan into a local SQLite database
 
 		const importConfig: ImportGtfsToDatabaseConfig = {
-			discrete_dates: Object.values(exportConfig.day_types),
+			discrete_dates: Array.from(new Set(Object.values(exportConfig.day_types).flat())),
 		};
 
 		const sqlGtfs = await importGtfsToDatabase(planData, importConfig);

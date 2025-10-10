@@ -1,6 +1,8 @@
 /* * */
 
-import { DayTypesExt } from './types.js';
+import { DayTypesExt } from '@/types.js';
+
+/* * */
 
 export const DAY_TYPES: DayTypesExt[] = [
 	//

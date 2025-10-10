@@ -5,7 +5,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 /* * */
 
 export interface ExportToHitouchConfig {
-	day_types: Record<string, OperationalDate>
+	day_types: Record<string, OperationalDate[]>
 	output: string
 	workdir: string
 }
