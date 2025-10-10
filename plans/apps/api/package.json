@@ -15,15 +15,15 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.2.1",
-		"@tmlmobilidade/connectors": "20251010.802.11",
-		"@tmlmobilidade/interfaces": "20251010.802.11",
-		"@tmlmobilidade/lib": "20251010.802.11",
-		"@tmlmobilidade/utils": "20251010.802.11",
-		"pino-pretty": "13.1.1"
+		"@tmlmobilidade/connectors": "20251010.1633.52",
+		"@tmlmobilidade/interfaces": "20251010.1633.52",
+		"@tmlmobilidade/lib": "20251010.1633.52",
+		"@tmlmobilidade/utils": "20251010.1633.52",
+		"pino-pretty": "13.1.2"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251010.802.11",
-		"@tmlmobilidade/types": "20251010.802.11",
+		"@tmlmobilidade/tsconfig": "20251010.1633.52",
+		"@tmlmobilidade/types": "20251010.1633.52",
 		"@types/node": "24.7.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

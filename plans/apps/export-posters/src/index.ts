@@ -14,6 +14,8 @@ import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
+import { mergeServiceIds } from './merge-calendars.js';
+
 /* * */
 
 (async function main() {
@@ -111,6 +113,11 @@ import fs from 'node:fs';
 		};
 
 		const sqlGtfs = await importGtfsToDatabase(planData, importConfig);
+
+		//
+		// Merge calendars
+
+		mergeServiceIds(sqlGtfs);
 
 		//
 		// Start the export process
