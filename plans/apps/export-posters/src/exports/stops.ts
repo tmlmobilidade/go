@@ -12,7 +12,7 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 	//
 	// Export calendar-related files
 
-	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 1000 });
+	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 
 	for (const stopData of sqlTables.stops.all()) {
 		const data: GTFS_Stop = {

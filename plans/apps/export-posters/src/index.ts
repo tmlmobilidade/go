@@ -100,11 +100,6 @@ import { mergeServiceIds } from './merge-calendars.js';
 			workdir: '/tmp/hitouch',
 		};
 
-		if (fs.existsSync(exportConfig.output)) {
-			fs.rmSync(exportConfig.output);
-		}
-		fs.mkdirSync(exportConfig.workdir, { recursive: true });
-
 		//
 		// Import the Plan into a local SQLite database
 
@@ -123,6 +118,11 @@ import { mergeServiceIds } from './merge-calendars.js';
 		// Start the export process
 
 		Logs.info(`Exporting to HiTouch GTFS...`);
+
+		if (fs.existsSync(exportConfig.workdir)) {
+			fs.rmSync(exportConfig.workdir, { recursive: true });
+		}
+		fs.mkdirSync(exportConfig.workdir, { recursive: true });
 
 		const exportTimer = new TIMETRACKER();
 

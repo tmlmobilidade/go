@@ -12,7 +12,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	//
 	// Export calendar-related files
 
-	const routesCsv = new CsvWriter('routes.txt', `${exportConfig.workdir}/routes.txt`, { batch_size: 1000 });
+	const routesCsv = new CsvWriter('routes.txt', `${exportConfig.workdir}/routes.txt`, { batch_size: 100000 });
 
 	for (const routeData of sqlTables.routes.all()) {
 		const data: GTFS_Route = {

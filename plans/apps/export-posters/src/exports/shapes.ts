@@ -12,7 +12,7 @@ export async function exportShapesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	//
 	// Export calendar-related files
 
-	const shapesCsv = new CsvWriter('shapes.txt', `${exportConfig.workdir}/shapes.txt`, { batch_size: 1000 });
+	const shapesCsv = new CsvWriter('shapes.txt', `${exportConfig.workdir}/shapes.txt`, { batch_size: 100000 });
 
 	for (const shapeData of sqlTables.shapes.all()) {
 		const data: GTFS_Shape = {
