@@ -14,7 +14,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 
 	const routesCsv = new CsvWriter('routes.txt', `${exportConfig.workdir}/routes.txt`, { batch_size: 100000 });
 
-	for (const routeData of sqlTables.routes.all()) {
+	for await (const routeData of sqlTables.routes.stream()) {
 		const data: GTFS_Route = {
 			agency_id: routeData.agency_id,
 			route_color: routeData.route_color,

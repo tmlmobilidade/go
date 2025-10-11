@@ -26,6 +26,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		skipEmptyLines: true,
 	});
 
+	const datesMap = new Map<string, GTFS_Date>();
+	datesCat.data.forEach(d => datesMap.set(d.date, d));
+
 	//
 	// Group dates by period, day_type, and holiday status
 
@@ -114,8 +117,6 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	for (const [currentServiceId, currentServiceIdDates] of sqlTables.calendar_dates.entries()) {
 		//
 
-		console.log('Processing service_id:', currentServiceId);
-
 		//
 		// Get the weekdays this service_id operates on
 
@@ -124,8 +125,8 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			const weekday = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
 				.toFormat('c'); // '1' (Mon) to '7' (Sun)
-			const dateCategory = datesCat.data.find(d => d.date === date);
-			if (!dateCategory || dateCategory.holiday) continue;
+			const dateCategory = datesMap.get(date);
+			if (!dateCategory || dateCategory.holiday === '1') continue;
 			weekdaysSet.add(weekday);
 		}
 		const weekdays = Array.from(weekdaysSet).sort();
@@ -134,11 +135,11 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// Check if this set of weekdays matches any of the standard day_types.
 		// If it does, no need to create an exception in calendarExt.txt
 
-		const isNormalWeek = weekdays.includes('1') && weekdays.includes('2') && weekdays.includes('3') && weekdays.includes('4') && weekdays.includes('5') && !weekdays.includes('6') && !weekdays.includes('7');
-		const isSaturdayOnly = weekdays.length === 1 && weekdays.includes('6');
-		const isSundayOnly = weekdays.length === 1 && weekdays.includes('7');
+		const isBusinessDays = weekdays.includes('1') && weekdays.includes('2') && weekdays.includes('3') && weekdays.includes('4') && weekdays.includes('5');
 
-		if (isNormalWeek || isSaturdayOnly || isSundayOnly) continue;
+		if (isBusinessDays) continue;
+
+		console.log('Processing service_id:', currentServiceId, currentServiceIdDates.length, 'with weekdays:', weekdays);
 
 		//
 		// Create a comment for this exception based on the weekdays it operates on
@@ -150,17 +151,15 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				case '3': return 'Quartas';
 				case '4': return 'Quintas';
 				case '5': return 'Sextas';
-				case '6': return 'Sábados';
-				case '7': return 'Domingos';
 				default: return '';
 			}
-		});
+		}).filter(Boolean);
 
 		if (!weekdayNames.length) continue;
 
 		console.log('weekdayNames', weekdayNames);
 
-		const comment = `Apenas às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')}`;
+		const comment = `Apenas ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')}`;
 
 		const calendarException: CalendarExt = {
 			comment: comment,

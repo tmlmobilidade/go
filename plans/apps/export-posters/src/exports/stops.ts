@@ -14,7 +14,7 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 
 	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 
-	for (const stopData of sqlTables.stops.all()) {
+	for await (const stopData of sqlTables.stops.stream()) {
 		const data: GTFS_Stop = {
 			location_type: stopData.location_type,
 			parent_station: stopData.parent_station,

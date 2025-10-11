@@ -5,6 +5,7 @@ import { exportRoutesFile } from '@/exports/routes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripFile } from '@/exports/trips.js';
+import { mergeServiceIds } from '@/merge-calendars.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import TIMETRACKER from '@helperkits/timer';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
@@ -12,8 +13,6 @@ import { plans } from '@tmlmobilidade/interfaces';
 import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
-
-import { mergeServiceIds } from './merge-calendars.js';
 
 /* * */
 

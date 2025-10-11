@@ -14,7 +14,7 @@ export async function exportTripFile(sqlTables: GtfsSQLTables, exportConfig: Exp
 
 	const tripsCsv = new CsvWriter('trips.txt', `${exportConfig.workdir}/trips.txt`, { batch_size: 10000 });
 
-	for (const tripData of sqlTables.trips.all()) {
+	for await (const tripData of sqlTables.trips.stream()) {
 		const data: GTFS_Trip = {
 			direction_id: tripData.direction_id,
 			route_id: tripData.route_id,

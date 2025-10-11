@@ -88,31 +88,28 @@ export function mergeServiceIds(sqlTables: GtfsSQLTables) {
 			for (const serviceId of uniqueServiceIds) {
 				const serviceDates = sqlTables.calendar_dates.get(serviceId);
 				if (!serviceDates.length) continue;
-				serviceDates.forEach(date => combinedDates.add(date));
-			}
-
-			//
-			// Deduplicate combined dates based on day_type, period and weekday
-
-			for (const date of Array.from(combinedDates)) {
-				const matchingDateEntry = datesMap.get(date);
-				if (!matchingDateEntry) continue;
-				// Get weekday from date
-				const weekday = Dates
-					.fromOperationalDate(date, 'Europe/Lisbon')
-					.toFormat('c'); // '1' (Mon) to '7' (Sun)
-				// Check if another date with same day_type, period and weekday exists
-				const isDuplicate = Array.from(combinedDates).find((d) => {
-					if (d === date) return false; // Skip self
-					const dEntry = datesMap.get(d);
-					if (!dEntry) return false;
-					const dWeekday = Dates
-						.fromOperationalDate(d, 'Europe/Lisbon')
+				serviceDates.forEach((date) => {
+					// Check if a date with the same day_type,
+					// period and weekday already exists
+					const matchingDateEntry = datesMap.get(date);
+					if (!matchingDateEntry) return;
+					// Get weekday from date
+					const weekday = Dates
+						.fromOperationalDate(date, 'Europe/Lisbon')
 						.toFormat('c'); // '1' (Mon) to '7' (Sun)
-					return dEntry.day_type === matchingDateEntry.day_type && dEntry.period === matchingDateEntry.period && dWeekday === weekday;
+					// Check if another date with same day_type, period and weekday exists
+					const isDuplicate = Array.from(combinedDates).find((d) => {
+						if (d === date) return false; // Skip self
+						const dEntry = datesMap.get(d);
+						if (!dEntry) return false;
+						const dWeekday = Dates
+							.fromOperationalDate(d, 'Europe/Lisbon')
+							.toFormat('c'); // '1' (Mon) to '7' (Sun)
+						return dEntry.day_type === matchingDateEntry.day_type && dEntry.period === matchingDateEntry.period && dWeekday === weekday;
+					});
+					// If a duplicate is found, remove it from the combined dates
+					if (!isDuplicate) combinedDates.add(date);
 				});
-				// If a duplicate is found, remove it from the combined dates
-				if (isDuplicate) combinedDates.delete(date);
 			}
 
 			//
