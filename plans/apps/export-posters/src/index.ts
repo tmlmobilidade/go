@@ -14,6 +14,9 @@ import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
+import { exportAgencyFile } from './exports/agency.js';
+import { exportFeedInfoFile } from './exports/feed_info.js';
+
 /* * */
 
 (async function main() {
@@ -27,7 +30,7 @@ import fs from 'node:fs';
 		//
 		// Get single plan to process
 
-		const planData = await plans.findById('BYBGK');
+		const planData = await plans.findById('FPTD0');
 
 		Logs.info(`Found Plan to process: ${planData._id}`);
 
@@ -78,6 +81,8 @@ import fs from 'node:fs';
 		await exportRoutesFile(sqlGtfs, exportConfig);
 		await exportStopTimesFile(sqlGtfs, exportConfig);
 		await exportStopsFile(sqlGtfs, exportConfig);
+		await exportAgencyFile(planData, exportConfig);
+		await exportFeedInfoFile(planData, exportConfig);
 
 		Logs.info(`Exported files in ${exportTimer.get()} seconds`);
 

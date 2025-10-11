@@ -118,6 +118,25 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		//
 
 		//
+		// If this service_id has only one date, set it as an exception
+
+		if (currentServiceIdDates.length <= 2) {
+			const datesFormatted = currentServiceIdDates.map((date) => {
+				const formattedDate = Dates
+					.fromOperationalDate(date, 'Europe/Lisbon')
+					.toFormat('dd/LL/yyyy');
+				return formattedDate;
+			});
+			const calendarException: CalendarExt = {
+				comment: `Apenas ${datesFormatted.join(' e ')}`,
+				index: 'º',
+				service_id: currentServiceId,
+			};
+			await calendarExtCsv.write(calendarException);
+			continue;
+		}
+
+		//
 		// Get the weekdays this service_id operates on
 
 		const weekdaysSet = new Set<string>();
@@ -136,8 +155,10 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// If it does, no need to create an exception in calendarExt.txt
 
 		const isBusinessDays = weekdays.includes('1') && weekdays.includes('2') && weekdays.includes('3') && weekdays.includes('4') && weekdays.includes('5');
+		const isSaturdays = weekdays[0] === '6';
+		const isSundays = weekdays[0] === '7';
 
-		if (isBusinessDays) continue;
+		if (isBusinessDays || isSaturdays || isSundays) continue;
 
 		console.log('Processing service_id:', currentServiceId, currentServiceIdDates.length, 'with weekdays:', weekdays);
 
@@ -151,6 +172,8 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				case '3': return 'Quartas';
 				case '4': return 'Quintas';
 				case '5': return 'Sextas';
+				case '6': return 'Sábados';
+				case '7': return 'Domingos';
 				default: return '';
 			}
 		}).filter(Boolean);
