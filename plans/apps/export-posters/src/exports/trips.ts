@@ -8,13 +8,13 @@ import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function exportTripFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportTripsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export calendar-related files
 
 	const tripsCsv = new CsvWriter('trips.txt', `${exportConfig.workdir}/trips.txt`, { batch_size: 10000 });
 
-	for await (const tripData of sqlTables.trips.stream()) {
+	for await (const tripData of sqlTables.trips.stream('ORDER BY trip_id ASC')) {
 		const data: GTFS_Trip = {
 			direction_id: tripData.direction_id,
 			route_id: tripData.route_id,

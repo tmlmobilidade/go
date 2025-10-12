@@ -1,11 +1,12 @@
 /* * */
 
-import { exportCalendarFiles } from '@/exports/calendar-files.js';
+import { exportAgencyFile } from '@/exports/agency.js';
+import { exportCalendarFiles } from '@/exports/calendars.js';
+import { exportFeedInfoFile } from '@/exports/feed_info.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
-import { exportTripFile } from '@/exports/trips.js';
-import { mergeServiceIds } from '@/merge-calendars.js';
+import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import TIMETRACKER from '@helperkits/timer';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
@@ -14,8 +15,7 @@ import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
-import { exportAgencyFile } from './exports/agency.js';
-import { exportFeedInfoFile } from './exports/feed_info.js';
+import { exportDayTypesFile } from './exports/day_types.js';
 
 /* * */
 
@@ -30,7 +30,7 @@ import { exportFeedInfoFile } from './exports/feed_info.js';
 		//
 		// Get single plan to process
 
-		const planData = await plans.findById('FPTD0');
+		const planData = await plans.findById('P1LDS');
 
 		Logs.info(`Found Plan to process: ${planData._id}`);
 
@@ -60,11 +60,6 @@ import { exportFeedInfoFile } from './exports/feed_info.js';
 		const sqlGtfs = await importGtfsToDatabase(planData, importConfig);
 
 		//
-		// Merge calendars
-
-		mergeServiceIds(sqlGtfs);
-
-		//
 		// Start the export process
 
 		Logs.info(`Exporting to HiTouch GTFS...`);
@@ -77,12 +72,13 @@ import { exportFeedInfoFile } from './exports/feed_info.js';
 		const exportTimer = new TIMETRACKER();
 
 		await exportCalendarFiles(sqlGtfs, exportConfig);
-		await exportTripFile(sqlGtfs, exportConfig);
-		await exportRoutesFile(sqlGtfs, exportConfig);
+		await exportTripsFile(sqlGtfs, exportConfig);
 		await exportStopTimesFile(sqlGtfs, exportConfig);
+		await exportRoutesFile(sqlGtfs, exportConfig);
 		await exportStopsFile(sqlGtfs, exportConfig);
 		await exportAgencyFile(planData, exportConfig);
 		await exportFeedInfoFile(planData, exportConfig);
+		await exportDayTypesFile(exportConfig);
 
 		Logs.info(`Exported files in ${exportTimer.get()} seconds`);
 
