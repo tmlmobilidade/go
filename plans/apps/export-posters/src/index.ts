@@ -2,6 +2,7 @@
 
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarFiles } from '@/exports/calendars.js';
+import { exportDayTypesFile } from '@/exports/day_types.js';
 import { exportFeedInfoFile } from '@/exports/feed_info.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
@@ -14,8 +15,6 @@ import { plans } from '@tmlmobilidade/interfaces';
 import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
-
-import { exportDayTypesFile } from './exports/day_types.js';
 
 /* * */
 

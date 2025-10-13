@@ -1,7 +1,7 @@
 /* * */
 
 import { DAY_TYPES } from '@/day-types.js';
-import { getPeriodName, getWeekdayNames } from '@/get-names.js';
+import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
 import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
@@ -324,20 +324,15 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			const weekdayNames = getWeekdayNames(almostRegularWeekdays.map(([weekdayCode]) => weekdayCode));
 			const periodName = getPeriodName(serviceIdData.period);
 			// Get the exception dates for the non-regular weekdays
-			const exceptionDatesFormatted = Object.entries(weekdaysMap)
-				.flatMap(([, weekdayData]) => weekdayData.dates_missing)
-				.map((date) => {
-					const formattedDate = Dates
-						.fromOperationalDate(date, 'Europe/Lisbon')
-						.toFormat('dd/LL/yyyy');
-					return formattedDate;
-				});
+			const exceptionDates = Object.entries(weekdaysMap)
+				.flatMap(([, weekdayData]) => weekdayData.dates_missing);
+			const exceptionDatesFormatted = getFormattedDates(exceptionDates);
 			// Detect is plural or singular
 			let prefix = 'exceto a';
-			if (exceptionDatesFormatted.length > 1) prefix = 'exceto nos dias';
+			if (exceptionDates.length > 1) prefix = 'exceto nos dias';
 			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}, ${prefix} ${exceptionDatesFormatted.join(', ')}.`,
+				comment: `Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}, ${prefix} ${exceptionDatesFormatted}.`,
 				index: '*',
 			});
 			// Log and continue to next service ID
@@ -357,20 +352,15 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		if (datesWhereServiceIsActive.length > datesWhereServiceIsMissingButIsExpected.length) {
 			// Get the exception dates
-			const exceptionDatesFormatted = Object.entries(weekdaysMap)
-				.flatMap(([, weekdayData]) => weekdayData.dates_missing)
-				.map((date) => {
-					const formattedDate = Dates
-						.fromOperationalDate(date, 'Europe/Lisbon')
-						.toFormat('dd/LL/yyyy');
-					return formattedDate;
-				});
-				// Detect is plural or singular
+			const exceptionDates = Object.entries(weekdaysMap)
+				.flatMap(([, weekdayData]) => weekdayData.dates_missing);
+			const exceptionDatesFormatted = getFormattedDates(exceptionDates);
+			// Detect is plural or singular
 			let prefix = 'Exceto a';
-			if (exceptionDatesFormatted.length > 1) prefix = 'Exceto nos dias';
+			if (exceptionDates.length > 1) prefix = 'Exceto nos dias';
 			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `${prefix} ${exceptionDatesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
+				comment: `${prefix} ${exceptionDatesFormatted}`,
 				index: '*',
 			});
 			// Log and continue to next service ID
@@ -385,20 +375,15 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// special services for events or holidays.
 		// Example: "Apenas a 01/01/2023 e 15/08/2023."
 
-		const exceptionDatesFormatted = Object.entries(weekdaysMap)
-			.flatMap(([, weekdayData]) => weekdayData.dates_found)
-			.map((date) => {
-				const formattedDate = Dates
-					.fromOperationalDate(date, 'Europe/Lisbon')
-					.toFormat('dd/LL/yyyy');
-				return formattedDate;
-			});
+		const exceptionDates = Object.entries(weekdaysMap)
+			.flatMap(([, weekdayData]) => weekdayData.dates_missing);
+		const exceptionDatesFormatted = getFormattedDates(exceptionDates);
 
 		let prefix = 'Apenas a';
-		if (exceptionDatesFormatted.length > 1) prefix = 'Nos dias';
+		if (exceptionDates.length > 1) prefix = 'Nos dias';
 
 		updatedServiceIds[serviceIdKey].exceptions.push({
-			comment: `${prefix} ${exceptionDatesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
+			comment: `${prefix} ${exceptionDatesFormatted}`,
 			index: '*',
 		});
 
