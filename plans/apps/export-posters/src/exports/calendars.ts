@@ -313,24 +313,41 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		//
 		// When the service is not regular, there are two possibilities:
-		// 1. The service is mostly regular, but on some dates it deviates from the matched day type configuration;
-		// 2. The service only operates on a few dates, making it impractical to define a pattern.
-		// In both cases, we will list the specific dates as exceptions. However, in the first case,
-		// we say "except on the dates..." while in the second case we say "only on the dates...".
-		// To decide on which case it is, we check for the quantity of dates in the service compared
-		// to the matched day type configuration.
+		// 1. The service is mostly regular on all weekdays, but on some dates it deviates from the matched day type configuration;
+		// 2. The service only operates on a few dates (eg. only on Christmas).
+		// However, for case 1, there is a special sub-case to consider, which is when the service is mostly regular
+		// on a subset of weekdays (eg. every Wednesday except on that one); To handle this special sub-case,
+		// we need to ignore dates that would never be in service anyway, for example, if a service only operates on Wednesdays,
+		// we don't need to list all the other weekdays as exceptions, since they would never be in service anyway.
 
-		const regularDatesNotInService = matchedDayType.dates.filter(date => !serviceIdData.dates.includes(date));
-		const regularDatesInService = matchedDayType.dates.filter(date => serviceIdData.dates.includes(date) && !regularDatesNotInService.includes(date));
+		const serviceWeekdayCodes = Object.keys(weekdaysMap);
 
-		console.log('HERE', serviceIdData._id, regularDatesNotInService.length, regularDatesInService.length);
+		const datesWithoutService = matchedDayType.dates.filter((date) => {
+			// If this service operates on all business days,
+			// check only if the date is not in service.
+			if (isAllBusinessDays) return !serviceIdData.dates.includes(date);
+			// Otherwise, also check if the date falls on a weekday
+			// that would never be in service.
+			const weekdayCode = Dates
+				.fromOperationalDate(date, 'Europe/Lisbon')
+				.toFormat('c'); // '1' (Mon) to '7' (Sun)
+			// The date is not in service if it is not in the service dates
+			// or if it is a weekday that is not operated by this service.
+			return serviceWeekdayCodes.includes(weekdayCode) && !serviceIdData.dates.includes(date);
+		});
+
+		const allDatesNotInDatesWithoutService = matchedDayType.dates.filter(date => serviceIdData.dates.includes(date) && !datesWithoutService.includes(date));
+
+		console.log('HERE', serviceIdData._id, isAllBusinessDays, datesWithoutService.length, allDatesNotInDatesWithoutService.length);
 
 		//
-		// Case 1: Mostly regular, except on some dates
+		// Case 1: Mostly regular, except on some dates.
+		// In this case, we list the dates that are NOT in service.
+		// Example: "Exceto a 25/12/2022"
 
-		if (regularDatesInService.length >= regularDatesNotInService.length) {
+		if (allDatesNotInDatesWithoutService.length >= datesWithoutService.length) {
 			// Format the dates into a human readable format
-			const datesFormatted = regularDatesNotInService.map((date) => {
+			const datesFormatted = datesWithoutService.map((date) => {
 				const formattedDate = Dates
 					.fromOperationalDate(date, 'Europe/Lisbon')
 					.toFormat('dd/LL/yyyy');
@@ -349,10 +366,12 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		//
 		// Case 2: Only on a few dates
+		// In this case, we list the dates that are in service.
+		// Example: "Apenas a 01/01/2023"
 
-		if (regularDatesInService.length < regularDatesNotInService.length) {
+		if (allDatesNotInDatesWithoutService.length < datesWithoutService.length) {
 			// Format the dates into a human readable format
-			const datesFormatted = regularDatesInService.map((date) => {
+			const datesFormatted = allDatesNotInDatesWithoutService.map((date) => {
 				const formattedDate = Dates
 					.fromOperationalDate(date, 'Europe/Lisbon')
 					.toFormat('dd/LL/yyyy');
@@ -370,8 +389,6 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		//
 	}
-
-	// process.exit(0);
 
 	//
 	// Output the calendar assignments file with the new service_ids,
