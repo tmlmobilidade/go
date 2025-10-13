@@ -215,7 +215,10 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		const isExactMatch = serviceIdData.dates.length === matchedDayType.dates.length && matchedDayType.dates.every(date => serviceIdData.dates.includes(date));
 
-		if (isExactMatch) continue;
+		if (isExactMatch) {
+			Logs.info(`Service ID ${serviceIdData._id} matches exactly the day_type ${serviceIdData.day_type} and period ${serviceIdData.period}. No exceptions needed.`);
+			continue;
+		}
 
 		//
 		// If the match is not exact, we need to detect the exceptions
@@ -225,9 +228,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// 2. Specific dates that are included or excluded
 
 		//
-		// Start with detecting a given pattern for this service_id.
-		// For example, does this only operate on mondays? Or only on weekends?
-		// If so, add a comment to calendarExt.txt noting this exception.
+		// Start with counting the occurrences of each weekday in the service_id dates
+		// and the matched day_type dates. If the counts match for a weekday,
+		// we consider that weekday to be regular, otherwise it is an exception.
 
 		const serviceIdWeekdaysMap: Record<string, { count: number, dates: OperationalDate[] }> = {};
 
@@ -285,49 +288,33 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		const serviceIsRegular = Object.values(weekdaysMap).every(v => v === true);
 
-		//
-		// Also detect which weekdays are operated on since
-		// Saturday and Sunday have their own timetable slots.
-
-		const weekdaysCount = Object.values(serviceIdWeekdaysMap).length;
-
-		const isAllBusinessDays = weekdaysCount === 5 && ['1', '2', '3', '4', '5'].every(d => serviceIdWeekdaysMap[d]);
-		const isSaturdaysOnly = weekdaysCount === 1 && serviceIdWeekdaysMap['6'];
-		const isSundaysOnly = weekdaysCount === 1 && serviceIdWeekdaysMap['7'];
-
-		if (isAllBusinessDays || isSaturdaysOnly || isSundaysOnly) continue;
-
-		//
-		// Add exceptions based on the detected patterns.
-		// e.g. only on Mondays and Wednesdays.
-
 		if (serviceIsRegular) {
+			// Get friendly names for weekdays and period
 			const weekdayNames = getWeekdayNames(Object.keys(weekdaysMap));
 			const periodName = getPeriodName(serviceIdData.period);
+			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push({
 				comment: `Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}.`,
 				index: 'º',
 			});
+			// Log and continue to next service ID
+			Logs.info(`Service ID ${serviceIdData._id} is regular on ${weekdayNames.join(', ')} during ${periodName}. No date exceptions needed.`);
 			continue;
 		}
 
 		//
 		// When the service is not regular, there are two possibilities:
-		// 1. The service is mostly regular on all weekdays, but on some dates it deviates from the matched day type configuration;
+		// 1. The service is mostly regular on a set of weekdays, but on some dates it deviates from the matched day type configuration;
 		// 2. The service only operates on a few dates (eg. only on Christmas).
-		// However, for case 1, there is a special sub-case to consider, which is when the service is mostly regular
-		// on a subset of weekdays (eg. every Wednesday except on that one); To handle this special sub-case,
-		// we need to ignore dates that would never be in service anyway, for example, if a service only operates on Wednesdays,
-		// we don't need to list all the other weekdays as exceptions, since they would never be in service anyway.
+		// To handle case 1 we need to ignore dates that would never be in service anyway,
+		// for example, if a service only operates on Wednesdays, we don't need to list all
+		// the other weekdays as exceptions, since they would never be in service anyway.
 
 		const serviceWeekdayCodes = Object.keys(weekdaysMap);
 
-		const datesWithoutService = matchedDayType.dates.filter((date) => {
-			// If this service operates on all business days,
-			// check only if the date is not in service.
-			if (isAllBusinessDays) return !serviceIdData.dates.includes(date);
-			// Otherwise, also check if the date falls on a weekday
-			// that would never be in service.
+		const expectedButInactiveDates = matchedDayType.dates.filter((date) => {
+			// Check if the date falls on a weekday that
+			// would never be in service.
 			const weekdayCode = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
 				.toFormat('c'); // '1' (Mon) to '7' (Sun)
@@ -336,18 +323,19 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			return serviceWeekdayCodes.includes(weekdayCode) && !serviceIdData.dates.includes(date);
 		});
 
-		const allDatesNotInDatesWithoutService = matchedDayType.dates.filter(date => serviceIdData.dates.includes(date) && !datesWithoutService.includes(date));
+		const activeServiceDates = matchedDayType.dates.filter(date => serviceIdData.dates.includes(date) && !expectedButInactiveDates.includes(date));
 
-		console.log('HERE', serviceIdData._id, isAllBusinessDays, datesWithoutService.length, allDatesNotInDatesWithoutService.length);
+		Logs.info(`Service ID ${serviceIdData._id} has ${activeServiceDates.length} active dates and ${expectedButInactiveDates.length} expected but inactive dates.`);
 
 		//
 		// Case 1: Mostly regular, except on some dates.
-		// In this case, we list the dates that are NOT in service.
+		// If expected but inactive dates are fewer than active service dates,
+		// it is easier to list the exceptions as dates that are NOT in service.
 		// Example: "Exceto a 25/12/2022"
 
-		if (allDatesNotInDatesWithoutService.length >= datesWithoutService.length) {
+		if (expectedButInactiveDates.length && expectedButInactiveDates.length < activeServiceDates.length) {
 			// Format the dates into a human readable format
-			const datesFormatted = datesWithoutService.map((date) => {
+			const datesFormatted = expectedButInactiveDates.map((date) => {
 				const formattedDate = Dates
 					.fromOperationalDate(date, 'Europe/Lisbon')
 					.toFormat('dd/LL/yyyy');
@@ -355,12 +343,14 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			});
 			// Detect is plural or singular
 			let prefix = 'Exceto a';
-			if (datesFormatted.length > 1) prefix = 'Exceto nos dias ';
+			if (datesFormatted.length > 1) prefix = 'Exceto nos dias';
 			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push({
 				comment: `${prefix} ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
 				index: '-',
 			});
+			// Log and continue to next service ID
+			Logs.info(`Service ID ${serviceIdData._id} has ${expectedButInactiveDates.length} exceptions. Noted in calendarExt.txt.`);
 			continue;
 		}
 
@@ -369,9 +359,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// In this case, we list the dates that are in service.
 		// Example: "Apenas a 01/01/2023"
 
-		if (allDatesNotInDatesWithoutService.length < datesWithoutService.length) {
-			// Format the dates into a human readable format
-			const datesFormatted = allDatesNotInDatesWithoutService.map((date) => {
+		if (!expectedButInactiveDates.length || expectedButInactiveDates.length >= activeServiceDates.length) {
+		// Format the dates into a human readable format
+			const datesFormatted = activeServiceDates.map((date) => {
 				const formattedDate = Dates
 					.fromOperationalDate(date, 'Europe/Lisbon')
 					.toFormat('dd/LL/yyyy');
@@ -379,12 +369,15 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			});
 			// Detect is plural or singular
 			let prefix = 'Apenas a';
-			if (datesFormatted.length > 1) prefix = 'Apenas nos dias ';
+			if (datesFormatted.length > 1) prefix = 'Nos dias';
 			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push({
 				comment: `${prefix} ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
 				index: '+',
 			});
+			// Log and continue to next service ID
+			Logs.info(`Service ID ${serviceIdData._id} has ${activeServiceDates.length} exceptions. Noted in calendarExt.txt.`);
+			continue;
 		}
 
 		//
