@@ -2,7 +2,7 @@
 
 import { DAY_TYPES } from '@/day-types.js';
 import { getPeriodName, getWeekdayNames } from '@/get-names.js';
-import { type CalendarAssignmentsExt, type CalendarExt, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
+import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
@@ -28,7 +28,18 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	});
 
 	const datesMap = new Map<string, GTFS_Date>();
-	datesCat.data.forEach(d => datesMap.set(d.date, d));
+	const dayTypesConfig: DayTypeConfig[] = DAY_TYPES;
+
+	datesCat.data.forEach((d) => {
+		// Ignore dates outside the export range
+		// if (d.date.localeCompare(exportConfig.date_range.start) > 0) console.log(d.date);
+		if (d.date < exportConfig.date_range.start || d.date > exportConfig.date_range.end) return;
+		// Add this date to the corresponding day_type_id
+		const dayTypeTable = dayTypesConfig.find(dt => dt.period === d.period && dt.day_type === d.day_type);
+		if (dayTypeTable) dayTypeTable.dates.push(d.date);
+		// Add to map
+		datesMap.set(d.date, d);
+	});
 
 	//
 	// Get all unique Pattern IDs from trips
@@ -96,7 +107,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 			for (const serviceId of equalTripsData.service_ids) {
 				// Get all dates for this service_id
-				const serviceDates = sqlTables.calendar_dates.get(serviceId);
+				const serviceDates = sqlTables.calendar_dates[serviceId];
 				if (!serviceDates.length) continue;
 				// Categorize each date
 				serviceDates.forEach((date) => {
@@ -196,11 +207,29 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		//
 
 		//
-		// Detect a given pattern for this service_id. For example,
-		// does this only operate on mondays? Or only on weekends?
+		// Check if this service_id matches any of the standard
+		// day_type and period combinations exactly.
+
+		const matchedDayType = DAY_TYPES.find(dt => dt.day_type === serviceIdData.day_type && dt.period === serviceIdData.period);
+		if (!matchedDayType) return Logs.error(`Service ID ${serviceIdData._id} with day_type ${serviceIdData.day_type} and period ${serviceIdData.period} does not match any known day_type and period combination.`);
+
+		const isExactMatch = serviceIdData.dates.length === matchedDayType.dates.length && matchedDayType.dates.every(date => serviceIdData.dates.includes(date));
+
+		if (isExactMatch) continue;
+
+		//
+		// If the match is not exact, we need to detect the exceptions
+		// to the standard pattern and note them in calendarExt.txt.
+		// Exceptions can be of two types:
+		// 1. Patterns in the weekdays that are operated on
+		// 2. Specific dates that are included or excluded
+
+		//
+		// Start with detecting a given pattern for this service_id.
+		// For example, does this only operate on mondays? Or only on weekends?
 		// If so, add a comment to calendarExt.txt noting this exception.
 
-		const weekdaysMap: Record<string, { count: number, dates: OperationalDate[] }> = {};
+		const serviceIdWeekdaysMap: Record<string, { count: number, dates: OperationalDate[] }> = {};
 
 		for (const date of serviceIdData.dates) {
 			// Get the date entry from dates.txt
@@ -213,49 +242,66 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			// Treat holidays as Sundays
 			if (matchingDateEntry.holiday === '1') weekdayCode = '7';
 			// Create a new entry for this weekday if it doesn't exist yet
-			if (!weekdaysMap[weekdayCode]) weekdaysMap[weekdayCode] = { count: 0, dates: [] };
+			if (!serviceIdWeekdaysMap[weekdayCode]) serviceIdWeekdaysMap[weekdayCode] = { count: 0, dates: [] };
 			// Increment the count for this weekday
-			weekdaysMap[weekdayCode].count++;
-			weekdaysMap[weekdayCode].dates.push(date);
+			serviceIdWeekdaysMap[weekdayCode].count++;
+			serviceIdWeekdaysMap[weekdayCode].dates.push(date);
+		}
+
+		const matchedDayTypeWeekdaysMap: Record<string, { count: number, dates: OperationalDate[] }> = {};
+
+		for (const date of matchedDayType.dates) {
+			// Get the date entry from dates.txt
+			const matchingDateEntry = datesMap.get(date);
+			if (!matchingDateEntry) return Logs.error(`Date ${date} for service_id ${serviceIdData._id} not found in dates.txt`);
+			// Get the weekday code for this date
+			let weekdayCode = Dates
+				.fromOperationalDate(date, 'Europe/Lisbon')
+				.toFormat('c'); // '1' (Mon) to '7' (Sun)
+			// Treat holidays as Sundays
+			if (matchingDateEntry.holiday === '1') weekdayCode = '7';
+			// Create a new entry for this weekday if it doesn't exist yet
+			if (!matchedDayTypeWeekdaysMap[weekdayCode]) matchedDayTypeWeekdaysMap[weekdayCode] = { count: 0, dates: [] };
+			// Increment the count for this weekday
+			matchedDayTypeWeekdaysMap[weekdayCode].count++;
+			matchedDayTypeWeekdaysMap[weekdayCode].dates.push(date);
 		}
 
 		//
-		// Detect if the service is regular, i.e. it operates on the given weekdays
-		// every week in the date range. If not, it is an exception and should be noted.
+		// We consider a service to be regular if there are
+		// the same number of dates for each weekday in the service
+		// as in the matched day type configuration.
 
-		const weekdaysCount = Object.keys(weekdaysMap).length;
+		const weekdaysMap: Record<string, boolean> = {};
 
-		// const isRegularService = Object.values(weekdaysMap).every(wd => wd.count >= (serviceIdData.dates.length / weekdaysCount) * 0.8);
-
-		const isBusinessDaysOnly = weekdaysCount === 5 && ['1', '2', '3', '4', '5'].every(d => weekdaysMap[d]);
-		const isSaturdaysOnly = weekdaysCount === 1 && weekdaysMap['6'];
-		const isSundaysOnly = weekdaysCount === 1 && weekdaysMap['7'];
-
-		//
-		// When this service has only a few dates, for the end user it is clearer
-		// to just list the dates rather than the weekdays it operates on.
-
-		if (serviceIdData.dates.length < 3) {
-			// Format the dates into a human readable format
-			const datesFormatted = serviceIdData.dates.map((date) => {
-				const formattedDate = Dates
-					.fromOperationalDate(date, 'Europe/Lisbon')
-					.toFormat('dd/LL/yyyy');
-				return formattedDate;
-			});
-			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `Nos dias ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
-				index: 'º',
-			});
-			continue;
+		for (const [weekdayCode, matchedData] of Object.entries(serviceIdWeekdaysMap)) {
+			// If the counts match, we consider this weekday to be regular
+			if (serviceIdWeekdaysMap[weekdayCode] && serviceIdWeekdaysMap[weekdayCode].count === matchedData.count) {
+				weekdaysMap[weekdayCode] = true;
+			}
+			// Otherwise, it is an exception
+			else weekdaysMap[weekdayCode] = false;
 		}
 
-		//
-		// When the service operates on a subset of weekdays,
-		// e.g. only on Mondays and Wednesdays, we note the weekdays instead.
-		// Since Saturday and Sunday have their own timetable slots, we skip them here.
+		const serviceIsRegular = Object.values(weekdaysMap).every(v => v === true);
 
-		if (!isBusinessDaysOnly && !isSaturdaysOnly && !isSundaysOnly) {
+		//
+		// Also detect which weekdays are operated on since
+		// Saturday and Sunday have their own timetable slots.
+
+		const weekdaysCount = Object.values(serviceIdWeekdaysMap).length;
+
+		const isAllBusinessDays = weekdaysCount === 5 && ['1', '2', '3', '4', '5'].every(d => serviceIdWeekdaysMap[d]);
+		const isSaturdaysOnly = weekdaysCount === 1 && serviceIdWeekdaysMap['6'];
+		const isSundaysOnly = weekdaysCount === 1 && serviceIdWeekdaysMap['7'];
+
+		if (isAllBusinessDays || isSaturdaysOnly || isSundaysOnly) continue;
+
+		//
+		// Add exceptions based on the detected patterns.
+		// e.g. only on Mondays and Wednesdays.
+
+		if (serviceIsRegular) {
 			const weekdayNames = getWeekdayNames(Object.keys(weekdaysMap));
 			const periodName = getPeriodName(serviceIdData.period);
 			updatedServiceIds[serviceIdKey].exceptions.push({
@@ -264,6 +310,27 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			});
 			continue;
 		}
+
+		//
+		// When this service has only a few dates, for the end user it is clearer
+		// to just list the dates rather than the weekdays it operates on.
+		// Extract the dates that are not present in the matched day type configuration
+		// and list them in the exceptions.
+
+		const missingDates = matchedDayType.dates.filter(date => !serviceIdData.dates.includes(date));
+
+		// Format the dates into a human readable format
+		const datesFormatted = missingDates.map((date) => {
+			const formattedDate = Dates
+				.fromOperationalDate(date, 'Europe/Lisbon')
+				.toFormat('dd/LL/yyyy');
+			return formattedDate;
+		});
+
+		updatedServiceIds[serviceIdKey].exceptions.push({
+			comment: `Nos dias ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
+			index: 'º',
+		});
 
 		//
 	}

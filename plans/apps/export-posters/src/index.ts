@@ -30,7 +30,11 @@ import { exportDayTypesFile } from './exports/day_types.js';
 		//
 		// Get single plan to process
 
-		const planData = await plans.findById('P1LDS');
+		const planData = await plans.findById('P1LDS'); // Teste Simples
+		// const planData = await plans.findById('FPTD0'); // 41 Viação Alvorada
+		// const planData = await plans.findById('LA4CI'); // 42 Rodoviária de Lisboa
+		// const planData = await plans.findById('BYBGK'); // 43 Transportes Sul do Tejo
+		// const planData = await plans.findById('N8TKT'); // 44 Alsa Todi
 
 		Logs.info(`Found Plan to process: ${planData._id}`);
 
@@ -40,34 +44,40 @@ import { exportDayTypesFile } from './exports/day_types.js';
 		}
 
 		//
-		// Setup the export config
-
-		const exportConfig: ExportToHitouchConfig = {
-			output: 'export-hitouch.zip',
-			workdir: '/tmp/hitouch',
-		};
-
-		//
 		// Import the Plan into a local SQLite database
 
 		const importConfig: ImportGtfsToDatabaseConfig = {
 			date_range: {
 				end: validateOperationalDate('20501231'),
-				start: validateOperationalDate('20010101'),
+				start: validateOperationalDate('19900101'),
 			},
 		};
 
 		const sqlGtfs = await importGtfsToDatabase(planData, importConfig);
 
 		//
-		// Start the export process
+		// Setup the export config
 
-		Logs.info(`Exporting to HiTouch GTFS...`);
+		const existingPlanDates = Array.from(new Set(Object.values(sqlGtfs.calendar_dates).flat())).sort();
+
+		const exportConfig: ExportToHitouchConfig = {
+			date_range: {
+				end: existingPlanDates[existingPlanDates.length - 1],
+				start: existingPlanDates[0],
+			},
+			output: 'export-hitouch.zip',
+			workdir: '/tmp/hitouch',
+		};
 
 		if (fs.existsSync(exportConfig.workdir)) {
 			fs.rmSync(exportConfig.workdir, { recursive: true });
 		}
 		fs.mkdirSync(exportConfig.workdir, { recursive: true });
+
+		//
+		// Start the export process
+
+		Logs.info(`Exporting to HiTouch GTFS...`);
 
 		const exportTimer = new TIMETRACKER();
 

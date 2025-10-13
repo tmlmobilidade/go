@@ -9,6 +9,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 
 	{
 		_id: 'DT_ESC_DU',
+		dates: [],
 		day_type: '1',
 		index: 1,
 		name: 'Escolar | Dias Úteis',
@@ -16,6 +17,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 	},
 	{
 		_id: 'DT_ESC_SAB',
+		dates: [],
 		day_type: '2',
 		index: 2,
 		name: 'Escolar | Sábados',
@@ -23,6 +25,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 	},
 	{
 		_id: 'DT_ESC_DOM',
+		dates: [],
 		day_type: '3',
 		index: 3,
 		name: 'Escolar | Domingos e Feriados',
@@ -33,6 +36,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 
 	{
 		_id: 'DT_FER_DU',
+		dates: [],
 		day_type: '1',
 		index: 4,
 		name: 'Férias Escolares | Dias Úteis',
@@ -40,6 +44,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 	},
 	{
 		_id: 'DT_FER_SAB',
+		dates: [],
 		day_type: '2',
 		index: 5,
 		name: 'Férias Escolares | Sábados',
@@ -47,6 +52,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 	},
 	{
 		_id: 'DT_FER_DOM',
+		dates: [],
 		day_type: '3',
 		index: 6,
 		name: 'Férias Escolares | Domingos e Feriados',
@@ -57,6 +63,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 
 	{
 		_id: 'DT_VER_DU',
+		dates: [],
 		day_type: '1',
 		index: 7,
 		name: 'Verão | Dias Úteis',
@@ -64,6 +71,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 	},
 	{
 		_id: 'DT_VER_SAB',
+		dates: [],
 		day_type: '2',
 		index: 8,
 		name: 'Verão | Sábados',
@@ -71,6 +79,7 @@ export const DAY_TYPES: DayTypeConfig[] = [
 	},
 	{
 		_id: 'DT_VER_DOM',
+		dates: [],
 		day_type: '3',
 		index: 9,
 		name: 'Verão | Domingos e Feriados',
