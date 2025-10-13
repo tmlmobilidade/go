@@ -30,9 +30,9 @@ import { exportDayTypesFile } from './exports/day_types.js';
 		//
 		// Get single plan to process
 
-		const planData = await plans.findById('P1LDS'); // Teste Simples
+		// const planData = await plans.findById('P1LDS'); // Teste Simples
 		// const planData = await plans.findById('FPTD0'); // 41 Viação Alvorada
-		// const planData = await plans.findById('LA4CI'); // 42 Rodoviária de Lisboa
+		const planData = await plans.findById('LA4CI'); // 42 Rodoviária de Lisboa
 		// const planData = await plans.findById('BYBGK'); // 43 Transportes Sul do Tejo
 		// const planData = await plans.findById('N8TKT'); // 44 Alsa Todi
 

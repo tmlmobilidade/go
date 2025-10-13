@@ -276,7 +276,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		for (const [weekdayCode, matchedData] of Object.entries(serviceIdWeekdaysMap)) {
 			// If the counts match, we consider this weekday to be regular
-			if (serviceIdWeekdaysMap[weekdayCode] && serviceIdWeekdaysMap[weekdayCode].count === matchedData.count) {
+			if (matchedDayTypeWeekdaysMap[weekdayCode] && matchedDayTypeWeekdaysMap[weekdayCode].count === matchedData.count) {
 				weekdaysMap[weekdayCode] = true;
 			}
 			// Otherwise, it is an exception
@@ -306,34 +306,72 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			const periodName = getPeriodName(serviceIdData.period);
 			updatedServiceIds[serviceIdKey].exceptions.push({
 				comment: `Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}.`,
-				index: '+',
+				index: 'º',
 			});
 			continue;
 		}
 
 		//
-		// When this service has only a few dates, for the end user it is clearer
-		// to just list the dates rather than the weekdays it operates on.
-		// Extract the dates that are not present in the matched day type configuration
-		// and list them in the exceptions.
+		// When the service is not regular, there are two possibilities:
+		// 1. The service is mostly regular, but on some dates it deviates from the matched day type configuration;
+		// 2. The service only operates on a few dates, making it impractical to define a pattern.
+		// In both cases, we will list the specific dates as exceptions. However, in the first case,
+		// we say "except on the dates..." while in the second case we say "only on the dates...".
+		// To decide on which case it is, we check for the quantity of dates in the service compared
+		// to the matched day type configuration.
 
-		const missingDates = matchedDayType.dates.filter(date => !serviceIdData.dates.includes(date));
+		const regularDatesNotInService = matchedDayType.dates.filter(date => !serviceIdData.dates.includes(date));
+		const regularDatesInService = matchedDayType.dates.filter(date => serviceIdData.dates.includes(date) && !regularDatesNotInService.includes(date));
 
-		// Format the dates into a human readable format
-		const datesFormatted = missingDates.map((date) => {
-			const formattedDate = Dates
-				.fromOperationalDate(date, 'Europe/Lisbon')
-				.toFormat('dd/LL/yyyy');
-			return formattedDate;
-		});
+		console.log('HERE', serviceIdData._id, regularDatesNotInService.length, regularDatesInService.length);
 
-		updatedServiceIds[serviceIdKey].exceptions.push({
-			comment: `Nos dias ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
-			index: 'º',
-		});
+		//
+		// Case 1: Mostly regular, except on some dates
+
+		if (regularDatesInService.length >= regularDatesNotInService.length) {
+			// Format the dates into a human readable format
+			const datesFormatted = regularDatesNotInService.map((date) => {
+				const formattedDate = Dates
+					.fromOperationalDate(date, 'Europe/Lisbon')
+					.toFormat('dd/LL/yyyy');
+				return formattedDate;
+			});
+			// Detect is plural or singular
+			let prefix = 'Exceto a';
+			if (datesFormatted.length > 1) prefix = 'Exceto nos dias ';
+			// Add exception
+			updatedServiceIds[serviceIdKey].exceptions.push({
+				comment: `${prefix} ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
+				index: '-',
+			});
+			continue;
+		}
+
+		//
+		// Case 2: Only on a few dates
+
+		if (regularDatesInService.length < regularDatesNotInService.length) {
+			// Format the dates into a human readable format
+			const datesFormatted = regularDatesInService.map((date) => {
+				const formattedDate = Dates
+					.fromOperationalDate(date, 'Europe/Lisbon')
+					.toFormat('dd/LL/yyyy');
+				return formattedDate;
+			});
+			// Detect is plural or singular
+			let prefix = 'Apenas a';
+			if (datesFormatted.length > 1) prefix = 'Apenas nos dias ';
+			// Add exception
+			updatedServiceIds[serviceIdKey].exceptions.push({
+				comment: `${prefix} ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
+				index: '+',
+			});
+		}
 
 		//
 	}
+
+	// process.exit(0);
 
 	//
 	// Output the calendar assignments file with the new service_ids,
