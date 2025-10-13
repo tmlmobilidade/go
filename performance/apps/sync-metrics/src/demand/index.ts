@@ -1,4 +1,6 @@
 /* * */
+import { syncDemandByLineByDay } from '@/demand/by_line_by_day.js';
+import { syncDemandByLineByMonth } from '@/demand/by_line_by_month.js';
 import { syncDemandByLineByYear } from '@/demand/by_line_by_year.js';
 
 /* * */
@@ -15,6 +17,8 @@ export const syncDemandMetrics = async () => {
 
 	const runOnInterval = async () => {
 		await syncDemandByLineByYear();
+		await syncDemandByLineByMonth();
+		await syncDemandByLineByDay();
 		setTimeout(runOnInterval, RUN_INTERVAL);
 	};
 

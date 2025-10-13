@@ -29,6 +29,7 @@
 		"@helperkits/timer": "^20240627.34.23",
 		"@tmlmobilidade/interfaces": "20251009.1648.44",
 		"@tmlmobilidade/utils": "20251009.1648.44",
-		"npm-check-updates": "^19.0.0"
+		"npm-check-updates": "^19.0.0",
+		"p-limit": "^7.1.1"
 	}
 }
