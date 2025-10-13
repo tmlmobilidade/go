@@ -70,7 +70,7 @@ export function StopDetailsSectionGeneral() {
 				<Grid columns="a" gap="md">
 
 					<ProposedChangesWrapper
-						actualValue={stopDetailContext.data.stop?.name}
+						currentValue={stopDetailContext.data.stop?.name}
 						inputName="name"
 						label="Antigo Nome da Paragem (p/ alterar)"
 						relatedId={stopDetailContext.data.stop?._id}
