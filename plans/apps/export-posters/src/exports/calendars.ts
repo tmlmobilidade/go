@@ -203,10 +203,18 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	// and then simplify our calendar to include only one date per day_type and period combination,
 	// so we can fit everything into the 9 slots available.
 
+	// TABLE OF CONTENTS:
+	// CASE 1 — EXACT MATCH FOR DAY_TYPE AND PERIOD
+	// CASE 2 — REGULAR ON ALL FOUND WEEKDAYS (eg. Mondays, Wednesdays and Fridays)
+	// CASE 3 — REGULAR ON SOME WEEKDAYS BUT NOT ALL
+	// CASE 4 — IRREGULAR SERVICE (REMOVED DATES)
+	// CASE 5 — IRREGULAR SERVICE (ADDED DATES)
+
 	for (const [serviceIdKey, serviceIdData] of Object.entries(updatedServiceIds)) {
 		//
 
 		//
+		// CASE 1 — EXACT MATCH FOR DAY_TYPE AND PERIOD
 		// Check if this service_id matches any of the standard
 		// day_type and period combinations exactly.
 
@@ -216,21 +224,14 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		const isExactMatch = serviceIdData.dates.length === matchedDayType.dates.length && matchedDayType.dates.every(date => serviceIdData.dates.includes(date));
 
 		if (isExactMatch) {
-			Logs.info(`Service ID ${serviceIdData._id} matches exactly the day_type ${serviceIdData.day_type} and period ${serviceIdData.period}. No exceptions needed.`);
+			Logs.info(`Service ID "${serviceIdData._id}" [CASE 1] Matches exactly the day_type ${serviceIdData.day_type} and period ${serviceIdData.period}. Qty # ${serviceIdData.dates.length} dates.`);
 			continue;
 		}
 
 		//
-		// If the match is not exact, we need to detect the exceptions
-		// to the standard pattern and note them in calendarExt.txt.
-		// Exceptions can be of two types:
-		// 1. Patterns in the weekdays that are operated on
-		// 2. Specific dates that are included or excluded
-
-		//
-		// Start with counting the occurrences of each weekday in the service_id dates
-		// and the matched day_type dates. If the counts match for a weekday,
-		// we consider that weekday to be regular, otherwise it is an exception.
+		// If the match is not exact, start by counting the occurrences of each weekday
+		// in the service_id dates and the matched day_type dates. If the counts match
+		// for a weekday, we consider that weekday to be regular, otherwise it is an exception.
 
 		const serviceIdWeekdaysMap: Record<string, { count: number, dates: OperationalDate[] }> = {};
 
@@ -270,25 +271,27 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			matchedDayTypeWeekdaysMap[weekdayCode].dates.push(date);
 		}
 
-		//
-		// We consider a service to be regular if there are
-		// the same number of dates for each weekday in the service
-		// as in the matched day type configuration.
+		const weekdaysMap: Record<string, { dates_expected: OperationalDate[], dates_found: OperationalDate[], dates_missing: OperationalDate[], is_regular: boolean }> = {};
 
-		const weekdaysMap: Record<string, boolean> = {};
-
-		for (const [weekdayCode, matchedData] of Object.entries(serviceIdWeekdaysMap)) {
-			// If the counts match, we consider this weekday to be regular
-			if (matchedDayTypeWeekdaysMap[weekdayCode] && matchedDayTypeWeekdaysMap[weekdayCode].count === matchedData.count) {
-				weekdaysMap[weekdayCode] = true;
-			}
-			// Otherwise, it is an exception
-			else weekdaysMap[weekdayCode] = false;
+		for (const [weekdayCode, serviceWeekdayData] of Object.entries(serviceIdWeekdaysMap)) {
+			// Save the expected count from the matched day type configuration
+			weekdaysMap[weekdayCode] = {
+				dates_expected: matchedDayTypeWeekdaysMap[weekdayCode].dates,
+				dates_found: serviceWeekdayData.dates,
+				dates_missing: matchedDayTypeWeekdaysMap[weekdayCode].dates.filter(d => !serviceWeekdayData.dates.includes(d)),
+				is_regular: matchedDayTypeWeekdaysMap[weekdayCode].count === serviceWeekdayData.count,
+			};
 		}
 
-		const serviceIsRegular = Object.values(weekdaysMap).every(v => v === true);
+		//
+		// CASE 2 — REGULAR ON ALL FOUND WEEKDAYS (eg. Mondays, Wednesdays and Fridays)
+		// If a service is regular on all expected weekdays, we can simply note that
+		// in the calendarExt.txt file and move on. No need to list all dates.
+		// Example: "Às segundas, quartas e sextas de Período Escolar."
 
-		if (serviceIsRegular) {
+		const serviceIsRegularOnAllExpectedWeekdays = Object.values(weekdaysMap).every(v => v.is_regular);
+
+		if (serviceIsRegularOnAllExpectedWeekdays) {
 			// Get friendly names for weekdays and period
 			const weekdayNames = getWeekdayNames(Object.keys(weekdaysMap));
 			const periodName = getPeriodName(serviceIdData.period);
@@ -298,87 +301,108 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				index: 'º',
 			});
 			// Log and continue to next service ID
-			Logs.info(`Service ID ${serviceIdData._id} is regular on ${weekdayNames.join(', ')} during ${periodName}. No date exceptions needed.`);
+			Logs.info(`Service ID "${serviceIdData._id}" [CASE 2] Is regular on all expected weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates.`);
 			continue;
 		}
 
 		//
-		// When the service is not regular, there are two possibilities:
-		// 1. The service is mostly regular on a set of weekdays, but on some dates it deviates from the matched day type configuration;
-		// 2. The service only operates on a few dates (eg. only on Christmas).
-		// To handle case 1 we need to ignore dates that would never be in service anyway,
-		// for example, if a service only operates on Wednesdays, we don't need to list all
-		// the other weekdays as exceptions, since they would never be in service anyway.
+		// CASE 3 — REGULAR ON SOME WEEKDAYS BUT NOT ALL
+		// If a service is regular only on some weekdays, we need to list the exceptions.
+		// A weekday is considered "almost" regular if the number of occurrences in the service_id
+		// is greater than the number of missing dates in the matched day type.
+		// Handle the case where all weekdays are present (regular) but some have missing dates. This is the same
+		// as CASE 4 or CASE 5, since business days, saturdays and sundays have their own timetables.
+		// Example: "Às segundas, quartas e sextas de Período Escolar, exceto a 25/12/2022."
 
-		const serviceWeekdayCodes = Object.keys(weekdaysMap);
+		const isAllBusinessDays = Object.keys(weekdaysMap).length === 5;
+		const isSaturdayOrSunday = weekdaysMap['6'] || weekdaysMap['7'];
 
-		const expectedButInactiveDates = matchedDayType.dates.filter((date) => {
-			// Check if the date falls on a weekday that
-			// would never be in service.
-			const weekdayCode = Dates
-				.fromOperationalDate(date, 'Europe/Lisbon')
-				.toFormat('c'); // '1' (Mon) to '7' (Sun)
-			// The date is not in service if it is not in the service dates
-			// or if it is a weekday that is not operated by this service.
-			return serviceWeekdayCodes.includes(weekdayCode) && !serviceIdData.dates.includes(date);
+		const almostRegularWeekdays = Object.entries(weekdaysMap).filter(([, weekdayData]) => weekdayData.is_regular || weekdayData.dates_found.length > weekdayData.dates_missing.length);
+
+		if (almostRegularWeekdays.length && !isAllBusinessDays && !isSaturdayOrSunday) {
+			// Get friendly names for weekdays and period
+			const weekdayNames = getWeekdayNames(almostRegularWeekdays.map(([weekdayCode]) => weekdayCode));
+			const periodName = getPeriodName(serviceIdData.period);
+			// Get the exception dates for the non-regular weekdays
+			const exceptionDatesFormatted = Object.entries(weekdaysMap)
+				.flatMap(([, weekdayData]) => weekdayData.dates_missing)
+				.map((date) => {
+					const formattedDate = Dates
+						.fromOperationalDate(date, 'Europe/Lisbon')
+						.toFormat('dd/LL/yyyy');
+					return formattedDate;
+				});
+			// Detect is plural or singular
+			let prefix = 'exceto a';
+			if (exceptionDatesFormatted.length > 1) prefix = 'exceto nos dias';
+			// Add exception
+			updatedServiceIds[serviceIdKey].exceptions.push({
+				comment: `Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}, ${prefix} ${exceptionDatesFormatted.join(', ')}.`,
+				index: '*',
+			});
+			// Log and continue to next service ID
+			Logs.info(`Service ID "${serviceIdData._id}" [CASE 3] Is regular on some weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
+			continue;
+		}
+
+		//
+		// CASE 4 — IRREGULAR SERVICE (REMOVED DATES)
+		// If a service is irregular, and there are more dates with service that missing ones,
+		// we need to list all dates where the service is not active. This is usually the case of
+		// reduced service on christmas and new year, for example.
+		// Example: "Exceto a 25/12/2022, 01/01/2023 e 15/08/2023."
+
+		const datesWhereServiceIsActive = Object.values(weekdaysMap).flatMap(weekdayData => weekdayData.dates_found);
+		const datesWhereServiceIsMissingButIsExpected = Object.values(weekdaysMap).flatMap(weekdayData => weekdayData.dates_missing);
+
+		if (datesWhereServiceIsActive.length > datesWhereServiceIsMissingButIsExpected.length) {
+			// Get the exception dates
+			const exceptionDatesFormatted = Object.entries(weekdaysMap)
+				.flatMap(([, weekdayData]) => weekdayData.dates_missing)
+				.map((date) => {
+					const formattedDate = Dates
+						.fromOperationalDate(date, 'Europe/Lisbon')
+						.toFormat('dd/LL/yyyy');
+					return formattedDate;
+				});
+				// Detect is plural or singular
+			let prefix = 'Exceto a';
+			if (exceptionDatesFormatted.length > 1) prefix = 'Exceto nos dias';
+			// Add exception
+			updatedServiceIds[serviceIdKey].exceptions.push({
+				comment: `${prefix} ${exceptionDatesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
+				index: '*',
+			});
+			// Log and continue to next service ID
+			Logs.info(`Service ID "${serviceIdData._id}" [CASE 4] Is irregular with more active dates (${datesWhereServiceIsActive.length}) than missing ones (${datesWhereServiceIsMissingButIsExpected.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
+			continue;
+		}
+
+		//
+		// CASE 5 — IRREGULAR SERVICE (ADDED DATES)
+		// If a service is irregular, and there are more dates without service that active ones,
+		// we need to list all dates where the service is active. This is usually the case of
+		// special services for events or holidays.
+		// Example: "Apenas a 01/01/2023 e 15/08/2023."
+
+		const exceptionDatesFormatted = Object.entries(weekdaysMap)
+			.flatMap(([, weekdayData]) => weekdayData.dates_found)
+			.map((date) => {
+				const formattedDate = Dates
+					.fromOperationalDate(date, 'Europe/Lisbon')
+					.toFormat('dd/LL/yyyy');
+				return formattedDate;
+			});
+
+		let prefix = 'Apenas a';
+		if (exceptionDatesFormatted.length > 1) prefix = 'Nos dias';
+
+		updatedServiceIds[serviceIdKey].exceptions.push({
+			comment: `${prefix} ${exceptionDatesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
+			index: '*',
 		});
 
-		const activeServiceDates = matchedDayType.dates.filter(date => serviceIdData.dates.includes(date) && !expectedButInactiveDates.includes(date));
-
-		Logs.info(`Service ID ${serviceIdData._id} has ${activeServiceDates.length} active dates and ${expectedButInactiveDates.length} expected but inactive dates.`);
-
-		//
-		// Case 1: Mostly regular, except on some dates.
-		// If expected but inactive dates are fewer than active service dates,
-		// it is easier to list the exceptions as dates that are NOT in service.
-		// Example: "Exceto a 25/12/2022"
-
-		if (expectedButInactiveDates.length && expectedButInactiveDates.length < activeServiceDates.length) {
-			// Format the dates into a human readable format
-			const datesFormatted = expectedButInactiveDates.map((date) => {
-				const formattedDate = Dates
-					.fromOperationalDate(date, 'Europe/Lisbon')
-					.toFormat('dd/LL/yyyy');
-				return formattedDate;
-			});
-			// Detect is plural or singular
-			let prefix = 'Exceto a';
-			if (datesFormatted.length > 1) prefix = 'Exceto nos dias';
-			// Add exception
-			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `${prefix} ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
-				index: '-',
-			});
-			// Log and continue to next service ID
-			Logs.info(`Service ID ${serviceIdData._id} has ${expectedButInactiveDates.length} exceptions. Noted in calendarExt.txt.`);
-			continue;
-		}
-
-		//
-		// Case 2: Only on a few dates
-		// In this case, we list the dates that are in service.
-		// Example: "Apenas a 01/01/2023"
-
-		if (!expectedButInactiveDates.length || expectedButInactiveDates.length >= activeServiceDates.length) {
-		// Format the dates into a human readable format
-			const datesFormatted = activeServiceDates.map((date) => {
-				const formattedDate = Dates
-					.fromOperationalDate(date, 'Europe/Lisbon')
-					.toFormat('dd/LL/yyyy');
-				return formattedDate;
-			});
-			// Detect is plural or singular
-			let prefix = 'Apenas a';
-			if (datesFormatted.length > 1) prefix = 'Nos dias';
-			// Add exception
-			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `${prefix} ${datesFormatted.join(', ').replace(/, ([^,]*)$/, ' e $1')}`,
-				index: '+',
-			});
-			// Log and continue to next service ID
-			Logs.info(`Service ID ${serviceIdData._id} has ${activeServiceDates.length} exceptions. Noted in calendarExt.txt.`);
-			continue;
-		}
+		Logs.info(`Service ID "${serviceIdData._id}" [CASE 5] Is irregular with more missing dates (${datesWhereServiceIsMissingButIsExpected.length}) than active ones (${datesWhereServiceIsActive.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
 
 		//
 	}
@@ -436,6 +460,10 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	// Log completion
 
 	Logs.info('Merged service IDs into new calendars.');
+
+	for (const serviceIdData of Object.values(updatedServiceIds)) {
+		Logs.info(`Service ID "${serviceIdData._id}" has ${serviceIdData.dates.length} dates and ${serviceIdData.exceptions.length} exceptions.`);
+	}
 
 	//
 }
