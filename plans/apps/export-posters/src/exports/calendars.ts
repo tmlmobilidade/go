@@ -49,7 +49,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 	Logs.info(`Found ${allUniquePatternIds.length} unique pattern IDs in trips.`);
 
-	const updatedServiceIds: Record<string, { _id: string, dates: OperationalDate[], day_type: string, exceptions: { comment: string, index: string }[], period: string }> = {};
+	const updatedServiceIds: Record<string, { _id: string, dates: OperationalDate[], day_type: string, exceptions: string[], period: string }> = {};
 
 	//
 	// Loop through each pattern_id and find trips associated with it
@@ -296,10 +296,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			const weekdayNames = getWeekdayNames(Object.keys(weekdaysMap));
 			const periodName = getPeriodName(serviceIdData.period);
 			// Add exception
-			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}.`,
-				index: 'º',
-			});
+			updatedServiceIds[serviceIdKey].exceptions.push(`Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}.`);
 			// Log and continue to next service ID
 			Logs.info(`Service ID "${serviceIdData._id}" [CASE 2] Is regular on all expected weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates.`);
 			continue;
@@ -312,7 +309,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// is greater than the number of missing dates in the matched day type.
 		// Handle the case where all weekdays are present (regular) but some have missing dates. This is the same
 		// as CASE 4 or CASE 5, since business days, saturdays and sundays have their own timetables.
-		// Example: "Às segundas, quartas e sextas de Período Escolar, exceto a 25/12/2022."
+		// Example: "Às segundas, quartas e sextas de Período Escolar, excepto a 25/12/2022."
 
 		const isAllBusinessDays = Object.keys(weekdaysMap).length === 5;
 		const isSaturdayOrSunday = weekdaysMap['6'] || weekdaysMap['7'];
@@ -328,13 +325,10 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				.flatMap(([, weekdayData]) => weekdayData.dates_missing);
 			const exceptionDatesFormatted = getFormattedDates(exceptionDates);
 			// Detect is plural or singular
-			let prefix = 'exceto a';
-			if (exceptionDates.length > 1) prefix = 'exceto nos dias';
+			let prefix = 'excepto a';
+			if (exceptionDates.length > 1) prefix = 'excepto nos dias';
 			// Add exception
-			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}, ${prefix} ${exceptionDatesFormatted}.`,
-				index: '*',
-			});
+			updatedServiceIds[serviceIdKey].exceptions.push(`Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}, ${prefix} ${exceptionDatesFormatted}.`);
 			// Log and continue to next service ID
 			Logs.info(`Service ID "${serviceIdData._id}" [CASE 3] Is regular on some weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
 			continue;
@@ -345,7 +339,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// If a service is irregular, and there are more dates with service that missing ones,
 		// we need to list all dates where the service is not active. This is usually the case of
 		// reduced service on christmas and new year, for example.
-		// Example: "Exceto a 25/12/2022, 01/01/2023 e 15/08/2023."
+		// Example: "Excepto a 25/12/2022, 01/01/2023 e 15/08/2023."
 
 		const datesWhereServiceIsActive = Object.values(weekdaysMap).flatMap(weekdayData => weekdayData.dates_found);
 		const datesWhereServiceIsMissingButIsExpected = Object.values(weekdaysMap).flatMap(weekdayData => weekdayData.dates_missing);
@@ -355,14 +349,8 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			const exceptionDates = Object.entries(weekdaysMap)
 				.flatMap(([, weekdayData]) => weekdayData.dates_missing);
 			const exceptionDatesFormatted = getFormattedDates(exceptionDates);
-			// Detect is plural or singular
-			let prefix = 'Exceto a';
-			if (exceptionDates.length > 1) prefix = 'Exceto nos dias';
 			// Add exception
-			updatedServiceIds[serviceIdKey].exceptions.push({
-				comment: `${prefix} ${exceptionDatesFormatted}`,
-				index: '*',
-			});
+			updatedServiceIds[serviceIdKey].exceptions.push(`Excepto ${exceptionDatesFormatted}`);
 			// Log and continue to next service ID
 			Logs.info(`Service ID "${serviceIdData._id}" [CASE 4] Is irregular with more active dates (${datesWhereServiceIsActive.length}) than missing ones (${datesWhereServiceIsMissingButIsExpected.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
 			continue;
@@ -376,21 +364,26 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// Example: "Apenas a 01/01/2023 e 15/08/2023."
 
 		const exceptionDates = Object.entries(weekdaysMap)
-			.flatMap(([, weekdayData]) => weekdayData.dates_missing);
+			.flatMap(([, weekdayData]) => weekdayData.dates_found);
 		const exceptionDatesFormatted = getFormattedDates(exceptionDates);
 
-		let prefix = 'Apenas a';
-		if (exceptionDates.length > 1) prefix = 'Nos dias';
-
-		updatedServiceIds[serviceIdKey].exceptions.push({
-			comment: `${prefix} ${exceptionDatesFormatted}`,
-			index: '*',
-		});
+		updatedServiceIds[serviceIdKey].exceptions.push(`Disponível ${exceptionDatesFormatted}`);
 
 		Logs.info(`Service ID "${serviceIdData._id}" [CASE 5] Is irregular with more missing dates (${datesWhereServiceIsMissingButIsExpected.length}) than active ones (${datesWhereServiceIsActive.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
 
 		//
 	}
+
+	//
+	// Deduplicate exceptions and add an index for reference
+
+	const uniqueExceptions = new Set(Object.values(updatedServiceIds).flatMap(sid => sid.exceptions).filter(e => e));
+
+	const uniqueExceptionsMap: Record<string, { comment: string, index: string }> = {};
+
+	const indexesList = ['¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹', '¹⁰', '¹¹', '¹²', '¹³', '¹⁴', '¹⁵', '¹⁶', '¹⁷', '¹⁸', '¹⁹', '²⁰', '²¹', '²²', '²³', '²⁴', '²⁵', '²⁶', '²⁷', '²⁸', '²⁹', '³⁰', '³¹', '³²', '³³', '³⁴', '³⁵', '³⁶', '³⁷', '³⁸', '³⁹', '⁴⁰', '⁴¹', '⁴²', '⁴³', '⁴⁴', '⁴⁵', '⁴⁶', '⁴⁷', '⁴⁸', '⁴⁹', '⁵⁰'];
+
+	Array.from(uniqueExceptions).sort().forEach((exception, index) => uniqueExceptionsMap[exception] = { comment: exception, index: indexesList[index] });
 
 	//
 	// Output the calendar assignments file with the new service_ids,
@@ -415,10 +408,11 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			await calendarAssignmentsExtCsv.write(assignment);
 		}
 		// Output any exceptions for this service_id
+		serviceIdData.exceptions = Array.from(new Set(serviceIdData.exceptions));
 		for (const exceptionData of serviceIdData.exceptions) {
 			const calendarException: CalendarExt = {
-				comment: exceptionData.comment,
-				index: exceptionData.index,
+				comment: exceptionData,
+				index: uniqueExceptionsMap[exceptionData].index,
 				service_id: serviceIdData._id,
 			};
 			await calendarExtCsv.write(calendarException);

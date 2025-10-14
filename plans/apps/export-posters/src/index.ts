@@ -16,6 +16,8 @@ import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
+// import { getFormattedDates } from './get-names.js';
+
 /* * */
 
 (async function main() {
@@ -25,6 +27,14 @@ import fs from 'node:fs';
 		Logs.init();
 
 		const globalTimer = new TIMETRACKER();
+
+		// console.log(getFormattedDates(['20250204', '20250205']));
+		// console.log(getFormattedDates(['20250204', '20250205', '20250206', '20250207']));
+		// console.log(getFormattedDates(['20250212', '20250214', '20250222']));
+		// console.log(getFormattedDates(['20251201', '20251202', '20251207', '20251208', '20251214']));
+		// console.log(getFormattedDates(['20250204', '20250205', '20250206', '20250207', '20250212', '20250214', '20250222']));
+
+		// process.exit(0);
 
 		//
 		// Get single plan to process
@@ -49,6 +59,8 @@ import fs from 'node:fs';
 			date_range: {
 				end: validateOperationalDate('20501231'),
 				start: validateOperationalDate('19900101'),
+				// end: validateOperationalDate('20251231'),
+				// start: validateOperationalDate('20250101'),
 			},
 		};
 

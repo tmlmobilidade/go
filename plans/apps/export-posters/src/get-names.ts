@@ -37,19 +37,18 @@ export function getPeriodName(period: string): string {
 }
 
 /**
- * Format a list of dates (YYYYMMDD) into a human-readable string in Portuguese.
+ * Get formatted dates in Portuguese from an array of OperationalDate (YYYYMMDD).
+ *
  * Rules:
- * - Only consecutive on the same month: `4 a 7 Fev. 2025` (or `4 e 5 Fev. 2025` if just two days)
- * - Consecutive + non-consecutive on same month: `4 a 7 Fev. e 12, 14 e 22 Fev. 2025`
- * - Only non-consecutive: `12, 14 e 22 Fev. 2025`
- * - Separate different months with `; `
- * - Use abbreviated month names: Jan., Fev., Mar., Abr., Mai, Jun., Jul., Ago., Set., Out., Nov., Dez.
- * @param dates Array of dates in YYYYMMDD format.
- * @returns Formatted string of dates.
+ * - Only consecutive (>=3 days) on same month: "4 a 7 Fev. 2025"
+ * - Only 2 consecutive days: "4 e 5 Fev. 2025"
+ * - Consecutive + non-consecutive, or mixed with 2-day range: treat all as non-consecutive → "1, 7, 8 e 14 Dez. 2025"
+ * - Only non-consecutive: "12, 14 e 22 Fev. 2025"
  */
 export function getFormattedDates(dates: OperationalDate[]): string {
 	// Sort and deduplicate
 	const sortedDates = Array.from(new Set(dates)).sort();
+
 	// Group by month and year
 	const groupedDates: Record<string, number[]> = {};
 	for (const date of sortedDates) {
@@ -58,9 +57,10 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		if (!groupedDates[monthYear]) groupedDates[monthYear] = [];
 		groupedDates[monthYear].push(day);
 	}
+
 	// Month names in Portuguese
 	const monthNames = ['Jan.', 'Fev.', 'Mar.', 'Abr.', 'Mai.', 'Jun.', 'Jul.', 'Ago.', 'Set.', 'Out.', 'Nov.', 'Dez.'];
-	// Format each group
+
 	const formattedGroups = Object.entries(groupedDates).map(([monthYear, days]) => {
 		const year = monthYear.slice(0, 4);
 		const month = parseInt(monthYear.slice(4, 6), 10);
@@ -84,35 +84,60 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		}
 		ranges.push([start, prev]);
 
-		// Separate consecutive and non-consecutive
-		const consecutive = ranges.filter(([a, b]) => b > a);
-		const nonConsecutive = ranges.filter(([a, b]) => a === b).map(([a]) => a);
+		const hasNonConsecutive = ranges.some(([a, b]) => a === b);
+		const hasTwoDayRange = ranges.some(([a, b]) => b === a + 1);
+		const hasLongRange = ranges.some(([a, b]) => b > a + 1);
 
 		let formatted = '';
 
-		// Helper for formatting ranges correctly (handling 2-day case)
-		const formatRange = ([a, b]: [number, number]) =>
-			b === a + 1 ? `${a} e ${b}` : `${a} a ${b}`;
+		// Helper to format a range properly
+		const formatRange = ([a, b]: [number, number]) => (b === a + 1 ? `${a} e ${b}` : `de ${a} a ${b}`);
 
-		// Case 1: Only consecutive
-		if (consecutive.length > 0 && nonConsecutive.length === 0) {
-			const [a, b] = consecutive[0];
+		// Case 1: Only consecutive (>=3)
+		if (hasLongRange && !hasNonConsecutive && !hasTwoDayRange) {
+			const [a, b] = ranges.find(([a, b]) => b > a + 1);
 			formatted = `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
 		}
-		// Case 2: Only non-consecutive
-		else if (consecutive.length === 0 && nonConsecutive.length > 0) {
-			const list = nonConsecutive.length > 1
-				? `${nonConsecutive.slice(0, -1).join(', ')} e ${nonConsecutive.at(-1)}`
-				: `${nonConsecutive[0]}`;
-			formatted = `${list} ${monthNames[month - 1]} ${year}`;
+		// Case 2: Only one 2-day range
+		else if (hasTwoDayRange && !hasNonConsecutive && !hasLongRange && ranges.length === 1) {
+			const [a, b] = ranges[0];
+			formatted = `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
 		}
-		// Case 3: Mixed consecutive + non-consecutive
-		else {
-			const rangeParts = consecutive.map(formatRange).join(', ');
-			const nonConsecList = nonConsecutive.length > 1
-				? `${nonConsecutive.slice(0, -1).join(', ')} e ${nonConsecutive.at(-1)}`
-				: `${nonConsecutive[0]}`;
+		// Case 3: Mix of long ranges + non-consecutive
+		else if (hasLongRange && hasNonConsecutive) {
+			const rangeParts = ranges
+				.filter(([a, b]) => b > a + 1)
+				.map(formatRange)
+				.join(', ');
+			const nonConsecDays = ranges
+				.filter(([a, b]) => a === b)
+				.map(([a]) => a)
+				.sort((a, b) => a - b);
+
+			const nonConsecList
+				= nonConsecDays.length > 1
+					? `${nonConsecDays.slice(0, -1).join(', ')} e ${nonConsecDays.at(-1)}`
+					: `${nonConsecDays[0]}`;
+
 			formatted = `${rangeParts} ${monthNames[month - 1]} e ${nonConsecList} ${monthNames[month - 1]} ${year}`;
+		}
+		// Case 4: Only non-consecutive or mix with 2-day pairs → treat all as non-consecutive
+		else {
+			const allDays = ranges.flatMap(([a, b]) => {
+				if (b === a) return [a];
+				if (b === a + 1) return [a, b]; // expand 2-day range
+				const expanded: number[] = [];
+				for (let d = a; d <= b; d++) expanded.push(d);
+				return expanded;
+			});
+
+			allDays.sort((a, b) => a - b);
+
+			const list
+				= allDays.length > 1
+					? `${allDays.slice(0, -1).join(', ')} e ${allDays.at(-1)}`
+					: `${allDays[0]}`;
+			formatted = `${list} ${monthNames[month - 1]} ${year}`;
 		}
 
 		return formatted;
