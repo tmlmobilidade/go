@@ -149,7 +149,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: 'PUBLISHED' };
 
 		const method = 'PUT';
-		const url = Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
+		const url = Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId) + '?realtime=true';
 		const body = convertObject(saveAlert, UpdateAlertSchema);
 
 		const response = await fetchData<Alert>(url, method, body);
