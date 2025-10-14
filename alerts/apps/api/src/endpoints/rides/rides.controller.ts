@@ -23,13 +23,7 @@ export class RidesController {
 		const startDate = Dates.now('Europe/Lisbon').minus({ minutes: 30 }).unix_timestamp;
 		const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
 
-		// // ! WARNING: THIS IS FOR DEVELOPMENT PURPOSES ONLY
-		// const todayStartDate = Dates.fromISO('2025-08-28T00:00:00Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
-		// const todayEndDate = Dates.fromISO('2025-08-28T23:59:59Z').minus({ days: 1 }).plus({ hours: 4 }).unix_timestamp;
-
 		pipeline.push({ $match: { end_time_scheduled: { $gte: startDate, $lt: todayEndDate } } });
-
-		console.log(`{ end_time_scheduled: { $gte: ${startDate}, $lte: ${todayEndDate} } }`);
 
 		//
 
