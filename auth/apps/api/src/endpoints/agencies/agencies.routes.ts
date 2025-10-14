@@ -1,7 +1,7 @@
 /* * */
 
 import { AgenciesController } from '@/endpoints/agencies/agencies.controller.js';
-import authorizationMiddleware from '@/middleware/authorization.middleware.js';
+import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
 
