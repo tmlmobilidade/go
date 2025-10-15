@@ -2,12 +2,13 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SQLiteDatabase } from '@tmlmobilidade/connectors';
+import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { mimeTypes } from '@tmlmobilidade/lib';
 import { Dates } from '@tmlmobilidade/utils';
 import fs from 'fs';
 import cron from 'node-cron';
+import os from 'os';
 
 import { DrtJourneys, DrtPatternPoints, DrtPatterns, DrtPatternStops, DrtRoutes, DrtStops } from './drt.types.js';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig } from './import-gtfs-to-database.js';
@@ -55,7 +56,11 @@ async function main() {
 
 		//
 		// Initialize the SQLite database
-		const database = new SQLiteDatabase('drt-model');
+		const sqliteConfig: SQLiteDatabaseConfig = {
+			instanceName: 'drt-model',
+			instancePath: `${os.tmpdir()}/drt-model.db`,
+		};
+		const database = new SQLiteDatabase(sqliteConfig);
 		const tables = intializeDrtSQLTables(database);
 
 		//
@@ -72,8 +77,8 @@ async function main() {
 		LOGGER.info(`[${globalTimer.get()}] Saving the SQLite database to the storage service...`);
 
 		try {
-			const fileStats = fs.statSync(database.instancePath);
-			const fileStream = fs.createReadStream(database.instancePath);
+			const fileStats = fs.statSync(sqliteConfig.instancePath);
+			const fileStream = fs.createReadStream(sqliteConfig.instancePath);
 
 			const fileResult = await files.upload(fileStream, {
 				_id: 'drt-model',
