@@ -40,16 +40,16 @@ interface AlertDetailContextState {
 const emptyAlert: CreateAlertDto = {
 	active_period_end_date: undefined,
 	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(causeSchema.Enum)[0],
+	cause: Object.values(causeSchema.enum)[0],
 	created_by: 'temp',
 	description: '',
-	effect: Object.values(effectSchema.Enum)[0],
+	effect: Object.values(effectSchema.enum)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
 	publish_end_date: undefined,
 	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	publish_status: 'DRAFT',
-	reference_type: Object.values(referenceTypeSchema.Enum)[0],
+	reference_type: Object.values(referenceTypeSchema.enum)[0],
 	references: [],
 	title: '',
 	type: 'PLANNED',
@@ -117,7 +117,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setLoading(true);
 
 		if (!myAlert.reference_type) {
-			myAlert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
+			myAlert.reference_type = Object.values(referenceTypeSchema.enum)[0];
 			myAlert.references = [];
 		}
 
@@ -158,14 +158,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	const saveAlert = async (type: 'draft' | 'publish') => {
 		setIsSaving(true);
-
-		// Handle Save Alert
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
-
 		const method = MODE === AlertDetailMode.CREATE ? 'POST' : 'PUT';
 		const url = MODE === AlertDetailMode.CREATE ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
 		const body = MODE === AlertDetailMode.CREATE ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
-
 		const response = await fetchData<Alert>(url, method, body);
 
 		if (!response.isOk) {
@@ -174,14 +170,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			return;
 		}
 
-		// Upload image if the alert is new
 		if (response.data) await uploadImage(response.data._id.toString());
 
-		// Redirect to the detail page if the alert is new
 		if (response.data && MODE === AlertDetailMode.CREATE) {
 			router.replace(Routes.ALERT_DETAIL(response.data._id.toString()));
 		}
-
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
 
 		setIsSaving(false);
@@ -221,19 +214,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	const uploadImage = async (alert_id: string) => {
 		if (!image) return;
-
-		console.log('HERE =======> ', alert_id);
 		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);
-
-		console.log('HERE =======> ', response);
-
 		if (response.error) {
-			console.log('HERE =======> ', response.error);
 			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
 			return;
 		}
-
-		console.log('SUCCESS =======> ', response.data);
 		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
 	};
 

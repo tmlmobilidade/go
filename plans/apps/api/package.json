@@ -16,6 +16,10 @@
 	"dependencies": {
 		"@fastify/multipart": "9.2.1",
 		"@tmlmobilidade/connectors": "20251015.1047.23",
+<<<<<<< HEAD
+=======
+		"@tmlmobilidade/emails": "20251015.1047.23",
+>>>>>>> origin/production
 		"@tmlmobilidade/interfaces": "20251015.1047.23",
 		"@tmlmobilidade/lib": "20251015.1047.23",
 		"@tmlmobilidade/utils": "20251015.1047.23",

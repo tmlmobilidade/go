@@ -159,10 +159,8 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 
 		// Handle Save Alert
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: 'PUBLISHED' };
-		const url = Routes.ALERTS_API + Routes.ALERT_LIST;
+		const url = Routes.ALERTS_API + Routes.ALERT_LIST + '?realtime=true';
 		const body = saveAlert;
-
-		console.log('HERE =======> ', url, body);
 		const response = await fetchData<Alert>(url, 'POST', body);
 
 		if (response.error) {
