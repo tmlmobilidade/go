@@ -2,7 +2,6 @@
 
 /* * */
 
-import { type DataTableHandle } from '@/components/datatable/DataTableContext';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
@@ -50,9 +49,6 @@ interface RidesListContextState {
 		last_update: null | UnixTimestamp
 		loading: boolean
 	}
-	refs: {
-		datatable: React.RefObject<DataTableHandle | null>
-	}
 }
 
 /* * */
@@ -78,7 +74,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const agenciesContext = useAgenciesContext();
 
 	const webSocketRef = useRef<null | WebSocket>(null);
-	const dataTableRef = useRef<DataTableHandle | null>(null);
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.trim(), 500);
@@ -222,9 +217,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			last_update: flagsLastUpdateState,
 			loading: ridesLoading,
 		},
-		refs: {
-			datatable: dataTableRef,
-		},
 	}), [
 		ridesData,
 		filterAgency,
@@ -241,7 +233,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		flagsLastUpdateState,
 		ridesLoading,
 		ridesError,
-		dataTableRef,
 	]);
 
 	//
