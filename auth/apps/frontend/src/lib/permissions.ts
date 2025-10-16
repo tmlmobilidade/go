@@ -136,13 +136,25 @@ const validationActions: PermissionConfig<typeof Permissions.validations.actions
 
 const roleActions: PermissionConfig<typeof Permissions.roles.actions> = {
 	actions: [
+		{ description: 'Permite ver grupos de permissões', key: 'read', label: 'Ver' },
+		{ description: 'Permite criar um grupo de permissões', key: 'create', label: 'Criar' },
+		{ description: 'Permite editar um grupo de permissões', key: 'update', label: 'Editar' },
+		{ description: 'Permite eliminar um grupo de permissões', key: 'delete', label: 'Eliminar' },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de grupos de permissões.',
+	scope: Permissions.roles.scope,
+	title: 'Permissões de Grupos de Permissões',
+};
+
+const organizationActions: PermissionConfig<typeof Permissions.organizations.actions> = {
+	actions: [
 		{ description: 'Permite ver organizações', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar uma organização', key: 'create', label: 'Criar' },
 		{ description: 'Permite editar uma organização', key: 'update', label: 'Editar' },
 		{ description: 'Permite eliminar uma organização', key: 'delete', label: 'Eliminar' },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de papéis.',
-	scope: Permissions.roles.scope,
+	description: 'As ações que o utilizador pode realizar na gestão de organizações.',
+	scope: Permissions.organizations.scope,
 	title: 'Permissões de Organizações',
 };
 
@@ -199,6 +211,7 @@ export const permissionsConfig: PermissionConfig[] = [
 	homeActions,
 	planActions,
 	userActions,
+	organizationActions,
 	validationActions,
 	roleActions,
 	stopActions,
