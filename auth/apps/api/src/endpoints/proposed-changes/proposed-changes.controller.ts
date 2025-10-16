@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { proposedChanges } from '@tmlmobilidade/interfaces';
+import { enrichUserRefs, proposedChanges } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { ProposedChange, UpdateProposedChangeDto } from '@tmlmobilidade/types';
 
@@ -15,7 +15,7 @@ export class ProposedChangesController {
 	 */
 	static async create(request: FastifyRequest, reply: FastifyReply<ProposedChange<any>>) {
 		const data = request.body as ProposedChange<any>;
-		const result = await proposedChanges.insertOne(data);
+		const result = await proposedChanges.insertOne({ ...data, created_by: request.me._id, updated_by: request.me._id });
 
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED });
 	}
@@ -42,7 +42,7 @@ export class ProposedChangesController {
 			sort: { created_at: -1 },
 		});
 
-		reply.send({ data, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: await enrichUserRefs(data), error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -56,7 +56,7 @@ export class ProposedChangesController {
 
 		if (!proposedChange) throw new HttpException(HttpStatus.NOT_FOUND, 'Proposed Change not found');
 
-		reply.send({ data: proposedChange, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: await enrichUserRefs(proposedChange), error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**

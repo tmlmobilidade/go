@@ -42,13 +42,19 @@ export function StopDetailsSectionShelter() {
 		>
 			<Section>
 				<Grid columns="abc" gap="md">
-					<Combobox
-						data={has_shelter}
+					<ProposedChangesWrapper
+						inputName="has_shelter"
 						label="Existe Abrigo?"
-						placeholder="..."
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_shelter')}
-					/>
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<Combobox
+							data={has_shelter}
+							placeholder="..."
+							fullWidth
+							{...stopDetailContext.data.form.getInputProps('has_shelter')}
+						/>
+					</ProposedChangesWrapper>
 					<TextInput
 						label="Código do Abrigo"
 						miw="100%"
@@ -63,22 +69,6 @@ export function StopDetailsSectionShelter() {
 					/>
 				</Grid>
 				<Spacer />
-			</Section>
-			<Section>
-				<ProposedChangesWrapper
-					inputName="has_shelter"
-					label="Existe Abrigo?"
-					relatedId={stopDetailContext.data.stop?._id}
-					scope={scopeOption}
-				>
-					<Combobox
-						data={shelterStatus}
-						placeholder="..."
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_shelter')}
-					/>
-				</ProposedChangesWrapper>
-
 			</Section>
 			<Section>
 				<TextInput

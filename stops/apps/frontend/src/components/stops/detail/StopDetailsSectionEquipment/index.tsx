@@ -3,7 +3,8 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { ScopeOption } from '@/types/proposed-changes';
+import { Checkbox, Collapsible, Grid, ProposedChangesWrapper, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function StopDetailsSectionEquipment() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const scopeOption: ScopeOption = 'stop';
 
 	//
 	// B. Render components
@@ -25,10 +27,19 @@ export function StopDetailsSectionEquipment() {
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">
-					<Checkbox
+
+					<ProposedChangesWrapper
+						inputName="near_health_clinic"
 						label="Clínica"
-						{...stopDetailContext.data.form.getInputProps('near_health_clinic')}
-					/>
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<Checkbox
+							label="Clínica"
+							{...stopDetailContext.data.form.getInputProps('near_health_clinic')}
+						/>
+					</ProposedChangesWrapper>
+
 					<Checkbox
 						label="Hopital"
 						{...stopDetailContext.data.form.getInputProps('near')}
