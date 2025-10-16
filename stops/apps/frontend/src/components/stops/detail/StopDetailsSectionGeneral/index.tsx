@@ -78,10 +78,16 @@ export function StopDetailsSectionGeneral() {
 						<TextInput {...stopDetailContext.data.form.getInputProps('name')} />
 					</ProposedChangesWrapper>
 
-					<TextInput
+					<ProposedChangesWrapper
+						inputName="new_name"
 						label="Nome da Paragem (depois da correção)"
-						{...stopDetailContext.data.form.getInputProps('new_name')}
-					/>
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<TextInput
+							{...stopDetailContext.data.form.getInputProps('new_name')}
+						/>
+					</ProposedChangesWrapper>
 				</Grid>
 			</Section>
 
