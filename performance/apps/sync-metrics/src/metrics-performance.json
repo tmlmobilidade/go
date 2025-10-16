@@ -1,43 +1,13 @@
 [
 	{
 		"approach": {
-			"description": "Loop by year, aggregate on mongo",
-			"key": "loop_year_aggregate"
-		},
-		"metric": "demand_by_line_by_year",
-		"queryCount": 2,
-		"runtime": "2m 23s 32ms",
-		"timestamp": "2025-10-10T10:50:59.966Z"
-	},
-	{
-		"approach": {
-			"description": "Loop by line and month, aggregate on mongo",
-			"key": "loop_line_month"
-		},
-		"metric": "demand_by_line_by_month",
-		"queryCount": 17468,
-		"runtime": "17m 33s 467ms",
-		"timestamp": "2025-10-10T11:09:35.965Z"
-	},
-	{
-		"approach": {
-			"description": "Loop by line and year, count on mongo",
-			"key": "loop_line_year"
-		},
-		"metric": "demand_by_line_by_year",
-		"queryCount": 1588,
-		"runtime": "2m 43s 148ms",
-		"timestamp": "2025-10-10T14:17:18.980Z"
-	},
-	{
-		"approach": {
 			"description": "Loop by year, aggregate on mongo (parallel)",
 			"key": "loop_year_parallel"
 		},
 		"metric": "demand_by_line_by_year",
 		"queryCount": 2,
-		"runtime": "2m 16s 820ms",
-		"timestamp": "2025-10-13T14:33:28.853Z"
+		"runtime": "1m 11s 342ms",
+		"timestamp": "2025-10-16T15:47:50.402Z"
 	},
 	{
 		"approach": {
@@ -46,8 +16,8 @@
 		},
 		"metric": "demand_by_line_by_month",
 		"queryCount": 22,
-		"runtime": "2m 44s 456ms",
-		"timestamp": "2025-10-13T14:36:13.313Z"
+		"runtime": "15s 881ms",
+		"timestamp": "2025-10-16T15:48:06.285Z"
 	},
 	{
 		"approach": {
@@ -55,8 +25,118 @@
 			"key": "loop_day_parallel"
 		},
 		"metric": "demand_by_line_by_day",
-		"queryCount": 652,
-		"runtime": "4m 12s 39ms",
-		"timestamp": "2025-10-13T14:40:25.356Z"
+		"queryCount": 655,
+		"runtime": "4m 4s 380ms",
+		"timestamp": "2025-10-16T15:52:10.668Z"
+	},
+	{
+		"approach": {
+			"description": "Iterate demand_by_line_by_day",
+			"key": "iterate_demand_by_line_by_day"
+		},
+		"metric": "mean_demand_by_line_by_month",
+		"queryCount": 1,
+		"runtime": "26s 693ms",
+		"timestamp": "2025-10-16T15:52:37.363Z"
+	},
+	{
+		"approach": {
+			"description": "Iterate mean_demand_by_line_by_month for every month",
+			"key": "iterate_mean_demand_by_line_by_month"
+		},
+		"metric": "top_mean_demand_by_line_by_month",
+		"queryCount": 22,
+		"runtime": "1m 7s 780ms",
+		"timestamp": "2025-10-16T15:53:45.145Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by year, aggregate on mongo (parallel)",
+			"key": "loop_year_parallel"
+		},
+		"metric": "demand_by_agency_by_year",
+		"queryCount": 2,
+		"runtime": "1m 12s 868ms",
+		"timestamp": "2025-10-16T15:54:58.017Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by month, aggregate on mongo (parallel)",
+			"key": "loop_month_parallel"
+		},
+		"metric": "demand_by_agency_by_month",
+		"queryCount": 22,
+		"runtime": "16s 110ms",
+		"timestamp": "2025-10-16T15:55:14.129Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by day, aggregate on mongo (parallel)",
+			"key": "loop_day_parallel"
+		},
+		"metric": "demand_by_agency_by_day",
+		"queryCount": 655,
+		"runtime": "4m 8s 761ms",
+		"timestamp": "2025-10-16T15:59:22.893Z"
+	},
+	{
+		"approach": {
+			"description": "Aggregate metric demand_by_agency_by_day",
+			"key": "aggregate_demand_by_agency_by_day"
+		},
+		"metric": "top_demand_by_agency",
+		"queryCount": 2,
+		"runtime": "477ms",
+		"timestamp": "2025-10-16T15:59:23.373Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by year, aggregate on mongo (parallel)",
+			"key": "loop_year_parallel"
+		},
+		"metric": "demand_by_pattern_by_year",
+		"queryCount": 2,
+		"runtime": "2m 41s 740ms",
+		"timestamp": "2025-10-16T16:02:05.114Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by month, aggregate on mongo (parallel)",
+			"key": "loop_month_parallel"
+		},
+		"metric": "demand_by_pattern_by_month",
+		"queryCount": 22,
+		"runtime": "4m 24s 22ms",
+		"timestamp": "2025-10-16T16:06:29.136Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by day, aggregate on mongo (parallel)",
+			"key": "loop_day_parallel"
+		},
+		"metric": "demand_by_pattern_by_day",
+		"queryCount": 655,
+		"runtime": "7m 58s 848ms",
+		"timestamp": "2025-10-16T16:14:27.987Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by year, aggregate on mongo (parallel)",
+			"key": "loop_year_parallel"
+		},
+		"metric": "demand_by_pattern_hour_by_year",
+		"queryCount": 2,
+		"runtime": "3m 38s 964ms",
+		"timestamp": "2025-10-16T16:18:06.953Z"
+	},
+	{
+		"approach": {
+			"description": "Loop by month, aggregate on mongo (parallel)",
+			"key": "loop_month_parallel"
+		},
+		"metric": "demand_by_pattern_hour_by_month",
+		"queryCount": 22,
+		"runtime": "1m 26s 365ms",
+		"timestamp": "2025-10-16T16:19:33.321Z"
 	}
 ]

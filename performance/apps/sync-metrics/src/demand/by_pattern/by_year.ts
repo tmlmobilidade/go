@@ -9,18 +9,20 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export const syncDemandByLineByYear = async () => {
+export const syncDemandByPatternByYear = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Line by Year`);
+	LOGGER.title(`Sync Demand Metrics by Pattern by Year`);
 	const globalTimer = new TIMETRACKER();
 
+	const METRIC = 'demand_by_pattern_by_year';
+
 	//
-	// Delete existing metrics
+	// Delete existing pattern metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing 'demand_by_line_by_year' metrics...`);
-	metrics.deleteMany({ metric: 'demand_by_line_by_year' });
+	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	metrics.deleteMany({ metric: METRIC });
 	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
@@ -31,15 +33,17 @@ export const syncDemandByLineByYear = async () => {
 	//
 	// Define yearly chunks
 
-	const earliestDataNeeded = Dates.fromISO('2024-01-01T04:00:00').setZone('Europe/Lisbon', 'offset_only');
+	const earliestDataNeeded = Dates.now('Europe/Lisbon').set(
+		{ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 },
+	);
 
 	const latest = Dates.now('Europe/Lisbon')
 		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
 		.plus({ days: 1 });
 
 	const allTimestampChunks: { end: number, start: number }[] = [];
-	let cursor = earliestDataNeeded;
 
+	let cursor = earliestDataNeeded;
 	while (cursor.unix_timestamp < latest.unix_timestamp) {
 		const next = cursor.plus({ years: 1 });
 		allTimestampChunks.push({
@@ -52,41 +56,35 @@ export const syncDemandByLineByYear = async () => {
 	//
 	// Process each year in parallel
 
-	const lineMap = new Map<string, Metric>();
+	const patternMap = new Map<string, Metric>();
 
 	const yearPromises = allTimestampChunks.map(async (chunkData) => {
 		const chunkTimer = new TIMETRACKER();
 
-		const chunkStartDate = Dates.fromUnixTimestamp(chunkData.start).setZone('Europe/Lisbon', 'offset_only');
-		const chunkEndDate = Dates.fromUnixTimestamp(chunkData.end).setZone('Europe/Lisbon', 'offset_only');
-
-		const year = new Date(chunkStartDate.unix_timestamp).getFullYear();
+		const year = new Date(chunkData.start).getFullYear();
 
 		LOGGER.info(`Processing Year ${year}...`);
 
 		//
-		// Aggregate by line_id for this year
+		// Aggregate by pattern_id for this year
 
 		const validationsAgg = await validationsCollection.aggregate([
 			{
 				$match: {
-					created_at: {
-						$gte: chunkStartDate.unix_timestamp,
-						$lt: chunkEndDate.unix_timestamp,
-					},
+					created_at: { $gte: chunkData.start, $lt: chunkData.end },
 					is_passenger: true,
 				},
 			},
 			{
 				$group: {
-					_id: '$line_id',
+					_id: '$pattern_id',
 					count: { $sum: 1 },
-					line_id: { $first: '$line_id' },
+					pattern_id: { $first: '$pattern_id' },
 				},
 			},
-		]).toArray();
+		], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-		LOGGER.info(`Year ${year} aggregation returned ${validationsAgg.length} line groups (${chunkTimer.get()})`);
+		LOGGER.info(`Year ${year} aggregation returned ${validationsAgg.length} pattern groups (${chunkTimer.get()})`);
 		return { validationsAgg, year };
 	});
 
@@ -97,27 +95,24 @@ export const syncDemandByLineByYear = async () => {
 
 	for (const { validationsAgg, year } of allChunksResults) {
 		for (const validation of validationsAgg) {
-			const line_id = validation.line_id ?? 'no-line';
-			if (!lineMap.has(line_id)) {
-				lineMap.set(line_id, {
+			const pattern_id = validation.pattern_id ?? 'no-pattern';
+
+			if (!patternMap.has(pattern_id)) {
+				patternMap.set(pattern_id, {
 					data: {} as Record<string, { qty: number }>,
-					description: `Aggregated passenger demand for line ${line_id}`,
+					description: `Aggregated passenger demand for pattern ${pattern_id}`,
 					generated_at: new Date(),
-					metric: 'demand_by_line_by_year',
-					properties: {
-						interval: 300_000,
-						line_id,
-					},
+					metric: METRIC,
+					properties: { pattern_id },
 				} as Metric);
 			}
 
-			const lineDoc = lineMap.get(line_id);
-			lineDoc.data[year] = { qty: validation.count };
+			const patternDoc = patternMap.get(pattern_id);
+			patternDoc.data[year] = { qty: validation.count };
 		}
 	}
 
-	const results = Array.from(lineMap.values());
-	LOGGER.info(`Sample results: ${JSON.stringify(results.slice(0, 2), null, 2)}`);
+	const results = Array.from(patternMap.values());
 
 	//
 	// Insert all metrics
@@ -126,13 +121,13 @@ export const syncDemandByLineByYear = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by year, aggregate on mongo (parallel)', key: 'loop_year_parallel' },
-		metric: 'demand_by_line_by_year',
+		metric: METRIC,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	LOGGER.terminate(`Processed ${results.length} pattern results (${globalTimer.get()})`);
 };
 
 //

@@ -9,73 +9,73 @@ import { Dates } from '@tmlmobilidade/utils';
 
 /* * */
 
-export const syncDemandByLineByMonth = async () => {
+export const syncDemandByLineByYear = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Line by Month`);
+	LOGGER.title(`Sync Demand Metrics by Line by Year`);
 	const globalTimer = new TIMETRACKER();
+
+	const METRIC = 'demand_by_line_by_year';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing 'demand_by_line_by_month' metrics...`);
-	metrics.deleteMany({ metric: 'demand_by_line_by_month' });
+	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	metrics.deleteMany({ metric: METRIC });
 	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
 	// Fetch validations collection
+
 	const validationsCollection = await simplifiedApexValidations.getCollection();
 
 	//
-	// Define monthly chunks
+	// Define yearly chunks
 
 	const earliestDataNeeded = Dates.now('Europe/Lisbon').set(
 		{ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 },
 	);
 
-	const latest = Dates.now('Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).plus({ days: 1 });
+	const latest = Dates.now('Europe/Lisbon')
+		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
+		.plus({ days: 1 });
 
-	const allTimestampChunks: { end: number, endIso: string, start: number, startIso: string }[] = [];
+	const allTimestampChunks: { end: number, start: number }[] = [];
 
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_timestamp < latest.unix_timestamp) {
-		const next = cursor.plus({ months: 1 });
+		const next = cursor.plus({ years: 1 });
 		allTimestampChunks.push({
 			end: next.unix_timestamp,
-			endIso: next.iso,
 			start: cursor.unix_timestamp,
-			startIso: cursor.iso,
 		});
 		cursor = next;
 	}
 
 	//
-	// Process each month in parallel
+	// Process each year in parallel
 
 	const lineMap = new Map<string, Metric>();
 
-	const monthPromises = allTimestampChunks.map(async (chunkData, chunkIndex) => {
+	const yearPromises = allTimestampChunks.map(async (chunkData) => {
 		const chunkTimer = new TIMETRACKER();
-		const chunkStartDate = Dates.fromUnixTimestamp(chunkData.start).setZone('Europe/Lisbon', 'offset_only');
-		const chunkEndDate = Dates.fromUnixTimestamp(chunkData.end).setZone('Europe/Lisbon', 'offset_only');
-		const yearMonth = new Date(chunkStartDate.unix_timestamp).toISOString().slice(0, 7);
+
+		const year = new Date(chunkData.start).getFullYear();
+
+		LOGGER.info(`Processing Year ${year}...`);
 
 		//
-		// Aggregation per month (group by line_id)
+		// Aggregate by line_id for this year
 
 		const validationsAgg = await validationsCollection.aggregate([
 			{
 				$match: {
-					created_at: { $gte: chunkStartDate.unix_timestamp, $lt: chunkEndDate.unix_timestamp },
+					created_at: {
+						$gte: chunkData.start,
+						$lt: chunkData.end,
+					},
 					is_passenger: true,
-				},
-			},
-			{
-				$project: {
-					_id: '$_id',
-					line_id: '$line_id',
-					month_year: { $literal: yearMonth },
 				},
 			},
 			{
@@ -83,21 +83,20 @@ export const syncDemandByLineByMonth = async () => {
 					_id: '$line_id',
 					count: { $sum: 1 },
 					line_id: { $first: '$line_id' },
-					month_year: { $first: '$month_year' },
 				},
 			},
-		]).toArray();
+		], { hint: 'is_passenger_1_line_id_1_created_at_1' }).toArray();
 
-		LOGGER.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} lines (${chunkTimer.get()})`);
-		return validationsAgg;
+		LOGGER.info(`Year ${year} aggregation returned ${validationsAgg.length} line groups (${chunkTimer.get()})`);
+		return { validationsAgg, year };
 	});
 
 	//
 	// Transform into Metric objects
 
-	const allChunksResults = await Promise.all(monthPromises);
+	const allChunksResults = await Promise.all(yearPromises);
 
-	for (const validationsAgg of allChunksResults) {
+	for (const { validationsAgg, year } of allChunksResults) {
 		for (const validation of validationsAgg) {
 			const line_id = validation.line_id ?? 'no-line';
 			if (!lineMap.has(line_id)) {
@@ -105,20 +104,17 @@ export const syncDemandByLineByMonth = async () => {
 					data: {} as Record<string, { qty: number }>,
 					description: `Aggregated passenger demand for line ${line_id}`,
 					generated_at: new Date(),
-					metric: 'demand_by_line_by_month',
-					properties: {
-						interval: 300_000,
-						line_id,
-					},
+					metric: METRIC,
+					properties: { line_id },
 				} as Metric);
 			}
+
 			const lineDoc = lineMap.get(line_id);
-			lineDoc.data[validation.month_year] = { qty: validation.count };
+			lineDoc.data[year] = { qty: validation.count };
 		}
 	}
 
 	const results = Array.from(lineMap.values());
-	LOGGER.info(`Sample results: ${JSON.stringify(results.slice(0, 2), null, 2)}`);
 
 	//
 	// Insert all metrics
@@ -126,8 +122,8 @@ export const syncDemandByLineByMonth = async () => {
 	await metrics.insertMany(results);
 
 	logMetricToFile({
-		approach: { description: 'Loop by month, aggregate on mongo (parallel)', key: 'loop_month_parallel' },
-		metric: 'demand_by_line_by_month',
+		approach: { description: 'Loop by year, aggregate on mongo (parallel)', key: 'loop_year_parallel' },
+		metric: METRIC,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

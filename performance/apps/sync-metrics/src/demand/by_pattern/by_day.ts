@@ -10,18 +10,20 @@ import pLimit from 'p-limit';
 
 /* * */
 
-export const syncDemandByLineByDay = async () => {
+export const syncDemandByPatternByDay = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Line by Day`);
+	LOGGER.title(`Sync Demand Metrics by Pattern by Day`);
 	const globalTimer = new TIMETRACKER();
+
+	const METRIC = 'demand_by_pattern_by_day';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing 'demand_by_line_by_day' metrics...`);
-	metrics.deleteMany({ metric: 'demand_by_line_by_day' });
+	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	metrics.deleteMany({ metric: METRIC });
 	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
@@ -53,47 +55,37 @@ export const syncDemandByLineByDay = async () => {
 	}
 
 	//
-	// Process each year in parallel
-	const lineMap = new Map<string, Metric>();
-
-	//
 	// Set max concurrent queries
 	const limit = pLimit(10);
+
+	//
+	// Process each year in parallel
+	const patternMap = new Map<string, Metric>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
 			const chunkTimer = new TIMETRACKER();
 
-			const chunkStartDate = Dates.fromUnixTimestamp(chunkData.start).setZone('Europe/Lisbon', 'offset_only');
-			const chunkEndDate = Dates.fromUnixTimestamp(chunkData.end).setZone('Europe/Lisbon', 'offset_only');
-
-			const dayLabel = new Date(chunkStartDate.unix_timestamp).toISOString().slice(0, 10);
+			const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
 
 			const validationsAgg = await validationsCollection.aggregate([
 				{
 					$match: {
-						created_at: { $gte: chunkStartDate.unix_timestamp, $lt: chunkEndDate.unix_timestamp },
+						created_at: { $gte: chunkData.start, $lt: chunkData.end },
 						is_passenger: true,
 					},
 				},
 				{
-					$project: {
-						_id: '$_id',
-						day: { $literal: dayLabel },
-						line_id: '$line_id',
-					},
-				},
-				{
 					$group: {
-						_id: '$line_id',
+						_id: '$pattern_id',
 						count: { $sum: 1 },
-						day: { $first: '$day' },
-						line_id: { $first: '$line_id' },
+						day: { $first: dayLabel },
+						pattern_id: { $first: '$pattern_id' },
 					},
 				},
-			]).toArray();
+			], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-			LOGGER.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} lines (${chunkTimer.get()})`);
+			LOGGER.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
 			return validationsAgg;
 		}),
 	);
@@ -105,22 +97,22 @@ export const syncDemandByLineByDay = async () => {
 
 	for (const validationsAgg of allChunksResults) {
 		for (const validation of validationsAgg) {
-			const line_id = validation.line_id ?? 'no-line';
-			if (!lineMap.has(line_id)) {
-				lineMap.set(line_id, {
+			const pattern_id = validation.pattern_id ?? 'no-pattern';
+			if (!patternMap.has(pattern_id)) {
+				patternMap.set(pattern_id, {
 					data: {} as Record<string, { qty: number }>,
-					description: `Aggregated passengers for the line ${line_id}`,
+					description: `Aggregated passengers for the pattern ${pattern_id}`,
 					generated_at: new Date(),
-					metric: 'demand_by_line_by_day',
-					properties: { interval: 300_000, line_id },
+					metric: METRIC,
+					properties: { pattern_id },
 				} as Metric);
 			}
-			const lineDoc = lineMap.get(line_id);
-			lineDoc.data[validation.day] = { qty: validation.count };
+			const patternDoc = patternMap.get(pattern_id);
+			patternDoc.data[validation.day] = { qty: validation.count };
 		}
 	}
 
-	const results = Array.from(lineMap.values());
+	const results = Array.from(patternMap.values());
 
 	//
 	// Insert all metrics
@@ -129,7 +121,7 @@ export const syncDemandByLineByDay = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },
-		metric: 'demand_by_line_by_day',
+		metric: METRIC,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

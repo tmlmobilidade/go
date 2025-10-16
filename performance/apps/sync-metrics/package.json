@@ -13,7 +13,8 @@
 		"dev": "tsx watch ./src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"start": "node dist/index.js"
+		"start": "node dist/index.js",
+		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
