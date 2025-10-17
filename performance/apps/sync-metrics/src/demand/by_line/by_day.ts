@@ -3,11 +3,9 @@
 import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
+import { type Metric, type OperationalDate } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
-import fs from 'fs/promises';
 import pLimit from 'p-limit';
-import path from 'path';
 
 /* * */
 
@@ -35,36 +33,36 @@ export const syncDemandByLineByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarPath = path.resolve('./src/data/calendar.json');
-	const calendarRaw = await fs.readFile(calendarPath, 'utf-8');
-
-	const calendarJson: {
-		date: string
-		day_type: number
-		holiday: number
+	const calendarRes = await fetch('https://go.carrismetropolitana.pt/api/dates/public');
+	const calendarJson = await calendarRes.json() as {
+		date: OperationalDate
+		day_type: string
+		holiday: string
 		notes: string
-		period: number
-	}[] = JSON.parse(calendarRaw);
+		period: string
+	}[];
 
 	//
 	// Build a map for fast lookup
 
 	const calendarMap = new Map<string, typeof calendarJson[0]>();
 	for (const day of calendarJson) {
-		const dayString = day.date.toString();
 		// convert date to YYYY-MM-DD format
-		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
+		const formattedDate = `${day.date.slice(0, 4)}-${day.date.slice(4, 6)}-${day.date.slice(6, 8)}`;
 		calendarMap.set(formattedDate, day);
 	}
 
 	//
 	// Define daily chunks
 
-	const earliestDataNeeded = Dates.now('Europe/Lisbon').set(
-		{ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 },
-	);
+	const earliestDataNeeded = Dates
+		.now('Europe/Lisbon')
+		.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 });
 
-	const latest = Dates.now('Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).plus({ days: 1 });
+	const latest = Dates
+		.now('Europe/Lisbon')
+		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
+		.plus({ days: 1 });
 
 	const allTimestampChunks: { end: number, endIso: string, start: number, startIso: string }[] = [];
 
@@ -129,10 +127,10 @@ export const syncDemandByLineByDay = async () => {
 			if (!lineMap.has(line_id)) {
 				lineMap.set(line_id, {
 					data: {} as Record<string, {
-						day_type: number
-						holiday: number
+						day_type: string
+						holiday: string
 						notes: string
-						period: number
+						period: string
 						qty: number
 					}>,
 					description: `Aggregated passengers for the line ${line_id}`,
@@ -144,10 +142,10 @@ export const syncDemandByLineByDay = async () => {
 			const lineDoc = lineMap.get(line_id);
 
 			const calendarProps = calendarMap.get(validation.day) ?? {
-				day_type: 0,
-				holiday: 0,
+				day_type: '0',
+				holiday: '0',
 				notes: '',
-				period: 0,
+				period: '0',
 			};
 
 			lineDoc.data[validation.day] = {
