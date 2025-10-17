@@ -1,6 +1,6 @@
 {
 	"name": "@tmlmobilidade/sae-performance-frontend",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 		"build": "next build",
@@ -11,24 +11,22 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.35.0",
-		"@tmlmobilidade/lib": "20251009.1648.44",
-		"@tmlmobilidade/ui": "20251009.1648.44",
-		"@tmlmobilidade/utils": "20251009.1648.44",
-		"bcryptjs": "3.0.2",
-		"clsx": "2.1.1",
-		"next": "15.5.4",
-		"nuqs": "2.7.1",
+		"@tmlmobilidade/lib": "20251017.932.51",
+		"@tmlmobilidade/ui": "20251017.932.51",
+		"@tmlmobilidade/utils": "20251017.932.51",
+		"next": "15.5.6",
+		"nuqs": "2.7.2",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"swr": "2.3.6"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20251009.1648.44",
-		"@tmlmobilidade/types": "20251009.1648.44",
-		"@types/node": "24.7.0",
+		"@tmlmobilidade/tsconfig": "20251017.932.51",
+		"@tmlmobilidade/types": "20251017.932.51",
+		"@types/node": "24.8.1",
 		"@types/react": "19.2.2",
-		"@types/react-dom": "19.2.1",
+		"@types/react-dom": "19.2.2",
 		"typescript": "5.9.3"
 	}
 }
