@@ -24,8 +24,8 @@ export const syncDemandByLineByDay = async () => {
 
 	const deleteTimer = new TIMETRACKER();
 	Logs.info(`Clearing existing '${METRIC}' metrics...`);
-	metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	await metrics.deleteMany({ metric: METRIC });
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection

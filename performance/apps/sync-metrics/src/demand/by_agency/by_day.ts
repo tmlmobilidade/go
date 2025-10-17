@@ -3,7 +3,7 @@
 import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
+import { type Metric } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
@@ -22,8 +22,8 @@ export const syncDemandByAgencyByDay = async () => {
 
 	const deleteTimer = new TIMETRACKER();
 	Logs.info(`Clearing existing '${METRIC}' metrics...`);
-	metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	await metrics.deleteMany({ metric: METRIC });
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -33,11 +33,14 @@ export const syncDemandByAgencyByDay = async () => {
 	//
 	// Define daily chunks
 
-	const earliestDataNeeded = Dates.now('Europe/Lisbon').set(
-		{ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 },
-	);
+	const earliestDataNeeded = Dates
+		.now('Europe/Lisbon')
+		.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 });
 
-	const latest = Dates.now('Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).plus({ days: 1 });
+	const latest = Dates
+		.now('Europe/Lisbon')
+		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
+		.plus({ days: 1 });
 
 	const allTimestampChunks: { end: number, endIso: string, start: number, startIso: string }[] = [];
 
@@ -55,10 +58,12 @@ export const syncDemandByAgencyByDay = async () => {
 
 	//
 	// Set max concurrent queries
+
 	const limit = pLimit(10);
 
 	//
 	// Process each year in parallel
+
 	const agencyMap = new Map<string, Metric>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
