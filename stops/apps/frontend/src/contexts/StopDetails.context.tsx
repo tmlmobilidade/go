@@ -152,7 +152,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const handleSaveStop = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Stop>(`/api/stops/${stopId}`, 'POST', form.getValues());
+		const response = await fetchData<Stop>(`/stops/${stopId}`, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({

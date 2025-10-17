@@ -29,8 +29,7 @@ export function StopDetailsSectionEquipment() {
 				<Grid columns="abcd" gap="md">
 
 					<ProposedChangesWrapper
-						inputName="near_health_clinic"
-						label="Clínica"
+						inputName="health_clinic"
 						relatedId={stopDetailContext.data.stop?._id}
 						scope={scopeOption}
 					>
@@ -40,10 +39,17 @@ export function StopDetailsSectionEquipment() {
 						/>
 					</ProposedChangesWrapper>
 
-					<Checkbox
-						label="Hopital"
-						{...stopDetailContext.data.form.getInputProps('near')}
-					/>
+					<ProposedChangesWrapper
+						inputName="hospital"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<Checkbox
+							label="Hospital"
+							{...stopDetailContext.data.form.getInputProps('near')}
+						/>
+					</ProposedChangesWrapper>
+
 					<Checkbox
 						label="Universidade"
 						{...stopDetailContext.data.form.getInputProps('near_university')}
