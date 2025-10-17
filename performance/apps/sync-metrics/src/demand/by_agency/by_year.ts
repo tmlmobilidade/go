@@ -1,18 +1,17 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const syncDemandByAgencyByYear = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Agency by Year`);
+	Logs.title(`Sync Demand Metrics by Agency by Year`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_agency_by_year';
@@ -21,9 +20,9 @@ export const syncDemandByAgencyByYear = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
 	metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
 	// Fetch validations collection
@@ -63,7 +62,7 @@ export const syncDemandByAgencyByYear = async () => {
 
 		const year = new Date(chunkData.start).getFullYear();
 
-		LOGGER.info(`Processing Year ${year}...`);
+		Logs.info(`Processing Year ${year}...`);
 
 		//
 		// Aggregate by agency_id for this year
@@ -87,7 +86,7 @@ export const syncDemandByAgencyByYear = async () => {
 			},
 		], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
 
-		LOGGER.info(`Year ${year} aggregation returned ${validationsAgg.length} agency groups (${chunkTimer.get()})`);
+		Logs.info(`Year ${year} aggregation returned ${validationsAgg.length} agency groups (${chunkTimer.get()})`);
 		return { validationsAgg, year };
 	});
 
@@ -129,7 +128,7 @@ export const syncDemandByAgencyByYear = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

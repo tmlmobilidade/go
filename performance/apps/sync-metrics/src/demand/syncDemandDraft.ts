@@ -1,8 +1,9 @@
-import LOGGER from '@helperkits/logger';
+/* * */
+
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type Metric } from '@tmlmobilidade/types';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 type DemandGroupType = 'agency' | 'line' | 'pattern';
 type Granularity = 'day' | 'month' | 'year';
@@ -42,7 +43,7 @@ const getTimeChunks = (granularity: Granularity) => {
 };
 
 export const syncDemand = async (groupType: DemandGroupType, granularity: Granularity) => {
-	LOGGER.title(`Sync Demand Metrics by ${groupType} by ${granularity}`);
+	Logs.title(`Sync Demand Metrics by ${groupType} by ${granularity}`);
 	const globalTimer = new TIMETRACKER();
 
 	const field = `${groupType}_id` as const; // e.g. 'agency_id', 'line_id', 'pattern_id'
@@ -78,22 +79,22 @@ export const syncDemand = async (groupType: DemandGroupType, granularity: Granul
 				},
 			]).toArray();
 
-			for (const item of agg) {
-				const id = item[field] ?? 'no-id';
-				if (!groupMap.has(id)) {
-					groupMap.set(id, {
-						data: {},
-						description: `Aggregated passenger demand for ${groupType} ${id}`,
-						generated_at: new Date(),
-						metric: metricName,
-						properties: { [field]: id, interval },
-					});
-				}
-				groupMap.get(id).data[label] = { qty: item.count };
-			}
+			// for (const item of agg) {
+			// 	const id = item[field] ?? 'no-id';
+			// 	if (!groupMap.has(id)) {
+			// 		groupMap.set(id, {
+			// 			data: {},
+			// 			description: `Aggregated passenger demand for ${groupType} ${id}`,
+			// 			generated_at: new Date(),
+			// 			metric: metricName,
+			// 			properties: { [field]: id, interval },
+			// 		});
+			// 	}
+			// 	groupMap.get(id).data[label] = { qty: item.count };
+			// }
 		}),
 	);
 
 	await metrics.insertMany([...groupMap.values()]);
-	LOGGER.terminate(`Processed ${groupMap.size} ${groupType} groups (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${groupMap.size} ${groupType} groups (${globalTimer.get()})`);
 };

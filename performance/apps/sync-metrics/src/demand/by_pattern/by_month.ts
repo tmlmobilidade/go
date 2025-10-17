@@ -1,18 +1,17 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const syncDemandByPatternByMonth = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Pattern by Month`);
+	Logs.title(`Sync Demand Metrics by Pattern by Month`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_by_month';
@@ -21,9 +20,9 @@ export const syncDemandByPatternByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
 	metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
 	// Fetch validations collection
@@ -82,7 +81,7 @@ export const syncDemandByPatternByMonth = async () => {
 			},
 		], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-		LOGGER.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
+		Logs.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
 		return validationsAgg;
 	});
 
@@ -123,7 +122,7 @@ export const syncDemandByPatternByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

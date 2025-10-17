@@ -1,13 +1,13 @@
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
+import { Logs } from '@tmlmobilidade/utils';
 
 export const computeTopDemandByAgency = async () => {
 	//
 
-	LOGGER.title('Compute Top Demand By Agency');
+	Logs.title('Compute Top Demand By Agency');
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'top_demand_by_agency';
@@ -16,9 +16,9 @@ export const computeTopDemandByAgency = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
 	metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
 	// Fetch metrics collection
@@ -110,7 +110,7 @@ export const computeTopDemandByAgency = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Metric computed and inserted in ${globalTimer.get()}`);
+	Logs.terminate(`Metric computed and inserted in ${globalTimer.get()}`);
 };
 
 //
