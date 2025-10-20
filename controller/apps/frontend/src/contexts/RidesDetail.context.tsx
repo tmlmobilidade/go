@@ -26,7 +26,7 @@ export const RidesDetailViewOptions = {
 	ACCEPTANCE: {
 		icon: IconChecks,
 		label: 'Aceitação',
-		permission: Permissions.rides.actions.justification_read,
+		permission: Permissions.rides.actions.acceptance_read,
 		value: 'ACCEPTANCE',
 	},
 	AUDIT: {

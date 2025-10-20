@@ -14,12 +14,12 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "^9.2.1",
-		"@tmlmobilidade/connectors": "20251016.1108.21",
-		"@tmlmobilidade/interfaces": "20251016.1108.21",
-		"@tmlmobilidade/lib": "20251016.1108.21",
-		"@tmlmobilidade/types": "20251016.1108.21",
-		"@tmlmobilidade/ui": "20251016.1108.21",
-		"@tmlmobilidade/utils": "20251016.1108.21"
+		"@tmlmobilidade/connectors": "20251020.919.5",
+		"@tmlmobilidade/interfaces": "20251020.919.5",
+		"@tmlmobilidade/lib": "20251020.919.5",
+		"@tmlmobilidade/types": "20251020.919.5",
+		"@tmlmobilidade/ui": "20251020.919.5",
+		"@tmlmobilidade/utils": "20251020.919.5"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
