@@ -8,27 +8,27 @@ import { Permission } from '@tmlmobilidade/types';
  */
 export function calculateRolePermissions(
 	roleIds: string[],
-	roles: Array<{ _id: string; permissions: Permission<unknown>[] }>
+	roles: { _id: string, permissions: Permission<unknown>[] }[],
 ): Permission<unknown>[] {
 	const rolePermissions: Permission<unknown>[] = [];
-	
+
 	// Get all roles assigned to the user
 	const userRoles = roles.filter(role => roleIds.includes(role._id));
-	
+
 	// Collect all permissions from user's roles
-	userRoles.forEach(role => {
-		role.permissions.forEach(permission => {
+	userRoles.forEach((role) => {
+		role.permissions.forEach((permission) => {
 			// Check if this permission is already in the array (avoid duplicates)
 			const existingPermission = rolePermissions.find(
-				p => p.scope === permission.scope && p.action === permission.action
+				p => p.scope === permission.scope && p.action === permission.action,
 			);
-			
+
 			if (!existingPermission) {
 				rolePermissions.push(permission);
 			}
 		});
 	});
-	
+
 	return rolePermissions;
 }
 
@@ -44,10 +44,10 @@ export function hasRolePermission(
 	scope: string,
 	action: string,
 	roleIds: string[],
-	roles: Array<{ _id: string; permissions: Permission<unknown>[] }>
+	roles: { _id: string, permissions: Permission<unknown>[] }[],
 ): boolean {
 	const rolePermissions = calculateRolePermissions(roleIds, roles);
 	return rolePermissions.some(
-		permission => permission.scope === scope && permission.action === action
+		permission => permission.scope === scope && permission.action === action,
 	);
 }

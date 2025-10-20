@@ -55,8 +55,8 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Setup variables
 
-	const [filterOrganizationIds, setFilterOrganizationIds] = useQueryState('organization_ids', { defaultValue: '', parse: (value) => value ? value.split(',') : [], serialize: (value) => value.join(',') });
-	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', { defaultValue: '', parse: (value) => value ? value.split(',') : [], serialize: (value) => value.join(',') });
+	const [filterOrganizationIds, setFilterOrganizationIds] = useQueryState('organization_ids', { defaultValue: '', parse: value => value ? value.split(',') : [], serialize: value => value.join(',') });
+	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', { defaultValue: '', parse: value => value ? value.split(',') : [], serialize: value => value.join(',') });
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const pathname = usePathname();
 
@@ -101,8 +101,8 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		// Skip if no role filter is applied
 		if (!filterRoleIds.length) return searchResultsData;
 		// Filter users by selected roles
-		return searchResultsData.filter(user => 
-			user.role_ids.some(roleId => filterRoleIds.includes(roleId))
+		return searchResultsData.filter(user =>
+			user.role_ids.some(roleId => filterRoleIds.includes(roleId)),
 		);
 	}, [searchResultsData, filterRoleIds]);
 
@@ -110,8 +110,8 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		// Skip if no organization filter is applied
 		if (!filterOrganizationIds.length) return roleFilteredData;
 		// Filter users by selected organizations
-		return roleFilteredData.filter(user => 
-			filterOrganizationIds.includes(user.organization_id)
+		return roleFilteredData.filter(user =>
+			filterOrganizationIds.includes(user.organization_id),
 		);
 	}, [roleFilteredData, filterOrganizationIds]);
 
