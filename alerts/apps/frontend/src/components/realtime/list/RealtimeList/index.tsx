@@ -109,6 +109,7 @@ export function RealtimeList() {
 				onRowClick={handleRowClick}
 				records={realtimeListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={realtimeListContext.data.selectedId}
 			/>
 		</Pane>
 	);
