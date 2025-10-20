@@ -1,14 +1,13 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
+import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
-import fs from 'fs/promises';
 import pLimit from 'p-limit';
-import path from 'path';
 
 /* * */
 
@@ -36,21 +35,12 @@ export const syncDemandByLineByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarPath = path.resolve('./src/data/calendar.json');
-	const calendarRaw = await fs.readFile(calendarPath, 'utf-8');
-
-	const calendarJson: {
-		date: string
-		day_type: number
-		holiday: number
-		notes: string
-		period: number
-	}[] = JSON.parse(calendarRaw);
+	const calendarJson = await fetchCalendarData();
 
 	//
 	// Build a map for fast lookup
 
-	const calendarMap = new Map<string, typeof calendarJson[0]>();
+	const calendarMap = new Map<string, CalendarEntry>();
 	for (const day of calendarJson) {
 		const dayString = day.date.toString();
 		// convert date to YYYY-MM-DD format
@@ -152,10 +142,10 @@ export const syncDemandByLineByDay = async () => {
 			};
 
 			lineDoc.data[validation.day] = {
-				day_type: calendarProps.day_type,
-				holiday: calendarProps.holiday,
+				day_type: Number(calendarProps.day_type),
+				holiday: Number(calendarProps.holiday),
 				notes: calendarProps.notes,
-				period: calendarProps.period,
+				period: Number(calendarProps.period),
 				qty: validation.count,
 			};
 		}
