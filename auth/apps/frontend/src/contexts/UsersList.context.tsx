@@ -15,6 +15,7 @@ import useSWR from 'swr';
 
 interface UsersListContextState {
 	actions: {
+		setFilterRoleIds: (values: string[]) => void
 		setFilterSearch: (values: string) => void
 	}
 	data: {
@@ -23,6 +24,7 @@ interface UsersListContextState {
 		selectedId: string | undefined
 	}
 	filters: {
+		role_ids: string[]
 		search: string
 	}
 	flags: {
@@ -51,6 +53,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Setup variables
 
+	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', { defaultValue: '', parse: (value) => value ? value.split(',') : [], serialize: (value) => value.join(',') });
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const pathname = usePathname();
 
@@ -91,19 +94,30 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		query: filterSearch,
 	});
 
+	const roleFilteredData = useMemo(() => {
+		// Skip if no role filter is applied
+		if (!filterRoleIds.length) return searchResultsData;
+		// Filter users by selected roles
+		return searchResultsData.filter(user => 
+			user.role_ids.some(roleId => filterRoleIds.includes(roleId))
+		);
+	}, [searchResultsData, filterRoleIds]);
+
 	//
 	// D. Define context value
 
 	const contextValue: UsersListContextState = useMemo(() => ({
 		actions: {
+			setFilterRoleIds,
 			setFilterSearch,
 		},
 		data: {
-			filtered: searchResultsData,
+			filtered: roleFilteredData,
 			raw: allUsersData ?? [],
 			selectedId,
 		},
 		filters: {
+			role_ids: filterRoleIds,
 			search: filterSearch,
 		},
 		flags: {
@@ -114,7 +128,8 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		allUsersData,
 		allUsersError,
 		allUsersLoading,
-		searchResultsData,
+		roleFilteredData,
+		filterRoleIds,
 		filterSearch,
 		selectedId,
 	]);

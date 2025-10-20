@@ -3,6 +3,7 @@
 /* * */
 
 import { UsersListFieldRole } from '@/components/users/list/UsersListFieldRole';
+import { UsersListFilterBar } from '@/components/users/list/UsersListFilterBar';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
@@ -64,6 +65,7 @@ export function UsersList() {
 	return (
 		<Pane header={[
 			<UsersListHeader />,
+			<UsersListFilterBar />,
 		]}
 		>
 			<DataTable
