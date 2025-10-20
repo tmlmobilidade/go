@@ -15,6 +15,7 @@ import useSWR from 'swr';
 
 interface UsersListContextState {
 	actions: {
+		setFilterOrganizationIds: (values: string[]) => void
 		setFilterRoleIds: (values: string[]) => void
 		setFilterSearch: (values: string) => void
 	}
@@ -24,6 +25,7 @@ interface UsersListContextState {
 		selectedId: string | undefined
 	}
 	filters: {
+		organization_ids: string[]
 		role_ids: string[]
 		search: string
 	}
@@ -53,6 +55,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Setup variables
 
+	const [filterOrganizationIds, setFilterOrganizationIds] = useQueryState('organization_ids', { defaultValue: '', parse: (value) => value ? value.split(',') : [], serialize: (value) => value.join(',') });
 	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', { defaultValue: '', parse: (value) => value ? value.split(',') : [], serialize: (value) => value.join(',') });
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const pathname = usePathname();
@@ -103,20 +106,31 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		);
 	}, [searchResultsData, filterRoleIds]);
 
+	const organizationFilteredData = useMemo(() => {
+		// Skip if no organization filter is applied
+		if (!filterOrganizationIds.length) return roleFilteredData;
+		// Filter users by selected organizations
+		return roleFilteredData.filter(user => 
+			filterOrganizationIds.includes(user.organization_id)
+		);
+	}, [roleFilteredData, filterOrganizationIds]);
+
 	//
 	// D. Define context value
 
 	const contextValue: UsersListContextState = useMemo(() => ({
 		actions: {
+			setFilterOrganizationIds,
 			setFilterRoleIds,
 			setFilterSearch,
 		},
 		data: {
-			filtered: roleFilteredData,
+			filtered: organizationFilteredData,
 			raw: allUsersData ?? [],
 			selectedId,
 		},
 		filters: {
+			organization_ids: filterOrganizationIds,
 			role_ids: filterRoleIds,
 			search: filterSearch,
 		},
@@ -128,7 +142,8 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		allUsersData,
 		allUsersError,
 		allUsersLoading,
-		roleFilteredData,
+		organizationFilteredData,
+		filterOrganizationIds,
 		filterRoleIds,
 		filterSearch,
 		selectedId,
