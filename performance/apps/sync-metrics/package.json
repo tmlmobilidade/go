@@ -17,15 +17,16 @@
 		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
-		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"luxon": "^3.7.2"
+		"@tmlmobilidade/utils": "20251017.1433.50",
+		"luxon": "3.7.2",
+		"p-limit": "7.1.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/interfaces": "20251009.1648.44",
-		"@tmlmobilidade/tsconfig": "20251009.1648.44",
-		"@tmlmobilidade/types": "20251009.1648.44",
-		"@types/node": "24.7.0",
+		"@tmlmobilidade/interfaces": "20251017.1433.50",
+		"@tmlmobilidade/tsconfig": "20251017.1433.50",
+		"@tmlmobilidade/types": "20251017.1433.50",
+		"@types/node": "24.8.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

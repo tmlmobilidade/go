@@ -14,9 +14,9 @@ import { syncDemandByPatternByMonth } from '@/demand/by_pattern/by_month.js';
 import { syncDemandByPatternByYear } from '@/demand/by_pattern/by_year.js';
 import { syncDemandByPatternHourByMonth } from '@/demand/by_pattern_hour/by_month.js';
 import { syncDemandByPatternHourByYear } from '@/demand/by_pattern_hour/by_year.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MetricBasePropertiesSchema } from '@tmlmobilidade/types';
+import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -36,8 +36,8 @@ export const syncDemandMetrics = async () => {
 
 		const globalTimer = new TIMETRACKER();
 
-		LOGGER.title(`Starting Demand Metrics Sync`);
-		LOGGER.divider();
+		Logs.title(`Starting Demand Metrics Sync`);
+		Logs.divider();
 
 		await syncDemandByLineByYear();
 		await syncDemandByLineByMonth();
@@ -48,9 +48,9 @@ export const syncDemandMetrics = async () => {
 
 		//
 
-		LOGGER.divider();
-		LOGGER.title(`Starting Agency Demand Metrics Sync`);
-		LOGGER.divider();
+		Logs.divider();
+		Logs.title(`Starting Agency Demand Metrics Sync`);
+		Logs.divider();
 
 		await syncDemandByAgencyByYear();
 		await syncDemandByAgencyByMonth();
@@ -60,9 +60,9 @@ export const syncDemandMetrics = async () => {
 
 		//
 
-		LOGGER.divider();
-		LOGGER.title(`Starting Pattern Demand Metrics Sync`);
-		LOGGER.divider();
+		Logs.divider();
+		Logs.title(`Starting Pattern Demand Metrics Sync`);
+		Logs.divider();
 
 		await syncDemandByPatternByYear();
 		await syncDemandByPatternByMonth();
@@ -70,18 +70,18 @@ export const syncDemandMetrics = async () => {
 
 		//
 
-		LOGGER.divider();
-		LOGGER.title(`Starting Pattern Hour Demand Metrics Sync`);
-		LOGGER.divider();
+		Logs.divider();
+		Logs.title(`Starting Pattern Hour Demand Metrics Sync`);
+		Logs.divider();
 
 		await syncDemandByPatternHourByYear();
 		await syncDemandByPatternHourByMonth();
 
 		//
 
-		LOGGER.divider();
-		LOGGER.terminate(`Finished Demand Metrics Sync (${globalTimer.get()})`);
-		LOGGER.divider();
+		Logs.divider();
+		Logs.terminate(`Finished Demand Metrics Sync (${globalTimer.get()})`);
+		Logs.divider();
 
 		setTimeout(runOnInterval, RUN_INTERVAL);
 	};

@@ -10,6 +10,7 @@ export interface CheckCardProps {
 	children?: React.ReactNode
 	description: string
 	disabled?: boolean
+	fromRole?: boolean
 	label: string
 	onChange: (checked: boolean) => void
 }
@@ -19,6 +20,7 @@ export default function CheckCard({
 	children,
 	description,
 	disabled = false,
+	fromRole = false,
 	label,
 	onChange,
 }: CheckCardProps) {
@@ -39,7 +41,7 @@ export default function CheckCard({
 		<div
 			aria-checked={checked}
 			aria-disabled={disabled}
-			className={`${styles.root} ${disabled ? styles.disabled : ''}`}
+			className={`${styles.root} ${disabled ? styles.disabled : ''} ${fromRole ? styles.fromRole : ''}`}
 			onClick={disabled ? undefined : handleCardClick}
 			role="checkbox"
 			tabIndex={disabled ? -1 : 0}
@@ -66,6 +68,13 @@ export default function CheckCard({
 				<div className={styles.content}>
 					<Label>{label}</Label>
 					<Description>{description}</Description>
+					{fromRole && (
+						<div className={styles.roleIndicator}>
+							<Description>
+								✓ Herdado do grupo de permissões
+							</Description>
+						</div>
+					)}
 				</div>
 			</Section>
 			<div

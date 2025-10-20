@@ -1,16 +1,15 @@
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const syncDemandByPatternHourByMonth = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Pattern Hour by Month`);
+	Logs.title(`Sync Demand Metrics by Pattern Hour by Month`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_hour_by_month';
@@ -19,9 +18,9 @@ export const syncDemandByPatternHourByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch rides collection
@@ -62,7 +61,7 @@ export const syncDemandByPatternHourByMonth = async () => {
 		const year = new Date(chunkData.start).getFullYear();
 		const month = new Date(chunkData.start).getMonth() + 1;
 
-		LOGGER.info(`Processing ${year}-${month.toString().padStart(2, '0')}...`);
+		Logs.info(`Processing ${year}-${month.toString().padStart(2, '0')}...`);
 
 		//
 		// Aggregate by pattern_id + hour + minute
@@ -99,7 +98,7 @@ export const syncDemandByPatternHourByMonth = async () => {
 			])
 			.toArray();
 
-		LOGGER.info(
+		Logs.info(
 			`Month ${year}-${month.toString().padStart(2, '0')} aggregation returned ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`,
 		);
 
@@ -151,7 +150,7 @@ export const syncDemandByPatternHourByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

@@ -2,7 +2,9 @@
 
 /* * */
 
+import { UsersListFieldOrganization } from '@/components/users/list/UsersListFieldOrganization';
 import { UsersListFieldRole } from '@/components/users/list/UsersListFieldRole';
+import { UsersListFilterBar } from '@/components/users/list/UsersListFilterBar';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
@@ -32,13 +34,19 @@ export function UsersList() {
 		{
 			accessor: 'full_name',
 			title: 'Nome',
-			width: 400,
+			width: 250,
 		},
 		{
 			accessor: 'role_ids',
 			render: item => item.role_ids.map(role => <UsersListFieldRole key={role} role_id={role} />),
 			title: 'Grupos',
 			width: 200,
+		},
+		{
+			accessor: 'organization_id',
+			render: item => <UsersListFieldOrganization organizationId={item.organization_id} />,
+			title: 'Organização',
+			width: 300,
 		},
 	];
 
@@ -64,6 +72,7 @@ export function UsersList() {
 	return (
 		<Pane header={[
 			<UsersListHeader />,
+			<UsersListFilterBar />,
 		]}
 		>
 			<DataTable
@@ -71,6 +80,7 @@ export function UsersList() {
 				onRowClick={handleRowClick}
 				records={usersListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={usersListContext.data.selectedId}
 			/>
 		</Pane>
 	);

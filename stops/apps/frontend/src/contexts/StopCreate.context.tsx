@@ -14,7 +14,6 @@ import useSWR from 'swr';
 /* * */
 
 const emptyStop: CreateStopDto = {
-	_id: '',
 	bench_status: 'unknown',
 	comments: [],
 	connections: [],

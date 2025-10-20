@@ -1,8 +1,10 @@
+/* * */
+
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
+import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -19,7 +21,7 @@ import { Metric } from '@tmlmobilidade/types';
 const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<string[]> => {
 	//
 
-	LOGGER.info(`Fetching all months from metric '${metricName}'...`);
+	Logs.info(`Fetching all months from metric '${metricName}'...`);
 
 	const metricsCollection = await metrics.getCollection();
 
@@ -42,11 +44,11 @@ const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<st
 
 	const allMonths = Array.from(monthsSet).sort();
 
-	LOGGER.info(
+	Logs.info(
 		`Found ${allMonths.length} unique months from ${docsCount} documents of '${metricName}'.`,
 	);
 
-	LOGGER.divider();
+	Logs.divider();
 
 	return allMonths;
 };
@@ -78,11 +80,11 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 	const metricsCollection = await metrics.getCollection();
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
 	metricsCollection.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
-	LOGGER.divider();
+	Logs.divider();
 
 	//
 	// Get all months present in 'mean_demand_by_line_by_month' metrics
@@ -99,7 +101,7 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed all months (${allMonths.length}) for ${METRIC} (${globalTimer.get()})`);
+	Logs.terminate(`Processed all months (${allMonths.length}) for ${METRIC} (${globalTimer.get()})`);
 };
 
 /* * */
@@ -222,7 +224,7 @@ const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) =>
 
 	await metrics.insertOne(result);
 
-	LOGGER.info(`Computed TopMeanDemandByLineByMonth for ${yearMonth} in ${globalTimer.get()}`);
+	Logs.info(`Computed TopMeanDemandByLineByMonth for ${yearMonth} in ${globalTimer.get()}`);
 };
 
 //

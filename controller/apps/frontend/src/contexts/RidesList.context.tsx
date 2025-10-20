@@ -2,13 +2,13 @@
 
 /* * */
 
-import { type DataTableHandle } from '@/components/datatable/DataTableContext';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
+import { usePathname } from 'next/navigation';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
@@ -31,6 +31,7 @@ interface RidesListContextState {
 	}
 	data: {
 		filtered: RideNormalized[]
+		selectedRideId: string | undefined
 	}
 	filters: {
 		acceptance_status: string[]
@@ -49,9 +50,6 @@ interface RidesListContextState {
 		error: Error | null
 		last_update: null | UnixTimestamp
 		loading: boolean
-	}
-	refs: {
-		datatable: React.RefObject<DataTableHandle | null>
 	}
 }
 
@@ -76,9 +74,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const agenciesContext = useAgenciesContext();
+	const pathname = usePathname();
 
 	const webSocketRef = useRef<null | WebSocket>(null);
-	const dataTableRef = useRef<DataTableHandle | null>(null);
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.trim(), 500);
@@ -97,6 +95,12 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
+
+	const selectedRideId = useMemo(() => {
+		const rideId = pathname.split('/rides/').pop()?.split('?').shift();
+		if (!rideId) return undefined;
+		return decodeURIComponent(rideId);
+	}, [pathname]);
 
 	//
 	// B. Fetch data
@@ -203,6 +207,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		data: {
 			filtered: ridesData ?? [],
+			selectedRideId,
 		},
 		filters: {
 			acceptance_status: filterAcceptanceStatus,
@@ -222,11 +227,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			last_update: flagsLastUpdateState,
 			loading: ridesLoading,
 		},
-		refs: {
-			datatable: dataTableRef,
-		},
 	}), [
 		ridesData,
+		selectedRideId,
 		filterAgency,
 		filterDateEnd,
 		filterDateStart,
@@ -241,7 +244,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		flagsLastUpdateState,
 		ridesLoading,
 		ridesError,
-		dataTableRef,
 	]);
 
 	//

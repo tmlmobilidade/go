@@ -1,6 +1,8 @@
-import LOGGER from '@helperkits/logger';
+/* * */
+
 import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@tmlmobilidade/interfaces';
+import { Logs } from '@tmlmobilidade/utils';
 
 const metricTypes = [
 	{ hasDaily: true, id: 'demand_by_line' },
@@ -45,7 +47,7 @@ interface DemandMetricResult {
 export const testDemandMetrics = async () => {
 	//
 
-	LOGGER.title('Demand Metrics Comparison Test');
+	Logs.title('Demand Metrics Comparison Test');
 	const globalTimer = new TIMETRACKER();
 
 	const YEAR = 2024;
@@ -127,10 +129,10 @@ export const testDemandMetrics = async () => {
 		//
 		// Log results for this metric type
 
-		LOGGER.divider(`----- ${metricType.id.toUpperCase()} -----`);
-		LOGGER.info(`Year total:  ${totalYearly.toLocaleString()}`);
-		LOGGER.info(`Month total: ${totalMonthly.toLocaleString()}`);
-		LOGGER.info(
+		Logs.divider(`----- ${metricType.id.toUpperCase()} -----`);
+		Logs.info(`Year total:  ${totalYearly.toLocaleString()}`);
+		Logs.info(`Month total: ${totalMonthly.toLocaleString()}`);
+		Logs.info(
 			`Day total:   ${
 				metricType.hasDaily ? totalDaily.toLocaleString() : 'N/A (no daily metrics)'
 			}`,
@@ -144,11 +146,11 @@ export const testDemandMetrics = async () => {
 				? '✅ Year and month match!'
 				: '⚠️ Year and month do not match';
 
-		LOGGER.info(matchResult);
-		LOGGER.info(`Processed in ${metricTimer.get()}`);
+		Logs.info(matchResult);
+		Logs.info(`Processed in ${metricTimer.get()}`);
 	}
 
-	LOGGER.divider('===== CROSS-METRIC COMPARISON =====');
+	Logs.divider('===== CROSS-METRIC COMPARISON =====');
 
 	const lineResults = results['demand_by_line'];
 	const agencyResults = results['demand_by_agency'];
@@ -156,27 +158,27 @@ export const testDemandMetrics = async () => {
 	const hourResults = results['demand_by_pattern_hour'];
 
 	if (lineResults && patternResults && agencyResults) {
-		LOGGER.info(`Line yearly total:   ${lineResults.yearly.toLocaleString()}`);
-		LOGGER.info(`Pattern yearly total: ${patternResults.yearly.toLocaleString()}`);
-		LOGGER.info(`Agency yearly total:  ${agencyResults.yearly.toLocaleString()}`);
+		Logs.info(`Line yearly total:   ${lineResults.yearly.toLocaleString()}`);
+		Logs.info(`Pattern yearly total: ${patternResults.yearly.toLocaleString()}`);
+		Logs.info(`Agency yearly total:  ${agencyResults.yearly.toLocaleString()}`);
 
 		if (lineResults.yearly === patternResults.yearly && lineResults.yearly === agencyResults.yearly) {
-			LOGGER.info('✅ Line, pattern, and agency yearly totals match!');
+			Logs.info('✅ Line, pattern, and agency yearly totals match!');
 		}
 		else {
-			LOGGER.info('⚠️ Line, pattern, and agency yearly totals do not match');
+			Logs.info('⚠️ Line, pattern, and agency yearly totals do not match');
 		}
 	}
 
 	if (hourResults && patternResults) {
-		LOGGER.divider('Note: Pattern-hour metrics use the rides collection (planned rides only)');
-		LOGGER.info(`Pattern yearly total:      ${patternResults.yearly.toLocaleString()}`);
-		LOGGER.info(`Pattern-hour yearly total: ${hourResults.yearly.toLocaleString()}`);
-		LOGGER.info(`Difference: ${(patternResults.yearly - hourResults.yearly).toLocaleString()}`);
-		LOGGER.info(
+		Logs.divider('Note: Pattern-hour metrics use the rides collection (planned rides only)');
+		Logs.info(`Pattern yearly total:      ${patternResults.yearly.toLocaleString()}`);
+		Logs.info(`Pattern-hour yearly total: ${hourResults.yearly.toLocaleString()}`);
+		Logs.info(`Difference: ${(patternResults.yearly - hourResults.yearly).toLocaleString()}`);
+		Logs.info(
 			'⚠️ Disclaimer: These totals are **not expected to match** because the rides collection excludes unplanned rides.',
 		);
 	}
 
-	LOGGER.terminate(`Demand metrics test completed in ${globalTimer.get()}`);
+	Logs.terminate(`Demand metrics test completed in ${globalTimer.get()}`);
 };

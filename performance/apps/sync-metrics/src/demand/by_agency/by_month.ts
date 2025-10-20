@@ -1,18 +1,17 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const syncDemandByAgencyByMonth = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Agency by Month`);
+	Logs.title(`Sync Demand Metrics by Agency by Month`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_agency_by_month';
@@ -21,9 +20,9 @@ export const syncDemandByAgencyByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
-	metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	await metrics.deleteMany({ metric: METRIC });
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -82,7 +81,7 @@ export const syncDemandByAgencyByMonth = async () => {
 			},
 		], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
 
-		LOGGER.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})`);
+		Logs.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})`);
 		return validationsAgg;
 	});
 
@@ -123,7 +122,7 @@ export const syncDemandByAgencyByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

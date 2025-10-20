@@ -2,11 +2,10 @@
 
 import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
 /* * */
@@ -14,7 +13,7 @@ import pLimit from 'p-limit';
 export const syncDemandByPatternByDay = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Pattern by Day`);
+	Logs.title(`Sync Demand Metrics by Pattern by Day`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_by_day';
@@ -23,9 +22,9 @@ export const syncDemandByPatternByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
-	metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	await metrics.deleteMany({ metric: METRIC });
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -102,7 +101,7 @@ export const syncDemandByPatternByDay = async () => {
 				},
 			], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-			LOGGER.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
+			Logs.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
 			return validationsAgg;
 		}),
 	);
@@ -164,7 +163,7 @@ export const syncDemandByPatternByDay = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

@@ -1,6 +1,6 @@
 # # # # # # # # #
 
-FROM node:22.6-alpine3.20 AS base
+FROM node:24-alpine AS base
 
 ENV MODULE=auth
 ENV PROJECT=frontend

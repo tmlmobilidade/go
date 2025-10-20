@@ -24,6 +24,11 @@
 		background-color: var(--color-background);
 		border-color: var(--color-primary);
 	}
+
+	&.fromRole {
+		background-color: var(--color-system-background-100);
+		border-left: 4px solid var(--color-secondary);
+	}
 }
 
 .root.disabled {
@@ -57,4 +62,12 @@
 	&[aria-disabled="true"] {
 		opacity: 0.2;
 	}
+}
+
+.roleIndicator {
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	margin-top: var(--size-spacing-xs);
+	background-color: var(--color-secondary-light);
+	border-left: 3px solid var(--color-secondary);
+	border-radius: var(--border-radius-xs);
 }

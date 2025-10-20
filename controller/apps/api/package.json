@@ -16,20 +16,21 @@
 	},
 	"dependencies": {
 		"@fastify/websocket": "^11.2.0",
-		"@tmlmobilidade/connectors": "20250925.1818.18",
-		"@tmlmobilidade/interfaces": "20250925.1818.18",
-		"@tmlmobilidade/lib": "20250925.1818.18",
+		"@tmlmobilidade/connectors": "20251020.919.5",
+		"@tmlmobilidade/emails": "20251020.919.5",
+		"@tmlmobilidade/interfaces": "20251020.919.5",
+		"@tmlmobilidade/lib": "20251020.919.5",
 		"@tmlmobilidade/sae-controller-pckg-ride-normalized": "*",
-		"@tmlmobilidade/utils": "20250925.1818.18",
-		"pino-pretty": "13.1.1"
+		"@tmlmobilidade/utils": "20251020.919.5",
+		"pino-pretty": "13.1.2"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250925.1818.18",
-		"@tmlmobilidade/types": "20250925.1818.18",
-		"@types/node": "24.5.2",
+		"@tmlmobilidade/tsconfig": "20251020.919.5",
+		"@tmlmobilidade/types": "20251020.919.5",
+		"@types/node": "24.8.1",
 		"@types/ws": "8.18.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.5",
-		"typescript": "5.9.2"
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
 	}
 }

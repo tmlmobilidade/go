@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { rideAcceptances } from '@tmlmobilidade/interfaces';
+import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { NoteComment, RideAcceptanceStatusSchema, RideJustificationCause, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 import { RideAcceptance } from '@tmlmobilidade/types';
@@ -69,7 +69,7 @@ export class RideAcceptanceController {
 		}
 
 		return reply.send({
-			data: rideAcceptanceData,
+			data: await enrichUserRefs(rideAcceptanceData),
 			error: null,
 			statusCode: HttpStatus.OK,
 		});

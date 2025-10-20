@@ -1,0 +1,60 @@
+/* * */
+
+import { useOrganizationsContext } from '@/contexts/Organizations.context';
+import { useUsersListContext } from '@/contexts/UsersList.context';
+import { FilterTypeList } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+
+/* * */
+
+export function UsersListFilterOrganization() {
+	//
+
+	//
+	// A. Setup variables
+
+	const organizationsContext = useOrganizationsContext();
+	const usersListContext = useUsersListContext();
+
+	//
+	// B. Transform data
+
+	const isActive = useMemo(() => {
+		// Skip if organizations data is not available
+		if (!organizationsContext.data.raw?.length) return false;
+		// The default for this filter is to show all organizations
+		const defaultValues = organizationsContext.data.raw.map(item => item._id);
+		const enabledValues = usersListContext.filters.organization_ids;
+		// Check if the arrays are equal by quickly comparing their lengths
+		if (defaultValues.length !== enabledValues.length) return true;
+		// If the length is the same ensure they're equal by also
+		// checking if every item in one array is included in the other.
+		return !defaultValues.every(item => enabledValues.includes(item));
+	}, [usersListContext.filters.organization_ids, organizationsContext.data.raw]);
+
+	const parsedOptions = useMemo(() => {
+		// Skip if options are not provided or are empty.
+		if (!organizationsContext.data.raw?.length) return [];
+		// Parse options to the expected format.
+		return organizationsContext.data.raw.map(item => ({
+			checked: usersListContext.filters.organization_ids.includes(item._id),
+			label: item.long_name,
+			value: item._id,
+		}));
+	}, [usersListContext.filters.organization_ids, organizationsContext.data.raw]);
+
+	//
+	// C. Render components
+
+	return (
+		<FilterTypeList
+			active={isActive}
+			label="Organização"
+			onChange={usersListContext.actions.setFilterOrganizationIds}
+			options={parsedOptions}
+			withToggleAll
+		/>
+	);
+
+	//
+}

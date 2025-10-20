@@ -2,11 +2,10 @@
 
 import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type Metric } from '@tmlmobilidade/types';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
 /* * */
@@ -14,7 +13,7 @@ import pLimit from 'p-limit';
 export const syncDemandByLineByDay = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Line by Day`);
+	Logs.title(`Sync Demand Metrics by Line by Day`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_line_by_day';
@@ -23,9 +22,9 @@ export const syncDemandByLineByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
-	metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	await metrics.deleteMany({ metric: METRIC });
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -42,20 +41,22 @@ export const syncDemandByLineByDay = async () => {
 
 	const calendarMap = new Map<string, CalendarEntry>();
 	for (const day of calendarJson) {
-		const dayString = day.date.toString();
 		// convert date to YYYY-MM-DD format
-		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
+		const formattedDate = `${day.date.slice(0, 4)}-${day.date.slice(4, 6)}-${day.date.slice(6, 8)}`;
 		calendarMap.set(formattedDate, day);
 	}
 
 	//
 	// Define daily chunks
 
-	const earliestDataNeeded = Dates.now('Europe/Lisbon').set(
-		{ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 },
-	);
+	const earliestDataNeeded = Dates
+		.now('Europe/Lisbon')
+		.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 });
 
-	const latest = Dates.now('Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).plus({ days: 1 });
+	const latest = Dates
+		.now('Europe/Lisbon')
+		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
+		.plus({ days: 1 });
 
 	const allTimestampChunks: { end: number, endIso: string, start: number, startIso: string }[] = [];
 
@@ -104,7 +105,7 @@ export const syncDemandByLineByDay = async () => {
 				},
 			], { hint: 'is_passenger_1_line_id_1_created_at_1' }).toArray();
 
-			LOGGER.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} lines (${chunkTimer.get()})`);
+			Logs.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} lines (${chunkTimer.get()})`);
 			return validationsAgg;
 		}),
 	);
@@ -166,7 +167,7 @@ export const syncDemandByLineByDay = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

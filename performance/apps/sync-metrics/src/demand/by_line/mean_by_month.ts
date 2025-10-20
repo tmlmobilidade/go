@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
+import { type Metric } from '@tmlmobilidade/types';
+import { Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -19,7 +19,7 @@ const dayTypeMap: Record<string, string> = {
 export const computeMeanDemandByLineByMonth = async () => {
 	//
 
-	LOGGER.title(`Compute Mean Demand by Line by Month`);
+	Logs.title(`Compute Mean Demand by Line by Month`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'mean_demand_by_line_by_month' as const;
@@ -30,9 +30,9 @@ export const computeMeanDemandByLineByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing ${METRIC} metrics...`);
+	Logs.info(`Clearing existing ${METRIC} metrics...`);
 	metricsCollection.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
 	// Fetch metrics collection
@@ -106,7 +106,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

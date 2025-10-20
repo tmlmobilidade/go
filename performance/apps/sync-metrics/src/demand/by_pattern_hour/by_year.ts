@@ -1,16 +1,17 @@
+/* * */
+
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const syncDemandByPatternHourByYear = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Pattern Hour by Year`);
+	Logs.title(`Sync Demand Metrics by Pattern Hour by Year`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_hour_by_year';
@@ -19,9 +20,9 @@ export const syncDemandByPatternHourByYear = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch rides collection
@@ -60,7 +61,7 @@ export const syncDemandByPatternHourByYear = async () => {
 
 		const year = new Date(chunkData.start).getFullYear();
 
-		LOGGER.info(`Processing Year ${year}...`);
+		Logs.info(`Processing Year ${year}...`);
 
 		//
 		// Aggregate by pattern_id + hour + minute
@@ -97,7 +98,7 @@ export const syncDemandByPatternHourByYear = async () => {
 			])
 			.toArray();
 
-		LOGGER.info(`Year ${year} aggregation returned ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`);
+		Logs.info(`Year ${year} aggregation returned ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`);
 		return { ridesAgg, year };
 	});
 
@@ -145,7 +146,7 @@ export const syncDemandByPatternHourByYear = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

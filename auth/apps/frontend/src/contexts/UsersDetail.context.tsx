@@ -178,7 +178,6 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	};
 
 	const handlePermissionToggle = (scope: string, action: string) => {
-		console.log('HERE =======> ', 'permission');
 		const currentPermissions = form.values.permissions;
 
 		if (currentPermissions.find(permission => permission.scope === scope && permission.action === action)) {

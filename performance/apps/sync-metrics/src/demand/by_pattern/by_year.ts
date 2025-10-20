@@ -1,18 +1,17 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates, Logs } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const syncDemandByPatternByYear = async () => {
 	//
 
-	LOGGER.title(`Sync Demand Metrics by Pattern by Year`);
+	Logs.title(`Sync Demand Metrics by Pattern by Year`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_by_year';
@@ -21,9 +20,9 @@ export const syncDemandByPatternByYear = async () => {
 	// Delete existing pattern metrics
 
 	const deleteTimer = new TIMETRACKER();
-	LOGGER.info(`Clearing existing '${METRIC}' metrics...`);
-	metrics.deleteMany({ metric: METRIC });
-	LOGGER.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	await metrics.deleteMany({ metric: METRIC });
+	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -63,7 +62,7 @@ export const syncDemandByPatternByYear = async () => {
 
 		const year = new Date(chunkData.start).getFullYear();
 
-		LOGGER.info(`Processing Year ${year}...`);
+		Logs.info(`Processing Year ${year}...`);
 
 		//
 		// Aggregate by pattern_id for this year
@@ -84,7 +83,7 @@ export const syncDemandByPatternByYear = async () => {
 			},
 		], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-		LOGGER.info(`Year ${year} aggregation returned ${validationsAgg.length} pattern groups (${chunkTimer.get()})`);
+		Logs.info(`Year ${year} aggregation returned ${validationsAgg.length} pattern groups (${chunkTimer.get()})`);
 		return { validationsAgg, year };
 	});
 
@@ -127,7 +126,7 @@ export const syncDemandByPatternByYear = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	LOGGER.terminate(`Processed ${results.length} pattern results (${globalTimer.get()})`);
+	Logs.terminate(`Processed ${results.length} pattern results (${globalTimer.get()})`);
 };
 
 //
