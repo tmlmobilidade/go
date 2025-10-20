@@ -141,7 +141,7 @@ export function RidesDetailAcceptanceJustification() {
 			<Label size="lg" caps>Justificação</Label>
 			<AcceptanceStatus grade={acceptance_status} />
 			<HasPermission
-				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : Permissions.rides.actions.justification_change_status}
+				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : Permissions.rides.actions.justification_justify}
 				fallback={fallback}
 				scope={Permissions.rides.scope}
 			>
