@@ -70,6 +70,7 @@ export function RolesList() {
 				onRowClick={handleRowClick}
 				records={rolesListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={rolesListContext.data.selectedId}
 			/>
 		</Pane>
 	);

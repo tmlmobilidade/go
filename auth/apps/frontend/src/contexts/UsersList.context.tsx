@@ -6,6 +6,7 @@ import { type UserNormalized } from '@/types/normalized';
 import { type User } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString } from '@tmlmobilidade/utils';
+import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -19,6 +20,7 @@ interface UsersListContextState {
 	data: {
 		filtered: UserNormalized[]
 		raw: User[]
+		selectedId: string | undefined
 	}
 	filters: {
 		search: string
@@ -50,6 +52,13 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	// A. Setup variables
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+	const pathname = usePathname();
+
+	const selectedId = useMemo(() => {
+		const userId = pathname.split('/users/').pop()?.split('?').shift();
+		if (!userId) return undefined;
+		return decodeURIComponent(userId);
+	}, [pathname]);
 
 	//
 	// B. Fetch data
@@ -92,6 +101,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		data: {
 			filtered: searchResultsData,
 			raw: allUsersData ?? [],
+			selectedId,
 		},
 		filters: {
 			search: filterSearch,
@@ -106,6 +116,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		allUsersLoading,
 		searchResultsData,
 		filterSearch,
+		selectedId,
 	]);
 
 	//

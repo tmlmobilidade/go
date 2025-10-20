@@ -71,6 +71,7 @@ export function UsersList() {
 				onRowClick={handleRowClick}
 				records={usersListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={usersListContext.data.selectedId}
 			/>
 		</Pane>
 	);

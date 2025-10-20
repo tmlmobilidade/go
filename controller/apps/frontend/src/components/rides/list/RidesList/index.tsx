@@ -15,8 +15,7 @@ import { useRidesListContext } from '@/contexts/RidesList.context';
 import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
-import { usePathname, useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -27,14 +26,7 @@ export function RidesList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const pathname = usePathname();
 	const ridesListContext = useRidesListContext();
-
-	const selectedRideId = useMemo(() => {
-		const rideId = pathname.split('/rides/').pop()?.split('?').shift();
-		if (!rideId) return undefined;
-		return decodeURIComponent(rideId);
-	}, [pathname]);
 
 	const columns: DataTableColumn<RideNormalized>[] = [
 		{
@@ -131,7 +123,7 @@ export function RidesList() {
 				onRowClick={handleRowClick}
 				records={ridesListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={selectedRideId}
+				selectedId={ridesListContext.data.selectedRideId}
 			/>
 		</Pane>
 	);
