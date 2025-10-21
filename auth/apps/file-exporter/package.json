@@ -2,7 +2,9 @@
 	"name": "@tmlmobilidade/sae-auth-file-exporter",
 	"version": "1.0.0",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
@@ -16,6 +18,7 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
+		"@helperkits/writer": "^20251010.1959.27",
 		"@tmlmobilidade/interfaces": "20251020.919.5",
 		"@tmlmobilidade/utils": "20251020.919.5"
 	},

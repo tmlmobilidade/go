@@ -6,6 +6,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
+		"dev:exporter:prod": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-auth-file-exporter",
 		"dev:production": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
