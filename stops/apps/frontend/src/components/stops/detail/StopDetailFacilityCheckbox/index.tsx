@@ -1,30 +1,34 @@
 /* * */
 
-import { Checkbox } from '@tmlmobilidade/ui';
+import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { Checkbox, ProposedChangesWrapper } from '@tmlmobilidade/ui';
 import React from 'react';
 
 /* * */
 
-export function FacilityCheckbox({ form, label, value }) {
-	//
+export function StopDetailFacilityCheckbox({ label, value }) {
+	const stopDetailContext = useStopDetailContext();
+	const form = stopDetailContext.data.form;
+	const stopId = stopDetailContext.data.stop?._id;
 
-	//
-	// A. Setup variables
-
-	const checked = form.values.facilities?.includes(value) ?? false;
-
-	//
-	// B. Render components
 	return (
-		<Checkbox
-			checked={checked}
-			label={label}
-			onChange={(e) => {
-				const facilities = form.values.facilities ?? [];
-				const isChecked = e.target.checked;
-				const newFacilities = isChecked ? [...facilities, value] : facilities.filter(f => f !== value);
-				form.setFieldValue('facilities', newFacilities);
-			}}
-		/>
+		<ProposedChangesWrapper
+			inputName={value}
+			relatedId={stopId}
+			scope="stop"
+		>
+			<Checkbox
+				checked={form.values.facilities?.includes(value) ?? false}
+				label={label}
+				onChange={(e) => {
+					const facilities = form.values.facilities ?? [];
+					const isChecked = e.target.checked;
+					const newFacilities = isChecked
+						? [...facilities, value]
+						: facilities.filter(f => f !== value);
+					form.setFieldValue('facilities', newFacilities);
+				}}
+			/>
+		</ProposedChangesWrapper>
 	);
 }
