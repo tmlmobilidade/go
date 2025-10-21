@@ -34,8 +34,14 @@ export function StopDetailsSectionEquipment() {
 						scope={scopeOption}
 					>
 						<Checkbox
+							checked={stopDetailContext.data.form.values.facilities?.includes('health_clinic') ?? false}
 							label="Clínica"
-							{...stopDetailContext.data.form.getInputProps('near_health_clinic')}
+							onChange={(e) => {
+								const facilities = stopDetailContext.data.form.values.facilities ?? [];
+								const checked = e.target.checked;
+								const newFacilities = checked ? [...facilities, 'health_clinic'] : facilities.filter(f => f !== 'health_clinic');
+								stopDetailContext.data.form.setFieldValue('facilities', newFacilities);
+							}}
 						/>
 					</ProposedChangesWrapper>
 
