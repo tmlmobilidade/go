@@ -15,16 +15,7 @@ import { syncDemandByPatternByYear } from '@/demand/by_pattern/by_year.js';
 import { syncDemandByPatternHourByMonth } from '@/demand/by_pattern_hour/by_month.js';
 import { syncDemandByPatternHourByYear } from '@/demand/by_pattern_hour/by_year.js';
 import TIMETRACKER from '@helperkits/timer';
-import { MetricBasePropertiesSchema } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
-
-/* * */
-
-//
-// Run once every 1 hour
-
-const parsed = MetricBasePropertiesSchema.parse({});
-const RUN_INTERVAL = parsed.interval;
 
 /* * */
 
@@ -83,7 +74,7 @@ export const syncDemandMetrics = async () => {
 		Logs.terminate(`Finished Demand Metrics Sync (${globalTimer.get()})`);
 		Logs.divider();
 
-		setTimeout(runOnInterval, RUN_INTERVAL);
+		setTimeout(runOnInterval, 3_600_000); // 1 hour
 	};
 
 	runOnInterval();

@@ -131,18 +131,13 @@ export const syncDemandByPatternByDay = async () => {
 			}
 			const patternDoc = patternMap.get(pattern_id);
 
-			const calendarProps = calendarMap.get(validation.day) ?? {
-				day_type: 0,
-				holiday: 0,
-				notes: '',
-				period: 0,
-			};
+			const calendarProps = calendarMap.get(validation.day);
 
 			patternDoc.data[validation.day] = {
-				day_type: Number(calendarProps.day_type),
-				holiday: Number(calendarProps.holiday),
+				day_type: calendarProps.day_type,
+				holiday: calendarProps.holiday,
 				notes: calendarProps.notes,
-				period: Number(calendarProps.period),
+				period: calendarProps.period,
 				qty: validation.count,
 			};
 		}

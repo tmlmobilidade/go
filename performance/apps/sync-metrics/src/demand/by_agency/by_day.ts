@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type Metric } from '@tmlmobilidade/types';
+import { DemandByAgencyByDay, type Metric } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
@@ -81,7 +81,7 @@ export const syncDemandByAgencyByDay = async () => {
 	//
 	// Process each year in parallel
 
-	const agencyMap = new Map<string, Metric>();
+	const agencyMap = new Map<string, DemandByAgencyByDay>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
@@ -121,33 +121,22 @@ export const syncDemandByAgencyByDay = async () => {
 			const agency_id = validation.agency_id ?? 'no-agency';
 			if (!agencyMap.has(agency_id)) {
 				agencyMap.set(agency_id, {
-					data: {} as Record<string, {
-						day_type: number
-						holiday: number
-						notes: string
-						period: number
-						qty: number
-					}>,
+					data: {},
 					description: `Aggregated passengers for the agency ${agency_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
-					properties: { agency_id },
-				} as Metric);
+					properties: { agency_id, interval: 0 },
+				});
 			}
 			const agencyDoc = agencyMap.get(agency_id);
 
-			const calendarProps = calendarMap.get(validation.day) ?? {
-				day_type: 0,
-				holiday: 0,
-				notes: '',
-				period: 0,
-			};
+			const calendarProps = calendarMap.get(validation.day);
 
 			agencyDoc.data[validation.day] = {
-				day_type: Number(calendarProps.day_type),
-				holiday: Number(calendarProps.holiday),
+				day_type: calendarProps.day_type,
+				holiday: calendarProps.holiday,
 				notes: calendarProps.notes,
-				period: Number(calendarProps.period),
+				period: calendarProps.period,
 				qty: validation.count,
 			};
 		}

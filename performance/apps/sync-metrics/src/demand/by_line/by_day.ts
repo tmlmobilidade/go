@@ -129,18 +129,13 @@ export const syncDemandByLineByDay = async () => {
 			}
 			const lineDoc = lineMap.get(line_id);
 
-			const calendarProps = calendarMap.get(validation.day) ?? {
-				day_type: 0,
-				holiday: 0,
-				notes: '',
-				period: 0,
-			};
+			const calendarProps = calendarMap.get(validation.day);
 
 			lineDoc.data[validation.day] = {
-				day_type: Number(calendarProps.day_type),
-				holiday: Number(calendarProps.holiday),
+				day_type: calendarProps.day_type,
+				holiday: calendarProps.holiday,
 				notes: calendarProps.notes,
-				period: Number(calendarProps.period),
+				period: calendarProps.period,
 				qty: validation.count,
 			};
 		}

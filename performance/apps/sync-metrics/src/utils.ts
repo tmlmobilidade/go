@@ -5,10 +5,10 @@ const CALENDAR_URL = 'https://go.carrismetropolitana.pt/api/dates/public';
 
 interface CalendarEntry {
 	date: string
-	day_type: string
-	holiday: string
+	day_type: '1' | '2' | '3'
+	holiday: '0' | '1'
 	notes: string
-	period: string
+	period: '1' | '2' | '3'
 }
 
 /**
