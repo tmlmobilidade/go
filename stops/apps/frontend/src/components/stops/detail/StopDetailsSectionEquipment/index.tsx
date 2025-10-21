@@ -2,9 +2,10 @@
 
 /* * */
 
+import { FacilityCheckbox } from '@/components/stops/detail/StopDetailFacilityCheckbox';
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { ScopeOption } from '@/types/proposed-changes';
-import { Checkbox, Collapsible, Grid, ProposedChangesWrapper, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, ProposedChangesWrapper, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -33,16 +34,7 @@ export function StopDetailsSectionEquipment() {
 						relatedId={stopDetailContext.data.stop?._id}
 						scope={scopeOption}
 					>
-						<Checkbox
-							checked={stopDetailContext.data.form.values.facilities?.includes('health_clinic') ?? false}
-							label="Clínica"
-							onChange={(e) => {
-								const facilities = stopDetailContext.data.form.values.facilities ?? [];
-								const checked = e.target.checked;
-								const newFacilities = checked ? [...facilities, 'health_clinic'] : facilities.filter(f => f !== 'health_clinic');
-								stopDetailContext.data.form.setFieldValue('facilities', newFacilities);
-							}}
-						/>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Clínica" value="health_clinic" />
 					</ProposedChangesWrapper>
 
 					<ProposedChangesWrapper
@@ -50,44 +42,72 @@ export function StopDetailsSectionEquipment() {
 						relatedId={stopDetailContext.data.stop?._id}
 						scope={scopeOption}
 					>
-						<Checkbox
-							label="Hospital"
-							{...stopDetailContext.data.form.getInputProps('near')}
-						/>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Hospital" value="hospital" />
 					</ProposedChangesWrapper>
 
-					<Checkbox
-						label="Universidade"
-						{...stopDetailContext.data.form.getInputProps('near_university')}
-					/>
-					<Checkbox
-						label="Escola"
-						{...stopDetailContext.data.form.getInputProps('near_school')}
-					/>
-					<Checkbox
-						label="Esquadra"
-						{...stopDetailContext.data.form.getInputProps('near_police_station')}
-					/>
-					<Checkbox
-						label="Bombeiros"
-						{...stopDetailContext.data.form.getInputProps('near_fire_station')}
-					/>
-					<Checkbox
-						label="Zona Comercial"
-						{...stopDetailContext.data.form.getInputProps('near_shopping')}
-					/>
-					<Checkbox
-						label="Edifício Histórico"
-						{...stopDetailContext.data.form.getInputProps('near_historic_building')}
-					/>
-					<Checkbox
-						label="Espaço navegante®"
-						{...stopDetailContext.data.form.getInputProps('near_transit_office')}
-					/>
-					<Checkbox
-						label="Praia"
-						{...stopDetailContext.data.form.getInputProps('near_beach')}
-					/>
+					<ProposedChangesWrapper
+						inputName="univeristy"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Universidade" value="university" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="school"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Escola" value="school" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="police_station"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Esquadra" value="police_station" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="fire_station"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Bombeiros" value="fire_station" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="commercial_area"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Zona Comercial" value="commercial_area" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="shopping"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Centro Comercial" value="shopping" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="historic_building"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Edifício Histórico" value="historic_building" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="transit_office"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Espaço navegante®" value="transit_office" />
+					</ProposedChangesWrapper>
+					<ProposedChangesWrapper
+						inputName="beach"
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<FacilityCheckbox form={stopDetailContext.data.form} label="Praia" value="beach" />
+					</ProposedChangesWrapper>
 				</Grid>
 			</Section>
 		</Collapsible>
