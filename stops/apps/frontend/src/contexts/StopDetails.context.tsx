@@ -1,8 +1,9 @@
 'use client';
 
-import { type CreateStopDto, type Stop } from '@tmlmobilidade/types';
+import { Routes } from '@/lib/routes';
+import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { convertObject, fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -65,7 +66,7 @@ interface StopDetailContextState {
 		saveStop: () => void
 	}
 	data: {
-		form: UseFormReturnType<CreateStopDto>
+		form: UseFormReturnType<CreateStopDto | UpdateStopDto>
 		// imageUrl: string | undefined
 		stop: Stop | undefined
 	}
@@ -152,7 +153,10 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const handleSaveStop = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Stop>(`/stops/${stopId}`, 'POST', form.getValues());
+		const method = stopId ? 'PUT' : 'POST';
+		const url = !stopId ? Routes.STOP_API(Routes.STOPS_LIST) : Routes.STOP_API(`/stops/${stopId}`);
+		const body = !stopId ? form.values : convertObject(form.values, UpdateStopSchema);
+		const response = await fetchData<Stop>(url, method, body);
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({
@@ -169,17 +173,24 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 					});
 				}
 			}
-			stopMutate();
-			allStopsMutate();
 			setIsSaving(false);
+			return;
 		}
 
 		useToast.success({
-			message: 'Paragem salvo com sucesso',
+			message: 'Paragem salva com sucesso',
 			title: 'Sucesso',
 		});
 
+		if (stopId && response.data?._id) {
+			router.replace(Routes.STOPS_DETAIL(response.data._id));
+		}
+
 		setIsSaving(false);
+		stopMutate();
+		allStopsMutate();
+		setIsSaving(false);
+		return;
 	};
 
 	//
