@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type Metric } from '@tmlmobilidade/types';
+import { type DemandByLineByDay } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
@@ -75,7 +75,7 @@ export const syncDemandByLineByDay = async () => {
 	//
 	// Process each year in parallel
 
-	const lineMap = new Map<string, Metric>();
+	const lineMap = new Map<string, DemandByLineByDay>();
 
 	//
 	// Set max concurrent queries
@@ -125,7 +125,7 @@ export const syncDemandByLineByDay = async () => {
 					generated_at: new Date(),
 					metric: METRIC,
 					properties: { line_id },
-				} as Metric);
+				});
 			}
 			const lineDoc = lineMap.get(line_id);
 

@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
+import { type DemandByPatternByDay } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
@@ -76,7 +76,7 @@ export const syncDemandByPatternByDay = async () => {
 
 	//
 	// Process each year in parallel
-	const patternMap = new Map<string, Metric>();
+	const patternMap = new Map<string, DemandByPatternByDay>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
@@ -116,18 +116,12 @@ export const syncDemandByPatternByDay = async () => {
 			const pattern_id = validation.pattern_id ?? 'no-pattern';
 			if (!patternMap.has(pattern_id)) {
 				patternMap.set(pattern_id, {
-					data: {} as Record<string, {
-						day_type: number
-						holiday: number
-						notes: string
-						period: number
-						qty: number
-					}>,
+					data: {},
 					description: `Aggregated passengers for the pattern ${pattern_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
 					properties: { pattern_id },
-				} as Metric);
+				});
 			}
 			const patternDoc = patternMap.get(pattern_id);
 

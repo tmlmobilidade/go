@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { DemandByAgencyByDay, type Metric } from '@tmlmobilidade/types';
+import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
