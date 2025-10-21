@@ -125,7 +125,7 @@ export const syncDemandByAgencyByDay = async () => {
 					description: `Aggregated passengers for the agency ${agency_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
-					properties: { agency_id, interval: 0 },
+					properties: { agency_id },
 				});
 			}
 			const agencyDoc = agencyMap.get(agency_id);
