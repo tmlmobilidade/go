@@ -20,17 +20,17 @@ export function StopDetailsSectionEquipment() {
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">
-					<StopDetailFacilityCheckbox label="Clínica" value="health_clinic" />
-					<StopDetailFacilityCheckbox label="Hospital" value="hospital" />
-					<StopDetailFacilityCheckbox label="Universidade" value="university" />
-					<StopDetailFacilityCheckbox label="Escola" value="school" />
-					<StopDetailFacilityCheckbox label="Esquadra" value="police_station" />
-					<StopDetailFacilityCheckbox label="Bombeiros" value="fire_station" />
-					<StopDetailFacilityCheckbox label="Zona Comercial" value="commercial_area" />
-					<StopDetailFacilityCheckbox label="Centro Comercial" value="shopping" />
-					<StopDetailFacilityCheckbox label="Edifício Histórico" value="historic_building" />
-					<StopDetailFacilityCheckbox label="Espaço navegante®" value="transit_office" />
-					<StopDetailFacilityCheckbox label="Praia" value="beach" />
+					<StopDetailFacilityCheckbox label="Clínica" value="health_clinic" proposeable />
+					<StopDetailFacilityCheckbox label="Hospital" value="hospital" proposeable />
+					<StopDetailFacilityCheckbox label="Universidade" value="university" proposeable />
+					<StopDetailFacilityCheckbox label="Escola" value="school" proposeable />
+					<StopDetailFacilityCheckbox label="Esquadra" value="police_station" proposeable />
+					<StopDetailFacilityCheckbox label="Bombeiros" value="fire_station" proposeable />
+					<StopDetailFacilityCheckbox label="Zona Comercial" value="commercial_area" proposeable />
+					<StopDetailFacilityCheckbox label="Centro Comercial" value="shopping" proposeable />
+					<StopDetailFacilityCheckbox label="Edifício Histórico" value="historic_building" proposeable />
+					<StopDetailFacilityCheckbox label="Espaço navegante®" value="transit_office" proposeable />
+					<StopDetailFacilityCheckbox label="Praia" value="beach" proposeable />
 				</Grid>
 			</Section>
 		</Collapsible>

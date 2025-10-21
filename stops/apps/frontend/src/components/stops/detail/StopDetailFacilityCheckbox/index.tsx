@@ -6,7 +6,15 @@ import React from 'react';
 
 /* * */
 
-export function StopDetailFacilityCheckbox({ label, value }) {
+interface StopDetailFacilityCheckboxProps {
+	label: string
+	proposeable?: boolean
+	value: string
+}
+
+/* * */
+
+export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDetailFacilityCheckboxProps) {
 	//
 
 	//
@@ -18,26 +26,20 @@ export function StopDetailFacilityCheckbox({ label, value }) {
 	//
 	// B. Render components
 
-	return (
-		<ProposedChangesWrapper
-			inputName={value}
-			relatedId={stopId}
-			scope="stop"
-		>
-			<Checkbox
-				checked={form.values.facilities?.includes(value) ?? false}
-				label={label}
-				onChange={(e) => {
-					const facilities = form.values.facilities ?? [];
-					const isChecked = e.target.checked;
-					const newFacilities = isChecked
-						? [...facilities, value]
-						: facilities.filter(f => f !== value);
-					form.setFieldValue('facilities', newFacilities);
-				}}
-			/>
-		</ProposedChangesWrapper>
+	const checkbox = (
+		<Checkbox
+			checked={form.values.facilities?.includes(value) ?? false}
+			label={label}
+			onChange={(e) => {
+				const facilities = form.values.facilities ?? [];
+				const isChecked = e.target.checked;
+				const newFacilities = isChecked ? [...facilities, value] : facilities.filter(f => f !== value);
+				form.setFieldValue('facilities', newFacilities);
+			}}
+		/>
 	);
+
+	return proposeable ? <ProposedChangesWrapper inputName={value} relatedId={stopId} scope="stop">{checkbox}</ProposedChangesWrapper> : checkbox;
 
 	//
 }
