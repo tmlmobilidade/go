@@ -7,9 +7,16 @@ import React from 'react';
 /* * */
 
 export function StopDetailFacilityCheckbox({ label, value }) {
+	//
+
+	//
+	// A. Setup variables
 	const stopDetailContext = useStopDetailContext();
 	const form = stopDetailContext.data.form;
 	const stopId = stopDetailContext.data.stop?._id;
+
+	//
+	// B. Render components
 
 	return (
 		<ProposedChangesWrapper
@@ -31,4 +38,6 @@ export function StopDetailFacilityCheckbox({ label, value }) {
 			/>
 		</ProposedChangesWrapper>
 	);
+
+	//
 }
