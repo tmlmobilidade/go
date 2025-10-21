@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-file-exporter-exporter",
+	"name": "@tmlmobilidade/sae-auth-file-exporter",
 	"version": "1.0.0",
 	"type": "module",
 	"files": [
