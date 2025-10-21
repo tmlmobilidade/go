@@ -120,13 +120,7 @@ export const syncDemandByLineByDay = async () => {
 			const line_id = validation.line_id ?? 'no-line';
 			if (!lineMap.has(line_id)) {
 				lineMap.set(line_id, {
-					data: {} as Record<string, {
-						day_type: number
-						holiday: number
-						notes: string
-						period: number
-						qty: number
-					}>,
+					data: {},
 					description: `Aggregated passengers for the line ${line_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
