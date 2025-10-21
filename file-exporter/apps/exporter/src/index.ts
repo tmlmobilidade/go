@@ -60,26 +60,14 @@ async function main() {
 	//
 }
 
-// /* * */
-
-// (async function init() {
-// 	const runOnInterval = async () => {
-// 		await main();
-// 		setTimeout(runOnInterval, RUN_INTERVAL);
-// 	};
-// 	runOnInterval();
-// })();
-
 /* * */
 
 (async function init() {
-	try {
+	const runOnInterval = async () => {
 		await main();
-	}
-	catch (error) {
-		LOGGER.error(error);
-	}
-	finally {
-		process.exit(0);
-	}
+		setTimeout(runOnInterval, RUN_INTERVAL);
+	};
+	runOnInterval();
 })();
+
+/* * */
