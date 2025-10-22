@@ -3,7 +3,7 @@
 /* * */
 
 import { IconFileDownload } from '@tabler/icons-react';
-import { Button, closeModal, DateTimePicker, Divider, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { Button, closeModal, DateTimePicker, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
 
 import { RidesExportModalContextProvider, useRidesExportModalContext } from './context';
 
@@ -16,11 +16,11 @@ export const RIDES_EXPORT_MODAL_ID = 'rides-export-modal';
 export const openRideExportModal = () => {
 	openModal({
 		children: (
-			<MeContextProvider>
+			<ExportsContextProvider>
 				<RidesExportModalContextProvider>
 					<RidesExportModal />
 				</RidesExportModalContextProvider>
-			</MeContextProvider>
+			</ExportsContextProvider>
 		),
 		closeOnClickOutside: false,
 		modalId: RIDES_EXPORT_MODAL_ID,
