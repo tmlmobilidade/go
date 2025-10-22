@@ -1,9 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
+import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type Metric, type OperationalDate } from '@tmlmobilidade/types';
+import { type DemandByLineByDay } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
@@ -33,19 +34,12 @@ export const syncDemandByLineByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarRes = await fetch('https://go.carrismetropolitana.pt/api/dates/public');
-	const calendarJson = await calendarRes.json() as {
-		date: OperationalDate
-		day_type: string
-		holiday: string
-		notes: string
-		period: string
-	}[];
+	const calendarJson = await fetchCalendarData();
 
 	//
 	// Build a map for fast lookup
 
-	const calendarMap = new Map<string, typeof calendarJson[0]>();
+	const calendarMap = new Map<string, CalendarEntry>();
 	for (const day of calendarJson) {
 		// convert date to YYYY-MM-DD format
 		const formattedDate = `${day.date.slice(0, 4)}-${day.date.slice(4, 6)}-${day.date.slice(6, 8)}`;
@@ -81,7 +75,7 @@ export const syncDemandByLineByDay = async () => {
 	//
 	// Process each year in parallel
 
-	const lineMap = new Map<string, Metric>();
+	const lineMap = new Map<string, DemandByLineByDay>();
 
 	//
 	// Set max concurrent queries
@@ -126,27 +120,16 @@ export const syncDemandByLineByDay = async () => {
 			const line_id = validation.line_id ?? 'no-line';
 			if (!lineMap.has(line_id)) {
 				lineMap.set(line_id, {
-					data: {} as Record<string, {
-						day_type: string
-						holiday: string
-						notes: string
-						period: string
-						qty: number
-					}>,
+					data: {},
 					description: `Aggregated passengers for the line ${line_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
 					properties: { line_id },
-				} as Metric);
+				});
 			}
 			const lineDoc = lineMap.get(line_id);
 
-			const calendarProps = calendarMap.get(validation.day) ?? {
-				day_type: '0',
-				holiday: '0',
-				notes: '',
-				period: '0',
-			};
+			const calendarProps = calendarMap.get(validation.day);
 
 			lineDoc.data[validation.day] = {
 				day_type: calendarProps.day_type,

@@ -1,9 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
+import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type Metric } from '@tmlmobilidade/types';
+import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
@@ -29,6 +30,22 @@ export const syncDemandByAgencyByDay = async () => {
 	// Fetch validations collection
 
 	const validationsCollection = await simplifiedApexValidations.getCollection();
+
+	//
+	// Load calendar JSON
+
+	const calendarJson = await fetchCalendarData();
+
+	//
+	// Build a map for fast lookup
+
+	const calendarMap = new Map<string, CalendarEntry>();
+	for (const day of calendarJson) {
+		const dayString = day.date.toString();
+		// convert date to YYYY-MM-DD format
+		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
+		calendarMap.set(formattedDate, day);
+	}
 
 	//
 	// Define daily chunks
@@ -64,7 +81,7 @@ export const syncDemandByAgencyByDay = async () => {
 	//
 	// Process each year in parallel
 
-	const agencyMap = new Map<string, Metric>();
+	const agencyMap = new Map<string, DemandByAgencyByDay>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
@@ -104,15 +121,24 @@ export const syncDemandByAgencyByDay = async () => {
 			const agency_id = validation.agency_id ?? 'no-agency';
 			if (!agencyMap.has(agency_id)) {
 				agencyMap.set(agency_id, {
-					data: {} as Record<string, { qty: number }>,
+					data: {},
 					description: `Aggregated passengers for the agency ${agency_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
 					properties: { agency_id },
-				} as Metric);
+				});
 			}
 			const agencyDoc = agencyMap.get(agency_id);
-			agencyDoc.data[validation.day] = { qty: validation.count };
+
+			const calendarProps = calendarMap.get(validation.day);
+
+			agencyDoc.data[validation.day] = {
+				day_type: calendarProps.day_type,
+				holiday: calendarProps.holiday,
+				notes: calendarProps.notes,
+				period: calendarProps.period,
+				qty: validation.count,
+			};
 		}
 	}
 

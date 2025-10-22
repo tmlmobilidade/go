@@ -1,9 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
+import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
+import { type DemandByPatternByDay } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 import pLimit from 'p-limit';
 
@@ -29,6 +30,22 @@ export const syncDemandByPatternByDay = async () => {
 	// Fetch validations collection
 
 	const validationsCollection = await simplifiedApexValidations.getCollection();
+
+	//
+	// Load calendar JSON
+
+	const calendarJson = await fetchCalendarData();
+
+	//
+	// Build a map for fast lookup
+
+	const calendarMap = new Map<string, CalendarEntry>();
+	for (const day of calendarJson) {
+		const dayString = day.date.toString();
+		// convert date to YYYY-MM-DD format
+		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
+		calendarMap.set(formattedDate, day);
+	}
 
 	//
 	// Define daily chunks
@@ -59,7 +76,7 @@ export const syncDemandByPatternByDay = async () => {
 
 	//
 	// Process each year in parallel
-	const patternMap = new Map<string, Metric>();
+	const patternMap = new Map<string, DemandByPatternByDay>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
@@ -99,15 +116,24 @@ export const syncDemandByPatternByDay = async () => {
 			const pattern_id = validation.pattern_id ?? 'no-pattern';
 			if (!patternMap.has(pattern_id)) {
 				patternMap.set(pattern_id, {
-					data: {} as Record<string, { qty: number }>,
+					data: {},
 					description: `Aggregated passengers for the pattern ${pattern_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
 					properties: { pattern_id },
-				} as Metric);
+				});
 			}
 			const patternDoc = patternMap.get(pattern_id);
-			patternDoc.data[validation.day] = { qty: validation.count };
+
+			const calendarProps = calendarMap.get(validation.day);
+
+			patternDoc.data[validation.day] = {
+				day_type: calendarProps.day_type,
+				holiday: calendarProps.holiday,
+				notes: calendarProps.notes,
+				period: calendarProps.period,
+				qty: validation.count,
+			};
 		}
 	}
 
