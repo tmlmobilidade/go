@@ -110,7 +110,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>('/api/stops');
-	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(`/api/stops/${stopId}`);
+	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(`/api/stops/${stopId}`, { refreshInterval: 5000 });
 
 	// const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 	// 	stopId === 'new'
