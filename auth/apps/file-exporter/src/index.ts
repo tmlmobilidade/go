@@ -11,7 +11,7 @@ import { exportRidesFile } from './export-rides.js';
 
 /* * */
 
-const RUN_INTERVAL = 60_000; // 1 minute in milliseconds
+const RUN_INTERVAL = 30_000; // 30 seconds in milliseconds
 
 async function main() {
 	//
@@ -41,7 +41,9 @@ async function main() {
 		//
 		// Upload the file to the storage service & update the file export.
 		if (pathToFile) {
-			const file = await files.upload(pathToFile, {
+			const fileStream = fs.createReadStream(pathToFile);
+
+			const file = await files.upload(fileStream, {
 				created_by: 'system',
 				name: fileExport.file_name,
 				resource_id: fileExport._id,
