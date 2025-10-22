@@ -1,11 +1,12 @@
 {
-	"name": "@tmlmobilidade/sae-auth-api",
-	"description": "",
+	"name": "@tmlmobilidade/sae-auth-file-exporter",
 	"version": "1.0.0",
-	"author": "",
-	"keywords": [],
 	"type": "module",
-	"main": "index.js",
+	"files": [
+		"dist"
+	],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "npm run clean && tsc && resolve-tspaths",
 		"clean": "rm -rf dist",
@@ -15,15 +16,11 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "20251022.1644.0-staging.0",
-		"@tmlmobilidade/emails": "20251022.1644.0-staging.0",
+		"@helperkits/logger": "20250628.901.58",
+		"@helperkits/timer": "20240627.34.23",
+		"@helperkits/writer": "^20251010.1959.27",
 		"@tmlmobilidade/interfaces": "20251022.1644.0-staging.0",
-		"@tmlmobilidade/lib": "20251022.1644.0-staging.0",
-		"@tmlmobilidade/utils": "20251022.1644.0-staging.0",
-		"gray-matter": "4.0.3",
-		"pino-pretty": "13.1.2",
-		"remark-html": "16.0.1",
-		"remark-parse": "11.0.0"
+		"@tmlmobilidade/utils": "20251022.1644.0-staging.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20251022.1644.0-staging.0",
