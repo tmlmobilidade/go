@@ -3,11 +3,11 @@
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
 
-import { FileExporterController } from './file-exporter.controller.js';
+import { FileExporterController } from './file-exports.controller.js';
 
 /* * */
 
-const NAMESPACE = '/file-exporter';
+const NAMESPACE = '/file-exports';
 
 /* * */
 

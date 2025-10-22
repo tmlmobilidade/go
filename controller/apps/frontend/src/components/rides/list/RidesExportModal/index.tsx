@@ -83,7 +83,7 @@ export default function RidesExportModal() {
 						icon={<IconFileDownload />}
 						label="Exportar Circulações"
 						loading={context.flags.loading}
-						// onClick={context.actions.exportRides}
+						onClick={context.actions.exportRides}
 					/>
 				</Grid>
 			</Section>
