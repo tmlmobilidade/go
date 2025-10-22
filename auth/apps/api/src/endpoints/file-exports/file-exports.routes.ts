@@ -20,6 +20,11 @@ server.register(
 		// GET /file-exporter
 		instance.get('/', { preHandler: authorizationMiddleware() }, FileExporterController.getAll);
 
+		//
+		// GET /file-exporter/:id/download
+		instance.get('/:id/download', { preHandler: authorizationMiddleware() }, FileExporterController.download);
+
+		//
 		// POST /file-exporter
 		instance.post('/', { preHandler: authorizationMiddleware() }, FileExporterController.create);
 

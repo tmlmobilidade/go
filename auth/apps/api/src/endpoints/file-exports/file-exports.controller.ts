@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { fileExports } from '@tmlmobilidade/interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
+import { fileExports, files } from '@tmlmobilidade/interfaces';
+import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { CreateFileExportDto, FileExport } from '@tmlmobilidade/types';
 
 /* * */
@@ -22,6 +22,22 @@ export class FileExporterController {
 	}
 
 	/**
+	 * Downloads a FileExport by ID.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async download(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		const { id } = request.params;
+		const fileExport = await fileExports.findById(id);
+		if (!fileExport) throw new HttpException(HttpStatus.NOT_FOUND, 'File export not found');
+
+		const file = await files.findById(fileExport.file_id);
+		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+
+		reply.send({ data: file.url, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
 	 * Returns all FileExport sorted by ID.
 	 * @param request The request object
 	 * @param reply The reply object
@@ -30,7 +46,7 @@ export class FileExporterController {
 		const filters = {
 			created_by: request.me._id,
 		};
-		console.log('HERE =======>', filters);
+
 		const allFileExport = await fileExports.findMany(filters, { sort: { created_at: 1 } });
 		return reply.send({ data: allFileExport, error: null, statusCode: HttpStatus.OK });
 	}

@@ -16,7 +16,7 @@ import { parseRide } from './lib/parse-ride.js';
 /**
  * Gets a batch of Rides built with an aggregation pipeline.
  */
-async function getRidesBatchAggregation(properties: RideExportProperties): Promise<AggregationCursor<Ride>> {
+async function getRidesBatchAggregation(properties: RideExportProperties['properties']): Promise<AggregationCursor<Ride>> {
 	//
 	// Setup an aggregation pipeline to filter data
 	// based on the provided parameters.

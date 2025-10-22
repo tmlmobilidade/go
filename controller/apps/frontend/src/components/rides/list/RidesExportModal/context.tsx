@@ -1,12 +1,13 @@
 'use client';
 
-import { getAppConfig } from '@tmlmobilidade/lib';
 /* * */
 
-import { CreateFileExportDto, FileExport, type RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useMeContext, useToast } from '@tmlmobilidade/ui';
-import { Dates, fetchData } from '@tmlmobilidade/utils';
+import { CreateFileExportDto, type RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
+import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+
+import { RIDES_EXPORT_MODAL_ID } from '.';
 
 /* * */
 
@@ -48,7 +49,7 @@ export const RidesExportModalContextProvider = ({ children }: PropsWithChildren)
 	// A. Setup variables
 	const [endDate, setEndDate] = useState<undefined | UnixTimestamp>(undefined);
 	const [startDate, setStartDate] = useState<undefined | UnixTimestamp>(undefined);
-	const me = useMeContext();
+	const exports = useExportsContext();
 
 	//
 	// B. Transform data
@@ -69,15 +70,9 @@ export const RidesExportModalContextProvider = ({ children }: PropsWithChildren)
 			type: 'ride',
 		};
 
-		const response = await fetchData<FileExport>(getAppConfig('auth', 'api_url') + '/file-exports', 'POST', createFileExportDto);
-
-		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao exportar circulações' });
-			return;
-		}
-
+		exports.actions.create(createFileExportDto);
 		useToast.success({ message: 'A exportação foi iniciada', title: 'Sucesso' });
-		me.actions.mutateFileExports();
+		closeModal(RIDES_EXPORT_MODAL_ID);
 	}
 
 	//
