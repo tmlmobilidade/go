@@ -23,6 +23,11 @@
 				"^lint"
 			]
 		},
+		"lint:fix": {
+			"dependsOn": [
+				"^lint:fix"
+			]
+		},
 		"start": {
 			"dependsOn": [
 				"^build",

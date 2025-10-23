@@ -120,7 +120,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const form = useForm<CreateStopDto>({
+	const form = useForm<CreateStopDto | UpdateStopDto>({
 		initialValues: stopData || emptyStop,
 		// validate: zodResolver(stop ? StopSchema : CreateStopSchema) as unknown as FormValidateInput<CreateStopDto>,
 		validateInputOnBlur: true,

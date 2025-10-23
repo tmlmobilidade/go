@@ -1,6 +1,7 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { facilitiesSchema } from '@tmlmobilidade/types';
 import { Checkbox, ProposedChangesWrapper } from '@tmlmobilidade/ui';
 import React from 'react';
 
@@ -9,7 +10,7 @@ import React from 'react';
 interface StopDetailFacilityCheckboxProps {
 	label: string
 	proposeable?: boolean
-	value: string
+	value: typeof facilitiesSchema.options[number]
 }
 
 /* * */
