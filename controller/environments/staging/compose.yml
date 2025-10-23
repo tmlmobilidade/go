@@ -235,6 +235,7 @@ services:
   nginx:
     image: ghcr.io/tmlmobilidade/sae-controller-nginx:staging
     labels:
+      com.centurylinklabs.watchtower.enable: true
       com.centurylinklabs.watchtower.depends-on: 'frontend,api'
     deploy:
       restart_policy:
@@ -296,6 +297,8 @@ services:
 
   frontend:
     image: ghcr.io/tmlmobilidade/sae-controller-frontend:staging
+    labels:
+      com.centurylinklabs.watchtower.enable: true
     deploy:
       restart_policy:
         condition: any
