@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apps=(alerts controller auth plans)
+apps=(alerts controller auth plans stops performance locations)
 
 # Check if --target parameter is provided
 if [ "$1" == "--target" ] && [ -n "$2" ]; then

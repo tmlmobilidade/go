@@ -11,10 +11,10 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.35.0",
-		"@tmlmobilidade/lib": "20251017.1132.6",
-		"@tmlmobilidade/types": "20251017.1132.6",
-		"@tmlmobilidade/ui": "20251017.1132.6",
-		"@tmlmobilidade/utils": "20251017.1132.6",
+		"@tmlmobilidade/lib": "20251023.1350.6-staging.0",
+		"@tmlmobilidade/types": "20251023.1350.6-staging.0",
+		"@tmlmobilidade/ui": "20251023.1350.6-staging.0",
+		"@tmlmobilidade/utils": "20251023.1350.6-staging.0",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"clsx": "2.1.1",
 		"maplibre-gl": "5.9.0",
@@ -24,7 +24,7 @@
 		"swr": "2.3.6"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251017.1132.6",
+		"@tmlmobilidade/tsconfig": "20251023.1350.6-staging.0",
 		"@types/node": "24.8.1",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",
