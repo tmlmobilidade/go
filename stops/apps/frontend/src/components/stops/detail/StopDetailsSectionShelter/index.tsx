@@ -42,6 +42,7 @@ export function StopDetailsSectionShelter() {
 		>
 			<Section>
 				<Grid columns="abc" gap="md">
+
 					<ProposedChangesWrapper
 						inputName="has_shelter"
 						label="Existe Abrigo?"

@@ -88,6 +88,7 @@ export function StopDetailsSectionGeneral() {
 							{...stopDetailContext.data.form.getInputProps('new_name')}
 						/>
 					</ProposedChangesWrapper>
+
 				</Grid>
 			</Section>
 
