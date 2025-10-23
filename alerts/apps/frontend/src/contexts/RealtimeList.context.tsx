@@ -9,6 +9,7 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { normalizeString } from '@tmlmobilidade/utils';
+import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -26,6 +27,7 @@ interface RealtimeListContextState {
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
+		selectedId: string | undefined
 	}
 	filters: {
 		cause: string[]
@@ -61,6 +63,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 	// A. Setup variables
 
 	const locationsContext = useLocationsContext();
+	const pathname = usePathname();
 
 	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status.options);
 	const [filterCause, setFilterCause] = useState<string[]>(AlertSchema.shape.cause.options);
@@ -72,6 +75,12 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 	const [queryCause, setQueryCause] = useQueryState<string[]>('cause', parseAsArrayOfStrings.withDefault([]));
 	const [queryEffect, setQueryEffect] = useQueryState<string[]>('effect', parseAsArrayOfStrings.withDefault([]));
 	const [queryMunicipality, setQueryMunicipality] = useQueryState<string[]>('municipality', parseAsArrayOfStrings.withDefault([]));
+
+	const selectedId = useMemo(() => {
+		const alertId = pathname.split('/realtime/').pop()?.split('?').shift();
+		if (!alertId) return undefined;
+		return decodeURIComponent(alertId);
+	}, [pathname]);
 
 	//
 	// B. Fetch data
@@ -171,6 +180,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 		data: {
 			filtered: filterResultsData,
 			raw: allAlertsData,
+			selectedId,
 		},
 		filters: {
 			cause: filterCause,
@@ -193,6 +203,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 		filterEffect,
 		filterMunicipality,
 		querySearch,
+		selectedId,
 	]);
 
 	//

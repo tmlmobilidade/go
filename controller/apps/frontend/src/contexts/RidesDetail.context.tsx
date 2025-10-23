@@ -4,6 +4,7 @@
 
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
+import { Permissions } from '@tmlmobilidade/lib';
 import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
@@ -18,17 +19,20 @@ export const RidesDetailViewOptions = {
 	ANALYSIS: {
 		icon: IconPresentationAnalytics,
 		label: 'Análise',
+		permission: Permissions.rides.actions.analysis_read,
 		value: 'ANALYSIS',
 	},
 	// eslint-disable-next-line perfectionist/sort-objects
 	ACCEPTANCE: {
 		icon: IconChecks,
 		label: 'Aceitação',
+		permission: Permissions.rides.actions.acceptance_read,
 		value: 'ACCEPTANCE',
 	},
 	AUDIT: {
 		icon: IconClipboardSearch,
 		label: 'Auditoria',
+		permission: Permissions.rides.actions.audit_read,
 		value: 'AUDIT',
 	},
 } as const;

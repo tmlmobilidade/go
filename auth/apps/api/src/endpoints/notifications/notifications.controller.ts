@@ -24,7 +24,7 @@ export class NotificationsController {
 	 * @param reply The reply object
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Notification[]>) {
-		const allNotifications = await notifications.findMany({}, { sort: { _id: 1 } });
+		const allNotifications = await notifications.findMany({ user_id: request.me._id }, { sort: { _id: 1 } });
 		reply.send({ data: allNotifications, error: null, statusCode: HttpStatus.OK });
 	}
 

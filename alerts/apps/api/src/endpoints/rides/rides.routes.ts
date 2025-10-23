@@ -1,6 +1,6 @@
 /* * */
 
-import { RidesController } from '@/endpoints/rides/rides.controller';
+import { RidesController } from '@/endpoints/rides/rides.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
 import { Ride } from '@tmlmobilidade/types';

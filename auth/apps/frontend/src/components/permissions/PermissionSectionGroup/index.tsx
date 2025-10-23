@@ -7,7 +7,16 @@ import { PermissionSectionInputProps, PermissionsSection, WithResourceToggle } f
 
 /* * */
 
-export function PermissionSectionGroup({ onResourceToggle, onToggle, permissions }: WithResourceToggle<PermissionSectionInputProps, Permission<unknown>>) {
+export function PermissionSectionGroup({
+	onResourceToggle,
+	onToggle,
+	permissions,
+	roles,
+	userRoleIds,
+}: WithResourceToggle<PermissionSectionInputProps, Permission<unknown>> & {
+	roles?: { _id: string, permissions: Permission<unknown>[] }[]
+	userRoleIds?: string[]
+}) {
 	return (
 		<>
 			{permissionsConfig.map(permission => (
@@ -18,8 +27,10 @@ export function PermissionSectionGroup({ onResourceToggle, onToggle, permissions
 					description={permission.description}
 					onResourceToggle={onResourceToggle}
 					onToggle={onToggle}
+					roles={roles}
 					scope={permission.scope}
 					title={permission.title}
+					userRoleIds={userRoleIds}
 				/>
 			))}
 		</>

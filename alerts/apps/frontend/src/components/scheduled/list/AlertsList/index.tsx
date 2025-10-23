@@ -109,6 +109,7 @@ export function AlertList() {
 				onRowClick={handleRowClick}
 				records={alertsListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={alertsListContext.data.selectedId}
 			/>
 		</Pane>
 	);

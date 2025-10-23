@@ -150,13 +150,25 @@ const validationActions: PermissionConfig<typeof Permissions.validations.actions
 
 const roleActions: PermissionConfig<typeof Permissions.roles.actions> = {
 	actions: [
+		{ description: 'Permite ver grupos de permissões', key: 'read', label: 'Ver' },
+		{ description: 'Permite criar um grupo de permissões', key: 'create', label: 'Criar' },
+		{ description: 'Permite editar um grupo de permissões', key: 'update', label: 'Editar' },
+		{ description: 'Permite eliminar um grupo de permissões', key: 'delete', label: 'Eliminar' },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de grupos de permissões.',
+	scope: Permissions.roles.scope,
+	title: 'Permissões de Grupos de Permissões',
+};
+
+const organizationActions: PermissionConfig<typeof Permissions.organizations.actions> = {
+	actions: [
 		{ description: 'Permite ver organizações', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar uma organização', key: 'create', label: 'Criar' },
 		{ description: 'Permite editar uma organização', key: 'update', label: 'Editar' },
 		{ description: 'Permite eliminar uma organização', key: 'delete', label: 'Eliminar' },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de papéis.',
-	scope: Permissions.roles.scope,
+	description: 'As ações que o utilizador pode realizar na gestão de organizações.',
+	scope: Permissions.organizations.scope,
 	title: 'Permissões de Organizações',
 };
 
@@ -185,14 +197,23 @@ const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
 		{ description: 'Permite ver uma auditoria de uma viagem', key: 'audit_read', label: 'Auditoria - Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite editar uma auditoria de uma viagem', key: 'audit_update', label: 'Auditoria - Editar', resources: ['AGENCIES'] },
 		/* Aceitação */
-		{ description: 'Permite alterar o estado de uma justificação de uma viagem', key: 'justification_change_status', label: 'Aceitação - Alterar estado', resources: ['AGENCIES'] },
-		{ description: 'Permite justificar uma viagem', key: 'justification_justify', label: 'Aceitação - Justificar', resources: ['AGENCIES'] },
-		{ description: 'Permite bloquear/desbloquear uma justificação de uma viagem', key: 'justification_lock', label: 'Aceitação - Bloquear/Desbloquear', resources: ['AGENCIES'] },
-		{ description: 'Permite ver uma justificação de uma viagem', key: 'justification_read', label: 'Aceitação - Ver', resources: ['AGENCIES'] },
+		{ description: 'Permite alterar o estado de uma justificação de uma viagem', key: 'acceptance_change_status', label: 'Aceitação - Alterar estado', resources: ['AGENCIES'] },
+		{ description: 'Permite justificar uma viagem', key: 'acceptance_justify', label: 'Aceitação - Justificar', resources: ['AGENCIES'] },
+		{ description: 'Permite bloquear/desbloquear uma justificação de uma viagem', key: 'acceptance_lock', label: 'Aceitação - Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ description: 'Permite ver uma justificação de uma viagem', key: 'acceptance_read', label: 'Aceitação - Ver', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de viagens.',
 	scope: Permissions.rides.scope,
 	title: 'Permissões de Viagens',
+};
+
+const performanceActions: PermissionConfig<typeof Permissions.performance.actions> = {
+	actions: [
+		{ description: 'Permite ver métricas', key: 'read', label: 'Ver' },
+	],
+	description: 'As ações que o utilizador pode realizar na visualização de métricas.',
+	scope: Permissions.performance.scope,
+	title: 'Permissões de Métricas',
 };
 
 /* * */
@@ -204,10 +225,12 @@ export const permissionsConfig: PermissionConfig[] = [
 	homeActions,
 	planActions,
 	userActions,
+	organizationActions,
 	validationActions,
 	roleActions,
 	stopActions,
 	rideActions,
+	performanceActions,
 	topicActions,
 	proposedChangesActions,
 ];

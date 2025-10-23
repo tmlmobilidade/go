@@ -26,7 +26,7 @@ export function RidesDetailMap() {
 	// B. Render components
 
 	return (
-		<Collapsible description="Eventos dos veículos mapeados" title="Visão Geográfica">
+		<Collapsible description="Eventos dos veículos mapeados" title="Visão Geográfica" defaultOpen>
 			<div className={styles.mapWrapper}>
 				<MapView id="ridesDetailMap">
 					<MapOverlayScheduledPath

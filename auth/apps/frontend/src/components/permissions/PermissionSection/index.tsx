@@ -3,6 +3,7 @@
 /* * */
 
 import CheckCard from '@/components/common/CheckCard';
+import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionAction } from '@/lib/permissions';
 import { Permission } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
@@ -28,8 +29,10 @@ interface PermissionsSectionProps {
 	description: string
 	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
 	onToggle: (scope: string, action: string, send_email?: boolean) => void
+	roles?: { _id: string, permissions: Permission<unknown>[] }[]
 	scope: string
 	title: string
+	userRoleIds?: string[]
 }
 
 /* * */
@@ -40,15 +43,21 @@ export function PermissionsSection({
 	description,
 	onResourceToggle,
 	onToggle,
+	roles = [],
 	scope,
 	title,
+	userRoleIds = [],
 }: PermissionsSectionProps) {
 	const getPermissionData = (action: string) => {
 		const permission = currentPermissions.find(
 			p => p.scope === scope && p.action === action,
 		);
+		const hasPermission = !!permission;
+		const fromRole = hasRolePermission(scope, action, userRoleIds, roles);
+
 		return {
-			hasPermission: !!permission,
+			fromRole,
+			hasPermission,
 		};
 	};
 
@@ -57,12 +66,13 @@ export function PermissionsSection({
 			<Section gap="md">
 				<Grid columns="ab" gap="sm">
 					{actions.map(({ description, key, label, resources }) => {
-						const { hasPermission } = getPermissionData(key);
+						const { fromRole, hasPermission } = getPermissionData(key);
 						return (
 							<CheckCard
 								key={key}
 								checked={hasPermission}
 								description={description}
+								fromRole={fromRole}
 								label={label}
 								onChange={() => onToggle(scope, key)}
 							>

@@ -3,7 +3,8 @@
 /* * */
 
 import { RidesDetailViewOptions, useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { Label, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { Permissions } from '@tmlmobilidade/lib';
+import { Label, Section, SegmentedControl, useMeContext } from '@tmlmobilidade/ui';
 import React from 'react';
 
 /* * */
@@ -13,13 +14,12 @@ export function RidesDetailViewNavigation() {
 
 	//
 	// A. Setup variables
-
 	const ridesDetailContext = useRidesDetailContext();
+	const me = useMeContext();
 
 	//
 	// B. Handle actions
 	const handleChangeView = (value: keyof typeof RidesDetailViewOptions) => {
-		console.log('value', value);
 		ridesDetailContext.actions.setSelectedView(value);
 	};
 
@@ -27,7 +27,7 @@ export function RidesDetailViewNavigation() {
 	// C. Render components
 
 	const renderViewsOptions = () => {
-		return Object.values(RidesDetailViewOptions).map(option => ({
+		return Object.values(RidesDetailViewOptions).map(option => me.actions.hasPermission(Permissions.rides.scope, option.permission) && ({
 			label: (
 				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
 					{React.createElement(option.icon)}
@@ -35,7 +35,7 @@ export function RidesDetailViewNavigation() {
 				</Section>
 			),
 			value: option.value,
-		}));
+		})).filter(Boolean);
 	};
 
 	return (

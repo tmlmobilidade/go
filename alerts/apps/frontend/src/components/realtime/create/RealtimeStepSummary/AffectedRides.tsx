@@ -22,7 +22,7 @@ export function AffectedRides() {
 			accessor: 'start_time_scheduled',
 			render: item => (
 				<StartTimeStatusTag
-					startTimeObserved={Dates.fromUnixTimestamp(item.start_time_scheduled).toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt')}
+					startTimeObserved={Dates.fromUnixTimestamp(item.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt')}
 					status={getDelayStatus(item.start_time_scheduled, item.start_time_observed)}
 				/>
 			),

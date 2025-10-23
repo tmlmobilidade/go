@@ -75,7 +75,7 @@ export class PlansController {
 			// Make a clone of the validation GTFS file in S3
 			// to keep plan data separate from validations
 
-			const fileResult = await filesCollection.clone(
+			const updateFileResult = await filesCollection.clone(
 				validationData.file_id,
 				Permissions.plans.scope,
 				planData._id.toString(),
@@ -83,10 +83,26 @@ export class PlansController {
 			);
 
 			//
+			// Get a hash of all metadata to make it possible
+			// to keep track of changes to the plan
+
+			const hashablePlanMetadata: HashablePlanMetadata = {
+				_id: planData._id,
+				gtfs_agency: planData.gtfs_agency,
+				gtfs_feed_info: planData.gtfs_feed_info,
+				operation_file_id: updateFileResult._id,
+			};
+
+			const hashValue = createHash('sha256')
+				.update(JSON.stringify(hashablePlanMetadata))
+				.digest('hex');
+
+			//
 			// Update the plan with the new data
 
 			const updatedPlanData = await plansCollection.updateById(planData._id, {
-				operation_file_id: fileResult._id,
+				hash: hashValue,
+				operation_file_id: updateFileResult._id,
 			}, { session: plansTransaction.getSession() });
 
 			return updatedPlanData;

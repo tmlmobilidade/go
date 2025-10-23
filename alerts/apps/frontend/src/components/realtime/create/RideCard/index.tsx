@@ -21,7 +21,7 @@ export function RideCard({ onSelect, ride, selected }: { onSelect: () => void, r
 					<Label size="lg" singleLine>{ride.headsign}</Label>
 				</Section>
 				<StartTimeStatusTag
-					startTimeObserved={Dates.fromUnixTimestamp(ride.start_time_scheduled).toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt')}
+					startTimeObserved={Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt')}
 					status={getDelayStatus(ride.start_time_scheduled, ride.start_time_observed)}
 				/>
 			</Section>

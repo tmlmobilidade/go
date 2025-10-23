@@ -7,14 +7,13 @@ import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
-import { DataTable, DataTableColumn } from '@/components/datatable';
 import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
@@ -120,11 +119,11 @@ export function RidesList() {
 		]}
 		>
 			<DataTable
-				ref={ridesListContext.refs.datatable}
 				columns={columns}
 				onRowClick={handleRowClick}
 				records={ridesListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={ridesListContext.data.selectedRideId}
 			/>
 		</Pane>
 	);

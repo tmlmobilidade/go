@@ -1,0 +1,33 @@
+{
+	"name": "@tmlmobilidade/sae-controller-rides-locker",
+	"version": "1.0.0",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@helperkits/logger": "20250628.901.58",
+		"@helperkits/timer": "20240627.34.23",
+		"@tmlmobilidade/interfaces": "20251022.1644.0-staging.0",
+		"@tmlmobilidade/sae-controller-pckg-ride-normalized": "*",
+		"luxon": "^3.7.2"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "20251022.1644.0-staging.0",
+		"@tmlmobilidade/types": "20251022.1644.0-staging.0",
+		"@types/node": "24.8.1",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
+	}
+}

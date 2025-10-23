@@ -171,6 +171,25 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+  
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  rides-locker:
+    image: ghcr.io/tmlmobilidade/sae-controller-rides-locker:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -216,6 +235,7 @@ services:
   nginx:
     image: ghcr.io/tmlmobilidade/sae-controller-nginx:production
     labels:
+      com.centurylinklabs.watchtower.enable: true
       com.centurylinklabs.watchtower.depends-on: 'frontend,api'
     deploy:
       restart_policy:
@@ -277,6 +297,8 @@ services:
 
   frontend:
     image: ghcr.io/tmlmobilidade/sae-controller-frontend:production
+    labels:
+      com.centurylinklabs.watchtower.enable: true
     deploy:
       restart_policy:
         condition: any

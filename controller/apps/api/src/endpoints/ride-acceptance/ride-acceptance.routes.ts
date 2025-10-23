@@ -20,35 +20,35 @@ server.register(
 		// GET /rides/:id/justification
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.justification_read) },
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_read) },
 			RideAcceptanceController.get,
 		);
 
 		// PUT /rides/:id/justification/change-status
 		instance.put(
 			'/change-status',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.justification_change_status) },
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_change_status) },
 			RideAcceptanceController.changeStatus,
 		);
 
 		// PUT /rides/:id/justification/justify
 		instance.put(
 			'/justify',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.justification_justify) },
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_justify) },
 			RideAcceptanceController.justify,
 		);
 
 		// PUT /rides/:id/justification/comment
 		instance.post(
 			'/comment',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, [Permissions.rides.actions.justification_justify, Permissions.rides.actions.justification_change_status]) },
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, [Permissions.rides.actions.acceptance_justify, Permissions.rides.actions.acceptance_change_status]) },
 			RideAcceptanceController.comment,
 		);
 
 		// PUT /rides/:id/justification/lock
 		instance.put(
 			'/lock',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.justification_lock) },
+			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_lock) },
 			RideAcceptanceController.lock,
 		);
 

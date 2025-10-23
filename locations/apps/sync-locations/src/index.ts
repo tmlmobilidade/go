@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import { MongoConnector } from '@tmlmobilidade/connectors';
-import { booleanValid } from '@turf/boolean-valid';
+import { booleanValid } from '@turf/turf';
 import { feature as turfFeature } from '@turf/turf';
 import fs from 'fs/promises';
 import path from 'path';

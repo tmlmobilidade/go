@@ -180,7 +180,9 @@ async function main() {
 
 				//
 				// Justify
-				await alertJustification(ride);
+				if (acceptanceMap.get(ride._id)?.acceptance_status === 'justification_required') {
+					await alertJustification(ride);
+				}
 			}
 
 			//

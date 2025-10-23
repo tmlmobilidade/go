@@ -1,6 +1,6 @@
 # # # # # # # # #
 
-FROM node:alpine AS base
+FROM node:24-alpine AS base
 
 ENV MODULE=sae-controller
 ENV PROJECT=api

@@ -6,6 +6,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
+		"dev:exporter:prod": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-auth-file-exporter",
 		"dev:production": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
@@ -14,12 +15,12 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "^9.2.1",
-		"@tmlmobilidade/connectors": "20251007.946.5-staging.0",
-		"@tmlmobilidade/interfaces": "20251007.946.5-staging.0",
-		"@tmlmobilidade/lib": "20251007.946.5-staging.0",
-		"@tmlmobilidade/types": "20251007.946.5-staging.0",
-		"@tmlmobilidade/ui": "20251007.946.5-staging.0",
-		"@tmlmobilidade/utils": "20251007.946.5-staging.0"
+		"@tmlmobilidade/connectors": "20251022.1644.0-staging.0",
+		"@tmlmobilidade/interfaces": "20251022.1644.0-staging.0",
+		"@tmlmobilidade/lib": "20251022.1644.0-staging.0",
+		"@tmlmobilidade/types": "20251022.1644.0-staging.0",
+		"@tmlmobilidade/ui": "20251022.1644.0-staging.0",
+		"@tmlmobilidade/utils": "20251022.1644.0-staging.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
@@ -27,7 +28,7 @@
 		"turbo": "2.5.8",
 		"typescript": "5.9.3"
 	},
-	"packageManager": "npm@11.6.1",
+	"packageManager": "npm@11.6.2",
 	"workspaces": [
 		"apps/*"
 	]
