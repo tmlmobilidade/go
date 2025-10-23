@@ -3,6 +3,8 @@
 /* * */
 
 import { StopDetailFacilityCheckbox } from '@/components/stops/detail/StopDetailFacilityCheckbox';
+import { Translations } from '@/lib/translations';
+import { facilitiesSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -20,17 +22,9 @@ export function StopDetailsSectionEquipment() {
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">
-					<StopDetailFacilityCheckbox label="Clínica" value="health_clinic" proposeable />
-					<StopDetailFacilityCheckbox label="Hospital" value="hospital" proposeable />
-					<StopDetailFacilityCheckbox label="Universidade" value="university" proposeable />
-					<StopDetailFacilityCheckbox label="Escola" value="school" proposeable />
-					<StopDetailFacilityCheckbox label="Esquadra" value="police_station" proposeable />
-					<StopDetailFacilityCheckbox label="Bombeiros" value="fire_station" proposeable />
-					<StopDetailFacilityCheckbox label="Zona Comercial" value="commercial_area" proposeable />
-					<StopDetailFacilityCheckbox label="Centro Comercial" value="shopping" proposeable />
-					<StopDetailFacilityCheckbox label="Edifício Histórico" value="historic_building" proposeable />
-					<StopDetailFacilityCheckbox label="Espaço navegante®" value="transit_office" proposeable />
-					<StopDetailFacilityCheckbox label="Praia" value="beach" proposeable />
+					{facilitiesSchema.options.map(value => (
+						<StopDetailFacilityCheckbox label={Translations.FACILITIES[value]} value={value} proposeable />
+					))}
 				</Grid>
 			</Section>
 		</Collapsible>
