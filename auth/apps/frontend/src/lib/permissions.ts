@@ -116,8 +116,6 @@ const proposedChangesActions: PermissionConfig<typeof Permissions.proposed_chang
 		{ description: 'Criar Proposta de Alterações', key: 'create', label: `Criar Proposta de Alterações` },
 		{ description: 'Aprovar as Alterações Propostas', key: 'approve', label: 'Aprovar Alterações Propostas' },
 		{ description: 'Rejeitar as Alterações Propostas', key: 'reject', label: 'Rejeitar Alterações Propostas' },
-		{ description: 'Eliminar as Alterações Propostas', key: 'delete', label: 'Eliminar Alterações Propostas' },
-		{ description: 'Comentar as Alterações Propostas', key: 'comment', label: 'Comentar Alterações Propostas' },
 		{ description: 'Consultar Alterações Propostas', key: 'read', label: 'Consultar Alterações Propostas' },
 	],
 	description: 'As acções que o utilizador pode realizar na gestão de alterações propostas.',
