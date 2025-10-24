@@ -30,6 +30,9 @@ export function RidesDetailMetadata() {
 					<ValueDisplay label="Hora de Início Planeada" value={`${ridesDetailContext.data.ride?.start_time_scheduled_display} (${ridesDetailContext.data.ride?.start_time_scheduled})`} bordered />
 					<ValueDisplay label="Hora de Início Observada" value={`${ridesDetailContext.data.ride?.start_time_observed_display} (${ridesDetailContext.data.ride?.start_time_observed})`} bordered />
 					<ValueDisplay label="Atraso à Partida" value={ridesDetailContext.data.ride?.delay_value_display ?? 'N/A'} bordered />
+					<ValueDisplay label="Hora de Fim Planeada" value={`${ridesDetailContext.data.ride?.end_time_scheduled_display} (${ridesDetailContext.data.ride?.end_time_scheduled})`} bordered />
+					<ValueDisplay label="Hora de Fim Observada" value={`${ridesDetailContext.data.ride?.end_time_observed_display} (${ridesDetailContext.data.ride?.end_time_observed})`} bordered />
+					<ValueDisplay label="Atraso à Chegada" value={ridesDetailContext.data.ride?.delay_value_display ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 			<Divider />
