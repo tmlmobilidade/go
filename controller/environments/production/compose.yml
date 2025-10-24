@@ -45,6 +45,9 @@ services:
       restart_policy:
         condition: any
         delay: 30s
+      resources:
+        limits:
+          memory: 2gb
     ports:
       - 27027:5432
     logging:
@@ -99,7 +102,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-rides-examiner:production
     deploy:
       mode: replicated
-      replicas: 5
+      replicas: 12
       restart_policy:
         condition: any
         delay: 30s
@@ -152,7 +155,7 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-  
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
@@ -171,7 +174,7 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-  
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
