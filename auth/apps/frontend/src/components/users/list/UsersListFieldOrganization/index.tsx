@@ -11,6 +11,7 @@ export function UsersListFieldOrganization({ organizationId }: { organizationId:
 
 	//
 	// B. Render components
+	if (!organizationsContext.data.raw) return null;
 
 	return <Tag label={organizationsContext.data.raw.find(organization => organization._id === organizationId)?.long_name} variant="secondary" />;
 }
