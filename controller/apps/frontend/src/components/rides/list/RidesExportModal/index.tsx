@@ -2,7 +2,9 @@
 
 /* * */
 
+import { RidesListContextState } from '@/contexts/RidesList.context';
 import { IconFileDownload } from '@tabler/icons-react';
+import { UnixTimestamp } from '@tmlmobilidade/types';
 import { Button, closeModal, DateTimePicker, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
 
 import { RidesExportModalContextProvider, useRidesExportModalContext } from './context';
@@ -13,11 +15,11 @@ export const RIDES_EXPORT_MODAL_ID = 'rides-export-modal';
 
 /* * */
 
-export const openRideExportModal = () => {
+export const openRideExportModal = (filters: RidesListContextState['filters']) => {
 	openModal({
 		children: (
 			<ExportsContextProvider>
-				<RidesExportModalContextProvider>
+				<RidesExportModalContextProvider initialFilters={filters}>
 					<RidesExportModal />
 				</RidesExportModalContextProvider>
 			</ExportsContextProvider>
@@ -54,21 +56,34 @@ export default function RidesExportModal() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<DateTimePicker
-						onChange={context.actions.onStartDateChange}
+						onChange={value => context.actions.setFilterDateStart(value)}
 						placeholder="Data de Início"
-						value={context.data.startDate}
+						value={context.filters.date_start as UnixTimestamp}
 						fullWidth
 					/>
 					<DateTimePicker
-						onChange={value => context.actions.onEndDateChange(value)}
+						onChange={value => context.actions.setFilterDateEnd(value)}
 						placeholder="Data de Fim"
-						value={context.data.endDate}
+						value={context.filters.date_end as UnixTimestamp}
 						fullWidth
 					/>
 				</Grid>
 			</Section>
 
 			<Divider />
+
+			<Section gap="sm">
+				{Object.entries(context.filters).map(([key, value]) => {
+					if (key === 'date_start' || key === 'date_end') return null;
+					if (!value || (Array.isArray(value) && value.length === 0)) return null;
+					return (
+						<div key={key}>
+							<Label size="sm" caps>{key}</Label>
+							<Text size="sm">{Array.isArray(value) ? value.join(', ') : String(value)}</Text>
+						</div>
+					);
+				})}
+			</Section>
 
 			<Section>
 				<Grid columns="ab" gap="md">

@@ -29,7 +29,7 @@ export function RidesListHeader() {
 			<RidesListUpdatedAt />
 			<Tag label={`Total ${ridesListContext.data.filtered.length}`} variant="muted" />
 			<SearchInput onChange={ridesListContext.actions.setFilterSearch} value={ridesListContext.filters.search} />
-			<IconButton icon={<IconFileDownload />} onClick={() => openRideExportModal()} tooltip="Exportar Circulações" variant="secondary" />
+			<IconButton icon={<IconFileDownload />} onClick={() => openRideExportModal(ridesListContext.filters)} tooltip="Exportar Circulações" variant="secondary" />
 		</Toolbar>
 	);
 
