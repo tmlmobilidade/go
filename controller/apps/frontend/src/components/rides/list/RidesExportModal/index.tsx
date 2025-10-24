@@ -2,12 +2,15 @@
 
 /* * */
 
+import { AgenciesContextProvider, useAgenciesContext } from '@/contexts/Agencies.context';
 import { RidesListContextState } from '@/contexts/RidesList.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { Button, closeModal, DateTimePicker, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 import { RidesExportModalContextProvider, useRidesExportModalContext } from './context';
+import { translateFilterKey, translateFilterValue } from './translations';
 
 /* * */
 
@@ -19,9 +22,11 @@ export const openRideExportModal = (filters: RidesListContextState['filters']) =
 	openModal({
 		children: (
 			<ExportsContextProvider>
-				<RidesExportModalContextProvider initialFilters={filters}>
-					<RidesExportModal />
-				</RidesExportModalContextProvider>
+				<AgenciesContextProvider>
+					<RidesExportModalContextProvider initialFilters={filters}>
+						<RidesExportModal />
+					</RidesExportModalContextProvider>
+				</AgenciesContextProvider>
 			</ExportsContextProvider>
 		),
 		closeOnClickOutside: false,
@@ -41,9 +46,33 @@ export default function RidesExportModal() {
 	//
 	// A. Setup variables
 	const context = useRidesExportModalContext();
+	const agenciesContext = useAgenciesContext();
 
 	//
-	// B. Render Components
+	// B. Transform data
+
+	const agencyMap = useMemo(() => {
+		const map = new Map<string, string>();
+		agenciesContext.data.raw.forEach((agency) => {
+			map.set(agency._id, agency.name);
+		});
+		return map;
+	}, [agenciesContext.data.raw]);
+
+	const getFormattedValue = (key: string, value: number | string | string[]): string => {
+		if (Array.isArray(value)) {
+			return value.map((v) => {
+				if (key === 'agency') {
+					return agencyMap.get(v) || v;
+				}
+				return translateFilterValue(key, v);
+			}).join(', ');
+		}
+		return translateFilterValue(key, String(value));
+	};
+
+	//
+	// C. Render Components
 
 	return (
 		<div style={{ minHeight: '200px' }}>
@@ -78,8 +107,8 @@ export default function RidesExportModal() {
 					if (!value || (Array.isArray(value) && value.length === 0)) return null;
 					return (
 						<div key={key}>
-							<Label size="sm" caps>{key}</Label>
-							<Text size="sm">{Array.isArray(value) ? value.join(', ') : String(value)}</Text>
+							<Label size="sm" caps>{translateFilterKey(key)}</Label>
+							<Text size="sm">{getFormattedValue(key, value)}</Text>
 						</div>
 					);
 				})}
