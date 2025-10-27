@@ -85,7 +85,27 @@ async function cleanOldFileExports() {
 	const globalTimer = new TIMETRACKER();
 
 	//
-	// Get all GTFS Validation documents from the database
+	// Mark all processing file exports as error that are older than 2 hours
+
+	const allProcessingFileExports = await fileExports.findMany({
+		created_at: { $lt: Dates.now('local').minus({ hours: 2 }).unix_timestamp },
+		processing_status: ProcessingStatusSchema.enum.processing,
+	});
+
+	LOGGER.info(`MARKING PROCESSING FILE EXPORTS AS ERROR: ${allProcessingFileExports.length} file exports...`);
+
+	for (const item of allProcessingFileExports) {
+		try {
+			await fileExports.updateById(item._id, { processing_status: ProcessingStatusSchema.enum.error });
+			LOGGER.success(`Marked processing file export ${item._id} as error.`);
+		}
+		catch (error) {
+			LOGGER.error(`Failed to mark processing file export ${item._id} as error:`, error);
+		}
+	}
+
+	//
+	// Delete all file exports that are older than 4 hours and have a status of complete or error
 
 	const allFileExports = await fileExports.findMany({
 		processing_status: { $in: [
@@ -95,9 +115,7 @@ async function cleanOldFileExports() {
 		updated_at: { $lt: Dates.now('local').minus({ hours: 4 }).unix_timestamp },
 	});
 
-	//
-	// Loop through all validations and filter out, for each status,
-	// those that are older than the threshold
+	LOGGER.info(`DELETING OLD FILE EXPORTS: ${allFileExports.length} file exports...`);
 
 	for (const item of allFileExports) {
 		//
@@ -106,7 +124,13 @@ async function cleanOldFileExports() {
 		// If the file export is older than the cutoff date,
 		// delete the associated files and the file export document.
 		try {
-			await files.deleteById(item.file_id);
+			try {
+				await files.deleteById(item.file_id);
+			}
+			catch (error) {
+				LOGGER.error(`Failed to delete file ${item.file_id}:`, error);
+			}
+
 			await fileExports.deleteById(item._id);
 			LOGGER.success(`Deleted file export ${item._id}.`);
 		}
