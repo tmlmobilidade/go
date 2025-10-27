@@ -2,8 +2,10 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { StopDetailFacilityCheckbox } from '@/components/stops/detail/StopDetailFacilityCheckbox';
+import { Translations } from '@/lib/translations';
+import { facilitiesSchema } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -11,12 +13,7 @@ export function StopDetailsSectionEquipment() {
 	//
 
 	//
-	// A. Setup variables
-
-	const stopDetailContext = useStopDetailContext();
-
-	//
-	// B. Render components
+	// A. Render components
 
 	return (
 		<Collapsible
@@ -25,46 +22,9 @@ export function StopDetailsSectionEquipment() {
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">
-					<Checkbox
-						label="Clínica"
-						{...stopDetailContext.data.form.getInputProps('near_health_clinic')}
-					/>
-					<Checkbox
-						label="Hopital"
-						{...stopDetailContext.data.form.getInputProps('near')}
-					/>
-					<Checkbox
-						label="Universidade"
-						{...stopDetailContext.data.form.getInputProps('near_university')}
-					/>
-					<Checkbox
-						label="Escola"
-						{...stopDetailContext.data.form.getInputProps('near_school')}
-					/>
-					<Checkbox
-						label="Esquadra"
-						{...stopDetailContext.data.form.getInputProps('near_police_station')}
-					/>
-					<Checkbox
-						label="Bombeiros"
-						{...stopDetailContext.data.form.getInputProps('near_fire_station')}
-					/>
-					<Checkbox
-						label="Zona Comercial"
-						{...stopDetailContext.data.form.getInputProps('near_shopping')}
-					/>
-					<Checkbox
-						label="Edifício Histórico"
-						{...stopDetailContext.data.form.getInputProps('near_historic_building')}
-					/>
-					<Checkbox
-						label="Espaço navegante®"
-						{...stopDetailContext.data.form.getInputProps('near_transit_office')}
-					/>
-					<Checkbox
-						label="Praia"
-						{...stopDetailContext.data.form.getInputProps('near_beach')}
-					/>
+					{facilitiesSchema.options.map(value => (
+						<StopDetailFacilityCheckbox label={Translations.FACILITIES[value]} value={value} proposeable />
+					))}
 				</Grid>
 			</Section>
 		</Collapsible>

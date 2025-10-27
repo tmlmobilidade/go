@@ -17,10 +17,10 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.1.0",
-		"@tmlmobilidade/interfaces": "20251017.1132.6",
-		"@tmlmobilidade/lib": "20251017.1132.6",
-		"@tmlmobilidade/types": "20251017.1132.6",
-		"@tmlmobilidade/utils": "20251017.1132.6",
+		"@tmlmobilidade/interfaces": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/lib": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/types": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/utils": "20251023.1553.26-staging.0",
 		"@turf/turf": "^7.2.0",
 		"fastify": "5.6.1",
 		"pino-pretty": "13.1.2",
@@ -30,7 +30,7 @@
 	},
 	"devDependencies": {
 		"@fastify/multipart": "9.2.1",
-		"@tmlmobilidade/tsconfig": "20251017.1132.6",
+		"@tmlmobilidade/tsconfig": "20251023.1553.26-staging.0",
 		"@types/jest": "30.0.0",
 		"@types/node": "24.8.1",
 		"jest": "30.2.0",

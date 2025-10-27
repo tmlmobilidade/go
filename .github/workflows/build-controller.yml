@@ -384,9 +384,11 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
+          context: ./controller/apps/nginx
           file: ./controller/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/sae-controller-nginx:${{ github.ref_name }}
+          build-args: |
+            NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.controller.sae.carrismetropolitana.pt' || 'controller.sae.carrismetropolitana.pt' }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

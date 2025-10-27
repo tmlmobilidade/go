@@ -6,6 +6,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- turbo dev",
+		"dev:exporter:prod": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev --filter=@tmlmobilidade/sae-auth-file-exporter",
 		"dev:production": "dotenv-run -f ./environments/production/secrets/.env -- turbo dev",
 		"lint": "turbo lint",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
@@ -14,12 +15,12 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "^9.2.1",
-		"@tmlmobilidade/connectors": "20251020.919.5",
-		"@tmlmobilidade/interfaces": "20251020.919.5",
-		"@tmlmobilidade/lib": "20251020.919.5",
-		"@tmlmobilidade/types": "20251020.919.5",
-		"@tmlmobilidade/ui": "20251020.919.5",
-		"@tmlmobilidade/utils": "20251020.919.5"
+		"@tmlmobilidade/connectors": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/interfaces": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/lib": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/types": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/ui": "20251023.1553.26-staging.0",
+		"@tmlmobilidade/utils": "20251023.1553.26-staging.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",

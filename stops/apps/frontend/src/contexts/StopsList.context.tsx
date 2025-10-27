@@ -79,7 +79,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// B. Fetch data
 
-	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>('/api/stops');
+	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>('/api/stops', { refreshInterval: 5000 });
 
 	//
 	// C. Transform data
