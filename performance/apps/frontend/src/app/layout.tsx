@@ -4,6 +4,8 @@ import '@tmlmobilidade/ui/styles';
 
 /* * */
 
+import { HomeContextProvider } from '@/contexts/Home.context';
+import { LocaleContextProvider } from '@/contexts/Locale.context';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
@@ -24,7 +26,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 			<NuqsAdapter>
 				<AppProvider>
 					<AppWrapper>
-						{children}
+						<LocaleContextProvider>
+							<HomeContextProvider>
+								{children}
+							</HomeContextProvider>
+						</LocaleContextProvider>
 					</AppWrapper>
 				</AppProvider>
 			</NuqsAdapter>

@@ -2,10 +2,10 @@
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 import { Permissions } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { Metric } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
-import { AlertsController } from './metrics.controller.js';
+import { MetricsController } from './metrics.controller.js';
 
 /* * */
 
@@ -16,16 +16,16 @@ const namespace = '/metrics';
 
 server.register(
 	(instance, opts, next) => {
-		// GET /metrics
+		// GET /metrics/:metricName
 		instance.get(
-			'/',
+			'/:metricName',
 			{
-				preHandler: authorizationMiddleware<Alert>(
+				preHandler: authorizationMiddleware<Metric>(
 					Permissions.performance.scope,
 					Permissions.performance.actions.read,
 				),
 			},
-			AlertsController.getAll,
+			MetricsController.getMetric,
 		);
 
 		next();

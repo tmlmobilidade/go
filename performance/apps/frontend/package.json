@@ -15,6 +15,7 @@
 		"@tmlmobilidade/ui": "20251021.1725.54",
 		"@tmlmobilidade/utils": "20251021.1725.54",
 		"next": "15.5.6",
+		"next-intl": "4.3.12",
 		"nuqs": "2.7.2",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",

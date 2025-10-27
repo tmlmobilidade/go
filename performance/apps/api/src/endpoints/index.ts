@@ -1,1 +1,1 @@
-import './metrics/metrics.routes.js';
+import '@/endpoints/metrics/metrics.routes.js';
