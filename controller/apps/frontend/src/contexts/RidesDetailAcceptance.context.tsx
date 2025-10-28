@@ -1,6 +1,6 @@
 'use client';
 
-import { type RideAcceptance, RideJustificationCause } from '@tmlmobilidade/types';
+import { GtfsCause, type RideAcceptance } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
@@ -14,7 +14,7 @@ interface RidesDetailAcceptanceContextState {
 	actions: {
 		addComment: (comment: RideAcceptance['comments'][number]) => void
 		changeStatus: (status: RideAcceptance['acceptance_status']) => void
-		justify: (pto_message: string, justification_cause: RideJustificationCause) => void
+		justify: (pto_message: string, justification_cause: GtfsCause) => void
 		toggleLock: (is_locked: RideAcceptance['is_locked']) => void
 	}
 	data: {
@@ -83,7 +83,7 @@ export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 		}
 	}
 
-	async function justify(message: string, cause: RideJustificationCause) {
+	async function justify(message: string, cause: GtfsCause) {
 		const response = await fetchData(BASE_URL(rideId) + '/justify', 'PUT', { justification_cause: cause, pto_message: message });
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao justificar' });

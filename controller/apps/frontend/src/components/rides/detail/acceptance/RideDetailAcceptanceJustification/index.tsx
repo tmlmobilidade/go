@@ -6,7 +6,7 @@ import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { GtfsCause, RideAcceptance, RideAcceptanceStatusSchema, RideJustificationCause, RideJustificationCauseSchema } from '@tmlmobilidade/types';
+import { GtfsCause, gtfsCauseSchema, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
 import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
@@ -28,7 +28,7 @@ function JustificationReadOnly({ cause, message }: { cause?: string, message?: s
 	);
 }
 
-function JustificationEditable({ cause, message, onSubmit, setCause, setMessage }: { cause?: RideJustificationCause, message: string, onSubmit: () => void, setCause: (v: RideJustificationCause) => void, setMessage: (v: string) => void }) {
+function JustificationEditable({ cause, message, onSubmit, setCause, setMessage }: { cause?: GtfsCause, message: string, onSubmit: () => void, setCause: (v: GtfsCause) => void, setMessage: (v: string) => void }) {
 	return (
 		<>
 			<Combobox
@@ -36,7 +36,7 @@ function JustificationEditable({ cause, message, onSubmit, setCause, setMessage 
 				onChange={setCause}
 				placeholder="Selecione o motivo da justificação"
 				value={cause}
-				data={RideJustificationCauseSchema.options.map(cause => ({
+				data={gtfsCauseSchema.options.map(cause => ({
 					icon: CauseIcons[cause],
 					label: Translations.CAUSE[cause],
 					value: cause,
@@ -132,7 +132,7 @@ export function RidesDetailAcceptanceJustification() {
 	const { acceptance_status, justification } = acceptance;
 
 	const [message, setMessage] = useState(justification?.pto_message ?? '');
-	const [cause, setCause] = useState<RideJustificationCause | undefined>(justification?.justification_cause);
+	const [cause, setCause] = useState<GtfsCause | undefined>(justification?.justification_cause);
 
 	const handleSubmit = () => actions.justify(message, cause);
 
