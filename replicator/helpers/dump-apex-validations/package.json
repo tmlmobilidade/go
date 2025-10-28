@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sae-replicator-sync-apex-on-board-refunds",
+	"name": "@tmlmobilidade/sae-replicator-helpers-dump-apex-validations",
 	"version": "1.0.0",
 	"type": "module",
 	"files": ["dist"],
@@ -18,16 +18,15 @@
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251010.1959.27",
 		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/sae-replicator-pckg-parse": "*",
-		"@tmlmobilidade/sae-replicator-pckg-sync": "*",
 		"@tmlmobilidade/sae-replicator-pckg-utils": "*",
 		"@tmlmobilidade/utils": "20251028.1440.40",
-		"luxon": "3.7.2"
+		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20251028.1440.40",
-		"@types/luxon": "3.7.1",
+		"@tmlmobilidade/types": "20251028.1440.40",
 		"@types/node": "24.9.1",
+		"@types/papaparse": "5.3.16",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"
