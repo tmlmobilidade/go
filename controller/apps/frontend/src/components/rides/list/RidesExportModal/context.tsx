@@ -3,7 +3,7 @@
 /* * */
 
 import { RidesListContextState } from '@/contexts/RidesList.context';
-import { CreateFileExportDto, type RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
+import { CreateFileExportDto, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideDelayStatus, type RideExportProperties, RideOperationalStatus, type UnixTimestamp } from '@tmlmobilidade/types';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { Dates } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -79,23 +79,30 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 			file_name: fileName,
 			processing_status: 'waiting',
 			properties: {
-				acceptance_statuses: filterAcceptanceStatus,
+				acceptance_status: filterAcceptanceStatus as RideAcceptanceStatus[],
 				agency_ids: filterAgency,
-				analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop,
-				analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval,
-				analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents,
-				analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality,
-				delay_statuses: filterDelayStatus,
-				end_date: filterDateEnd as UnixTimestamp,
-				operational_statuses: filterOperationalStatus,
-				start_date: filterDateStart as UnixTimestamp,
+				analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop as RideAnalysisGradeWithNone[],
+				analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval as RideAnalysisGradeWithNone[],
+				analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents as RideAnalysisGradeWithNone[],
+				analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality as RideAnalysisGradeWithNone[],
+				date_end: filterDateEnd as UnixTimestamp,
+				date_start: filterDateStart as UnixTimestamp,
+				delay_statuses: filterDelayStatus as RideDelayStatus[],
+				operational_statuses: filterOperationalStatus as RideOperationalStatus[],
 			},
 			type: 'ride',
 		};
 
-		exports.actions.create(createFileExportDto);
-		useToast.success({ message: 'A exportação foi iniciada', title: 'Sucesso' });
-		closeModal(RIDES_EXPORT_MODAL_ID);
+		try {
+			const fileExport = await exports.actions.create(createFileExportDto);
+			if (!fileExport) return;
+			useToast.success({ message: 'A exportação foi iniciada', title: 'Sucesso' });
+			closeModal(RIDES_EXPORT_MODAL_ID);
+		}
+		catch (error) {
+			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao iniciar a exportação', title: 'Erro' });
+			return;
+		}
 	}
 
 	//

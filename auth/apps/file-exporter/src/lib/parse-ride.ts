@@ -1,6 +1,6 @@
-import { Ride, type RideExportData } from '@tmlmobilidade/types';
+import { type RideExportData, RideNormalized } from '@tmlmobilidade/types';
 
-export function parseRide(ride: Ride): RideExportData {
+export function parseRide(ride: RideNormalized): RideExportData {
 	return {
 		_id: ride._id,
 		agency_id: ride.agency_id,
@@ -51,6 +51,7 @@ export function parseRide(ride: Ride): RideExportData {
 		apex_validations_qty: ride.apex_validations_qty ?? 0,
 		created_at: ride.created_at,
 		driver_ids: (ride.driver_ids ?? []).join('|'),
+		end_delay_status: ride.end_delay_status,
 		end_time_observed: ride.end_time_observed ?? 0,
 		end_time_scheduled: ride.end_time_scheduled,
 		extension_observed: ride.extension_observed ?? 0,
@@ -61,6 +62,7 @@ export function parseRide(ride: Ride): RideExportData {
 		is_locked: false,
 		line_id: ride.line_id,
 		operational_date: ride.operational_date,
+		operational_status: ride.operational_status,
 		passengers_estimated: ride.passengers_estimated ?? 0,
 		passengers_observed: ride.passengers_observed ?? 0,
 		passengers_observed_on_board_sales_amount: ride.passengers_observed_on_board_sales_amount ?? 0,
@@ -73,6 +75,8 @@ export function parseRide(ride: Ride): RideExportData {
 		route_id: ride.route_id,
 		seen_first_at: ride.seen_first_at ?? 0,
 		seen_last_at: ride.seen_last_at ?? 0,
+		seen_status: ride.seen_status,
+		start_delay_status: ride.start_delay_status,
 		start_time_observed: ride.start_time_observed ?? 0,
 		start_time_scheduled: ride.start_time_scheduled,
 		system_status: ride.system_status,
