@@ -3,7 +3,7 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { Cause } from '@tmlmobilidade/types';
+import { GtfsCause, gtfsCauseSchema } from '@tmlmobilidade/types';
 import { Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -13,18 +13,14 @@ import styles from './styles.module.css';
 interface CauseItem {
 	icon: React.ReactNode
 	label: string
-	value: Cause
+	value: GtfsCause
 }
 
 export function RealtimeStepCause() {
 	//
 	// A. Setup variables
 
-	const allowedCauses: Cause[] = [
-		'TECHNICAL_PROBLEM', 'DEMONSTRATION', 'ACCIDENT', 'WEATHER', 'CONSTRUCTION', 'POLICE_ACTIVITY', 'MEDICAL_EMERGENCY',
-	];
-
-	const causeItems: CauseItem[] = allowedCauses.map(cause => ({
+	const causeItems: CauseItem[] = Object.values(gtfsCauseSchema.enum).map(cause => ({
 		icon: CauseIcons[cause],
 		label: Translations.CAUSE[cause],
 		value: cause,
@@ -35,7 +31,7 @@ export function RealtimeStepCause() {
 
 	return (
 		<Section>
-			<Grid columns="abcd" gap="xl" hAlign="center" vAlign="center">
+			<Grid columns="abcde" gap="xl" hAlign="center" vAlign="center">
 				{causeItems.map(cause => (
 					<CauseItem key={cause.value} cause={cause} />
 				))}

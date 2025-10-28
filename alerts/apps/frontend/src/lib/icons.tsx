@@ -1,6 +1,7 @@
-import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, IconCalendarEvent, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconInfoTriangle, IconRouteAltRight, IconShieldChevron, IconSpeakerphone, IconTool } from '@tabler/icons-react';
+import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, IconCalendarEvent, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconFish, IconInfoTriangle, IconRoadOff, IconRouteAltRight, IconServerCog, IconSettings, IconShieldChevron, IconSpeakerphone, IconTool, IconTrafficCone, IconUserExclamation, IconUserOff } from '@tabler/icons-react';
+import { GtfsCause, GtfsEffect } from '@tmlmobilidade/types';
 
-export const CauseIcons = {
+export const CauseIcons: Record<GtfsCause, React.ReactNode> = {
 	ACCIDENT: <IconCarCrash />,
 	CONSTRUCTION: <IconBarrierBlock />,
 	DEMONSTRATION: <IconSpeakerphone />,
@@ -13,9 +14,19 @@ export const CauseIcons = {
 	TECHNICAL_PROBLEM: <IconTool />,
 	UNKNOWN_CAUSE: <IconInfoTriangle />,
 	WEATHER: <IconCloudStorm />,
+
+	/* * */
+
+	DRIVER_ABSENCE: <IconUserOff />,
+	DRIVER_ISSUE: <IconUserExclamation />,
+	HIGH_PASSENGER_LOAD: <IconFish style={{ transform: 'rotate(90deg) ' }} />,
+	ROAD_INCIDENT: <IconRoadOff />,
+	SYSTEM_FAILURE: <IconServerCog />,
+	TRAFFIC_JAM: <IconTrafficCone />,
+	VEHICLE_ISSUE: <IconSettings />,
 };
 
-export const EffectIcons = {
+export const EffectIcons: Record<GtfsEffect, React.ReactNode> = {
 	ACCESSIBILITY_ISSUE: <IconAccessible />,
 	ADDITIONAL_SERVICE: <IconArrowBigUpLines />,
 	DETOUR: <IconRouteAltRight />,

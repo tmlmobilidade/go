@@ -11,7 +11,7 @@ import { RealtimeStepTrips } from '@/components/realtime/create/RealtimeStepTrip
 
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { Routes } from '@/lib/routes';
-import { Alert, causeSchema, CreateAlertDto, CreateAlertSchema, effectSchema } from '@tmlmobilidade/types';
+import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { Dates, fetchData } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
@@ -72,10 +72,10 @@ const STEPS: Step[] = [
 const emptyAlert: CreateAlertDto = {
 	active_period_end_date: Dates.now('Europe/Lisbon').plus({ hours: Dates.STANDARD_WINDOW_HOURS }).unix_timestamp,
 	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(causeSchema.Enum)[0],
+	cause: Object.values(gtfsCauseSchema)[0],
 	created_by: 'temp',
 	description: '',
-	effect: Object.values(effectSchema.Enum)[0],
+	effect: Object.values(gtfsEffectSchema)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
 	publish_end_date: Dates.now('Europe/Lisbon').plus({ hours: Dates.STANDARD_WINDOW_HOURS }).unix_timestamp,
