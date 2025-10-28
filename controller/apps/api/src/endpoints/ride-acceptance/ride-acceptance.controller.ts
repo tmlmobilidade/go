@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { NoteComment, RideAcceptanceStatusSchema, RideJustificationCause, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
+import { GtfsCause, NoteComment, RideAcceptanceStatusSchema, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 import { RideAcceptance } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 
@@ -78,7 +78,7 @@ export class RideAcceptanceController {
 	/**
 	 * Justifies a ride acceptance by trip ID
 	 */
-	static async justify(request: FastifyRequest<{ Body: { justification_cause: RideJustificationCause, pto_message: string }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
+	static async justify(request: FastifyRequest<{ Body: { justification_cause: GtfsCause, pto_message: string }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
 
 		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {

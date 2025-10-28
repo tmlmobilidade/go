@@ -4,7 +4,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { Ride, RideAcceptance, RideJustificationCause } from '@tmlmobilidade/types';
+import { Ride, RideAcceptance, GtfsCause } from '@tmlmobilidade/types';
 import { compareObjects, Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
@@ -85,7 +85,7 @@ async function alertJustification(ride: Ride) {
 			justification: {
 				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
 				created_by: foundAlert.created_by,
-				justification_cause: foundAlert.cause as RideJustificationCause,
+				justification_cause: foundAlert.cause as GtfsCause,
 				justification_source: 'ALERT',
 				pto_message: foundAlert.description,
 				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
