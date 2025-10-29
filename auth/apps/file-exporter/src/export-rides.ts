@@ -4,7 +4,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { CsvWriter } from '@helperkits/writer';
 import { fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { FileExport, RideNormalized } from '@tmlmobilidade/types';
+import { FileExport, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
 import { generateRandomString } from '@tmlmobilidade/utils';
 import os from 'os';
 import path from 'path';
@@ -32,7 +32,18 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 	//
 	// Get the rides batch
 	const pipeline = ridesBatchAggregationPipeline(fileExport.properties);
-	const ridesBatch = await rides.aggregate(pipeline);
+	const ridesBatch = await rides.aggregate([
+		...pipeline,
+		{
+			$lookup: {
+				as: 'acceptance',
+				foreignField: 'ride_id',
+				from: 'ride_acceptances',
+				localField: '_id',
+			},
+		},
+		{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
+	]);
 
 	//
 	// Write the rides batch to the file
@@ -41,7 +52,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	let count = 0;
 	for await (const ride of ridesBatch) {
-		await csvWriter.write(parseRide(ride as RideNormalized));
+		await csvWriter.write(parseRide(ride as RideNormalized & { acceptance: null | RideAcceptance }));
 		count++;
 	}
 

@@ -1,6 +1,6 @@
-import { type RideExportData, RideNormalized } from '@tmlmobilidade/types';
+import { RideAcceptance, type RideExportData, RideNormalized } from '@tmlmobilidade/types';
 
-export function parseRide(ride: RideNormalized): RideExportData {
+export function parseRide(ride: RideNormalized & { acceptance: null | RideAcceptance }): RideExportData {
 	return {
 		_id: ride._id,
 		agency_id: ride.agency_id,
@@ -83,5 +83,13 @@ export function parseRide(ride: RideNormalized): RideExportData {
 		trip_id: ride.trip_id,
 		updated_at: ride.updated_at,
 		vehicle_ids: (ride.vehicle_ids ?? []).join('|'),
+
+		/* ACCEPTANCE / JUSTIFICATION */
+		/* * */
+		acceptance_status: ride.acceptance?.acceptance_status,
+		justification_cause: ride.acceptance?.justification?.justification_cause,
+		justification_source: ride.acceptance?.justification?.justification_source,
+		manual_trip_id: ride.acceptance?.justification?.manual_trip_id,
+		pto_message: ride.acceptance?.justification?.pto_message,
 	};
 }
