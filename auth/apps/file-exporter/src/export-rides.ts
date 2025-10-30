@@ -30,20 +30,24 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 	await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
 
 	//
-	// Get the rides batch
+	// Get the rides batch using native MongoDB cursor with batchSize to prevent memory issues
 	const pipeline = ridesBatchAggregationPipeline(fileExport.properties);
-	const ridesBatch = await rides.aggregate([
-		...pipeline,
-		{
-			$lookup: {
-				as: 'acceptance',
-				foreignField: 'ride_id',
-				from: 'ride_acceptances',
-				localField: '_id',
+	const ridesCollection = await rides.getCollection();
+	const ridesBatchCursor = ridesCollection.aggregate(
+		[
+			...pipeline,
+			{
+				$lookup: {
+					as: 'acceptance',
+					foreignField: 'ride_id',
+					from: 'ride_acceptances',
+					localField: '_id',
+				},
 			},
-		},
-		{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
-	]);
+			{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
+		],
+		{ cursor: { batchSize: 5000 } },
+	);
 
 	//
 	// Write the rides batch to the file
@@ -51,7 +55,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 	const csvWriter = new CsvWriter(fileExport.file_name, tempFilePath, { batch_size: 10000 });
 
 	let count = 0;
-	for await (const ride of ridesBatch) {
+	for await (const ride of ridesBatchCursor) {
 		await csvWriter.write(parseRide(ride as RideNormalized & { acceptance: null | RideAcceptance }));
 		count++;
 	}
