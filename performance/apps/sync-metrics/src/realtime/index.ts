@@ -1,6 +1,5 @@
 /* * */
 
-import { syncRealtimeDelays } from '@/realtime/delays.js';
 import { syncRealtimeDemand } from '@/realtime/demand.js';
 import { syncRealtimeServiceCompliance } from '@/realtime/serviceCompliance.js';
 import TIMETRACKER from '@helperkits/timer';
@@ -23,9 +22,7 @@ export const syncRealtimeMetrics = async () => {
 
 		await syncRealtimeDemand(); // 2 seconds
 
-		await syncRealtimeDelays(); // 15 seconds
-
-		await syncRealtimeServiceCompliance(); // 13 seconds
+		await syncRealtimeServiceCompliance(); // 24 seconds
 
 		//
 
@@ -33,7 +30,7 @@ export const syncRealtimeMetrics = async () => {
 		Logs.terminate(`Finished Realtime Metrics Sync (${globalTimer.get()})`);
 		Logs.divider();
 
-		setTimeout(runOnInterval, 60_000); // 1 minute
+		setTimeout(runOnInterval, 1_200_000); // 20 minutes
 	};
 
 	runOnInterval();

@@ -1,0 +1,9 @@
+.breadcrumbItem {
+    font-size: var(--font-size-md);
+    color: var(--color-system-text-200);
+}
+
+.activeBreadcrumbItem {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}

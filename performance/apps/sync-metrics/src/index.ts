@@ -10,7 +10,7 @@ import { syncRealtimeMetrics } from '@/realtime/index.js';
 
 	// await syncDemandMetrics();
 
-	// await syncRealtimeMetrics();
+	await syncRealtimeMetrics();
 
 	//
 })();

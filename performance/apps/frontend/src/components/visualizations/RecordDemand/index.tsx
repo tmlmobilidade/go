@@ -2,8 +2,7 @@
 
 /* * */
 
-import { KpiCardSkeleton } from '@/components/layout/KpiCardSkeleton';
-import { VisualizationContainer } from '@/components/layout/VisualizationContainer';
+import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
@@ -86,30 +85,29 @@ export function RecordDemand({ operator }: { operator?: OperatorType }) {
 
 	// D. Render components
 	if (!formattedData) {
-		return <KpiCardSkeleton height={190} />;
+		return <MetricCardSkeleton height={100} />;
 	}
 
-	const { progressPercentage, recordPassengers, remaining } = formattedData;
+	const { progressPercentage, recordPassengers } = formattedData;
 
+	// calcular recordes de dias uteis e fins de semana
 	return (
-		<div className={styles.fadeIn}>
-			<VisualizationContainer
-				title={`Faltam ${remaining.toLocaleString('pt-PT')} passageiros para atingirmos o nosso recorde diário!`}
-			>
-				<Progress.Root size={30}>
-					<Tooltip label={`${getTooltipLabel(progressPercentage)} (${progressPercentage.toFixed(2)}%)`}>
+		<div className={styles.container}>
+			<p style={{ color: 'var(--text-muted, #6b7280)', textAlign: 'left' }}>Recorde de passageiros diário: <b>{recordPassengers.qty.toLocaleString('pt-PT')}</b> ({t('dates.formatted', { date: recordPassengers.date })})</p>
+
+			<div className={styles.progressContainer}>
+				<Progress.Root size={30} w="100%">
+					<Tooltip label={`${getTooltipLabel(progressPercentage)} (${progressPercentage.toFixed(1)}%)`}>
 						<Progress.Section
 							color="var(--color-primary)"
 							value={progressPercentage}
 							animated
-						/>
+						>
+							<Progress.Label styles={{ label: { fontSize: 'var(--font-size-md)' } }}>{`${progressPercentage.toFixed(1)}%`}</Progress.Label>
+						</Progress.Section>
 					</Tooltip>
 				</Progress.Root>
-
-				<p style={{ color: 'var(--color-system-text-200)' }}>
-					Recorde atual: {recordPassengers.qty.toLocaleString('pt-PT')} ({t('dates.formatted_short', { date: recordPassengers.date })})
-				</p>
-			</VisualizationContainer>
+			</div>
 		</div>
 	);
 }

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { VisualizationContainer } from '@/components/layout/VisualizationContainer';
+import { LiveIcon } from '@/components/layout/LiveIcon';
 import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
@@ -120,7 +120,12 @@ export function DemandByAgencyByDay({ chartType, height, operator }: { chartType
 	const hasData = dataToDisplay.length > 0;
 
 	return (
-		<VisualizationContainer height={height || '100%'} title="Passageiros transportados nos últimos 7 dias" updatedAt={formattedData?.lastUpdated}>
+		<div className={styles.container}>
+			<div style={{ display: 'flex', gap: 'var(--size-spacing-xs)' }}>
+				<p style={{ color: 'var(--text-muted, #6b7280)' }}>Passageiros transportados por dia</p>
+				<LiveIcon updatedAt={formattedData.lastUpdated} />
+			</div>
+
 			{hasData ? (
 				<div className={styles.fadeIn}>
 					{chartType === 'line' ? (
@@ -129,7 +134,7 @@ export function DemandByAgencyByDay({ chartType, height, operator }: { chartType
 							curveType="natural"
 							data={dataToDisplay}
 							dataKey="formatted_day"
-							h="100%"
+							h={height || 200}
 							strokeWidth={5}
 							valueFormatter={v => v.toLocaleString('pt-PT')}
 							withDots={false}
@@ -149,7 +154,7 @@ export function DemandByAgencyByDay({ chartType, height, operator }: { chartType
 								color="var(--color-primary)"
 								data={dataToDisplay}
 								dataKey="formatted_day"
-								h="100%"
+								h={height || 200}
 								valueFormatter={v => v.toLocaleString('pt-PT')}
 								valueLabelProps={{ fill: 'white', position: 'inside' }}
 								withXAxis={true}
@@ -166,8 +171,10 @@ export function DemandByAgencyByDay({ chartType, height, operator }: { chartType
 						)}
 				</div>
 			) : (
-				<MetricsSkeleton />
+				<div style={{ height: height || 200 }}>
+					<MetricsSkeleton />
+				</div>
 			)}
-		</VisualizationContainer>
+		</div>
 	);
 }

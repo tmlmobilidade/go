@@ -2,13 +2,16 @@
 
 /* * */
 
-import { KpiCard } from '@/components/layout/KpiCard';
-import { KpiCardSkeleton } from '@/components/layout/KpiCardSkeleton';
+import { MetricCard } from '@/components/layout/MetricCard';
+import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
+import { DemandByAgencyByDay } from '@/components/visualizations/DemandByAgencyByDay';
+import { RecordDemand } from '@/components/visualizations/RecordDemand';
 import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconUser } from '@tabler/icons-react';
 import { type RealtimeDemand } from '@tmlmobilidade/types';
+import { Spacer } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -26,7 +29,7 @@ export function RealtimeDemand({ operator }: { operator?: OperatorType }) {
 
 	// B. Fetch data
 
-	const { data } = useSWR<RealtimeDemand[]>(MetricsRoutes.REALTIME_DEMAND);
+	const { data, isLoading } = useSWR<RealtimeDemand[]>(MetricsRoutes.REALTIME_DEMAND);
 
 	//
 	// C. Transform data
@@ -64,28 +67,25 @@ export function RealtimeDemand({ operator }: { operator?: OperatorType }) {
 
 	return (
 		<>
-			{!data ? <KpiCardSkeleton height={190} />
-				: (
-					<div className={styles.fadeIn}>
-						<KpiCard
-							headerIcon={<IconUser />}
-							headerTitle="Passageiros transportados hoje"
-							headerValue={formattedData.now.toLocaleString()}
-							updatedAt={new Date(formattedData.lastUpdated)}
-							items={[
-								{
-									label: `Semana passada à mesma hora`,
-									value: formattedData.lastWeek.toLocaleString(),
-								},
-								{
-									isDelta: true,
-									label: `Variação`,
-									value: ((formattedData.now / formattedData.lastWeek) - 1) * 100,
-								},
-							]}
-						/>
+			<div className={styles.fadeIn}>
+				<MetricCard
+					goal="increase"
+					icon={<IconUser />}
+					isLoading={isLoading}
+					previousValue={formattedData.lastWeek}
+					title="Passageiros transportados hoje"
+					updatedAt={new Date(formattedData.lastUpdated)}
+					value={formattedData.now}
+				>
+
+					<div className={styles.container}>
+						<RecordDemand operator={operator} />
+						<Spacer size="md" />
+						<DemandByAgencyByDay chartType="bar" height={200} operator={operator} />
 					</div>
-				)}
+
+				</MetricCard>
+			</div>
 		</>
 	);
 }

@@ -9,6 +9,13 @@
   height: 100%;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-spacing-md);
+  padding: var(--size-spacing-md);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

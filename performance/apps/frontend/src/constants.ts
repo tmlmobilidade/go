@@ -10,13 +10,57 @@ export interface DashboardDefinition {
 
 export interface TopicDefinition {
 	dashboards: DashboardDefinition[]
+	description?: string
 	filters?: string[]
 	icon?: React.ComponentType
 	key: string
 	label: string
 }
 
-export const EXPLORER_TOPICS: TopicDefinition[] = [
+export const TOPICS = {
+	COVERAGE_AVAILABILITY: 'coverage-availability',
+	CUSTOMER_SATISFACTION: 'customer-satisfaction',
+	INSPECTIONS: 'inspections',
+	OPERATIONAL_COSTS: 'operational_costs',
+	REVENUE: 'revenue',
+	SERVICE_COMPLIANCE: 'service_compliance',
+	SUPPLY_DEMAND_ALIGNMENT: 'supply-demand',
+	SUSTAINABILITY: 'sustainability',
+} as const;
+
+export const TOPICS_REGISTRY: TopicDefinition[] = [
+	{
+		dashboards: [
+			{
+				key: 'occupancy-rate',
+				label: 'Taxa de ocupação', // shows load factor or seat utilization per line/time
+			},
+			{
+				key: 'oversupply-zones', // Linhas pouca procura
+				label: 'Excesso de oferta', // identifies lines or time periods with too much capacity vs. low usage
+			},
+			{
+				key: 'undersupply-zones', // Linhas com muita procura
+				label: 'Falta de oferta', // shows where demand exceeds supply (crowded services)
+			},
+			{
+				key: 'temporal-alignment',
+				label: 'Alinhamento temporal', // compares supply and demand patterns by hour/day
+			},
+			{
+				key: 'supply-demand-ratio',
+				label: 'Rácio oferta/procura', // aggregate indicator showing proportionality
+			},
+			{
+				key: 'efficiency-index',
+				label: 'Índice de eficiência', // synthetic KPI summarizing alignment quality
+			},
+		],
+		description: 'O tema Alinhamento oferta-procura analisa o equilíbrio entre a capacidade disponibilizada (oferta) e a utilização efetiva do serviço (procura). O objetivo é avaliar se os recursos estão a ser alocados de forma eficiente — identificando situações de excesso de oferta (veículos subutilizados) ou falta de oferta (sobrelotação e procura não satisfeita).',
+		icon: IconArrowsLeftRight,
+		key: TOPICS.SUPPLY_DEMAND_ALIGNMENT,
+		label: 'Alinhamento oferta-procura',
+	},
 	{
 		dashboards: [
 			{
@@ -58,12 +102,6 @@ export const EXPLORER_TOPICS: TopicDefinition[] = [
 		icon: IconMapPin,
 		key: 'coverage_availability',
 		label: 'Cobertura e disponibilidade',
-	},
-	{
-		dashboards: [],
-		icon: IconArrowsLeftRight,
-		key: 'supply_demand_alignment',
-		label: 'Alinhamento oferta-procura',
 	},
 	{
 		dashboards: [
@@ -115,3 +153,5 @@ export const OPERATORS = {
 } as const;
 
 export type OperatorType = typeof OPERATORS[keyof typeof OPERATORS];
+
+export type SystemStatusType = 'negative' | 'positive' | 'warning';

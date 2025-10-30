@@ -2,19 +2,21 @@
 
 /* * */
 
-import { KpiCard } from '@/components/layout/KpiCard';
-import { KpiCardSkeleton } from '@/components/layout/KpiCardSkeleton';
+import { MetricCard } from '@/components/layout/MetricCard';
+import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconClock } from '@tabler/icons-react';
-import { type RealtimeDelays } from '@tmlmobilidade/types';
+import { type RealtimeServiceCompliance } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
 /* * */
+
+// Refactor this. Currently its not being used
 
 export function RealtimeDelays({ operator }: { operator?: OperatorType }) {
 	//
@@ -26,7 +28,7 @@ export function RealtimeDelays({ operator }: { operator?: OperatorType }) {
 
 	// B. Fetch data
 
-	const { data } = useSWR<RealtimeDelays[]>(MetricsRoutes.REALTIME_DELAYS);
+	const { data } = useSWR<RealtimeServiceCompliance[]>(MetricsRoutes.REALTIME_SERVICE_COMPLIANCE);
 
 	//
 	// C. Transform data
@@ -58,8 +60,8 @@ export function RealtimeDelays({ operator }: { operator?: OperatorType }) {
 				now: operatorData.mean_delay_minutes.now,
 			},
 			totalRides: {
-				lastWeek: operatorData.total_rides.last_week,
-				now: operatorData.total_rides.now,
+				lastWeek: operatorData.scheduled_rides.last_week,
+				now: operatorData.scheduled_rides.now,
 			},
 		};
 	}, [data, selectedOperator]);
@@ -69,10 +71,10 @@ export function RealtimeDelays({ operator }: { operator?: OperatorType }) {
 
 	return (
 		<>
-			{!data ? <KpiCardSkeleton height={190} />
+			{!data ? <MetricCardSkeleton height={190} />
 				: (
 					<div className={styles.fadeIn}>
-						<KpiCard
+						<MetricCard
 							headerIcon={<IconClock />}
 							headerTitle="Atraso médio das viagens"
 							headerValue={`${formattedData.meanDelay.now.toLocaleString()} min`}
