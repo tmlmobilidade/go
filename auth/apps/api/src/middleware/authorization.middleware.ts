@@ -38,7 +38,7 @@ export function authorizationMiddleware<T = unknown>(scope?: string, actions?: s
 		}
 		else {
 			user = await authProvider.getUser(sessionToken);
-			permissions = await authProvider.getPermissions(sessionToken);
+			permissions = await authProvider.getPermissions({ sessionToken });
 			REQUEST_CACHE.set(sessionToken, { permissions, user });
 		}
 

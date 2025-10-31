@@ -40,7 +40,7 @@ export class AuthController {
 	 */
 	async getPermissions(request: FastifyRequest, reply: FastifyReply<Permission<unknown>[]>) {
 		const session_token = request.cookies[COOKIE_NAME];
-		const permissions = await authProvider.getPermissions(session_token);
+		const permissions = await authProvider.getPermissions({ sessionToken: session_token });
 		return reply.send({ data: permissions, error: null, statusCode: HttpStatus.OK }).status(HttpStatus.OK);
 	}
 

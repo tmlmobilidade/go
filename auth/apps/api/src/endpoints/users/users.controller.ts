@@ -115,7 +115,7 @@ export class UsersController {
 		//
 		// Retrieve roles and permissions for the user
 		// and merge them into the user data.
-		userData.permissions = await authProvider.getPermissions(sessionToken);
+		userData.permissions = await authProvider.getPermissions({ sessionToken });
 
 		//
 		// Send the user data back in the response.
