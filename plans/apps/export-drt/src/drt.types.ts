@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 /* * */
 
-import { SQLiteDatabase, SQLiteTable } from '@tmlmobilidade/connectors';
+import { SQLiteDatabase, SQLiteTableInstance } from '@tmlmobilidade/connectors';
 import { OperationalDate, UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
@@ -10,8 +10,8 @@ export interface GlobalContext {
 	configs: {
 		database_name: string
 		database_path: string
-		end_date: OperationalDate
-		start_date: OperationalDate
+		end_date: UnixTimestamp
+		start_date: UnixTimestamp
 	}
 	database: InstanceType<typeof SQLiteDatabase>
 	tables: DrtTables
@@ -21,11 +21,11 @@ export interface GlobalContext {
 /* DRT TABLES */
 
 export interface DrtTables {
-	agencies: SQLiteTable<DrtAgency>
-	rides: SQLiteTable<DrtRide>
-	shapes: SQLiteTable<DrtHashedShape>
-	stops: SQLiteTable<DrtStop>
-	trips: SQLiteTable<DrtHashedTrip>
+	agencies: SQLiteTableInstance<DrtAgency>
+	rides: SQLiteTableInstance<DrtRide>
+	shapes: SQLiteTableInstance<DrtHashedShape>
+	stops: SQLiteTableInstance<DrtStop>
+	hashed_trips: SQLiteTableInstance<DrtHashedTrip>
 }
 
 export interface DrtHashedTrip {
@@ -55,8 +55,8 @@ export interface DrtHashedShape {
 	/* * */
 
 	shape_dist_traveled: number
-	shape_pt_lat: string
-	shape_pt_lon: string
+	shape_pt_lat: number
+	shape_pt_lon: number
 	shape_pt_sequence: number
 }
 

@@ -3,23 +3,24 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
-import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/utils';
 import os from 'os';
 import path from 'path';
 
 import { DrtAgency, DrtHashedShape, DrtHashedTrip, DrtRide, DrtStop, DrtTables, GlobalContext } from './drt.types.js';
+import { processor } from './processor.js';
 
 /* * */
 
 const DAYS_TO_ADD = 3;
+const RUN_INTERVAL = 10 * 60 * 60_000; // 10 hours in milliseconds
 
-const GLOBAL_CONTEXT: GlobalContext = {
+export const GLOBAL_CONTEXT: GlobalContext = {
 	configs: {
 		database_name: 'drt-model',
 		database_path: os.tmpdir(),
-		end_date: Dates.now('Europe/Lisbon').plus({ days: DAYS_TO_ADD }).operational_date,
-		start_date: Dates.now('Europe/Lisbon').operational_date,
+		end_date: Dates.now('Europe/Lisbon').plus({ days: DAYS_TO_ADD }).unix_timestamp,
+		start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	},
 	database: undefined,
 	tables: undefined,
@@ -71,7 +72,7 @@ function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
 		],
 	});
 
-	const trips = database.registerTable<DrtHashedTrip>('trips', {
+	const hashed_trips = database.registerTable<DrtHashedTrip>('hashed_trips', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
@@ -107,10 +108,10 @@ function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
 
 	return {
 		agencies,
+		hashed_trips,
 		rides,
 		shapes,
 		stops,
-		trips,
 	};
 }
 
@@ -132,9 +133,33 @@ async function main() {
 
 		GLOBAL_CONTEXT.database = new SQLiteDatabase(sqliteConfig);
 		GLOBAL_CONTEXT.tables = intializeDrtSQLTables(GLOBAL_CONTEXT.database);
+
+		//
+		// Process the rides
+		LOGGER.title(`Processing the DRT data`);
+		await processor();
+
+		LOGGER.success(GLOBAL_CONTEXT.configs.database_path);
+
+		LOGGER.terminate(`Finished processing the DRT data in ${globalTimer.get()}.`);
+		LOGGER.divider();
+
+		//
+		// Exit the application
+		process.exit(0);
 	}
 	catch (error) {
 		LOGGER.error('Error parsing plan.', error);
 		throw error;
 	}
 }
+
+/* * */
+
+(async function init() {
+	const runOnInterval = async () => {
+		await main();
+		setTimeout(runOnInterval, RUN_INTERVAL);
+	};
+	runOnInterval();
+})();
