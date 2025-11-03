@@ -76,6 +76,10 @@ async function processRides() {
 			va_trip_number: 0,
 			vehicle_id: ride.vehicle_ids.join(','),
 		});
+
+		if (totalRides % 10000 === 0) {
+			LOGGER.info(`Processed ${totalRides} rides so far...`);
+		}
 	}
 
 	GLOBAL_CONTEXT.tables.hashed_trips.flush();
