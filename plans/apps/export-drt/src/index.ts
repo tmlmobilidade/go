@@ -4,6 +4,7 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
 import { Dates } from '@tmlmobilidade/utils';
+import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
@@ -123,6 +124,12 @@ async function main() {
 
 		LOGGER.init();
 		const globalTimer = new TIMETRACKER();
+
+		//
+		// Delete the database if it exists
+		if (fs.existsSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`))) {
+			fs.unlinkSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
+		}
 
 		//
 		// Initialize the SQLite database

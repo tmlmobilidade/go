@@ -46,8 +46,9 @@ async function processRides() {
 
 		//
 		// Handle Hashed Trip and Hashed Shape
-		if (!hashedTripsIds.has(ride.hashed_trip_id)) hashedTripsIds.add(ride.hashed_trip_id);
-		if (!hashedShapesIds.has(ride.hashed_shape_id)) hashedShapesIds.add(ride.hashed_shape_id);
+		// Set.add() automatically handles duplicates, no need to check first
+		hashedTripsIds.add(ride.hashed_trip_id);
+		hashedShapesIds.add(ride.hashed_shape_id);
 
 		/* * */
 		/* Write the ride to the database */
@@ -72,9 +73,9 @@ async function processRides() {
 			/* DRT-specific */
 
 			da_trip_number: 0,
-			driver_id: ride.driver_ids.join(','),
+			driver_id: ride.driver_ids.length > 0 ? ride.driver_ids.join(',') : '',
 			va_trip_number: 0,
-			vehicle_id: ride.vehicle_ids.join(','),
+			vehicle_id: ride.vehicle_ids.length > 0 ? ride.vehicle_ids.join(',') : '',
 		});
 
 		if (totalRides % 10000 === 0) {
@@ -82,7 +83,8 @@ async function processRides() {
 		}
 	}
 
-	GLOBAL_CONTEXT.tables.hashed_trips.flush();
+	// Flush the rides table to ensure all buffered writes are persisted
+	GLOBAL_CONTEXT.tables.rides.flush();
 
 	LOGGER.info(`Processed ${totalRides} Rides in ${timer.get()}.`);
 
@@ -157,7 +159,7 @@ async function processHashedShapes(hashedShapesIds: Set<string>) {
 				//
 				// Calculate the meters from the previous stop, start, end, and next stop
 				const meters_to_end = lastPointShapeDistTraveled - point.shape_dist_traveled;
-				const meters_from_previous_stop = point.shape_dist_traveled - hashedShape.points[index - 1].shape_dist_traveled;
+				const meters_from_previous_stop = index === 0 ? 0 : point.shape_dist_traveled - hashedShape.points[index - 1].shape_dist_traveled;
 				const meters_from_start = point.shape_dist_traveled;
 				const meters_to_next_stop = index === hashedShape.points.length - 1 ? 0 : hashedShape.points[index + 1].shape_dist_traveled - point.shape_dist_traveled;
 
@@ -198,7 +200,7 @@ async function processAgencies() {
 		LOGGER.info('Processing Agencies...');
 		const agenciesTimer = new TIMETRACKER();
 
-		const allAgencies = await agencies.all();
+		const allAgencies = await agencies.findMany({}, { sort: { _id: 1 } });
 
 		let totalAgencies = 0;
 
@@ -209,11 +211,13 @@ async function processAgencies() {
 			//
 			const drtAgency: DrtAgency = {
 				_id: agency._id,
-				agency_name: agency.name || '',
+				agency_name: agency.name,
 			};
 
 			GLOBAL_CONTEXT.tables.agencies.write(drtAgency);
 		}
+
+		GLOBAL_CONTEXT.tables.agencies.flush();
 
 		LOGGER.info(`Processed ${totalAgencies} Agencies in ${agenciesTimer.get()}.`);
 	}
@@ -252,7 +256,8 @@ async function processStops() {
 				longitude: stop.lon,
 				municipality_id: stop.municipality_id,
 				parish_id: '',
-				stop_name: stop.long_name,
+				// @ts-expect-error - stop.name is not defined in the type but it is what is coming from the API
+				stop_name: stop.name,
 				tts_name: stop.tts_name,
 			});
 		}
