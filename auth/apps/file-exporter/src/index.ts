@@ -42,7 +42,7 @@ async function main() {
 			//
 			// Upload the file to the storage service & update the file export.
 			if (pathToFile) {
-				const fileStream = fs.createReadStream(pathToFile);
+				const fileStream = fs.createReadStream(pathToFile, 'utf-8');
 
 				const file = await files.upload(fileStream, {
 					created_by: 'system',

@@ -1,88 +1,93 @@
-import { RideAcceptance, type RideExportData, RideNormalized } from '@tmlmobilidade/types';
+import { RideAcceptance, type RideExportData, RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/utils';
+
+function parseTime(time: null | UnixTimestamp): null | string {
+	if (!time) {
+		return null;
+	}
+
+	return Dates.fromUnixTimestamp(time).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt-Pt');
+}
 
 export function parseRide(ride: RideNormalized & { acceptance: null | RideAcceptance }): RideExportData {
 	return {
+		/* META */
+	/* * */
 		_id: ride._id,
 		agency_id: ride.agency_id,
-		analysis_AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP_grade: ride.analysis?.AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP?.grade ?? '',
-		analysis_AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP_reason: ride.analysis?.AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP?.reason ?? '',
-		analysis_ENDED_AT_LAST_STOP_grade: ride.analysis?.ENDED_AT_LAST_STOP?.grade ?? '',
-		analysis_ENDED_AT_LAST_STOP_reason: ride.analysis?.ENDED_AT_LAST_STOP?.reason ?? '',
-		analysis_EXPECTED_APEX_VALIDATION_INTERVAL_grade: ride.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade ?? '',
-		analysis_EXPECTED_APEX_VALIDATION_INTERVAL_reason: ride.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.reason ?? '',
-		analysis_EXPECTED_DRIVER_ID_QTY_grade: ride.analysis?.EXPECTED_DRIVER_ID_QTY?.grade ?? '',
-		analysis_EXPECTED_DRIVER_ID_QTY_reason: ride.analysis?.EXPECTED_DRIVER_ID_QTY?.reason ?? '',
-		analysis_EXPECTED_START_TIME_grade: ride.analysis?.EXPECTED_START_TIME?.grade ?? '',
-		analysis_EXPECTED_START_TIME_reason: ride.analysis?.EXPECTED_START_TIME?.reason ?? '',
-		analysis_EXPECTED_START_TIME_value: ride.analysis?.EXPECTED_START_TIME?.value ?? 0,
-		analysis_EXPECTED_VEHICLE_EVENT_DELAY_grade: ride.analysis?.EXPECTED_VEHICLE_EVENT_DELAY?.grade ?? '',
-		analysis_EXPECTED_VEHICLE_EVENT_DELAY_reason: ride.analysis?.EXPECTED_VEHICLE_EVENT_DELAY?.reason ?? '',
-		analysis_EXPECTED_VEHICLE_EVENT_INTERVAL_grade: ride.analysis?.EXPECTED_VEHICLE_EVENT_INTERVAL?.grade ?? '',
-		analysis_EXPECTED_VEHICLE_EVENT_INTERVAL_reason: ride.analysis?.EXPECTED_VEHICLE_EVENT_INTERVAL?.reason ?? '',
-		analysis_EXPECTED_VEHICLE_EVENT_QTY_expected_qty: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.expected_qty ?? 0,
-		analysis_EXPECTED_VEHICLE_EVENT_QTY_found_qty: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.found_qty ?? 0,
-		analysis_EXPECTED_VEHICLE_EVENT_QTY_grade: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.grade ?? '',
-		analysis_EXPECTED_VEHICLE_EVENT_QTY_reason: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.reason ?? '',
-		analysis_EXPECTED_VEHICLE_ID_QTY_grade: ride.analysis?.EXPECTED_VEHICLE_ID_QTY?.grade ?? '',
-		analysis_EXPECTED_VEHICLE_ID_QTY_reason: ride.analysis?.EXPECTED_VEHICLE_ID_QTY?.reason ?? '',
-		analysis_MATCHING_APEX_LOCATIONS_grade: ride.analysis?.MATCHING_APEX_LOCATIONS?.grade ?? '',
-		analysis_MATCHING_APEX_LOCATIONS_reason: ride.analysis?.MATCHING_APEX_LOCATIONS?.reason ?? '',
-		analysis_MATCHING_VEHICLE_IDS_grade: ride.analysis?.MATCHING_VEHICLE_IDS?.grade ?? '',
-		analysis_MATCHING_VEHICLE_IDS_reason: ride.analysis?.MATCHING_VEHICLE_IDS?.reason ?? '',
-		analysis_SIMPLE_ONE_APEX_VALIDATION_grade: ride.analysis?.SIMPLE_ONE_APEX_VALIDATION?.grade ?? '',
-		analysis_SIMPLE_ONE_APEX_VALIDATION_reason: ride.analysis?.SIMPLE_ONE_APEX_VALIDATION?.reason ?? '',
-		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION_grade: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION?.grade ?? '',
-		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION_reason: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION?.reason ?? '',
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_grade: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade ?? '',
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.reason ?? '',
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_first: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_first?.join('|') ?? '',
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_last: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_last?.join('|') ?? '',
-		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_middle: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_middle?.join('|') ?? '',
-		analysis_TRANSACTION_SEQUENTIALITY_expected_qty: ride.analysis?.TRANSACTION_SEQUENTIALITY?.expected_qty ?? 0,
-		analysis_TRANSACTION_SEQUENTIALITY_found_qty: ride.analysis?.TRANSACTION_SEQUENTIALITY?.found_qty ?? 0,
-		analysis_TRANSACTION_SEQUENTIALITY_grade: ride.analysis?.TRANSACTION_SEQUENTIALITY?.grade ?? '',
-		analysis_TRANSACTION_SEQUENTIALITY_missing_qty: ride.analysis?.TRANSACTION_SEQUENTIALITY?.missing_qty ?? 0,
-		analysis_TRANSACTION_SEQUENTIALITY_reason: ride.analysis?.TRANSACTION_SEQUENTIALITY?.reason ?? '',
-		apex_locations_qty: ride.apex_locations_qty ?? 0,
-		apex_on_board_refunds_amount: ride.apex_on_board_refunds_amount ?? 0,
-		apex_on_board_refunds_qty: ride.apex_on_board_refunds_qty ?? 0,
-		apex_on_board_sales_amount: ride.apex_on_board_sales_amount ?? 0,
-		apex_on_board_sales_qty: ride.apex_on_board_sales_qty ?? 0,
-		apex_validations_qty: ride.apex_validations_qty ?? 0,
-		created_at: ride.created_at,
-		driver_ids: (ride.driver_ids ?? []).join('|'),
-		end_delay_status: ride.end_delay_status,
-		end_time_observed: ride.end_time_observed ?? 0,
-		end_time_scheduled: ride.end_time_scheduled,
-		extension_observed: ride.extension_observed ?? 0,
-		extension_scheduled: ride.extension_scheduled,
-		hashed_shape_id: ride.hashed_shape_id,
-		hashed_trip_id: ride.hashed_trip_id,
+		driver_ids: ride.driver_ids.join('|'),
 		headsign: ride.headsign,
-		is_locked: false,
 		line_id: ride.line_id,
-		operational_date: ride.operational_date,
-		operational_status: ride.operational_status,
-		passengers_estimated: ride.passengers_estimated ?? 0,
-		passengers_observed: ride.passengers_observed ?? 0,
-		passengers_observed_on_board_sales_amount: ride.passengers_observed_on_board_sales_amount ?? 0,
-		passengers_observed_on_board_sales_qty: ride.passengers_observed_on_board_sales_qty ?? 0,
-		passengers_observed_prepaid_amount: ride.passengers_observed_prepaid_amount ?? 0,
-		passengers_observed_prepaid_qty: ride.passengers_observed_prepaid_qty ?? 0,
-		passengers_observed_subscription_qty: ride.passengers_observed_subscription_qty ?? 0,
 		pattern_id: ride.pattern_id,
 		plan_id: ride.plan_id,
 		route_id: ride.route_id,
-		seen_first_at: ride.seen_first_at ?? 0,
-		seen_last_at: ride.seen_last_at ?? 0,
-		seen_status: ride.seen_status,
-		start_delay_status: ride.start_delay_status,
-		start_time_observed: ride.start_time_observed ?? 0,
-		start_time_scheduled: ride.start_time_scheduled,
-		system_status: ride.system_status,
 		trip_id: ride.trip_id,
-		updated_at: ride.updated_at,
-		vehicle_ids: (ride.vehicle_ids ?? []).join('|'),
+		vehicle_ids: ride.vehicle_ids.join('|'),
+
+		/* TIME & STATUS */
+		/* * */
+		operational_date: ride.operational_date,
+		operational_status: ride.operational_status,
+		//
+		start_delay_status: ride.start_delay_status,
+		start_time_observed: parseTime(ride.start_time_observed),
+		start_time_scheduled: parseTime(ride.start_time_scheduled),
+		//
+		end_delay_status: ride.end_delay_status,
+		end_time_observed: parseTime(ride.end_time_observed),
+		end_time_scheduled: parseTime(ride.end_time_scheduled),
+		extension_observed: ride.extension_observed,
+		extension_scheduled: ride.extension_scheduled,
+		//
+		seen_first_at: parseTime(ride.seen_first_at),
+		seen_last_at: parseTime(ride.seen_last_at),
+		seen_status: ride.seen_status,
+
+		/* PASSENGERS */
+		/* * */
+		passengers_estimated: ride.passengers_estimated,
+		passengers_observed: ride.passengers_observed,
+		passengers_observed_on_board_sales_amount: ride.passengers_observed_on_board_sales_amount,
+		passengers_observed_on_board_sales_qty: ride.passengers_observed_on_board_sales_qty,
+		passengers_observed_prepaid_amount: ride.passengers_observed_prepaid_amount,
+		passengers_observed_prepaid_qty: ride.passengers_observed_prepaid_qty,
+		passengers_observed_subscription_qty: ride.passengers_observed_subscription_qty,
+
+		/* APEX */
+		/* * */
+		apex_locations_qty: ride.apex_locations_qty,
+		apex_on_board_refunds_amount: ride.apex_on_board_refunds_amount,
+		apex_on_board_refunds_qty: ride.apex_on_board_refunds_qty,
+		apex_on_board_sales_amount: ride.apex_on_board_sales_amount,
+		apex_on_board_sales_qty: ride.apex_on_board_sales_qty,
+		apex_validations_qty: ride.apex_validations_qty,
+
+		/* ANALYSIS */
+		/* * */
+		analysis_AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: ride.analysis?.AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP?.grade,
+		analysis_ENDED_AT_LAST_STOP: ride.analysis?.ENDED_AT_LAST_STOP?.grade,
+		analysis_EXPECTED_APEX_VALIDATION_INTERVAL: ride.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade,
+		analysis_EXPECTED_DRIVER_ID_QTY: ride.analysis?.EXPECTED_DRIVER_ID_QTY?.grade,
+		analysis_EXPECTED_START_TIME: ride.analysis?.EXPECTED_START_TIME?.grade,
+		analysis_EXPECTED_START_TIME_value: ride.analysis?.EXPECTED_START_TIME.value,
+		analysis_EXPECTED_VEHICLE_EVENT_DELAY: ride.analysis?.EXPECTED_VEHICLE_EVENT_DELAY?.grade,
+		analysis_EXPECTED_VEHICLE_EVENT_INTERVAL: ride.analysis?.EXPECTED_VEHICLE_EVENT_INTERVAL?.grade,
+		analysis_EXPECTED_VEHICLE_EVENT_QTY: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.grade,
+		analysis_EXPECTED_VEHICLE_EVENT_QTY_expected_qty: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.expected_qty,
+		analysis_EXPECTED_VEHICLE_EVENT_QTY_found_qty: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.found_qty,
+		analysis_EXPECTED_VEHICLE_ID_QTY: ride.analysis?.EXPECTED_VEHICLE_ID_QTY?.grade,
+		analysis_MATCHING_APEX_LOCATIONS: ride.analysis?.MATCHING_APEX_LOCATIONS?.grade,
+		analysis_MATCHING_VEHICLE_IDS: ride.analysis?.MATCHING_VEHICLE_IDS?.grade,
+		analysis_SIMPLE_ONE_APEX_VALIDATION: ride.analysis?.SIMPLE_ONE_APEX_VALIDATION?.grade,
+		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION?.grade,
+		analysis_SIMPLE_THREE_VEHICLE_EVENTS: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade,
+		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_first: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_first.join('|'),
+		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_last: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_last.join('|'),
+		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_middle: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_middle.join('|'),
+		analysis_TRANSACTION_SEQUENTIALITY: ride.analysis?.TRANSACTION_SEQUENTIALITY?.grade,
+		analysis_TRANSACTION_SEQUENTIALITY_expected_qty: ride.analysis?.TRANSACTION_SEQUENTIALITY?.expected_qty,
+		analysis_TRANSACTION_SEQUENTIALITY_found_qty: ride.analysis?.TRANSACTION_SEQUENTIALITY?.found_qty,
+		analysis_TRANSACTION_SEQUENTIALITY_missing_qty: ride.analysis?.TRANSACTION_SEQUENTIALITY?.missing_qty,
 
 		/* ACCEPTANCE / JUSTIFICATION */
 		/* * */

@@ -66,7 +66,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 	//
 	// Write the rides batch to the file
 	const tempFilePath = path.join(os.tmpdir(), `${fileExport.file_name}_${generateRandomString()}.csv`);
-	const csvWriter = new CsvWriter(fileExport.file_name, tempFilePath, { batch_size: 10000 });
+	const csvWriter = new CsvWriter(fileExport.file_name, tempFilePath, { batch_size: 10000, include_bom: true });
 
 	let count = 0;
 	for await (const ride of ridesBatchCursor) {
