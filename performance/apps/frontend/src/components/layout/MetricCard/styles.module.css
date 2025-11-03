@@ -24,11 +24,11 @@
 .title {
 	font-size: var(--font-size-md);
 	font-weight: var(--font-weight-medium);
-	color: var(--text-muted, #6b7280);
+	color: var(--color-system-text-200);
 }
 
 .icon {
-	color: var(--text-muted, #9ca3af);
+	color: var(--color-system-text-200);
 	display: flex;
 	align-items: center;
 }
@@ -47,5 +47,5 @@
 .value {
 	font-size: 28px;
 	font-weight: var(--font-weight-semibold);
-	color: var(--text-primary, #111827);
+	color: var(--color-system-text-100);
 }

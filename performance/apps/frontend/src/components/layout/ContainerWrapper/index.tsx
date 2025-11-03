@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function ContainerWrapper({ children, height, onClick, padding, style }: { children: React.ReactNode, height?: number | string, onClick?: () => void, padding?: string, style?: React.CSSProperties }) {
+export function ContainerWrapper({ border, children, height, onClick, padding, style, width }: { border?: string, children: React.ReactNode, height?: number | string, onClick?: () => void, padding?: string, style?: React.CSSProperties, width?: number | string }) {
 	//
 
 	//
@@ -17,7 +17,7 @@ export function ContainerWrapper({ children, height, onClick, padding, style }: 
 			<button
 				className={`${styles.container} ${styles.clickable}`}
 				onClick={onClick}
-				style={{ height, padding, ...style }}
+				style={{ border, height, padding, width, ...style }}
 				type="button"
 			>
 				{children}
@@ -26,7 +26,7 @@ export function ContainerWrapper({ children, height, onClick, padding, style }: 
 	}
 
 	return (
-		<div className={styles.container} style={{ height, padding, ...style }}>
+		<div className={styles.container} style={{ border, height, padding, width, ...style }}>
 			{children}
 		</div>
 	);

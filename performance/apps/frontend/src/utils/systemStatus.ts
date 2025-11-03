@@ -38,7 +38,7 @@ export function getSystemStatusInfo(globalIndex: number, t): StatusInfo {
 	const formattedHealth = globalIndex > 1 ? globalIndex : globalIndex * 100;
 	const healthPct = formattedHealth.toFixed(1);
 
-	if (formattedHealth < 60) {
+	if (formattedHealth < 75) {
 		return {
 			color: 'var(--color-status-danger-primary)',
 			label: t('systemStatus.negative', { value: `${healthPct}%` }),
@@ -46,7 +46,7 @@ export function getSystemStatusInfo(globalIndex: number, t): StatusInfo {
 			value: formattedHealth,
 		};
 	}
-	else if (formattedHealth < 85) {
+	else if (formattedHealth < 90) {
 		return {
 			color: 'var(--color-status-warning-primary)',
 			label: t('systemStatus.warning', { value: `${healthPct}%` }),

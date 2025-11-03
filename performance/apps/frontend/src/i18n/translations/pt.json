@@ -1,4 +1,14 @@
 {
+	"chart": {
+		"series": {
+			"average": {
+				"label": "Média = {value, number}"
+			},
+			"qty": {
+				"label": "Passageiros transportados / dia"
+			}
+		}
+	},
 	"dates": {
 		"formatted": "{date, date, ::EEEE, dd MMMM yyyy}",
 		"formatted_short": "{date, date, ::dd MMMM yyyy}",

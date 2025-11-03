@@ -11,4 +11,5 @@
     padding: var(--size-spacing-sm) 0;
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
+    color: var(--color-system-text-100);
 }

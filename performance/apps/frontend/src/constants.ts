@@ -32,6 +32,10 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	{
 		dashboards: [
 			{
+				key: 'demand-by-line',
+				label: 'Procura por linha',
+			},
+			{
 				key: 'occupancy-rate',
 				label: 'Taxa de ocupação', // shows load factor or seat utilization per line/time
 			},

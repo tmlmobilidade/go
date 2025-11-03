@@ -1,9 +1,9 @@
 /* * */
 
-import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { DemandByAgencyByDay } from '@/components/visualizations/DemandByAgencyByDay';
-
-import styles from './styles.module.css';
+import { DemandByAgencyComparison } from '@/components/visualizations/DemandByAgencyComparison';
+import { TopMeanDemandByLineByMonth } from '@/components/visualizations/TopMeanDemandByLineByMonth';
+import { Grid } from '@tmlmobilidade/ui';
 
 export default function SupplyDemandTopic() {
 	//
@@ -16,11 +16,12 @@ export default function SupplyDemandTopic() {
 	// C. Render components
 
 	return (
-		<div className={styles.container}>
-			<ContainerWrapper>
-				<DemandByAgencyByDay chartType="line" height={400} />
-			</ContainerWrapper>
-		</div>
+		<Grid columns="ab" gap="lg">
+			<DemandByAgencyComparison chartType="line" height={400} />
+			<TopMeanDemandByLineByMonth height={400} />
+
+			<DemandByAgencyByDay chartType="bar" height={400} isInsideFrame />
+		</Grid>
 	);
 }
 

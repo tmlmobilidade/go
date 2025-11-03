@@ -3,6 +3,7 @@
 /* * */
 
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
+import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
@@ -92,9 +93,7 @@ export function RecordDemand({ operator }: { operator?: OperatorType }) {
 
 	// calcular recordes de dias uteis e fins de semana
 	return (
-		<div className={styles.container}>
-			<p style={{ color: 'var(--text-muted, #6b7280)', textAlign: 'left' }}>Recorde de passageiros diário: <b>{recordPassengers.qty.toLocaleString('pt-PT')}</b> ({t('dates.formatted', { date: recordPassengers.date })})</p>
-
+		<VisualizationWrapper border="none" padding="0" title={`Recorde de passageiros diário: ${recordPassengers.qty.toLocaleString('pt-PT')} (${t('dates.formatted', { date: recordPassengers.date })})`}>
 			<div className={styles.progressContainer}>
 				<Progress.Root size={30} w="100%">
 					<Tooltip label={`${getTooltipLabel(progressPercentage)} (${progressPercentage.toFixed(1)}%)`}>
@@ -108,6 +107,6 @@ export function RecordDemand({ operator }: { operator?: OperatorType }) {
 					</Tooltip>
 				</Progress.Root>
 			</div>
-		</div>
+		</VisualizationWrapper>
 	);
 }
