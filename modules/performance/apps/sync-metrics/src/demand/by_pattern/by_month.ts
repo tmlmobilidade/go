@@ -2,7 +2,7 @@
 
 import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { metrics, simplifiedApexValidations } from '@tmlmobilidade/go-interfaces';
 import { Metric } from '@tmlmobilidade/types';
 import { Dates, Logs } from '@tmlmobilidade/utils';
 

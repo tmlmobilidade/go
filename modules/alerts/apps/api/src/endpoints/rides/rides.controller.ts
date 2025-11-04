@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { AggregationPipeline } from '@tmlmobilidade/interfaces';
-import { rides } from '@tmlmobilidade/interfaces';
+import { AggregationPipeline } from '@tmlmobilidade/go-interfaces';
+import { rides } from '@tmlmobilidade/go-interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { Permission, Ride, RidePermission } from '@tmlmobilidade/types';
 import { Dates, getPermission } from '@tmlmobilidade/utils';

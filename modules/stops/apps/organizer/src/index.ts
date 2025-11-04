@@ -3,7 +3,7 @@
 import { type LocationsApiResponse } from '@/types';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { stops } from '@tmlmobilidade/interfaces';
+import { stops } from '@tmlmobilidade/go-interfaces';
 import { getAppConfig } from '@tmlmobilidade/lib';
 import { fetchData } from '@tmlmobilidade/utils';
 

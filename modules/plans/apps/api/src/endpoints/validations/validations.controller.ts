@@ -4,7 +4,7 @@ import { MultipartValue } from '@fastify/multipart';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
-import { files, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
+import { files, gtfsValidations, TransactionManager } from '@tmlmobilidade/go-interfaces';
 import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
 import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, type GtfsValidationPermission, type Permission } from '@tmlmobilidade/types';
 import { fetchData, getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';

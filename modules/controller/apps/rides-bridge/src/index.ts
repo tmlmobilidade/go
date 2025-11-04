@@ -5,7 +5,7 @@ import { parseRide, sampleRide } from '@/types.js';
 import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { rides } from '@tmlmobilidade/interfaces';
+import { rides } from '@tmlmobilidade/go-interfaces';
 import { Dates } from '@tmlmobilidade/utils';
 
 /* * */

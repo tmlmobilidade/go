@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { rideAcceptances } from '@tmlmobilidade/interfaces';
+import { rideAcceptances } from '@tmlmobilidade/go-interfaces';
 import { Dates } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { enrichUserRefs, proposedChanges } from '@tmlmobilidade/interfaces';
+import { enrichUserRefs, proposedChanges } from '@tmlmobilidade/go-interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { ProposedChange, UpdateProposedChangeDto } from '@tmlmobilidade/types';
 

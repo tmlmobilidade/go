@@ -1,6 +1,6 @@
 /* * */
 
-import { sams } from '@tmlmobilidade/interfaces';
+import { sams } from '@tmlmobilidade/go-interfaces';
 import { type Sam } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import fs from 'node:fs';

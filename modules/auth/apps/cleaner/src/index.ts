@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { fileExports, files, verificationTokens } from '@tmlmobilidade/interfaces';
+import { fileExports, files, verificationTokens } from '@tmlmobilidade/go-interfaces';
 import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 

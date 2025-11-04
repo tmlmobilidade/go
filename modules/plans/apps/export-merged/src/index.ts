@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { files, plans } from '@tmlmobilidade/go-interfaces';
 import { mimeTypes } from '@tmlmobilidade/lib';
 import { Dates } from '@tmlmobilidade/utils';
 import fs from 'fs';

@@ -11,7 +11,7 @@ import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import TIMETRACKER from '@helperkits/timer';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { plans } from '@tmlmobilidade/interfaces';
+import { plans } from '@tmlmobilidade/go-interfaces';
 import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Logs } from '@tmlmobilidade/utils';
 import fs from 'node:fs';

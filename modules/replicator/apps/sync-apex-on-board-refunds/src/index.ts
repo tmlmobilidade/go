@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
+import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/go-interfaces';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';

@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
-import { Filter, FindOptions, locations } from '@tmlmobilidade/interfaces';
+import { Filter, FindOptions, locations } from '@tmlmobilidade/go-interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { District, GetAllDistrictsQuery, GetAllDistrictsQuerySchema, GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, GetAllParishesQuery, GetAllParishesQuerySchema, Locality, Location, Municipality, Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';

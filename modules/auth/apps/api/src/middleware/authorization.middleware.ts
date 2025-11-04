@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
-import { authProvider } from '@tmlmobilidade/interfaces';
+import { authProvider } from '@tmlmobilidade/go-interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { type Permission, type User } from '@tmlmobilidade/types';
 import { Cache, hasPermission } from '@tmlmobilidade/utils';

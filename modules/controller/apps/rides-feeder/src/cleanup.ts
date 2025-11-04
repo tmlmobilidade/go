@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/go-interfaces';
 import { performInChunks } from '@tmlmobilidade/utils';
 
 /* * */

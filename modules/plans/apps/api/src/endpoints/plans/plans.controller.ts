@@ -2,7 +2,7 @@
 
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { files, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { files, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/go-interfaces';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/lib';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';

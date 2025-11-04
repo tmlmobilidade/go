@@ -1,5 +1,5 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { stops } from '@tmlmobilidade/interfaces';
+import { stops } from '@tmlmobilidade/go-interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { Stop, UpdateStopDto } from '@tmlmobilidade/types';
 

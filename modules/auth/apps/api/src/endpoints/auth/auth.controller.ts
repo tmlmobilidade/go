@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
-import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
+import { authProvider, users, verificationTokens } from '@tmlmobilidade/go-interfaces';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { createEmail, LoginDto, LoginDtoSchema, Permission, Session } from '@tmlmobilidade/types';
 import { Dates, generateRandomToken } from '@tmlmobilidade/utils';

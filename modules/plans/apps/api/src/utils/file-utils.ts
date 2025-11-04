@@ -1,4 +1,4 @@
-import { files } from '@tmlmobilidade/interfaces';
+import { files } from '@tmlmobilidade/go-interfaces';
 import { File, OperationalDate } from '@tmlmobilidade/types';
 import { Files } from '@tmlmobilidade/utils';
 import { File as NodeFile } from 'node:buffer';

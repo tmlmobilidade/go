@@ -1,5 +1,5 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
-import { files } from '@tmlmobilidade/interfaces';
+import { files } from '@tmlmobilidade/go-interfaces';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
 import { Alert, File } from '@tmlmobilidade/types';
 import { type EntitySelector } from 'gtfs-types';

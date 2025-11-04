@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { rides, vehicleEvents } from '@tmlmobilidade/go-interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';

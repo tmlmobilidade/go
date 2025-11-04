@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { CsvWriter } from '@helperkits/writer';
-import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/go-interfaces';
 import { ALLOW_ALL_FLAG, Permissions } from '@tmlmobilidade/lib';
 import { FileExport, Permission, RideAcceptance, RideNormalized, RidePermission } from '@tmlmobilidade/types';
 import { generateRandomString, getPermission } from '@tmlmobilidade/utils';

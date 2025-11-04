@@ -4,7 +4,7 @@ import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
-import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { files, gtfsValidations } from '@tmlmobilidade/go-interfaces';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
 import { access, constants, writeFile } from 'fs/promises';

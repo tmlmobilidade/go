@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/interfaces';
+import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/go-interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
 import { GtfsCause, NoteComment, RideAcceptanceStatusSchema, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 import { RideAcceptance } from '@tmlmobilidade/types';

@@ -1,4 +1,4 @@
-import { alerts } from '@tmlmobilidade/interfaces';
+import { alerts } from '@tmlmobilidade/go-interfaces';
 import { HttpStatus } from '@tmlmobilidade/lib';
 import { Alert } from '@tmlmobilidade/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
