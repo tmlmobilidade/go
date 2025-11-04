@@ -4,6 +4,7 @@ import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { MetricsRoutes } from '@/routes';
 import { type TopMeanDemandByLineByMonth } from '@tmlmobilidade/types';
 import { BarChart, MetricsSkeleton } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -15,10 +16,11 @@ export function TopMeanDemandByLineByMonth({ height }: { height?: number }) {
 	// B. Fetch data
 
 	const { data } = useSWR<TopMeanDemandByLineByMonth[]>(MetricsRoutes.TOP_MEAN_DEMAND_BY_LINE_BY_MONTH);
+	const previousYearMonth = Dates.now('Europe/Lisbon').minus({ month: 1 }).toFormat('yyyy-MM');
 
 	const chartData = useMemo(() => {
 		if (!data) return [];
-		const monthData = data.find(item => item.properties.year_month === '2025-03');
+		const monthData = data.find(item => item.properties.year_month === previousYearMonth);
 		if (!monthData) return [];
 
 		return Object.entries(monthData.data).map(([lineId, values]) => ({
@@ -30,14 +32,14 @@ export function TopMeanDemandByLineByMonth({ height }: { height?: number }) {
 	}, [data]);
 
 	const lastUpdated = useMemo(() => {
-		const monthData = data?.find(item => item.properties.year_month === '2025-03');
+		const monthData = data?.find(item => item.properties.year_month === previousYearMonth);
 		return monthData ? new Date(monthData.generated_at) : undefined;
 	}, [data]);
 
 	const hasData = chartData.length > 0;
 
 	return (
-		<VisualizationWrapper lastUpdated={lastUpdated} title="Top 10 linhas acima da média anual (mês atual)">
+		<VisualizationWrapper lastUpdated={lastUpdated} title={`Top 10 linhas com mais crescimento para o mês anterior (${previousYearMonth})`}>
 
 			{hasData ? (
 				<BarChart

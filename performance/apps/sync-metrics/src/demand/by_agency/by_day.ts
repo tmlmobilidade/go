@@ -119,6 +119,8 @@ export const syncDemandByAgencyByDay = async () => {
 	for (const validationsAgg of allChunksResults) {
 		for (const validation of validationsAgg) {
 			const agency_id = validation.agency_id ?? 'no-agency';
+
+			// Create or get agency document
 			if (!agencyMap.has(agency_id)) {
 				agencyMap.set(agency_id, {
 					data: {},
@@ -128,10 +130,23 @@ export const syncDemandByAgencyByDay = async () => {
 					properties: { agency_id },
 				});
 			}
-			const agencyDoc = agencyMap.get(agency_id);
 
+			// Create or get "all" document for aggregated totals
+			if (!agencyMap.has('all')) {
+				agencyMap.set('all', {
+					data: {},
+					description: 'Aggregated passengers for all agencies combined',
+					generated_at: new Date(),
+					metric: METRIC,
+					properties: { agency_id: 'all' },
+				});
+			}
+
+			const agencyDoc = agencyMap.get(agency_id);
+			const allDoc = agencyMap.get('all');
 			const calendarProps = calendarMap.get(validation.day);
 
+			// Update individual agency data
 			agencyDoc.data[validation.day] = {
 				day_type: calendarProps.day_type,
 				holiday: calendarProps.holiday,
@@ -139,6 +154,18 @@ export const syncDemandByAgencyByDay = async () => {
 				period: calendarProps.period,
 				qty: validation.count,
 			};
+
+			// Update "all" aggregated data
+			if (!allDoc.data[validation.day]) {
+				allDoc.data[validation.day] = {
+					day_type: calendarProps.day_type,
+					holiday: calendarProps.holiday,
+					notes: calendarProps.notes,
+					period: calendarProps.period,
+					qty: 0,
+				};
+			}
+			allDoc.data[validation.day].qty += validation.count;
 		}
 	}
 
