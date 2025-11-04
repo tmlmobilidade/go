@@ -3,6 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
+import { files } from '@tmlmobilidade/interfaces';
+import { mimeTypes } from '@tmlmobilidade/lib';
 import { Dates } from '@tmlmobilidade/utils';
 import fs from 'fs';
 import os from 'os';
@@ -146,11 +148,24 @@ async function main() {
 		LOGGER.title(`Processing the DRT data`);
 		await processor();
 
-		LOGGER.success(GLOBAL_CONTEXT.configs.database_path);
+		LOGGER.success(`Finished processing the DRT data in ${globalTimer.get()}.`);
 
-		LOGGER.terminate(`Finished processing the DRT data in ${globalTimer.get()}.`);
+		LOGGER.info(`Saving the SQLite database to the storage service...`);
+		const fileStream = fs.createReadStream(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
+		const fileStats = fs.statSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
+		const fileResult = await files.upload(fileStream, {
+			_id: 'drt-model',
+			created_by: 'system	',
+			name: 'drt-model.db',
+			resource_id: 'Demand-Response-Transportation',
+			scope: 'plans',
+			size: fileStats.size,
+			type: mimeTypes.sqlite,
+			updated_by: 'system',
+		}, { override: true });
+
+		LOGGER.terminate(`SQLite database saved to the storage service.` + `(${fileResult._id})`);
 		LOGGER.divider();
-
 		//
 		// Exit the application
 		process.exit(0);
