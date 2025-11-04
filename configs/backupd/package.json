@@ -1,0 +1,38 @@
+{
+	"name": "@tmlmobilidade/backupd",
+	"version": "1.0.0",
+	"license": "MIT",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rimraf dist",
+		"lint": "eslint . && tsc --noEmit",
+		"start": "npm run build && node dist/index.js"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "3.913.0",
+		"@helperkits/logger": "20250628.901.58",
+		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/lib": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
+		"@types/archiver": "6.0.3",
+		"archiver": "7.0.1",
+		"mongodb": "6.20.0",
+		"nodemailer": "7.0.9",
+		"pg": "8.16.3",
+		"react": "19.1.1",
+		"resolve-tspaths": "0.8.23",
+		"rimraf": "6.0.1",
+		"yaml": "2.8.1"
+	},
+	"devDependencies": {
+		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/node": "24.9.1",
+		"@types/nodemailer": "7.0.2",
+		"typescript": "5.9.3"
+	}
+}

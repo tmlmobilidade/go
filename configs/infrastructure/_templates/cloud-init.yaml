@@ -1,0 +1,33 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+# Install necessary packages
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+
+# Add Docker's official GPG key
+runcmd:
+  - curl -fsSL https://get.docker.com -o get-docker.sh
+  - sudo sh get-docker.sh
+  - sudo rm get-docker.sh
+
+# Start Docker service
+  - sudo systemctl start docker
+  - sudo systemctl enable docker
+
+# Optionally, add the default user to the Docker group to allow running Docker without sudo
+  - sudo usermod -aG docker ${USER}
+  - sudo usermod -aG docker ubuntu
+  - sudo newgrp docker
+
+# Create the /opt/app directory
+  - sudo mkdir -p /opt/app
+  - sudo chown -R ubuntu:ubuntu /opt/app
+  - sudo chmod -R u+rwx /opt/app
+
+# Verify Docker installation
+final_message: "Docker has been installed and started successfully!"
