@@ -1,0 +1,24 @@
+export const PageRoutes = Object.freeze({
+	HOME: '/',
+
+	// Alerts
+	// Example: ALERT_DETAIL: (id: string) => `/alerts/${id}`,
+});
+
+export const ApiRoutes = Object.freeze({
+	// Common
+	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
+
+	// Page routes
+	// Example: ALERT_DETAIL_API: (id: string) => `/api/alerts/${id}`,
+});
+
+export const Routes = Object.freeze({
+	// Common
+	AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL ?? 'https://auth.sae.carrismetropolitana.pt',
+	URL: process.env.NEXT_PUBLIC_URL ?? 'https://alerts.sae.carrismetropolitana.pt',
+
+	// Other
+	...PageRoutes,
+	...ApiRoutes,
+});
