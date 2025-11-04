@@ -93,6 +93,7 @@ function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
 		columns: [
 			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'trip_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'plan_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
