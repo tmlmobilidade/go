@@ -2,32 +2,37 @@
 
 import { AcceptanceStatusProps, AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
+import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/lib';
-import { RideAcceptance, RideAcceptanceStatusSchema, RideJustificationCause, RideJustificationCauseSchema } from '@tmlmobilidade/types';
-import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, useToast } from '@tmlmobilidade/ui';
+import { GtfsCause, gtfsCauseSchema, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
+import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 /* * */
 
-function JustificationReadOnly({ cause, message }: { cause?: string, message?: string }) {
+function JustificationReadOnly({ cause, manualTripId, message }: { cause?: string, manualTripId?: string, message?: string }) {
 	return (
 		<>
 			<Label size="lg" caps>Justificação</Label>
 			<Section gap="xs" padding="none">
 				<Label>Motivo da justificação</Label>
-				<Text>{Translations.CAUSE[cause] || '—'}</Text>
+				<Text>{cause ? Translations.CAUSE[cause as GtfsCause] : '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
 				<Label>Mensagem de justificação</Label>
 				<Text>{message || '—'}</Text>
 			</Section>
+			<Section gap="xs" padding="none">
+				<Label>ID da viagem manual</Label>
+				<Text>{manualTripId || '—'}</Text>
+			</Section>
 		</>
 	);
 }
 
-function JustificationEditable({ cause, message, onSubmit, setCause, setMessage }: { cause?: RideJustificationCause, message: string, onSubmit: () => void, setCause: (v: RideJustificationCause) => void, setMessage: (v: string) => void }) {
+function JustificationEditable({ cause, manualTripId, message, onSubmit, setCause, setManualTripId, setMessage }: { cause?: GtfsCause, manualTripId: string, message: string, onSubmit: () => void, setCause: (v: GtfsCause) => void, setManualTripId: (v: string) => void, setMessage: (v: string) => void }) {
 	return (
 		<>
 			<Combobox
@@ -35,7 +40,8 @@ function JustificationEditable({ cause, message, onSubmit, setCause, setMessage 
 				onChange={setCause}
 				placeholder="Selecione o motivo da justificação"
 				value={cause}
-				data={RideJustificationCauseSchema.options.map(cause => ({
+				data={gtfsCauseSchema.options.map(cause => ({
+					icon: CauseIcons[cause],
 					label: Translations.CAUSE[cause],
 					value: cause,
 				}))}
@@ -48,6 +54,12 @@ function JustificationEditable({ cause, message, onSubmit, setCause, setMessage 
 				value={message}
 				w="100%"
 				autosize
+			/>
+			<TextInput
+				label="ID da viagem manual (opcional)"
+				onChange={e => setManualTripId(e.target.value)}
+				value={manualTripId ?? ''}
+				w="100%"
 			/>
 			<Button label="Justificar" onClick={onSubmit} fullWidth />
 		</>
@@ -130,11 +142,12 @@ export function RidesDetailAcceptanceJustification() {
 	const { acceptance_status, justification } = acceptance;
 
 	const [message, setMessage] = useState(justification?.pto_message ?? '');
-	const [cause, setCause] = useState<RideJustificationCause | undefined>(justification?.justification_cause);
+	const [cause, setCause] = useState<GtfsCause | undefined>(justification?.justification_cause);
+	const [manualTripId, setManualTripId] = useState(justification?.manual_trip_id ?? '');
 
-	const handleSubmit = () => actions.justify(message, cause);
+	const handleSubmit = () => actions.justify(message, cause, manualTripId);
 
-	const fallback = useMemo(() => <JustificationReadOnly cause={cause} message={message} />, [cause, message]);
+	const fallback = useMemo(() => <JustificationReadOnly cause={cause} manualTripId={manualTripId} message={message} />, [cause, message, manualTripId]);
 
 	return (
 		<Section gap="md" width="100%">
@@ -147,9 +160,11 @@ export function RidesDetailAcceptanceJustification() {
 			>
 				<JustificationEditable
 					cause={cause}
+					manualTripId={manualTripId}
 					message={message}
 					onSubmit={handleSubmit}
 					setCause={setCause}
+					setManualTripId={setManualTripId}
 					setMessage={setMessage}
 				/>
 			</HasPermission>

@@ -1,7 +1,7 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, causeSchema, CreateAlertDto, effectSchema, File as FileType, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { Dates, fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
@@ -48,10 +48,10 @@ export function useRealtimeDetailContext() {
 const emptyAlert: CreateAlertDto = {
 	active_period_end_date: undefined,
 	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(causeSchema.Enum)[0],
+	cause: Object.values(gtfsCauseSchema.enum)[0],
 	created_by: 'temp',
 	description: '',
-	effect: Object.values(effectSchema.Enum)[0],
+	effect: Object.values(gtfsEffectSchema.enum)[0],
 	modified_by: 'temp',
 	municipality_ids: [],
 	publish_end_date: undefined,

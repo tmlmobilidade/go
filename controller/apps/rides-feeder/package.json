@@ -17,17 +17,17 @@
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251010.1959.27",
-		"@tmlmobilidade/connectors": "20251020.919.5",
-		"@tmlmobilidade/interfaces": "20251020.919.5",
-		"@tmlmobilidade/utils": "20251020.919.5",
+		"@tmlmobilidade/connectors": "20251028.1802.11",
+		"@tmlmobilidade/interfaces": "20251028.1802.11",
+		"@tmlmobilidade/utils": "20251028.1802.11",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251020.919.5",
-		"@tmlmobilidade/types": "20251020.919.5",
-		"@types/node": "24.8.1",
+		"@tmlmobilidade/tsconfig": "20251028.1802.11",
+		"@tmlmobilidade/types": "20251028.1802.11",
+		"@types/node": "24.9.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

@@ -6,7 +6,7 @@ import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions
 /* * */
 
 const BUFFER_RADIUS = 50; // meters
-const ENDING_SEGMENT_LENGTH = 500; // meters
+const ENDING_SEGMENT_LENGTH = 5; // meters
 const ENDING_SEGMENT_CHUNK_LENGTH = 50; // meters
 
 /**
@@ -27,7 +27,7 @@ export function detectEndEvent(vehicleEventsData: VehicleEvent[], hashedShapeDat
 		return null;
 	}
 
-	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at');
+	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at', 'desc');
 
 	//
 	// Ensure that the hashed shape has at least two points.

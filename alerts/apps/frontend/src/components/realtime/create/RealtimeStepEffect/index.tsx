@@ -3,7 +3,7 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { Effect } from '@tmlmobilidade/types';
+import { GtfsEffect, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -13,22 +13,14 @@ import styles from './styles.module.css';
 interface EffectItem {
 	icon: React.ReactNode
 	label: string
-	value: Effect
+	value: GtfsEffect
 }
 
 export function RealtimeStepEffect() {
 	//
 	// A. Setup variables
 
-	const allowedEffects: Effect[] = [
-		'ADDITIONAL_SERVICE',
-		'DETOUR',
-		'NO_SERVICE',
-		'REDUCED_SERVICE',
-		'SIGNIFICANT_DELAYS',
-	];
-
-	const EffectItems: EffectItem[] = allowedEffects.map(Effect => ({
+	const EffectItems: EffectItem[] = Object.values(gtfsEffectSchema.enum).map(Effect => ({
 		icon: EffectIcons[Effect],
 		label: Translations.EFFECT[Effect],
 		value: Effect,

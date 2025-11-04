@@ -1,9 +1,8 @@
 /* * */
 
-import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
+import { delayStatusValues, type RideNormalized } from '@/ride-normalized.js';
+import { type Ride, type RideAnalysis, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/utils';
-
-import { type RideNormalized } from './ride-normalized.js';
 
 /**
  * This function normalizes a Ride object by adding additional properties
@@ -22,8 +21,14 @@ export function normalizeRide(ride: Ride): RideNormalized {
 		analysis_transaction_sequentiality: getAnalysisGrade(operationalStatusValue, ride.analysis?.TRANSACTION_SEQUENTIALITY?.grade),
 		delay_status: getDelayStatus(ride.start_time_scheduled, ride.start_time_observed),
 		delay_value_display: getDelayValueDisplay(ride.start_time_scheduled, ride.start_time_observed),
+		end_delay_status: getDelayStatus(ride.end_time_scheduled, ride.end_time_observed),
+		end_delay_value_display: getDelayValueDisplay(ride.end_time_scheduled, ride.end_time_observed),
+		end_time_observed_display: ride.end_time_observed ? Dates.fromUnixTimestamp(ride.end_time_observed).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : null,
+		end_time_scheduled_display: Dates.fromUnixTimestamp(ride.end_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'),
 		operational_status: operationalStatusValue,
 		seen_status: getSeenStatus(ride.seen_last_at),
+		start_delay_status: getDelayStatus(ride.start_time_scheduled, ride.start_time_observed),
+		start_delay_value_display: getDelayValueDisplay(ride.start_time_scheduled, ride.start_time_observed),
 		start_time_observed_display: ride.start_time_observed ? Dates.fromUnixTimestamp(ride.start_time_observed).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : null,
 		start_time_scheduled_display: Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'),
 	};
@@ -52,14 +57,14 @@ export function getAnalysisGrade(operationalStatus: RideNormalized['operational_
  * @param timestamp The date string to extract the hour and minute components from.
  * @returns The hour and minute components of the date string.
  */
-export function getDelayValueDisplay(startTimeScheduled: Ride['start_time_scheduled'], startTimeObserved: Ride['start_time_observed']): RideNormalized['delay_value_display'] {
+export function getDelayValueDisplay(timeScheduled: Ride['start_time_scheduled'], timeObserved: Ride['start_time_observed']): RideNormalized['delay_value_display'] {
 	//
 
-	if (!startTimeScheduled || !startTimeObserved) {
+	if (!timeScheduled || !timeObserved) {
 		return 'N/A';
 	}
 
-	const difference = startTimeObserved - startTimeScheduled;
+	const difference = timeObserved - timeScheduled;
 
 	const sign = difference < 0 ? '-' : '';
 	const absDiff = Math.abs(difference);
@@ -80,14 +85,14 @@ export function getDelayValueDisplay(startTimeScheduled: Ride['start_time_schedu
  * @param timestamp The date string to extract the hour and minute components from.
  * @returns The hour and minute components of the date string.
  */
-export function getDelayStatus(startTimeScheduled: Ride['start_time_scheduled'], startTimeObserved: Ride['start_time_observed']): RideNormalized['delay_status'] {
+export function getDelayStatus(timeScheduled: UnixTimestamp, timeObserved: UnixTimestamp): typeof delayStatusValues[number] {
 	//
 
-	if (!startTimeScheduled || !startTimeObserved) {
+	if (!timeScheduled || !timeObserved) {
 		return 'none';
 	}
 
-	const difference = startTimeObserved - startTimeScheduled;
+	const difference = timeObserved - timeScheduled;
 
 	// 5 minutes late
 	if (difference > 300000) {

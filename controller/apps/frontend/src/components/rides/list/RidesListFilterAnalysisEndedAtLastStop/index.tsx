@@ -44,7 +44,7 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Fim na Útlima Paragem"
+			label="Fim na Última Paragem"
 			onChange={ridesListContext.actions.setFilterAnalysisEndedAtLastStop}
 			options={parsedOptions}
 			withToggleAll

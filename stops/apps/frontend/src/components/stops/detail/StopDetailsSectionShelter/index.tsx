@@ -4,8 +4,9 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
+import { ScopeOption } from '@/types/proposed-changes';
 import { hasAnySchema, infrastructureStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, Grid, ProposedChangesWrapper, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function StopDetailsSectionShelter() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const scopeOption: ScopeOption = 'stop';
 
 	//
 	// B. Transform data
@@ -40,13 +42,20 @@ export function StopDetailsSectionShelter() {
 		>
 			<Section>
 				<Grid columns="abc" gap="md">
-					<Combobox
-						data={has_shelter}
+
+					<ProposedChangesWrapper
+						inputName="has_shelter"
 						label="Existe Abrigo?"
-						placeholder="..."
-						fullWidth
-						{...stopDetailContext.data.form.getInputProps('has_shelter')}
-					/>
+						relatedId={stopDetailContext.data.stop?._id}
+						scope={scopeOption}
+					>
+						<Combobox
+							data={has_shelter}
+							placeholder="..."
+							fullWidth
+							{...stopDetailContext.data.form.getInputProps('has_shelter')}
+						/>
+					</ProposedChangesWrapper>
 					<TextInput
 						label="Código do Abrigo"
 						miw="100%"
@@ -61,15 +70,6 @@ export function StopDetailsSectionShelter() {
 					/>
 				</Grid>
 				<Spacer />
-			</Section>
-			<Section>
-				<Combobox
-					data={shelterStatus}
-					label="Existe Abrigo?"
-					placeholder="..."
-					fullWidth
-					{...stopDetailContext.data.form.getInputProps('has_shelter')}
-				/>
 			</Section>
 			<Section>
 				<TextInput

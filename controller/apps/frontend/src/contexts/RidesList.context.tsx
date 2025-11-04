@@ -15,7 +15,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface RidesListContextState {
+export interface RidesListContextState {
 	actions: {
 		setFilterAcceptanceStatus: (values: string[]) => void
 		setFilterAgency: (values: string[]) => void

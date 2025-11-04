@@ -12,11 +12,11 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@helperkits/writer": "20250623.2358.3"
+		"@helperkits/writer": "20251010.1959.27"
 	},
 	"devDependencies": {
-		"@types/node": "24.3.1",
+		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
-		"typescript": "5.9.2"
+		"typescript": "5.9.3"
 	}
 }
