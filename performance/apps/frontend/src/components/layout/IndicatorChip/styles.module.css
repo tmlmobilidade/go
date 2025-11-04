@@ -1,0 +1,30 @@
+.container {
+	display: flex;
+	align-items: center;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	border-radius: 6px;
+	color: var(--text-muted, #6b7280);
+	background-color: var(--bg-muted, #f3f4f6);
+    gap: 4px;
+	cursor: default;
+}
+
+.positive {
+	color: var(--color-status-success-primary);
+	background-color: var(--color-status-success-contrast);
+}
+
+.negative {
+	color: var(--color-status-danger-primary);
+	background-color: var(--color-status-danger-contrast);
+}
+
+.warning {
+	color: var(--color-status-warning-primary);
+	background-color: var(--color-status-warning-contrast);
+}
+
+.label {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+}

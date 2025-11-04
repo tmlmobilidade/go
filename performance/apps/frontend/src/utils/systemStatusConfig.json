@@ -1,0 +1,45 @@
+{
+	"advanced_rides": {
+		"comparison_to": "scheduled_rides",
+		"goal": "decrease",
+		"target": [0.0, 0.02],
+		"trend_weight": 0.3,
+		"weight": 0.1
+	},
+	"demand": {
+		"goal": "increase",
+		"weight": 0.2
+	},
+	"five_min_delays": {
+		"comparison_to": "scheduled_rides",
+		"goal": "decrease",
+		"target": [0.05, 0.1],
+		"trend_weight": 0.2,
+		"weight": 0.1
+	},
+	"no_passengers_rides": {
+		"comparison_to": "scheduled_rides",
+		"goal": "decrease",
+		"target": [0.02, 0.05],
+		"trend_weight": 0.2,
+		"weight": 0.1
+	},
+	"rides_with_sales": {
+		"comparison_to": "scheduled_rides",
+		"goal": "increase",
+		"target": [0.9, 0.95],
+		"trend_weight": 0.3,
+		"weight": 0.15
+	},
+	"scheduled_rides": {
+		"goal": "increase",
+		"weight": 0.1
+	},
+	"valid_rides": {
+		"comparison_to": "scheduled_rides",
+		"goal": "increase",
+		"target": [0.9, 0.95],
+		"trend_weight": 0.2,
+		"weight": 0.25
+	}
+}

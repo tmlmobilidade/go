@@ -1,3 +1,13 @@
+'use client';
+
+/* * */
+
+import Home from '@/components/layout/Home';
+
+/* * */
+
 export default function Page() {
-	return <div>Afonso was here!</div>;
+	return (
+		<Home />
+	);
 }

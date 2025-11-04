@@ -1,0 +1,21 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-lg);
+	justify-content: space-between;
+	border: 1px solid var(--border-color, #e5e7eb);
+	border-radius: var(--border-radius-md);
+	padding: var(--size-spacing-md);
+	background-color: var(--color-system-background-100);
+	min-width: 180px;
+	height: fit-content;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clickable:hover {
+  background-color: var(--color-system-background-200);
+}

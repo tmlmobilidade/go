@@ -1,0 +1,29 @@
+.container {
+	display: flex;
+	align-items: center;
+	color: var(--text-muted, #6b7280);
+    gap: 4px;
+	cursor: default;
+}
+
+.positive {
+	color: var(--color-status-success-primary);
+}
+
+.negative {
+	color: var(--color-status-danger-primary);
+}
+
+.warning {
+	color: var(--color-status-warning-primary);
+}
+
+.label {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+}
+
+.comparisonLabel {
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+}

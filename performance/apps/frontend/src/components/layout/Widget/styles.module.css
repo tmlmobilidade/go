@@ -1,0 +1,42 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-spacing-sm);
+}
+
+.weatherContainer {
+    display: flex;
+    gap: var(--size-spacing-sm);
+    justify-content: flex-end;
+}
+
+.weatherLabel {
+    text-align: end;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+}
+
+
+.timeContainer {
+	display: flex;
+    justify-content: flex-end;
+	width: 100%;
+    position: relative;
+}
+
+/* * */
+/* NUMBERS */
+
+.hours, .minutes, .seconds {
+	font-size: 32px;
+	font-weight: 600;
+	line-height: 1;
+}
+
+.seconds {
+    align-self: flex-end;
+	font-size: 21px;
+	opacity: 0.25;
+    margin-left: 5px;
+    font-family: var(--font-family-monospace);
+}

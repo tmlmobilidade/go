@@ -1,0 +1,11 @@
+.container {
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.statusValue {
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    text-decoration: underline;
+}

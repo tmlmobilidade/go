@@ -1,0 +1,19 @@
+/* * */
+/* TOPICS */
+
+.topicCard {
+    display: flex;
+    gap: var(--size-spacing-sm);
+    align-items: center;
+}
+
+.topicCardTitle {
+    padding: var(--size-spacing-sm) 0;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+}
+
+.topicCard svg,
+.topicCardTitle {
+    color: var(--color-system-text-100);
+}
