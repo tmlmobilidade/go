@@ -1,0 +1,50 @@
+{
+	"name": "@tmlmobilidade/go-utils",
+	"version": "1.0.0",
+	"author": "João de Vasconcelos & Jusi Monteiro",
+	"license": "AGPL-3.0-or-later",
+	"homepage": "https://github.com/tmlmobilidade/go#readme",
+	"bugs": {
+		"url": "https://github.com/tmlmobilidade/go/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tmlmobilidade/go.git"
+	},
+	"keywords": [
+		"public transit",
+		"tml",
+		"transportes metropolitanos de lisboa",
+		"go"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"files": [
+		"dist/"
+	],
+	"main": "index.ts",
+	"types": "index.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsup index.ts --format esm --dts --watch --sourcemap",
+		"lint": "eslint ./src/ && tsc --noEmit",
+		"lint:fix": "eslint ./src/ --fix"
+	},
+	"dependencies": {
+		"@tmlmobilidade/go-lib": "*",
+		"@tmlmobilidade/go-types": "*",
+		"mergekit": "3.0.6"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"resolve-tspaths": "0.8.23"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	}
+}

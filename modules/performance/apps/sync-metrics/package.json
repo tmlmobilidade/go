@@ -1,0 +1,34 @@
+{
+	"name": "@tmlmobilidade/go-performance-sync-metrics",
+	"version": "1.0.0",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js",
+		"test": "tsx ./src/tests/index.ts"
+	},
+	"dependencies": {
+		"@helperkits/timer": "20240627.34.23",
+		"@tmlmobilidade/utils": "20251028.1440.40",
+		"luxon": "3.7.2",
+		"p-limit": "7.2.0"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/interfaces": "20251028.1440.40",
+		"@tmlmobilidade/tsconfig": "20251028.1440.40",
+		"@tmlmobilidade/types": "20251028.1440.40",
+		"@types/node": "24.9.1",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
+	}
+}

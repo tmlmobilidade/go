@@ -1,0 +1,32 @@
+{
+	"name": "@tmlmobilidade/go-plans-validator",
+	"description": "",
+	"version": "1.0.0",
+	"author": "",
+	"license": "ISC",
+	"keywords": [],
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsx --watch src/index.ts",
+		"lint": "eslint . && tsc --noEmit",
+		"lint:fix": "eslint --fix .",
+		"start": "tsx src/index.ts",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@helperkits/logger": "20250628.901.58",
+		"@tmlmobilidade/connectors": "20251028.1440.40",
+		"@tmlmobilidade/emails": "20251028.1440.40",
+		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
+		"@tmlmobilidade/interfaces": "20251028.1440.40",
+		"@tmlmobilidade/utils": "20251028.1440.40",
+		"csv-parse": "6.1.0"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/types": "20251028.1440.40",
+		"@types/node": "24.9.1",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
+	}
+}

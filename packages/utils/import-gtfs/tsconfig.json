@@ -1,0 +1,13 @@
+{
+	"extends": "@tmlmobilidade/tsconfig/lib.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"outDir": "dist",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"rootDir": ".",
+		"types": ["node"]
+	},
+	"exclude": ["node_modules", "dist"]
+}
