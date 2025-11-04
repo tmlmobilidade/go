@@ -57,6 +57,18 @@ find . -type f -name "yalc.lock" | xargs rm -f
 echo "✓ Done"
 echo ""
 
+echo "→ Removing '.DS_Store' files..."
+find . -type f -name ".DS_Store" | xargs rm -f
+echo "✓ Done"
+echo ""
+
+# # #
+
+echo "→ Removing empty directories..."
+find . -type d -empty -delete
+echo "✓ Done"
+echo ""
+
 # # #
 
 echo "✓ Cleanup complete!"
