@@ -2,9 +2,9 @@
 
 import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
 import { Button, Hr, Section, Text } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/lib';
+import { getAppConfig } from '@tmlmobilidade/go-lib';
 import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

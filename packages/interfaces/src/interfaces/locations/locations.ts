@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable perfectionist/sort-classes */
-import { MongoConnector } from '@tmlmobilidade/connectors';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
+import { MongoConnector } from '@tmlmobilidade/go-connectors-mongo';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
 import {
 	Census,
 	District,

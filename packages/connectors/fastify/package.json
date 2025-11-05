@@ -1,7 +1,10 @@
 {
-	"name": "@tmlmobilidade/go-connectors-rabbitmq",
+	"name": "@tmlmobilidade/go-connectors-fastify",
 	"version": "1.0.0",
-	"author": "João de Vasconcelos & Jusi Monteiro",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/tmlmobilidade/go#readme",
 	"bugs": {
@@ -28,9 +31,9 @@
 	"types": "index.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsup index.ts --format esm --dts --watch --sourcemap",
-		"lint": "eslint ./src/ && tsc --noEmit",
-		"lint:fix": "eslint ./src/ --fix"
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
+		"lint": "eslint . && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
@@ -39,9 +42,11 @@
 		"fastify": "5.6.1"
 	},
 	"devDependencies": {
+		"@tmlmobilidade/go-types": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.1",
-		"resolve-tspaths": "0.8.23"
+		"resolve-tspaths": "0.8.23",
+		"tsc-watch": "7.2.0"
 	},
 	"exports": {
 		".": {

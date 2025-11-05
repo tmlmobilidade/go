@@ -3,8 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { fileExports, files } from '@tmlmobilidade/go-interfaces';
-import { ProcessingStatusSchema } from '@tmlmobilidade/types';
-import { Files } from '@tmlmobilidade/utils';
+import { ProcessingStatusSchema } from '@tmlmobilidade/go-types';
+import { Files } from '@tmlmobilidade/go-utils';
 import fs from 'fs';
 
 import { exportRidesFile } from './export-rides.js';

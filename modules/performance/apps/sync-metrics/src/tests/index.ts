@@ -1,7 +1,7 @@
 /* * */
 
 import TIMETRACKER from '@helperkits/timer';
-import { Logs } from '@tmlmobilidade/utils';
+import { Logs } from '@tmlmobilidade/go-utils';
 
 import { testDemandMetrics } from './demand.js';
 

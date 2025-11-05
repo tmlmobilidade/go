@@ -5,8 +5,8 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, vehicleEvents } from '@tmlmobilidade/go-interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type VehicleEvent } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type VehicleEvent } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

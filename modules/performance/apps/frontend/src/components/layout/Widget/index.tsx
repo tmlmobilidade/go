@@ -12,7 +12,7 @@ import {
 	IconCloudStorm,
 	IconSun,
 } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';

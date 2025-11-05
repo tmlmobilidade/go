@@ -1,7 +1,10 @@
 {
 	"name": "@tmlmobilidade/go-lib",
 	"version": "1.0.0",
-	"author": "João de Vasconcelos & Jusi Monteiro",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/tmlmobilidade/go#readme",
 	"bugs": {
@@ -32,7 +35,7 @@
 	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsup index.ts --format esm --dts --watch --sourcemap",
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix"
 	},

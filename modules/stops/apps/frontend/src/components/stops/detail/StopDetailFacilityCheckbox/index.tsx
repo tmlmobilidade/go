@@ -1,7 +1,7 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { facilitiesSchema } from '@tmlmobilidade/types';
+import { facilitiesSchema } from '@tmlmobilidade/go-types';
 import { Checkbox, ProposedChangesWrapper } from '@tmlmobilidade/ui';
 import React from 'react';
 

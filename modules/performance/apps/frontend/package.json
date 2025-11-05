@@ -1,6 +1,11 @@
 {
 	"name": "@tmlmobilidade/go-performance-frontend",
 	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"scripts": {
 		"build": "next build",
@@ -11,7 +16,7 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.35.0",
-		"@tmlmobilidade/lib": "20251028.1440.40",
+		"@tmlmobilidade/go-lib": "*",
 		"@tmlmobilidade/ui": "20251028.1440.40",
 		"@tmlmobilidade/utils": "20251028.1440.40",
 		"next": "15.5.6",

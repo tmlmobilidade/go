@@ -1,11 +1,10 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
-import { Permissions } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-connectors-fastify';
+import { Permissions } from '@tmlmobilidade/go-lib';
+import { Alert } from '@tmlmobilidade/go-types';
 import { FastifyInstance } from 'fastify';
-
-import { AlertsController } from './alerts.controller.js';
 
 /* * */
 

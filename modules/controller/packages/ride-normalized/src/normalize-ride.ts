@@ -1,8 +1,8 @@
 /* * */
 
 import { delayStatusValues, type RideNormalized } from '@/ride-normalized.js';
-import { type Ride, type RideAnalysis, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type Ride, type RideAnalysis, type UnixTimestamp } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * This function normalizes a Ride object by adding additional properties

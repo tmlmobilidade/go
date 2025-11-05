@@ -1,7 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types';
 
 /**
  * This analyzer tests if the trip has at most two vehicle IDs (at least one, maximum of two).

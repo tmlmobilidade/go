@@ -1,6 +1,9 @@
 {
 	"name": "go",
-	"author": "João de Vasconcelos & Jusi Monteiro",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
 	"license": "AGPL-3.0-or-later",
 	"main": "index.js",
 	"scripts": {
@@ -8,18 +11,18 @@
 		"build:packages": "turbo build --filter=./packages/**/*",
 		"build:types": "turbo build --filter=@tmlmobilidade/go-types",
 		"dev": "turbo dev",
+		"dev:alerts": "dotenv-run -f ./modules/alerts/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*...",
 		"dev:packages": "turbo dev --filter=./packages/**/*",
+		"dev:test": "turbo run build:watch",
 		"dev:types": "turbo dev --filter=@tmlmobilidade/go-types",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
-		"lint:fix:packages": "turbo lint:fix --filter=./packages/*",
-		"lint:packages": "turbo lint --filter=./packages/*"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"tsup": "^8.5.0",
-		"tsx": "4.20.6",
-		"turbo": "2.5.8"
+		"@dotenv-run/cli": "1.3.6",
+		"turbo": "2.6.0"
 	},
 	"packageManager": "npm@11.6.2",
 	"workspaces": [

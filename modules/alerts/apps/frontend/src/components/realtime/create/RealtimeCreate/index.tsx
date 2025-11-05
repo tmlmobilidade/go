@@ -4,7 +4,7 @@
 
 import { RealtimeCreateHeader } from '@/components/realtime/create/RealtimeCreateHeader';
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { Permissions } from '@tmlmobilidade/lib';
+import { Permissions } from '@tmlmobilidade/go-lib';
 import { ErrorDisplay, Pane, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */

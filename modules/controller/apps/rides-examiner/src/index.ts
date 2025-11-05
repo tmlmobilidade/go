@@ -4,8 +4,8 @@ import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import TIMETRACKER from '@helperkits/timer';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/go-interfaces';
-import { UpdateRideSchema } from '@tmlmobilidade/types';
-import { Dates, Logs } from '@tmlmobilidade/utils';
+import { UpdateRideSchema } from '@tmlmobilidade/go-types';
+import { Dates, Logs } from '@tmlmobilidade/go-utils';
 
 /* * */
 

@@ -1,10 +1,11 @@
 {
 	"name": "@tmlmobilidade/go-plans-validator",
-	"description": "",
 	"version": "1.0.0",
-	"author": "",
-	"license": "ISC",
-	"keywords": [],
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
 	"main": "index.js",
 	"scripts": {
 		"build": "tsc",
@@ -17,7 +18,7 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@tmlmobilidade/connectors": "20251028.1440.40",
-		"@tmlmobilidade/emails": "20251028.1440.40",
+		"@tmlmobilidade/go-emails": "*",
 		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
 		"@tmlmobilidade/interfaces": "20251028.1440.40",
 		"@tmlmobilidade/utils": "20251028.1440.40",

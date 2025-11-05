@@ -2,7 +2,10 @@
 	"name": "@tmlmobilidade/generate-offer-files",
 	"description": "A CLI tool to generate legacy offer files for TML Mobilidade.",
 	"version": "1.0.0",
-	"author": "João de Vasconcelos",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
 	"files": [
@@ -14,8 +17,7 @@
 	},
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "npm run clean && tsc && resolve-tspaths",
-		"clean": "rm -rf dist",
+		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch ./src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
@@ -26,7 +28,7 @@
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251010.1959.27",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/lib": "*",
+		"@tmlmobilidade/go-lib": "*",
 		"@tmlmobilidade/utils": "*",
 		"commander": "14.0.1",
 		"csv-parse": "6.1.0",

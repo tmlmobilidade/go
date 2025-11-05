@@ -9,7 +9,7 @@ import { PlansDetailSectionFeedInfo } from '@/components/plans/detail/PlansDetai
 import { PlansDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
 import { PlansDetailSectionPcgiLegacy } from '@/components/plans/detail/PlansDetailSectionPcgiLegacy';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Permissions } from '@tmlmobilidade/lib';
+import { Permissions } from '@tmlmobilidade/go-lib';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */

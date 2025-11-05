@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsAgency, GtfsFeedInfo } from '@tmlmobilidade/types';
+import { GtfsAgency, GtfsFeedInfo } from '@tmlmobilidade/go-types';
 import jszip from 'jszip';
 import papa from 'papaparse';
 

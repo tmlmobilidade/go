@@ -3,7 +3,7 @@
 /* * */
 
 import { RidesDetailViewOptions, useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { Permissions } from '@tmlmobilidade/lib';
+import { Permissions } from '@tmlmobilidade/go-lib';
 import { Label, Section, SegmentedControl, useMeContext } from '@tmlmobilidade/ui';
 import React from 'react';
 

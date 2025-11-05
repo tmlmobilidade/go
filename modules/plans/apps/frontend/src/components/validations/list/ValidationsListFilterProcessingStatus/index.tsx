@@ -2,7 +2,7 @@
 
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { validationProcessingStatus } from '@/types/normalized';
-import { PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
+import { PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/go-types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

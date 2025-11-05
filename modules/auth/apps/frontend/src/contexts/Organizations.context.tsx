@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type Organization } from '@tmlmobilidade/types';
+import { type Organization } from '@tmlmobilidade/go-types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

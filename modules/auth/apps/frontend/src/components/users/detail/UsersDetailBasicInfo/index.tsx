@@ -4,7 +4,7 @@
 
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { CreateUserSchema } from '@tmlmobilidade/types';
+import { CreateUserSchema } from '@tmlmobilidade/go-types';
 import { Collapsible, Grid, PasswordInput, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

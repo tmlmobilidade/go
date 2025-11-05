@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { notifications } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { type Notification } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { type Notification } from '@tmlmobilidade/go-types';
 
 /* * */
 

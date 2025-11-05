@@ -1,7 +1,10 @@
 {
 	"name": "@tmlmobilidade/import-gtfs",
 	"version": "1.0.0",
-	"author": "João de Vasconcelos & Jusi Monteiro",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/tmlmobilidade/services#readme",
 	"bugs": {
@@ -37,21 +40,20 @@
 		"lint": "eslint ./src/ && tsc --noEmit"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors": "*",
+		"@tmlmobilidade/go-interfaces": "*",
 		"@tmlmobilidade/go-utils-logger": "*",
+		"@tmlmobilidade/go-utils-sqlite": "*",
 		"@tmlmobilidade/go-utils-timer": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/lib": "*",
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-lib": "*",
 		"@tmlmobilidade/go-types": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
-		"rimraf": "6.0.1",
 		"typescript": "5.9.3"
 	}
 }

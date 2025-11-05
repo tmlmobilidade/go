@@ -5,7 +5,7 @@
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
-import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/utils';
+import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/go-utils';
 import { type Point } from 'geojson';
 import { useMemo } from 'react';
 

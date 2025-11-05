@@ -5,8 +5,8 @@ import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/go-interfaces';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

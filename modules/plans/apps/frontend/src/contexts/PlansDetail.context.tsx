@@ -3,9 +3,9 @@
 /* * */
 
 import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
-import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
+import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@tmlmobilidade/go-types';
 import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { Dates, fetchData } from '@tmlmobilidade/utils';
+import { Dates, fetchData } from '@tmlmobilidade/go-utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 

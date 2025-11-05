@@ -3,7 +3,7 @@
 /* * */
 
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { type RideAnalysis } from '@tmlmobilidade/types';
+import { type RideAnalysis } from '@tmlmobilidade/go-types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */

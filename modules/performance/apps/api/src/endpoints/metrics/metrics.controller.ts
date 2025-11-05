@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
 import { metrics } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { type Metric } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { type Metric } from '@tmlmobilidade/go-types';
 
 /* * */
 export class MetricsController {

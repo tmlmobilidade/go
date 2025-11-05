@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { roles } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { type CreateRoleDto, Role, type UpdateRoleDto } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { type CreateRoleDto, Role, type UpdateRoleDto } from '@tmlmobilidade/go-types';
 
 /* * */
 

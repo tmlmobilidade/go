@@ -1,6 +1,6 @@
 /* * */
 
-import { OperationalDate } from '@tmlmobilidade/types';
+import { OperationalDate } from '@tmlmobilidade/go-types';
 
 /**
  * Get weekday names in Portuguese from weekday indexes.

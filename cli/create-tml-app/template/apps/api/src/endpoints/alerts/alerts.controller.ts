@@ -1,6 +1,6 @@
 import { alerts } from '@tmlmobilidade/go-interfaces';
-import { HttpStatus } from '@tmlmobilidade/lib';
-import { Alert } from '@tmlmobilidade/types';
+import { HttpStatus } from '@tmlmobilidade/go-lib';
+import { Alert } from '@tmlmobilidade/go-types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 /**

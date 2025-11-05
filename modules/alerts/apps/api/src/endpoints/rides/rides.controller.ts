@@ -1,11 +1,12 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-connectors-fastify';
 import { AggregationPipeline } from '@tmlmobilidade/go-interfaces';
 import { rides } from '@tmlmobilidade/go-interfaces';
-import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/lib';
-import { Permission, Ride, RidePermission } from '@tmlmobilidade/types';
-import { Dates, getPermission } from '@tmlmobilidade/utils';
+import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/go-lib';
+import { Permission, Ride, RidePermission } from '@tmlmobilidade/go-types';
+import { getPermission } from '@tmlmobilidade/go-utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

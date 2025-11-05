@@ -1,7 +1,7 @@
 /* * */
 
-import { type HashedShape, type HashedTrip, type VehicleEvent } from '@tmlmobilidade/types';
-import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, sortByUnixTimestamp, toLineStringFromHashedShape } from '@tmlmobilidade/utils';
+import { type HashedShape, type HashedTrip, type VehicleEvent } from '@tmlmobilidade/go-types';
+import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, sortByUnixTimestamp, toLineStringFromHashedShape } from '@tmlmobilidade/go-utils';
 
 /* * */
 

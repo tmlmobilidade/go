@@ -5,7 +5,7 @@ import { OrganizationsDetailMode, useOrganizationsDetailContext } from '@/contex
 
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/go-utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

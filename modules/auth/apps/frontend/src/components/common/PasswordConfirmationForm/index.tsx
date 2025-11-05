@@ -2,7 +2,7 @@
 
 import { Routes } from '@/lib/routes';
 import { IconArrowRight, IconCheck, IconX } from '@tabler/icons-react';
-import { PasswordRequirementsSchema } from '@tmlmobilidade/types';
+import { PasswordRequirementsSchema } from '@tmlmobilidade/go-types';
 import { Button, Label, PasswordInput, Section, Surface, TMLogoLight } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';

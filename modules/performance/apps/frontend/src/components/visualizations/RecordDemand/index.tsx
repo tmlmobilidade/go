@@ -7,7 +7,7 @@ import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
-import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/types';
+import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/go-types';
 import { Progress, Tooltip } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';

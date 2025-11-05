@@ -1,7 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types';
 
 /**
  * This analyzer tests if there are any missing Transactions for the given Ride.

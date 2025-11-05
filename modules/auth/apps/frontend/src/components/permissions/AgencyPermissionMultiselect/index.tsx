@@ -1,5 +1,5 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { ALLOW_ALL_FLAG } from '@tmlmobilidade/lib';
+import { ALLOW_ALL_FLAG } from '@tmlmobilidade/go-lib';
 import { MultiSelect } from '@tmlmobilidade/ui';
 
 export function AgencyPermissionMultiselect({

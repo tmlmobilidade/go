@@ -7,8 +7,8 @@ import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/go-interfaces'
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Interval } from 'luxon';
 
 /* * */

@@ -1,11 +1,11 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Permissions } from '@tmlmobilidade/lib';
-import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/types';
+import { Permissions } from '@tmlmobilidade/go-lib';
+import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/go-types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
-import { convertObject } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/go-utils';
+import { convertObject } from '@tmlmobilidade/go-utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';

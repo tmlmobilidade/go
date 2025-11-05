@@ -1,7 +1,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
+import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/go-types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

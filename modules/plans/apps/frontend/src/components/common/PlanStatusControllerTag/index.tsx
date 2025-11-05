@@ -1,6 +1,6 @@
 /* * */
 
-import { type ProcessingStatus } from '@tmlmobilidade/types';
+import { type ProcessingStatus } from '@tmlmobilidade/go-types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */

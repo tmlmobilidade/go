@@ -3,7 +3,7 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { GtfsEffect, gtfsEffectSchema } from '@tmlmobilidade/types';
+import { GtfsEffect, gtfsEffectSchema } from '@tmlmobilidade/go-types';
 import { Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

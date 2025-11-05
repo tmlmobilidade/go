@@ -1,14 +1,15 @@
 {
 	"name": "@tmlmobilidade/go-plans-api",
 	"version": "1.0.0",
-	"author": "",
-	"license": "ISC",
-	"keywords": [],
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
 	"type": "module",
 	"main": "index.js",
 	"scripts": {
-		"build": "npm run clean && tsc && resolve-tspaths",
-		"clean": "rm -rf dist",
+		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
@@ -17,7 +18,7 @@
 		"@fastify/multipart": "9.3.0",
 		"@tmlmobilidade/connectors": "20251028.1440.40",
 		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/lib": "20251028.1440.40",
+		"@tmlmobilidade/go-lib": "*",
 		"@tmlmobilidade/utils": "20251028.1440.40",
 		"pino-pretty": "13.1.2"
 	},

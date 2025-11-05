@@ -5,7 +5,7 @@ import '@tmlmobilidade/ui/styles';
 /* * */
 
 import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
-import { getAppConfig } from '@tmlmobilidade/lib';
+import { getAppConfig } from '@tmlmobilidade/go-lib';
 import { ThemeContextProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';

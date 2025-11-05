@@ -7,7 +7,7 @@ import { RealtimeReferencesLines } from '@/components/realtime/detail/RealtimeRe
 import { RealtimeReferencesStops } from '@/components/realtime/detail/RealtimeReferencesStops';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
-import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/go-types';
 import { Collapsible, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

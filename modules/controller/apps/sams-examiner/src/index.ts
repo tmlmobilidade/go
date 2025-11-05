@@ -4,8 +4,8 @@ import { type AggregationResultItem } from '@/types.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/go-interfaces';
-import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

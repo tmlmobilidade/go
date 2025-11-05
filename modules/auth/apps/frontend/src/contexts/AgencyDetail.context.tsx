@@ -2,10 +2,10 @@
 
 /* * */
 
-import { Permissions } from '@tmlmobilidade/lib';
-import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
+import { Permissions } from '@tmlmobilidade/go-lib';
+import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/go-utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 

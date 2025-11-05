@@ -2,11 +2,12 @@
 
 import { fetchLines } from '@/utils/lines.js';
 import { parseServiceAlert } from '@/utils/service-alert-parser.js';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-connectors-fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus, Permissions } from '@tmlmobilidade/lib';
-import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@tmlmobilidade/types';
-import { Dates, validateQueryParams } from '@tmlmobilidade/utils';
+import { HttpException, HttpStatus, Permissions } from '@tmlmobilidade/go-lib';
+import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@tmlmobilidade/go-types';
+import { validateQueryParams } from '@tmlmobilidade/go-utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

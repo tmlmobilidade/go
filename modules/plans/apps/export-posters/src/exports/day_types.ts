@@ -3,7 +3,7 @@
 import { DAY_TYPES } from '@/day-types.js';
 import { DayTypesExt, type ExportToHitouchConfig } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
-import { Logs } from '@tmlmobilidade/utils';
+import { Logs } from '@tmlmobilidade/go-utils';
 
 /* * */
 

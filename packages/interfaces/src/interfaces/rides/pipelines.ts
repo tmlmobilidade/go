@@ -1,6 +1,6 @@
 import { AggregationPipeline } from '@/aggregation-pipeline.js';
-import { Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideDelayStatus, RideOperationalStatus, RideSeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize delay statuses.
@@ -18,7 +18,7 @@ import { Dates } from '@tmlmobilidade/utils';
  *
  * @returns {Array} Array of MongoDB aggregation pipeline stages
  */
-export function ridesPipelineDelayStatus({ filter }: { filter?: { end_delay_status?: RideDelayStatus[], start_delay_status?: RideDelayStatus[] } } = {}): AggregationPipeline<Ride> {
+export function ridesPipelineDelayStatus({ filter }: { filter?: { end_delay_status?: DelayStatus[], start_delay_status?: DelayStatus[] } } = {}): AggregationPipeline<Ride> {
 	//
 	// Delay thresholds in milliseconds
 	const DELAY_THRESHOLDS = {
@@ -129,7 +129,7 @@ export function ridesPipelineDelayStatus({ filter }: { filter?: { end_delay_stat
  * @param {number} now - Current timestamp in milliseconds
  * @returns {Array} Array of MongoDB aggregation pipeline stages
  */
-export function ridesPipelineOperationalStatus({ filter }: { filter?: { operational_status?: RideOperationalStatus[] } } = {}): AggregationPipeline<Ride> {
+export function ridesPipelineOperationalStatus({ filter }: { filter?: { operational_status?: OperationalStatus[] } } = {}): AggregationPipeline<Ride> {
 	//
 	// Time thresholds in milliseconds
 	const OPERATIONAL_WINDOW = 600000; // 10 minutes
@@ -228,7 +228,7 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
  * @param {number} now - Current timestamp in milliseconds
  * @returns {Array} Array of MongoDB aggregation pipeline stages
  */
-export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: RideSeenStatus[] } } = {}): AggregationPipeline<Ride> {
+export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: SeenStatus[] } } = {}): AggregationPipeline<Ride> {
 	//
 	// Time thresholds in milliseconds
 	const SEEN_WINDOW = 30000; // 30 seconds
@@ -291,11 +291,11 @@ interface RidesPipelineFilter {
 	analysis_transaction_sequentiality?: RideAnalysisGradeWithNone[]
 	date_end: UnixTimestamp
 	date_start: UnixTimestamp
-	delay_statuses?: RideDelayStatus[]
+	delay_statuses?: DelayStatus[]
 	line_ids?: string[]
-	operational_statuses?: RideOperationalStatus[]
+	operational_statuses?: OperationalStatus[]
 	search?: string
-	seen_statuses?: RideSeenStatus[]
+	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
 }
 
@@ -367,9 +367,9 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 	// Stage 8: Apply status filters using dedicated pipeline functions
 	// These functions add calculated status fields and filter by them
-	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses?.map(status => status as RideDelayStatus), start_delay_status: filter.delay_statuses?.map(status => status as RideDelayStatus) } }));
-	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses?.map(status => status as RideOperationalStatus) } }));
-	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses?.map(status => status as RideSeenStatus) } }));
+	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses?.map(status => status as DelayStatus), start_delay_status: filter.delay_statuses?.map(status => status as DelayStatus) } }));
+	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses?.map(status => status as OperationalStatus) } }));
+	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses?.map(status => status as SeenStatus) } }));
 
 	return pipeline;
 }

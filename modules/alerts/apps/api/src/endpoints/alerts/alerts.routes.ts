@@ -1,10 +1,10 @@
 /* * */
 
 import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
-import { Permissions } from '@tmlmobilidade/lib';
-import { Alert, GetAllAlertsQuery, GetAllAlertsQuerySchema } from '@tmlmobilidade/types';
-import { validateQueryParams } from '@tmlmobilidade/utils';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-connectors-fastify';
+import { Permissions } from '@tmlmobilidade/go-lib';
+import { Alert, GetAllAlertsQuery, GetAllAlertsQuerySchema } from '@tmlmobilidade/go-types';
+import { validateQueryParams } from '@tmlmobilidade/go-utils';
 import { FastifyInstance } from 'fastify';
 
 /* * */

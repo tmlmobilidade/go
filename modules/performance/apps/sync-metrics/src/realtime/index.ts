@@ -3,7 +3,7 @@
 import { syncRealtimeDemand } from '@/realtime/demand.js';
 import { syncRealtimeServiceCompliance } from '@/realtime/serviceCompliance.js';
 import TIMETRACKER from '@helperkits/timer';
-import { Logs } from '@tmlmobilidade/utils';
+import { Logs } from '@tmlmobilidade/go-utils';
 
 /* * */
 

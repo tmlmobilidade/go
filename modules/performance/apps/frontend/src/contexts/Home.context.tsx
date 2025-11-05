@@ -5,7 +5,7 @@
 import { OPERATORS, OperatorType } from '@/constants';
 import { MetricsRoutes } from '@/routes';
 import { calculateSystemHealthIndex, getSystemStatusInfo, StatusInfo } from '@/utils/systemStatus';
-import { RealtimeDemand, RealtimeServiceCompliance } from '@tmlmobilidade/types';
+import { RealtimeDemand, RealtimeServiceCompliance } from '@tmlmobilidade/go-types';
 import { useTranslations } from 'next-intl';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';

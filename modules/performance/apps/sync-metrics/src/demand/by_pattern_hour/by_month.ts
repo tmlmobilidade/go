@@ -1,8 +1,8 @@
 import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, rides } from '@tmlmobilidade/go-interfaces';
-import { Metric } from '@tmlmobilidade/types';
-import { Dates, Logs } from '@tmlmobilidade/utils';
+import { Metric } from '@tmlmobilidade/go-types';
+import { Dates, Logs } from '@tmlmobilidade/go-utils';
 
 /* * */
 

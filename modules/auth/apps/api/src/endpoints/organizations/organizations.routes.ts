@@ -2,7 +2,7 @@
 
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/connectors';
-import { Permissions } from '@tmlmobilidade/lib';
+import { Permissions } from '@tmlmobilidade/go-lib';
 
 import { OrganizationsController } from './organizations.controller.js';
 

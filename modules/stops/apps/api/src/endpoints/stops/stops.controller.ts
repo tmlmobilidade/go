@@ -1,7 +1,7 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { stops } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { Stop, UpdateStopDto } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { Stop, UpdateStopDto } from '@tmlmobilidade/go-types';
 
 /**
  * This is an example controller that is using the stops interface.

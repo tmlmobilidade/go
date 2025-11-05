@@ -4,9 +4,9 @@ import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteWriter } from '@tmlmobilidade/connectors';
 import { files } from '@tmlmobilidade/go-interfaces';
-import { GTFS_Calendar_Raw, GTFS_CalendarDate_Raw, GTFS_Route_Extended, GTFS_Route_Extended_Raw, GTFS_Shape, GTFS_Shape_Raw, GTFS_Stop_Extended, GTFS_Stop_Extended_Raw, GTFS_StopTime, GTFS_StopTime_Raw, GTFS_Trip_Extended, GTFS_Trip_Extended_Raw, Plan, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
-import { OperationalDate } from '@tmlmobilidade/types';
-import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/utils';
+import { GTFS_Calendar_Raw, GTFS_CalendarDate_Raw, GTFS_Route_Extended, GTFS_Route_Extended_Raw, GTFS_Shape, GTFS_Shape_Raw, GTFS_Stop_Extended, GTFS_Stop_Extended_Raw, GTFS_StopTime, GTFS_StopTime_Raw, GTFS_Trip_Extended, GTFS_Trip_Extended_Raw, Plan, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/go-types';
+import { OperationalDate } from '@tmlmobilidade/go-types';
+import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils';
 import fs from 'fs';
 
 import { parseCsvFile, unzipFile } from './utils.js';

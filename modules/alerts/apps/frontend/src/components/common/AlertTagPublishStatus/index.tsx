@@ -1,6 +1,6 @@
 /* * */
 
-import { type AlertSchema } from '@tmlmobilidade/types';
+import { type AlertSchema } from '@tmlmobilidade/go-types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,4 +1,4 @@
-import { Permissions } from '@tmlmobilidade/lib';
+import { Permissions } from '@tmlmobilidade/go-lib';
 
 /* * */
 

@@ -3,9 +3,9 @@
 import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
 import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
 import { Routes } from '@/lib/routes';
-import { type GtfsValidation, type Plan } from '@tmlmobilidade/types';
+import { type GtfsValidation, type Plan } from '@tmlmobilidade/go-types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/go-utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 

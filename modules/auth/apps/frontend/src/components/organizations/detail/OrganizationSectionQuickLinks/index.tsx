@@ -1,7 +1,7 @@
 'use client';
 
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
-import { HomeLink } from '@tmlmobilidade/types';
+import { HomeLink } from '@tmlmobilidade/go-types';
 
 /* * */
 

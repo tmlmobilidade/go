@@ -1,7 +1,7 @@
 'use client';
 
-import { Session } from '@tmlmobilidade/types';
-import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
+import { Session } from '@tmlmobilidade/go-types';
+import { fetchData, HttpResponse } from '@tmlmobilidade/go-utils';
 import bcrypt from 'bcryptjs';
 import { useState } from 'react';
 

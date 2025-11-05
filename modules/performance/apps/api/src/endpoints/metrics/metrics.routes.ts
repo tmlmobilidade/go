@@ -1,8 +1,8 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
-import { Permissions } from '@tmlmobilidade/lib';
-import { Metric } from '@tmlmobilidade/types';
+import { Permissions } from '@tmlmobilidade/go-lib';
+import { Metric } from '@tmlmobilidade/go-types';
 import { FastifyInstance } from 'fastify';
 
 import { MetricsController } from './metrics.controller.js';

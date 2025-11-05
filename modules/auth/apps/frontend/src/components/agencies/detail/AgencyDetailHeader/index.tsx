@@ -5,7 +5,7 @@
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/go-utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

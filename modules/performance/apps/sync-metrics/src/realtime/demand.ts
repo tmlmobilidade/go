@@ -2,8 +2,8 @@
 
 import TIMETRACKER from '@helperkits/timer';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/go-interfaces';
-import { type RealtimeDemand } from '@tmlmobilidade/types';
-import { Dates, Logs } from '@tmlmobilidade/utils';
+import { type RealtimeDemand } from '@tmlmobilidade/go-types';
+import { Dates, Logs } from '@tmlmobilidade/go-utils';
 
 /* * */
 

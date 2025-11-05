@@ -3,7 +3,7 @@
 /* * */
 
 import { RidesDetailAnalysisResultItem } from '@/components/rides/detail/RidesDetailAnalysisResultItem';
-import { RideAnalysis } from '@tmlmobilidade/types';
+import { RideAnalysis } from '@tmlmobilidade/go-types';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 
 /* * */

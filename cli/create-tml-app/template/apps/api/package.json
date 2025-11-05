@@ -1,15 +1,11 @@
 {
 	"name": "@tmlmobilidade/...scope...-api",
-	"description": "",
 	"version": "1.0.0",
-	"author": "",
-	"license": "ISC",
 	"keywords": [],
 	"type": "module",
 	"main": "index.js",
 	"scripts": {
-		"build": "npm run clean && tsc && resolve-tspaths",
-		"clean": "rm -rf dist",
+		"build": "tsc && resolve-tspaths",
 		"dev": "dotenv-run -- tsx watch src/index.ts",
 		"lint": "eslint . && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
@@ -18,7 +14,7 @@
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
 		"@tmlmobilidade/interfaces": "0.0.0",
-		"@tmlmobilidade/lib": "0.0.0",
+		"@tmlmobilidade/go-lib": "0.0.0",
 		"@tmlmobilidade/types": "0.0.0",
 		"@tmlmobilidade/utils": "0.0.0",
 		"fastify": "5.2.2",

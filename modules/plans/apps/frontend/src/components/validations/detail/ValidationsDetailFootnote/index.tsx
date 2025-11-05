@@ -2,7 +2,7 @@
 
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { Label, Section } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 
 /* * */

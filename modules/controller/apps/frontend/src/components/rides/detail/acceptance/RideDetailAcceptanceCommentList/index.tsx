@@ -5,9 +5,9 @@
 import { RidesDetailAnalysisResultItem } from '@/components/rides/detail/RidesDetailAnalysisResultItem';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
-import { RideAcceptance, UserDisplay } from '@tmlmobilidade/types';
+import { RideAcceptance, UserDisplay } from '@tmlmobilidade/go-types';
 import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import React, { createElement, useMemo } from 'react';
 
 import styles from './styles.module.css';

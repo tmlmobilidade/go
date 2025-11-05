@@ -1,9 +1,9 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/go-types';
 import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { convertObject, fetchData } from '@tmlmobilidade/utils';
+import { convertObject, fetchData } from '@tmlmobilidade/go-utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';

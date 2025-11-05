@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { files, organizations } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { type Organization, UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { type Organization, UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/go-types';
 
 /* * */
 

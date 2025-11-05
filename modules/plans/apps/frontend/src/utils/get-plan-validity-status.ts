@@ -1,8 +1,8 @@
 /* * */
 
 import { type PlanNormalized } from '@/types/normalized';
-import { type OperationalDate } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type OperationalDate } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

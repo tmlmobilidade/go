@@ -1,11 +1,11 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
+import { sendResetPasswordEmail } from '@tmlmobilidade/go-emails';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/go-interfaces';
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { createEmail, LoginDto, LoginDtoSchema, Permission, Session } from '@tmlmobilidade/types';
-import { Dates, generateRandomToken } from '@tmlmobilidade/utils';
+import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { createEmail, LoginDto, LoginDtoSchema, Permission, Session } from '@tmlmobilidade/go-types';
+import { Dates, generateRandomToken } from '@tmlmobilidade/go-utils';
 
 /* * */
 

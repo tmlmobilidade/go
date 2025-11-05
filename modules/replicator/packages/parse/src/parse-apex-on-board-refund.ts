@@ -1,7 +1,7 @@
 /* * */
 
-import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

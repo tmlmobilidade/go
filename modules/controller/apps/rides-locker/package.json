@@ -1,6 +1,11 @@
 {
 	"name": "@tmlmobilidade/go-controller-rides-locker",
 	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
 	"type": "module",
 	"files": [
 		"dist"
@@ -8,8 +13,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "npm run clean && tsc && resolve-tspaths",
-		"clean": "rm -rf dist",
+		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch ./src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
@@ -18,8 +22,8 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20251028.1802.11",
 		"@tmlmobilidade/go-controller-pckg-ride-normalized": "*",
+		"@tmlmobilidade/interfaces": "20251028.1802.11",
 		"luxon": "^3.7.2"
 	},
 	"devDependencies": {

@@ -1,6 +1,6 @@
 /* * */
 
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types';
 
 /* * */
 

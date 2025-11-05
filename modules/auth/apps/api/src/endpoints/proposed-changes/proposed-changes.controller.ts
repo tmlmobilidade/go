@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
 import { enrichUserRefs, proposedChanges } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { ProposedChange, UpdateProposedChangeDto } from '@tmlmobilidade/types';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { ProposedChange, UpdateProposedChangeDto } from '@tmlmobilidade/go-types';
 
 /**
  * This is an example controller that is using the proposed changes interface.

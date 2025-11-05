@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
 import { Filter, FindOptions, locations } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { District, GetAllDistrictsQuery, GetAllDistrictsQuerySchema, GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, GetAllParishesQuery, GetAllParishesQuerySchema, Locality, Location, Municipality, Parish } from '@tmlmobilidade/types';
-import { validateQueryParams } from '@tmlmobilidade/utils';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { District, GetAllDistrictsQuery, GetAllDistrictsQuerySchema, GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, GetAllParishesQuery, GetAllParishesQuerySchema, Locality, Location, Municipality, Parish } from '@tmlmobilidade/go-types';
+import { validateQueryParams } from '@tmlmobilidade/go-utils';
 
 /**
  * This is an example controller that is using the locations interface.

@@ -1,5 +1,5 @@
-import { RenderFailedBackupEmail } from '@tmlmobilidade/emails';
-import { Dates } from '@tmlmobilidade/utils';
+import { RenderFailedBackupEmail } from '@tmlmobilidade/go-emails';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import nodemailer, { Transporter } from 'nodemailer';
 
 export interface MailOptions {

@@ -1,6 +1,6 @@
 /* * */
 
-import { type WikiArticle } from '@tmlmobilidade/types';
+import { type WikiArticle } from '@tmlmobilidade/go-types';
 import matter from 'gray-matter';
 import remarkHtml from 'remark-html';
 import remarkParse from 'remark-parse';

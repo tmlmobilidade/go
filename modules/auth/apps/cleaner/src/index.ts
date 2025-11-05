@@ -3,8 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { fileExports, files, verificationTokens } from '@tmlmobilidade/go-interfaces';
-import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
+import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/go-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * This script removes verification-token documents

@@ -1,9 +1,10 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
+import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
 import { CreateRideAcceptanceDto, RideAcceptance, RideAcceptanceSchema, UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/go-types';
-import { HttpException, HttpStatus } from '@tmlmobilidade/lib';
-import { AsyncSingletonProxy, compareObjects, Dates, flattenObject } from '@tmlmobilidade/utils';
+import { AsyncSingletonProxy, compareObjects, flattenObject } from '@tmlmobilidade/go-utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Filter, IndexDescription, InsertOneOptions, UpdateOptions } from 'mongodb';
 import { z } from 'zod';
 

@@ -1,10 +1,10 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, referenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/go-types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { Dates, fetchData } from '@tmlmobilidade/utils';
-import { convertObject } from '@tmlmobilidade/utils';
+import { Dates, fetchData } from '@tmlmobilidade/go-utils';
+import { convertObject } from '@tmlmobilidade/go-utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';

@@ -10,9 +10,9 @@ import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus
 import { useRealtimeListContext } from '@/contexts/RealtimeList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
-import { type Alert } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/go-types';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/go-utils';
 import { useRouter } from 'next/navigation';
 
 import { RealtimeListHeader } from '../AlertsListHeader';

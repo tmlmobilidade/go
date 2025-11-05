@@ -1,7 +1,10 @@
 {
 	"name": "@tmlmobilidade/go-interfaces",
 	"version": "1.0.0",
-	"author": "João de Vasconcelos & Jusi Monteiro",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/tmlmobilidade/services#readme",
 	"bugs": {
@@ -31,7 +34,8 @@
 		}
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc && resolve-tspaths",
+		"build": "tsc && resolve-tspaths",
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"lint": "eslint && tsc --noEmit",
 		"lint:fix": "eslint --fix"
 	},
@@ -41,6 +45,9 @@
 		"@tmlmobilidade/go-lib": "*",
 		"@tmlmobilidade/go-types": "*",
 		"@tmlmobilidade/go-utils": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-files": "*",
+		"@tmlmobilidade/go-utils-strings": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"bcryptjs": "3.0.2",
 		"oci-common": "2.119.1",
@@ -52,7 +59,6 @@
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
-		"rimraf": "6.0.1",
 		"typescript": "5.9.3"
 	}
 }

@@ -1,15 +1,15 @@
 {
 	"name": "@tmlmobilidade/go-locations-api",
-	"description": "",
 	"version": "1.0.0",
-	"author": "",
-	"license": "ISC",
-	"keywords": [],
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
 	"type": "module",
 	"main": "index.js",
 	"scripts": {
-		"build": "npm run clean && tsc && resolve-tspaths",
-		"clean": "rm -rf dist",
+		"build": "tsc && resolve-tspaths",
 		"dev": "dotenv-run -- tsx watch src/index.ts",
 		"lint": "eslint . && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
@@ -18,7 +18,7 @@
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.1.0",
 		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/lib": "20251028.1440.40",
+		"@tmlmobilidade/go-lib": "*",
 		"@tmlmobilidade/types": "20251028.1440.40",
 		"@tmlmobilidade/utils": "20251028.1440.40",
 		"@turf/turf": "^7.2.0",

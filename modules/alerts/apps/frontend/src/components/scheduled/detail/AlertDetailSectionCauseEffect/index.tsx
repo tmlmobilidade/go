@@ -5,7 +5,7 @@
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
+import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/go-types';
 import { Collapsible, Combobox, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

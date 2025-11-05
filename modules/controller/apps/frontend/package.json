@@ -1,6 +1,11 @@
 {
 	"name": "@tmlmobilidade/go-controller-frontend",
 	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"scripts": {
 		"build": "next build",

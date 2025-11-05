@@ -2,7 +2,7 @@
 
 import { EmailWrapper, styles } from '@/components/index.js';
 import { Button, Hr, Link, Section, Text } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/lib';
+import { getAppConfig } from '@tmlmobilidade/go-lib';
 
 /* * */
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { Body, Container, Head, Html, Img, Preview } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/lib';
+import { getAppConfig } from '@tmlmobilidade/go-lib';
 import React from 'react';
 
 import { Footer } from './footer.js';

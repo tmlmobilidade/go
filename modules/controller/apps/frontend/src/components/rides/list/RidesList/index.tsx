@@ -14,7 +14,7 @@ import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/go-utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

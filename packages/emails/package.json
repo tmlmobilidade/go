@@ -1,7 +1,10 @@
 {
 	"name": "@tmlmobilidade/go-emails",
 	"version": "1.0.0",
-	"author": "João de Vasconcelos & Jusi Monteiro",
+	"author": {
+		"email": "iso@tmlmobilidade.com",
+		"name": "TML-ISO"
+	},
 	"license": "AGPL-3.0-or-later",
 	"homepage": "https://github.com/tmlmobilidade/services#readme",
 	"bugs": {
@@ -32,7 +35,8 @@
 	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "email dev -p 3001 --dir ./src/emails",
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
+		"dev2": "email dev -p 3001 --dir ./src/emails",
 		"export": "email export --dir ./src/emails",
 		"lint": "eslint ./src/ && tsc --noEmit"
 	},
@@ -48,12 +52,12 @@
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@react-email/preview-server": "4.3.1",
-		"@tmlmobilidade/lib": "*",
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-lib": "*",
 		"@tmlmobilidade/go-types": "*",
+		"@tmlmobilidade/go-utils": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
-		"rimraf": "6.0.1",
 		"typescript": "5.9.3"
 	}
 }
