@@ -3,7 +3,6 @@ export * from '@/caching/index.js';
 export * from '@/css/index.js';
 export * from '@/generic/index.js';
 export * from '@/http.js';
-export * from '@/math/index.js';
 export * from '@/navigation/index.js';
 export * from '@/objects/index.js';
 export * from '@/permissions.js';

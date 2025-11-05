@@ -1,0 +1,12 @@
+{
+	"extends": "@go/tsconfig/lib.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"rootDir": ".",
+		"types": ["node"]
+	},
+	"exclude": ["node_modules", "dist"]
+}
