@@ -1,10 +1,10 @@
 /* * */
 
-import '@tmlmobilidade/ui/styles';
+import '@go/ui/styles';
 
 /* * */
 
-import { BaseProvider } from '@tmlmobilidade/ui';
+import { BaseProvider } from '@go/ui';
 import { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { PropsWithChildren } from 'react';

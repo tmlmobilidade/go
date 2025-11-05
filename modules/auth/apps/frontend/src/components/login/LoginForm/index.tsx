@@ -5,7 +5,7 @@
 import { useLogin } from '@/components/login/LoginForm/use-login';
 import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
-import { Button, Label, PasswordInput, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
+import { Button, Label, PasswordInput, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@go/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 

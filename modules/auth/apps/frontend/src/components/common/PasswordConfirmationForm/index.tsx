@@ -3,7 +3,7 @@
 import { Routes } from '@/lib/routes';
 import { PasswordRequirementsSchema } from '@go/types';
 import { IconArrowRight, IconCheck, IconX } from '@tabler/icons-react';
-import { Button, Label, PasswordInput, Section, Surface, TMLogoLight } from '@tmlmobilidade/ui';
+import { Button, Label, PasswordInput, Section, Surface, TMLogoLight } from '@go/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 

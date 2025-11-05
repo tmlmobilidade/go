@@ -6,7 +6,7 @@ import { HomeLink } from '@go/types';
 /* * */
 
 import { iconMap } from '@/lib/icons';
-import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
+import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@go/ui';
 import { useMemo } from 'react';
 import React from 'react';
 

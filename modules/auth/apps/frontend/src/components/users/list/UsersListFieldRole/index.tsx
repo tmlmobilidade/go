@@ -1,5 +1,5 @@
 import { useRolesContext } from '@/contexts/Roles.context';
-import { Tag } from '@tmlmobilidade/ui';
+import { Tag } from '@go/ui';
 
 export function UsersListFieldRole({ role_id }: { role_id: string }) {
 	//

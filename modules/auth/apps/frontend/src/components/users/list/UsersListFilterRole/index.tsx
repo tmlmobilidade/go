@@ -2,7 +2,7 @@
 
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersListContext } from '@/contexts/UsersList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

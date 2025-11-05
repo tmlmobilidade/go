@@ -6,7 +6,7 @@ import { HomeLink } from '@go/types';
 /* * */
 
 import { isUrl } from '@go/utils-strings';
-import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@go/ui';
 import { useState } from 'react';
 
 /* * */

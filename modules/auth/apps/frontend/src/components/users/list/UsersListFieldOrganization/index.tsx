@@ -1,5 +1,5 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
-import { Tag } from '@tmlmobilidade/ui';
+import { Tag } from '@go/ui';
 
 export function UsersListFieldOrganization({ organizationId }: { organizationId: string }) {
 	//

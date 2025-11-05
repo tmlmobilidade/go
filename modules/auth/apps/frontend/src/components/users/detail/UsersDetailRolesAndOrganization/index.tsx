@@ -1,6 +1,6 @@
 'use client';
 
-import { Collapsible } from '@tmlmobilidade/ui';
+import { Collapsible } from '@go/ui';
 
 import { UsersDetailRoles } from '../UserDetailRoles';
 import { UsersDetailOrganization } from '../UsersDetailOrganization';

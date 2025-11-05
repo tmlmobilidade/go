@@ -15,9 +15,9 @@
 	},
 	"dependencies": {
 		"@go/lib": "*",
+		"@go/ui": "*",
 		"@go/utils": "*",
 		"@tabler/icons-react": "3.35.0",
-		"@tmlmobilidade/ui": "20251103.1255.55",
 		"bcryptjs": "3.0.3",
 		"clsx": "2.1.1",
 		"next": "15.5.6",

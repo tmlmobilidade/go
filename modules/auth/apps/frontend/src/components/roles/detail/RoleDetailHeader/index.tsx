@@ -5,7 +5,7 @@
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { keepUrlParams } from '@go/utils';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { BackButton, Badge, Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Badge, Button, Spacer, Toolbar } from '@go/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

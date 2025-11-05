@@ -7,7 +7,7 @@ import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.con
 import { iconMap } from '@/lib/icons';
 import { HomeLink } from '@/types/quick-links';
 import { IconFileInfo } from '@tabler/icons-react';
-import { Grid, Section } from '@tmlmobilidade/ui';
+import { Grid, Section } from '@go/ui';
 
 /* * */
 

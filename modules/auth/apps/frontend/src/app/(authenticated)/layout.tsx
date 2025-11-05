@@ -3,7 +3,7 @@
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { OrganizationsContextProvider } from '@/contexts/Organizations.context';
 import { RolesContextProvider } from '@/contexts/Roles.context';
-import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
+import { AppProvider, AppWrapper } from '@go/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

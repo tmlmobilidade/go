@@ -2,7 +2,7 @@
 
 import { OrganizationsList } from '@/components/organizations/list/OrganizationsList';
 import { OrganizationsListContextProvider } from '@/contexts/OrganizationsList.context';
-import { PanesManager } from '@tmlmobilidade/ui';
+import { PanesManager } from '@go/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

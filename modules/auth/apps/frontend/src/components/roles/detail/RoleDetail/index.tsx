@@ -6,7 +6,7 @@ import { PermissionSectionGroup } from '@/components/permissions/PermissionSecti
 import { RoleDetailBasicInfo } from '@/components/roles/detail/RoleDetailBasicInfo';
 import { RoleDetailHeader } from '@/components/roles/detail/RoleDetailHeader';
 import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
-import { Pane } from '@tmlmobilidade/ui';
+import { Pane } from '@go/ui';
 
 /* * */
 

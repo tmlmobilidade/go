@@ -3,7 +3,7 @@
 /* * */
 
 import { HomeLink } from '@go/types';
-import { Button, Section } from '@tmlmobilidade/ui';
+import { Button, Section } from '@go/ui';
 
 /* * */
 

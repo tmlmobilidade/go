@@ -8,7 +8,7 @@ import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
 import { UsersDetailRolesAndOrganization } from '@/components/users/detail/UsersDetailRolesAndOrganization';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { Pane } from '@tmlmobilidade/ui';
+import { Pane } from '@go/ui';
 
 /* * */
 

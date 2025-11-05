@@ -7,7 +7,7 @@ import { AgencyDetailBasicInfo } from '@/components/agencies/detail/AgencySectio
 import { AgencySectionContacts } from '@/components/agencies/detail/AgencySectionContacts';
 import { AgencySectionFinacial } from '@/components/agencies/detail/AgencySectionFinacial';
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { ErrorDisplay, LoadingOverlay, Pane } from '@go/ui';
 
 /* * */
 

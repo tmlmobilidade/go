@@ -2,7 +2,7 @@
 
 import { AgenciesList } from '@/components/agencies/list/AgenciesList';
 import { AgenciesListContextProvider } from '@/contexts/AgenciesList.context';
-import { PanesManager } from '@tmlmobilidade/ui';
+import { PanesManager } from '@go/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

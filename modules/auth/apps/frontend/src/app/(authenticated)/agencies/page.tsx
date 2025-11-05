@@ -2,7 +2,7 @@
 
 /* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { NoDataLabel, Surface } from '@go/ui';
 
 /* * */
 

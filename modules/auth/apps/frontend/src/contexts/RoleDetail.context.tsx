@@ -5,7 +5,7 @@ import { Permissions } from '@go/lib';
 import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@go/types';
 import { fetchData } from '@go/utils';
 import { convertObject } from '@go/utils';
-import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { useForm, UseFormReturnType, useToast, zodResolver } from '@go/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';

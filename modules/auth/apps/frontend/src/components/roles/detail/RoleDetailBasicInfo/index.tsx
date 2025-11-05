@@ -3,7 +3,7 @@
 /* * */
 
 import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
-import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, TextInput } from '@go/ui';
 
 /* * */
 

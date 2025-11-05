@@ -4,7 +4,7 @@
 
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { Combobox, Grid, Section } from '@tmlmobilidade/ui';
+import { Combobox, Grid, Section } from '@go/ui';
 
 /* * */
 

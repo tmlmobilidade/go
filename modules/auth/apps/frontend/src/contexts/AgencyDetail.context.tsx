@@ -5,7 +5,7 @@
 import { Permissions } from '@go/lib';
 import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@go/types';
 import { fetchData } from '@go/utils';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@go/ui';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 

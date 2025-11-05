@@ -4,7 +4,7 @@
 
 import { HomePage } from '@/components/home/HomePage';
 import { OrganizationsDetailContextProvider } from '@/contexts/OrganizationDetail.context';
-import { useMeContext } from '@tmlmobilidade/ui';
+import { useMeContext } from '@go/ui';
 
 /* * */
 

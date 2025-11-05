@@ -1,4 +1,4 @@
-import { Switch } from '@tmlmobilidade/ui';
+import { Switch } from '@go/ui';
 
 export function EnableEmailNotificationsSwitch({
 	checked,

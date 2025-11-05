@@ -2,7 +2,7 @@
 
 /* * */
 
-import { NoDataLabel } from '@tmlmobilidade/ui';
+import { NoDataLabel } from '@go/ui';
 
 import styles from './styles.module.css';
 

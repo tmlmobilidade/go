@@ -33,7 +33,7 @@ async function watchBuild() {
 			case 'END':
 				console.log('Build finished.');
 				buildStyles();
-				pushToYalc();
+				// pushToYalc();
 				break;
 			case 'ERROR':
 				console.error('Error:', event.error);

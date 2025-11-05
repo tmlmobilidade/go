@@ -3,7 +3,7 @@
 /* * */
 
 import { type WikiArticle } from '@go/types';
-import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@go/ui';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 

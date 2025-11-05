@@ -5,7 +5,7 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { normalizeString } from '@go/utils-strings';
-import { useSearch } from '@tmlmobilidade/ui';
+import { useSearch } from '@go/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 

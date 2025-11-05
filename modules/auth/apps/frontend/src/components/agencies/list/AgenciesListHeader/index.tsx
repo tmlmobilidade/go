@@ -1,7 +1,7 @@
 /* * */
 
 import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
-import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, SearchInput, Spacer, Toolbar } from '@go/ui';
 
 /* * */
 
