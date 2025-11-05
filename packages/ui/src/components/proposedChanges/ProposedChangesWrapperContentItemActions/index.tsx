@@ -1,7 +1,7 @@
 /* * */
 
 import { ButtonGroup, type ButtonGroupProps } from '@/components/buttons/ButtonGroup';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { Permission } from '@go/types';
 import { IconCheck, IconPlus, IconX } from '@tabler/icons-react';
 

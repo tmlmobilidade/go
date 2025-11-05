@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { AggregationPipeline } from '@go/interfaces';
 import { rides } from '@go/interfaces';
-import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@go/lib';
+import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@go/consts';
 import { Permission, Ride, RidePermission } from '@go/types';
 import { getPermission } from '@go/utils';
 import { Dates } from '@go/utils-dates';

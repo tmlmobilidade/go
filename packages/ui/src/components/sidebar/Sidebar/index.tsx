@@ -3,7 +3,7 @@
 /* * */
 
 import { SidebarItem } from '@/components/sidebar/SidebarItem';
-import { getAppConfig, Permissions } from '@go/lib';
+import { getAppConfig, Permissions } from '@go/consts';
 import { IconAlertTriangle, IconBuildings, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
 
 import styles from './styles.module.css';

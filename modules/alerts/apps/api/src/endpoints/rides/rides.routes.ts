@@ -2,7 +2,7 @@
 
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
 import { authorizationMiddleware, FastifyService } from '@go/connectors-fastify';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { Ride } from '@go/types';
 import { FastifyInstance } from 'fastify';
 

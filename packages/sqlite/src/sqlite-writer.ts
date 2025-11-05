@@ -2,7 +2,7 @@
 
 import { SQLiteTableInstance } from '@/sqlite-db.js';
 import { type SQLiteTable } from '@/types.js';
-import { generateRandomString } from '@go/utils-strings';
+import { generateRandomString } from '../../strings/dist/index.js';
 import BSQLite3, { type Database } from 'better-sqlite3';
 
 /* * */

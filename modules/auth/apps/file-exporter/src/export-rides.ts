@@ -1,7 +1,7 @@
 /* * */
 
 import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@go/interfaces';
-import { ALLOW_ALL_FLAG, Permissions } from '@go/lib';
+import { ALLOW_ALL_FLAG, Permissions } from '@go/consts';
 import { FileExport, Permission, RideAcceptance, RideNormalized, RidePermission } from '@go/types';
 import { getPermission } from '@go/utils';
 import { generateRandomString } from '@go/utils-strings';

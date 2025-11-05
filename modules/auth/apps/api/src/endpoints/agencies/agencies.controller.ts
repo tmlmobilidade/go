@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { agencies } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@go/types';
 
 /* * */

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { enrichUserRefs, proposedChanges } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { ProposedChange, UpdateProposedChangeDto } from '@go/types';
 
 /**

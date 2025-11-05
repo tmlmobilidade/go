@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
 import { IStorageProvider, StorageFactory } from '@/providers/index.js';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@go/types';
 import { AsyncSingletonProxy, convertObject } from '@go/utils';
 import { Files } from '@go/utils-files';

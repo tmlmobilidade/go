@@ -1,7 +1,7 @@
 /* * */
 
 import { files, plans } from '@go/interfaces';
-import { mimeTypes } from '@go/lib';
+import { mimeTypes } from '@go/consts';
 import { Dates } from '@go/utils-dates';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@go/utils-sqlite';
 import LOGGER from '@helperkits/logger';

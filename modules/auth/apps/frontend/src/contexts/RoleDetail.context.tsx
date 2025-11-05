@@ -1,7 +1,7 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@go/types';
 import { fetchData } from '@go/utils';
 import { convertObject } from '@go/utils';

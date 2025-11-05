@@ -4,7 +4,7 @@ import { fetchLines } from '@/utils/lines.js';
 import { parseServiceAlert } from '@/utils/service-alert-parser.js';
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { alerts, files, notifications } from '@go/interfaces';
-import { HttpException, HttpStatus, Permissions } from '@go/lib';
+import { HttpException, HttpStatus, Permissions } from '@go/consts';
 import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@go/types';
 import { validateQueryParams } from '@go/utils';
 import { Dates } from '@go/utils-dates';

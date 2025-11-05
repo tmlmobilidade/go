@@ -15,7 +15,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/utils": "*",
 		"@tabler/icons-react": "3.35.0",
 		"@go/ui": "*",

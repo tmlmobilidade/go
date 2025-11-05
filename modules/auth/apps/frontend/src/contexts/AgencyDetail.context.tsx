@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@go/types';
 import { fetchData } from '@go/utils';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@go/ui';

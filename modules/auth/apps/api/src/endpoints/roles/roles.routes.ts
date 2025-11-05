@@ -3,7 +3,7 @@
 import { RolesController } from '@/endpoints/roles/roles.controller.js';
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@go/connectors-fastify';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 
 /* * */
 

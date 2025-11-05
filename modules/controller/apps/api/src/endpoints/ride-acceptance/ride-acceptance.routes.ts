@@ -1,7 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/connectors';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { type RidePermission } from '@go/types';
 
 import { RideAcceptanceController } from './ride-acceptance.controller.js';

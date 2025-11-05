@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable perfectionist/sort-classes */
 import { MongoConnector } from '@go/connectors-mongo';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import {
 	Census,
 	District,

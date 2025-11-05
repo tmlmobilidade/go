@@ -5,7 +5,7 @@
 import { openChangePlanModal } from '@/components/plans/detail/ChangePlanModal';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconRefresh, IconUpload } from '@tabler/icons-react';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@go/ui';
 import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';

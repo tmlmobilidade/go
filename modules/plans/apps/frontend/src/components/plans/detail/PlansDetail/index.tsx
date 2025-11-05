@@ -9,7 +9,7 @@ import { PlansDetailSectionFeedInfo } from '@/components/plans/detail/PlansDetai
 import { PlansDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
 import { PlansDetailSectionPcgiLegacy } from '@/components/plans/detail/PlansDetailSectionPcgiLegacy';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@go/ui';
 
 /* * */

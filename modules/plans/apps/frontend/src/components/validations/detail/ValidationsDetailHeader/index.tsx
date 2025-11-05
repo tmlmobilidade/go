@@ -7,7 +7,7 @@ import { openApprovePlanModal } from '@/components/validations/detail/ApprovePla
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { BackButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@go/ui';
 import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';

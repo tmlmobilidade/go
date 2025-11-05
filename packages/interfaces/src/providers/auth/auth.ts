@@ -2,7 +2,7 @@
 
 import { roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
 import { sendWelcomeEmail } from '@go/emails';
-import { getAppConfig, HttpException, HttpStatus } from '@go/lib';
+import { getAppConfig, HttpException, HttpStatus } from '@go/consts';
 import { CreateUserDto, LoginDto, OneOrTheOther, Permission, Session, User } from '@go/types';
 import { AsyncSingletonProxy, mergeObjects } from '@go/utils';
 import { Dates } from '@go/utils-dates';

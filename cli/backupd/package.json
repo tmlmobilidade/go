@@ -18,7 +18,7 @@
 		"@aws-sdk/client-s3": "3.922.0",
 		"@go/emails": "*",
 		"@go/interfaces": "*",
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
 		"@helperkits/logger": "20250628.901.58",

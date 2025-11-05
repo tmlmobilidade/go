@@ -3,7 +3,7 @@
 import { openCreateValidationModal } from '@/components/validations/detail/CreateValidationModal';
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@go/ui';
 
 /* * */

@@ -42,7 +42,7 @@
 	"dependencies": {
 		"@go/connectors-mongo": "*",
 		"@go/emails": "*",
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
 		"@go/utils-dates": "*",

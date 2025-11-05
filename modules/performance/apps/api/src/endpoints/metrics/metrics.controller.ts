@@ -2,7 +2,7 @@
 
 import { FastifyReply, FastifyRequest } from '@go/connectors-fastify';
 import { metrics } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { type Metric } from '@go/types';
 
 /* * */

@@ -2,7 +2,7 @@
 
 import { PlansController } from '@/endpoints/plans/plans.controller.js';
 import { authorizationMiddleware, FastifyService } from '@go/connectors-fastify';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { type PlanPermission } from '@go/types';
 
 /* * */

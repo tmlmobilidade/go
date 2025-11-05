@@ -1,6 +1,6 @@
 /* * */
 
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 import { type Map as MapLibreMap } from 'maplibre-gl';
 
 /* * */

@@ -2,7 +2,7 @@
 
 import fastifyMultipart from '@fastify/multipart';
 import { FastifyService, type FastifyServiceOptions } from '@go/connectors-fastify';
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 
 /* * */
 

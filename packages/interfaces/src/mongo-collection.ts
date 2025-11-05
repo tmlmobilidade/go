@@ -2,7 +2,7 @@
 
 import { AggregationPipeline } from '@/aggregation-pipeline.js';
 import { MongoConnector } from '@go/connectors-mongo';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { type UnixTimestamp } from '@go/types';
 import { Dates } from '@go/utils-dates';
 import { generateRandomString } from '@go/utils-strings';

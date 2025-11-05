@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { notifications } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { type Notification } from '@go/types';
 
 /* * */

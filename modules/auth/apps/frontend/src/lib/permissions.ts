@@ -1,4 +1,4 @@
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 
 /* * */
 

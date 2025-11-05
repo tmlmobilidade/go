@@ -14,7 +14,7 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/ui": "*",
 		"@go/utils": "*",
 		"@tabler/icons-react": "3.35.0",

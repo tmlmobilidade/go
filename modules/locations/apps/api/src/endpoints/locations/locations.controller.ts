@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
 import { Filter, FindOptions, locations } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { District, GetAllDistrictsQuery, GetAllDistrictsQuerySchema, GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, GetAllParishesQuery, GetAllParishesQuerySchema, Locality, Location, Municipality, Parish } from '@go/types';
 import { validateQueryParams } from '@go/utils';
 

@@ -5,7 +5,7 @@ import '@go/ui/styles';
 /* * */
 
 import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 import { ThemeContextProvider } from '@go/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';

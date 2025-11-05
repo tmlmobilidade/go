@@ -1,7 +1,7 @@
 /* * */
 
 import { Body, Container, Head, Html, Img, Preview } from '@react-email/components';
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 import React from 'react';
 
 import { Footer } from './footer.js';

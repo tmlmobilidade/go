@@ -1,5 +1,5 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { ALLOW_ALL_FLAG } from '@go/lib';
+import { ALLOW_ALL_FLAG } from '@go/consts';
 import { MultiSelect } from '@go/ui';
 
 export function AgencyPermissionMultiselect({

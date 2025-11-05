@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.31.0",
-		"@go/lib": "0.0.0",
+		"@go/consts": "0.0.0",
 		"@go/types": "0.0.0",
 		"@tmlmobilidade/ui": "0.0.0",
 		"@tmlmobilidade/utils": "0.0.0",

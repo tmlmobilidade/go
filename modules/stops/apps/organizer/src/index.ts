@@ -2,7 +2,7 @@
 
 import { type LocationsApiResponse } from '@/types';
 import { stops } from '@go/interfaces';
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 import { fetchData } from '@go/utils';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';

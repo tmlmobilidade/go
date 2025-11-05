@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
 import { sendNotificationEmail } from '@go/emails';
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 import { CreateNotificationDto, Notification, NotificationPermission, NotificationSchema, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@go/types';
 import { AsyncSingletonProxy, mergeObjects } from '@go/utils';
 import { IndexDescription } from 'mongodb';

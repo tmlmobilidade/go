@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 import { type District, type Locality, type Location, type Municipality, type Parish } from '@go/types';
 import { fetchData } from '@go/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';

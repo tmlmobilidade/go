@@ -24,7 +24,7 @@
 		"@go/controller-pckg-ride-normalized": "*",
 		"@go/emails": "*",
 		"@go/interfaces": "*",
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/utils": "*",
 		"pino-pretty": "13.1.2"
 	},

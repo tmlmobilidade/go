@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyRequest } from '@/fastify-service.js';
-import { getAppConfig, HttpException, HttpStatus } from '@go/lib';
+import { getAppConfig, HttpException, HttpStatus } from '@go/consts';
 import { type Permission, type User } from '@go/types';
 import { Cache, fetchData, hasPermission } from '@go/utils';
 

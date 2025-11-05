@@ -2,7 +2,7 @@
 
 /* * */
 import { useMeContext } from '@/contexts/Me.context';
-import { getAppConfig, HttpException } from '@go/lib';
+import { getAppConfig, HttpException } from '@go/consts';
 import { type Organization } from '@go/types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';

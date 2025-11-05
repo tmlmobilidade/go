@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig } from '@go/lib';
+import { getAppConfig } from '@go/consts';
 import { type Agency } from '@go/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';

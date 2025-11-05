@@ -19,7 +19,7 @@
 		"@go/connectors-fastify": "*",
 		"@go/connectors-rabbitmq": "*",
 		"@go/interfaces": "*",
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/utils": "*",
 		"@go/utils-files": "*",
 		"pino-pretty": "13.1.2"

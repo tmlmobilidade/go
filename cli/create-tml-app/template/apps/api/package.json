@@ -13,7 +13,7 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
-		"@go/lib": "0.0.0",
+		"@go/consts": "0.0.0",
 		"@go/interfaces": "0.0.0",
 		"@go/types": "0.0.0",
 		"@tmlmobilidade/utils": "0.0.0",

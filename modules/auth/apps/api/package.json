@@ -20,7 +20,7 @@
 		"@go/connectors-fastify": "*",
 		"@go/emails": "*",
 		"@go/interfaces": "*",
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/utils": "*",
 		"gray-matter": "4.0.3",
 		"pino-pretty": "13.1.2",

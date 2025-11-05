@@ -1,6 +1,6 @@
 /* * */
 
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { type StopPermission } from '@go/types';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
 

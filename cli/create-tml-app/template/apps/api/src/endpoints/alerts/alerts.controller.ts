@@ -1,5 +1,5 @@
 import { alerts } from '@go/interfaces';
-import { HttpStatus } from '@go/lib';
+import { HttpStatus } from '@go/consts';
 import { Alert } from '@go/types';
 import { FastifyReply, FastifyRequest } from 'fastify';
 

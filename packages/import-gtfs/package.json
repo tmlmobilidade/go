@@ -49,7 +49,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/tsconfig": "*",
 		"@go/types": "*",
 		"@types/node": "24.10.0",

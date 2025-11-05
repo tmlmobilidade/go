@@ -1,7 +1,7 @@
 /* * */
 
 import { IconDownload, IconFile, IconFileTypeZip } from '@tabler/icons-react';
-import { mimeTypes } from '@go/lib';
+import { mimeTypes } from '@go/consts';
 import { type File } from '@go/types';
 import { Label, useToast } from '@go/ui';
 

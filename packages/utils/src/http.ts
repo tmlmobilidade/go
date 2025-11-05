@@ -1,4 +1,4 @@
-import { HttpException } from '@go/lib';
+import { HttpException } from '@go/consts';
 
 export class HttpResponse<T> {
 	public readonly data: null | T;

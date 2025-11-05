@@ -3,7 +3,7 @@
 /* * */
 
 import { RidesDetailViewOptions, useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { Label, Section, SegmentedControl, useMeContext } from '@go/ui';
 import React from 'react';
 

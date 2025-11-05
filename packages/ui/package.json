@@ -44,7 +44,7 @@
 	},
 	"dependencies": {
 		"@carrismetropolitana/api-types": "20251104.1218.36",
-		"@go/lib": "*",
+		"@go/consts": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
 		"@mantine/charts": "8.3.6",

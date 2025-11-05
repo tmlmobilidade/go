@@ -1,5 +1,5 @@
 {
-	"name": "@go/utils",
+	"name": "@go/utils-files",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -36,9 +36,9 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@go/lib": "*",
-		"@go/types": "*",
-		"mergekit": "3.0.6"
+		"@go/consts": "*",
+		"jszip": "3.10.1",
+		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@go/tsconfig": "*",

@@ -2,7 +2,7 @@
 
 import { transformMarkdownToWikiArticle } from '@/utils/transform-md-to-wiki.js';
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
-import { HttpStatus } from '@go/lib';
+import { HttpStatus } from '@go/consts';
 import { type WikiArticle } from '@go/types';
 import fs from 'node:fs';
 import { dirname, resolve } from 'path';

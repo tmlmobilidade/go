@@ -1,6 +1,6 @@
 /* * */
 
-import { mimeTypes } from '@go/lib';
+import { mimeTypes } from '@go/consts';
 import JSZip from 'jszip';
 import papaparse, { ParseConfig } from 'papaparse';
 

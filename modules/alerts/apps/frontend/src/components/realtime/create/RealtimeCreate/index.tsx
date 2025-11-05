@@ -4,7 +4,7 @@
 
 import { RealtimeCreateHeader } from '@/components/realtime/create/RealtimeCreateHeader';
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { ErrorDisplay, Pane, useMeContext } from '@go/ui';
 
 /* * */

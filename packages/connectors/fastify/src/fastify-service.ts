@@ -7,7 +7,7 @@ import '@fastify/cors';
 
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { HttpResponse, WithPagination } from '@go/utils';
 
 /* * */

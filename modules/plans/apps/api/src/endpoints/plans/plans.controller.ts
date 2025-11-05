@@ -3,7 +3,7 @@
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { files, gtfsValidations, plans, TransactionManager } from '@go/interfaces';
-import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@go/lib';
+import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@go/consts';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, type UpdatePlanDto, validateOperationalDate } from '@go/types';
 import { getPermission, hasAPIResourcePermission } from '@go/utils';
 import { createHash } from 'node:crypto';

@@ -3,7 +3,7 @@
 import { WikiController } from '@/endpoints/wiki/wiki.controller.js';
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@go/connectors-fastify';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 
 /* * */
 

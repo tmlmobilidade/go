@@ -5,7 +5,7 @@ import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { rabbitMQ } from '@go/connectors-rabbitmq';
 import { sendPlanApprovalRequestEmail } from '@go/emails';
 import { files, gtfsValidations, TransactionManager } from '@go/interfaces';
-import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@go/lib';
+import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@go/consts';
 import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, type GtfsValidationPermission, type Permission } from '@go/types';
 import { fetchData, getPermission, hasAPIResourcePermission } from '@go/utils';
 import { createWriteStream } from 'fs';

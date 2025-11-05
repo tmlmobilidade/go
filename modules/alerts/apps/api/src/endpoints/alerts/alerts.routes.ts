@@ -2,7 +2,7 @@
 
 import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
 import { authorizationMiddleware, FastifyService } from '@go/connectors-fastify';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { Alert, GetAllAlertsQuery, GetAllAlertsQuerySchema } from '@go/types';
 import { validateQueryParams } from '@go/utils';
 import { FastifyInstance } from 'fastify';

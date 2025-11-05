@@ -1,5 +1,5 @@
 {
-	"name": "@go/lib",
+	"name": "@go/utils",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -24,15 +24,11 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist/"],
+	"files": [
+		"dist/"
+	],
 	"main": "index.ts",
 	"types": "index.ts",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
-		}
-	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
@@ -40,13 +36,20 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@go/types": "*"
+		"@go/consts": "*",
+		"@go/types": "*",
+		"mergekit": "3.0.6"
 	},
 	"devDependencies": {
 		"@go/tsconfig": "*",
-		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
 	}
 }

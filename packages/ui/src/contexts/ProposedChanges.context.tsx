@@ -3,7 +3,7 @@
 
 import { useToast } from '@/hooks';
 import { Line } from '@carrismetropolitana/api-types/network';
-import { getAppConfig, HttpException } from '@go/lib';
+import { getAppConfig, HttpException } from '@go/consts';
 import { CreateProposedChangeDto, Facilities, facilitiesSchema, ProposedChange, Stop } from '@go/types';
 import { fetchData } from '@go/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';

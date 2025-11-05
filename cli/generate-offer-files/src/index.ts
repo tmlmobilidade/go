@@ -4,7 +4,7 @@
 
 import { generateOfferOutput } from '@/main.js';
 import LOGGER from '@helperkits/logger';
-import { ASCII_CM_SHORT } from '@go/lib';
+import { ASCII_CM_SHORT } from '@go/consts';
 import { validateOperationalDate } from '@go/types';
 import { Command } from 'commander';
 import fs from 'fs';

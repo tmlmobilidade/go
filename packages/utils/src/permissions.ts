@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* * */
 
-import { ALLOW_ALL_FLAG } from '@go/lib';
+import { ALLOW_ALL_FLAG } from '@go/consts';
 import { type Permission } from '@go/types';
 import { mergekit } from 'mergekit';
 

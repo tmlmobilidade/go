@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { roles } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { type CreateRoleDto, type Role, type UpdateRoleDto } from '@go/types';
 
 /* * */

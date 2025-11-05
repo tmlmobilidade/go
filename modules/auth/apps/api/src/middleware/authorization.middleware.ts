@@ -1,6 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { authProvider } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { type Permission, type User } from '@go/types';
 import { Cache, hasPermission } from '@go/utils';
 

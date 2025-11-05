@@ -4,7 +4,7 @@
 
 import { getCssVariableValue } from '@/utils/get-css-variable-value';
 import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
-import { Permissions } from '@go/lib';
+import { Permissions } from '@go/consts';
 import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@go/types';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@go/ui';

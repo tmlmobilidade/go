@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { enrichUserRefs, rideAcceptances } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/lib';
+import { HttpException, HttpStatus } from '@go/consts';
 import { GtfsCause, NoteComment, RideAcceptanceStatusSchema, UpdateRideAcceptanceDto } from '@go/types';
 import { RideAcceptance } from '@go/types';
 import { Dates } from '@go/utils-dates';
