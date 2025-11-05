@@ -8,7 +8,7 @@ import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { type RealtimeDemand, TopDemandByAgency } from '@go/types';
-import { Progress, Tooltip } from '@tmlmobilidade/ui';
+import { Progress, Tooltip } from '@go/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import useSWR from 'swr';

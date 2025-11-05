@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
-import { Grid, Label, LineSelect, SearchInput, Section, StopSelect } from '@tmlmobilidade/ui';
+import { Grid, Label, LineSelect, SearchInput, Section, StopSelect } from '@go/ui';
 
 /* * */
 

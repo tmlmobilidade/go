@@ -8,7 +8,7 @@ import { type AlertNormalized } from '@/types/normalized';
 import { type Alert, AlertSchema } from '@go/types';
 import { swrFetcher } from '@go/utils';
 import { normalizeString } from '@go/utils-strings';
-import { useSearch } from '@tmlmobilidade/ui';
+import { useSearch } from '@go/ui';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';

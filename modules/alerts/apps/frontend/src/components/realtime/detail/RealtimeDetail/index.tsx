@@ -8,7 +8,7 @@ import { RealtimeDetailSectionReferences } from '@/components/realtime/detail/Re
 import { RealtimeDetailSectionTitle } from '@/components/realtime/detail/RealtimeDetailSectionTitle';
 import { RealtimeDetailSectionValidity } from '@/components/realtime/detail/RealtimeDetailSectionValidity';
 import { RealtimeDetailSectionVisibility } from '@/components/realtime/detail/RealtimeDetailSectionVisibility';
-import { Pane } from '@tmlmobilidade/ui';
+import { Pane } from '@go/ui';
 
 /* * */
 

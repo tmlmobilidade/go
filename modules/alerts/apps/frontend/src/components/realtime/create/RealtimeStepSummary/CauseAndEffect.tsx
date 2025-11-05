@@ -1,7 +1,7 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { Label, Section } from '@tmlmobilidade/ui';
+import { Label, Section } from '@go/ui';
 
 export function CauseAndEffect() {
 	const realtimeContext = useRealtimeCreateContext();

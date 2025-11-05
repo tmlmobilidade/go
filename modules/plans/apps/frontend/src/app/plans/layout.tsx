@@ -2,7 +2,7 @@
 
 import { PlansList } from '@/components/plans/list/PlansList';
 import { PlansListContextProvider } from '@/contexts/PlansList.context';
-import { PanesManager } from '@tmlmobilidade/ui';
+import { PanesManager } from '@go/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

@@ -2,7 +2,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

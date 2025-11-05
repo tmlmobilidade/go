@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { Button } from '@tmlmobilidade/ui';
+import { Button } from '@go/ui';
 
 /* * */
 

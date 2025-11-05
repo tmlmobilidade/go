@@ -2,7 +2,7 @@
 
 import { usePlansListContext } from '@/contexts/PlansList.context';
 import { planValidityStatus, planValidityStatusValues } from '@/types/normalized';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

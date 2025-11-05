@@ -4,7 +4,7 @@
 
 import { FileComponent } from '@/components/common/FileComponent';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Label, Section } from '@go/ui';
 
 /* * */
 

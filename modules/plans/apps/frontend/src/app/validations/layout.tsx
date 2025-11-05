@@ -2,7 +2,7 @@
 
 import { ValidationsList } from '@/components/validations/list/ValidationsList';
 import { ValidationsListContextProvider } from '@/contexts/ValidationsList.context';
-import { PanesManager } from '@tmlmobilidade/ui';
+import { PanesManager } from '@go/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

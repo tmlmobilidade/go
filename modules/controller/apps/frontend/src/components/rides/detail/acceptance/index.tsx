@@ -4,7 +4,7 @@
 
 import { RidesDetailAnalysisResult } from '@/components/rides/detail/RidesDetailAnalysisResult';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
-import { ErrorDisplay, Grid, LoadingOverlay, Section, Separator } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, LoadingOverlay, Section, Separator } from '@go/ui';
 import { useMemo } from 'react';
 
 import { RidesDetailAcceptanceCommentList } from './RideDetailAcceptanceCommentList';

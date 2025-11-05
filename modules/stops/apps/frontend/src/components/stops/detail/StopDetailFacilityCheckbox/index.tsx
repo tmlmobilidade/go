@@ -2,7 +2,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { facilitiesSchema } from '@go/types';
-import { Checkbox, ProposedChangesWrapper } from '@tmlmobilidade/ui';
+import { Checkbox, ProposedChangesWrapper } from '@go/ui';
 import React from 'react';
 
 /* * */

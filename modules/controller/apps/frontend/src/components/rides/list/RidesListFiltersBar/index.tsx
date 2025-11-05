@@ -9,7 +9,7 @@ import { RidesListFilterAnalysisTransactionSequentiality } from '@/components/ri
 import { RidesListFilterDateRange } from '@/components/rides/list/RidesListFilterDateRange';
 import { RidesListFilterDelayStatus } from '@/components/rides/list/RidesListFilterDelayStatus';
 import { RidesListFilterOperationalStatus } from '@/components/rides/list/RidesListFilterOperationalStatus';
-import { FiltersBar } from '@tmlmobilidade/ui';
+import { FiltersBar } from '@go/ui';
 
 /* * */
 

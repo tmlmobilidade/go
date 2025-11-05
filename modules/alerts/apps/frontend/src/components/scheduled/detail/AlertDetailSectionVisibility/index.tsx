@@ -3,7 +3,7 @@
 /* * */
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
-import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DateTimePicker, Section } from '@go/ui';
 
 /* * */
 

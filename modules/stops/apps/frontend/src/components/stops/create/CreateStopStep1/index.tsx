@@ -5,7 +5,7 @@
 import { CreateStopStep1Coordinates } from '@/components/stops/create/CreateStopStep1Coordinates';
 import { CreateStopStep1Locations } from '@/components/stops/create/CreateStopStep1Locations';
 import { CreateStopStep1Map } from '@/components/stops/create/CreateStopStep1Map';
-import { Divider } from '@tmlmobilidade/ui';
+import { Divider } from '@go/ui';
 
 /* * */
 

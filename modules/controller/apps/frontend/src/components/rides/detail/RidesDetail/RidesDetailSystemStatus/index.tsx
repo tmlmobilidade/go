@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { Tag, useMeContext } from '@tmlmobilidade/ui';
+import { Tag, useMeContext } from '@go/ui';
 
 /* * */
 

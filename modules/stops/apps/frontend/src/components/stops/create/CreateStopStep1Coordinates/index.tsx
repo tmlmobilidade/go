@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { CoordinatesInput, Section } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Section } from '@go/ui';
 
 /* * */
 

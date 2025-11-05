@@ -2,7 +2,7 @@
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { RideAcceptanceStatusSchema } from '@go/types';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

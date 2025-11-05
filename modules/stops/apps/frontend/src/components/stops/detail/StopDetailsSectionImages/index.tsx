@@ -4,7 +4,7 @@
 
 import { UploadImage } from '@/components/Common/UploadImage';
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Collapsible, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Section } from '@go/ui';
 
 /* * */
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { GtfsCause, type RideAcceptance } from '@go/types';
-import { useToast } from '@tmlmobilidade/ui';
+import { useToast } from '@go/ui';
 import { fetchData } from '@go/utils';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR, { mutate } from 'swr';

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Label, Section } from '@go/ui';
 
 /* * */
 

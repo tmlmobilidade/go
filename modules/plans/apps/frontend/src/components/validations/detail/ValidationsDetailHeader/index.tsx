@@ -8,7 +8,7 @@ import { openRequestApprovalModalModal } from '@/components/validations/detail/R
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { Permissions } from '@go/lib';
-import { BackButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@go/ui';
 import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 

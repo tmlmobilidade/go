@@ -7,7 +7,7 @@ import { CreateStopModalControls } from '@/components/stops/create/CreateStopMod
 import { CreateStopModalHeader } from '@/components/stops/create/CreateStopModalHeader';
 import { CreateStopModalSwitch } from '@/components/stops/create/CreateStopModalSwitch';
 import { StopCreateContextProvider } from '@/contexts/StopCreate.context';
-import { Divider, Modal, Pane } from '@tmlmobilidade/ui';
+import { Divider, Modal, Pane } from '@go/ui';
 
 /* * */
 

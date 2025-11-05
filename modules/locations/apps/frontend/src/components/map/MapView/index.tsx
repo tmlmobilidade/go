@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Section } from '@tmlmobilidade/ui';
+import { Section } from '@go/ui';
 import Map, { FullscreenControl, GeolocateControl, MapLayerMouseEvent, MapRef, NavigationControl, ScaleControl, useMap, ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 
 import 'maplibre-gl/dist/maplibre-gl.css';

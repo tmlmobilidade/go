@@ -7,7 +7,7 @@ import { MetricsRoutes } from '@/routes';
 import { transformDemandByLineByDay } from '@/utils/metrics/demandChartData';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { type DemandByLineByDay } from '@go/types';
-import { BarChart, LineChart, MetricsSkeleton } from '@tmlmobilidade/ui';
+import { BarChart, LineChart, MetricsSkeleton } from '@go/ui';
 import { Dates } from '@go/utils-dates';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';

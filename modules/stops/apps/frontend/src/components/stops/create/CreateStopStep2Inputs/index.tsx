@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { Divider, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Divider, Grid, Section, TextInput } from '@go/ui';
 
 /* * */
 

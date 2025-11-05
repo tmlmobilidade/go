@@ -6,7 +6,7 @@ import { useLocationsContext } from '@/contexts/Locations.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type StopNormalized } from '@/types/normalized';
 import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop } from '@go/types';
-import { useSearch } from '@tmlmobilidade/ui';
+import { useSearch } from '@go/ui';
 import { normalizeString } from '@go/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';

@@ -2,7 +2,7 @@
 
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { AlertSchema } from '@go/types';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

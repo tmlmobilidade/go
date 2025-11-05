@@ -4,7 +4,7 @@ import { CreateStopModal } from '@/components/stops/create/CreateStopModal';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Permissions } from '@go/lib';
-import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@go/ui';
 import { useState } from 'react';
 
 /* * */

@@ -4,7 +4,7 @@
 
 import { PlanStatusControllerTag } from '@/components/common/PlanStatusControllerTag';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Button, Collapsible, Section, Tag } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Section, Tag } from '@go/ui';
 
 /* * */
 

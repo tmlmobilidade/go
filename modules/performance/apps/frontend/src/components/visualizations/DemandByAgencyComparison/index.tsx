@@ -7,7 +7,7 @@ import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { type DemandByAgencyByDay as DemandByAgencyByDayType } from '@go/types';
-import { BarChart, LineChart, LineChartProps, MetricsSkeleton } from '@tmlmobilidade/ui';
+import { BarChart, LineChart, LineChartProps, MetricsSkeleton } from '@go/ui';
 import { Dates } from '@go/utils-dates';
 import { useMemo } from 'react';
 import useSWR from 'swr';

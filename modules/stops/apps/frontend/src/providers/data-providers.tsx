@@ -4,7 +4,7 @@
 
 import { LocationsContextProvider } from '@/contexts/Locations.context';
 import { StopCreateContextProvider } from '@/contexts/StopCreate.context';
-import { AppProvider } from '@tmlmobilidade/ui';
+import { AppProvider } from '@go/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

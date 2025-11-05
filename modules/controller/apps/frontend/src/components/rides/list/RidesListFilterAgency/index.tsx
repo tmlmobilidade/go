@@ -2,7 +2,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

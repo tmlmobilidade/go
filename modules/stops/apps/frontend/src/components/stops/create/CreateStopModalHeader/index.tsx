@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, Spacer, Toolbar } from '@go/ui';
 
 /* * */
 

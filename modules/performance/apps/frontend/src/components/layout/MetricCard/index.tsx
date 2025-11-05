@@ -4,7 +4,7 @@
 
 import { LiveIcon } from '@/components/layout/LiveIcon';
 import { TrendChip } from '@/components/layout/TrendChip';
-import { Divider, Skeleton } from '@tmlmobilidade/ui';
+import { Divider, Skeleton } from '@go/ui';
 import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';

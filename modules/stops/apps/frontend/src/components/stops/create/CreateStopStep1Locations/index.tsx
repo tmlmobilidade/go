@@ -4,7 +4,7 @@
 
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Grid, Section, ValueDisplay } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

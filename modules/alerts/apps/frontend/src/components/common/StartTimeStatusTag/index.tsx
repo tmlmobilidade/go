@@ -3,7 +3,7 @@
 /* * */
 
 import { RidesData } from '@/contexts/Rides.context';
-import { Section, Tag } from '@tmlmobilidade/ui';
+import { Section, Tag } from '@go/ui';
 
 /* * */
 

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Section, Text } from '@tmlmobilidade/ui';
+import { Section, Text } from '@go/ui';
 
 /* * */
 

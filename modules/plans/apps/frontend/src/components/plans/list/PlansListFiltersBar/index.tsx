@@ -2,7 +2,7 @@
 
 import { PlansListFilterAgency } from '@/components/plans/list/PlansListFilterAgency';
 import { PlansListFilterValidityStatus } from '@/components/plans/list/PlansListFilterValidityStatus';
-import { FiltersBar } from '@tmlmobilidade/ui';
+import { FiltersBar } from '@go/ui';
 
 /* * */
 

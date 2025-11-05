@@ -6,7 +6,7 @@ import { RidesDetailAnalysisResultItem } from '@/components/rides/detail/RidesDe
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
 import { RideAcceptance, UserDisplay } from '@go/types';
-import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@tmlmobilidade/ui';
+import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@go/ui';
 import { Dates } from '@go/utils-dates';
 import React, { createElement, useMemo } from 'react';
 

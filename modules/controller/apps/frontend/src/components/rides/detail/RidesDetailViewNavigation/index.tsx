@@ -4,7 +4,7 @@
 
 import { RidesDetailViewOptions, useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { Permissions } from '@go/lib';
-import { Label, Section, SegmentedControl, useMeContext } from '@tmlmobilidade/ui';
+import { Label, Section, SegmentedControl, useMeContext } from '@go/ui';
 import React from 'react';
 
 /* * */

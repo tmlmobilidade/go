@@ -1,7 +1,7 @@
 /* * */
 
 import { type SimplifiedApexValidation } from '@go/types';
-import { Tag, TagGroup } from '@tmlmobilidade/ui';
+import { Tag, TagGroup } from '@go/ui';
 
 /* * */
 

@@ -3,7 +3,7 @@
 /* * */
 
 import { RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { Label, Section, Tag } from '@tmlmobilidade/ui';
+import { Label, Section, Tag } from '@go/ui';
 
 /* * */
 

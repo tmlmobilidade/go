@@ -3,7 +3,7 @@
 import { RealtimeList } from '@/components/realtime/list/RealtimeList';
 import { RealtimeListContextProvider } from '@/contexts/RealtimeList.context';
 import { RidesContextProvider } from '@/contexts/Rides.context';
-import { PanesManager } from '@tmlmobilidade/ui';
+import { PanesManager } from '@go/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

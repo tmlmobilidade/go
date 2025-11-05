@@ -1,7 +1,7 @@
 /* * */
 
 import { useStopsContext } from '@/contexts/Stops.context';
-import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
+import { TagGroup, type TagProps } from '@go/ui';
 
 /* * */
 

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { LoadingOverlay } from '@tmlmobilidade/ui';
+import { LoadingOverlay } from '@go/ui';
 
 /* * */
 

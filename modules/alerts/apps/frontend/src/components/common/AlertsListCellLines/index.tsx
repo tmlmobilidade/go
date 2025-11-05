@@ -3,7 +3,7 @@
 /* * */
 
 import { useLinesContext } from '@/contexts/Lines.context';
-import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
+import { TagGroup, type TagProps } from '@go/ui';
 
 /* * */
 

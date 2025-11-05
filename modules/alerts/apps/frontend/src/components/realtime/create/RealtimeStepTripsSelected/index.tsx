@@ -4,7 +4,7 @@
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { IconListCheck } from '@tabler/icons-react';
-import { Button, Label, Section } from '@tmlmobilidade/ui';
+import { Button, Label, Section } from '@go/ui';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';

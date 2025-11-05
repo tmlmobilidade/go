@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { AlertMessage } from '@tmlmobilidade/ui';
+import { AlertMessage } from '@go/ui';
 
 /* * */
 

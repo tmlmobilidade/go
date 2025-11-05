@@ -5,7 +5,7 @@
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Translations } from '@/lib/translations';
 import { connectionsSchema } from '@go/types';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList } from '@go/ui';
 import { useMemo } from 'react';
 
 /* * */

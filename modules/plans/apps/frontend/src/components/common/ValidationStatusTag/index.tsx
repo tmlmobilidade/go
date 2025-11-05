@@ -1,7 +1,7 @@
 /* * */
 
 import { type ProcessingStatus } from '@go/types';
-import { Tag } from '@tmlmobilidade/ui';
+import { Tag } from '@go/ui';
 
 /* * */
 

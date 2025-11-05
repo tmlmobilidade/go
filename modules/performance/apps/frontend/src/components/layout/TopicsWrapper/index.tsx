@@ -4,7 +4,7 @@ import Breadcrumb from '@/components/layout/Breadcrumb';
 import Dashboards from '@/components/layout/Dashboards';
 import { Widget } from '@/components/layout/Widget';
 import { TopicDefinition } from '@/constants';
-import { Divider } from '@tmlmobilidade/ui';
+import { Divider } from '@go/ui';
 
 import styles from './styles.module.css';
 

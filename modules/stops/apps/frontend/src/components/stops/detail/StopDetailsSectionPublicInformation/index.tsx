@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
 import { hasAnySchema } from '@go/types';
-import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@go/ui';
 
 /* * */
 

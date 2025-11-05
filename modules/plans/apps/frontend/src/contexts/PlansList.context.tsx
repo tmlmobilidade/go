@@ -7,7 +7,7 @@ import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type PlanNormalized, planValidityStatusValues } from '@/types/normalized';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { type Plan } from '@go/types';
-import { useSearch } from '@tmlmobilidade/ui';
+import { useSearch } from '@go/ui';
 import { normalizeString } from '@go/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

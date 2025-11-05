@@ -7,7 +7,7 @@ import { TopMeanDemandByLineByMonth } from '@/components/visualizations/TopMeanD
 import { OPERATORS, OperatorType } from '@/constants';
 import { Routes } from '@/routes';
 import { DemandByAgencyByMonth } from '@go/types';
-import { Combobox, Grid } from '@tmlmobilidade/ui';
+import { Combobox, Grid } from '@go/ui';
 import { Dates } from '@go/utils-dates';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';

@@ -4,7 +4,7 @@ import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { GtfsEffect, gtfsEffectSchema } from '@go/types';
-import { Grid, Section } from '@tmlmobilidade/ui';
+import { Grid, Section } from '@go/ui';
 
 import styles from './styles.module.css';
 

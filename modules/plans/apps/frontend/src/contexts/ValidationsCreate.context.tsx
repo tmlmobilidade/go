@@ -6,7 +6,7 @@ import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/Crea
 import { type WorkerMessage } from '@/types/worker';
 import { Permissions } from '@go/lib';
 import { type CreateGtfsValidationDto, type GtfsValidation, type GtfsValidationPermission } from '@go/types';
-import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@go/ui';
 import { multipartFetch } from '@go/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';

@@ -3,7 +3,7 @@
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { FileComponent } from '@/components/common/FileComponent';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Label, Section } from '@go/ui';
 
 /* * */
 

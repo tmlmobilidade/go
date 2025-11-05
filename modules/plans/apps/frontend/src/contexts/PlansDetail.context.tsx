@@ -4,7 +4,7 @@
 
 import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
 import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@go/types';
-import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { useForm, UseFormReturnType, useToast } from '@go/ui';
 import { Dates, fetchData } from '@go/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';

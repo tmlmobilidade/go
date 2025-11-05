@@ -4,7 +4,7 @@
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
-import { Button, Combobox, Label, Section, Surface } from '@tmlmobilidade/ui';
+import { Button, Combobox, Label, Section, Surface } from '@go/ui';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';

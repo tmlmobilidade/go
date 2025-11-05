@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Checkbox, Collapsible, Grid, Section } from '@go/ui';
 
 /* * */
 

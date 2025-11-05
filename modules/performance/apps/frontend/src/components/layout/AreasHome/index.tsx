@@ -4,7 +4,7 @@ import SystemStatus from '@/components/layout/SystemStatus';
 import { RealtimeDemand } from '@/components/visualizations/RealtimeDemand';
 import { ServiceCompliance } from '@/components/visualizations/ServiceCompliance';
 import { OperatorType } from '@/constants';
-import { Grid } from '@tmlmobilidade/ui';
+import { Grid } from '@go/ui';
 import { useTranslations } from 'next-intl';
 
 import styles from './styles.module.css';

@@ -2,7 +2,7 @@
 
 import { Routes } from '@/lib/routes';
 import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@go/types';
-import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { useForm, type UseFormReturnType, useToast } from '@go/ui';
 import { convertObject, fetchData } from '@go/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';

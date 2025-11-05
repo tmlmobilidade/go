@@ -2,7 +2,7 @@
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { type UnixTimestamp } from '@go/types';
-import { FilterTypeDateRange } from '@tmlmobilidade/ui';
+import { FilterTypeDateRange } from '@go/ui';
 
 /* * */
 

@@ -3,7 +3,7 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, Spacer, Tag, Toolbar } from '@go/ui';
 
 /* * */
 

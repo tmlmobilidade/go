@@ -2,7 +2,7 @@
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { getAlertTitleAndDescription } from '@/lib/translations';
-import { Separator } from '@tmlmobilidade/ui';
+import { Separator } from '@go/ui';
 import { useEffect } from 'react';
 
 import { AffectedRides } from './AffectedRides';

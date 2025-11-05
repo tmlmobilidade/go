@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@go/ui';
 import { useState } from 'react';
 
 import styles from './styles.module.css';

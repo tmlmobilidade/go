@@ -5,7 +5,7 @@ import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, 
 import { fetchData } from '@go/utils';
 import { convertObject } from '@go/utils';
 import { Dates } from '@go/utils-dates';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@go/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';

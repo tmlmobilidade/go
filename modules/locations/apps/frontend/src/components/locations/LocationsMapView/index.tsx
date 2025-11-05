@@ -5,7 +5,7 @@
 import { MapView } from '@/components/map';
 import MapViewGeoJson from '@/components/map/MapViewGeoJson';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Section } from '@tmlmobilidade/ui';
+import { Section } from '@go/ui';
 
 /* * */
 

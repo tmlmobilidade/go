@@ -2,7 +2,7 @@
 
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
 import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { Tag } from '@tmlmobilidade/ui';
+import { Tag } from '@go/ui';
 
 /* * */
 

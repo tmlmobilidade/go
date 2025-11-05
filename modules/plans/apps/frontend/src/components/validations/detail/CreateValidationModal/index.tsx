@@ -5,7 +5,7 @@
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { useValidationsCreateContext, ValidationsCreateContextProvider } from '@/contexts/ValidationsCreate.context';
-import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, MeContextProvider, openModal, Section, Text } from '@go/ui';
 
 /* * */
 

@@ -4,7 +4,7 @@ import { openCreateValidationModal } from '@/components/validations/detail/Creat
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Permissions } from '@go/lib';
-import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@go/ui';
 
 /* * */
 

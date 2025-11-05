@@ -4,7 +4,7 @@
 
 import { RidesDetailAnalysisResultItem } from '@/components/rides/detail/RidesDetailAnalysisResultItem';
 import { RideAnalysis } from '@go/types';
-import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Label, Section } from '@go/ui';
 
 /* * */
 

@@ -3,7 +3,7 @@
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { Skeleton } from '@tmlmobilidade/ui';
+import { Skeleton } from '@go/ui';
 
 /* * */
 

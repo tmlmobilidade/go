@@ -4,7 +4,7 @@ import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePla
 import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
 import { Routes } from '@/lib/routes';
 import { type GtfsValidation, type Plan } from '@go/types';
-import { closeModal, useToast } from '@tmlmobilidade/ui';
+import { closeModal, useToast } from '@go/ui';
 import { fetchData } from '@go/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';

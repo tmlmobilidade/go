@@ -2,7 +2,7 @@
 
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Collapsible, DatePicker, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DatePicker, Grid, Section } from '@go/ui';
 
 /* * */
 
