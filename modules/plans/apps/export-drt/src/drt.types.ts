@@ -2,7 +2,7 @@
 /* * */
 
 import { OperationalDate, UnixTimestamp } from '@go/types';
-import { SQLiteDatabase, SQLiteTableInstance } from '@go/utils-sqlite';
+import { SQLiteDatabase, SQLiteTableInstance } from '@go/sqlite';
 
 /* * */
 

@@ -2,7 +2,7 @@
 
 import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_Stop_Extended, type GTFS_StopTime, type GTFS_Trip_Extended, type Plan } from '@go/types';
 import { type OperationalDate } from '@go/types';
-import { type SQLiteTableInstance } from '@go/utils-sqlite';
+import { type SQLiteTableInstance } from '@go/sqlite';
 
 /**
  * Configuration options for importing GTFS data into a database.

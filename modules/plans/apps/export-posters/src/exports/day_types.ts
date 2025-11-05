@@ -2,7 +2,7 @@
 
 import { DAY_TYPES } from '@/day-types.js';
 import { DayTypesExt, type ExportToHitouchConfig } from '@/types.js';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import { CsvWriter } from '@helperkits/writer';
 
 /* * */

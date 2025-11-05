@@ -3,7 +3,7 @@
 import { type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { GTFS_CalendarDate_Raw, validateGtfsCalendarDate } from '@go/types';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import { Timer } from '@go/utils-timer';
 import fs from 'node:fs';
 

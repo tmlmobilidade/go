@@ -10,7 +10,7 @@ import { processTripsFile } from '@/processors/trips.js';
 import { type GtfsSQLTables, type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
 import { downloadAndExtractGtfs } from '@/utils/extract-file.js';
 import { initGtfsSqlTables } from '@/utils/init-tables.js';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import { Timer } from '@go/utils-timer';
 import { type Plan } from '@go/types';
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { metrics } from '@go/interfaces';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import TIMETRACKER from '@helperkits/timer';
 
 const metricTypes = [

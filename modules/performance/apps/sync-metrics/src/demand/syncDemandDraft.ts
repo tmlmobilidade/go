@@ -3,7 +3,7 @@
 import { metrics, simplifiedApexValidations } from '@go/interfaces';
 import { type Metric } from '@go/types';
 import { Dates } from '@go/dates';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import TIMETRACKER from '@helperkits/timer';
 
 type DemandGroupType = 'agency' | 'line' | 'pattern';

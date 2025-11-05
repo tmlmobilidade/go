@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import { metrics, rides } from '@go/interfaces';
 import { Metric } from '@go/types';
 import { Dates } from '@go/dates';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import TIMETRACKER from '@helperkits/timer';
 
 /* * */

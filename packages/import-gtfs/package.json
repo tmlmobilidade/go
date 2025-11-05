@@ -1,5 +1,5 @@
 {
-	"name": "@go/utils-import-gtfs",
+	"name": "@go/import-gtfs",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -42,8 +42,8 @@
 	"dependencies": {
 		"@go/interfaces": "*",
 		"@go/utils": "*",
-		"@go/utils-logger": "*",
-		"@go/utils-sqlite": "*",
+		"@go/logger": "*",
+		"@go/sqlite": "*",
 		"@go/utils-timer": "*",
 		"csv-parse": "6.1.0"
 	},

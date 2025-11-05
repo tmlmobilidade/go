@@ -2,7 +2,7 @@
 
 import { type ExportToHitouchConfig } from '@/types.js';
 import { type Plan } from '@go/types';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import { CsvWriter } from '@helperkits/writer';
 
 /* * */

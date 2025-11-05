@@ -2,7 +2,7 @@
 
 import { GTFS_Route_Extended, GTFS_StopTime, GTFS_Trip_Extended, Plan } from '@go/types';
 import { toMetersFromKilometersOrMeters } from '@go/geo';
-import { SQLiteDatabase, SQLiteTableInstance } from '@go/utils-sqlite';
+import { SQLiteDatabase, SQLiteTableInstance } from '@go/sqlite';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

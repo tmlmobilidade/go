@@ -1,4 +1,4 @@
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 
 /* * */
 const CALENDAR_URL = 'https://go.carrismetropolitana.pt/api/dates/public';

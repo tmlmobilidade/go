@@ -3,7 +3,7 @@
 import { files, plans } from '@go/interfaces';
 import { mimeTypes } from '@go/consts';
 import { Dates } from '@go/dates';
-import { SQLiteDatabase, SQLiteDatabaseConfig } from '@go/utils-sqlite';
+import { SQLiteDatabase, SQLiteDatabaseConfig } from '@go/sqlite';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import fs from 'fs';

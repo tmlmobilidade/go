@@ -5,8 +5,8 @@ import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.j
 import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
 import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@go/types';
 import { Dates } from '@go/dates';
-import { type GtfsSQLTables } from '@go/utils-import-gtfs';
-import { Logger } from '@go/utils-logger';
+import { type GtfsSQLTables } from '@go/import-gtfs';
+import { Logger } from '@go/logger';
 import { generateRandomString } from '@go/utils-strings';
 import { CsvWriter } from '@helperkits/writer';
 import fs from 'node:fs';

@@ -5,7 +5,7 @@ import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import { metrics, simplifiedApexValidations } from '@go/interfaces';
 import { type DemandByAgencyByDay } from '@go/types';
 import { Dates } from '@go/dates';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import TIMETRACKER from '@helperkits/timer';
 import pLimit from 'p-limit';
 

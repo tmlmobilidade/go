@@ -11,8 +11,8 @@ import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import { plans } from '@go/interfaces';
 import { validateOperationalDate } from '@go/types';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@go/utils-import-gtfs';
-import { Logger } from '@go/utils-logger';
+import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@go/import-gtfs';
+import { Logger } from '@go/logger';
 import TIMETRACKER from '@helperkits/timer';
 import fs from 'node:fs';
 

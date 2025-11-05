@@ -2,8 +2,8 @@
 
 import { type ExportToHitouchConfig } from '@/types.js';
 import { type GTFS_Stop } from '@go/types';
-import { type GtfsSQLTables } from '@go/utils-import-gtfs';
-import { Logger } from '@go/utils-logger';
+import { type GtfsSQLTables } from '@go/import-gtfs';
+import { Logger } from '@go/logger';
 import { CsvWriter } from '@helperkits/writer';
 
 /* * */

@@ -1,5 +1,5 @@
 {
-	"name": "@go/utils-sqlite",
+	"name": "@go/sqlite",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

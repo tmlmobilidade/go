@@ -2,7 +2,7 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { Logger } from '@go/utils-logger';
+import { Logger } from '@go/logger';
 import { Timer } from '@go/utils-timer';
 import { type GTFS_Route_Extended_Raw, validateGtfsRouteExtended } from '@go/types';
 
