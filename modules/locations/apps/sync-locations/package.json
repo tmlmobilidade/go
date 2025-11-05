@@ -17,13 +17,13 @@
 	},
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
-		"@tmlmobilidade/interfaces": "20251028.1440.40",
+		"@go/interfaces": "*",
 		"@turf/turf": "7.2.0"
 	},
 	"devDependencies": {
 		"@go/tsconfig": "*",
-		"@tmlmobilidade/types": "20251028.1440.40",
-		"@types/node": "24.9.1",
+		"@go/types": "*",
+		"@types/node": "24.10.0",
 		"ts-node": "10.9.2",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

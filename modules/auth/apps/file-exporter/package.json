@@ -23,12 +23,12 @@
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "^20251103.1250.18",
-		"@tmlmobilidade/interfaces": "20251103.1255.55",
+		"@go/interfaces": "*",
 		"@tmlmobilidade/utils": "20251103.1255.55"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251103.1255.55",
-		"@tmlmobilidade/types": "20251103.1255.55",
+		"@go/tsconfig": "*",
+		"@go/types": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

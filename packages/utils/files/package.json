@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@go/lib": "*",
 		"jszip": "3.10.1",
-		"papaparse": "5.4.1"
+		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@go/tsconfig": "*",

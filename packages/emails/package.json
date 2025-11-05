@@ -43,11 +43,11 @@
 	"dependencies": {
 		"@go/utils": "*",
 		"@react-email/components": "0.5.7",
-		"@types/nodemailer": "7.0.2",
-		"browserslist": "4.26.3",
-		"nodemailer": "7.0.9",
-		"react": "19.1.1",
-		"react-email": "4.3.1"
+		"@types/nodemailer": "7.0.3",
+		"browserslist": "4.27.0",
+		"nodemailer": "7.0.10",
+		"react": "19.2.0",
+		"react-email": "4.3.2"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
@@ -55,8 +55,8 @@
 		"@go/tsconfig": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
-		"@react-email/preview-server": "4.3.1",
-		"@types/node": "24.9.1",
+		"@react-email/preview-server": "4.3.2",
+		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"

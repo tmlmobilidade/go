@@ -18,18 +18,18 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
+		"@go/interfaces": "*",
+		"@go/utils": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/interfaces": "20250906.141.55",
-		"@tmlmobilidade/utils": "20250906.141.55",
 		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20250906.141.55",
-		"@types/node": "24.3.1",
-		"@types/papaparse": "5.3.16",
+		"@go/tsconfig": "*",
+		"@types/node": "24.10.0",
+		"@types/papaparse": "5.5.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.5",
-		"typescript": "5.9.2"
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
 	}
 }

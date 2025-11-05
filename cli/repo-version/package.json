@@ -27,7 +27,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@types/node": "24.9.1",
+		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.3"
 	}

@@ -24,13 +24,13 @@
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
+		"@go/interfaces": "*",
+		"@go/lib": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@helperkits/writer": "20251010.1959.27",
-		"@tmlmobilidade/interfaces": "*",
-		"@go/lib": "*",
+		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/utils": "*",
-		"commander": "14.0.1",
+		"commander": "14.0.2",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0"
@@ -38,8 +38,8 @@
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@go/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
-		"@types/node": "24.9.1",
+		"@go/types": "*",
+		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

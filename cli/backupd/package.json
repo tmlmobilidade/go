@@ -15,27 +15,27 @@
 		"start": "npm run build && node dist/index.js"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "3.913.0",
+		"@aws-sdk/client-s3": "3.922.0",
 		"@go/emails": "*",
 		"@go/interfaces": "*",
 		"@go/lib": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
 		"@helperkits/logger": "20250628.901.58",
-		"@types/archiver": "6.0.3",
+		"@types/archiver": "7.0.0",
 		"archiver": "7.0.1",
 		"mongodb": "6.20.0",
-		"nodemailer": "7.0.9",
+		"nodemailer": "7.0.10",
 		"pg": "8.16.3",
-		"react": "19.1.1",
+		"react": "19.2.0",
 		"resolve-tspaths": "0.8.23",
 		"yaml": "2.8.1"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@go/tsconfig": "*",
-		"@types/node": "24.9.1",
-		"@types/nodemailer": "7.0.2",
+		"@types/node": "24.10.0",
+		"@types/nodemailer": "7.0.3",
 		"typescript": "5.9.3"
 	}
 }

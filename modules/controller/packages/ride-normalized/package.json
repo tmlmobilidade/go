@@ -22,12 +22,12 @@
 		"lint:fix": "eslint --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20251028.1802.11"
+		"@go/types": "20251103.1255.55"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20251028.1802.11",
-		"@types/node": "24.9.2",
+		"@go/tsconfig": "*",
+		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.3"
 	}

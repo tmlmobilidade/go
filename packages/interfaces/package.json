@@ -48,16 +48,16 @@
 		"@go/utils-dates": "*",
 		"@go/utils-files": "*",
 		"@go/utils-strings": "*",
-		"bcryptjs": "3.0.2",
-		"oci-common": "2.119.1",
-		"oci-objectstorage": "2.119.1",
+		"bcryptjs": "3.0.3",
+		"oci-common": "2.121.0",
+		"oci-objectstorage": "2.121.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@go/tsconfig": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "24.9.1",
+		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
