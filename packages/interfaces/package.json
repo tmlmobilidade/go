@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-interfaces",
+	"name": "@go/interfaces",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -40,14 +40,14 @@
 		"lint:fix": "eslint --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-connectors-mongo": "*",
-		"@tmlmobilidade/go-emails": "*",
-		"@tmlmobilidade/go-lib": "*",
-		"@tmlmobilidade/go-types": "*",
-		"@tmlmobilidade/go-utils": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/go-utils-files": "*",
-		"@tmlmobilidade/go-utils-strings": "*",
+		"@go/connectors-mongo": "*",
+		"@go/emails": "*",
+		"@go/lib": "*",
+		"@go/types": "*",
+		"@go/utils": "*",
+		"@go/utils-dates": "*",
+		"@go/utils-files": "*",
+		"@go/utils-strings": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"bcryptjs": "3.0.2",
 		"oci-common": "2.119.1",

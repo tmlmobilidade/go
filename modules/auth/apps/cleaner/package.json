@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-auth-cleaner",
+	"name": "@go/auth-cleaner",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

@@ -1,6 +1,6 @@
 /* * */
 
-import { type Plan } from '@tmlmobilidade/go-types';
+import { type Plan } from '@go/types';
 
 /* * */
 

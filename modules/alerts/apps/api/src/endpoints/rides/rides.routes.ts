@@ -1,9 +1,9 @@
 /* * */
 
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-connectors-fastify';
-import { Permissions } from '@tmlmobilidade/go-lib';
-import { Ride } from '@tmlmobilidade/go-types';
+import { authorizationMiddleware, FastifyService } from '@go/connectors-fastify';
+import { Permissions } from '@go/lib';
+import { Ride } from '@go/types';
 import { FastifyInstance } from 'fastify';
 
 /* * */

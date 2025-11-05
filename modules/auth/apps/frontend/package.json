@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-auth-frontend",
+	"name": "@go/auth-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.35.0",
-		"@tmlmobilidade/go-lib": "*",
+		"@go/lib": "*",
 		"@tmlmobilidade/ui": "20251103.1255.55",
 		"@tmlmobilidade/utils": "20251103.1255.55",
 		"bcryptjs": "3.0.3",

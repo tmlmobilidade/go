@@ -2,11 +2,11 @@
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
 import { IStorageProvider, StorageFactory } from '@/providers/index.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
-import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/go-utils';
-import { Files } from '@tmlmobilidade/go-utils-files';
-import { generateRandomString } from '@tmlmobilidade/go-utils-strings';
+import { HttpException, HttpStatus } from '@go/lib';
+import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@go/types';
+import { AsyncSingletonProxy, convertObject } from '@go/utils';
+import { Files } from '@go/utils-files';
+import { generateRandomString } from '@go/utils-strings';
 import { DeleteOptions, DeleteResult, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
 import { Readable } from 'node:stream';
 import { z } from 'zod';

@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-performance-sync-metrics",
+	"name": "@go/performance-sync-metrics",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

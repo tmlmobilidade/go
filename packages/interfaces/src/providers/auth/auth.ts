@@ -1,12 +1,12 @@
 /* * */
 
 import { roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
-import { sendWelcomeEmail } from '@tmlmobilidade/go-emails';
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
-import { CreateUserDto, LoginDto, OneOrTheOther, Permission, Session, User } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/go-utils';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { generateRandomString, generateRandomToken } from '@tmlmobilidade/go-utils-strings';
+import { sendWelcomeEmail } from '@go/emails';
+import { getAppConfig, HttpException, HttpStatus } from '@go/lib';
+import { CreateUserDto, LoginDto, OneOrTheOther, Permission, Session, User } from '@go/types';
+import { AsyncSingletonProxy, mergeObjects } from '@go/utils';
+import { Dates } from '@go/utils-dates';
+import { generateRandomString, generateRandomToken } from '@go/utils-strings';
 import bcrypt from 'bcryptjs';
 
 /* * */

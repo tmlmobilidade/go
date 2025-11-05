@@ -9,12 +9,12 @@
 	"scripts": {
 		"build": "turbo build",
 		"build:packages": "turbo build --filter=./packages/**/*",
-		"build:types": "turbo build --filter=@tmlmobilidade/go-types",
+		"build:types": "turbo build --filter=@go/types",
 		"dev": "turbo dev",
-		"dev:alerts": "dotenv-run -f ./modules/alerts/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*...",
+		"dev:alerts": "dotenv-run -f ./modules/alerts/environments/development/secrets/.env -- turbo run dev --filter=@go/alerts-*...",
 		"dev:packages": "turbo dev --filter=./packages/**/*",
 		"dev:test": "turbo run build:watch",
-		"dev:types": "turbo dev --filter=@tmlmobilidade/go-types",
+		"dev:types": "turbo dev --filter=@go/types",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse"

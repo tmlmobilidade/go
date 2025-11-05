@@ -2,7 +2,7 @@
 
 import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { Tag } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 
 /* * */
 

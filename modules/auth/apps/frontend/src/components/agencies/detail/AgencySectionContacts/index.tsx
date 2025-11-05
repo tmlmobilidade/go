@@ -3,9 +3,9 @@
 /* * */
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { CreateAgencySchema } from '@tmlmobilidade/go-types';
+import { CreateAgencySchema } from '@go/types';
 import { Collapsible, PillsInput, Section } from '@tmlmobilidade/ui';
-import { isEmail } from '@tmlmobilidade/go-utils';
+import { isEmail } from '@go/utils';
 
 /* * */
 

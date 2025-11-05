@@ -5,9 +5,9 @@
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { Line, Stop } from '@carrismetropolitana/api-types/network';
-import { Ride } from '@tmlmobilidade/go-types';
+import { Ride } from '@go/types';
 import { useDebouncedValue } from '@tmlmobilidade/ui';
-import { swrFetcher } from '@tmlmobilidade/go-utils';
+import { swrFetcher } from '@go/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';

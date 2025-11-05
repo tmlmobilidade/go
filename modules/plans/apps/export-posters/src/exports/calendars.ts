@@ -5,8 +5,8 @@ import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.j
 import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/go-types';
-import { Dates, generateRandomString, Logs } from '@tmlmobilidade/go-utils';
+import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@go/types';
+import { Dates, generateRandomString, Logs } from '@go/utils';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

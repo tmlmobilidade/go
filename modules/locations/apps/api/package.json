@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-locations-api",
+	"name": "@go/locations-api",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -18,7 +18,7 @@
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.1.0",
 		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/go-lib": "*",
+		"@go/lib": "*",
 		"@tmlmobilidade/types": "20251028.1440.40",
 		"@tmlmobilidade/utils": "20251028.1440.40",
 		"@turf/turf": "^7.2.0",

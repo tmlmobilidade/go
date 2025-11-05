@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { CreateGtfsValidationDto, GtfsValidation, GtfsValidationSchema, UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+import { CreateGtfsValidationDto, GtfsValidation, GtfsValidationSchema, UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@go/types';
+import { AsyncSingletonProxy } from '@go/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

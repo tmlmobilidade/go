@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-utils-sqlite",
+	"name": "@go/utils-sqlite",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -35,7 +35,7 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-utils-strings": "*",
+		"@go/utils-strings": "*",
 		"better-sqlite3": "12.4.1"
 	},
 	"devDependencies": {

@@ -1,6 +1,6 @@
 /* * */
 
-import { type VehicleEvent } from '@tmlmobilidade/go-types';
+import { type VehicleEvent } from '@go/types';
 
 /**
  * The observed extension is the distance between the odomoter values of the first and last events.

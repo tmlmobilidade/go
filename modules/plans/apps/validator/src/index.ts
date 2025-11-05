@@ -2,11 +2,11 @@
 
 import logger from '@helperkits/logger';
 import { rabbitMQ } from '@tmlmobilidade/connectors';
-import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/go-emails';
+import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@go/emails';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
-import { files, gtfsValidations } from '@tmlmobilidade/go-interfaces';
-import { getCurrentEnvironment } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { files, gtfsValidations } from '@go/interfaces';
+import { getCurrentEnvironment } from '@go/types';
+import { Dates } from '@go/utils-dates';
 import { access, constants, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';

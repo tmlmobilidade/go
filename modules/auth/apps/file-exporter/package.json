@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-auth-file-exporter",
+	"name": "@go/auth-file-exporter",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

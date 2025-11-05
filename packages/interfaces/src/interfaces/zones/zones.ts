@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { CreateZoneDto, UpdateZoneDto, UpdateZoneSchema, Zone, ZoneSchema } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+import { CreateZoneDto, UpdateZoneDto, UpdateZoneSchema, Zone, ZoneSchema } from '@go/types';
+import { AsyncSingletonProxy } from '@go/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

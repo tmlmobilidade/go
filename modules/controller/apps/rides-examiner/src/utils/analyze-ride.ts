@@ -16,7 +16,7 @@ import { simpleOneVehicleEventOrApexValidationAnalyzer } from '@/analyzers/simpl
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.js';
 import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.js';
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/go-types';
+import { type Ride } from '@go/types';
 
 /**
  * Analyzes the ride data and returns the analysis results.

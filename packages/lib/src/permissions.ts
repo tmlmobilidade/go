@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertPermissionSchema, GtfsValidationPermissionSchema, NotificationSchema, PlanPermissionSchema, RidePermissionSchema } from '@tmlmobilidade/go-types';
+import { AlertPermissionSchema, GtfsValidationPermissionSchema, NotificationSchema, PlanPermissionSchema, RidePermissionSchema } from '@go/types';
 
 /* * */
 

@@ -6,7 +6,7 @@ import { ApexValidationIsPassengerTag } from '@/components/common/ApexValidation
 import { ApexValidationStatusTag } from '@/components/common/ApexValidationStatusTag';
 import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types';
+import { type SimplifiedApexValidation } from '@go/types';
 import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

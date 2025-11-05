@@ -5,9 +5,9 @@
 import { openChangePlanModal } from '@/components/plans/detail/ChangePlanModal';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconRefresh, IconUpload } from '@tabler/icons-react';
-import { Permissions } from '@tmlmobilidade/go-lib';
+import { Permissions } from '@go/lib';
 import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/go-utils';
+import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

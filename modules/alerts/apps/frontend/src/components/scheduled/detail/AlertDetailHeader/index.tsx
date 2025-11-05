@@ -5,7 +5,7 @@
 import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/go-utils';
+import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

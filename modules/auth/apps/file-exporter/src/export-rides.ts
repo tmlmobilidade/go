@@ -3,10 +3,10 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { CsvWriter } from '@helperkits/writer';
-import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/go-interfaces';
-import { ALLOW_ALL_FLAG, Permissions } from '@tmlmobilidade/go-lib';
-import { FileExport, Permission, RideAcceptance, RideNormalized, RidePermission } from '@tmlmobilidade/go-types';
-import { generateRandomString, getPermission } from '@tmlmobilidade/go-utils';
+import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@go/interfaces';
+import { ALLOW_ALL_FLAG, Permissions } from '@go/lib';
+import { FileExport, Permission, RideAcceptance, RideNormalized, RidePermission } from '@go/types';
+import { generateRandomString, getPermission } from '@go/utils';
 import os from 'os';
 import path from 'path';
 

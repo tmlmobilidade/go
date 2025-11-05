@@ -34,23 +34,23 @@
 		}
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc && resolve-tspaths",
+		"build": "tsc && resolve-tspaths",
 		"dev": "email dev -p 3001 --dir ./src/emails",
 		"export": "email export --dir ./src/emails",
 		"lint": "eslint ./src/ && tsc --noEmit"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces": "*",
-		"@tmlmobilidade/go-utils-logger": "*",
-		"@tmlmobilidade/go-utils-sqlite": "*",
-		"@tmlmobilidade/go-utils-timer": "*",
+		"@go/interfaces": "*",
+		"@go/utils-logger": "*",
+		"@go/utils-sqlite": "*",
+		"@go/utils-timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/go-lib": "*",
-		"@tmlmobilidade/go-types": "*",
+		"@go/lib": "*",
+		"@go/types": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",

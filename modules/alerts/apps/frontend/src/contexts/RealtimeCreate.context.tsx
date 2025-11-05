@@ -11,9 +11,9 @@ import { RealtimeStepTrips } from '@/components/realtime/create/RealtimeStepTrip
 
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { Routes } from '@/lib/routes';
-import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/go-types';
+import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@go/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { Dates, fetchData } from '@tmlmobilidade/go-utils';
+import { Dates, fetchData } from '@go/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 

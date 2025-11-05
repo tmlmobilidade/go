@@ -2,8 +2,8 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/go-interfaces';
-import { performInChunks } from '@tmlmobilidade/go-utils';
+import { hashedShapes, hashedTrips, plans, rides } from '@go/interfaces';
+import { performInChunks } from '@go/utils';
 
 /* * */
 

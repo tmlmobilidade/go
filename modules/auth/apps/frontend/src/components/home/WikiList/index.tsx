@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type WikiArticle } from '@tmlmobilidade/go-types';
+import { type WikiArticle } from '@go/types';
 import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';

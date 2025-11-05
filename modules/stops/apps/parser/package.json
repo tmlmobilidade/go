@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-stops-parser",
+	"name": "@go/stops-parser",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-pckg-parse",
+	"name": "@go/replicator-pckg-parse",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

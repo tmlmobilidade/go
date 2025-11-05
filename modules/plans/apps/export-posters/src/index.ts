@@ -11,9 +11,9 @@ import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import TIMETRACKER from '@helperkits/timer';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { plans } from '@tmlmobilidade/go-interfaces';
-import { validateOperationalDate } from '@tmlmobilidade/go-types';
-import { Logs } from '@tmlmobilidade/go-utils';
+import { plans } from '@go/interfaces';
+import { validateOperationalDate } from '@go/types';
+import { Logs } from '@go/utils';
 import fs from 'node:fs';
 
 // import { getFormattedDates } from './get-names.js';

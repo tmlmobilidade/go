@@ -4,7 +4,7 @@
 
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Translations } from '@/lib/translations';
-import { equipmentSchema } from '@tmlmobilidade/go-types';
+import { equipmentSchema } from '@go/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

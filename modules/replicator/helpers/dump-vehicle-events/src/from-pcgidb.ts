@@ -3,7 +3,7 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 import fs from 'node:fs';
 
 /* * */

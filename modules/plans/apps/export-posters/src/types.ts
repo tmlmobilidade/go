@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationalDate } from '@tmlmobilidade/go-types';
+import { type OperationalDate } from '@go/types';
 
 /* * */
 

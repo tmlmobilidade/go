@@ -1,6 +1,6 @@
 /* * */
 
-import { type SimplifiedApexType, type UnixTimestamp } from '@tmlmobilidade/go-types';
+import { type SimplifiedApexType, type UnixTimestamp } from '@go/types';
 
 /* * */
 

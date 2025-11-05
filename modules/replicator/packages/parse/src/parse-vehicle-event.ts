@@ -1,7 +1,7 @@
 /* * */
 
-import { type VehicleEvent } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type VehicleEvent } from '@go/types';
+import { Dates } from '@go/utils-dates';
 
 /* * */
 

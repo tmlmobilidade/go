@@ -4,8 +4,8 @@
 
 import { generateOfferOutput } from '@/main.js';
 import LOGGER from '@helperkits/logger';
-import { ASCII_CM_SHORT } from '@tmlmobilidade/go-lib';
-import { validateOperationalDate } from '@tmlmobilidade/go-types';
+import { ASCII_CM_SHORT } from '@go/lib';
+import { validateOperationalDate } from '@go/types';
 import { Command } from 'commander';
 import fs from 'fs';
 

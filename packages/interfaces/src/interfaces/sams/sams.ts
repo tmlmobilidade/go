@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { type CreateSamDto, type Sam, SamSchema, type UpdateSamDto, UpdateSamSchema } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+import { type CreateSamDto, type Sam, SamSchema, type UpdateSamDto, UpdateSamSchema } from '@go/types';
+import { AsyncSingletonProxy } from '@go/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

@@ -1,4 +1,4 @@
-import { locations } from '@tmlmobilidade/go-interfaces';
+import { locations } from '@go/interfaces';
 
 const lng = -9.1205183;
 const lat = 38.7173029;

@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { VehicleEvent } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+import { VehicleEvent } from '@go/types';
+import { AsyncSingletonProxy } from '@go/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */

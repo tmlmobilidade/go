@@ -3,9 +3,9 @@
 import { CHANGE_PLAN_MODAL_ID } from '@/components/plans/detail/ChangePlanModal';
 /* * */
 
-import { GtfsValidation, type Plan } from '@tmlmobilidade/go-types';
+import { GtfsValidation, type Plan } from '@go/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/go-utils';
+import { fetchData } from '@go/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 

@@ -3,8 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { CsvWriter } from '@helperkits/writer';
-import { rides } from '@tmlmobilidade/go-interfaces';
-import { Ride, validateOperationalDate } from '@tmlmobilidade/go-types';
+import { rides } from '@go/interfaces';
+import { Ride, validateOperationalDate } from '@go/types';
 import fs from 'node:fs';
 
 /* * */

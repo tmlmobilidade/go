@@ -3,9 +3,9 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
-import { files, plans } from '@tmlmobilidade/go-interfaces';
-import { mimeTypes } from '@tmlmobilidade/go-lib';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { files, plans } from '@go/interfaces';
+import { mimeTypes } from '@go/lib';
+import { Dates } from '@go/utils-dates';
 import fs from 'fs';
 import cron from 'node-cron';
 import os from 'os';

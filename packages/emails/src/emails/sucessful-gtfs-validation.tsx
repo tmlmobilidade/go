@@ -2,8 +2,8 @@
 
 import { EmailWrapper, styles, ValidationSummary } from '@/components/index.js';
 import { Button, Hr, Section, Text } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/go-lib';
-import { GtfsValidation, ProcessingStatus, UnixTimestamp } from '@tmlmobilidade/go-types';
+import { getAppConfig } from '@go/lib';
+import { GtfsValidation, ProcessingStatus, UnixTimestamp } from '@go/types';
 
 /* * */
 

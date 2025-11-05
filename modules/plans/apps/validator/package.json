@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-plans-validator",
+	"name": "@go/plans-validator",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -18,7 +18,7 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@tmlmobilidade/connectors": "20251028.1440.40",
-		"@tmlmobilidade/go-emails": "*",
+		"@go/emails": "*",
 		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
 		"@tmlmobilidade/interfaces": "20251028.1440.40",
 		"@tmlmobilidade/utils": "20251028.1440.40",

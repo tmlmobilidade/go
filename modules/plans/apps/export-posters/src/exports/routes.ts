@@ -3,8 +3,8 @@
 import { type ExportToHitouchConfig } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { type GTFS_Route } from '@tmlmobilidade/go-types';
-import { Logs } from '@tmlmobilidade/go-utils';
+import { type GTFS_Route } from '@go/types';
+import { Logs } from '@go/utils';
 
 /* * */
 

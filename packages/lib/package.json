@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-lib",
+	"name": "@go/lib",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -40,7 +40,7 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types": "*"
+		"@go/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

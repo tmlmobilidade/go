@@ -2,7 +2,7 @@
 
 /* * */
 
-import { HomeLink } from '@tmlmobilidade/go-types';
+import { HomeLink } from '@go/types';
 import { Button, Section } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable perfectionist/sort-classes */
-import { MongoConnector } from '@tmlmobilidade/go-connectors-mongo';
-import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
+import { MongoConnector } from '@go/connectors-mongo';
+import { HttpException, HttpStatus } from '@go/lib';
 import {
 	Census,
 	District,
@@ -14,8 +14,8 @@ import {
 	MunicipalityDocument,
 	Parish,
 	ParishDocument,
-} from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+} from '@go/types';
+import { AsyncSingletonProxy } from '@go/utils';
 import { Collection, Document, Filter, FindOptions, WithId } from 'mongodb';
 
 /* * */

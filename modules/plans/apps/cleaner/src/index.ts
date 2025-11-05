@@ -2,9 +2,9 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { files, gtfsValidations } from '@tmlmobilidade/go-interfaces';
-import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { files, gtfsValidations } from '@go/interfaces';
+import { type GtfsValidation, type UnixTimestamp } from '@go/types';
+import { Dates } from '@go/utils-dates';
 
 /**
  * This script removes gtfs-validation documents and their associated files

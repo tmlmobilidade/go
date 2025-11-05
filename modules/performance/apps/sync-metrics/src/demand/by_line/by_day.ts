@@ -3,9 +3,9 @@
 import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
 import TIMETRACKER from '@helperkits/timer';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/go-interfaces';
-import { type DemandByLineByDay } from '@tmlmobilidade/go-types';
-import { Dates, Logs } from '@tmlmobilidade/go-utils';
+import { metrics, simplifiedApexValidations } from '@go/interfaces';
+import { type DemandByLineByDay } from '@go/types';
+import { Dates, Logs } from '@go/utils';
 import pLimit from 'p-limit';
 
 /* * */

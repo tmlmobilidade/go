@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-utils-dates",
+	"name": "@go/utils-dates",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -35,7 +35,7 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types": "*",
+		"@go/types": "*",
 		"luxon": "3.7.2"
 	},
 	"devDependencies": {

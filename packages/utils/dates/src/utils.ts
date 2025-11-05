@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@/dates.js';
-import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/go-types';
+import { type OperationalDate, type UnixTimestamp } from '@go/types';
 
 /* * */
 

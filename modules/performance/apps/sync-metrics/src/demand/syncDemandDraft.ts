@@ -1,9 +1,9 @@
 /* * */
 
 import TIMETRACKER from '@helperkits/timer';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/go-interfaces';
-import { type Metric } from '@tmlmobilidade/go-types';
-import { Dates, Logs } from '@tmlmobilidade/go-utils';
+import { metrics, simplifiedApexValidations } from '@go/interfaces';
+import { type Metric } from '@go/types';
+import { Dates, Logs } from '@go/utils';
 
 type DemandGroupType = 'agency' | 'line' | 'pattern';
 type Granularity = 'day' | 'month' | 'year';

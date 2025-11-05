@@ -5,7 +5,7 @@
 import CheckCard from '@/components/common/CheckCard';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionAction } from '@/lib/permissions';
-import { Permission } from '@tmlmobilidade/go-types';
+import { Permission } from '@go/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';

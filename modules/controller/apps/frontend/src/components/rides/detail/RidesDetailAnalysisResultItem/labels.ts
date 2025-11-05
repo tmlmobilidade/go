@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride } from '@tmlmobilidade/go-types';
+import { type Ride } from '@go/types';
 
 /* * */
 

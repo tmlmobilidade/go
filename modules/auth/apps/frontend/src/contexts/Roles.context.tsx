@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type Role } from '@tmlmobilidade/go-types';
+import { type Role } from '@go/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

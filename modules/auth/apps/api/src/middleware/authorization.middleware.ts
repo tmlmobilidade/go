@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
-import { authProvider } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
-import { type Permission, type User } from '@tmlmobilidade/go-types';
-import { Cache, hasPermission } from '@tmlmobilidade/go-utils';
+import { authProvider } from '@go/interfaces';
+import { HttpException, HttpStatus } from '@go/lib';
+import { type Permission, type User } from '@go/types';
+import { Cache, hasPermission } from '@go/utils';
 
 declare module 'fastify' {
 	export interface FastifyRequest {

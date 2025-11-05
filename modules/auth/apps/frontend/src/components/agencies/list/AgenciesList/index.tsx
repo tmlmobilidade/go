@@ -7,7 +7,7 @@ import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
 import { Routes } from '@/lib/routes';
 import { type AgencyNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/go-utils';
+import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

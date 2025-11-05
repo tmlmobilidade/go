@@ -14,7 +14,7 @@
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.0.1",
 		"@tmlmobilidade/interfaces": "0.0.0",
-		"@tmlmobilidade/go-lib": "0.0.0",
+		"@go/lib": "0.0.0",
 		"@tmlmobilidade/types": "0.0.0",
 		"@tmlmobilidade/utils": "0.0.0",
 		"fastify": "5.2.2",

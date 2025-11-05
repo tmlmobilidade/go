@@ -1,9 +1,9 @@
 /* * */
 
 import { type FastifyRequest } from '@/fastify-service.js';
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
-import { type Permission, type User } from '@tmlmobilidade/go-types';
-import { Cache, fetchData, hasPermission } from '@tmlmobilidade/go-utils';
+import { getAppConfig, HttpException, HttpStatus } from '@go/lib';
+import { type Permission, type User } from '@go/types';
+import { Cache, fetchData, hasPermission } from '@go/utils';
 
 /* * */
 

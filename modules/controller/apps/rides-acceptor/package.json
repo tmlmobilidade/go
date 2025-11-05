@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-controller-rides-acceptor",
+	"name": "@go/controller-rides-acceptor",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -22,7 +22,7 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/go-controller-pckg-ride-normalized": "*",
+		"@go/controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/interfaces": "20251028.1802.11",
 		"luxon": "^3.7.2"
 	},

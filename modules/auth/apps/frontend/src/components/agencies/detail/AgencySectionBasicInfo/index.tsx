@@ -3,9 +3,9 @@
 /* * */
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { CreateAgencySchema } from '@tmlmobilidade/go-types';
+import { CreateAgencySchema } from '@go/types';
 import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 
 /* * */
 

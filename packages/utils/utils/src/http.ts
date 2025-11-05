@@ -1,4 +1,4 @@
-import { HttpException } from '@tmlmobilidade/go-lib';
+import { HttpException } from '@go/lib';
 
 export class HttpResponse<T> {
 	public readonly data: null | T;

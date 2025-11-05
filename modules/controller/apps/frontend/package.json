@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-controller-frontend",
+	"name": "@go/controller-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -17,7 +17,7 @@
 	"dependencies": {
 		"@mantine/nprogress": "8.3.5",
 		"@tabler/icons-react": "3.35.0",
-		"@tmlmobilidade/go-controller-pckg-ride-normalized": "*",
+		"@go/controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/types": "20251028.1802.11",
 		"@tmlmobilidade/ui": "20251028.1802.11",
 		"@turf/turf": "7.2.0",

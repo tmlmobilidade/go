@@ -1,7 +1,7 @@
 /* * */
 
 import { type AggregationResultItem } from '@/types.js';
-import { type CreateSamDto } from '@tmlmobilidade/go-types';
+import { type CreateSamDto } from '@go/types';
 
 /* * */
 

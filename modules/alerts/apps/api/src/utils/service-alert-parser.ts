@@ -1,7 +1,7 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
-import { files } from '@tmlmobilidade/go-interfaces';
-import { type ServiceAlertResponseItem } from '@tmlmobilidade/go-types';
-import { Alert, File } from '@tmlmobilidade/go-types';
+import { files } from '@go/interfaces';
+import { type ServiceAlertResponseItem } from '@go/types';
+import { Alert, File } from '@go/types';
 import { type EntitySelector } from 'gtfs-types';
 
 async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAlertResponseItem> {

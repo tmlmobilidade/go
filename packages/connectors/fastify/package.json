@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-connectors-fastify",
+	"name": "@go/connectors-fastify",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -42,7 +42,7 @@
 		"fastify": "5.6.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/go-types": "*",
+		"@go/types": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",

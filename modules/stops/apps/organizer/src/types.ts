@@ -1,6 +1,6 @@
 /* * */
 
-import { type District, Locality, Municipality, ParishDocument } from '@tmlmobilidade/go-types';
+import { type District, Locality, Municipality, ParishDocument } from '@go/types';
 
 /**
  * Represents a response from the Locations API.

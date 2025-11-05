@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { unzipFile } from '@/utils/unzip-file.js';
-import { type Plan } from '@tmlmobilidade/go-types';
-import { Logger } from '@tmlmobilidade/go-utils-logger';
-import { files } from '@tmlmobilidade/go-interfaces';
+import { type Plan } from '@go/types';
+import { Logger } from '@go/utils-logger';
+import { files } from '@go/interfaces';
 import fs from 'node:fs';
 
 /**

@@ -3,10 +3,10 @@
 /* * */
 
 import { Routes } from '@/lib/routes';
-import { CreateUserDto, CreateUserSchema, UpdateUserSchema, User } from '@tmlmobilidade/go-types';
+import { CreateUserDto, CreateUserSchema, UpdateUserSchema, User } from '@go/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/go-utils';
-import { convertObject } from '@tmlmobilidade/go-utils';
+import { fetchData } from '@go/utils';
+import { convertObject } from '@go/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';

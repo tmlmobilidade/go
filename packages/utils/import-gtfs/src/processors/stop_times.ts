@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { type GTFS_StopTime_Raw, validateGtfsStopTime } from '@tmlmobilidade/go-types';
-import { Logger } from '@tmlmobilidade/go-utils-logger';
-import { Timer } from '@tmlmobilidade/go-utils-timer';
+import { type GTFS_StopTime_Raw, validateGtfsStopTime } from '@go/types';
+import { Logger } from '@go/utils-logger';
+import { Timer } from '@go/utils-timer';
 
 /**
  * Processes the stop_times.txt file from the GTFS dataset.

@@ -10,7 +10,7 @@ import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconUser } from '@tabler/icons-react';
-import { type RealtimeDemand } from '@tmlmobilidade/go-types';
+import { type RealtimeDemand } from '@go/types';
 import { Spacer } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';

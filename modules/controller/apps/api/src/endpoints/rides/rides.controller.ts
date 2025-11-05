@@ -2,11 +2,11 @@
 
 import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/go-interfaces';
-import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/go-lib';
+import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@go/interfaces';
+import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@go/lib';
 import { normalizeRide, RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { type HashedShape, type HashedTrip, type Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/go-types';
-import { Dates, getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/go-utils';
+import { type HashedShape, type HashedTrip, type Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@go/types';
+import { Dates, getPermission, HttpResponse, validateQueryParams } from '@go/utils';
 import { type WebSocket } from 'ws';
 
 /* * */

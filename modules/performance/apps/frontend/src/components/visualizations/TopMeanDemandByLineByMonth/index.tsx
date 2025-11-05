@@ -2,9 +2,9 @@
 
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { MetricsRoutes } from '@/routes';
-import { type TopMeanDemandByLineByMonth } from '@tmlmobilidade/go-types';
+import { type TopMeanDemandByLineByMonth } from '@go/types';
 import { BarChart, MetricsSkeleton } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 

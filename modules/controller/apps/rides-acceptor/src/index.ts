@@ -2,10 +2,10 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { alerts, rideAcceptances, rides } from '@tmlmobilidade/go-interfaces';
+import { alerts, rideAcceptances, rides } from '@go/interfaces';
 import { normalizeRide } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { Ride, RideAcceptance, GtfsCause } from '@tmlmobilidade/go-types';
-import { compareObjects, Dates } from '@tmlmobilidade/go-utils';
+import { Ride, RideAcceptance, GtfsCause } from '@go/types';
+import { compareObjects, Dates } from '@go/utils';
 import { Interval } from 'luxon';
 
 import { isEmpty, testRide } from './utils.js';

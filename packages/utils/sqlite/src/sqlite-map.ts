@@ -1,6 +1,6 @@
 /* * */
 
-import { generateRandomString } from '@tmlmobilidade/go-utils-strings';
+import { generateRandomString } from '@go/utils-strings';
 import BSQLite3, { type Database } from 'better-sqlite3';
 
 /* * */

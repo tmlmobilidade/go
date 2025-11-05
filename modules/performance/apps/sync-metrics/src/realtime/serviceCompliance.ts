@@ -1,7 +1,7 @@
 import TIMETRACKER from '@helperkits/timer';
-import { metrics, rides } from '@tmlmobilidade/go-interfaces';
-import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/go-types';
-import { Dates, Logs } from '@tmlmobilidade/go-utils';
+import { metrics, rides } from '@go/interfaces';
+import { type RealtimeServiceCompliance, type Ride } from '@go/types';
+import { Dates, Logs } from '@go/utils';
 
 /* * */
 

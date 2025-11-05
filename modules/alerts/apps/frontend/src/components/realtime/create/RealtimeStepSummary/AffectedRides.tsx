@@ -2,7 +2,7 @@ import { getDelayStatus, StartTimeStatusTag } from '@/components/common/StartTim
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { RidesData } from '@/contexts/Rides.context';
 import { DataTable, DataTableColumn, Label, Section } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 
 export function AffectedRides() {
 	const realtimeContext = useRealtimeCreateContext();

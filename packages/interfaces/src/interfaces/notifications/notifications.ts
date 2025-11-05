@@ -1,10 +1,10 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { sendNotificationEmail } from '@tmlmobilidade/go-emails';
-import { getAppConfig } from '@tmlmobilidade/go-lib';
-import { CreateNotificationDto, Notification, NotificationPermission, NotificationSchema, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/go-utils';
+import { sendNotificationEmail } from '@go/emails';
+import { getAppConfig } from '@go/lib';
+import { CreateNotificationDto, Notification, NotificationPermission, NotificationSchema, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@go/types';
+import { AsyncSingletonProxy, mergeObjects } from '@go/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

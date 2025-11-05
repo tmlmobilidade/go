@@ -2,9 +2,9 @@
 
 import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
-import { metrics } from '@tmlmobilidade/go-interfaces';
-import { type Metric } from '@tmlmobilidade/go-types';
-import { Logs } from '@tmlmobilidade/go-utils';
+import { metrics } from '@go/interfaces';
+import { type Metric } from '@go/types';
+import { Logs } from '@go/utils';
 
 /* * */
 

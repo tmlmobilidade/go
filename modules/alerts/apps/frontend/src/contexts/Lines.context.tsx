@@ -7,7 +7,7 @@ import type { CachedResource } from '@carrismetropolitana/api-types/common';
 import type { DemandMetricsByLine, ServiceMetrics } from '@carrismetropolitana/api-types/metrics';
 import type { Line } from '@carrismetropolitana/api-types/network';
 
-import { standardSwrFetcher } from '@tmlmobilidade/go-utils';
+import { standardSwrFetcher } from '@go/utils';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/go-types';
+import { type Ride } from '@go/types';
 
 /**
  * This analyzer tests if the trip has at most two drivers (at least one, maximum of two).

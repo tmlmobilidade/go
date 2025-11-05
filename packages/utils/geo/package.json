@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-utils-geo",
+	"name": "@go/utils-geo",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -35,7 +35,7 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types": "*",
+		"@go/types": "*",
 		"@turf/turf": "7.2.0"
 	},
 	"devDependencies": {

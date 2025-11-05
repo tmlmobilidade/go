@@ -6,9 +6,9 @@ import { DemandByAgencyComparison } from '@/components/visualizations/DemandByAg
 import { TopMeanDemandByLineByMonth } from '@/components/visualizations/TopMeanDemandByLineByMonth';
 import { OPERATORS, OperatorType } from '@/constants';
 import { Routes } from '@/routes';
-import { DemandByAgencyByMonth } from '@tmlmobilidade/go-types';
+import { DemandByAgencyByMonth } from '@go/types';
 import { Combobox, Grid } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';

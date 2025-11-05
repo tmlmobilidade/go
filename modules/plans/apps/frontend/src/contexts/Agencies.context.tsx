@@ -2,8 +2,8 @@
 
 /* * */
 
-import { getAppConfig } from '@tmlmobilidade/go-lib';
-import { type Agency } from '@tmlmobilidade/go-types';
+import { getAppConfig } from '@go/lib';
+import { type Agency } from '@go/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

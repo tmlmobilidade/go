@@ -1,8 +1,8 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
-import { Permissions } from '@tmlmobilidade/go-lib';
-import { StopPermission } from '@tmlmobilidade/go-types';
+import { Permissions } from '@go/lib';
+import { StopPermission } from '@go/types';
 
 import { StopsController } from './stops.controller.js';
 

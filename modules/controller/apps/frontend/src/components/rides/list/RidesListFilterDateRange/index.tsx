@@ -1,7 +1,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types';
+import { type UnixTimestamp } from '@go/types';
 import { FilterTypeDateRange } from '@tmlmobilidade/ui';
 
 /* * */

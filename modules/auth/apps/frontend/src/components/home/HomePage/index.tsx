@@ -5,7 +5,7 @@
 import { QuickLinks } from '@/components/home/QuickLinks';
 import { WelcomeMessage } from '@/components/home/WelcomeMessage';
 import { WikiList } from '@/components/home/WikiList';
-import { Permissions } from '@tmlmobilidade/go-lib';
+import { Permissions } from '@go/lib';
 import { Divider, Pane, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */

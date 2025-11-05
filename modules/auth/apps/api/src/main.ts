@@ -2,7 +2,7 @@
 
 import fastifyMultipart from '@fastify/multipart';
 import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
-import { getAppConfig } from '@tmlmobilidade/go-lib';
+import { getAppConfig } from '@go/lib';
 
 /* * */
 

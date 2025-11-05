@@ -4,9 +4,9 @@
 
 import { ChangePlanContextProvider, useChangePlanContext } from '@/contexts/ChangePlan.context';
 import { IconRefresh } from '@tabler/icons-react';
-import { type Plan } from '@tmlmobilidade/go-types';
+import { type Plan } from '@go/types';
 import { Button, closeModal, Combobox, Divider, Grid, Label, MeContextProvider, openModal, Section, Tag, Text } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 
 /* * */
 

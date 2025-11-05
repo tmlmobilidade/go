@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsValidation, type Plan, PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/go-types';
+import { type GtfsValidation, type Plan, PROCESSING_STATUS_OPTIONS } from '@go/types';
 
 /* * */
 

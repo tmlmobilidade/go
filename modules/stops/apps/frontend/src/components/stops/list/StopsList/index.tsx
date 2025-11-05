@@ -7,7 +7,7 @@ import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { type StopNormalized } from '@/types/normalized';
 import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/go-utils';
+import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

@@ -3,7 +3,7 @@
 /* * */
 
 import { useMapOptionsContext } from '@/components/map/MapOptions.context';
-import { type Location } from '@tmlmobilidade/go-types';
+import { type Location } from '@go/types';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */

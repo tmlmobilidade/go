@@ -1,7 +1,7 @@
 /* * */
 
 import { SQLiteColumn, SQLiteDatabaseConfig, SQLiteTable } from '@/types.js';
-import { generateRandomString } from '@tmlmobilidade/go-utils-strings';
+import { generateRandomString } from '@go/utils-strings';
 import BSQLite3, { type Database, Statement } from 'better-sqlite3';
 import fs from 'node:fs';
 import { Readable } from 'node:stream';

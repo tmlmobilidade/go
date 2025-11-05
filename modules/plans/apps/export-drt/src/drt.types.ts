@@ -2,7 +2,7 @@
 /* * */
 
 import { SQLiteDatabase, SQLiteTableInstance } from '@tmlmobilidade/connectors';
-import { OperationalDate, UnixTimestamp } from '@tmlmobilidade/go-types';
+import { OperationalDate, UnixTimestamp } from '@go/types';
 
 /* * */
 

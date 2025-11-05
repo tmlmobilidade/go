@@ -1,6 +1,6 @@
 /* * */
 
-import { type Metric } from '@tmlmobilidade/go-types';
+import { type Metric } from '@go/types';
 
 /* * */
 

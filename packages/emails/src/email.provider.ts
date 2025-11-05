@@ -1,6 +1,6 @@
 /* * */
 
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+import { AsyncSingletonProxy } from '@go/utils';
 import nodemailer from 'nodemailer';
 
 /* * */

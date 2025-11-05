@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { type SimplifiedApexInspection } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+import { type SimplifiedApexInspection } from '@go/types';
+import { AsyncSingletonProxy } from '@go/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */

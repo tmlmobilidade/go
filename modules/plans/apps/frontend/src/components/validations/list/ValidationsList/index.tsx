@@ -10,7 +10,7 @@ import { ValidationsListHeader } from '@/components/validations/list/Validations
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { type ValidationNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/go-utils';
+import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

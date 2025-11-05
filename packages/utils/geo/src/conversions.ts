@@ -1,6 +1,6 @@
 /* * */
 
-import { type HashedShape } from '@tmlmobilidade/go-types';
+import { type HashedShape } from '@go/types';
 import { type Feature, type GeoJsonProperties, type LineString, type Point, type Polygon, type Position } from 'geojson';
 
 /**

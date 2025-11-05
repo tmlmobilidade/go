@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-utils",
+	"name": "@go/utils",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -36,8 +36,8 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-lib": "*",
-		"@tmlmobilidade/go-types": "*",
+		"@go/lib": "*",
+		"@go/types": "*",
 		"mergekit": "3.0.6"
 	},
 	"devDependencies": {

@@ -1,12 +1,12 @@
 'use client';
 
 import { IconChooser } from '@/components/common/IconChooser';
-import { HomeLink } from '@tmlmobilidade/go-types';
+import { HomeLink } from '@go/types';
 
 /* * */
 
 import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
-import { isUrl } from '@tmlmobilidade/go-utils';
+import { isUrl } from '@go/utils';
 import { useState } from 'react';
 
 /* * */

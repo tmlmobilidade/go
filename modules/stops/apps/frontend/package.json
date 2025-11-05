@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-stops-frontend",
+	"name": "@go/stops-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.35.0",
-		"@tmlmobilidade/go-lib": "*",
+		"@go/lib": "*",
 		"@tmlmobilidade/ui": "20251028.1440.40",
 		"@tmlmobilidade/utils": "20251028.1440.40",
 		"clsx": "2.1.1",

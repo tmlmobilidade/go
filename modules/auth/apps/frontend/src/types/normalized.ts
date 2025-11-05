@@ -1,6 +1,6 @@
 /* * */
 
-import { type Agency, HomeLink, Organization, type Role, type User } from '@tmlmobilidade/go-types';
+import { type Agency, HomeLink, Organization, type Role, type User } from '@go/types';
 
 /* * */
 

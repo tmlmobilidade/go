@@ -1,8 +1,8 @@
 /* * */
 
-import { sams } from '@tmlmobilidade/go-interfaces';
-import { type Sam } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { sams } from '@go/interfaces';
+import { type Sam } from '@go/types';
+import { Dates } from '@go/utils-dates';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

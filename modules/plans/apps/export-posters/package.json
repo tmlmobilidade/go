@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-plans-export-posters",
+	"name": "@go/plans-export-posters",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

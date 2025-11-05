@@ -1,6 +1,6 @@
 import { AggregationPipeline } from '@/aggregation-pipeline.js';
-import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@go/types';
+import { Dates } from '@go/utils-dates';
 
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize delay statuses.

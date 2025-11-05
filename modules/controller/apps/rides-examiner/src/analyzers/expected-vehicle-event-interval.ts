@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/go-types';
-import { sortByUnixTimestamp } from '@tmlmobilidade/go-utils';
+import { type Ride } from '@go/types';
+import { sortByUnixTimestamp } from '@go/utils';
 
 /**
  * This analyzer tests if the average interval between vehicle events is within limits.

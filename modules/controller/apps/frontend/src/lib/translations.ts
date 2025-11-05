@@ -1,4 +1,4 @@
-import { GtfsCause, GtfsEffect } from '@tmlmobilidade/go-types';
+import { GtfsCause, GtfsEffect } from '@go/types';
 
 export const Translations: { CAUSE: Record<GtfsCause, string>, EFFECT: Record<GtfsEffect, string> } = {
 	CAUSE: {

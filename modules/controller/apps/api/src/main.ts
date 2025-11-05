@@ -2,7 +2,7 @@
 
 import fastifyWs from '@fastify/websocket';
 import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
-import { getAppConfig } from '@tmlmobilidade/go-lib';
+import { getAppConfig } from '@go/lib';
 
 /* * */
 

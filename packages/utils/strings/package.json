@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-utils-strings",
+	"name": "@go/utils-strings",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

@@ -1,7 +1,7 @@
 /* * */
 
-import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type OperationalDate, type UnixTimestamp } from '@go/types';
+import { Dates } from '@go/utils-dates';
 
 /* * */
 

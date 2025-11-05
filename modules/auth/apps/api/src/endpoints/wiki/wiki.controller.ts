@@ -2,8 +2,8 @@
 
 import { transformMarkdownToWikiArticle } from '@/utils/transform-md-to-wiki.js';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
-import { HttpStatus } from '@tmlmobilidade/go-lib';
-import { type WikiArticle } from '@tmlmobilidade/go-types';
+import { HttpStatus } from '@go/lib';
+import { type WikiArticle } from '@go/types';
 import fs from 'node:fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';

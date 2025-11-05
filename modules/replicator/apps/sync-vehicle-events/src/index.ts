@@ -3,12 +3,12 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, vehicleEvents } from '@tmlmobilidade/go-interfaces';
+import { rides, vehicleEvents } from '@go/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/sae-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
-import { type VehicleEvent } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type VehicleEvent } from '@go/types';
+import { Dates } from '@go/utils-dates';
 import { Interval } from 'luxon';
 
 /* * */

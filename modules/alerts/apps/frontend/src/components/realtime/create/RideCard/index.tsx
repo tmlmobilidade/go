@@ -3,7 +3,7 @@
 import { getDelayStatus, StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { RidesData } from '@/contexts/Rides.context';
 import { Badge, Label, Section } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 
 import styles from './styles.module.css';
 

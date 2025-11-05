@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-controller-helpers-export-sams",
+	"name": "@go/controller-helpers-export-sams",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",

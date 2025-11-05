@@ -3,10 +3,10 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/go-interfaces';
+import { rides, simplifiedApexOnBoardRefunds } from '@go/interfaces';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type SimplifiedApexOnBoardRefund } from '@go/types';
+import { Dates } from '@go/utils-dates';
 
 /* * */
 

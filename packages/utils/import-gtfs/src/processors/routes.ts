@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { Logger } from '@tmlmobilidade/go-utils-logger';
-import { Timer } from '@tmlmobilidade/go-utils-timer';
-import { type GTFS_Route_Extended_Raw, validateGtfsRouteExtended } from '@tmlmobilidade/go-types';
+import { Logger } from '@go/utils-logger';
+import { Timer } from '@go/utils-timer';
+import { type GTFS_Route_Extended_Raw, validateGtfsRouteExtended } from '@go/types';
 
 /**
  * Processes the routes.txt file from the GTFS dataset.

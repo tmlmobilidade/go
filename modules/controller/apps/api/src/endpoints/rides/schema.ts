@@ -1,7 +1,7 @@
 /* * */
 
 import { delayStatusOptions, operationalStatusOptions, seenStatusOptions } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { RideAcceptanceStatusSchema, RideAnalysisGradeSchema, validateUnixTimestamp } from '@tmlmobilidade/go-types';
+import { RideAcceptanceStatusSchema, RideAnalysisGradeSchema, validateUnixTimestamp } from '@go/types';
 import { z } from 'zod';
 
 const RideAnalysisGradeWithNoneSchema = RideAnalysisGradeSchema.or(z.literal('none'));

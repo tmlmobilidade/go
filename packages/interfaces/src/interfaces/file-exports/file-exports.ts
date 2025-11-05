@@ -2,8 +2,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { CreateFileExportDto, FileExport, FileExportSchema, UpdateFileExportSchema } from '@tmlmobilidade/go-types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/go-utils';
+import { CreateFileExportDto, FileExport, FileExportSchema, UpdateFileExportSchema } from '@go/types';
+import { AsyncSingletonProxy } from '@go/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

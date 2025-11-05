@@ -3,7 +3,7 @@
 /* * */
 
 import { IconAlertCircle, IconCheck, IconClock, IconX } from '@tabler/icons-react';
-import { RideAcceptanceStatus } from '@tmlmobilidade/go-types';
+import { RideAcceptanceStatus } from '@go/types';
 import { Tag, TagProps } from '@tmlmobilidade/ui';
 
 /* * */

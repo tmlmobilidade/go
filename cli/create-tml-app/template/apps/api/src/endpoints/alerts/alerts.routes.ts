@@ -1,9 +1,9 @@
 /* * */
 
 import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-connectors-fastify';
-import { Permissions } from '@tmlmobilidade/go-lib';
-import { Alert } from '@tmlmobilidade/go-types';
+import { authorizationMiddleware, FastifyService } from '@go/connectors-fastify';
+import { Permissions } from '@go/lib';
+import { Alert } from '@go/types';
 import { FastifyInstance } from 'fastify';
 
 /* * */

@@ -1,7 +1,7 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/go-types';
+import { type Ride } from '@go/types';
 
 /**
  * This analyzer tests if at least one vehicle event or one validation is found for the trip.

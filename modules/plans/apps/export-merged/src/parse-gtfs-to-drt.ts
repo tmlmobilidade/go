@@ -3,8 +3,8 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { SQLiteDatabase, SQLiteTableInstance } from '@tmlmobilidade/connectors';
-import { GTFS_Route_Extended, GTFS_StopTime, GTFS_Trip_Extended, Plan } from '@tmlmobilidade/go-types';
-import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/go-utils';
+import { GTFS_Route_Extended, GTFS_StopTime, GTFS_Trip_Extended, Plan } from '@go/types';
+import { toMetersFromKilometersOrMeters } from '@go/utils';
 
 import { DrtJourneys, DrtPatternPoints, DrtPatterns, DrtPatternStops, DrtRoutes, DrtStops } from './drt.types.js';
 import { GtfsSQLTables } from './import-gtfs-to-database.js';

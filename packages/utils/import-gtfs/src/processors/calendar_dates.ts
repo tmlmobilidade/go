@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { GTFS_CalendarDate_Raw, validateGtfsCalendarDate } from '@tmlmobilidade/go-types';
-import { Logger } from '@tmlmobilidade/go-utils-logger';
-import { Timer } from '@tmlmobilidade/go-utils-timer';
+import { GTFS_CalendarDate_Raw, validateGtfsCalendarDate } from '@go/types';
+import { Logger } from '@go/utils-logger';
+import { Timer } from '@go/utils-timer';
 import fs from 'node:fs';
 
 /**

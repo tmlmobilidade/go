@@ -5,9 +5,9 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type ValidationNormalized } from '@/types/normalized';
-import { type GtfsValidation, PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/go-types';
+import { type GtfsValidation, PROCESSING_STATUS_OPTIONS } from '@go/types';
 import { useSearch } from '@tmlmobilidade/ui';
-import { normalizeString } from '@tmlmobilidade/go-utils';
+import { normalizeString } from '@go/utils';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';

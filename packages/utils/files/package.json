@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-utils-files",
+	"name": "@go/utils-files",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -35,7 +35,7 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-lib": "*",
+		"@go/lib": "*",
 		"jszip": "3.10.1",
 		"papaparse": "5.4.1"
 	},

@@ -1,11 +1,11 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
-import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/go-interfaces';
-import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
-import { GtfsCause, NoteComment, RideAcceptanceStatusSchema, UpdateRideAcceptanceDto } from '@tmlmobilidade/go-types';
-import { RideAcceptance } from '@tmlmobilidade/go-types';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { enrichUserRefs, rideAcceptances } from '@go/interfaces';
+import { HttpException, HttpStatus } from '@go/lib';
+import { GtfsCause, NoteComment, RideAcceptanceStatusSchema, UpdateRideAcceptanceDto } from '@go/types';
+import { RideAcceptance } from '@go/types';
+import { Dates } from '@go/utils-dates';
 
 /* * */
 

@@ -4,7 +4,7 @@ import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { DemandByLineByDayVisualization } from '@/components/visualizations/DemandByLineByDay';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { Combobox, DatePicker } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@go/utils-dates';
 import { useState } from 'react';
 
 import styles from './styles.module.css';

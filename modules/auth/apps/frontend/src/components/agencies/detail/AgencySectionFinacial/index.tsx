@@ -3,7 +3,7 @@
 /* * */
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { CreateAgencySchema } from '@tmlmobilidade/go-types';
+import { CreateAgencySchema } from '@go/types';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

@@ -7,8 +7,8 @@ import '@fastify/cors';
 
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
-import { HttpException, HttpStatus } from '@tmlmobilidade/go-lib';
-import { HttpResponse, WithPagination } from '@tmlmobilidade/go-utils';
+import { HttpException, HttpStatus } from '@go/lib';
+import { HttpResponse, WithPagination } from '@go/utils';
 
 /* * */
 

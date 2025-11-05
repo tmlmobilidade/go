@@ -6,7 +6,7 @@ import { useOrganizationsListContext } from '@/contexts/OrganizationsList.contex
 import { Routes } from '@/lib/routes';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/go-utils';
+import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 import { OrganizationsListHeader } from '../OrganizationsListHeader';

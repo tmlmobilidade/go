@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-emails",
+	"name": "@go/emails",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -52,9 +52,9 @@
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@react-email/preview-server": "4.3.1",
-		"@tmlmobilidade/go-lib": "*",
-		"@tmlmobilidade/go-types": "*",
-		"@tmlmobilidade/go-utils": "*",
+		"@go/lib": "*",
+		"@go/types": "*",
+		"@go/utils": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
