@@ -11,15 +11,18 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc && resolve-tspaths"
+		"build": "tsc && resolve-tspaths",
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20251028.1440.40",
-		"@tmlmobilidade/utils": "20251028.1440.40"
+		"@go/types": "*",
+		"@go/utils": "*"
 	},
 	"devDependencies": {
+		"@go/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
+		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
 	}
 }

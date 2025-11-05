@@ -1,10 +1,10 @@
 /* * */
 
+import { rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@go/interfaces';
+import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@go/sae-replicator-pckg-parse';
+import { Dates } from '@go/utils-dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@go/interfaces';
-import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { Dates } from '@go/utils-dates';
 
 /**
  * This function links Refunds with Sales and Validation transactions.

@@ -1,12 +1,12 @@
 /* * */
 
+import { rides, vehicleEvents } from '@go/interfaces';
+import { parseVehicleEvent } from '@go/sae-replicator-pckg-parse';
+import { type VehicleEvent } from '@go/types';
+import { Dates } from '@go/utils-dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, vehicleEvents } from '@go/interfaces';
-import { parseVehicleEvent } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type VehicleEvent } from '@go/types';
-import { Dates } from '@go/utils-dates';
 
 /* * */
 

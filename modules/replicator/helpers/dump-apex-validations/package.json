@@ -12,22 +12,22 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch ./src/index.ts",
+		"dev": "tsx watch src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@go/interfaces": "*",
+		"@go/replicator-pckg-utils": "*",
+		"@go/utils": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251010.1959.27",
-		"@go/replicator-pckg-utils": "*",
-		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/utils": "20251028.1440.40",
 		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251028.1440.40",
-		"@tmlmobilidade/types": "20251028.1440.40",
+		"@go/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.9.1",
 		"@types/papaparse": "5.3.16",
 		"resolve-tspaths": "0.8.23",

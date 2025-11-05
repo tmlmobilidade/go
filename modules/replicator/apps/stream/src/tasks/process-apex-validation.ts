@@ -1,12 +1,12 @@
 /* * */
 
+import { rides, simplifiedApexValidations } from '@go/interfaces';
+import { parseSimplifiedApexValidation } from '@go/sae-replicator-pckg-parse';
+import { type SimplifiedApexValidation } from '@go/types';
+import { Dates } from '@go/utils-dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexValidations } from '@go/interfaces';
-import { parseSimplifiedApexValidation } from '@tmlmobilidade/sae-replicator-pckg-parse';
-import { type SimplifiedApexValidation } from '@go/types';
-import { Dates } from '@go/utils-dates';
 
 /* * */
 
