@@ -1,6 +1,6 @@
 import { files } from '@go/interfaces';
 import { File, OperationalDate } from '@go/types';
-import { Files } from '@go/utils-files';
+import { Files } from '@go/files';
 import { File as NodeFile } from 'node:buffer';
 
 /**

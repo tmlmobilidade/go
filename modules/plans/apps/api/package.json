@@ -21,7 +21,7 @@
 		"@go/interfaces": "*",
 		"@go/consts": "*",
 		"@go/utils": "*",
-		"@go/utils-files": "*",
+		"@go/files": "*",
 		"pino-pretty": "13.1.2"
 	},
 	"devDependencies": {

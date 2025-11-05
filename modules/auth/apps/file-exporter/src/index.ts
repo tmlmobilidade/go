@@ -2,7 +2,7 @@
 
 import { fileExports, files } from '@go/interfaces';
 import { ProcessingStatusSchema } from '@go/types';
-import { Files } from '@go/utils-files';
+import { Files } from '@go/files';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import fs from 'fs';
