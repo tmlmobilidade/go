@@ -1,9 +1,9 @@
 /* * */
 
 import { type ExportToHitouchConfig } from '@/types.js';
-import { CsvWriter } from '@helperkits/writer';
 import { type Plan } from '@go/types';
-import { Logs } from '@go/utils';
+import { Logger } from '@go/utils-logger';
+import { CsvWriter } from '@helperkits/writer';
 
 /* * */
 
@@ -17,5 +17,5 @@ export async function exportFeedInfoFile(planData: Plan, exportConfig: ExportToH
 
 	await feedInfoCsv.flush();
 
-	Logs.info('Exported feed_info.txt file.');
+	Logger.info('Exported feed_info.txt file.');
 }

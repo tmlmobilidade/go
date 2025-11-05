@@ -8,25 +8,25 @@
 	"license": "AGPL-3.0-or-later",
 	"main": "index.js",
 	"scripts": {
-		"build": "tsc",
-		"dev": "tsx --watch src/index.ts",
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . && tsc --noEmit",
-		"lint:fix": "eslint --fix .",
-		"start": "tsx src/index.ts",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
-		"@helperkits/logger": "20250628.901.58",
-		"@tmlmobilidade/connectors": "20251028.1440.40",
+		"@go/connectors-rabbitmq": "*",
 		"@go/emails": "*",
+		"@go/interfaces": "*",
+		"@go/utils": "*",
+		"@helperkits/logger": "20250628.901.58",
 		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
-		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/utils": "20251028.1440.40",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/types": "20251028.1440.40",
+		"@go/tsconfig": "*",
+		"@go/types": "*",
 		"@types/node": "24.9.1",
+		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"
 	}

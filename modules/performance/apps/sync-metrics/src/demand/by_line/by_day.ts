@@ -13,7 +13,7 @@ import pLimit from 'p-limit';
 export const syncDemandByLineByDay = async () => {
 	//
 
-	Logs.title(`Sync Demand Metrics by Line by Day`);
+	Logger.title(`Sync Demand Metrics by Line by Day`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_line_by_day';
@@ -22,9 +22,9 @@ export const syncDemandByLineByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -105,7 +105,7 @@ export const syncDemandByLineByDay = async () => {
 				},
 			], { hint: 'is_passenger_1_line_id_1_created_at_1' }).toArray();
 
-			Logs.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} lines (${chunkTimer.get()})`);
+			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} lines (${chunkTimer.get()})`);
 			return validationsAgg;
 		}),
 	);
@@ -156,7 +156,7 @@ export const syncDemandByLineByDay = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

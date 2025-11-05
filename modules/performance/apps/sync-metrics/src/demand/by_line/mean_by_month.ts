@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@go/interfaces';
 import { type Metric } from '@go/types';
-import { Logs } from '@go/utils';
+import { Logger } from '@go/utils-logger';
 
 /* * */
 
@@ -19,7 +19,7 @@ const dayTypeMap: Record<string, string> = {
 export const computeMeanDemandByLineByMonth = async () => {
 	//
 
-	Logs.title(`Compute Mean Demand by Line by Month`);
+	Logger.title(`Compute Mean Demand by Line by Month`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'mean_demand_by_line_by_month' as const;
@@ -30,9 +30,9 @@ export const computeMeanDemandByLineByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing ${METRIC} metrics...`);
+	Logger.info(`Clearing existing ${METRIC} metrics...`);
 	metricsCollection.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logger.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//
 	// Fetch metrics collection
@@ -106,7 +106,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

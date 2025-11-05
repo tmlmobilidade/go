@@ -13,7 +13,7 @@ import pLimit from 'p-limit';
 export const syncDemandByAgencyByDay = async () => {
 	//
 
-	Logs.title(`Sync Demand Metrics by Agency by Day`);
+	Logger.title(`Sync Demand Metrics by Agency by Day`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_agency_by_day';
@@ -22,9 +22,9 @@ export const syncDemandByAgencyByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -106,7 +106,7 @@ export const syncDemandByAgencyByDay = async () => {
 				},
 			], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
 
-			Logs.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})`);
+			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})`);
 			return validationsAgg;
 		}),
 	);
@@ -184,7 +184,7 @@ export const syncDemandByAgencyByDay = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

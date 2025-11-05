@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@go/interfaces';
 import { Metric } from '@go/types';
-import { Logs } from '@go/utils';
+import { Logger } from '@go/utils-logger';
 
 /* * */
 
@@ -21,7 +21,7 @@ import { Logs } from '@go/utils';
 const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<string[]> => {
 	//
 
-	Logs.info(`Fetching all months from metric '${metricName}'...`);
+	Logger.info(`Fetching all months from metric '${metricName}'...`);
 
 	const metricsCollection = await metrics.getCollection();
 
@@ -44,11 +44,11 @@ const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<st
 
 	const allMonths = Array.from(monthsSet).sort();
 
-	Logs.info(
+	Logger.info(
 		`Found ${allMonths.length} unique months from ${docsCount} documents of '${metricName}'.`,
 	);
 
-	Logs.divider();
+	Logger.divider();
 
 	return allMonths;
 };
@@ -80,11 +80,11 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 	const metricsCollection = await metrics.getCollection();
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	metricsCollection.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logger.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
-	Logs.divider();
+	Logger.divider();
 
 	//
 	// Get all months present in 'mean_demand_by_line_by_month' metrics
@@ -101,7 +101,7 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed all months (${allMonths.length}) for ${METRIC} (${globalTimer.get()})`);
+	Logger.terminate(`Processed all months (${allMonths.length}) for ${METRIC} (${globalTimer.get()})`);
 };
 
 /* * */
@@ -224,7 +224,7 @@ const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) =>
 
 	await metrics.insertOne(result);
 
-	Logs.info(`Computed TopMeanDemandByLineByMonth for ${yearMonth} in ${globalTimer.get()}`);
+	Logger.info(`Computed TopMeanDemandByLineByMonth for ${yearMonth} in ${globalTimer.get()}`);
 };
 
 //

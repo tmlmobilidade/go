@@ -1,10 +1,10 @@
 /* * */
 
 import { type ExportToHitouchConfig } from '@/types.js';
-import { CsvWriter } from '@helperkits/writer';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { type GTFS_StopTime } from '@go/types';
-import { Logs } from '@go/utils';
+import { type GtfsSQLTables } from '@go/utils-import-gtfs';
+import { Logger } from '@go/utils-logger';
+import { CsvWriter } from '@helperkits/writer';
 
 /* * */
 
@@ -32,5 +32,5 @@ export async function exportStopTimesFile(sqlTables: GtfsSQLTables, exportConfig
 
 	await stopTimesCsv.flush();
 
-	Logs.info('Exported stop_times.txt file.');
+	Logger.info('Exported stop_times.txt file.');
 }

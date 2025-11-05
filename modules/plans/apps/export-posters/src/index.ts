@@ -9,11 +9,11 @@ import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
-import TIMETRACKER from '@helperkits/timer';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { plans } from '@go/interfaces';
 import { validateOperationalDate } from '@go/types';
-import { Logs } from '@go/utils';
+import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@go/utils-import-gtfs';
+import { Logger } from '@go/utils-logger';
+import TIMETRACKER from '@helperkits/timer';
 import fs from 'node:fs';
 
 // import { getFormattedDates } from './get-names.js';
@@ -24,7 +24,7 @@ import fs from 'node:fs';
 	try {
 		//
 
-		Logs.init();
+		Logger.init();
 
 		const globalTimer = new TIMETRACKER();
 
@@ -45,10 +45,10 @@ import fs from 'node:fs';
 		const planData = await plans.findById('BYBGK'); // 43 Transportes Sul do Tejo
 		// const planData = await plans.findById('N8TKT'); // 44 Alsa Todi
 
-		Logs.info(`Found Plan to process: ${planData._id}`);
+		Logger.info(`Found Plan to process: ${planData._id}`);
 
 		if (!planData) {
-			Logs.info('Plan not found. Exiting...');
+			Logger.info('Plan not found. Exiting...');
 			return;
 		}
 
@@ -88,7 +88,7 @@ import fs from 'node:fs';
 		//
 		// Start the export process
 
-		Logs.info(`Exporting to HiTouch GTFS...`);
+		Logger.info(`Exporting to HiTouch GTFS...`);
 
 		const exportTimer = new TIMETRACKER();
 
@@ -101,15 +101,15 @@ import fs from 'node:fs';
 		await exportFeedInfoFile(planData, exportConfig);
 		await exportDayTypesFile(exportConfig);
 
-		Logs.info(`Exported files in ${exportTimer.get()} seconds`);
+		Logger.info(`Exported files in ${exportTimer.get()} seconds`);
 
 		//
 
-		Logs.terminate(`Run took ${globalTimer.get()}`);
+		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
 	}
 	catch (error) {
-		Logs.error(error);
+		Logger.error(error);
 	}
 })();

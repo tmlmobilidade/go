@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
 import { type Plan } from '@go/types';
+import LOGGER from '@helperkits/logger';
 
 /* * */
 

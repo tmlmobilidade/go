@@ -2,8 +2,8 @@
 
 import { DAY_TYPES } from '@/day-types.js';
 import { DayTypesExt, type ExportToHitouchConfig } from '@/types.js';
+import { Logger } from '@go/utils-logger';
 import { CsvWriter } from '@helperkits/writer';
-import { Logs } from '@go/utils';
 
 /* * */
 
@@ -31,5 +31,5 @@ export async function exportDayTypesFile(exportConfig: ExportToHitouchConfig) {
 
 	await dayTypesExtCsv.flush();
 
-	Logs.info('Exported day_typesExt.txt file.');
+	Logger.info('Exported day_typesExt.txt file.');
 }

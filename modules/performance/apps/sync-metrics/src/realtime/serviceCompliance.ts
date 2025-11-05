@@ -91,7 +91,7 @@ async function processRidesStream(stream, results, operators, mode: 'last_week' 
 export const syncRealtimeServiceCompliance = async () => {
 	//
 
-	Logs.title(`Sync Service Compliance Metrics in Realtime`);
+	Logger.title(`Sync Service Compliance Metrics in Realtime`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'realtime_service_compliance';
@@ -100,9 +100,9 @@ export const syncRealtimeServiceCompliance = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Setup timestamp boundaries
@@ -150,7 +150,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	//
 	// Today's stream
 
-	Logs.info(`Processing rides for current operational date: ${currentOperationalDate}`);
+	Logger.info(`Processing rides for current operational date: ${currentOperationalDate}`);
 	const todayTimer = new TIMETRACKER();
 
 	const todayStream = ridesCollection
@@ -158,12 +158,12 @@ export const syncRealtimeServiceCompliance = async () => {
 		.stream();
 
 	await processRidesStream(todayStream, results, operators, 'now');
-	Logs.info(`Processed today's rides in ${todayTimer.get()}`);
+	Logger.info(`Processed today's rides in ${todayTimer.get()}`);
 
 	//
 	// Last week's stream
 
-	Logs.info(`Processing rides for last week's operational date: ${previousOperationalDate}`);
+	Logger.info(`Processing rides for last week's operational date: ${previousOperationalDate}`);
 	const lastWeekTimer = new TIMETRACKER();
 
 	const lastWeekStream = ridesCollection.find({
@@ -173,7 +173,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	}).stream();
 
 	await processRidesStream(lastWeekStream, results, operators, 'last_week');
-	Logs.info(`Processed last week's rides in ${lastWeekTimer.get()}`);
+	Logger.info(`Processed last week's rides in ${lastWeekTimer.get()}`);
 
 	//
 	// Compute mean delays
@@ -198,7 +198,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	};
 
 	await metrics.insertOne(metricToInsert);
-	Logs.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
 };
 
 //

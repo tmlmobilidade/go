@@ -2,10 +2,11 @@
 
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
-import TIMETRACKER from '@helperkits/timer';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@go/interfaces';
 import { UpdateRideSchema } from '@go/types';
-import { Dates, Logs } from '@go/utils';
+import { Dates } from '@go/utils-dates';
+import { Logger } from '@go/utils-logger';
+import TIMETRACKER from '@helperkits/timer';
 
 /* * */
 
@@ -13,7 +14,7 @@ export async function validateRides() {
 	try {
 		//
 
-		Logs.init();
+		Logger.init();
 
 		const globalTimer = new TIMETRACKER();
 
@@ -34,7 +35,7 @@ export async function validateRides() {
 
 		const ridesBatch = await rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
-		Logs.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, 1);
+		Logger.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, 1);
 
 		//
 		// Process each Ride
@@ -128,7 +129,7 @@ export async function validateRides() {
 					system_status: 'complete',
 				});
 
-				Logs.info([
+				Logger.info([
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
 					' F: ', { c: 5, t: fetchAnalysisDataTime },
 					' T: ', { c: 7, t: rideAnalysisTimer.get() },
@@ -143,7 +144,7 @@ export async function validateRides() {
 			}
 			catch (error) {
 				await rides.updateById(rideData._id, { system_status: 'error' });
-				Logs.error('An error occurred while processing a ride.', error);
+				Logger.error('An error occurred while processing a ride.', error);
 			}
 		}
 
@@ -151,13 +152,13 @@ export async function validateRides() {
 
 		fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb?status=up&msg=OK&ping=');
 
-		Logs.terminate(`Run took ${globalTimer.get()}.`);
+		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
 	}
 	catch (err) {
-		Logs.error('An error occurred. Halting execution.', err);
-		Logs.error('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', err);
+		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds

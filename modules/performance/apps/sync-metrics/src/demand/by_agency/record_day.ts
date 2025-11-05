@@ -2,12 +2,12 @@ import { logMetricToFile } from '@/logMetrics.js';
 import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@go/interfaces';
 import { Metric } from '@go/types';
-import { Logs } from '@go/utils';
+import { Logger } from '@go/utils-logger';
 
 export const computeTopDemandByAgency = async () => {
 	//
 
-	Logs.title('Compute Top Demand By Agency');
+	Logger.title('Compute Top Demand By Agency');
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'top_demand_by_agency';
@@ -16,9 +16,9 @@ export const computeTopDemandByAgency = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch metrics collection
@@ -168,7 +168,7 @@ export const computeTopDemandByAgency = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Metric computed and inserted in ${globalTimer.get()}`);
+	Logger.terminate(`Metric computed and inserted in ${globalTimer.get()}`);
 };
 
 //

@@ -11,7 +11,7 @@ import { Dates, Logs } from '@go/utils';
 export const syncDemandByPatternByMonth = async () => {
 	//
 
-	Logs.title(`Sync Demand Metrics by Pattern by Month`);
+	Logger.title(`Sync Demand Metrics by Pattern by Month`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_by_month';
@@ -20,9 +20,9 @@ export const syncDemandByPatternByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -81,7 +81,7 @@ export const syncDemandByPatternByMonth = async () => {
 			},
 		], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-		Logs.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
+		Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
 		return validationsAgg;
 	});
 
@@ -122,7 +122,7 @@ export const syncDemandByPatternByMonth = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

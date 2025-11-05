@@ -1,15 +1,15 @@
 /* * */
 
-import logger from '@helperkits/logger';
-import { rabbitMQ } from '@tmlmobilidade/connectors';
+import { rabbitMQ } from '@go/connectors-rabbitmq';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@go/emails';
-import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { files, gtfsValidations } from '@go/interfaces';
 import { getCurrentEnvironment } from '@go/types';
 import { Dates } from '@go/utils-dates';
+import logger from '@helperkits/logger';
+import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { access, constants, writeFile } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 interface ValidationMessage {
 	file_id: string

@@ -11,7 +11,7 @@ import { Dates, Logs } from '@go/utils';
 export const syncDemandByPatternByYear = async () => {
 	//
 
-	Logs.title(`Sync Demand Metrics by Pattern by Year`);
+	Logger.title(`Sync Demand Metrics by Pattern by Year`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_by_year';
@@ -20,9 +20,9 @@ export const syncDemandByPatternByYear = async () => {
 	// Delete existing pattern metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -62,7 +62,7 @@ export const syncDemandByPatternByYear = async () => {
 
 		const year = new Date(chunkData.start).getFullYear();
 
-		Logs.info(`Processing Year ${year}...`);
+		Logger.info(`Processing Year ${year}...`);
 
 		//
 		// Aggregate by pattern_id for this year
@@ -83,7 +83,7 @@ export const syncDemandByPatternByYear = async () => {
 			},
 		], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-		Logs.info(`Year ${year} aggregation returned ${validationsAgg.length} pattern groups (${chunkTimer.get()})`);
+		Logger.info(`Year ${year} aggregation returned ${validationsAgg.length} pattern groups (${chunkTimer.get()})`);
 		return { validationsAgg, year };
 	});
 
@@ -126,7 +126,7 @@ export const syncDemandByPatternByYear = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed ${results.length} pattern results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${results.length} pattern results (${globalTimer.get()})`);
 };
 
 //

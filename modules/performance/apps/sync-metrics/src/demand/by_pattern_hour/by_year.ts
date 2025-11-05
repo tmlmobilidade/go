@@ -11,7 +11,7 @@ import { Dates, Logs } from '@go/utils';
 export const syncDemandByPatternHourByYear = async () => {
 	//
 
-	Logs.title(`Sync Demand Metrics by Pattern Hour by Year`);
+	Logger.title(`Sync Demand Metrics by Pattern Hour by Year`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_pattern_hour_by_year';
@@ -20,9 +20,9 @@ export const syncDemandByPatternHourByYear = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch rides collection
@@ -61,7 +61,7 @@ export const syncDemandByPatternHourByYear = async () => {
 
 		const year = new Date(chunkData.start).getFullYear();
 
-		Logs.info(`Processing Year ${year}...`);
+		Logger.info(`Processing Year ${year}...`);
 
 		//
 		// Aggregate by pattern_id + hour + minute
@@ -98,7 +98,7 @@ export const syncDemandByPatternHourByYear = async () => {
 			])
 			.toArray();
 
-		Logs.info(`Year ${year} aggregation returned ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`);
+		Logger.info(`Year ${year} aggregation returned ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`);
 		return { ridesAgg, year };
 	});
 
@@ -146,7 +146,7 @@ export const syncDemandByPatternHourByYear = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

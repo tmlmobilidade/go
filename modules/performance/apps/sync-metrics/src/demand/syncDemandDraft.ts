@@ -43,7 +43,7 @@ const getTimeChunks = (granularity: Granularity) => {
 };
 
 export const syncDemand = async (groupType: DemandGroupType, granularity: Granularity) => {
-	Logs.title(`Sync Demand Metrics by ${groupType} by ${granularity}`);
+	Logger.title(`Sync Demand Metrics by ${groupType} by ${granularity}`);
 	const globalTimer = new TIMETRACKER();
 
 	const field = `${groupType}_id` as const; // e.g. 'agency_id', 'line_id', 'pattern_id'
@@ -96,5 +96,5 @@ export const syncDemand = async (groupType: DemandGroupType, granularity: Granul
 	);
 
 	await metrics.insertMany([...groupMap.values()]);
-	Logs.terminate(`Processed ${groupMap.size} ${groupType} groups (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${groupMap.size} ${groupType} groups (${globalTimer.get()})`);
 };

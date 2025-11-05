@@ -10,7 +10,7 @@ import { Dates, Logs } from '@go/utils';
 export const syncRealtimeDemand = async () => {
 	//
 
-	Logs.title(`Sync Demand Metrics in Realtime`);
+	Logger.title(`Sync Demand Metrics in Realtime`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'realtime_demand';
@@ -19,9 +19,9 @@ export const syncRealtimeDemand = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -76,7 +76,7 @@ export const syncRealtimeDemand = async () => {
 
 	for (const operatorId of operators) {
 		const operatorTimer = new TIMETRACKER();
-		Logs.info(`Processing Operator ${operatorId}...`);
+		Logger.info(`Processing Operator ${operatorId}...`);
 
 		//
 		// Count validations for today so far
@@ -109,7 +109,7 @@ export const syncRealtimeDemand = async () => {
 		results.total.last_week += lastWeekValidCount;
 		results.total.now += todayValidCount;
 
-		Logs.info(`Processed Operator ${operatorId} in ${operatorTimer.get()}`);
+		Logger.info(`Processed Operator ${operatorId} in ${operatorTimer.get()}`);
 	}
 
 	const metricToInsert: RealtimeDemand = {
@@ -124,7 +124,7 @@ export const syncRealtimeDemand = async () => {
 
 	await metrics.insertOne(metricToInsert);
 
-	Logs.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
 };
 
 //

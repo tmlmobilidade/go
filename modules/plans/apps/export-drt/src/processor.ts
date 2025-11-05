@@ -1,8 +1,8 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
 import { agencies, hashedShapes, hashedTrips, rides } from '@go/interfaces';
 import { HashedShape, HashedTrip, Ride } from '@go/types';
+import LOGGER from '@helperkits/logger';
+import TIMETRACKER from '@helperkits/timer';
 
 import { DrtAgency, DrtHashedShape, DrtHashedTrip } from './drt.types.js';
 import { GLOBAL_CONTEXT } from './index.js';

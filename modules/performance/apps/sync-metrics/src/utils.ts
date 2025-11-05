@@ -1,4 +1,4 @@
-import { Logs } from '@go/utils';
+import { Logger } from '@go/utils-logger';
 
 /* * */
 const CALENDAR_URL = 'https://go.carrismetropolitana.pt/api/dates/public';
@@ -23,7 +23,7 @@ const fetchCalendarData = async (): Promise<CalendarEntry[]> => {
 		calendarJson = !calendarData.ok ? [] : await calendarData.json() as CalendarEntry[];
 	}
 	catch (error) {
-		Logs.error(`Error fetching calendar data: ${error instanceof Error ? error.message : String(error)}`);
+		Logger.error(`Error fetching calendar data: ${error instanceof Error ? error.message : String(error)}`);
 	}
 
 	return calendarJson;

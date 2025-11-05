@@ -1,11 +1,11 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
-import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
 import { files, plans } from '@go/interfaces';
 import { mimeTypes } from '@go/lib';
 import { Dates } from '@go/utils-dates';
+import { SQLiteDatabase, SQLiteDatabaseConfig } from '@go/utils-sqlite';
+import LOGGER from '@helperkits/logger';
+import TIMETRACKER from '@helperkits/timer';
 import fs from 'fs';
 import cron from 'node-cron';
 import os from 'os';

@@ -11,7 +11,7 @@ import { Dates, Logs } from '@go/utils';
 export const syncDemandByAgencyByYear = async () => {
 	//
 
-	Logs.title(`Sync Demand Metrics by Agency by Year`);
+	Logger.title(`Sync Demand Metrics by Agency by Year`);
 	const globalTimer = new TIMETRACKER();
 
 	const METRIC = 'demand_by_agency_by_year';
@@ -20,9 +20,9 @@ export const syncDemandByAgencyByYear = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new TIMETRACKER();
-	Logs.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
-	Logs.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
 	// Fetch validations collection
@@ -62,7 +62,7 @@ export const syncDemandByAgencyByYear = async () => {
 
 		const year = new Date(chunkData.start).getFullYear();
 
-		Logs.info(`Processing Year ${year}...`);
+		Logger.info(`Processing Year ${year}...`);
 
 		//
 		// Aggregate by agency_id for this year
@@ -86,7 +86,7 @@ export const syncDemandByAgencyByYear = async () => {
 			},
 		], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
 
-		Logs.info(`Year ${year} aggregation returned ${validationsAgg.length} agency groups (${chunkTimer.get()})`);
+		Logger.info(`Year ${year} aggregation returned ${validationsAgg.length} agency groups (${chunkTimer.get()})`);
 		return { validationsAgg, year };
 	});
 
@@ -128,7 +128,7 @@ export const syncDemandByAgencyByYear = async () => {
 		timestamp: new Date().toISOString(),
 	});
 
-	Logs.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
 };
 
 //

@@ -1,10 +1,10 @@
 /* * */
 
 import { type ExportToHitouchConfig } from '@/types.js';
-import { CsvWriter } from '@helperkits/writer';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { type GTFS_Route } from '@go/types';
-import { Logs } from '@go/utils';
+import { type GtfsSQLTables } from '@go/utils-import-gtfs';
+import { Logger } from '@go/utils-logger';
+import { CsvWriter } from '@helperkits/writer';
 
 /* * */
 
@@ -63,5 +63,5 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 
 	await routesCsv.flush();
 
-	Logs.info('Exported routes.txt file.');
+	Logger.info('Exported routes.txt file.');
 }

@@ -1,8 +1,8 @@
 /* * */
 
 import { MultipartValue } from '@fastify/multipart';
-import { rabbitMQ } from '@tmlmobilidade/connectors';
 import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
+import { rabbitMQ } from '@go/connectors-rabbitmq';
 import { sendPlanApprovalRequestEmail } from '@go/emails';
 import { files, gtfsValidations, TransactionManager } from '@go/interfaces';
 import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@go/lib';

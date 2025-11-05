@@ -15,10 +15,10 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.35.0",
 		"@go/lib": "*",
+		"@go/utils": "*",
+		"@tabler/icons-react": "3.35.0",
 		"@tmlmobilidade/ui": "20251028.1440.40",
-		"@tmlmobilidade/utils": "20251028.1440.40",
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
 		"next": "15.5.6",
@@ -30,8 +30,8 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/tsconfig": "20251028.1440.40",
-		"@tmlmobilidade/types": "20251028.1440.40",
+		"@go/tsconfig": "*",
+		"@go/types": "*",
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.9.1",
 		"@types/papaparse": "5.3.16",

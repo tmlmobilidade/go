@@ -3,7 +3,7 @@
 import { syncRealtimeDemand } from '@/realtime/demand.js';
 import { syncRealtimeServiceCompliance } from '@/realtime/serviceCompliance.js';
 import TIMETRACKER from '@helperkits/timer';
-import { Logs } from '@go/utils';
+import { Logger } from '@go/utils-logger';
 
 /* * */
 
@@ -15,8 +15,8 @@ export const syncRealtimeMetrics = async () => {
 
 		const globalTimer = new TIMETRACKER();
 
-		Logs.title(`Starting Realtime Metrics Sync`);
-		Logs.divider();
+		Logger.title(`Starting Realtime Metrics Sync`);
+		Logger.divider();
 
 		//
 
@@ -26,9 +26,9 @@ export const syncRealtimeMetrics = async () => {
 
 		//
 
-		Logs.divider();
-		Logs.terminate(`Finished Realtime Metrics Sync (${globalTimer.get()})`);
-		Logs.divider();
+		Logger.divider();
+		Logger.terminate(`Finished Realtime Metrics Sync (${globalTimer.get()})`);
+		Logger.divider();
 
 		setTimeout(runOnInterval, 1_200_000); // 20 minutes
 	};
