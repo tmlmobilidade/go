@@ -1,7 +1,7 @@
 /* * */
 
 import { rides, simplifiedApexValidations } from '@go/interfaces';
-import { parseSimplifiedApexValidation } from '@go/sae-replicator-pckg-parse';
+import { parseSimplifiedApexValidation } from '@go/replicator-pckg-parse';
 import { type SimplifiedApexValidation } from '@go/types';
 import { Dates } from '@go/utils-dates';
 import LOGGER from '@helperkits/logger';

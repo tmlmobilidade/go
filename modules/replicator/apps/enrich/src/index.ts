@@ -1,7 +1,7 @@
 /* * */
 
 import { rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@go/interfaces';
-import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@go/sae-replicator-pckg-parse';
+import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@go/replicator-pckg-parse';
 import { Dates } from '@go/utils-dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';

@@ -1,7 +1,7 @@
 /* * */
 
 import { rides, simplifiedApexOnBoardRefunds } from '@go/interfaces';
-import { parseSimplifiedApexOnBoardRefund } from '@go/sae-replicator-pckg-parse';
+import { parseSimplifiedApexOnBoardRefund } from '@go/replicator-pckg-parse';
 import { type SimplifiedApexOnBoardRefund } from '@go/types';
 import { Dates } from '@go/utils-dates';
 import LOGGER from '@helperkits/logger';

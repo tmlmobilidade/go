@@ -1,7 +1,7 @@
 /* * */
 
 import { rides, vehicleEvents } from '@go/interfaces';
-import { parseVehicleEvent } from '@go/sae-replicator-pckg-parse';
+import { parseVehicleEvent } from '@go/replicator-pckg-parse';
 import { type VehicleEvent } from '@go/types';
 import { Dates } from '@go/utils-dates';
 import LOGGER from '@helperkits/logger';

@@ -2,7 +2,7 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { PCGIDB } from '@tmlmobilidade/sae-replicator-pckg-utils';
+import { PCGIDB } from '@go/replicator-pckg-utils';
 import { Dates } from '@go/utils-dates';
 import fs from 'node:fs';
 
