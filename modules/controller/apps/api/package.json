@@ -22,7 +22,7 @@
 		"@fastify/websocket": "^11.2.0",
 		"@tmlmobilidade/connectors-fastify": "*",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/controller-pckg-ride-normalized": "*",
+		"@tmlmobilidade/go-controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
