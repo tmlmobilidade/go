@@ -7,3 +7,4 @@ export * from '@/gtfs/shapes.js';
 export * from '@/gtfs/stop-times.js';
 export * from '@/gtfs/stops.js';
 export * from '@/gtfs/trips.js';
+export * from '@/gtfs/service-alert.js';
