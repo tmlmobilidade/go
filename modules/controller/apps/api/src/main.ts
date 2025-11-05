@@ -1,8 +1,8 @@
 /* * */
 
 import fastifyWs from '@fastify/websocket';
+import { FastifyService, type FastifyServiceOptions } from '@go/connectors-fastify';
 import { getAppConfig } from '@go/consts';
-import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors';
 
 /* * */
 
