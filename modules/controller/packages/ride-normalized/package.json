@@ -22,7 +22,7 @@
 		"lint:fix": "eslint --fix"
 	},
 	"dependencies": {
-		"@go/types": "20251103.1255.55"
+		"@go/types": "*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
