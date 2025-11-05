@@ -7,7 +7,7 @@ import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocati
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@go/ui';
 import { fetchData } from '@go/utils';
 import { getCssVariableValue } from '@go/utils';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@go/geo';
 import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
 import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';

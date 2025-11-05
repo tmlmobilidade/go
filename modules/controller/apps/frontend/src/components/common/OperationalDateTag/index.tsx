@@ -1,7 +1,7 @@
 /* * */
 
 import { Tag } from '@go/ui';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { type RideNorma@go/datestmlmobilidade/sae-controller-pckg-ride-normalized';
 
 /* * */

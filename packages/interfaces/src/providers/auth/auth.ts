@@ -1,12 +1,12 @@
 /* * */
 
 import { roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
-import { sendWelcomeEmail } from '@go/emails';
 import { getAppConfig, HttpException, HttpStatus } from '@go/consts';
+import { Dates } from '@go/dates';
+import { sendWelcomeEmail } from '@go/emails';
+import { generateRandomString, generateRandomToken } from '@go/strings';
 import { CreateUserDto, LoginDto, OneOrTheOther, Permission, Session, User } from '@go/types';
 import { AsyncSingletonProxy, mergeObjects } from '@go/utils';
-import { Dates } from '@go/dates';
-import { generateRandomString, generateRandomToken } from '@go/strings';
 import bcrypt from 'bcryptjs';
 
 /* * */

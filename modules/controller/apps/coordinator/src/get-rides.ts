@@ -1,7 +1,7 @@
 /* * */
 
 import { rides } from '@go/interfaces';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from@go/datesimer';
 

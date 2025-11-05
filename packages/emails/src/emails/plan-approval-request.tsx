@@ -2,9 +2,9 @@
 
 import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
 import { getAppConfig } from '@go/consts';
+import { Dates } from '@go/dates';
 import { type GtfsValidation, type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/utils-dates';
-import { Button, Hr, Se@go/datesrom '@react-email/components';
+import { Button, Hr, Section, Text } from '@react-email/components';
 
 /* * */
 

@@ -36,6 +36,7 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
+		"@go/utils": "*",
 		"amqplib": "0.10.9"
 	},
 	"devDependencies": {
