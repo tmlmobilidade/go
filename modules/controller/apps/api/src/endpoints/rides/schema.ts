@@ -1,7 +1,6 @@
 /* * */
 
-import { delayStatusOptions, operationalStatusOptions, seenStatusOptions } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { RideAcceptanceStatusSchema, RideAnalysisGradeSchema, validateUnixTimestamp } from '@go/types';
+import { DelayStatusSchema, OperationalStatusSchema, RideAcceptanceStatusSchema, RideAnalysisGradeSchema, SeenStatusSchema, validateUnixTimestamp } from '@go/types';
 import { z } from 'zod';
 
 const RideAnalysisGradeWithNoneSchema = RideAnalysisGradeSchema.or(z.literal('none'));
@@ -24,9 +23,9 @@ export const GetRidesBatchQuerySchema = z.object({
 
 	/* * */
 
-	delay_statuses: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(z.enum(delayStatusOptions))).optional(),
-	operational_statuses: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(z.enum(operationalStatusOptions))).optional(),
-	seen_statuses: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(z.enum(seenStatusOptions))).optional(),
+	delay_statuses: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(DelayStatusSchema)).optional(),
+	operational_statuses: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(OperationalStatusSchema)).optional(),
+	seen_statuses: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(SeenStatusSchema)).optional(),
 
 	/* * */
 

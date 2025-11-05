@@ -1,8 +1,8 @@
 /* * */
 
+import { rides } from '@go/interfaces';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { rides } from '@go/interfaces';
 
 /* * */
 

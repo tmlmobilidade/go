@@ -1,8 +1,8 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { operationalStatusValues } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { FilterTypeList } from '@go/ui';
+import { operationalStatusValues } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { useMemo } from 'react';
 
 /* * */

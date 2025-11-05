@@ -2,13 +2,15 @@
 
 /* * */
 
-import { getCssVariableValue } from '@/utils/get-css-variable-value';
-import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
 import { Permissions } from '@go/consts';
-import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@go/types';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@go/ui';
-import { Dates, fetchData, getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@go/utils';
+import { fetchData } from '@go/utils';
+import { getCssVariableValue } from '@go/utils';
+import { Dates } from '@go/utils-dates';
+import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@go/utils-geo';
+import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
+import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';

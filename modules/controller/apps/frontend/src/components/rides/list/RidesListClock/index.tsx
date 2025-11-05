@@ -2,7 +2,6 @@
 
 /* * */
 
-import { useRidesListContext } from '@/contexts/RidesList.context';
 import { IconPlayerPlayFilled } from '@tabler/icons-react';
 import { DateTime } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
@@ -16,8 +15,6 @@ export function RidesListClock() {
 
 	//
 	// A. Setup variables
-
-	const ridesListContext = useRidesListContext();
 
 	const elementRef = useRef(null);
 

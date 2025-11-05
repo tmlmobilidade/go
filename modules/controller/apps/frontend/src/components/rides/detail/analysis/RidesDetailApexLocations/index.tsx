@@ -6,7 +6,7 @@ import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
 import { type SimplifiedApexLocation } from '@go/types';
 import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@go/ui';
-import { sortByUnixTimestamp } from '@go/utils';
+import { sortByUnixTimestamp } from '@go/utils-dates';
 import { useMemo } from 'react';
 
 /* * */

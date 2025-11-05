@@ -3,10 +3,10 @@
 /* * */
 
 import { RidesListContextState } from '@/contexts/RidesList.context';
-import { CreateFileExportDto, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideDelayStatus, type RideExportProperties, RideOperationalStatus, type UnixTimestamp } from '@go/types';
+import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@go/types';
 import { closeModal, useExportsContext, useToast } from '@go/ui';
 import { Dates } from '@go/utils-dates';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 import { RIDES_EXPORT_MODAL_ID } from '.';
 
@@ -87,8 +87,8 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 				analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality as RideAnalysisGradeWithNone[],
 				date_end: filterDateEnd as UnixTimestamp,
 				date_start: filterDateStart as UnixTimestamp,
-				delay_statuses: filterDelayStatus as RideDelayStatus[],
-				operational_statuses: filterOperationalStatus as RideOperationalStatus[],
+				delay_statuses: filterDelayStatus as DelayStatus[],
+				operational_statuses: filterOperationalStatus as OperationalStatus[],
 			},
 			type: 'ride',
 		};

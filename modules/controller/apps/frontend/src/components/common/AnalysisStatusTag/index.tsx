@@ -2,9 +2,9 @@
 
 /* * */
 
-import { IconCheck, IconX } from '@tabler/icons-react';
 import { type RideAnalysis } from '@go/types';
 import { Tag } from '@go/ui';
+import { IconCheck, IconX } from '@tabler/icons-react';
 
 /* * */
 

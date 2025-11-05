@@ -1,7 +1,7 @@
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { Indicator } from '@go/ui';
+import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 
 /* * */
 

@@ -11,6 +11,7 @@ import { RidesDetailMetadata } from '@/components/rides/detail/RidesDetail/Rides
 import { RidesDetailVehicleEvents } from '@/components/rides/detail/RidesDetail/RidesDetailVehicleEvents';
 import { RidesDetailAnalysisResult } from '@/components/rides/detail/RidesDetailAnalysisResult';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
+import { RideAnalysis } from '@go/types';
 import { useMemo } from 'react';
 
 /* * */
@@ -28,7 +29,7 @@ export function RidesDetailAnalysis() {
 		// Skip if no analysis data is available
 		if (!ridesDetailContext.data.ride?.analysis) return [];
 		// Transform the analysis data into an array of items
-		return Object.entries(ridesDetailContext.data.ride.analysis).map(([id, item]) => ({ id, ...item }));
+		return Object.entries(ridesDetailContext.data.ride.analysis).map(([id, item]) => ({ id, ...(item as RideAnalysis) }));
 	}, [ridesDetailContext.data.ride?.analysis]);
 
 	//
