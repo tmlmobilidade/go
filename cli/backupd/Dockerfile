@@ -2,7 +2,7 @@
 
 FROM node:alpine AS base
 
-ENV PROJECT=backupd
+ENV APP=backupd
 
 RUN npm install -g turbo@^2
 
@@ -24,7 +24,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/${APP} --docker
 
 
 # # #
@@ -38,9 +38,9 @@ WORKDIR /app
 COPY --from=pruner /app/out/json/ .
 RUN npm install
 
-# Build the project
+# Build the app
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/${APP}
 
 
 # # #
@@ -52,4 +52,4 @@ WORKDIR /app
 
 COPY --from=builder /app .
 
-CMD node configs/${PROJECT}/dist/index.js
+CMD node configs/${APP}/dist/index.js

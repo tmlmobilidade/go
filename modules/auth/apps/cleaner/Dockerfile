@@ -4,7 +4,7 @@
 FROM node:24-alpine AS base
 
 ENV MODULE=auth
-ENV PROJECT=cleaner
+ENV APP=cleaner
 
 RUN npm install -g turbo@^2
 
@@ -18,7 +18,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
 
 # # #
@@ -32,9 +32,9 @@ WORKDIR /app
 COPY --from=pruner /app/out/json/ .
 RUN npm install
 
-# Build the project
+# Build the app
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
 
 # # #
@@ -46,4 +46,4 @@ WORKDIR /app
 
 COPY --from=builder /app .
 
-CMD node apps/${PROJECT}/dist/index.js
+CMD node apps/${APP}/dist/index.js

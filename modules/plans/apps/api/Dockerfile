@@ -3,7 +3,7 @@
 FROM node:24-alpine AS base
 
 ENV MODULE=sae-plans
-ENV PROJECT=api
+ENV APP=api
 
 RUN npm install -g turbo@^2
 
@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/${MODULE}-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/${MODULE}-${APP} --docker
 
 
 # # #
@@ -33,9 +33,9 @@ WORKDIR /app
 COPY --from=pruner /app/out/json/ .
 RUN npm install
 
-# Build the project
+# Build the app
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${APP}
 
 
 # # #
@@ -47,4 +47,4 @@ WORKDIR /app
 
 COPY --from=builder /app .
 
-CMD node apps/${PROJECT}/dist/src/index.js
+CMD node modules/${MODULE}/apps/${APP}/dist/src/index.js

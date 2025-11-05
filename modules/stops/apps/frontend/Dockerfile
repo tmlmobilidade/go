@@ -5,7 +5,7 @@ FROM node:24-alpine AS base
 
 
 ENV MODULE=sae-stops
-ENV PROJECT=frontend
+ENV APP=frontend
 
 ARG ENVIRONMENT
 
@@ -31,7 +31,7 @@ WORKDIR /app
 COPY package.json ./
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/${MODULE}-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/${MODULE}-${APP} --docker
 
 
 # # # # # # # # #
@@ -51,9 +51,9 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 RUN npm install
 
-# Build the project
+# Build the app
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/${MODULE}-${APP}
 
 
 # # # # # # # # #
@@ -70,7 +70,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT}/.next/static ./apps/${PROJECT}/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${APP}/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/${APP}/.next/static ./apps/${APP}/.next/static
 
-CMD node /app/apps/${PROJECT}/server.js
+CMD node /app/apps/${APP}/server.js
