@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@go/interfaces';
 import { Metric } from '@go/types';
 import { Logger } from '@go/utils-logger';
+import TIMETRACKER from '@helperkits/timer';
 
 /* * */
 

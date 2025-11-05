@@ -1,8 +1,8 @@
 'use client';
 
-import DashboardWrapper from '@/components/layout/DashboardWrapper';
 /* * */
 
+import DashboardWrapper from '@/components/layout/DashboardWrapper';
 import SupplyDemandTopic from '@/components/topics/SupplyDemand';
 import { TOPICS, TOPICS_REGISTRY } from '@/constants';
 

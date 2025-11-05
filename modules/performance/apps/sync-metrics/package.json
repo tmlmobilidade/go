@@ -20,15 +20,16 @@
 		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
+		"@go/utils-dates": "*",
+		"@go/utils-logger": "*",
 		"@helperkits/timer": "20240627.34.23",
-		"@tmlmobilidade/utils": "20251028.1440.40",
 		"luxon": "3.7.2",
 		"p-limit": "7.2.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/tsconfig": "20251028.1440.40",
-		"@tmlmobilidade/types": "20251028.1440.40",
+		"@go/interfaces": "*",
+		"@go/tsconfig": "*",
+		"@go/types": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

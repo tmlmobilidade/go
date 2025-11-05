@@ -1,9 +1,12 @@
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
+/* * */
+
+import { FastifyReply, FastifyRequest } from '@go/connectors-fastify';
 import { metrics } from '@go/interfaces';
 import { HttpException, HttpStatus } from '@go/lib';
 import { type Metric } from '@go/types';
 
 /* * */
+
 export class MetricsController {
 	/**
 	 * Get a metric by name - Retrieves a metric from the database by its name

@@ -29,7 +29,7 @@
 		"swr": "2.3.6"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251028.1440.40",
+		"@go/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",

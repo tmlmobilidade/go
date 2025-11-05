@@ -1,8 +1,8 @@
 /* * */
 
-import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@go/interfaces';
 import { Logger } from '@go/utils-logger';
+import TIMETRACKER from '@helperkits/timer';
 
 const metricTypes = [
 	{ hasDaily: true, id: 'demand_by_line' },

@@ -2,8 +2,8 @@
 
 import { syncRealtimeDemand } from '@/realtime/demand.js';
 import { syncRealtimeServiceCompliance } from '@/realtime/serviceCompliance.js';
-import TIMETRACKER from '@helperkits/timer';
 import { Logger } from '@go/utils-logger';
+import TIMETRACKER from '@helperkits/timer';
 
 /* * */
 

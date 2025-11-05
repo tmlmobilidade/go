@@ -1,7 +1,7 @@
 /* * */
 
-import TIMETRACKER from '@helperkits/timer';
 import { Logger } from '@go/utils-logger';
+import TIMETRACKER from '@helperkits/timer';
 
 import { testDemandMetrics } from './demand.js';
 
