@@ -6,17 +6,16 @@
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**"]
 		},
-		"build:watch": {
-			"interruptible": true,
-			"outputs": ["dist/**"],
-			"persistent": true
-		},
 		"dev": {
 			"cache": false,
 			"persistent": true
 		},
 		"lint": {},
-		"lint:fix": {}
+		"lint:fix": {},
+		"watch": {
+			"outputs": ["dist/**"],
+			"persistent": true
+		}
 	},
 	"ui": "tui"
 }

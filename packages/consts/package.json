@@ -35,7 +35,7 @@
 	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix"
 	},
