@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig, HttpException } from '@tmlmobilidade/lib';
+import { getAppConfig, HttpException } from '@go/lib';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 

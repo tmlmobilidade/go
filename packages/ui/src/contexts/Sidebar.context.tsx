@@ -4,7 +4,7 @@
 
 import { Loader } from '@/components/loaders/Loader';
 import { type SidebarItemProps } from '@/components/sidebar/SidebarItem';
-import { getAppConfig } from '@tmlmobilidade/lib';
+import { getAppConfig } from '@go/lib';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 

@@ -4,9 +4,9 @@
 
 import { ErrorDisplay } from '@/components/display/ErrorDisplay';
 import { LoadingOverlay } from '@/components/loaders/LoadingOverlay';
-import { getAppConfig, HttpException } from '@tmlmobilidade/lib';
-import { FileExport, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
-import { fetchData, type HasPermissionResourceArgs, hasPermissionResource as hasPermissionResourceUtils, hasPermission as hasPermissionUtils } from '@tmlmobilidade/utils';
+import { getAppConfig, HttpException } from '@go/lib';
+import { FileExport, type User, type UserPreferenceValue } from '@go/types';
+import { fetchData, type HasPermissionResourceArgs, hasPermissionResource as hasPermissionResourceUtils, hasPermission as hasPermissionUtils } from '@go/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 

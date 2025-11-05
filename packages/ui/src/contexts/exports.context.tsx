@@ -3,9 +3,9 @@
 /* * */
 
 import { useToast } from '@/hooks/toast';
-import { getAppConfig, HttpException } from '@tmlmobilidade/lib';
-import { CreateFileExportDto, FileExport, FileExportType } from '@tmlmobilidade/types';
-import { fetchData } from '@tmlmobilidade/utils';
+import { getAppConfig, HttpException } from '@go/lib';
+import { CreateFileExportDto, FileExport, FileExportType } from '@go/types';
+import { fetchData } from '@go/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

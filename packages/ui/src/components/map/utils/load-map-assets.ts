@@ -1,6 +1,6 @@
 /* * */
 
-import { getAppConfig } from '@tmlmobilidade/lib';
+import { getAppConfig } from '@go/lib';
 import { type Map as MapLibreMap } from 'maplibre-gl';
 
 /* * */

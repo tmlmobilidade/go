@@ -1,9 +1,9 @@
 /* * */
 
 import { ButtonGroup, type ButtonGroupProps } from '@/components/buttons/ButtonGroup';
+import { Permissions } from '@go/lib';
+import { Permission } from '@go/types';
 import { IconCheck, IconPlus, IconX } from '@tabler/icons-react';
-import { Permissions } from '@tmlmobilidade/lib';
-import { Permission } from '@tmlmobilidade/types';
 
 /* * */
 

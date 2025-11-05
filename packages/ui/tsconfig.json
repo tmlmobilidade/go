@@ -25,7 +25,8 @@
 		"noUnusedParameters": true /* Raise an error when a function parameter isn't read. */,
 		// "outDir": "dist" /* Specify an output folder for all emitted files. */,
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["src/*"],
+			"react": ["./node_modules/@types/react"]
 		},
 
 		"resolveJsonModule": true,

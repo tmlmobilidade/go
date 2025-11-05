@@ -7,7 +7,7 @@ import { Label } from '@/components/display/Label';
 import { Section } from '@/components/layout/Section';
 import { sidebarApps } from '@/components/sidebar/Sidebar';
 import { useNotificationsContext } from '@/contexts/Notifications.context';
-import { Notification } from '@tmlmobilidade/types';
+import { Notification } from '@go/types';
 import React from 'react';
 
 import styles from './styles.module.css';

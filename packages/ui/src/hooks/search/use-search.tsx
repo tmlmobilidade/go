@@ -4,8 +4,8 @@
 
 import { accessorSearch } from '@/hooks/search/acessor-search';
 import { plainSearch } from '@/hooks/search/plain-search';
+import { normalizeString } from '@go/utils-strings';
 import { useDebouncedValue } from '@mantine/hooks';
-import { normalizeString } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 
 /* * */

@@ -10,7 +10,7 @@ import { ProposedChangesWrapperModalContentNoData } from '@/components/proposedC
 import { ProposedChangesWrapperModalMetadata } from '@/components/proposedChanges/ProposedChangesWrapperModalMetadata';
 import { useMeContext } from '@/contexts/Me.context';
 import { ScopeEntityMap, ScopeKey, useProposedChangesContext } from '@/contexts/ProposedChanges.context';
-import { CreateProposedChangeDto, ProposedChange } from '@tmlmobilidade/types';
+import { CreateProposedChangeDto, ProposedChange } from '@go/types';
 import { useState } from 'react';
 
 import styles from './styles.module.css';

@@ -2,10 +2,10 @@
 
 /* * */
 
+import { UnixTimestamp } from '@go/types';
+import { Dates } from '@go/utils-dates';
 import { DateTimePicker as MantineDateTimePicker } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
-import { UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';

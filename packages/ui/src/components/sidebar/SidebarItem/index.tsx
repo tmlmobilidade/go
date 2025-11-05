@@ -5,8 +5,8 @@
 import { SidebarItemTooltip } from '@/components/sidebar/SidebarItemTooltip';
 import { useMeContext } from '@/contexts/Me.context';
 import { useCurrentUrl } from '@/hooks';
-import { type Permission } from '@tmlmobilidade/types';
-import { hasPermission } from '@tmlmobilidade/utils';
+import { type Permission } from '@go/types';
+import { hasPermission } from '@go/utils';
 import { useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';

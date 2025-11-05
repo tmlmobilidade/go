@@ -3,11 +3,11 @@
 /* * */
 
 import { themeData } from '@/styles/theme';
+import { swrFetcher } from '@go/utils';
 import { MantineProvider } from '@mantine/core';
 import { DatesProvider, DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 

@@ -2,9 +2,9 @@
 
 /* * */
 
+import { User } from '@go/types';
+import { isUrl } from '@go/utils-strings';
 import { Avatar as MantineAvatar } from '@mantine/core';
-import { User } from '@tmlmobilidade/types';
-import { isUrl } from '@tmlmobilidade/utils';
 
 /* * */
 

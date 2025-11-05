@@ -3,8 +3,8 @@
 import { ProposedChangesWrapperModal } from '@/components/proposedChanges/ProposedChangesWrapperModal';
 import { useMeContext, useProposedChangesContext } from '@/contexts';
 import { ScopeEntityMap, ScopeKey } from '@/contexts/ProposedChanges.context';
+import { ApprovalStatus, ProposedChange } from '@go/types';
 import { IconInfoCircle } from '@tabler/icons-react';
-import { ProposedChange, Status } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -31,7 +31,7 @@ export function ProposedChangesWrapper<S extends ScopeKey>({ children, inputName
 
 	const [proposedChangesOfField, setProposedChangesOfField] = useState<ProposedChange<ScopeEntityMap[S]>[]>();
 	const [opened, setOpened] = useState(false);
-	const [status, setStatus] = useState<'none' | Status>('none');
+	const [status, setStatus] = useState<'none' | ApprovalStatus>('none');
 	const isCheckbox = children.type.toString().toLowerCase().includes('checkbox');
 	const colorLevel = status === 'pending' ? 'var(	--color-status-warning-primary)' : status === 'approved' ? ' var(--color-status-success-primary)' : status === 'rejected' ? 'var(--color-status-danger-primary)' : 'var(--color-system-text-200)';
 

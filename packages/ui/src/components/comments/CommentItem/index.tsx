@@ -2,7 +2,7 @@
 
 import { Label } from '@/components/display';
 import { Section } from '@/components/layout/Section';
-import { Dates } from '@tmlmobilidade/utils';
+import { Dates } from '@go/utils-dates';
 
 import styles from './styles.module.css';
 

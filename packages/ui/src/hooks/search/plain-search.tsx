@@ -1,6 +1,6 @@
 /* * */
 
-import { normalizeString } from '@tmlmobilidade/utils';
+import { normalizeString } from '@go/utils-strings';
 
 /**
  * Plain search function that checks if a given query is present

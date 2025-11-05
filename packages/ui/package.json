@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/ui",
+	"name": "@go/ui",
 	"description": "UI components for Transportes Metropolitanos de Lisboa (TML) web applications.",
 	"version": "1.0.0",
 	"author": "João de Vasconcelos & Jusi Monteiro",
@@ -28,7 +28,8 @@
 		"build": "npm run clean && tsx scripts/build.ts",
 		"clean": "rm -rf dist",
 		"dev": "tsx scripts/watch.ts",
-		"lint": "eslint ./src"
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
 	},
 	"peerDependencies": {
 		"next": "15.x",
