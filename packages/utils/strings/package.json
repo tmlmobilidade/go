@@ -31,6 +31,7 @@
 	"types": "index.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix"
 	},
@@ -38,7 +39,7 @@
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@go/tsconfig": "*",
 		"resolve-tspaths": "0.8.23"
 	},
 	"exports": {

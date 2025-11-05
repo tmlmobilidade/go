@@ -35,7 +35,7 @@
 	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "email dev -p 3001 --dir ./src/emails",
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"export": "email export --dir ./src/emails",
 		"lint": "eslint ./src/ && tsc --noEmit"
 	},

@@ -1,11 +1,11 @@
 /* * */
 
 import { type LocationsApiResponse } from '@/types';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
 import { stops } from '@go/interfaces';
 import { getAppConfig } from '@go/lib';
 import { fetchData } from '@go/utils';
+import LOGGER from '@helperkits/logger';
+import TIMETRACKER from '@helperkits/timer';
 
 /**
  * This script ensures Stop documents have up to date attributes concerning

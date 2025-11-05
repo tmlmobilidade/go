@@ -41,7 +41,7 @@
 		"mergekit": "3.0.6"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@go/tsconfig": "*",
 		"resolve-tspaths": "0.8.23"
 	},
 	"exports": {

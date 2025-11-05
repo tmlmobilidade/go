@@ -31,6 +31,7 @@
 	"types": "index.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix"
 	},
@@ -39,7 +40,7 @@
 		"better-sqlite3": "12.4.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@go/tsconfig": "*",
 		"@types/better-sqlite3": "^7.6.13",
 		"resolve-tspaths": "0.8.23"
 	},

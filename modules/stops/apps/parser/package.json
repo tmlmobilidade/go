@@ -12,17 +12,17 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch ./src/index.ts",
+		"dev": "tsx watch src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/interfaces": "20251028.1440.40",
-		"@tmlmobilidade/utils": "20251028.1440.40"
+		"@go/interfaces": "*",
+		"@go/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251028.1440.40",
-		"@tmlmobilidade/types": "20251028.1440.40",
+		"@go/tsconfig": "*",
+		"@go/types": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
