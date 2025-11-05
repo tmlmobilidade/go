@@ -4,7 +4,7 @@ import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@go/interfaces';
 import { UpdateRideSchema } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { Logger } from '@go/utils-logger';
 import TIMETRACKER from '@helperkits/timer';
 

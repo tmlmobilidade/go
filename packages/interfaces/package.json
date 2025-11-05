@@ -45,7 +45,7 @@
 		"@go/consts": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
-		"@go/utils-dates": "*",
+		"@go/dates": "*",
 		"@go/utils-files": "*",
 		"@go/utils-strings": "*",
 		"bcryptjs": "3.0.3",

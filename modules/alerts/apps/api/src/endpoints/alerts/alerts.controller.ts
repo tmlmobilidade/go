@@ -7,7 +7,7 @@ import { alerts, files, notifications } from '@go/interfaces';
 import { HttpException, HttpStatus, Permissions } from '@go/consts';
 import { type Alert, type File, GetAllAlertsQuery, GetAllAlertsQuerySchema, ServiceAlertResponse } from '@go/types';
 import { validateQueryParams } from '@go/utils';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 
 /* * */
 

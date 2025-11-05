@@ -4,7 +4,7 @@ import { rabbitMQ } from '@go/connectors-rabbitmq';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@go/emails';
 import { files, gtfsValidations } from '@go/interfaces';
 import { getCurrentEnvironment } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import logger from '@helperkits/logger';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { access, constants, writeFile } from 'fs/promises';

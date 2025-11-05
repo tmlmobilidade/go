@@ -20,7 +20,7 @@
 		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
-		"@go/utils-dates": "*",
+		"@go/dates": "*",
 		"@go/utils-logger": "*",
 		"@helperkits/timer": "20240627.34.23",
 		"luxon": "3.7.2",

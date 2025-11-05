@@ -4,7 +4,7 @@
 
 import { type GtfsFeedInfo } from '@go/types';
 import { Grid, ValueDisplay } from '@go/ui';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { useMemo } from 'react';
 
 /* * */

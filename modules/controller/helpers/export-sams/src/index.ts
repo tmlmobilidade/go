@@ -2,7 +2,7 @@
 
 import { sams } from '@go/interfaces';
 import { type Sam } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

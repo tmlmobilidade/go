@@ -2,7 +2,7 @@
 
 import { type PlanNormalized } from '@/types/normalized';
 import { type OperationalDate } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 
 /* * */
 

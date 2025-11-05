@@ -2,7 +2,7 @@
 
 import { delayStatusValues, type RideNormalized } from '@/ride-normalized.js';
 import { type Ride, type RideAnalysis, type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 
 /**
  * This function normalizes a Ride object by adding additional properties

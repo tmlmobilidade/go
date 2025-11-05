@@ -5,7 +5,7 @@ import { sendResetPasswordEmail } from '@go/emails';
 import { authProvider, users, verificationTokens } from '@go/interfaces';
 import { getAppConfig, HttpException, HttpStatus } from '@go/consts';
 import { LoginDto, LoginDtoSchema, Permission, Session } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { generateRandomToken } from '@go/utils-strings';
 
 /* * */

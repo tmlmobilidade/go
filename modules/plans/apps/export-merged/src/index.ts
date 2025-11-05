@@ -2,7 +2,7 @@
 
 import { files, plans } from '@go/interfaces';
 import { mimeTypes } from '@go/consts';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@go/utils-sqlite';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';

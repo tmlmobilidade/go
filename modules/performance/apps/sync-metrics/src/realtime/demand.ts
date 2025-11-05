@@ -2,7 +2,7 @@
 
 import { metrics, simplifiedApexValidations } from '@go/interfaces';
 import { type RealtimeDemand } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { Logger } from '@go/utils-logger';
 import TIMETRACKER from '@helperkits/timer';
 

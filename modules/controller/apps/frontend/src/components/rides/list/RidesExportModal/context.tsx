@@ -5,7 +5,7 @@
 import { RidesListContextState } from '@/contexts/RidesList.context';
 import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@go/types';
 import { closeModal, useExportsContext, useToast } from '@go/ui';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 import { RIDES_EXPORT_MODAL_ID } from '.';

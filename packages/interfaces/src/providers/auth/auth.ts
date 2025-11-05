@@ -5,7 +5,7 @@ import { sendWelcomeEmail } from '@go/emails';
 import { getAppConfig, HttpException, HttpStatus } from '@go/consts';
 import { CreateUserDto, LoginDto, OneOrTheOther, Permission, Session, User } from '@go/types';
 import { AsyncSingletonProxy, mergeObjects } from '@go/utils';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { generateRandomString, generateRandomToken } from '@go/utils-strings';
 import bcrypt from 'bcryptjs';
 

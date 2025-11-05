@@ -2,7 +2,7 @@
 
 import { fileExports, files, verificationTokens } from '@go/interfaces';
 import { ProcessingStatusSchema, type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

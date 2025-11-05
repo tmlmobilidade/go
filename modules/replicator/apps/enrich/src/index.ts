@@ -2,7 +2,7 @@
 
 import { rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@go/interfaces';
 import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@go/replicator-pckg-parse';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

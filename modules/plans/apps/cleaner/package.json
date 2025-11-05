@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@go/interfaces": "*",
-		"@go/utils-dates": "*",
+		"@go/dates": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23"
 	},

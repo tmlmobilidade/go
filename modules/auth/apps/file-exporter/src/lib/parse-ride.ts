@@ -1,5 +1,5 @@
 import { RideAcceptance, type RideExportData, RideNormalized, UnixTimestamp } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 
 function parseTime(time: null | UnixTimestamp): null | string {
 	if (!time) {

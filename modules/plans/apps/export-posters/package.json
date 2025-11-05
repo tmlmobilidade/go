@@ -21,7 +21,7 @@
 	"dependencies": {
 		"@go/interfaces": "*",
 		"@go/utils": "*",
-		"@go/utils-dates": "*",
+		"@go/dates": "*",
 		"@go/utils-import-gtfs": "*",
 		"@go/utils-logger": "*",
 		"@go/utils-strings": "*",

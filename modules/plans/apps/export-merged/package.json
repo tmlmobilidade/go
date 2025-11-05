@@ -20,7 +20,7 @@
 	},
 	"dependencies": {
 		"@go/interfaces": "*",
-		"@go/utils-dates": "*",
+		"@go/dates": "*",
 		"@go/utils-geo": "*",
 		"@go/utils-sqlite": "*",
 		"@helperkits/logger": "20250628.901.58",

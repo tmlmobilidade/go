@@ -4,7 +4,7 @@ import { type PlanNormalized } from '@/types/normalized';
 import { IconArrowRight } from '@tabler/icons-react';
 import { type OperationalDate } from '@go/types';
 import { Indicator, Tag } from '@go/ui';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 
 import styles from './styles.module.css';
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { type OperationalDate, type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
 import fs from 'fs';

@@ -1,7 +1,7 @@
 import { getDelayStatus, StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { RidesData } from '@/contexts/Rides.context';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { DataTable, DataTableColumn, Label, Section } from '@go/ui';
 
 export function AffectedRides() {

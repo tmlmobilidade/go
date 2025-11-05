@@ -1,5 +1,5 @@
 import { RenderFailedBackupEmail } from '@go/emails';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import nodemailer, { Transporter } from 'nodemailer';
 
 export interface MailOptions {

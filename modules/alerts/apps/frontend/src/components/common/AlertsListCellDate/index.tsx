@@ -1,7 +1,7 @@
 /* * */
 
 import { type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { Label } from '@go/ui';
 import { useMemo } from 'react';
 

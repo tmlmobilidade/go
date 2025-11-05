@@ -8,7 +8,7 @@ import { parseSimplifiedApexValidation } from '@go/replicator-pckg-parse';
 import { syncDocuments } from '@go/replicator-pckg-sync';
 import { PCGIDB } from '@go/replicator-pckg-utils';
 import { type SimplifiedApexValidation } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { Interval } from 'luxon';
 
 /* * */

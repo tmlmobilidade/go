@@ -5,7 +5,7 @@ import { parseSimplifiedApexLocation } from '@go/replicator-pckg-parse';
 import { syncDocuments } from '@go/replicator-pckg-sync';
 import { PCGIDB } from '@go/replicator-pckg-utils';
 import { type SimplifiedApexLocation } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';

@@ -1,4 +1,4 @@
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { useTranslations } from 'next-intl';
 
 export interface DayInfo {

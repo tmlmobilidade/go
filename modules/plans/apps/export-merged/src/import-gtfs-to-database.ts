@@ -2,7 +2,7 @@
 
 import { files } from '@go/interfaces';
 import { GTFS_Calendar_Raw, GTFS_CalendarDate_Raw, GTFS_Route_Extended, GTFS_Route_Extended_Raw, GTFS_Shape, GTFS_Shape_Raw, GTFS_Stop_Extended, GTFS_Stop_Extended_Raw, GTFS_StopTime, GTFS_StopTime_Raw, GTFS_Trip_Extended, GTFS_Trip_Extended_Raw, OperationalDate, Plan, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@go/types';
-import { Dates, getOperationalDatesFromRange } from '@go/utils-dates';
+import { Dates, getOperationalDatesFromRange } from '@go/dates';
 import { SQLiteWriter } from '@go/utils-sqlite';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';

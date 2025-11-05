@@ -13,7 +13,7 @@ import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multi
 import { Routes } from '@/lib/routes';
 import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@go/types';
 import { fetchData } from '@go/utils';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@go/ui';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { mutate } from 'swr';

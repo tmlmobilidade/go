@@ -10,7 +10,7 @@ import { transformDemandByAgencyByDay } from '@/utils/metrics/demandChartData';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { type DemandByAgencyByDay as DemandByAgencyByDayType } from '@go/types';
 import { BarChart, LineChart, MetricsSkeleton } from '@go/ui';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import useSWR from 'swr';

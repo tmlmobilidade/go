@@ -4,7 +4,7 @@ import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
 import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
 import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@go/types';
-import { Dates } from '@go/utils-dates';
+import { Dates } from '@go/dates';
 import { type GtfsSQLTables } from '@go/utils-import-gtfs';
 import { Logger } from '@go/utils-logger';
 import { generateRandomString } from '@go/utils-strings';
