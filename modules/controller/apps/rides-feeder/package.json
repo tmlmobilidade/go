@@ -18,12 +18,14 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
+		"@go/interfaces": "*",
+		"@go/utils": "*",
+		"@go/utils-dates": "*",
+		"@go/utils-geo": "*",
+		"@go/utils-sqlite": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
-		"@tmlmobilidade/connectors": "20251103.1255.55",
-		"@go/interfaces": "*",
-		"@go/utils": "*",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0"

@@ -20,11 +20,11 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
+		"@go/interfaces": "*",
+		"@go/utils": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@helperkits/writer": "^20251103.1250.18",
-		"@go/interfaces": "*",
-		"@tmlmobilidade/utils": "20251103.1255.55"
+		"@helperkits/writer": "^20251103.1250.18"
 	},
 	"devDependencies": {
 		"@go/tsconfig": "*",

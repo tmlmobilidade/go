@@ -19,7 +19,7 @@
 		"@tabler/icons-react": "3.35.0",
 		"@go/controller-pckg-ride-normalized": "*",
 		"@go/types": "*",
-		"@tmlmobilidade/ui": "20251103.1255.55",
+		"@go/ui": "*",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"lodash": "4.17.21",

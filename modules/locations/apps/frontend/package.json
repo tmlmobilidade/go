@@ -18,7 +18,7 @@
 		"@tabler/icons-react": "3.35.0",
 		"@go/lib": "*",
 		"@go/types": "*",
-		"@tmlmobilidade/ui": "20251103.1255.55",
+		"@go/ui": "*",
 		"@go/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"clsx": "2.1.1",
