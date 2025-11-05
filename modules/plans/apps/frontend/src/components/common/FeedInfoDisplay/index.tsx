@@ -2,9 +2,9 @@
 
 /* * */
 
-import { type GtfsFeedInfo } from '@go/types';
-import { Grid, ValueDisplay } from '@go/ui';
-import { Dates } from '@go/dates';
+import { type GtfsFeedInfo } from '@tmlmobilidade/types';
+import { Grid, ValueDisplay } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 
 /* * */

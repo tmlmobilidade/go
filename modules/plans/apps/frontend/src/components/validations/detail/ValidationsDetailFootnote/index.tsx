@@ -1,8 +1,8 @@
 /* * */
 
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { Label, Section } from '@go/ui';
-import { Dates } from '@go/dates';
+import { Label, Section } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 
 /* * */

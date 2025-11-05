@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@go/ui';
+import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

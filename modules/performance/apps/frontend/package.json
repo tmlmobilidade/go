@@ -1,5 +1,5 @@
 {
-	"name": "@go/performance-frontend",
+	"name": "@tmlmobilidade/go-performance-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -15,10 +15,10 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@go/consts": "*",
-		"@go/utils": "*",
 		"@tabler/icons-react": "3.35.0",
-		"@go/ui": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
 		"next": "15.5.6",
 		"next-intl": "4.4.0",
 		"nuqs": "2.7.2",
@@ -28,8 +28,8 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",

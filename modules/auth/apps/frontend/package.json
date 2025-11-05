@@ -1,5 +1,5 @@
 {
-	"name": "@go/auth-frontend",
+	"name": "@tmlmobilidade/go-auth-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -14,10 +14,10 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@go/consts": "*",
-		"@go/ui": "*",
-		"@go/utils": "*",
 		"@tabler/icons-react": "3.35.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",
 		"clsx": "2.1.1",
 		"next": "15.5.6",
@@ -28,8 +28,8 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",

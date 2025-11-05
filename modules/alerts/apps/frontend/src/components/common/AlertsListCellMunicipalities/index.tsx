@@ -1,7 +1,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { TagGroup, type TagProps } from '@go/ui';
+import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 

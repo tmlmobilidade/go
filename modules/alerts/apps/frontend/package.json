@@ -1,5 +1,5 @@
 {
-	"name": "@go/alerts-frontend",
+	"name": "@tmlmobilidade/go-alerts-frontend",
 	"version": "0.1.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -14,11 +14,11 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@go/interfaces": "*",
-		"@go/consts": "*",
-		"@go/ui": "*",
-		"@go/utils": "*",
 		"@tabler/icons-react": "3.35.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
 		"clsx": "2.1.1",
 		"luxon": "3.7.2",
 		"next": "15.5.6",
@@ -31,8 +31,8 @@
 	"devDependencies": {
 		"@carrismetropolitana/api-types": "20251104.1218.36",
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.10.0",
 		"@types/react": "19",

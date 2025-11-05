@@ -3,7 +3,7 @@
 /* * */
 
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Collapsible, Section, TextInput } from '@go/ui';
+import { Collapsible, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 

@@ -1,11 +1,11 @@
 /* * */
 
 import { AggregationPipeline } from '@/aggregation-pipeline.js';
-import { MongoConnector } from '@go/connectors-mongo';
-import { HttpException, HttpStatus } from '@go/consts';
-import { type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/dates';
-import { generateRandomString } from '@go/strings';
+import { MongoConnector } from '@tmlmobilidade/connectors-mongo';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { AggregateOptions, AggregationCursor, Collection, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexDescription, InsertManyResult, InsertOneOptions, InsertOneResult, MongoClientOptions, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from 'mongodb';
 import { z } from 'zod';
 

@@ -1,5 +1,5 @@
 {
-	"name": "@go/emails",
+	"name": "@tmlmobilidade/emails",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -41,7 +41,7 @@
 		"lint": "eslint ./src/ && tsc --noEmit"
 	},
 	"dependencies": {
-		"@go/utils": "*",
+		"@tmlmobilidade/utils": "*",
 		"@react-email/components": "0.5.7",
 		"@types/nodemailer": "7.0.3",
 		"browserslist": "4.27.0",
@@ -51,10 +51,10 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/consts": "*",
-		"@go/tsconfig": "*",
-		"@go/types": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"@react-email/preview-server": "4.3.2",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",

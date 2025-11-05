@@ -1,7 +1,7 @@
 /* * */
 
-import { type WikiArticle } from '@go/types';
-import { BackButton, Label, Spacer, TagGroup } from '@go/ui';
+import { type WikiArticle } from '@tmlmobilidade/types';
+import { BackButton, Label, Spacer, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

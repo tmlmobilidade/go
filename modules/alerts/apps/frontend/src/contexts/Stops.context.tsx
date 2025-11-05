@@ -5,7 +5,7 @@
 import type { Stop } from '@carrismetropolitana/api-types/network';
 
 import { Routes } from '@/lib/routes';
-import { standardSwrFetcher } from '@go/utils';
+import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
 

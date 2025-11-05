@@ -9,8 +9,8 @@ import { ValidationsListFiltersBar } from '@/components/validations/list/Validat
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { type ValidationNormalized } from '@/types/normalized';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@go/ui';
-import { keepUrlParams } from '@go/utils';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

@@ -1,5 +1,5 @@
 {
-	"name": "@go/import-gtfs",
+	"name": "@tmlmobilidade/import-gtfs",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -40,18 +40,18 @@
 		"lint": "eslint ./src/ && tsc --noEmit"
 	},
 	"dependencies": {
-		"@go/interfaces": "*",
-		"@go/utils": "*",
-		"@go/logger": "*",
-		"@go/sqlite": "*",
-		"@go/timer": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/sqlite": "*",
+		"@tmlmobilidade/timer": "*",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/consts": "*",
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",

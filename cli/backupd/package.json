@@ -16,11 +16,11 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "3.922.0",
-		"@go/emails": "*",
-		"@go/interfaces": "*",
-		"@go/consts": "*",
-		"@go/types": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@types/archiver": "7.0.0",
 		"archiver": "7.0.1",
@@ -33,7 +33,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.0",
 		"@types/nodemailer": "7.0.3",
 		"typescript": "5.9.3"

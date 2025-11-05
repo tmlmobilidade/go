@@ -1,7 +1,7 @@
 /* * */
 
-import { type UpdatePlanDto } from '@go/types';
-import { Dates } from '@go/dates';
+import { type UpdatePlanDto } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 

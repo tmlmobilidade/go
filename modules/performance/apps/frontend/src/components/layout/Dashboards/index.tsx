@@ -2,7 +2,7 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { DashboardDefinition, TopicDefinition } from '@/constants';
-import { Grid } from '@go/ui';
+import { Grid } from '@tmlmobilidade/ui';
 import { usePathname, useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';

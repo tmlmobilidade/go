@@ -3,7 +3,7 @@
 /* * */
 
 import { type DataTableColumn } from '@/components/datatable/DataTable';
-import { getValueAtPath } from '@go/utils';
+import { getValueAtPath } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
 

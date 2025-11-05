@@ -1,7 +1,7 @@
 /* * */
 
-import { type SimplifiedApexLocation } from '@go/types';
-import { Dates } from '@go/dates';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 

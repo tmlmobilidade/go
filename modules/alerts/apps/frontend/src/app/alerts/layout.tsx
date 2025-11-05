@@ -2,7 +2,7 @@
 
 import { AlertList } from '@/components/scheduled/list/AlertsList';
 import { AlertListContextProvider } from '@/contexts/AlertList.context';
-import { PanesManager } from '@go/ui';
+import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

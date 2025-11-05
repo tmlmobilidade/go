@@ -1,6 +1,6 @@
 /* * */
 
-import { AsyncSingletonProxy } from '@go/utils';
+import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { connect as amqpConnect, Channel, ChannelModel, Options, Replies } from 'amqplib';
 
 /* * */

@@ -3,7 +3,7 @@
 /* * */
 
 import StatusCircle from '@/components/layout/StatusCircle';
-import { Tooltip } from '@go/ui';
+import { Tooltip } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

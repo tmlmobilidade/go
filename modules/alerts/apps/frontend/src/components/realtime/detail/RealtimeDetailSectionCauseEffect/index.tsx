@@ -5,8 +5,8 @@
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { gtfsCauseSchema, gtfsEffectSchema } from '@go/types';
-import { Collapsible, Combobox, Section } from '@go/ui';
+import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
+import { Collapsible, Combobox, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

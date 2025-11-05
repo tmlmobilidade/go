@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@go/types';
-import { getDistanceBetweenPositions } from '@go/utils';
+import { type Ride } from '@tmlmobilidade/types';
+import { getDistanceBetweenPositions } from '@tmlmobilidade/utils';
 
 /* * */
 

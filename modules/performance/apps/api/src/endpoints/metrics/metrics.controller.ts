@@ -1,9 +1,9 @@
 /* * */
 
-import { FastifyReply, FastifyRequest } from '@go/connectors-fastify';
-import { metrics } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/consts';
-import { type Metric } from '@go/types';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { metrics } from '@tmlmobilidade/interfaces';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type Metric } from '@tmlmobilidade/types';
 
 /* * */
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride, RideAcceptanceStatusSchema, type RideAnalysis } from '@go/types';
+import { type Ride, RideAcceptanceStatusSchema, type RideAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 

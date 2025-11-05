@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getCssVariableValue } from '@go/utils';
+import { getCssVariableValue } from '@tmlmobilidade/utils';
 import { useEffect, useState } from 'react';
 
 /**

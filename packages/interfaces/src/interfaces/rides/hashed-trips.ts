@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { DocumentSchema, HashedTrip } from '@go/types';
-import { AsyncSingletonProxy } from '@go/utils';
+import { DocumentSchema, HashedTrip } from '@tmlmobilidade/types';
+import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

@@ -1,5 +1,5 @@
 {
-	"name": "@go/plans-export-merged",
+	"name": "@tmlmobilidade/go-plans-export-merged",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -19,10 +19,10 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@go/interfaces": "*",
-		"@go/dates": "*",
-		"@go/geo": "*",
-		"@go/sqlite": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/sqlite": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
@@ -32,8 +32,8 @@
 		"node-cron": "4.2.1"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

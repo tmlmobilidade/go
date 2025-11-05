@@ -1,9 +1,9 @@
 /* * */
 
-import { rides, simplifiedApexOnBoardRefunds } from '@go/interfaces';
-import { parseSimplifiedApexOnBoardRefund } from '@go/replicator-pckg-parse';
-import { type SimplifiedApexOnBoardRefund } from '@go/types';
-import { Dates } from '@go/dates';
+import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
+import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';

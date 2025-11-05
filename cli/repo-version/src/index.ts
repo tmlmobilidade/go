@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Dates } from '@go/dates';
+import { Dates } from '@tmlmobilidade/dates';
 import fs from 'node:fs';
 
 /* * */

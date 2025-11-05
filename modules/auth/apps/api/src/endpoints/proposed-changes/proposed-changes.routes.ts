@@ -1,8 +1,8 @@
 /* * */
 
-import { Permissions } from '@go/consts';
-import { type StopPermission } from '@go/types';
-import { authorizationMiddleware, FastifyService } from '@go/connectors-fastify';
+import { Permissions } from '@tmlmobilidade/consts';
+import { type StopPermission } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors-fastify';
 
 import { ProposedChangesController } from './proposed-changes.controller.js';
 

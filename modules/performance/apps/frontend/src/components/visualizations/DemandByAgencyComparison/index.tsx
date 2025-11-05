@@ -6,9 +6,9 @@ import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
-import { type DemandByAgencyByDay as DemandByAgencyByDayType } from '@go/types';
-import { BarChart, LineChart, LineChartProps, MetricsSkeleton } from '@go/ui';
-import { Dates } from '@go/dates';
+import { type DemandByAgencyByDay as DemandByAgencyByDayType } from '@tmlmobilidade/types';
+import { BarChart, LineChart, LineChartProps, MetricsSkeleton } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 

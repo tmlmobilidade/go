@@ -2,8 +2,8 @@
 
 /* * */
 
-import { User } from '@go/types';
-import { isUrl } from '@go/strings';
+import { User } from '@tmlmobilidade/types';
+import { isUrl } from '@tmlmobilidade/strings';
 import { Avatar as MantineAvatar } from '@mantine/core';
 
 /* * */

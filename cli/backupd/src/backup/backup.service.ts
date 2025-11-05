@@ -1,5 +1,5 @@
 import { IDatabaseService } from '@/database/database.interface.js';
-import { IStorageProvider } from '@go/interfaces';
+import { IStorageProvider } from '@tmlmobilidade/interfaces';
 import fs from 'fs';
 import path from 'path';
 

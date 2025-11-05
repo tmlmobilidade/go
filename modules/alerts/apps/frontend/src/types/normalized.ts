@@ -1,6 +1,6 @@
 /* * */
 
-import { type Alert } from '@go/types';
+import { type Alert } from '@tmlmobilidade/types';
 
 /* * */
 

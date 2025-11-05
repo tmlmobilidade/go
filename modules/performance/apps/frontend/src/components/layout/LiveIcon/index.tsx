@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Tooltip } from '@go/ui';
+import { Tooltip } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';

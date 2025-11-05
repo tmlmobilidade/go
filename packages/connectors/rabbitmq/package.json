@@ -1,5 +1,5 @@
 {
-	"name": "@go/connectors-rabbitmq",
+	"name": "@tmlmobilidade/connectors-rabbitmq",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -36,11 +36,11 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@go/utils": "*",
+		"@tmlmobilidade/utils": "*",
 		"amqplib": "0.10.9"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/amqplib": "0.10.8",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",

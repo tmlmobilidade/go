@@ -1,7 +1,7 @@
 /* * */
 
-import { type OperationalDate, type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/dates';
+import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
 import fs from 'fs';

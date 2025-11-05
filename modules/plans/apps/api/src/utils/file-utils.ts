@@ -1,6 +1,6 @@
-import { files } from '@go/interfaces';
-import { File, OperationalDate } from '@go/types';
-import { Files } from '@go/files';
+import { files } from '@tmlmobilidade/interfaces';
+import { File, OperationalDate } from '@tmlmobilidade/types';
+import { Files } from '@tmlmobilidade/files';
 import { File as NodeFile } from 'node:buffer';
 
 /**

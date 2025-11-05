@@ -1,7 +1,7 @@
 /* * */
 
 import { usePlansListContext } from '@/contexts/PlansList.context';
-import { Label, SearchInput, Spacer, Toolbar } from '@go/ui';
+import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 

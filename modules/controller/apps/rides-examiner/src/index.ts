@@ -2,10 +2,10 @@
 
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
-import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@go/interfaces';
-import { UpdateRideSchema } from '@go/types';
-import { Dates } from '@go/dates';
-import { Logger } from '@go/logger';
+import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { UpdateRideSchema } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { Logger } from '@tmlmobilidade/logger';
 import TIMETRACKER from '@helperkits/timer';
 
 /* * */

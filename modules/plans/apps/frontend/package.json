@@ -1,5 +1,5 @@
 {
-	"name": "@go/plans-frontend",
+	"name": "@tmlmobilidade/go-plans-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -15,9 +15,9 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@go/consts": "*",
-		"@go/ui": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
 		"@tabler/icons-react": "3.35.0",
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
@@ -30,8 +30,8 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.10.0",
 		"@types/papaparse": "5.5.0",

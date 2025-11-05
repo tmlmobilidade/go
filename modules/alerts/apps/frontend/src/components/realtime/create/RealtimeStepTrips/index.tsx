@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Section, Separator } from '@go/ui';
+import { Section, Separator } from '@tmlmobilidade/ui';
 
 import { RealtimeStepTripsFilters } from '../RealtimeStepTripsFilters';
 import { RealtimeStepTripsFound } from '../RealtimeStepTripsFound';

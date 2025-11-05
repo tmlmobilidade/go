@@ -5,7 +5,7 @@
 import { PasswordConfirmationForm } from '@/components/common/PasswordConfirmationForm';
 import { useChangePassword } from '@/components/reset-password/ResetPasswordForm/use-change-password';
 import { Routes } from '@/lib/routes';
-import { useToast } from '@go/ui';
+import { useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

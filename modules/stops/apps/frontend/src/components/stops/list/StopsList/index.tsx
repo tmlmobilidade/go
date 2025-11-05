@@ -6,8 +6,8 @@ import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { type StopNormalized } from '@/types/normalized';
-import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@go/ui';
-import { keepUrlParams } from '@go/utils';
+import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

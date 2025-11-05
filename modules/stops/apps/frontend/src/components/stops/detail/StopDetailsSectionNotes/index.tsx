@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Collapsible, Section, Textarea } from '@go/ui';
+import { Collapsible, Section, Textarea } from '@tmlmobilidade/ui';
 
 /* * */
 

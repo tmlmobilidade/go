@@ -1,5 +1,5 @@
 {
-	"name": "@go/plans-export-posters",
+	"name": "@tmlmobilidade/go-plans-export-posters",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -19,12 +19,12 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@go/interfaces": "*",
-		"@go/utils": "*",
-		"@go/dates": "*",
-		"@go/import-gtfs": "*",
-		"@go/logger": "*",
-		"@go/strings": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/import-gtfs": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
@@ -32,8 +32,8 @@
 		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"@types/papaparse": "5.5.0",
 		"resolve-tspaths": "0.8.23",

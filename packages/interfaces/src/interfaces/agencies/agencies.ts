@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { type Agency, AgencySchema, type CreateAgencyDto, type UpdateAgencyDto, UpdateAgencySchema } from '@go/types';
-import { AsyncSingletonProxy } from '@go/utils';
+import { type Agency, AgencySchema, type CreateAgencyDto, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
+import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

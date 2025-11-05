@@ -1,4 +1,4 @@
-import { Ride, RideAnalysis, RideAnalysisSummary } from '@go/types';
+import { Ride, RideAnalysis, RideAnalysisSummary } from '@tmlmobilidade/types';
 
 /* * */
 

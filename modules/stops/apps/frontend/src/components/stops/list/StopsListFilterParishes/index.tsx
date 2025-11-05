@@ -2,7 +2,7 @@
 
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopsListContext } from '@/contexts/StopsList.context';
-import { MultiSelect } from '@go/ui';
+import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

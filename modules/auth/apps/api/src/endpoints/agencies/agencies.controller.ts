@@ -1,9 +1,9 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
-import { agencies } from '@go/interfaces';
-import { HttpException, HttpStatus } from '@go/consts';
-import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@go/types';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { agencies } from '@tmlmobilidade/interfaces';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 
 /* * */
 

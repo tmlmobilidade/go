@@ -1,5 +1,5 @@
 {
-	"name": "@go/controller-api",
+	"name": "@tmlmobilidade/go-controller-api",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -20,17 +20,17 @@
 	},
 	"dependencies": {
 		"@fastify/websocket": "^11.2.0",
-		"@go/connectors-fastify": "*",
-		"@go/controller-pckg-ride-normalized": "*",
-		"@go/emails": "*",
-		"@go/interfaces": "*",
-		"@go/consts": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/controller-pckg-ride-normalized": "*",
+		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/utils": "*",
 		"pino-pretty": "13.1.2"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"@types/ws": "8.18.1",
 		"resolve-tspaths": "0.8.23",

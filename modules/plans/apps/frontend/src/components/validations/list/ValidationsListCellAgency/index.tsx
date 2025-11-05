@@ -1,6 +1,6 @@
 /* * */
 
-import { Label, Tag } from '@go/ui';
+import { Label, Tag } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

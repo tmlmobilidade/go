@@ -2,7 +2,7 @@
 
 import { RidesList } from '@/components/rides/list/RidesList';
 import { RidesListContextProvider } from '@/contexts/RidesList.context';
-import { PanesManager } from '@go/ui';
+import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

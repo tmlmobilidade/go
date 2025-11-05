@@ -2,8 +2,8 @@
 
 /* * */
 
-import { RideAcceptanceStatus } from '@go/types';
-import { Tag, TagProps } from '@go/ui';
+import { RideAcceptanceStatus } from '@tmlmobilidade/types';
+import { Tag, TagProps } from '@tmlmobilidade/ui';
 import { IconAlertCircle, IconCheck, IconClock, IconX } from '@tabler/icons-react';
 
 /* * */

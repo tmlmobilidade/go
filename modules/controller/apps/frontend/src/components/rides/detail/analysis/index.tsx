@@ -11,7 +11,7 @@ import { RidesDetailMetadata } from '@/components/rides/detail/RidesDetail/Rides
 import { RidesDetailVehicleEvents } from '@/components/rides/detail/RidesDetail/RidesDetailVehicleEvents';
 import { RidesDetailAnalysisResult } from '@/components/rides/detail/RidesDetailAnalysisResult';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { RideAnalysis } from '@go/types';
+import { RideAnalysis } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 
 /* * */

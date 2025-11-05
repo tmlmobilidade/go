@@ -1,5 +1,5 @@
 {
-	"name": "@go/controller-rides-bridge",
+	"name": "@tmlmobilidade/go-controller-rides-bridge",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -20,13 +20,13 @@
 	"dependencies": {
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
-		"@go/interfaces": "*",
-		"@go/types": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"pg": "8.16.3"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.0",
 		"@types/pg": "8.15.6",
 		"resolve-tspaths": "0.8.23",

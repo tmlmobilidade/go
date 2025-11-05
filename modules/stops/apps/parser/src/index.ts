@@ -1,5 +1,5 @@
-// import { stops } from '@go/interfaces';
-// import { Connections, connectionsSchema, CreateStopSchema, Equipment, equipmentSchema, Facilities, facilitiesSchema, hasAnySchema, jurisdictionSchema, operationalStatusSchema, Stop } from '@go/types';
+// import { stops } from '@tmlmobilidade/interfaces';
+// import { Connections, connectionsSchema, CreateStopSchema, Equipment, equipmentSchema, Facilities, facilitiesSchema, hasAnySchema, jurisdictionSchema, operationalStatusSchema, Stop } from '@tmlmobilidade/types';
 // import { promises as fs } from 'fs';
 // import path from 'path';
 // import { dirname } from 'path';

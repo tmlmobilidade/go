@@ -3,8 +3,8 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { GtfsCause, gtfsCauseSchema } from '@go/types';
-import { Grid, Section } from '@go/ui';
+import { GtfsCause, gtfsCauseSchema } from '@tmlmobilidade/types';
+import { Grid, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

@@ -1,8 +1,8 @@
 /* * */
 
-import { type UnixTimestamp } from '@go/types';
-import { Tag } from '@go/ui';
-import { Dates } from '@go/dates';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
+import { Tag } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 
 /* * */

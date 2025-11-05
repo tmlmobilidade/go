@@ -1,10 +1,10 @@
 /* * */
 
-import { rabbitMQ } from '@go/connectors-rabbitmq';
-import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@go/emails';
-import { files, gtfsValidations } from '@go/interfaces';
-import { getCurrentEnvironment } from '@go/types';
-import { Dates } from '@go/dates';
+import { rabbitMQ } from '@tmlmobilidade/connectors-rabbitmq';
+import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
+import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { getCurrentEnvironment } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import logger from '@helperkits/logger';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { access, constants, writeFile } from 'fs/promises';

@@ -1,5 +1,5 @@
 {
-	"extends": "@go/tsconfig/nextjs.json",
+	"extends": "@tmlmobilidade/tsconfig/nextjs.json",
 	"compilerOptions": {
 		"jsx": "preserve",
 		"paths": {

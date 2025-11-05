@@ -2,8 +2,8 @@
 
 import { getDelayStatus, StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { RidesData } from '@/contexts/Rides.context';
-import { Dates } from '@go/dates';
-import { Badge, Label, Section } from '@go/ui';
+import { Dates } from '@tmlmobilidade/dates';
+import { Badge, Label, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

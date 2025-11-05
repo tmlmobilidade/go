@@ -2,7 +2,7 @@
 
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { FilterTypeList } from '@go/ui';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

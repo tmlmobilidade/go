@@ -1,6 +1,6 @@
 /* * */
 
-import { type Plan } from '@go/types';
+import { type Plan } from '@tmlmobilidade/types';
 import LOGGER from '@helperkits/logger';
 
 /* * */

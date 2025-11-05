@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig, HttpException } from '@go/consts';
+import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 

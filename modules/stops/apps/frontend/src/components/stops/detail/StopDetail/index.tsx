@@ -13,7 +13,7 @@ import { StopDetailsSectionMap } from '@/components/stops/detail/StopDetailsSect
 import { StopDetailsSectionNotes } from '@/components/stops/detail/StopDetailsSectionNotes';
 import { StopDetailsSectionPublicInformation } from '@/components/stops/detail/StopDetailsSectionPublicInformation';
 import { StopDetailsSectionShelter } from '@/components/stops/detail/StopDetailsSectionShelter';
-import { Divider, Pane } from '@go/ui';
+import { Divider, Pane } from '@tmlmobilidade/ui';
 
 /* * */
 

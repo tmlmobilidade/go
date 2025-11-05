@@ -2,7 +2,7 @@
 
 import { StopsList } from '@/components/stops/list/StopsList';
 import { StopsListContextProvider } from '@/contexts/StopsList.context';
-import { PanesManager } from '@go/ui';
+import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

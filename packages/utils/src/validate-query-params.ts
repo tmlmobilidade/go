@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@go/consts';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { z } from 'zod';
 
 export function validateQueryParams<T>(queryParams: unknown, schema: z.ZodTypeAny): T {

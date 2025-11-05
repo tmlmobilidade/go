@@ -1,5 +1,5 @@
 {
-	"name": "@go/stops-api",
+	"name": "@tmlmobilidade/go-stops-api",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -16,15 +16,15 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@go/connectors-fastify": "*",
-		"@go/interfaces": "*",
-		"@go/consts": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/utils": "*",
 		"pino-pretty": "13.1.2"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* * */
 
-import { ALLOW_ALL_FLAG } from '@go/consts';
-import { type Permission } from '@go/types';
+import { ALLOW_ALL_FLAG } from '@tmlmobilidade/consts';
+import { type Permission } from '@tmlmobilidade/types';
 import { mergekit } from 'mergekit';
 
 /**

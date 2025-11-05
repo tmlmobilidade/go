@@ -14,7 +14,7 @@ import { syncDemandByPatternByMonth } from '@/demand/by_pattern/by_month.js';
 import { syncDemandByPatternByYear } from '@/demand/by_pattern/by_year.js';
 import { syncDemandByPatternHourByMonth } from '@/demand/by_pattern_hour/by_month.js';
 import { syncDemandByPatternHourByYear } from '@/demand/by_pattern_hour/by_year.js';
-import { Logger } from '@go/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import TIMETRACKER from '@helperkits/timer';
 
 /* * */

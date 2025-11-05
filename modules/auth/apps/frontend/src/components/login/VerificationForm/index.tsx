@@ -4,7 +4,7 @@
 
 import { PasswordConfirmationForm } from '@/components/common/PasswordConfirmationForm';
 import { Routes } from '@/lib/routes';
-import { useToast } from '@go/ui';
+import { useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { useVerify } from './use-verify';

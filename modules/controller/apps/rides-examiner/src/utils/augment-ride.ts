@@ -6,7 +6,7 @@ import { detectFirstEvent } from '@/utils/detect-first-event.util.js';
 import { detectLastEvent } from '@/utils/detect-last-event.util.js';
 import { detectStartEvent } from '@/utils/detect-start-event.util.js';
 import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
-import { type Ride } from '@go/types';
+import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * Augments the ride data with additional information from the analysis data.

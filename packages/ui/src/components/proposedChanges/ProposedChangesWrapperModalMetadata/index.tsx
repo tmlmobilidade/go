@@ -3,7 +3,7 @@
 import { ProposedChangesWrapperModalTag } from '@/components/proposedChanges/ProposedChangesWrapperModalTag';
 import { ProposedChangesWrapperModalUserMetadata } from '@/components/proposedChanges/ProposedChangesWrapperModalUserMetadata';
 import { ScopeEntityMap, ScopeKey } from '@/contexts/ProposedChanges.context';
-import { ProposedChange, User } from '@go/types';
+import { ProposedChange, User } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 

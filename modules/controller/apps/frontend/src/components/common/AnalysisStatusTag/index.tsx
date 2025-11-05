@@ -2,8 +2,8 @@
 
 /* * */
 
-import { type RideAnalysis } from '@go/types';
-import { Tag } from '@go/ui';
+import { type RideAnalysis } from '@tmlmobilidade/types';
+import { Tag } from '@tmlmobilidade/ui';
 import { IconCheck, IconX } from '@tabler/icons-react';
 
 /* * */

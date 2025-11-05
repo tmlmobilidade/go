@@ -1,7 +1,7 @@
 /* * */
 
-import { hashedShapes, hashedTrips, plans, rides } from '@go/interfaces';
-import { performInChunks } from '@go/utils';
+import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { performInChunks } from '@tmlmobilidade/utils';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

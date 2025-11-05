@@ -4,8 +4,8 @@
 
 import { UploadImage } from '@/components/common/UploadImage';
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
-import { CreateOrganizationSchema } from '@go/types';
-import { Collapsible, Grid, Section, TextInput } from '@go/ui';
+import { CreateOrganizationSchema } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 

@@ -7,8 +7,8 @@ import { ApexPaymentMethodTag } from '@/components/common/ApexPaymentMethodTag';
 import { CurrencyTag } from '@/components/common/CurrencyTag';
 import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { type SimplifiedApexOnBoardSale } from '@go/types';
-import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@go/ui';
+import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

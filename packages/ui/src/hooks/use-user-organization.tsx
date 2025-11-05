@@ -2,8 +2,8 @@
 
 /* * */
 import { useMeContext } from '@/contexts/Me.context';
-import { getAppConfig, HttpException } from '@go/consts';
-import { type Organization } from '@go/types';
+import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { type Organization } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 

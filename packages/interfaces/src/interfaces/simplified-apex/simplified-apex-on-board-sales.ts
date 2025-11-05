@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { type SimplifiedApexOnBoardSale, type UpdateSimplifiedApexOnBoardSaleDto } from '@go/types';
-import { AsyncSingletonProxy } from '@go/utils';
+import { type SimplifiedApexOnBoardSale, type UpdateSimplifiedApexOnBoardSaleDto } from '@tmlmobilidade/types';
+import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */

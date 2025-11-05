@@ -1,6 +1,6 @@
-import { DemandByAgencyByDay, type DemandByLineByDay } from '@go/types';
+import { DemandByAgencyByDay, type DemandByLineByDay } from '@tmlmobilidade/types';
 import { type LineChartProps } from '@tmlmobilidade/ui';
-import { Dates } from '@go/dates';
+import { Dates } from '@tmlmobilidade/dates';
 
 import { formatDayDetailed, formatDayShort } from './formatDates';
 

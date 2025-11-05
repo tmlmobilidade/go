@@ -2,10 +2,10 @@
 
 import { parseSam } from '@/parse-sam.js';
 import { type AggregationResultItem } from '@/types.js';
-import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@go/interfaces';
-import { Dates } from '@go/dates';
+import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
-import TIMETRACKER from@go/datesimer';
+import TIMETRACKER from@tmlmobilidade/datesimer';
 
 /* * */
 

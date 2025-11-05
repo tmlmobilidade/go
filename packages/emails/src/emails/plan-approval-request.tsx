@@ -1,9 +1,9 @@
 /* * */
 
 import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
-import { getAppConfig } from '@go/consts';
-import { Dates } from '@go/dates';
-import { type GtfsValidation, type UnixTimestamp } from '@go/types';
+import { getAppConfig } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
+import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Button, Hr, Section, Text } from '@react-email/components';
 
 /* * */

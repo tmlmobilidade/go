@@ -1,1 +1,1 @@
-# Gestor de Oferta (GO)
+# Gestor de Oferta (GO v2)

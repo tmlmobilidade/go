@@ -1,5 +1,5 @@
 {
-	"name": "@go/auth-api",
+	"name": "@tmlmobilidade/go-auth-api",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -17,19 +17,19 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@go/connectors-fastify": "*",
-		"@go/emails": "*",
-		"@go/interfaces": "*",
-		"@go/consts": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/utils": "*",
 		"gray-matter": "4.0.3",
 		"pino-pretty": "13.1.2",
 		"remark-html": "16.0.1",
 		"remark-parse": "11.0.0"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

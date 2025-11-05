@@ -1,7 +1,7 @@
 /* * */
 
 import { permissionsConfig } from '@/lib/permissions';
-import { Permission } from '@go/types';
+import { Permission } from '@tmlmobilidade/types';
 
 import { PermissionSectionInputProps, PermissionsSection, WithResourceToggle } from '../PermissionSection';
 

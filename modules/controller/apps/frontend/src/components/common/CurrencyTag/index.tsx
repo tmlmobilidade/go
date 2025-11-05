@@ -1,6 +1,6 @@
 /* * */
 
-import { Tag } from '@go/ui';
+import { Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

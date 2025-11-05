@@ -24,8 +24,8 @@
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
-		"@go/interfaces": "*",
-		"@go/consts": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/consts": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
@@ -37,8 +37,8 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

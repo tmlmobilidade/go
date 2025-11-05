@@ -1,9 +1,9 @@
 /* * */
 
 import { IconDownload, IconFile, IconFileTypeZip } from '@tabler/icons-react';
-import { mimeTypes } from '@go/consts';
-import { type File } from '@go/types';
-import { Label, useToast } from '@go/ui';
+import { mimeTypes } from '@tmlmobilidade/consts';
+import { type File } from '@tmlmobilidade/types';
+import { Label, useToast } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

@@ -3,7 +3,7 @@
 /* * */
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
-import { Collapsible, DateTimePicker, Section } from '@go/ui';
+import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
 
 /* * */
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { Breadcrumbs } from '@go/ui';
+import { Breadcrumbs } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

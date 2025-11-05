@@ -5,8 +5,8 @@
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { jurisdictionSchema } from '@go/types';
-import { Collapsible, Combobox, Grid, Section, ValueDisplay } from '@go/ui';
+import { jurisdictionSchema } from '@tmlmobilidade/types';
+import { Collapsible, Combobox, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

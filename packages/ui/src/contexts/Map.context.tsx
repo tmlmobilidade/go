@@ -9,7 +9,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { type MapStyle } from '@/components/map/configs/styles';
 import { type MapOverlayPinsPointDataProps } from '@/components/map/overlays/MapOverlayPins';
 import { useUserPreference } from '@/hooks/use-user-preference';
-import { getBaseGeoJsonFeatureCollection, parseCoordinatePairString } from '@go/geo';
+import { getBaseGeoJsonFeatureCollection, parseCoordinatePairString } from '@tmlmobilidade/geo';
 import { MapProvider } from '@vis.gl/react-maplibre';
 import { type FeatureCollection, type Point } from 'geojson';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

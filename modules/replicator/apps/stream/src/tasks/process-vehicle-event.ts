@@ -1,9 +1,9 @@
 /* * */
 
-import { rides, vehicleEvents } from '@go/interfaces';
-import { parseVehicleEvent } from '@go/replicator-pckg-parse';
-import { type VehicleEvent } from '@go/types';
-import { Dates } from '@go/dates';
+import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { type VehicleEvent } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';

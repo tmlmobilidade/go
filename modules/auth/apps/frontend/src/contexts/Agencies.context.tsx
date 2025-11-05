@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type Agency } from '@go/types';
+import { type Agency } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

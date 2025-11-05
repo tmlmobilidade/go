@@ -2,7 +2,7 @@
 
 import { RolesList } from '@/components/roles/list/RolesList';
 import { RolesListContextProvider } from '@/contexts/RolesList.context';
-import { PanesManager } from '@go/ui';
+import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

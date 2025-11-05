@@ -2,8 +2,8 @@
 
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { validationProcessingStatus } from '@/types/normalized';
-import { PROCESSING_STATUS_OPTIONS } from '@go/types';
-import { FilterTypeList } from '@go/ui';
+import { PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
+import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

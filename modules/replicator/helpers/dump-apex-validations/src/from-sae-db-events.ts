@@ -3,9 +3,9 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { CsvWriter } from '@helperkits/writer';
-import { vehicleEvents } from '@go/interfaces';
-import { VehicleEvent } from '@go/types';
-import { Dates, generateRandomString } from '@go/utils';
+import { vehicleEvents } from '@tmlmobilidade/interfaces';
+import { VehicleEvent } from '@tmlmobilidade/types';
+import { Dates, generateRandomString } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
 /* * */

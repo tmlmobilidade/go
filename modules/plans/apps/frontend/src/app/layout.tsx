@@ -1,11 +1,11 @@
 /* * */
 
-import '@go/ui/styles';
+import '@tmlmobilidade/ui/styles';
 
 /* * */
 
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
-import { AppProvider, AppWrapper, BaseProvider } from '@go/ui';
+import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';

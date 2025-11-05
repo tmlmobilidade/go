@@ -4,8 +4,8 @@
 
 import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { type VehicleEvent } from '@go/types';
-import { Collapsible, DataTable, DataTableColumn } from '@go/ui';
+import { type VehicleEvent } from '@tmlmobilidade/types';
+import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

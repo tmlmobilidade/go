@@ -1,4 +1,4 @@
-import { Alert } from '@go/types';
+import { Alert } from '@tmlmobilidade/types';
 
 export function getAvailableLines(alert: Alert) {
 	if (alert.reference_type === 'LINE') {

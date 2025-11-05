@@ -1,5 +1,5 @@
 {
-	"name": "@go/controller-frontend",
+	"name": "@tmlmobilidade/go-controller-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -17,9 +17,9 @@
 	"dependencies": {
 		"@mantine/nprogress": "8.3.6",
 		"@tabler/icons-react": "3.35.0",
-		"@go/controller-pckg-ride-normalized": "*",
-		"@go/types": "*",
-		"@go/ui": "*",
+		"@tmlmobilidade/controller-pckg-ride-normalized": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/ui": "*",
 		"@turf/turf": "7.2.0",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"lodash": "4.17.21",
@@ -36,7 +36,7 @@
 		"swr": "2.3.6"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/lodash": "4.17.20",
 		"@types/luxon": "3.7.1",

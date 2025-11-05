@@ -1,6 +1,6 @@
 /* * */
 
-import { mimeTypes } from '@go/consts';
+import { mimeTypes } from '@tmlmobilidade/consts';
 import JSZip from 'jszip';
 import papaparse, { ParseConfig } from 'papaparse';
 

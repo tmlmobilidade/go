@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/sae-${MODULE}-${PROJECT} --docker
+RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${PROJECT} --docker
 
 
 # # #
@@ -35,7 +35,7 @@ RUN npm install
 
 # Build the project
 COPY --from=pruner /app/out/full/ .
-RUN turbo run build --filter=@tmlmobilidade/sae-${MODULE}-${PROJECT}
+RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${PROJECT}
 
 
 # # #

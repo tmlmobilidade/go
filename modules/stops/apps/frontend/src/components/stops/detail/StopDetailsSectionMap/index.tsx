@@ -3,8 +3,8 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView } from '@go/ui';
-import { getBaseGeoJsonFeatureCollection } from '@go/utils';
+import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView } from '@tmlmobilidade/ui';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/utils';
 import { type Point } from 'geojson';
 import { useMemo } from 'react';
 

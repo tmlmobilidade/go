@@ -4,7 +4,7 @@ import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
-import { Button, closeModal, Divider, Grid, Label, openModal, Section, Tag } from '@go/ui';
+import { Button, closeModal, Divider, Grid, Label, openModal, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 

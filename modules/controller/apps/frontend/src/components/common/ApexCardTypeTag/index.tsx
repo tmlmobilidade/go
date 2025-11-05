@@ -1,7 +1,7 @@
 /* * */
 
-import { type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale } from '@go/types';
-import { Tag, TagGroup } from '@go/ui';
+import { type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { Tag, TagGroup } from '@tmlmobilidade/ui';
 
 /* * */
 

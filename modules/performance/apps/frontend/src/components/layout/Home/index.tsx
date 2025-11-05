@@ -6,7 +6,7 @@ import Topics from '@/components/layout/Topics';
 import { Widget } from '@/components/layout/Widget';
 import { RealtimeDemand } from '@/components/visualizations/RealtimeDemand';
 import { ServiceCompliance } from '@/components/visualizations/ServiceCompliance';
-import { Divider, Grid, useMeContext } from '@go/ui';
+import { Divider, Grid, useMeContext } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

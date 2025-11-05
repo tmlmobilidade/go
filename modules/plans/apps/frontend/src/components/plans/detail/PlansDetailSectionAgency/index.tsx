@@ -2,7 +2,7 @@
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Collapsible, Section } from '@go/ui';
+import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 /* * */
 

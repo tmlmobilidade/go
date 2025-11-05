@@ -8,7 +8,7 @@ import { ValidationsDetailSectionAgency } from '@/components/validations/detail/
 import { ValidationsDetailSectionFeedInfo } from '@/components/validations/detail/ValidationsDetailSectionFeedInfo';
 import { ValidationsDetailSectionResult } from '@/components/validations/detail/ValidationsDetailSectionResult';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { ErrorDisplay, LoadingOverlay, Pane } from '@go/ui';
+import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
 

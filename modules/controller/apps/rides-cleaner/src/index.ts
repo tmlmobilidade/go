@@ -1,6 +1,6 @@
 /* * */
 
-import { rides } from '@go/interfaces';
+import { rides } from '@tmlmobilidade/interfaces';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

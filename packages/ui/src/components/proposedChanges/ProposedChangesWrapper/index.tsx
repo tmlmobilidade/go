@@ -5,7 +5,7 @@
 import { ProposedChangesWrapperModal } from '@/components/proposedChanges/ProposedChangesWrapperModal';
 import { useMeContext, useProposedChangesContext } from '@/contexts';
 import { ScopeEntityMap, ScopeKey } from '@/contexts/ProposedChanges.context';
-import { ApprovalStatus, ProposedChange } from '@go/types';
+import { ApprovalStatus, ProposedChange } from '@tmlmobilidade/types';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 

@@ -7,8 +7,8 @@ import { AlertReferencesLines } from '@/components/scheduled/detail/AlertReferen
 import { AlertReferencesStops } from '@/components/scheduled/detail/AlertReferencesStops';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Alert, referenceTypeSchema } from '@go/types';
-import { Collapsible, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@go/ui';
+import { Alert, referenceTypeSchema } from '@tmlmobilidade/types';
+import { Collapsible, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

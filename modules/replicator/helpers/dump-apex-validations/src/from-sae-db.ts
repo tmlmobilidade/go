@@ -3,9 +3,9 @@
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { CsvWriter } from '@helperkits/writer';
-import { simplifiedApexValidations } from '@go/interfaces';
-import { SimplifiedApexValidation } from '@go/types';
-import { Dates, generateRandomString } from '@go/utils';
+import { simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { Dates, generateRandomString } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
 /* * */

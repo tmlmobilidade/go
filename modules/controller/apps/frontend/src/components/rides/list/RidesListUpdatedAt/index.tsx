@@ -3,7 +3,7 @@
 import { useRidesListContext } from '@/contexts/RidesList.context';
 /* * */
 
-import { Tag } from '@go/ui';
+import { Tag } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 

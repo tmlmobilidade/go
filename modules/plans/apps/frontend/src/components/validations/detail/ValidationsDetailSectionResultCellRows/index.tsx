@@ -1,6 +1,6 @@
 /* * */
 
-import { TagGroup, type TagProps } from '@go/ui';
+import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 

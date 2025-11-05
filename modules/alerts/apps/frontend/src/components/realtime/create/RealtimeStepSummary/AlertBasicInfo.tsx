@@ -1,5 +1,5 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { CoordinatesInput, Description, Label, Section } from '@go/ui';
+import { CoordinatesInput, Description, Label, Section } from '@tmlmobilidade/ui';
 
 export function AlertBasicInfo() {
 	const realtimeContext = useRealtimeCreateContext();

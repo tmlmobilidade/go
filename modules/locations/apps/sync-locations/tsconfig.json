@@ -1,5 +1,5 @@
 {
-	"extends": "@go/tsconfig/lib.json",
+	"extends": "@tmlmobilidade/tsconfig/lib.json",
 	"compilerOptions": {
 		"outDir": "./dist",
 		"paths": {

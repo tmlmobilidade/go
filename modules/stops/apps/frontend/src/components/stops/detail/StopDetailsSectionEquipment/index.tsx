@@ -4,8 +4,8 @@
 
 import { StopDetailFacilityCheckbox } from '@/components/stops/detail/StopDetailFacilityCheckbox';
 import { Translations } from '@/lib/translations';
-import { facilitiesSchema } from '@go/types';
-import { Collapsible, Grid, Section } from '@go/ui';
+import { facilitiesSchema } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 

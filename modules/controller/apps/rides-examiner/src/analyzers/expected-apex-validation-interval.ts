@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride, SimplifiedApexValidation } from '@go/types';
-import { sortByUnixTimestamp } from '@go/utils';
+import { type Ride, SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
 /* * */
 

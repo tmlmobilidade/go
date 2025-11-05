@@ -1,7 +1,7 @@
 /* * */
 
-import { FastifyService, type FastifyServiceOptions } from '@go/connectors-fastify';
-import { getAppConfig } from '@go/consts';
+import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors-fastify';
+import { getAppConfig } from '@tmlmobilidade/consts';
 
 /* * */
 

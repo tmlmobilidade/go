@@ -3,7 +3,7 @@
 import { DateTimePicker } from '@/components/dates/DateTimePicker';
 import { FilterWrapper } from '@/components/filters/FilterWrapper';
 import { Section } from '@/components/layout/Section';
-import { type UnixTimestamp } from '@go/types';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 

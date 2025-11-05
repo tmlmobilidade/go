@@ -1,6 +1,6 @@
 /* * */
 
-import { DelayStatusSchema, OperationalStatusSchema, RideAcceptanceStatusSchema, RideAnalysisGradeSchema, SeenStatusSchema, validateUnixTimestamp } from '@go/types';
+import { DelayStatusSchema, OperationalStatusSchema, RideAcceptanceStatusSchema, RideAnalysisGradeSchema, SeenStatusSchema, validateUnixTimestamp } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 const RideAnalysisGradeWithNoneSchema = RideAnalysisGradeSchema.or(z.literal('none'));

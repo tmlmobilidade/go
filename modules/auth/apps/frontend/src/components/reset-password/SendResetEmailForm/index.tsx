@@ -5,7 +5,7 @@
 import { useVerifyEmail } from '@/components/reset-password/SendResetEmailForm/use-verify-email';
 import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
-import { Button, Label, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@go/ui';
+import { Button, Label, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 

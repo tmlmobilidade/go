@@ -6,7 +6,7 @@ import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
 	experimental: {
-		optimizePackageImports: ['@go/ui'],
+		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
 	async headers() {
 		return [

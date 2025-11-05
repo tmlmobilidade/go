@@ -5,7 +5,7 @@
 import { RidesDetailHeader } from '@/components/rides/detail/RidesDetailHeader';
 import { RidesDetailViewNavigation } from '@/components/rides/detail/RidesDetailViewNavigation';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { ErrorDisplay, LoadingOverlay, Pane } from '@go/ui';
+import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 import { RidesDetailAcceptance } from '../acceptance';
 import { RidesDetailAnalysis } from '../analysis';

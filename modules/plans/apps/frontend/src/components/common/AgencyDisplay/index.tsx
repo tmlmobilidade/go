@@ -1,7 +1,7 @@
 /* * */
 
-import { type GtfsAgency } from '@go/types';
-import { Grid, ValueDisplay } from '@go/ui';
+import { type GtfsAgency } from '@tmlmobilidade/types';
+import { Grid, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 

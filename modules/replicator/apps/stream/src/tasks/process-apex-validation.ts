@@ -1,9 +1,9 @@
 /* * */
 
-import { rides, simplifiedApexValidations } from '@go/interfaces';
-import { parseSimplifiedApexValidation } from '@go/replicator-pckg-parse';
-import { type SimplifiedApexValidation } from '@go/types';
-import { Dates } from '@go/dates';
+import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';

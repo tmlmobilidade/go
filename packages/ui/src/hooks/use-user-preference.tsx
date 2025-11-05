@@ -3,7 +3,7 @@
 /* * */
 
 import { useMeContext } from '@/contexts/Me.context';
-import { type UserPreferenceValue } from '@go/types';
+import { type UserPreferenceValue } from '@tmlmobilidade/types';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 

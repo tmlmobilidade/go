@@ -3,9 +3,9 @@
 /* * */
 
 import { type UserNormalized } from '@/types/normalized';
-import { type User } from '@go/types';
-import { normalizeString } from '@go/strings';
-import { useSearch } from '@go/ui';
+import { type User } from '@tmlmobilidade/types';
+import { normalizeString } from '@tmlmobilidade/strings';
+import { useSearch } from '@tmlmobilidade/ui';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';

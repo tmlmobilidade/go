@@ -1,9 +1,9 @@
 /* * */
 
 import { type LocationsApiResponse } from '@/types';
-import { stops } from '@go/interfaces';
-import { getAppConfig } from '@go/consts';
-import { fetchData } from '@go/utils';
+import { stops } from '@tmlmobilidade/interfaces';
+import { getAppConfig } from '@tmlmobilidade/consts';
+import { fetchData } from '@tmlmobilidade/utils';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

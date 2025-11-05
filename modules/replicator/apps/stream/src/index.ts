@@ -5,7 +5,7 @@ import { processApexOnBoardRefund } from '@/tasks/process-apex-on-board-refund.j
 import { processApexOnBoardSale } from '@/tasks/process-apex-on-board-sale.js';
 import { processApexValidation } from '@/tasks/process-apex-validation.js';
 import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
-import { PCGIDB } from '@go/replicator-pckg-utils';
+import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
 
 /* * */
 

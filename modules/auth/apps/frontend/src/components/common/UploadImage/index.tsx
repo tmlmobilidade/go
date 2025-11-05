@@ -1,4 +1,4 @@
-import { DeleteButton, FileButton, Label, useToast } from '@go/ui';
+import { DeleteButton, FileButton, Label, useToast } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 

@@ -1,8 +1,8 @@
 /* * */
 
 import { IStorageProvider } from '@/providers/storage/storage.interface.js';
-import { HttpException, HttpStatus } from '@go/consts';
-import { mimeTypes } from '@go/consts';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { mimeTypes } from '@tmlmobilidade/consts';
 import { readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
 import { OciError, Region, SimpleAuthenticationDetailsProvider } from 'oci-common';

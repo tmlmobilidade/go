@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { Alert, AlertSchema, CreateAlertDto, UpdateAlertDto, UpdateAlertSchema } from '@go/types';
-import { AsyncSingletonProxy } from '@go/utils';
+import { Alert, AlertSchema, CreateAlertDto, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 /* * */

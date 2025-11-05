@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { Collapsible, Divider, Grid, Section, ValueDisplay } from '@go/ui';
+import { Collapsible, Divider, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 

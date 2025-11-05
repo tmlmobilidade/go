@@ -5,7 +5,7 @@
 import { Label } from '@/components/display/Label';
 import { Section } from '@/components/layout/Section';
 import { useExportsContext } from '@/contexts/exports.context';
-import { FileExport } from '@go/types';
+import { FileExport } from '@tmlmobilidade/types';
 import { IconCheck, IconCircleDashed, IconFileDownload, IconLoader2, IconX } from '@tabler/icons-react';
 import { useMemo } from 'react';
 

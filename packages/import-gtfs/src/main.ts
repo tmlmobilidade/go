@@ -10,9 +10,9 @@ import { processTripsFile } from '@/processors/trips.js';
 import { type GtfsSQLTables, type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
 import { downloadAndExtractGtfs } from '@/utils/extract-file.js';
 import { initGtfsSqlTables } from '@/utils/init-tables.js';
-import { Logger } from '@go/logger';
-import { Timer } from '@go/timer';
-import { type Plan } from '@go/types';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+import { type Plan } from '@tmlmobilidade/types';
 
 /**
  * Imports GTFS data into the database for a given plan.

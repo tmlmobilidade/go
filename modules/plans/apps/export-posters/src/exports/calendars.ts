@@ -3,11 +3,11 @@
 import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
 import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
-import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@go/types';
-import { Dates } from '@go/dates';
-import { type GtfsSQLTables } from '@go/import-gtfs';
-import { Logger } from '@go/logger';
-import { generateRandomString } from '@go/strings';
+import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { Logger } from '@tmlmobilidade/logger';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { CsvWriter } from '@helperkits/writer';
 import fs from 'node:fs';
 import Papa from 'papaparse';

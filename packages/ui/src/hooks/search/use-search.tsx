@@ -4,7 +4,7 @@
 
 import { accessorSearch } from '@/hooks/search/acessor-search';
 import { plainSearch } from '@/hooks/search/plain-search';
-import { normalizeString } from '@go/strings';
+import { normalizeString } from '@tmlmobilidade/strings';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useMemo } from 'react';
 

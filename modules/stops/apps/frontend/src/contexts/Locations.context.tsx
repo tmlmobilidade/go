@@ -2,9 +2,9 @@
 
 /* * */
 
-import { getAppConfig } from '@go/consts';
-import { type District, type Locality, type Location, type Municipality, type Parish } from '@go/types';
-import { fetchData } from '@go/utils';
+import { getAppConfig } from '@tmlmobilidade/consts';
+import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 

@@ -8,7 +8,7 @@ import { AlertDetailSectionReferences } from '@/components/scheduled/detail/Aler
 import { AlertDetailSectionTitle } from '@/components/scheduled/detail/AlertDetailSectionTitle';
 import { AlertDetailSectionValidity } from '@/components/scheduled/detail/AlertDetailSectionValidity';
 import { AlertDetailSectionVisibility } from '@/components/scheduled/detail/AlertDetailSectionVisibility';
-import { Pane } from '@go/ui';
+import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
 

@@ -1,4 +1,4 @@
-import { Permission } from '@go/types';
+import { Permission } from '@tmlmobilidade/types';
 
 /**
  * Calculate permissions that a user has from their assigned roles

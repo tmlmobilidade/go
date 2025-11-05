@@ -1,5 +1,5 @@
 {
-	"name": "@go/plans-validator",
+	"name": "@tmlmobilidade/go-plans-validator",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -14,17 +14,17 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
-		"@go/connectors-rabbitmq": "*",
-		"@go/emails": "*",
-		"@go/interfaces": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/connectors-rabbitmq": "*",
+		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/utils": "*",
 		"@helperkits/logger": "20250628.901.58",
 		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
-		"@go/types": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",

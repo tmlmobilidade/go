@@ -7,7 +7,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MongoConnector } from '@go/connectors-mongo';
+import { MongoConnector } from '@tmlmobilidade/connectors-mongo';
 import { ClientSession } from 'mongodb';
 
 import { MongoCollectionClass } from './mongo-collection.js';

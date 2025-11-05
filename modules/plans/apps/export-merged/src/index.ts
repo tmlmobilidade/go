@@ -1,9 +1,9 @@
 /* * */
 
-import { files, plans } from '@go/interfaces';
-import { mimeTypes } from '@go/consts';
-import { Dates } from '@go/dates';
-import { SQLiteDatabase, SQLiteDatabaseConfig } from '@go/sqlite';
+import { files, plans } from '@tmlmobilidade/interfaces';
+import { mimeTypes } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
+import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/sqlite';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import fs from 'fs';

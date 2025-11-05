@@ -2,15 +2,15 @@
 
 /* * */
 
-import { Permissions } from '@go/consts';
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@go/types';
-import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@go/ui';
-import { fetchData } from '@go/utils';
-import { getCssVariableValue } from '@go/utils';
-import { Dates } from '@go/dates';
-import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@go/geo';
+import { Permissions } from '@tmlmobilidade/consts';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
+import { getCssVariableValue } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/dates';
+import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
 import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
-import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
+import { normalizeRide, type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';

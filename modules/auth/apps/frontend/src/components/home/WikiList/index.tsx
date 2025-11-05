@@ -2,8 +2,8 @@
 
 /* * */
 
-import { type WikiArticle } from '@go/types';
-import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@go/ui';
+import { type WikiArticle } from '@tmlmobilidade/types';
+import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 

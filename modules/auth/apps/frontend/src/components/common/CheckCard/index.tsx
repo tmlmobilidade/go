@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox, Description, Label, Section } from '@go/ui';
+import { Checkbox, Description, Label, Section } from '@tmlmobilidade/ui';
 import React, { useCallback } from 'react';
 
 import styles from './styles.module.css';

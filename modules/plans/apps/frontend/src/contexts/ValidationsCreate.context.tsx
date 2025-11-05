@@ -4,10 +4,10 @@
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { type WorkerMessage } from '@/types/worker';
-import { Permissions } from '@go/consts';
-import { type CreateGtfsValidationDto, type GtfsValidation, type GtfsValidationPermission } from '@go/types';
-import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@go/ui';
-import { multipartFetch } from '@go/utils';
+import { Permissions } from '@tmlmobilidade/consts';
+import { type CreateGtfsValidationDto, type GtfsValidation, type GtfsValidationPermission } from '@tmlmobilidade/types';
+import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { mutate } from 'swr';

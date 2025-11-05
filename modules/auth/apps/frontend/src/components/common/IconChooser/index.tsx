@@ -1,7 +1,7 @@
 /* * */
 
 import { iconMap } from '@/lib/icons';
-import { Combobox } from '@go/ui';
+import { Combobox } from '@tmlmobilidade/ui';
 
 /* * */
 

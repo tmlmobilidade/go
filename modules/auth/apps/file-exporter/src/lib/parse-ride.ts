@@ -1,5 +1,5 @@
-import { RideAcceptance, type RideExportData, RideNormalized, UnixTimestamp } from '@go/types';
-import { Dates } from '@go/dates';
+import { RideAcceptance, type RideExportData, RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 
 function parseTime(time: null | UnixTimestamp): null | string {
 	if (!time) {

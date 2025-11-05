@@ -5,7 +5,7 @@
 import { UploadImage } from '@/components/common/UploadImage';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
-import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@go/ui';
+import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 

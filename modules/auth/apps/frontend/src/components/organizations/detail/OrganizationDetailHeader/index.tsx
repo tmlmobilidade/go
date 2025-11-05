@@ -3,9 +3,9 @@
 import { OrganizationsDetailMode, useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
 /* * */
 
-import { keepUrlParams } from '@go/utils';
+import { keepUrlParams } from '@tmlmobilidade/utils';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@go/ui';
+import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

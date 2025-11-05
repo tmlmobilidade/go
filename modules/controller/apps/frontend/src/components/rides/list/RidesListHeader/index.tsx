@@ -5,7 +5,7 @@
 import { openRideExportModal } from '@/components/rides/list/RidesExportModal';
 import { RidesListUpdatedAt } from '@/components/rides/list/RidesListUpdatedAt';
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { IconButton, Label, Loader, SearchInput, Spacer, Tag, Toolbar } from '@go/ui';
+import { IconButton, Label, Loader, SearchInput, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { IconFileDownload } from '@tabler/icons-react';
 
 /* * */

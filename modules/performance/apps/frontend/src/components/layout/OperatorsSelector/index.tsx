@@ -3,7 +3,7 @@
 import StatusCircle from '@/components/layout/StatusCircle';
 import { OPERATORS } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
-import { Skeleton } from '@go/ui';
+import { Skeleton } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 

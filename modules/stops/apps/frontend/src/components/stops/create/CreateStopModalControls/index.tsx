@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { Button, Grid, Section } from '@go/ui';
+import { Button, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 

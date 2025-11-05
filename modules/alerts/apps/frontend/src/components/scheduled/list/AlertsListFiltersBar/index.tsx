@@ -4,7 +4,7 @@ import { AlertsListFilterCause } from '@/components/scheduled/list/AlertsListFil
 import { AlertsListFilterEffect } from '@/components/scheduled/list/AlertsListFilterEffect';
 import { AlertsListFilterMunicipality } from '@/components/scheduled/list/AlertsListFilterMunicipality';
 import { AlertsListFilterPublishStatus } from '@/components/scheduled/list/AlertsListFilterPublishStatus';
-import { FiltersBar } from '@go/ui';
+import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
 

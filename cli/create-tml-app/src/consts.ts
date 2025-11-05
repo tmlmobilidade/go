@@ -1,4 +1,4 @@
-export { ASCII_TMLMOBILIDADE } from '@go/consts';
+export { ASCII_TMLMOBILIDADE } from '@tmlmobilidade/consts';
 export const TEMPLATE_STRING = '...scope...';
 export const CREATE_TML_APP = 'create-tml-app';
 

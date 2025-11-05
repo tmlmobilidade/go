@@ -3,7 +3,7 @@
 import { useAlertListContext } from '@/contexts/AlertList.context';
 import { Routes } from '@/lib/routes';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, SearchInput, Spacer, Toolbar } from '@go/ui';
+import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 

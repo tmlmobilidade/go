@@ -1,9 +1,9 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
-import { authProvider, users } from '@go/interfaces';
-import { getAppConfig, HttpException, HttpStatus } from '@go/consts';
-import { type CreateUserDto, type UpdateUserDto, type User } from '@go/types';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { authProvider, users } from '@tmlmobilidade/interfaces';
+import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type CreateUserDto, type UpdateUserDto, type User } from '@tmlmobilidade/types';
 
 /* * */
 

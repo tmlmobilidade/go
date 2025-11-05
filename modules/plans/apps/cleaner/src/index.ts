@@ -1,8 +1,8 @@
 /* * */
 
-import { files, gtfsValidations } from '@go/interfaces';
-import { type GtfsValidation, type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/dates';
+import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

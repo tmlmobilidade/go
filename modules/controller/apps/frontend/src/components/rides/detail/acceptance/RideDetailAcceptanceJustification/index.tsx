@@ -4,9 +4,9 @@ import { AcceptanceStatusProps, AcceptanceStatusTag } from '@/components/common/
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
 import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { Permissions } from '@go/consts';
-import { GtfsCause, gtfsCauseSchema, RideAcceptance, RideAcceptanceStatusSchema } from '@go/types';
-import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, TextInput, useToast } from '@go/ui';
+import { Permissions } from '@tmlmobilidade/consts';
+import { GtfsCause, gtfsCauseSchema, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
+import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 

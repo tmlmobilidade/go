@@ -3,9 +3,9 @@
 /* * */
 
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { CreateUserSchema } from '@go/types';
+import { CreateUserSchema } from '@tmlmobilidade/types';
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { Collapsible, Grid, PasswordInput, Section, TextInput } from '@go/ui';
+import { Collapsible, Grid, PasswordInput, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 

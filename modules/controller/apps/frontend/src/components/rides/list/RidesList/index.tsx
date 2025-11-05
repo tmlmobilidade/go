@@ -12,9 +12,9 @@ import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPa
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@go/ui';
-import { keepUrlParams } from '@go/utils';
-import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
+import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/utils';
+import { type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
 import { useRouter } from 'next/navigation';
 
 /* * */

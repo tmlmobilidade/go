@@ -1,4 +1,4 @@
-import { Permissions } from '@go/consts';
+import { Permissions } from '@tmlmobilidade/consts';
 
 /* * */
 

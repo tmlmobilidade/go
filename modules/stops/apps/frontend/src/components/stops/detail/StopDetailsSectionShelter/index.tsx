@@ -5,8 +5,8 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
 import { ScopeOption } from '@/types/proposed-changes';
-import { hasAnySchema, infrastructureStatusSchema } from '@go/types';
-import { Collapsible, Combobox, Grid, ProposedChangesWrapper, Section, Spacer, TextInput } from '@go/ui';
+import { hasAnySchema, infrastructureStatusSchema } from '@tmlmobilidade/types';
+import { Collapsible, Combobox, Grid, ProposedChangesWrapper, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 

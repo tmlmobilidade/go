@@ -6,7 +6,7 @@ import { LocationsCoordinateInput } from '@/components/locations/LocationsCoordi
 import { LocationsFilters } from '@/components/locations/LocationsFilters';
 import { LocationsMapView } from '@/components/locations/LocationsMapView';
 import { LocationsSearch } from '@/components/locations/LocationsSearch';
-import { Grid, Pane, Section } from '@go/ui';
+import { Grid, Pane, Section } from '@tmlmobilidade/ui';
 import { MapProvider } from '@vis.gl/react-maplibre';
 
 /* * */

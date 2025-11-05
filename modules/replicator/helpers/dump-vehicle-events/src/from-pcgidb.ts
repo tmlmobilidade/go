@@ -2,8 +2,8 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { PCGIDB } from '@go/replicator-pckg-utils';
-import { Dates } from '@go/dates';
+import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
+import { Dates } from '@tmlmobilidade/dates';
 import fs from 'node:fs';
 
 /* * */

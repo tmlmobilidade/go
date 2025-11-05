@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import { metrics, simplifiedApexValidations } from '@go/interfaces';
-import { Metric } from '@go/types';
-import { Dates } from '@go/dates';
-import { Logger } from '@go/logger';
+import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { Metric } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { Logger } from '@tmlmobilidade/logger';
 import TIMETRACKER from '@helperkits/timer';
 
 /* * */

@@ -1,5 +1,5 @@
 {
-	"name": "@go/types",
+	"name": "@tmlmobilidade/types",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -42,7 +42,7 @@
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",

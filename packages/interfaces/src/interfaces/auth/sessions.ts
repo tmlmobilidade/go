@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { CreateSessionDto, Session, SessionSchema, UpdateSessionDto } from '@go/types';
-import { AsyncSingletonProxy } from '@go/utils';
+import { CreateSessionDto, Session, SessionSchema, UpdateSessionDto } from '@tmlmobilidade/types';
+import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 

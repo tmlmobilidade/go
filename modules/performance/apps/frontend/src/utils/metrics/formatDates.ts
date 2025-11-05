@@ -1,4 +1,4 @@
-import { Dates } from '@go/dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { useTranslations } from 'next-intl';
 
 export interface DayInfo {

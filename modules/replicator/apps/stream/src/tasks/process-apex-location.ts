@@ -1,9 +1,9 @@
 /* * */
 
-import { rides, simplifiedApexLocations } from '@go/interfaces';
-import { parseSimplifiedApexLocation } from '@go/replicator-pckg-parse';
-import { type SimplifiedApexLocation } from '@go/types';
-import { Dates } from '@go/dates';
+import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
+import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';

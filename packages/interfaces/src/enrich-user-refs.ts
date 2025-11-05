@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { users } from '@/interfaces/auth/users.js';
-import { type UserDisplay, UserDisplayFields } from '@go/types';
+import { type UserDisplay, UserDisplayFields } from '@tmlmobilidade/types';
 import { FindOptions } from 'mongodb';
 
 type AnyDoc = Record<string, any>;

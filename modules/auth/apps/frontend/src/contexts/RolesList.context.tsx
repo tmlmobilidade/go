@@ -4,8 +4,8 @@
 
 import { useRolesContext } from '@/contexts/Roles.context';
 import { type RoleNormalized } from '@/types/normalized';
-import { normalizeString } from '@go/strings';
-import { useSearch } from '@go/ui';
+import { normalizeString } from '@tmlmobilidade/strings';
+import { useSearch } from '@tmlmobilidade/ui';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

@@ -2,7 +2,7 @@
 
 import { type DatesFormat, Formats, OPERATIONAL_DATE_FORMAT } from '@/format.js';
 import { type TimezoneIdentified, timezoneList, timezoneListSchema } from '@/types.js';
-import { type OperationalDate, type UnixTimestamp } from '@go/types';
+import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
 /* * */

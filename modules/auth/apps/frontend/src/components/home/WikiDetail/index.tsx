@@ -3,8 +3,8 @@
 /* * */
 
 import { WikiDetailHeader } from '@/components/home/WikiDetailHeader';
-import { type WikiArticle } from '@go/types';
-import { ErrorDisplay, LoadingOverlay, Pane, Section } from '@go/ui';
+import { type WikiArticle } from '@tmlmobilidade/types';
+import { ErrorDisplay, LoadingOverlay, Pane, Section } from '@tmlmobilidade/ui';
 import useSWR from 'swr';
 
 /* * */

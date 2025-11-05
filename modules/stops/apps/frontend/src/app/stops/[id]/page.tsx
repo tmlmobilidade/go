@@ -2,7 +2,7 @@
 
 import { StopDetail } from '@/components/stops/detail/StopDetail';
 import { StopDetailContextProvider } from '@/contexts/StopDetails.context';
-import { ProposedChangesContextProvider } from '@go/ui';
+import { ProposedChangesContextProvider } from '@tmlmobilidade/ui';
 
 /* * */
 

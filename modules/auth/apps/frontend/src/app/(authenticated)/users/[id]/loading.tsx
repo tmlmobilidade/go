@@ -1,6 +1,6 @@
 /* * */
 
-import { Loader } from '@go/ui';
+import { Loader } from '@tmlmobilidade/ui';
 
 /* * */
 

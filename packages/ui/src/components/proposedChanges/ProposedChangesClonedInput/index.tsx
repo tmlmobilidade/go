@@ -3,7 +3,7 @@
 /* * */
 
 import { ScopeEntityMap, ScopeKey } from '@/contexts/ProposedChanges.context';
-import { CreateProposedChangeDto, ProposedChange } from '@go/types';
+import { CreateProposedChangeDto, ProposedChange } from '@tmlmobilidade/types';
 import React, { useEffect, useId, useState } from 'react';
 
 /* * */

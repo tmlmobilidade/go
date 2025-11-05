@@ -4,9 +4,9 @@
 
 import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
-import { type SimplifiedApexLocation } from '@go/types';
-import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@go/ui';
-import { sortByUnixTimestamp } from '@go/dates';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
+import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
+import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 
 /* * */

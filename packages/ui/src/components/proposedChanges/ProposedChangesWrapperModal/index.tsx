@@ -4,7 +4,7 @@
 
 import { ProposedChangesWrapperModalContent } from '@/components/proposedChanges/ProposedChangesWrapperModalContent';
 import { ScopeEntityMap, ScopeKey } from '@/contexts/ProposedChanges.context';
-import { ProposedChange } from '@go/types';
+import { ProposedChange } from '@tmlmobilidade/types';
 import { Modal } from '@mantine/core';
 
 /* * */

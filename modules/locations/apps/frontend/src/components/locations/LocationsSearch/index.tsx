@@ -3,7 +3,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Combobox, Description, Grid, Label, Section } from '@go/ui';
+import { Combobox, Description, Grid, Label, Section } from '@tmlmobilidade/ui';
 
 /* * */
 

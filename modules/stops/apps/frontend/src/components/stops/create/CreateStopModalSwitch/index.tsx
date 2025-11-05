@@ -6,7 +6,7 @@ import { CreateStopStep1 } from '@/components/stops/create/CreateStopStep1';
 import { CreateStopStep2 } from '@/components/stops/create/CreateStopStep2';
 import { CreateStopStep3 } from '@/components/stops/create/CreateStopStep3';
 import { useStopCreateContext } from '@/contexts/StopCreate.context';
-import { ErrorDisplay } from '@go/ui';
+import { ErrorDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 

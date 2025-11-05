@@ -1,8 +1,8 @@
 /* * */
 
-import { Tag } from '@go/ui';
+import { Tag } from '@tmlmobilidade/ui';
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
-import { type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
+import { type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
 
 /* * */
 

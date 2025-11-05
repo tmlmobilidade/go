@@ -1,8 +1,8 @@
 /* * */
 
-import { fileExports, files, verificationTokens } from '@go/interfaces';
-import { ProcessingStatusSchema, type UnixTimestamp } from '@go/types';
-import { Dates } from '@go/dates';
+import { fileExports, files, verificationTokens } from '@tmlmobilidade/interfaces';
+import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

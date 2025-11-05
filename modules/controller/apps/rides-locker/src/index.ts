@@ -1,9 +1,9 @@
 /* * */
 
-import { rideAcceptances } from '@go/interfaces';
-import { Dates } from '@go/dates';
+import { rideAcceptances } from '@tmlmobilidade/interfaces';
+import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
-import TIMETRACKER from@go/datesimer';
+import TIMETRACKER from@tmlmobilidade/datesimer';
 import { Interval } from 'luxon';
 
 /* * */

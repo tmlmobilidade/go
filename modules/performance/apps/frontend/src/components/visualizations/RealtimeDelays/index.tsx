@@ -8,7 +8,7 @@ import { OperatorType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconClock } from '@tabler/icons-react';
-import { type RealtimeServiceCompliance } from '@go/types';
+import { type RealtimeServiceCompliance } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 

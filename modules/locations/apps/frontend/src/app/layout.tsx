@@ -1,12 +1,12 @@
 /* * */
 
-import '@go/ui/styles';
+import '@tmlmobilidade/ui/styles';
 
 /* * */
 
 import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
-import { getAppConfig } from '@go/consts';
-import { ThemeContextProvider } from '@go/ui';
+import { getAppConfig } from '@tmlmobilidade/consts';
+import { ThemeContextProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';

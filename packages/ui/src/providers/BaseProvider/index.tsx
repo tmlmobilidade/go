@@ -3,7 +3,7 @@
 /* * */
 
 import { themeData } from '@/styles/theme';
-import { swrFetcher } from '@go/utils';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { MantineProvider } from '@mantine/core';
 import { DatesProvider, DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';

@@ -1,7 +1,7 @@
 /* * */
 
-import { type VehicleEvent } from '@go/types';
-import { sortByUnixTimestamp } from '@go/utils';
+import { type VehicleEvent } from '@tmlmobilidade/types';
+import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
 /**
  * Detect the first event in the vehicle events data.

@@ -1,5 +1,5 @@
 {
-	"name": "@go/consts",
+	"name": "@tmlmobilidade/consts",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -40,10 +40,10 @@
 		"lint:fix": "eslint ./src/ --fix"
 	},
 	"dependencies": {
-		"@go/types": "*"
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",

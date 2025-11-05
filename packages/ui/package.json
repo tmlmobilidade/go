@@ -1,5 +1,5 @@
 {
-	"name": "@go/ui",
+	"name": "@tmlmobilidade/ui",
 	"description": "UI components for Transportes Metropolitanos de Lisboa (TML) web applications.",
 	"version": "1.0.0",
 	"author": "João de Vasconcelos & Jusi Monteiro",
@@ -44,9 +44,9 @@
 	},
 	"dependencies": {
 		"@carrismetropolitana/api-types": "20251104.1218.36",
-		"@go/consts": "*",
-		"@go/types": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"@mantine/charts": "8.3.6",
 		"@mantine/core": "8.3.6",
 		"@mantine/dates": "8.3.6",

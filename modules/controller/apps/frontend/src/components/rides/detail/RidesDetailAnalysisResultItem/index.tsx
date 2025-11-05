@@ -2,8 +2,8 @@
 
 /* * */
 
-import { type RideAnalysis } from '@go/types';
-import { Label, Section, Surface, Tag, Text } from '@go/ui';
+import { type RideAnalysis } from '@tmlmobilidade/types';
+import { Label, Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
 
 import { rideAnalysisLabels } from './labels';
 

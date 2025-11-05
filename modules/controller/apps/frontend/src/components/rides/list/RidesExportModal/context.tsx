@@ -3,9 +3,9 @@
 /* * */
 
 import { RidesListContextState } from '@/contexts/RidesList.context';
-import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@go/types';
-import { closeModal, useExportsContext, useToast } from '@go/ui';
-import { Dates } from '@go/dates';
+import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
+import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/dates';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 import { RIDES_EXPORT_MODAL_ID } from '.';

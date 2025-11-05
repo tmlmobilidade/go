@@ -1,5 +1,5 @@
 {
-	"name": "@go/locations-frontend",
+	"name": "@tmlmobilidade/go-locations-frontend",
 	"version": "0.1.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -16,10 +16,10 @@
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.35.0",
-		"@go/consts": "*",
-		"@go/types": "*",
-		"@go/ui": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"clsx": "2.1.1",
 		"maplibre-gl": "5.11.0",
@@ -29,7 +29,7 @@
 		"swr": "2.3.6"
 	},
 	"devDependencies": {
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.0",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",

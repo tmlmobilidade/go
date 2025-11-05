@@ -1,12 +1,12 @@
 'use client';
 
 import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
-import { HomeLink } from '@go/types';
+import { HomeLink } from '@tmlmobilidade/types';
 
 /* * */
 
 import { iconMap } from '@/lib/icons';
-import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@go/ui';
+import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import React from 'react';
 

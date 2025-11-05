@@ -1,5 +1,5 @@
 {
-	"name": "@go/controller-pckg-ride-normalized",
+	"name": "@tmlmobilidade/go-controller-pckg-ride-normalized",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
 		"name": "TML-ISO"
@@ -22,11 +22,11 @@
 		"lint:fix": "eslint --fix"
 	},
 	"dependencies": {
-		"@go/types": "*"
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.3"

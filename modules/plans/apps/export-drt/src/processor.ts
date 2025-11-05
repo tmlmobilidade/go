@@ -1,6 +1,6 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
-import { agencies, hashedShapes, hashedTrips, rides } from '@go/interfaces';
-import { HashedShape, HashedTrip, Ride } from '@go/types';
+import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
+import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 

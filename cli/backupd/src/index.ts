@@ -1,4 +1,4 @@
-import { StorageConfiguration, StorageFactory } from '@go/interfaces';
+import { StorageConfiguration, StorageFactory } from '@tmlmobilidade/interfaces';
 
 import { BackupService } from './backup/backup.service.js';
 import { loadConfig } from './config/config-loader.js';

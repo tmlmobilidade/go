@@ -1,5 +1,5 @@
 {
-	"name": "@go/interfaces",
+	"name": "@tmlmobilidade/interfaces",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.com",
@@ -40,14 +40,14 @@
 		"lint:fix": "eslint --fix"
 	},
 	"dependencies": {
-		"@go/connectors-mongo": "*",
-		"@go/consts": "*",
-		"@go/dates": "*",
-		"@go/emails": "*",
-		"@go/files": "*",
-		"@go/strings": "*",
-		"@go/types": "*",
-		"@go/utils": "*",
+		"@tmlmobilidade/connectors-mongo": "*",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",
 		"oci-common": "2.121.0",
 		"oci-objectstorage": "2.121.0",
@@ -55,7 +55,7 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@go/tsconfig": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.10.0",
 		"resolve-tspaths": "0.8.23",

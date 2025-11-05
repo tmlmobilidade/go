@@ -3,9 +3,9 @@
 
 import { useToast } from '@/hooks';
 import { Line } from '@carrismetropolitana/api-types/network';
-import { getAppConfig, HttpException } from '@go/consts';
-import { CreateProposedChangeDto, Facilities, facilitiesSchema, ProposedChange, Stop } from '@go/types';
-import { fetchData } from '@go/utils';
+import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { CreateProposedChangeDto, Facilities, facilitiesSchema, ProposedChange, Stop } from '@tmlmobilidade/types';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 

@@ -4,7 +4,7 @@
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { useRidesContext } from '@/contexts/Rides.context';
-import { Button, Label, Section } from '@go/ui';
+import { Button, Label, Section } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';

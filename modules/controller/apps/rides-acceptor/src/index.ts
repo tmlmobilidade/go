@@ -1,11 +1,11 @@
 /* * */
 
-import { alerts, rideAcceptances, rides } from '@go/interfaces';
-import { GtfsCause, Ride, RideAcceptance } from '@go/types';
-import { compareObjects, Dates } from '@go/utils';
+import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
+import { GtfsCause, Ride, RideAcceptance } from '@tmlmobilidade/types';
+import { compareObjects, Dates } from '@tmlmobilidade/utils';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { normalizeRide } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
+import { normalizeRide } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
 import { Interval } from 'luxon';
 
 import { isEmpty, testRide } from './utils.js';

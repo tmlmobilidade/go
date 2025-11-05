@@ -1,14 +1,14 @@
 /* * */
 
 import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
-import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
-import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@go/consts';
-import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@go/interfaces';
-import { type HashedShape, type HashedTrip, type Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@go/types';
-import { getPermission, HttpResponse, validateQueryParams } from '@go/utils';
-import { Dates } from '@go/dates';
-import { normalizeRide, RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
-import { normalizeRide, RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { type HashedShape, type HashedTrip, type Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/dates';
+import { normalizeRide, RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { normalizeRide, RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
 import { type WebSocket } from 'ws';
 
 /* * */

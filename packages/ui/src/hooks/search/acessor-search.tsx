@@ -1,7 +1,7 @@
 /* * */
 
-import { getValueAtPath } from '@go/utils';
-import { normalizeString } from '@go/strings';
+import { getValueAtPath } from '@tmlmobilidade/utils';
+import { normalizeString } from '@tmlmobilidade/strings';
 
 /**
  * Checks if a given query is present in the value at the specified accessor path
