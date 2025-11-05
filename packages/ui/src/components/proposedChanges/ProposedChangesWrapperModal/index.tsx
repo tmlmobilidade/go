@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { ProposedChangesWrapperModalContent } from '@/components/proposedChanges/ProposedChangesWrapperModalContent';

@@ -1,8 +1,7 @@
 /* * */
 
+import { AsyncSingletonProxy } from '@go/utils';
 import nodemailer from 'nodemailer';
-
-import { AsyncSingletonProxy } from '../../utils/dist/index.js';
 
 /* * */
 

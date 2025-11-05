@@ -13,8 +13,7 @@
 		},
 		"dev": {
 			"cache": false,
-			"persistent": true,
-			"with": ["build:watch"]
+			"persistent": true
 		},
 		"lint": {},
 		"lint:fix": {}

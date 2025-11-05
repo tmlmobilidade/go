@@ -1,6 +1,6 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors';
+import { authorizationMiddleware, FastifyService } from '@go/connectors-fastify';
 
 import { NotificationsController } from './notifications.controller.js';
 

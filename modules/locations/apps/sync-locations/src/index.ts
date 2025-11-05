@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import { MongoConnector } from '@tmlmobilidade/connectors';
+import { MongoConnector } from '@go/connectors-mongo';
+import { Logger } from '@go/logger';
 import { booleanValid } from '@turf/turf';
 import { feature as turfFeature } from '@turf/turf';
 import fs from 'fs/promises';
