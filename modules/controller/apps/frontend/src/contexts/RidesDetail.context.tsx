@@ -8,7 +8,7 @@ import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLi
 import { fetchData } from '@go/utils';
 import { getCssVariableValue } from '@go/utils';
 import { Dates } from '@go/utils-dates';
-import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@go/utils-geo';
+import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@go/geo';
 import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
 import { normalizeRide, type RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
