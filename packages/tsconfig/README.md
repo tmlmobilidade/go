@@ -26,7 +26,7 @@ Several options are provided depending on the project type:
 In your tsconfig.json:
 ```
 {
-  "extends": "@tmlmobilidade/tsconfig/{your-project-type}.json",
+  "extends": "@go/tsconfig/{your-project-type}.json",
   "compilerOptions": {
     // Add any project-specific overrides here
   }

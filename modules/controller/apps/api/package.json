@@ -29,8 +29,8 @@
 		"pino-pretty": "13.1.2"
 	},
 	"devDependencies": {
+		"@go/tsconfig": "*",
 		"@go/types": "*",
-		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.2",
 		"@types/ws": "8.18.1",
 		"resolve-tspaths": "0.8.23",
