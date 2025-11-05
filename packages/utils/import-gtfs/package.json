@@ -41,19 +41,20 @@
 	},
 	"dependencies": {
 		"@go/interfaces": "*",
+		"@go/utils": "*",
 		"@go/utils-logger": "*",
 		"@go/utils-sqlite": "*",
 		"@go/utils-timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@go/lib": "*",
+		"@go/tsconfig": "*",
 		"@go/types": "*",
-		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
+		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
 	}
 }

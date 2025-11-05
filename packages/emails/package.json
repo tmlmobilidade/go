@@ -41,8 +41,8 @@
 		"lint": "eslint ./src/ && tsc --noEmit"
 	},
 	"dependencies": {
+		"@go/utils": "*",
 		"@react-email/components": "0.5.7",
-		"@tmlmobilidade/utils": "*",
 		"@types/nodemailer": "7.0.2",
 		"browserslist": "4.26.3",
 		"nodemailer": "7.0.9",
@@ -51,13 +51,14 @@
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@react-email/preview-server": "4.3.1",
 		"@go/lib": "*",
+		"@go/tsconfig": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
-		"@tmlmobilidade/tsconfig": "*",
+		"@react-email/preview-server": "4.3.1",
 		"@types/node": "24.9.1",
 		"resolve-tspaths": "0.8.23",
+		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
 	}
 }
