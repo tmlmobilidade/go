@@ -3,9 +3,9 @@
 /* * */
 
 import { UsersDetailMode, useUsersDetailContext } from '@/contexts/UsersDetail.context';
+import { keepUrlParams } from '@go/utils';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

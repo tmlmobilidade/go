@@ -1,6 +1,6 @@
 /* * */
 
-import { FastifyService } from '@tmlmobilidade/connectors';
+import { FastifyService } from '@go/connectors-fastify';
 
 import { LocationsController } from './locations.controller.js';
 

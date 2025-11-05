@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { agencies } from '@go/interfaces';
 import { HttpException, HttpStatus } from '@go/lib';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@go/types';

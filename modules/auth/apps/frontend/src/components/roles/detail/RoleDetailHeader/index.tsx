@@ -3,9 +3,9 @@
 /* * */
 
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
+import { keepUrlParams } from '@go/utils';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Badge, Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

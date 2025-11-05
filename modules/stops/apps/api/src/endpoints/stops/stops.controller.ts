@@ -1,4 +1,4 @@
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { stops } from '@go/interfaces';
 import { HttpException, HttpStatus } from '@go/lib';
 import { Stop, UpdateStopDto } from '@go/types';

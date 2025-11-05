@@ -1,11 +1,12 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { sendResetPasswordEmail } from '@go/emails';
 import { authProvider, users, verificationTokens } from '@go/interfaces';
 import { getAppConfig, HttpException, HttpStatus } from '@go/lib';
-import { createEmail, LoginDto, LoginDtoSchema, Permission, Session } from '@go/types';
-import { Dates, generateRandomToken } from '@go/utils';
+import { LoginDto, LoginDtoSchema, Permission, Session } from '@go/types';
+import { Dates } from '@go/utils-dates';
+import { generateRandomToken } from '@go/utils-strings';
 
 /* * */
 
@@ -57,7 +58,7 @@ export class AuthController {
 		}
 
 		const session: Session = await authProvider.login({
-			email: createEmail(result.data.email),
+			email: result.data.email,
 			password: result.data.password,
 		});
 
@@ -126,7 +127,7 @@ export class AuthController {
 
 		// Save token in DB
 		await verificationTokens.insertOne({
-			expires_at: Dates.now('utc').plus({ hour: 1 }).unix_timestamp,
+			expires_at: Dates.now('utc').plus({ hours: 1 }).unix_timestamp,
 			token: token,
 			user_id: user._id,
 		});

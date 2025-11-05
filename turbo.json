@@ -16,12 +16,8 @@
 			"persistent": true,
 			"with": ["build:watch"]
 		},
-		"lint": {
-			"dependsOn": ["^lint"]
-		},
-		"lint:fix": {
-			"dependsOn": ["^lint:fix"]
-		}
+		"lint": {},
+		"lint:fix": {}
 	},
 	"ui": "tui"
 }

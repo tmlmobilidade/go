@@ -1,7 +1,7 @@
 /* * */
 
 import { transformMarkdownToWikiArticle } from '@/utils/transform-md-to-wiki.js';
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { HttpStatus } from '@go/lib';
 import { type WikiArticle } from '@go/types';
 import fs from 'node:fs';

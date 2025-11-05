@@ -2,7 +2,7 @@
 
 import { AgenciesController } from '@/endpoints/agencies/agencies.controller.js';
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
-import { FastifyService } from '@tmlmobilidade/connectors';
+import { FastifyService } from '@go/connectors-fastify';
 import { Permissions } from '@go/lib';
 
 /* * */

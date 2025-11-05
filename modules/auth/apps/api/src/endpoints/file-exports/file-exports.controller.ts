@@ -1,9 +1,9 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { fileExports, files } from '@go/interfaces';
 import { HttpException, HttpStatus } from '@go/lib';
-import { CreateFileExportDto, FileExport } from '@go/types';
+import { type CreateFileExportDto, type FileExport } from '@go/types';
 
 /* * */
 

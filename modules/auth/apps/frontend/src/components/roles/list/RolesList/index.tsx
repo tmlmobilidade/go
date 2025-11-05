@@ -6,8 +6,8 @@ import { RolesListHeader } from '@/components/roles/list/RolesListHeader';
 import { useRolesListContext } from '@/contexts/RolesList.context';
 import { Routes } from '@/lib/routes';
 import { type RoleNormalized } from '@/types/normalized';
-import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@go/utils';
+import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

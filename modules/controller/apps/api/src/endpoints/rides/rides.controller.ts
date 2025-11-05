@@ -1,7 +1,7 @@
 /* * */
 
 import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, vehicleEvents } from '@go/interfaces';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@go/lib';
 import { normalizeRide, RideNormalized } from '@tmlmobilidade/sae-controller-pckg-ride-normalized';

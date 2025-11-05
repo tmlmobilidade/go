@@ -1,7 +1,7 @@
 /* * */
 
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { files, gtfsValidations, plans, TransactionManager } from '@go/interfaces';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@go/lib';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, type UpdatePlanDto, validateOperationalDate } from '@go/types';

@@ -1,9 +1,9 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { roles } from '@go/interfaces';
 import { HttpException, HttpStatus } from '@go/lib';
-import { type CreateRoleDto, Role, type UpdateRoleDto } from '@go/types';
+import { type CreateRoleDto, type Role, type UpdateRoleDto } from '@go/types';
 
 /* * */
 

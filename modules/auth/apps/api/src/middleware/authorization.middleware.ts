@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors';
+import { type FastifyReply, type FastifyRequest } from '@go/connectors-fastify';
 import { authProvider } from '@go/interfaces';
 import { HttpException, HttpStatus } from '@go/lib';
 import { type Permission, type User } from '@go/types';
