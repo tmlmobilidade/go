@@ -3,9 +3,9 @@
 /* * */
 
 import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { keepUrlParams } from '@go/utils';
 import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

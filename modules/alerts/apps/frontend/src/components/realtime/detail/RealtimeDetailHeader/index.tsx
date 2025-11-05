@@ -4,9 +4,9 @@
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { Routes } from '@/lib/routes';
+import { keepUrlParams } from '@go/utils';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@go/utils';
 import { useRouter } from 'next/navigation';
 
 /* * */

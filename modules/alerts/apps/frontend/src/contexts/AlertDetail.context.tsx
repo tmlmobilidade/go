@@ -1,10 +1,10 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, CreateAlertDto, CreateAlertSchema, File as FileType, gtfsCauseSchema, gtfsEffectSchema, referenceTypeSchema, UpdateAlertSchema } from '@go/types';
+import { Alert, AlertSchema, CreateAlertDto, CreateAlertSchema, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@go/types';
+import { convertObject, fetchData, uploadFile } from '@go/utils';
+import { Dates } from '@go/utils-dates';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { fetchData, uploadFile } from '@go/utils';
-import { convertObject, Dates } from '@go/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -49,7 +49,7 @@ const emptyAlert: CreateAlertDto = {
 	publish_end_date: undefined,
 	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	publish_status: 'DRAFT',
-	reference_type: Object.values(referenceTypeSchema.enum)[0],
+	reference_type: ReferenceTypeSchema.options[0],
 	references: [],
 	title: '',
 	type: 'PLANNED',
@@ -93,7 +93,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
-		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
 		validate: zodResolver(alert && MODE === AlertDetailMode.EDIT ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
@@ -117,7 +116,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setLoading(true);
 
 		if (!myAlert.reference_type) {
-			myAlert.reference_type = Object.values(referenceTypeSchema.enum)[0];
+			myAlert.reference_type = ReferenceTypeSchema.options[0];
 			myAlert.references = [];
 		}
 

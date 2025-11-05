@@ -11,8 +11,8 @@ import { useRealtimeListContext } from '@/contexts/RealtimeList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
 import { type Alert } from '@go/types';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@go/utils';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { RealtimeListHeader } from '../AlertsListHeader';

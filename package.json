@@ -11,6 +11,7 @@
 		"build:packages": "turbo build --filter=./packages/**/*",
 		"build:types": "turbo build --filter=@go/types",
 		"dev": "turbo dev",
+		"dev:auth": "dotenv-run -f ./modules/auth/environments/development/secrets/.env -- turbo run dev --filter=@go/auth-*...",
 		"dev:alerts": "dotenv-run -f ./modules/alerts/environments/development/secrets/.env -- turbo run dev --filter=@go/alerts-*...",
 		"dev:packages": "turbo dev --filter=./packages/**/*",
 		"dev:plans": "dotenv-run -f ./modules/plans/environments/development/secrets/.env -- turbo run dev --filter=@go/plans-*...",

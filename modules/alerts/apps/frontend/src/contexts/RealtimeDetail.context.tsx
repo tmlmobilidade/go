@@ -1,10 +1,11 @@
 'use client';
 
 import { Routes } from '@/lib/routes';
-import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, referenceTypeSchema, UpdateAlertSchema } from '@go/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { Dates, fetchData } from '@go/utils';
+import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@go/types';
+import { fetchData } from '@go/utils';
 import { convertObject } from '@go/utils';
+import { Dates } from '@go/utils-dates';
+import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -14,9 +15,8 @@ interface RealtimeDetailContextState {
 		addReference: () => void
 		deleteAlert: () => void
 		deleteImage: () => void
-		fileChanged: (file: File) => void
 		removeReference: (index: number) => void
-		saveAlert: () => void
+		saveAlert: () => Promise<void>
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
@@ -57,7 +57,7 @@ const emptyAlert: CreateAlertDto = {
 	publish_end_date: undefined,
 	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	publish_status: 'DRAFT',
-	reference_type: Object.values(referenceTypeSchema.Enum)[0],
+	reference_type: ReferenceTypeSchema.options[0],
 	references: [],
 	title: '',
 	type: 'REALTIME',
@@ -72,7 +72,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDraft, setIsDraft] = useState(false);
 	const [canSave, setCanSave] = useState(false);
-	const [image, setImage] = useState<File | null>(null);
 
 	const { data: alert, error, isLoading } = useSWR<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId));
 	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId));
@@ -81,7 +80,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
-		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
 		validate: zodResolver(AlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
@@ -103,7 +101,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		setLoading(true);
 
 		if (!myAlert.reference_type) {
-			myAlert.reference_type = Object.values(referenceTypeSchema.Enum)[0];
+			myAlert.reference_type = ReferenceTypeSchema.options[0];
 			myAlert.references = [];
 		}
 
@@ -203,7 +201,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 			addReference,
 			deleteAlert,
 			deleteImage,
-			fileChanged: (file: File) => setImage(file),
 			removeReference,
 			saveAlert: () => saveAlert(),
 		},

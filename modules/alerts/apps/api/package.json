@@ -10,9 +10,9 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch src/index.ts",
-		"lint": "eslint .",
-		"lint:fix": "eslint --fix ."
+		"dev": "dotenv-run -f ./environments/development/secrets/.env -- tsx watch src/index.ts",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",

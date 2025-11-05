@@ -14,9 +14,9 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
+		"@go/lib": "*",
 		"@tabler/icons-react": "3.35.0",
 		"@tmlmobilidade/interfaces": "20251028.1739.53",
-		"@go/lib": "*",
 		"@tmlmobilidade/ui": "20251028.1739.53",
 		"@tmlmobilidade/utils": "20251028.1739.53",
 		"clsx": "2.1.1",

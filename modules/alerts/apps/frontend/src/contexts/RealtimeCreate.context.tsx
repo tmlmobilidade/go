@@ -12,8 +12,9 @@ import { RealtimeStepTrips } from '@/components/realtime/create/RealtimeStepTrip
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { Routes } from '@/lib/routes';
 import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@go/types';
+import { fetchData } from '@go/utils';
+import { Dates } from '@go/utils-dates';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
-import { Dates, fetchData } from '@go/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 
@@ -101,7 +102,6 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 	// B. Define form
 	const form = useForm<CreateAlertDto>({
 		initialValues: emptyAlert,
-		// @ts-ignore - zod conflict with zod-openapi from @carrismetropolitana/api-types
 		validate: zodResolver(CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
