@@ -44,7 +44,7 @@
 		"@go/utils": "*",
 		"@go/logger": "*",
 		"@go/sqlite": "*",
-		"@go/utils-timer": "*",
+		"@go/timer": "*",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {

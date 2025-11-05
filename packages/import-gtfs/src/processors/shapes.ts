@@ -4,7 +4,7 @@ import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { type GTFS_Shape_Raw, validateGtfsShape } from '@go/types';
 import { Logger } from '@go/logger';
-import { Timer } from '@go/utils-timer';
+import { Timer } from '@go/timer';
 
 /**
  * Processes the shapes.txt file from the GTFS dataset.

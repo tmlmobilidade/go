@@ -6,7 +6,7 @@ import { GTFS_Calendar_Raw, validateGtfsCalendar } from '@go/types';
 import { OperationalDate } from '@go/types';
 import { Dates, getOperationalDatesFromRange } from '@go/dates';
 import { Logger } from '@go/logger';
-import { Timer } from '@go/utils-timer';
+import { Timer } from '@go/timer';
 import fs from 'node:fs';
 
 /**

@@ -4,7 +4,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { type AgencyNormalized } from '@/types/normalized';
-import { normalizeString } from '@go/utils-strings';
+import { normalizeString } from '@go/strings';
 import { useSearch } from '@go/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

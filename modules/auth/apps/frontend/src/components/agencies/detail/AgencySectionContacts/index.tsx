@@ -4,7 +4,7 @@
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { CreateAgencySchema } from '@go/types';
-import { isEmail } from '@go/utils-strings';
+import { isEmail } from '@go/strings';
 import { Collapsible, PillsInput, Section } from '@go/ui';
 
 /* * */

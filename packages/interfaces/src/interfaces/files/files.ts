@@ -6,7 +6,7 @@ import { HttpException, HttpStatus } from '@go/consts';
 import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@go/types';
 import { AsyncSingletonProxy, convertObject } from '@go/utils';
 import { Files } from '@go/files';
-import { generateRandomString } from '@go/utils-strings';
+import { generateRandomString } from '@go/strings';
 import { DeleteOptions, DeleteResult, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
 import { Readable } from 'node:stream';
 import { z } from 'zod';

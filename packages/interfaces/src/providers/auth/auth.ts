@@ -6,7 +6,7 @@ import { getAppConfig, HttpException, HttpStatus } from '@go/consts';
 import { CreateUserDto, LoginDto, OneOrTheOther, Permission, Session, User } from '@go/types';
 import { AsyncSingletonProxy, mergeObjects } from '@go/utils';
 import { Dates } from '@go/dates';
-import { generateRandomString, generateRandomToken } from '@go/utils-strings';
+import { generateRandomString, generateRandomToken } from '@go/strings';
 import bcrypt from 'bcryptjs';
 
 /* * */

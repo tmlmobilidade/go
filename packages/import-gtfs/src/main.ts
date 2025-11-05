@@ -11,7 +11,7 @@ import { type GtfsSQLTables, type ImportGtfsContext, type ImportGtfsToDatabaseCo
 import { downloadAndExtractGtfs } from '@/utils/extract-file.js';
 import { initGtfsSqlTables } from '@/utils/init-tables.js';
 import { Logger } from '@go/logger';
-import { Timer } from '@go/utils-timer';
+import { Timer } from '@go/timer';
 import { type Plan } from '@go/types';
 
 /**

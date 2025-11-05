@@ -4,7 +4,7 @@
 
 import { type UserNormalized } from '@/types/normalized';
 import { type User } from '@go/types';
-import { normalizeString } from '@go/utils-strings';
+import { normalizeString } from '@go/strings';
 import { useSearch } from '@go/ui';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';

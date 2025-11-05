@@ -4,7 +4,7 @@ import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from 
 import { ALLOW_ALL_FLAG, Permissions } from '@go/consts';
 import { FileExport, Permission, RideAcceptance, RideNormalized, RidePermission } from '@go/types';
 import { getPermission } from '@go/utils';
-import { generateRandomString } from '@go/utils-strings';
+import { generateRandomString } from '@go/strings';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
 import { CsvWriter } from '@helperkits/writer';

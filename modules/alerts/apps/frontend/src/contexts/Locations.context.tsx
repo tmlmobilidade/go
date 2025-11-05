@@ -6,7 +6,7 @@ import { Routes } from '@/lib/routes';
 import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { standardSwrFetcher } from '@go/utils';
-import { normalizeString } from '@go/utils-strings';
+import { normalizeString } from '@go/strings';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

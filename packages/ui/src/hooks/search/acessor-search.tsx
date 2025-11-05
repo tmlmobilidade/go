@@ -1,7 +1,7 @@
 /* * */
 
 import { getValueAtPath } from '@go/utils';
-import { normalizeString } from '@go/utils-strings';
+import { normalizeString } from '@go/strings';
 
 /**
  * Checks if a given query is present in the value at the specified accessor path

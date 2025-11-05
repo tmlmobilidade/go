@@ -3,7 +3,7 @@
 /* * */
 
 import { User } from '@go/types';
-import { isUrl } from '@go/utils-strings';
+import { isUrl } from '@go/strings';
 import { Avatar as MantineAvatar } from '@mantine/core';
 
 /* * */

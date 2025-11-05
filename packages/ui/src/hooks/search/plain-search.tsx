@@ -1,6 +1,6 @@
 /* * */
 
-import { normalizeString } from '@go/utils-strings';
+import { normalizeString } from '@go/strings';
 
 /**
  * Plain search function that checks if a given query is present

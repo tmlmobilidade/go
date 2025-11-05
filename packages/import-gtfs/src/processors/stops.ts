@@ -4,7 +4,7 @@ import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { type GTFS_Stop_Extended_Raw, validateGtfsStopExtended } from '@go/types';
 import { Logger } from '@go/logger';
-import { Timer } from '@go/utils-timer';
+import { Timer } from '@go/timer';
 
 /**
  * Processes the stops.txt file from the GTFS dataset.

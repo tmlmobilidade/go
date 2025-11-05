@@ -7,7 +7,7 @@ import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, ty
 import { Dates } from '@go/dates';
 import { type GtfsSQLTables } from '@go/import-gtfs';
 import { Logger } from '@go/logger';
-import { generateRandomString } from '@go/utils-strings';
+import { generateRandomString } from '@go/strings';
 import { CsvWriter } from '@helperkits/writer';
 import fs from 'node:fs';
 import Papa from 'papaparse';

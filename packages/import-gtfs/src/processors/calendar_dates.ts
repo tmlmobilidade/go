@@ -4,7 +4,7 @@ import { type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { GTFS_CalendarDate_Raw, validateGtfsCalendarDate } from '@go/types';
 import { Logger } from '@go/logger';
-import { Timer } from '@go/utils-timer';
+import { Timer } from '@go/timer';
 import fs from 'node:fs';
 
 /**

@@ -47,7 +47,7 @@
 		"@go/files": "*",
 		"@go/types": "*",
 		"@go/utils": "*",
-		"@go/utils-strings": "*",
+		"@go/strings": "*",
 		"bcryptjs": "3.0.3",
 		"oci-common": "2.121.0",
 		"oci-objectstorage": "2.121.0",
