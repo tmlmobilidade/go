@@ -9,29 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Utility function that returns a humanized version of a string, e.g. "camelCase" -> "Camel Case"
- */
-export function humanize(value: string) {
-	const str = value
-		.replace(/([a-z\d])([A-Z]+)/g, '$1 $2')
-		.replace(/\W|_/g, ' ')
-		.trim()
-		.toLowerCase();
-	return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
-}
-
-/**
- * Truncates a string to a specified length and adds ellipsis if necessary.
- * @param {string | null} str - The string to truncate.
- * @param {number} length - The maximum length of the truncated string.
- * @returns {string | null} - The truncated string with ellipsis if it exceeds the specified length, or the original string if it does not.
- */
-export const truncate = (str: null | string, length: number): null | string => {
-	if (!str || str.length <= length) return str;
-	return `${str.slice(0, length - 3)}...`;
-};
-
-/**
  * Capitalizes first letters of words in string.
  * @param {string} str String to be modified
  * @param {boolean=false} lower Whether all other letters should be lowercased

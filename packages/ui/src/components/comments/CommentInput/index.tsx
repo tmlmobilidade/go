@@ -5,7 +5,7 @@
 import { IconButton } from '@/components/buttons';
 import { Label } from '@/components/display';
 import { Section } from '@/components/layout/Section';
-import { isPlatformMac } from '@/lib/utils';
+import { isPlatformMac } from '@/utils/is-platform';
 import { Textarea } from '@mantine/core';
 import { IconSend } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
