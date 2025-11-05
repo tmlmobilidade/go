@@ -1,0 +1,36 @@
+/* * */
+/* ITEM */
+
+.item {
+	border-bottom-color: var(--color-system-border-100);
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	padding: 0;
+}
+
+/* * */
+/* CHEVRON */
+
+.chevron {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	color: var(--color-system-text-300);
+}
+
+.control[data-active="true"] .chevron {
+	transform: rotate(-90deg);
+}
+
+/* * */
+/* CONTENT */
+
+.content {
+	padding: 0;
+}

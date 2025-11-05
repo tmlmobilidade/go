@@ -1,0 +1,25 @@
+/* * */
+/* Metadata Wrapper */
+
+.metadataWrapper {
+	display: grid;
+	grid-template-rows: auto auto;
+	grid-template-columns: 2fr 1fr;
+	gap: var(--size-spacing-md);
+	align-items: start;
+	padding: 0 0 10px;
+}
+
+.metadataLeft {
+	display: flex;
+	flex-direction: column;
+	grid-row: 1 / span 2;
+	grid-column: 1;
+	gap: var(--size-spacing-md);
+}
+
+.metadataBadge {
+	grid-row: 1;
+	grid-column: 2;
+	justify-self: end;
+}

@@ -1,0 +1,52 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: relative;
+	display: flex;
+
+	/* flex-direction: row; */
+	align-items: center;
+	justify-content: flex-start;
+	width: 100%;
+	aspect-ratio: 1;
+	user-select: none;
+}
+
+/* * */
+/* ICON */
+
+.icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	aspect-ratio: 1;
+	font-size: 30px;
+	color: var(--color-system-text-100);
+	cursor: pointer;
+	background-color: transparent;
+	border: 2px solid transparent;
+	border-radius: var(--border-radius-sm);
+}
+
+.icon:hover {
+	background-color: var(--color-system-background-200);
+}
+
+.icon[data-active='true'],
+.icon[data-active='true']:hover {
+	color: var(--color-contrast);
+	cursor: default;
+	background-color: var(--color-primary);
+	border-color: var(--color-secondary);
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.icon[data-disabled='true'],
+.icon[data-disabled='true']:hover {
+	color: var(--color-system-text-100);
+	cursor: not-allowed;
+	background-color: transparent;
+	opacity: 0.25;
+}

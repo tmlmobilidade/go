@@ -1,0 +1,13 @@
+/* * */
+/* TOOLBAR */
+
+.toolbar {
+	display: flex;
+	gap: var(--size-spacing-md);
+	align-items: center;
+	justify-content: flex-start;
+	width: 100%;
+	min-height: 72px;
+	padding: var(--size-spacing-md);
+	overflow-x: auto;
+}

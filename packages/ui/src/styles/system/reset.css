@@ -1,0 +1,60 @@
+/* * */
+/* ALL ELEMENTS */
+
+* {
+	box-sizing: border-box;
+}
+
+/* * */
+/* HTML & BODY */
+
+html,
+body {
+	padding: 0;
+	margin: 0;
+	color: var(--color-system-text-100);
+	scroll-padding-top: 80px;
+	scrollbar-color: var(--color-primary) var(--color-system-background-200);
+	background-color: var(--color-system-background-200);
+	scroll-behavior: smooth;
+}
+
+body {
+	height: 100vh;
+}
+
+
+/* * */
+/* TEXT ELEMENTS */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+input,
+button,
+textarea {
+	padding: 0;
+	margin: 0;
+	line-height: 1.3;
+	user-select: text;
+	border: none;
+	-webkit-touch-callout: default;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* * */
+/* IMAGES & FIGURES */
+
+img,
+figure {
+	display: flex;
+}

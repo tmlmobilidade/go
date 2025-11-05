@@ -1,0 +1,23 @@
+/* * *
+ * WHAT IS THIS?
+ * Here we define some utility classes
+ * used across the project.
+ */
+
+:root[data-mode="light"] [data-mode-switch="light"] {
+	display: contents;
+}
+
+:root[data-mode="light"] [data-mode-switch="dark"] {
+	display: none;
+}
+
+/* * */
+
+:root[data-mode="dark"] [data-mode-switch="light"] {
+	display: none;
+}
+
+:root[data-mode="dark"] [data-mode-switch="dark"] {
+	display: contents;
+}

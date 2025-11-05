@@ -1,0 +1,29 @@
+/* * */
+/* ROOT */
+
+.root {
+    color: var(--color-system-text-100);
+}
+
+/* * */
+/* PROPS / SIZE */
+
+.root[data-size='xs'] {
+	font-size: var(--font-size-xs);
+}
+
+.root[data-size='sm'] {
+	font-size: var(--font-size-sm);
+}
+
+.root[data-size='md'] {
+	font-size: var(--font-size-md);
+}
+
+.root[data-size='lg'] {
+	font-size: var(--font-size-lg);
+}
+
+.root[data-size='xl'] {
+	font-size: var(--font-size-xl);
+}

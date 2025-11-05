@@ -1,0 +1,37 @@
+/* * */
+/* ROOT */
+
+.root {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 30px;
+	color: var(--color-system-text-300);
+}
+
+/* * */
+/* TITLE */
+
+.title {
+	font-size: 24px;
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+	text-transform: uppercase;
+	user-select: none;
+}
+
+/* * */
+/* MESSAGE */
+
+.message {
+	max-width: 500px;
+	padding: 10px;
+	font-family: monospace;
+	font-size: 14px;
+	text-align: center;
+	border: 1px solid var(--color-system-text-300);
+	border-radius: 5px;
+}

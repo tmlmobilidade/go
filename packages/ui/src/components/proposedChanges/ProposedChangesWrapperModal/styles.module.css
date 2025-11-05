@@ -1,0 +1,18 @@
+/* * */
+/* inputWithIcon */
+
+.icon {
+cursor: pointer;
+}
+
+
+/* * */
+/* label wrapper */
+
+.labelWrapper {
+	display: inline-flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+}
+
+/* * */

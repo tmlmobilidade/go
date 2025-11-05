@@ -1,0 +1,10 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	padding: var(--size-spacing-md);
+	color: var(--alert-color);
+	background-color: var(--alert-bg);
+	border: var(--alert-bd);
+	border-radius: var(--alert-radius);
+}

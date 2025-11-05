@@ -1,0 +1,22 @@
+/* * */
+/* DESCRIPTION */
+
+.description {
+	padding: 0;
+	margin: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	line-height: var(font-line-height);
+	color: var(--color-system-text-200);
+}
+
+/* * */
+/* DESCRIPTION / SINGLE LINE */
+
+.description[data-single-line="true"] {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-clamp: 1;
+	white-space: nowrap;
+}
+

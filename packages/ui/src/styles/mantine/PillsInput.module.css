@@ -1,0 +1,27 @@
+/* * */
+/* root */
+
+.root {
+	--input-size: 40px;
+	--input-height: 40px;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 200px;
+	padding: 0;
+	overflow: visible;
+	border: none;
+	transition: width 300ms ease-in-out;
+}
+
+/* * */
+/* INPUT */
+
+.input {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	width: 100%;
+	padding: 0;
+	border: none;
+}

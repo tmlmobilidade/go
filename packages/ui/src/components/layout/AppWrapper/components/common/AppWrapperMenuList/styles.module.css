@@ -1,0 +1,18 @@
+.moreButton {
+    all: unset;
+    display: inline-block;
+    margin-top: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-sm);
+    color: var(--color-system-text-200);
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--color-system-text-200);
+    text-underline-offset: 2px;
+    cursor: pointer;
+  
+    &:hover {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
+  }

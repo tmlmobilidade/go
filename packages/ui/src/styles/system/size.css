@@ -1,0 +1,27 @@
+/* * *
+ * WHAT IS THIS?
+ * This file contains all spacing related
+ * definitions used in the project.
+ */
+
+ :root {
+
+	/* SIZE / SPACING */
+	--size-spacing-xs: 5px;
+	--size-spacing-sm: 10px;
+	--size-spacing-md: 15px;
+	--size-spacing-lg: 20px;
+	--size-spacing-xl: 25px;
+	--size-spacing-2xl: 30px;
+	--size-spacing-3xl: 40px;
+	--size-spacing-4xl: 60px;
+
+	/* BORDER-RADIUS */
+	--border-radius-xs: 3px;
+	--border-radius-sm: 5px;
+	--border-radius-md: 10px;
+	--border-radius-lg: 18px;
+	--border-radius-xl: 30px;
+	--border-radius-full: 100%;
+
+}

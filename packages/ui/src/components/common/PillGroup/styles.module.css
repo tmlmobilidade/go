@@ -1,0 +1,50 @@
+/* * */
+/* PILL */
+
+.pill {
+	display: flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+    height: fit-content;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-100);
+	cursor: auto;
+	background-color: var(--color-system-background-200);
+    border-radius: var(--border-radius-xs);
+	box-shadow: 1px 2px 3px 1px rgb(0 0 0 / 15%);
+	
+	& * {
+		user-select: none;
+	}
+
+    &[data-size='lg'] {
+        padding: var(--size-spacing-sm);
+        font-size: var(--font-size-lg);
+    }
+
+    &[data-size='md'] {
+        padding: var(--size-spacing-xs);
+        font-size: var(--font-size-md);
+    }
+
+    &[data-size='sm'] {
+        padding: var(--size-spacing-xs);
+        font-size: var(--font-size-sm);
+    }
+
+    &[data-size='xl'] {
+        padding: var(--size-spacing-md);
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	display: flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	color: var(--color-system-text-100);
+}

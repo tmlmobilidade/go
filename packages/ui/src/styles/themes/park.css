@@ -1,0 +1,25 @@
+:root {
+	--theme-park-color-primary: #7dcd7d;
+	--theme-park-color-secondary: #50b450;
+	--theme-park-color-background: #e6ffe6;
+	--theme-park-color-contrast: #fff;
+	--theme-park-color-shadow: #1e3c1e40;
+}
+
+:root[data-mode="dark"] {
+	--theme-park-color-primary: #509b50;
+	--theme-park-color-secondary: #2d8c2d;
+	--theme-park-color-background: #233223;
+	--theme-park-color-contrast: #e6ffdc;
+	--theme-park-color-shadow: #1e3c1e40;
+}
+
+/* * */
+
+:root[data-theme="park"] {
+	--color-primary: var(--theme-park-color-primary);
+	--color-secondary: var(--theme-park-color-secondary);
+	--color-background: var(--theme-park-color-background);
+	--color-contrast: var(--theme-park-color-contrast);
+	--color-shadow: var(--theme-park-color-shadow);
+}

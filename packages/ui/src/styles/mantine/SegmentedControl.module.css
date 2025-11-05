@@ -1,0 +1,28 @@
+.root {
+	overflow: visible;
+    color: var(--color-primary);
+	background-color: var(--color-background);
+}
+
+.indicator {
+    color: var(--color-contrast);
+    background-color: var(--color-primary);
+	border: 2px solid var(--color-secondary);
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: calc(var(--size-spacing-md) / 2) var(--size-spacing-md);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+    color: var(--color-primary);
+	text-transform: uppercase;
+}
+
+.label[data-active="true"] {
+    color: var(--color-contrast);
+}

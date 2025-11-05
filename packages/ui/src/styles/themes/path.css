@@ -1,0 +1,25 @@
+:root {
+	--theme-path-color-primary: #a09682;
+	--theme-path-color-secondary: #8c826e;
+	--theme-path-color-background: #f0f0eb;
+	--theme-path-color-contrast: #fff;
+	--theme-path-color-shadow: #32322d40;
+}
+
+:root[data-mode="dark"] {
+	--theme-path-color-primary: #6e6a64;
+	--theme-path-color-secondary: #5f5a55;
+	--theme-path-color-background: #232328;
+	--theme-path-color-contrast: #d2cdc8;
+	--theme-path-color-shadow: #32322d40;
+}
+
+/* * */
+
+:root[data-theme="path"] {
+	--color-primary: var(--theme-path-color-primary);
+	--color-secondary: var(--theme-path-color-secondary);
+	--color-background: var(--theme-path-color-background);
+	--color-contrast: var(--theme-path-color-contrast);
+	--color-shadow: var(--theme-path-color-shadow);
+}

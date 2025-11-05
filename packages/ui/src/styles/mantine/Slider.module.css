@@ -1,0 +1,63 @@
+/* * */
+/* ROOT */
+
+.root {
+	width: 100%;
+
+	--slider-size-xs: 10px;
+	--slider-size-sm: 10px;
+	--slider-size-md: 10px;
+	--slider-size-lg: 10px;
+	--slider-size-xl: 10px;
+	--slider-color: var(--color-primary);
+	--slider-thumb-size-xs: 18px;
+	--slider-thumb-size-sm: 18px;
+	--slider-thumb-size-md: 18px;
+	--slider-thumb-size-lg: 18px;
+	--slider-thumb-size-xl: 18px;
+	--slider-radius: 999px;
+}
+
+/* * */
+/* TRACK */
+
+.track::before {
+    background-color: var(--color-system-text-300);
+}
+
+/* * */
+/* THUMB */
+
+.thumb {
+	background-color: var(--color-contrast);
+	border: 3px solid var(--color-secondary);
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.label {
+	top: -45px;
+	padding: var(--size-spacing-sm);
+	font-size: 14px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+/* * */
+/* MARK */
+
+.mark {
+	width: 4px;
+	height: 4px;
+	margin: 3px;
+	background-color: var(--color-contrast);
+	border: none;
+}
+
+.markLabel {
+	margin-top: 5px;
+	font-size: 12px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	text-transform: uppercase;
+}

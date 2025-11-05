@@ -1,0 +1,123 @@
+/* * */
+/* WRAPPER */
+
+.wrapper {
+	position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* * */
+/* INPUT */
+
+.input {
+	height: auto;
+	max-height: none;
+	padding: 0 15px;
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-medium);
+	line-height: 1;
+	background-color: var(--color-system-background-100);
+	border: 2px solid var(--color-system-text-300);
+	border-radius: var(--border-radius-sm);
+
+	& input::placeholder {
+		font-size: var(--font-size-md);
+		font-weight: var(--font-weight-medium);
+		color: var(--color-system-text-300);
+	}
+
+	& * {
+		background-color: transparent;
+	}
+}
+
+.placeholder {
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-300);
+}
+
+.pillInputWrapper {
+	position: relative;
+	padding: 0;
+	margin-top: 1px;
+
+	& > * {
+		border: none;
+	}
+}
+
+.pillInputField {
+	margin-right: 20px;
+}
+
+.icon {
+	color: var(--color-system-text-200);
+}
+
+.pillClearButton {
+	position: absolute;
+	top: 4px;
+	right: 20px;
+}
+
+/* * */
+/* PILL */
+
+.pill {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	background-color: var(--color-system-background-200);
+    border-radius: var(--border-radius-xs);
+	box-shadow: 1px 2px 3px 1px rgb(0 0 0 / 15%);
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-system-text-100);
+}
+
+.labelWrapper {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+/* * */
+/* DESCRIPTION */
+
+.description {
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+}
+
+/* * */
+/* ERROR */
+
+.error {
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-status-danger-primary);
+}
+
+/* * */
+/* DROPDOWN */
+
+.dropdownWrapper {
+	width: 100% !important;
+	margin-top: 10px;
+	background-color: var(--color-system-background-100);
+	border: 2px solid var(--color-system-text-300);
+	border-radius: var(--border-radius-sm);
+	box-shadow: 1px 2px 3px 1px rgb(0 0 0 / 15%);
+}

@@ -1,0 +1,63 @@
+.input {
+	height: auto;
+	max-height: none;
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-medium);
+	border: 2px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+
+	& input::placeholder {
+		font-size: var(--font-size-md);
+		font-weight: var(--font-weight-medium);
+		color: var(--color-system-text-300);
+	}
+
+	&[data-focus='true'] {
+		border-color: var(--color-system-text-300);
+	}
+
+	&[data-error='true'] {
+		border-color: var(--color-status-danger-text);
+	}
+}
+
+.dropdown {
+	border: 2px solid var(--color-system-text-300);
+	border-radius: var(--border-radius-sm);
+	box-shadow: 1px 2px 3px 1px rgb(0 0 0 / 15%);
+}
+
+.option {
+	&:hover,
+	&[data-combobox-selected='true'] {
+		color: var(--color-contrast);
+		background-color: var(--color-primary);
+	}
+}
+
+/* * */
+/* PILL */
+
+.pill {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-100);
+	cursor: auto;
+	background-color: var(--color-system-background-200);
+    border-radius: var(--border-radius-xs);
+	box-shadow: 1px 2px 3px 1px rgb(0 0 0 / 15%);
+	
+	& * {
+		user-select: none;
+	}
+}
+
+.clearButton {
+	width: 32px;
+	height: 32px;
+	transition: translate 200ms ease-in-out;
+
+	&:hover {
+		translate: 0 -1px;
+	}
+}
