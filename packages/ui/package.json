@@ -45,6 +45,7 @@
 		"@carrismetropolitana/api-types": "20251104.1218.36",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/utils": "*",
 		"@mantine/charts": "8.3.6",
 		"@mantine/core": "8.3.6",
