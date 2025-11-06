@@ -29,8 +29,9 @@ FROM base AS pruner
 
 WORKDIR /app
 
+COPY --from=installer package-lock.json package-lock.json
+
 COPY . .
-COPY --from=installer package-lock.json .
 
 RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
