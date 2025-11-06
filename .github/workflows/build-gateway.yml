@@ -45,8 +45,8 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./gateway/apps/nginx
-          file: ./gateway/apps/nginx/Dockerfile
+          context: .
+          file: ./modules/gateway/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-gateway-nginx:${{ github.ref_name }}
           build-args: |
             NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.gateway.sae.carrismetropolitana.pt' || 'gateway.sae.carrismetropolitana.pt' }}
