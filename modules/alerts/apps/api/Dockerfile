@@ -4,10 +4,9 @@ FROM node:24-alpine AS base
 
 ENV MODULE=alerts
 ENV APP=api
-ENV TURBO_VERSION=2
 
 # Install turbo once globally (reused across all stages)
-RUN npm install -g turbo@^${TURBO_VERSION}
+RUN npm install -g turbo@^2
 
 WORKDIR /app
 
