@@ -17,8 +17,8 @@ interface AppConfigGroup {
 
 const DEFAULT_NON_DEV_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
-	cookie_domain: '.sae.carrismetropolitana.pt',
-	cors_origin: new RegExp(`https://.*\\.sae\\.carrismetropolitana\\.pt$`),
+	cookie_domain: '.go.tmlmobilidade.pt',
+	cors_origin: new RegExp(`https://.*\\.go\\.tmlmobilidade\\.pt$`),
 	frontend_port: 3000,
 };
 
@@ -48,20 +48,20 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	auth: {
 		development: {
 			api_port: 52000,
-			api_url: 'http://localhost:52000',
+			api_url: 'http://localhost:52000/auth',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51000,
-			frontend_url: 'http://localhost:51000',
+			frontend_url: 'http://localhost:51000/auth',
 		},
 		production: {
-			api_url: 'https://auth.sae.carrismetropolitana.pt/api',
-			frontend_url: 'https://auth.sae.carrismetropolitana.pt',
+			api_url: 'https://go.carrismetropolitana.pt/auth/api',
+			frontend_url: 'https://go.carrismetropolitana.pt/auth',
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.auth.sae.carrismetropolitana.pt/api',
-			frontend_url: 'https://staging.auth.sae.carrismetropolitana.pt',
+			api_url: 'https://staging.go.carrismetropolitana.pt/auth/api',
+			frontend_url: 'https://staging.go.carrismetropolitana.pt/auth',
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 	},

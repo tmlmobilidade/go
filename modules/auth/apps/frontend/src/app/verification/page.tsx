@@ -35,7 +35,7 @@ export default async function Page({ searchParams }: Props) {
 	if (session) {
 		// Redirect to the main page
 		// if the user is already logged in.
-		redirect('/');
+		redirect('/auth/home');
 	}
 
 	if (!token) {

@@ -11,21 +11,21 @@ export const PageRoutes = Object.freeze({
 	ORGANIZATION_LOGO: (id: string) => `/organizations/${id}/logo`,
 
 	// Auth
-	LOGIN: '/login',
-	LOGOUT: '/logout',
-	RESET_PASSWORD: '/reset-password',
+	LOGIN: '/auth/login',
+	LOGOUT: '/auth/logout',
+	RESET_PASSWORD: '/auth/reset-password',
 
 	//
-	ME: '/users/me',
-	ROLE_DETAIL: (id: string) => `/roles/${id}`,
-	ROLES: '/roles',
-	USER_DETAIL: (id: string) => `/users/${id}`,
+	ME: '/auth/users/me',
+	ROLE_DETAIL: (id: string) => `/auth/roles/${id}`,
+	ROLES: '/auth/roles',
+	USER_DETAIL: (id: string) => `/auth/users/${id}`,
 
-	USERS: '/users',
+	USERS: '/auth/users',
 } as const);
 
 export const ApiRoutes = Object.freeze({
-	AUTH_API: '/api',
+	AUTH_API: '/auth/api',
 	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
 
 	// APP
