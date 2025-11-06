@@ -1,12 +1,12 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { LoginDto, LoginDtoSchema, Permission, Session } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import { generateRandomToken } from '@tmlmobilidade/strings';
+import { LoginDto, LoginDtoSchema, Permission, Session } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -71,11 +71,13 @@ export class AuthController {
 			secure: true,
 		});
 
-		return reply.send({
-			data: session,
-			error: null,
-			statusCode: HttpStatus.OK,
-		}).status(HttpStatus.OK);
+		return reply
+			.send({
+				data: session,
+				error: null,
+				statusCode: HttpStatus.OK,
+			})
+			.status(HttpStatus.OK);
 	}
 
 	/* * */

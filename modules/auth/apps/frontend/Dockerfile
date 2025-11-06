@@ -3,9 +3,12 @@ FROM node:24-alpine AS base
 ENV MODULE=auth
 ENV APP=frontend
 
-RUN npm install -g turbo@^2
+ARG ENVIRONMENT
 
-# # # # # # # # #
+ENV ENVIRONMENT=${ENVIRONMENT}
+ENV NEXT_PUBLIC_ENVIRONMENT=${ENVIRONMENT}
+
+RUN npm install -g turbo@^2
 
 
 # # #
