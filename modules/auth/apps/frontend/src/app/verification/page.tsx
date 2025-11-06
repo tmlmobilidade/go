@@ -5,7 +5,6 @@
 // import { Background3 } from '@/components/Background3';
 import { Background4 } from '@/components/login/Background4';
 import { VerificationForm } from '@/components/login/VerificationForm';
-import { Routes } from '@/lib/routes';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -40,7 +39,7 @@ export default async function Page({ searchParams }: Props) {
 
 	if (!token) {
 		// Redirect to the login page
-		redirect(Routes.LOGIN);
+		redirect('/login');
 	}
 
 	//

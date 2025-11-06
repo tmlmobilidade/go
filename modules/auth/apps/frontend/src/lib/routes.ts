@@ -11,9 +11,9 @@ export const PageRoutes = Object.freeze({
 	ORGANIZATION_LOGO: (id: string) => `/organizations/${id}/logo`,
 
 	// Auth
-	LOGIN: '/auth/login',
-	LOGOUT: '/auth/logout',
-	RESET_PASSWORD: '/auth/reset-password',
+	LOGIN: '/login',
+	LOGOUT: '/logout',
+	RESET_PASSWORD: '/reset-password',
 
 	//
 	ME: '/auth/users/me',
