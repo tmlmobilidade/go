@@ -1,5 +1,6 @@
 export { default as Badge } from './Badge';
-export { default as Combobox, DataItem } from './Combobox';
+export { default as Combobox } from './Combobox';
+export type { DataItem } from './Combobox';
 export { default as ComponentWrapper } from './ComponentWrapper';
 export { default as Description } from './Description';
 export { default as MultiSelect } from './MultiSelect';

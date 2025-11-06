@@ -23,12 +23,18 @@ async function watchBuild() {
 	const watcher = watch(
 		config.map((c) => ({
 			...c,
-			// Enable Rollup cache for faster rebuilds
+			// Optimized watch settings for faster rebuilds
 			watch: {
-				buildDelay: 100,
+				// Reduced delay to batch rapid file changes
+				buildDelay: 50,
 				chokidar: {
+					// Disable polling for better performance on macOS/Linux
 					usePolling: false,
+					// Ignore node_modules and dist for faster watching
+					ignored: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
 				},
+				// Clear screen on rebuild for cleaner output
+				clearScreen: false,
 			},
 		})),
 	);

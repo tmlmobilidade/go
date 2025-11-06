@@ -5,6 +5,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import { type RollupOptions } from 'rollup';
 import { dts } from 'rollup-plugin-dts';
+import esbuild from 'rollup-plugin-esbuild';
 import postcss from 'rollup-plugin-postcss';
 import tsConfigPaths from 'rollup-plugin-tsconfig-paths';
 import { preserveDirective } from 'rollup-preserve-directives';
@@ -24,7 +25,7 @@ const external = [
 export function rollupConfig(options?: { watch?: boolean }): RollupOptions[] {
 	const isWatch = options?.watch ?? false;
 	
-	// In watch mode, only build JS, skip type definitions for faster rebuilds
+	// In watch mode, use esbuild for ultra-fast rebuilds (10-100x faster than tsc)
 	if (isWatch) {
 		return [
 			{
@@ -36,9 +37,16 @@ export function rollupConfig(options?: { watch?: boolean }): RollupOptions[] {
 						format: 'esm',
 						preserveModules: true,
 						preserveModulesRoot: '.',
-						sourcemap: true,
 					},
 				],
+				// Suppress circular dependency warnings from node_modules
+				onwarn(warning, warn) {
+					// Ignore circular dependency warnings from node_modules
+					if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('node_modules')) {
+						return;
+					}
+					warn(warning);
+				},
 				plugins: [
 					tsConfigPaths(),
 					nodeResolve({
@@ -46,16 +54,27 @@ export function rollupConfig(options?: { watch?: boolean }): RollupOptions[] {
 					}),
 					preserveDirective(),
 					commonjs(),
-					typescript({
+					// Use esbuild instead of TypeScript compiler for much faster builds
+					esbuild({
+						include: /\.tsx?$/,
 						exclude: ['**/*.test.tsx', '**/*.test.ts', '**/*.stories.tsx', '**/*.stories.ts', 'scripts/**'],
 						tsconfig: './tsconfig.json',
-						// Use incremental compilation for faster rebuilds
-						incremental: true,
+						// Target modern browsers for faster compilation
+						target: 'esnext',
+						// Minify is disabled for faster builds in watch mode
+						minify: false,
+						// Skip type checking for maximum speed
+						tsconfigRaw: {
+							compilerOptions: {
+								jsx: 'react-jsx',
+							},
+						},
 					}),
 					postcss({
 						autoModules: true,
 						extract: 'index.css',
-						sourceMap: true,
+						// Disable sourcemaps in watch mode
+						sourceMap: false,
 					}),
 				],
 			},
