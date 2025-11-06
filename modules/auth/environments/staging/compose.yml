@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-auth
+name: tmlmobilidade-go-auth-staging
 
 volumes:
   certbotdata:
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-auth-nginx:staging
+    image: ghcr.io/tmlmobilidade/go-auth-nginx:staging
     deploy:
       restart_policy:
         condition: any
@@ -73,7 +73,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/sae-auth-api:staging
+    image: ghcr.io/tmlmobilidade/go-auth-api:staging
     deploy:
       restart_policy:
         condition: any
@@ -92,7 +92,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/sae-auth-frontend:staging
+    image: ghcr.io/tmlmobilidade/go-auth-frontend:staging
     deploy:
       restart_policy:
         condition: any
@@ -111,7 +111,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   file-exporter:
-    image: ghcr.io/tmlmobilidade/sae-auth-file-exporter:staging
+    image: ghcr.io/tmlmobilidade/go-auth-file-exporter:staging
     deploy:
       restart_policy:
         condition: any
@@ -128,7 +128,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    image: ghcr.io/tmlmobilidade/sae-auth-cleaner:staging
+    image: ghcr.io/tmlmobilidade/go-auth-cleaner:staging
     deploy:
       restart_policy:
         condition: any
