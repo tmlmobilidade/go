@@ -49,9 +49,7 @@ export default async function Page({ searchParams }: Props) {
 	return (
 		<div className={styles.root}>
 			<Background4 />
-			<VerificationForm
-				token={token}
-			/>
+			<VerificationForm token={token} />
 		</div>
 	);
 
