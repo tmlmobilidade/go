@@ -3,11 +3,14 @@ name: 'Auth | Build & Push'
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'auth/**'
     branches:
-      - production
+    #   - production
       - staging
+    paths:
+      - 'modules/auth/**'
+      - 'packages/**'
+      - '.github/workflows/build-auth.yml'
+
 
 # # #
 
