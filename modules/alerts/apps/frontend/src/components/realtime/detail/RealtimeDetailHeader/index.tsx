@@ -4,8 +4,8 @@
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { Routes } from '@/lib/routes';
-import { keepUrlParams } from '@tmlmobilidade/utils';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

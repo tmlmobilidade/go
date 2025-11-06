@@ -1,5 +1,5 @@
-import { GtfsCause, GtfsEffect } from '@tmlmobilidade/types';
 import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, IconCalendarEvent, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconFish, IconInfoTriangle, IconRoadOff, IconRouteAltRight, IconServerCog, IconSettings, IconShieldChevron, IconSpeakerphone, IconTool, IconTrafficCone, IconUserExclamation, IconUserOff } from '@tabler/icons-react';
+import { GtfsCause, GtfsEffect } from '@tmlmobilidade/types';
 
 export const CauseIcons: Record<GtfsCause, React.ReactNode> = {
 	ACCIDENT: <IconCarCrash />,

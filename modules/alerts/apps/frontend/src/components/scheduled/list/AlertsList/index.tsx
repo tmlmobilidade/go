@@ -13,7 +13,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { Routes } from '@/lib/routes';
 import { type Alert } from '@tmlmobilidade/types';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

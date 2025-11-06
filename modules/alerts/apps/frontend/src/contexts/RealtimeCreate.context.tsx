@@ -11,10 +11,10 @@ import { RealtimeStepTrips } from '@/components/realtime/create/RealtimeStepTrip
 
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { Routes } from '@/lib/routes';
-import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
-import { fetchData } from '@tmlmobilidade/utils';
 import { Dates } from '@tmlmobilidade/dates';
+import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 

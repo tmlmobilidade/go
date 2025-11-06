@@ -7,7 +7,7 @@ import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconRefresh, IconUpload } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/consts';
 import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

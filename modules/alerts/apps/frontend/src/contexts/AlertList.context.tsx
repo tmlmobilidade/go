@@ -5,10 +5,10 @@
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type AlertNormalized } from '@/types/normalized';
-import { type Alert, AlertSchema } from '@tmlmobilidade/types';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import { normalizeString } from '@tmlmobilidade/strings';
+import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';

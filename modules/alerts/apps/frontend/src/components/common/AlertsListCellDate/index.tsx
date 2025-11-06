@@ -1,7 +1,7 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

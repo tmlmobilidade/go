@@ -7,7 +7,7 @@ import { RealtimeReferencesLines } from '@/components/realtime/detail/RealtimeRe
 import { RealtimeReferencesStops } from '@/components/realtime/detail/RealtimeReferencesStops';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
-import { Alert, AlertSchema, referenceTypeSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, ReferenceTypeSchema } from '@tmlmobilidade/types';
 import { Collapsible, MultiSelect, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -97,7 +97,7 @@ export function RealtimeDetailSectionReferences() {
 				/>
 
 				<SegmentedControl
-					data={AlertSchema.shape.reference_type.options.map(parseOptionsLabel).filter(option => option.value !== referenceTypeSchema.Values.TRIP)}
+					data={AlertSchema.shape.reference_type.options.map(parseOptionsLabel).filter(option => option.value !== ReferenceTypeSchema.Values.TRIP)}
 					onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
 					value={realtimeDetailContext.data.form.values.reference_type}
 					fullWidth

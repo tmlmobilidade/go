@@ -5,8 +5,8 @@
 import { Routes } from '@/lib/routes';
 import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
-import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import { normalizeString } from '@tmlmobilidade/strings';
+import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

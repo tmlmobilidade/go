@@ -9,7 +9,7 @@ import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.contex
 import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/consts';
 import { BackButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */

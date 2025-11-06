@@ -9,7 +9,7 @@ import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { Routes } from '@/lib/routes';
 import { type UserNormalized } from '@/types/normalized';
-import { keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
