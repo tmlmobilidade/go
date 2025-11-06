@@ -3,8 +3,8 @@
 import { OrganizationsDetailMode, useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
 /* * */
 
-import { keepUrlParams } from '@tmlmobilidade/ui';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

@@ -3,8 +3,8 @@
 /* * */
 
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
-import { keepUrlParams } from '@tmlmobilidade/ui';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Badge, Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

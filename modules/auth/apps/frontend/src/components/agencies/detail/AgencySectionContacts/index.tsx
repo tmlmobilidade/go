@@ -3,8 +3,8 @@
 /* * */
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { CreateAgencySchema } from '@tmlmobilidade/types';
 import { isEmail } from '@tmlmobilidade/strings';
+import { CreateAgencySchema } from '@tmlmobilidade/types';
 import { Collapsible, PillsInput, Section } from '@tmlmobilidade/ui';
 
 /* * */

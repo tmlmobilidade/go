@@ -3,8 +3,8 @@
 /* * */
 
 import { type UserNormalized } from '@/types/normalized';
-import { type User } from '@tmlmobilidade/types';
 import { normalizeString } from '@tmlmobilidade/strings';
+import { type User } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
