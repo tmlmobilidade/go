@@ -1,5 +1,5 @@
 # # #
-# Base image
+# BASE IMAGE
 FROM node:24-alpine AS base
 
 ENV MODULE=alerts
@@ -14,7 +14,7 @@ WORKDIR /app
 # # # # # # # # #
 
 # # #
-# Installer stage
+# INSTALLER STAGE
 FROM base AS installer
 
 WORKDIR /app
@@ -27,7 +27,7 @@ RUN npm install --package-lock-only
 # # # # # # # # #
 
 # # #
-# Pruner stage
+# PRUNER STAGE
 FROM base AS pruner
 
 WORKDIR /app
@@ -42,13 +42,14 @@ RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 # # # # # # # # #
 
 # # #
-# Builder stage
+# BUILDER STAGE
 FROM base AS builder
 
 WORKDIR /app
 
 # Copy pruned dependency files first for cache
 COPY --from=pruner /app/out/json/ ./
+COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 
 # Install dependencies using the generated lockfile
 RUN npm ci

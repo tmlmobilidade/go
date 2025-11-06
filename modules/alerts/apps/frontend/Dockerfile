@@ -1,64 +1,75 @@
-# # # # # # # # #
-
+# # #
+# BASE IMAGE
 FROM node:24-alpine AS base
 
 ENV MODULE=alerts
 ENV APP=frontend
+ENV TURBO_VERSION=2
 
-ARG ENVIRONMENT
+# Install turbo once globally (reused across all stages)
+RUN npm install -g turbo@^${TURBO_VERSION}
 
-ENV ENVIRONMENT=${ENVIRONMENT}
-ENV NEXT_PUBLIC_ENVIRONMENT=${ENVIRONMENT}
-
-RUN npm install -g turbo@^2
+WORKDIR /app
 
 # # # # # # # # #
 
+# # #
+# INSTALLER STAGE
+FROM base AS installer
+
+WORKDIR /app
+
+# Copy minimal files needed to compute dependencies
+COPY package.json turbo.json ./
+
+# Copy all packages except "ui" for efficiency
+COPY packages ./packages
+
+# Copy the app
+COPY modules/${MODULE}/apps/${APP} ./modules/${MODULE}/apps/${APP}
+
+# Generate a package-lock.json based on current state
+RUN npm install --package-lock-only
+
+# # # # # # # # #
 
 # # #
 # PRUNER STAGE
-
 FROM base AS pruner
 
-RUN apk add --no-cache libc6-compat
-RUN apk update
-
 WORKDIR /app
 
-COPY package.json ./
-COPY . .
+# Copy everything needed for prune, including the generated lock file
+COPY --from=installer /app .
 
+# Prune down to only needed deps/files
 RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
-
 # # # # # # # # #
 
-
-# PHASE 2
-# Rebuild the source code only when needed.
-
+# # #
+# BUILDER STAGE
 FROM base AS builder
-
-RUN apk add --no-cache libc6-compat
-RUN apk update
 
 WORKDIR /app
 
-COPY --from=pruner /app/out/json/ .
+# Copy pruned dependency files first for cache
+COPY --from=pruner /app/out/json/ ./
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
-RUN npm install
+
+# Install dependencies using the generated lockfile
+RUN npm ci
+
+# Copy full source for building
+COPY --from=pruner /app/out/full/ .
 
 # Build the app
-COPY --from=pruner /app/out/full/ .
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
-
 
 # # # # # # # # #
 
-
-# PHASE 3
-# Setup the final Docker image with only the required files.
-
+# # #
+# RUNNER STAGE
 FROM base AS runner
 
 WORKDIR /app
