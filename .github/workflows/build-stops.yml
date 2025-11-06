@@ -3,11 +3,13 @@ name: 'Stops | Build & Push'
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'stops/**'
     branches:
-      - production
+    #   - production
       - staging
+    paths:
+      - 'modules/stops/**'
+      - 'packages/**'
+      - '.github/workflows/build-stops.yml' 
 
 # # #
 
