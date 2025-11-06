@@ -6,6 +6,8 @@ on:
     branches:
     #   - production
       - staging
+    paths:
+      - 'modules/gateway/**'
 
 # # #
 
