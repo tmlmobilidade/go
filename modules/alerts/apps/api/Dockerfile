@@ -1,62 +1,52 @@
-# # #
-# BASE IMAGE
 FROM node:24-alpine AS base
 
 ENV MODULE=alerts
 ENV APP=api
 
-# Install turbo once globally (reused across all stages)
 RUN npm install -g turbo@^2
-
-WORKDIR /app
 
 # # # # # # # # #
 
+
 # # #
 # INSTALLER STAGE
+
 FROM base AS installer
 
 WORKDIR /app
 
 COPY . .
 
-# Generate a package-lock.json based on current state
 RUN npm install --package-lock-only
 
-# # # # # # # # #
 
 # # #
 # PRUNER STAGE
+
 FROM base AS pruner
 
 WORKDIR /app
 
-# Copy everything needed for prune,
-# including the generated lock file.
-COPY --from=installer /app .
+COPY . .
+COPY --from=installer /app/package-lock.json ./package-lock.json
 
-# Prune down to only needed deps/files
 RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
 # # # # # # # # #
 
 # # #
 # BUILDER STAGE
+
 FROM base AS builder
 
 WORKDIR /app
 
-# Copy pruned dependency files first for cache
-COPY --from=pruner /app/out/json/ ./
-COPY --from=pruner /app/out/package-lock.json ./package-lock.json
-
-# Install dependencies using the generated lockfile
-RUN npm ci
-
-# Copy full source for building
-COPY --from=pruner /app/out/full/ .
+# First install the dependencies (as they change less often)
+COPY --from=pruner /app/out/json/ .
+RUN npm install
 
 # Build the app
+COPY --from=pruner /app/out/full/ .
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
 # # # # # # # # #
