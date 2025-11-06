@@ -26,6 +26,7 @@ COPY package.json turbo.json ./
 COPY packages ./packages
 RUN rm -rf ./packages/ui
 
+# Copy the app
 COPY modules/${MODULE}/apps/${APP} ./modules/${MODULE}/apps/${APP}
 
 # Generate a package-lock.json based on current state
@@ -40,14 +41,10 @@ FROM base AS pruner
 WORKDIR /app
 
 # Copy everything needed for prune, including the generated lock file
-COPY --from=installer /app/package-lock.json ./package-lock.json
-COPY package.json turbo.json ./
-COPY packages ./packages
-COPY modules/${MODULE}/apps/${APP} ./modules/${MODULE}/apps/${APP}
+COPY --from=installer /app .
 
 # Prune down to only needed deps/files
 RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
-
 
 # # # # # # # # #
 
@@ -76,6 +73,10 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 FROM base AS runner
 
 WORKDIR /app
-COPY --from=builder /app .
 
-CMD node modules/${MODULE}/apps/${APP}/dist/src/index.js
+# Copy only the built app and dependencies, packages need to be included because node_modules symlinks to them
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist/ .
+
+CMD node src/index.js
