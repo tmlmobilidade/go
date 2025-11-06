@@ -20,13 +20,7 @@ FROM base AS installer
 WORKDIR /app
 
 # Copy minimal files needed to compute dependencies
-COPY package.json turbo.json ./
-
-# Copy all packages except "ui" for efficiency
-COPY packages ./packages
-
-# Copy the app
-COPY modules/${MODULE}/apps/${APP} ./modules/${MODULE}/apps/${APP}
+COPY . .
 
 # Generate a package-lock.json based on current state
 RUN npm install --package-lock-only
