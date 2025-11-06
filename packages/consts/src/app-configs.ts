@@ -55,13 +55,13 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_url: 'http://localhost:51000/auth',
 		},
 		production: {
-			api_url: 'https://go.carrismetropolitana.pt/auth/api',
-			frontend_url: 'https://go.carrismetropolitana.pt/auth',
+			api_url: 'https://go.tmlmobilidade.pt/auth/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/auth',
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.carrismetropolitana.pt/auth/api',
-			frontend_url: 'https://staging.go.carrismetropolitana.pt/auth',
+			api_url: 'https://staging.go.tmlmobilidade.pt/auth/api',
+			frontend_url: 'https://staging.go.tmlmobilidade.pt/auth',
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 	},

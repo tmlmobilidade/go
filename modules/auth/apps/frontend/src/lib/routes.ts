@@ -33,7 +33,7 @@ export const ApiRoutes = Object.freeze({
 });
 
 export const Routes = Object.freeze({
-	URL: process.env.NEXT_PUBLIC_URL ?? 'https://auth.sae.carrismetropolitana.pt',
+	URL: process.env.NEXT_PUBLIC_URL ?? 'https://go.tmlmobilidade.pt',
 	...PageRoutes,
 	...ApiRoutes,
 });
