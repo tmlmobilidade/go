@@ -9,6 +9,7 @@ on:
     paths:
       - 'modules/alerts/**'
       - 'packages/**'
+      - '.github/workflows/build-alerts.yml'
 
 # # #
 
