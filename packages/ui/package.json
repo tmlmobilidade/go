@@ -46,6 +46,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/utils": "*",
 		"@mantine/charts": "8.3.6",
 		"@mantine/core": "8.3.6",

@@ -8,6 +8,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "turbo build",
+		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:packages": "turbo build --filter=./packages/**/*",
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
 		"dev:alerts": "dotenv-run -f ./modules/alerts/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
