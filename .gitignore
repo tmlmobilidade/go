@@ -33,6 +33,8 @@ build
 .next
 .turbo
 .eslintcache
+.tsbuildinfo
+.rollup.cache
 
 # generated content
 .contentlayer

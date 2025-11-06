@@ -21,7 +21,47 @@ const external = [
 
 /* * */
 
-export function rollupConfig(): RollupOptions[] {
+export function rollupConfig(options?: { watch?: boolean }): RollupOptions[] {
+	const isWatch = options?.watch ?? false;
+	
+	// In watch mode, only build JS, skip type definitions for faster rebuilds
+	if (isWatch) {
+		return [
+			{
+				external,
+				input: './index.ts',
+				output: [
+					{
+						dir: 'dist',
+						format: 'esm',
+						preserveModules: true,
+						preserveModulesRoot: '.',
+						sourcemap: true,
+					},
+				],
+				plugins: [
+					tsConfigPaths(),
+					nodeResolve({
+						allowExportsFolderMapping: false,
+					}),
+					preserveDirective(),
+					commonjs(),
+					typescript({
+						exclude: ['**/*.test.tsx', '**/*.test.ts', '**/*.stories.tsx', '**/*.stories.ts', 'scripts/**'],
+						tsconfig: './tsconfig.json',
+						// Use incremental compilation for faster rebuilds
+						incremental: true,
+					}),
+					postcss({
+						autoModules: true,
+						extract: 'index.css',
+						sourceMap: true,
+					}),
+				],
+			},
+		];
+	}
+	
 	return [
 		{
 			external,
@@ -45,6 +85,8 @@ export function rollupConfig(): RollupOptions[] {
 				typescript({
 					exclude: ['**/*.test.tsx', '**/*.test.ts', '**/*.stories.tsx', '**/*.stories.ts', 'scripts/**'],
 					tsconfig: './tsconfig.json',
+					// Use incremental compilation for faster builds
+					incremental: true,
 				}),
 				postcss({
 					autoModules: true,
@@ -64,7 +106,13 @@ export function rollupConfig(): RollupOptions[] {
 			],
 			plugins: [
 				tsConfigPaths(),
-				dts(),
+				dts({
+					// Use incremental compilation for faster type generation
+					compilerOptions: {
+						incremental: true,
+						tsBuildInfoFile: '.tsbuildinfo',
+					},
+				}),
 			],
 		},
 	];

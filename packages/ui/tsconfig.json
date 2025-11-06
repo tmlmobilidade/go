@@ -33,7 +33,9 @@
 		"skipLibCheck": true, /* Skip type checking all .d.ts files. */
 		"sourceMap": true /* Create source map files for emitted JavaScript files. */,
 		"strict": true, /* Enable all strict type-checking options. */
-		"target": "esnext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+		"target": "esnext", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+		"incremental": true, /* Enable incremental compilation. */
+		"tsBuildInfoFile": ".tsbuildinfo" /* Specify the file path for incremental compilation information. */
 	},
 	"include": ["src/**/*", "scripts/**/*", "index.ts"],
 	"exclude": ["node_modules", "dist"]

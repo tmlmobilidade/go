@@ -25,9 +25,8 @@
 		}
 	},
 	"scripts": {
-		"build": "npm run clean && tsx scripts/build.ts",
-		"watch": "tsx scripts/watch.ts",
-		"clean": "rm -rf dist",
+		"build": "tsx scripts/build.ts",
+		"dev": "tsx scripts/watch.ts",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix"
 	},

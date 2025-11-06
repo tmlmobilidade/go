@@ -18,14 +18,27 @@ const YALC_SCRIPT_PATH = path.resolve(__dirname, '..', '..', '..');
 async function watchBuild() {
 	console.log('Starting watch mode...');
 
-	const config = rollupConfig();
+	const config = rollupConfig({ watch: true });
 
-	const watcher = watch(config);
+	const watcher = watch(
+		config.map((c) => ({
+			...c,
+			// Enable Rollup cache for faster rebuilds
+			watch: {
+				buildDelay: 100,
+				chokidar: {
+					usePolling: false,
+				},
+			},
+		})),
+	);
 
 	watcher.on('event', async (event) => {
 		switch (event.code) {
 			case 'BUNDLE_END':
 				console.log('Bundle completed.');
+				// Only rebuild types when explicitly needed or on first build
+				// Skip type generation in watch mode for faster rebuilds
 				break;
 			case 'BUNDLE_START':
 				console.log('Bundling...');
