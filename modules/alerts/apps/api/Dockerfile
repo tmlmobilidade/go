@@ -23,6 +23,8 @@ RUN npm install
 
 RUN ls -la
 
+RUN pwd
+
 
 # # #
 # PRUNER STAGE
@@ -31,7 +33,7 @@ FROM base AS pruner
 
 WORKDIR /app
 
-COPY --from=installer package-lock.json package-lock.json
+COPY --from=installer ./package-lock.json ./package-lock.json
 
 RUN ls -la
 
