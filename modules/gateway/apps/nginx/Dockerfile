@@ -12,7 +12,7 @@ RUN if [ -z "$NGINX_SERVER_NAME" ]; then echo "NGINX_SERVER_NAME is not set" && 
 RUN apk add --no-cache gettext
 
 # Copy the template
-COPY ./nginx.conf /etc/nginx/nginx.conf.template
+COPY ./modules/gateway/apps/nginx/configs/nginx.conf /etc/nginx/nginx.conf.template
 
 # Render the template at build time
 RUN envsubst '${NGINX_SERVER_NAME}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf

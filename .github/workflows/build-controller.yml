@@ -50,7 +50,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/rides-cleaner/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-rides-cleaner:${{ github.ref_name }}
 
@@ -87,7 +86,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/coordinator/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-coordinator:${{ github.ref_name }}
 
@@ -124,7 +122,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/rides-bridge/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-rides-bridge:${{ github.ref_name }}
 
@@ -162,7 +159,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/rides-acceptor/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-rides-acceptor:${{ github.ref_name }}
 
@@ -199,7 +195,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/rides-locker/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-rides-locker:${{ github.ref_name }}
 
@@ -236,7 +231,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/rides-examiner/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-rides-examiner:${{ github.ref_name }}
 
@@ -273,7 +267,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/rides-feeder/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-rides-feeder:${{ github.ref_name }}
 
@@ -310,7 +303,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/sams-examiner/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-sams-examiner:${{ github.ref_name }}
 
@@ -347,7 +339,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/sams-feeder/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-sams-feeder:${{ github.ref_name }}
 
@@ -384,7 +375,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller/apps/nginx
           file: ./controller/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-nginx:${{ github.ref_name }}
           build-args: |
@@ -423,7 +413,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/api/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-api:${{ github.ref_name }}
 
@@ -461,7 +450,6 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./controller
           file: ./controller/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-controller-frontend:${{ github.ref_name }}
           build-args: |

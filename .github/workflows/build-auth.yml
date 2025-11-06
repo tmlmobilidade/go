@@ -46,8 +46,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./auth
-          file: ./auth/apps/frontend/Dockerfile
+          file: ./modules/auth/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-auth-frontend:${{ github.ref_name }}
           build-args: |
             ENVIRONMENT=${{ github.ref_name }}
@@ -85,8 +84,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./auth
-          file: ./auth/apps/api/Dockerfile
+          file: ./modules/auth/apps/api/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-auth-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -123,8 +121,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./auth
-          file: ./auth/apps/cleaner/Dockerfile
+          file: ./modules/auth/apps/cleaner/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-auth-cleaner:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -161,8 +158,7 @@ jobs:
           uses: docker/build-push-action@master
           with:
             push: true
-            context: ./auth
-            file: ./auth/apps/file-exporter/Dockerfile
+            file: ./modules/auth/apps/file-exporter/Dockerfile
             tags: ghcr.io/tmlmobilidade/go-auth-file-exporter:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # #
@@ -198,8 +194,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./auth/apps/nginx
-          file: ./auth/apps/nginx/Dockerfile
+          file: ./modules/auth/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-auth-nginx:${{ github.ref_name }}
           build-args: |
             NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.auth.sae.carrismetropolitana.pt' || 'auth.sae.carrismetropolitana.pt' }}
