@@ -44,12 +44,12 @@ export function RealtimeDetailSectionTitle() {
 					withAsterisk
 					{...realtimeDetailContext.data.form.getInputProps('description')}
 				/>
-				<UploadImage
+				{/* <UploadImage
 					imageUrl={realtimeDetailContext.data.imageUrl?.url}
 					label="Imagem"
 					onDelete={realtimeDetailContext.actions.deleteImage}
 					onFileChange={realtimeDetailContext.actions.fileChanged}
-				/>
+				/> */}
 				<CoordinatesInput
 					description="Ponto de referência do realtimea, para que seja possível localizar o realtimea no mapa."
 					{...realtimeDetailContext.data.form.getInputProps('coordinates')}
