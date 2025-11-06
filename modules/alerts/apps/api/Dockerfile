@@ -21,6 +21,8 @@ COPY . .
 
 RUN npm install
 
+RUN ls -la
+
 
 # # #
 # PRUNER STAGE
