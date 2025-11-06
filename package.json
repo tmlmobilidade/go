@@ -21,7 +21,7 @@
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
-		"watch:packages": "turbo run watch --filter=./packages/**/*"
+		"watch:packages": "turbo run build --filter=./packages/**/* && turbo run watch --filter=./packages/**/*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",

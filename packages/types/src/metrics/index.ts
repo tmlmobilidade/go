@@ -1,5 +1,6 @@
 import { DemandByAgencyByDaySchema, DemandByAgencyByMonthSchema, DemandByAgencyByYearSchema, DemandByLineByDaySchema, DemandByLineByMonthSchema, DemandByLineByYearSchema, DemandByPatternByDaySchema, DemandByPatternByMonthSchema, DemandByPatternByYearSchema, DemandByPatternHourByMonthSchema, DemandByPatternHourByYearSchema, MeanDemandByLineByMonthSchema, TopDemandByAgencySchema, TopMeanDemandByLineByMonthSchema } from '@/metrics/demand.js';
 import { z } from 'zod';
+import { RealtimeDemandSchema, RealtimeServiceComplianceSchema } from './realtime.js';
 
 /* * */
 
@@ -18,6 +19,8 @@ export const MetricSchema = z.discriminatedUnion('metric', [
 	TopDemandByAgencySchema,
 	MeanDemandByLineByMonthSchema,
 	TopMeanDemandByLineByMonthSchema,
+	RealtimeDemandSchema,
+	RealtimeServiceComplianceSchema,
 ]);
 
 /* * */
@@ -37,3 +40,5 @@ export type DemandByAgencyByDay = z.infer<typeof DemandByAgencyByDaySchema>;
 export type TopDemandByAgency = z.infer<typeof TopDemandByAgencySchema>;
 export type MeanDemandByLineByMonth = z.infer<typeof MeanDemandByLineByMonthSchema>;
 export type TopMeanDemandByLineByMonth = z.infer<typeof TopMeanDemandByLineByMonthSchema>;
+export type RealtimeDemand = z.infer<typeof RealtimeDemandSchema>;
+export type RealtimeServiceCompliance = z.infer<typeof RealtimeServiceComplianceSchema>;
