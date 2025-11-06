@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getCssVariableValue } from '@tmlmobilidade/utils';
+import { getCssVariableValue } from '@/utils/get-variable-value';
 import { useEffect, useState } from 'react';
 
 /**
