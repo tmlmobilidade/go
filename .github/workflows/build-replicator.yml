@@ -7,12 +7,13 @@ name: 'Replicator | Build & Test'
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'replicator/packages/**'
-      - 'replicator/apps/**'
     branches:
-      - production
+    #   - production
       - staging
+    paths:
+      - 'modules/replicator/**'
+      - 'packages/**'
+      - '.github/workflows/build-replicator.yml'
 
 # # #
 
@@ -52,8 +53,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./replicator
-          file: ./replicator/apps/enrich/Dockerfile
+          file: ./modules/replicator/apps/enrich/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-replicator-enrich:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -90,8 +90,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./replicator
-          file: ./replicator/apps/stream/Dockerfile
+          file: ./modules/replicator/apps/stream/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-replicator-stream:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -128,8 +127,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./replicator
-          file: ./replicator/apps/sync-apex-locations/Dockerfile
+          file: ./modules/replicator/apps/sync-apex-locations/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-replicator-sync-apex-locations:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -166,8 +164,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./replicator
-          file: ./replicator/apps/sync-apex-on-board-refunds/Dockerfile
+          file: ./modules/replicator/apps/sync-apex-on-board-refunds/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-refunds:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -204,8 +201,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./replicator
-          file: ./replicator/apps/sync-apex-on-board-sales/Dockerfile
+          file: ./modules/replicator/apps/sync-apex-on-board-sales/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-sales:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -242,8 +238,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./replicator
-          file: ./replicator/apps/sync-apex-validations/Dockerfile
+          file: ./modules/replicator/apps/sync-apex-validations/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-replicator-sync-apex-validations:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -280,6 +275,5 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./replicator
-          file: ./replicator/apps/sync-vehicle-events/Dockerfile
+          file: ./modules/replicator/apps/sync-vehicle-events/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-replicator-sync-vehicle-events:${{ github.ref_name }}

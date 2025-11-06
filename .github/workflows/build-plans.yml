@@ -3,11 +3,13 @@ name: 'Plans | Build & Push'
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'plans/**'
     branches:
-      - production
+    #   - production
       - staging
+    paths:
+      - 'modules/plans/**'
+      - 'packages/**'
+      - '.github/workflows/build-plans.yml'
 
 # # #
 
@@ -47,8 +49,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./plans
-          file: ./plans/apps/frontend/Dockerfile
+          file: ./modules/plans/apps/frontend/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-plans-frontend:${{ github.ref_name }}
           build-args: |
             ENVIRONMENT=${{ github.ref_name }}
@@ -87,8 +88,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./plans
-          file: ./plans/apps/api/Dockerfile
+          file: ./modules/plans/apps/api/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-plans-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -125,8 +125,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./plans
-          file: ./plans/apps/validator/Dockerfile
+          file: ./modules/plans/apps/validator/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-plans-validator:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -163,8 +162,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./plans
-          file: ./plans/apps/cleaner/Dockerfile
+          file: ./modules/plans/apps/cleaner/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-plans-cleaner:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # #
@@ -200,13 +198,10 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@master
         with:
-          push: true
-          context: ./plans/apps/nginx
-          file: ./plans/apps/nginx/Dockerfile
+          push: true/apps/nginx
+          file: ./modules/plans/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-plans-nginx:${{ github.ref_name }}
-          build-args: |
-            NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.plans.sae.carrismetropolitana.pt' || 'plans.sae.carrismetropolitana.pt' }}
-
+          
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
@@ -240,6 +235,5 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          context: ./plans
-          file: ./plans/apps/export-drt/Dockerfile
+          file: ./modules/plans/apps/export-drt/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-plans-export-drt:${{ github.ref_name }}
