@@ -19,15 +19,7 @@ FROM base AS installer
 
 WORKDIR /app
 
-# Copy minimal files needed to compute dependencies
-COPY package.json turbo.json ./
-
-# Copy all packages except "ui" for efficiency
-COPY packages ./packages
-RUN rm -rf ./packages/ui
-
-# Copy the app
-COPY modules/${MODULE}/apps/${APP} ./modules/${MODULE}/apps/${APP}
+COPY . .
 
 # Generate a package-lock.json based on current state
 RUN npm install --package-lock-only
@@ -40,7 +32,8 @@ FROM base AS pruner
 
 WORKDIR /app
 
-# Copy everything needed for prune, including the generated lock file
+# Copy everything needed for prune,
+# including the generated lock file.
 COPY --from=installer /app .
 
 # Prune down to only needed deps/files
@@ -74,7 +67,8 @@ FROM base AS runner
 
 WORKDIR /app
 
-# Copy only the built app and dependencies, packages need to be included because node_modules symlinks to them
+# Copy only the built app and dependencies,
+# packages need to be included because node_modules symlinks to them.
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist/ .
