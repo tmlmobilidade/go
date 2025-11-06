@@ -49,7 +49,7 @@ jobs:
           push: true
           context: ./plans
           file: ./plans/apps/frontend/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-plans-frontend:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-plans-frontend:${{ github.ref_name }}
           build-args: |
             ENVIRONMENT=${{ github.ref_name }}
 
@@ -89,7 +89,7 @@ jobs:
           push: true
           context: ./plans
           file: ./plans/apps/api/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-plans-api:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-plans-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -127,7 +127,7 @@ jobs:
           push: true
           context: ./plans
           file: ./plans/apps/validator/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-plans-validator:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-plans-validator:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -165,7 +165,7 @@ jobs:
           push: true
           context: ./plans
           file: ./plans/apps/cleaner/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-plans-cleaner:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-plans-cleaner:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # #
@@ -203,7 +203,7 @@ jobs:
           push: true
           context: ./plans/apps/nginx
           file: ./plans/apps/nginx/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-plans-nginx:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-plans-nginx:${{ github.ref_name }}
           build-args: |
             NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.plans.sae.carrismetropolitana.pt' || 'plans.sae.carrismetropolitana.pt' }}
 
@@ -242,4 +242,4 @@ jobs:
           push: true
           context: ./plans
           file: ./plans/apps/export-drt/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-plans-export-drt:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-plans-export-drt:${{ github.ref_name }}

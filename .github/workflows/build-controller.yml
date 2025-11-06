@@ -52,7 +52,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/rides-cleaner/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-rides-cleaner:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-rides-cleaner:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -89,7 +89,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/coordinator/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-coordinator:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-coordinator:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -126,7 +126,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/rides-bridge/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-rides-bridge:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-rides-bridge:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -164,8 +164,8 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/rides-acceptor/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-rides-acceptor:${{ github.ref_name }}
-  
+          tags: ghcr.io/tmlmobilidade/go-controller-rides-acceptor:${{ github.ref_name }}
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
@@ -201,7 +201,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/rides-locker/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-rides-locker:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-rides-locker:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -238,7 +238,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/rides-examiner/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-rides-examiner:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-rides-examiner:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -275,7 +275,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/rides-feeder/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-rides-feeder:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-rides-feeder:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -312,7 +312,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/sams-examiner/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-sams-examiner:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-sams-examiner:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -349,7 +349,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/sams-feeder/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-sams-feeder:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-sams-feeder:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -386,7 +386,7 @@ jobs:
           push: true
           context: ./controller/apps/nginx
           file: ./controller/apps/nginx/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-nginx:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-nginx:${{ github.ref_name }}
           build-args: |
             NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.controller.sae.carrismetropolitana.pt' || 'controller.sae.carrismetropolitana.pt' }}
 
@@ -425,7 +425,7 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/api/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-api:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-api:${{ github.ref_name }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -463,6 +463,6 @@ jobs:
           push: true
           context: ./controller
           file: ./controller/apps/frontend/Dockerfile
-          tags: ghcr.io/tmlmobilidade/sae-controller-frontend:${{ github.ref_name }}
+          tags: ghcr.io/tmlmobilidade/go-controller-frontend:${{ github.ref_name }}
           build-args: |
             ENVIRONMENT=${{ github.ref_name }}

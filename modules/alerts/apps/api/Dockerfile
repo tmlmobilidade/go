@@ -11,7 +11,19 @@ RUN npm install -g turbo@^2
 
 
 # # #
-# BUILDER STAGE
+# INSTALLER STAGE
+
+FROM base AS installer
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+
+# # #
+# PRUNER STAGE
 
 FROM base AS pruner
 
@@ -23,7 +35,7 @@ RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
 
 # # #
-# INSTALLER STAGE
+# BUILDER STAGE
 
 FROM base AS builder
 
