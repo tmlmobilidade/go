@@ -51,4 +51,4 @@ jobs:
           context: ./modules/gateway/apps/nginx
           tags: ghcr.io/tmlmobilidade/go-gateway-nginx:${{ github.ref_name }}
           build-args: |
-            NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.gateway.sae.carrismetropolitana.pt' || 'gateway.sae.carrismetropolitana.pt' }}
+            NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.go.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
