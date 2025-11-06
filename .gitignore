@@ -25,6 +25,7 @@ node_modules
 
 # PACKAGE-LOCK
 # pnpm-lock.yaml
+package-lock.json
 
 # BUILD & CACHE
 dist
