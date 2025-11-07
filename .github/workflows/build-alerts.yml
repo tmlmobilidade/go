@@ -19,21 +19,8 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  check-changes:
-    uses: ./.github/workflows/_check-app-changes.yml
-    with:
-      paths: |
-        modules/alerts/apps/frontend/**
-        modules/alerts/apps/api/**
-        packages/**
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
   frontend:
     name: frontend (NextJS)
-    needs: check-changes
-    if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/alerts/apps/frontend/Dockerfile
@@ -45,8 +32,6 @@ jobs:
 
   api:
     name: api (NodeJS)
-    needs: check-changes
-    if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/alerts/apps/api/Dockerfile

@@ -20,20 +20,7 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  check-changes:
-    uses: ./.github/workflows/_check-app-changes.yml
-    with:
-      paths: |
-        modules/auth/apps/frontend/**
-        modules/auth/apps/api/**
-        packages/**
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
   frontend:
-    needs: check-changes
-    if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/auth/apps/frontend/Dockerfile
@@ -44,8 +31,6 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    needs: check-changes
-    if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/auth/apps/api/Dockerfile
