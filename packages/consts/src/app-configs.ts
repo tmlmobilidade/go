@@ -60,7 +60,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/api/api',
+			api_url: 'https://staging.go.tmlmobilidade.pt/auth/api',
 			frontend_url: 'https://staging.go.tmlmobilidade.pt/auth',
 			...DEFAULT_NON_DEV_CONFIG,
 		},
