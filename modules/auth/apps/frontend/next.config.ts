@@ -32,6 +32,16 @@ const nextConfig: NextConfig = {
 	},
 	output: 'standalone',
 	reactStrictMode: true,
+	async redirects() {
+		return [
+			{
+				basePath: false,
+				destination: '/auth',
+				permanent: true,
+				source: '/',
+			},
+		];
+	},
 	async rewrites() {
 		return [
 			{
