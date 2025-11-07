@@ -1,7 +1,7 @@
-name: sae-db-development
+name: go-db-development
 
 volumes:
-  sae-db-development:
+  go-db-development:
 
 # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # #
@@ -24,7 +24,7 @@ services:
     volumes:
       - ./secrets/replica.key:/data/replica.key
       - ./init.sh:/docker-entrypoint-initdb.d/setup.sh
-      - sae-db-development:/data/db
+      - go-db-development:/data/db
     entrypoint:
       - /bin/bash
       - -c
