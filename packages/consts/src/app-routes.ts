@@ -3,8 +3,8 @@ export const PAGE_ROUTES = Object.freeze({
 	/* ALERTS */
 	alerts: {
 		// ALERTS
-		ALERTS_DETAIL: (id: string) => `/alerts/${id}`,
-		ALERTS_LIST: '/alerts',
+		ALERTS_DETAIL: (id: string) => `/${id}`,
+		ALERTS_LIST: '/',
 
 		// REALTIME
 		REALTIME_DETAIL: (id: string) => `/alerts/realtime/${id}`,
@@ -63,7 +63,7 @@ export const PAGE_ROUTES = Object.freeze({
 		AREAS_2_LIST: '/performance/areas/2',
 
 		// PERFORMANCE
-		PERFORMANCE_LIST: '/performance',
+		PERFORMANCE_LIST: '/',
 
 		// SUPPLY_DEMAND_DEMAND_BY_LINE
 		SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: '/performance/supply-demand/demand-by-line',
@@ -79,8 +79,8 @@ export const PAGE_ROUTES = Object.freeze({
 	/* PLANS */
 	plans: {
 		// PLANS
-		PLANS_DETAIL: (id: string) => `/plans/${id}`,
-		PLANS_LIST: '/plans',
+		PLANS_DETAIL: (id: string) => `/${id}`,
+		PLANS_LIST: '/',
 
 		// VALIDATIONS
 		VALIDATIONS_DETAIL: (id: string) => `/plans/validations/${id}`,
@@ -91,8 +91,8 @@ export const PAGE_ROUTES = Object.freeze({
 	/* STOPS */
 	stops: {
 		// STOPS
-		STOPS_DETAIL: (id: string) => `/stops/${id}`,
-		STOPS_LIST: '/stops',
+		STOPS_DETAIL: (id: string) => `/${id}`,
+		STOPS_LIST: '/',
 	},
 } as const);
 

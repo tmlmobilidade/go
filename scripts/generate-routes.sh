@@ -90,9 +90,9 @@ scan_frontend_routes() {
                 local route_name=$(to_snake_case "${base_path}_DETAIL")
             fi
             route_name=$(sanitize_route_name "$route_name")
-            # Build route path: if base_path is empty after removing prefix, just use module_name
+            # Build route path: if base_path is empty after removing prefix, remove module prefix
             if [ -z "$base_path" ]; then
-                local route_path="/${module_name}/\${id}"
+                local route_path="/\${id}"
             else
                 local route_path="/${module_name}/${base_path}/\${id}"
             fi
@@ -112,9 +112,9 @@ scan_frontend_routes() {
                 local route_name=$(to_snake_case "${dir_path}_LIST")
             fi
             route_name=$(sanitize_route_name "$route_name")
-            # Build route path: if dir_path is empty after removing prefix, just use module_name
+            # Build route path: if dir_path is empty after removing prefix, remove module prefix
             if [ -z "$dir_path" ]; then
-                local route_path="/${module_name}"
+                local route_path="/"
             else
                 local route_path="/${module_name}/${dir_path}"
             fi
