@@ -5,6 +5,7 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
+	basePath: '/alerts',
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
