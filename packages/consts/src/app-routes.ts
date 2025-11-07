@@ -4,6 +4,7 @@ export const PAGE_ROUTES = Object.freeze({
 	alerts: {
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `/${id}`,
+		ALERTS_LIST: '/',
 
 		// REALTIME
 		REALTIME_DETAIL: (id: string) => `/realtime/${id}`,

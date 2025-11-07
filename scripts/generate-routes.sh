@@ -40,7 +40,7 @@ to_pascal_case() {
 
 # Function to sanitize route names (remove invalid characters)
 sanitize_route_name() {
-    echo "$1" | sed 's|\.|_|g' | sed 's|/|_|g' | sed 's|-|_|g' | sed 's|__|_|g' | sed 's|^_||' | sed 's|_$||'
+    echo "$1" | sed -E 's|\([^)]+\)||g' | sed 's|\.|_|g' | sed 's|/|_|g' | sed 's|-|_|g' | sed 's|__|_|g' | sed 's|^_||' | sed 's|_$||'
 }
 
 # Function to scan frontend routes
@@ -66,8 +66,8 @@ scan_frontend_routes() {
             continue
         fi
         
-        # Remove route groups like (authenticated)
-        dir_path=$(echo "$dir_path" | sed -E 's|\([^)]+\)/||g' | sed 's|^/||')
+        # Remove route groups like (authenticated) - handle them anywhere in the path
+        dir_path=$(echo "$dir_path" | sed -E 's|\([^)]+\)/||g' | sed -E 's|/\([^)]+\)||g' | sed -E 's|^\([^)]+\)$||' | sed 's|^/||')
         
         # Check if path contains [id] (detail route)
         if [[ "$dir_path" == *"[id]"* ]]; then
@@ -77,6 +77,8 @@ scan_frontend_routes() {
                 # Handle case where [id] is the directory name itself
                 base_path=$(echo "$dir_path" | sed 's|\[id\]||g' | sed 's|/$||')
             fi
+            # Remove any remaining route groups from base_path
+            base_path=$(echo "$base_path" | sed -E 's|\([^)]+\)/||g' | sed -E 's|/\([^)]+\)||g' | sed -E 's|^\([^)]+\)$||')
             # Remove module name prefix if it exists (e.g., "alerts/alerts" -> "alerts", or "alerts" -> "")
             base_path=$(echo "$base_path" | sed "s|^${module_name}/||")
             # If base_path equals module_name, remove it entirely
@@ -99,6 +101,8 @@ scan_frontend_routes() {
             routes+=("${route_name}:${route_path}")
         else
             # It's a list route
+            # Remove any remaining route groups from dir_path
+            dir_path=$(echo "$dir_path" | sed -E 's|\([^)]+\)/||g' | sed -E 's|/\([^)]+\)||g' | sed -E 's|^\([^)]+\)$||')
             # Remove module name prefix if it exists (e.g., "alerts/alerts" -> "alerts", or "alerts" -> "")
             dir_path=$(echo "$dir_path" | sed "s|^${module_name}/||")
             # If dir_path equals module_name, remove it entirely
