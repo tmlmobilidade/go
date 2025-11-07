@@ -19,6 +19,7 @@
 		"dev:plans": "dotenv-run -f ./modules/plans/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"dev:replicator": "dotenv-run -f ./modules/replicator/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-*",
 		"dev:stops": "dotenv-run -f ./modules/stops/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
+		"generate-routes": "bash ./scripts/generate-routes.sh",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
