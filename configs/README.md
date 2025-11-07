@@ -40,3 +40,7 @@ Finally, run the docker compose file to start the services.
 ```bash
 docker compose up -d
 ```
+
+### To generate a new keyfile
+
+`openssl rand -base64 756 > apex-t11-keyfile.key`
