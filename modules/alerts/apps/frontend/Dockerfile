@@ -1,11 +1,28 @@
+# # #
+
 FROM node:24-alpine AS base
+
+
+# # #
+# MODULE CONFIGURATION
 
 ENV MODULE=alerts
 ENV APP=frontend
 
-RUN npm install -g turbo@^2
 
-# # # # # # # # #
+# # #
+# ENVIRONMENT ARGUMENTS
+
+ARG ENVIRONMENT
+
+ENV ENVIRONMENT=${ENVIRONMENT}
+ENV NEXT_PUBLIC_ENVIRONMENT=${ENVIRONMENT}
+
+
+# # #
+# GLOBAL DEPENDENCIES
+
+RUN npm install -g turbo@^2
 
 
 # # #
@@ -32,7 +49,6 @@ COPY --from=installer /app/package-lock.json ./package-lock.json
 
 RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
-# # # # # # # # #
 
 # # #
 # BUILDER STAGE
@@ -49,10 +65,10 @@ RUN npm install
 COPY --from=pruner /app/out/full/ .
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
-# # # # # # # # #
 
 # # #
 # RUNNER STAGE
+
 FROM base AS runner
 
 WORKDIR /app
