@@ -173,15 +173,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 
 } as const;
 
-const APP_ROUTES: Record<string, Record<Environment, AppRoutes>> = {
-	alerts: {
-		development: {
-			api_url: 'http://localhost:52001',
-			frontend_url: 'http://localhost:51001',
-		},
-	},
-};
-
 /* * */
 
 /**
