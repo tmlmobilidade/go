@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Permissions } from '@tmlmobilidade/consts';
+import { API_ROUTES, Permissions } from '@tmlmobilidade/consts';
 import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -65,7 +65,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// B. Fetch data
 
-	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(`/auth/api/agencies/${agencyId}`);
+	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId));
 
 	//
 	// C. Setup form
@@ -96,7 +96,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 			title: 'A guardar operador',
 		});
 		try {
-			const response = await fetchData<Agency>(`/auth/api/agencies/${agencyId}`, 'PUT', form.getValues());
+			const response = await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId), 'PUT', form.getValues());
 			if (response.error) {
 				return useToast.update(toastId, {
 					loading: false,

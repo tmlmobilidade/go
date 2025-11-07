@@ -1,5 +1,6 @@
 'use client';
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';
 import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
@@ -19,7 +20,7 @@ export function useVerify(): UseLoginReturn {
 		const password_hash = bcrypt.hashSync(password);
 
 		const response = await fetchData<Session>(
-			`/auth/api/verify`,
+			API_ROUTES.auth.AUTH_VERIFY,
 			'POST',
 			{ password_hash, token },
 		);

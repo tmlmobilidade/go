@@ -1,5 +1,6 @@
 'use client';
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';
 import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
 import { useState } from 'react';
@@ -16,7 +17,7 @@ export function useVerifyEmail(): UseverifyEmailReturn {
 		setLoading(true);
 
 		const response = await fetchData<Session>(
-			'/auth/api/verify-email',
+			API_ROUTES.auth.AUTH_VERIFY_EMAIL,
 			'POST',
 			{ email },
 		);

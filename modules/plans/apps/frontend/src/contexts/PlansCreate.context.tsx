@@ -51,7 +51,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 	//
 	// B. Fetch data
 
-	const { data: validationData, error: validationError } = useSWR<GtfsValidation>(validationId && `/api/validations/${validationId}`);
+	const { data: validationData, error: validationError } = useSWR<GtfsValidation>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL(validationId));
 
 	//
 	// C. Handle actions
@@ -60,7 +60,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		setIsLoading(true);
 		setIsError(null);
 
-		const response = await fetchData<Plan>('/api/plans', 'POST', { validation_id: validationId });
+		const response = await fetchData<Plan>(API_ROUTES.plans.PLANS_LIST, 'POST', { validation_id: validationId });
 
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao aprovar plano' });
@@ -71,13 +71,13 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 
 		useToast.success({ message: 'Plano aprovado com sucesso', title: 'Sucesso' });
 
-		mutate('/api/plans');
+		mutate(API_ROUTES.plans.PLANS_LIST);
 
 		setIsLoading(false);
 		closeModal(CREATE_PLAN_MODAL_ID);
 
 		if (response.data) {
-			window.location.href = `/plans/${response.data._id}`;
+			window.location.href = API_ROUTES.plans.PLANS_DETAIL(response.data._id);
 		}
 	};
 

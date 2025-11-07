@@ -6,6 +6,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type PlanNormalized, planValidityStatusValues } from '@/types/normalized';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Plan } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString } from '@tmlmobilidade/utils';
@@ -65,7 +66,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>('/api/plans', { refreshInterval: 5000 });
+	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(API_ROUTES.plans.PLANS_LIST, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data

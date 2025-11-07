@@ -169,7 +169,7 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 			return;
 		}
 
-		mutate('/api/alerts?realtime=true');
+		mutate(API_ROUTES.alerts.ALERTS_LIST + '?realtime=true');
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
 
 		reset();

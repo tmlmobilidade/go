@@ -1,5 +1,6 @@
 'use client';
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { GtfsCause, type RideAcceptance } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -40,7 +41,7 @@ export function useRidesDetailAcceptanceContext() {
 
 /* * */
 
-const BASE_URL = (rideId: string) => `/api/rides/${rideId}/acceptance`;
+const BASE_URL = (rideId: string) => API_ROUTES.controller.ACCEPTANCE_DETAIL(rideId);
 export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 	//
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { CHANGE_PLAN_MODAL_ID } from '@/components/plans/detail/ChangePlanModal';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 /* * */
 
 import { GtfsValidation, type Plan } from '@tmlmobilidade/types';
@@ -48,7 +49,7 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 	// A. Setup variables
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedValidation, setSelectedValidation] = useState<GtfsValidation | undefined>(undefined);
-	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>('/api/validations');
+	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>(API_ROUTES.plans.VALIDATIONS_LIST);
 
 	//
 	// B. Transform data
@@ -71,7 +72,7 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 
 		//
 		// Change the GTFS of the plan
-		const response = await fetchData(`/api/plans/${plan._id}/change-gtfs`, 'POST', {
+		const response = await fetchData(API_ROUTES.plans.PLANS_DETAIL_CHANGE_GTFS(plan._id), 'POST', {
 			validation_id: selectedValidation._id,
 		});
 
@@ -86,7 +87,7 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 		//
 		// Mutate the plans list
 
-		mutate('/api/plans');
+		mutate(API_ROUTES.plans.PLANS_LIST);
 
 		//
 		// Close the modal

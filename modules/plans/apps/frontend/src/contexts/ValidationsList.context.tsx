@@ -5,6 +5,7 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type ValidationNormalized } from '@/types/normalized';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type GtfsValidation, PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString } from '@tmlmobilidade/utils';
@@ -64,7 +65,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// B. Fetch data
 
-	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>('/api/validations', { refreshInterval: 3_000 });
+	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>(API_ROUTES.plans.VALIDATIONS_LIST, { refreshInterval: 3_000 });
 
 	//
 	// C. Transform data

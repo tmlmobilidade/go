@@ -4,10 +4,12 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
-import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates, type HttpResponse } from '@tmlmobilidade/utils';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type HttpResponse } from '@tmlmobilidade/utils';
 import { usePathname } from 'next/navigation';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
@@ -105,7 +107,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(queryStringParams && `/api/rides?${queryStringParams}`);
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(queryStringParams && `${API_ROUTES.controller.RIDES_LIST}?${queryStringParams}`);
 
 	useEffect(() => {
 		// This effect runs every time there is a change in the websocket reference,

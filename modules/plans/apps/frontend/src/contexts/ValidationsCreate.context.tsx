@@ -4,7 +4,7 @@
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { type WorkerMessage } from '@/types/worker';
-import { Permissions } from '@tmlmobilidade/consts';
+import { API_ROUTES, Permissions } from '@tmlmobilidade/consts';
 import { type CreateGtfsValidationDto, type GtfsValidation, type GtfsValidationPermission } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
@@ -137,7 +137,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		//
 		// Perform the API request to create the validation
 
-		const response = await multipartFetch<GtfsValidation>('/api/validations', uploadFormData);
+		const response = await multipartFetch<GtfsValidation>(API_ROUTES.plans.VALIDATIONS_LIST, uploadFormData);
 
 		//
 		// Handle the response
@@ -166,7 +166,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 
 		setIsLoading(false);
 		closeModal(CREATE_VALIDATION_MODAL_ID);
-		mutate('/api/validations');
+		mutate(API_ROUTES.plans.VALIDATIONS_LIST);
 
 		//
 	};

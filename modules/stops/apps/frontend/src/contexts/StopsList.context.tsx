@@ -5,6 +5,7 @@
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type StopNormalized } from '@/types/normalized';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
 import { normalizeString } from '@tmlmobilidade/utils';
@@ -79,7 +80,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// B. Fetch data
 
-	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>('/api/stops', { refreshInterval: 5000 });
+	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data

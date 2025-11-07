@@ -108,8 +108,8 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: allStopsMutate } = useSWR<Stop[]>('/api/stops');
-	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(`/api/stops/${stopId}`, { refreshInterval: 5000 });
+	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
+	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), { refreshInterval: 5000 });
 
 	// const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
 	// 	stopId === 'new'
@@ -195,7 +195,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 
 	const handleDeleterStop = async () => {
-		const response = await fetchData<Stop>(`/api/stops/${stopId}`, 'DELETE');
+		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'DELETE');
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {

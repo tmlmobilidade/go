@@ -1,5 +1,6 @@
 'use client';
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { LoginDto, Session } from '@tmlmobilidade/types';
 import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
 import { useState } from 'react';
@@ -16,7 +17,7 @@ export function useLogin(): UseLoginReturn {
 		setLoading(true);
 
 		const response = await fetchData<Session>(
-			`/auth/api/login`,
+			API_ROUTES.auth.AUTH_LOGIN,
 			'POST',
 			credentials,
 		);

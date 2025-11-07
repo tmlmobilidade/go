@@ -1,5 +1,6 @@
 'use client';
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 /* * */
 
 import { type Agency } from '@tmlmobilidade/types';
@@ -38,7 +39,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>('/auth/api/agencies');
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
 
 	//
 	// B. Define context value

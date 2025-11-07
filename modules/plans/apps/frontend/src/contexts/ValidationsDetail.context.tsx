@@ -2,6 +2,7 @@
 
 /* * */
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type File, type GtfsValidation } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -43,8 +44,8 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	//
 	// A. Fetch data
 
-	const { data: validationData, error: validationError, isLoading: validationLoading } = useSWR<GtfsValidation>(validationId && `/api/validations/${validationId}`, { refreshInterval: 3_000 });
-	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<File>(validationId && `/api/validations/${validationId}/file`);
+	const { data: validationData, error: validationError, isLoading: validationLoading } = useSWR<GtfsValidation>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL(validationId), { refreshInterval: 3_000 });
+	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<File>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL_FILE(validationId));
 
 	//
 	// B. Handle actions

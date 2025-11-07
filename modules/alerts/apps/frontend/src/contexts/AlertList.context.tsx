@@ -5,6 +5,7 @@
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type AlertNormalized } from '@/types/normalized';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
@@ -85,7 +86,7 @@ export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>('/api/alerts', swrFetcher);
+	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_LIST, swrFetcher);
 
 	//
 	// C. Transform data

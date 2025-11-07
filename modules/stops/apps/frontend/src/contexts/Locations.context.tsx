@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig } from '@tmlmobilidade/consts';
+import { API_ROUTES, getAppConfig } from '@tmlmobilidade/consts';
 import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -68,10 +68,10 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allDistrictsData, error: allDistrictsError, isLoading: allDistrictsLoading } = useSWR<District[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/districts?limit=999999`);
-	const { data: allMunicipalitiesData, error: allMunicipalitiesError, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/municipalities?limit=999999`);
-	const { data: allParishesData, error: allParishesError, isLoading: allParishesLoading } = useSWR<Parish[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/parishes?limit=999999`);
-	const { data: allLocalitiesData, error: allLocalitiesError, isLoading: allLocalitiesLoading } = useSWR<Locality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/localities?limit=999999`);
+	const { data: allDistrictsData, error: allDistrictsError, isLoading: allDistrictsLoading } = useSWR<District[]>(`${getAppConfig('locations', 'frontend_url', 'production')}${API_ROUTES.locations.LOCATIONS_DISTRICTS}?limit=999999`);
+	const { data: allMunicipalitiesData, error: allMunicipalitiesError, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}${API_ROUTES.locations.LOCATIONS_MUNICIPALITIES}?limit=999999`);
+	const { data: allParishesData, error: allParishesError, isLoading: allParishesLoading } = useSWR<Parish[]>(`${getAppConfig('locations', 'frontend_url', 'production')}${API_ROUTES.locations.LOCATIONS_PARISHES}?limit=999999`);
+	const { data: allLocalitiesData, error: allLocalitiesError, isLoading: allLocalitiesLoading } = useSWR<Locality[]>(`${getAppConfig('locations', 'frontend_url', 'production')}${API_ROUTES.locations.LOCATIONS_LOCALITIES}?limit=999999`);
 
 	//
 	// C. Transform data
@@ -97,7 +97,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 
 	const queryLocations = async (latitude: number, longitude: number) => {
 		setIsLoading(true);
-		const result = await fetchData<Location>(`${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/coordinates?lat=${latitude}&lon=${longitude}`);
+		const result = await fetchData<Location>(`${getAppConfig('locations', 'frontend_url', 'production')}${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${latitude}&lon=${longitude}`);
 		setIsLoading(false);
 		return result.data ?? null;
 	};

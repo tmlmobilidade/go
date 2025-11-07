@@ -3,9 +3,11 @@
 /* * */
 
 import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type File, type OperationalDate, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { Dates, fetchData } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -57,8 +59,8 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 	//
 	// B. Fetch data
 
-	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(`/api/plans/${planId}`, { refreshInterval: 5000 });
-	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: fileMutate } = useSWR<File>(`/api/plans/${planId}/operation-file`);
+	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
+	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: fileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
 
 	//
 	// C. Setup form
@@ -102,7 +104,7 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 	const handleControllerReprocessPlan = async () => {
 		try {
 			setIsSaving(true);
-			const response = await fetchData<Plan>(`/api/plans/${planId}/controller-reprocess`);
+			const response = await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL_CONTROLLER_REPROCESS(planId));
 			if (response.error) {
 				return useToast.error({
 					message: response.error,
@@ -130,7 +132,7 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 		});
 		try {
 			const preparedValues = validatePlanUpdateValues(form.getValues());
-			const response = await fetchData<Plan>(`/api/plans/${planId}`, 'PUT', preparedValues);
+			const response = await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', preparedValues);
 			if (response.error) {
 				return useToast.update(toastId, {
 					loading: false,
@@ -164,7 +166,7 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 
 	const handleToggleLock = async () => {
 		try {
-			const response = await fetchData<Plan>(`/api/plans/${planId}/toggle-lock`);
+			const response = await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL_TOGGLE_LOCK(planId));
 			if (response.error) {
 				return useToast.error({
 					message: response.error,

@@ -2,15 +2,15 @@
 
 /* * */
 
-import { Permissions } from '@tmlmobilidade/consts';
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
-import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
-import { getCssVariableValue } from '@tmlmobilidade/utils';
+import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
+import { API_ROUTES, Permissions } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
-import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
-import { normalizeRide, type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { normalizeRide, type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized/ride-normalized';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { getCssVariableValue } from '@tmlmobilidade/ui';
+import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -89,14 +89,14 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	//
 	// A. Fetch data
 
-	const { data: rideData, error: rideError, isLoading: rideLoading, mutate: rideMutate } = useSWR<Ride>(`/api/rides/${rideId}/ride`, { refreshInterval: 1000 });
-	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<VehicleEvent[]>(`/api/rides/${rideId}/vehicle-events`, { refreshInterval: 1000 });
-	const { data: simplifiedApexLocationsData, error: simplifiedApexLocationsError, isLoading: simplifiedApexLocationsLoading } = useSWR<SimplifiedApexLocation[]>(`/api/rides/${rideId}/simplified-apex-locations`, { refreshInterval: 1000 });
-	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<SimplifiedApexValidation[]>(`/api/rides/${rideId}/simplified-apex-validations`, { refreshInterval: 1000 });
-	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<SimplifiedApexOnBoardSale[]>(`/api/rides/${rideId}/simplified-apex-on-board-sales`, { refreshInterval: 1000 });
-	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<SimplifiedApexOnBoardRefund[]>(`/api/rides/${rideId}/simplified-apex-on-board-refunds`, { refreshInterval: 1000 });
-	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HashedTrip>(`/api/rides/${rideId}/hashed-trip`);
-	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HashedShape>(`/api/rides/${rideId}/hashed-shape`);
+	const { data: rideData, error: rideError, isLoading: rideLoading, mutate: rideMutate } = useSWR<Ride>(API_ROUTES.controller.RIDES_DETAIL_RIDE(rideId), { refreshInterval: 1000 });
+	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<VehicleEvent[]>(API_ROUTES.controller.RIDES_DETAIL_VEHICLE_EVENTS(rideId), { refreshInterval: 1000 });
+	const { data: simplifiedApexLocationsData, error: simplifiedApexLocationsError, isLoading: simplifiedApexLocationsLoading } = useSWR<SimplifiedApexLocation[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_LOCATIONS(rideId), { refreshInterval: 1000 });
+	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<SimplifiedApexValidation[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_VALIDATIONS(rideId), { refreshInterval: 1000 });
+	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<SimplifiedApexOnBoardSale[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES(rideId), { refreshInterval: 1000 });
+	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<SimplifiedApexOnBoardRefund[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_REFUNDS(rideId), { refreshInterval: 1000 });
+	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HashedTrip>(API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId));
+	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HashedShape>(API_ROUTES.controller.RIDES_DETAIL_HASHED_SHAPE(rideId));
 
 	const [selectedView, setSelectedView] = useState<keyof typeof RidesDetailViewOptions>(Object.keys(RidesDetailViewOptions)[0] as keyof typeof RidesDetailViewOptions);
 
@@ -222,7 +222,7 @@ export const RidesDetailContextProvider = ({ children, rideId }) => {
 	// C. Handle actions
 
 	const reprocessRide = async () => {
-		const result = await fetchData<Ride>(`/api/rides/${rideId}/reprocess`);
+		const result = await fetchData<Ride>(API_ROUTES.controller.RIDES_DETAIL_REPROCESS(rideId));
 		rideMutate(result.data);
 	};
 

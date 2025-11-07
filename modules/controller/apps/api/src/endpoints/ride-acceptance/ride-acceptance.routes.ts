@@ -9,7 +9,7 @@ import { RideAcceptanceController } from './ride-acceptance.controller.js';
 /* * */
 
 const server: FastifyInstance = FastifyService.getInstance().server;
-const namespace = '/rides/:trip_id/acceptance';
+const namespace = '/rides/:id/acceptance';
 
 /* * */
 

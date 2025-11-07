@@ -5,6 +5,7 @@
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { StopOptions } from '@/schemas/options';
 import { abbreviateName } from '@/utils/abreviate-stop-name';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateStopDto, Stop } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType } from '@tmlmobilidade/ui';
 import { fetchData, isValidLatitude, isValidLongitude, keepUrlParams } from '@tmlmobilidade/utils';
@@ -111,7 +112,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { mutate: allStopsMutate } = useSWR<Stop[]>('/api/stops');
+	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 
 	//
 	// C. Setup form
@@ -217,7 +218,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		// Update UI
 		setIsLoading(true);
 		// Fetch the API with the new stop data
-		const response = await fetchData<Stop>('/api/stops', 'POST', form.getValues());
+		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues());
 		// Handle the API response error
 		if (response.error) {
 			setIsError(new Error(response.error));
