@@ -90,11 +90,11 @@ scan_frontend_routes() {
                 local route_name=$(to_snake_case "${base_path}_DETAIL")
             fi
             route_name=$(sanitize_route_name "$route_name")
-            # Build route path: if base_path is empty after removing prefix, remove module prefix
+            # Build route path: always remove module prefix for PAGE routes
             if [ -z "$base_path" ]; then
                 local route_path="/\${id}"
             else
-                local route_path="/${module_name}/${base_path}/\${id}"
+                local route_path="/${base_path}/\${id}"
             fi
             routes+=("${route_name}:${route_path}")
         else
@@ -112,11 +112,11 @@ scan_frontend_routes() {
                 local route_name=$(to_snake_case "${dir_path}_LIST")
             fi
             route_name=$(sanitize_route_name "$route_name")
-            # Build route path: if dir_path is empty after removing prefix, remove module prefix
+            # Build route path: always remove module prefix for PAGE routes
             if [ -z "$dir_path" ]; then
                 local route_path="/"
             else
-                local route_path="/${module_name}/${dir_path}"
+                local route_path="/${dir_path}"
             fi
             routes+=("${route_name}:${route_path}")
         fi

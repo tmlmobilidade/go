@@ -4,75 +4,74 @@ export const PAGE_ROUTES = Object.freeze({
 	alerts: {
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `/${id}`,
-		ALERTS_LIST: '/',
 
 		// REALTIME
-		REALTIME_DETAIL: (id: string) => `/alerts/realtime/${id}`,
-		REALTIME_LIST: '/alerts/realtime',
-		REALTIME_NEW_LIST: '/alerts/realtime/new',
+		REALTIME_DETAIL: (id: string) => `/realtime/${id}`,
+		REALTIME_LIST: '/realtime',
+		REALTIME_NEW_LIST: '/realtime/new',
 	},
 
 	/* * */
 	/* AUTH */
 	auth: {
 		// AGENCIES
-		AGENCIES_DETAIL: (id: string) => `/auth/agencies/${id}`,
-		AGENCIES_LIST: '/auth/agencies',
+		AGENCIES_DETAIL: (id: string) => `/agencies/${id}`,
+		AGENCIES_LIST: '/agencies',
 
 		// HOME
-		HOME_DETAIL: (id: string) => `/auth/home/${id}`,
-		HOME_LIST: '/auth/home',
+		HOME_DETAIL: (id: string) => `/home/${id}`,
+		HOME_LIST: '/home',
 
 		// LOGIN
-		LOGIN_LIST: '/auth/login',
+		LOGIN_LIST: '/login',
 
 		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `/auth/organizations/${id}`,
-		ORGANIZATIONS_LIST: '/auth/organizations',
+		ORGANIZATIONS_DETAIL: (id: string) => `/organizations/${id}`,
+		ORGANIZATIONS_LIST: '/organizations',
 
 		// RESET_PASSWORD
-		RESET_PASSWORD_LIST: '/auth/reset-password',
+		RESET_PASSWORD_LIST: '/reset-password',
 
 		// ROLES
-		ROLES_DETAIL: (id: string) => `/auth/roles/${id}`,
-		ROLES_LIST: '/auth/roles',
+		ROLES_DETAIL: (id: string) => `/roles/${id}`,
+		ROLES_LIST: '/roles',
 
 		// USERS
-		USERS_DETAIL: (id: string) => `/auth/users/${id}`,
-		USERS_LIST: '/auth/users',
+		USERS_DETAIL: (id: string) => `/users/${id}`,
+		USERS_LIST: '/users',
 
 		// VERIFICATION
-		VERIFICATION_LIST: '/auth/verification',
+		VERIFICATION_LIST: '/verification',
 	},
 
 	/* * */
 	/* CONTROLLER */
 	controller: {
 		// RIDES
-		RIDES_DETAIL: (id: string) => `/controller/rides/${id}`,
-		RIDES_LIST: '/controller/rides',
+		RIDES_DETAIL: (id: string) => `/rides/${id}`,
+		RIDES_LIST: '/rides',
 	},
 
 	/* * */
 	/* PERFORMANCE */
 	performance: {
 		// AREAS_1
-		AREAS_1_LIST: '/performance/areas/1',
+		AREAS_1_LIST: '/areas/1',
 
 		// AREAS_2
-		AREAS_2_LIST: '/performance/areas/2',
+		AREAS_2_LIST: '/areas/2',
 
 		// PERFORMANCE
 		PERFORMANCE_LIST: '/',
 
 		// SUPPLY_DEMAND_DEMAND_BY_LINE
-		SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: '/performance/supply-demand/demand-by-line',
+		SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: '/supply-demand/demand-by-line',
 
 		// SUPPLY_DEMAND
-		SUPPLY_DEMAND_LIST: '/performance/supply-demand',
+		SUPPLY_DEMAND_LIST: '/supply-demand',
 
 		// SUPPLY_DEMAND_OCCUPANCY_RATE
-		SUPPLY_DEMAND_OCCUPANCY_RATE_LIST: '/performance/supply-demand/occupancy-rate',
+		SUPPLY_DEMAND_OCCUPANCY_RATE_LIST: '/supply-demand/occupancy-rate',
 	},
 
 	/* * */
@@ -83,8 +82,8 @@ export const PAGE_ROUTES = Object.freeze({
 		PLANS_LIST: '/',
 
 		// VALIDATIONS
-		VALIDATIONS_DETAIL: (id: string) => `/plans/validations/${id}`,
-		VALIDATIONS_LIST: '/plans/validations',
+		VALIDATIONS_DETAIL: (id: string) => `/validations/${id}`,
+		VALIDATIONS_LIST: '/validations',
 	},
 
 	/* * */
