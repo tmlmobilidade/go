@@ -2,10 +2,10 @@
 
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/connectors';
+import { mimeTypes } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { files } from '@tmlmobilidade/interfaces';
-import { mimeTypes } from '@tmlmobilidade/lib';
-import { Dates } from '@tmlmobilidade/utils';
+import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/sqlite';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
