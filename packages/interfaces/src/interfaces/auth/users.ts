@@ -49,7 +49,7 @@ class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto
 	 * @param includePasswordHash - Whether to include the password hash in the result
 	 * @returns A promise that resolves to the matching document or null if not found
 	 */
-	override async findById(id: string, options?: FindOptions<User>, includePasswordHash = false) {
+	override async findById(id: string, options?: FindOptions, includePasswordHash = false) {
 		const user = await this.mongoCollection.findOne({ _id: id } as unknown as Filter<User>, options);
 		if (!user) {
 			return null;
@@ -90,7 +90,7 @@ class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto
 	 * @param sort - (Optional) sort specification
 	 * @returns A promise that resolves to an array of matching documents
 	 */
-	override async findMany(filter?: Filter<User>, options?: FindOptions<User>) {
+	override async findMany(filter?: Filter<User>, options?: FindOptions) {
 		const users = await this.mongoCollection.find(filter ?? {}, options).toArray();
 		return users.map(user => this.deletePasswordHash(user) as WithId<User>);
 	}

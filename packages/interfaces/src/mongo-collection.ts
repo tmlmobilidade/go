@@ -3,9 +3,9 @@
 import { AggregationPipeline } from '@/aggregation-pipeline.js';
 import { MongoConnector } from '@tmlmobilidade/connectors-mongo';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { AggregateOptions, AggregationCursor, Collection, DeleteOptions, DeleteResult, Document, Filter, FindOptions, IndexDescription, InsertManyResult, InsertOneOptions, InsertOneResult, MongoClientOptions, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from 'mongodb';
 import { z } from 'zod';
 
@@ -183,7 +183,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param options - (Optional) find options
 	 * @returns A promise that resolves to an array of matching documents
 	 */
-	public async findMany(filter?: Filter<T>, options?: FindOptions<T>): Promise<WithId<T>[]> {
+	public async findMany(filter?: Filter<T>, options?: FindOptions): Promise<WithId<T>[]> {
 		return await this.mongoCollection.find(filter ?? {}, options).toArray();
 	}
 
@@ -193,7 +193,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param options - (Optional) find options
 	 * @returns A promise that resolves to the matching document or null if not found
 	 */
-	public async findOne(filter: Filter<T>, options?: FindOptions<T>): Promise<null | WithId<T>> {
+	public async findOne(filter: Filter<T>, options?: FindOptions): Promise<null | WithId<T>> {
 		return await this.mongoCollection.findOne(filter, options);
 	}
 
