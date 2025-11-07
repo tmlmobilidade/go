@@ -15,7 +15,6 @@ const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
 
 	const options: FastifyServiceOptions = {
 		bodyLimit: MAX_BODY_SIZE,
-		ignoreTrailingSlash: true,
 		logger: {
 			level: 'debug',
 			transport: {
@@ -27,6 +26,9 @@ const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
 		},
 		origin: getAppConfig('auth', 'cors_origin'),
 		port: getAppConfig('auth', 'api_port'),
+		routerOptions: {
+			ignoreTrailingSlash: true,
+		},
 	};
 
 	// Start Fastify server
