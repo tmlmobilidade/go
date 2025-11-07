@@ -145,6 +145,8 @@ scan_api_routes() {
     while IFS= read -r routes_file; do
         local namespace=""
         local endpoint_name=$(basename "$(dirname "$routes_file")")
+        # Extract file name without extension (e.g., "alerts.routes.ts" -> "alerts")
+        local file_name=$(basename "$routes_file" | sed 's|\.routes\.ts$||')
         
         # Extract namespace from the routes file (handle both const namespace and const NAMESPACE)
         namespace=$(grep -E "^\s*(const\s+)?(namespace|NAMESPACE)\s*=\s*['\"](.*)['\"]" "$routes_file" | head -1 | sed -E "s/.*['\"](.*)['\"].*/\1/" | sed 's|^/||')
@@ -190,52 +192,80 @@ scan_api_routes() {
                 continue
             fi
             
-            # Use endpoint_name (folder name) for route path, not namespace
-            # This matches the pattern: /module_name/endpoint_name
+            # Use namespace for route path instead of endpoint_name
+            # Convert :id in namespace to ${id} for the route path
+            local namespace_for_path=$(echo "$namespace" | sed 's|:id|\${id}|g')
             
-            # Handle root path (/)
-            # Add /api to API routes
-            if [ "$path" = "/" ]; then
-                local route_name=$(to_snake_case "${endpoint_name}_LIST")
-                local route_path="/${module_name}/api/${endpoint_name}"
-                routes+=("${route_name}:${route_path}")
-                continue
+            # Build the full route path by combining namespace and path
+            # Remove leading slash from path if it exists
+            local clean_path=$(echo "$path" | sed 's|^/||')
+            
+            # Check if path is :id or starts with :id (detail route)
+            local is_detail_route=false
+            if [[ "$clean_path" == ":id" ]] || [[ "$clean_path" =~ ^:id/ ]]; then
+                is_detail_route=true
             fi
             
-            # Handle detail routes (:id or /:id)
-            if [[ "$path" == *":id"* ]]; then
-                # Extract suffix after :id (e.g., /image from /:id/image)
-                local suffix=$(echo "$path" | sed 's|.*:id||' | sed 's|^/||')
-                
-                # Build the route path (add /api for API routes)
-                if [ -z "$suffix" ]; then
-                    # Just :id means it's the endpoint itself
-                    local route_path="/${module_name}/api/${endpoint_name}/\${id}"
-                else
-                    # Path like /:id/image means endpoint/:id/suffix
-                    local route_path="/${module_name}/api/${endpoint_name}/\${id}/${suffix}"
-                fi
-                
-                # Create route name
-                if [ -z "$suffix" ]; then
-                    local route_name=$(to_snake_case "${endpoint_name}_DETAIL")
-                else
-                    local suffix_name=$(echo "$suffix" | sed 's|/|_|g' | sed 's|-|_|g')
-                    local route_name=$(to_snake_case "${endpoint_name}_DETAIL_${suffix_name}")
-                fi
-                route_name=$(sanitize_route_name "$route_name")
-                routes+=("${route_name}:${route_path}")
+            # Convert :id in path to ${id} for the route path
+            local clean_path_for_route=$(echo "$clean_path" | sed 's|:id|\${id}|g')
+            
+            # Combine namespace and path (namespace already has leading slash removed by extraction)
+            if [ "$path" = "/" ] || [ -z "$clean_path" ]; then
+                # Root path - just use the namespace (add leading slash)
+                local full_route_path="/${namespace_for_path}"
             else
-                # Regular route (not :id)
-                local clean_path=$(echo "$path" | sed 's|^/||')
-                # Create route name from endpoint name and path
-                local route_suffix=$(echo "$clean_path" | sed 's|/|_|g' | sed 's|-|_|g')
-                local route_name=$(to_snake_case "${endpoint_name}_${route_suffix}")
-                route_name=$(sanitize_route_name "$route_name")
-                # Add /api for API routes
-                local route_path="/${module_name}/api/${endpoint_name}/${clean_path}"
-                routes+=("${route_name}:${route_path}")
+                # Append the path to the namespace (add leading slash to namespace)
+                local full_route_path="/${namespace_for_path}/${clean_path_for_route}"
             fi
+            
+            # Add /api prefix and module name
+            local route_path="/${module_name}/api${full_route_path}"
+            
+            # Generate route name from namespace and path
+            # Extract the last meaningful part from namespace for naming
+            local namespace_parts=$(echo "$namespace" | sed 's|^/||' | tr '/' ' ')
+            local last_namespace_part=""
+            for part in $namespace_parts; do
+                # Skip :id parts
+                if [[ "$part" != ":id" ]]; then
+                    last_namespace_part="$part"
+                fi
+            done
+            
+            # If no meaningful part found, use endpoint_name as fallback
+            if [ -z "$last_namespace_part" ]; then
+                last_namespace_part="$endpoint_name"
+            fi
+            
+            # Build route name
+            if [ "$path" = "/" ] || [ -z "$clean_path" ]; then
+                # Root path - check if namespace contains :id to determine if it's a detail route
+                if [[ "$namespace" == *":id"* ]]; then
+                    local route_name=$(to_snake_case "${last_namespace_part}_DETAIL")
+                else
+                    local route_name=$(to_snake_case "${last_namespace_part}_LIST")
+                fi
+            elif [ "$is_detail_route" = true ]; then
+                # Path is :id or starts with :id - this is a detail route
+                # Extract suffix after :id if any (e.g., /:id/image -> image)
+                local suffix_after_id=$(echo "$clean_path" | sed 's|^:id/||' | sed 's|^:id$||')
+                if [ -z "$suffix_after_id" ]; then
+                    # Just :id, so it's the detail route itself
+                    local route_name=$(to_snake_case "${last_namespace_part}_DETAIL")
+                else
+                    # :id with suffix (e.g., /:id/image)
+                    local suffix_name=$(echo "$suffix_after_id" | sed 's|/|_|g' | sed 's|-|_|g')
+                    local route_name=$(to_snake_case "${last_namespace_part}_DETAIL_${suffix_name}")
+                fi
+            else
+                # Non-root path without :id - use path suffix for naming
+                local route_suffix=$(echo "$clean_path" | sed 's|/|_|g' | sed 's|-|_|g')
+                local route_name=$(to_snake_case "${last_namespace_part}_${route_suffix}")
+            fi
+            route_name=$(sanitize_route_name "$route_name")
+            
+            # Include file name in route storage: route_name:route_path|file_name
+            routes+=("${route_name}:${route_path}|${file_name}")
         done < "$grep_temp"
         
         rm -f "$grep_temp"
@@ -304,7 +334,7 @@ for module_dir in "${MODULES_DIR}"/*; do
     fi
     
     # Store routes for this module in temp file (one route per line with module prefix and type)
-    # Format: module_name|type|route_name:route_path
+    # Format: module_name|type|route_name:route_path|file_name (file_name only for API routes)
     if [ ${#module_route_list[@]} -gt 0 ]; then
         for route in "${module_route_list[@]}"; do
             if [ -n "$route" ]; then
@@ -313,6 +343,8 @@ for module_dir in "${MODULES_DIR}"/*; do
                     route_type="api"
                 else
                     route_type="frontend"
+                    # For frontend routes, add empty file_name
+                    route="${route}|"
                 fi
                 printf '%s|%s|%s\n' "$module_name" "$route_type" "$route" >> "${MODULE_ROUTES_TEMP}"
             fi
@@ -347,12 +379,12 @@ generate_routes_for_type() {
         echo "	/* ${module_comment_upper} */" >> "$output_file"
         echo "	${module_name}: {" >> "$output_file"
         
-        # Process routes, deduplicating by route name
+        # Process routes, deduplicating by route name and grouping by file name
         route_temp=$(mktemp)
         # Write all routes to temp file first, then deduplicate
         echo "$module_routes_data" | sort -u > "${route_temp}.all"
         
-        # Deduplicate by route name (keep first occurrence)
+        # Deduplicate by route name (keep first occurrence) and preserve file_name
         while IFS= read -r route_line; do
             if [ -z "$route_line" ]; then
                 continue
@@ -368,36 +400,55 @@ generate_routes_for_type() {
         
         rm -f "${route_temp}.all"
         
-        # Output routes
+        # Sort routes by file_name (if present) to group routes from same file together
+        # Format: route_name:route_path|file_name
+        sort -t'|' -k2,2 -k1,1 "$route_temp" > "${route_temp}.sorted"
+        mv "${route_temp}.sorted" "$route_temp"
+        
+        # Output routes, grouping by file name
+        local previous_comment=""
+        local first_route=true
         while IFS= read -r route_line; do
             if [ -z "$route_line" ]; then
                 continue
             fi
             
+            # Extract route_name, route_path, and file_name
             route_name=$(echo "$route_line" | cut -d':' -f1)
-            route_path=$(echo "$route_line" | cut -d':' -f2-)
+            route_path_with_file=$(echo "$route_line" | cut -d':' -f2-)
+            route_path=$(echo "$route_path_with_file" | cut -d'|' -f1)
+            file_name=$(echo "$route_path_with_file" | cut -d'|' -f2)
             
-            # For API routes, ensure /api/ is in the path (it should already be there from scan_api_routes)
-            # For frontend routes, keep as-is
-            
-            # Determine route type for comment
-            if [[ "$route_name" == *"_DETAIL" ]]; then
-                comment_name=$(echo "$route_name" | sed 's|_DETAIL||')
-            elif [[ "$route_name" == *"_LIST" ]]; then
-                comment_name=$(echo "$route_name" | sed 's|_LIST||')
+            # For API routes, use file_name for comment (convert to uppercase)
+            # For frontend routes, derive comment from route name as before
+            if [ "$route_type" = "api" ] && [ -n "$file_name" ]; then
+                # Use file name as comment (all routes from same file share the same comment)
+                comment_name=$(echo "$file_name" | tr '[:lower:]' '[:upper:]')
             else
-                comment_name="$route_name"
+                # Frontend routes or API routes without file_name - derive from route name
+                # Remove common suffixes to get base name
+                comment_name=$(echo "$route_name" | sed 's|_DETAIL$||' | sed 's|_LIST$||' | sed 's|_NEW_LIST$||' | sed 's|_NEW$||')
             fi
+            
+            # Output comment only when it changes, and add blank line between groups
+            if [ "$comment_name" != "$previous_comment" ]; then
+                if [ "$first_route" = false ]; then
+                    # Add blank line between comment groups
+                    echo "" >> "$output_file"
+                fi
+                echo "		// ${comment_name}" >> "$output_file"
+                previous_comment="$comment_name"
+            fi
+            
+            first_route=false
             
             # Check if it's a detail route (contains ${id})
             if [[ "$route_path" == *"\${id}"* ]] || [[ "$route_path" == *'${id}'* ]]; then
                 # Convert to function format
                 clean_path=$(echo "$route_path" | sed 's|\\${id}|${id}|g' | sed "s|\${id}|\${id}|g")
-                echo "		// ${comment_name}" >> "$output_file"
                 echo "		${route_name}: (id: string) => \`${clean_path}\`," >> "$output_file"
             else
                 # Regular string route
-                echo "		// ${comment_name}" >> "$output_file"
                 echo "		${route_name}: '${route_path}'," >> "$output_file"
             fi
         done < "$route_temp"
