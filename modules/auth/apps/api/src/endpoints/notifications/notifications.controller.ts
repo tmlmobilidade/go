@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
-import { notifications } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { notifications } from '@tmlmobilidade/interfaces';
 import { type Notification } from '@tmlmobilidade/types';
 
 /* * */

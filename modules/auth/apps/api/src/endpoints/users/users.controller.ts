@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
-import { authProvider, users } from '@tmlmobilidade/interfaces';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { authProvider, users } from '@tmlmobilidade/interfaces';
 import { type CreateUserDto, type UpdateUserDto, type User } from '@tmlmobilidade/types';
 
 /* * */
