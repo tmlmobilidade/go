@@ -5,10 +5,10 @@ echo "|    Initializing MongoDB Entrypoint Script    |"
 echo "+----------------------------------------------+"
 
 mongosh <<EOF
-use admin
+use admin;
 
 // Initialize the replica set
-rs.initiate()
+rs.initiate();
 
 // Wait for replica set initiation
 while (!rs.isMaster().ismaster) {
@@ -16,11 +16,11 @@ while (!rs.isMaster().ismaster) {
 }
 
 // Create the root user
- db.createUser({
- 	user: "root",
- 	pwd: "root",
- 	roles: ["root"]
- })
+db.createUser({
+	user: "root",
+	pwd: "root",
+	roles: ["root"]
+});
 EOF
 
 echo "+----------------------------------------------+"
