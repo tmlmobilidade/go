@@ -1,0 +1,53 @@
+name: Check App Changes
+
+on:
+  workflow_call:
+    inputs:
+      paths:
+        description: "Comma or newline-separated list of paths or globs to check for changes"
+        required: true
+        type: string
+    outputs:
+      changed:
+        description: "True if any of the provided paths changed"
+        value: ${{ jobs.detect.outputs.changed }}
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.set-output.outputs.changed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # ensure we have the previous commit
+
+      - name: Detect path changes
+        id: detect
+        run: |
+          echo "Checking for changes in the following paths:"
+          echo "${{ inputs.paths }}"
+          echo
+
+          # Convert input to a list of globs
+          IFS=$'\n,' read -r -a PATHS <<< "${{ inputs.paths }}"
+          CHANGED=false
+
+          for path in "${PATHS[@]}"; do
+            path=$(echo "$path" | xargs) # trim whitespace
+            echo "Checking: $path"
+            if git diff --quiet HEAD^ HEAD -- "$path"; then
+              echo "No changes in $path"
+            else
+              echo "Changes detected in $path"
+              CHANGED=true
+              break
+            fi
+          done
+
+          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Set output
+        id: set-output
+        run: echo "changed=${{ steps.detect.outputs.changed }}" >> $GITHUB_OUTPUT

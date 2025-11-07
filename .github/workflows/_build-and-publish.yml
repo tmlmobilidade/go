@@ -1,0 +1,50 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        description: "Context directory"
+        required: true
+        default: "."
+        type: string
+      file:
+        description: "Path to the Dockerfile"
+        required: true
+        type: string
+      tags:
+        description: "Docker image tags"
+        required: true
+        type: string
+      environment:
+        description: "Environment name (used as build arg)"
+        required: true
+        type: string
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.context }}
+          push: true
+          file: ${{ inputs.file }}
+          tags: ${{ inputs.tags }}
+          build-args: |
+            ENVIRONMENT=${{ inputs.environment }}
