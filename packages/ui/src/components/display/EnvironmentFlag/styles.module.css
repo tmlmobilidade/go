@@ -1,0 +1,33 @@
+.container {
+	position: fixed;
+	bottom: 6px;
+	left: 0;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+.message {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3px;
+	font-size: 10px;
+	font-weight: bold;
+	line-height: 1;
+	text-align: center;
+	text-transform: uppercase;
+	border-radius: 2px;
+}
+
+.container[data-environment="development"] .message {
+	color: #fff;
+	background-color: #f00;
+}
+
+.container[data-environment="staging"] .message {
+	color: #fafa96;
+	background-color: #ff8c00;
+}

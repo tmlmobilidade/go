@@ -2,12 +2,13 @@
 
 /* * */
 
+import { EnvironmentFlag } from '@/components/display/EnvironmentFlag';
 import { themeData } from '@/styles/theme';
-import { swrFetcher } from '@tmlmobilidade/utils';
 import { MantineProvider } from '@mantine/core';
 import { DatesProvider, DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
@@ -48,6 +49,7 @@ export function BaseProvider({ children }: PropsWithChildren) {
 						<DatesProvider settings={mantineDatesSettings}>
 							<ModalsProvider>
 								<Notifications styles={{ root: { marginTop: '60px' } }} />
+								<EnvironmentFlag />
 								{children}
 							</ModalsProvider>
 						</DatesProvider>
