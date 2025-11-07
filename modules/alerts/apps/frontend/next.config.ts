@@ -31,8 +31,12 @@ const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	async redirects() {
 		return [
-			{ destination: '/alerts', permanent: true, source: '/' },
-			{ destination: '/realtime/new', permanent: true, source: '/realtime' },
+			{
+				basePath: false,
+				destination: '/alerts',
+				permanent: true,
+				source: '/',
+			},
 		];
 	},
 	async rewrites() {
