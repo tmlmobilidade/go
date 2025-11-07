@@ -19,7 +19,7 @@ export function useChangePassword(): UsechangePasswordReturn {
 		const password_hash = bcrypt.hashSync(password);
 
 		const response = await fetchData<Session>(
-			`/api/change-password`,
+			`/auth/api/change-password`,
 			'POST',
 			{ password_hash, token },
 		);

@@ -65,7 +65,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// B. Fetch data
 
-	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(`/api/agencies/${agencyId}`);
+	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(`/auth/api/agencies/${agencyId}`);
 
 	//
 	// C. Setup form
@@ -96,7 +96,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 			title: 'A guardar operador',
 		});
 		try {
-			const response = await fetchData<Agency>(`/api/agencies/${agencyId}`, 'PUT', form.getValues());
+			const response = await fetchData<Agency>(`/auth/api/agencies/${agencyId}`, 'PUT', form.getValues());
 			if (response.error) {
 				return useToast.update(toastId, {
 					loading: false,

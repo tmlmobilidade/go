@@ -38,7 +38,7 @@ export const OrganizationsContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// A. Fetch data
 
-	const { data: allOrganizationsData, error: allOrganizationsError, isLoading: allOrganizationsLoading } = useSWR<Organization[], Error>('/api/organizations');
+	const { data: allOrganizationsData, error: allOrganizationsError, isLoading: allOrganizationsLoading } = useSWR<Organization[], Error>('/auth/api/organizations');
 
 	//
 	// B. Handle Actions

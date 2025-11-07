@@ -16,7 +16,7 @@ export function useVerifyEmail(): UseverifyEmailReturn {
 		setLoading(true);
 
 		const response = await fetchData<Session>(
-			`/api/verify-email`,
+			'/auth/api/verify-email',
 			'POST',
 			{ email },
 		);

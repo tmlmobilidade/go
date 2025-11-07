@@ -34,7 +34,7 @@ export function WikiList() {
 	//
 	// B. Fetch data
 
-	const { data: allWikiData, error: allWikiError, isLoading: allWikiLoading } = useSWR<WikiArticle[], Error>('/api/wiki');
+	const { data: allWikiData, error: allWikiError, isLoading: allWikiLoading } = useSWR<WikiArticle[], Error>('/auth/api/wiki');
 
 	//
 	// C. Handle actions

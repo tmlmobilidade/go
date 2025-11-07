@@ -16,7 +16,7 @@ export function useLogin(): UseLoginReturn {
 		setLoading(true);
 
 		const response = await fetchData<Session>(
-			`/api/login`,
+			`/auth/api/login`,
 			'POST',
 			credentials,
 		);

@@ -19,7 +19,7 @@ export function useVerify(): UseLoginReturn {
 		const password_hash = bcrypt.hashSync(password);
 
 		const response = await fetchData<Session>(
-			`/api/verify`,
+			`/auth/api/verify`,
 			'POST',
 			{ password_hash, token },
 		);

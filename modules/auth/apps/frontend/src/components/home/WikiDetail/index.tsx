@@ -21,7 +21,7 @@ export function WikiDetail({ id }: WikiDetailProps) {
 	//
 	// A. Setup Variables
 
-	const { data: wikiArticleData, error: wikiArticleError, isLoading: wikiArticleLoading } = useSWR<WikiArticle, Error>(`/api/wiki/${id}`);
+	const { data: wikiArticleData, error: wikiArticleError, isLoading: wikiArticleLoading } = useSWR<WikiArticle, Error>(`/auth/api/wiki/${id}`);
 
 	//
 	// B. Render components
