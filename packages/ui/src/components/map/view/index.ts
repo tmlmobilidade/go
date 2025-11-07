@@ -1,2 +1,2 @@
-export * from '@/components/map/view/MapView';
-export * from '@/components/map/view/MapViewContext';
+export * from './MapView';
+export * from './MapViewContext';

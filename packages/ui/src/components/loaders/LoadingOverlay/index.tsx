@@ -1,8 +1,8 @@
 /* * */
 
-import { Loader } from '@/components/loaders/Loader';
-
 import styles from './styles.module.css';
+
+import { Loader } from '../Loader';
 
 /* * */
 

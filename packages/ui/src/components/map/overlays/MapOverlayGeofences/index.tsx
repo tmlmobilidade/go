@@ -2,11 +2,12 @@
 
 /* * */
 
-import { useMapViewContext } from '@/components/map/view/MapViewContext';
-import { useCssVariable } from '@/hooks';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { type FeatureCollection, type Polygon } from 'geojson';
 import { useEffect } from 'react';
+
+import { useCssVariable } from '../../../../hooks/use-css-variable';
+import { useMapViewContext } from '../../view/MapViewContext';
 
 /* * */
 

@@ -1,10 +1,12 @@
 /* * */
 
-import { Label } from '@/components/display';
-import { Section } from '@/components/layout/Section';
 import { Dates } from '@tmlmobilidade/dates';
+;
 
 import styles from './styles.module.css';
+
+import { Label } from '../../display/Label';
+import { Section } from '../../layout/Section';
 
 /* * */
 

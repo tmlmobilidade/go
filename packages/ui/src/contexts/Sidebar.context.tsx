@@ -2,11 +2,12 @@
 
 /* * */
 
-import { Loader } from '@/components/loaders/Loader';
-import { type SidebarItemProps } from '@/components/sidebar/SidebarItem';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
+
+import { Loader } from '../components/loaders/Loader';
+import { SidebarItemProps } from '../components/sidebar/SidebarItem';
 
 /* * */
 

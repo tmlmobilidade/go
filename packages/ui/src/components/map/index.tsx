@@ -1,3 +1,3 @@
-export * from '@/components/map/configs/index';
-export * from '@/components/map/overlays/index';
-export * from '@/components/map/view/index';
+export * from './configs/index';
+export * from './overlays/index';
+export * from './view/index';

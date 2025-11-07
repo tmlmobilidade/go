@@ -2,4 +2,4 @@
 
 /* * */
 
-export { Breadcrumbs, BreadcrumbsCssVariables, BreadcrumbsFactory, BreadcrumbsProps, BreadcrumbsStylesNames } from '@mantine/core';
+export { Breadcrumbs, type BreadcrumbsCssVariables, type BreadcrumbsFactory, type BreadcrumbsProps, type BreadcrumbsStylesNames } from '@mantine/core';

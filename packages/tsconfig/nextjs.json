@@ -4,7 +4,7 @@
 		"incremental": true,
 		"jsx": "preserve",
 		"lib": [
-			"es2022",
+			"es2023",
 			"dom",
 			"dom.iterable"
 		],

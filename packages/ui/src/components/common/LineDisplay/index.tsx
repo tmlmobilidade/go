@@ -1,11 +1,13 @@
 /* * */
 
-import { LineBadge } from '@/components/common/LineBadge';
-import { LineName } from '@/components/common/LineName';
 import { Line } from '@carrismetropolitana/api-types/network';
 import { Skeleton } from '@mantine/core';
+;
 
 import styles from './styles.module.css';
+
+import { LineBadge } from '../LineBadge';
+import { LineName } from '../LineName';
 
 /* * */
 

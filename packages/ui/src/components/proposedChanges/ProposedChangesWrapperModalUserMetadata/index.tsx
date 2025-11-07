@@ -1,7 +1,7 @@
 /* * */
 
-import { UnixTimestamp, User } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { UnixTimestamp, User } from '@tmlmobilidade/types';
 
 /* * */
 

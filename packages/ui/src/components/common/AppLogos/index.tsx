@@ -2,7 +2,7 @@
 
 /* * */
 
-import { WhenMode } from '@/components/layout/WhenMode';
+import { WhenMode } from '../../layout/WhenMode';
 
 // CM ICON
 export function CMIcon() {

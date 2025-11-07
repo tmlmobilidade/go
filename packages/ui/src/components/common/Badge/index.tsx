@@ -2,11 +2,12 @@
 
 /* * */
 
-import { cn } from '@/lib/utils';
 import { Badge as MantineBadge, BadgeProps as MantineBadgeProps } from '@mantine/core';
 import React from 'react';
 
 import styles from './styles.module.css';
+
+import { cn } from '../../../lib/utils';
 
 /* * */
 

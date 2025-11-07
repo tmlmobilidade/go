@@ -2,9 +2,10 @@
 
 /* * */
 
-import { Button } from '@/components/buttons/Button';
 import { IconArrowBigUpLinesFilled } from '@tabler/icons-react';
 import { type ReactNode, useState } from 'react';
+
+import { Button } from '../../buttons/Button';
 
 /* * */
 

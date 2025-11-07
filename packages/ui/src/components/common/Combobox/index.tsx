@@ -1,24 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { cn } from '@/lib/utils';
-import {
-	ActionIcon,
-	CheckIcon,
-	Group,
-	Input,
-	InputBase,
-	Combobox as MantineCombobox,
-	ComboboxProps as MantineComboboxProps,
-	Pill,
-	PillsInput,
-	useCombobox,
-} from '@mantine/core';
+import { ActionIcon, CheckIcon, Group, Input, InputBase, Combobox as MantineCombobox, ComboboxProps as MantineComboboxProps, Pill, PillsInput, useCombobox } from '@mantine/core';
 import { IconCaretDownFilled, IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';
+
+import { cn } from '../../../lib/utils';
 
 // Define DataItem type
 export interface DataItem {

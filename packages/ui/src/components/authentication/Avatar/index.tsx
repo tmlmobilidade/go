@@ -2,9 +2,9 @@
 
 /* * */
 
-import { User } from '@tmlmobilidade/types';
-import { isUrl } from '@tmlmobilidade/strings';
 import { Avatar as MantineAvatar } from '@mantine/core';
+import { isUrl } from '@tmlmobilidade/strings';
+import { User } from '@tmlmobilidade/types';
 
 /* * */
 

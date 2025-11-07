@@ -1,2 +1,2 @@
-export * from '@/components/upload/FileButton';
-export * from '@/components/upload/FileUpload';
+export * from './FileButton';
+export * from './FileUpload';

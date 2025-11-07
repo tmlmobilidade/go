@@ -2,13 +2,14 @@
 
 /* * */
 
-import { ComponentWrapper } from '@/components/common';
-import { Label } from '@/components/display';
-import { Section } from '@/components/layout';
-import { FileButton, type FileButtonProps } from '@/components/upload/FileButton';
-import { useToast } from '@/hooks';
 import { IconFileZip } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+
+import { useToast } from '../../../hooks';
+import { ComponentWrapper } from '../../common';
+import { Label } from '../../display';
+import { Section } from '../../layout';
+import { FileButton, FileButtonProps } from '../FileButton';
 
 /* * */
 

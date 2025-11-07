@@ -2,13 +2,14 @@
 
 /* * */
 
-import { MapViewBasemap } from '@/components/map/view/MapViewBasemap';
-import { MapViewContextProvider } from '@/components/map/view/MapViewContext';
-import { MapViewToolbar } from '@/components/map/view/MapViewToolbar';
 import { type MapLayerMouseEvent, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
+
+import { MapViewBasemap } from '../MapViewBasemap';
+import { MapViewContextProvider } from '../MapViewContext';
+import { MapViewToolbar } from '../MapViewToolbar';
 
 /* * */
 

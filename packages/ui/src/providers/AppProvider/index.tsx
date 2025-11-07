@@ -2,12 +2,13 @@
 
 /* * */
 
-import { ExportsContextProvider } from '@/contexts/exports.context';
-import { MapContextProvider } from '@/contexts/Map.context';
-import { MeContextProvider } from '@/contexts/Me.context';
-import { NotificationsContextProvider } from '@/contexts/Notifications.context';
-import { ThemeContextProvider } from '@/contexts/Theme.context';
 import { type PropsWithChildren } from 'react';
+
+import { ExportsContextProvider } from '../../contexts/exports.context';
+import { MapContextProvider } from '../../contexts/Map.context';
+import { MeContextProvider } from '../../contexts/Me.context';
+import { NotificationsContextProvider } from '../../contexts/Notifications.context';
+import { ThemeContextProvider } from '../../contexts/Theme.context';
 
 /**
  * `AppProvider` component that wraps the application with necessary context providers.
@@ -17,7 +18,6 @@ import { type PropsWithChildren } from 'react';
 export function AppProvider({ children }: PropsWithChildren) {
 	return (
 		<MeContextProvider>
-
 			<NotificationsContextProvider>
 				<ExportsContextProvider>
 					<ThemeContextProvider>

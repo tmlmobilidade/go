@@ -1,6 +1,6 @@
 /* * */
 
-import { Tag } from '@/components/display';
+import { Tag } from '../../display/Tag';
 
 /* * */
 

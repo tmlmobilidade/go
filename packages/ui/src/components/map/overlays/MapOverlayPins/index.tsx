@@ -2,13 +2,14 @@
 
 /* * */
 
-import { useMapViewContext } from '@/components/map/view/MapViewContext';
-import { useMapContext } from '@/contexts/Map.context';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useEffect } from 'react';
 
-import { centerMapView, moveMapView } from '../../utils';
+import { useMapContext } from '../../../../contexts';
+import { centerMapView } from '../../utils/center-map-view';
+import { moveMapView } from '../../utils/move-map-view';
+import { useMapViewContext } from '../../view/MapViewContext';
 
 /* * */
 

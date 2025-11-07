@@ -2,12 +2,13 @@
 
 /* * */
 
-import { centerMapView } from '@/components/map/utils/center-map-view';
-import { loadMapAssets } from '@/components/map/utils/load-map-assets';
 import { type MapRef } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type GeoJsonProperties, type Geometry } from 'geojson';
 import { type MapLibreEvent } from 'maplibre-gl';
 import { createContext, type CSSProperties, type PropsWithChildren, type RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
+import { centerMapView } from '../../utils';
+import { loadMapAssets } from '../../utils/load-map-assets';
 
 /* * */
 

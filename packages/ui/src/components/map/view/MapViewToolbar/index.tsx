@@ -1,18 +1,17 @@
 'use client';
 
+import { SegmentedControl, Switch } from '@mantine/core';
 /* * */
 
-import { Button } from '@/components/buttons';
-import { SegmentedControl } from '@/components/common/SegmentedControl';
-import { Switch } from '@/components/common/Switch';
-import { SearchInput } from '@/components/inputs';
-import { Spacer } from '@/components/layout/Spacer';
-import { Toolbar } from '@/components/layout/Toolbar';
-import { MAP_STYLES } from '@/components/map/configs/styles';
-import { useMapViewContext } from '@/components/map/view/MapViewContext';
-import { useMapContext } from '@/contexts';
 import { IconCrosshair } from '@tabler/icons-react';
 import { useMemo } from 'react';
+
+import { useMapContext } from '../../../../contexts';
+import { Button } from '../../../buttons/Button';
+import { SearchInput } from '../../../inputs';
+import { Spacer, Toolbar } from '../../../layout';
+import { MAP_STYLES } from '../../configs';
+import { useMapViewContext } from '../MapViewContext';
 
 /* * */
 

@@ -2,11 +2,12 @@
 
 /* * */
 
-import { accessorSearch } from '@/hooks/search/acessor-search';
-import { plainSearch } from '@/hooks/search/plain-search';
-import { normalizeString } from '@tmlmobilidade/strings';
 import { useDebouncedValue } from '@mantine/hooks';
+import { normalizeString } from '@tmlmobilidade/strings';
 import { useMemo } from 'react';
+
+import { accessorSearch } from './acessor-search';
+import { plainSearch } from './plain-search';
 
 /* * */
 

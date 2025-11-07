@@ -1,9 +1,10 @@
 /* * */
 
-import { ButtonGroup, type ButtonGroupProps } from '@/components/buttons/ButtonGroup';
+import { IconCheck, IconPlus, IconX } from '@tabler/icons-react';
 import { Permissions } from '@tmlmobilidade/consts';
 import { Permission } from '@tmlmobilidade/types';
-import { IconCheck, IconPlus, IconX } from '@tabler/icons-react';
+
+import { ButtonGroup, ButtonGroupProps } from '../../buttons/ButtonGroup';
 
 /* * */
 

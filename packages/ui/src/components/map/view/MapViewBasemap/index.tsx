@@ -2,16 +2,16 @@
 
 /* * */
 
-import { MAP_STYLES } from '@/components/map/configs/styles';
-import { MAP_VIEWPORT } from '@/components/map/configs/viewport';
-import { MapOverlayPins } from '@/components/map/overlays/MapOverlayPins';
-import { MapViewAttribution } from '@/components/map/view/MapViewAttribution';
-import { useMapViewContext } from '@/components/map/view/MapViewContext';
-import { useMapContext } from '@/contexts/Map.context';
 import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren, useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
+
+import { useMapContext } from '../../../../contexts';
+import { MAP_STYLES, MAP_VIEWPORT } from '../../configs';
+import { MapOverlayPins } from '../../overlays';
+import { MapViewAttribution } from '../MapViewAttribution';
+import { useMapViewContext } from '../MapViewContext';
 
 /* * */
 

@@ -2,10 +2,11 @@
 
 /* * */
 
-import { type DataTableColumn } from '@/components/datatable/DataTable';
 import { getValueAtPath } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';
+
+import { DataTableColumn } from '../DataTable';
 
 /* * */
 

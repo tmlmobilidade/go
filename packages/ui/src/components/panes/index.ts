@@ -1,2 +1,2 @@
-export * from '@/components/panes/Pane';
-export * from '@/components/panes/PanesManager';
+export * from './Pane';
+export * from './PanesManager';

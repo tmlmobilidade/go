@@ -2,8 +2,8 @@
 
 /* * */
 
-import { DataTableContent } from '@/components/datatable/DataTableContent';
-import { DataTableContextProvider } from '@/components/datatable/DataTableContext';
+import { DataTableContent } from '../DataTableContent';
+import { DataTableContextProvider } from '../DataTableContext';
 
 /* * */
 

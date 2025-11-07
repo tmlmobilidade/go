@@ -2,14 +2,14 @@
 
 /* * */
 
-import { ProposedChangesWrapperModal } from '@/components/proposedChanges/ProposedChangesWrapperModal';
-import { useMeContext, useProposedChangesContext } from '@/contexts';
-import { ScopeEntityMap, ScopeKey } from '@/contexts/ProposedChanges.context';
-import { ApprovalStatus, ProposedChange } from '@tmlmobilidade/types';
 import { IconInfoCircle } from '@tabler/icons-react';
+import { ApprovalStatus, ProposedChange } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
+
+import { ScopeEntityMap, ScopeKey, useMeContext, useProposedChangesContext } from '../../../contexts';
+import { ProposedChangesWrapperModal } from '../ProposedChangesWrapperModal';
 
 /* * */
 

@@ -2,11 +2,11 @@
 
 /* * */
 
-import { useUserOrganization } from '@/hooks/use-user-organization';
-import { useUserPreference } from '@/hooks/use-user-preference';
 import { useColorScheme } from '@mantine/hooks';
 import { IconAB2, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+
+import { useUserOrganization, useUserPreference } from '../hooks';
 
 /* * */
 

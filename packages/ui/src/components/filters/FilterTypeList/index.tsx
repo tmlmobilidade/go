@@ -1,8 +1,9 @@
 /* * */
 
-import { FilterWrapper } from '@/components/filters/FilterWrapper';
 import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo } from 'react';
+
+import { FilterWrapper } from '../FilterWrapper';
 
 /* * */
 

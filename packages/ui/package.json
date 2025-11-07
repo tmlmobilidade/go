@@ -14,21 +14,13 @@
 	],
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
-		},
-		"./styles": {
-			"default": "./dist/styles.css"
-		},
-		"./styles-no-reset": {
-			"default": "./dist/styles-no-reset.css"
+			"types": "./index.ts",
+			"default": "./index.ts"
 		}
 	},
 	"scripts": {
-		"build": "tsx scripts/build.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix",
-		"watch": "tsx scripts/watch.ts"
+		"lint:fix": "eslint ./src --fix"
 	},
 	"peerDependencies": {
 		"next": "15.x",

@@ -1,8 +1,9 @@
 /* * */
 
-import { FilterTarget } from '@/components/filters/FilterTarget';
 import { Popover } from '@mantine/core';
 import { type PropsWithChildren } from 'react';
+
+import { FilterTarget } from '../FilterTarget';
 
 /* * */
 

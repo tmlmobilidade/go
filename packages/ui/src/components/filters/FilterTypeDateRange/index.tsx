@@ -1,9 +1,10 @@
 /* * */
 
-import { DateTimePicker } from '@/components/dates/DateTimePicker';
-import { FilterWrapper } from '@/components/filters/FilterWrapper';
-import { Section } from '@/components/layout/Section';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
+
+import { DateTimePicker } from '../../dates/DateTimePicker';
+import { Section } from '../../layout/Section';
+import { FilterWrapper } from '../FilterWrapper';
 
 /* * */
 

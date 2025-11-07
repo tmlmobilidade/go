@@ -2,12 +2,13 @@
 
 /* * */
 
-import { type DataTableProps } from '@/components/datatable/DataTable';
-import { useDataTableContext } from '@/components/datatable/DataTableContext';
-import { DataTableHeader } from '@/components/datatable/DataTableHeader';
-import { DataTableRow } from '@/components/datatable/DataTableRow';
 import { getValueAtPath } from '@tmlmobilidade/utils';
 import { ViewportList } from 'react-viewport-list';
+
+import { DataTableProps } from '../DataTable';
+import { useDataTableContext } from '../DataTableContext';
+import { DataTableHeader } from '../DataTableHeader';
+import { DataTableRow } from '../DataTableRow';
 
 /* * */
 

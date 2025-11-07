@@ -1,9 +1,9 @@
 /* * */
 
-import { Label } from '@/components/display/Label';
-import { Tag, type TagProps } from '@/components/display/Tag';
-
 import styles from './styles.module.css';
+
+import { Label } from '../Label';
+import { Tag, TagProps } from '../Tag';
 
 /* * */
 

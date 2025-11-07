@@ -2,4 +2,4 @@
 
 /* * */
 
-export { getTreeExpandedState, RenderTreeNodePayload, Tree, TreeNodeData, useTree } from '@mantine/core';
+export { getTreeExpandedState, type RenderTreeNodePayload, Tree, type TreeNodeData, useTree } from '@mantine/core';

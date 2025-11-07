@@ -1,1 +1,1 @@
-export * from '@/components/datatable/DataTable';
+export * from './DataTable';

@@ -2,8 +2,9 @@
 
 /* * */
 
-import { getCssVariableValue } from '@/utils/get-variable-value';
 import { useEffect, useState } from 'react';
+
+import { getCssVariableValue } from '../utils/get-variable-value';
 
 /**
  * A custom hook to read and keep track of a CSS variable's value.

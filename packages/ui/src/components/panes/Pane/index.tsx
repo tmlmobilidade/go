@@ -1,8 +1,8 @@
 /* * */
 
-import { Surface } from '@/components/layout/Surface';
-
 import styles from './styles.module.css';
+
+import { Surface } from '../../layout/Surface';
 
 /* * */
 

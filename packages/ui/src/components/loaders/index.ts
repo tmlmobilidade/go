@@ -1,2 +1,2 @@
-export * from '@/components/loaders/Loader';
-export * from '@/components/loaders/LoadingOverlay';
+export * from './Loader';
+export * from './LoadingOverlay';

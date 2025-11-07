@@ -2,9 +2,6 @@
 
 /* * */
 
-import { LineDisplay } from '@/components/common/LineDisplay';
-import { Loader } from '@/components/loaders';
-import { createDocCollection } from '@/hooks/use-other-search';
 import { Line } from '@carrismetropolitana/api-types/network';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
@@ -13,6 +10,10 @@ import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
+
+import { createDocCollection } from '../../../hooks/use-other-search';
+import { Loader } from '../../loaders/Loader';
+import { LineDisplay } from '../LineDisplay';
 
 /* * */
 

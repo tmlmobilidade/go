@@ -2,11 +2,12 @@
 
 /* * */
 
-import { type DataTableColumn } from '@/components/datatable/DataTable';
-import { tryParseDateToTimestamp } from '@/lib/utils';
 import { getValueAtPath } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, type RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { type ViewportListRef } from 'react-viewport-list';
+
+import { tryParseDateToTimestamp } from '../../../lib/utils';
+import { DataTableColumn } from '../DataTable';
 
 /* * */
 

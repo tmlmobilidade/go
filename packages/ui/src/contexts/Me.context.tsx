@@ -2,13 +2,14 @@
 
 /* * */
 
-import { ErrorDisplay } from '@/components/display/ErrorDisplay';
-import { LoadingOverlay } from '@/components/loaders/LoadingOverlay';
 import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
 import { FileExport, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
 import { fetchData, type HasPermissionResourceArgs, hasPermissionResource as hasPermissionResourceUtils, hasPermission as hasPermissionUtils } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
+
+import { ErrorDisplay } from '../components/display/ErrorDisplay';
+import { LoadingOverlay } from '../components/loaders/LoadingOverlay';
 
 /* * */
 
@@ -108,6 +109,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			hasPermission,
 			hasPermissionResource,
 			logout,
+			mutate: meMutate,
 			mutateFileExports,
 			updatePreference,
 		},
@@ -119,7 +121,14 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			error: meError,
 			loading: meLoading,
 		},
-	}), [meData, meLoading, meError, fileExportsData, fileExportsLoading, fileExportsError]);
+	}), [
+		meData,
+		meLoading,
+		meError,
+		fileExportsData,
+		fileExportsLoading,
+		fileExportsError,
+	]);
 
 	//
 	// E. Render components

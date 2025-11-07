@@ -2,4 +2,4 @@
 
 /* * */
 
-export { SemiCircleProgress, SemiCircleProgressCssVariables, SemiCircleProgressFactory, SemiCircleProgressProps, SemiCircleProgressStylesNames } from '@mantine/core';
+export { SemiCircleProgress, type SemiCircleProgressCssVariables, type SemiCircleProgressFactory, type SemiCircleProgressProps, type SemiCircleProgressStylesNames } from '@mantine/core';

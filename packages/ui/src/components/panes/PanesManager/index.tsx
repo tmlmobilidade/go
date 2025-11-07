@@ -2,10 +2,11 @@
 
 /* * */
 
-import { useUserPreference } from '@/hooks/use-user-preference';
 import { type ReactNode, useRef } from 'react';
 
 import styles from './styles.module.css';
+
+import { useUserPreference } from '../../../hooks/use-user-preference';
 
 /* * */
 

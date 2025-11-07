@@ -1,3 +1,3 @@
-export * from '@/hooks/search/acessor-search';
-export * from '@/hooks/search/plain-search';
-export * from '@/hooks/search/use-search';
+export * from './acessor-search';
+export * from './plain-search';
+export * from './use-search';

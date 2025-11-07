@@ -1,2 +1,2 @@
-export * from '@/components/authentication/Avatar';
-export * from '@/components/authentication/HasPermission';
+export * from './Avatar';
+export * from './HasPermission';

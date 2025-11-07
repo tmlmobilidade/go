@@ -2,13 +2,14 @@
 
 /* * */
 
-import { useMapViewContext } from '@/components/map/view/MapViewContext';
-import { useCssVariable } from '@/hooks/use-css-variable';
 import { Layer, type MapMouseEvent, Popup, Source } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type Point } from 'geojson';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
+
+import { useCssVariable } from '../../../../hooks/use-css-variable';
+import { useMapViewContext } from '../../view/MapViewContext';
 
 /* * */
 

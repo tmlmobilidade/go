@@ -2,11 +2,12 @@
 
 /* * */
 
-import { Description } from '@/components/common';
-import { Label } from '@/components/display';
-import { NumberInput } from '@/components/inputs/NumberInput';
-import { Section } from '@/components/layout';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+import { Description } from '../../common';
+import { Label } from '../../display';
+import { Section } from '../../layout/Section';
+import { NumberInput } from '../NumberInput';
 
 /* * */
 

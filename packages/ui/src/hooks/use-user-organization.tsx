@@ -1,11 +1,12 @@
 'use client';
 
 /* * */
-import { useMeContext } from '@/contexts/Me.context';
 import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
 import { type Organization } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
+
+import { useMeContext } from '../contexts/Me.context';
 
 /* * */
 

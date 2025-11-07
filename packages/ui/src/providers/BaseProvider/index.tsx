@@ -2,8 +2,6 @@
 
 /* * */
 
-import { EnvironmentFlag } from '@/components/display/EnvironmentFlag';
-import { themeData } from '@/styles/theme';
 import { MantineProvider } from '@mantine/core';
 import { DatesProvider, DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
@@ -11,6 +9,9 @@ import { Notifications } from '@mantine/notifications';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
+
+import { EnvironmentFlag } from '../../components/display/EnvironmentFlag';
+import { themeData } from '../../styles/theme';
 
 /**
  * This is the application base provider component. The whole application should be

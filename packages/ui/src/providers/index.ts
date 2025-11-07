@@ -1,2 +1,2 @@
-export * from '@/providers/AppProvider';
-export * from '@/providers/BaseProvider';
+export * from './AppProvider';
+export * from './BaseProvider';

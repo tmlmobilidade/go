@@ -1,19 +1,19 @@
 /* * */
 
-import { Button } from '@/components/buttons/Button';
-import { Timeline } from '@/components/common/Timeline';
-import { TimelineItem } from '@/components/common/Timeline/TimelineItem';
-import { ProposedChangesClonedInput } from '@/components/proposedChanges/ProposedChangesClonedInput';
-import { ProposedChangesWrapperContentItemActions } from '@/components/proposedChanges/ProposedChangesWrapperContentItemActions';
-import { ProposedChangesWrapperModalContentHeader } from '@/components/proposedChanges/ProposedChangesWrapperModalContentHeader';
-import { ProposedChangesWrapperModalContentNoData } from '@/components/proposedChanges/ProposedChangesWrapperModalContentNoData';
-import { ProposedChangesWrapperModalMetadata } from '@/components/proposedChanges/ProposedChangesWrapperModalMetadata';
-import { useMeContext } from '@/contexts/Me.context';
-import { ScopeEntityMap, ScopeKey, useProposedChangesContext } from '@/contexts/ProposedChanges.context';
 import { CreateProposedChangeDto, ProposedChange } from '@tmlmobilidade/types';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
+
+import { ScopeEntityMap, ScopeKey, useMeContext, useProposedChangesContext } from '../../../contexts';
+import { Button } from '../../buttons/Button';
+import { Timeline } from '../../common/Timeline';
+import { TimelineItem } from '../../common/Timeline/TimelineItem';
+import { ProposedChangesClonedInput } from '../ProposedChangesClonedInput';
+import { ProposedChangesWrapperContentItemActions } from '../ProposedChangesWrapperContentItemActions';
+import { ProposedChangesWrapperModalContentHeader } from '../ProposedChangesWrapperModalContentHeader';
+import { ProposedChangesWrapperModalContentNoData } from '../ProposedChangesWrapperModalContentNoData';
+import { ProposedChangesWrapperModalMetadata } from '../ProposedChangesWrapperModalMetadata';
 
 /* * */
 

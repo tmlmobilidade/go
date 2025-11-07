@@ -2,4 +2,4 @@
 
 /* * */
 
-export { Skeleton, SkeletonCssVariables, SkeletonFactory, SkeletonProps, SkeletonStylesNames } from '@mantine/core';
+export { Skeleton, type SkeletonCssVariables, type SkeletonFactory, type SkeletonProps, type SkeletonStylesNames } from '@mantine/core';

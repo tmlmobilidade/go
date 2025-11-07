@@ -1,3 +1,3 @@
-export * from '@/utils/get-variable-value';
-export * from '@/utils/is-platform';
-export * from '@/utils/keep-url-params';
+export * from './get-variable-value';
+export * from './is-platform';
+export * from './keep-url-params';

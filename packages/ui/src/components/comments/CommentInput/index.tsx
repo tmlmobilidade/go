@@ -2,15 +2,16 @@
 
 /* * */
 
-import { IconButton } from '@/components/buttons';
-import { Label } from '@/components/display';
-import { Section } from '@/components/layout/Section';
-import { isPlatformMac } from '@/utils/is-platform';
 import { Textarea } from '@mantine/core';
 import { IconSend } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
 
 import styles from './styles.module.css';
+
+import { isPlatformMac } from '../../../utils';
+import { IconButton } from '../../buttons';
+import { Label } from '../../display/Label';
+import { Section } from '../../layout/Section';
 
 /* * */
 

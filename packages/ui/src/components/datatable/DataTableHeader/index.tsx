@@ -2,12 +2,13 @@
 
 /* * */
 
-import { type DataTableColumn } from '@/components/datatable/DataTable';
-import { useDataTableContext } from '@/components/datatable/DataTableContext';
 import { ActionIcon } from '@mantine/core';
 import { IconArrowDownRhombus, IconArrowsUpDown, IconArrowUpRhombus } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
+
+import { DataTableColumn } from '../DataTable';
+import { useDataTableContext } from '../DataTableContext';
 
 /* * */
 
