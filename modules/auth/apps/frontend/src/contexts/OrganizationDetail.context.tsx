@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Routes } from '@/lib/routes';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, fetchData } from '@tmlmobilidade/utils';
@@ -81,8 +81,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	//
 	// B. Fetch data
 
-	const orgDetailKey = organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_DETAIL(organization_id);
-	const orgLogoKey = organization_id === 'new' ? null : Routes.AUTH_API + Routes.ORGANIZATION_LOGO(organization_id);
+	const orgDetailKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
+	const orgLogoKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organization_id);
 	const { data: organization, isLoading, mutate } = useSWR<Organization>(orgDetailKey);
 	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(orgLogoKey);
 
@@ -117,7 +117,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		setIsSaving(true);
 
 		const method = organization_id === 'new' ? 'POST' : 'PUT';
-		const url = organization_id === 'new' ? Routes.API(Routes.ORGANIZATION_LIST) : Routes.API(Routes.ORGANIZATION_DETAIL(organization_id));
+		const url = organization_id === 'new' ? API_ROUTES.auth.ORGANIZATIONS_LIST : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
 		const body = organization_id === 'new' ? form.values : convertObject(form.values, UpdateOrganizationSchema);
 		const response = await fetchData<Organization>(url, method, body);
 
@@ -154,7 +154,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		}
 
 		if (organization_id === 'new' && response.data?._id) {
-			router.replace(Routes.ORGANIZATION_DETAIL(response.data._id));
+			router.replace(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id));
 		}
 
 		setIsSaving(false);
@@ -163,7 +163,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	const handleDeleteOrganization = async () => {
 		if (organization_id === 'new') return;
 
-		const response = await fetchData<Organization>(Routes.AUTH_API + Routes.ORGANIZATION_DETAIL(organization_id), 'DELETE', organization);
+		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id), 'DELETE', organization);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -180,7 +180,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			title: 'Sucesso',
 		});
 
-		router.replace(Routes.ORGANIZATION_LIST);
+		router.replace(PAGE_ROUTES.auth.ORGANIZATIONS_LIST);
 	};
 
 	const uploadImages = async (organization_id: string) => {
@@ -206,7 +206,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			formData.append('light', imagesToUpload.light);
 		}
 
-		const response = await fetch(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE_NO_THEME(organization_id), {
+		const response = await fetch(API_ROUTES.auth.ORGANIZATIONS_DETAIL_IMAGE(organization_id), {
 			body: formData,
 			method: 'POST',
 		});
@@ -222,7 +222,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	};
 
 	const deleteImage = async (theme: 'dark' | 'light') => {
-		const response = await fetchData<Organization>(Routes.AUTH_API + Routes.ORGANIZATION_IMAGE(organization_id, theme) + '?realtime=true', 'DELETE', organization);
+		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_(organization_id).replace('THEME_IMAGE:', '').replace(':theme', theme);
+		const response = await fetchData<Organization>(themeImageRoute + '?realtime=true', 'DELETE', organization);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {

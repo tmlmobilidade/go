@@ -4,12 +4,12 @@
 
 import { useLogin } from '@/components/login/LoginForm/use-login';
 import { IconArrowRight } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, Label, PasswordInput, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 

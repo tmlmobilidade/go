@@ -2,7 +2,7 @@
 
 import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
 import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
-import { Routes } from '@/lib/routes';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type GtfsValidation, type Plan } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -85,7 +85,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		setIsLoading(true);
 		setIsError(null);
 
-		const response = await fetchData<Plan>('/api' + Routes.VALIDATION_DETAIL(validationId) + '/request-approval', 'GET');
+		const response = await fetchData<Plan>(API_ROUTES.plans.VALIDATIONS_DETAIL_REQUEST_APPROVAL(validationId), 'GET');
 
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao solicitar aprovação à TML' });

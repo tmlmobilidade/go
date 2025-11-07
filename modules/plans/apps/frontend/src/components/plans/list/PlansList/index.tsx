@@ -8,7 +8,7 @@ import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFee
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlansListContext } from '@/contexts/PlansList.context';
-import { Routes } from '@/lib/routes';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PlanNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -62,7 +62,7 @@ export function PlansList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: PlanNormalized) => {
-		const destUrl = keepUrlParams(Routes.PLAN_DETAIL(item._id), window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.plans.PLANS_DETAIL(item._id), window.location.search);
 		router.push(destUrl);
 	};
 

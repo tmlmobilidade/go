@@ -1,11 +1,11 @@
 /* * */
 
 import { IconArrowRight, IconCheck, IconX } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PasswordRequirementsSchema } from '@tmlmobilidade/types';
 import { Button, Label, PasswordInput, Section, Surface, TMLogoLight } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 import styles from './styles.module.css';
 

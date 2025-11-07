@@ -3,11 +3,11 @@
 /* * */
 
 import { PasswordConfirmationForm } from '@/components/common/PasswordConfirmationForm';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { useVerify } from './use-verify';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 

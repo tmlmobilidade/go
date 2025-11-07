@@ -1,7 +1,6 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
-import { Permissions } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES, Permissions } from '@tmlmobilidade/consts';
 import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -70,7 +69,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 
-	const { data: role, isLoading } = useSWR<Role>(role_id === 'new' ? null : Routes.API(Routes.ROLE_DETAIL(role_id)));
+	const { data: role, isLoading } = useSWR<Role>(role_id === 'new' ? null : API_ROUTES.auth.ROLES_DETAIL(role_id));
 
 	//
 	// B. Define form
@@ -105,7 +104,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 	const handleSaveRole = async () => {
 		setIsSaving(true);
 		const method = role_id === 'new' ? 'POST' : 'PUT';
-		const url = role_id === 'new' ? Routes.API(Routes.ROLES) : Routes.API(Routes.ROLE_DETAIL(role_id));
+		const url = role_id === 'new' ? API_ROUTES.auth.ROLES_LIST : API_ROUTES.auth.ROLES_DETAIL(role_id);
 		const body = role_id === 'new' ? form.values : convertObject(form.values, UpdateRoleSchema);
 		const response = await fetchData<Role>(url, method, body);
 
@@ -127,7 +126,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 			}
 
 			setIsSaving(false);
-			router.replace(Routes.ROLE_DETAIL(response.data?._id));
+			router.replace(PAGE_ROUTES.auth.ROLES_DETAIL(response.data?._id));
 			return;
 		}
 
@@ -137,7 +136,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 		});
 
 		if (role_id === 'new' && response.data?._id) {
-			router.replace(Routes.ROLE_DETAIL(response.data._id));
+			router.replace(PAGE_ROUTES.auth.ROLES_DETAIL(response.data._id));
 		}
 
 		setIsSaving(false);
@@ -146,7 +145,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 	const handleDeleteRole = async () => {
 		if (role_id === 'new') return;
 
-		const response = await fetchData<Role>(Routes.API(Routes.ROLE_DETAIL(role_id)), 'DELETE');
+		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(role_id), 'DELETE');
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -163,7 +162,7 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 			title: 'Sucesso',
 		});
 
-		router.replace(Routes.ROLES);
+		router.replace(PAGE_ROUTES.auth.ROLES_LIST);
 	};
 
 	const handlePermissionToggle = (scope: string, action: string) => {

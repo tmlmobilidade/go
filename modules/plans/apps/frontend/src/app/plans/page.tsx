@@ -1,4 +1,4 @@
-import { Routes } from '@/lib/routes';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { IconFileCertificate } from '@tabler/icons-react';
 
 import styles from './page.module.css';
@@ -13,7 +13,7 @@ export default function Page() {
 			<ol>
 				<li>
 					<h3>Validar o ficheiro GTFS</h3>
-					Aceda a este <a href={Routes.VALIDATION_LIST}>link</a> e faça o upload do seu ficheiro GTFS para iniciar a validação.
+					Aceda a este <a href={PAGE_ROUTES.plans.VALIDATIONS_LIST}>link</a> e faça o upload do seu ficheiro GTFS para iniciar a validação.
 				</li>
 				<li>
 					<h3>Aguardar o resultado da validação</h3>

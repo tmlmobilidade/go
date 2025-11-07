@@ -2,8 +2,8 @@
 
 import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 

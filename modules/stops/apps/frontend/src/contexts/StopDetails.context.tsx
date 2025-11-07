@@ -1,6 +1,6 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { convertObject, fetchData } from '@tmlmobilidade/utils';
@@ -153,7 +153,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const handleSaveStop = async () => {
 		setIsSaving(true);
 		const method = stopId ? 'PUT' : 'POST';
-		const url = !stopId ? Routes.STOP_API(Routes.STOPS_LIST) : Routes.STOP_API(`/stops/${stopId}`);
+		const url = !stopId ? API_ROUTES.stops.STOPS_LIST : API_ROUTES.stops.STOPS_DETAIL(stopId);
 		const body = !stopId ? form.values : convertObject(form.values, UpdateStopSchema);
 		const response = await fetchData<Stop>(url, method, body);
 		if (response.error) {
@@ -182,7 +182,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		});
 
 		if (stopId && response.data?._id) {
-			router.replace(Routes.STOPS_DETAIL(response.data._id));
+			router.replace(PAGE_ROUTES.stops.STOPS_DETAIL(response.data._id));
 		}
 
 		setIsSaving(false);

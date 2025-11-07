@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Routes } from '@/lib/routes';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateUserDto, CreateUserSchema, UpdateUserSchema, User } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -83,7 +83,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	//
 	// B. Fetch data
 
-	const { data: user, isLoading } = useSWR<User>(user_id === 'new' ? null : Routes.AUTH_API + Routes.USER_DETAIL(user_id));
+	const { data: user, isLoading } = useSWR<User>(user_id === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(user_id));
 
 	//
 	// C. Initialize form
@@ -117,7 +117,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	const handleSaveUser = async () => {
 		setIsSaving(true);
 		const method = user_id === 'new' ? 'POST' : 'PUT';
-		const url = user_id === 'new' ? Routes.API(Routes.USERS) : Routes.API(Routes.USER_DETAIL(user_id));
+		const url = user_id === 'new' ? API_ROUTES.auth.USERS_LIST : API_ROUTES.auth.USERS_DETAIL(user_id);
 		const body = user_id === 'new' ? form.values : convertObject(form.values, UpdateUserSchema);
 		const response = await fetchData<User>(url, method, body);
 
@@ -148,7 +148,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 		});
 
 		if (user_id === 'new' && response.data?._id) {
-			router.replace(Routes.USER_DETAIL(response.data._id));
+			router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
 		}
 
 		setIsSaving(false);
@@ -157,7 +157,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	const handleDeleteUser = async () => {
 		if (user_id === 'new') return;
 
-		const response = await fetchData<User>(Routes.AUTH_API + Routes.USER_DETAIL(user_id), 'DELETE', user);
+		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(user_id), 'DELETE', user);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -174,7 +174,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 			title: 'Sucesso',
 		});
 
-		router.replace(Routes.USERS);
+		router.replace(PAGE_ROUTES.auth.USERS_LIST);
 	};
 
 	const handlePermissionToggle = (scope: string, action: string) => {

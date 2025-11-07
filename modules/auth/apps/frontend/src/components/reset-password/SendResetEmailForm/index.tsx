@@ -4,12 +4,12 @@
 
 import { useVerifyEmail } from '@/components/reset-password/SendResetEmailForm/use-verify-email';
 import { IconArrowRight } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, Label, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import styles from '../styles.module.css';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -71,7 +71,7 @@ export default function IntroductionEmail() {
 						<div className={styles.formFooter}>
 							<span
 								className={styles.resetLink}
-								onClick={() => router.push(Routes.LOGIN)}
+								onClick={() => router.push(PAGE_ROUTES.auth.LOGIN_LIST)}
 								style={{ cursor: 'pointer' }}
 							>
 								<Label size="sm" caps>Voltar ao login</Label>
