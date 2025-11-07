@@ -1,10 +1,10 @@
 /* * */
 
-import { Loader } from '@mantine/core';
 import { type PropsWithChildren, Suspense } from 'react';
 
 import styles from './styles.module.css';
 
+import { Loader } from '../../loaders';
 import { Sidebar } from '../../sidebar';
 import { Topbar } from '../../topbar';
 import { AppWrapperLogo } from '../AppWrapperLogo';
