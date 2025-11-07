@@ -1,9 +1,5 @@
 /* * */
 
-import '@tmlmobilidade/ui/styles';
-
-/* * */
-
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';

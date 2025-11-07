@@ -1,9 +1,5 @@
 /* * */
 
-import '@tmlmobilidade/ui/styles';
-
-/* * */
-
 import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { ThemeContextProvider } from '@tmlmobilidade/ui';

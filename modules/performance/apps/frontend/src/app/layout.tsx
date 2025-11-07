@@ -1,9 +1,5 @@
 /* * */
 
-import '@tmlmobilidade/ui/styles';
-
-/* * */
-
 import { HomeContextProvider } from '@/contexts/Home.context';
 import { LinesContextProvider } from '@/contexts/Lines.context';
 import { LocaleContextProvider } from '@/contexts/Locale.context';

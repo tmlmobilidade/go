@@ -52,7 +52,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'alerts',
-		href: `${getAppConfig('alerts', 'frontend_url')}/alerts`,
+		href: `${getAppConfig('alerts', 'frontend_url')}`,
 		icon: <IconAlertTriangle size={26} />,
 		label: 'Alertas',
 		permissions: [{ action: Permissions.alerts.actions.read, scope: Permissions.alerts.scope }],
@@ -66,7 +66,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'rides',
-		href: `${getAppConfig('controller', 'frontend_url')}/rides`,
+		href: `${getAppConfig('controller', 'frontend_url')}`,
 		icon: <IconListCheck size={26} />,
 		label: 'Circulações',
 		permissions: [{ action: Permissions.rides.actions.analysis_read, scope: Permissions.rides.scope }],
@@ -87,7 +87,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'plans',
-		href: `${getAppConfig('plans', 'frontend_url')}/plans`,
+		href: `${getAppConfig('plans', 'frontend_url')}`,
 		icon: <IconFileCertificate size={26} />,
 		label: 'Planos',
 		permissions: [{ action: Permissions.plans.actions.read, scope: Permissions.plans.scope }],
@@ -101,7 +101,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'performance',
-		href: `${getAppConfig('performance', 'frontend_url')}/performance`,
+		href: `${getAppConfig('performance', 'frontend_url')}`,
 		icon: <IconRocket size={26} />,
 		label: 'Performance',
 		permissions: [{ action: Permissions.performance.actions.read, scope: Permissions.performance.scope }],

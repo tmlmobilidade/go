@@ -1,9 +1,5 @@
 /* * */
 
-import '@tmlmobilidade/ui/styles';
-
-/* * */
-
 import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';

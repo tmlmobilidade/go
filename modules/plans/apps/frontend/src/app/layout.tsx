@@ -1,9 +1,5 @@
 /* * */
 
-import '@tmlmobilidade/ui/styles';
-
-/* * */
-
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
