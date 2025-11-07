@@ -1,9 +1,9 @@
 /* * */
 
 import { type ExportToHitouchConfig } from '@/types.js';
-import { type Plan } from '@tmlmobilidade/types';
-import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@helperkits/writer';
+import { Logger } from '@tmlmobilidade/logger';
+import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 

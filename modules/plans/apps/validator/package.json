@@ -14,12 +14,12 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@helperkits/logger": "20250628.901.58",
 		"@tmlmobilidade/connectors-rabbitmq": "*",
 		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
-		"@helperkits/logger": "20250628.901.58",
-		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {

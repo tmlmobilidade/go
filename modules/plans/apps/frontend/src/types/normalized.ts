@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsValidation, type Plan, PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
+import { type GtfsValidation, type Plan, ProcessingStatusSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -22,7 +22,7 @@ export interface PlanNormalized extends Plan {
 
 /* * */
 
-export const validationProcessingStatus = PROCESSING_STATUS_OPTIONS.map((item) => {
+export const validationProcessingStatus = ProcessingStatusSchema.options.map((item) => {
 	if (item === 'complete') return { label: 'Válido', value: item };
 	if (item === 'error') return { label: 'Erro', value: item };
 	if (item === 'processing') return { label: 'Em Análise', value: item };

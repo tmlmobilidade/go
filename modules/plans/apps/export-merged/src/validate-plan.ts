@@ -1,7 +1,7 @@
 /* * */
 
-import { type Plan } from '@tmlmobilidade/types';
 import LOGGER from '@helperkits/logger';
+import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 

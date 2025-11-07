@@ -1,10 +1,10 @@
 /* * */
 
-import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
-import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
+import { Dates } from '@tmlmobilidade/dates';
+import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /**
  * This script removes gtfs-validation documents and their associated files

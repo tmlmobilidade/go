@@ -1,6 +1,6 @@
+import { Files } from '@tmlmobilidade/files';
 import { files } from '@tmlmobilidade/interfaces';
 import { File, OperationalDate } from '@tmlmobilidade/types';
-import { Files } from '@tmlmobilidade/files';
 import { File as NodeFile } from 'node:buffer';
 
 /**
