@@ -8,7 +8,7 @@ import { UsersListFilterBar } from '@/components/users/list/UsersListFilterBar';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { type UserNormalized } from '@/types/normalized';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -53,8 +53,7 @@ export function UsersList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: UserNormalized) => {
-		const destUrl = keepUrlParams(`/users/${item._id}`, window.location.search);
-		router.push(destUrl);
+		router.push(PAGE_ROUTES.auth.USERS_DETAIL(item._id) + window.location.search);
 	};
 
 	//

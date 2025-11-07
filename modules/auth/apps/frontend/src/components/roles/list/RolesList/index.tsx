@@ -7,7 +7,6 @@ import { useRolesListContext } from '@/contexts/RolesList.context';
 import { type RoleNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -45,8 +44,7 @@ export function RolesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: RoleNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.ROLES_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(PAGE_ROUTES.auth.ROLES_DETAIL(item._id) + window.location.search);
 	};
 
 	//

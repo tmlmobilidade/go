@@ -31,7 +31,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51001,
-			frontend_url: 'http://localhost:51001',
+			frontend_url: 'http://localhost:51001/alerts',
 		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/alerts/api',
@@ -73,7 +73,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51002,
-			frontend_url: 'http://localhost:51002',
+			frontend_url: 'http://localhost:51002/controller',
 		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/controller/api',
@@ -94,7 +94,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51005,
-			frontend_url: 'http://localhost:51005',
+			frontend_url: 'http://localhost:51005/locations',
 		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/locations/api',
@@ -115,7 +115,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51006,
-			frontend_url: 'http://localhost:51006',
+			frontend_url: 'http://localhost:51006/performance',
 		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/performance/api',
@@ -136,7 +136,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51004,
-			frontend_url: 'http://localhost:51004',
+			frontend_url: 'http://localhost:51004/plans',
 		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/plans/api',
@@ -157,7 +157,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51003,
-			frontend_url: 'http://localhost:51003',
+			frontend_url: 'http://localhost:51003/stops',
 		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/stops/api',

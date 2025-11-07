@@ -3,6 +3,7 @@
 /* * */
 
 import { Button as MantineButton, type ButtonProps as MantineButtonProps } from '@mantine/core';
+import Link from 'next/link';
 import React from 'react';
 
 /* * */
@@ -32,20 +33,20 @@ export function Button({ disabled, href, icon, label, loading, onClick, type = '
 	//
 	// B. Render components
 
-	return (
-		<MantineButton
-			component={href ? 'a' : 'button'}
-			disabled={disabled || loading}
-			href={href}
-			leftSection={icon && icon}
-			loading={loading}
-			onClick={onClick}
-			type={type}
-			variant={variant}
-			{...props}
-		>
-			{label}
-		</MantineButton>
+	const commonProps = {
+		disabled: disabled || loading,
+		leftSection: icon && icon,
+		loading,
+		onClick,
+		type,
+		variant,
+		...props,
+	};
+
+	return href ? (
+		<MantineButton component={Link}href={href}{...commonProps}>{label}</MantineButton>
+	) : (
+		<MantineButton {...commonProps}>{label}</MantineButton>
 	);
 
 	//

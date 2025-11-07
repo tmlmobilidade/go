@@ -8,7 +8,7 @@ import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 
 interface RealtimeDetailContextState {
 	actions: {
