@@ -3,9 +3,9 @@ export const PAGE_ROUTES = Object.freeze({
 	/* ALERTS */
 	alerts: {
 		// ALERTS
-		ALERTS_DETAIL: (id: string) => `/alerts/alerts/${id}`,
+		ALERTS_DETAIL: (id: string) => `/alerts/${id}`,
 		// ALERTS
-		ALERTS_LIST: '/alerts/alerts',
+		ALERTS_LIST: '/alerts',
 		// REALTIME
 		REALTIME_DETAIL: (id: string) => `/alerts/realtime/${id}`,
 		// REALTIME
@@ -57,27 +57,27 @@ export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* PERFORMANCE */
 	performance: {
-		// PERFORMANCE_AREAS_1
-		PERFORMANCE_AREAS_1_LIST: '/performance/performance/areas/1',
-		// PERFORMANCE_AREAS_2
-		PERFORMANCE_AREAS_2_LIST: '/performance/performance/areas/2',
+		// AREAS_1
+		AREAS_1_LIST: '/performance/areas/1',
+		// AREAS_2
+		AREAS_2_LIST: '/performance/areas/2',
 		// PERFORMANCE
-		PERFORMANCE_LIST: '/performance/performance',
-		// PERFORMANCE_SUPPLY_DEMAND_DEMAND_BY_LINE
-		PERFORMANCE_SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: '/performance/performance/supply-demand/demand-by-line',
-		// PERFORMANCE_SUPPLY_DEMAND
-		PERFORMANCE_SUPPLY_DEMAND_LIST: '/performance/performance/supply-demand',
-		// PERFORMANCE_SUPPLY_DEMAND_OCCUPANCY_RATE
-		PERFORMANCE_SUPPLY_DEMAND_OCCUPANCY_RATE_LIST: '/performance/performance/supply-demand/occupancy-rate',
+		PERFORMANCE_LIST: '/performance',
+		// SUPPLY_DEMAND_DEMAND_BY_LINE
+		SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: '/performance/supply-demand/demand-by-line',
+		// SUPPLY_DEMAND
+		SUPPLY_DEMAND_LIST: '/performance/supply-demand',
+		// SUPPLY_DEMAND_OCCUPANCY_RATE
+		SUPPLY_DEMAND_OCCUPANCY_RATE_LIST: '/performance/supply-demand/occupancy-rate',
 	},
 
 	/* * */
 	/* PLANS */
 	plans: {
 		// PLANS
-		PLANS_DETAIL: (id: string) => `/plans/plans/${id}`,
+		PLANS_DETAIL: (id: string) => `/plans/${id}`,
 		// PLANS
-		PLANS_LIST: '/plans/plans',
+		PLANS_LIST: '/plans',
 		// VALIDATIONS
 		VALIDATIONS_DETAIL: (id: string) => `/plans/validations/${id}`,
 		// VALIDATIONS
@@ -88,9 +88,9 @@ export const PAGE_ROUTES = Object.freeze({
 	/* STOPS */
 	stops: {
 		// STOPS
-		STOPS_DETAIL: (id: string) => `/stops/stops/${id}`,
+		STOPS_DETAIL: (id: string) => `/stops/${id}`,
 		// STOPS
-		STOPS_LIST: '/stops/stops',
+		STOPS_LIST: '/stops',
 	},
 } as const);
 

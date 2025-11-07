@@ -2,6 +2,7 @@
 
 /* * */
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Organization } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -38,7 +39,7 @@ export const OrganizationsContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// A. Fetch data
 
-	const { data: allOrganizationsData, error: allOrganizationsError, isLoading: allOrganizationsLoading } = useSWR<Organization[], Error>('/auth/api/organizations');
+	const { data: allOrganizationsData, error: allOrganizationsError, isLoading: allOrganizationsLoading } = useSWR<Organization[], Error>(API_ROUTES.auth.ORGANIZATIONS_LIST);
 
 	//
 	// B. Handle Actions

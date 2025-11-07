@@ -3,6 +3,7 @@
 /* * */
 
 import { type UserNormalized } from '@/types/normalized';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
 import { useSearch } from '@tmlmobilidade/ui';
@@ -69,7 +70,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// B. Fetch data
 
-	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>('/auth/api/users');
+	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(API_ROUTES.auth.USERS_LIST);
 
 	//
 	// C. Transform data

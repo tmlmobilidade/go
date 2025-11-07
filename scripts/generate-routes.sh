@@ -77,15 +77,47 @@ scan_frontend_routes() {
                 # Handle case where [id] is the directory name itself
                 base_path=$(echo "$dir_path" | sed 's|\[id\]||g' | sed 's|/$||')
             fi
-            local route_name=$(to_snake_case "${base_path}_DETAIL")
+            # Remove module name prefix if it exists (e.g., "alerts/alerts" -> "alerts", or "alerts" -> "")
+            base_path=$(echo "$base_path" | sed "s|^${module_name}/||")
+            # If base_path equals module_name, remove it entirely
+            if [ "$base_path" = "$module_name" ]; then
+                base_path=""
+            fi
+            # Generate route name: use module_name if base_path is empty, otherwise use base_path
+            if [ -z "$base_path" ]; then
+                local route_name=$(to_snake_case "${module_name}_DETAIL")
+            else
+                local route_name=$(to_snake_case "${base_path}_DETAIL")
+            fi
             route_name=$(sanitize_route_name "$route_name")
-            local route_path="/${module_name}/${base_path}/\${id}"
+            # Build route path: if base_path is empty after removing prefix, just use module_name
+            if [ -z "$base_path" ]; then
+                local route_path="/${module_name}/\${id}"
+            else
+                local route_path="/${module_name}/${base_path}/\${id}"
+            fi
             routes+=("${route_name}:${route_path}")
         else
             # It's a list route
-            local route_name=$(to_snake_case "${dir_path}_LIST")
+            # Remove module name prefix if it exists (e.g., "alerts/alerts" -> "alerts", or "alerts" -> "")
+            dir_path=$(echo "$dir_path" | sed "s|^${module_name}/||")
+            # If dir_path equals module_name, remove it entirely
+            if [ "$dir_path" = "$module_name" ]; then
+                dir_path=""
+            fi
+            # Generate route name: use module_name if dir_path is empty, otherwise use dir_path
+            if [ -z "$dir_path" ]; then
+                local route_name=$(to_snake_case "${module_name}_LIST")
+            else
+                local route_name=$(to_snake_case "${dir_path}_LIST")
+            fi
             route_name=$(sanitize_route_name "$route_name")
-            local route_path="/${module_name}/${dir_path}"
+            # Build route path: if dir_path is empty after removing prefix, just use module_name
+            if [ -z "$dir_path" ]; then
+                local route_path="/${module_name}"
+            else
+                local route_path="/${module_name}/${dir_path}"
+            fi
             routes+=("${route_name}:${route_path}")
         fi
     done < "$find_temp"
