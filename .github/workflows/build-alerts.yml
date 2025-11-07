@@ -25,6 +25,7 @@ jobs:
       paths: |
         modules/alerts/apps/frontend/**
         modules/alerts/apps/api/**
+        packages/**
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
