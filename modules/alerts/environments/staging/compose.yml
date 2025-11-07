@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-alerts
+name: tmlmobilidade-go-alerts-staging
 
 volumes:
   certbotdata:
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-alerts-nginx:staging
+    image: ghcr.io/tmlmobilidade/go-alerts-nginx:staging
     deploy:
       restart_policy:
         condition: any
@@ -59,20 +59,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    mem_limit: 2g
-    volumes:
-      - ./letsencrypt:/etc/letsencrypt
-      - certbotdata:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
   api:
-    image: ghcr.io/tmlmobilidade/sae-alerts-api:staging
+    image: ghcr.io/tmlmobilidade/go-alerts-api:staging
     deploy:
       restart_policy:
         condition: any
@@ -93,7 +81,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/sae-alerts-frontend:staging
+    image: ghcr.io/tmlmobilidade/go-alerts-frontend:staging
     deploy:
       restart_policy:
         condition: any
