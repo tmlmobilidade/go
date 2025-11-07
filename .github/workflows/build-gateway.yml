@@ -29,14 +29,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@main
 
-      - name: Cache turbo build setup
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@master
         with:
@@ -51,4 +43,5 @@ jobs:
           file: ./modules/gateway/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-gateway-nginx:${{ github.ref_name }}
           build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
             NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.go.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
