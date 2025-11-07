@@ -45,6 +45,9 @@ services:
       restart_policy:
         condition: any
         delay: 30s
+      resources:
+        limits:
+          memory: 2gb
     ports:
       - 27027:5432
     logging:
@@ -99,7 +102,7 @@ services:
     image: ghcr.io/tmlmobilidade/sae-controller-rides-examiner:staging
     deploy:
       mode: replicated
-      replicas: 5
+      replicas: 2
       restart_policy:
         condition: any
         delay: 30s
