@@ -46,11 +46,10 @@ jobs:
         with:
           context: .
           file: .github/dockerfiles/packages.Dockerfile
-          push: false
+          push: true
           cache-from: type=registry,ref=ghcr.io/tmlmobilidade/go-plans-packages:cache
           cache-to: type=registry,ref=ghcr.io/tmlmobilidade/go-plans-packages:cache,mode=max
           tags: ghcr.io/tmlmobilidade/go-plans-packages:cache
-          outputs: type=cache,dest=/tmp/.buildx-cache
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -70,33 +69,39 @@ jobs:
 
   api:
     name: api (NodeJS)
+    needs: build-packages
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/plans/apps/api/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-plans-api:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
+      cache-from: ghcr.io/tmlmobilidade/go-plans-packages:cache
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   validator:
     name: validator (NodeJS)
+    needs: build-packages
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/plans/apps/validator/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-plans-validator:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
+      cache-from: ghcr.io/tmlmobilidade/go-plans-packages:cache
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
     name: cleaner (NodeJS)
+    needs: build-packages
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/plans/apps/cleaner/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-plans-cleaner:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
+      cache-from: ghcr.io/tmlmobilidade/go-plans-packages:cache
 
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -104,19 +109,23 @@ jobs:
   
   nginx:
     name: nginx (NodeJS)
+    needs: build-packages
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/plans/apps/nginx/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-plans-nginx:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
+      cache-from: ghcr.io/tmlmobilidade/go-plans-packages:cache
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   export-drt:
     name: export-drt (NodeJS)
+    needs: build-packages
     uses: ./.github/workflows/_build-and-publish.yml
     with:
       file: ./modules/plans/apps/export-drt/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-plans-export-drt:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
+      cache-from: ghcr.io/tmlmobilidade/go-plans-packages:cache
