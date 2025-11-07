@@ -13,7 +13,7 @@ import { Label } from '../../display';
 import { Section } from '../../layout';
 
 /* * */
-export function ExportsMenuItem({ fileExport }: { fileExport: FileExport }) {
+export function TopbarExportsItem({ fileExport }: { fileExport: FileExport }) {
 	//
 
 	//

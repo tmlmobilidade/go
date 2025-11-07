@@ -8,11 +8,11 @@ import { useNotificationsContext } from '../../../contexts';
 import { AppWrapperMenu } from '../AppWrapperMenu';
 import { AppWrapperMenuList } from '../AppWrapperMenuList';
 import { AppWrapperMenuNoContent } from '../AppWrapperMenuNoContent';
-import { NotificationsMenuItem } from '../NotificationsMenuItem';
+import { TopbarNotificationsItem } from '../TopbarNotificationsItem';
 
 /* * */
 
-export function NotificationsMenu() {
+export function TopbarNotifications() {
 	//
 
 	//
@@ -30,8 +30,8 @@ export function NotificationsMenu() {
 	return (
 		<AppWrapperMenu counter={unreadNotifications.length} icon={IconBell}>
 
-			<AppWrapperMenuList data={unreadNotifications} itemComponent={({ item }) => <NotificationsMenuItem notification={item} />} title="Não Lidas" />
-			<AppWrapperMenuList data={readNotifications} itemComponent={({ item }) => <NotificationsMenuItem notification={item} />} title="Lidas" />
+			<AppWrapperMenuList data={unreadNotifications} itemComponent={({ item }) => <TopbarNotificationsItem notification={item} />} title="Não Lidas" />
+			<AppWrapperMenuList data={readNotifications} itemComponent={({ item }) => <TopbarNotificationsItem notification={item} />} title="Lidas" />
 
 			{notifications.length === 0 && (
 				<AppWrapperMenuNoContent icon={IconBellOff} text="Sem notificações disponíveis" />

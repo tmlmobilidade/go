@@ -8,11 +8,11 @@ import { useExportsContext } from '../../../contexts/exports.context';
 import { AppWrapperMenu } from '../AppWrapperMenu';
 import { AppWrapperMenuList } from '../AppWrapperMenuList';
 import { AppWrapperMenuNoContent } from '../AppWrapperMenuNoContent';
-import { ExportsMenuItem } from '../ExportsMenuItem';
+import { TopbarExportsItem } from '../TopbarExportsItem';
 
 /* * */
 
-export function ExportsMenu() {
+export function TopbarExports() {
 	//
 
 	//
@@ -28,7 +28,7 @@ export function ExportsMenu() {
 		<AppWrapperMenu counter={fileExports.length} icon={IconCloudDown}>
 			{fileExports.length === 0
 				? <AppWrapperMenuNoContent icon={IconCloudMinus} text="Sem exportações disponíveis" />
-				: <AppWrapperMenuList data={fileExports} itemComponent={({ item }) => <ExportsMenuItem fileExport={item} />} title="Exportações" />}
+				: <AppWrapperMenuList data={fileExports} itemComponent={({ item }) => <TopbarExportsItem fileExport={item} />} title="Exportações" />}
 		</AppWrapperMenu>
 	);
 

@@ -7,15 +7,15 @@ import React from 'react';
 
 import styles from './styles.module.css';
 
-import { useNotificationsContext } from '../../../contexts';
-import { DeleteButton } from '../../buttons';
-import { Label } from '../../display';
-import { Section } from '../../layout';
-import { sidebarApps } from '../../sidebar';
+import { useNotificationsContext } from '../../../contexts/Notifications.context';
+import { DeleteButton } from '../../buttons/DeleteButton';
+import { Label } from '../../display/Label';
+import { Section } from '../../layout/Section';
+import { sidebarApps } from '../../sidebar/Sidebar';
 
 /* * */
 
-export function NotificationsMenuItem({ notification }: { notification: Notification }) {
+export function TopbarNotificationsItem({ notification }: { notification: Notification }) {
 	//
 
 	//

@@ -3,10 +3,10 @@
 import styles from './styles.module.css';
 
 import { Spacer } from '../../layout/Spacer';
-import { ExportsMenu } from '../ExportsMenu';
-import { NotificationsMenu } from '../NotificationsMenu';
-import { OptionsMenu } from '../OptionsMenu';
+import { TopbarExports } from '../TopbarExports';
 import { TopbarGreeting } from '../TopbarGreeting';
+import { TopbarNotifications } from '../TopbarNotifications';
+import { TopbarOptions } from '../TopbarOptions';
 
 /* * */
 
@@ -15,9 +15,9 @@ export function Topbar() {
 		<div className={styles.container}>
 			<TopbarGreeting />
 			<Spacer />
-			<ExportsMenu />
-			<NotificationsMenu />
-			<OptionsMenu />
+			<TopbarExports />
+			<TopbarNotifications />
+			<TopbarOptions />
 		</div>
 	);
 }

@@ -5,8 +5,9 @@
 import { ColorSwatch, Menu } from '@mantine/core';
 import { IconBellRinging, IconChevronRight, IconColorSwatch, IconLogout, IconSettings, IconSunMoon } from '@tabler/icons-react';
 
-import { AVAILABLE_MODES, AVAILABLE_THEMES, useMeContext, useThemeContext } from '../../../contexts';
-import { Label } from '../../display';
+import { useMeContext } from '../../../contexts/Me.context';
+import { AVAILABLE_MODES, AVAILABLE_THEMES, useThemeContext } from '../../../contexts/Theme.context';
+import { Label } from '../../display/Label';
 import { AppWrapperMenu } from '../AppWrapperMenu';
 
 /* * */
@@ -21,7 +22,7 @@ interface MenuItem {
 
 /* * */
 
-export function OptionsMenu() {
+export function TopbarOptions() {
 	//
 
 	//
