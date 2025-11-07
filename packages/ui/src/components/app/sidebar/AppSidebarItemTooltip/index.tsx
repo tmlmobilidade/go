@@ -13,14 +13,14 @@ const ROOT_ELEM_ID = 'sidebar-item-tooltip';
 
 /* * */
 
-interface SidebarItemTooltipProps {
+interface AppSidebarItemTooltipProps {
 	label: string
 	target: HTMLElement | null
 }
 
 /* * */
 
-export function SidebarItemTooltip({ label, target }: SidebarItemTooltipProps) {
+export function AppSidebarItemTooltip({ label, target }: AppSidebarItemTooltipProps) {
 	//
 
 	//

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { SidebarItemTooltip } from '@/components/app/sidebar/SidebarItemTooltip';
+import { AppSidebarItemTooltip } from '@/components/app/sidebar/AppSidebarItemTooltip';
 import { useMeContext } from '@/contexts/Me.context';
 import { useCurrentUrl } from '@/hooks';
 import { type Permission } from '@tmlmobilidade/types';
@@ -13,7 +13,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export interface SidebarItemProps {
+export interface AppSidebarItemProps {
 	href: string
 	icon: React.ReactNode
 	label: string
@@ -22,7 +22,7 @@ export interface SidebarItemProps {
 
 /* * */
 
-export function SidebarItem({ href, icon, label, permissions }: SidebarItemProps) {
+export function AppSidebarItem({ href, icon, label, permissions }: AppSidebarItemProps) {
 	//
 
 	//
@@ -91,7 +91,7 @@ export function SidebarItem({ href, icon, label, permissions }: SidebarItemProps
 				{icon}
 			</a>
 			{hover && (
-				<SidebarItemTooltip
+				<AppSidebarItemTooltip
 					label={label}
 					target={ref.current}
 				/>

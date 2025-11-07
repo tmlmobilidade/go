@@ -2,7 +2,7 @@
 
 /* * */
 
-import { sidebarApps } from '@/components/app/sidebar/Sidebar';
+import { sidebarApps } from '@/components/app/sidebar/AppSidebar';
 import { DeleteButton } from '@/components/buttons';
 import { Label } from '@/components/display/Label';
 import { Section } from '@/components/layout/Section';

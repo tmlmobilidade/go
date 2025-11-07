@@ -5,6 +5,7 @@
 import { Label } from '@/components/display/Label';
 import { Section } from '@/components/layout/Section';
 import { Spacer } from '@/components/layout/Spacer';
+import { useMeContext } from '@/contexts';
 import { Skeleton } from '@mantine/core';
 import { useState } from 'react';
 
@@ -20,24 +21,20 @@ const AVAILABLE_GREETINGS = ['Olá', 'Hi', 'Hey', 'Oi', 'Hallo', 'Hola', 'Ciao',
 
 /* * */
 
-interface AppWrapperHeaderProps {
-	userName?: string
-}
-
-/* * */
-
-export function AppWrapperHeader({ userName }: AppWrapperHeaderProps) {
+export function AppTopbar() {
 	//
 
 	//
 	// A. Setup variables
+
+	const meContext = useMeContext();
 
 	const [drawnGreeting] = useState(AVAILABLE_GREETINGS[(AVAILABLE_GREETINGS.length * Math.random()) | 0]);
 
 	//
 	// B. Render components
 
-	if (!userName) {
+	if (!meContext.data.user?.first_name) {
 		return (
 			<div className={styles.container}>
 				<Skeleton h={18} w={120} />
@@ -47,7 +44,7 @@ export function AppWrapperHeader({ userName }: AppWrapperHeaderProps) {
 
 	return (
 		<div className={styles.container}>
-			<Label size="md" caps singleLine>{drawnGreeting} {userName}</Label>
+			<Label size="md" caps singleLine>{drawnGreeting} {meContext.data.user.first_name}</Label>
 			<Spacer />
 			<Section flexDirection="row" gap="xs" width="fit-content">
 				<ExportsMenu />
