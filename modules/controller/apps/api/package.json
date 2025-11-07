@@ -19,11 +19,11 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@fastify/websocket": "^11.2.0",
+		"@fastify/websocket": "11.2.0",
 		"@tmlmobilidade/connectors-fastify": "*",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/go-controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/go-controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
 		"pino-pretty": "13.1.2"
