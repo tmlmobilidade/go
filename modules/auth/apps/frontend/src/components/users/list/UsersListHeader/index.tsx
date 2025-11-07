@@ -1,7 +1,6 @@
 /* * */
 
 import { useUsersListContext } from '@/contexts/UsersList.context';
-import { Routes } from '@/lib/routes';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
@@ -23,7 +22,7 @@ export function UsersListHeader() {
 			<Label size="lg" caps singleLine>Utilizadores</Label>
 			<Spacer />
 			<SearchInput onChange={userListContext.actions.setFilterSearch} value={userListContext.filters.search} />
-			<Button href={Routes.USER_DETAIL('new')} icon={<IconPlus size={20} />} label="Novo utilizador" />
+			<Button href="/users/new" icon={<IconPlus size={20} />} label="Novo utilizador" />
 		</Toolbar>
 	);
 
