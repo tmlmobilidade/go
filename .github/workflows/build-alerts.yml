@@ -35,7 +35,6 @@ jobs:
     if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/alerts/apps/frontend
       file: ./modules/alerts/apps/frontend/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-alerts-frontend:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
@@ -49,7 +48,6 @@ jobs:
     if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/alerts/apps/api
       file: ./modules/alerts/apps/api/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-alerts-api:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
@@ -61,7 +59,6 @@ jobs:
     name: nginx
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/alerts/apps/nginx
       file: ./modules/alerts/apps/nginx/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-alerts-nginx:${{ github.ref_name }}
       environment: ${{ github.ref_name }}

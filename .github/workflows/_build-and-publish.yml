@@ -5,7 +5,7 @@ on:
     inputs:
       context:
         description: "Context directory"
-        required: true
+        required: false
         default: "."
         type: string
       file:

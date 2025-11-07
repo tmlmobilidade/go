@@ -35,7 +35,6 @@ jobs:
     if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/auth/apps/frontend
       file: ./modules/auth/apps/frontend/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-auth-frontend:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
@@ -48,7 +47,6 @@ jobs:
     if: needs.check-changes.outputs.changed == 'true'
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/auth/apps/api
       file: ./modules/auth/apps/api/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-auth-api:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
@@ -59,7 +57,6 @@ jobs:
   cleaner:
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/auth/apps/cleaner
       file: ./modules/auth/apps/cleaner/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-auth-cleaner:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
@@ -70,7 +67,6 @@ jobs:
   file-exporter:
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/auth/apps/file-exporter
       file: ./modules/auth/apps/file-exporter/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-auth-file-exporter:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
@@ -81,7 +77,6 @@ jobs:
   nginx:
     uses: ./.github/workflows/_build-and-publish.yml
     with:
-      context: ./modules/auth/apps/nginx
       file: ./modules/auth/apps/nginx/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-auth-nginx:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
