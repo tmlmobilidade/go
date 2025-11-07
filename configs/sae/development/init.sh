@@ -23,6 +23,8 @@ db.createUser({
 });
 EOF
 
+mongorestore production --drop --gzip --archive=/dump/db.dump
+
 echo "+----------------------------------------------+"
 echo "|      MongoDB replica set initialized         |"
 echo "+----------------------------------------------+"
