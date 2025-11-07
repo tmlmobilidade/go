@@ -2,7 +2,7 @@
 
 /* * */
 
-import { SidebarItemTooltip } from '@/components/sidebar/SidebarItemTooltip';
+import { SidebarItemTooltip } from '@/components/app/sidebar/SidebarItemTooltip';
 import { useMeContext } from '@/contexts/Me.context';
 import { useCurrentUrl } from '@/hooks';
 import { type Permission } from '@tmlmobilidade/types';

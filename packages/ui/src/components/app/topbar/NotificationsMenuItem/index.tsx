@@ -2,10 +2,10 @@
 
 /* * */
 
+import { sidebarApps } from '@/components/app/sidebar/Sidebar';
 import { DeleteButton } from '@/components/buttons';
 import { Label } from '@/components/display/Label';
 import { Section } from '@/components/layout/Section';
-import { sidebarApps } from '@/components/sidebar/Sidebar';
 import { useNotificationsContext } from '@/contexts/Notifications.context';
 import { Notification } from '@tmlmobilidade/types';
 import React from 'react';

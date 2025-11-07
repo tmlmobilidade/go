@@ -1,3 +1,4 @@
+export * from '@/components/app';
 export * from '@/components/authentication';
 export * from '@/components/buttons';
 export * from '@/components/comments';
@@ -13,5 +14,4 @@ export * from '@/components/map';
 export * from '@/components/modals';
 export * from '@/components/panes';
 export * from '@/components/proposedChanges';
-export * from '@/components/sidebar';
 export * from '@/components/upload';

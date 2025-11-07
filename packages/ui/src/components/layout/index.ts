@@ -1,4 +1,3 @@
-export * from '@/components/layout/AppWrapper';
 export * from '@/components/layout/Collapsible';
 export * from '@/components/layout/Divider';
 export * from '@/components/layout/Grid';

@@ -2,13 +2,12 @@
 
 /* * */
 
+import { AppWrapperMenu } from '@/components/app/topbar/AppWrapperMenu';
 import { Label } from '@/components/display/Label';
 import { useMeContext } from '@/contexts';
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useThemeContext } from '@/contexts/Theme.context';
 import { ColorSwatch, Menu } from '@mantine/core';
 import { IconBellRinging, IconChevronRight, IconColorSwatch, IconLogout, IconSettings, IconSunMoon } from '@tabler/icons-react';
-
-import { AppWrapperMenu } from '../../common/AppWrapperMenu';
 
 /* * */
 

@@ -10,7 +10,9 @@ import { useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { ExportsMenu, NotificationsMenu, OptionsMenu } from '../../menus';
+import { ExportsMenu } from '../ExportsMenu';
+import { NotificationsMenu } from '../NotificationsMenu';
+import { OptionsMenu } from '../OptionsMenu';
 
 /* * */
 

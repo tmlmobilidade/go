@@ -2,9 +2,9 @@
 
 /* * */
 
-import { AppWrapperMenu } from '@/components/layout/AppWrapper/components/common/AppWrapperMenu';
-import { AppWrapperMenuList } from '@/components/layout/AppWrapper/components/common/AppWrapperMenuList';
-import { AppWrapperMenuNoContent } from '@/components/layout/AppWrapper/components/common/AppWrapperMenuNoContent';
+import { AppWrapperMenu } from '@/components/app/topbar/AppWrapperMenu';
+import { AppWrapperMenuList } from '@/components/app/topbar/AppWrapperMenuList';
+import { AppWrapperMenuNoContent } from '@/components/app/topbar/AppWrapperMenuNoContent';
 import { useExportsContext } from '@/contexts/exports.context';
 import { IconCloudDown, IconCloudMinus } from '@tabler/icons-react';
 
