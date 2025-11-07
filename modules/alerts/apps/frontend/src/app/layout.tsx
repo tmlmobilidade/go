@@ -4,14 +4,12 @@ import '@tmlmobilidade/ui/styles';
 
 /* * */
 
-import { AlertList } from '@/components/scheduled/list/AlertsList';
-import { AlertListContextProvider } from '@/contexts/AlertList.context';
 import { DataProviders } from '@/providers/data-providers';
-import { AppProvider, AppWrapper, BaseProvider, PanesManager } from '@tmlmobilidade/ui';
+import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
+import { headers } from 'next/headers';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
-
 /* * */
 
 export const metadata: Metadata = {
@@ -28,27 +26,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 				<NuqsAdapter>
 					<DataProviders>
 						<AppWrapper>
-							<AlertsLayout>
-								{children}
-							</AlertsLayout>
+							{children}
 						</AppWrapper>
 					</DataProviders>
 				</NuqsAdapter>
 			</AppProvider>
 		</BaseProvider>
-	);
-}
-
-function AlertsLayout({ children }: PropsWithChildren) {
-	return (
-		<PanesManager
-			id="alerts"
-			panes={[
-				<AlertListContextProvider>
-					<AlertList />
-				</AlertListContextProvider>,
-				children,
-			]}
-		/>
 	);
 }

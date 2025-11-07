@@ -133,7 +133,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		if (!error) return;
 
 		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
-		router.replace(PAGE_ROUTES.alerts.ALERTS_LIST);
+		router.replace('/');
 	}, [error]);
 
 	// Validate form on change
