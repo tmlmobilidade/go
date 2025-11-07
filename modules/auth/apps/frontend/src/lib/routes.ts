@@ -16,12 +16,12 @@ export const PageRoutes = Object.freeze({
 	RESET_PASSWORD: '/reset-password',
 
 	//
-	ME: '/auth/users/me',
-	ROLE_DETAIL: (id: string) => `/auth/roles/${id}`,
-	ROLES: '/auth/roles',
-	USER_DETAIL: (id: string) => `/auth/users/${id}`,
+	ME: '/users/me',
+	ROLE_DETAIL: (id: string) => `/roles/${id}`,
+	ROLES: '/roles',
+	USER_DETAIL: (id: string) => `/users/${id}`,
 
-	USERS: '/auth/users',
+	USERS: '/users',
 } as const);
 
 export const ApiRoutes = Object.freeze({
