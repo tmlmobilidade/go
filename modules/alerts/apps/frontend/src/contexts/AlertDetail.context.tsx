@@ -1,6 +1,6 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Alert, AlertSchema, CreateAlertDto, CreateAlertSchema, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
@@ -80,13 +80,13 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const copyURL = new URLSearchParams(window.location.search).get('copy');
 
 	const { data: alert, error, isLoading } = useSWR<Alert>(MODE === AlertDetailMode.CREATE
-		? copyURL ? Routes.ALERTS_API + Routes.ALERT_DETAIL(copyURL) : null
-		: Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId));
+		? copyURL ? API_ROUTES.alerts.ALERTS_DETAIL(copyURL) : null
+		: API_ROUTES.alerts.ALERTS_DETAIL(alertId));
 
 	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(
 		MODE === AlertDetailMode.CREATE
 			? undefined
-			: Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId),
+			: API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId),
 	);
 
 	//
@@ -133,7 +133,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		if (!error) return;
 
 		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
-		router.replace(Routes.ALERT_LIST);
+		router.replace(PAGE_ROUTES.alerts.ALERTS_LIST);
 	}, [error]);
 
 	// Validate form on change
@@ -159,7 +159,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		setIsSaving(true);
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 		const method = MODE === AlertDetailMode.CREATE ? 'POST' : 'PUT';
-		const url = MODE === AlertDetailMode.CREATE ? Routes.ALERTS_API + Routes.ALERT_LIST : Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId);
+		const url = MODE === AlertDetailMode.CREATE ? API_ROUTES.alerts.ALERTS_LIST : API_ROUTES.alerts.ALERTS_DETAIL(alertId);
 		const body = MODE === AlertDetailMode.CREATE ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
 		const response = await fetchData<Alert>(url, method, body);
 
@@ -172,7 +172,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		if (response.data) await uploadImage(response.data._id.toString());
 
 		if (response.data && MODE === AlertDetailMode.CREATE) {
-			router.replace(Routes.ALERT_DETAIL(response.data._id.toString()));
+			router.replace(PAGE_ROUTES.alerts.ALERTS_DETAIL(response.data._id.toString()));
 		}
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
 
@@ -182,7 +182,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const deleteAlert = async () => {
 		if (MODE === AlertDetailMode.CREATE) return;
 
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId), 'DELETE', alert);
+		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -193,13 +193,13 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
 
-		router.replace(Routes.ALERT_LIST);
+		router.replace(PAGE_ROUTES.alerts.ALERTS_LIST);
 	};
 
 	const deleteImage = async () => {
 		if (MODE === AlertDetailMode.CREATE) return;
 
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId), 'DELETE', alert);
+		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -213,7 +213,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	const uploadImage = async (alert_id: string) => {
 		if (!image) return;
-		const response = await uploadFile(Routes.ALERTS_API + Routes.ALERT_IMAGE(alert_id), image);
+		const response = await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alert_id), image);
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
 			return;

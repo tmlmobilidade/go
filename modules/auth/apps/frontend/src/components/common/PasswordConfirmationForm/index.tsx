@@ -1,11 +1,11 @@
 /* * */
 
-import { Routes } from '@/lib/routes';
 import { IconArrowRight, IconCheck, IconX } from '@tabler/icons-react';
 import { PasswordRequirementsSchema } from '@tmlmobilidade/types';
 import { Button, Label, PasswordInput, Section, Surface, TMLogoLight } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 import styles from './styles.module.css';
 
@@ -110,7 +110,7 @@ export function PasswordConfirmationForm({ description, loading, onSubmit, title
 						<div className={styles.formFooter}>
 							<span
 								className={styles.resetLink}
-								onClick={() => router.push(Routes.LOGIN)}
+								onClick={() => router.push(PAGE_ROUTES.auth.LOGIN_LIST)}
 								style={{ cursor: 'pointer' }}
 							>
 								<Label size="sm" caps>Voltar ao login</Label>

@@ -3,13 +3,13 @@
 /* * */
 
 import { useLogin } from '@/components/login/LoginForm/use-login';
-import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
 import { Button, Label, PasswordInput, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -57,7 +57,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 	};
 
 	const handleReset = () => {
-		router.push(Routes.RESET_PASSWORD);
+		router.push(PAGE_ROUTES.auth.RESET_PASSWORD_LIST);
 	};
 	//
 	// C. Render components

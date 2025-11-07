@@ -1,6 +1,6 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
@@ -73,8 +73,8 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	const [isDraft, setIsDraft] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 
-	const { data: alert, error, isLoading } = useSWR<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId));
-	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId));
+	const { data: alert, error, isLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// B. Define form
@@ -118,7 +118,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		if (!error) return;
 
 		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
-		router.replace(Routes.REALTIME_LIST);
+		router.replace(PAGE_ROUTES.alerts.REALTIME_LIST);
 	}, [error]);
 
 	// Validate form on change
@@ -147,7 +147,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: 'PUBLISHED' };
 
 		const method = 'PUT';
-		const url = Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId) + '?realtime=true';
+		const url = `${API_ROUTES.alerts.ALERTS_DETAIL(alertId)}?realtime=true`;
 		const body = convertObject(saveAlert, UpdateAlertSchema);
 
 		const response = await fetchData<Alert>(url, method, body);
@@ -159,13 +159,13 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
-		mutate(Routes.ALERT_LIST);
+		alertMutate();
 
 		setIsSaving(false);
 	};
 
 	const deleteAlert = async () => {
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_DETAIL(alertId) + '?realtime=true', 'DELETE', alert);
+		const response = await fetchData<Alert>(`${API_ROUTES.alerts.ALERTS_DETAIL(alertId)}?realtime=true`, 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -175,14 +175,14 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
-		mutate('/api/alerts?realtime=true');
-		router.replace(Routes.REALTIME_LIST);
+		alertMutate();
+		router.replace(PAGE_ROUTES.alerts.REALTIME_LIST);
 
 		setIsSaving(false);
 	};
 
 	const deleteImage = async () => {
-		const response = await fetchData<Alert>(Routes.ALERTS_API + Routes.ALERT_IMAGE(alertId) + '?realtime=true', 'DELETE', alert);
+		const response = await fetchData<Alert>(`${API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId)}?realtime=true`, 'DELETE', alert);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -192,6 +192,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		}
 
 		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
+		alertMutate();
 	};
 
 	//

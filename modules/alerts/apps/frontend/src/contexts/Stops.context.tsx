@@ -4,12 +4,13 @@
 
 import type { Stop } from '@carrismetropolitana/api-types/network';
 
-import { Routes } from '@/lib/routes';
 import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
+
+const CMET_API = process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2';
 
 interface StopsContextState {
 	actions: {
@@ -43,7 +44,7 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${Routes.CMET_API}/stops`, standardSwrFetcher);
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${CMET_API}/stops`, standardSwrFetcher);
 
 	//
 	// B. Handle actions

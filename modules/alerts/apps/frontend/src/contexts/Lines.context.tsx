@@ -1,6 +1,5 @@
 'use client';
 
-import { Routes } from '@/lib/routes';
 /* * */
 
 import type { CachedResource } from '@carrismetropolitana/api-types/common';
@@ -43,15 +42,17 @@ export function useLinesContext() {
 
 /* * */
 
+const CMET_API = process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2';
+
 export const LinesContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[]>(`${Routes.CMET_API}/lines`, standardSwrFetcher);
-	const { data: demandByLineData, isLoading: demandByLineDataLoading } = useSWR<DemandMetricsByLine[]>(`${Routes.CMET_API}/metrics/demand/by_line`, standardSwrFetcher);
-	const { data: serviceMetricsData, isLoading: serviceMetricsLoading } = useSWR<CachedResource<ServiceMetrics[]>>(`${Routes.CMET_API}/metrics/service/all`, standardSwrFetcher);
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[]>(`${CMET_API}/lines`, standardSwrFetcher);
+	const { data: demandByLineData, isLoading: demandByLineDataLoading } = useSWR<DemandMetricsByLine[]>(`${CMET_API}/metrics/demand/by_line`, standardSwrFetcher);
+	const { data: serviceMetricsData, isLoading: serviceMetricsLoading } = useSWR<CachedResource<ServiceMetrics[]>>(`${CMET_API}/metrics/service/all`, standardSwrFetcher);
 
 	//
 	// B. Handle actions

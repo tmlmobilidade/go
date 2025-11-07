@@ -3,13 +3,13 @@
 /* * */
 
 import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
-import { Routes } from '@/lib/routes';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { OrganizationsListHeader } from '../OrganizationsListHeader';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -40,7 +40,7 @@ export function OrganizationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: OrganizationNormalized) => {
-		const destUrl = keepUrlParams(Routes.ORGANIZATION_DETAIL(item._id), window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(item._id), window.location.search);
 		router.push(destUrl);
 	};
 

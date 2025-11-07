@@ -4,6 +4,7 @@
 
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Line, Stop } from '@carrismetropolitana/api-types/network';
 import { Ride } from '@tmlmobilidade/types';
 import { useDebouncedValue } from '@tmlmobilidade/ui';
@@ -81,7 +82,7 @@ export function RidesContextProvider({ children }: PropsWithChildren) {
 
 	//
 	// B. Fetch data
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RidesData[], Error>(`/api/rides?search=${debouncedFilterSearch}&lineId=${filterLineId}&stopId=${filterStopId}`, swrFetcher);
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RidesData[], Error>(`${API_ROUTES.alerts.RIDES_LIST}?search=${debouncedFilterSearch}&lineId=${filterLineId}&stopId=${filterStopId}`, swrFetcher);
 
 	//
 	// C. Transform Data

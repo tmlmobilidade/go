@@ -3,13 +3,13 @@
 /* * */
 
 import { useVerifyEmail } from '@/components/reset-password/SendResetEmailForm/use-verify-email';
-import { Routes } from '@/lib/routes';
 import { IconArrowRight } from '@tabler/icons-react';
 import { Button, Label, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import styles from '../styles.module.css';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -39,7 +39,7 @@ export default function IntroductionEmail() {
 
 		useToast.success({ message: 'Email de recuperação enviado com sucesso', title: 'Sucesso' });
 
-		router.push(Routes.LOGIN);
+		router.push(PAGE_ROUTES.auth.LOGIN_LIST);
 	};
 
 	//

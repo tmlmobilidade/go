@@ -2,7 +2,6 @@
 
 /* * */
 
-import { Routes } from '@/lib/routes';
 import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { normalizeString } from '@tmlmobilidade/strings';
@@ -52,16 +51,18 @@ export function useLocationsContext() {
 
 /* * */
 
+const CMET_API = process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2';
+
 export const LocationsContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data: fetchedDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<ApiResponse<District[]>, Error>(`${Routes.CMET_API}/locations/districts`, standardSwrFetcher);
-	const { data: fetchedMunicipalitiesData, isLoading: fetchedMunicipalitiesLoading } = useSWR<ApiResponse<Municipality[]>, Error>(`${Routes.CMET_API}/locations/municipalities`, standardSwrFetcher);
-	const { data: fetchedParishesData, isLoading: fetchedParishesLoading } = useSWR<ApiResponse<Parish[]>, Error>(`${Routes.CMET_API}/locations/parishes`, standardSwrFetcher);
-	const { data: fetchedLocalitiesData, isLoading: fetchedLocalitiesLoading } = useSWR<ApiResponse<Locality[]>, Error>(`${Routes.CMET_API}/locations/localities`, standardSwrFetcher);
+	const { data: fetchedDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<ApiResponse<District[]>, Error>(`${CMET_API}/locations/districts`, standardSwrFetcher);
+	const { data: fetchedMunicipalitiesData, isLoading: fetchedMunicipalitiesLoading } = useSWR<ApiResponse<Municipality[]>, Error>(`${CMET_API}/locations/municipalities`, standardSwrFetcher);
+	const { data: fetchedParishesData, isLoading: fetchedParishesLoading } = useSWR<ApiResponse<Parish[]>, Error>(`${CMET_API}/locations/parishes`, standardSwrFetcher);
+	const { data: fetchedLocalitiesData, isLoading: fetchedLocalitiesLoading } = useSWR<ApiResponse<Locality[]>, Error>(`${CMET_API}/locations/localities`, standardSwrFetcher);
 
 	//
 	// B. Transform data

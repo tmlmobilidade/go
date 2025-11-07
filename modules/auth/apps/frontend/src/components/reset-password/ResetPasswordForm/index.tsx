@@ -4,7 +4,7 @@
 
 import { PasswordConfirmationForm } from '@/components/common/PasswordConfirmationForm';
 import { useChangePassword } from '@/components/reset-password/ResetPasswordForm/use-change-password';
-import { Routes } from '@/lib/routes';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -40,7 +40,7 @@ export function ResetPasswordForm({ token }: Props) {
 
 		useToast.success({ message: 'Password foi alterada com sucesso', title: 'Sucesso' });
 
-		router.replace(Routes.LOGIN);
+		router.replace(PAGE_ROUTES.auth.LOGIN_LIST);
 	};
 
 	//

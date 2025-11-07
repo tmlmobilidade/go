@@ -10,12 +10,6 @@ const nextConfig: NextConfig = {
 	},
 	output: 'standalone',
 	reactStrictMode: true,
-	async redirects() {
-		return [
-			//
-			// { destination: Routes.ALERT_LIST, permanent: true, source: '/' },
-		];
-	},
 	async rewrites() {
 		return [
 			{

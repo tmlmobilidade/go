@@ -1,7 +1,7 @@
 /* * */
 
 import { useAlertListContext } from '@/contexts/AlertList.context';
-import { Routes } from '@/lib/routes';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
@@ -23,7 +23,7 @@ export function AlertsListHeader() {
 			<Label size="lg" caps singleLine>Alertas</Label>
 			<Spacer />
 			<SearchInput onChange={alertsListContext.actions.setFilterSearch} value={alertsListContext.filters.search} />
-			<Button href={Routes.ALERT_DETAIL('new')} label="Novo alerta" leftSection={<IconPlus size={20} />} />
+			<Button href={PAGE_ROUTES.alerts.ALERTS_DETAIL('new')} label="Novo alerta" leftSection={<IconPlus size={20} />} />
 		</Toolbar>
 	);
 

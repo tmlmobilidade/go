@@ -9,13 +9,13 @@ import { AlertsListCellStops } from '@/components/common/AlertsListCellStops';
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { useRealtimeListContext } from '@/contexts/RealtimeList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
-import { Routes } from '@/lib/routes';
 import { type Alert } from '@tmlmobilidade/types';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { RealtimeListHeader } from '../AlertsListHeader';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -76,15 +76,9 @@ export function RealtimeList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: Alert) => {
-		// Check if url is /realtime
-		if (window.location.pathname.includes('realtime')) {
-			const destUrl = keepUrlParams(Routes.REALTIME_DETAIL(item._id), window.location.search);
-			router.push(destUrl);
-		}
-		else {
-			const destUrl = keepUrlParams(Routes.REALTIME_DETAIL(item._id), window.location.search);
-			router.push(destUrl);
-		}
+		// Always redirect to the detail page for the selected alert, preserving URL params
+		const destUrl = keepUrlParams(PAGE_ROUTES.alerts.REALTIME_DETAIL(item._id), window.location.search);
+		router.push(destUrl);
 	};
 
 	//
