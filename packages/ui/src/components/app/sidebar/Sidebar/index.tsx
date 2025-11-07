@@ -51,7 +51,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'alerts',
-		href: `${getAppConfig('alerts', 'frontend_url')}/alerts`,
+		href: getAppConfig('alerts', 'frontend_url'),
 		icon: <IconAlertTriangle size={26} />,
 		label: 'Alertas',
 		permissions: [{ action: Permissions.alerts.actions.read, scope: Permissions.alerts.scope }],
