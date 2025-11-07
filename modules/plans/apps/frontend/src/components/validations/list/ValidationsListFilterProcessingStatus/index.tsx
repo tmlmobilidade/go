@@ -2,7 +2,7 @@
 
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { validationProcessingStatus } from '@/types/normalized';
-import { PROCESSING_STATUS_OPTIONS } from '@tmlmobilidade/types';
+import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -21,14 +21,13 @@ export function ValidationsListFilterProcessingStatus() {
 
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
-		const defaultValues = PROCESSING_STATUS_OPTIONS;
+		const defaultValues = ProcessingStatusSchema.options;
 		const enabledValues = validationsListContext.filters.processing_status;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
-		// If the length is the same ensure they're equal by also
-		// checking if every item in one array is included in the other.
+		// If the length is the same ensure they're equal by also checking if every item in one array is included in the other.
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [validationsListContext.filters.processing_status, PROCESSING_STATUS_OPTIONS]);
+	}, [validationsListContext.filters.processing_status]);
 
 	const parsedOptions = useMemo(() => {
 		// Skip if options are not provided or are empty.

@@ -2,9 +2,9 @@
 
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsFeedInfo } from '@tmlmobilidade/types';
 import { Grid, ValueDisplay } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 
 /* * */

@@ -15,10 +15,12 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"@tabler/icons-react": "3.35.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"@tabler/icons-react": "3.35.0",
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
 		"next": "15.5.6",

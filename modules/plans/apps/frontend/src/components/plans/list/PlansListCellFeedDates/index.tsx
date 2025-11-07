@@ -2,9 +2,9 @@
 
 import { type PlanNormalized } from '@/types/normalized';
 import { IconArrowRight } from '@tabler/icons-react';
+import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { Indicator, Tag } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/dates';
 
 import styles from './styles.module.css';
 

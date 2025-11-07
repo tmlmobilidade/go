@@ -8,8 +8,8 @@ import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFee
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { usePlansListContext } from '@/contexts/PlansList.context';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PlanNormalized } from '@/types/normalized';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';

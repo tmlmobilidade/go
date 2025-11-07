@@ -21,6 +21,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"pino-pretty": "13.1.2"
 	},

@@ -1,5 +1,5 @@
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { IconFileCertificate } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 import styles from './page.module.css';
 
