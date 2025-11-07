@@ -1,0 +1,29 @@
+/* * */
+/* DROPDOWN */
+
+.dropdown {
+	min-width: 200px;
+	background-color: var(--color-system-background-100);
+}
+
+/* * */
+/* ITEM */
+
+.item {
+	padding: 8px 12px;
+}
+
+.itemLabel {
+	font-size: 16px;
+	font-weight: var(--font-weight-semibold);
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	font-size: 12px;
+	font-weight: var(--font-weight-bold);
+	color: var(--color-system-text-300);
+	text-transform: uppercase;
+}

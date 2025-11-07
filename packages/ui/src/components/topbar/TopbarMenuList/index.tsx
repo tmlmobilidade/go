@@ -2,16 +2,16 @@
 
 /* * */
 
-import React, { useMemo, useState } from 'react';
+import { createElement, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { Label } from '../../display';
-import { Section } from '../../layout';
+import { Label } from '../../display/Label';
+import { Section } from '../../layout/Section';
 
 /* * */
 
-interface AppWrapperMenuListProps<T> {
+interface TopbarMenuListProps<T> {
 	data: T[]
 	itemComponent: React.ComponentType<{ item: T }>
 	maxDisplayedItems?: number
@@ -20,7 +20,7 @@ interface AppWrapperMenuListProps<T> {
 
 /* * */
 
-export function AppWrapperMenuList<T>({ data, itemComponent, maxDisplayedItems, title }: AppWrapperMenuListProps<T>) {
+export function TopbarMenuList<T>({ data, itemComponent, maxDisplayedItems, title }: TopbarMenuListProps<T>) {
 	//
 
 	//
@@ -41,7 +41,7 @@ export function AppWrapperMenuList<T>({ data, itemComponent, maxDisplayedItems, 
 		<Section flexDirection="column" gap="sm" padding="sm" width="100%">
 			<Label size="sm">({data.length}) {title}</Label>
 			{displayData.map((item, idx) => (
-				React.createElement(itemComponent, { item, key: idx })
+				createElement(itemComponent, { item, key: idx })
 			))}
 
 			{(data.length > (maxDisplayedItems ?? Infinity)) && (

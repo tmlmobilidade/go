@@ -2,16 +2,16 @@
 
 import React from 'react';
 
-import { Section } from '../../layout';
+import { Section } from '../../layout/Section';
 
 /* * */
 
-interface AppWrapperMenuNoContentProps {
+interface TopbarMenuNoContentProps {
 	icon: React.ElementType
 	text: string
 }
 
-export function AppWrapperMenuNoContent({ icon, text }: AppWrapperMenuNoContentProps) {
+export function TopbarMenuNoContent({ icon, text }: TopbarMenuNoContentProps) {
 	//
 
 	//

@@ -22,6 +22,7 @@ interface NotificationsContextState {
 		unreadNotifications: TmlNotification[]
 	}
 	flags: {
+		enabled: boolean
 		error?: HttpException
 		loading: boolean
 	}
@@ -67,7 +68,6 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 	 */
 	useEffect(() => {
 		if (!notificationsData || !notificationsLoading || !notificationsError) return;
-
 		notificationsData.map((n) => {
 			if (!n.is_read) {
 				triggerNotificationToast(
@@ -179,10 +179,15 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 			unreadNotifications: notificationsData?.filter(n => !n.is_read) ?? [],
 		},
 		flags: {
+			enabled: Notification.permission === 'granted',
 			error: notificationsError,
 			loading: notificationsLoading,
 		},
-	}), [notificationsData, notificationsError, notificationsLoading]);
+	}), [
+		notificationsData,
+		notificationsError,
+		notificationsLoading,
+	]);
 
 	//
 	// E. Render components

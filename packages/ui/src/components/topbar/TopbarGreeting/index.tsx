@@ -5,8 +5,8 @@
 import { Skeleton } from '@mantine/core';
 import { useState } from 'react';
 
-import { useMeContext } from '../../../contexts';
-import { Label } from '../../display';
+import { useMeContext } from '../../../contexts/Me.context';
+import { Label } from '../../display/Label';
 
 /* * */
 

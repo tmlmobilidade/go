@@ -6,7 +6,8 @@ import { useColorScheme } from '@mantine/hooks';
 import { IconAB2, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 
-import { useUserOrganization, useUserPreference } from '../hooks';
+import { useUserOrganization } from '../hooks/use-user-organization';
+import { useUserPreference } from '../hooks/use-user-preference';
 
 /* * */
 
@@ -24,9 +25,9 @@ export type ThemeType = (typeof AVAILABLE_THEMES)[number]['_id'];
 /* * */
 
 export const AVAILABLE_MODES = [
-	{ _id: 'dark', icon: <IconMoonFilled />, name: 'Escuro' },
-	{ _id: 'light', icon: <IconSunFilled />, name: 'Claro' },
-	{ _id: 'system', icon: <IconAB2 />, name: 'Sistema' },
+	{ _id: 'light', icon: <IconSunFilled size={20} />, name: 'Claro' },
+	{ _id: 'dark', icon: <IconMoonFilled size={20} />, name: 'Escuro' },
+	{ _id: 'system', icon: <IconAB2 size={20} />, name: 'Sistema' },
 ] as const;
 
 export type ModeType = (typeof AVAILABLE_MODES)[number]['_id'];
@@ -66,46 +67,41 @@ export const ThemeContextProvider = ({ children }: PropsWithChildren) => {
 
 	const systemColorScheme = useColorScheme();
 
+	const [userOrganization] = useUserOrganization();
+
+	const defaultTheme: ThemeType = userOrganization && userOrganization.theme && AVAILABLE_THEMES.some(t => t._id === userOrganization.theme) ? userOrganization.theme as ThemeType : 'ocean';
+
+	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', defaultTheme);
 	const [activeMode, setActiveMode] = useUserPreference<ModeType>('ui', 'active_mode', 'system');
-	const [organization] = useUserOrganization();
-
-	const theme: ThemeType = organization && organization.theme && AVAILABLE_THEMES.some(t => t._id === organization.theme) ? organization.theme as ThemeType : 'ocean';
-
-	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', theme);
 
 	//
 	// B. Handle actions
 
 	useEffect(() => {
-		// Apply the active mode to the document
+		// Skip if document is unavailable (SSR)
 		if (typeof document === 'undefined') return;
-		if (typeof activeMode !== 'string') return;
-		// If the preferred mode is 'system', use the system color scheme...
-		if (activeMode === 'system') document.documentElement.setAttribute('data-mode', systemColorScheme);
-		// ...otherwise, use the active mode
-		else document.documentElement.setAttribute('data-mode', activeMode);
+		// If active mode is system, set it to system color scheme
+		if (activeMode === 'system') {
+			document.documentElement.setAttribute('data-mode', systemColorScheme);
+			document.documentElement.setAttribute('data-mantine-color-scheme', systemColorScheme);
+			return;
+		}
+		// Otherwise, set it to active mode
+		document.documentElement.setAttribute('data-mode', activeMode);
+		document.documentElement.setAttribute('data-mantine-color-scheme', activeMode);
 	}, [activeMode, systemColorScheme]);
 
 	useEffect(() => {
-		// Apply the active theme to the document
+		// Skip if document is unavailable (SSR)
 		if (typeof document === 'undefined') return;
 		if (typeof activeTheme !== 'string') return;
+		// Apply the active theme to the document
 		document.documentElement.setAttribute('data-theme', activeTheme);
 	}, [activeTheme]);
 
 	const activateMode = (modeId: ModeType) => {
 		if (!AVAILABLE_MODES.some(t => t._id === modeId)) return;
-
-		if (modeId === 'system') {
-			setActiveMode(systemColorScheme);
-			document.documentElement.setAttribute('data-mode', systemColorScheme);
-			document.documentElement.setAttribute('data-mantine-color-scheme', systemColorScheme);
-		}
-		else {
-			document.documentElement.setAttribute('data-mode', modeId);
-			document.documentElement.setAttribute('data-mantine-color-scheme', modeId);
-			setActiveMode(modeId);
-		}
+		setActiveMode(modeId);
 	};
 
 	const activateTheme = (themeId: ThemeType) => {
@@ -125,7 +121,10 @@ export const ThemeContextProvider = ({ children }: PropsWithChildren) => {
 			active_mode: activeMode,
 			active_theme: activeTheme,
 		},
-	}), [activeTheme, activeMode]);
+	}), [
+		activeTheme,
+		activeMode,
+	]);
 
 	//
 	// D. Render components

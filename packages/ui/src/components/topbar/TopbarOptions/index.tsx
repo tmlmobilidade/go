@@ -3,22 +3,12 @@
 /* * */
 
 import { ColorSwatch, Menu } from '@mantine/core';
-import { IconBellRinging, IconChevronRight, IconColorSwatch, IconLogout, IconSettings, IconSunMoon } from '@tabler/icons-react';
+import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconSettings } from '@tabler/icons-react';
 
 import { useMeContext } from '../../../contexts/Me.context';
+import { useNotificationsContext } from '../../../contexts/Notifications.context';
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useThemeContext } from '../../../contexts/Theme.context';
-import { Label } from '../../display/Label';
-import { AppWrapperMenu } from '../AppWrapperMenu';
-
-/* * */
-
-interface MenuItem {
-	href?: string
-	icon: React.ReactNode
-	label: string
-	onClick?: () => void
-	submenu?: MenuItem[]
-}
+import { TopbarMenu } from '../TopbarMenu';
 
 /* * */
 
@@ -30,116 +20,77 @@ export function TopbarOptions() {
 
 	const meContext = useMeContext();
 	const themeContext = useThemeContext();
+	const notificationsContext = useNotificationsContext();
 
 	//
-	// B. Define menu structure
-
-	const MENU_ITEMS: MenuItem[] = [
-		{
-			icon: <IconSunMoon size={18} />,
-			label: 'Modo',
-			submenu: AVAILABLE_MODES.map(item => ({
-				icon: item.icon,
-				label: item.name,
-				onClick: () => themeContext.actions.activateMode(item._id),
-			})),
-		},
-		{
-			icon: <IconBellRinging size={18} />,
-			label: 'Ativar Notificações',
-			onClick: () => Notification.requestPermission(),
-		},
-		{
-			icon: <IconColorSwatch size={18} />,
-			label: 'Temas',
-			submenu: AVAILABLE_THEMES.map(item => ({
-				icon: <ColorSwatch color={item.primary_color} size={16} />,
-				label: item.name,
-				onClick: () => themeContext.actions.activateTheme(item._id),
-			})),
-		},
-		{
-			icon: <IconLogout size={18} />,
-			label: 'Logout',
-			onClick: meContext.actions.logout,
-		},
-	];
-
-	//
-	// D. Render helpers
-
-	const renderMenuItem = (item: MenuItem) => {
-		if (item.submenu) {
-			return (
-				<Menu.Item
-					key={item.label}
-					leftSection={item.icon}
-					px={12}
-					py={8}
-				>
-					<Menu offset={8} position="left-start" shadow="md" trigger="hover" width={180}>
-						<Menu.Target>
-							<div style={{
-								alignItems: 'center',
-								cursor: 'pointer',
-								display: 'flex',
-								justifyContent: 'space-between',
-								width: '100%',
-							}}
-							>
-								<Label size="md" singleLine>{item.label}</Label>
-								<IconChevronRight size={16} />
-							</div>
-						</Menu.Target>
-						<Menu.Dropdown>
-							{item.submenu.map((subItem, subIndex) => (
-								<Menu.Item
-									key={subItem.label}
-									leftSection={subItem.icon}
-									onClick={subItem.onClick}
-									px={12}
-									py={6}
-									style={{
-										backgroundColor: themeContext.data.active_theme === AVAILABLE_THEMES[subIndex]?._id
-											? 'var(--color-system-background-200)'
-											: undefined,
-									}}
-								>
-									<Label size="md" singleLine>{subItem.label}</Label>
-								</Menu.Item>
-							))}
-						</Menu.Dropdown>
-					</Menu>
-				</Menu.Item>
-			);
-		}
-
-		return (
-			<Menu.Item
-				key={item.label}
-				component={item.href ? 'a' : 'button'}
-				href={item.href}
-				leftSection={item.icon}
-				onClick={item.onClick}
-				px={12}
-				py={8}
-			>
-				<Label size="md" singleLine>{item.label}</Label>
-			</Menu.Item>
-		);
-	};
-
-	//
-	// E. Render components
+	// B. Render components
 
 	return (
-		<AppWrapperMenu icon={IconSettings}>
+		<TopbarMenu icon={IconSettings}>
+
 			<Menu.Label>Personalização</Menu.Label>
-			{MENU_ITEMS.slice(0, 2).map(renderMenuItem)}
+
+			<Menu.Sub position="left">
+				<Menu.Sub.Target>
+					<Menu.Sub.Item leftSection={<IconBrightness size={20} />}>
+						Modo
+					</Menu.Sub.Item>
+				</Menu.Sub.Target>
+				<Menu.Sub.Dropdown>
+					{AVAILABLE_MODES.map(item => (
+						<Menu.Item
+							key={item._id}
+							leftSection={item.icon}
+							onClick={() => themeContext.actions.activateMode(item._id)}
+							rightSection={themeContext.data.active_mode === item._id ? <IconCheck size={16} /> : null}
+						>
+							{item.name}
+						</Menu.Item>
+					))}
+				</Menu.Sub.Dropdown>
+			</Menu.Sub>
+
+			<Menu.Sub position="left">
+				<Menu.Sub.Target>
+					<Menu.Sub.Item leftSection={<IconColorSwatch size={20} />}>
+						Tema
+					</Menu.Sub.Item>
+				</Menu.Sub.Target>
+				<Menu.Sub.Dropdown>
+					{AVAILABLE_THEMES.map(item => (
+						<Menu.Item
+							key={item._id}
+							leftSection={<ColorSwatch color={item.primary_color} size={16} />}
+							onClick={() => themeContext.actions.activateTheme(item._id)}
+							rightSection={themeContext.data.active_theme === item._id ? <IconCheck size={16} /> : null}
+						>
+							{item.name}
+						</Menu.Item>
+					))}
+				</Menu.Sub.Dropdown>
+			</Menu.Sub>
+
 			<Menu.Divider />
+
 			<Menu.Label>Conta</Menu.Label>
-			{MENU_ITEMS.slice(2).map(renderMenuItem)}
-		</AppWrapperMenu>
+
+			<Menu.Item
+				leftSection={<IconBellRinging size={20} />}
+				onClick={() => Notification.requestPermission()}
+				rightSection={notificationsContext.flags.enabled ? <IconCheck size={16} /> : null}
+			>
+				{notificationsContext.flags.enabled ? 'Notificações Ativadas' : 'Ativar Notificações'}
+			</Menu.Item>
+
+			<Menu.Item
+				color="var(--color-status-danger-primary)"
+				leftSection={<IconLogout size={20} />}
+				onClick={meContext.actions.logout}
+			>
+				Logout
+			</Menu.Item>
+
+		</TopbarMenu>
 	);
 
 	//
