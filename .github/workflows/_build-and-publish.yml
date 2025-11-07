@@ -20,10 +20,6 @@ on:
         description: "Environment name (used as build arg)"
         required: true
         type: string
-      cache-from:
-        description: "Cache from image"
-        required: false
-        type: string
 
 jobs:
   build-and-push:
@@ -35,9 +31,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@main
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -53,6 +46,5 @@ jobs:
           push: true
           file: ${{ inputs.file }}
           tags: ${{ inputs.tags }}
-          cache-from: ${{ inputs.cache-from }}
           build-args: |
             ENVIRONMENT=${{ inputs.environment }}
