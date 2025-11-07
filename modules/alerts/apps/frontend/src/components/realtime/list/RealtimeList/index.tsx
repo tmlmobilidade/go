@@ -9,13 +9,13 @@ import { AlertsListCellStops } from '@/components/common/AlertsListCellStops';
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { useRealtimeListContext } from '@/contexts/RealtimeList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { RealtimeListHeader } from '../AlertsListHeader';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 

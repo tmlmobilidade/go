@@ -4,8 +4,8 @@
 
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Line, Stop } from '@carrismetropolitana/api-types/network';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Ride } from '@tmlmobilidade/types';
 import { useDebouncedValue } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';

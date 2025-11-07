@@ -1,8 +1,8 @@
 /* * */
 
 import { useAlertListContext } from '@/contexts/AlertList.context';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { IconPlus } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
