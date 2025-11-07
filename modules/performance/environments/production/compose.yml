@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-performance
+name: tmlmobilidade-go-performance
 
 volumes:
   certbotdata:
@@ -40,7 +40,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   # nginx:
-  #   image: ghcr.io/tmlmobilidade/sae-performance-nginx:production
+  #   image: ghcr.io/tmlmobilidade/go-performance-nginx:production
   #   labels:
   #     com.centurylinklabs.watchtower.depends-on: 'frontend,api'
   #   deploy:
@@ -80,7 +80,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   # api:
-  #   image: ghcr.io/tmlmobilidade/sae-performance-api:production
+  #   image: ghcr.io/tmlmobilidade/go-performance-api:production
   #   labels:
   #     com.centurylinklabs.watchtower.enable: true
   #   deploy:
@@ -101,7 +101,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   # frontend:
-  #   image: ghcr.io/tmlmobilidade/sae-performance-frontend:production
+  #   image: ghcr.io/tmlmobilidade/go-performance-frontend:production
   #   deploy:
   #     restart_policy:
   #       condition: any
@@ -120,7 +120,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-metrics:
-    image: ghcr.io/tmlmobilidade/sae-performance-sync-metrics:production
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics:production
     deploy:
       restart_policy:
         condition: any

@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-alerts
+name: tmlmobilidade-go-alerts
 
 volumes:
   certbotdata:
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-alerts-nginx:production
+    image: ghcr.io/tmlmobilidade/go-alerts-nginx:production
     deploy:
       restart_policy:
         condition: any
@@ -60,7 +60,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/sae-alerts-api:production
+    image: ghcr.io/tmlmobilidade/go-alerts-api:production
     deploy:
       restart_policy:
         condition: any
@@ -81,7 +81,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/sae-alerts-frontend:production
+    image: ghcr.io/tmlmobilidade/go-alerts-frontend:production
     deploy:
       restart_policy:
         condition: any

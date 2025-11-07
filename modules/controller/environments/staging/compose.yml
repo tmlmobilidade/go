@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-controller
+name: tmlmobilidade-go-controller
 
 volumes:
   certbotdata:
@@ -61,7 +61,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   coordinator:
-    image: ghcr.io/tmlmobilidade/sae-controller-coordinator:staging
+    image: ghcr.io/tmlmobilidade/go-controller-coordinator:staging
     deploy:
       restart_policy:
         condition: any
@@ -80,7 +80,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-bridge:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-bridge:staging
+    image: ghcr.io/tmlmobilidade/go-controller-rides-bridge:staging
     deploy:
       restart_policy:
         condition: any
@@ -99,7 +99,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-examiner:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-examiner:staging
+    image: ghcr.io/tmlmobilidade/go-controller-rides-examiner:staging
     deploy:
       mode: replicated
       replicas: 2
@@ -120,7 +120,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-feeder:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-feeder:staging
+    image: ghcr.io/tmlmobilidade/go-controller-rides-feeder:staging
     deploy:
       restart_policy:
         condition: any
@@ -141,7 +141,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-cleaner:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-cleaner:staging
+    image: ghcr.io/tmlmobilidade/go-controller-rides-cleaner:staging
     deploy:
       restart_policy:
         condition: any
@@ -160,7 +160,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-acceptor:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-acceptor:staging
+    image: ghcr.io/tmlmobilidade/go-controller-rides-acceptor:staging
     deploy:
       restart_policy:
         condition: any
@@ -179,7 +179,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   rides-locker:
-    image: ghcr.io/tmlmobilidade/sae-controller-rides-locker:staging
+    image: ghcr.io/tmlmobilidade/go-controller-rides-locker:staging
     deploy:
       restart_policy:
         condition: any
@@ -198,7 +198,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sams-feeder:
-    image: ghcr.io/tmlmobilidade/sae-controller-sams-feeder:staging
+    image: ghcr.io/tmlmobilidade/go-controller-sams-feeder:staging
     deploy:
       restart_policy:
         condition: any
@@ -217,7 +217,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sams-examiner:
-    image: ghcr.io/tmlmobilidade/sae-controller-sams-examiner:staging
+    image: ghcr.io/tmlmobilidade/go-controller-sams-examiner:staging
     deploy:
       restart_policy:
         condition: any
@@ -236,7 +236,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-controller-nginx:staging
+    image: ghcr.io/tmlmobilidade/go-controller-nginx:staging
     labels:
       com.centurylinklabs.watchtower.enable: true
       com.centurylinklabs.watchtower.depends-on: 'frontend,api'
@@ -277,7 +277,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/sae-controller-api:staging
+    image: ghcr.io/tmlmobilidade/go-controller-api:staging
     labels:
       com.centurylinklabs.watchtower.enable: true
     deploy:
@@ -298,7 +298,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/sae-controller-frontend:staging
+    image: ghcr.io/tmlmobilidade/go-controller-frontend:staging
     labels:
       com.centurylinklabs.watchtower.enable: true
     deploy:

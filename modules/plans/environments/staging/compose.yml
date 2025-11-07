@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-plans
+name: tmlmobilidade-go-plans
 
 volumes:
   certbotdata:
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-plans-nginx:staging
+    image: ghcr.io/tmlmobilidade/go-plans-nginx:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -72,7 +72,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/sae-plans-api:staging
+    image: ghcr.io/tmlmobilidade/go-plans-api:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -93,7 +93,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/sae-plans-frontend:staging
+    image: ghcr.io/tmlmobilidade/go-plans-frontend:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -112,7 +112,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    image: ghcr.io/tmlmobilidade/sae-plans-cleaner:staging
+    image: ghcr.io/tmlmobilidade/go-plans-cleaner:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -131,7 +131,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   export-drt:
-    image: ghcr.io/tmlmobilidade/sae-plans-export-drt:staging
+    image: ghcr.io/tmlmobilidade/go-plans-export-drt:staging
     deploy:
       restart_policy:
         condition: on-failure

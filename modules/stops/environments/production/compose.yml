@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-stops
+name: tmlmobilidade-go-stops
 
 volumes:
   certbotdata:
@@ -36,7 +36,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/sae-stops-nginx:production
+    image: ghcr.io/tmlmobilidade/go-stops-nginx:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -71,7 +71,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/sae-stops-api:production
+    image: ghcr.io/tmlmobilidade/go-stops-api:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -92,7 +92,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/sae-stops-frontend:production
+    image: ghcr.io/tmlmobilidade/go-stops-frontend:production
     deploy:
       restart_policy:
         condition: on-failure
@@ -111,7 +111,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   organizer:
-    image: ghcr.io/tmlmobilidade/sae-stops-organizer:production
+    image: ghcr.io/tmlmobilidade/go-stops-organizer:production
     deploy:
       restart_policy:
         condition: on-failure
