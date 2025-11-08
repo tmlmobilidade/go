@@ -6,6 +6,7 @@ on:
     branches:
       - production
       - staging
+      - 'staging/**'
     paths:
       - '!modules/alerts/environments/**'
       - 'modules/alerts/**'

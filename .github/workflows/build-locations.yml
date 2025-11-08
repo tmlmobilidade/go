@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-    #   - production
+      - production
       - staging
+      - 'staging/**'
     paths:
       - 'modules/locations/**'
       - 'packages/**'
