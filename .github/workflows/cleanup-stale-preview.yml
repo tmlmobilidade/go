@@ -1,0 +1,82 @@
+name: Cleanup Stale Preview Environments
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  cleanup-stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl for OCI
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.OCI_KUBECONFIG }}" | base64 -d > ~/.kube/config
+          kubectl config use-context ${{ secrets.OCI_KUBERNETES_CLUSTER_ID }}
+
+      - name: Get all preview namespaces
+        id: namespaces
+        run: |
+          NAMESPACES=$(kubectl get namespaces -l preview=true -o json | jq -r '.items[] | "\(.metadata.name)|\(.metadata.labels.branch // "unknown")|\(.metadata.creationTimestamp)"')
+          echo "namespaces<<EOF" >> $GITHUB_OUTPUT
+          echo "$NAMESPACES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check branch existence and cleanup
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          echo "${{ steps.namespaces.outputs.namespaces }}" | while IFS='|' read -r NAMESPACE BRANCH CREATED; do
+            if [ -z "$NAMESPACE" ] || [ "$NAMESPACE" == "null" ]; then
+              continue
+            fi
+            
+            echo "Checking namespace: $NAMESPACE (branch: $BRANCH)"
+            
+            # Check if branch still exists
+            BRANCH_EXISTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/branches/$BRANCH" | jq -r '.name // empty')
+            
+            if [ -z "$BRANCH_EXISTS" ]; then
+              echo "Branch $BRANCH no longer exists. Cleaning up namespace $NAMESPACE"
+              
+              # Delete Kubernetes namespace
+              kubectl delete namespace "$NAMESPACE" --wait=true --timeout=5m || true
+              
+              # Delete Cloudflare DNS records
+              SUBDOMAIN_PATTERN=$(echo "$BRANCH" | sed 's/[^a-z0-9-]/-/g' | tr '[:upper:]' '[:lower:]')
+              RECORDS=$(curl -s -X GET \
+                "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/dns_records?comment=*$BRANCH*" \
+                -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+                -H "Content-Type: application/json" | jq -r '.result[] | .id')
+              
+              echo "$RECORDS" | while read -r RECORD_ID; do
+                if [ -n "$RECORD_ID" ] && [ "$RECORD_ID" != "null" ]; then
+                  curl -s -X DELETE \
+                    "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/dns_records/$RECORD_ID" \
+                    -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+                    -H "Content-Type: application/json" || true
+                fi
+              done
+            else
+              # Check if namespace is older than 30 days
+              CREATED_EPOCH=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$CREATED" +%s 2>/dev/null || date -d "$CREATED" +%s)
+              CURRENT_EPOCH=$(date +%s)
+              AGE_DAYS=$(( (CURRENT_EPOCH - CREATED_EPOCH) / 86400 ))
+              
+              if [ "$AGE_DAYS" -gt 30 ]; then
+                echo "Namespace $NAMESPACE is $AGE_DAYS days old. Consider cleanup."
+                # Optionally add notification or auto-cleanup logic here
+              fi
+            fi
+          done
