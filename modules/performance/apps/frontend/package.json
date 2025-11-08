@@ -20,14 +20,14 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "15.5.6",
-		"next-intl": "4.4.0",
-		"nuqs": "2.7.2",
+		"next-intl": "4.5.0",
+		"nuqs": "2.7.3",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"swr": "2.3.6"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@carrismetropolitana/eslint": "20251107.1231.48",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
