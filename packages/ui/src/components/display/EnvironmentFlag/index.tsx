@@ -2,7 +2,7 @@
 
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
 
-import styles from './styles.module.css';
+import { Tag } from '../Tag';
 
 /* * */
 
@@ -18,21 +18,11 @@ export function EnvironmentFlag() {
 	// B. Render components
 
 	if (currentEnvironment === 'development') {
-		return (
-			<div className={styles.container} data-environment="development">
-				<div className={styles.message}>dev</div>
-			</div>
-		);
+		return <Tag label="dev" variant="danger" />;
 	}
 
 	if (currentEnvironment === 'staging') {
-		return (
-			<div className={styles.container} data-environment="staging">
-				<div className={styles.message}>
-					Staging
-				</div>
-			</div>
-		);
+		return <Tag label="staging" variant="warning" />;
 	}
 
 	return null;

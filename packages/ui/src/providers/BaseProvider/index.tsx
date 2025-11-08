@@ -10,7 +10,6 @@ import { swrFetcher } from '@tmlmobilidade/utils';
 import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
-import { EnvironmentFlag } from '../../components/display/EnvironmentFlag';
 import { themeData } from '../../styles/theme';
 
 /**
@@ -50,7 +49,6 @@ export function BaseProvider({ children }: PropsWithChildren) {
 						<DatesProvider settings={mantineDatesSettings}>
 							<ModalsProvider>
 								<Notifications styles={{ root: { marginTop: '60px' } }} />
-								<EnvironmentFlag />
 								{children}
 							</ModalsProvider>
 						</DatesProvider>
