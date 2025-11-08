@@ -5,7 +5,7 @@ import { FastifyService } from '@tmlmobilidade/connectors-fastify';
 
 /* * */
 
-const NAMESPACE = '/';
+const NAMESPACE = '/auth';
 
 /* * */
 

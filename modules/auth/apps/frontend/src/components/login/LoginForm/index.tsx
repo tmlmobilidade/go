@@ -59,6 +59,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 	const handleReset = () => {
 		router.push(PAGE_ROUTES.auth.RESET_PASSWORD_LIST);
 	};
+
 	//
 	// C. Render components
 
