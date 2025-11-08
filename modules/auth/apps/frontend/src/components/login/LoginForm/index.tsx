@@ -5,7 +5,7 @@
 import { useLogin } from '@/components/login/LoginForm/use-login';
 import { IconArrowRight } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, Label, PasswordInput, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
+import { Button, EnvironmentFlag, Label, PasswordInput, Section, Surface, TextInput, TMLogoDark, TMLogoLight, useToast, WhenMode } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -13,7 +13,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface LoginFormProps {
 
 	/**
 	 * The URL to redirect to after successful login.
@@ -23,7 +23,7 @@ interface Props {
 
 }
 
-export function LoginForm({ redirect = '/' }: Props) {
+export function LoginForm({ redirect = '/' }: LoginFormProps) {
 	//
 
 	//
@@ -41,18 +41,12 @@ export function LoginForm({ redirect = '/' }: Props) {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const response = await login({
-			email: username,
-			password,
-		});
-
+		const response = await login({ email: username, password });
 		if (response.error) {
 			useToast.error({ message: response.error ?? 'An error occurred', title: 'Login failed' });
 			return;
 		}
-
 		useToast.success({ message: undefined, title: 'Login successful' });
-
 		router.replace(redirect);
 	};
 
@@ -72,6 +66,7 @@ export function LoginForm({ redirect = '/' }: Props) {
 						<div className={styles.headerContent}>
 							<Label size="lg">Login no GO+</Label>
 							<Label>Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.</Label>
+							<EnvironmentFlag />
 						</div>
 						<div className={styles.headerLogo}>
 							<WhenMode dark={<TMLogoDark />} light={<TMLogoLight />} />

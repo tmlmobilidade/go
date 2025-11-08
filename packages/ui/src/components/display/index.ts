@@ -1,5 +1,6 @@
 export * from './AlertCard';
 export * from './AlertMessage';
+export * from './EnvironmentFlag';
 export * from './ErrorDisplay';
 export * from './Indicator';
 export * from './Label';
