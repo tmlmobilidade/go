@@ -9,7 +9,7 @@ import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 export default function Page() {
 	return (
 		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione um Role" />
+			<NoDataLabel text="Selecione um Grupo de Permissões" />
 		</Surface>
 	);
 }
