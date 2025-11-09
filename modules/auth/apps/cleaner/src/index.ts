@@ -1,10 +1,10 @@
 /* * */
 
-import { fileExports, files, verificationTokens } from '@tmlmobilidade/interfaces';
-import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
+import { Dates } from '@tmlmobilidade/dates';
+import { fileExports, files, verificationTokens } from '@tmlmobilidade/interfaces';
+import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /**
  * This script removes verification-token documents

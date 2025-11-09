@@ -1,6 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
-import { authProvider } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { authProvider } from '@tmlmobilidade/interfaces';
 import { type Permission, type User } from '@tmlmobilidade/types';
 import { Cache, hasPermission } from '@tmlmobilidade/utils';
 

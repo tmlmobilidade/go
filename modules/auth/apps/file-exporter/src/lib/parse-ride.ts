@@ -1,5 +1,5 @@
-import { RideAcceptance, type RideExportData, RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { RideAcceptance, type RideExportData, RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
 
 function parseTime(time: null | UnixTimestamp): null | string {
 	if (!time) {
