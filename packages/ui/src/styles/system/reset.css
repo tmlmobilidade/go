@@ -14,7 +14,7 @@ body {
 	margin: 0;
 	color: var(--color-system-text-100);
 	scroll-padding-top: 80px;
-	scrollbar-color: var(--color-primary) var(--color-system-background-200);
+	scrollbar-color: var(--color-system-border-100) transparent;
 	background-color: var(--color-system-background-200);
 	scroll-behavior: smooth;
 }
