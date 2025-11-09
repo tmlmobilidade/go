@@ -6,6 +6,7 @@ on:
     branches:
      - feature/**
      - feat/**
+     - staging
   pull_request:
     types: [opened, synchronize, reopened, closed]
 
@@ -57,7 +58,9 @@ jobs:
             MODULES="auth alerts controller locations plans stops performance"
           fi
           
-          echo "modules=$MODULES" >> $GITHUB_OUTPUT
+          # Convert space-separated string to JSON array
+          JSON_MODULES=$(echo "$MODULES" | awk '{for(i=1;i<=NF;i++) printf "\"%s\"%s", $i, (i<NF?", ":"")}')
+          echo "modules=[$JSON_MODULES]" >> $GITHUB_OUTPUT
           echo "should-deploy=true" >> $GITHUB_OUTPUT
 
   # Build and push Docker images for changed modules
@@ -67,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: ${{ fromJson(format('[{0}]', needs.detect-changes.outputs.modules)) }}
+        module: ${{ fromJson(needs.detect-changes.outputs.modules) }}
       fail-fast: false
     permissions:
       contents: read
@@ -143,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: ${{ fromJson(format('[{0}]', needs.detect-changes.outputs.modules)) }}
+        module: ${{ fromJson(needs.detect-changes.outputs.modules) }}
       fail-fast: false
 
     steps:
