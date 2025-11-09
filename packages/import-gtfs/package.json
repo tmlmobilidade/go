@@ -48,7 +48,7 @@
 		"csv-parse": "6.1.0"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20251107.1231.48",
+		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",

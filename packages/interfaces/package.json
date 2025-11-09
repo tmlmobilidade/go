@@ -54,7 +54,7 @@
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20251107.1231.48",
+		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.10.0",
