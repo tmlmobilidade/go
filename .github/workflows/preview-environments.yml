@@ -100,42 +100,80 @@ jobs:
           SANITIZED=$(echo "$SANITIZED" | cut -c1-50)
           echo "name=$SANITIZED" >> $GITHUB_OUTPUT
 
+      # - name: Build and push frontend
+      #   if: hashFiles(format('modules/{0}/apps/frontend/Dockerfile', matrix.module)) != ''
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     file: ./modules/${{ matrix.module }}/apps/frontend/Dockerfile
+      #     push: true
+      #     tags: |
+      #       ghcr.io/tmlmobilidade/go-${{ matrix.module }}-frontend:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
+      #       ghcr.io/tmlmobilidade/go-${{ matrix.module }}-frontend:preview-${{ steps.branch.outputs.name }}
+      #     build-args: |
+      #       ENVIRONMENT=preview
+
+      # - name: Build and push API
+      #   if: hashFiles(format('modules/{0}/apps/api/Dockerfile', matrix.module)) != ''
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     file: ./modules/${{ matrix.module }}/apps/api/Dockerfile
+      #     push: true
+      #     tags: |
+      #       ghcr.io/tmlmobilidade/go-${{ matrix.module }}-api:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
+      #       ghcr.io/tmlmobilidade/go-${{ matrix.module }}-api:preview-${{ steps.branch.outputs.name }}
+      #     build-args: |
+      #       ENVIRONMENT=preview
+
+      # - name: Build and push nginx
+        # if: hashFiles(format('modules/{0}/apps/nginx/Dockerfile', matrix.module)) != ''
+        # uses: docker/build-push-action@v5
+        # with:
+        #   context: .
+        #   file: ./modules/${{ matrix.module }}/apps/nginx/Dockerfile
+        #   push: true
+        #   tags: |
+        #     ghcr.io/tmlmobilidade/go-${{ matrix.module }}-nginx:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
+        #     ghcr.io/tmlmobilidade/go-${{ matrix.module }}-nginx:preview-${{ steps.branch.outputs.name }}
+        #   build-args: |
+        #     ENVIRONMENT=preview
       - name: Build and push frontend
-        if: hashFiles(format('modules/{0}/apps/frontend/Dockerfile', matrix.module)) != ''
+        if: hashFiles(format('modules/auth/apps/frontend/Dockerfile')) != ''
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./modules/${{ matrix.module }}/apps/frontend/Dockerfile
+          file: ./modules/auth/apps/frontend/Dockerfile
           push: true
           tags: |
-            ghcr.io/tmlmobilidade/go-${{ matrix.module }}-frontend:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
-            ghcr.io/tmlmobilidade/go-${{ matrix.module }}-frontend:preview-${{ steps.branch.outputs.name }}
+            ghcr.io/tmlmobilidade/go-auth-frontend:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
+            ghcr.io/tmlmobilidade/go-auth-frontend:preview-${{ steps.branch.outputs.name }}
           build-args: |
             ENVIRONMENT=preview
 
       - name: Build and push API
-        if: hashFiles(format('modules/{0}/apps/api/Dockerfile', matrix.module)) != ''
+        if: hashFiles(format('modules/auth/apps/api/Dockerfile')) != ''
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./modules/${{ matrix.module }}/apps/api/Dockerfile
+          file: ./modules/auth/apps/api/Dockerfile
           push: true
           tags: |
-            ghcr.io/tmlmobilidade/go-${{ matrix.module }}-api:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
-            ghcr.io/tmlmobilidade/go-${{ matrix.module }}-api:preview-${{ steps.branch.outputs.name }}
+            ghcr.io/tmlmobilidade/go-auth-api:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
+            ghcr.io/tmlmobilidade/go-auth-api:preview-${{ steps.branch.outputs.name }}
           build-args: |
             ENVIRONMENT=preview
 
       - name: Build and push nginx
-        if: hashFiles(format('modules/{0}/apps/nginx/Dockerfile', matrix.module)) != ''
+        if: hashFiles(format('modules/auth/apps/nginx/Dockerfile')) != ''
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./modules/${{ matrix.module }}/apps/nginx/Dockerfile
+          file: ./modules/auth/apps/nginx/Dockerfile
           push: true
           tags: |
-            ghcr.io/tmlmobilidade/go-${{ matrix.module }}-nginx:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
-            ghcr.io/tmlmobilidade/go-${{ matrix.module }}-nginx:preview-${{ steps.branch.outputs.name }}
+            ghcr.io/tmlmobilidade/go-auth-nginx:preview-${{ steps.branch.outputs.name }}-${{ github.sha }}
+            ghcr.io/tmlmobilidade/go-auth-nginx:preview-${{ steps.branch.outputs.name }}
           build-args: |
             ENVIRONMENT=preview
 
