@@ -33,15 +33,15 @@ export function LoginForm({ redirect = '/' }: LoginFormProps) {
 
 	const { loading, login } = useLogin();
 
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
+	const [emailValue, setEmailValue] = useState('');
+	const [passwordValue, setPasswordValue] = useState('');
 
 	//
 	// B. Handle actions
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const response = await login({ email: username, password });
+		const response = await login({ email: emailValue, password: passwordValue });
 		if (response.error) {
 			useToast.error({ message: response.error ?? 'An error occurred', title: 'Login failed' });
 			return;
@@ -76,15 +76,15 @@ export function LoginForm({ redirect = '/' }: LoginFormProps) {
 					<form className={styles.form} onSubmit={handleSubmit}>
 						<TextInput
 							disabled={loading}
-							onChange={e => setUsername(e.target.value)}
+							onChange={e => setEmailValue(e.target.value)}
 							placeholder="Email"
-							value={username}
+							value={emailValue}
 						/>
 						<PasswordInput
 							disabled={loading}
-							onChange={e => setPassword(e.target.value)}
+							onChange={e => setPasswordValue(e.target.value)}
 							placeholder="Password"
-							value={password}
+							value={passwordValue}
 						/>
 						<div className={styles.formFooter}>
 							<span
@@ -95,7 +95,7 @@ export function LoginForm({ redirect = '/' }: LoginFormProps) {
 								<Label size="sm" caps>Recuperar password</Label>
 							</span>
 							<Button
-								disabled={password.length < 8 || username.length === 0}
+								disabled={passwordValue.length < 8 || emailValue.length === 0}
 								icon={<IconArrowRight />}
 								label="Login"
 								loading={loading}
