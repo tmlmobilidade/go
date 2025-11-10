@@ -33,12 +33,18 @@ jobs:
       - name: Discover apps with Dockerfiles
         id: set-matrix
         run: |
-          APPS=$(for dir in modules/controller/apps/*/; do
+          APPS_ARRAY=()
+          for dir in modules/controller/apps/*/; do
             if [ -f "${dir}Dockerfile" ]; then
-              basename "$dir"
+              APPS_ARRAY+=("$(basename "$dir")")
             fi
-          done | jq -R . | jq -s .)
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
+          done
+          APPS=$(printf '%s\n' "${APPS_ARRAY[@]}" | jq -R . | jq -s -c .)
+          {
+            echo "apps<<EOF"
+            echo "$APPS"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
           echo "Discovered apps: $APPS"
 
   build:
