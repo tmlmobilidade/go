@@ -2,6 +2,8 @@
 
 FROM nginx:alpine-slim
 
+ARG MODULE
+
 WORKDIR /app
 
 # # #

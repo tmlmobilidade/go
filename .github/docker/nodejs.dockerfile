@@ -1,5 +1,8 @@
 FROM node:24-alpine AS base
 
+ARG MODULE
+ARG APP
+
 ENV MODULE=${MODULE}
 ENV APP=${APP}
 
@@ -12,6 +15,9 @@ RUN npm install -g turbo@^2
 # PRUNER STAGE
 
 FROM base AS pruner
+
+ARG MODULE
+ARG APP
 
 WORKDIR /app
 
@@ -26,6 +32,9 @@ RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 # BUILDER STAGE
 
 FROM base AS builder
+
+ARG MODULE
+ARG APP
 
 WORKDIR /app
 
@@ -42,6 +51,9 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 # # #
 # RUNNER STAGE
 FROM base AS runner
+
+ARG MODULE
+ARG APP
 
 WORKDIR /app
 
