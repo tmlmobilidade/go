@@ -91,6 +91,10 @@ jobs:
       modules: ${{ steps.discover.outputs.modules }}
       modules-apps: ${{ steps.discover.outputs.modules-apps }}
     steps:
+      # # #
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # # #
       - name: Discover modules and apps
         id: discover
         uses: ./.github/actions/discover-modules
