@@ -1,4 +1,4 @@
-/* * */
+/*  * */
 
 import { toLineStringFromPositions } from '@/conversions.js';
 import { getDistanceBetweenPositions, interpolatePositions } from '@/measurements.js';
