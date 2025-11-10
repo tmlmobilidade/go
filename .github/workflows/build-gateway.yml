@@ -1,6 +1,6 @@
 # # #
 
-name: 'Performance Module | Build & Test'
+name: 'Gateway Module | Build & Test'
 
 # # #
 
@@ -12,10 +12,10 @@ on:
       - staging
       - 'staging/**'
     paths:
-      - 'modules/performance/**'
-      - '!modules/performance/environments/**'
+      - 'modules/gateway/**'
+      - '!modules/gateway/environments/**'
       - 'packages/**'
-      - '.github/workflows/build-performance.yml'
+      - '.github/workflows/build-gateway.yml'
 
 # # #
 
@@ -48,12 +48,12 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   build-module:
-    name: Build performance
+    name: Build gateway
     needs: build-packages
     uses: ./.github/workflows/_build-module-apps.yml
     with:
-      module: performance
-      modules-apps: '{"performance":["api","frontend","nginx","sync-metrics"]}'
+      module: gateway
+      modules-apps: '{"gateway":["nginx"]}'
       ref-name: ${{ github.ref_name }}
     secrets: inherit
 

@@ -53,7 +53,7 @@ jobs:
     uses: ./.github/workflows/_build-module-apps.yml
     with:
       module: replicator
-      modules-apps: '{"replicator":["api","nginx"]}'
+      modules-apps: '{"replicator":["enrich","stream","sync-apex-locations","sync-vehicle-events","sync-apex-on-board-refunds","sync-apex-on-board-sales","sync-apex-validations"]}'
       ref-name: ${{ github.ref_name }}
     secrets: inherit
 
