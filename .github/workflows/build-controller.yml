@@ -48,13 +48,14 @@ jobs:
           echo "Discovered apps: $APPS"
 
   build:
-    name: ${{ matrix.app }} (NodeJS)
+    name: ${{ matrix.app }}
     needs: discover-apps
     uses: ./.github/workflows/_build-and-publish.yml
     strategy:
       matrix:
         app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
     with:
+      context: .
       file: ./modules/controller/apps/${{ matrix.app }}/Dockerfile
       tags: ghcr.io/tmlmobilidade/go-controller-${{ matrix.app }}:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
