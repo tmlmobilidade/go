@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/normalizers';
+import { type RideNormalized } from '@tmlmobilidade/types';
 import { Indicator } from '@tmlmobilidade/ui';
 
 /* * */

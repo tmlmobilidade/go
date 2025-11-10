@@ -1,7 +1,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { operationalStatusValues } from '@tmlmobilidade/normalizers';
+import { OperationalStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -20,7 +20,7 @@ export function RidesListFilterOperationalStatus() {
 
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
-		const defaultValues = operationalStatusValues;
+		const defaultValues = OperationalStatusSchema.options;
 		const enabledValues = ridesListContext.filters.operational_status;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
@@ -31,7 +31,7 @@ export function RidesListFilterOperationalStatus() {
 
 	const parsedOptions = useMemo(() => {
 		// Parse options to the expected format.
-		return operationalStatusValues.map(value => ({
+		return OperationalStatusSchema.options.map(value => ({
 			checked: ridesListContext.filters.operational_status.includes(value),
 			label: value,
 			value: value,

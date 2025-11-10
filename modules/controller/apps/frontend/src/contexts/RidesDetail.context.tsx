@@ -6,7 +6,8 @@ import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tab
 import { API_ROUTES, Permissions } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
-import { normalizeRide, type RideNormalized } from '@tmlmobilidade/normalizers/ride-normalized';
+import { normalizeRide } from '@tmlmobilidade/normalizers';
+import { type RideNormalized } from '@tmlmobilidade/types';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
 import { getCssVariableValue } from '@tmlmobilidade/ui';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';

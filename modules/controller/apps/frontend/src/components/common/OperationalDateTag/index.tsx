@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized } from '@tmlmobilidade/normalizers';
+import { type RideNormalized } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */

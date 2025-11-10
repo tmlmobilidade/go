@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RideNormalized } from '@tmlmobilidade/normalizers';
+import { type RideNormalized } from '@tmlmobilidade/types';
 import { Label, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */

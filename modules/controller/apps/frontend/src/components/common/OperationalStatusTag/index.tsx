@@ -1,7 +1,7 @@
 /* * */
 
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
-import { type RideNormalized } from '@tmlmobilidade/normalizers';
+import { type RideNormalized } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */

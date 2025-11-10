@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/normalizers';
+import { type RideNormalized } from '@tmlmobilidade/types';
 import { Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */

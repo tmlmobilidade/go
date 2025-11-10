@@ -1,8 +1,9 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
+import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
+import { getDistanceBetweenPositions } from '@tmlmobilidade/geo';
 import { type Ride } from '@tmlmobilidade/types';
-import { getDistanceBetweenPositions, sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
 /* * */
 
