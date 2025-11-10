@@ -11,11 +11,6 @@ const nextConfig: NextConfig = {
 	},
 	output: 'standalone',
 	reactStrictMode: true,
-	async redirects() {
-		return [
-			{ destination: '/plans', permanent: true, source: '/' },
-		];
-	},
 	async rewrites() {
 		return [
 			{
