@@ -56,7 +56,7 @@ WORKDIR /app
 
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
-RUN npm install
+RUN npm ci
 
 # Build the app
 COPY --from=pruner /app/out/full/ .

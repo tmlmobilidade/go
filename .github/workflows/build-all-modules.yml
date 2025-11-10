@@ -111,40 +111,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-
-      - name: Setup Turbo
-        run: npm install -g turbo@^2
-
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-${{ hashFiles('package.json', 'packages/**/package.json') }}
-          restore-keys: |
-            npm-${{ runner.os }}-
-
-      - name: Cache Turbo build cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: turbo-packages-${{ runner.os }}-${{ hashFiles('package.json', 'packages/**/package.json') }}
-          restore-keys: |
-            turbo-packages-${{ runner.os }}-
-            turbo-${{ runner.os }}-
-
       - name: Install dependencies
-        run: npm install
-
-      - name: Build packages
-        run: npm run build:packages
-
-      - name: Cache package-lock.json
-        uses: actions/cache@v4
-        with:
-          path: package-lock.json
-          key: package-lock-${{ runner.os }}-${{ hashFiles('package.json', 'packages/**/package.json') }}
-          restore-keys: |
-            package-lock-${{ runner.os }}-
+        run: npm install --package-lock-only
 
       - name: Save package-lock.json as artifact
         uses: actions/upload-artifact@v4
@@ -164,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: ${{ fromJson(needs.discover-modules.outputs.modules) }}
+        module: ${{ fromJson(needs.discover-modules.outputs.modules) }} 
     with:
       module: ${{ matrix.module }}
       modules-apps: ${{ needs.discover-modules.outputs.modules-apps }}
