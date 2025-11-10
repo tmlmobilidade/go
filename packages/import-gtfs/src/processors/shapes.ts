@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { type GTFS_Shape_Raw, validateGtfsShape } from '@tmlmobilidade/types';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type GTFS_Shape_Raw, validateGtfsShape } from '@tmlmobilidade/types';
 
 /**
  * Processes the shapes.txt file from the GTFS dataset.
