@@ -1,9 +1,9 @@
 import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
-import TIMETRACKER from '@helperkits/timer';
 import { Dates } from '@tmlmobilidade/dates';
 import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { Metric } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
@@ -13,14 +13,14 @@ export const syncDemandByPatternHourByDay = async () => {
 	//
 
 	Logger.title(`Sync Demand Metrics by Pattern Hour by Day`);
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const METRIC = 'demand_by_pattern_hour_by_day';
 
 	//
 	// Delete existing metrics
 
-	const deleteTimer = new TIMETRACKER();
+	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
@@ -81,7 +81,7 @@ export const syncDemandByPatternHourByDay = async () => {
 
 	const dayPromises = allTimestampChunks.map((chunkData, index) =>
 		limit(async () => {
-			const chunkTimer = new TIMETRACKER();
+			const chunkTimer = new Timer();
 
 			const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
 			Logger.info(`Processing ${dayLabel} (${index + 1}/${allTimestampChunks.length})...`);

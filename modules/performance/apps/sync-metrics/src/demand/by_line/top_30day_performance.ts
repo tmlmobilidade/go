@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@/logMetrics.js';
-import TIMETRACKER from '@helperkits/timer';
 import { Dates } from '@tmlmobilidade/dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { DemandByLineByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
@@ -27,14 +27,14 @@ export const computeTop30DayPerformanceByLine = async () => {
 	//
 
 	Logger.title(`Compute Top 30-Day Performance by Line`);
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const METRIC = 'top_lines_30day_performance';
 
 	//
 	// Delete existing metrics
 
-	const deleteTimer = new TIMETRACKER();
+	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
@@ -56,7 +56,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 	//
 	// Fetch demand metrics by line by day
 
-	const fetchTimer = new TIMETRACKER();
+	const fetchTimer = new Timer();
 	Logger.info(`Fetching demand_by_line_by_day metrics...`);
 
 	const dailyMetrics = await metrics.findMany({

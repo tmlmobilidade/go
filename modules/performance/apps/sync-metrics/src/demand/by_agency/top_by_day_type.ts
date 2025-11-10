@@ -1,20 +1,20 @@
 import { logMetricToFile } from '@/logMetrics.js';
-import TIMETRACKER from '@helperkits/timer';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { Metric } from '@tmlmobilidade/types';
 
 export const computeTopDemandByAgencyByDayType = async () => {
 	//
 
 	Logger.title('Compute Top Demand By Agency by Day Type');
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const METRIC = 'top_demand_by_agency_by_day_type';
 
 	//
 	// Delete existing metrics
-	const deleteTimer = new TIMETRACKER();
+	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
