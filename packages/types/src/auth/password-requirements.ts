@@ -4,9 +4,10 @@ import { z } from 'zod';
 
 /* * */
 
-export const PasswordRequirementsSchema = z.object({
-	password: z.string(),
-})
+export const PasswordRequirementsSchema = z
+	.object({
+		password: z.string(),
+	})
 	.superRefine(({ password }, checkPassComplexity) => {
 		const CONDITIONS = {
 			minLength: 8,
