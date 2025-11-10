@@ -1,9 +1,9 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { Dates } from '@tmlmobilidade/dates';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /**

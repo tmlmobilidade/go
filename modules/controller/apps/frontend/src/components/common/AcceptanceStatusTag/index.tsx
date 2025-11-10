@@ -2,9 +2,9 @@
 
 /* * */
 
+import { IconAlertCircle, IconCheck, IconClock, IconX } from '@tabler/icons-react';
 import { RideAcceptanceStatus } from '@tmlmobilidade/types';
 import { Tag, TagProps } from '@tmlmobilidade/ui';
-import { IconAlertCircle, IconCheck, IconClock, IconX } from '@tabler/icons-react';
 
 /* * */
 

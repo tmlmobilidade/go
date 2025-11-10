@@ -3,8 +3,8 @@
 import { cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { validatePlan } from '@/validate-plan.js';
-import { plans } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/dates';
+import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 

@@ -1,9 +1,9 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@helperkits/writer';
 import { rides } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { Ride, validateOperationalDate } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 

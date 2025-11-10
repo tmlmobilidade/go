@@ -1,9 +1,9 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
+import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteDatabase, SQLiteTableInstance } from '@tmlmobilidade/sqlite';
+import { Timer } from '@tmlmobilidade/timer';
 import { GTFS_Route_Extended, GTFS_StopTime, GTFS_Trip_Extended, Plan } from '@tmlmobilidade/types';
 
 import { DrtJourneys, DrtPatternPoints, DrtPatterns, DrtPatternStops, DrtRoutes, DrtStops } from './drt.types.js';

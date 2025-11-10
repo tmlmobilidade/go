@@ -9,10 +9,10 @@ import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
-import { Timer } from '@tmlmobilidade/timer';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { validateOperationalDate } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 

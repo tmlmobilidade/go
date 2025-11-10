@@ -1,9 +1,9 @@
 /* * */
 
 import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
-import { performInChunks } from '@tmlmobilidade/utils';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { performInChunks } from '@tmlmobilidade/utils';
 
 /* * */
 

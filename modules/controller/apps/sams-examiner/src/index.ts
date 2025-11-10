@@ -1,11 +1,11 @@
 /* * */
 
 import { type AggregationResultItem } from '@/types.js';
-import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from@tmlmobilidade/datesimer';
+import { Timer } from '@tmlmobilidade/timer';
+import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 

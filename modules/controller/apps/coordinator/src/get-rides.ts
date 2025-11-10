@@ -1,9 +1,9 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/dates';
+import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from@tmlmobilidade/datesimer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 

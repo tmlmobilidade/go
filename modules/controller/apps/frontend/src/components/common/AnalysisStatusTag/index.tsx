@@ -2,9 +2,9 @@
 
 /* * */
 
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { type RideAnalysis } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
-import { IconCheck, IconX } from '@tabler/icons-react';
 
 /* * */
 

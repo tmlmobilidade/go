@@ -3,10 +3,10 @@
 import { BRIDGEDB } from '@/BRIDGEDB.js';
 import { parseRide, sampleRide } from '@/types.js';
 import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.js';
-import { rides } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/dates';
+import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from@tmlmobilidade/datesimer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 

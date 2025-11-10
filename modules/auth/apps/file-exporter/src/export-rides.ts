@@ -1,11 +1,11 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@helperkits/writer';
 import { ALLOW_ALL_FLAG, Permissions } from '@tmlmobilidade/consts';
 import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
+import { Timer } from '@tmlmobilidade/timer';
 import { FileExport, Permission, RideAcceptance, RideNormalized, RidePermission } from '@tmlmobilidade/types';
 import { getPermission } from '@tmlmobilidade/utils';
 import os from 'os';

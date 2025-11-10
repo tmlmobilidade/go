@@ -1,10 +1,10 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { files } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
+import { Timer } from '@tmlmobilidade/timer';
 import { GTFS_Calendar_Raw, GTFS_CalendarDate_Raw, GTFS_Route_Extended, GTFS_Route_Extended_Raw, GTFS_Shape, GTFS_Shape_Raw, GTFS_Stop_Extended, GTFS_Stop_Extended_Raw, GTFS_StopTime, GTFS_StopTime_Raw, GTFS_Trip_Extended, GTFS_Trip_Extended_Raw, OperationalDate, Plan, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import fs from 'fs';
 

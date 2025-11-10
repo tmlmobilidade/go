@@ -1,11 +1,11 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { files } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/sqlite';
+import { Timer } from '@tmlmobilidade/timer';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';

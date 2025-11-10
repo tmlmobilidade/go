@@ -2,9 +2,9 @@
 
 /* * */
 
-import { Tag } from '@tmlmobilidade/ui';
 import { IconUserFilled } from '@tabler/icons-react';
 import { type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 

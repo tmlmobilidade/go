@@ -1,9 +1,9 @@
 // /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { Files } from '@tmlmobilidade/files';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import fs from 'fs';
 

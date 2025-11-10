@@ -4,10 +4,10 @@
 
 import { RidesDetailAnalysisResultItem } from '@/components/rides/detail/RidesDetailAnalysisResultItem';
 import { useRidesDetailAcceptanceContext } from '@/contexts/RidesDetailAcceptance.context';
+import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
+import { Dates } from '@tmlmobilidade/dates';
 import { RideAcceptance, UserDisplay } from '@tmlmobilidade/types';
 import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/dates';
-import { IconAlertCircl@tmlmobilidade/dateseck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
 import React, { createElement, useMemo } from 'react';
 
 import styles from './styles.module.css';

@@ -1,8 +1,8 @@
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
 import { sams } from '@tmlmobilidade/interfaces';
 import { type Sam } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

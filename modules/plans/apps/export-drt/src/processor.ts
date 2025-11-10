@@ -1,7 +1,7 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
+import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
 
 import { DrtAgency, DrtHashedShape, DrtHashedTrip } from './drt.types.js';
