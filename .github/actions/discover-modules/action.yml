@@ -35,6 +35,31 @@ runs:
           packages/**
         base_sha: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
         sha: ${{ github.sha }}
+        include_all_old_new_renamed_files: true
+
+    - name: Get deleted files via git diff
+      id: git-diff
+      shell: bash
+      run: |
+        BASE_SHA="${{ github.event.before || github.event.pull_request.base.sha || '' }}"
+        CURRENT_SHA="${{ github.sha }}"
+        
+        # Get all changed files including deletions (A=Added, M=Modified, D=Deleted, R=Renamed)
+        # Use git diff to ensure deleted files are captured
+        if [ -n "$BASE_SHA" ]; then
+          CHANGED=$(git diff --name-only --diff-filter=AMDR ${BASE_SHA} ${CURRENT_SHA} 2>/dev/null | grep -E '^(modules|packages)/' || true)
+        else
+          # If no base SHA, compare with HEAD (for initial commits or manual runs)
+          CHANGED=$(git diff --name-only --diff-filter=AMDR HEAD ${CURRENT_SHA} 2>/dev/null | grep -E '^(modules|packages)/' || true)
+        fi
+        
+        if [ -n "$CHANGED" ]; then
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "changed_files=" >> $GITHUB_OUTPUT
+        fi
 
     - name: Discover modules and apps
       id: discover
@@ -42,6 +67,7 @@ runs:
       env:
         MODULES_APPS: ${{ inputs.modules-apps }}
         CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        GIT_DIFF_FILES: ${{ steps.git-diff.outputs.changed_files }}
       with:
         script: |
           // Parse one app per line format: module:app
@@ -64,10 +90,22 @@ runs:
             apps
           }));
 
-          // Parse changed files - tj-actions/changed-files returns newline-separated string
-          const changedFiles = (process.env.CHANGED_FILES || '')
+          // Parse changed files from tj-actions/changed-files (newline-separated string)
+          const changedFilesFromAction = (process.env.CHANGED_FILES || '')
             .split('\n')
             .filter(Boolean);
+          
+          // Parse changed files from git diff (includes deletions)
+          const changedFilesFromGit = (process.env.GIT_DIFF_FILES || '')
+            .split('\n')
+            .filter(Boolean);
+          
+          // Combine both sources and deduplicate
+          const changedFilesSet = new Set([
+            ...changedFilesFromAction,
+            ...changedFilesFromGit
+          ]);
+          const changedFiles = Array.from(changedFilesSet);
           
           const isManual = context.eventName === 'workflow_dispatch';
           const buildAll = isManual || changedFiles.some(f => f.startsWith('packages/'));
