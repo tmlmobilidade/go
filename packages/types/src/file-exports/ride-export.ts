@@ -2,15 +2,14 @@
 
 import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
 import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { FileExportBaseSchema } from '@/file-exports/common.js';
 import { gtfsCauseSchema } from '@/gtfs/cause-effetcs.js';
 import { RideAcceptanceStatusSchema, RideJustificationSourceSchema } from '@/rides/ride-acceptance.js';
 import { RideAnalysisGradeWithNoneSchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
 
-import { FileExportBaseSchema } from './common.js';
-
-/* DATA SCHEMA */
 /* * */
+/* DATA SCHEMA */
 export const FlatRideSchema = z.object({
 	/* META */
 	/* * */
