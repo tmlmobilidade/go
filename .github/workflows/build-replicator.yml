@@ -1,0 +1,59 @@
+# # #
+
+name: 'Replicator Module | Build & Test'
+
+# # #
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production
+      - staging
+      - 'staging/**'
+    paths:
+      - 'modules/replicator/**'
+      - '!modules/replicator/environments/**'
+      - 'packages/**'
+      - '.github/workflows/build-replicator.yml'
+
+# # #
+
+jobs:
+
+  build-packages:
+    name: Build Packages Cache
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: npm install --package-lock-only
+
+      - name: Save package-lock.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-lock.json
+          path: package-lock.json
+          retention-days: 1
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  build-module:
+    name: Build replicator
+    needs: build-packages
+    uses: ./.github/workflows/_build-module-apps.yml
+    with:
+      module: replicator
+      modules-apps: '{"replicator":["api","nginx"]}'
+      ref-name: ${{ github.ref_name }}
+    secrets: inherit
+
