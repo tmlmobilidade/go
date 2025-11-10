@@ -107,6 +107,21 @@ jobs:
       - name: Build packages
         run: npm run build:packages
 
+      - name: Cache package-lock.json
+        uses: actions/cache@v4
+        with:
+          path: package-lock.json
+          key: package-lock-${{ runner.os }}-${{ hashFiles('package.json', 'packages/**/package.json') }}
+          restore-keys: |
+            package-lock-${{ runner.os }}-
+
+      - name: Save package-lock.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-lock.json
+          path: package-lock.json
+          retention-days: 1
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
@@ -134,7 +149,35 @@ jobs:
           IFS='|' read -r module app <<< "${{ matrix.app }}"
           echo "module=$module" >> $GITHUB_OUTPUT
           echo "app=$app" >> $GITHUB_OUTPUT
-          echo "Parsed: module=$module, app=$app"
+          
+          # Determine Dockerfile template based on app type and module
+          if [ "$module" = "gateway" ] && [ "$app" = "nginx" ]; then
+            DOCKERFILE=".github/docker/gateway-nginx.dockerfile"
+          elif [ "$app" = "frontend" ]; then
+            DOCKERFILE=".github/docker/frontend.dockerfile"
+          elif [ "$app" = "nginx" ]; then
+            DOCKERFILE=".github/docker/nginx.dockerfile"
+          else
+            DOCKERFILE=".github/docker/nodejs.dockerfile"
+          fi
+          
+          echo "dockerfile=$DOCKERFILE" >> $GITHUB_OUTPUT
+          echo "Parsed: module=$module, app=$app, dockerfile=$DOCKERFILE"
+
+      - name: Restore package-lock.json
+        uses: actions/cache@v4
+        with:
+          path: package-lock.json
+          key: package-lock-${{ runner.os }}-${{ hashFiles('package.json', 'packages/**/package.json') }}
+          restore-keys: |
+            package-lock-${{ runner.os }}-
+
+      - name: Download package-lock.json artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: package-lock.json
+          path: .
+        continue-on-error: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -153,11 +196,14 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./modules/${{ steps.parse.outputs.module }}/apps/${{ steps.parse.outputs.app }}/Dockerfile
+          file: ${{ steps.parse.outputs.dockerfile }}
           push: false
           tags: ghcr.io/tmlmobilidade/go-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}:${{ github.ref_name }}
           build-args: |
+            MODULE=${{ steps.parse.outputs.module }}
+            APP=${{ steps.parse.outputs.app }}
             ENVIRONMENT=${{ github.ref_name }}
+            NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.go.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
           cache-from: |
             type=gha
           cache-to: |
