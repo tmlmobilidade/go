@@ -4,7 +4,7 @@ FROM node:24-alpine AS base
 
 
 # # #
-# MODULE CONFIGURATION
+# MODULE CONFIGURATION 
 
 ENV MODULE=auth
 ENV APP=api
