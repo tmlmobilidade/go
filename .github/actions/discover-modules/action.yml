@@ -1,0 +1,91 @@
+name: "Discover Modules"
+description: "Discovers which modules and apps to build based on changed files"
+
+inputs:
+  modules-apps:
+    description: "Newline-separated list of modules and their apps (format: module:app, one app per line)"
+    required: true
+  fetch-depth:
+    description: "Depth to fetch when checking out repository"
+    required: false
+    default: "2"
+
+outputs:
+  modules:
+    description: "JSON array of module names to build"
+    value: ${{ steps.discover.outputs.modules }}
+  modules-apps:
+    description: "JSON object mapping module names to their apps"
+    value: ${{ steps.discover.outputs.modules-apps }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
+
+    - name: Get changed files
+      id: changed
+      uses: tj-actions/changed-files@v45
+      with:
+        files: |
+          modules/**
+          packages/**
+
+    - name: Discover modules and apps
+      id: discover
+      uses: actions/github-script@v7
+      env:
+        MODULES_APPS: ${{ inputs.modules-apps }}
+      with:
+        script: |
+          // Parse one app per line format: module:app
+          const moduleAppsMap = {};
+          process.env.MODULES_APPS
+            .split('\n')
+            .filter(Boolean)
+            .forEach(line => {
+              const [module, app] = line.split(':').map(s => s.trim());
+              if (module && app) {
+                if (!moduleAppsMap[module]) {
+                  moduleAppsMap[module] = [];
+                }
+                moduleAppsMap[module].push(app);
+              }
+            });
+
+          const allModules = Object.entries(moduleAppsMap).map(([module, apps]) => ({
+            module,
+            apps
+          }));
+
+          const changedFiles = ${{ toJSON(steps.changed.outputs.all_changed_files) }};
+          const isManual = context.eventName === 'workflow_dispatch';
+          const buildAll = isManual || changedFiles.some(f => f.startsWith('packages/'));
+
+          const modulesToBuild = [];
+          const moduleApps = {};
+
+          for (const { module, apps } of allModules) {
+            if (buildAll) {
+              modulesToBuild.push(module);
+              moduleApps[module] = apps;
+            } else {
+              const changed = changedFiles.some(f =>
+                f.startsWith(`modules/${module}/`) && !f.includes('environments/')
+              );
+              if (changed) {
+                modulesToBuild.push(module);
+                moduleApps[module] = apps;
+              }
+            }
+          }
+
+          core.setOutput('modules', JSON.stringify(modulesToBuild));
+          core.setOutput('modules-apps', JSON.stringify(moduleApps));
+
+          console.log('Modules to build:', modulesToBuild);
+          console.log('Modules and apps:', moduleApps);
+

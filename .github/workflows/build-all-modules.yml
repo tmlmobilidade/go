@@ -20,17 +20,63 @@ on:
 # # #
 
 # Hardcoded array of modules and their apps to build
-# Format: module:app1,app2,app3
+# Format: module:app (one app per line)
 env:
   MODULES_APPS: |
-    auth:api,frontend,nginx
-    alerts:api,frontend,nginx
-    controller:api,frontend,nginx
-    locations:api,frontend,nginx
-    performance:api,frontend,nginx
-    plans:api,frontend,nginx
-    replicator:api,nginx
-    stops:api,frontend,nginx
+    auth:api
+    auth:frontend
+    auth:nginx
+    auth:cleaner
+    auth:file-exporter
+
+    alerts:api
+    alerts:frontend
+    alerts:nginx
+    alerts:organizer
+    
+    controller:api
+    controller:frontend
+    controller:nginx
+    controller:coordinator
+    controller:rides-acceptor
+    controller:rides-bridge
+    controller:rides-cleaner
+    controller:rides-examiner
+    controller:rides-feeder
+    controller:rides-locker
+    controller:sams-examiner
+    controller:sams-feeder
+
+    locations:api
+    locations:frontend
+    locations:nginx
+    
+    performance:api
+    performance:frontend
+    performance:nginx
+    performance:sync-metrics
+    
+    plans:api
+    plans:frontend
+    plans:nginx
+    plans:cleaner
+    plans:export-drt
+    plans:export-merged
+    plans:export-posters
+    plans:validator
+
+    replicator:enrich
+    replicator:stream
+    replicator:sync-apex-locations
+    replicator:sync-vehicle-events
+    replicator:sync-apex-on-board-refunds
+    replicator:sync-apex-on-board-sales
+    replicator:sync-apex-validations
+    
+    stops:api
+    stops:frontend
+    stops:nginx
+    stops:organizer
 
 # # #
 
@@ -40,139 +86,14 @@ jobs:
     name: Discover Modules
     runs-on: ubuntu-latest
     outputs:
-      modules: ${{ steps.set-modules.outputs.modules }}
-      modules-apps: ${{ steps.set-modules.outputs.modules-apps }}
+      modules: ${{ steps.discover.outputs.modules }}
+      modules-apps: ${{ steps.discover.outputs.modules-apps }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Discover modules and apps
+        id: discover
+        uses: ./.github/actions/discover-modules
         with:
-          fetch-depth: 2 # ensure we have the previous commit for change detection
-
-      - name: Discover modules and their apps
-        id: set-modules
-        env:
-          MODULES_APPS: ${{ env.MODULES_APPS }}
-        run: |
-          MODULES_ARRAY=()
-          declare -A MODULE_APPS
-          
-          # Check if this is a manual workflow dispatch or if packages changed
-          BUILD_ALL=false
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Manual workflow dispatch - building all modules"
-            BUILD_ALL=true
-          else
-            # Check if HEAD^ exists (not the first commit)
-            if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-              # Check if packages folder has changes
-              if git diff --name-only HEAD^ HEAD | grep -q "^packages/"; then
-                echo "Changes detected in packages folder - building all modules"
-                BUILD_ALL=true
-              else
-                echo "No changes in packages folder"
-              fi
-            else
-              echo "First commit detected - building all modules"
-              BUILD_ALL=true
-            fi
-          fi
-          
-          if [ "$BUILD_ALL" = true ]; then
-            echo "Discovering all modules and apps"
-          else
-            echo "Discovering modules and apps with changes"
-          fi
-          
-          # Parse the hardcoded MODULES_APPS array
-          while IFS= read -r line; do
-            # Skip empty lines
-            [ -z "$line" ] && continue
-            
-            # Parse module:app1,app2,app3 format
-            module=$(echo "$line" | cut -d':' -f1)
-            apps_str=$(echo "$line" | cut -d':' -f2-)
-            
-            # Check if we should include this module
-            INCLUDE_MODULE=false
-            if [ "$BUILD_ALL" = true ]; then
-              INCLUDE_MODULE=true
-            else
-              # Check if this module has changes (excluding environments)
-              # Only check if HEAD^ exists
-              if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-                module_dir="modules/${module}/"
-                if [ -d "$module_dir" ]; then
-                  CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- "${module_dir}" | grep -v "^${module_dir}environments/" || true)
-                  if [ -z "$CHANGED_FILES" ]; then
-                    echo "No changes in module: ${module}"
-                  else
-                    echo "Changes detected in module: ${module}"
-                    INCLUDE_MODULE=true
-                  fi
-                else
-                  echo "Module directory not found: ${module_dir}"
-                fi
-              else
-                # First commit - include all modules
-                INCLUDE_MODULE=true
-              fi
-            fi
-            
-            if [ "$INCLUDE_MODULE" = true ]; then
-              # Split apps by comma and add them to the array
-              APPS_FOR_MODULE=()
-              IFS=',' read -ra APPS <<< "$apps_str"
-              for app in "${APPS[@]}"; do
-                # Trim whitespace
-                app=$(echo "$app" | xargs)
-                if [ -n "$app" ]; then
-                  APPS_FOR_MODULE+=("${app}")
-                  echo "Found ${module}|${app}"
-                fi
-              done
-              
-              if [ ${#APPS_FOR_MODULE[@]} -gt 0 ]; then
-                MODULES_ARRAY+=("${module}")
-                APPS_JSON=$(printf '%s\n' "${APPS_FOR_MODULE[@]}" | jq -R . | jq -s -c .)
-                MODULE_APPS["${module}"]="${APPS_JSON}"
-              fi
-            fi
-          done <<< "$MODULES_APPS"
-          
-          if [ ${#MODULES_ARRAY[@]} -eq 0 ]; then
-            echo "No modules to build"
-            MODULES="[]"
-            MODULES_APPS_JSON="{}"
-          else
-            MODULES=$(printf '%s\n' "${MODULES_ARRAY[@]}" | jq -R . | jq -s -c .)
-            # Create JSON object with module -> apps mapping
-            MODULES_APPS_JSON="{"
-            FIRST=true
-            for module in "${MODULES_ARRAY[@]}"; do
-              if [ "$FIRST" = true ]; then
-                FIRST=false
-              else
-                MODULES_APPS_JSON+=","
-              fi
-              MODULES_APPS_JSON+="\"${module}\":${MODULE_APPS[$module]}"
-            done
-            MODULES_APPS_JSON+="}"
-          fi
-          
-          {
-            echo "modules<<EOF"
-            echo "$MODULES"
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
-          
-          {
-            echo "modules-apps<<EOF"
-            echo "$MODULES_APPS_JSON"
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
-          
-          echo "Modules to build: $MODULES"
-          echo "Modules and apps: $MODULES_APPS_JSON"
+          modules-apps: ${{ env.MODULES_APPS }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
