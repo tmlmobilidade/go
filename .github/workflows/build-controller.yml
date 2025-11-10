@@ -47,15 +47,86 @@ jobs:
           } >> $GITHUB_OUTPUT
           echo "Discovered apps: $APPS"
 
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
   build:
-    name: ${{ matrix.app }}
+    name: Build ${{ matrix.app }}
     needs: discover-apps
-    uses: ./.github/workflows/_build-and-publish.yml
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-controller-${{ matrix.app }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
     strategy:
       matrix:
         app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
-    with:
-      context: .
-      file: ./modules/controller/apps/${{ matrix.app }}/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-${{ matrix.app }}:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./modules/controller/apps/${{ matrix.app }}/Dockerfile
+          push: false
+          tags: ghcr.io/tmlmobilidade/go-controller-${{ matrix.app }}:${{ github.ref_name }}
+          build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: type=docker,dest=/tmp/image.tar
+
+      - name: Save Docker Image as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-${{ matrix.app }}
+          path: /tmp/image.tar
+          retention-days: 1
+
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  publish:
+    name: Publish ${{ matrix.app }}
+    needs: [discover-apps, build]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Docker Image Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image-${{ matrix.app }}
+
+      - name: Load Docker Image
+        run: |
+          docker load -i image.tar
+
+      - name: Push Docker Image
+        run: |
+          docker push ghcr.io/tmlmobilidade/go-controller-${{ matrix.app }}:${{ github.ref_name }}
