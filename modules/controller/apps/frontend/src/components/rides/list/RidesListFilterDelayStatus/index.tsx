@@ -1,7 +1,7 @@
 /* * */
 
 import { useRidesListContext } from '@/contexts/RidesList.context';
-import { delayStatusValues } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { delayStatusValues } from '@tmlmobilidade/normalizers';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

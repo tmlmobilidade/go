@@ -7,7 +7,7 @@ import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { delayStatusValues, operationalStatusValues, type RideNormalized } from '@tmlmobilidade/normalizers';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type HttpResponse } from '@tmlmobilidade/utils';
 import { usePathname } from 'next/navigation';

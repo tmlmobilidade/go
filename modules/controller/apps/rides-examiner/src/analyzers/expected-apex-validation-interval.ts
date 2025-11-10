@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { type Ride, SimplifiedApexValidation } from '@tmlmobilidade/types';
-import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
+import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 
 /* * */
 

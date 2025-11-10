@@ -1,7 +1,7 @@
 /* * */
 
+import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { type VehicleEvent } from '@tmlmobilidade/types';
-import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
 
 /**
  * Detect the last event in the vehicle events data.

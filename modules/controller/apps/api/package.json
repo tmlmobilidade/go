@@ -23,8 +23,8 @@
 		"@tmlmobilidade/connectors-fastify": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/go-controller-pckg-ride-normalized": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/utils": "*",
 		"pino-pretty": "13.1.2"
 	},

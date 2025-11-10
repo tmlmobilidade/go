@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { type Ride } from '@tmlmobilidade/types';
-import { sortByUnixTimestamp } from '@tmlmobilidade/utils';
+import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 
 /**
  * This analyzer tests if the average interval between vehicle events is within limits.

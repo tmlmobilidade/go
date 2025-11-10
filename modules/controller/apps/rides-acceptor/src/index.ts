@@ -1,9 +1,9 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { normalizeRide } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
 import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { Timer } from '@tmlmobilidade/timer';
 import { GtfsCause, Ride, RideAcceptance } from '@tmlmobilidade/types';
 import { compareObjects } from '@tmlmobilidade/utils';

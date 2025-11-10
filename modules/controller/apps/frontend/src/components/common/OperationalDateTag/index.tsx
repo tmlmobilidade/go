@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { type RideNormalized } from '@tmlmobilidade/normalizers';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */

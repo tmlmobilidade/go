@@ -6,7 +6,6 @@
 			"@/*": ["./src/*"]
 		},
 		"rootDir": ".",
-		"strictNullChecks": false,
 		"types": ["node"]
 	},
 	"exclude": ["node_modules", "dist"]

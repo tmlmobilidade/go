@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { type RideNormalized } from '@tmlmobilidade/normalizers';
 import { Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */

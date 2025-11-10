@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RideNormalized } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { RideNormalized } from '@tmlmobilidade/normalizers';
 import { Label, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */

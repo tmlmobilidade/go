@@ -1,8 +1,7 @@
 /* * */
 
-import { delayStatusValues, type RideNormalized } from '@/ride-normalized.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Ride, type RideAnalysis, type UnixTimestamp } from '@tmlmobilidade/types';
+import { DelayStatusSchema, type Ride, RideAnalysisGrade, type RideNormalized } from '@tmlmobilidade/types';
 
 /**
  * This function normalizes a Ride object by adding additional properties
@@ -40,7 +39,7 @@ export function normalizeRide(ride: Ride): RideNormalized {
  * @param grade The grade to return if the operational status is not 'scheduled' or 'running'.
  * @returns The analysis grade for the Ride.
  */
-export function getAnalysisGrade(operationalStatus: RideNormalized['operational_status'], grade?: Ride['analysis']['SIMPLE_THREE_VEHICLE_EVENTS']['grade']): 'none' | RideAnalysis['grade'] {
+export function getAnalysisGrade(operationalStatus: RideNormalized['operational_status'], grade?: RideAnalysisGrade): 'none' | RideAnalysisGrade {
 	//
 
 	if (operationalStatus === 'scheduled' || operationalStatus === 'running') {
@@ -85,7 +84,7 @@ export function getDelayValueDisplay(timeScheduled: Ride['start_time_scheduled']
  * @param timestamp The date string to extract the hour and minute components from.
  * @returns The hour and minute components of the date string.
  */
-export function getDelayStatus(timeScheduled: UnixTimestamp, timeObserved: UnixTimestamp): typeof delayStatusValues[number] {
+export function getDelayStatus(timeScheduled: Ride['start_time_scheduled'], timeObserved: Ride['start_time_observed']): typeof DelayStatusSchema.options[number] {
 	//
 
 	if (!timeScheduled || !timeObserved) {
@@ -150,7 +149,7 @@ export function getOperationalStatus(startTimeScheduled: Ride['start_time_schedu
 	// If there is seen_last_at for the ride, and the most recent one was received less than or exactly at 10 minutes ago,
 	// then the ride is considered 'running'. Else it is considered 'ended'.
 
-	const millisecondsFromMostRecentVehicleEventToNow = nowInUnixMilliseconds - seenLastAt;
+	const millisecondsFromMostRecentVehicleEventToNow = nowInUnixMilliseconds - (seenLastAt ?? 0);
 
 	if (millisecondsFromMostRecentVehicleEventToNow <= 600000) {
 		return 'running';
