@@ -59,6 +59,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Generate nginx.conf from template
+        if: matrix.app == 'nginx' && inputs.module != 'gateway'
+        run: |
+          MODULE="${{ inputs.module }}"
+          TEMPLATE=".github/templates/nginx.conf.template"
+          OUTPUT="modules/${MODULE}/apps/nginx/configs/nginx.conf"
+          
+          # Create directory if it doesn't exist
+          mkdir -p "$(dirname "$OUTPUT")"
+          
+          # Replace {{MODULE}} placeholder with actual module name
+          sed "s/{{MODULE}}/${MODULE}/g" "$TEMPLATE" > "$OUTPUT"
+          
+          echo "Generated $OUTPUT from template"
+
       - name: Determine Dockerfile template
         id: dockerfile
         run: |
