@@ -19,6 +19,21 @@ on:
 
 # # #
 
+# Hardcoded array of modules and their apps to build
+# Format: module:app1,app2,app3
+env:
+  MODULES_APPS: |
+    auth:api,frontend,nginx
+    alerts:api,frontend,nginx
+    controller:api,frontend,nginx
+    locations:api,frontend,nginx
+    performance:api,frontend,nginx
+    plans:api,frontend,nginx
+    replicator:api,nginx
+    stops:api,frontend,nginx
+
+# # #
+
 jobs:
 
   discover-modules:
@@ -35,6 +50,8 @@ jobs:
 
       - name: Discover modules and their apps
         id: set-modules
+        env:
+          MODULES_APPS: ${{ env.MODULES_APPS }}
         run: |
           MODULES_ARRAY=()
           declare -A MODULE_APPS
@@ -66,9 +83,14 @@ jobs:
             echo "Discovering modules and apps with changes"
           fi
           
-          for module_dir in modules/*/; do
-            module=$(basename "$module_dir")
-            APPS_FOR_MODULE=()
+          # Parse the hardcoded MODULES_APPS array
+          while IFS= read -r line; do
+            # Skip empty lines
+            [ -z "$line" ] && continue
+            
+            # Parse module:app1,app2,app3 format
+            module=$(echo "$line" | cut -d':' -f1)
+            apps_str=$(echo "$line" | cut -d':' -f2-)
             
             # Check if we should include this module
             INCLUDE_MODULE=false
@@ -78,12 +100,17 @@ jobs:
               # Check if this module has changes (excluding environments)
               # Only check if HEAD^ exists
               if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-                CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- "${module_dir}" | grep -v "^${module_dir}environments/" || true)
-                if [ -z "$CHANGED_FILES" ]; then
-                  echo "No changes in module: ${module}"
+                module_dir="modules/${module}/"
+                if [ -d "$module_dir" ]; then
+                  CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- "${module_dir}" | grep -v "^${module_dir}environments/" || true)
+                  if [ -z "$CHANGED_FILES" ]; then
+                    echo "No changes in module: ${module}"
+                  else
+                    echo "Changes detected in module: ${module}"
+                    INCLUDE_MODULE=true
+                  fi
                 else
-                  echo "Changes detected in module: ${module}"
-                  INCLUDE_MODULE=true
+                  echo "Module directory not found: ${module_dir}"
                 fi
               else
                 # First commit - include all modules
@@ -92,9 +119,13 @@ jobs:
             fi
             
             if [ "$INCLUDE_MODULE" = true ]; then
-              for app_dir in "${module_dir}apps"/*/; do
-                if [ -f "${app_dir}Dockerfile" ]; then
-                  app=$(basename "$app_dir")
+              # Split apps by comma and add them to the array
+              APPS_FOR_MODULE=()
+              IFS=',' read -ra APPS <<< "$apps_str"
+              for app in "${APPS[@]}"; do
+                # Trim whitespace
+                app=$(echo "$app" | xargs)
+                if [ -n "$app" ]; then
                   APPS_FOR_MODULE+=("${app}")
                   echo "Found ${module}|${app}"
                 fi
@@ -106,7 +137,7 @@ jobs:
                 MODULE_APPS["${module}"]="${APPS_JSON}"
               fi
             fi
-          done
+          done <<< "$MODULES_APPS"
           
           if [ ${#MODULES_ARRAY[@]} -eq 0 ]; then
             echo "No modules to build"
