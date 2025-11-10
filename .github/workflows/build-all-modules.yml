@@ -129,7 +129,6 @@ jobs:
     name: Build ${{ matrix.app }}
     needs: [discover-apps, build-packages]
     if: needs.discover-apps.outputs.apps != '[]'
-    continue-on-error: false
     runs-on: ubuntu-latest
     concurrency:
       group: build-all-modules-${{ matrix.app }}
@@ -137,6 +136,7 @@ jobs:
     permissions:
       contents: read
     strategy:
+      fail-fast: false
       matrix:
         app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
     steps:
@@ -230,6 +230,7 @@ jobs:
       contents: read
       packages: write
     strategy:
+      fail-fast: false
       matrix:
         app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
     steps:
