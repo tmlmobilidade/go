@@ -1,11 +1,12 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@helperkits/writer';
+import { Dates } from '@tmlmobilidade/dates';
 import { vehicleEvents } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { generateRandomString } from '@tmlmobilidade/strings';
+import { Timer } from '@tmlmobilidade/timer';
 import { VehicleEvent } from '@tmlmobilidade/types';
-import { Dates, generateRandomString } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
 /* * */
