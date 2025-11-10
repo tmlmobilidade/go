@@ -106,55 +106,10 @@ jobs:
         with:
           context: .
           file: ${{ steps.dockerfile.outputs.dockerfile }}
-          push: false
+          push: true
           tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ inputs.ref-name }}
           build-args: |
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}
             ENVIRONMENT=${{ inputs.ref-name }}
             NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'staging.go.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
-          outputs: type=docker,dest=/tmp/image-${{ inputs.module }}-${{ matrix.app }}.tar
-
-      - name: Save Docker Image as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-image-${{ inputs.module }}-${{ matrix.app }}
-          path: /tmp/image-${{ inputs.module }}-${{ matrix.app }}.tar
-          retention-days: 1
-
-  publish:
-    name: Publish ${{ inputs.module }}/${{ matrix.app }}
-    needs: [get-apps, build]
-    if: success() && needs.get-apps.outputs.apps != '[]'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    strategy:
-      fail-fast: false
-      matrix:
-        app: ${{ fromJson(needs.get-apps.outputs.apps) }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download Docker Image Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image-${{ inputs.module }}-${{ matrix.app }}
-
-      - name: Load Docker Image
-        run: |
-          docker load -i image-${{ inputs.module }}-${{ matrix.app }}.tar
-
-      - name: Push Docker Image
-        run: |
-          docker push ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ inputs.ref-name }}
-
