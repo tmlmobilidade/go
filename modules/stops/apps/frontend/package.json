@@ -15,14 +15,14 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/utils": "*",
 		"@tabler/icons-react": "3.35.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
-		"clsx": "2.1.1",
+		"@tmlmobilidade/utils": "*",
 		"next": "15.5.6",
 		"nuqs": "2.7.3",
-		"papaparse": "5.5.3",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"swr": "2.3.6"
@@ -33,9 +33,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/luxon": "3.7.1",
 		"@types/node": "24.10.0",
-		"@types/papaparse": "5.5.0",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",
 		"typescript": "5.9.3"

@@ -1,28 +1,48 @@
 # # #
-# DEFINE THE BASE IMAGE
 
 FROM node:24-alpine AS base
 
+
+# # #
+# MODULE CONFIGURATION
+
 ENV MODULE=stops
 ENV APP=organizer
+
+
+# # #
+# GLOBAL DEPENDENCIES
 
 RUN npm install -g turbo@^2
 
 
 # # #
-# BUILDER STAGE
+# INSTALLER STAGE
+
+FROM base AS installer
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install --package-lock-only
+
+
+# # #
+# PRUNER STAGE
 
 FROM base AS pruner
 
 WORKDIR /app
 
 COPY . .
+COPY --from=installer /app/package-lock.json ./package-lock.json
 
 RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
 
 # # #
-# INSTALLER STAGE
+# BUILDER STAGE
 
 FROM base AS builder
 
@@ -44,6 +64,10 @@ FROM base AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app .
+# Copy only the built app and dependencies,
+# packages need to be included because node_modules symlinks to them.
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist/ .
 
-CMD node apps/${APP}/dist/index.js
+CMD node src/index.js
