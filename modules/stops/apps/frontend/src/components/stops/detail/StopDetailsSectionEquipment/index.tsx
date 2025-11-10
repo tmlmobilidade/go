@@ -23,7 +23,12 @@ export function StopDetailsSectionEquipment() {
 			<Section>
 				<Grid columns="abcd" gap="md">
 					{facilitiesSchema.options.map(value => (
-						<StopDetailFacilityCheckbox label={Translations.FACILITIES[value]} value={value} proposeable />
+						<StopDetailFacilityCheckbox
+							key={value}
+							label={Translations.FACILITIES[value]}
+							value={value}
+							proposeable
+						/>
 					))}
 				</Grid>
 			</Section>
