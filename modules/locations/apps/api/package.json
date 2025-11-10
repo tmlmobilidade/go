@@ -17,23 +17,19 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.1.0",
+		"@tmlmobilidade/connectors-fastify": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.2.0",
-		"fastify": "5.6.1",
-		"pino-pretty": "13.1.2",
-		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.6",
-		"zustand": "5.0.8"
+		"pino-pretty": "13.1.2"
 	},
 	"devDependencies": {
-		"@fastify/multipart": "9.3.0",
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/jest": "30.0.0",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
-		"jest": "30.2.0",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.6",
 		"typescript": "5.9.3"
 	}
 }

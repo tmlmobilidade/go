@@ -20,8 +20,7 @@
 		"fastify": "5.2.2",
 		"pino-pretty": "13.0.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.19.3",
-		"zustand": "5.0.5"
+		"tsx": "4.19.3"
 	},
 	"devDependencies": {
 		"@fastify/multipart": "9.0.3",
