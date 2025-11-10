@@ -3,9 +3,8 @@
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
 import { gtfsCauseSchema } from '@/gtfs/cause-effetcs.js';
+import { RideAnalysisSummarySchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
-
-import { RideAnalysisSummarySchema } from './ride-analysis.js';
 
 /* * */
 
