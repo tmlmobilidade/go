@@ -1,8 +1,8 @@
 'use client';
 
+import { AGENCIES, AgencyType } from '@/constants';
 /* * */
 
-import { OPERATORS, OperatorType } from '@/constants';
 import { MetricsRoutes } from '@/routes';
 import { calculateSystemHealthIndex, getSystemStatusInfo, StatusInfo } from '@/utils/systemStatus';
 import { RealtimeDemand, RealtimeServiceCompliance } from '@tmlmobilidade/types';
@@ -14,10 +14,10 @@ import useSWR from 'swr';
 
 interface HomeContextState {
 	actions: {
-		setSelectedOperator: (operator: null | string) => void
+		setSelectedAgency: (agency: null | string) => void
 	}
 	data: {
-		selected_operator: null | OperatorType
+		selected_agency: AgencyType | null
 		systemStatuses: Record<string, StatusInfo>
 	}
 	flags: {
@@ -48,14 +48,14 @@ export const HomeContextProvider = ({ children }: { children: React.ReactNode })
 
 	const t = useTranslations();
 
-	const [selectedOperator, setSelectedOperator] = useState<null | OperatorType>(OPERATORS.ALL);
+	const [selectedAgency, setSelectedAgency] = useState<AgencyType | null>(AGENCIES.ALL);
 	const [systemStatuses, setSystemStatuses] = useState<Record<string, StatusInfo>>({});
 
 	//
 	// B. Define actions
 
-	const changeSelectedOperator = (operator: null | OperatorType) => {
-		setSelectedOperator(operator);
+	const changeSelectedAgency = (agency: AgencyType | null) => {
+		setSelectedAgency(agency);
 	};
 
 	//
@@ -72,12 +72,12 @@ export const HomeContextProvider = ({ children }: { children: React.ReactNode })
 
 		const statuses: Record<string, StatusInfo> = {};
 
-		Object.values(OPERATORS).forEach((op) => {
+		Object.values(AGENCIES).forEach((agency) => {
 			// 1️⃣ Merge metrics
 			const metricsData: Record<string, { last_week: number, now: number }> = {};
 
-			const serviceData = op === 'all' ? serviceComplianceData[0].data.total : serviceComplianceData[0].data.operators[op];
-			const demandMetric = op === 'all' ? demandData[0].data.total : demandData[0].data.operators[op];
+			const serviceData = agency === 'all' ? serviceComplianceData[0].data.total : serviceComplianceData[0].data.operators[agency];
+			const demandMetric = agency === 'all' ? demandData[0].data.total : demandData[0].data.operators[agency];
 
 			for (const [key, value] of Object.entries(serviceData)) {
 				metricsData[key] = {
@@ -96,7 +96,7 @@ export const HomeContextProvider = ({ children }: { children: React.ReactNode })
 
 			// 3️⃣ Transform into friendly status info
 			if (globalIndex != null) {
-				statuses[op] = getSystemStatusInfo(globalIndex, t);
+				statuses[agency] = getSystemStatusInfo(globalIndex, t);
 			}
 		});
 
@@ -108,10 +108,10 @@ export const HomeContextProvider = ({ children }: { children: React.ReactNode })
 
 	const contextValue: HomeContextState = {
 		actions: {
-			setSelectedOperator: changeSelectedOperator,
+			setSelectedAgency: changeSelectedAgency,
 		},
 		data: {
-			selected_operator: selectedOperator,
+			selected_agency: selectedAgency,
 			systemStatuses,
 		},
 		flags: {

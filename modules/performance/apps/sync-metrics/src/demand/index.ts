@@ -4,10 +4,12 @@ import { syncDemandByAgencyByDay } from '@/demand/by_agency/by_day.js';
 import { syncDemandByAgencyByMonth } from '@/demand/by_agency/by_month.js';
 import { syncDemandByAgencyByYear } from '@/demand/by_agency/by_year.js';
 import { computeTopDemandByAgency } from '@/demand/by_agency/record_day.js';
+import { computeTopDemandByAgencyByDayType } from '@/demand/by_agency/top_by_day_type.js';
 import { syncDemandByLineByDay } from '@/demand/by_line/by_day.js';
 import { syncDemandByLineByMonth } from '@/demand/by_line/by_month.js';
 import { syncDemandByLineByYear } from '@/demand/by_line/by_year.js';
 import { computeMeanDemandByLineByMonth } from '@/demand/by_line/mean_by_month.js';
+import { computeTop30DayPerformanceByLine } from '@/demand/by_line/top_30day_performance.js';
 import { computeTopMeanDemandByLineByMonth } from '@/demand/by_line/top_mean_by_month.js';
 import { syncDemandByPatternByDay } from '@/demand/by_pattern/by_day.js';
 import { syncDemandByPatternByMonth } from '@/demand/by_pattern/by_month.js';
@@ -48,6 +50,8 @@ export const syncDemandMetrics = async () => {
 		await syncDemandByAgencyByDay();
 
 		await computeTopDemandByAgency();
+		await computeTop30DayPerformanceByLine();
+		await computeTopDemandByAgencyByDayType();
 
 		//
 
@@ -67,6 +71,7 @@ export const syncDemandMetrics = async () => {
 
 		await syncDemandByPatternHourByYear();
 		await syncDemandByPatternHourByMonth();
+		// await syncDemandByPatternHourByDay();
 
 		//
 

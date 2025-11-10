@@ -6,7 +6,7 @@ import { IndicatorChip } from '@/components/layout/IndicatorChip';
 import { MetricCard } from '@/components/layout/MetricCard';
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { TrendChip } from '@/components/layout/TrendChip';
-import { OperatorType } from '@/constants';
+import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconBus } from '@tabler/icons-react';
@@ -19,13 +19,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function ServiceCompliance({ operator }: { operator?: OperatorType }) {
+export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 	//
 
 	// A. Setup variables
 
 	const homeContext = useHomeContext();
-	const selectedOperator = operator || homeContext.data.selected_operator;
+	const selectedAgency = agency || homeContext.data.selected_agency;
 
 	// B. Fetch data
 
@@ -50,25 +50,25 @@ export function ServiceCompliance({ operator }: { operator?: OperatorType }) {
 
 		const latest = data[0];
 
-		const operatorData = selectedOperator === 'all'
+		const agencyData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.operators[selectedOperator];
+			: latest.data.operators[selectedAgency];
 
 		const calculatePct = (part: number, total: number) => {
 			return total > 0 ? (part / total) * 100 : 0;
 		};
 
 		return {
-			advancedRides: operatorData.advanced_rides,
-			delayedRides: operatorData.five_min_delays,
+			advancedRides: agencyData.advanced_rides,
+			delayedRides: agencyData.five_min_delays,
 			lastUpdated: new Date(latest.generated_at),
-			noPassengerRides: operatorData.no_passengers_rides,
-			ridesWithSales: operatorData.rides_with_sales,
-			scheduledRides: operatorData.scheduled_rides,
-			validRides: operatorData.valid_rides,
-			validRidesPct: calculatePct(operatorData.valid_rides.now, operatorData.scheduled_rides.now),
+			noPassengerRides: agencyData.no_passengers_rides,
+			ridesWithSales: agencyData.rides_with_sales,
+			scheduledRides: agencyData.scheduled_rides,
+			validRides: agencyData.valid_rides,
+			validRidesPct: calculatePct(agencyData.valid_rides.now, agencyData.scheduled_rides.now),
 		};
-	}, [data, selectedOperator]);
+	}, [data, selectedAgency]);
 
 	const metricsData = [
 		{

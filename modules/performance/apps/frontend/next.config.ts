@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
 	async rewrites() {
 		return [
 			{
+				destination: 'https://go.carrismetropolitana.pt/api/dates/public',
+				source: '/api/dates/public',
+			},
+			{
 				destination: `http://localhost:52006/:path*`,
 				source: '/api/:path*',
 			},

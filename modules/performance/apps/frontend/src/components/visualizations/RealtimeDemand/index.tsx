@@ -3,10 +3,8 @@
 /* * */
 
 import { MetricCard } from '@/components/layout/MetricCard';
-import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
-import { DemandByAgencyByDay } from '@/components/visualizations/DemandByAgencyByDay';
 import { RecordDemand } from '@/components/visualizations/RecordDemand';
-import { OperatorType } from '@/constants';
+import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconUser } from '@tabler/icons-react';
@@ -17,15 +15,17 @@ import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
+import { DemandByDay } from '../DemandByDay';
+
 /* * */
 
-export function RealtimeDemand({ operator }: { operator?: OperatorType }) {
+export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 	//
 
 	// A. Setup variables
 
 	const homeContext = useHomeContext();
-	const selectedOperator = operator || homeContext.data.selected_operator;
+	const selectedAgency = agency || homeContext.data.selected_agency;
 
 	// B. Fetch data
 
@@ -46,12 +46,12 @@ export function RealtimeDemand({ operator }: { operator?: OperatorType }) {
 
 		const latest = data[0];
 
-		const operatorData = selectedOperator === 'all'
+		const agenciesData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.operators[selectedOperator];
+			: latest.data.operators[selectedAgency];
 
-		const now = operatorData.now;
-		const lastWeek = operatorData.last_week;
+		const now = agenciesData.now;
+		const lastWeek = agenciesData.last_week;
 		const progress = lastWeek > 0 ? (now / lastWeek) * 100 : 0;
 
 		return {
@@ -60,7 +60,7 @@ export function RealtimeDemand({ operator }: { operator?: OperatorType }) {
 			now,
 			progress,
 		};
-	}, [data, selectedOperator]);
+	}, [data, selectedAgency]);
 
 	//
 	// D. Render components
@@ -79,9 +79,9 @@ export function RealtimeDemand({ operator }: { operator?: OperatorType }) {
 				>
 
 					<div className={styles.container}>
-						<RecordDemand operator={operator} />
+						<RecordDemand agency={selectedAgency} />
 						<Spacer size="md" />
-						<DemandByAgencyByDay chartType="bar" height={200} operator={operator} />
+						<DemandByDay chartType="bar" filters={{ agencyId: selectedAgency }} groupBy="agency" height={200} />
 					</div>
 
 				</MetricCard>

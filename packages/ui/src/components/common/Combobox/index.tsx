@@ -40,6 +40,7 @@ interface BaseProps extends Omit<MantineComboboxProps, 'onChange' | 'value'> {
 	maxHeight?: number
 	placeholder?: string
 	searchable?: boolean
+	width?: number
 }
 
 // Props for single selection
@@ -72,6 +73,7 @@ export default function ComboboxComponent(props: Props) {
 		multiple = false,
 		onChange,
 		searchable = false,
+		width,
 		...rest
 	} = props;
 
@@ -317,6 +319,7 @@ export default function ComboboxComponent(props: Props) {
 						rightSection={renderClearButton()}
 						type="text"
 						value={search}
+						w={width}
 						onBlur={() => {
 							combobox.closeDropdown();
 							setSearch(itemData ? itemData.label : '');
@@ -333,6 +336,7 @@ export default function ComboboxComponent(props: Props) {
 						onFocus={() => combobox.openDropdown()}
 						rightSection={renderClearButton()}
 						type="button"
+						w={width}
 						onBlur={() => {
 							combobox.closeDropdown();
 							setSearch(value?.toString() || '');

@@ -1,7 +1,7 @@
 /* * */
 
 import StatusCircle from '@/components/layout/StatusCircle';
-import { OPERATORS } from '@/constants';
+import { AGENCIES } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { Skeleton } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
@@ -9,25 +9,25 @@ import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-export default function OperatorsSelector() {
+export default function AgencySelector() {
 	//
 
 	// A. Setup variables
 
 	const homeContext = useHomeContext();
-	const selectedOperator = homeContext.data.selected_operator;
+	const selectedAgency = homeContext.data.selected_agency;
 
 	const t = useTranslations();
 
 	//
 	// B. Transform data
 
-	const operatorsData = useMemo(() =>
-		Object.values(OPERATORS)
+	const agenciesData = useMemo(() =>
+		Object.values(AGENCIES)
 			.filter(value => homeContext.data.systemStatuses?.[value])
 			.map(value => ({
 				key: value,
-				label: t(`operators.${value}`),
+				label: t(`agencies.${value}`),
 				systemStatus: homeContext.data.systemStatuses[value].status,
 			})),
 	[homeContext.data.systemStatuses, t]);
@@ -35,12 +35,12 @@ export default function OperatorsSelector() {
 	// C. Render components
 
 	return (
-		<div className={styles.operatorsContainer}>
+		<div className={styles.agenciesContainer}>
 
-			{operatorsData.length ? (
+			{agenciesData.length ? (
 				<>
-					{operatorsData.map(({ key, label, systemStatus }) => (
-						<div key={key} className={`${styles.operator} ${selectedOperator !== key ? styles.mutedOperator : ''}`} onClick={() => homeContext.actions.setSelectedOperator(key)}>
+					{agenciesData.map(({ key, label, systemStatus }) => (
+						<div key={key} className={`${styles.agency} ${selectedAgency !== key ? styles.mutedAgency : ''}`} onClick={() => homeContext.actions.setSelectedAgency(key)}>
 							<StatusCircle status={systemStatus} />
 							{label}
 						</div>

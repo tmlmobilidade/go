@@ -176,6 +176,26 @@ export const DemandByPatternHourByMonthSchema = DemandByPatternSchema.extend({
 	}),
 });
 
+export const DemandByPatternHourByDaySchema = DemandByPatternSchema.extend({
+	data: z.record(
+		z.string(),
+		z.object({
+			day_type: z.enum(['1', '2', '3']),
+			holiday: z.enum(['0', '1']),
+			notes: z.string().nullable(),
+			period: z.enum(['1', '2', '3']),
+			qty: z.number(),
+		}),
+	),
+	metric: z.literal('demand_by_pattern_hour_by_day'),
+	properties: z.object({
+		hour: z.number().min(0).max(23),
+		line_id: z.string(),
+		minute: z.number().min(0).max(59),
+		pattern_id: z.string(),
+	}),
+});
+
 /* RECORD BY AGENCY */
 
 export const TopDemandByAgencySchema = MetricBaseSchema.extend({
@@ -207,4 +227,56 @@ export const TopDemandByAgencySchema = MetricBaseSchema.extend({
 	metric: z.literal('top_demand_by_agency'),
 });
 
+export const TopDemandByAgencyByDayTypeSchema = MetricBaseSchema.extend({
+	data: z.object({
+		operators: z.record(
+			z.string().describe('Agency ID'),
+			z.record(
+				z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
+				z.record(
+					z.string().describe('Date in \'YYYY-MM-DD\' format'),
+					z.number(),
+				),
+			),
+		),
+		total: z.record(
+			z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
+			z.record(
+				z.string().describe('Date in \'YYYY-MM-DD\' format'),
+				z.number(),
+			),
+		),
+	}),
+	metric: z.literal('top_demand_by_agency_by_day_type'),
+});
+
+export const TopLines30DayPerformanceSchema = MetricBaseSchema.extend({
+	data: z.object({
+		top_performers: z.record(
+			z.string().describe('Line ID'),
+			z.object({
+				increase_pct: z.number(),
+				last_30_days_by_day_type: z.record(
+					z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
+					z.number(),
+				),
+				last_30_days_total: z.number(),
+				ytd_avg: z.number(),
+			}),
+		),
+		worst_performers: z.record(
+			z.string().describe('Line ID'),
+			z.object({
+				increase_pct: z.number(),
+				last_30_days_by_day_type: z.record(
+					z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
+					z.number(),
+				),
+				last_30_days_total: z.number(),
+				ytd_avg: z.number(),
+			}),
+		),
+	}),
+	metric: z.literal('top_lines_30day_performance'),
+});
 /* * */

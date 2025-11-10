@@ -1,4 +1,11 @@
 {
+	"agencies": {
+		"41": "Área 1",
+		"42": "Área 2",
+		"43": "Área 3",
+		"44": "Área 4",
+		"all": "Toda a CM"
+	},
 	"chart": {
 		"series": {
 			"average": {
@@ -10,16 +17,14 @@
 		}
 	},
 	"dates": {
+		"day_types": {
+			"day_type_1": "Dias úteis",
+			"day_type_2": "Sábados",
+			"day_type_3": "Domingos e feriados"
+		},
 		"formatted": "{date, date, ::EEEE, dd MMMM yyyy}",
 		"formatted_short": "{date, date, ::dd MMMM yyyy}",
 		"holiday": "Feriado"
-	},
-	"operators": {
-		"41": "Área 1",
-		"42": "Área 2",
-		"43": "Área 3",
-		"44": "Área 4",
-		"all": "Toda a CM"
 	},
 	"recordProgress": {
 		"0_10": "Acabámos de sair da garagem 🚍💨",

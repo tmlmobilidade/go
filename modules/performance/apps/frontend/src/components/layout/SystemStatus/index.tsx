@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function SystemStatus({ operator }: { operator?: string }) {
+export default function SystemStatus({ agency }: { agency?: string }) {
 	//
 
 	//
@@ -17,12 +17,12 @@ export default function SystemStatus({ operator }: { operator?: string }) {
 
 	const t = useTranslations('systemStatus');
 	const homeContext = useHomeContext();
-	const selectedOperator = operator || homeContext.data.selected_operator;
+	const selectedAgency = agency || homeContext.data.selected_agency;
 
 	//
 	// B. Fetch data
 
-	const systemStatus = homeContext.data.systemStatuses[selectedOperator] as StatusInfo | undefined;
+	const systemStatus = homeContext.data.systemStatuses[selectedAgency] as StatusInfo | undefined;
 
 	const translationsMap = {
 		negative: t('negative'),

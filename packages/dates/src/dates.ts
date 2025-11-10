@@ -183,6 +183,20 @@ export class Dates {
 	}
 
 	/**
+	 * Returns the difference between this date and another date.
+	 * @param other The other Dates object to compare with
+	 * @param unit The unit of time to return the difference in (defaults to 'day')
+	 * @returns The difference as a number in the specified unit
+	 */
+	diff(other: Dates, unit: DateTimeUnit = 'day'): number {
+		if (!this.iso || !other.iso) throw new Error('ISO date is not set.');
+		const thisDateTime = DateTime.fromISO(this.iso, { setZone: true });
+		const otherDateTime = DateTime.fromISO(other.iso, { setZone: true });
+
+		return thisDateTime.diff(otherDateTime, unit).as(unit);
+	}
+
+	/**
 	 * Returns a new Dates object with the end of the specified unit.
 	 * @param unit The unit to set the end of, e.g., 'day', 'month', 'year', etc.
 	 * @returns A new Dates object with the end of the specified unit.

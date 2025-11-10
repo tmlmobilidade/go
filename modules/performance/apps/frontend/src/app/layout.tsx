@@ -1,8 +1,9 @@
 /* * */
 
+import { DatesContextProvider } from '@/contexts/Dates.context';
 import { HomeContextProvider } from '@/contexts/Home.context';
-import { LinesContextProvider } from '@/contexts/Lines.context';
 import { LocaleContextProvider } from '@/contexts/Locale.context';
+import { NetworkContextProvider } from '@/contexts/Network.context';
 import { ThemeProviders } from '@/providers/theme-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
@@ -26,11 +27,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					<AppWrapper>
 						<ThemeProviders>
 							<LocaleContextProvider>
-								<LinesContextProvider>
-									<HomeContextProvider>
-										{children}
-									</HomeContextProvider>
-								</LinesContextProvider>
+								<NetworkContextProvider>
+									<DatesContextProvider>
+										<HomeContextProvider>
+											{children}
+										</HomeContextProvider>
+									</DatesContextProvider>
+								</NetworkContextProvider>
 							</LocaleContextProvider>
 						</ThemeProviders>
 					</AppWrapper>

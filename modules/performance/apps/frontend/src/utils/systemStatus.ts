@@ -134,7 +134,7 @@ function calculateTargetScore(baseNow: number, target: number | number[], goal: 
  * @param {boolean} options.verbose - Whether to log detailed calculation steps.
  * @returns {Object} Object containing breakdown and globalIndex.
  */
-export function calculateSystemHealthIndex(metrics: MetricsData, { verbose = true } = {}) {
+export function calculateSystemHealthIndex(metrics: MetricsData, { verbose = false } = {}) {
 	let totalWeight = 0;
 	let totalScore = 0;
 	const breakdown = [];

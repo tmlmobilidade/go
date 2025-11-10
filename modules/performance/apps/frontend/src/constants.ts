@@ -32,8 +32,8 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	{
 		dashboards: [
 			{
-				key: 'demand-by-line',
-				label: 'Procura por linha',
+				key: 'demand-by',
+				label: 'Procura por...',
 			},
 			{
 				key: 'occupancy-rate',
@@ -148,7 +148,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	},
 ];
 
-export const OPERATORS = {
+export const AGENCIES = {
 	ALL: 'all',
 	AREA_1: '41',
 	AREA_2: '42',
@@ -156,6 +156,6 @@ export const OPERATORS = {
 	AREA_4: '44',
 } as const;
 
-export type OperatorType = typeof OPERATORS[keyof typeof OPERATORS];
+export type AgencyType = typeof AGENCIES[keyof typeof AGENCIES];
 
 export type SystemStatusType = 'negative' | 'positive' | 'warning';

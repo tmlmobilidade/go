@@ -4,7 +4,7 @@
 
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { OperatorType } from '@/constants';
+import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/types';
@@ -17,14 +17,14 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RecordDemand({ operator }: { operator?: OperatorType }) {
+export function RecordDemand({ agency }: { agency?: AgencyType }) {
 	//
 
 	// A. Setup variables
 
 	const t = useTranslations();
 	const homeContext = useHomeContext();
-	const selectedOperator = operator || homeContext.data.selected_operator;
+	const selectedAgency = agency || homeContext.data.selected_agency;
 
 	// B. Fetch data
 
@@ -53,16 +53,16 @@ export function RecordDemand({ operator }: { operator?: OperatorType }) {
 		const topDemandLatest = topDemandByAgency[0];
 
 		// Get current passengers
-		const currentData = selectedOperator === 'all'
+		const currentData = selectedAgency === 'all'
 			? realtimeLatest.data.total
-			: realtimeLatest.data.operators?.[selectedOperator];
+			: realtimeLatest.data.operators?.[selectedAgency];
 
 		if (!currentData) return null;
 
 		// Get record data
-		const recordData = selectedOperator === 'all'
+		const recordData = selectedAgency === 'all'
 			? topDemandLatest.data.total
-			: topDemandLatest.data.operators?.[selectedOperator];
+			: topDemandLatest.data.operators?.[selectedAgency];
 
 		if (!recordData) return null;
 
@@ -82,7 +82,7 @@ export function RecordDemand({ operator }: { operator?: OperatorType }) {
 			recordPassengers,
 			remaining: recordPassengers.qty - currentPassengers,
 		};
-	}, [realtimeDemand, topDemandByAgency, selectedOperator]);
+	}, [realtimeDemand, topDemandByAgency, selectedAgency]);
 
 	// D. Render components
 	if (!formattedData) {

@@ -9,7 +9,7 @@ export interface SurfaceProps {
 	children: React.ReactNode
 	height?: 'auto' | 'full'
 	justify?: 'center' | 'end' | 'start'
-	overflow?: 'auto' | 'hidden' | 'scroll'
+	overflow?: 'auto' | 'hidden' | 'scroll' | 'visible'
 	variant?: 'default' | 'transparent'
 }
 
