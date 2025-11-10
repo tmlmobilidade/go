@@ -21,35 +21,94 @@ on:
 
 jobs:
 
+  check-packages-changed:
+    name: Check Packages Changed
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if packages changed
+        id: check
+        run: |
+          # On workflow_dispatch, build all apps
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Manual trigger - will build all apps"
+          # Check if HEAD^ exists (might not exist on first commit or shallow clone)
+          elif ! git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "No previous commit found - will build all apps"
+          elif git diff --quiet HEAD^ HEAD -- "packages/"; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Packages did not change"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Packages changed - will build all apps"
+          fi
+
   discover-apps:
     name: Discover Apps
+    needs: check-packages-changed
     runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.set-matrix.outputs.apps }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-      - name: Discover apps with Dockerfiles
+      - name: Discover apps with Dockerfiles and check changes
         id: set-matrix
         run: |
+          PACKAGES_CHANGED="${{ needs.check-packages-changed.outputs.changed }}"
           APPS_ARRAY=()
+          
+          echo "Packages changed: $PACKAGES_CHANGED"
+          
           for module_dir in modules/*/; do
             module=$(basename "$module_dir")
             for app_dir in "${module_dir}apps"/*/; do
               if [ -f "${app_dir}Dockerfile" ]; then
                 app=$(basename "$app_dir")
-                APPS_ARRAY+=("${module}|${app}")
+                app_path="modules/${module}/apps/${app}/"
+                
+                # If packages changed or manual trigger, include all apps
+                # Otherwise, check if this specific app changed
+                if [ "$PACKAGES_CHANGED" = "true" ]; then
+                  echo "Including ${module}|${app} (packages changed or manual trigger)"
+                  APPS_ARRAY+=("${module}|${app}")
+                elif ! git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+                  echo "Including ${module}|${app} (no previous commit found)"
+                  APPS_ARRAY+=("${module}|${app}")
+                elif git diff --quiet HEAD^ HEAD -- "$app_path"; then
+                  echo "Skipping ${module}|${app} (no changes)"
+                else
+                  echo "Including ${module}|${app} (app changed)"
+                  APPS_ARRAY+=("${module}|${app}")
+                fi
               fi
             done
           done
-          APPS=$(printf '%s\n' "${APPS_ARRAY[@]}" | jq -R . | jq -s -c .)
+          
+          if [ ${#APPS_ARRAY[@]} -eq 0 ]; then
+            echo "No apps to build"
+            APPS="[]"
+          else
+            APPS=$(printf '%s\n' "${APPS_ARRAY[@]}" | jq -R . | jq -s -c .)
+          fi
+          
           {
             echo "apps<<EOF"
             echo "$APPS"
             echo "EOF"
           } >> $GITHUB_OUTPUT
-          echo "Discovered apps: $APPS"
+          echo "Apps to build: $APPS"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -57,6 +116,7 @@ jobs:
   build:
     name: Build ${{ matrix.app }}
     needs: discover-apps
+    if: needs.discover-apps.outputs.apps != '[]'
     runs-on: ubuntu-latest
     concurrency:
       group: build-all-modules-${{ matrix.app }}
@@ -108,7 +168,7 @@ jobs:
   publish:
     name: Publish ${{ matrix.app }}
     needs: [discover-apps, build]
-    if: success()
+    if: needs.discover-apps.outputs.apps != '[]' && success()
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -156,7 +216,7 @@ jobs:
   cleanup:
     name: Cleanup on Failure
     needs: [discover-apps, build, publish]
-    if: always() && (needs.build.result == 'failure' || needs.publish.result == 'failure')
+    if: always() && needs.discover-apps.outputs.apps != '[]' && (needs.build.result == 'failure' || needs.publish.result == 'failure')
     runs-on: ubuntu-latest
     permissions:
       contents: read
