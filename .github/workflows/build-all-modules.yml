@@ -1,0 +1,205 @@
+# # #
+
+name: 'All Modules | Build & Test'
+
+# # #
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production
+      - staging
+      - 'staging/**'
+    paths:
+      - 'modules/**'
+      - '!modules/*/environments/**'
+      - 'packages/**'
+      - '.github/workflows/build-all-modules.yml'
+
+# # #
+
+jobs:
+
+  discover-apps:
+    name: Discover Apps
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.set-matrix.outputs.apps }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Discover apps with Dockerfiles
+        id: set-matrix
+        run: |
+          APPS_ARRAY=()
+          for module_dir in modules/*/; do
+            module=$(basename "$module_dir")
+            for app_dir in "${module_dir}apps"/*/; do
+              if [ -f "${app_dir}Dockerfile" ]; then
+                app=$(basename "$app_dir")
+                APPS_ARRAY+=("${module}|${app}")
+              fi
+            done
+          done
+          APPS=$(printf '%s\n' "${APPS_ARRAY[@]}" | jq -R . | jq -s -c .)
+          {
+            echo "apps<<EOF"
+            echo "$APPS"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+          echo "Discovered apps: $APPS"
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  build:
+    name: Build ${{ matrix.app }}
+    needs: discover-apps
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-all-modules-${{ matrix.app }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse module and app
+        id: parse
+        run: |
+          IFS='|' read -r module app <<< "${{ matrix.app }}"
+          echo "module=$module" >> $GITHUB_OUTPUT
+          echo "app=$app" >> $GITHUB_OUTPUT
+          echo "Parsed: module=$module, app=$app"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./modules/${{ steps.parse.outputs.module }}/apps/${{ steps.parse.outputs.app }}/Dockerfile
+          push: false
+          tags: ghcr.io/tmlmobilidade/go-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}:${{ github.ref_name }}
+          build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: type=docker,dest=/tmp/image-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}.tar
+
+      - name: Save Docker Image as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}
+          path: /tmp/image-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}.tar
+          retention-days: 1
+
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  publish:
+    name: Publish ${{ matrix.app }}
+    needs: [discover-apps, build]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse module and app
+        id: parse
+        run: |
+          IFS='|' read -r module app <<< "${{ matrix.app }}"
+          echo "module=$module" >> $GITHUB_OUTPUT
+          echo "app=$app" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Docker Image Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}
+
+      - name: Load Docker Image
+        run: |
+          docker load -i image-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}.tar
+
+      - name: Push Docker Image
+        run: |
+          docker push ghcr.io/tmlmobilidade/go-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}:${{ github.ref_name }}
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cleanup:
+    name: Cleanup on Failure
+    needs: [discover-apps, build, publish]
+    if: always() && (needs.build.result == 'failure' || needs.publish.result == 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse module and app
+        id: parse
+        run: |
+          IFS='|' read -r module app <<< "${{ matrix.app }}"
+          echo "module=$module" >> $GITHUB_OUTPUT
+          echo "app=$app" >> $GITHUB_OUTPUT
+
+      - name: Delete Published Images
+        if: needs.publish.result == 'failure'
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PACKAGE_NAME="go-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}"
+          TAG="${{ github.ref_name }}"
+          echo "Attempting to delete published image: $PACKAGE_NAME:$TAG"
+          
+          # Get the version ID for the tag
+          VERSION_ID=$(gh api "/orgs/tmlmobilidade/packages/container/$PACKAGE_NAME/versions" \
+            --jq ".[] | select(.metadata.container.tags[] == \"$TAG\") | .id" | head -n1)
+          
+          if [ -n "$VERSION_ID" ]; then
+            echo "Deleting version $VERSION_ID of package $PACKAGE_NAME"
+            gh api --method DELETE "/orgs/tmlmobilidade/packages/container/$PACKAGE_NAME/versions/$VERSION_ID" \
+              || echo "Warning: Failed to delete image version (may have been already deleted)"
+          else
+            echo "No version found with tag $TAG, skipping deletion"
+          fi
+
+      - name: Delete Artifacts
+        continue-on-error: true
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: docker-image-${{ steps.parse.outputs.module }}-${{ steps.parse.outputs.app }}
+
