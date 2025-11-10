@@ -51,6 +51,7 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -106,12 +107,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker Image
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@master
         with:
-          context: .
-          file: ${{ steps.dockerfile.outputs.dockerfile }}
           push: true
+          file: ${{ steps.dockerfile.outputs.dockerfile }}
           tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ inputs.ref-name }}
           build-args: |
             MODULE=${{ inputs.module }}
