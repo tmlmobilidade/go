@@ -67,9 +67,11 @@ jobs:
         id: set-matrix
         run: |
           PACKAGES_CHANGED="${{ needs.check-packages-changed.outputs.changed }}"
+          IS_MANUAL_TRIGGER="${{ github.event_name == 'workflow_dispatch' }}"
           APPS_ARRAY=()
           
           echo "Packages changed: $PACKAGES_CHANGED"
+          echo "Manual trigger: $IS_MANUAL_TRIGGER"
           
           for module_dir in modules/*/; do
             module=$(basename "$module_dir")
@@ -78,11 +80,15 @@ jobs:
                 app=$(basename "$app_dir")
                 app_path="modules/${module}/apps/${app}/"
                 
-                # If packages changed or manual trigger, include all apps
-                # Otherwise, check if this specific app changed
-                if [ "$PACKAGES_CHANGED" = "true" ]; then
-                  echo "Including ${module}|${app} (packages changed or manual trigger)"
+                # If manual trigger, always include all apps
+                if [ "$IS_MANUAL_TRIGGER" = "true" ]; then
+                  echo "Including ${module}|${app} (manual trigger - build all)"
                   APPS_ARRAY+=("${module}|${app}")
+                # If packages changed, include all apps
+                elif [ "$PACKAGES_CHANGED" = "true" ]; then
+                  echo "Including ${module}|${app} (packages changed)"
+                  APPS_ARRAY+=("${module}|${app}")
+                # Check if this specific app changed
                 elif ! git rev-parse --verify HEAD^ >/dev/null 2>&1; then
                   echo "Including ${module}|${app} (no previous commit found)"
                   APPS_ARRAY+=("${module}|${app}")
@@ -116,7 +122,7 @@ jobs:
   build-packages:
     name: Build Packages Cache
     needs: [check-packages-changed, discover-apps]
-    if: needs.check-packages-changed.outputs.changed == 'true' && needs.discover-apps.outputs.apps != '[]'
+    if: (needs.check-packages-changed.outputs.changed == 'true' || github.event_name == 'workflow_dispatch') && needs.discover-apps.outputs.apps != '[]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
