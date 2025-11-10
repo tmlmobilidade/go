@@ -1,7 +1,7 @@
 /* * */
 
-import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
