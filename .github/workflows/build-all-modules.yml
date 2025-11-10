@@ -41,7 +41,7 @@ env:
     alerts:api
     alerts:frontend
     alerts:nginx
-    
+
     controller:api
     controller:frontend
     controller:nginx
@@ -58,12 +58,12 @@ env:
     locations:api
     locations:frontend
     locations:nginx
-    
+
     performance:api
     performance:frontend
     performance:nginx
     performance:sync-metrics
-    
+
     plans:api
     plans:frontend
     plans:nginx
@@ -80,7 +80,7 @@ env:
     replicator:sync-apex-on-board-refunds
     replicator:sync-apex-on-board-sales
     replicator:sync-apex-validations
-    
+
     stops:api
     stops:frontend
     stops:nginx
@@ -146,7 +146,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: ${{ fromJson(needs.discover-modules.outputs.modules) }} 
+        module: ${{ fromJson(needs.discover-modules.outputs.modules) }}
     with:
       module: ${{ matrix.module }}
       modules-apps: ${{ needs.discover-modules.outputs.modules-apps }}

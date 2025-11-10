@@ -20,7 +20,7 @@ jobs:
 
     # # # # # # # # # # # # # # # # # # # # #
     # # # # # # # # # # # # # # # # # # # # #
-    
+
   get-apps:
     name: Get Apps for ${{ inputs.module }}
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
           MODULE="${{ inputs.module }}"
           MODULES_APPS='${{ inputs.modules-apps }}'
           APPS=$(echo "$MODULES_APPS" | jq -r ".[\"$MODULE\"] // []")
-          
+
           {
             echo "apps<<EOF"
             echo "$APPS"
@@ -60,18 +60,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate nginx.conf from template
-        if: matrix.app == 'nginx' && inputs.module != 'gateway'
+        if: matrix.app == 'nginx'
         run: |
           MODULE="${{ inputs.module }}"
           TEMPLATE=".github/templates/nginx.conf.template"
           OUTPUT="modules/${MODULE}/apps/nginx/configs/nginx.conf"
-          
+
           # Create directory if it doesn't exist
           mkdir -p "$(dirname "$OUTPUT")"
-          
+
           # Replace {{MODULE}} placeholder with actual module name
           sed "s/{{MODULE}}/${MODULE}/g" "$TEMPLATE" > "$OUTPUT"
-          
+
           echo "Generated $OUTPUT from template"
 
       - name: Determine Dockerfile template
@@ -79,18 +79,16 @@ jobs:
         run: |
           MODULE="${{ inputs.module }}"
           APP="${{ matrix.app }}"
-          
+
           # Determine Dockerfile template based on app type and module
-          if [ "$MODULE" = "gateway" ] && [ "$APP" = "nginx" ]; then
-            DOCKERFILE=".github/docker/gateway-nginx.dockerfile"
+          if [ "$APP" = "nginx" ]; then
+            DOCKERFILE=".github/docker/nginx.dockerfile"
           elif [ "$APP" = "frontend" ]; then
             DOCKERFILE=".github/docker/frontend.dockerfile"
-          elif [ "$APP" = "nginx" ]; then
-            DOCKERFILE=".github/docker/nginx.dockerfile"
           else
             DOCKERFILE=".github/docker/nodejs.dockerfile"
           fi
-          
+
           echo "dockerfile=$DOCKERFILE" >> $GITHUB_OUTPUT
           echo "Dockerfile for $MODULE/$APP: $DOCKERFILE"
 
@@ -99,7 +97,6 @@ jobs:
         with:
           name: package-lock.json
           path: .
-        continue-on-error: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
