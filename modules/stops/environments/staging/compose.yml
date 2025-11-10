@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-stops
+name: tmlmobilidade-go-stops-staging
 
 volumes:
   certbotdata:
@@ -123,7 +123,5 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
-    volumes:
-      - ./secrets:/secrets
     env_file:
       - ./secrets/.env

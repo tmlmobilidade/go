@@ -6,7 +6,6 @@ volumes:
   certbotdata:
 
 services:
-  #
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
