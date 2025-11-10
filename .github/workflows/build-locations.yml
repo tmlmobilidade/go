@@ -125,6 +125,6 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@master
         with:
-          push: true/apps/nginx
+          push: true
           file: ./modules/locations/apps/nginx/Dockerfile
           tags: ghcr.io/tmlmobilidade/go-locations-nginx:${{ github.ref_name }}
