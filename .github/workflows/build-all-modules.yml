@@ -6,6 +6,12 @@ name: 'All Modules | Build & Test'
 
 on:
   workflow_dispatch:
+    inputs:
+      build_all:
+        description: 'Build all modules (ignores file changes)'
+        required: false
+        default: true
+        type: boolean
   push:
     branches:
       - production
