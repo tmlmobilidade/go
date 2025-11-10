@@ -2,11 +2,11 @@
 
 import { type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { GTFS_Calendar_Raw, validateGtfsCalendar } from '@tmlmobilidade/types';
-import { OperationalDate } from '@tmlmobilidade/types';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { GTFS_Calendar_Raw, validateGtfsCalendar } from '@tmlmobilidade/types';
+import { OperationalDate } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /**
