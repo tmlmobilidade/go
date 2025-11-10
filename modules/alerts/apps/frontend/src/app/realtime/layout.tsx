@@ -12,7 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
 	return (
 		<RidesContextProvider>
 			<PanesManager
-				id="realtime"
+				id="alerts-realtime"
 				panes={[
 					<RealtimeListContextProvider>
 						<RealtimeList />

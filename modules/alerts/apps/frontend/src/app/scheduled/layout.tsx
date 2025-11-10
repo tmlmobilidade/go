@@ -10,7 +10,7 @@ import { type PropsWithChildren } from 'react';
 export default function Layout({ children }: PropsWithChildren) {
 	return (
 		<PanesManager
-			id="alerts"
+			id="alerts-scheduled"
 			panes={[
 				<AlertListContextProvider>
 					<AlertList />
