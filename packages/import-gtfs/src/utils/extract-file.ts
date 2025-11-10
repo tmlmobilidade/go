@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { unzipFile } from '@/utils/unzip-file.js';
-import { type Plan } from '@tmlmobilidade/types';
-import { Logger } from '@tmlmobilidade/logger';
 import { files } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /**
