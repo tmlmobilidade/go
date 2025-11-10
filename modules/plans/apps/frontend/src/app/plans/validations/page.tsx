@@ -23,7 +23,7 @@ export default function Page() {
 				</li>
 				<li>
 					<h3>Converter GTFS em plano</h3>
-					Após uma <strong>validação bem-sucedida</strong>, será possível converter a validação num <a href={PAGE_ROUTES.plans.PLANS_LIST}>plano</a>.
+					Após uma <strong>validação bem-sucedida</strong>, será possível converter a validação num <a href={PAGE_ROUTES.plans.APPROVED_LIST}>plano</a>.
 				</li>
 			</ol>
 		</div>

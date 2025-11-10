@@ -24,14 +24,14 @@ export function AlertDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST, window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST, window.location.search);
 		router.push(destUrl);
 	};
 
 	const handleDuplicate = () => {
 		const id = alertDetailContext.data.id;
 
-		router.replace(`${PAGE_ROUTES.alerts.ALERTS_DETAIL('new')}?copy=${id}`);
+		router.replace(`${PAGE_ROUTES.alerts.SCHEDULED_DETAIL('new')}?copy=${id}`);
 	};
 
 	//

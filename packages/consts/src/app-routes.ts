@@ -11,89 +11,88 @@ export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* ALERTS */
 	alerts: {
-		// ALERTS
-		ALERTS_DETAIL: (id: string) => `/${id}`,
-		ALERTS_LIST: '/',
+		// SCHEDULED
+		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/scheduled/${id}`,
+		SCHEDULED_LIST: `${getAppConfig('alerts', 'frontend_url')}/scheduled`,
 
 		// REALTIME
-		REALTIME_DETAIL: (id: string) => `/realtime/${id}`,
-		REALTIME_LIST: '/realtime',
-		REALTIME_NEW_LIST: '/realtime/new',
+		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/realtime/${id}`,
+		REALTIME_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime`,
+		REALTIME_NEW_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime/new`,
 	},
 
 	/* * */
 	/* AUTH */
 	auth: {
 		// AGENCIES
-		AGENCIES_DETAIL: (id: string) => `/agencies/${id}`,
-		AGENCIES_LIST: '/agencies',
+		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/agencies/${id}`,
+		AGENCIES_LIST: `${getAppConfig('auth', 'frontend_url')}/agencies`,
 
 		// HOME
-		HOME_DETAIL: (id: string) => `/home/${id}`,
-		HOME_LIST: '/home',
+		HOME_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/home/${id}`,
+		HOME_LIST: `${getAppConfig('auth', 'frontend_url')}/home`,
 
 		// LOGIN
-		LOGIN_LIST: '/login',
+		LOGIN_LIST: `${getAppConfig('auth', 'frontend_url')}/login`,
 
 		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `/organizations/${id}`,
-		ORGANIZATIONS_LIST: '/organizations',
-
+		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/organizations/${id}`,
+		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'frontend_url')}/organizations`,
 		// RESET_PASSWORD
-		RESET_PASSWORD_LIST: '/reset-password',
+		RESET_PASSWORD_LIST: `${getAppConfig('auth', 'frontend_url')}/reset-password`,
 
 		// ROLES
-		ROLES_DETAIL: (id: string) => `/roles/${id}`,
-		ROLES_LIST: '/roles',
+		ROLES_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/roles/${id}`,
+		ROLES_LIST: `${getAppConfig('auth', 'frontend_url')}/roles`,
 
 		// USERS
-		USERS_DETAIL: (id: string) => `/users/${id}`,
-		USERS_LIST: '/users',
+		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/users/${id}`,
+		USERS_LIST: `${getAppConfig('auth', 'frontend_url')}/users`,
 
 		// VERIFICATION
-		VERIFICATION_LIST: '/verification',
+		VERIFICATION_LIST: `${getAppConfig('auth', 'frontend_url')}/verification`,
 	},
 
 	/* * */
 	/* CONTROLLER */
 	controller: {
-		// CONTROLLER
-		CONTROLLER_DETAIL: (id: string) => `/${id}`,
-		CONTROLLER_LIST: '/',
+		// RIDES
+		RIDES_DETAIL: (id: string) => `${getAppConfig('controller', 'frontend_url')}/rides/${id}`,
+		RIDES_LIST: `${getAppConfig('controller', 'frontend_url')}/rides`,
 	},
 
 	/* * */
 	/* PERFORMANCE */
 	performance: {
 		// AREAS_1
-		AREAS_1_LIST: '/areas/1',
+		AREAS_1_LIST: `${getAppConfig('performance', 'frontend_url')}/areas/1`,
 
 		// AREAS_2
-		AREAS_2_LIST: '/areas/2',
+		AREAS_2_LIST: `${getAppConfig('performance', 'frontend_url')}/areas/2`,
 
 		// PERFORMANCE
-		PERFORMANCE_LIST: '/',
+		PERFORMANCE_LIST: `${getAppConfig('performance', 'frontend_url')}/`,
 
 		// SUPPLY_DEMAND_DEMAND_BY_LINE
-		SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: '/supply-demand/demand-by-line',
+		SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand/demand-by-line`,
 
 		// SUPPLY_DEMAND
-		SUPPLY_DEMAND_LIST: '/supply-demand',
+		SUPPLY_DEMAND_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand`,
 
 		// SUPPLY_DEMAND_OCCUPANCY_RATE
-		SUPPLY_DEMAND_OCCUPANCY_RATE_LIST: '/supply-demand/occupancy-rate',
+		SUPPLY_DEMAND_OCCUPANCY_RATE_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand/occupancy-rate`,
 	},
 
 	/* * */
 	/* PLANS */
 	plans: {
-		// PLANS
-		PLANS_DETAIL: (id: string) => `/${id}`,
-		PLANS_LIST: '/',
+		// APPROVED
+		APPROVED_DETAIL: (id: string) => `${getAppConfig('plans', 'frontend_url')}/approved/${id}`,
+		APPROVED_LIST: `${getAppConfig('plans', 'frontend_url')}/approved`,
 
 		// VALIDATIONS
-		VALIDATIONS_DETAIL: (id: string) => `/validations/${id}`,
-		VALIDATIONS_LIST: '/validations',
+		VALIDATIONS_DETAIL: (id: string) => `${getAppConfig('plans', 'frontend_url')}/validations/${id}`,
+		VALIDATIONS_LIST: `${getAppConfig('plans', 'frontend_url')}/validations`,
 	},
 
 	/* * */

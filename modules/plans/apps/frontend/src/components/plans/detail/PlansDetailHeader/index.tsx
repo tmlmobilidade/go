@@ -5,7 +5,7 @@
 import { openChangePlanModal } from '@/components/plans/detail/ChangePlanModal';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconRefresh, IconUpload } from '@tabler/icons-react';
-import { Permissions } from '@tmlmobilidade/consts';
+import { PAGE_ROUTES, Permissions } from '@tmlmobilidade/consts';
 import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -25,7 +25,7 @@ export function PlansDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams('/plans', window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.plans.APPROVED_LIST, window.location.search);
 		router.push(destUrl);
 	};
 

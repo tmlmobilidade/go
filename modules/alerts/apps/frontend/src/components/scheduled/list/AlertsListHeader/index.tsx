@@ -23,7 +23,7 @@ export function AlertsListHeader() {
 			<Label size="lg" caps singleLine>Alertas</Label>
 			<Spacer />
 			<SearchInput onChange={alertsListContext.actions.setFilterSearch} value={alertsListContext.filters.search} />
-			<Button href={PAGE_ROUTES.alerts.ALERTS_DETAIL('new')} label="Novo alerta" leftSection={<IconPlus size={20} />} />
+			<Button href={PAGE_ROUTES.alerts.SCHEDULED_DETAIL('new')} label="Novo alerta" leftSection={<IconPlus size={20} />} />
 		</Toolbar>
 	);
 

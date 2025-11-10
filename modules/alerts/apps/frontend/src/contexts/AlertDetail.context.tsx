@@ -172,7 +172,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		if (response.data) await uploadImage(response.data._id.toString());
 
 		if (response.data && MODE === AlertDetailMode.CREATE) {
-			router.replace(PAGE_ROUTES.alerts.ALERTS_DETAIL(response.data._id.toString()));
+			router.replace(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id.toString()));
 		}
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
 
@@ -193,7 +193,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
 
-		router.replace(PAGE_ROUTES.alerts.ALERTS_LIST);
+		router.replace(PAGE_ROUTES.alerts.SCHEDULED_LIST);
 	};
 
 	const deleteImage = async () => {
