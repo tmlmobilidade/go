@@ -4,6 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -22,7 +23,7 @@ export function StopDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push('/stops', { scroll: false });
+		router.push(PAGE_ROUTES.stops.STOPS_LIST, { scroll: false });
 	};
 
 	//

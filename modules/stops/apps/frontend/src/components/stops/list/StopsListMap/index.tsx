@@ -3,8 +3,9 @@
 /* * */
 
 import { useStopsListContext } from '@/contexts/StopsList.context';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView, Pane } from '@tmlmobilidade/ui';
+import { keepUrlParams, MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView, Pane } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -48,7 +49,8 @@ export function StopsListMap() {
 	// C. Handle actions
 
 	const handleStopClick = (value: MapOverlayMultipleStopsDataProps) => {
-		router.push(`/stops/${value.id}`);
+		const destUrl = keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(value.id), window.location.search);
+		router.push(destUrl);
 	};
 
 	//
