@@ -6,9 +6,10 @@ import { useLocationsContext } from '@/contexts/Locations.context';
 import { StopOptions } from '@/schemas/options';
 import { abbreviateName } from '@/utils/abreviate-stop-name';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { type CreateStopDto, Stop } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType } from '@tmlmobilidade/ui';
-import { fetchData, isValidLatitude, isValidLongitude, keepUrlParams } from '@tmlmobilidade/utils';
+import { keepUrlParams, useForm, UseFormReturnType } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 

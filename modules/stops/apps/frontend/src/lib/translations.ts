@@ -45,7 +45,7 @@ export const Translations = {
 		other: 'Outro',
 		unknown: 'Desconhecido',
 	},
-	OPERATIONAL_STATUS: {
+	LIFECYCLE_STATUS: {
 		active: 'Paragem ativa',
 		inactive: 'Paragem inativa',
 		provisional: 'Provisória',

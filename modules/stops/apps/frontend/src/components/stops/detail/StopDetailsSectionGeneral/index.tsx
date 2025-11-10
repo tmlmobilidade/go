@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
 import { ScopeOption } from '@/types/proposed-changes';
-import { operationalStatusSchema } from '@tmlmobilidade/types';
+import { StopLifecycleStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
@@ -22,22 +22,22 @@ export function StopDetailsSectionGeneral() {
 	//
 	// B. Transform data
 
-	const operationalStatusItems = operationalStatusSchema.options.map(value => ({
-		label: Translations.OPERATIONAL_STATUS[value],
+	const lifecycleStatusItems = StopLifecycleStatusSchema.options.map(value => ({
+		label: Translations.LIFECYCLE_STATUS[value],
 		value: value,
 	}));
 
 	//
 	// C. Handle actions
 
-	const handlePlayPhoneticName = async () => {
-		if (typeof window !== 'undefined') {
-			const synth = window.speechSynthesis;
-			const utterance = new SpeechSynthesisUtterance(stopDetailContext.data.form.values.tts_name || '');
-			utterance.lang = 'pt';
-			synth.speak(utterance);
-		}
-	};
+	// const handlePlayPhoneticName = async () => {
+	// 	if (typeof window !== 'undefined') {
+	// 		const synth = window.speechSynthesis;
+	// 		const utterance = new SpeechSynthesisUtterance(stopDetailContext.data.form.values.tts_name || '');
+	// 		utterance.lang = 'pt';
+	// 		synth.speak(utterance);
+	// 	}
+	// };
 
 	//
 	// D. Render components
@@ -59,9 +59,9 @@ export function StopDetailsSectionGeneral() {
 
 			<Section gap="md">
 				<SegmentedControl
-					data={operationalStatusItems}
-					onChange={(value: typeof operationalStatusSchema.options[number]) => stopDetailContext.data.form.setFieldValue('operational_status', value)}
-					value={stopDetailContext.data.form.values.operational_status}
+					data={lifecycleStatusItems}
+					onChange={(value: typeof StopLifecycleStatusSchema.options[number]) => stopDetailContext.data.form.setFieldValue('lifecycle_status', value)}
+					value={stopDetailContext.data.form.values.lifecycle_status}
 					fullWidth
 				/>
 			</Section>

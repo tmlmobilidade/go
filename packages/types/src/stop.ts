@@ -11,7 +11,7 @@ import { z } from 'zod';
 // Define constants for enum values for better maintainability
 
 const JURISDICTION_VALUES = ['ip', 'municipality', 'other', 'unknown'] as const;
-const STOP_OPERATIONAL_STATUS_VALUES = ['active', 'inactive', 'provisional', 'seasonal', 'voided'] as const;
+const STOP_LIFECYCLE_STATUS_VALUES = ['active', 'inactive', 'provisional', 'seasonal', 'voided'] as const;
 const ELECTRICITY_STATUS_VALUES = ['available', 'unavailable', 'unknown'] as const;
 const ROAD_TYPE_VALUES = ['complementary_itinerary', 'highway', 'main_itinerary', 'national_road', 'regional_road', 'secondary_road', 'unknown'] as const;
 const INFRASTRUCTURE_STATUS_VALUES = ['not_applicable', 'unknown', 'missing', 'damaged', 'ok'] as const;
@@ -20,8 +20,8 @@ const FACILITIES_VALUES = ['fire_station', 'health_clinic', 'historic_building',
 const HAS_ANY = ['yes', 'no', 'unknown'] as const;
 const EQUIPMENT_VALUES = ['pip', 'mupi', 'mini_pip'] as const;
 
-export const jurisdictionSchema = z.enum(JURISDICTION_VALUES);
-export const stopOperationalStatusSchema = z.enum(STOP_OPERATIONAL_STATUS_VALUES);
+export const JurisdictionSchema = z.enum(JURISDICTION_VALUES);
+export const StopLifecycleStatusSchema = z.enum(STOP_LIFECYCLE_STATUS_VALUES);
 export const electricityStatusSchema = z.enum(ELECTRICITY_STATUS_VALUES);
 export const roadTypeSchema = z.enum(ROAD_TYPE_VALUES);
 export const infrastructureStatusSchema = z.enum(INFRASTRUCTURE_STATUS_VALUES);
@@ -33,8 +33,8 @@ export const equipmentSchema = z.enum(EQUIPMENT_VALUES);
 //
 // Define types based on schemas
 
-export type Jurisdiction = z.infer<typeof jurisdictionSchema>;
-export type StopOperationalStatus = z.infer<typeof stopOperationalStatusSchema>;
+export type Jurisdiction = z.infer<typeof JurisdictionSchema>;
+export type StopLifecycleStatus = z.infer<typeof StopLifecycleStatusSchema>;
 export type ElectricityStatus = z.infer<typeof electricityStatusSchema>;
 export type RoadType = z.infer<typeof roadTypeSchema>;
 export type InfrastructureStatus = z.infer<typeof infrastructureStatusSchema>;
@@ -50,11 +50,11 @@ export const StopSchema = DocumentSchema.extend({
 	_id: z.string(),
 	is_archived: z.boolean().default(false),
 	is_locked: z.boolean().default(false),
-	jurisdiction: jurisdictionSchema,
+	jurisdiction: JurisdictionSchema,
 	legacy_id: z.string().nullish(),
+	lifecycle_status: StopLifecycleStatusSchema,
 	name: z.string(),
 	new_name: z.string().nullish(),
-	operational_status: stopOperationalStatusSchema,
 	short_name: z.string().nullish(),
 	tts_name: z.string().nullish(),
 
