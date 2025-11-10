@@ -1,8 +1,9 @@
 # # #
 
-name: tmlmobilidade-go-performance-production
+name: tmlmobilidade-go-locations-staging
 
 services:
+  #
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -11,7 +12,7 @@ services:
     image: containrrr/watchtower
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:
@@ -33,14 +34,14 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/go-performance-nginx:production
+    image: ghcr.io/tmlmobilidade/go-locations-nginx:staging
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:
-          memory: 1gb
+          memory: 2gb
     logging:
       options:
         max-size: '1m'
@@ -48,26 +49,25 @@ services:
     ports:
       - 80:80
       - 443:443
-    depends_on:
-      - api
-      - frontend
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/go-performance-api:production
+    image: ghcr.io/tmlmobilidade/go-locations-api:staging
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:
-          memory: 2gb
+          memory: 4gb
     logging:
       options:
         max-size: '1m'
         max-file: '1'
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
 
@@ -75,29 +75,10 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/go-performance-frontend:production
+    image: ghcr.io/tmlmobilidade/go-locations-frontend:staging
     deploy:
       restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-metrics:
-    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics:production
-    deploy:
-      restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:

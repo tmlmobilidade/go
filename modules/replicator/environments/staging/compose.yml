@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-replicator
+name: tmlmobilidade-go-replicator-staging
 
 secrets:
   pcgidbkey:

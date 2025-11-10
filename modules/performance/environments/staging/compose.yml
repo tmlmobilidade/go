@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-performance-production
+name: tmlmobilidade-go-performance-staging
 
 services:
 
@@ -33,7 +33,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/go-performance-nginx:production
+    image: ghcr.io/tmlmobilidade/go-performance-nginx:staging
     deploy:
       restart_policy:
         condition: any
@@ -56,7 +56,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/go-performance-api:production
+    image: ghcr.io/tmlmobilidade/go-performance-api:staging
     deploy:
       restart_policy:
         condition: any
@@ -75,7 +75,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/go-performance-frontend:production
+    image: ghcr.io/tmlmobilidade/go-performance-frontend:staging
     deploy:
       restart_policy:
         condition: any
@@ -94,7 +94,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-metrics:
-    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics:production
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics:staging
     deploy:
       restart_policy:
         condition: any

@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-gateway
+name: tmlmobilidade-go-gateway-production
 
 volumes:
   certbotdata:

@@ -1,12 +1,8 @@
 # # #
 
-name: tmlmobilidade-go-alerts
-
-volumes:
-  certbotdata:
+name: tmlmobilidade-go-alerts-production
 
 services:
-  #
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -49,9 +45,6 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
-    volumes:
-      - ./letsencrypt:/etc/letsencrypt:ro
-      - certbotdata:/var/www/certbot:ro
     ports:
       - 80:80
       - 443:443

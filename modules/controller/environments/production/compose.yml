@@ -1,9 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-controller
-
-volumes:
-  certbotdata:
+name: tmlmobilidade-go-controller-production
 
 secrets:
   ociprivatekey:
@@ -251,27 +248,12 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
-    volumes:
-      - ./letsencrypt:/etc/letsencrypt:ro
-      - certbotdata:/var/www/certbot:ro
     ports:
       - 80:80
       - 443:443
     depends_on:
       - api
       - frontend
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    mem_limit: 2g
-    volumes:
-      - ./letsencrypt:/etc/letsencrypt
-      - certbotdata:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
