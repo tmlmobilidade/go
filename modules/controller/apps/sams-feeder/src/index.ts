@@ -2,10 +2,10 @@
 
 import { parseSam } from '@/parse-sam.js';
 import { type AggregationResultItem } from '@/types.js';
-import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Dates } from '@tmlmobilidade/dates';
 import LOGGER from '@helperkits/logger';
-import TIMETRACKER from@tmlmobilidade/datesimer';
+import { Dates } from '@tmlmobilidade/dates';
+import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -15,7 +15,7 @@ async function main() {
 
 		LOGGER.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Connect to the relevant collections.
@@ -46,7 +46,7 @@ async function main() {
 
 		LOGGER.info('Adding SAMs from Simplified APEX Locations...');
 
-		const samsForLocationsTimer = new TIMETRACKER();
+		const samsForLocationsTimer = new Timer();
 
 		let samsForLocationsCounter = 0;
 
@@ -80,7 +80,7 @@ async function main() {
 
 		LOGGER.info('Adding SAMs from Simplified APEX On Board Refunds...');
 
-		const samsForOnBoardRefundsTimer = new TIMETRACKER();
+		const samsForOnBoardRefundsTimer = new Timer();
 
 		let samsForOnBoardRefundsCounter = 0;
 
@@ -114,7 +114,7 @@ async function main() {
 
 		LOGGER.info('Adding SAMs from Simplified APEX On Board Sales...');
 
-		const samsForOnBoardSalesTimer = new TIMETRACKER();
+		const samsForOnBoardSalesTimer = new Timer();
 
 		let samsForOnBoardSalesCounter = 0;
 
@@ -148,7 +148,7 @@ async function main() {
 
 		LOGGER.info('Adding SAMs from Simplified APEX Validations...');
 
-		const samsForValidationsTimer = new TIMETRACKER();
+		const samsForValidationsTimer = new Timer();
 
 		let samsForValidationsCounter = 0;
 
