@@ -9,7 +9,7 @@ import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -53,7 +53,8 @@ export function UsersList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: UserNormalized) => {
-		router.push(PAGE_ROUTES.auth.USERS_DETAIL(item._id) + window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.auth.USERS_DETAIL(item._id), window.location.search);
+		router.push(destUrl);
 	};
 
 	//

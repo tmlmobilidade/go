@@ -1,8 +1,11 @@
 /* * */
 
+// import { Background1 } from '@/components/Background1';
+// import { Background2 } from '@/components/Background2';
+// import { Background3 } from '@/components/Background3';
 import { Background4 } from '@/components/login/Background4';
-import { ResetPasswordForm } from '@/components/reset-password/ResetPasswordForm';
-import SendResetEmailForm from '@/components/reset-password/SendResetEmailForm';
+import { VerificationForm } from '@/components/login/VerificationForm';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -32,7 +35,12 @@ export default async function Page({ searchParams }: Props) {
 	if (session) {
 		// Redirect to the main page
 		// if the user is already logged in.
-		redirect('/');
+		redirect(PAGE_ROUTES.auth.HOME_LIST);
+	}
+
+	if (!token) {
+		// Redirect to the login page
+		redirect(PAGE_ROUTES.auth.LOGIN_LIST);
 	}
 
 	//
@@ -41,7 +49,7 @@ export default async function Page({ searchParams }: Props) {
 	return (
 		<div className={styles.root}>
 			<Background4 />
-			{token ? <ResetPasswordForm token={token} /> : <SendResetEmailForm />}
+			<VerificationForm token={token} />
 		</div>
 	);
 

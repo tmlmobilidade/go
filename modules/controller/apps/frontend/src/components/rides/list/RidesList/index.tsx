@@ -12,6 +12,7 @@ import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPa
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type RideNormalized } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -101,7 +102,7 @@ export function RidesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: RideNormalized) => {
-		const destUrl = keepUrlParams(`/rides/${item._id}`, window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.controller.RIDES_DETAIL(item._id), window.location.search);
 		router.push(destUrl);
 	};
 

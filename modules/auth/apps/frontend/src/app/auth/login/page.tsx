@@ -5,6 +5,7 @@
 // import { Background3 } from '@/components/Background3';
 import { Background4 } from '@/components/login/Background4';
 import { LoginForm } from '@/components/login/LoginForm';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -34,7 +35,7 @@ export default async function Page({ searchParams }: Props) {
 	if (session) {
 		// Redirect to the main page
 		// if the user is already logged in.
-		redirect('/');
+		redirect(PAGE_ROUTES.auth.HOME_LIST);
 	}
 
 	//

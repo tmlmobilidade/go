@@ -4,6 +4,7 @@
 
 import { UsersDetailMode, useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,7 @@ export function UsersDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams('/users', window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.auth.USERS_LIST, window.location.search);
 		router.push(destUrl);
 	};
 

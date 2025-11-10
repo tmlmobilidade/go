@@ -4,6 +4,7 @@
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { IconUpload } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,7 @@ export function AgencyDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams('/agencies', window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.auth.AGENCIES_LIST, window.location.search);
 		router.push(destUrl);
 	};
 

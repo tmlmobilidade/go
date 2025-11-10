@@ -10,14 +10,6 @@ const nextConfig: NextConfig = {
 	},
 	output: 'standalone',
 	reactStrictMode: true,
-	async rewrites() {
-		return [
-			{
-				destination: `http://localhost:52004/:path*`,
-				source: '/api/:path*',
-			},
-		];
-	},
 };
 
 /* * */

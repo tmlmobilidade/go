@@ -5,7 +5,6 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
-	basePath: '/auth',
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
@@ -35,18 +34,9 @@ const nextConfig: NextConfig = {
 	async redirects() {
 		return [
 			{
-				basePath: false,
 				destination: '/auth',
 				permanent: true,
 				source: '/',
-			},
-		];
-	},
-	async rewrites() {
-		return [
-			{
-				destination: `http://localhost:52000/:path*`,
-				source: '/api/:path*',
 			},
 		];
 	},

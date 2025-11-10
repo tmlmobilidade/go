@@ -4,6 +4,7 @@
 
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Badge, Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,7 @@ export function RoleDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams('/roles', window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.auth.ROLES_LIST, window.location.search);
 		router.push(destUrl);
 	};
 

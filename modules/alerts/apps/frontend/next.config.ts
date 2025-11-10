@@ -5,7 +5,6 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
-	basePath: '/alerts',
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
@@ -13,11 +12,6 @@ const nextConfig: NextConfig = {
 		remotePatterns: [
 			{
 				hostname: '*.carrismetropolitana.pt',
-				port: '',
-				protocol: 'https',
-			},
-			{
-				hostname: '*.cloudflarestorage.com',
 				port: '',
 				protocol: 'https',
 			},
@@ -32,14 +26,10 @@ const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	async redirects() {
 		return [
-			{ basePath: false, destination: '/alerts', permanent: true, source: '/' },
-		];
-	},
-	async rewrites() {
-		return [
 			{
-				destination: `http://localhost:52001/:path*`,
-				source: '/api/:path*',
+				destination: '/alerts/scheduled',
+				permanent: true,
+				source: '/',
 			},
 		];
 	},
