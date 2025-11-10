@@ -3,6 +3,7 @@
 
 .dropdown {
 	min-width: 200px;
+	max-width: 500px;
 	background-color: var(--color-system-background-100);
 }
 
