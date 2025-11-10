@@ -1,8 +1,4 @@
-# # #
-
-name: 'Gateway Module | Build & Test'
-
-# # #
+name: 'Gateway | Build & Push'
 
 on:
   workflow_dispatch:
@@ -13,47 +9,40 @@ on:
       - 'staging/**'
     paths:
       - 'modules/gateway/**'
-      - '!modules/gateway/environments/**'
-      - 'packages/**'
       - '.github/workflows/build-gateway.yml'
 
 # # #
 
 jobs:
 
-  build-packages:
-    name: Build Packages Cache
+  # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # #
+
+  nginx:
+    name: nginx
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
+
     steps:
+
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@master
         with:
-          node-version: '24'
-      - name: Install dependencies
-        run: npm install --package-lock-only
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Save package-lock.json as artifact
-        uses: actions/upload-artifact@v4
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@master
         with:
-          name: package-lock.json
-          path: package-lock.json
-          retention-days: 1
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  build-module:
-    name: Build gateway
-    needs: build-packages
-    uses: ./.github/workflows/_build-module-apps.yml
-    with:
-      module: gateway
-      modules-apps: '{"gateway":["nginx"]}'
-      ref-name: ${{ github.ref_name }}
-    secrets: inherit
-
+          push: true
+          file: ./modules/gateway/apps/nginx/Dockerfile
+          tags: ghcr.io/tmlmobilidade/go-gateway-nginx:${{ github.ref_name }}
+          build-args: |
+            ENVIRONMENT=${{ github.ref_name }}
+            NGINX_SERVER_NAME=${{ github.ref_name == 'staging' && 'staging.go.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
