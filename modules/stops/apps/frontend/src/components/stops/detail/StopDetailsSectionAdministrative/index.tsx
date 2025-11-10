@@ -5,7 +5,7 @@
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { jurisdictionSchema } from '@tmlmobilidade/types';
+import { JurisdictionSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -23,7 +23,7 @@ export function StopDetailsSectionAdministrative() {
 	//
 	// B. Transform data
 
-	const jurisdictionItems = jurisdictionSchema.options.map(value => ({
+	const jurisdictionItems = JurisdictionSchema.options.map(value => ({
 		label: Translations.JURISDICATION[value],
 		value: value,
 	}));
