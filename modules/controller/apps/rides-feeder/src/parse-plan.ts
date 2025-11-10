@@ -6,8 +6,8 @@ import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Ext
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
@@ -20,7 +20,7 @@ export async function parsePlan(planData: Plan) {
 	try {
 		//
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Setup variables to save formatted entities found in this Plan
@@ -171,10 +171,10 @@ export async function parsePlan(planData: Plan) {
 		try {
 			fs.rmSync(workdirPath, { force: true, recursive: true });
 			fs.mkdirSync(workdirPath, { recursive: true });
-			LOGGER.success('Prepared working directory.', 1);
+			Logger.success('Prepared working directory.', 1);
 		}
 		catch (error) {
-			LOGGER.error(`Error preparing workdir path "${workdirPath}".`, error);
+			Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
 			process.exit(1);
 		}
 
@@ -184,7 +184,7 @@ export async function parsePlan(planData: Plan) {
 
 		const operationFileData = await files.findById(planData.operation_file_id);
 		if (!operationFileData || !operationFileData.url) {
-			LOGGER.error(`No operation file found for plan "${planData._id}".`);
+			Logger.error(`No operation file found for plan "${planData._id}".`);
 			process.exit(1);
 		}
 
@@ -194,16 +194,16 @@ export async function parsePlan(planData: Plan) {
 			fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 		}
 		catch (error) {
-			LOGGER.error('Error downloading the file.', error);
+			Logger.error('Error downloading the file.', error);
 			process.exit(1);
 		}
 
 		try {
 			await unzipFile(downloadFilePath, extractDirPath);
-			LOGGER.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
+			Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
 		}
 		catch (error) {
-			LOGGER.error('Error unzipping the file.', error);
+			Logger.error('Error unzipping the file.', error);
 			process.exit(1);
 		}
 
@@ -228,9 +228,9 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const calendarParseTimer = new TIMETRACKER();
+			const calendarParseTimer = new Timer();
 
-			LOGGER.info(`Reading zip entry "calendar.txt"...`);
+			Logger.info(`Reading zip entry "calendar.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Calendar_Raw) => {
 				//
@@ -287,16 +287,16 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
+				Logger.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
+				Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
 			}
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "calendar.txt" file.', error);
+			Logger.error('Error processing "calendar.txt" file.', error);
 			throw new Error('✖︎ Error processing "calendar.txt" file.');
 		}
 
@@ -311,9 +311,9 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const calendarDatesParseTimer = new TIMETRACKER();
+			const calendarDatesParseTimer = new Timer();
 
-			LOGGER.info(`Reading zip entry "calendar_dates.txt"...`);
+			Logger.info(`Reading zip entry "calendar_dates.txt"...`);
 
 			const parseEachRow = async (data: GTFS_CalendarDate_Raw) => {
 				//
@@ -367,16 +367,16 @@ export async function parsePlan(planData: Plan) {
 
 			if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
+				Logger.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
+				Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
 			}
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "calendar_dates.txt" file.', error);
+			Logger.error('Error processing "calendar_dates.txt" file.', error);
 			throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 		}
 
@@ -391,9 +391,9 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const tripsParseTimer = new TIMETRACKER();
+			const tripsParseTimer = new Timer();
 
-			LOGGER.info(`Reading zip entry "trips.txt"...`);
+			Logger.info(`Reading zip entry "trips.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -407,7 +407,7 @@ export async function parsePlan(planData: Plan) {
 				referencedRouteIds.add(validatedData.route_id);
 				referencedShapeIds.add(validatedData.shape_id);
 				// Log progress
-				if (tripsCounter % 10000 === 0) LOGGER.info(`Parsed ${tripsCounter} trips.txt rows so far.`);
+				if (tripsCounter % 10000 === 0) Logger.info(`Parsed ${tripsCounter} trips.txt rows so far.`);
 				// Increment the counter
 				tripsCounter++;
 			};
@@ -419,12 +419,12 @@ export async function parsePlan(planData: Plan) {
 
 			savedTrips.flush();
 
-			LOGGER.success(`Finished processing "trips.txt": ${savedTrips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
+			Logger.success(`Finished processing "trips.txt": ${savedTrips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "trips.txt" file.', error);
+			Logger.error('Error processing "trips.txt" file.', error);
 			throw new Error('✖︎ Error processing "trips.txt" file.');
 		}
 
@@ -438,9 +438,9 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const routesParseTimer = new TIMETRACKER();
+			const routesParseTimer = new Timer();
 
-			LOGGER.info(`Reading zip entry "routes.txt"...`);
+			Logger.info(`Reading zip entry "routes.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -459,12 +459,12 @@ export async function parsePlan(planData: Plan) {
 
 			savedRoutes.flush();
 
-			LOGGER.success(`Finished processing "routes.txt": ${savedRoutes.size} rows saved in ${routesParseTimer.get()}.`, 1);
+			Logger.success(`Finished processing "routes.txt": ${savedRoutes.size} rows saved in ${routesParseTimer.get()}.`, 1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "routes.txt" file.', error);
+			Logger.error('Error processing "routes.txt" file.', error);
 			throw new Error('✖︎ Error processing "routes.txt" file.');
 		}
 
@@ -479,9 +479,9 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const shapesParseTimer = new TIMETRACKER();
+			const shapesParseTimer = new Timer();
 
-			LOGGER.info(`Reading zip entry "shapes.txt"...`);
+			Logger.info(`Reading zip entry "shapes.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Shape_Raw) => {
 				// Validate the current row against the proper type
@@ -492,7 +492,7 @@ export async function parsePlan(planData: Plan) {
 				// Save the exported row
 				savedShapes.write(validatedData);
 				// Log progress
-				if (shapesCounter % 100000 === 0) LOGGER.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
+				if (shapesCounter % 100000 === 0) Logger.info(`Parsed ${shapesCounter} shapes.txt rows so far.`);
 				// Increment the counter
 				shapesCounter++;
 			};
@@ -504,12 +504,12 @@ export async function parsePlan(planData: Plan) {
 
 			savedShapes.flush();
 
-			LOGGER.success(`Finished processing "shapes.txt": ${savedShapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
+			Logger.success(`Finished processing "shapes.txt": ${savedShapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "shapes.txt" file.', error);
+			Logger.error('Error processing "shapes.txt" file.', error);
 			throw new Error('✖︎ Error processing "shapes.txt" file.');
 		}
 
@@ -524,9 +524,9 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const stopsParseTimer = new TIMETRACKER();
+			const stopsParseTimer = new Timer();
 
-			LOGGER.info(`Reading zip entry "stops.txt"...`);
+			Logger.info(`Reading zip entry "stops.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -542,12 +542,12 @@ export async function parsePlan(planData: Plan) {
 
 			savedStops.flush();
 
-			LOGGER.success(`Finished processing "stops.txt": ${savedStops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
+			Logger.success(`Finished processing "stops.txt": ${savedStops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "stops.txt" file.', error);
+			Logger.error('Error processing "stops.txt" file.', error);
 			throw new Error('✖︎ Error processing "stops.txt" file.');
 		}
 
@@ -563,9 +563,9 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const stopTimesParseTimer = new TIMETRACKER();
+			const stopTimesParseTimer = new Timer();
 
-			LOGGER.info(`Reading zip entry "stop_times.txt"...`);
+			Logger.info(`Reading zip entry "stop_times.txt"...`);
 
 			const parseEachRow = async (data: GTFS_StopTime_Raw) => {
 				// Validate the current row against the proper type
@@ -579,7 +579,7 @@ export async function parsePlan(planData: Plan) {
 				// Save the exported row
 				savedStopTimes.write(validatedData);
 				// Log progress
-				if (stopTimesCounter % 100000 === 0) LOGGER.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
+				if (stopTimesCounter % 100000 === 0) Logger.info(`Parsed ${stopTimesCounter} stop_times.txt rows so far.`);
 				// Increment the counter
 				stopTimesCounter++;
 			};
@@ -591,12 +591,12 @@ export async function parsePlan(planData: Plan) {
 
 			savedStopTimes.flush();
 
-			LOGGER.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved in ${stopTimesParseTimer.get()}.`, 1);
+			Logger.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "stop_times.txt" file.', error);
+			Logger.error('Error processing "stop_times.txt" file.', error);
 			throw new Error('✖︎ Error processing "stop_times.txt" file.');
 		}
 
@@ -612,16 +612,16 @@ export async function parsePlan(planData: Plan) {
 		try {
 			//
 
-			const outputsTimer = new TIMETRACKER();
+			const outputsTimer = new Timer();
 
-			LOGGER.title(`Generating HashedTrips, HashedShapes and Rides:`);
+			Logger.title(`Generating HashedTrips, HashedShapes and Rides:`);
 
-			LOGGER.info(`Dates: ${calendarDatesCounter} for ${savedCalendarDates.size} service_ids`);
-			LOGGER.info(`Trips: ${tripsCounter}`);
-			LOGGER.info(`Routes: ${savedRoutes.size}`);
-			LOGGER.info(`Shapes: ${savedShapes.size}`);
-			LOGGER.info(`Stops: ${savedStops.size}`);
-			LOGGER.info(`StopTimes: ${stopTimesCounter} rows`, 1);
+			Logger.info(`Dates: ${calendarDatesCounter} for ${savedCalendarDates.size} service_ids`);
+			Logger.info(`Trips: ${tripsCounter}`);
+			Logger.info(`Routes: ${savedRoutes.size}`);
+			Logger.info(`Shapes: ${savedShapes.size}`);
+			Logger.info(`Stops: ${savedStops.size}`);
+			Logger.info(`StopTimes: ${stopTimesCounter} rows`, 1);
 
 			for (const currentTrip of savedTrips.all()) {
 				//
@@ -629,7 +629,7 @@ export async function parsePlan(planData: Plan) {
 				//
 				// Log every 10000 rides processed
 
-				if (tripsCounter % 10000 === 0) LOGGER.title(`${tripsCounter} trips left. ${stopTimesCounter} stop_times left. Generated ${savedRideIds.size} Rides so far. `);
+				if (tripsCounter % 10000 === 0) Logger.title(`${tripsCounter} trips left. ${stopTimesCounter} stop_times left. Generated ${savedRideIds.size} Rides so far. `);
 
 				//
 				// Get associated data from previously saved entities,
@@ -645,22 +645,22 @@ export async function parsePlan(planData: Plan) {
 				// to prevent errors later on.
 
 				if (!calendarDatesData || calendarDatesData.length === 0) {
-					LOGGER.error(`Trip "${currentTrip.trip_id}" has no calendar dates. Skipping...`);
+					Logger.error(`Trip "${currentTrip.trip_id}" has no calendar dates. Skipping...`);
 					continue;
 				}
 
 				if (!stopTimesData || stopTimesData.length === 0) {
-					LOGGER.error(`Trip "${currentTrip.trip_id}" has no stop_times data. Skipping...`);
+					Logger.error(`Trip "${currentTrip.trip_id}" has no stop_times data. Skipping...`);
 					continue;
 				}
 
 				if (!routeData) {
-					LOGGER.error(`Trip "${currentTrip.trip_id}" has no route data. Skipping...`);
+					Logger.error(`Trip "${currentTrip.trip_id}" has no route data. Skipping...`);
 					continue;
 				}
 
 				if (!shapeData || shapeData.length === 0) {
-					LOGGER.error(`Trip "${currentTrip.trip_id}" has no shape data. Skipping...`);
+					Logger.error(`Trip "${currentTrip.trip_id}" has no shape data. Skipping...`);
 					continue;
 				}
 
@@ -815,7 +815,7 @@ export async function parsePlan(planData: Plan) {
 				// Start by validating that this trip has a valid path.
 
 				if (!finalHashedTrip || !finalHashedTrip.path || finalHashedTrip.path.length === 0) {
-					LOGGER.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
+					Logger.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
 					continue;
 				}
 
@@ -938,12 +938,12 @@ export async function parsePlan(planData: Plan) {
 			//
 			// Log progress
 
-			LOGGER.info(`Saved ${savedRideIds.size} Rides, ${hashedTripsCounter} Trips, ${hashedShapesCounter} Shapes in ${outputsTimer.get()}.`);
+			Logger.info(`Saved ${savedRideIds.size} Rides, ${hashedTripsCounter} Trips, ${hashedShapesCounter} Shapes in ${outputsTimer.get()}.`);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error transforming or saving Shapes, Trips or Rides to database.', error);
+			Logger.error('Error transforming or saving Shapes, Trips or Rides to database.', error);
 			throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.');
 		}
 
@@ -963,14 +963,14 @@ export async function parsePlan(planData: Plan) {
 			},
 		});
 
-		LOGGER.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
+		Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 
 		//
 		// When a plan is successfully processed, the program must be restarted
 		// to retrieve the latest data. This is because plans take a long time to process,
 		// and in the meantime users may have changed status and updated files.
 
-		LOGGER.divider('Restarting to fetch latest plan data...');
+		Logger.divider('Restarting to fetch latest plan data...');
 
 		process.exit(0);
 
@@ -984,8 +984,8 @@ export async function parsePlan(planData: Plan) {
 				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 			},
 		});
-		LOGGER.error(`Error processing plan ${planData._id}`, error);
-		LOGGER.divider();
+		Logger.error(`Error processing plan ${planData._id}`, error);
+		Logger.divider();
 	}
 };
 

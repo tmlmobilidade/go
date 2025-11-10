@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@helperkits/writer';
 import { vehicleEvents } from '@tmlmobilidade/interfaces';
 import { VehicleEvent } from '@tmlmobilidade/types';
@@ -14,9 +14,9 @@ export async function dumpVehicleEventsFromSaeDb() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Connect to databases and setup DB writers
@@ -53,7 +53,7 @@ export async function dumpVehicleEventsFromSaeDb() {
 
 		const totalCount = await collection.countDocuments(query);
 
-		LOGGER.info(`Total records to process: ${totalCount}`);
+		Logger.info(`Total records to process: ${totalCount}`);
 
 		//
 
@@ -90,7 +90,7 @@ export async function dumpVehicleEventsFromSaeDb() {
 				vehicle_id: data.vehicle_id,
 			});
 			// Log progress every 100000 records
-			if (counter % 100000 === 0) LOGGER.info(`Processed ${counter} records so far...`);
+			if (counter % 100000 === 0) Logger.info(`Processed ${counter} records so far...`);
 			counter++;
 		}
 
@@ -105,7 +105,7 @@ export async function dumpVehicleEventsFromSaeDb() {
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
 	}

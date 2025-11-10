@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { SQLiteDatabase, SQLiteTableInstance } from '@tmlmobilidade/sqlite';
 import { GTFS_Route_Extended, GTFS_StopTime, GTFS_Trip_Extended, Plan } from '@tmlmobilidade/types';
@@ -33,9 +33,9 @@ interface Context {
 /* MAIN FUNCTION */
 export async function parseGtfsToDrt(options: Context) {
 	try {
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
-		LOGGER.title(`Converting GTFS to DRT Schema...`);
+		Logger.title(`Converting GTFS to DRT Schema...`);
 
 		//
 		//
@@ -43,7 +43,7 @@ export async function parseGtfsToDrt(options: Context) {
 		const context: Context = { ...options };
 
 		//
-		LOGGER.terminate(`Finished GTFS to DRT Schema in ${globalTimer.get()}.`);
+		Logger.terminate(`Finished GTFS to DRT Schema in ${globalTimer.get()}.`);
 
 		//
 		// Parse Stops and Routes first, because they are independent of the other tables
@@ -58,7 +58,7 @@ export async function parseGtfsToDrt(options: Context) {
 			//
 			// Log every 10000 rides processed
 
-			if (index % 1000 === 0) LOGGER.info(`Processing Trip ${index} of ${context.gtfs.trips.size}`);
+			if (index % 1000 === 0) Logger.info(`Processing Trip ${index} of ${context.gtfs.trips.size}`);
 
 			//
 			// Get associated data from previously saved entities,
@@ -74,22 +74,22 @@ export async function parseGtfsToDrt(options: Context) {
 			// to prevent errors later on.
 
 			if (!selectedCalendarDate || selectedCalendarDate.length === 0) {
-				LOGGER.error(`Trip "${currentTrip.trip_id}" has no calendar dates. Skipping...`);
+				Logger.error(`Trip "${currentTrip.trip_id}" has no calendar dates. Skipping...`);
 				continue;
 			}
 
 			if (!selectedStopTime || selectedStopTime.length === 0) {
-				LOGGER.error(`Trip "${currentTrip.trip_id}" has no stop_times data. Skipping...`);
+				Logger.error(`Trip "${currentTrip.trip_id}" has no stop_times data. Skipping...`);
 				continue;
 			}
 
 			if (!selectedRoute) {
-				LOGGER.error(`Trip "${currentTrip.trip_id}" has no route data. Skipping...`);
+				Logger.error(`Trip "${currentTrip.trip_id}" has no route data. Skipping...`);
 				continue;
 			}
 
 			if (!selectedShape || selectedShape.length === 0) {
-				LOGGER.error(`Trip "${currentTrip.trip_id}" has no shape data. Skipping...`);
+				Logger.error(`Trip "${currentTrip.trip_id}" has no shape data. Skipping...`);
 				continue;
 			}
 
@@ -113,11 +113,11 @@ export async function parseGtfsToDrt(options: Context) {
 			await parseJourneys(context, currentTrip, selectedRoute, selectedStopTime);
 		}
 
-		LOGGER.success(`Finished converting GTFS to DRT Schema in ${globalTimer.get()}.`, 1);
+		Logger.success(`Finished converting GTFS to DRT Schema in ${globalTimer.get()}.`, 1);
 		return;
 	}
 	catch (error) {
-		LOGGER.error('Error converting GTFS to DRT Schema.', error);
+		Logger.error('Error converting GTFS to DRT Schema.', error);
 		throw error;
 	}
 }
@@ -177,7 +177,7 @@ async function parseStops(context: Context) {
 		context.tables.stops.flush();
 	}
 	catch (error) {
-		LOGGER.error('Error parsing GTFS stops.', error);
+		Logger.error('Error parsing GTFS stops.', error);
 		throw error;
 	}
 }
@@ -224,7 +224,7 @@ async function parseRoutes(context: Context) {
 		context.tables.routes.flush();
 	}
 	catch (error) {
-		LOGGER.error('Error parsing GTFS routes.', error);
+		Logger.error('Error parsing GTFS routes.', error);
 		throw error;
 	}
 }
@@ -257,7 +257,7 @@ async function parsePatterns(context: Context, selectedTrip: GTFS_Trip_Extended,
 		context.tables.patterns.flush();
 	}
 	catch (error) {
-		LOGGER.error('Error parsing GTFS patterns.', error);
+		Logger.error('Error parsing GTFS patterns.', error);
 		throw error;
 	}
 }
@@ -315,7 +315,7 @@ async function parsePatternPoints(context: Context, stopTimesData: GTFS_StopTime
 		context.tables.patternPoints.flush();
 	}
 	catch (error) {
-		LOGGER.error('Error parsing GTFS pattern stops.', error);
+		Logger.error('Error parsing GTFS pattern stops.', error);
 		throw error;
 	}
 }
@@ -374,7 +374,7 @@ async function parsePatternStops(context: Context, stopTimesData: GTFS_StopTime[
 		context.tables.patternStops.flush();
 	}
 	catch (error) {
-		LOGGER.error('Error parsing GTFS pattern stops.', error);
+		Logger.error('Error parsing GTFS pattern stops.', error);
 		throw error;
 	}
 }
@@ -445,7 +445,7 @@ async function parseJourneys(context: Context, selectedTrip: GTFS_Trip_Extended,
 		context.tables.journeys.flush();
 	}
 	catch (error) {
-		LOGGER.error('Error parsing GTFS journeys.', error);
+		Logger.error('Error parsing GTFS journeys.', error);
 		throw error;
 	}
 }

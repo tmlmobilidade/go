@@ -1,9 +1,9 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
 import { Dates } from '@tmlmobilidade/dates';
 import { fileExports, files, verificationTokens } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /**
@@ -13,16 +13,16 @@ import { ProcessingStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types
 async function cleanOldValidations() {
 	//
 
-	LOGGER.init();
+	Logger.init();
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	//
 	// Get all GTFS Validation documents from the database
 
 	const allVerificationTokens = await verificationTokens.all();
 
-	LOGGER.info(`Found ${allVerificationTokens.length} verification tokens.`);
+	Logger.info(`Found ${allVerificationTokens.length} verification tokens.`);
 
 	//
 	// Loop through all validations and filter out, for each status,
@@ -35,7 +35,7 @@ async function cleanOldValidations() {
 		// Check that the validation has the required properties
 
 		if (!verificationToken._id) {
-			LOGGER.error(`Verification token ${verificationToken._id} does not have an _id. Skipping.`);
+			Logger.error(`Verification token ${verificationToken._id} does not have an _id. Skipping.`);
 			continue;
 		}
 
@@ -49,7 +49,7 @@ async function cleanOldValidations() {
 		// Check if the validation is older than the cutoff date
 
 		if (verificationToken.created_at > cutoffUnixTimestamp) {
-			LOGGER.info(`Verification token ${verificationToken._id} is not old enough. Skipping.`);
+			Logger.info(`Verification token ${verificationToken._id} is not old enough. Skipping.`);
 			continue;
 		}
 
@@ -58,16 +58,16 @@ async function cleanOldValidations() {
 		// delete the associated files and the validation document.
 		try {
 			await verificationTokens.deleteById(verificationToken._id);
-			LOGGER.success(`Deleted verification token ${verificationToken._id}.`);
+			Logger.success(`Deleted verification token ${verificationToken._id}.`);
 		}
 		catch (error) {
-			LOGGER.error(`Failed to delete verification token ${verificationToken._id}:`, error);
+			Logger.error(`Failed to delete verification token ${verificationToken._id}:`, error);
 		}
 
 		//
 	}
 
-	LOGGER.terminate(`Cleanup completed in ${globalTimer.get()}`);
+	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
 
 	//
 }
@@ -80,9 +80,9 @@ async function cleanOldValidations() {
 async function cleanOldFileExports() {
 	//
 
-	LOGGER.init();
+	Logger.init();
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	//
 	// Mark all processing file exports as error that are older than 2 hours
@@ -92,15 +92,15 @@ async function cleanOldFileExports() {
 		processing_status: ProcessingStatusSchema.enum.processing,
 	});
 
-	LOGGER.info(`MARKING PROCESSING FILE EXPORTS AS ERROR: ${allProcessingFileExports.length} file exports...`);
+	Logger.info(`MARKING PROCESSING FILE EXPORTS AS ERROR: ${allProcessingFileExports.length} file exports...`);
 
 	for (const item of allProcessingFileExports) {
 		try {
 			await fileExports.updateById(item._id, { processing_status: ProcessingStatusSchema.enum.error });
-			LOGGER.success(`Marked processing file export ${item._id} as error.`);
+			Logger.success(`Marked processing file export ${item._id} as error.`);
 		}
 		catch (error) {
-			LOGGER.error(`Failed to mark processing file export ${item._id} as error:`, error);
+			Logger.error(`Failed to mark processing file export ${item._id} as error:`, error);
 		}
 	}
 
@@ -115,7 +115,7 @@ async function cleanOldFileExports() {
 		updated_at: { $lt: Dates.now('local').minus({ hours: 4 }).unix_timestamp },
 	});
 
-	LOGGER.info(`DELETING OLD FILE EXPORTS: ${allFileExports.length} file exports...`);
+	Logger.info(`DELETING OLD FILE EXPORTS: ${allFileExports.length} file exports...`);
 
 	for (const item of allFileExports) {
 		//
@@ -128,20 +128,20 @@ async function cleanOldFileExports() {
 				await files.deleteById(item.file_id);
 			}
 			catch (error) {
-				LOGGER.error(`Failed to delete file ${item.file_id}:`, error);
+				Logger.error(`Failed to delete file ${item.file_id}:`, error);
 			}
 
 			await fileExports.deleteById(item._id);
-			LOGGER.success(`Deleted file export ${item._id}.`);
+			Logger.success(`Deleted file export ${item._id}.`);
 		}
 		catch (error) {
-			LOGGER.error(`Failed to delete file export ${item._id}:`, error);
+			Logger.error(`Failed to delete file export ${item._id}:`, error);
 		}
 
 		//
 	}
 
-	LOGGER.terminate(`Cleanup completed in ${globalTimer.get()}`);
+	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
 
 	//
 }

@@ -2,7 +2,7 @@
 
 import { parseSam } from '@/parse-sam.js';
 import { type AggregationResultItem } from '@/types.js';
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import { Dates } from '@tmlmobilidade/dates';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Timer } from '@tmlmobilidade/timer';
@@ -13,7 +13,7 @@ async function main() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
 		const globalTimer = new Timer();
 
@@ -44,7 +44,7 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX LOCATIONS */
 
-		LOGGER.info('Adding SAMs from Simplified APEX Locations...');
+		Logger.info('Adding SAMs from Simplified APEX Locations...');
 
 		const samsForLocationsTimer = new Timer();
 
@@ -59,7 +59,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -73,12 +73,12 @@ async function main() {
 			samsForLocationsCounter++;
 		}
 
-		LOGGER.success(`Added ${samsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${samsForLocationsTimer.get()})`, 1);
+		Logger.success(`Added ${samsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${samsForLocationsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
 
-		LOGGER.info('Adding SAMs from Simplified APEX On Board Refunds...');
+		Logger.info('Adding SAMs from Simplified APEX On Board Refunds...');
 
 		const samsForOnBoardRefundsTimer = new Timer();
 
@@ -93,7 +93,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -107,12 +107,12 @@ async function main() {
 			samsForOnBoardRefundsCounter++;
 		}
 
-		LOGGER.success(`Added ${samsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${samsForOnBoardRefundsTimer.get()})`, 1);
+		Logger.success(`Added ${samsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${samsForOnBoardRefundsTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD SALES */
 
-		LOGGER.info('Adding SAMs from Simplified APEX On Board Sales...');
+		Logger.info('Adding SAMs from Simplified APEX On Board Sales...');
 
 		const samsForOnBoardSalesTimer = new Timer();
 
@@ -127,7 +127,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -141,12 +141,12 @@ async function main() {
 			samsForOnBoardSalesCounter++;
 		}
 
-		LOGGER.success(`Added ${samsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${samsForOnBoardSalesTimer.get()})`, 1);
+		Logger.success(`Added ${samsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${samsForOnBoardSalesTimer.get()})`, 1);
 
 		/* * */
 		/* SIMPLIFIED APEX VALIDATIONS */
 
-		LOGGER.info('Adding SAMs from Simplified APEX Validations...');
+		Logger.info('Adding SAMs from Simplified APEX Validations...');
 
 		const samsForValidationsTimer = new Timer();
 
@@ -161,7 +161,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				LOGGER.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -175,17 +175,17 @@ async function main() {
 			samsForValidationsCounter++;
 		}
 
-		LOGGER.success(`Added ${samsForValidationsCounter} SAMs from Simplified APEX Validations. (${samsForValidationsTimer.get()})`, 1);
+		Logger.success(`Added ${samsForValidationsCounter} SAMs from Simplified APEX Validations. (${samsForValidationsTimer.get()})`, 1);
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}`);
+		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('An error occurred. Halting execution.', error);
-		LOGGER.error('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', error);
+		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds

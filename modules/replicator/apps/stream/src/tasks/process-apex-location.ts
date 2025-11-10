@@ -4,8 +4,8 @@ import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 
 /* * */
@@ -27,7 +27,7 @@ export async function processApexLocation(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		LOGGER.error(`WARNING: processApexLocation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
+		Logger.error(`WARNING: processApexLocation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
 	}
 
 	//
@@ -37,7 +37,7 @@ export async function processApexLocation(databaseOperation) {
 
 	const newSimplifiedApexLocationDocument = parseSimplifiedApexLocation(databaseOperation.fullDocument);
 	if (!newSimplifiedApexLocationDocument) {
-		LOGGER.error(`Invalid APEX Location document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		Logger.error(`Invalid APEX Location document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
 		return;
 	}
 
@@ -49,7 +49,7 @@ export async function processApexLocation(databaseOperation) {
 		try {
 			//
 
-			const invalidationTimer = new TIMETRACKER();
+			const invalidationTimer = new Timer();
 
 			//
 			// Map the flushed data to the query that will be used to invalidate documents
@@ -67,12 +67,12 @@ export async function processApexLocation(databaseOperation) {
 
 			const updateRidesResult = await rides.updateMany({ $or: updateRidesOps }, { system_status: 'waiting' }, { returnResults: false });
 
-			LOGGER.info(`Flush [simplified_apex_locations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+			Logger.info(`Flush [simplified_apex_locations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error in flushCallback', error);
+			Logger.error('Error in flushCallback', error);
 		}
 	};
 

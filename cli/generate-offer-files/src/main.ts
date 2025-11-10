@@ -1,11 +1,11 @@
 /* * */
 
 import { type OfferJourney, type OfferStop } from '@/types.js';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
 import { JsonWriter } from '@helperkits/writer';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type OperationalDate, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -17,9 +17,9 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Setup the JSON batch writers to speed up the writing process and
@@ -55,21 +55,21 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			fs.rmSync(workdirPath, { recursive: true });
 			fs.mkdirSync(workdirPath, { recursive: true });
-			LOGGER.success('Prepared working directory.');
-			LOGGER.spacer(1);
+			Logger.success('Prepared working directory.');
+			Logger.spacer(1);
 		}
 		catch (error) {
-			LOGGER.error(`Error preparing workdir path "${workdirPath}".`, error);
+			Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
 			process.exit(1);
 		}
 
 		try {
 			await unzipFile(filePath, extractDirPath);
-			LOGGER.success(`Unzipped GTFS file from "${filePath}" to "${extractDirPath}".`);
-			LOGGER.spacer(1);
+			Logger.success(`Unzipped GTFS file from "${filePath}" to "${extractDirPath}".`);
+			Logger.spacer(1);
 		}
 		catch (error) {
-			LOGGER.error('Error unzipping the file.', error);
+			Logger.error('Error unzipping the file.', error);
 			process.exit(1);
 		}
 
@@ -94,7 +94,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			LOGGER.info(`Reading zip entry "calendar.txt"...`);
+			Logger.info(`Reading zip entry "calendar.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Calendar_Raw) => {
 				//
@@ -149,18 +149,18 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar.txt"`);
-				LOGGER.spacer(1);
+				Logger.success(`Finished processing "calendar.txt"`);
+				Logger.spacer(1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`);
-				LOGGER.spacer(1);
+				Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`);
+				Logger.spacer(1);
 			}
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "calendar.txt" file.', error);
+			Logger.error('Error processing "calendar.txt" file.', error);
 			throw new Error('✖︎ Error processing "calendar.txt" file.');
 		}
 
@@ -175,7 +175,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			LOGGER.info(`Reading zip entry "calendar_dates.txt"...`);
+			Logger.info(`Reading zip entry "calendar_dates.txt"...`);
 
 			const parseEachRow = async (data: GTFS_CalendarDate_Raw) => {
 				//
@@ -222,18 +222,18 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
-				LOGGER.success(`Finished processing "calendar_dates.txt"`);
-				LOGGER.spacer(1);
+				Logger.success(`Finished processing "calendar_dates.txt"`);
+				Logger.spacer(1);
 			}
 			else {
-				LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`);
-				LOGGER.spacer(1);
+				Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`);
+				Logger.spacer(1);
 			}
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "calendar_dates.txt" file.', error);
+			Logger.error('Error processing "calendar_dates.txt" file.', error);
 			throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 		}
 
@@ -248,7 +248,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			LOGGER.info(`Reading zip entry "trips.txt"...`);
+			Logger.info(`Reading zip entry "trips.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -267,13 +267,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			await parseCsvFile(`${extractDirPath}/trips.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "trips.txt"`);
-			LOGGER.spacer(1);
+			Logger.success(`Finished processing "trips.txt"`);
+			Logger.spacer(1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "trips.txt" file.', error);
+			Logger.error('Error processing "trips.txt" file.', error);
 			throw new Error('✖︎ Error processing "trips.txt" file.');
 		}
 
@@ -287,7 +287,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			LOGGER.info(`Reading zip entry "routes.txt"...`);
+			Logger.info(`Reading zip entry "routes.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -304,13 +304,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			await parseCsvFile(`${extractDirPath}/routes.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "routes.txt"`);
-			LOGGER.spacer(1);
+			Logger.success(`Finished processing "routes.txt"`);
+			Logger.spacer(1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "routes.txt" file.', error);
+			Logger.error('Error processing "routes.txt" file.', error);
 			throw new Error('✖︎ Error processing "routes.txt" file.');
 		}
 
@@ -325,7 +325,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			LOGGER.info(`Reading zip entry "stops.txt"...`);
+			Logger.info(`Reading zip entry "stops.txt"...`);
 
 			const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -339,13 +339,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			await parseCsvFile(`${extractDirPath}/stops.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stops.txt"`);
-			LOGGER.spacer(1);
+			Logger.success(`Finished processing "stops.txt"`);
+			Logger.spacer(1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "stops.txt" file.', error);
+			Logger.error('Error processing "stops.txt" file.', error);
 			throw new Error('✖︎ Error processing "stops.txt" file.');
 		}
 
@@ -361,7 +361,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			LOGGER.info(`Reading zip entry "stop_times.txt"...`);
+			Logger.info(`Reading zip entry "stop_times.txt"...`);
 
 			const parseEachRow = async (data: GTFS_StopTime_Raw) => {
 				//
@@ -399,13 +399,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			await parseCsvFile(`${extractDirPath}/stop_times.txt`, parseEachRow);
 
-			LOGGER.success(`Finished processing "stop_times.txt"`);
-			LOGGER.spacer(1);
+			Logger.success(`Finished processing "stop_times.txt"`);
+			Logger.spacer(1);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error processing "stop_times.txt" file.', error);
+			Logger.error('Error processing "stop_times.txt" file.', error);
 			throw new Error('✖︎ Error processing "stop_times.txt" file.');
 		}
 
@@ -430,7 +430,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				const routeData = savedRoutes.get(currentTrip.route_id);
 
 				if (!stopTimesData || stopTimesData.length === 0) {
-					LOGGER.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
+					Logger.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
 					continue;
 				}
 
@@ -586,7 +586,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error transforming or saving Offer documents.', error);
+			Logger.error('Error transforming or saving Offer documents.', error);
 			throw new Error('✖︎ Error transforming or saving Offer documents.');
 		}
 
@@ -595,18 +595,18 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		offerStopsWriter.close();
 		offerJourneysWriter.close();
 
-		LOGGER.spacer(1);
+		Logger.spacer(1);
 
-		LOGGER.success(`Total OfferJourneys written: ${totalOfferJourneysCounter}`);
-		LOGGER.success(`Total OfferStops written: ${totalOfferStopsCounter}`);
+		Logger.success(`Total OfferJourneys written: ${totalOfferJourneysCounter}`);
+		Logger.success(`Total OfferStops written: ${totalOfferStopsCounter}`);
 
-		LOGGER.terminate(`Finished processing GTFS file. Run took ${globalTimer.get()}`);
+		Logger.terminate(`Finished processing GTFS file. Run took ${globalTimer.get()}`);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('An error occurred. Halting execution.', error);
-		LOGGER.error('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', error);
+		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds

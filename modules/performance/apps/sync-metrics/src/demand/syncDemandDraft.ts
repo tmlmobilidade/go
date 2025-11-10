@@ -4,7 +4,7 @@ import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { type Metric } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 type DemandGroupType = 'agency' | 'line' | 'pattern';
 type Granularity = 'day' | 'month' | 'year';
@@ -45,7 +45,7 @@ const getTimeChunks = (granularity: Granularity) => {
 
 export const syncDemand = async (groupType: DemandGroupType, granularity: Granularity) => {
 	Logger.title(`Sync Demand Metrics by ${groupType} by ${granularity}`);
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const field = `${groupType}_id` as const; // e.g. 'agency_id', 'line_id', 'pattern_id'
 	const metricName = `demand_by_${groupType}_by_${granularity}` as const;

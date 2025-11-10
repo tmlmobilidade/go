@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
 import { Dates } from '@tmlmobilidade/dates';
 import fs from 'node:fs';
@@ -12,9 +12,9 @@ export async function dumpVehicleEventsFromPCGIDB() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Connect to databases and setup DB writers
@@ -59,7 +59,7 @@ export async function dumpVehicleEventsFromPCGIDB() {
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
 	}

@@ -1,6 +1,6 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import pg from 'pg';
 
 /* * */
@@ -16,12 +16,12 @@ const client = new pg.Client({
 
 async function connect() {
 	await client.connect();
-	LOGGER.success('Connected to BRIDGEDB');
+	Logger.success('Connected to BRIDGEDB');
 }
 
 async function disconnect() {
 	await client.end();
-	LOGGER.success('Disconnected from BRIDGEDB');
+	Logger.success('Disconnected from BRIDGEDB');
 }
 
 /* * */

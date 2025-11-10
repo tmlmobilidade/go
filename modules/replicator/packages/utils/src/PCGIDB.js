@@ -1,6 +1,6 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import { readFileSync } from 'fs';
 import { MongoClient, ObjectId } from 'mongodb';
 import { createTunnel } from 'tunnel-ssh';
@@ -33,7 +33,7 @@ export class PCGIDBClass {
 
 	async connect() {
 		try {
-			LOGGER.info('PCGIDB: New connection request...');
+			Logger.info('PCGIDB: New connection request...');
 
 			//
 			// Establish SSH tunnel
@@ -44,7 +44,7 @@ export class PCGIDBClass {
 			// If another connection request is already in progress, wait for it to complete
 
 			if (this.mongoClientConnecting) {
-				LOGGER.info('PCGIDB: Waiting for MongoDB Client connection...');
+				Logger.info('PCGIDB: Waiting for MongoDB Client connection...');
 				await this.waitForMongoClientConnection();
 				return;
 			}
@@ -153,7 +153,7 @@ export class PCGIDBClass {
 		this.mongoClientConnectionInstance = null;
 		global._mongoClientConnectionInstance = null;
 		//
-		LOGGER.info('PCGIDB: Reset all connections.');
+		Logger.info('PCGIDB: Reset all connections.');
 	}
 
 	/* * *
@@ -168,7 +168,7 @@ export class PCGIDBClass {
 		// If another setup request is already in progress, wait for it to complete
 
 		if (this.sshTunnelConnecting) {
-			LOGGER.info('PCGIDB: Waiting for SSH Tunnel connection...');
+			Logger.info('PCGIDB: Waiting for SSH Tunnel connection...');
 			await this.waitForSshTunnelConnection();
 			return;
 		}
@@ -177,7 +177,7 @@ export class PCGIDBClass {
 		// Check if there is already an active SSH connection
 
 		if (this.sshTunnelConnectionInstance?.listening || global._sshTunnelConnectionInstance?.listening) {
-			LOGGER.info('PCGIDB: SSH Tunnel already connected. Skipping...');
+			Logger.info('PCGIDB: SSH Tunnel already connected. Skipping...');
 			return;
 		}
 
@@ -192,7 +192,7 @@ export class PCGIDBClass {
 
 		try {
 			//
-			LOGGER.info('PCGIDB: Starting SSH Tunnel connection...');
+			Logger.info('PCGIDB: Starting SSH Tunnel connection...');
 
 			//
 			// Setup the flag to prevent double connection
@@ -225,7 +225,7 @@ export class PCGIDBClass {
 
 			const [server] = await createTunnel(tunnelOptions, serverOptions, sshOptions, forwardOptions);
 
-			LOGGER.info(`PCGIDB: Created SSH Tunnel instance on host port ${server.address().port}`);
+			Logger.info(`PCGIDB: Created SSH Tunnel instance on host port ${server.address().port}`);
 
 			if (process.env.NODE_ENV === 'development') global._sshTunnelConnectionInstance = server;
 			else this.sshTunnelConnectionInstance = server;

@@ -5,7 +5,7 @@ import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -13,14 +13,14 @@ export const syncDemandByLineByYear = async () => {
 	//
 
 	Logger.title(`Sync Demand Metrics by Line by Year`);
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const METRIC = 'demand_by_line_by_year';
 
 	//
 	// Delete existing metrics
 
-	const deleteTimer = new TIMETRACKER();
+	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
@@ -59,7 +59,7 @@ export const syncDemandByLineByYear = async () => {
 	const lineMap = new Map<string, Metric>();
 
 	const yearPromises = allTimestampChunks.map(async (chunkData) => {
-		const chunkTimer = new TIMETRACKER();
+		const chunkTimer = new Timer();
 
 		const year = new Date(chunkData.start).getFullYear();
 

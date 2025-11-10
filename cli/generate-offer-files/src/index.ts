@@ -3,7 +3,7 @@
 /* * */
 
 import { generateOfferOutput } from '@/main.js';
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Command } from 'commander';
@@ -40,9 +40,9 @@ import fs from 'fs';
 		options.endDate = validateOperationalDate(options.endDate);
 	}
 	catch (error) {
-		LOGGER.divider();
-		LOGGER.error(`--start-date and/or --end-date are not valid:`, error.message);
-		LOGGER.divider();
+		Logger.divider();
+		Logger.error(`--start-date and/or --end-date are not valid:`, error.message);
+		Logger.divider();
 		return;
 	}
 
@@ -50,14 +50,14 @@ import fs from 'fs';
 	// Ensure the output directory exists and is empty
 
 	if (fs.existsSync(options.outputDir) && !options.override) {
-		LOGGER.divider();
-		LOGGER.error(`Output directory "${options.outputDir}" already exists. Please remove it or change it before running the script.`);
-		LOGGER.divider();
+		Logger.divider();
+		Logger.error(`Output directory "${options.outputDir}" already exists. Please remove it or change it before running the script.`);
+		Logger.divider();
 		return;
 	}
 
 	if (fs.existsSync(options.outputDir) && options.override) {
-		LOGGER.info(`Output directory "${options.outputDir}" already exists. It will be overridden.`);
+		Logger.info(`Output directory "${options.outputDir}" already exists. It will be overridden.`);
 		fs.rmSync(options.outputDir, { recursive: true });
 	}
 
@@ -66,11 +66,11 @@ import fs from 'fs';
 	//
 	// Log the ASCII art
 
-	LOGGER.spacer(3);
+	Logger.spacer(3);
 
 	console.log(ASCII_CM_SHORT);
 
-	LOGGER.spacer(3);
+	Logger.spacer(3);
 
 	//
 	// Start the offer generation process

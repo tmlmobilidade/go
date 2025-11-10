@@ -1,6 +1,6 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
 
@@ -18,7 +18,7 @@ export async function processor() {
 		]);
 	}
 	catch (error) {
-		LOGGER.error('Error processing.', error);
+		Logger.error('Error processing.', error);
 		throw new Error('✖︎ Error processing rides.');
 	}
 }
@@ -26,8 +26,8 @@ export async function processor() {
 async function processRides() {
 	//
 
-	LOGGER.info('Processing Rides...');
-	const timer = new TIMETRACKER();
+	Logger.info('Processing Rides...');
+	const timer = new Timer();
 
 	const hashedShapesIds = new Set<string>();
 	const hashedTripsIds = new Set<string>();
@@ -79,14 +79,14 @@ async function processRides() {
 		});
 
 		if (totalRides % 10000 === 0) {
-			LOGGER.info(`Processed ${totalRides} rides so far...`);
+			Logger.info(`Processed ${totalRides} rides so far...`);
 		}
 	}
 
 	// Flush the rides table to ensure all buffered writes are persisted
 	GLOBAL_CONTEXT.tables.rides.flush();
 
-	LOGGER.info(`Processed ${totalRides} Rides in ${timer.get()}.`);
+	Logger.info(`Processed ${totalRides} Rides in ${timer.get()}.`);
 
 	await Promise.all([
 		processHashedTrips(hashedTripsIds),
@@ -97,8 +97,8 @@ async function processRides() {
 async function processHashedTrips(hashedTripsIds: Set<string>) {
 	try {
 		//
-		LOGGER.info('Processing Hashed Trips...');
-		const hashedTripsTimer = new TIMETRACKER();
+		Logger.info('Processing Hashed Trips...');
+		const hashedTripsTimer = new Timer();
 
 		const hashedTripsCollection = await hashedTrips.getCollection();
 		const hashedTripsStream = hashedTripsCollection.find({ _id: { $in: Array.from(hashedTripsIds) } }).stream();
@@ -126,10 +126,10 @@ async function processHashedTrips(hashedTripsIds: Set<string>) {
 
 		GLOBAL_CONTEXT.tables.hashed_trips.flush();
 
-		LOGGER.info(`Processed ${totalHashedTrips} Hashed Trips in ${hashedTripsTimer.get()}.`);
+		Logger.info(`Processed ${totalHashedTrips} Hashed Trips in ${hashedTripsTimer.get()}.`);
 	}
 	catch (error) {
-		LOGGER.error('Error processing Hashed Trips.', error); ;
+		Logger.error('Error processing Hashed Trips.', error); ;
 		throw new Error('✖︎ Error processing Hashed Trips.');
 	}
 }
@@ -138,8 +138,8 @@ async function processHashedShapes(hashedShapesIds: Set<string>) {
 	try {
 		//
 
-		LOGGER.info('Processing Hashed Shapes...');
-		const hashedShapesTimer = new TIMETRACKER();
+		Logger.info('Processing Hashed Shapes...');
+		const hashedShapesTimer = new Timer();
 
 		const hashedShapesCollection = await hashedShapes.getCollection();
 		const hashedShapesStream = hashedShapesCollection.find({ _id: { $in: Array.from(hashedShapesIds) } }).stream();
@@ -185,10 +185,10 @@ async function processHashedShapes(hashedShapesIds: Set<string>) {
 
 		GLOBAL_CONTEXT.tables.shapes.flush();
 
-		LOGGER.info(`Processed ${totalHashedShapes} Hashed Shapes in ${hashedShapesTimer.get()}.`);
+		Logger.info(`Processed ${totalHashedShapes} Hashed Shapes in ${hashedShapesTimer.get()}.`);
 	}
 	catch (error) {
-		LOGGER.error('Error processing Hashed Shapes.', error);
+		Logger.error('Error processing Hashed Shapes.', error);
 		throw new Error('✖︎ Error processing Hashed Shapes.');
 	}
 }
@@ -197,8 +197,8 @@ async function processAgencies() {
 	try {
 		//
 
-		LOGGER.info('Processing Agencies...');
-		const agenciesTimer = new TIMETRACKER();
+		Logger.info('Processing Agencies...');
+		const agenciesTimer = new Timer();
 
 		const allAgencies = await agencies.findMany({}, { sort: { _id: 1 } });
 
@@ -219,10 +219,10 @@ async function processAgencies() {
 
 		GLOBAL_CONTEXT.tables.agencies.flush();
 
-		LOGGER.info(`Processed ${totalAgencies} Agencies in ${agenciesTimer.get()}.`);
+		Logger.info(`Processed ${totalAgencies} Agencies in ${agenciesTimer.get()}.`);
 	}
 	catch (error) {
-		LOGGER.error('Error processing Agencies.', error);
+		Logger.error('Error processing Agencies.', error);
 		throw new Error('✖︎ Error processing Agencies.');
 	}
 }
@@ -232,8 +232,8 @@ async function processStops() {
 		//
 
 		//
-		LOGGER.info('Processing Stops...');
-		const stopsTimer = new TIMETRACKER();
+		Logger.info('Processing Stops...');
+		const stopsTimer = new Timer();
 
 		//
 		// Fetch the stops from the API
@@ -263,10 +263,10 @@ async function processStops() {
 		}
 		GLOBAL_CONTEXT.tables.stops.flush();
 
-		LOGGER.info(`Processed ${totalStops} Stops in ${stopsTimer.get()}.`);
+		Logger.info(`Processed ${totalStops} Stops in ${stopsTimer.get()}.`);
 	}
 	catch (error) {
-		LOGGER.error('Error processing Stops.', error);
+		Logger.error('Error processing Stops.', error);
 		throw new Error('✖︎ Error processing Stops.');
 	}
 }

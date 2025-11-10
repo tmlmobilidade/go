@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { files } from '@tmlmobilidade/interfaces';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
@@ -53,9 +53,9 @@ interface Context {
 
 export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatabaseConfig = {}): Promise<GtfsSQLTables> {
 	try {
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
-		LOGGER.info(`Importing ${plan._id} GTFS to database...`);
+		Logger.info(`Importing ${plan._id} GTFS to database...`);
 
 		// Initialize context for the current plan
 		const context: Context = {
@@ -80,15 +80,15 @@ export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatab
 		await processStopsFile(context);
 		await processStopTimesFile(context);
 
-		LOGGER.success(`Finished importing GTFS to database for plan "${plan._id}" in ${globalTimer.get()}.`, 0);
-		LOGGER.divider();
+		Logger.success(`Finished importing GTFS to database for plan "${plan._id}" in ${globalTimer.get()}.`, 0);
+		Logger.divider();
 
-		LOGGER.terminate(`Finished importing GTFS to database in ${globalTimer.get()}.`);
+		Logger.terminate(`Finished importing GTFS to database in ${globalTimer.get()}.`);
 
 		return context.gtfs;
 	}
 	catch (error) {
-		LOGGER.error('Error parsing plan.', error);
+		Logger.error('Error parsing plan.', error);
 		throw error;
 	}
 }
@@ -225,7 +225,7 @@ async function downloadAndExtractGtfs(plan: Plan): Promise<Context['workdir']> {
 	// Return early if no operation file is found
 
 	if (!plan.operation_file_id) {
-		LOGGER.error(`No operation file found for plan "${plan._id}".`);
+		Logger.error(`No operation file found for plan "${plan._id}".`);
 		process.exit(1);
 	}
 
@@ -240,10 +240,10 @@ async function downloadAndExtractGtfs(plan: Plan): Promise<Context['workdir']> {
 		fs.rmSync(workdirPath, { force: true, recursive: true });
 		fs.mkdirSync(workdirPath, { recursive: true });
 
-		LOGGER.success('Prepared working directory.', 1);
+		Logger.success('Prepared working directory.', 1);
 	}
 	catch (error) {
-		LOGGER.error(`Error preparing workdir path "${workdirPath}".`, error);
+		Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
 		process.exit(1);
 	}
 
@@ -253,7 +253,7 @@ async function downloadAndExtractGtfs(plan: Plan): Promise<Context['workdir']> {
 
 	const operationFileData = await files.findById(plan.operation_file_id);
 	if (!operationFileData || !operationFileData.url) {
-		LOGGER.error(`No operation file found for plan "${plan._id}".`);
+		Logger.error(`No operation file found for plan "${plan._id}".`);
 		process.exit(1);
 	}
 
@@ -263,16 +263,16 @@ async function downloadAndExtractGtfs(plan: Plan): Promise<Context['workdir']> {
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 	}
 	catch (error) {
-		LOGGER.error('Error downloading the file.', error);
+		Logger.error('Error downloading the file.', error);
 		process.exit(1);
 	}
 
 	try {
 		await unzipFile(downloadFilePath, extractDirPath);
-		LOGGER.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
+		Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
 	}
 	catch (error) {
-		LOGGER.error('Error unzipping the file.', error);
+		Logger.error('Error unzipping the file.', error);
 		process.exit(1);
 	}
 
@@ -293,9 +293,9 @@ async function processCalendarFile(context: Context, startDate: OperationalDate,
 	try {
 		//
 
-		const calendarParseTimer = new TIMETRACKER();
+		const calendarParseTimer = new Timer();
 
-		LOGGER.info(`Reading zip entry "calendar.txt"...`);
+		Logger.info(`Reading zip entry "calendar.txt"...`);
 
 		const parseEachRow = async (data: GTFS_Calendar_Raw) => {
 			//
@@ -352,16 +352,16 @@ async function processCalendarFile(context: Context, startDate: OperationalDate,
 
 		if (fs.existsSync(`${context.workdir.extractDirPath}/calendar.txt`)) {
 			await parseCsvFile(`${context.workdir.extractDirPath}/calendar.txt`, parseEachRow);
-			LOGGER.success(`Finished processing "calendar.txt": ${context.gtfs.calendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
+			Logger.success(`Finished processing "calendar.txt": ${context.gtfs.calendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
 		}
 		else {
-			LOGGER.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
+			Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('Error processing "calendar.txt" file.', error);
+		Logger.error('Error processing "calendar.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar.txt" file.');
 	}
 }
@@ -377,9 +377,9 @@ async function processCalendarDatesFile(context: Context, startDate: Operational
 	try {
 		//
 
-		const calendarDatesParseTimer = new TIMETRACKER();
+		const calendarDatesParseTimer = new Timer();
 
-		LOGGER.info(`Reading zip entry "calendar_dates.txt"...`);
+		Logger.info(`Reading zip entry "calendar_dates.txt"...`);
 
 		const parseEachRow = async (data: GTFS_CalendarDate_Raw) => {
 			//
@@ -433,16 +433,16 @@ async function processCalendarDatesFile(context: Context, startDate: Operational
 
 		if (fs.existsSync(`${context.workdir.extractDirPath}/calendar_dates.txt`)) {
 			await parseCsvFile(`${context.workdir.extractDirPath}/calendar_dates.txt`, parseEachRow);
-			LOGGER.success(`Finished processing "calendar_dates.txt": ${context.gtfs.calendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
+			Logger.success(`Finished processing "calendar_dates.txt": ${context.gtfs.calendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
 		}
 		else {
-			LOGGER.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
+			Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('Error processing "calendar_dates.txt" file.', error);
+		Logger.error('Error processing "calendar_dates.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 	}
 }
@@ -458,9 +458,9 @@ async function processTripsFile(context: Context): Promise<void> {
 	try {
 		//
 
-		const tripsParseTimer = new TIMETRACKER();
+		const tripsParseTimer = new Timer();
 
-		LOGGER.info(`Reading zip entry "trips.txt"...`);
+		Logger.info(`Reading zip entry "trips.txt"...`);
 
 		const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
 			// Validate the current row against the proper type
@@ -474,7 +474,7 @@ async function processTripsFile(context: Context): Promise<void> {
 			context.referencedRouteIds.add(validatedData.route_id);
 			context.referencedShapeIds.add(validatedData.shape_id);
 			// Log progress
-			if (context.counters.trips % 10000 === 0) LOGGER.info(`Parsed ${context.counters.trips} trips.txt rows so far.`);
+			if (context.counters.trips % 10000 === 0) Logger.info(`Parsed ${context.counters.trips} trips.txt rows so far.`);
 			// Increment the counter
 			context.counters.trips++;
 		};
@@ -486,12 +486,12 @@ async function processTripsFile(context: Context): Promise<void> {
 
 		context.gtfs.trips.flush();
 
-		LOGGER.success(`Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
+		Logger.success(`Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('Error processing "trips.txt" file.', error);
+		Logger.error('Error processing "trips.txt" file.', error);
 		throw new Error('✖︎ Error processing "trips.txt" file.');
 	}
 }
@@ -506,9 +506,9 @@ async function processRoutesFile(context: Context): Promise<void> {
 	try {
 		//
 
-		const routesParseTimer = new TIMETRACKER();
+		const routesParseTimer = new Timer();
 
-		LOGGER.info(`Reading zip entry "routes.txt"...`);
+		Logger.info(`Reading zip entry "routes.txt"...`);
 
 		const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
 			// Validate the current row against the proper type
@@ -527,12 +527,12 @@ async function processRoutesFile(context: Context): Promise<void> {
 
 		context.gtfs.routes.flush();
 
-		LOGGER.success(`Finished processing "routes.txt": ${context.gtfs.routes.size} rows saved in ${routesParseTimer.get()}.`, 1);
+		Logger.success(`Finished processing "routes.txt": ${context.gtfs.routes.size} rows saved in ${routesParseTimer.get()}.`, 1);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('Error processing "routes.txt" file.', error);
+		Logger.error('Error processing "routes.txt" file.', error);
 		throw new Error('✖︎ Error processing "routes.txt" file.');
 	}
 }
@@ -548,9 +548,9 @@ async function processShapesFile(context: Context): Promise<void> {
 	try {
 		//
 
-		const shapesParseTimer = new TIMETRACKER();
+		const shapesParseTimer = new Timer();
 
-		LOGGER.info(`Reading zip entry "shapes.txt"...`);
+		Logger.info(`Reading zip entry "shapes.txt"...`);
 
 		const parseEachRow = async (data: GTFS_Shape_Raw) => {
 			// Validate the current row against the proper type
@@ -561,7 +561,7 @@ async function processShapesFile(context: Context): Promise<void> {
 			// Save the exported row
 			context.gtfs.shapes.write(validatedData);
 			// Log progress
-			if (context.counters.shapes % 100000 === 0) LOGGER.info(`Parsed ${context.counters.shapes} shapes.txt rows so far.`);
+			if (context.counters.shapes % 100000 === 0) Logger.info(`Parsed ${context.counters.shapes} shapes.txt rows so far.`);
 			// Increment the counter
 			context.counters.shapes++;
 		};
@@ -573,12 +573,12 @@ async function processShapesFile(context: Context): Promise<void> {
 
 		context.gtfs.shapes.flush();
 
-		LOGGER.success(`Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
+		Logger.success(`Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('Error processing "shapes.txt" file.', error);
+		Logger.error('Error processing "shapes.txt" file.', error);
 		throw new Error('✖︎ Error processing "shapes.txt" file.');
 	}
 }
@@ -594,9 +594,9 @@ async function processStopsFile(context: Context): Promise<void> {
 	try {
 		//
 
-		const stopsParseTimer = new TIMETRACKER();
+		const stopsParseTimer = new Timer();
 
-		LOGGER.info(`Reading zip entry "stops.txt"...`);
+		Logger.info(`Reading zip entry "stops.txt"...`);
 
 		const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
 			// Validate the current row against the proper type
@@ -614,12 +614,12 @@ async function processStopsFile(context: Context): Promise<void> {
 
 		context.gtfs.stops.flush();
 
-		LOGGER.success(`Finished processing "stops.txt": ${context.gtfs.stops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
+		Logger.success(`Finished processing "stops.txt": ${context.gtfs.stops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('Error processing "stops.txt" file.', error);
+		Logger.error('Error processing "stops.txt" file.', error);
 		throw new Error('✖︎ Error processing "stops.txt" file.');
 	}
 }
@@ -636,9 +636,9 @@ async function processStopTimesFile(context: Context): Promise<void> {
 	try {
 		//
 
-		const stopTimesParseTimer = new TIMETRACKER();
+		const stopTimesParseTimer = new Timer();
 
-		LOGGER.info(`Reading zip entry "stop_times.txt"...`);
+		Logger.info(`Reading zip entry "stop_times.txt"...`);
 
 		const parseEachRow = async (data: GTFS_StopTime_Raw) => {
 			// Validate the current row against the proper type
@@ -652,7 +652,7 @@ async function processStopTimesFile(context: Context): Promise<void> {
 			// Save the exported row
 			context.gtfs.stopTimes.write(validatedData);
 			// Log progress
-			if (context.counters.stopTimes % 100000 === 0) LOGGER.info(`Parsed ${context.counters.stopTimes} stop_times.txt rows so far.`);
+			if (context.counters.stopTimes % 100000 === 0) Logger.info(`Parsed ${context.counters.stopTimes} stop_times.txt rows so far.`);
 			// Increment the counter
 			context.counters.stopTimes++;
 		};
@@ -664,12 +664,12 @@ async function processStopTimesFile(context: Context): Promise<void> {
 
 		context.gtfs.stopTimes.flush();
 
-		LOGGER.success(`Finished processing "stop_times.txt": ${context.counters.stopTimes} rows saved in ${stopTimesParseTimer.get()}.`, 1);
+		Logger.success(`Finished processing "stop_times.txt": ${context.counters.stopTimes} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('Error processing "stop_times.txt" file.', error);
+		Logger.error('Error processing "stop_times.txt" file.', error);
 		throw new Error('✖︎ Error processing "stop_times.txt" file.');
 	}
 }

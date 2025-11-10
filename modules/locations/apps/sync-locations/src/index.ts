@@ -20,7 +20,7 @@ const mongo = new MongoConnector(process.env.TML_INTERFACE_LOCATIONS);
 const COLLECTIONS = ['census', 'districts', 'localities', 'municipalities', 'parishes'] as const;
 
 async function seedGeoCollection(filePath: string, collectionName: (typeof COLLECTIONS)[number]) {
-	LOGGER.info(`📖 Reading file from ${filePath}`);
+	Logger.info(`📖 Reading file from ${filePath}`);
 
 	const raw = await fs.readFile(filePath, 'utf-8');
 	const geojson = JSON.parse(raw);
@@ -29,20 +29,20 @@ async function seedGeoCollection(filePath: string, collectionName: (typeof COLLE
 		throw new Error('Invalid GeoJSON FeatureCollection');
 	}
 
-	LOGGER.info(`🔗 Connecting to collection: ${collectionName}`);
+	Logger.info(`🔗 Connecting to collection: ${collectionName}`);
 	const db = mongo.db('production');
 	const collection = db.collection(collectionName);
 
-	LOGGER.info(`🧹 Clearing collection: ${collectionName}`);
+	Logger.info(`🧹 Clearing collection: ${collectionName}`);
 	await collection.deleteMany({});
 
 	// 🚨 Insert the individual features, not the full object
-	LOGGER.info(`💾 Inserting ${geojson.features.length} features into ${collectionName}`);
+	Logger.info(`💾 Inserting ${geojson.features.length} features into ${collectionName}`);
 	for (const feature of geojson.features) {
 		try {
 			// 🚨 Skip invalid features for localities
 			if (collectionName === 'localities' && !booleanValid(feature)) {
-				LOGGER.error(`Invalid feature ${feature.properties.name} (${feature.properties.id})`);
+				Logger.error(`Invalid feature ${feature.properties.name} (${feature.properties.id})`);
 
 				// Fix Feature
 				// continue;
@@ -66,36 +66,36 @@ async function seedGeoCollection(filePath: string, collectionName: (typeof COLLE
 			await collection.insertOne(object, {});
 		}
 		catch (error) {
-			LOGGER.error(`Error inserting ${feature.properties.name} (${feature.properties.id})`, error);
+			Logger.error(`Error inserting ${feature.properties.name} (${feature.properties.id})`, error);
 		}
 	}
 
 	// ✅ Add geospatial index
-	LOGGER.info(`🔍 Creating index for ${collectionName}`);
+	Logger.info(`🔍 Creating index for ${collectionName}`);
 	await collection.createIndex({ geometry: '2dsphere' }, { });
 
-	LOGGER.success(`✅ Seeded ${geojson.features.length} documents into ${collectionName}`);
+	Logger.success(`✅ Seeded ${geojson.features.length} documents into ${collectionName}`);
 }
 
 // Usage example:
 
 async function main() {
 	try {
-		LOGGER.divider('🚀 Locations seeder service started');
+		Logger.divider('🚀 Locations seeder service started');
 
-		LOGGER.title('🔗 Connecting to MongoDB');
+		Logger.title('🔗 Connecting to MongoDB');
 		await mongo.connect();
-		LOGGER.success('Connected to MongoDB');
-		LOGGER.divider();
+		Logger.success('Connected to MongoDB');
+		Logger.divider();
 
-		LOGGER.title('🚀 Seeding collections');
+		Logger.title('🚀 Seeding collections');
 
 		for (const collection of COLLECTIONS) {
-			LOGGER.title(`🌱 Seeding ${collection}`);
+			Logger.title(`🌱 Seeding ${collection}`);
 			await seedGeoCollection(path.join(__dirname, `../data/${collection}.json`), collection);
 
-			LOGGER.spacer(1);
-			LOGGER.divider();
+			Logger.spacer(1);
+			Logger.divider();
 		}
 	}
 	catch (error) {

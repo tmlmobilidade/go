@@ -1,11 +1,12 @@
 /* * */
 
-import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
-import { GtfsCause, Ride, RideAcceptance } from '@tmlmobilidade/types';
-import { compareObjects, Dates } from '@tmlmobilidade/utils';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Dates } from '@tmlmobilidade/dates';
 import { normalizeRide } from '@tmlmobilidade/go-controller-pckg-ride-normalized';
+import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+import { GtfsCause, Ride, RideAcceptance } from '@tmlmobilidade/types';
+import { compareObjects } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
 import { isEmpty, testRide } from './utils.js';
@@ -40,10 +41,10 @@ async function createRideAcceptances(ride: Ride) {
 			ride_id: ride._id,
 		}, { returnResult: false });
 
-		LOGGER.info(`Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+		Logger.info(`Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
 	}
 	catch (err) {
-		LOGGER.error('An error occurred. Halting execution.', err);
+		Logger.error('An error occurred. Halting execution.', err);
 	}
 }
 
@@ -62,10 +63,10 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 			analysis_summary: requiredTestsSummary,
 		}, { returnResult: false });
 
-		LOGGER.info(`Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+		Logger.info(`Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
 	}
 	catch (err) {
-		LOGGER.error('An error occurred. Halting execution.', err);
+		Logger.error('An error occurred. Halting execution.', err);
 	}
 }
 
@@ -92,11 +93,11 @@ async function alertJustification(ride: Ride) {
 			},
 		});
 
-		LOGGER.info(`Justified ride ${ride._id} with alert ${foundAlert._id}.`);
+		Logger.info(`Justified ride ${ride._id} with alert ${foundAlert._id}.`);
 	}
 	catch (error) {
-		LOGGER.error('An error occurred. Halting execution.', error);
-		LOGGER.info('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', error);
+		Logger.info('Retrying in 10 seconds...');
 	}
 }
 
@@ -104,9 +105,9 @@ async function main() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
 		// it is necessary to divide the process into smaller blocks. Instead of syncing all documents at once,
@@ -136,7 +137,7 @@ async function main() {
 		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
 			//
 
-			const chunkTimer = new TIMETRACKER();
+			const chunkTimer = new Timer();
 			const progress = `[${chunkIndex + 1}/${allTimestampChunks.length}]`;
 
 			const chunkStartDate = Dates
@@ -147,8 +148,8 @@ async function main() {
 				.fromUnixTimestamp(chunkData.end)
 				.setZone('Europe/Lisbon', 'offset_only');
 
-			LOGGER.spacer(1);
-			LOGGER.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
+			Logger.spacer(1);
+			Logger.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
 
 			//
 			// Fetch the rides.
@@ -187,17 +188,17 @@ async function main() {
 
 			//
 
-			LOGGER.info(`Found ${totalRides} rides. (${chunkTimer.get()})`);
+			Logger.info(`Found ${totalRides} rides. (${chunkTimer.get()})`);
 
-			LOGGER.spacer(1);
-			LOGGER.divider();
+			Logger.spacer(1);
+			Logger.divider();
 		}
 
-		LOGGER.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
+		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
 	}
 	catch (err) {
-		LOGGER.error('An error occurred. Halting execution.', err);
-		LOGGER.info('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', err);
+		Logger.info('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds

@@ -1,7 +1,7 @@
 /* * */
 
 import { getRides } from '@/get-rides.js';
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
 
 /* * */
@@ -27,7 +27,7 @@ import Fastify from 'fastify';
 			console.log(err);
 			process.exit(1);
 		}
-		LOGGER.info(`Server listening at ${address}`);
+		Logger.info(`Server listening at ${address}`);
 	});
 
 	//

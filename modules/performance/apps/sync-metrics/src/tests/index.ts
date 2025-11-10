@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 import { testDemandMetrics } from './demand.js';
 
@@ -11,7 +11,7 @@ import { testDemandMetrics } from './demand.js';
 	//
 
 	Logger.title('Running All Tests');
-	const timer = new TIMETRACKER();
+	const timer = new Timer();
 
 	try {
 		Logger.info('Starting demand metrics tests...');

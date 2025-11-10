@@ -3,8 +3,8 @@
 import { rides, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /**
  * This function links Refunds with Sales and Validation transactions.
@@ -19,10 +19,10 @@ async function linkRefundsToSalesToValidations() {
 	try {
 		//
 
-		LOGGER.init();
-		LOGGER.info('Linking Refunds to Sales and Validations...');
+		Logger.init();
+		Logger.info('Linking Refunds to Sales and Validations...');
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		let totalUnlinkedOnBoardRefunds = 0;
 		let totalLinkedOnBoardRefunds = 0;
@@ -43,7 +43,7 @@ async function linkRefundsToSalesToValidations() {
 
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
 			totalUnlinkedOnBoardRefunds++;
-			if (totalUnlinkedOnBoardRefunds % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.`);
+			if (totalUnlinkedOnBoardRefunds % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.`);
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardRefund.card_serial_number });
@@ -103,7 +103,7 @@ async function linkRefundsToSalesToValidations() {
 
 		//
 
-		LOGGER.success(`Linked ${totalLinkedOnBoardRefunds} out of ${totalUnlinkedOnBoardRefunds} OnBoardRefunds in ${globalTimer.get()}.`);
+		Logger.success(`Linked ${totalLinkedOnBoardRefunds} out of ${totalUnlinkedOnBoardRefunds} OnBoardRefunds in ${globalTimer.get()}.`);
 
 		//
 	}
@@ -131,10 +131,10 @@ async function linkSalesToValidations() {
 	try {
 		//
 
-		LOGGER.init();
-		LOGGER.info('Linking Sales to Validations...');
+		Logger.init();
+		Logger.info('Linking Sales to Validations...');
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		let totalUnlinkedOnBoardSales = 0;
 		let totalLinkedOnBoardSales = 0;
@@ -154,7 +154,7 @@ async function linkSalesToValidations() {
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
 			totalUnlinkedOnBoardSales++;
-			if (totalUnlinkedOnBoardSales % 10000 === 0) LOGGER.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.`);
+			if (totalUnlinkedOnBoardSales % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.`);
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
@@ -197,7 +197,7 @@ async function linkSalesToValidations() {
 
 		//
 
-		LOGGER.success(`Linked ${totalLinkedOnBoardSales} out of ${totalUnlinkedOnBoardSales} OnBoardSales in ${globalTimer.get()}.`);
+		Logger.success(`Linked ${totalLinkedOnBoardSales} out of ${totalUnlinkedOnBoardSales} OnBoardSales in ${globalTimer.get()}.`);
 
 		//
 	}

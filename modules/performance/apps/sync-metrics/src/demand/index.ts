@@ -15,7 +15,7 @@ import { syncDemandByPatternByYear } from '@/demand/by_pattern/by_year.js';
 import { syncDemandByPatternHourByMonth } from '@/demand/by_pattern_hour/by_month.js';
 import { syncDemandByPatternHourByYear } from '@/demand/by_pattern_hour/by_year.js';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -25,7 +25,7 @@ export const syncDemandMetrics = async () => {
 	const runOnInterval = async () => {
 		//
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		Logger.title(`Starting Demand Metrics Sync`);
 		Logger.divider();

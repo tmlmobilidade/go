@@ -1,7 +1,7 @@
 // /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { Files } from '@tmlmobilidade/files';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
@@ -16,13 +16,13 @@ const RUN_INTERVAL = 5_000; // 30 seconds in milliseconds
 async function main() {
 	//
 
-	LOGGER.init();
+	Logger.init();
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const waitingFileExports = await fileExports.findMany({ processing_status: ProcessingStatusSchema.enum.waiting });
 
-	LOGGER.info(`Found ${waitingFileExports.length} waiting file exports.`);
+	Logger.info(`Found ${waitingFileExports.length} waiting file exports.`);
 
 	for (const fileExport of waitingFileExports) {
 		let pathToFile: string | undefined;
@@ -35,7 +35,7 @@ async function main() {
 					pathToFile = await exportRidesFile(fileExport);
 					break;
 				default:
-					LOGGER.error(`Unknown file export type: ${fileExport.type}.`);
+					Logger.error(`Unknown file export type: ${fileExport.type}.`);
 					continue;
 			}
 
@@ -58,14 +58,14 @@ async function main() {
 			}
 		}
 		catch (error) {
-			LOGGER.error(error);
-			LOGGER.error(`Error processing file export: ${error instanceof Error ? error.message : 'Unknown error'}.`);
+			Logger.error(error);
+			Logger.error(`Error processing file export: ${error instanceof Error ? error.message : 'Unknown error'}.`);
 			await fileExports.updateById(fileExport._id, { processing_status: 'error' });
 			continue;
 		}
 	}
 
-	LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+	Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 	//
 }

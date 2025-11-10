@@ -5,8 +5,8 @@ import { parsePlan } from '@/parse-plan.js';
 import { validatePlan } from '@/validate-plan.js';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -14,9 +14,9 @@ async function main() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Get all Plans and iterate on each one
@@ -24,14 +24,14 @@ async function main() {
 		const allPlansData = await plans.all();
 		const allPlansDataSorted = allPlansData.sort((a, b) => b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date));
 
-		LOGGER.info(`Found ${allPlansData.length} Plans to process...`);
+		Logger.info(`Found ${allPlansData.length} Plans to process...`);
 
 		for (const [planIndex, currentPlan] of allPlansDataSorted.entries()) {
 			try {
 				//
 
-				LOGGER.spacer(1);
-				LOGGER.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.gtfs_agency.agency_id} - Plan ${currentPlan._id}`);
+				Logger.spacer(1);
+				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.gtfs_agency.agency_id} - Plan ${currentPlan._id}`);
 
 				//
 				// Validate the Plan data before processing
@@ -50,8 +50,8 @@ async function main() {
 					},
 				});
 
-				LOGGER.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
-				LOGGER.spacer(1);
+				Logger.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
+				Logger.spacer(1);
 
 				//
 				// Parse the plan into Rides
@@ -68,8 +68,8 @@ async function main() {
 						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 					},
 				});
-				LOGGER.error(`Error processing plan ${currentPlan._id}`, error);
-				LOGGER.divider();
+				Logger.error(`Error processing plan ${currentPlan._id}`, error);
+				Logger.divider();
 			}
 		}
 
@@ -82,13 +82,13 @@ async function main() {
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}`);
+		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('An error occurred. Halting execution.', error);
-		LOGGER.error('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', error);
+		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds

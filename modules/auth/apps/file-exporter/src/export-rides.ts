@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@helperkits/writer';
 import { ALLOW_ALL_FLAG, Permissions } from '@tmlmobilidade/consts';
 import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
@@ -27,7 +27,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	//
 	// Setup a timer to track the execution time
-	const timer = new TIMETRACKER();
+	const timer = new Timer();
 
 	await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
 
@@ -77,9 +77,9 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	await csvWriter.flush();
 
-	LOGGER.success(`Exported ${count} rides in ${timer.get()}`, 1);
-	LOGGER.info(`File path: ${tempFilePath}`);
-	LOGGER.spacer(1);
+	Logger.success(`Exported ${count} rides in ${timer.get()}`, 1);
+	Logger.info(`File path: ${tempFilePath}`);
+	Logger.spacer(1);
 
 	return tempFilePath;
 }

@@ -4,7 +4,7 @@ import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { type RealtimeDemand } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -12,14 +12,14 @@ export const syncRealtimeDemand = async () => {
 	//
 
 	Logger.title(`Sync Demand Metrics in Realtime`);
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const METRIC = 'realtime_demand';
 
 	//
 	// Delete existing metrics
 
-	const deleteTimer = new TIMETRACKER();
+	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
@@ -76,7 +76,7 @@ export const syncRealtimeDemand = async () => {
 	// Count validations per operator
 
 	for (const operatorId of operators) {
-		const operatorTimer = new TIMETRACKER();
+		const operatorTimer = new Timer();
 		Logger.info(`Processing Operator ${operatorId}...`);
 
 		//

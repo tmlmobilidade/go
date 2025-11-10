@@ -4,8 +4,8 @@ import { type LocationsApiResponse } from '@/types';
 import { stops } from '@tmlmobilidade/interfaces';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { fetchData } from '@tmlmobilidade/utils';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /**
  * This script ensures Stop documents have up to date attributes concerning
@@ -15,16 +15,16 @@ import TIMETRACKER from '@helperkits/timer';
 async function cleanOldValidations() {
 	//
 
-	LOGGER.init();
+	Logger.init();
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	//
 	// Get all Stop documents from the database
 
 	const allStopsData = await stops.all();
 
-	LOGGER.info(`Found ${allStopsData.length} stops.`);
+	Logger.info(`Found ${allStopsData.length} stops.`);
 
 	//
 	// Loop through all stops and request updated attributes for each document
@@ -36,7 +36,7 @@ async function cleanOldValidations() {
 		// Check that the stop has the required properties
 
 		if (!stopData.latitude || !stopData.longitude) {
-			LOGGER.error(`Stop ${stopData._id} does not have a latitude or longitude. Skipping.`);
+			Logger.error(`Stop ${stopData._id} does not have a latitude or longitude. Skipping.`);
 			continue;
 		}
 
@@ -48,7 +48,7 @@ async function cleanOldValidations() {
 		const { data: locationsData } = await fetchData<LocationsApiResponse>(locationsApiUrl);
 
 		if (!locationsData) {
-			LOGGER.error(`No locations data found for stop ${stopData._id}. Skipping.`);
+			Logger.error(`No locations data found for stop ${stopData._id}. Skipping.`);
 			continue;
 		}
 
@@ -59,12 +59,12 @@ async function cleanOldValidations() {
 			parish_id: locationsData.parish?._id ?? null,
 		});
 
-		LOGGER.success(`Updated stop ${stopData._id}: District ${locationsData.district?._id ?? null} | Municipality ${locationsData.municipality?._id ?? null} | Parish ${locationsData.parish?._id ?? null} | Locality ${locationsData.locality?._id ?? null} ${locationsData.locality?.name ?? null}`);
+		Logger.success(`Updated stop ${stopData._id}: District ${locationsData.district?._id ?? null} | Municipality ${locationsData.municipality?._id ?? null} | Parish ${locationsData.parish?._id ?? null} | Locality ${locationsData.locality?._id ?? null} ${locationsData.locality?.name ?? null}`);
 
 		//
 	}
 
-	LOGGER.terminate(`Organization completed in ${globalTimer.get()}`);
+	Logger.terminate(`Organization completed in ${globalTimer.get()}`);
 
 	//
 }

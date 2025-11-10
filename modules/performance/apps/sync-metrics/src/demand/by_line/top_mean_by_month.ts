@@ -4,7 +4,7 @@ import { logMetricToFile } from '@/logMetrics.js';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -70,7 +70,7 @@ const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<st
 export const computeTopMeanDemandByLineByMonth = async () => {
 	//
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const METRIC = 'top_mean_demand_by_line_by_month' as const;
 
@@ -79,7 +79,7 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 
 	const metricsCollection = await metrics.getCollection();
 
-	const deleteTimer = new TIMETRACKER();
+	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	metricsCollection.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics (${deleteTimer.get()})`);
@@ -125,7 +125,7 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) => {
 	//
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	//
 	// Validate yearMonth format

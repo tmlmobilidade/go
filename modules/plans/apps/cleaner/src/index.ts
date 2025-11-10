@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { Dates } from '@tmlmobilidade/dates';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
@@ -14,16 +14,16 @@ import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 async function cleanOldValidations() {
 	//
 
-	LOGGER.init();
+	Logger.init();
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	//
 	// Get all GTFS Validation documents from the database
 
 	const allValidations = await gtfsValidations.all();
 
-	LOGGER.info(`Found ${allValidations.length} validations.`);
+	Logger.info(`Found ${allValidations.length} validations.`);
 
 	//
 	// Set the threshold for deletion (30 days)
@@ -51,7 +51,7 @@ async function cleanOldValidations() {
 		// Check that the validation has the required properties
 
 		if (!validation.file_id) {
-			LOGGER.error(`Validation ${validation._id} does not have a file_id. Skipping.`);
+			Logger.error(`Validation ${validation._id} does not have a file_id. Skipping.`);
 			continue;
 		}
 
@@ -61,7 +61,7 @@ async function cleanOldValidations() {
 		const thresholdValue = thresholdsByStatus[validation.feeder_status];
 
 		if (!thresholdValue) {
-			LOGGER.error(`No threshold defined for status ${validation.feeder_status}. Skipping validation ${validation._id}.`);
+			Logger.error(`No threshold defined for status ${validation.feeder_status}. Skipping validation ${validation._id}.`);
 			continue;
 		}
 
@@ -71,7 +71,7 @@ async function cleanOldValidations() {
 		// Check if the validation is older than the cutoff date
 
 		if (validation.created_at > cutoffUnixTimestamp) {
-			LOGGER.info(`Validation ${validation._id} is not old enough. Skipping.`);
+			Logger.info(`Validation ${validation._id} is not old enough. Skipping.`);
 			continue;
 		}
 
@@ -79,21 +79,21 @@ async function cleanOldValidations() {
 		// If the validation is older than the cutoff date,
 		// delete the associated files and the validation document.
 
-		const fileDeletionTimer = new TIMETRACKER();
+		const fileDeletionTimer = new Timer();
 
 		try {
 			await files.deleteById(validation.file_id);
 			await gtfsValidations.deleteById(validation._id);
-			LOGGER.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
+			Logger.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
 		}
 		catch (error) {
-			LOGGER.error(`Failed to delete validation ${validation._id} or its associated file ${validation.file_id}:`, error);
+			Logger.error(`Failed to delete validation ${validation._id} or its associated file ${validation.file_id}:`, error);
 		}
 
 		//
 	}
 
-	LOGGER.terminate(`Cleanup completed in ${globalTimer.get()}`);
+	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
 
 	//
 }

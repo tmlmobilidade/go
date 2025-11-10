@@ -4,8 +4,8 @@ import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
 import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 
 /* * */
@@ -27,7 +27,7 @@ export async function processVehicleEvent(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		LOGGER.error('MAJOR ERROR: processVehicleEvent called with operationType different than "insert".');
+		Logger.error('MAJOR ERROR: processVehicleEvent called with operationType different than "insert".');
 		return;
 	}
 
@@ -38,7 +38,7 @@ export async function processVehicleEvent(databaseOperation) {
 
 	const newVehicleEventDocument = parseVehicleEvent(databaseOperation.fullDocument);
 	if (!newVehicleEventDocument) {
-		LOGGER.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
+		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
 		return;
 	}
 
@@ -50,7 +50,7 @@ export async function processVehicleEvent(databaseOperation) {
 		try {
 			//
 
-			const invalidationTimer = new TIMETRACKER();
+			const invalidationTimer = new Timer();
 
 			//
 			// Map the flushed data to the query that will be used to invalidate documents
@@ -68,12 +68,12 @@ export async function processVehicleEvent(databaseOperation) {
 
 			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: 'waiting' }, { returnResults: false });
 
-			LOGGER.info(`Flush [vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+			Logger.info(`Flush [vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
 		}
 		catch (error) {
-			LOGGER.error('Error in flushCallback', error);
+			Logger.error('Error in flushCallback', error);
 		}
 	};
 

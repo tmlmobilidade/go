@@ -9,7 +9,7 @@ import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -26,7 +26,7 @@ import fs from 'node:fs';
 
 		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		// console.log(getFormattedDates(['20250204', '20250205']));
 		// console.log(getFormattedDates(['20250204', '20250205', '20250206', '20250207']));
@@ -90,7 +90,7 @@ import fs from 'node:fs';
 
 		Logger.info(`Exporting to HiTouch GTFS...`);
 
-		const exportTimer = new TIMETRACKER();
+		const exportTimer = new Timer();
 
 		await exportCalendarFiles(sqlGtfs, exportConfig);
 		await exportTripsFile(sqlGtfs, exportConfig);

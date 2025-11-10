@@ -1,9 +1,9 @@
 /* * */
 
-import { rideAcceptances } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from@tmlmobilidade/datesimer';
+import { rideAcceptances } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { Interval } from 'luxon';
 
 /* * */
@@ -15,9 +15,9 @@ async function main() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
 		// it is necessary to divide the process into smaller blocks. Instead of syncing all documents at once,
@@ -45,7 +45,7 @@ async function main() {
 		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
 			//
 
-			const chunkTimer = new TIMETRACKER();
+			const chunkTimer = new Timer();
 			const progress = `[${chunkIndex + 1}/${allTimestampChunks.length}]`;
 
 			const chunkStartDate = Dates
@@ -56,8 +56,8 @@ async function main() {
 				.fromUnixTimestamp(chunkData.end)
 				.setZone('Europe/Lisbon', 'offset_only');
 
-			LOGGER.spacer(1);
-			LOGGER.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
+			Logger.spacer(1);
+			Logger.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
 
 			//
 			// Fetch the ride acceptances.
@@ -74,22 +74,22 @@ async function main() {
 				if (rideAcceptance.is_locked) continue;
 
 				await rideAcceptances.updateByRideId(rideAcceptance.ride_id, { is_locked: true, updated_by: 'system' });
-				LOGGER.info(`Locked ride acceptance for ride ${rideAcceptance.ride_id}.`);
+				Logger.info(`Locked ride acceptance for ride ${rideAcceptance.ride_id}.`);
 			}
 
 			//
 
-			LOGGER.info(`Found ${totalRides} ride acceptances. (${chunkTimer.get()})`);
+			Logger.info(`Found ${totalRides} ride acceptances. (${chunkTimer.get()})`);
 
-			LOGGER.spacer(1);
-			LOGGER.divider();
+			Logger.spacer(1);
+			Logger.divider();
 		}
 
-		LOGGER.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
+		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
 	}
 	catch (err) {
-		LOGGER.error('An error occurred. Halting execution.', err);
-		LOGGER.info('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', err);
+		Logger.info('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds

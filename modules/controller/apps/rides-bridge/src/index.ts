@@ -5,7 +5,7 @@ import { parseRide, sampleRide } from '@/types.js';
 import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.js';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import TIMETRACKER from@tmlmobilidade/datesimer';
 
 /* * */
@@ -19,8 +19,8 @@ export async function syncRides() {
 	try {
 		//
 
-		LOGGER.init();
-		const globalTimer = new TIMETRACKER();
+		Logger.init();
+		const globalTimer = new Timer();
 
 		//
 		// Prevent syncing if the current minutes are at an exact hour or half-hour,
@@ -32,13 +32,13 @@ export async function syncRides() {
 
 		if (currentMinutesAsNumber > 57 && currentMinutesAsNumber < 4) {
 			// Do not sync between 57 minutes past the hour and 4 minutes past the next hour.
-			LOGGER.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
+			Logger.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
 			return;
 		}
 
 		if (currentMinutesAsNumber > 27 && currentMinutesAsNumber < 34) {
 			// Do not sync between 27 minutes and 34 minutes past the hour.
-			LOGGER.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
+			Logger.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
 			return;
 		}
 
@@ -48,12 +48,12 @@ export async function syncRides() {
 		// everything and copy everything again than checking if each individual
 		// item is present, updated or orphan in the original MongoDB collection.
 
-		LOGGER.info('Connecting to databases...');
+		Logger.info('Connecting to databases...');
 
 		await BRIDGEDB.connect();
 		const ridesCollection = await rides.getCollection();
 
-		LOGGER.info('Rebuilding table...');
+		Logger.info('Rebuilding table...');
 
 		await dropExistingTable();
 		await createTableFromExample(sampleRide);
@@ -84,7 +84,7 @@ export async function syncRides() {
 			batch.push(parseRide(ride));
 			if (batch.length >= BATCH_SIZE) {
 				await insertBatch(batch);
-				LOGGER.info(`Inserted ${count} rides so far...`);
+				Logger.info(`Inserted ${count} rides so far...`);
 				count += batch.length;
 				batch = [];
 			}
@@ -92,7 +92,7 @@ export async function syncRides() {
 
 		if (batch.length > 0) {
 			await insertBatch(batch);
-			LOGGER.info(`Inserted remaining ${batch.length} rides. Total: ${count + batch.length}.`);
+			Logger.info(`Inserted remaining ${batch.length} rides. Total: ${count + batch.length}.`);
 		}
 
 		//
@@ -103,13 +103,13 @@ export async function syncRides() {
 
 		fetch('https://status.carrismetropolitana.pt/api/push/xdBaFdiO0O42QVTqgp4pZzy66mdhTOYz?status=up&msg=OK&ping=');
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
 	}
 	catch (err) {
-		LOGGER.error('An error occurred. Halting execution.', err);
-		LOGGER.info('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', err);
+		Logger.info('Retrying in 10 seconds...');
 		setTimeout(() => process.exit(1), 10000);
 	}
 }

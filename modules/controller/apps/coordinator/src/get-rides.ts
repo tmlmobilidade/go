@@ -2,7 +2,7 @@
 
 import { rides } from '@tmlmobilidade/interfaces';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import TIMETRACKER from@tmlmobilidade/datesimer';
 
 /* * */
@@ -23,7 +23,7 @@ export async function getRides(): Promise<string[]> {
 	// sequentially. To do that, we implement a simple lock mechanism.
 
 	while (isBusy) {
-		LOGGER.info('[rides] Waiting for another request to complete...');
+		Logger.info('[rides] Waiting for another request to complete...');
 		await new Promise(resolve => setTimeout(resolve, 500));
 	}
 
@@ -37,7 +37,7 @@ export async function getRides(): Promise<string[]> {
 	// Find all Ride IDs that are waiting analysis and which started before the current time,
 	// sorted in descending order to prioritize the most recent Rides.
 
-	const fetchTimer = new TIMETRACKER();
+	const fetchTimer = new Timer();
 
 	const standardWindowInterval = Dates.now('utc').std_window;
 
@@ -58,7 +58,7 @@ export async function getRides(): Promise<string[]> {
 	const fetchTimerResult = fetchTimer.get();
 
 	if (latestWaitingRidesIds.length === 0) {
-		LOGGER.info(`[rides] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})`);
+		Logger.info(`[rides] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})`);
 		isBusy = false;
 		return [];
 	}
@@ -67,11 +67,11 @@ export async function getRides(): Promise<string[]> {
 	// Mark those Rides as 'processing' to ensure the next batch of Rdes does not include them,
 	// and return them to the caller instance.
 
-	const markTimer = new TIMETRACKER();
+	const markTimer = new Timer();
 
 	await ridesCollection.updateMany({ _id: { $in: latestWaitingRidesIds } }, { $set: { system_status: 'processing' } });
 
-	LOGGER.info(`[rides] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides.pop().start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+	Logger.info(`[rides] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides.pop().start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
 	isBusy = false;
 

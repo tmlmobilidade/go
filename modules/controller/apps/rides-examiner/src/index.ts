@@ -6,7 +6,7 @@ import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedAp
 import { UpdateRideSchema } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -16,12 +16,12 @@ export async function validateRides() {
 
 		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Ask the coordinator for a batch of Ride IDs to process
 
-		const fetchCoordinatorTimer = new TIMETRACKER();
+		const fetchCoordinatorTimer = new Timer();
 
 		const rideIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/rides');
 		const rideIdsBatch = await rideIdsBatchResponse.json() as string[];
@@ -31,7 +31,7 @@ export async function validateRides() {
 		//
 		// With the list of Ride IDs, fetch the actual Ride documents to be processsed
 
-		const fetchRideDocumentsTimer = new TIMETRACKER();
+		const fetchRideDocumentsTimer = new Timer();
 
 		const ridesBatch = await rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
@@ -44,14 +44,14 @@ export async function validateRides() {
 			try {
 				//
 
-				const rideAnalysisTimer = new TIMETRACKER();
+				const rideAnalysisTimer = new Timer();
 
 				//
 				// For this ride, fetch all the necessary data for analysis.
 				// This includes static data, like hashed shapes and trips, and dynamic data,
 				// like vehicle events and apex transactions. Request all data in parallel.
 
-				const fetchAnalysisDataTimer = new TIMETRACKER();
+				const fetchAnalysisDataTimer = new Timer();
 
 				const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 

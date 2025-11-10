@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { files } from '@tmlmobilidade/interfaces';
@@ -125,8 +125,8 @@ async function main() {
 	try {
 		//
 
-		LOGGER.init();
-		const globalTimer = new TIMETRACKER();
+		Logger.init();
+		const globalTimer = new Timer();
 
 		//
 		// Delete the database if it exists
@@ -146,12 +146,12 @@ async function main() {
 
 		//
 		// Process the rides
-		LOGGER.title(`Processing the DRT data`);
+		Logger.title(`Processing the DRT data`);
 		await processor();
 
-		LOGGER.success(`Finished processing the DRT data in ${globalTimer.get()}.`);
+		Logger.success(`Finished processing the DRT data in ${globalTimer.get()}.`);
 
-		LOGGER.info(`Saving the SQLite database to the storage service...`);
+		Logger.info(`Saving the SQLite database to the storage service...`);
 		const fileStream = fs.createReadStream(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
 		const fileStats = fs.statSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
 		const fileResult = await files.upload(fileStream, {
@@ -165,14 +165,14 @@ async function main() {
 			updated_by: 'system',
 		}, { override: true });
 
-		LOGGER.terminate(`SQLite database saved to the storage service.` + `(${fileResult._id})`);
-		LOGGER.divider();
+		Logger.terminate(`SQLite database saved to the storage service.` + `(${fileResult._id})`);
+		Logger.divider();
 		//
 		// Exit the application
 		process.exit(0);
 	}
 	catch (error) {
-		LOGGER.error('Error parsing plan.', error);
+		Logger.error('Error parsing plan.', error);
 		throw error;
 	}
 }

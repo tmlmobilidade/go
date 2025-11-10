@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pckg-parse';
@@ -17,9 +17,9 @@ async function syncApexOnBoardSales() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Connect to databases and setup DB writers
@@ -59,7 +59,7 @@ async function syncApexOnBoardSales() {
 		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
 			//
 
-			const chunkTimer = new TIMETRACKER();
+			const chunkTimer = new Timer();
 
 			const chunkStartDate = Dates
 				.fromUnixTimestamp(chunkData.start)
@@ -69,8 +69,8 @@ async function syncApexOnBoardSales() {
 				.fromUnixTimestamp(chunkData.end)
 				.setZone('Europe/Lisbon', 'offset_only');
 
-			LOGGER.spacer(1);
-			LOGGER.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+			Logger.spacer(1);
+			Logger.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 			//
 			// Setup the callback function that will be called on the DB Writer flush operation
@@ -80,7 +80,7 @@ async function syncApexOnBoardSales() {
 				try {
 					//
 
-					const invalidationTimer = new TIMETRACKER();
+					const invalidationTimer = new Timer();
 
 					//
 					// Extract the unique trip_ids from the flushed data and
@@ -106,12 +106,12 @@ async function syncApexOnBoardSales() {
 						{ returnResults: false },
 					);
 
-					LOGGER.info(`Flush [apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info(`Flush [apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 					//
 				}
 				catch (error) {
-					LOGGER.error('Error in flushCallback', error);
+					Logger.error('Error in flushCallback', error);
 				}
 			};
 
@@ -163,14 +163,14 @@ async function syncApexOnBoardSales() {
 
 			//
 
-			LOGGER.success(`Chunk sync complete (${chunkTimer.get()})`);
+			Logger.success(`Chunk sync complete (${chunkTimer.get()})`);
 
 			//
 		}
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}.`);
+		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
 	}

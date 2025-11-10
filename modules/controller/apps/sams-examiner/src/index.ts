@@ -4,7 +4,7 @@ import { type AggregationResultItem } from '@/types.js';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
-import LOGGER from '@helperkits/logger';
+import { Logger } from '@tmlmobilidade/logger';
 import TIMETRACKER from@tmlmobilidade/datesimer';
 
 /* * */
@@ -13,9 +13,9 @@ async function main() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Connect to databases
@@ -30,7 +30,7 @@ async function main() {
 		//
 		// Mark all SAMs as "processing" to indicate that they are being analyzed.
 
-		const setAsProcessingTimer = new TIMETRACKER();
+		const setAsProcessingTimer = new Timer();
 
 		await sams.updateMany(
 			{ /* ALL DOCUMENTS */ },
@@ -38,7 +38,7 @@ async function main() {
 			{ returnResults: false },
 		);
 
-		LOGGER.success(`Marked all SAMs as "processing" (${setAsProcessingTimer.get()})`);
+		Logger.success(`Marked all SAMs as "processing" (${setAsProcessingTimer.get()})`);
 
 		//
 		// Stream the full collection of SAMs
@@ -68,7 +68,7 @@ async function main() {
 				// Get all APEX transactions for the current SAM in parallel.
 				// Use an aggregation pipeline to avoid fetching unnecessary fields.
 
-				const aggregationTimer = new TIMETRACKER();
+				const aggregationTimer = new Timer();
 
 				let searchTimestampStart = Dates
 					.now('Europe/Lisbon')
@@ -87,7 +87,7 @@ async function main() {
 					.startOf('day')
 					.minus({ days: 5 });
 
-				LOGGER.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
+				Logger.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
 
 				//
 				// Prepare the aggregation pipeline for APEX transactions.
@@ -114,13 +114,13 @@ async function main() {
 					validationsTransactionsPromise,
 				]);
 
-				LOGGER.info(`Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length} (${aggregationTimer.get()})`);
+				Logger.info(`Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length} (${aggregationTimer.get()})`);
 
 				//
 				// Now merge all transactions into a single variable
 				// and sort them by ASE Counter Value.
 
-				const analysisTimer = new TIMETRACKER();
+				const analysisTimer = new Timer();
 
 				const preparedLocationTransactions = locationTransactionsData.map(item => ({ ...item, transaction_type: 'location' })) as AggregationResultItem[];
 				const preparedOnBoardRefundsTransactions = onBoardRefundsTransactionsData.map(item => ({ ...item, transaction_type: 'on_board_refund' })) as AggregationResultItem[];
@@ -143,9 +143,9 @@ async function main() {
 				// same Agency ID and the same Device ID.
 
 				if (sortedTransactions.length === 0) {
-					LOGGER.error(`No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})`);
+					Logger.error(`No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete' });
-					LOGGER.spacer(1);
+					Logger.spacer(1);
 					continue;
 				}
 
@@ -154,9 +154,9 @@ async function main() {
 				const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 				if (!allTransactionsMatch) {
-					LOGGER.error(`SAM ${samData._id} has transactions with different Agency ID. (${analysisTimer.get()})`);
+					Logger.error(`SAM ${samData._id} has transactions with different Agency ID. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
-					LOGGER.spacer(1);
+					Logger.spacer(1);
 					continue;
 				}
 
@@ -167,9 +167,9 @@ async function main() {
 				const allMacAseCounterValuesValid = sortedTransactions.every(transaction => transaction.mac_ase_counter_value > 0 && transaction.mac_ase_counter_value !== null && transaction.mac_ase_counter_value !== undefined);
 
 				if (!allMacAseCounterValuesValid) {
-					LOGGER.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})`);
+					Logger.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error' });
-					LOGGER.spacer(1);
+					Logger.spacer(1);
 					continue;
 				}
 
@@ -292,25 +292,25 @@ async function main() {
 
 				await sams.updateById(samData._id, updatedSamData);
 
-				LOGGER.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
+				Logger.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
 
 			//
 			}
 			catch (error) {
-				LOGGER.error(`Error processing SAM "${samData._id}": ${error.message}`);
+				Logger.error(`Error processing SAM "${samData._id}": ${error.message}`);
 				await sams.updateById(samData._id, { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error' });
 			}
 		}
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}`);
+		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error('An error occurred. Halting execution.', error);
-		LOGGER.error('Retrying in 10 seconds...');
+		Logger.error('An error occurred. Halting execution.', error);
+		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
 			process.exit(0); // End process
 		}, 10000); // after 10 seconds

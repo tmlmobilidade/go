@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { files, plans } from '@tmlmobilidade/interfaces';
@@ -22,9 +22,9 @@ async function main() {
 	try {
 		//
 
-		LOGGER.init();
+		Logger.init();
 
-		const globalTimer = new TIMETRACKER();
+		const globalTimer = new Timer();
 
 		//
 		// Get all Plans and iterate on each one
@@ -40,10 +40,10 @@ async function main() {
 
 		const foundPlans = await plans.findMany(filter, { sort: { 'gtfs_feed_info.feed_start_date': -1 } });
 
-		LOGGER.info(`Found ${foundPlans.length} Plans to process...`);
+		Logger.info(`Found ${foundPlans.length} Plans to process...`);
 
 		if (foundPlans.length === 0) {
-			LOGGER.info('No plans to process. Exiting...');
+			Logger.info('No plans to process. Exiting...');
 			return;
 		}
 
@@ -65,7 +65,7 @@ async function main() {
 
 		//
 		// Import the GTFS to the SQLite database and parse to DRT Database
-		LOGGER.info(`[${globalTimer.get()}] Importing the GTFS to the SQLite database and parsing to DRT Database...`);
+		Logger.info(`[${globalTimer.get()}] Importing the GTFS to the SQLite database and parsing to DRT Database...`);
 		for (const plan of foundPlans) {
 			const sqlGtfs = await importGtfsToDatabase(plan, importConfig);
 			await parseGtfsToDrt({ database: database, gtfs: sqlGtfs, plan: plan, tables: tables });
@@ -74,7 +74,7 @@ async function main() {
 		//
 		// Save the SQLite database
 
-		LOGGER.info(`[${globalTimer.get()}] Saving the SQLite database to the storage service...`);
+		Logger.info(`[${globalTimer.get()}] Saving the SQLite database to the storage service...`);
 
 		try {
 			const fileStats = fs.statSync(sqliteConfig.instancePath);
@@ -91,23 +91,23 @@ async function main() {
 				updated_by: 'system',
 			}, { override: true });
 
-			LOGGER.success(`SQLite database saved to the storage service.` + `(${fileResult._id})`, 0);
-			LOGGER.divider();
+			Logger.success(`SQLite database saved to the storage service.` + `(${fileResult._id})`, 0);
+			Logger.divider();
 		}
 		catch (error) {
-			LOGGER.error(`Error saving the SQLite database to the storage service.`, error);
-			LOGGER.divider();
+			Logger.error(`Error saving the SQLite database to the storage service.`, error);
+			Logger.divider();
 			process.exit(1);
 		}
 
 		//
 
-		LOGGER.terminate(`Run took ${globalTimer.get()}`);
+		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
 	}
 	catch (error) {
-		LOGGER.error(error);
+		Logger.error(error);
 	}
 }
 

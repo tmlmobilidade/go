@@ -2,7 +2,7 @@
 
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 const metricTypes = [
 	{ hasDaily: true, id: 'demand_by_line' },
@@ -48,7 +48,7 @@ export const testDemandMetrics = async () => {
 	//
 
 	Logger.title('Demand Metrics Comparison Test');
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const YEAR = 2024;
 	const metricsCollection = await metrics.getCollection();
@@ -61,7 +61,7 @@ export const testDemandMetrics = async () => {
 	for (const metricType of metricTypes) {
 		//
 
-		const metricTimer = new TIMETRACKER();
+		const metricTimer = new Timer();
 
 		//
 		// Fetch metrics for all time ranges

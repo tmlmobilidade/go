@@ -2,7 +2,7 @@ import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -93,14 +93,14 @@ export const syncRealtimeServiceCompliance = async () => {
 	//
 
 	Logger.title(`Sync Service Compliance Metrics in Realtime`);
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	const METRIC = 'realtime_service_compliance';
 
 	//
 	// Delete existing metrics
 
-	const deleteTimer = new TIMETRACKER();
+	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
 	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
@@ -152,7 +152,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	// Today's stream
 
 	Logger.info(`Processing rides for current operational date: ${currentOperationalDate}`);
-	const todayTimer = new TIMETRACKER();
+	const todayTimer = new Timer();
 
 	const todayStream = ridesCollection
 		.find({ operational_date: currentOperationalDate, system_status: 'complete' })
@@ -165,7 +165,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	// Last week's stream
 
 	Logger.info(`Processing rides for last week's operational date: ${previousOperationalDate}`);
-	const lastWeekTimer = new TIMETRACKER();
+	const lastWeekTimer = new Timer();
 
 	const lastWeekStream = ridesCollection.find({
 		operational_date: previousOperationalDate,
