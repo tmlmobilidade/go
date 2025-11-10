@@ -21,83 +21,29 @@ on:
 
 jobs:
 
-  check-packages-changed:
-    name: Check Packages Changed
-    runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.check.outputs.changed }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Check if packages changed
-        id: check
-        run: |
-          # On workflow_dispatch, build all apps
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Manual trigger - will build all apps"
-          # Check if HEAD^ exists (might not exist on first commit or shallow clone)
-          elif ! git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "No previous commit found - will build all apps"
-          elif git diff --quiet HEAD^ HEAD -- "packages/"; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Packages did not change"
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Packages changed - will build all apps"
-          fi
-
   discover-apps:
     name: Discover Apps
-    needs: check-packages-changed
     runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.set-matrix.outputs.apps }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
 
-      - name: Discover apps with Dockerfiles and check changes
+      - name: Discover all apps with Dockerfiles
         id: set-matrix
         run: |
-          PACKAGES_CHANGED="${{ needs.check-packages-changed.outputs.changed }}"
-          IS_MANUAL_TRIGGER="${{ github.event_name == 'workflow_dispatch' }}"
           APPS_ARRAY=()
           
-          echo "Packages changed: $PACKAGES_CHANGED"
-          echo "Manual trigger: $IS_MANUAL_TRIGGER"
+          echo "Discovering all apps (building all)"
           
           for module_dir in modules/*/; do
             module=$(basename "$module_dir")
             for app_dir in "${module_dir}apps"/*/; do
               if [ -f "${app_dir}Dockerfile" ]; then
                 app=$(basename "$app_dir")
-                app_path="modules/${module}/apps/${app}/"
-                
-                # If manual trigger, always include all apps
-                if [ "$IS_MANUAL_TRIGGER" = "true" ]; then
-                  echo "Including ${module}|${app} (manual trigger - build all)"
-                  APPS_ARRAY+=("${module}|${app}")
-                # If packages changed, include all apps
-                elif [ "$PACKAGES_CHANGED" = "true" ]; then
-                  echo "Including ${module}|${app} (packages changed)"
-                  APPS_ARRAY+=("${module}|${app}")
-                # Check if this specific app changed
-                elif ! git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-                  echo "Including ${module}|${app} (no previous commit found)"
-                  APPS_ARRAY+=("${module}|${app}")
-                elif git diff --quiet HEAD^ HEAD -- "$app_path"; then
-                  echo "Skipping ${module}|${app} (no changes)"
-                else
-                  echo "Including ${module}|${app} (app changed)"
-                  APPS_ARRAY+=("${module}|${app}")
-                fi
+                echo "Including ${module}|${app}"
+                APPS_ARRAY+=("${module}|${app}")
               fi
             done
           done
@@ -121,8 +67,8 @@ jobs:
 
   build-packages:
     name: Build Packages Cache
-    needs: [check-packages-changed, discover-apps]
-    if: (needs.check-packages-changed.outputs.changed == 'true' || github.event_name == 'workflow_dispatch') && needs.discover-apps.outputs.apps != '[]'
+    needs: discover-apps
+    if: needs.discover-apps.outputs.apps != '[]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
