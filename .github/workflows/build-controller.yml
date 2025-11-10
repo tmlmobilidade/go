@@ -21,134 +21,34 @@ on:
 
 jobs:
 
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
+  discover-apps:
+    name: Discover Apps
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.set-matrix.outputs.apps }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  rides-cleaner:
-    name: rides-cleaner (NodeJS)
+      - name: Discover apps with Dockerfiles
+        id: set-matrix
+        run: |
+          APPS=$(for dir in modules/controller/apps/*/; do
+            if [ -f "${dir}Dockerfile" ]; then
+              basename "$dir"
+            fi
+          done | jq -R . | jq -s .)
+          echo "apps=$APPS" >> $GITHUB_OUTPUT
+          echo "Discovered apps: $APPS"
+
+  build:
+    name: ${{ matrix.app }} (NodeJS)
+    needs: discover-apps
     uses: ./.github/workflows/_build-and-publish.yml
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
     with:
-      file: ./controller/apps/rides-cleaner/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-rides-cleaner:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-  
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  coordinator:
-    name: coordinator (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/coordinator/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-coordinator:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  rides-bridge:
-    name: rides-bridge (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/rides-bridge/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-rides-bridge:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  rides-acceptor:
-    name: rides-acceptor (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/rides-acceptor/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-rides-acceptor:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  rides-locker:
-    name: rides-locker (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/rides-locker/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-rides-locker:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  rides-examiner:
-    name: rides-examiner (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/rides-examiner/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-rides-examiner:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  rides-feeder:
-    name: rides-feeder (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/rides-feeder/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-rides-feeder:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sams-examiner:
-    name: sams-examiner (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/sams-examiner/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-sams-examiner:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sams-feeder:
-    name: sams-feeder (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/sams-feeder/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-sams-feeder:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  nginx:
-    name: nginx (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/nginx/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-nginx:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-          
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  api:
-    name: api (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/api/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-api:${{ github.ref_name }}
-      environment: ${{ github.ref_name }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  frontend:
-    name: frontend (NodeJS)
-    uses: ./.github/workflows/_build-and-publish.yml
-    with:
-      file: ./controller/apps/frontend/Dockerfile
-      tags: ghcr.io/tmlmobilidade/go-controller-frontend:${{ github.ref_name }}
+      file: ./modules/controller/apps/${{ matrix.app }}/Dockerfile
+      tags: ghcr.io/tmlmobilidade/go-controller-${{ matrix.app }}:${{ github.ref_name }}
       environment: ${{ github.ref_name }}
