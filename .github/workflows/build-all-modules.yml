@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # ensure we have the previous commit for change detection
 
       - name: Discover modules and their apps
         id: set-modules
@@ -37,24 +39,72 @@ jobs:
           MODULES_ARRAY=()
           declare -A MODULE_APPS
           
-          echo "Discovering modules and apps (building all)"
+          # Check if this is a manual workflow dispatch or if packages changed
+          BUILD_ALL=false
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual workflow dispatch - building all modules"
+            BUILD_ALL=true
+          else
+            # Check if HEAD^ exists (not the first commit)
+            if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+              # Check if packages folder has changes
+              if git diff --name-only HEAD^ HEAD | grep -q "^packages/"; then
+                echo "Changes detected in packages folder - building all modules"
+                BUILD_ALL=true
+              else
+                echo "No changes in packages folder"
+              fi
+            else
+              echo "First commit detected - building all modules"
+              BUILD_ALL=true
+            fi
+          fi
+          
+          if [ "$BUILD_ALL" = true ]; then
+            echo "Discovering all modules and apps"
+          else
+            echo "Discovering modules and apps with changes"
+          fi
           
           for module_dir in modules/*/; do
             module=$(basename "$module_dir")
             APPS_FOR_MODULE=()
             
-            for app_dir in "${module_dir}apps"/*/; do
-              if [ -f "${app_dir}Dockerfile" ]; then
-                app=$(basename "$app_dir")
-                APPS_FOR_MODULE+=("${app}")
-                echo "Found ${module}|${app}"
+            # Check if we should include this module
+            INCLUDE_MODULE=false
+            if [ "$BUILD_ALL" = true ]; then
+              INCLUDE_MODULE=true
+            else
+              # Check if this module has changes (excluding environments)
+              # Only check if HEAD^ exists
+              if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+                CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- "${module_dir}" | grep -v "^${module_dir}environments/" || true)
+                if [ -z "$CHANGED_FILES" ]; then
+                  echo "No changes in module: ${module}"
+                else
+                  echo "Changes detected in module: ${module}"
+                  INCLUDE_MODULE=true
+                fi
+              else
+                # First commit - include all modules
+                INCLUDE_MODULE=true
               fi
-            done
+            fi
             
-            if [ ${#APPS_FOR_MODULE[@]} -gt 0 ]; then
-              MODULES_ARRAY+=("${module}")
-              APPS_JSON=$(printf '%s\n' "${APPS_FOR_MODULE[@]}" | jq -R . | jq -s -c .)
-              MODULE_APPS["${module}"]="${APPS_JSON}"
+            if [ "$INCLUDE_MODULE" = true ]; then
+              for app_dir in "${module_dir}apps"/*/; do
+                if [ -f "${app_dir}Dockerfile" ]; then
+                  app=$(basename "$app_dir")
+                  APPS_FOR_MODULE+=("${app}")
+                  echo "Found ${module}|${app}"
+                fi
+              done
+              
+              if [ ${#APPS_FOR_MODULE[@]} -gt 0 ]; then
+                MODULES_ARRAY+=("${module}")
+                APPS_JSON=$(printf '%s\n' "${APPS_FOR_MODULE[@]}" | jq -R . | jq -s -c .)
+                MODULE_APPS["${module}"]="${APPS_JSON}"
+              fi
             fi
           done
           
