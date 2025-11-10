@@ -34,7 +34,7 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 	const lastUpdatedText = useMemo(() => {
 		if (!updatedAt) return '';
 
-		const now = DateTime.now('Europe/Lisbon');
+		const now = DateTime.now();
 
 		const updated = DateTime.fromJSDate(updatedAt).setZone('Europe/Lisbon');
 

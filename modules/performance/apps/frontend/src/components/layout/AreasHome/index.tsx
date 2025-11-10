@@ -3,13 +3,13 @@
 import SystemStatus from '@/components/layout/SystemStatus';
 import { RealtimeDemand } from '@/components/visualizations/RealtimeDemand';
 import { ServiceCompliance } from '@/components/visualizations/ServiceCompliance';
-import { OperatorType } from '@/constants';
+import { AgencyType } from '@/constants';
 import { Grid } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 
 import styles from './styles.module.css';
 
-export default function AreasHome({ operator }: { operator: OperatorType }) {
+export default function AreasHome({ agency }: { agency: AgencyType }) {
 	//
 
 	// A. Setup variables
@@ -25,18 +25,18 @@ export default function AreasHome({ operator }: { operator: OperatorType }) {
 		<div className={styles.container}>
 			<div className={styles.topContainer}>
 				<div className={styles.headerContainer}>
-					<h1 className={styles.title}>{t(`operators.${operator}`)}</h1>
+					<h1 className={styles.title}>{t(`agencies.${agency}`)}</h1>
 
-					<SystemStatus operator={operator} />
+					<SystemStatus agency={agency} />
 				</div>
 
 			</div>
 
 			<Grid columns="a" gap="lg">
-				<RealtimeDemand operator={operator} />
+				<RealtimeDemand agency={agency} />
 			</Grid>
 
-			<ServiceCompliance operator={operator} />
+			<ServiceCompliance agency={agency} />
 
 		</div>
 	);

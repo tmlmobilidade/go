@@ -1,6 +1,6 @@
+import { Dates } from '@tmlmobilidade/dates';
 import { DemandByAgencyByDay, type DemandByLineByDay } from '@tmlmobilidade/types';
 import { type LineChartProps } from '@tmlmobilidade/ui';
-import { Dates } from '@tmlmobilidade/dates';
 
 import { formatDayDetailed, formatDayShort } from './formatDates';
 
@@ -23,7 +23,7 @@ export function transformDemandByLineByDay(
 	startDate: Dates | null,
 	endDate: Dates | null,
 	lineId?: string,
-	t?: (key: string, options?: Record<string, unknown>) => string,
+	t?,
 ): DemandTransformResult {
 	if (!data?.length) {
 		return { all: { chart: [], sum: 0 }, lastUpdated: null };
@@ -96,7 +96,7 @@ export function transformDemandByAgencyByDay(
 	startDate?: Dates,
 	endDate?: Dates,
 	agencyId?: string,
-	t?: (key: string, options?: Record<string, unknown>) => string,
+	t?,
 ): DemandByAgencyTransformResult {
 	if (!data?.length) {
 		return { agencies: {}, all: { chart: [], sum: 0 }, lastUpdated: null };
