@@ -33,7 +33,6 @@ const nextConfig: NextConfig = {
 	async redirects() {
 		return [
 			{ basePath: false, destination: '/alerts', permanent: true, source: '/' },
-			{ basePath: false, destination: '/alerts/realtime/new', permanent: true, source: '/alerts/realtime' },
 		];
 	},
 	async rewrites() {
