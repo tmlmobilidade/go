@@ -130,3 +130,49 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push ghcr.io/tmlmobilidade/go-controller-${{ matrix.app }}:${{ github.ref_name }}
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cleanup:
+    name: Cleanup on Failure
+    needs: [discover-apps, build, publish]
+    if: always() && (needs.build.result == 'failure' || needs.publish.result == 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.discover-apps.outputs.apps) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Delete Published Images
+        if: needs.publish.result == 'failure'
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PACKAGE_NAME="go-controller-${{ matrix.app }}"
+          TAG="${{ github.ref_name }}"
+          echo "Attempting to delete published image: $PACKAGE_NAME:$TAG"
+          
+          # Get the version ID for the tag
+          VERSION_ID=$(gh api "/orgs/tmlmobilidade/packages/container/$PACKAGE_NAME/versions" \
+            --jq ".[] | select(.metadata.container.tags[] == \"$TAG\") | .id" | head -n1)
+          
+          if [ -n "$VERSION_ID" ]; then
+            echo "Deleting version $VERSION_ID of package $PACKAGE_NAME"
+            gh api --method DELETE "/orgs/tmlmobilidade/packages/container/$PACKAGE_NAME/versions/$VERSION_ID" \
+              || echo "Warning: Failed to delete image version (may have been already deleted)"
+          else
+            echo "No version found with tag $TAG, skipping deletion"
+          fi
+
+      - name: Delete Artifacts
+        continue-on-error: true
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: docker-image-${{ matrix.app }}
