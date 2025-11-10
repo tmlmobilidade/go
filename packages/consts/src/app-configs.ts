@@ -27,7 +27,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	alerts: {
 		development: {
 			api_port: 52001,
-			api_url: 'http://localhost:52001',
+			api_url: 'http://localhost:52001/alerts/api',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51001,
@@ -69,7 +69,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	controller: {
 		development: {
 			api_port: 52002,
-			api_url: 'http://localhost:52002',
+			api_url: 'http://localhost:52002/controller/api',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51002,
@@ -90,7 +90,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	locations: {
 		development: {
 			api_port: 52005,
-			api_url: 'http://localhost:52005',
+			api_url: 'http://localhost:52005/locations/api',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51005,
@@ -111,7 +111,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	performance: {
 		development: {
 			api_port: 52006,
-			api_url: 'http://localhost:52006',
+			api_url: 'http://localhost:52006/performance/api',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51006,
@@ -132,7 +132,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	plans: {
 		development: {
 			api_port: 52004,
-			api_url: 'http://localhost:52004',
+			api_url: 'http://localhost:52004/plans/api',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51004,
@@ -153,7 +153,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	stops: {
 		development: {
 			api_port: 52003,
-			api_url: 'http://localhost:52003',
+			api_url: 'http://localhost:52003/stops/api',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51003,
