@@ -34,7 +34,6 @@ env:
     alerts:api
     alerts:frontend
     alerts:nginx
-    alerts:organizer
     
     controller:api
     controller:frontend
