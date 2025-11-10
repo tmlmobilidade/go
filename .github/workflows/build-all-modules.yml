@@ -16,6 +16,8 @@ on:
       - '!modules/*/environments/**'
       - 'packages/**'
       - '.github/workflows/build-all-modules.yml'
+      - '.github/actions/discover-modules/action.yml'
+      - '.github/workflows/_build-module-apps.yml'
 
 # # #
 
