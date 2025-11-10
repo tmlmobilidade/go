@@ -1,3 +1,5 @@
+import { getAppConfig } from './app-configs.js';
+
 export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* ALERTS */
@@ -115,48 +117,48 @@ export const API_ROUTES = Object.freeze({
 	auth: {
 		// AGENCIES
 		AGENCIES_DETAIL: (id: string) => `/auth/api/agencies/${id}`,
-		AGENCIES_LIST: '/auth/api/agencies',
+		AGENCIES_LIST: `${getAppConfig('auth', 'api_url')}/agencies`,
 
 		// AUTH
-		AUTH_CHANGE_PASSWORD: '/auth/api/auth/change-password',
-		AUTH_LOGIN: '/auth/api/auth/login',
-		AUTH_LOGOUT: '/auth/api/auth/logout',
-		AUTH_PERMISSIONS: '/auth/api/auth/permissions',
-		AUTH_VERIFY: '/auth/api/auth/verify',
-		AUTH_VERIFY_EMAIL: '/auth/api/auth/verify-email',
+		AUTH_CHANGE_PASSWORD: `${getAppConfig('auth', 'api_url')}/auth/change-password`,
+		AUTH_LOGIN: `${getAppConfig('auth', 'api_url')}/auth/login`,
+		AUTH_LOGOUT: `${getAppConfig('auth', 'api_url')}/auth/logout`,
+		AUTH_PERMISSIONS: `${getAppConfig('auth', 'api_url')}/auth/permissions`,
+		AUTH_VERIFY: `${getAppConfig('auth', 'api_url')}/auth/verify`,
+		AUTH_VERIFY_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/verify-email`,
 
 		// FILE-EXPORTS
 		FILE_EXPORTS_DETAIL_DOWNLOAD: (id: string) => `/auth/api/file-exports/${id}/download`,
-		FILE_EXPORTS_LIST: '/auth/api/file-exports',
+		FILE_EXPORTS_LIST: `${getAppConfig('auth', 'api_url')}/file-exports`,
 
 		// NOTIFICATIONS
 		NOTIFICATIONS_DETAIL: (id: string) => `/auth/api/notifications/${id}`,
 		NOTIFICATIONS_DETAIL_MARK_AS_READ: (id: string) => `/auth/api/notifications/${id}/mark-as-read`,
-		NOTIFICATIONS_LIST: '/auth/api/notifications',
+		NOTIFICATIONS_LIST: `${getAppConfig('auth', 'api_url')}/notifications`,
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_DETAIL: (id: string) => `/auth/api/organizations/${id}`,
 		ORGANIZATIONS_DETAIL_: (id: string) => `THEME_IMAGE:/auth/api/organizations/${id}/:theme/image`,
 		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `/auth/api/organizations/${id}/image`,
 		ORGANIZATIONS_DETAIL_LOGO: (id: string) => `/auth/api/organizations/${id}/logo`,
-		ORGANIZATIONS_LIST: '/auth/api/organizations',
+		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'api_url')}/organizations`,
 
 		// PROPOSED-CHANGES
 		PROPOSED_CHANGES_DETAIL: (id: string) => `/auth/api/proposed-changes/${id}`,
-		PROPOSED_CHANGES_LIST: '/auth/api/proposed-changes',
+		PROPOSED_CHANGES_LIST: `${getAppConfig('auth', 'api_url')}/proposed-changes`,
 
 		// ROLES
 		ROLES_DETAIL: (id: string) => `/auth/api/roles/${id}`,
-		ROLES_LIST: '/auth/api/roles',
+		ROLES_LIST: `${getAppConfig('auth', 'api_url')}/roles`,
 
 		// USERS
 		USERS_DETAIL: (id: string) => `/auth/api/users/${id}`,
-		USERS_LIST: '/auth/api/users',
-		USERS_ME: '/auth/api/users/me',
+		USERS_LIST: `${getAppConfig('auth', 'api_url')}/users`,
+		USERS_ME: `${getAppConfig('auth', 'api_url')}/users/me`,
 
 		// WIKI
 		WIKI_DETAIL: (id: string) => `/auth/api/wiki/${id}`,
-		WIKI_LIST: '/auth/api/wiki',
+		WIKI_LIST: `${getAppConfig('auth', 'api_url')}/wiki`,
 	},
 
 	/* * */

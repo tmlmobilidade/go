@@ -1,8 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/mongo-collection.js';
-import { sendNotificationEmail } from '@tmlmobilidade/emails';
 import { getAppConfig } from '@tmlmobilidade/consts';
+import { sendNotificationEmail } from '@tmlmobilidade/emails';
 import { CreateNotificationDto, Notification, NotificationPermission, NotificationSchema, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';

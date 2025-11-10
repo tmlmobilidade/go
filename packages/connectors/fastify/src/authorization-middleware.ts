@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyRequest } from '@/fastify-service.js';
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type Permission, type User } from '@tmlmobilidade/types';
 import { Cache, fetchData, hasPermission } from '@tmlmobilidade/utils';
 
@@ -14,51 +14,48 @@ declare module 'fastify' {
 	}
 }
 
-const AUTH_API_BASE_URL = () => getAppConfig('auth', 'api_url');
+/* * */
+
 const REQUEST_CACHE = new Cache<string, { permissions: Permission<unknown>[], user: User }>(5 * 60_000); // 5 minutes TTL
 
 /**
- * Fetches user data from the authentication API
+ * Fetches user data from the authentication API.
+ * @param sessionToken The session token for authentication.
+ * @returns A promise that resolves to the user data.
  */
 async function fetchUserData(sessionToken: string): Promise<User> {
-	const userApiUrl = `${AUTH_API_BASE_URL()}/users/me`;
-	const userResponse = await fetchData<User>(userApiUrl, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
-
-	if (userResponse.statusCode !== HttpStatus.OK) {
-		throw new HttpException(userResponse.statusCode, userResponse.error ?? 'Failed to fetch user data');
-	}
-
-	if (!userResponse.data) {
-		throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
-	}
-
+	// Fetch user data from the authentication API
+	const userResponse = await fetchData<User>(API_ROUTES.auth.USERS_ME, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
+	// Handle errors if response is not OK
+	if (userResponse.statusCode !== HttpStatus.OK) throw new HttpException(userResponse.statusCode, userResponse.error ?? 'Failed to fetch user data');
+	// Ensure user data is present
+	if (!userResponse.data) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
+	// Return the fetched user data
 	return userResponse.data;
 }
 
 /**
- * Fetches user permissions from the authentication API
+ * Fetches user permissions from the authentication API.
+ * @param sessionToken The session token for authentication.
+ * @returns A promise that resolves to an array of user permissions.
  */
 async function fetchUserPermissions<T>(sessionToken: string): Promise<Permission<T>[]> {
-	const permissionsApiUrl = `${AUTH_API_BASE_URL()}/permissions`;
-	const permissionsResponse = await fetchData<Permission<T>[]>(permissionsApiUrl, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
-
-	if (permissionsResponse.statusCode !== HttpStatus.OK) {
-		throw new HttpException(permissionsResponse.statusCode, permissionsResponse.error ?? 'Failed to fetch permissions');
-	}
-
-	if (!permissionsResponse.data) {
-		throw new HttpException(HttpStatus.UNAUTHORIZED, 'Permissions not found');
-	}
-
+	// Fetch user permissions from the authentication API
+	const permissionsResponse = await fetchData<Permission<T>[]>(API_ROUTES.auth.AUTH_PERMISSIONS, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
+	// Handle errors if response is not OK
+	if (permissionsResponse.statusCode !== HttpStatus.OK) throw new HttpException(permissionsResponse.statusCode, permissionsResponse.error ?? 'Failed to fetch permissions');
+	// Ensure permissions data is present
+	if (!permissionsResponse.data) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Permissions not found');
+	// Return the fetched permissions data
 	return permissionsResponse.data;
 }
 
 /**
- * Creates an authorization middleware that validates user authentication and permissions
- * @param scope - The permission scope to check (optional)
- * @param action - The permission action(s) to check (optional)
- * @param requireAll - Whether all actions must be true or at least one must be true
- * @returns Fastify middleware function
+ * Creates an authorization middleware that validates user authentication and permissions.
+ * @param scope The permission scope to check (optional).
+ * @param action The permission action(s) to check (optional).
+ * @param requireAll Whether all actions must be true or at least one must be true.
+ * @returns Fastify middleware function.
  */
 export function authorizationMiddleware<T = unknown>(scope?: string, actions?: string | string[], requireAll = false) {
 	return async (request: FastifyRequest): Promise<void> => {

@@ -48,7 +48,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 	auth: {
 		development: {
 			api_port: 52000,
-			api_url: 'http://localhost:52000',
+			api_url: 'http://localhost:52000/auth/api',
 			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51000,

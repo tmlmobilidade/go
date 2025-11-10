@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, getAppConfig, HttpException } from '@tmlmobilidade/consts';
 import { Notification as TmlNotification } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -46,7 +46,7 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// A. Setup variables
 
-	const { data: notificationsData, error: notificationsError, isLoading: notificationsLoading } = useSWR<TmlNotification[], HttpException>(`${getAppConfig('auth', 'api_url')}/notifications`, { refreshInterval: 10_000 });
+	const { data: notificationsData, error: notificationsError, isLoading: notificationsLoading } = useSWR<TmlNotification[], HttpException>(API_ROUTES.auth.NOTIFICATIONS_LIST, { refreshInterval: 10_000 });
 
 	//
 	// C. Transform data
