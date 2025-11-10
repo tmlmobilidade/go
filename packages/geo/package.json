@@ -31,9 +31,9 @@
 	"types": "index.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"lint": "eslint ./src/ && tsc --noEmit",
-		"lint:fix": "eslint ./src/ --fix"
+		"lint:fix": "eslint ./src/ --fix",
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
 		"@tmlmobilidade/types": "*",

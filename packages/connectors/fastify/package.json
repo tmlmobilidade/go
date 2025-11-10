@@ -31,9 +31,9 @@
 	"types": "index.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"watch": "tsc-watch --onSuccess 'resolve-tspaths'",
 		"lint": "eslint . && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"lint:fix": "eslint . --fix",
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",

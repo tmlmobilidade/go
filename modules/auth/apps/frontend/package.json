@@ -1,40 +1,40 @@
 {
-  "name": "@tmlmobilidade/go-auth-frontend",
-  "version": "1.0.0",
-  "author": {
-    "email": "iso@tmlmobilidade.pt",
-    "name": "TML-ISO"
-  },
-  "license": "AGPL-3.0-or-later",
-  "private": true,
-  "scripts": {
-    "build": "next build",
-    "dev": "dotenv-run -f ./environments/development/secrets/.env -- next dev -p 51000",
-    "lint": "eslint ./src && tsc --noEmit",
-    "lint:fix": "eslint --fix ./src"
-  },
-  "dependencies": {
-    "@tabler/icons-react": "3.35.0",
-    "@tmlmobilidade/consts": "*",
-    "@tmlmobilidade/dates": "*",
-    "@tmlmobilidade/strings": "*",
-    "@tmlmobilidade/ui": "*",
-    "@tmlmobilidade/utils": "*",
-    "bcryptjs": "3.0.3",
-    "clsx": "2.1.1",
-    "next": "15.5.6",
-    "nuqs": "2.7.3",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "swr": "2.3.6"
-  },
-  "devDependencies": {
-    "@carrismetropolitana/eslint": "20250622.1204.50",
-    "@tmlmobilidade/tsconfig": "*",
-    "@tmlmobilidade/types": "*",
-    "@types/node": "24.10.0",
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2",
-    "typescript": "5.9.3"
-  }
+	"name": "@tmlmobilidade/go-auth-frontend",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "dotenv-run -f ./environments/development/secrets/.env -- next dev -p 51000",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src"
+	},
+	"dependencies": {
+		"@tabler/icons-react": "3.35.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
+		"bcryptjs": "3.0.3",
+		"clsx": "2.1.1",
+		"next": "15.5.6",
+		"nuqs": "2.7.3",
+		"react": "19.2.0",
+		"react-dom": "19.2.0",
+		"swr": "2.3.6"
+	},
+	"devDependencies": {
+		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@types/node": "24.10.0",
+		"@types/react": "19.2.2",
+		"@types/react-dom": "19.2.2",
+		"typescript": "5.9.3"
+	}
 }

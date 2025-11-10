@@ -18,9 +18,9 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@helperkits/logger": "20250628.901.58",
-		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"papaparse": "5.5.3"
 	},

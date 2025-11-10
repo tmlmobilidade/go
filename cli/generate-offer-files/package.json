@@ -24,11 +24,11 @@
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/consts": "*",
-		"@helperkits/logger": "20250628.901.58",
-		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"commander": "14.0.2",
 		"csv-parse": "6.1.0",

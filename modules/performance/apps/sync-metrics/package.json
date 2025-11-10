@@ -20,9 +20,9 @@
 		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
-		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"luxon": "3.7.2",
 		"p-limit": "7.2.0"
 	},

@@ -19,14 +19,13 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@helperkits/logger": "20250628.901.58",
-		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"gtfs-types": "5.1.0",
 		"papaparse": "5.5.3"
