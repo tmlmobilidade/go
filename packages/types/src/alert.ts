@@ -1,11 +1,10 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
+import { PublishStatusSchema } from '@/_common/status.js';
 import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { gtfsCauseSchema, gtfsEffectSchema } from '@/gtfs/cause-effetcs.js';
 import { z } from 'zod';
-
-import { PublishStatusSchema } from './_common/status.js';
-import { gtfsCauseSchema, gtfsEffectSchema } from './gtfs/cause-effetcs.js';
 
 /* * */
 
