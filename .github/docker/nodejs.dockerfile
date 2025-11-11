@@ -63,4 +63,4 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist/ .
 
-CMD node src/index.js
+CMD ["node", "index.js"]
