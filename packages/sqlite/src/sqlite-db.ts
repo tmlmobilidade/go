@@ -103,7 +103,7 @@ export class SQLiteTableInstance<T> {
 
 		// Create table
 		this.databaseInstance
-			.prepare(`CREATE TABLE IF NOT EXISTS ${this.tableName} (${params.columns.map(c => `"${c.name}"`).join(', ')})`)
+			.prepare(`CREATE TABLE IF NOT EXISTS ${this.tableName} (${params.columns.map(c => `"${c.name}" ${c.type}`).join(', ')})`)
 			.run();
 
 		// Create indexes

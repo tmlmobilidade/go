@@ -8,6 +8,7 @@ import { OperationalDate, UnixTimestamp } from '@tmlmobilidade/types';
 
 export interface GlobalContext {
 	configs: {
+		agency_ids: string[]
 		database_name: string
 		database_path: string
 		end_date: UnixTimestamp
@@ -30,7 +31,7 @@ export interface DrtTables {
 
 export interface DrtHashedTrip {
 	_id: string //  hashed_trip_id + stop_sequence + stop_id;
-	hashed_trip_id: string
+	hashed_trip_id: number
 
 	/* * */
 
@@ -43,7 +44,7 @@ export interface DrtHashedTrip {
 
 export interface DrtHashedShape {
 	_id: string //  hashed_shape_id + shape_pt_sequence;
-	hashed_shape_id: string
+	hashed_shape_id: number
 
 	/* * */
 
@@ -64,8 +65,8 @@ export interface DrtRide {
 	_id: string
 
 	/* Ride */
-	hashed_trip_id: string
-	hashed_shape_id: string
+	hashed_trip_id: number
+	hashed_shape_id: number
 
 	trip_id: string
 	plan_id: string
@@ -78,10 +79,12 @@ export interface DrtRide {
 	end_time_scheduled: UnixTimestamp
 	extension_scheduled: number
 
+	agency_id: string
+
 	/* DRT-specific */
 
-	driver_id: string
-	vehicle_id: string
+	// driver_id: string
+	// vehicle_id: string
 	da_trip_number: number // Driver Assignment Trip Number
 	va_trip_number: number // Vehicle Assignment Trip Number
 }

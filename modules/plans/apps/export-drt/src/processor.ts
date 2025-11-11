@@ -7,6 +7,38 @@ import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
 import { DrtAgency, DrtHashedShape, DrtHashedTrip } from './drt.types.js';
 import { GLOBAL_CONTEXT } from './index.js';
 
+class IndexedValues<T> {
+	private indexMap = new Map<T, number>();
+	private items = new Set<T>();
+
+	add(value: T) {
+		if (!this.items.has(value)) {
+			this.items.add(value);
+			this.indexMap.set(value, this.indexMap.size);
+		}
+	}
+
+	delete(value: T) {
+		if (!this.items.has(value)) return false;
+		// Note: This leaves "holes" in indexes unless you rebuild the map
+		this.items.delete(value);
+		this.indexMap.delete(value);
+		return true;
+	}
+
+	getIndex(value: T): number | undefined {
+		return this.indexMap.get(value);
+	}
+
+	has(value: T) {
+		return this.items.has(value);
+	}
+
+	values() {
+		return this.items.values();
+	}
+}
+
 export async function processor() {
 	try {
 		//
@@ -29,8 +61,8 @@ async function processRides() {
 	Logger.info('Processing Rides...');
 	const timer = new Timer();
 
-	const hashedShapesIds = new Set<string>();
-	const hashedTripsIds = new Set<string>();
+	const hashedShapesIds = new IndexedValues<string>();
+	const hashedTripsIds = new IndexedValues<string>();
 
 	const ridesCollection = await rides.getCollection();
 	const ridesStream = ridesCollection.find({
@@ -56,15 +88,16 @@ async function processRides() {
 			_id: ride._id,
 
 			/* Ride */
+			agency_id: ride.agency_id,
 			end_time_scheduled: ride.end_time_scheduled,
-			extension_scheduled: ride.extension_scheduled,
 
-			hashed_shape_id: ride.hashed_shape_id,
-			hashed_trip_id: ride.hashed_trip_id,
+			extension_scheduled: ride.extension_scheduled,
+			hashed_shape_id: hashedShapesIds.getIndex(ride.hashed_shape_id),
+			hashed_trip_id: hashedTripsIds.getIndex(ride.hashed_trip_id),
 			headsign: ride.headsign,
 			operational_date: ride.operational_date,
-			pattern_id: ride.pattern_id,
 
+			pattern_id: ride.pattern_id,
 			plan_id: ride.plan_id,
 			route_id: ride.route_id,
 			start_time_scheduled: ride.start_time_scheduled,
@@ -72,10 +105,10 @@ async function processRides() {
 
 			/* DRT-specific */
 
+			// driver_id: ride.driver_ids.length > 0 ? ride.driver_ids.join(',') : '',
+			// vehicle_id: ride.vehicle_ids.length > 0 ? ride.vehicle_ids.join(',') : '',
 			da_trip_number: 0,
-			driver_id: ride.driver_ids.length > 0 ? ride.driver_ids.join(',') : '',
 			va_trip_number: 0,
-			vehicle_id: ride.vehicle_ids.length > 0 ? ride.vehicle_ids.join(',') : '',
 		});
 
 		if (totalRides % 10000 === 0) {
@@ -94,14 +127,14 @@ async function processRides() {
 	]);
 }
 
-async function processHashedTrips(hashedTripsIds: Set<string>) {
+async function processHashedTrips(hashedTripsIds: IndexedValues<string>) {
 	try {
 		//
 		Logger.info('Processing Hashed Trips...');
 		const hashedTripsTimer = new Timer();
 
 		const hashedTripsCollection = await hashedTrips.getCollection();
-		const hashedTripsStream = hashedTripsCollection.find({ _id: { $in: Array.from(hashedTripsIds) } }).stream();
+		const hashedTripsStream = hashedTripsCollection.find({ _id: { $in: Array.from(hashedTripsIds.values()) } }).stream();
 
 		let totalHashedTrips = 0;
 		for await (const hashedTrip of hashedTripsStream as unknown as AsyncIterableIterator<HashedTrip>) {
@@ -110,11 +143,14 @@ async function processHashedTrips(hashedTripsIds: Set<string>) {
 
 			//
 			for (const stop of hashedTrip.path) {
+				const hashed_trip_idx = hashedTripsIds.getIndex(hashedTrip._id);
+				if (hashed_trip_idx === undefined) throw new Error(`Hashed trip "${hashedTrip._id}" not found in the index.`);
+
 				const drtHashedTrip: DrtHashedTrip = {
-					_id: `${hashedTrip._id}-${stop.stop_sequence}-${stop.stop_id}`,
+					_id: `${hashed_trip_idx}-${stop.stop_sequence}-${stop.stop_id}`,
 					arrival_time: stop.arrival_time,
 					departure_time: stop.departure_time,
-					hashed_trip_id: hashedTrip._id,
+					hashed_trip_id: hashed_trip_idx,
 					shape_dist_traveled: stop.shape_dist_traveled,
 					stop_id: stop.stop_id,
 					stop_sequence: stop.stop_sequence,
@@ -134,7 +170,7 @@ async function processHashedTrips(hashedTripsIds: Set<string>) {
 	}
 }
 
-async function processHashedShapes(hashedShapesIds: Set<string>) {
+async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 	try {
 		//
 
@@ -142,7 +178,7 @@ async function processHashedShapes(hashedShapesIds: Set<string>) {
 		const hashedShapesTimer = new Timer();
 
 		const hashedShapesCollection = await hashedShapes.getCollection();
-		const hashedShapesStream = hashedShapesCollection.find({ _id: { $in: Array.from(hashedShapesIds) } }).stream();
+		const hashedShapesStream = hashedShapesCollection.find({ _id: { $in: Array.from(hashedShapesIds.values()) } }).stream();
 
 		let totalHashedShapes = 0;
 
@@ -165,9 +201,13 @@ async function processHashedShapes(hashedShapesIds: Set<string>) {
 
 				//
 				// Write the Hashed Shape to the database
+				const hashed_shape_idx = hashedShapesIds.getIndex(hashedShape._id);
+				if (!hashed_shape_idx) throw new Error(`Hashed shape "${hashedShape._id}" not found in the index.`);
+
+				//
 				const drtHashedShape: DrtHashedShape = {
-					_id: `${hashedShape._id}-${point.shape_pt_sequence}`,
-					hashed_shape_id: hashedShape._id,
+					_id: `${hashed_shape_idx}-${point.shape_pt_sequence}`,
+					hashed_shape_id: hashed_shape_idx,
 					shape_dist_traveled: point.shape_dist_traveled,
 					shape_pt_lat: point.shape_pt_lat,
 					shape_pt_lon: point.shape_pt_lon,

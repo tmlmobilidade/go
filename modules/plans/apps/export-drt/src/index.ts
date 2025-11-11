@@ -16,14 +16,15 @@ import { processor } from './processor.js';
 /* * */
 
 const DAYS_TO_ADD = 3;
-const RUN_INTERVAL = 10 * 60 * 60_000; // 10 hours in milliseconds
+const RUN_INTERVAL = 1 * 60 * 60_000; // 10 hours in milliseconds
 
 export const GLOBAL_CONTEXT: GlobalContext = {
 	configs: {
+		agency_ids: ['41', '42', '43', '44'],
 		database_name: 'drt-model',
 		database_path: os.tmpdir(),
-		end_date: Dates.now('Europe/Lisbon').plus({ days: DAYS_TO_ADD }).unix_timestamp,
-		start_date: Dates.now('Europe/Lisbon').unix_timestamp,
+		end_date: Dates.now('Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).plus({ days: DAYS_TO_ADD }).unix_timestamp,
+		start_date: Dates.now('Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).unix_timestamp,
 	},
 	database: undefined,
 	tables: undefined,
@@ -48,7 +49,7 @@ function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'INTEGER' },
 			{ indexed: false, name: 'meters_from_previous_stop', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'meters_from_start', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'meters_to_end', not_null: true, type: 'REAL' },
@@ -79,7 +80,7 @@ function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'INTEGER' },
 			{ indexed: false, name: 'stop_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
 			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
@@ -92,19 +93,18 @@ function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'INTEGER' },
 			{ indexed: false, name: 'trip_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'plan_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'headsign', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'operational_date', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'start_time_scheduled', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'end_time_scheduled', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'extension_scheduled', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'driver_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'vehicle_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'da_trip_number', not_null: true, type: 'INTEGER' },
 			{ indexed: false, name: 'va_trip_number', not_null: true, type: 'INTEGER' },
 		],
@@ -152,20 +152,23 @@ async function main() {
 		Logger.success(`Finished processing the DRT data in ${globalTimer.get()}.`);
 
 		Logger.info(`Saving the SQLite database to the storage service...`);
-		const fileStream = fs.createReadStream(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
-		const fileStats = fs.statSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
-		const fileResult = await files.upload(fileStream, {
-			_id: 'drt-model',
-			created_by: 'system	',
-			name: 'drt-model.db',
-			resource_id: 'Demand-Response-Transportation',
-			scope: 'plans',
-			size: fileStats.size,
-			type: mimeTypes.sqlite,
-			updated_by: 'system',
-		}, { override: true });
 
-		Logger.terminate(`SQLite database saved to the storage service.` + `(${fileResult._id})`);
+		Logger.info('file saved in: ' + path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
+
+		// const fileStream = fs.createReadStream(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
+		// const fileStats = fs.statSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
+		// const fileResult = await files.upload(fileStream, {
+		// 	_id: 'drt-model',
+		// 	created_by: 'system	',
+		// 	name: 'drt-model.db',
+		// 	resource_id: 'Demand-Response-Transportation',
+		// 	scope: 'plans',
+		// 	size: fileStats.size,
+		// 	type: mimeTypes.sqlite,
+		// 	updated_by: 'system',
+		// }, { override: true });
+
+		// Logger.terminate(`SQLite database saved to the storage service.` + `(${fileResult._id})`);
 		Logger.divider();
 		//
 		// Exit the application
