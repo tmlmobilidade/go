@@ -3,7 +3,7 @@
 import { MultipartValue } from '@fastify/multipart';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
 import { rabbitMQ } from '@tmlmobilidade/connectors-rabbitmq';
-import { ALLOW_ALL_FLAG, getAppConfig, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { ALLOW_ALL_FLAG, API_ROUTES, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { files, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
 import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, type GtfsValidationPermission, type Permission } from '@tmlmobilidade/types';
@@ -277,7 +277,7 @@ export class GtfsValidationsController {
 		//
 		// Get the TML contact emails for this Agency
 
-		const agencyData = await fetchData<Agency>(getAppConfig('auth', 'frontend_url') + '/api/agencies/' + validationData.gtfs_agency.agency_id, 'GET', undefined, {
+		const agencyData = await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(validationData.gtfs_agency.agency_id), 'GET', undefined, {
 			Cookie: `session_token=${request.cookies.session_token}`,
 		});
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 /* * */
 
 import { type WikiArticle } from '@tmlmobilidade/types';
@@ -34,13 +35,13 @@ export function WikiList() {
 	//
 	// B. Fetch data
 
-	const { data: allWikiData, error: allWikiError, isLoading: allWikiLoading } = useSWR<WikiArticle[], Error>('/auth/api/wiki');
+	const { data: allWikiData, error: allWikiError, isLoading: allWikiLoading } = useSWR<WikiArticle[], Error>(API_ROUTES.auth.WIKI_LIST);
 
 	//
 	// C. Handle actions
 
 	const handleRowClick = (item: WikiArticle) => {
-		router.push(`/home/${item._id}`);
+		router.push(PAGE_ROUTES.auth.HOME_DETAIL(item._id));
 	};
 
 	//
