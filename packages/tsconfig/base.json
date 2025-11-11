@@ -4,6 +4,7 @@
 		"allowJs": false,
 		"esModuleInterop": true,
 		"isolatedModules": true,
+		"jsx": "react-jsx",
 		"moduleDetection": "force",
 		"noImplicitOverride": true,
 		"noUncheckedIndexedAccess": false,

@@ -13,104 +13,104 @@ import { z } from 'zod';
 export const FlatRideSchema = z.object({
 	/* META */
 	/* * */
-	_id: z.string(),
-	agency_id: z.string(),
-	driver_ids: z.string(),
-	headsign: z.string(),
-	line_id: z.number(),
-	pattern_id: z.string(),
-	plan_id: z.string(),
-	route_id: z.string(),
-	trip_id: z.string(),
-	vehicle_ids: z.string(),
+	_id: z.string().nullable(),
+	agency_id: z.string().nullable(),
+	driver_ids: z.string().nullable(),
+	headsign: z.string().nullable(),
+	line_id: z.number().nullable(),
+	pattern_id: z.string().nullable(),
+	plan_id: z.string().nullable(),
+	route_id: z.string().nullable(),
+	trip_id: z.string().nullable(),
+	vehicle_ids: z.string().nullable(),
 
 	/* TIME & STATUS */
 	/* * */
-	operational_date: z.string(),
-	operational_status: z.string(),
+	operational_date: z.string().nullable(),
+	operational_status: z.string().nullable(),
 	//
-	start_delay_status: z.string(),
-	start_time_observed: z.string(),
-	start_time_scheduled: z.string(),
+	start_delay_status: z.string().nullable(),
+	start_time_observed: z.string().nullable(),
+	start_time_scheduled: z.string().nullable(),
 	//
-	end_delay_status: z.string(),
-	end_time_observed: z.string(),
-	end_time_scheduled: z.string(),
-	extension_observed: z.number(),
-	extension_scheduled: z.number(),
+	end_delay_status: z.string().nullable(),
+	end_time_observed: z.string().nullable(),
+	end_time_scheduled: z.string().nullable(),
+	extension_observed: z.number().nullable(),
+	extension_scheduled: z.number().nullable(),
 	//
-	seen_first_at: z.string(),
-	seen_last_at: z.string(),
-	seen_status: z.string(),
+	seen_first_at: z.string().nullable(),
+	seen_last_at: z.string().nullable(),
+	seen_status: z.string().nullable(),
 
 	/* PASSENGERS */
 	/* * */
-	passengers_estimated: z.number(),
-	passengers_observed: z.number(),
-	passengers_observed_on_board_sales_amount: z.number(),
-	passengers_observed_on_board_sales_qty: z.number(),
-	passengers_observed_prepaid_amount: z.number(),
-	passengers_observed_prepaid_qty: z.number(),
-	passengers_observed_subscription_qty: z.number(),
+	passengers_estimated: z.number().nullable(),
+	passengers_observed: z.number().nullable(),
+	passengers_observed_on_board_sales_amount: z.number().nullable(),
+	passengers_observed_on_board_sales_qty: z.number().nullable(),
+	passengers_observed_prepaid_amount: z.number().nullable(),
+	passengers_observed_prepaid_qty: z.number().nullable(),
+	passengers_observed_subscription_qty: z.number().nullable(),
 
 	/* APEX */
 	/* * */
-	apex_locations_qty: z.number(),
-	apex_on_board_refunds_amount: z.number(),
-	apex_on_board_refunds_qty: z.number(),
-	apex_on_board_sales_amount: z.number(),
-	apex_on_board_sales_qty: z.number(),
-	apex_validations_qty: z.number(),
+	apex_locations_qty: z.number().nullable(),
+	apex_on_board_refunds_amount: z.number().nullable(),
+	apex_on_board_refunds_qty: z.number().nullable(),
+	apex_on_board_sales_amount: z.number().nullable(),
+	apex_on_board_sales_qty: z.number().nullable(),
+	apex_validations_qty: z.number().nullable(),
 
 	/* ANALYSIS */
 	/* * */
-	analysis_AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: z.string(),
-	analysis_ENDED_AT_LAST_STOP: z.string(),
-	analysis_EXPECTED_APEX_VALIDATION_INTERVAL: z.string(),
-	analysis_EXPECTED_DRIVER_ID_QTY: z.string(),
-	analysis_EXPECTED_START_TIME: z.string(),
-	analysis_EXPECTED_START_TIME_value: z.number(),
-	analysis_EXPECTED_VEHICLE_EVENT_DELAY: z.string(),
-	analysis_EXPECTED_VEHICLE_EVENT_INTERVAL: z.string(),
-	analysis_EXPECTED_VEHICLE_EVENT_QTY: z.string(),
-	analysis_EXPECTED_VEHICLE_EVENT_QTY_expected_qty: z.number(),
-	analysis_EXPECTED_VEHICLE_EVENT_QTY_found_qty: z.number(),
-	analysis_EXPECTED_VEHICLE_ID_QTY: z.string(),
-	analysis_MATCHING_APEX_LOCATIONS: z.string(),
-	analysis_MATCHING_VEHICLE_IDS: z.string(),
-	analysis_SIMPLE_ONE_APEX_VALIDATION: z.string(),
-	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: z.string(),
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS: z.string(),
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_first: z.string(),
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_last: z.string(),
-	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_middle: z.string(),
-	analysis_TRANSACTION_SEQUENTIALITY: z.string(),
-	analysis_TRANSACTION_SEQUENTIALITY_expected_qty: z.number(),
-	analysis_TRANSACTION_SEQUENTIALITY_found_qty: z.number(),
-	analysis_TRANSACTION_SEQUENTIALITY_missing_qty: z.number(),
+	analysis_AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: z.string().nullable(),
+	analysis_ENDED_AT_LAST_STOP: z.string().nullable(),
+	analysis_EXPECTED_APEX_VALIDATION_INTERVAL: z.string().nullable(),
+	analysis_EXPECTED_DRIVER_ID_QTY: z.string().nullable(),
+	analysis_EXPECTED_START_TIME: z.string().nullable(),
+	analysis_EXPECTED_START_TIME_value: z.number().nullable(),
+	analysis_EXPECTED_VEHICLE_EVENT_DELAY: z.string().nullable(),
+	analysis_EXPECTED_VEHICLE_EVENT_INTERVAL: z.string().nullable(),
+	analysis_EXPECTED_VEHICLE_EVENT_QTY: z.string().nullable(),
+	analysis_EXPECTED_VEHICLE_EVENT_QTY_expected_qty: z.number().nullable(),
+	analysis_EXPECTED_VEHICLE_EVENT_QTY_found_qty: z.number().nullable(),
+	analysis_EXPECTED_VEHICLE_ID_QTY: z.string().nullable(),
+	analysis_MATCHING_APEX_LOCATIONS: z.string().nullable(),
+	analysis_MATCHING_VEHICLE_IDS: z.string().nullable(),
+	analysis_SIMPLE_ONE_APEX_VALIDATION: z.string().nullable(),
+	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: z.string().nullable(),
+	analysis_SIMPLE_THREE_VEHICLE_EVENTS: z.string().nullable(),
+	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_first: z.string().nullable(),
+	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_last: z.string().nullable(),
+	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_middle: z.string().nullable(),
+	analysis_TRANSACTION_SEQUENTIALITY: z.string().nullable(),
+	analysis_TRANSACTION_SEQUENTIALITY_expected_qty: z.number().nullable(),
+	analysis_TRANSACTION_SEQUENTIALITY_found_qty: z.number().nullable(),
+	analysis_TRANSACTION_SEQUENTIALITY_missing_qty: z.number().nullable(),
 
 	/* ACCEPTANCE / JUSTIFICATION */
 	/* * */
 
-	acceptance_status: z.enum(RideAcceptanceStatusSchema.options).nullish(),
-	justification_cause: gtfsCauseSchema.nullish(),
-	justification_source: z.enum(RideJustificationSourceSchema.options).nullish(),
-	manual_trip_id: z.string().nullish(),
-	pto_message: z.string().min(2).max(5000).default('').nullish(),
+	acceptance_status: z.enum(RideAcceptanceStatusSchema.options).nullish().nullable(),
+	justification_cause: gtfsCauseSchema.nullish().nullable(),
+	justification_source: z.enum(RideJustificationSourceSchema.options).nullish().nullable(),
+	manual_trip_id: z.string().nullish().nullable(),
+	pto_message: z.string().min(2).max(5000).default('').nullish().nullable(),
 });
 
 /* PROPERTIES SCHEMA */
 /* * */
 export const RideExportPropertiesSchema = z.object({
 	properties: z.object({
-		agency_ids: z.array(z.string()).optional(),
+		agency_ids: z.array(z.string()).optional().nullable(),
 
 		/* * */
 
-		analysis_ended_at_last_stop: z.array(RideAnalysisGradeWithNoneSchema).optional(),
-		analysis_expected_apex_validation_interval: z.array(RideAnalysisGradeWithNoneSchema).optional(),
-		analysis_simple_three_vehicle_events: z.array(RideAnalysisGradeWithNoneSchema).optional(),
-		analysis_transaction_sequentiality: z.array(RideAnalysisGradeWithNoneSchema).optional(),
+		analysis_ended_at_last_stop: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
+		analysis_expected_apex_validation_interval: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
+		analysis_simple_three_vehicle_events: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
+		analysis_transaction_sequentiality: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
 
 		/* * */
 
@@ -119,17 +119,17 @@ export const RideExportPropertiesSchema = z.object({
 
 		/* * */
 
-		delay_statuses: z.array(DelayStatusSchema).optional(),
-		operational_statuses: z.array(OperationalStatusSchema).optional(),
-		seen_statuses: z.array(SeenStatusSchema).optional(),
+		delay_statuses: z.array(DelayStatusSchema).optional().nullable(),
+		operational_statuses: z.array(OperationalStatusSchema).optional().nullable(),
+		seen_statuses: z.array(SeenStatusSchema).optional().nullable(),
 
 		/* * */
 
-		line_ids: z.array(z.string()).optional(),
-		stop_ids: z.array(z.string()).optional(),
+		line_ids: z.array(z.string()).optional().nullable(),
+		stop_ids: z.array(z.string()).optional().nullable(),
 
 		/* * */
-		acceptance_status: z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none'])).optional(),
+		acceptance_status: z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none'])).optional().nullable(),
 	}),
 	type: z.literal('ride'),
 });

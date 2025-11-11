@@ -8,8 +8,8 @@
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
 	"files": ["dist"],
-	"main": "index.js",
-	"types": "index.d.ts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "dotenv-run -- tsx watch src/index.ts",
@@ -29,7 +29,6 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.0",
-		"gtfs-types": "5.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

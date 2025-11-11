@@ -2,7 +2,6 @@
 	"extends": "@tmlmobilidade/tsconfig/nodejs.json",
 	"compilerOptions": {
 		"baseUrl": ".",
-		"jsx": "react-jsx",
 		"outDir": "dist",
 		"paths": {
 			"@/*": ["./src/*"]

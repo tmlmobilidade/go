@@ -25,8 +25,8 @@
 	},
 	"type": "module",
 	"files": ["dist"],
-	"main": "index.js",
-	"types": "index.d.ts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint ./src/ && tsc --noEmit",
@@ -38,11 +38,5 @@
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
-	},
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
-		}
 	}
 }

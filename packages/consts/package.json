@@ -25,8 +25,8 @@
 	},
 	"type": "module",
 	"files": ["dist"],
-	"main": "index.js",
-	"types": "index.d.ts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint ./src/ && tsc --noEmit",

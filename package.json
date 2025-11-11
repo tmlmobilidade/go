@@ -5,7 +5,7 @@
 		"name": "TML-ISO"
 	},
 	"license": "AGPL-3.0-or-later",
-	"main": "index.js",
+	"main": "./dist/index.js",
 	"scripts": {
 		"build": "turbo build",
 		"build:alerts": "dotenv-run -f ./modules/alerts/environments/development/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
@@ -31,7 +31,7 @@
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
-		"watch:packages": "turbo run build --filter=./packages/**/* && turbo run watch --filter=./packages/**/*"
+		"watch:packages": "npm run build:packages && turbo run watch --filter=./packages/**/*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",

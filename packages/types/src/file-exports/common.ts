@@ -11,7 +11,7 @@ export type FileExportType = z.infer<typeof FileExportTypeSchema>;
 /* * */
 
 export const FileExportBaseSchema = DocumentSchema.extend({
-	file_id: z.string().nullish(),
+	file_id: z.string().nullable(),
 	file_name: z.string(),
 	processing_status: ProcessingStatusSchema,
 	properties: z.record(z.any()),

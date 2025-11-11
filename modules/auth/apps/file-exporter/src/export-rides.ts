@@ -25,6 +25,8 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	if (fileExport.type !== 'ride') throw new Error(`File export type is not ride: ${fileExport.type}.`);
 
+	if (!fileExport.properties) throw new Error(`File export properties is missing.`);
+
 	//
 	// Setup a timer to track the execution time
 	const timer = new Timer();

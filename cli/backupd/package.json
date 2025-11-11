@@ -8,7 +8,7 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"main": "index.js",
+	"main": "./dist/index.js",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint . && tsc --noEmit",
