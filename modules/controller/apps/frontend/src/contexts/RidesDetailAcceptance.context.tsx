@@ -1,13 +1,13 @@
 'use client';
 
+/* * */
+
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { GtfsCause, type RideAcceptance } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
-import useSWR, { mutate } from 'swr';
-
-/* * */
+import useSWR from 'swr';
 
 /* * */
 
@@ -41,43 +41,43 @@ export function useRidesDetailAcceptanceContext() {
 
 /* * */
 
-const BASE_URL = (rideId: string) => API_ROUTES.controller.ACCEPTANCE_DETAIL(rideId);
 export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 	//
 
 	//
 	// A. Setup variables
-	const { data: acceptanceData, error: acceptanceError, isLoading: acceptanceLoading } = useSWR<RideAcceptance>(BASE_URL(rideId));
+
+	const { data: acceptanceData, error: acceptanceError, isLoading: acceptanceLoading, mutate: acceptanceMutate } = useSWR<RideAcceptance>(API_ROUTES.controller.ACCEPTANCE_DETAIL(rideId));
 
 	//
-	// C. Handle actions
+	// B. Handle actions
+
 	async function addComment(comment: RideAcceptance['comments'][number]) {
 		try {
-			const res = await fetchData(BASE_URL(rideId) + '/comment', 'POST', comment);
+			const res = await fetchData(API_ROUTES.controller.ACCEPTANCE_COMMENT(rideId), 'POST', comment);
 
 			if (res.error) {
 				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
 				return;
 			}
 
-			mutate(BASE_URL(rideId));
+			acceptanceMutate();
 		}
 		catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao adicionar comentário' });
 		}
 	}
 
-	//
 	async function changeStatus(status: RideAcceptance['acceptance_status']) {
 		try {
-			const statusResponse = await fetchData(BASE_URL(rideId) + '/change-status', 'PUT', { acceptance_status: status });
+			const statusResponse = await fetchData(API_ROUTES.controller.ACCEPTANCE_CHANGE_STATUS(rideId), 'PUT', { acceptance_status: status });
 
 			if (statusResponse.error) {
 				useToast.error({ message: statusResponse.error, title: 'Erro ao alterar status' });
 				return;
 			}
 
-			mutate(BASE_URL(rideId));
+			acceptanceMutate();
 		}
 		catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao alterar status' });
@@ -85,27 +85,25 @@ export const RidesDetailAcceptanceContextProvider = ({ children, rideId }) => {
 	}
 
 	async function justify(message: string, cause: GtfsCause, manual_trip_id?: string) {
-		const response = await fetchData(BASE_URL(rideId) + '/justify', 'PUT', { justification_cause: cause, manual_trip_id, pto_message: message });
+		const response = await fetchData(API_ROUTES.controller.ACCEPTANCE_JUSTIFY(rideId), 'PUT', { justification_cause: cause, manual_trip_id, pto_message: message });
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao justificar' });
 			return;
 		}
-
-		mutate(BASE_URL(rideId));
+		acceptanceMutate();
 	}
 
-	//
 	async function toggleLock(is_locked: RideAcceptance['is_locked']) {
-		const response = await fetchData(BASE_URL(rideId), 'PUT', { is_locked });
+		const response = await fetchData(API_ROUTES.controller.ACCEPTANCE_LOCK(rideId), 'PUT', { is_locked });
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao bloquear justificação' });
 			return;
 		}
-
-		mutate(BASE_URL(rideId));
+		acceptanceMutate();
 	}
 
-	// D. Define context value
+	//
+	// C. Define context value
 
 	const contextValue: RidesDetailAcceptanceContextState = useMemo(() => ({
 		actions: {

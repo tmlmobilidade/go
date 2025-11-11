@@ -76,8 +76,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const agenciesContext = useAgenciesContext();
 	const pathname = usePathname();
+
+	const agenciesContext = useAgenciesContext();
 
 	const webSocketRef = useRef<null | WebSocket>(null);
 
