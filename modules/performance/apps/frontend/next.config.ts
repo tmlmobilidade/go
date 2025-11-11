@@ -5,11 +5,22 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
+	basePath: '/performance',
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
 	output: 'standalone',
 	reactStrictMode: true,
+	async redirects() {
+		return [
+			{
+				basePath: false,
+				destination: '/performance',
+				permanent: true,
+				source: '/',
+			},
+		];
+	},
 };
 
 /* * */

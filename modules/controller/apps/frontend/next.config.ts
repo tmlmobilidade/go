@@ -6,6 +6,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 /* * */
 
 const nextConfig: NextConfig = {
+	basePath: '/controller',
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
@@ -13,14 +14,11 @@ const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	async redirects() {
 		return [
-			{ destination: '/rides', permanent: true, source: '/' },
-		];
-	},
-	async rewrites() {
-		return [
 			{
-				destination: `http://localhost:52002/:path*`,
-				source: '/api/:path*',
+				basePath: false,
+				destination: '/controller',
+				permanent: true,
+				source: '/',
 			},
 		];
 	},

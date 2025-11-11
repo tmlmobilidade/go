@@ -6,5 +6,5 @@ import { redirect } from 'next/navigation';
 /* * */
 
 export default function Page() {
-	redirect(PAGE_ROUTES.plans.APPROVED_LIST);
+	redirect(PAGE_ROUTES.alerts.SCHEDULED_LIST);
 }

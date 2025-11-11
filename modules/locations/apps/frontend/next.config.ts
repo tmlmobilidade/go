@@ -5,6 +5,7 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
+	basePath: '/locations',
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
@@ -12,15 +13,11 @@ const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	async redirects() {
 		return [
-			//
-			// { destination: Routes.ALERT_LIST, permanent: true, source: '/' },
-		];
-	},
-	async rewrites() {
-		return [
 			{
-				destination: `http://localhost:52005/:path*`,
-				source: '/api/:path*',
+				basePath: false,
+				destination: '/locations',
+				permanent: true,
+				source: '/',
 			},
 		];
 	},

@@ -5,6 +5,7 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
+	basePath: '/alerts',
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},
@@ -27,7 +28,8 @@ const nextConfig: NextConfig = {
 	async redirects() {
 		return [
 			{
-				destination: '/alerts/scheduled',
+				basePath: false,
+				destination: '/alerts',
 				permanent: true,
 				source: '/',
 			},
