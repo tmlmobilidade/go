@@ -110,7 +110,7 @@ cat <<EOF >> compose.yaml
 services:
 
   watchtower:
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     command: --interval 30 --scope ${SERVICE_NAME}
     deploy:
       restart_policy:

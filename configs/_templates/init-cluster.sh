@@ -46,7 +46,7 @@ docker_service_watchtower() {
   local SERVICE_NAME=$1
   cat <<EOF
   watchtower:
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     command: --interval 30 --scope ${SERVICE_NAME}
     deploy:
       restart_policy:

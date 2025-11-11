@@ -60,7 +60,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   watchtower:
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     deploy:
       restart_policy:
         condition: on-failure
