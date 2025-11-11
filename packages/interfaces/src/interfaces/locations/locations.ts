@@ -222,7 +222,7 @@ class LocationsClass {
 	};
 
 	private convertFilter = <T, U>(filter?: Filter<T>): Filter<U> | undefined => {
-		if (!filter || typeof filter !== 'object') return filter;
+		if (!filter || typeof filter !== 'object') return filter as unknown as Filter<U>;
 
 		if (Array.isArray(filter)) {
 			return filter.map(this.convertFilter) as Filter<Record<string, any>>;

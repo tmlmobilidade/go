@@ -1,9 +1,9 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/types.js';
+import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_Stop_Extended, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
-import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 
 /**
  * Initializes GTFS SQL tables and writers.

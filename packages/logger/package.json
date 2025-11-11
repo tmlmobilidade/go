@@ -24,11 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": [
-		"dist/"
-	],
-	"main": "index.ts",
-	"types": "index.ts",
+	"files": ["dist"],
+	"main": "index.js",
+	"types": "index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint ./src/ && tsc --noEmit",

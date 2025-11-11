@@ -15,9 +15,9 @@
 		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@helperkits/writer": "20251103.1250.18"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
