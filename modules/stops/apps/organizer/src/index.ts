@@ -1,11 +1,11 @@
 /* * */
 
-import { type LocationsApiResponse } from '@/types';
-import { stops } from '@tmlmobilidade/interfaces';
+import { type LocationsApiResponse } from '@/types.js';
 import { getAppConfig } from '@tmlmobilidade/consts';
-import { fetchData } from '@tmlmobilidade/utils';
+import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { fetchData } from '@tmlmobilidade/utils';
 
 /**
  * This script ensures Stop documents have up to date attributes concerning
