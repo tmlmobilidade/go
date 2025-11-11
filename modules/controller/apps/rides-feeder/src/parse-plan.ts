@@ -179,6 +179,15 @@ export async function parsePlan(planData: Plan) {
 		}
 
 		//
+		// Validate if the plan has the necessary properties
+		// required for processing (dates and operation file).
+
+		if (!planData.gtfs_feed_info.feed_start_date || !planData.gtfs_feed_info.feed_end_date) {
+			Logger.error(`Plan "${planData._id}" is missing gtfs_feed_info with feed_start_date and feed_end_date properties.`);
+			process.exit(1);
+		}
+
+		//
 		// Get the associated Operation GTFS archive URL,
 		// and try to download, save and unzip it.
 

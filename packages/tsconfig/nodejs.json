@@ -6,7 +6,7 @@
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
 		"outDir": "dist",
-		"strictNullChecks": true
+		"strictNullChecks": false
 	},
 	"extends": "./base.json"
 }

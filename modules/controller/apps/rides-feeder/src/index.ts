@@ -22,7 +22,10 @@ async function main() {
 		// Get all Plans and iterate on each one
 
 		const allPlansData = await plans.all();
-		const allPlansDataSorted = allPlansData.sort((a, b) => b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date));
+
+		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
+
+		const allPlansDataSorted = allPlansData.sort((a, b) => (b.gtfs_feed_info?.feed_start_date || '').localeCompare(a.gtfs_feed_info?.feed_start_date || ''));
 
 		Logger.info(`Found ${allPlansData.length} Plans to process...`);
 

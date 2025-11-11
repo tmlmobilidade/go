@@ -17,9 +17,9 @@ export const SamAnalysisSchema = z.object({
 	last_transaction_id: z.string().nullable(),
 	last_transaction_type: SimplifiedApexTypeSchema.nullable(),
 	start_time: unixTimeStampSchema.nullable(),
-	transactions_expected: z.number().nullable(),
-	transactions_found: z.number().nullable(),
-	transactions_missing: z.number().nullable(),
+	transactions_expected: z.number(),
+	transactions_found: z.number(),
+	transactions_missing: z.number(),
 	vehicle_id: z.number().nullable(),
 }).strict();
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { BRIDGEDB } from '@/BRIDGEDB.js';
-import { parseRide, sampleRide } from '@/types.js';
+import { FlatRide, parseRide, sampleRide } from '@/types.js';
 import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
@@ -77,7 +77,7 @@ export async function syncRides() {
 			.sort({ operational_date: -1 })
 			.stream();
 
-		let batch = [];
+		let batch: FlatRide[] = [];
 		let count = 0;
 
 		for await (const ride of stream) {
