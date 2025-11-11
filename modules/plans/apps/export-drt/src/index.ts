@@ -13,8 +13,8 @@ import { saveAllAgencyDatabasesToStorage } from './storage.js';
 /* * */
 
 const DAYS_TO_ADD = 3;
-const RUN_INTERVAL = 1 * 60 * 60_000; // 1 hour in milliseconds
-const AGENCY_IDS = ['43', '44'];
+const RUN_INTERVAL = 10 * 60 * 60_000; // 10 hour in milliseconds
+const AGENCY_IDS = ['43', '41', '42', '44'];
 
 export const GLOBAL_CONTEXT: GlobalContext = {
 	configs: {

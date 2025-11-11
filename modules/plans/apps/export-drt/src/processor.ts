@@ -107,8 +107,11 @@ async function processRides() {
 
 			/* DRT-specific */
 
-			// driver_id: ride.driver_ids.length > 0 ? ride.driver_ids.join(',') : '',
-			// vehicle_id: ride.vehicle_ids.length > 0 ? ride.vehicle_ids.join(',') : '',
+			block_id: '',
+			start_shift_id: '',
+
+			/* * */
+
 			da_trip_number: 0,
 			va_trip_number: 0,
 		});
@@ -195,18 +198,7 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 			totalHashedShapes++;
 
 			//
-			const lastPointShapeDistTraveled = hashedShape.points[hashedShape.points.length - 1].shape_dist_traveled;
-
-			for (const [index, point] of hashedShape.points.entries()) {
-				//
-
-				//
-				// Calculate the meters from the previous stop, start, end, and next stop
-				const meters_to_end = lastPointShapeDistTraveled - point.shape_dist_traveled;
-				const meters_from_previous_stop = index === 0 ? 0 : point.shape_dist_traveled - hashedShape.points[index - 1].shape_dist_traveled;
-				const meters_from_start = point.shape_dist_traveled;
-				const meters_to_next_stop = index === hashedShape.points.length - 1 ? 0 : hashedShape.points[index + 1].shape_dist_traveled - point.shape_dist_traveled;
-
+			for (const point of hashedShape.points) {
 				//
 				// Write the Hashed Shape to the database
 				const hashed_shape_idx = hashedShapesIds.getIndex(hashedShape._id);
@@ -216,15 +208,10 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 				const drtHashedShape: DrtHashedShape = {
 					_id: `${hashed_shape_idx}-${point.shape_pt_sequence}`,
 					hashed_shape_id: hashed_shape_idx,
-					shape_dist_traveled: point.shape_dist_traveled,
+					shape_dist_traveled: round(point.shape_dist_traveled),
 					shape_pt_lat: point.shape_pt_lat,
 					shape_pt_lon: point.shape_pt_lon,
 					shape_pt_sequence: point.shape_pt_sequence,
-					/* * */
-					meters_from_previous_stop: round(meters_from_previous_stop),
-					meters_from_start: round(meters_from_start),
-					meters_to_end: round(meters_to_end),
-					meters_to_next_stop: round(meters_to_next_stop),
 				};
 
 				GLOBAL_CONTEXT.tables.shapes.write(drtHashedShape);

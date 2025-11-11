@@ -48,13 +48,6 @@ export interface DrtHashedShape {
 
 	/* * */
 
-	meters_from_previous_stop: number
-	meters_from_start: number
-	meters_to_end: number
-	meters_to_next_stop: number
-
-	/* * */
-
 	shape_dist_traveled: number
 	shape_pt_lat: number
 	shape_pt_lon: number
@@ -85,6 +78,8 @@ export interface DrtRide {
 
 	// driver_id: string
 	// vehicle_id: string
+	block_id: string
+	start_shift_id: string
 	da_trip_number: number // Driver Assignment Trip Number
 	va_trip_number: number // Vehicle Assignment Trip Number
 }
