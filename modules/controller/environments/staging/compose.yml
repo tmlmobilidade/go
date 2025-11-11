@@ -11,8 +11,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  watchtower:
-    image: containrrr/watchtower
+  whatsupdocker:
+    image: getwud/wud
     deploy:
       restart_policy:
         condition: any

@@ -16,6 +16,7 @@ import { getAppConfig } from '@tmlmobilidade/consts';
 			transport: {
 				options: {
 					colorize: true,
+					translateTime: 'SYS:standard',
 				},
 				target: 'pino-pretty',
 			},
