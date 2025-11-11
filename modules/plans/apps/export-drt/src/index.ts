@@ -1,26 +1,24 @@
 /* * */
 
-import { mimeTypes } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
-import fs from 'fs';
 import os from 'os';
-import path from 'path';
 
-import { DrtAgency, DrtHashedShape, DrtHashedTrip, DrtRide, DrtStop, DrtTables, GlobalContext } from './drt.types.js';
+import { deleteAllAgencyDatabases, initializeDatabase } from './database.js';
+import { GlobalContext } from './drt.types.js';
 import { processor } from './processor.js';
+import { saveAllAgencyDatabasesToStorage } from './storage.js';
 
 /* * */
 
 const DAYS_TO_ADD = 3;
-const RUN_INTERVAL = 1 * 60 * 60_000; // 10 hours in milliseconds
+const RUN_INTERVAL = 1 * 60 * 60_000; // 1 hour in milliseconds
+const AGENCY_IDS = ['43', '44'];
 
 export const GLOBAL_CONTEXT: GlobalContext = {
 	configs: {
-		agency_ids: ['41', '42', '43', '44'],
+		agency_id: undefined,
 		database_name: 'drt-model',
 		database_path: os.tmpdir(),
 		end_date: Dates.now('Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).plus({ days: DAYS_TO_ADD }).unix_timestamp,
@@ -31,146 +29,48 @@ export const GLOBAL_CONTEXT: GlobalContext = {
 };
 
 /* * */
-/* INITIALIZE SQL TABLES */
-function intializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
-	//
-	// Setup Tables
-
-	const agencies = database.registerTable<DrtAgency>('agencies', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'agency_name', not_null: true, type: 'TEXT' },
-
-		],
-	});
-
-	const shapes = database.registerTable<DrtHashedShape>('shapes', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'meters_from_previous_stop', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_from_start', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_to_end', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'meters_to_next_stop', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'shape_pt_lat', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'shape_pt_lon', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'shape_pt_sequence', not_null: true, type: 'INTEGER' },
-		],
-	});
-
-	const stops = database.registerTable<DrtStop>('stops', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'tts_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'longitude', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'latitude', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'district_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'locality_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'municipality_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'parish_id', not_null: true, type: 'TEXT' },
-		],
-	});
-
-	const hashed_trips = database.registerTable<DrtHashedTrip>('hashed_trips', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'stop_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'departure_time', not_null: true, type: 'TEXT' },
-		],
-	});
-
-	const rides = database.registerTable<DrtRide>('rides', {
-		batch_size: 10000,
-		columns: [
-			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'trip_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'plan_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'headsign', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'operational_date', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'start_time_scheduled', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'end_time_scheduled', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'extension_scheduled', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'da_trip_number', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'va_trip_number', not_null: true, type: 'INTEGER' },
-		],
-	});
-
-	return {
-		agencies,
-		hashed_trips,
-		rides,
-		shapes,
-		stops,
-	};
-}
-
-/* * */
 /* MAIN FUNCTION */
 async function main() {
 	try {
-		//
-
 		Logger.init();
 		const globalTimer = new Timer();
 
-		//
-		// Delete the database if it exists
-		if (fs.existsSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`))) {
-			fs.unlinkSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
-		}
-
-		//
-		// Initialize the SQLite database
-		const sqliteConfig: SQLiteDatabaseConfig = {
-			instanceName: GLOBAL_CONTEXT.configs.database_name,
-			instancePath: path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`),
+		const baseConfig = {
+			database_name: GLOBAL_CONTEXT.configs.database_name,
+			database_path: GLOBAL_CONTEXT.configs.database_path,
 		};
 
-		GLOBAL_CONTEXT.database = new SQLiteDatabase(sqliteConfig);
-		GLOBAL_CONTEXT.tables = intializeDrtSQLTables(GLOBAL_CONTEXT.database);
+		// Delete all existing agency databases
+		deleteAllAgencyDatabases(baseConfig, AGENCY_IDS);
 
-		//
-		// Process the rides
 		Logger.title(`Processing the DRT data`);
-		await processor();
+
+		// Process agency-specific data for each agency
+		// Common data (agencies and stops) will be processed for each database
+		for (const agencyId of AGENCY_IDS) {
+			Logger.divider();
+			Logger.title(`Processing agency ${agencyId}`);
+
+			const agencyConfig = { ...baseConfig, agency_id: agencyId };
+			const { database, tables } = initializeDatabase(agencyConfig);
+
+			GLOBAL_CONTEXT.tables = tables;
+			GLOBAL_CONTEXT.configs.agency_id = agencyId;
+			GLOBAL_CONTEXT.database = database;
+
+			await processor();
+
+			database.databaseInstance.close();
+		}
 
 		Logger.success(`Finished processing the DRT data in ${globalTimer.get()}.`);
 
-		Logger.info(`Saving the SQLite database to the storage service...`);
+		// Save all databases to storage
+		// Comment out the line below to skip uploading to storage during development
+		await saveAllAgencyDatabasesToStorage(baseConfig, AGENCY_IDS);
 
-		Logger.info('file saved in: ' + path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
-
-		// const fileStream = fs.createReadStream(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
-		// const fileStats = fs.statSync(path.join(GLOBAL_CONTEXT.configs.database_path, `${GLOBAL_CONTEXT.configs.database_name}.db`));
-		// const fileResult = await files.upload(fileStream, {
-		// 	_id: 'drt-model',
-		// 	created_by: 'system	',
-		// 	name: 'drt-model.db',
-		// 	resource_id: 'Demand-Response-Transportation',
-		// 	scope: 'plans',
-		// 	size: fileStats.size,
-		// 	type: mimeTypes.sqlite,
-		// 	updated_by: 'system',
-		// }, { override: true });
-
-		// Logger.terminate(`SQLite database saved to the storage service.` + `(${fileResult._id})`);
 		Logger.divider();
-		//
+
 		// Exit the application
 		process.exit(0);
 	}

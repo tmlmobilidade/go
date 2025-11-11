@@ -8,7 +8,7 @@ import { OperationalDate, UnixTimestamp } from '@tmlmobilidade/types';
 
 export interface GlobalContext {
 	configs: {
-		agency_ids: string[]
+		agency_id: string | undefined
 		database_name: string
 		database_path: string
 		end_date: UnixTimestamp

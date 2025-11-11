@@ -43,11 +43,8 @@ export async function processor() {
 	try {
 		//
 
-		await Promise.all([
-			processAgencies(),
-			processStops(),
-			processRides(),
-		]);
+		await processAgencies();
+		await processRides();
 	}
 	catch (error) {
 		Logger.error('Error processing.', error);
@@ -66,6 +63,7 @@ async function processRides() {
 
 	const ridesCollection = await rides.getCollection();
 	const ridesStream = ridesCollection.find({
+		agency_id: GLOBAL_CONTEXT.configs.agency_id,
 		end_time_scheduled: { $lte: GLOBAL_CONTEXT.configs.end_date },
 		start_time_scheduled: { $gte: GLOBAL_CONTEXT.configs.start_date },
 	}).stream();
@@ -122,16 +120,18 @@ async function processRides() {
 	Logger.info(`Processed ${totalRides} Rides in ${timer.get()}.`);
 
 	await Promise.all([
-		processHashedTrips(hashedTripsIds),
+		processHashedTrips(hashedTripsIds).then(stopIds => processStops(stopIds)),
 		processHashedShapes(hashedShapesIds),
 	]);
 }
 
-async function processHashedTrips(hashedTripsIds: IndexedValues<string>) {
+async function processHashedTrips(hashedTripsIds: IndexedValues<string>): Promise<Set<string>> {
 	try {
 		//
 		Logger.info('Processing Hashed Trips...');
 		const hashedTripsTimer = new Timer();
+
+		const stopIds = new Set<string>();
 
 		const hashedTripsCollection = await hashedTrips.getCollection();
 		const hashedTripsStream = hashedTripsCollection.find({ _id: { $in: Array.from(hashedTripsIds.values()) } }).stream();
@@ -157,12 +157,16 @@ async function processHashedTrips(hashedTripsIds: IndexedValues<string>) {
 				};
 
 				GLOBAL_CONTEXT.tables.hashed_trips.write(drtHashedTrip);
+
+				stopIds.add(stop.stop_id);
 			}
 		}
 
 		GLOBAL_CONTEXT.tables.hashed_trips.flush();
 
 		Logger.info(`Processed ${totalHashedTrips} Hashed Trips in ${hashedTripsTimer.get()}.`);
+
+		return stopIds;
 	}
 	catch (error) {
 		Logger.error('Error processing Hashed Trips.', error); ;
@@ -202,7 +206,7 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 				//
 				// Write the Hashed Shape to the database
 				const hashed_shape_idx = hashedShapesIds.getIndex(hashedShape._id);
-				if (!hashed_shape_idx) throw new Error(`Hashed shape "${hashedShape._id}" not found in the index.`);
+				if (hashed_shape_idx === undefined) throw new Error(`Hashed shape "${hashedShape._id}" not found in the index.`);
 
 				//
 				const drtHashedShape: DrtHashedShape = {
@@ -240,26 +244,18 @@ async function processAgencies() {
 		Logger.info('Processing Agencies...');
 		const agenciesTimer = new Timer();
 
-		const allAgencies = await agencies.findMany({}, { sort: { _id: 1 } });
+		const allAgencies = await agencies.findOne({ _id: GLOBAL_CONTEXT.configs.agency_id });
+		if (allAgencies === null) throw new Error(`Agency "${GLOBAL_CONTEXT.configs.agency_id}" not found.`);
 
-		let totalAgencies = 0;
+		const drtAgency: DrtAgency = {
+			_id: allAgencies._id,
+			agency_name: allAgencies.name,
+		};
 
-		for (const agency of allAgencies) {
-			//
-			totalAgencies++;
-
-			//
-			const drtAgency: DrtAgency = {
-				_id: agency._id,
-				agency_name: agency.name,
-			};
-
-			GLOBAL_CONTEXT.tables.agencies.write(drtAgency);
-		}
-
+		GLOBAL_CONTEXT.tables.agencies.write(drtAgency);
 		GLOBAL_CONTEXT.tables.agencies.flush();
 
-		Logger.info(`Processed ${totalAgencies} Agencies in ${agenciesTimer.get()}.`);
+		Logger.info(`Processed 1 Agency in ${agenciesTimer.get()}.`);
 	}
 	catch (error) {
 		Logger.error('Error processing Agencies.', error);
@@ -267,7 +263,7 @@ async function processAgencies() {
 	}
 }
 
-async function processStops() {
+async function processStops(stopIds: Set<string>) {
 	try {
 		//
 
@@ -284,6 +280,8 @@ async function processStops() {
 		const data = await response.json() as Stop[];
 		let totalStops = 0;
 		for (const stop of data) {
+			if (!stopIds.has(stop.id)) continue;
+
 			//
 			totalStops++;
 
