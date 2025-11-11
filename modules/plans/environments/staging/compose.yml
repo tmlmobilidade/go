@@ -121,5 +121,7 @@ services:
       resources:
         limits:
           memory: 2gb
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
