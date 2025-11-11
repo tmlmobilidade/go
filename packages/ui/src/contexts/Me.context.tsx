@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { FileExport, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
 import { fetchData, type HasPermissionResourceArgs, hasPermissionResource as hasPermissionResourceUtils, hasPermission as hasPermissionUtils } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -50,8 +50,8 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(`${getAppConfig('auth', 'api_url')}/users/me`);
-	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: mutateFileExports } = useSWR<FileExport[], HttpException>(`${getAppConfig('auth', 'api_url')}/file-exports`, { refreshInterval: 5_000 });
+	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(API_ROUTES.auth.USERS_ME, { refreshInterval: 15_000 });
+	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: mutateFileExports } = useSWR<FileExport[], HttpException>(API_ROUTES.auth.FILE_EXPORTS_LIST, { refreshInterval: 5_000 });
 
 	//
 	// C. Handle actions
@@ -60,7 +60,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if data is still loading
 		if (meLoading) return;
 		// If a user is not available redirect to login page
-		if (!meData) window.location.href = `${getAppConfig('auth', 'frontend_url')}/login`;
+		if (!meData) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	}, [meLoading, meData]);
 
 	function hasPermission(scope: string, action: string) {
@@ -75,11 +75,11 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	async function logout() {
 		// Call the logout endpoint
-		await fetch(`${getAppConfig('auth', 'api_url')}/logout`, { credentials: 'include' });
+		await fetch(API_ROUTES.auth.AUTH_LOGOUT, { credentials: 'include' });
 		// Mutate the SWR cache to remove user data
 		meMutate(undefined, { revalidate: true });
 		// Redirect to login page
-		window.location.href = `${getAppConfig('auth', 'frontend_url')}/login`;
+		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	}
 
 	function getPreference<T extends UserPreferenceValue>(scope: string, key: string): T | undefined {
@@ -95,7 +95,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchData(`${getAppConfig('auth', 'frontend_url')}/api/users/me`, 'PUT', { preferences: updatedPreferences });
+		await fetchData(API_ROUTES.auth.USERS_ME, 'PUT', { preferences: updatedPreferences });
 		// Mutate the SWR cache to update user data
 		meMutate();
 	}
