@@ -99,8 +99,8 @@ export const PAGE_ROUTES = Object.freeze({
 	/* STOPS */
 	stops: {
 		// STOPS
-		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'frontend_url')}/stops/${id}`,
-		STOPS_LIST: `${getAppConfig('stops', 'frontend_url')}/stops`,
+		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'frontend_url')}/${id}`,
+		STOPS_LIST: `${getAppConfig('stops', 'frontend_url')}`,
 	},
 } as const);
 
