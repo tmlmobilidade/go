@@ -11,11 +11,11 @@
 	"files": [
 		"dist"
 	],
-	"main": "dist/index.js",
+	"main": "index.js",
 	"bin": {
 		"generate-offer-files": "dist/index.js"
 	},
-	"types": "dist/index.d.ts",
+	"types": "index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",

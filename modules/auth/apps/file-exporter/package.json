@@ -10,8 +10,8 @@
 	"files": [
 		"dist"
 	],
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "index.js",
+	"types": "index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "dotenv-run -f ./environments/development/secrets/.env -- tsx watch src/index.ts",

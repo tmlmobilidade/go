@@ -8,7 +8,7 @@ import { syncRealtimeMetrics } from '@/realtime/index.js';
 (async function init() {
 	//
 
-	// await syncDemandMetrics();
+	await syncDemandMetrics();
 
 	await syncRealtimeMetrics();
 
