@@ -370,8 +370,8 @@ export class PlansController {
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getDrtModel(request: FastifyRequest, reply: FastifyReply<void>) {
-		const file = await files.findById('drt-model');
+	static async getDrtModel(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		const file = await files.findById(`drt-model-${request.params.id}`);
 		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'DRT model file not found');
 
 		// Redirect to the file download url

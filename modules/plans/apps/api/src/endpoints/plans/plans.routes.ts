@@ -82,8 +82,8 @@ server.register(
 		// GET /plans/approved
 		instance.get('/approved', PlansController.getApprovedPlans);
 
-		// GET /plans/drt-model.db
-		instance.get('/drt-model.db', PlansController.getDrtModel);
+		// GET /plans/drt-model/:id
+		instance.get('/drt-model/:id', PlansController.getDrtModel);
 
 		next();
 	},
