@@ -1,11 +1,13 @@
 {
 	"extends": "@tmlmobilidade/tsconfig/nodejs.json",
 	"compilerOptions": {
-		"outDir": "./dist",
+		"baseUrl": ".",
+		"outDir": "dist",
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"rootDir": "."
+		"rootDir": "src"
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src"],
+	"exclude": ["node_modules", "dist"]
 }
