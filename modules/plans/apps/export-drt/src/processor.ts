@@ -39,6 +39,10 @@ class IndexedValues<T> {
 	}
 }
 
+function round(value: number) {
+	return Math.round((value + Number.EPSILON) * 10) / 10;
+}
+
 export async function processor() {
 	try {
 		//
@@ -151,7 +155,7 @@ async function processHashedTrips(hashedTripsIds: IndexedValues<string>): Promis
 					arrival_time: stop.arrival_time,
 					departure_time: stop.departure_time,
 					hashed_trip_id: hashed_trip_idx,
-					shape_dist_traveled: stop.shape_dist_traveled,
+					shape_dist_traveled: round(stop.shape_dist_traveled),
 					stop_id: stop.stop_id,
 					stop_sequence: stop.stop_sequence,
 				};
@@ -217,10 +221,10 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 					shape_pt_lon: point.shape_pt_lon,
 					shape_pt_sequence: point.shape_pt_sequence,
 					/* * */
-					meters_from_previous_stop: meters_from_previous_stop,
-					meters_from_start: meters_from_start,
-					meters_to_end: meters_to_end,
-					meters_to_next_stop: meters_to_next_stop,
+					meters_from_previous_stop: round(meters_from_previous_stop),
+					meters_from_start: round(meters_from_start),
+					meters_to_end: round(meters_to_end),
+					meters_to_next_stop: round(meters_to_next_stop),
 				};
 
 				GLOBAL_CONTEXT.tables.shapes.write(drtHashedShape);
