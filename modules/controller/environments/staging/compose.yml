@@ -11,7 +11,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  whatsupdocker:
+  wud:
     image: getwud/wud
     deploy:
       restart_policy:
@@ -27,11 +27,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - WATCHTOWER_POLL_INTERVAL=10
-      - WATCHTOWER_CLEANUP=TRUE
-      - WATCHTOWER_INCLUDE_STOPPED=TRUE
-      - WATCHTOWER_REVIVE_STOPPED=TRUE
-      - WATCHTOWER_ROLLING_RESTART=FALSE
+      - WUD_TRIGGER_DOCKER_DEFAULT_PRUNE=true
+      - WUD_WATCHER_LOCAL_WATCHALL=true
+      - WUD_WATCHER_LOCAL_CRON=* * * * *
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
