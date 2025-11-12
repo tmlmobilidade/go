@@ -1,7 +1,7 @@
 /* * */
 
-import { RideAnalysisContextProvider } from '@/contexts/RideAnalysis.context';
 import { RideAcceptanceContextProvider } from '@/contexts/RideAcceptance.context';
+import { RideAnalysisContextProvider } from '@/contexts/RideAnalysis.context';
 
 /* * */
 

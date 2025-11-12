@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
-import { stops } from '@tmlmobilidade/interfaces';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { stops } from '@tmlmobilidade/interfaces';
 import { Stop, UpdateStopDto } from '@tmlmobilidade/types';
 
 /**

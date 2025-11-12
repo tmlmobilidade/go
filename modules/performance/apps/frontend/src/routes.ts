@@ -12,7 +12,7 @@ const metricEndpoint = (
 	metric: Metric['metric'],
 	queryParams?: Record<string, boolean | number | string | undefined>,
 ): string => {
-	const base = `${API_ROUTES.performance.METRICS}/${metric}`;
+	const base = `${API_ROUTES.performance.METRICS_}/${metric}`;
 
 	if (!queryParams || Object.keys(queryParams).length === 0) return base;
 
