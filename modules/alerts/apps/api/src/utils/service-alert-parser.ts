@@ -1,4 +1,5 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { files } from '@tmlmobilidade/interfaces';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
 import { Alert, File } from '@tmlmobilidade/types';
@@ -57,6 +58,17 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 					}
 				});
 				break;
+			case 'TRIP':
+				alert.references.forEach((reference) => {
+					informed_entity.push({
+						trip: {
+							trip_id: reference.parent_id.split('-').pop() ?? '',
+						},
+					});
+				});
+				break;
+			default:
+				throw new HttpException(HttpStatus.BAD_REQUEST, `Invalid reference type: ${alert.reference_type}`);
 		}
 
 		return informed_entity;
