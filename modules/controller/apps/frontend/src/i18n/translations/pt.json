@@ -1,6 +1,6 @@
 {
 	"detail": {
-		"RidesDetailAnalysisResult": {
+		"RideAnalysisAnalysisResult": {
 			"AT_MOST_TWO_DRIVER_IDS": {
 				"description": "Uma circulação pode ter no máximo dois IDs de motorista diferentes.",
 				"title": "No máximo dois motoristas"

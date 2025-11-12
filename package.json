@@ -22,6 +22,7 @@
 		"dev:alerts": "dotenv-run -f ./modules/alerts/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:auth": "dotenv-run -f ./modules/auth/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:controller": "dotenv-run -f ./modules/controller/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",
+		"dev:controller:prod": "dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",
 		"dev:locations": "dotenv-run -f ./modules/locations/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:performance": "dotenv-run -f ./modules/performance/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-*",
 		"dev:plans": "dotenv-run -f ./modules/plans/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
