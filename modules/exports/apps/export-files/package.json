@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-plans-export-drt",
+	"name": "@tmlmobilidade/go-exports-export-files",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -12,26 +12,17 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch src/index.ts",
-		"dev:prod": "dotenv-run -f ./environments/production/secrets/.env -- tsx watch src/index.ts",
+		"dev": "dotenv-run -f ./environments/development/secrets/.env -- tsx watch src/index.ts",
 		"lint": "eslint .",
-		"lint:fix": "eslint . --fix"
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@carrismetropolitana/api-types": "20251104.1218.36",
 		"@helperkits/writer": "20251103.1250.18",
-		"@tmlmobilidade/connectors": "*",
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/lib": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"csv-parse": "6.1.0",
-		"extract-zip": "2.0.1",
-		"gtfs-types": "5.1.0",
-		"node-cron": "4.2.1"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

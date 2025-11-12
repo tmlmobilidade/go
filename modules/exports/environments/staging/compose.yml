@@ -71,8 +71,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  exporter:
-    image: ghcr.io/tmlmobilidade/go-exports-exporter:staging
+  cleaner:
+    image: ghcr.io/tmlmobilidade/go-exports-cleaner:staging
     deploy:
       restart_policy:
         condition: any
@@ -88,8 +88,59 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cleaner:
-    image: ghcr.io/tmlmobilidade/go-exports-cleaner:staging
+  export-drt:
+    image: ghcr.io/tmlmobilidade/go-exports-export-drt:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    volumes:
+      - ./secrets:/secrets
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  export-files:
+    image: ghcr.io/tmlmobilidade/go-exports-export-files:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    volumes:
+      - ./secrets:/secrets
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  export-gtfs-merged:
+    image: ghcr.io/tmlmobilidade/go-exports-export-gtfs-merged:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    volumes:
+      - ./secrets:/secrets
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  export-posters:
+    image: ghcr.io/tmlmobilidade/go-exports-export-posters:staging
     deploy:
       restart_policy:
         condition: any

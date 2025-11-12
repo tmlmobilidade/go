@@ -105,20 +105,3 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  export-drt:
-    image: ghcr.io/tmlmobilidade/go-plans-export-drt:staging
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    volumes:
-      - ./secrets:/secrets
-    env_file:
-      - ./secrets/.env
