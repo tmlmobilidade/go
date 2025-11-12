@@ -1,14 +1,14 @@
 /* * */
 
-import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
+import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 
 /* * */

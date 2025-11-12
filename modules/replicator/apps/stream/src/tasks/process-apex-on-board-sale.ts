@@ -1,12 +1,12 @@
 /* * */
 
-import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
-import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
+import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 
 /* * */
 

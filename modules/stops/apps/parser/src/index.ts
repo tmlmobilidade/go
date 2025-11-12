@@ -11,7 +11,7 @@ import { type Stop } from '@tmlmobilidade/types';
 	try {
 		//
 
-		return;
+		// return;
 
 		//
 		// Delete existing stops
@@ -19,9 +19,12 @@ import { type Stop } from '@tmlmobilidade/types';
 		console.log('Deleting All');
 		await stops.deleteMany({});
 
+		//
+		// Sort original stops by code
+
 		const allOriginalStops = goStops as unknown as OriginalStopType[];
 
-		for (const originalStop of allOriginalStops) {
+		const preparedStops = allOriginalStops.map((originalStop) => {
 			//
 
 			//
@@ -74,14 +77,16 @@ import { type Stop } from '@tmlmobilidade/types';
 				tts_name: originalStop.tts_name,
 			};
 
-			//
-			// Insert stop into DB
+			return newStop;
+		});
 
-			await stops.insertOne(newStop);
-			console.log('Inserted:', newStop._id);
+		console.log(`Prepared ${preparedStops.length} stops`);
 
-			//
-		}
+		//
+		// Insert stop into DB
+
+		await stops.insertMany(preparedStops);
+		console.log(`Inserted ${preparedStops.length} stops`);
 
 		//
 	}

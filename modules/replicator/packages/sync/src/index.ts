@@ -2,9 +2,9 @@
 
 /* * */
 
+import { type MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 
 /* * */
 
