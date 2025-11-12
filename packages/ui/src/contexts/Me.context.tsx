@@ -51,7 +51,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Fetch data
 
 	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(API_ROUTES.auth.USERS_ME, { refreshInterval: 15_000 });
-	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: mutateFileExports } = useSWR<FileExport[], HttpException>(API_ROUTES.auth.FILE_EXPORTS_LIST, { refreshInterval: 5_000 });
+	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: mutateFileExports } = useSWR<FileExport[], HttpException>(API_ROUTES.exports.EXPORTER_LIST, { refreshInterval: 5_000 });
 
 	//
 	// C. Handle actions
