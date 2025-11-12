@@ -1,6 +1,6 @@
 /* * */
 
-import { MongoCollectionClass } from '@/mongo-collection.js';
+import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { CreateVerificationTokenDto, UpdateVerificationTokenDto, VerificationToken, VerificationTokenSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';

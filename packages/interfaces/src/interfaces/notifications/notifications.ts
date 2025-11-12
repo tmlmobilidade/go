@@ -1,15 +1,14 @@
 /* * */
 
-import { MongoCollectionClass } from '@/mongo-collection.js';
+import { MongoCollectionClass } from '@/common/mongo-collection.js';
+import { roles } from '@/interfaces/auth/roles.js';
+import { users } from '@/interfaces/auth/users.js';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { sendNotificationEmail } from '@tmlmobilidade/emails';
 import { CreateNotificationDto, Notification, NotificationPermission, NotificationSchema, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
-
-import { roles } from '../auth/roles.js';
-import { users } from '../auth/users.js';
 
 /* * */
 

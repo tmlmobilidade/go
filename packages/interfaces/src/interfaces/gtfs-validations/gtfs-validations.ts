@@ -1,6 +1,6 @@
 /* * */
 
-import { MongoCollectionClass } from '@/mongo-collection.js';
+import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { CreateGtfsValidationDto, GtfsValidation, GtfsValidationSchema, UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';

@@ -1,6 +1,6 @@
 /* * */
 
-import { MongoCollectionClass } from '@/mongo-collection.js';
+import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type Agency, AgencySchema, type CreateAgencyDto, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';

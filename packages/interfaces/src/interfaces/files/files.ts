@@ -1,12 +1,12 @@
 /* * */
 
-import { MongoCollectionClass } from '@/mongo-collection.js';
+import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { IStorageProvider, StorageFactory } from '@/providers/index.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
 import { Files } from '@tmlmobilidade/files';
 import { generateRandomString } from '@tmlmobilidade/strings';
+import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
+import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
 import { DeleteOptions, DeleteResult, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
 import { Readable } from 'node:stream';
 import { z } from 'zod';

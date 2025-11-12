@@ -1,4 +1,4 @@
-import { AggregationPipeline } from '@/aggregation-pipeline.js';
+import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
