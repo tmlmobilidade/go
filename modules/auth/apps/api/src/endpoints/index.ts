@@ -6,4 +6,3 @@ import '@/endpoints/wiki/wiki.routes';
 import '@/endpoints/organizations/organizations.routes';
 import '@/endpoints/notifications/notifications.routes';
 import '@/endpoints/proposed-changes/proposed-changes.routes';
-import '@/endpoints/file-exports/file-exports.routes';

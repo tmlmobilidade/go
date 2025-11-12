@@ -7,7 +7,7 @@ import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types'
 
 /* * */
 
-export class FileExporterController {
+export class ExporterController {
 	//
 
 	/**

@@ -9,8 +9,8 @@ interface AppConfigGroup {
 	api_url: string
 	cookie_domain: string
 	cors_origin: RegExp | string | true
-	frontend_port: number
-	frontend_url: string
+	frontend_port: null | number
+	frontend_url: null | string
 }
 
 /* * */
@@ -83,6 +83,27 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		staging: {
 			api_url: 'https://staging.go.tmlmobilidade.pt/controller/api',
 			frontend_url: 'https://staging.go.tmlmobilidade.pt/controller',
+			...DEFAULT_NON_DEV_CONFIG,
+		},
+	},
+
+	exports: {
+		development: {
+			api_port: 52007,
+			api_url: 'http://localhost:52007',
+			cookie_domain: 'localhost',
+			cors_origin: true,
+			frontend_port: null,
+			frontend_url: null,
+		},
+		production: {
+			api_url: 'https://go.tmlmobilidade.pt/exports/api',
+			frontend_url: null,
+			...DEFAULT_NON_DEV_CONFIG,
+		},
+		staging: {
+			api_url: 'https://staging.go.tmlmobilidade.pt/exports/api',
+			frontend_url: null,
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 	},
@@ -170,7 +191,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 	},
-
 } as const;
 
 /* * */
