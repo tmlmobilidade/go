@@ -52,7 +52,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'alerts',
-		href: PAGE_ROUTES.alerts.SCHEDULED_LIST,
+		href: PAGE_ROUTES.alerts.BASE,
 		icon: <IconAlertTriangle size={26} />,
 		label: 'Alertas',
 		permissions: [{ action: Permissions.alerts.actions.read, scope: Permissions.alerts.scope }],
@@ -66,7 +66,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'rides',
-		href: PAGE_ROUTES.controller.RIDES_LIST,
+		href: PAGE_ROUTES.controller.BASE,
 		icon: <IconListCheck size={26} />,
 		label: 'Circulações',
 		permissions: [{ action: Permissions.rides.actions.analysis_read, scope: Permissions.rides.scope }],
@@ -80,14 +80,14 @@ export const sidebarApps = [
 	// },
 	{
 		_id: 'stops',
-		href: PAGE_ROUTES.stops.STOPS_LIST,
+		href: PAGE_ROUTES.stops.BASE,
 		icon: <IconBusStop size={26} />,
 		label: 'Paragens',
 		permissions: [{ action: Permissions.stops.actions.read, scope: Permissions.stops.scope }],
 	},
 	{
 		_id: 'plans',
-		href: PAGE_ROUTES.plans.APPROVED_LIST,
+		href: PAGE_ROUTES.plans.BASE,
 		icon: <IconFileCertificate size={26} />,
 		label: 'Planos',
 		permissions: [{ action: Permissions.plans.actions.read, scope: Permissions.plans.scope }],
@@ -101,7 +101,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'performance',
-		href: PAGE_ROUTES.performance.PERFORMANCE_LIST,
+		href: PAGE_ROUTES.performance.BASE,
 		icon: <IconRocket size={26} />,
 		label: 'Performance',
 		permissions: [{ action: Permissions.performance.actions.read, scope: Permissions.performance.scope }],
