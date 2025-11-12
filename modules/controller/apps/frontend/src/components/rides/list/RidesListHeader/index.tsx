@@ -2,7 +2,7 @@
 
 /* * */
 
-import { openRideExportModal } from '@/components/rides/list/RidesExportModal';
+import { openRideExportModal } from '@/components/rides/export/RidesExportModal';
 import { RidesListUpdatedAt } from '@/components/rides/list/RidesListUpdatedAt';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { IconFileDownload } from '@tabler/icons-react';
