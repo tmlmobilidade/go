@@ -1,4 +1,4 @@
-import { Permission } from '@tmlmobilidade/types';
+import { Permission, Role } from '@tmlmobilidade/types';
 
 /**
  * Calculate permissions that a user has from their assigned roles
@@ -8,7 +8,7 @@ import { Permission } from '@tmlmobilidade/types';
  */
 export function calculateRolePermissions(
 	roleIds: string[],
-	roles: { _id: string, permissions: Permission<unknown>[] }[],
+	roles: Role[],
 ): Permission<unknown>[] {
 	const rolePermissions: Permission<unknown>[] = [];
 
@@ -24,7 +24,11 @@ export function calculateRolePermissions(
 			);
 
 			if (!existingPermission) {
-				rolePermissions.push(permission);
+				rolePermissions.push({
+					action: permission.action,
+					resource: permission.resource as Record<string, unknown>,
+					scope: permission.scope as string,
+				});
 			}
 		});
 	});
@@ -44,7 +48,7 @@ export function hasRolePermission(
 	scope: string,
 	action: string,
 	roleIds: string[],
-	roles: { _id: string, permissions: Permission<unknown>[] }[],
+	roles: Role[],
 ): boolean {
 	const rolePermissions = calculateRolePermissions(roleIds, roles);
 	return rolePermissions.some(
