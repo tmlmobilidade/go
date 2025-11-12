@@ -2,6 +2,7 @@
 
 /* * */
 
+import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/RideAnalysisResultItem';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
@@ -10,8 +11,6 @@ import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } 
 import React, { createElement, useMemo } from 'react';
 
 import styles from './styles.module.css';
-
-import { RideAnalysisAnalysisResultItem } from '../../analysis/RideAnalysisResultItem';
 
 /* * */
 

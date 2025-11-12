@@ -7,8 +7,8 @@ import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { ErrorDisplay, Grid, LoadingOverlay, Section, Separator } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { RideAcceptanceCommentList } from './RideAcceptanceCommentList';
-import { RideAcceptanceJustification } from './RideAcceptanceJustification';
+import { RideAcceptanceCommentList } from '../RideAcceptanceCommentList';
+import { RideAcceptanceJustification } from '../RideAcceptanceJustification';
 
 /* * */
 

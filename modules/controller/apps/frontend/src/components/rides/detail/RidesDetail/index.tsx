@@ -2,8 +2,8 @@
 
 /* * */
 
-import { RideAcceptance } from '@/components/rides/acceptance';
-import { RideAnalysisAnalysis } from '@/components/rides/analysis';
+import { RideAcceptance } from '@/components/rides/acceptance/RideAcceptance';
+import { RideAnalysisAnalysis } from '@/components/rides/analysis/RideAnalysis';
 import { RideAnalysisViewNavigation } from '@/components/rides/analysis/RideAnalysisViewNavigation';
 import { RideAnalysisAudit } from '@/components/rides/audit';
 import { RidesDetailHeader } from '@/components/rides/detail/RidesDetailHeader';
