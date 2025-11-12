@@ -7,7 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const SessionSchema = DocumentSchema.extend({
-	expires_at: unixTimeStampSchema.nullish(),
+	expires_at: unixTimeStampSchema,
 	token: z.string(),
 	user_id: z.string(),
 }).strict();

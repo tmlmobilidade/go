@@ -148,6 +148,7 @@ class AuthProvider {
 			_id: generateRandomString(),
 			created_at: Dates.now('utc').unix_timestamp,
 			created_by: 'system',
+			expires_at: Dates.now('utc').plus({ days: 30 }).unix_timestamp,
 			token: generateRandomToken(),
 			updated_at: Dates.now('utc').unix_timestamp,
 			updated_by: 'system',
