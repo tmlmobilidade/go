@@ -114,8 +114,8 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  build-packages:
-    name: Build Packages Cache
+  generate-package-lock:
+    name: Generate package-lock.json
     needs: discover-modules
     if: needs.discover-modules.outputs.modules != '[]'
     runs-on: ubuntu-latest
@@ -144,7 +144,7 @@ jobs:
 
   build-module:
     name: Build ${{ matrix.module }}
-    needs: [discover-modules, build-packages]
+    needs: [discover-modules, generate-package-lock]
     if: needs.discover-modules.outputs.modules != '[]'
     uses: ./.github/workflows/_build-module-apps.yml
     strategy:
