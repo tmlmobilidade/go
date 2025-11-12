@@ -36,7 +36,11 @@ env:
     auth:frontend
     auth:nginx
     auth:cleaner
-    auth:file-exporter
+
+    exports:api
+    exports:exporter
+    exports:nginx
+    exports:cleaner
 
     alerts:api
     alerts:frontend
