@@ -1,6 +1,6 @@
 /* * */
 
-import { AggregationPipeline } from '@/aggregation-pipeline.js';
+import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { MongoConnector } from '@tmlmobilidade/connectors-mongo';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
