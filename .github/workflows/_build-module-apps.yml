@@ -65,7 +65,7 @@ jobs:
         if: matrix.app == 'nginx'
         run: |
           MODULE="${{ inputs.module }}"
-          TEMPLATE=".github/templates/nginx.conf.template"
+          TEMPLATE=".github/templates/nginx/nginx.conf.template"
           OUTPUT="modules/${MODULE}/apps/nginx/configs/nginx.conf"
 
           # Create directory if it doesn't exist
@@ -84,11 +84,11 @@ jobs:
 
           # Determine Dockerfile template based on app type and module
           if [ "$APP" = "nginx" ]; then
-            DOCKERFILE=".github/docker/nginx.dockerfile"
+            DOCKERFILE=".github/templates/docker/nginx.dockerfile"
           elif [ "$APP" = "frontend" ]; then
-            DOCKERFILE=".github/docker/frontend.dockerfile"
+            DOCKERFILE=".github/templates/docker/frontend.dockerfile"
           else
-            DOCKERFILE=".github/docker/nodejs.dockerfile"
+            DOCKERFILE=".github/templates/docker/nodejs.dockerfile"
           fi
 
           echo "dockerfile=$DOCKERFILE" >> $GITHUB_OUTPUT
