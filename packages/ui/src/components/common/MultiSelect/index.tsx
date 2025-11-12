@@ -19,11 +19,13 @@ interface MultiSelectProps {
 	disabled?: boolean
 	error?: string
 	label?: string
+	limit?: number
 	maxHeight?: number
 	onChange?: (selected: string[]) => void
 	onPaste?: (pastedValues: string[]) => void
 	searchable?: boolean
 	selected: string[]
+	width?: number | string
 }
 
 export default function MultiSelect({
@@ -33,11 +35,13 @@ export default function MultiSelect({
 	disabled,
 	error,
 	label,
+	limit,
 	maxHeight,
 	onChange,
 	onPaste,
 	searchable = true,
 	selected,
+	width,
 }: MultiSelectProps) {
 	const combobox = useCombobox({
 		onDropdownClose: () => combobox.resetSelectedOption(),
@@ -93,7 +97,12 @@ export default function MultiSelect({
 		)
 		: data;
 
-	const options = filteredData.map((item) => {
+	// Apply limit if specified
+	const limitedData = limit && filteredData.length > limit ? filteredData.slice(0, limit) : filteredData;
+	const hasMoreItems = limit && filteredData.length > limit;
+	const hiddenCount = hasMoreItems ? filteredData.length - limit : 0;
+
+	const options = limitedData.map((item) => {
 		const isSelected = value.some(selectedItem => selectedItem.value === item.value);
 		return (
 			<Combobox.Option
@@ -160,82 +169,102 @@ export default function MultiSelect({
 	};
 
 	return (
+		<div style={{ width }}>
+			<Combobox
+				disabled={disabled}
+				onOptionSubmit={handleOptionSubmit}
+				store={combobox}
+				withinPortal={false}
+				classNames={{
+					dropdown: styles.dropdown,
+					option: styles.option,
+				}}
+			>
+				<Combobox.DropdownTarget>
+					<PillsInput
+						data-focus={combobox.dropdownOpened}
+						description={description}
+						error={error}
+						label={label}
+						onClick={() => combobox.openDropdown()}
+						onPaste={handlePaste}
+						style={{ width: '100%' }}
+						classNames={{
+							description: styles.description,
+							error: styles.error,
+							input: styles.input,
+							label: styles.label,
+						}}
+					>
+						<Pill.Group className={styles.pillGroup}>
+							{values}
 
-		<Combobox
-			disabled={disabled}
-			onOptionSubmit={handleOptionSubmit}
-			store={combobox}
-			withinPortal={false}
-			classNames={{
-				dropdown: styles.dropdown,
-				option: styles.option,
-			}}
-		>
-			<Combobox.DropdownTarget>
-				<PillsInput
-					data-focus={combobox.dropdownOpened}
-					description={description}
-					error={error}
-					label={label}
-					onClick={() => combobox.openDropdown()}
-					onPaste={handlePaste}
-					style={{ width: '100%' }}
-					classNames={{
-						description: styles.description,
-						error: styles.error,
-						input: styles.input,
-						label: styles.label,
-					}}
-				>
-					<Pill.Group>
-						{values}
-
-						<Combobox.EventsTarget>
-							<PillsInput.Field
-								disabled={disabled}
-								onBlur={() => combobox.closeDropdown()}
-								onFocus={() => combobox.openDropdown()}
-								placeholder={searchable ? 'Search values' : 'Select values'}
-								readOnly={!searchable}
-								value={searchable ? search : ''}
-								onChange={(event) => {
-									if (searchable) {
-										combobox.updateSelectedOptionIndex();
-										setSearch(event.currentTarget.value);
-									}
-								}}
-								onKeyDown={(event) => {
-									if (event.key === 'Backspace' && search.length === 0 && value.length > 0) {
-										event.preventDefault();
-										const lastItem = value[value.length - 1];
-										if (lastItem) {
-											handleValueRemove(lastItem);
+							<Combobox.EventsTarget>
+								<PillsInput.Field
+									disabled={disabled}
+									onBlur={() => combobox.closeDropdown()}
+									onFocus={() => combobox.openDropdown()}
+									placeholder={searchable ? 'Search values' : 'Select values'}
+									readOnly={!searchable}
+									value={searchable ? search : ''}
+									onChange={(event) => {
+										if (searchable) {
+											combobox.updateSelectedOptionIndex();
+											setSearch(event.currentTarget.value);
 										}
-									}
-								}}
-							/>
-						</Combobox.EventsTarget>
+									}}
+									onKeyDown={(event) => {
+										if (event.key === 'Backspace' && search.length === 0 && value.length > 0) {
+											event.preventDefault();
+											const lastItem = value[value.length - 1];
+											if (lastItem) {
+												handleValueRemove(lastItem);
+											}
+										}
+									}}
+								/>
+							</Combobox.EventsTarget>
 
-						{clearable && (
-							<Combobox.ClearButton
-								className={styles.clearButton}
-								onClear={() => {
-									setValue([]);
-									onChange?.([]);
-								}}
-							/>
-						)}
-					</Pill.Group>
-				</PillsInput>
-			</Combobox.DropdownTarget>
+							{clearable && (
+								<Combobox.ClearButton
+									className={styles.clearButton}
+									onClear={() => {
+										setValue([]);
+										onChange?.([]);
+									}}
+								/>
+							)}
+						</Pill.Group>
+					</PillsInput>
+				</Combobox.DropdownTarget>
 
-			<Combobox.Dropdown className={styles.dropdownWrapper} style={{ maxHeight }}>
-				<Combobox.Options>
-					<ScrollArea.Autosize mah={200} type="scroll">
-						{options.length > 0 ? options : <Combobox.Empty>Nothing found...</Combobox.Empty>}
-					</ScrollArea.Autosize>
-				</Combobox.Options>
-			</Combobox.Dropdown>
-		</Combobox>
+				<Combobox.Dropdown className={styles.dropdownWrapper} style={{ maxHeight }}>
+					<Combobox.Options>
+						<ScrollArea.Autosize mah={200} type="scroll">
+							{options.length > 0 ? (
+								<>
+									{options}
+									{hasMoreItems && (
+										<div
+											style={{
+												borderTop: '1px solid var(--mantine-color-gray-3)',
+												color: 'var(--mantine-color-dimmed)',
+												fontSize: '0.875rem',
+												marginTop: '4px',
+												padding: '8px 12px',
+											}}
+										>
+											{hiddenCount} more items... Type to search
+										</div>
+									)}
+								</>
+							) : (
+								<Combobox.Empty>Nothing found...</Combobox.Empty>
+							)}
+						</ScrollArea.Autosize>
+					</Combobox.Options>
+				</Combobox.Dropdown>
+			</Combobox>
+		</div>
 	);
 }

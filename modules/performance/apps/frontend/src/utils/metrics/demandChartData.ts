@@ -1,5 +1,5 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { DemandByAgencyByDay, type DemandByLineByDay } from '@tmlmobilidade/types';
+import { DemandByAgencyByDay, type DemandByLineByDay, type DemandByPatternByDay } from '@tmlmobilidade/types';
 import { type LineChartProps } from '@tmlmobilidade/ui';
 
 import { formatDayDetailed, formatDayShort } from './formatDates';
@@ -14,7 +14,7 @@ export interface DemandTransformResult {
 export interface TransformDemandOptions {
 	data: DemandByLineByDay[] | undefined
 	end: Dates | null
-	lineId?: string
+	lineIds?: string[]
 	start: Dates | null
 }
 
@@ -22,7 +22,7 @@ export function transformDemandByLineByDay(
 	data: DemandByLineByDay[] | undefined,
 	startDate: Dates | null,
 	endDate: Dates | null,
-	lineId?: string,
+	lineIds?: string[],
 	t?,
 ): DemandTransformResult {
 	if (!data?.length) {
@@ -32,9 +32,70 @@ export function transformDemandByLineByDay(
 	const startDateStr = startDate?.iso.split('T')[0];
 	const endDateStr = endDate?.iso.split('T')[0];
 
-	// Optional line filtering
-	const filteredData = lineId
-		? data.filter(d => d.properties?.line_id === lineId)
+	const filteredData = lineIds?.length
+		? data.filter(d => lineIds.includes(d.properties?.line_id))
+		: data;
+
+	const allMap: Record<string, { formatted_day_detailed: string, formatted_day_short: string, qty: number }> = {};
+	let totalSum = 0;
+
+	for (const item of filteredData) {
+		Object.entries(item.data)
+			.filter(([date]) => date >= startDateStr && date <= endDateStr)
+			.forEach(([date, d]) => {
+				const formattedDetailed = formatDayDetailed({
+					day_group: date,
+					day_type: d.day_type,
+					holiday: d.holiday,
+					notes: d.notes,
+				}, t);
+
+				const formattedShort = formatDayShort({ day_group: date }, t);
+
+				if (!allMap[date]) {
+					allMap[date] = {
+						formatted_day_detailed: formattedDetailed,
+						formatted_day_short: formattedShort,
+						qty: 0,
+					};
+				}
+
+				allMap[date].qty += d.qty;
+				totalSum += d.qty;
+			});
+	}
+
+	const allChart: LineChartProps['data'] = Object.values(allMap)
+		.sort((a, b) => new Date(a.formatted_day_detailed).getTime() - new Date(b.formatted_day_detailed).getTime())
+		.map(entry => ({
+			formatted_day_detailed: entry.formatted_day_detailed,
+			formatted_day_short: entry.formatted_day_short,
+			qty: entry.qty,
+		}));
+
+	const lastUpdated = filteredData
+		.map(r => new Date(r.generated_at))
+		.sort((a, b) => b.getTime() - a.getTime())[0] || null;
+
+	return { all: { chart: allChart, sum: totalSum }, lastUpdated };
+}
+
+export function transformDemandByPatternByDay(
+	data: DemandByPatternByDay[] | undefined,
+	startDate: Dates | null,
+	endDate: Dates | null,
+	patternIds?: string[],
+	t?,
+): DemandTransformResult {
+	if (!data?.length) {
+		return { all: { chart: [], sum: 0 }, lastUpdated: null };
+	}
+
+	const startDateStr = startDate?.iso.split('T')[0];
+	const endDateStr = endDate?.iso.split('T')[0];
+
+	const filteredData = patternIds?.length
+		? data.filter(d => patternIds.includes(d.properties?.pattern_id))
 		: data;
 
 	const allMap: Record<string, { formatted_day_detailed: string, formatted_day_short: string, qty: number }> = {};

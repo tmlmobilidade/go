@@ -206,7 +206,14 @@ export const API_ROUTES = Object.freeze({
 	/* PERFORMANCE */
 	performance: {
 		// METRICS
-		METRICS_: `${getAppConfig('performance', 'api_url')}/METRICNAME:/performance/api/metrics/:metricName`,
+		METRICS: `${getAppConfig('performance', 'api_url')}/metrics`,
+
+		// LINES & PATTERNS
+		LINES_LIST: `${getAppConfig('performance', 'api_url')}/lines`,
+		PATTERNS_LIST: `${getAppConfig('performance', 'api_url')}/patterns`,
+
+		// CALENDAR
+		CALENDAR_LIST: `${getAppConfig('performance', 'api_url')}/dates`,
 	},
 
 	/* * */

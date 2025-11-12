@@ -29,8 +29,24 @@ export class MetricsController {
 			const query: Record<string, unknown> = { metric: metricName };
 
 			// allow filters for specific metrics
-			if (metricName.startsWith('demand_by_line') && filters.line_id) {
-				query['properties.line_id'] = filters.line_id;
+			if (metricName.startsWith('demand_by_line') && filters.line_ids) {
+				const lineIds = typeof filters.line_ids === 'string'
+					? filters.line_ids.split(',').map(id => id.trim())
+					: Array.isArray(filters.line_ids)
+						? filters.line_ids
+						: [filters.line_ids];
+
+				query['properties.line_id'] = { $in: lineIds };
+			}
+
+			if (metricName.startsWith('demand_by_pattern') && filters.pattern_ids) {
+				const patternIds = typeof filters.pattern_ids === 'string'
+					? filters.pattern_ids.split(',').map(id => id.trim())
+					: Array.isArray(filters.pattern_ids)
+						? filters.pattern_ids
+						: [filters.pattern_ids];
+
+				query['properties.pattern_id'] = { $in: patternIds };
 			}
 
 			if (metricName.startsWith('demand_by_pattern') && filters.pattern_id) {

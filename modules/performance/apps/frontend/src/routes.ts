@@ -2,6 +2,8 @@
 
 import { type Metric } from '@tmlmobilidade/types';
 
+import { API_ROUTES } from '../../../../../packages/consts/dist/src/app-routes';
+
 /* * */
 
 // const metricEndpoint = (metric: Metric['metric']): string => `/api/metrics/${metric}`;
@@ -10,7 +12,7 @@ const metricEndpoint = (
 	metric: Metric['metric'],
 	queryParams?: Record<string, boolean | number | string | undefined>,
 ): string => {
-	const base = `/api/metrics/${metric}`;
+	const base = `${API_ROUTES.performance.METRICS}/${metric}`;
 
 	if (!queryParams || Object.keys(queryParams).length === 0) return base;
 

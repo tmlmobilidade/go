@@ -2,14 +2,11 @@
 
 /* * */
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { useTranslations } from 'next-intl';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-
-/* * */
-
-const CALENDAR_URL = '/api/dates/public';
 
 /* * */
 
@@ -76,9 +73,10 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 
 	const fetchCalendarData = async (): Promise<CalendarEntry[]> => {
 		try {
-			const response = await fetch(CALENDAR_URL);
-			if (!response.ok) throw new Error(`HTTP ${response.status}`);
-			return (await response.json()) as CalendarEntry[];
+			const response = await fetch(API_ROUTES.performance.CALENDAR_LIST);
+			if (!response.ok) return [];
+			const body = await response.json();
+			return (body?.data ?? body) as CalendarEntry[];
 		}
 		catch (error) {
 			Logger.error(`Error fetching calendar data`, error);

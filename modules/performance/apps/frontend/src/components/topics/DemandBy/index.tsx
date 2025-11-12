@@ -23,7 +23,7 @@ export default function DemandByTopic() {
 	const [groupBy, setGroupBy] = useState<'agency' | 'line' | 'pattern'>('agency');
 
 	const [lineIds, setLineIds] = useState<string[]>([]);
-	const [patternId, setPatternId] = useState<string>('');
+	const [patternIds, setPatternIds] = useState<string[]>([]);
 	const [agencyId, setAgencyId] = useState<AgencyType>(AGENCIES.ALL);
 
 	const [startDate, setStartDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').minus({ days: 7 }));
@@ -71,8 +71,6 @@ export default function DemandByTopic() {
 		setAgencyId(value);
 	};
 
-	console.log('Line Data:', networkData.lines, lineIds);
-
 	// C. Render components
 
 	return (
@@ -92,16 +90,16 @@ export default function DemandByTopic() {
 
 				<Section flexDirection="row" gap="lg" padding="none">
 
-					{/* {groupBy === 'line' && lineData.length > 0 && (
+					{groupBy === 'line' && lineData.length > 0 && (
 						<MultiSelect
 							data={lineData}
 							label="Linha"
-							// limit={5}
+							limit={20}
 							onChange={setLineIds}
-							value={lineIds}
+							selected={lineIds}
 							width={500}
 						/>
-					)} */}
+					)}
 					{groupBy === 'agency' && (
 						<Combobox
 							data={agenciesData}
@@ -112,14 +110,14 @@ export default function DemandByTopic() {
 							width={150}
 						/>
 					)}
-					{groupBy === 'pattern' && (
-						<Combobox
+					{groupBy === 'pattern' && patternsData.length > 0 && (
+						<MultiSelect
 							data={patternsData}
 							label="Pattern"
-							onChange={setPatternId}
-							placeholder="Selecionar"
-							value={patternId}
-							width={150}
+							limit={20}
+							onChange={setPatternIds}
+							selected={patternIds}
+							width={500}
 						/>
 					)}
 
@@ -131,7 +129,7 @@ export default function DemandByTopic() {
 
 			<Spacer />
 
-			<DemandByDay filters={{ agencyId, dateRange: { endDate, startDate }, lineId: lineIds[0], patternId }} groupBy={groupBy} height={300} />
+			<DemandByDay filters={{ agencyId, dateRange: { endDate, startDate }, lineIds, patternIds }} groupBy={groupBy} height={300} />
 
 		</Section>
 	);

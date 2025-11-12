@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Routes } from '@/routes';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -38,8 +38,8 @@ export const NetworkContextProvider = ({ children }: { children: React.ReactNode
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<string[]>(`${Routes.LINES}`);
-	const { data: allPatternsData, isLoading: allPatternsLoading } = useSWR<string[]>(`${Routes.PATTERNS}`);
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<string[]>(`${API_ROUTES.performance.LINES_LIST}`);
+	const { data: allPatternsData, isLoading: allPatternsLoading } = useSWR<string[]>(`${API_ROUTES.performance.PATTERNS_LIST}`);
 	// const allPatternsData = [];
 	// const allPatternsLoading = false;
 

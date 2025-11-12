@@ -52,6 +52,20 @@
 	}
 }
 
+.pillGroup input {
+	border: none !important;
+	box-shadow: none !important;
+
+	&[data-focus='true'] {
+		border: none !important;
+		box-shadow: none !important;
+	}
+
+	&[data-error='true'] {
+		border: none !important;
+	}
+}
+
 .clearButton {
 	width: 32px;
 	height: 32px;

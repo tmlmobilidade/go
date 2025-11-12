@@ -6,7 +6,7 @@ import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
-import { transformDemandByAgencyByDay, transformDemandByLineByDay } from '@/utils/metrics/demandChartData';
+import { transformDemandByAgencyByDay, transformDemandByLineByDay, transformDemandByPatternByDay } from '@/utils/metrics/demandChartData';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { Dates } from '@tmlmobilidade/dates';
 import { type DemandByAgencyByDay, type DemandByLineByDay, type DemandByPatternByDay } from '@tmlmobilidade/types';
@@ -25,8 +25,8 @@ interface Filters {
 		endDate: Dates
 		startDate: Dates
 	}
-	lineId?: string
-	patternId?: string
+	lineIds?: string[]
+	patternIds?: string[]
 }
 
 // filters can be date range, line, agency, pattern
@@ -69,16 +69,14 @@ export function DemandByDay({ chartType = 'dynamic', filters, groupBy, height, i
 		const params = new URLSearchParams();
 
 		// handle group by logic
-		if (groupBy === 'line' && filters?.lineId) {
+		if (groupBy === 'line' && filters?.lineIds?.length) {
 			baseUrl = MetricsRoutes.DEMAND_BY_LINE_BY_DAY;
-			params.set('line_id', filters.lineId);
+			params.set('line_ids', filters.lineIds.join(','));
 		}
-		else if (groupBy === 'pattern' && filters?.patternId) {
+		else if (groupBy === 'pattern' && filters?.patternIds?.length) {
 			baseUrl = MetricsRoutes.DEMAND_BY_PATTERN_BY_DAY;
-			params.set('pattern_id', filters.patternId);
+			params.set('pattern_ids', filters.patternIds.join(','));
 		}
-
-		console.log('Query Params:', groupBy, filters, params.toString());
 
 		const query = params.toString();
 		return query ? `${baseUrl}?${query}` : baseUrl;
@@ -94,9 +92,9 @@ export function DemandByDay({ chartType = 'dynamic', filters, groupBy, height, i
 
 		switch (groupBy) {
 			case 'line':
-				return transformDemandByLineByDay(data as DemandByLineByDay[], startDate, endDate, filters?.lineId, t);
+				return transformDemandByLineByDay(data as DemandByLineByDay[], startDate, endDate, filters?.lineIds, t);
 			case 'pattern':
-				return transformDemandByAgencyByDay(data as DemandByAgencyByDay[], startDate, endDate, selectedAgency, t);
+				return transformDemandByPatternByDay(data as DemandByPatternByDay[], startDate, endDate, filters?.patternIds, t);
 			default:
 				return transformDemandByAgencyByDay(data as DemandByAgencyByDay[], startDate, endDate, selectedAgency, t);
 		}

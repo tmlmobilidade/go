@@ -17,7 +17,7 @@ export default function Topics() {
 	// B. Handle actions
 
 	const handleTopicClick = (topic: TopicDefinition) => {
-		router.push(`/performance/${topic.key}`);
+		router.push(`/${topic.key}`);
 	};
 
 	// C. Render components
