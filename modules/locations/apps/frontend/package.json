@@ -10,8 +10,8 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev -p 51005",
-		"lint": "eslint . && tsc --noEmit",
-		"lint:fix": "eslint --fix ./src",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
 		"start": "next start"
 	},
 	"dependencies": {

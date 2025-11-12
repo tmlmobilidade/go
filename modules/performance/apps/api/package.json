@@ -13,7 +13,7 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "dotenv-run -- tsx watch src/index.ts",
-		"lint": "eslint . && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {

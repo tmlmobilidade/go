@@ -10,7 +10,7 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev -p 51003",
-		"lint": "eslint . && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src",
 		"start": "next start"
 	},

@@ -29,7 +29,7 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint . && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint . --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
