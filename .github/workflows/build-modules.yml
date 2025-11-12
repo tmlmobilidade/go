@@ -12,11 +12,11 @@ on:
         required: false
         default: true
         type: boolean
+  pull_request:
   push:
     branches:
       - production
-      - staging
-      - 'staging/**'
+      - staging*
     paths:
       - 'modules/**'
       - '!modules/*/environments/**'
