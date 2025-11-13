@@ -1,14 +1,14 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
+import { Dates } from '@tmlmobilidade/dates';
 import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
-import { type VehicleEvent } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
+import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 
 /* * */
@@ -26,8 +26,8 @@ async function syncVehicleEvents() {
 
 		await PCGIDB.connect();
 
-		const vehicleEventsCollection = await vehicleEvents.getCollection();
-		const vehicleEventsDbWritter = new MongoDbWriter<VehicleEvent>({ batch_size: 100000, collection: vehicleEventsCollection });
+		const vehicleEventsCollection = await simplifiedVehicleEvents.getCollection();
+		const vehicleEventsDbWritter = new MongoDbWriter<SimplifiedVehicleEvent>({ batch_size: 100000, collection: vehicleEventsCollection });
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -76,7 +76,7 @@ async function syncVehicleEvents() {
 			// Setup the callback function that will be called on the DB Writer flush operation
 			// to invalidate all the rides that are affected by the new data.
 
-			const flushCallback = async (flushedData: MongoDBWriterWriteOps<VehicleEvent>[]) => {
+			const flushCallback = async (flushedData: MongoDBWriterWriteOps<SimplifiedVehicleEvent>[]) => {
 				try {
 					//
 

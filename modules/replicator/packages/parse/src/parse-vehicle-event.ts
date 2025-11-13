@@ -1,12 +1,12 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseVehicleEvent(pcgiDoc: any): null | VehicleEvent {
+export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 	try {
 		return {
 			_id: pcgiDoc._id,
