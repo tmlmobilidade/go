@@ -65,7 +65,7 @@ export class AuthController {
 		reply.setCookie(COOKIE_NAME, session.token, {
 			domain: getAppConfig('auth', 'cookie_domain'),
 			httpOnly: true,
-			maxAge: parseInt(process.env.COOKIE_MAX_AGE_DAYS ?? '30') * 24 * 60 * 60, // 30 days
+			maxAge: 30 * 24 * 60 * 60, // 30 days
 			path: '/',
 			sameSite: 'none',
 			secure: true,
