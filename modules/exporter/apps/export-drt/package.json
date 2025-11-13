@@ -13,7 +13,6 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"dev:prod": "dotenv-run -f ./environments/production/secrets/.env -- tsx watch src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
 	},
