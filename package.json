@@ -11,6 +11,7 @@
 		"build:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
 		"build:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-auth-*",
 		"build:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-controller-*",
+		"build:exporter": "ENVIRONMENT=development dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-exporter-*",
 		"build:locations": "ENVIRONMENT=development dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:packages": "turbo build --filter=./packages/**/* && npm run generate-routes",
