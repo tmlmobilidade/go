@@ -1,8 +1,8 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/interfaces';
 import { type GtfsCause, type NoteComment, type RideAcceptance, RideAcceptanceStatusSchema, type UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 
@@ -12,10 +12,10 @@ export class RideAcceptanceController {
 	/**
 	 * Changes the status of a ride acceptance by trip ID
 	 */
-	static async changeStatus(request: FastifyRequest<{ Body: { acceptance_status: UpdateRideAcceptanceDto['acceptance_status'] }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
+	static async changeStatus(request: FastifyRequest<{ Body: { acceptance_status: UpdateRideAcceptanceDto['acceptance_status'] }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
 
-		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
+		const updateResult = await rideAcceptances.updateByRideId(request.params.id, {
 			acceptance_status: request.body.acceptance_status,
 			updated_by: request.me._id,
 		});
@@ -30,10 +30,10 @@ export class RideAcceptanceController {
 	/**
 	 * Adds a comment to a ride acceptance by trip ID
 	 */
-	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
+	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
 
-		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.trip_id);
+		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
 			return reply.status(HttpStatus.NOT_FOUND).send({
@@ -44,7 +44,7 @@ export class RideAcceptanceController {
 		}
 
 		const updateResult = await rideAcceptances.updateByRideId(
-			request.params.trip_id,
+			request.params.id,
 			{ comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }], updated_by: request.me._id },
 		);
 
@@ -58,10 +58,10 @@ export class RideAcceptanceController {
 	/**
 	 * Gets a ride acceptance by trip ID
 	 */
-	static async get(request: FastifyRequest<{ Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
+	static async get(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
 
-		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.trip_id);
+		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
 			throw new HttpException(HttpStatus.NOT_FOUND, 'Esta viagem não ainda não tem uma aprovação.');
@@ -77,10 +77,10 @@ export class RideAcceptanceController {
 	/**
 	 * Justifies a ride acceptance by trip ID
 	 */
-	static async justify(request: FastifyRequest<{ Body: { justification_cause: GtfsCause, manual_trip_id?: string, pto_message: string }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
+	static async justify(request: FastifyRequest<{ Body: { justification_cause: GtfsCause, manual_trip_id?: string, pto_message: string }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
 
-		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, {
+		const updateResult = await rideAcceptances.updateByRideId(request.params.id, {
 			acceptance_status: RideAcceptanceStatusSchema.Values.under_review,
 			justification: {
 				created_at: Dates.now('utc').unix_timestamp,
@@ -104,9 +104,9 @@ export class RideAcceptanceController {
 	/**
 	 * Locks a justification by trip ID
 	 */
-	static async lock(request: FastifyRequest<{ Body: { is_locked: UpdateRideAcceptanceDto['is_locked'] }, Params: { trip_id: string } }>, reply: FastifyReply<RideAcceptance>) {
+	static async lock(request: FastifyRequest<{ Body: { is_locked: UpdateRideAcceptanceDto['is_locked'] }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 		//
-		const oldJustificationData = await rideAcceptances.findByRideId(request.params.trip_id);
+		const oldJustificationData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (oldJustificationData.is_locked === request.body.is_locked) {
 			return reply.send({
@@ -116,7 +116,7 @@ export class RideAcceptanceController {
 			});
 		}
 
-		const updateResult = await rideAcceptances.updateByRideId(request.params.trip_id, { is_locked: request.body.is_locked, updated_by: request.me._id });
+		const updateResult = await rideAcceptances.updateByRideId(request.params.id, { is_locked: request.body.is_locked, updated_by: request.me._id });
 
 		return reply.send({
 			data: updateResult,
