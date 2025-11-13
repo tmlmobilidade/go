@@ -10,4 +10,29 @@
 
 3. `npm run dev:{module}` to start the desired module.
 
-Hello
+## Dump
+
+mongodump\
+--host=sae-db-rs0-1-production.carrismetropolitana.pt:27017,sae-db-rs0-2-production.carrismetropolitana.pt:27017,sae-db-rs0-3-production.carrismetropolitana.pt:27017\
+--username=backup\
+--password=...\
+--authenticationDatabase=admin\
+--excludeCollection=rides\
+--excludeCollection=ride_acceptances\
+--excludeCollection=hashed_shapes\
+--excludeCollection=hashed_trips\
+--excludeCollection=simplified_apex_locations\
+--excludeCollection=simplified_apex_on_board_refunds\
+--excludeCollection=simplified_apex_on_board_sales\
+--excludeCollection=simplified_apex_validations\
+--excludeCollection=sams\
+--excludeCollection=metrics\
+--excludeCollection=localities\
+--excludeCollection=parishes\
+--excludeCollection=census\
+--excludeCollection=districts\
+--excludeCollection=municipalities\
+--excludeCollection=vehicle_events\
+--db=production\
+--gzip\
+--archive=./production.dump
