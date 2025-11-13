@@ -1,14 +1,14 @@
 /* * */
 
 import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * Detect the last event in the vehicle events data.
  * @param vehicleEventsData
  * @returns The last event in the vehicle events data.
  */
-export function detectLastEvent(vehicleEventsData: VehicleEvent[]): null | VehicleEvent {
+export function detectLastEvent(vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
 	//
 
 	//

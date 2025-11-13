@@ -2,7 +2,7 @@
 
 import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/geo';
-import { type HashedShape, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,7 +16,7 @@ const ENDING_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which ends the trip.
  */
-export function detectEndEvent(vehicleEventsData: VehicleEvent[], hashedShapeData: HashedShape): null | VehicleEvent {
+export function detectEndEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedShapeData: HashedShape): null | SimplifiedVehicleEvent {
 	//
 
 	//
@@ -50,7 +50,7 @@ export function detectEndEvent(vehicleEventsData: VehicleEvent[], hashedShapeDat
 	// Detect the last event that is inside
 	// the geofence of the initial segment of the shape.
 
-	let firstEventInsideEndingSegment: null | VehicleEvent = null;
+	let firstEventInsideEndingSegment: null | SimplifiedVehicleEvent = null;
 
 	for (const vehicleEvent of sortedVehicleEvents) {
 		// Check if the current vehicle event has any point that is

@@ -46,4 +46,4 @@ class SimplifiedVehicleEventsClass extends MongoCollectionClass<SimplifiedVehicl
 
 /* * */
 
-export const vehicleEvents = AsyncSingletonProxy(SimplifiedVehicleEventsClass);
+export const simplifiedVehicleEvents = AsyncSingletonProxy(SimplifiedVehicleEventsClass);
