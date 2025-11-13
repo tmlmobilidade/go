@@ -1,7 +1,7 @@
 /* * */
 
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /* * */
 

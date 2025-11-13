@@ -1,7 +1,7 @@
 /* * */
 
-import { type VehicleEvent } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
