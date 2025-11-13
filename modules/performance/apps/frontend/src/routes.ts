@@ -1,8 +1,7 @@
 /* * */
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Metric } from '@tmlmobilidade/types';
-
-import { API_ROUTES } from '../../../../../packages/consts/dist/src/app-routes';
 
 /* * */
 
