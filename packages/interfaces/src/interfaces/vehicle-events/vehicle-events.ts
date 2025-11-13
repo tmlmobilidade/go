@@ -1,9 +1,9 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { VehicleEvent } from '@tmlmobilidade/types';
+import { type VehicleEvent } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
-import { IndexDescription } from 'mongodb';
+import { type IndexDescription } from 'mongodb';
 
 /* * */
 
@@ -40,7 +40,7 @@ class VehicleEventsClass extends MongoCollectionClass<VehicleEvent, VehicleEvent
 	}
 
 	protected getEnvName(): string {
-		return 'TML_INTERFACE_VEHICLE_EVENTS';
+		return 'DATABASE_URI';
 	}
 }
 
