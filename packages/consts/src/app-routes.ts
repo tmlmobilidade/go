@@ -213,14 +213,14 @@ export const API_ROUTES = Object.freeze({
 	},
 
 	/* * */
-	/* EXPORTS */
-	exports: {
+	/* EXPORTER */
+	exporter: {
 		// BASE
-		BASE: `${getAppConfig('exports', 'api_url')}`,
+		BASE: `${getAppConfig('exporter', 'api_url')}`,
 
 		// EXPORTER
-		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getAppConfig('exports', 'api_url')}/exporter/${id}/download`,
-		EXPORTER_LIST: `${getAppConfig('exports', 'api_url')}/exporter`,
+		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getAppConfig('exporter', 'api_url')}/exporter/${id}/download`,
+		EXPORTER_LIST: `${getAppConfig('exporter', 'api_url')}/exporter`,
 	},
 
 	/* * */
