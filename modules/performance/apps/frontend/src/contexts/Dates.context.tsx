@@ -73,7 +73,7 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 
 	const fetchCalendarData = async (): Promise<CalendarEntry[]> => {
 		try {
-			const response = await fetch(API_ROUTES.performance.DATES_DATES);
+			const response = await fetch(API_ROUTES.performance.DATES_LIST);
 			if (!response.ok) return [];
 			const body = await response.json();
 			return (body?.data ?? body) as CalendarEntry[];

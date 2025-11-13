@@ -1,7 +1,7 @@
 /* * */
 
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { type Metric } from '@tmlmobilidade/types';
 
@@ -16,20 +16,20 @@ export class MetricsController {
 	 */
 	static async getMetric(
 		request: FastifyRequest<{
-			Params: { metricName: Metric['metric'] }
+			Params: { id: Metric['metric'] }
 			Querystring: Record<string, unknown>
 		}>,
 		reply: FastifyReply<Metric[]>,
 	) {
-		const { metricName } = request.params;
+		const { id } = request.params;
 		const filters = request.query || {};
 
 		try {
 			// base query
-			const query: Record<string, unknown> = { metric: metricName };
+			const query: Record<string, unknown> = { metric: id };
 
 			// allow filters for specific metrics
-			if ((metricName.startsWith('demand_by_line') || metricName.startsWith('demand_by_product_by_line')) && filters.line_ids) {
+			if ((id.startsWith('demand_by_line') || id.startsWith('demand_by_product_by_line')) && filters.line_ids) {
 				const lineIds = typeof filters.line_ids === 'string'
 					? filters.line_ids.split(',').map(id => id.trim())
 					: Array.isArray(filters.line_ids)
@@ -39,7 +39,7 @@ export class MetricsController {
 				query['properties.line_id'] = { $in: lineIds };
 			}
 
-			if ((metricName.startsWith('demand_by_pattern') || metricName.startsWith('demand_by_product_by_pattern')) && filters.pattern_ids) {
+			if ((id.startsWith('demand_by_pattern') || id.startsWith('demand_by_product_by_pattern')) && filters.pattern_ids) {
 				const patternIds = typeof filters.pattern_ids === 'string'
 					? filters.pattern_ids.split(',').map(id => id.trim())
 					: Array.isArray(filters.pattern_ids)

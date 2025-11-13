@@ -244,10 +244,10 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('performance', 'api_url')}`,
 
 		// DATES
-		DATES_DATES: `${getAppConfig('performance', 'api_url')}/dates/dates`,
+		DATES_LIST: `${getAppConfig('performance', 'api_url')}/dates`,
 
 		// METRICS
-		METRICS_: `${getAppConfig('performance', 'api_url')}/METRICNAME:/performance/api/metrics/:metricName`,
+		METRICS_DETAIL: (id: string) => `${getAppConfig('performance', 'api_url')}/metrics/${id}`,
 
 		// NETWORK
 		NETWORK_LINES: `${getAppConfig('performance', 'api_url')}/network/lines`,
