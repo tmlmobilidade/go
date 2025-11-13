@@ -51,10 +51,10 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Fetch data
 
 	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(API_ROUTES.auth.USERS_ME, { refreshInterval: 15_000 });
-	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: mutateFileExports } = useSWR<FileExport[], HttpException>(API_ROUTES.exports.EXPORTER_LIST, { refreshInterval: 5_000 });
+	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: mutateFileExports } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
 
 	//
-	// C. Handle actions
+	// B. Handle actions
 
 	useEffect(() => {
 		// Skip if data is still loading
@@ -101,7 +101,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	//
-	// D. Define context value
+	// C. Define context value
 
 	const contextValue: MeContextState = useMemo(() => ({
 		actions: {
@@ -131,7 +131,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	//
-	// E. Render components
+	// D. Render components
 
 	if (meLoading) {
 		return <LoadingOverlay fullscreen />;

@@ -55,7 +55,7 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Handle actions
 
 	async function create<T extends { properties: Record<string, unknown>, type: FileExportType }>(dto: CreateFileExportDto<T>): Promise<FileExport> {
-		const response = await fetchData<FileExport>(API_ROUTES.exports.EXPORTER_LIST, 'POST', dto);
+		const response = await fetchData<FileExport>(API_ROUTES.exporter.EXPORTER_LIST, 'POST', dto);
 
 		if (response.error || !response.data) {
 			throw new HttpException(response.statusCode, response.error ?? 'Failed to create file export');
