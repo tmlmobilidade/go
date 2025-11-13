@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+
 /* * */
 
+import { fetchZipFromUrl, isBrowser, normalizeFileContent, readZipFromFile } from '@/utils.js';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import JSZip from 'jszip';
 import papaparse, { ParseConfig } from 'papaparse';
-
-import { fetchZipFromUrl, isBrowser, normalizeFileContent, readZipFromFile } from './utils.js';
 
 /* * */
 

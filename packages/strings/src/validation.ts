@@ -1,4 +1,8 @@
+/* * */
+
 import { z } from 'zod';
+
+/* * */
 
 export function isEmail(email: string): boolean {
 	return z.string().email().safeParse(email).success;

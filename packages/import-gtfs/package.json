@@ -29,8 +29,8 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"export": "email export --dir ./src/emails",
 		"lint": "eslint ./src/ && tsc --noEmit",
+		"lint:fix": "eslint ./src/ --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
@@ -38,16 +38,13 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "24.10.0",
+		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
