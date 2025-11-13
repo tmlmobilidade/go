@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/connectors-rabbitmq",
+	"name": "@tmlmobilidade/fastify",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -29,17 +29,20 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint ./src/ && tsc --noEmit",
-		"lint:fix": "eslint ./src/ --fix",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint . --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@fastify/cookie": "11.0.2",
+		"@fastify/cors": "11.1.0",
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/utils": "*",
-		"amqplib": "0.10.9"
+		"fastify": "5.6.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/amqplib": "0.10.8",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",

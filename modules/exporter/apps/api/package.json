@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",

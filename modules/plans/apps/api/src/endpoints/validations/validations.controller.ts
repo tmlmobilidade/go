@@ -1,8 +1,8 @@
 /* * */
 
 import { MultipartValue } from '@fastify/multipart';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
-import { rabbitMQ } from '@tmlmobilidade/connectors-rabbitmq';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
 import { ALLOW_ALL_FLAG, API_ROUTES, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { files, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';

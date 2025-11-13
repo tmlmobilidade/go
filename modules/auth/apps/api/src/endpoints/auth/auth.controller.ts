@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';

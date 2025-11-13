@@ -1,7 +1,7 @@
 /* * */
 
 import fastifyMultipart from '@fastify/multipart';
-import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/connectors-fastify';
+import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/fastify';
 import { getAppConfig } from '@tmlmobilidade/consts';
 
 /* * */

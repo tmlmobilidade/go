@@ -2,7 +2,7 @@
 
 import { fetchLines } from '@/utils/lines.js';
 import { parseServiceAlert } from '@/utils/service-alert-parser.js';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus, Permissions } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';

@@ -1,6 +1,6 @@
 /* * */
 
-import { rabbitMQ } from '@tmlmobilidade/connectors-rabbitmq';
+import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';

@@ -1,6 +1,6 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors-fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 
 import { NotificationsController } from './notifications.controller.js';
 

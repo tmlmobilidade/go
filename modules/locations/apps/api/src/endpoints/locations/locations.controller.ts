@@ -1,6 +1,6 @@
 /* * */
 
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Filter, FindOptions, locations } from '@tmlmobilidade/interfaces';
 import { District, GetAllDistrictsQuery, GetAllDistrictsQuerySchema, GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, GetAllParishesQuery, GetAllParishesQuerySchema, Locality, Location, Municipality, Parish } from '@tmlmobilidade/types';

@@ -1,7 +1,7 @@
 /* * */
 
 import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';

@@ -1,7 +1,7 @@
 /* * */
 
 import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
-import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/connectors-fastify';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { Permissions } from '@tmlmobilidade/consts';
 import { Alert, GetAllAlertsQuery, GetAllAlertsQuerySchema } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';

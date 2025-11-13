@@ -1,6 +1,6 @@
 /* * */
 
-import { MongoConnector } from '@tmlmobilidade/connectors-mongo';
+import { MongoConnector } from '@tmlmobilidade/mongo';
 import { Logger } from '@tmlmobilidade/logger';
 import { booleanValid } from '@turf/turf';
 import { feature as turfFeature } from '@turf/turf';

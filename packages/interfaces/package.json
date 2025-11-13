@@ -34,7 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors-mongo": "*",
+		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",

@@ -1,7 +1,7 @@
 /* * */
 
 import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
-import { MongoConnector } from '@tmlmobilidade/connectors-mongo';
+import { MongoConnector } from '@tmlmobilidade/mongo';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { generateRandomString } from '@tmlmobilidade/strings';

@@ -1,7 +1,7 @@
 /* * */
 
 import { GtfsValidationsController } from '@/endpoints/validations/validations.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors-fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { Permissions } from '@tmlmobilidade/consts';
 import { GtfsValidationPermission } from '@tmlmobilidade/types';
 

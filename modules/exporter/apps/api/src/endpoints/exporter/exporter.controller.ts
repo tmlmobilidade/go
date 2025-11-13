@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
 import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
