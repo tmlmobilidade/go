@@ -1,26 +1,26 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
 
 /* * */
 
-class VehicleEventsClass extends MongoCollectionClass<VehicleEvent, VehicleEvent, VehicleEvent> {
-	private static _instance: VehicleEventsClass;
+class SimplifiedVehicleEventsClass extends MongoCollectionClass<SimplifiedVehicleEvent, SimplifiedVehicleEvent, SimplifiedVehicleEvent> {
+	private static _instance: SimplifiedVehicleEventsClass;
 
 	private constructor() {
 		super();
 	}
 
 	public static async getInstance() {
-		if (!VehicleEventsClass._instance) {
-			const instance = new VehicleEventsClass();
+		if (!SimplifiedVehicleEventsClass._instance) {
+			const instance = new SimplifiedVehicleEventsClass();
 			await instance.connect();
-			VehicleEventsClass._instance = instance;
+			SimplifiedVehicleEventsClass._instance = instance;
 		}
-		return VehicleEventsClass._instance;
+		return SimplifiedVehicleEventsClass._instance;
 	}
 
 	protected getCollectionIndexes(): IndexDescription[] {
@@ -36,7 +36,7 @@ class VehicleEventsClass extends MongoCollectionClass<VehicleEvent, VehicleEvent
 	}
 
 	protected getCollectionName(): string {
-		return 'vehicle_events';
+		return 'simplified_vehicle_events';
 	}
 
 	protected getEnvName(): string {
@@ -46,4 +46,4 @@ class VehicleEventsClass extends MongoCollectionClass<VehicleEvent, VehicleEvent
 
 /* * */
 
-export const vehicleEvents = AsyncSingletonProxy(VehicleEventsClass);
+export const vehicleEvents = AsyncSingletonProxy(SimplifiedVehicleEventsClass);
