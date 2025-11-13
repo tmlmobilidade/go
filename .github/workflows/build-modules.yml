@@ -55,13 +55,13 @@ env:
     controller:sams-examiner
     controller:sams-feeder
 
-    exports:nginx
-    exports:api
-    exports:cleaner
-    exports:export-drt
-    exports:export-files
-    exports:export-gtfs-merged
-    exports:export-posters
+    exporter:nginx
+    exporter:api
+    exporter:cleaner
+    exporter:export-drt
+    exporter:export-files
+    exporter:export-gtfs-merged
+    exporter:export-posters
 
     locations:nginx
     locations:api
