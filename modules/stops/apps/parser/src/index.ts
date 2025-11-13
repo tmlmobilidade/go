@@ -1,7 +1,8 @@
 /* * */
 
 import goStops from '@/go-stops.json' with { type: 'json' };
-import { OriginalStopType } from '@/original-stop.type.js';
+import { type OriginalStopType } from '@/original-stop.type.js';
+import { Dates } from '@tmlmobilidade/dates';
 import { stops } from '@tmlmobilidade/interfaces';
 import { type Stop } from '@tmlmobilidade/types';
 
@@ -35,6 +36,7 @@ import { type Stop } from '@tmlmobilidade/types';
 				bench_status: 'unknown',
 				comments: [],
 				connections: [],
+				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
 				district_id: '',
 				electricity_status: 'unknown',
 				equipment: [],
@@ -75,6 +77,7 @@ import { type Stop } from '@tmlmobilidade/types';
 				shelter_status: 'unknown',
 				short_name: originalStop.short_name,
 				tts_name: originalStop.tts_name,
+				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			};
 
 			return newStop;
