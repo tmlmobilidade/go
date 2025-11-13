@@ -1,9 +1,9 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { CreateStopDto, Stop, StopSchema, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { type CreateStopDto, type Stop, StopSchema, type UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
-import { Filter, IndexDescription, Sort } from 'mongodb';
+import { type Filter, type IndexDescription, type Sort } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
