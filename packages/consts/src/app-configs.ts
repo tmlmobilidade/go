@@ -87,7 +87,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		},
 	},
 
-	exports: {
+	exporter: {
 		development: {
 			api_port: 52007,
 			api_url: 'http://localhost:52007',
@@ -97,12 +97,12 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_url: null,
 		},
 		production: {
-			api_url: 'https://go.tmlmobilidade.pt/exports/api',
+			api_url: 'https://go.tmlmobilidade.pt/exporter/api',
 			frontend_url: null,
 			...DEFAULT_NON_DEV_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/exports/api',
+			api_url: 'https://staging.go.tmlmobilidade.pt/exporter/api',
 			frontend_url: null,
 			...DEFAULT_NON_DEV_CONFIG,
 		},
