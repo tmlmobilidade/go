@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-exports-staging
+name: tmlmobilidade-go-exporter-production
 
 services:
 
@@ -31,7 +31,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/go-exports-nginx:staging
+    image: ghcr.io/tmlmobilidade/go-exporter-nginx:production
     deploy:
       restart_policy:
         condition: any
@@ -51,7 +51,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/go-exports-api:staging
+    image: ghcr.io/tmlmobilidade/go-exporter-api:production
     deploy:
       restart_policy:
         condition: any
@@ -72,7 +72,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cleaner:
-    image: ghcr.io/tmlmobilidade/go-exports-cleaner:staging
+    image: ghcr.io/tmlmobilidade/go-exporter-cleaner:production
     deploy:
       restart_policy:
         condition: any
@@ -89,7 +89,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   export-drt:
-    image: ghcr.io/tmlmobilidade/go-exports-export-drt:staging
+    image: ghcr.io/tmlmobilidade/go-exporter-export-drt:production
     deploy:
       restart_policy:
         condition: any
@@ -106,7 +106,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   export-files:
-    image: ghcr.io/tmlmobilidade/go-exports-export-files:staging
+    image: ghcr.io/tmlmobilidade/go-exporter-export-files:production
     deploy:
       restart_policy:
         condition: any
@@ -123,7 +123,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   export-gtfs-merged:
-    image: ghcr.io/tmlmobilidade/go-exports-export-gtfs-merged:staging
+    image: ghcr.io/tmlmobilidade/go-exporter-export-gtfs-merged:production
     deploy:
       restart_policy:
         condition: any
@@ -140,7 +140,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   export-posters:
-    image: ghcr.io/tmlmobilidade/go-exports-export-posters:staging
+    image: ghcr.io/tmlmobilidade/go-exporter-export-posters:production
     deploy:
       restart_policy:
         condition: any
