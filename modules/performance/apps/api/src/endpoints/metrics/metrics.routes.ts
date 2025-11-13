@@ -1,7 +1,7 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { Permissions } from '@tmlmobilidade/consts';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { Metric } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 

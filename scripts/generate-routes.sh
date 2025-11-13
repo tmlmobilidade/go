@@ -197,21 +197,25 @@ scan_api_routes() {
             fi
             
             # Use namespace for route path instead of endpoint_name
-            # Convert :id in namespace to ${id} for the route path
-            local namespace_for_path=$(echo "$namespace" | sed 's|:id|\${id}|g')
+            # Convert all variables (anything starting with :) in namespace to ${variable} format
+            local namespace_for_path=$(echo "$namespace" | sed -E 's|:([a-zA-Z][a-zA-Z0-9]*)|\${\1}|g')
             
             # Build the full route path by combining namespace and path
             # Remove leading slash from path if it exists
             local clean_path=$(echo "$path" | sed 's|^/||')
             
-            # Check if path is :id or starts with :id (detail route)
+            # Check if path contains any variable (anything starting with :)
             local is_detail_route=false
-            if [[ "$clean_path" == ":id" ]] || [[ "$clean_path" =~ ^:id/ ]]; then
+            if echo "$clean_path" | grep -qE '^:[a-zA-Z][a-zA-Z0-9]*'; then
                 is_detail_route=true
             fi
             
-            # Convert :id in path to ${id} for the route path
-            local clean_path_for_route=$(echo "$clean_path" | sed 's|:id|\${id}|g')
+            # Convert all variables (anything starting with :) in path to ${variable} format
+            local clean_path_for_route=$(echo "$clean_path" | sed -E 's|:([a-zA-Z][a-zA-Z0-9]*)|\${\1}|g')
+            
+            # Extract all variables from combined namespace and path for later use
+            local combined_path="${namespace}/${clean_path}"
+            local route_variables=$(echo "$combined_path" | grep -oE ':[a-zA-Z][a-zA-Z0-9]*' | sort -u | tr '\n' ' ' | sed 's/ $//')
             
             # Combine namespace and path (namespace already has leading slash removed by extraction)
             if [ "$path" = "/" ] || [ -z "$clean_path" ]; then
@@ -230,8 +234,8 @@ scan_api_routes() {
             local namespace_parts=$(echo "$namespace" | sed 's|^/||' | tr '/' ' ')
             local last_namespace_part=""
             for part in $namespace_parts; do
-                # Skip :id parts
-                if [[ "$part" != ":id" ]]; then
+                # Skip variable parts (anything starting with :)
+                if [[ ! "$part" =~ ^: ]]; then
                     last_namespace_part="$part"
                 fi
             done
@@ -243,33 +247,33 @@ scan_api_routes() {
             
             # Build route name
             if [ "$path" = "/" ] || [ -z "$clean_path" ]; then
-                # Root path - check if namespace contains :id to determine if it's a detail route
-                if [[ "$namespace" == *":id"* ]]; then
+                # Root path - check if namespace contains any variable to determine if it's a detail route
+                if echo "$namespace" | grep -qE ':[a-zA-Z][a-zA-Z0-9]*'; then
                     local route_name=$(to_snake_case "${last_namespace_part}_DETAIL")
                 else
                     local route_name=$(to_snake_case "${last_namespace_part}_LIST")
                 fi
             elif [ "$is_detail_route" = true ]; then
-                # Path is :id or starts with :id - this is a detail route
-                # Extract suffix after :id if any (e.g., /:id/image -> image)
-                local suffix_after_id=$(echo "$clean_path" | sed 's|^:id/||' | sed 's|^:id$||')
-                if [ -z "$suffix_after_id" ]; then
-                    # Just :id, so it's the detail route itself
+                # Path starts with a variable - this is a detail route
+                # Extract suffix after first variable if any (e.g., /:metricName -> empty, /:id/image -> image)
+                local suffix_after_var=$(echo "$clean_path" | sed -E 's|^:[a-zA-Z][a-zA-Z0-9]*/||' | sed -E 's|^:[a-zA-Z][a-zA-Z0-9]*$||')
+                if [ -z "$suffix_after_var" ]; then
+                    # Just a variable, so it's the detail route itself
                     local route_name=$(to_snake_case "${last_namespace_part}_DETAIL")
                 else
-                    # :id with suffix (e.g., /:id/image)
-                    local suffix_name=$(echo "$suffix_after_id" | sed 's|/|_|g' | sed 's|-|_|g')
+                    # Variable with suffix (e.g., /:id/image)
+                    local suffix_name=$(echo "$suffix_after_var" | sed 's|/|_|g' | sed 's|-|_|g' | sed -E 's|:[a-zA-Z][a-zA-Z0-9]*|VAR|g')
                     local route_name=$(to_snake_case "${last_namespace_part}_DETAIL_${suffix_name}")
                 fi
             else
-                # Non-root path without :id - use path suffix for naming
+                # Non-root path without variables - use path suffix for naming
                 local route_suffix=$(echo "$clean_path" | sed 's|/|_|g' | sed 's|-|_|g')
                 local route_name=$(to_snake_case "${last_namespace_part}_${route_suffix}")
             fi
             route_name=$(sanitize_route_name "$route_name")
             
-            # Include file name in route storage: route_name:route_path|file_name
-            routes+=("${route_name}:${route_path}|${file_name}")
+            # Include file name and variables in route storage: route_name:route_path|file_name|variables
+            routes+=("${route_name}:${route_path}|${file_name}|${route_variables}")
         done < "$grep_temp"
         
         rm -f "$grep_temp"
@@ -347,17 +351,24 @@ for module_dir in "${MODULES_DIR}"/*; do
     fi
     
     # Store routes for this module in temp file (one route per line with module prefix and type)
-    # Format: module_name|type|route_name:route_path|file_name (file_name only for API routes)
+    # Format: module_name|type|route_name:route_path|file_name|variables (variables only for API routes)
     if [ ${#module_route_list[@]} -gt 0 ]; then
         for route in "${module_route_list[@]}"; do
             if [ -n "$route" ]; then
                 # Extract route type from the route (check if it contains /api/)
                 if [[ "$route" == *"/api/"* ]]; then
                     route_type="api"
+                    # API routes have format: route_name:route_path|file_name|variables
+                    # Count pipes to ensure format is correct
+                    pipe_count=$(echo "$route" | grep -o '|' | wc -l | tr -d ' ')
+                    if [ "$pipe_count" -eq 1 ]; then
+                        # Missing variables field, add empty
+                        route="${route}|"
+                    fi
                 else
                     route_type="frontend"
-                    # For frontend routes, add empty file_name
-                    route="${route}|"
+                    # For frontend routes, add empty file_name and empty variables
+                    route="${route}||"
                 fi
                 printf '%s|%s|%s\n' "$module_name" "$route_type" "$route" >> "${MODULE_ROUTES_TEMP}"
             fi
@@ -436,11 +447,12 @@ generate_routes_for_type() {
                 continue
             fi
             
-            # Extract route_name, route_path, and file_name
+            # Extract route_name, route_path, file_name, and variables
             route_name=$(echo "$route_line" | cut -d':' -f1)
             route_path_with_file=$(echo "$route_line" | cut -d':' -f2-)
             route_path=$(echo "$route_path_with_file" | cut -d'|' -f1)
             file_name=$(echo "$route_path_with_file" | cut -d'|' -f2)
+            route_variables=$(echo "$route_path_with_file" | cut -d'|' -f3)
             
             # For API routes, use file_name for comment (convert to uppercase)
             # For frontend routes, derive comment from route name as before
@@ -472,11 +484,24 @@ generate_routes_for_type() {
                 # We want: namespace/path (without leading /module_name/api)
                 clean_api_path=$(echo "$route_path" | sed "s|^/${module_name}/api/||")
                 
-                # Check if it's a detail route (contains ${id})
-                if [[ "$route_path" == *"\${id}"* ]] || [[ "$route_path" == *'${id}'* ]]; then
+                # Check if route contains any variables
+                if [ -n "$route_variables" ]; then
+                    # Generate function parameters from variables
+                    # route_variables format: ":var1 :var2" (space-separated)
+                    function_params=""
+                    for var in $route_variables; do
+                        if [ -n "$var" ]; then
+                            # Remove leading : and use as parameter name
+                            param_name=$(echo "$var" | sed 's|^:||')
+                            if [ -z "$function_params" ]; then
+                                function_params="${param_name}: string"
+                            else
+                                function_params="${function_params}, ${param_name}: string"
+                            fi
+                        fi
+                    done
                     # Convert to function format with getAppConfig
-                    clean_path=$(echo "$clean_api_path" | sed 's|\\${id}|${id}|g' | sed "s|\${id}|\${id}|g")
-                    echo "		${route_name}: (id: string) => \`\${getAppConfig('${module_name}', 'api_url')}/${clean_path}\`," >> "$output_file"
+                    echo "		${route_name}: (${function_params}) => \`\${getAppConfig('${module_name}', 'api_url')}/${clean_api_path}\`," >> "$output_file"
                 else
                     # Regular string route with getAppConfig
                     echo "		${route_name}: \`\${getAppConfig('${module_name}', 'api_url')}/${clean_api_path}\`," >> "$output_file"
