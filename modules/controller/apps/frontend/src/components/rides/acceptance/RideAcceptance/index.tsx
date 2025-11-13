@@ -2,32 +2,22 @@
 
 /* * */
 
+import { RideAcceptanceCommentList } from '@/components/rides/acceptance/RideAcceptanceCommentList';
+import { RideAcceptanceJustification } from '@/components/rides/acceptance/RideAcceptanceJustification';
 import { RideAnalysisAnalysisResult } from '@/components/rides/analysis/RideAnalysisResult';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { ErrorDisplay, Grid, LoadingOverlay, Section, Separator } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { RideAcceptanceCommentList } from '../RideAcceptanceCommentList';
-import { RideAcceptanceJustification } from '../RideAcceptanceJustification';
-
 /* * */
 
 export function RideAcceptance() {
 	//
+
+	//
 	// A. Setup variables
 
 	const justificationContext = useRideAcceptanceContext();
-
-	//
-	// B. Render components
-
-	if (justificationContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (justificationContext.flags.error) {
-		return <ErrorDisplay message={justificationContext.flags.error.message} />;
-	}
 
 	//
 	// C. Transform data
@@ -41,6 +31,14 @@ export function RideAcceptance() {
 
 	//
 	// C. Render components
+
+	if (justificationContext.flags.loading) {
+		return <LoadingOverlay />;
+	}
+
+	if (justificationContext.flags.error) {
+		return <ErrorDisplay message={justificationContext.flags.error.message} />;
+	}
 
 	return (
 		<Section gap="lg" padding="none">

@@ -4,7 +4,7 @@
 
 import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -18,7 +18,7 @@ export function RideAnalysisVehicleEvents() {
 
 	const RideAnalysisContext = useRideAnalysisContext();
 
-	const columns: DataTableColumn<VehicleEvent>[] = [
+	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,

@@ -8,7 +8,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type RideNormalized } from '@tmlmobilidade/types';
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { getCssVariableValue } from '@tmlmobilidade/ui';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -55,7 +55,7 @@ interface RideAnalysisContextState {
 		simplified_apex_on_board_refunds: SimplifiedApexOnBoardRefund[]
 		simplified_apex_on_board_sales: SimplifiedApexOnBoardSale[]
 		simplified_apex_validations: SimplifiedApexValidation[]
-		vehicle_events: VehicleEvent[]
+		vehicle_events: SimplifiedVehicleEvent[]
 	}
 	flags: {
 		error: Error | null
@@ -91,7 +91,7 @@ export const RideAnalysisContextProvider = ({ children, rideId }) => {
 	// A. Fetch data
 
 	const { data: rideData, error: rideError, isLoading: rideLoading, mutate: rideMutate } = useSWR<Ride>(API_ROUTES.controller.RIDES_DETAIL_RIDE(rideId), { refreshInterval: 1000 });
-	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<VehicleEvent[]>(API_ROUTES.controller.RIDES_DETAIL_VEHICLE_EVENTS(rideId), { refreshInterval: 1000 });
+	const { data: vehicleEventsData, error: vehicleEventsError, isLoading: vehicleEventsLoading } = useSWR<SimplifiedVehicleEvent[]>(API_ROUTES.controller.RIDES_DETAIL_VEHICLE_EVENTS(rideId), { refreshInterval: 1000 });
 	const { data: simplifiedApexLocationsData, error: simplifiedApexLocationsError, isLoading: simplifiedApexLocationsLoading } = useSWR<SimplifiedApexLocation[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_LOCATIONS(rideId), { refreshInterval: 1000 });
 	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<SimplifiedApexValidation[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_VALIDATIONS(rideId), { refreshInterval: 1000 });
 	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<SimplifiedApexOnBoardSale[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES(rideId), { refreshInterval: 1000 });

@@ -9,14 +9,14 @@ import { rideAnalysisLabels } from './labels';
 
 /* * */
 
-interface Props {
+interface RideAnalysisAnalysisResultItemProps {
 	grade: RideAnalysis['grade']
 	id: string
 }
 
 /* * */
 
-export function RideAnalysisAnalysisResultItem({ grade, id }: Props) {
+export function RideAnalysisAnalysisResultItem({ grade, id }: RideAnalysisAnalysisResultItemProps) {
 	return (
 		<Surface height="full">
 			<Section gap="xs" height="100%" justifyContent="space-between" padding="sm">

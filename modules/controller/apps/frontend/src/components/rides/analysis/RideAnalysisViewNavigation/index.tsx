@@ -14,11 +14,13 @@ export function RideAnalysisViewNavigation() {
 
 	//
 	// A. Setup variables
+
 	const RideAnalysisContext = useRideAnalysisContext();
 	const me = useMeContext();
 
 	//
 	// B. Handle actions
+
 	const handleChangeView = (value: keyof typeof RideAnalysisViewOptions) => {
 		RideAnalysisContext.actions.setSelectedView(value);
 	};

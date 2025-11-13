@@ -1,6 +1,6 @@
 /* * */
 
-import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type VehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -12,5 +12,5 @@ export interface AnalysisData {
 	simplified_apex_on_board_refunds: SimplifiedApexOnBoardRefund[]
 	simplified_apex_on_board_sales: SimplifiedApexOnBoardSale[]
 	simplified_apex_validations: SimplifiedApexValidation[]
-	vehicle_events: VehicleEvent[]
+	vehicle_events: SimplifiedVehicleEvent[]
 }

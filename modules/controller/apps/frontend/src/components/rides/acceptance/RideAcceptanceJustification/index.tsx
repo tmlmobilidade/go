@@ -1,5 +1,7 @@
 'use client';
 
+/* * */
+
 import { AcceptanceStatusProps, AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { CauseIcons } from '@/lib/icons';

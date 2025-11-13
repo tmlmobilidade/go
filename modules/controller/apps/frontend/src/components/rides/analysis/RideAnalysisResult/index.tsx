@@ -8,12 +8,14 @@ import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface Props {
+interface RideAnalysisAnalysisResultProps {
 	defaultOpen?: boolean
 	items: (RideAnalysis & { id: string })[]
 }
 
-export function RideAnalysisAnalysisResult({ defaultOpen = false, items }: Props) {
+/* * */
+
+export function RideAnalysisAnalysisResult({ defaultOpen = false, items }: RideAnalysisAnalysisResultProps) {
 	//
 
 	//
