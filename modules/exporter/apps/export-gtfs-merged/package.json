@@ -19,10 +19,9 @@
 	"dependencies": {
 		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
 		"gtfs-types": "5.1.0",
 		"yazl": "3.3.1"
