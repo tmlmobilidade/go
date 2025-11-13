@@ -6,6 +6,7 @@ import { exportFeedInfoFile } from '@/exports/feed_info.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportShapesRows } from '@/exports/shapes.js';
 import { exportStopTimesRows } from '@/exports/stop-times.js';
+import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsRows } from '@/exports/trips.js';
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { CsvWriter } from '@helperkits/writer';
@@ -15,8 +16,8 @@ import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
-
-import { exportStopsFile } from './exports/stops.js';
+import fs from 'node:fs';
+import { ZipFile } from 'yazl';
 
 /* * */
 
@@ -200,10 +201,22 @@ import { exportStopsFile } from './exports/stops.js';
 
 		const zipTimer = new Timer();
 
-		await CsvWriter.zipDirectory(
-			`/tmp/${exportVersion}`,
-			`/tmp/gtfs-merged-${exportVersion}.zip`,
-		);
+		const outputZip = new ZipFile();
+
+		await new Promise<void>((resolve) => {
+			const workdirDirContents = fs.readdirSync(exportConfig.workdir, { withFileTypes: true });
+			workdirDirContents.forEach((outputDirFile) => {
+				outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name);
+			});
+			outputZip.outputStream
+				.pipe(fs.createWriteStream(`${exportConfig.workdir}/${exportConfig.version}.zip`))
+				.on('close', resolve);
+			outputZip.end();
+		});
+
+		// const outputZipBuffer = fs.readFileSync(`${exportConfig.workdir}/${exportConfig.version}.zip`);
+
+		Logger.success(`Zipped GTFS export in ${zipTimer.get()}.`);
 
 		//
 		// Finalize the export process
