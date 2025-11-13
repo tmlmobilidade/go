@@ -1,6 +1,6 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/connectors-fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { Permissions } from '@tmlmobilidade/consts';
 import { SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';

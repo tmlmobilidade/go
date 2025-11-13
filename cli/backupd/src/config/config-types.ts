@@ -2,15 +2,11 @@ import { BackupConfig } from '@/backup/backup.service.js';
 import { MongoDbConfig } from '@/database/mongo.service.js';
 import { PostgresConfig } from '@/database/postgres.service.js';
 import { EmailConfig } from '@/mailer/mailer.service.js';
-import { OCIStorageProviderConfiguration, S3StorageProviderConfiguration } from '@tmlmobilidade/interfaces';
+import { OCIStorageProviderConfiguration } from '@tmlmobilidade/interfaces';
 
 export interface StorageConfig {
-	aws_config?: S3StorageProviderConfiguration
 	oci_config?: OCIStorageProviderConfiguration
-	r2_config?: S3StorageProviderConfiguration & {
-		endpoint: string
-	}
-	type: 'aws' | 'cloudflare' | 'oci'
+	type: 'oci'
 }
 
 export interface MongoDBOptions {

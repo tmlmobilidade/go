@@ -69,3 +69,9 @@ db.createUser({
 	roles: [{ db: 'admin', role: 'backup' }],
 	user: 'backup',
 });
+
+db.createUser({
+	pwd: USER_EXPORTS_PASSWORD,
+	roles: [{ db: 'admin', role: 'exports' }],
+	user: 'exports',
+});

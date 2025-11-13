@@ -1,5 +1,6 @@
 /* * */
 
+import { isEmpty, testRide } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -8,8 +9,6 @@ import { Timer } from '@tmlmobilidade/timer';
 import { GtfsCause, Ride, RideAcceptance } from '@tmlmobilidade/types';
 import { compareObjects } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
-
-import { isEmpty, testRide } from './utils.js';
 
 /* * */
 

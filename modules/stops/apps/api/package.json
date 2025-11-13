@@ -13,12 +13,12 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",

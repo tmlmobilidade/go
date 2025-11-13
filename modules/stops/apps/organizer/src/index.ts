@@ -1,7 +1,7 @@
 /* * */
 
 import { type LocationsApiResponse } from '@/types.js';
-import { getAppConfig } from '@tmlmobilidade/consts';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -29,26 +29,26 @@ async function cleanOldValidations() {
 	//
 	// Loop through all stops and request updated attributes for each document
 
-	for (const stopData of allStopsData) {
+	for (const [stopIndex, stopData] of allStopsData.entries()) {
 		//
 
 		//
 		// Check that the stop has the required properties
 
 		if (!stopData.latitude || !stopData.longitude) {
-			Logger.error(`Stop ${stopData._id} does not have a latitude or longitude. Skipping.`);
+			Logger.error(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Stop ${stopData._id} does not have a latitude or longitude. Skipping.`);
 			continue;
 		}
 
 		//
 		// Fetch the relevant Location data for this coordinate pair
 
-		const locationsApiUrl = `${getAppConfig('locations', 'frontend_url', 'production')}/api/locations/coordinates?lat=${stopData.latitude}&lon=${stopData.longitude}`;
+		const locationsApiUrl = `${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${stopData.latitude}&lon=${stopData.longitude}`;
 
 		const { data: locationsData } = await fetchData<LocationsApiResponse>(locationsApiUrl);
 
 		if (!locationsData) {
-			Logger.error(`No locations data found for stop ${stopData._id}. Skipping.`);
+			Logger.error(`[${allStopsData.length - stopIndex}/${allStopsData.length}] No locations data found for stop ${stopData._id}. Skipping.`);
 			continue;
 		}
 
@@ -59,7 +59,7 @@ async function cleanOldValidations() {
 			parish_id: locationsData.parish?._id ?? null,
 		});
 
-		Logger.success(`Updated stop ${stopData._id}: District ${locationsData.district?._id ?? null} | Municipality ${locationsData.municipality?._id ?? null} | Parish ${locationsData.parish?._id ?? null} | Locality ${locationsData.locality?._id ?? null} ${locationsData.locality?.name ?? null}`);
+		Logger.success(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Updated stop ${stopData._id}: District ${locationsData.district?._id ?? null} | Municipality ${locationsData.municipality?._id ?? null} | Parish ${locationsData.parish?._id ?? null} | Locality ${locationsData.locality?._id ?? null} ${locationsData.locality?.name ?? null}`);
 
 		//
 	}

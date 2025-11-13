@@ -11,19 +11,25 @@ export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* ALERTS */
 	alerts: {
-		// SCHEDULED
-		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/scheduled/${id}`,
-		SCHEDULED_LIST: `${getAppConfig('alerts', 'frontend_url')}/scheduled`,
+		// BASE
+		BASE: `${getAppConfig('alerts', 'frontend_url')}`,
 
 		// REALTIME
 		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/realtime/${id}`,
 		REALTIME_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime`,
 		REALTIME_NEW_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime/new`,
+
+		// SCHEDULED
+		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/scheduled/${id}`,
+		SCHEDULED_LIST: `${getAppConfig('alerts', 'frontend_url')}/scheduled`,
 	},
 
 	/* * */
 	/* AUTH */
 	auth: {
+		// BASE
+		BASE: `${getAppConfig('auth', 'frontend_url')}`,
+
 		// AGENCIES
 		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/agencies/${id}`,
 		AGENCIES_LIST: `${getAppConfig('auth', 'frontend_url')}/agencies`,
@@ -38,6 +44,7 @@ export const PAGE_ROUTES = Object.freeze({
 		// ORGANIZATIONS
 		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/organizations/${id}`,
 		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'frontend_url')}/organizations`,
+
 		// RESET_PASSWORD
 		RESET_PASSWORD_LIST: `${getAppConfig('auth', 'frontend_url')}/reset-password`,
 
@@ -56,6 +63,9 @@ export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* CONTROLLER */
 	controller: {
+		// BASE
+		BASE: `${getAppConfig('controller', 'frontend_url')}`,
+
 		// RIDES
 		RIDES_DETAIL: (id: string) => `${getAppConfig('controller', 'frontend_url')}/rides/${id}`,
 		RIDES_LIST: `${getAppConfig('controller', 'frontend_url')}/rides`,
@@ -64,17 +74,17 @@ export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* PERFORMANCE */
 	performance: {
+		// BASE
+		BASE: `${getAppConfig('performance', 'frontend_url')}`,
+
 		// AREAS_1
 		AREAS_1_LIST: `${getAppConfig('performance', 'frontend_url')}/areas/1`,
 
 		// AREAS_2
 		AREAS_2_LIST: `${getAppConfig('performance', 'frontend_url')}/areas/2`,
 
-		// PERFORMANCE
-		PERFORMANCE_LIST: `${getAppConfig('performance', 'frontend_url')}/`,
-
-		// SUPPLY_DEMAND_DEMAND_BY_LINE
-		SUPPLY_DEMAND_DEMAND_BY_LINE_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand/demand-by-line`,
+		// SUPPLY_DEMAND_DEMAND_BY
+		SUPPLY_DEMAND_DEMAND_BY_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand/demand-by`,
 
 		// SUPPLY_DEMAND
 		SUPPLY_DEMAND_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand`,
@@ -86,6 +96,9 @@ export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* PLANS */
 	plans: {
+		// BASE
+		BASE: `${getAppConfig('plans', 'frontend_url')}`,
+
 		// APPROVED
 		APPROVED_DETAIL: (id: string) => `${getAppConfig('plans', 'frontend_url')}/approved/${id}`,
 		APPROVED_LIST: `${getAppConfig('plans', 'frontend_url')}/approved`,
@@ -98,6 +111,9 @@ export const PAGE_ROUTES = Object.freeze({
 	/* * */
 	/* STOPS */
 	stops: {
+		// BASE
+		BASE: `${getAppConfig('stops', 'frontend_url')}`,
+
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'frontend_url')}/${id}`,
 		STOPS_LIST: `${getAppConfig('stops', 'frontend_url')}`,
@@ -108,6 +124,9 @@ export const API_ROUTES = Object.freeze({
 	/* * */
 	/* ALERTS */
 	alerts: {
+		// BASE
+		BASE: `${getAppConfig('alerts', 'api_url')}`,
+
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
@@ -121,6 +140,9 @@ export const API_ROUTES = Object.freeze({
 	/* * */
 	/* AUTH */
 	auth: {
+		// BASE
+		BASE: `${getAppConfig('auth', 'api_url')}`,
+
 		// AGENCIES
 		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}`,
 		AGENCIES_LIST: `${getAppConfig('auth', 'api_url')}/agencies`,
@@ -132,10 +154,6 @@ export const API_ROUTES = Object.freeze({
 		AUTH_PERMISSIONS: `${getAppConfig('auth', 'api_url')}/auth/permissions`,
 		AUTH_VERIFY: `${getAppConfig('auth', 'api_url')}/auth/verify`,
 		AUTH_VERIFY_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/verify-email`,
-
-		// FILE-EXPORTS
-		FILE_EXPORTS_DETAIL_DOWNLOAD: (id: string) => `${getAppConfig('auth', 'api_url')}/file-exports/${id}/download`,
-		FILE_EXPORTS_LIST: `${getAppConfig('auth', 'api_url')}/file-exports`,
 
 		// NOTIFICATIONS
 		NOTIFICATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}`,
@@ -170,6 +188,9 @@ export const API_ROUTES = Object.freeze({
 	/* * */
 	/* CONTROLLER */
 	controller: {
+		// BASE
+		BASE: `${getAppConfig('controller', 'api_url')}`,
+
 		// RIDE-ACCEPTANCE
 		ACCEPTANCE_CHANGE_STATUS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/acceptance/change-status`,
 		ACCEPTANCE_COMMENT: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/acceptance/comment`,
@@ -192,8 +213,22 @@ export const API_ROUTES = Object.freeze({
 	},
 
 	/* * */
+	/* EXPORTER */
+	exporter: {
+		// BASE
+		BASE: `${getAppConfig('exporter', 'api_url')}`,
+
+		// EXPORTER
+		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getAppConfig('exporter', 'api_url')}/exporter/${id}/download`,
+		EXPORTER_LIST: `${getAppConfig('exporter', 'api_url')}/exporter`,
+	},
+
+	/* * */
 	/* LOCATIONS */
 	locations: {
+		// BASE
+		BASE: `${getAppConfig('locations', 'api_url')}`,
+
 		// LOCATIONS
 		LOCATIONS_COORDINATES: `${getAppConfig('locations', 'api_url')}/locations/coordinates`,
 		LOCATIONS_DISTRICTS: `${getAppConfig('locations', 'api_url')}/locations/districts`,
@@ -205,20 +240,26 @@ export const API_ROUTES = Object.freeze({
 	/* * */
 	/* PERFORMANCE */
 	performance: {
+		// BASE
+		BASE: `${getAppConfig('performance', 'api_url')}`,
+
+		// DATES
+		DATES_DATES: `${getAppConfig('performance', 'api_url')}/dates/dates`,
+
 		// METRICS
-		METRICS: `${getAppConfig('performance', 'api_url')}/metrics`,
+		METRICS_: `${getAppConfig('performance', 'api_url')}/METRICNAME:/performance/api/metrics/:metricName`,
 
-		// LINES & PATTERNS
-		LINES_LIST: `${getAppConfig('performance', 'api_url')}/lines`,
-		PATTERNS_LIST: `${getAppConfig('performance', 'api_url')}/patterns`,
-
-		// CALENDAR
-		CALENDAR_LIST: `${getAppConfig('performance', 'api_url')}/dates`,
+		// NETWORK
+		NETWORK_LINES: `${getAppConfig('performance', 'api_url')}/network/lines`,
+		NETWORK_PATTERNS: `${getAppConfig('performance', 'api_url')}/network/patterns`,
 	},
 
 	/* * */
 	/* PLANS */
 	plans: {
+		// BASE
+		BASE: `${getAppConfig('plans', 'api_url')}`,
+
 		// PLANS
 		PLANS_APPROVED: `${getAppConfig('plans', 'api_url')}/plans/approved`,
 		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,
@@ -226,7 +267,7 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/controller-reprocess`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
 		PLANS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/toggle-lock`,
-		PLANS_DRT_MODEL_DB: `${getAppConfig('plans', 'api_url')}/plans/drt-model.db`,
+		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
 
 		// VALIDATIONS
@@ -239,6 +280,9 @@ export const API_ROUTES = Object.freeze({
 	/* * */
 	/* STOPS */
 	stops: {
+		// BASE
+		BASE: `${getAppConfig('stops', 'api_url')}`,
+
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,

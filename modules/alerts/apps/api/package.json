@@ -12,13 +12,13 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "dotenv-run -f ./environments/development/secrets/.env -- tsx watch src/index.ts",
+		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/interfaces": "*",

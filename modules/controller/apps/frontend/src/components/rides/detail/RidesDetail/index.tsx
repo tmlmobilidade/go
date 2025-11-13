@@ -2,14 +2,13 @@
 
 /* * */
 
+import { RideAcceptance } from '@/components/rides/acceptance/RideAcceptance';
+import { RideAnalysisAnalysis } from '@/components/rides/analysis/RideAnalysis';
+import { RideAnalysisViewNavigation } from '@/components/rides/analysis/RideAnalysisViewNavigation';
+import { RideAnalysisAudit } from '@/components/rides/audit';
 import { RidesDetailHeader } from '@/components/rides/detail/RidesDetailHeader';
-import { RidesDetailViewNavigation } from '@/components/rides/detail/RidesDetailViewNavigation';
-import { useRidesDetailContext } from '@/contexts/RidesDetail.context';
+import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-
-import { RidesDetailAcceptance } from '../acceptance';
-import { RidesDetailAnalysis } from '../analysis';
-import { RidesDetailAudit } from '../audit';
 
 /* * */
 
@@ -19,24 +18,24 @@ export function RidesDetail() {
 	//
 	// A. Setup variables
 
-	const ridesDetailContext = useRidesDetailContext();
+	const RideAnalysisContext = useRideAnalysisContext();
 
 	//
 	// B. Render components
 
-	if (ridesDetailContext.flags.loading) {
+	if (RideAnalysisContext.flags.loading) {
 		return <LoadingOverlay />;
 	}
 
-	if (ridesDetailContext.flags.error) {
-		return <ErrorDisplay message={ridesDetailContext.flags.error.message} />;
+	if (RideAnalysisContext.flags.error) {
+		return <ErrorDisplay message={RideAnalysisContext.flags.error.message} />;
 	}
 
 	return (
-		<Pane header={[<RidesDetailHeader />, <RidesDetailViewNavigation />]}>
-			{ridesDetailContext.data.selected_view === 'ANALYSIS' && <RidesDetailAnalysis />}
-			{ridesDetailContext.data.selected_view === 'AUDIT' && <RidesDetailAudit />}
-			{ridesDetailContext.data.selected_view === 'ACCEPTANCE' && <RidesDetailAcceptance />}
+		<Pane header={[<RidesDetailHeader />, <RideAnalysisViewNavigation />]}>
+			{RideAnalysisContext.data.selected_view === 'ANALYSIS' && <RideAnalysisAnalysis />}
+			{RideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />}
+			{RideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />}
 		</Pane>
 	);
 

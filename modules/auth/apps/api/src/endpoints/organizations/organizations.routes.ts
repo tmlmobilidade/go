@@ -1,7 +1,7 @@
 /* * */
 
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
-import { FastifyService } from '@tmlmobilidade/connectors-fastify';
+import { FastifyService } from '@tmlmobilidade/fastify';
 import { Permissions } from '@tmlmobilidade/consts';
 
 import { OrganizationsController } from './organizations.controller.js';

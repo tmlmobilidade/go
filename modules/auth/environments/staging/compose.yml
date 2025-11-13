@@ -88,23 +88,6 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  file-exporter:
-    image: ghcr.io/tmlmobilidade/go-auth-file-exporter:staging
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    volumes:
-      - ./secrets:/secrets
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
   cleaner:
     image: ghcr.io/tmlmobilidade/go-auth-cleaner:staging
     deploy:

@@ -5,8 +5,6 @@ import { type SQLiteTable } from '@/types.js';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import BSQLite3, { type Database } from 'better-sqlite3';
 
-/* * */
-
 /**
  * @deprecated Use `SQLiteDatabase` instead.
  */

@@ -13,29 +13,11 @@ function validateConfig(config: AppConfig) {
 		throw new Error('Missing required field \'storage\' configuration.');
 	}
 
-	if (config.storage.type !== 'aws' && config.storage.type !== 'cloudflare' && config.storage.type !== 'oci') {
-		throw new Error('Invalid storage type. Supported types are \'aws\', (\'cloudflare\' or \'r2\'), \'oci\'.');
+	if (config.storage.type !== 'oci') {
+		throw new Error('Invalid storage type. Supported types are \'oci\'.');
 	}
 
-	if (config.storage.type === 'aws') {
-		if (!config.storage.aws_config) {
-			throw new Error('Storage type is \'aws\' but \'aws_config\' is missing.');
-		}
-		const { access_key_id, bucket_name, region, secret_access_key } = config.storage.aws_config;
-		if (!access_key_id || !secret_access_key || !bucket_name || !region) {
-			throw new Error('Missing required fields in \'aws_config\'. Ensure \'access_key_id\', \'secret_access_key\', \'bucket_name\', and \'region\' are set.');
-		}
-	}
-	else if (config.storage.type === 'cloudflare') {
-		if (!config.storage.r2_config) {
-			throw new Error('Storage type is \'cloudflare\' but \'r2_config\' is missing.');
-		}
-		const { access_key_id, bucket_name, endpoint, secret_access_key } = config.storage.r2_config;
-		if (!access_key_id || !bucket_name || !endpoint || !secret_access_key) {
-			throw new Error('Missing required fields in \'r2_config\'. Ensure \'access_key_id\', \'bucket_name\', \'endpoint\', and \'secret_access_key\' are set.');
-		}
-	}
-	else if (config.storage.type === 'oci') {
+	if (config.storage.type === 'oci') {
 		if (!config.storage.oci_config) {
 			throw new Error('Storage type is \'oci\' but \'oci_config\' is missing.');
 		}

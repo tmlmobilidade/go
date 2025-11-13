@@ -5,7 +5,7 @@
 import CheckCard from '@/components/common/CheckCard';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionAction } from '@/lib/permissions';
-import { Permission } from '@tmlmobilidade/types';
+import { Permission, Role } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';
@@ -29,7 +29,7 @@ interface PermissionsSectionProps {
 	description: string
 	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
 	onToggle: (scope: string, action: string, send_email?: boolean) => void
-	roles?: { _id: string, permissions: Permission<unknown>[] }[]
+	roles?: Role[]
 	scope: string
 	title: string
 	userRoleIds?: string[]

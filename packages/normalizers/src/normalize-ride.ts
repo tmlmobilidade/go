@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { DelayStatusSchema, type Ride, RideAnalysisGrade, type RideNormalized } from '@tmlmobilidade/types';
+import { DelayStatusSchema, type Ride, type RideAnalysisGrade, type RideNormalized } from '@tmlmobilidade/types';
 
 /**
  * This function normalizes a Ride object by adding additional properties

@@ -1,7 +1,7 @@
 /* * */
 
 import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
-import { SimplifiedApexTypeSchema } from '@/simplified-apex/simplified-apex-type.js';
+import { SimplifiedApexTypeSchema } from '@/apex/simplified-apex-type.js';
 import { z } from 'zod';
 
 /* * */

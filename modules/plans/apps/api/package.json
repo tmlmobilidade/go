@@ -13,13 +13,13 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@tmlmobilidade/connectors-fastify": "*",
-		"@tmlmobilidade/connectors-rabbitmq": "*",
+		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/interfaces": "*",

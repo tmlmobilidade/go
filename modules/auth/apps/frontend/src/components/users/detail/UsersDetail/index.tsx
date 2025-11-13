@@ -8,6 +8,7 @@ import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
 import { UsersDetailRolesAndOrganization } from '@/components/users/detail/UsersDetailRolesAndOrganization';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
+import { Permission } from '@tmlmobilidade/types';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -23,7 +24,7 @@ export function UsersDetail() {
 			<PermissionSectionGroup
 				onResourceToggle={actions.handlePermissionResourceToggle}
 				onToggle={actions.handlePermissionToggle}
-				permissions={data.form.values.permissions}
+				permissions={data.form.values.permissions as Permission<unknown>[]}
 				roles={roles.raw}
 				userRoleIds={data.form.values.role_ids}
 			/>

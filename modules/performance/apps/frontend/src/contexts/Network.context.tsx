@@ -38,8 +38,8 @@ export const NetworkContextProvider = ({ children }: { children: React.ReactNode
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<string[]>(`${API_ROUTES.performance.LINES_LIST}`);
-	const { data: allPatternsData, isLoading: allPatternsLoading } = useSWR<string[]>(`${API_ROUTES.performance.PATTERNS_LIST}`);
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<string[]>(API_ROUTES.performance.NETWORK_LINES);
+	const { data: allPatternsData, isLoading: allPatternsLoading } = useSWR<string[]>(API_ROUTES.performance.NETWORK_PATTERNS);
 	// const allPatternsData = [];
 	// const allPatternsLoading = false;
 

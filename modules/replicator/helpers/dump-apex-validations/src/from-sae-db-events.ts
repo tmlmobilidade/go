@@ -2,11 +2,11 @@
 
 import { CsvWriter } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
-import { vehicleEvents } from '@tmlmobilidade/interfaces';
+import { simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { VehicleEvent } from '@tmlmobilidade/types';
+import { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /* * */
@@ -22,7 +22,7 @@ export async function dumpVehicleEventsFromSaeDb() {
 		//
 		// Connect to databases and setup DB writers
 
-		const collection = await vehicleEvents.getCollection();
+		const collection = await simplifiedVehicleEvents.getCollection();
 
 		/* * * * * * * * * * * * * * * * */
 		/* * * SETUP YOUR QUERY HERE * * */
@@ -68,7 +68,7 @@ export async function dumpVehicleEventsFromSaeDb() {
 
 		for await (const doc of stream) {
 			// Enforce type
-			const data: VehicleEvent = doc;
+			const data: SimplifiedVehicleEvent = doc;
 			// Anonymize driver ID
 			if (!driverIds[data.driver_id]) {
 				driverIds[data.driver_id] = generateRandomString();

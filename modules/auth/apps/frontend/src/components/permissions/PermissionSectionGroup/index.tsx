@@ -1,7 +1,7 @@
 /* * */
 
 import { permissionsConfig } from '@/lib/permissions';
-import { Permission } from '@tmlmobilidade/types';
+import { Permission, Role } from '@tmlmobilidade/types';
 
 import { PermissionSectionInputProps, PermissionsSection, WithResourceToggle } from '../PermissionSection';
 
@@ -14,7 +14,7 @@ export function PermissionSectionGroup({
 	roles,
 	userRoleIds,
 }: WithResourceToggle<PermissionSectionInputProps, Permission<unknown>> & {
-	roles?: { _id: string, permissions: Permission<unknown>[] }[]
+	roles?: Role[]
 	userRoleIds?: string[]
 }) {
 	return (

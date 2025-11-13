@@ -1,1 +1,1 @@
-export * from '@/interfaces/vehicle-events/vehicle-events.js';
+export * from '@/interfaces/vehicle-events/simplified-vehicle-events.js';

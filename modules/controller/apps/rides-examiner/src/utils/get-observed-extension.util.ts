@@ -1,6 +1,6 @@
 /* * */
 
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * The observed extension is the distance between the odomoter values of the first and last events.
@@ -8,7 +8,7 @@ import { type VehicleEvent } from '@tmlmobilidade/types';
  * @param endEvent
  * @returns The observed extension in meters
  */
-export function getObservedExtension(startEvent: VehicleEvent, endEvent: VehicleEvent): null | number {
+export function getObservedExtension(startEvent: SimplifiedVehicleEvent, endEvent: SimplifiedVehicleEvent): null | number {
 	//
 
 	if (!startEvent || !startEvent.odometer) {

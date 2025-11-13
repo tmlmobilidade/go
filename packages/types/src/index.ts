@@ -7,6 +7,7 @@ export * from '@/_common/index.js';
 
 export * from '@/agency.js';
 export * from '@/alert.js';
+export * from '@/apex/index.js';
 export * from '@/auth/index.js';
 export * from '@/file-exports/index.js';
 export * from '@/file.js';
@@ -20,8 +21,7 @@ export * from '@/plans/index.js';
 export * from '@/proposed-change.js';
 export * from '@/rides/index.js';
 export * from '@/sams/index.js';
-export * from '@/simplified-apex/index.js';
 export * from '@/stop.js';
-export * from '@/vehicle-event.js';
+export * from '@/vehicle-events/index.js';
 export * from '@/wiki.js';
 export * from '@/zone.js';

@@ -11,12 +11,12 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint . && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"start": "npm run build && node dist/index.js"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "3.927.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

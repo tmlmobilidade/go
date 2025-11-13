@@ -1,19 +1,19 @@
 /* * */
 
-import { rides, vehicleEvents } from '@tmlmobilidade/interfaces';
-import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { type VehicleEvent } from '@tmlmobilidade/types';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
+import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
-const vehicleEventsDbWritter = new MongoDbWriter<VehicleEvent>({
+const vehicleEventsDbWritter = new MongoDbWriter<SimplifiedVehicleEvent>({
 	batch_size: 500,
 	batch_timeout: 10000,
-	collection: await vehicleEvents.getCollection(),
+	collection: await simplifiedVehicleEvents.getCollection(),
 	idle_timeout: 10000,
 });
 
@@ -46,7 +46,7 @@ export async function processVehicleEvent(databaseOperation) {
 	// Setup the callback function that will be called on the DB Writer flush operation
 	// to invalidate all the rides that are affected by the new data.
 
-	const flushCallback = async (flushedData: MongoDBWriterWriteOps<VehicleEvent>[]) => {
+	const flushCallback = async (flushedData: MongoDBWriterWriteOps<SimplifiedVehicleEvent>[]) => {
 		try {
 			//
 

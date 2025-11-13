@@ -1,6 +1,6 @@
 /* * */
 
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/logger';
 

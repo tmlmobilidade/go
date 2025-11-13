@@ -1,7 +1,7 @@
 /* * */
 
-import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 
 /* * */
 

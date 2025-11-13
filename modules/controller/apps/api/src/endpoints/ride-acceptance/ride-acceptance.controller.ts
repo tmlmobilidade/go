@@ -1,11 +1,10 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/interfaces';
-import { GtfsCause, NoteComment, RideAcceptanceStatusSchema, UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
-import { RideAcceptance } from '@tmlmobilidade/types';
+import { type GtfsCause, type NoteComment, type RideAcceptance, RideAcceptanceStatusSchema, type UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 
 /* * */
 

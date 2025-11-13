@@ -12,15 +12,16 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "dotenv-run -- tsx watch src/index.ts",
-		"lint": "eslint . && tsc --noEmit",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*",
 		"pino-pretty": "13.1.2"
 	},

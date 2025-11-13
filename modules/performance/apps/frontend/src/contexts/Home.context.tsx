@@ -1,13 +1,13 @@
 'use client';
 
-import { AGENCIES, AgencyType } from '@/constants';
 /* * */
 
+import { AGENCIES, AgencyType } from '@/constants';
 import { MetricsRoutes } from '@/routes';
 import { calculateSystemHealthIndex, getSystemStatusInfo, StatusInfo } from '@/utils/systemStatus';
 import { RealtimeDemand, RealtimeServiceCompliance } from '@tmlmobilidade/types';
 import { useTranslations } from 'next-intl';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -40,7 +40,7 @@ export function useHomeContext() {
 
 /* * */
 
-export const HomeContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const HomeContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//

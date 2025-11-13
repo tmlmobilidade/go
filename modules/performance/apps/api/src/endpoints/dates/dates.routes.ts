@@ -1,6 +1,6 @@
 /* * */
 
-import { FastifyService } from '@tmlmobilidade/connectors-fastify';
+import { FastifyService } from '@tmlmobilidade/fastify';
 import { FastifyInstance } from 'fastify';
 
 import { DatesController } from './dates.controller.js';

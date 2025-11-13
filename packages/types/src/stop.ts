@@ -20,8 +20,8 @@ const FACILITIES_VALUES = ['fire_station', 'health_clinic', 'historic_building',
 const HAS_ANY = ['yes', 'no', 'unknown'] as const;
 const EQUIPMENT_VALUES = ['pip', 'mupi', 'mini_pip'] as const;
 
-export const JurisdictionSchema = z.enum(JURISDICTION_VALUES);
-export const StopLifecycleStatusSchema = z.enum(STOP_LIFECYCLE_STATUS_VALUES);
+export const jurisdictionSchema = z.enum(JURISDICTION_VALUES);
+export const stopLifecycleStatusSchema = z.enum(STOP_LIFECYCLE_STATUS_VALUES);
 export const electricityStatusSchema = z.enum(ELECTRICITY_STATUS_VALUES);
 export const roadTypeSchema = z.enum(ROAD_TYPE_VALUES);
 export const infrastructureStatusSchema = z.enum(INFRASTRUCTURE_STATUS_VALUES);
@@ -33,8 +33,8 @@ export const equipmentSchema = z.enum(EQUIPMENT_VALUES);
 //
 // Define types based on schemas
 
-export type Jurisdiction = z.infer<typeof JurisdictionSchema>;
-export type StopLifecycleStatus = z.infer<typeof StopLifecycleStatusSchema>;
+export type Jurisdiction = z.infer<typeof jurisdictionSchema>;
+export type StopLifecycleStatus = z.infer<typeof stopLifecycleStatusSchema>;
 export type ElectricityStatus = z.infer<typeof electricityStatusSchema>;
 export type RoadType = z.infer<typeof roadTypeSchema>;
 export type InfrastructureStatus = z.infer<typeof infrastructureStatusSchema>;
@@ -50,9 +50,9 @@ export const StopSchema = DocumentSchema.extend({
 	_id: z.string(),
 	is_archived: z.boolean().default(false),
 	is_locked: z.boolean().default(false),
-	jurisdiction: JurisdictionSchema,
+	jurisdiction: jurisdictionSchema,
 	legacy_id: z.string().nullish(),
-	lifecycle_status: StopLifecycleStatusSchema,
+	lifecycle_status: stopLifecycleStatusSchema,
 	name: z.string(),
 	new_name: z.string().nullish(),
 	short_name: z.string().nullish(),

@@ -1,7 +1,7 @@
 /* * */
 
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/connectors-fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/consts';
 import { files, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';

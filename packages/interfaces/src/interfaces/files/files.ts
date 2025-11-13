@@ -1,12 +1,12 @@
 /* * */
 
-import { MongoCollectionClass } from '@/mongo-collection.js';
+import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { IStorageProvider, StorageFactory } from '@/providers/index.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
 import { Files } from '@tmlmobilidade/files';
 import { generateRandomString } from '@tmlmobilidade/strings';
+import { CreateFileDto, CreateFileSchema, File, FileSchema, UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
+import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
 import { DeleteOptions, DeleteResult, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
 import { Readable } from 'node:stream';
 import { z } from 'zod';
@@ -23,7 +23,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	private constructor() {
 		super();
 
-		switch (process.env.TML_INTERFACE_FILES_STORAGE_TYPE) {
+		switch (process.env.STORAGE_TYPE) {
 			case 'oci':
 				if (!process.env.OCI_BUCKET_NAME || !process.env.OCI_FINGERPRINT || !process.env.OCI_NAMESPACE || !process.env.OCI_PRIVATE_KEY || !process.env.OCI_REGION || !process.env.OCI_TENANCY || !process.env.OCI_USER) {
 					throw new Error('OCI_BUCKET_NAME, OCI_FINGERPRINT, OCI_NAMESPACE, OCI_PRIVATE_KEY, OCI_REGION, OCI_TENANCY, and OCI_USER must be set');
@@ -43,7 +43,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 				});
 				break;
 			default:
-				throw new Error(`Invalid storage type: ${process.env.TML_INTERFACE_FILES_STORAGE_TYPE}`);
+				throw new Error(`Invalid storage type: ${process.env.STORAGE_TYPE}`);
 		}
 	}
 

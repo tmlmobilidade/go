@@ -13,11 +13,11 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
-		"@tmlmobilidade/connectors-rabbitmq": "*",
+		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
 		"@tmlmobilidade/interfaces": "*",

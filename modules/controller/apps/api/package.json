@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@fastify/websocket": "11.2.0",
-		"@tmlmobilidade/connectors-fastify": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/interfaces": "*",

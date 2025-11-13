@@ -392,6 +392,16 @@ generate_routes_for_type() {
         echo "	/* ${module_comment_upper} */" >> "$output_file"
         echo "	${module_name}: {" >> "$output_file"
         
+        # Add BASE route at the beginning of each module group
+        if [ "$route_type" = "api" ]; then
+            echo "		// BASE" >> "$output_file"
+            echo "		BASE: \`\${getAppConfig('${module_name}', 'api_url')}\`," >> "$output_file"
+        else
+            echo "		// BASE" >> "$output_file"
+            echo "		BASE: \`\${getAppConfig('${module_name}', 'frontend_url')}\`," >> "$output_file"
+        fi
+        echo "" >> "$output_file"
+        
         # Process routes, deduplicating by route name and grouping by file name
         route_temp=$(mktemp)
         # Write all routes to temp file first, then deduplicate
@@ -472,15 +482,23 @@ generate_routes_for_type() {
                     echo "		${route_name}: \`\${getAppConfig('${module_name}', 'api_url')}/${clean_api_path}\`," >> "$output_file"
                 fi
             else
-                # Frontend routes - keep existing logic
+                # Frontend routes - use getAppConfig with frontend_url
+                # Remove leading slash from route_path for concatenation
+                clean_frontend_path=$(echo "$route_path" | sed 's|^/||')
+                
                 # Check if it's a detail route (contains ${id})
                 if [[ "$route_path" == *"\${id}"* ]] || [[ "$route_path" == *'${id}'* ]]; then
-                    # Convert to function format
-                    clean_path=$(echo "$route_path" | sed 's|\\${id}|${id}|g' | sed "s|\${id}|\${id}|g")
-                    echo "		${route_name}: (id: string) => \`${clean_path}\`," >> "$output_file"
+                    # Convert to function format with getAppConfig
+                    clean_path=$(echo "$clean_frontend_path" | sed 's|\\${id}|${id}|g' | sed "s|\${id}|\${id}|g")
+                    echo "		${route_name}: (id: string) => \`\${getAppConfig('${module_name}', 'frontend_url')}/${clean_path}\`," >> "$output_file"
                 else
-                    # Regular string route
-                    echo "		${route_name}: '${route_path}'," >> "$output_file"
+                    # Regular string route with getAppConfig
+                    # Handle root route (empty path) - use frontend_url directly without trailing slash
+                    if [ -z "$clean_frontend_path" ]; then
+                        echo "		${route_name}: \`\${getAppConfig('${module_name}', 'frontend_url')}\`," >> "$output_file"
+                    else
+                        echo "		${route_name}: \`\${getAppConfig('${module_name}', 'frontend_url')}/${clean_frontend_path}\`," >> "$output_file"
+                    fi
                 fi
             fi
         done < "$route_temp"

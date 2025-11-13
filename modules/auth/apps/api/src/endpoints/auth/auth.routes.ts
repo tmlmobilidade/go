@@ -1,7 +1,7 @@
 /* * */
 
 import { AuthController } from '@/endpoints/auth/auth.controller.js';
-import { FastifyService } from '@tmlmobilidade/connectors-fastify';
+import { FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 

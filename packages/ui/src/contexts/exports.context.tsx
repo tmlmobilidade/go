@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, getAppConfig, HttpException } from '@tmlmobilidade/consts';
 import { CreateFileExportDto, FileExport, FileExportType } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
@@ -55,7 +55,7 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Handle actions
 
 	async function create<T extends { properties: Record<string, unknown>, type: FileExportType }>(dto: CreateFileExportDto<T>): Promise<FileExport> {
-		const response = await fetchData<FileExport>(`${getAppConfig('auth', 'api_url')}/file-exports`, 'POST', dto);
+		const response = await fetchData<FileExport>(API_ROUTES.exporter.EXPORTER_LIST, 'POST', dto);
 
 		if (response.error || !response.data) {
 			throw new HttpException(response.statusCode, response.error ?? 'Failed to create file export');

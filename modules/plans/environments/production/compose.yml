@@ -107,17 +107,3 @@ services:
       - ./secrets:/secrets
     env_file:
       - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  export-drt:
-    image: ghcr.io/tmlmobilidade/go-plans-export-drt:production
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-    volumes:
-      - ./secrets:/secrets
-    env_file:
-      - ./secrets/.env
