@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const VehicleEventSchema = DocumentSchema.extend({
+export const GtfsRtVehicleEventExtendedSchema = DocumentSchema.extend({
 	agency_id: z.string(),
 	driver_id: z.string(),
 	event_id: z.string(),
@@ -30,4 +30,4 @@ export const VehicleEventSchema = DocumentSchema.extend({
  * These events are based on the GTFS-RT specification but extended with additional fields
  * specific to TML's needs.
  */
-export type VehicleEvent = z.infer<typeof VehicleEventSchema>;
+export type GtfsRtVehicleEventExtended = z.infer<typeof GtfsRtVehicleEventExtendedSchema>;
