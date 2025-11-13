@@ -1,0 +1,45 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+}
+
+/* * */
+/* PROPS / SIZE */
+
+.container[data-size="full"] {
+    --spacer-size: 100%;
+}
+
+.container[data-size="lg"] {
+	--spacer-size: var(--size-spacing-lg);
+}
+
+.container[data-size="md"] {
+	--spacer-size: var(--size-spacing-md);
+}
+
+.container[data-size="sm"] {
+	--spacer-size: var(--size-spacing-sm);
+}
+
+/* * */
+/* PROPS / ORIENTATION */
+
+.container[data-orientation="vertical"] {
+	width: 2px;
+    height: var(--spacer-size);
+}
+
+.container[data-orientation="horizontal"] {
+    width: var(--spacer-size);
+    height: 2px;
+}
+
+/* * */
+/* PROPS / SHRINK */
+
+.container[data-shrink="true"] {
+	flex-shrink: 999;
+}

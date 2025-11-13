@@ -1,0 +1,41 @@
+{
+	"name": "@tmlmobilidade/backupd",
+	"description": "A backup service for databases.",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"main": "./dist/index.js",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"lint": "eslint ./src && tsc --noEmit",
+		"start": "npm run build && node dist/index.js"
+	},
+	"dependencies": {
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
+		"@types/archiver": "7.0.0",
+		"archiver": "7.0.1",
+		"mongodb": "7.0.0",
+		"nodemailer": "7.0.10",
+		"pg": "8.16.3",
+		"react": "19.2.0",
+		"resolve-tspaths": "0.8.23",
+		"yaml": "2.8.1"
+	},
+	"devDependencies": {
+		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/node": "24.10.0",
+		"@types/nodemailer": "7.0.3",
+		"typescript": "5.9.3"
+	}
+}

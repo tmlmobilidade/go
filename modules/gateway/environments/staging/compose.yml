@@ -1,0 +1,66 @@
+# # #
+
+name: tmlmobilidade-go-gateway-staging
+
+volumes:
+  certbotdata:
+
+services:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  wud:
+    image: getwud/wud
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 100mb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WUD_TRIGGER_DOCKER_DEFAULT_PRUNE=true
+      - WUD_WATCHER_LOCAL_WATCHALL=true
+      - WUD_WATCHER_LOCAL_CRON=* * * * *
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  nginx:
+    image: ghcr.io/tmlmobilidade/go-gateway-nginx:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt:ro
+      - certbotdata:/var/www/certbot:ro
+    ports:
+      - 80:80
+      - 443:443
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    mem_limit: 2g
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt
+      - certbotdata:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

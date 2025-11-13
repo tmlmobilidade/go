@@ -1,0 +1,55 @@
+name: "Setup Node Environment"
+description: "Sets up Node.js with npm and installs dependencies"
+
+inputs:
+  node-version:
+    description: "Node.js version"
+    required: true
+    default: "20"
+  directory:
+    description: "Working directory"
+    required: true
+    default: "."
+  with-npm-cache:
+    description: "Whether to use npm cache"
+    required: false
+    default: "true"
+  with-turbo-cache:
+    description: "Whether to use turbo cache"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Use Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: https://registry.npmjs.org
+        cache: "npm"
+        cache-dependency-path: ${{ inputs.directory }}/package-lock.json
+
+    - name: Configurar cache do npm
+      if: ${{ inputs.with-npm-cache == 'true' || inputs.with-npm-cache == true }}
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm # Cache da pasta global do npm
+        key: npm-${{ runner.os }}-${{ hashFiles('${{ inputs.directory }}/package-lock.json') }}
+        restore-keys: |
+          npm-${{ runner.os }}-
+
+    - name: Cache turbo build setup
+      if: ${{ inputs.with-turbo-cache == 'true' || inputs.with-turbo-cache == true }}
+      uses: actions/cache@v4
+      with:
+        path: .turbo
+        key: ${{ runner.os }}-turbo-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+      working-directory: ${{ inputs.directory }}

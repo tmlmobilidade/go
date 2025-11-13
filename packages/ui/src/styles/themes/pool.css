@@ -1,0 +1,25 @@
+:root {
+	--theme-pool-color-primary: #28c8a0;
+	--theme-pool-color-secondary: #0a966e;
+	--theme-pool-color-background: #e6fff5;
+	--theme-pool-color-contrast: #fff;
+	--theme-pool-color-shadow: #0a643c40;
+}
+
+:root[data-mode="dark"] {
+	--theme-pool-color-primary: #1eaa8c;
+	--theme-pool-color-secondary: #0a966e;
+	--theme-pool-color-background: #1e2d28;
+	--theme-pool-color-contrast: #0a3228;
+	--theme-pool-color-shadow: #05231440;
+}
+
+/* * */
+
+:root[data-theme="pool"] {
+	--color-primary: var(--theme-pool-color-primary);
+	--color-secondary: var(--theme-pool-color-secondary);
+	--color-background: var(--theme-pool-color-background);
+	--color-contrast: var(--theme-pool-color-contrast);
+	--color-shadow: var(--theme-pool-color-shadow);
+}

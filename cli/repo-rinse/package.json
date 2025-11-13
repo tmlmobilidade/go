@@ -1,0 +1,23 @@
+{
+	"name": "@tmlmobilidade/repo-rinse",
+	"description": "A CLI tool to clean up and maintain a NodeJS repository.",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"bin": {
+		"repo-rinse": "src/repo-rinse.sh"
+	},
+	"scripts": {
+		"start": "sh ./src/repo-rinse.sh"
+	},
+	"devDependencies": {
+		"@carrismetropolitana/eslint": "20250622.1204.50"
+	}
+}

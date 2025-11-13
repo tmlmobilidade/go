@@ -49,9 +49,9 @@
 	"workbench.editor.customLabels.enabled": true,
 
 	"workbench.editor.customLabels.patterns": {
+		"**/*.tsx": "${dirname} (${extname})",
 		"**/components/**/*.css": "${dirname} (${extname})",
-		"**/components/**/*.js": "${dirname} (${extname})",
-		"**/components/**/*.tsx": "${dirname} (${extname})"
-	},
+		"**/components/**/*.js": "${dirname} (${extname})"
+	}
 
 }

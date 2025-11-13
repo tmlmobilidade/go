@@ -1,0 +1,108 @@
+/* * */
+/* TAG */
+
+.tag {
+	display: flex;
+	gap: 3px;
+	align-items: center;
+	justify-content: flex-start;
+	width: auto;
+	padding: 5px;
+	border-radius: 3px;
+}
+
+.icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	margin: 1px;
+}
+
+.label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-clamp: 1;
+	font-size: 16px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+/* * */
+/* PROPS / VARIANT */
+
+.tag[data-variant='primary'] {
+	color: var(--color-primary);
+	background-color: var(--color-background);
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.tag[data-variant='primary'][data-filled="true"] {
+	color: var(--color-contrast);
+	background-color: var(--color-primary);
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.tag[data-variant='secondary'] {
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-200);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='muted'] {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='success'] {
+	color: var(--color-status-success-primary);
+	background-color: var(--color-status-success-contrast);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='success'][data-filled="true"] {
+	color: var(--color-status-success-contrast);
+	background-color: var(--color-status-success-primary);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='warning'] {
+	padding: 3px;
+	color: var(--color-status-warning-primary);
+	background-color: var(--color-status-warning-contrast);
+	border: 2px solid var(--color-status-warning-primary);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='warning'][data-filled="true"] {
+	padding: 3px;
+	color: var(--color-status-warning-contrast);
+	background-color: var(--color-status-warning-primary);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='danger'] {
+	padding: 3px;
+	color: var(--color-status-danger-primary);
+	background-color: var(--color-status-danger-contrast);
+	border: 2px solid var(--color-status-danger-primary);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='danger'][data-filled="true"] {
+	padding: 3px;
+	color: var(--color-status-danger-contrast);
+	background-color: var(--color-status-danger-primary);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+/* * */
+/* PROPS / CLICKABLE */
+
+.tag[data-clickable='true'] {
+	cursor: pointer;
+}

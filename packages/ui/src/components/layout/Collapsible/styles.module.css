@@ -1,0 +1,82 @@
+/* * */
+/* IMPORTANT NOTE */
+/* This file contains styles for the Collapsible component, which is based on the Mantine Accordion component. */
+/* Even though Accordion styles are being overriden in the theme.tsx file, they are double-overriden here      */
+/* because the Collapsible component is a particular implementation of the Accordion component,                */
+/* that needs additional styles because it is supposed to be used as a top-level section.                      */
+/* * */
+
+/* * */
+/* ROOT */
+
+.root {
+	width: 100%;
+}
+
+/* * */
+/* CONTROL */
+
+.control {
+	display: flex;
+	flex-direction: row-reverse;
+	gap: var(--size-spacing-md);
+	align-items: flex-start;
+	padding: var(--size-spacing-xl) var(--size-spacing-md);
+	background-color: var(--color-system-background-100);
+	border-bottom: 1px dashed transparent;
+}
+
+.control[data-active='true'] {
+	border-bottom-color: var(--color-system-border-100);
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+}
+
+/* * */
+/* CONTENT */
+
+.content {
+	padding: 0;
+}
+
+/* * */
+/* ICON */
+
+.icon {
+	color: var(--color-system-border-100);
+}
+
+/* * */
+/* TITLE */
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-bold);
+	line-height: var(--font-line-height);
+	color: var(--color-system-text-100);
+	text-transform: uppercase;
+	transition: color 200ms ease-in-out;
+}
+
+.control:hover .title {
+	text-decoration: underline;
+}
+
+/* * */
+/* DESCRIPTION */
+
+.description {
+	margin: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-regular);
+	line-height: var(--font-line-height);
+	color: var(--color-system-text-200);
+}

@@ -1,0 +1,25 @@
+:root {
+	--theme-ocean-color-primary: #005ADC;
+	--theme-ocean-color-secondary: #0041A0;
+	--theme-ocean-color-background: #E6F0FF;
+	--theme-ocean-color-contrast: #FFF;
+	--theme-ocean-color-shadow: #000A5040;
+}
+
+:root[data-mode="dark"] {
+	--theme-ocean-color-primary: #2864B9;
+	--theme-ocean-color-secondary: #1E4B96;
+	--theme-ocean-color-background: #1E283C;
+	--theme-ocean-color-contrast: #CDE1FF;
+	--theme-ocean-color-shadow: #00083D40;
+}
+
+/* * */
+
+:root[data-theme="ocean"] {
+	--color-primary: var(--theme-ocean-color-primary);
+	--color-secondary: var(--theme-ocean-color-secondary);
+	--color-background: var(--theme-ocean-color-background);
+	--color-contrast: var(--theme-ocean-color-contrast);
+	--color-shadow: var(--theme-ocean-color-shadow);
+}

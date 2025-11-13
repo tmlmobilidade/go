@@ -1,0 +1,9 @@
+/* * */
+/* Button Group */
+
+.buttonGroup{
+	gap: var(--size-spacing-xs);
+	align-items: flex-end ;
+	justify-content: center;
+	padding-top: var(--size-spacing-md);
+}

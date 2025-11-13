@@ -1,0 +1,41 @@
+{
+	"name": "@tmlmobilidade/go-stops-frontend",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "next dev -p 51003",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src",
+		"start": "next start"
+	},
+	"dependencies": {
+		"@tabler/icons-react": "3.35.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
+		"next": "15.5.6",
+		"nuqs": "2.7.3",
+		"react": "19.2.0",
+		"react-dom": "19.2.0",
+		"swr": "2.3.6"
+	},
+	"devDependencies": {
+		"@carrismetropolitana/api-types": "20251104.1218.36",
+		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@types/geojson": "7946.0.16",
+		"@types/node": "24.10.0",
+		"@types/react": "19.2.2",
+		"@types/react-dom": "19.2.2",
+		"typescript": "5.9.3"
+	}
+}

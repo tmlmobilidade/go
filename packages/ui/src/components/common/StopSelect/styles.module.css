@@ -1,0 +1,66 @@
+/* * */
+/* COMBOBOX TARGET WRAPPER */
+
+.comboboxTargetWrapper {
+	position: relative;
+	width: 100%;
+	height: auto;
+}
+
+/* * */
+/* COMBOBOX TARGET TEXT INPUT */
+
+.comboboxTargetTextInput {
+	min-height: 60px;
+}
+
+/* * */
+/* COMBOBOX TARGET INPUT */
+
+.comboboxTargetInput {
+	width: 100%;
+	height: auto;
+	min-height: 60px;
+	max-height: none;
+	padding: 13px calc(var(--size-spacing-md) + 30px);
+	padding-bottom: 12px;
+	font-size: 18px;
+	line-height: 1;
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border: 2px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+}
+
+/* * */
+/* COMBOBOX TARGET SECTION */
+
+.comboboxTargetSection {
+	position: absolute;
+	display: flex;
+	width: auto;
+	padding: var(--size-spacing-sm);
+	color: var(--color-system-text-300);
+}
+
+.comboboxTargetSection[data-position="left"] {
+	left: 1px;
+}
+
+.comboboxTargetSection[data-position="right"] {
+	right: 1px;
+}
+
+/* * */
+/* COMBOBOX OPTION */
+
+.comboboxOption {
+  padding: 6px;
+}
+
+/* * */
+/* SELECTED */
+
+.selected {
+  background-color: var(--color-system-background-200) !important;
+}

@@ -1,0 +1,55 @@
+# # # # # # # # #
+
+FROM node:alpine AS base
+
+ENV APP=backupd
+
+RUN npm install -g turbo@^2
+
+# Install MongoDB
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/main' >> /etc/apk/repositories
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/community' >> /etc/apk/repositories
+RUN apk update
+RUN apk add mongodb-tools
+
+# # # # # # # # #
+
+
+# # #
+# BUILDER STAGE
+
+FROM base AS pruner
+
+WORKDIR /app
+
+COPY . .
+
+RUN turbo prune --scope=@tmlmobilidade/${APP} --docker
+
+
+# # #
+# INSTALLER STAGE
+
+FROM base AS builder
+
+WORKDIR /app
+
+# First install the dependencies (as they change less often)
+COPY --from=pruner /app/out/json/ .
+RUN npm install
+
+# Build the app
+COPY --from=pruner /app/out/full/ .
+RUN turbo run build --filter=@tmlmobilidade/${APP}
+
+
+# # #
+# RUNNER STAGE
+
+FROM base AS runner
+
+WORKDIR /app
+
+COPY --from=builder /app .
+
+CMD node configs/${APP}/dist/index.js

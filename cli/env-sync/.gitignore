@@ -1,0 +1,17 @@
+# Secrets and Configuration
+*.conf
+!*.example.conf
+!*.example.pem
+
+# Backups
+backups/
+
+# OS files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+

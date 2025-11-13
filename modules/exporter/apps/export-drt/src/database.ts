@@ -1,0 +1,144 @@
+/* * */
+
+import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/sqlite';
+import fs from 'fs';
+import path from 'path';
+
+import { DrtAgency, DrtHashedShape, DrtHashedTrip, DrtRide, DrtStop, DrtTables } from './drt.types.js';
+
+/* * */
+
+export interface DatabaseConfig {
+	agency_id?: string
+	database_name: string
+	database_path: string
+}
+
+/* * */
+/* INITIALIZE SQL TABLES */
+function initializeDrtSQLTables(database: SQLiteDatabase): DrtTables {
+	//
+	// Setup Tables
+
+	const agencies = database.registerTable<DrtAgency>('agencies', {
+		batch_size: 10000,
+		columns: [
+			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
+			{ indexed: false, name: 'agency_name', not_null: true, type: 'TEXT' },
+
+		],
+	});
+
+	const shapes = database.registerTable<DrtHashedShape>('shapes', {
+		batch_size: 10000,
+		columns: [
+			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
+			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
+			{ indexed: false, name: 'shape_pt_lat', not_null: true, type: 'REAL' },
+			{ indexed: false, name: 'shape_pt_lon', not_null: true, type: 'REAL' },
+			{ indexed: false, name: 'shape_pt_sequence', not_null: true, type: 'INTEGER' },
+		],
+	});
+
+	const stops = database.registerTable<DrtStop>('stops', {
+		batch_size: 10000,
+		columns: [
+			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
+			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'tts_name', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'longitude', not_null: true, type: 'REAL' },
+			{ indexed: false, name: 'latitude', not_null: true, type: 'REAL' },
+			{ indexed: false, name: 'district_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'locality_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'municipality_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'parish_id', not_null: true, type: 'TEXT' },
+		],
+	});
+
+	const hashed_trips = database.registerTable<DrtHashedTrip>('hashed_trips', {
+		batch_size: 10000,
+		columns: [
+			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
+			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'stop_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
+			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'departure_time', not_null: true, type: 'TEXT' },
+		],
+	});
+
+	const rides = database.registerTable<DrtRide>('rides', {
+		batch_size: 10000,
+		columns: [
+			{ indexed: true, name: '_id', not_null: true, primary_key: true, type: 'TEXT' },
+			{ indexed: false, name: 'hashed_trip_id', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'hashed_shape_id', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'trip_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'plan_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'headsign', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'operational_date', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'start_time_scheduled', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'end_time_scheduled', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'extension_scheduled', not_null: true, type: 'REAL' },
+			{ indexed: false, name: 'block_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'start_shift_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'da_trip_number', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'va_trip_number', not_null: true, type: 'INTEGER' },
+		],
+	});
+
+	return {
+		agencies,
+		hashed_trips,
+		rides,
+		shapes,
+		stops,
+	};
+}
+
+/* * */
+/* DELETE EXISTING DATABASE */
+export function deleteExistingDatabase(config: DatabaseConfig): void {
+	const databasePath = getDatabasePath(config);
+	if (fs.existsSync(databasePath)) {
+		fs.unlinkSync(databasePath);
+	}
+}
+
+/* * */
+/* DELETE ALL AGENCY DATABASES */
+export function deleteAllAgencyDatabases(baseConfig: Omit<DatabaseConfig, 'agency_id'>, agencyIds: string[]): void {
+	for (const agencyId of agencyIds) {
+		const config: DatabaseConfig = { ...baseConfig, agency_id: agencyId };
+		deleteExistingDatabase(config);
+	}
+}
+
+/* * */
+/* INITIALIZE DATABASE */
+export function initializeDatabase(config: DatabaseConfig): { database: SQLiteDatabase, tables: DrtTables } {
+	const databaseName = config.agency_id ? `${config.database_name}-${config.agency_id}` : config.database_name;
+	const databasePath = getDatabasePath(config);
+
+	const sqliteConfig: SQLiteDatabaseConfig = {
+		instanceName: databaseName,
+		instancePath: databasePath,
+	};
+
+	const database = new SQLiteDatabase(sqliteConfig);
+	const tables = initializeDrtSQLTables(database);
+
+	return { database, tables };
+}
+
+/* * */
+/* GET DATABASE PATH */
+export function getDatabasePath(config: DatabaseConfig): string {
+	const databaseName = config.agency_id ? `${config.database_name}-${config.agency_id}` : config.database_name;
+	return path.join(config.database_path, `${databaseName}.db`);
+}

@@ -1,0 +1,18 @@
+/* * */
+/* label wrapper */
+
+.labelWrapper {
+	display: flex;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+	cursor: pointer;
+}
+
+/* * */
+/* checkbox wrapper */
+
+.checkboxWrapper {
+	display: inline-flex;
+}
+
+/* * */

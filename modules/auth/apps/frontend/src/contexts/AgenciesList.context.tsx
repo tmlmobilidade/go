@@ -1,0 +1,106 @@
+'use client';
+
+/* * */
+
+import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { type AgencyNormalized } from '@/types/normalized';
+import { normalizeString } from '@tmlmobilidade/strings';
+import { useSearch } from '@tmlmobilidade/ui';
+import { useQueryState } from 'nuqs';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+
+/* * */
+
+interface AgenciesListContextState {
+	actions: {
+		setFilterSearch: (values: string) => void
+	}
+	data: {
+		filtered: AgencyNormalized[]
+	}
+	filters: {
+		search: string
+	}
+	flags: {
+		error: Error | undefined
+		loading: boolean
+	}
+}
+
+/* * */
+
+const AgenciesListContext = createContext<AgenciesListContextState | undefined>(undefined);
+
+export const useAgenciesListContext = () => {
+	const context = useContext(AgenciesListContext);
+	if (!context) {
+		throw new Error('useAgenciesListContext must be used within an AgenciesListContextProvider');
+	}
+	return context;
+};
+
+/* * */
+
+export const AgenciesListContextProvider = ({ children }: PropsWithChildren) => {
+	//
+
+	//
+	// A. Setup variables
+
+	const agenciesContext = useAgenciesContext();
+
+	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+
+	//
+	// B. Transform data
+
+	const normalizedAgenciesData: AgencyNormalized[] = useMemo(() => {
+		// Skip if no data is available
+		if (!agenciesContext.data.raw) return [];
+		// Normalize record fields
+		return agenciesContext.data.raw
+			.map(item => ({ ...item, name_normalized: normalizeString(item.name) }))
+			.sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
+	}, [agenciesContext.data.raw]);
+
+	const searchResultsData = useSearch<AgencyNormalized>({
+		accessors: ['name_normalized'],
+		data: normalizedAgenciesData,
+		query: filterSearch,
+	});
+
+	//
+	// C. Define context value
+
+	const contextValue: AgenciesListContextState = useMemo(() => ({
+		actions: {
+			setFilterSearch,
+		},
+		data: {
+			filtered: searchResultsData,
+		},
+		filters: {
+			search: filterSearch,
+		},
+		flags: {
+			error: agenciesContext.flags.error,
+			loading: agenciesContext.flags.loading,
+		},
+	}), [
+		agenciesContext.flags.error,
+		agenciesContext.flags.loading,
+		searchResultsData,
+		filterSearch,
+	]);
+
+	//
+	// D. Render components
+
+	return (
+		<AgenciesListContext.Provider value={contextValue}>
+			{children}
+		</AgenciesListContext.Provider>
+	);
+
+	//
+};

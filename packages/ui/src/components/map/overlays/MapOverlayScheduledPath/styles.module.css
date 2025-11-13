@@ -1,0 +1,40 @@
+/* * */
+/* POPUP */
+
+.popup {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+/* * */
+/* ID */
+
+.id {
+	font-size: 16px;
+	font-weight: var(--font-weight-bold);
+	line-height: 1;
+	color: var(--color-secondary);
+}
+
+/* * */
+/* NAME */
+
+.name {
+	font-size: 18px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1.2;
+	color: #000;
+}
+
+/* * */
+/* VALUE */
+
+.value {
+	font-size: 16px;
+	font-weight: var(--font-weight-regular);
+	line-height: 1.2;
+	color: #000;
+}

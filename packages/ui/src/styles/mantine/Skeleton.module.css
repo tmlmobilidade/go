@@ -1,0 +1,27 @@
+/* * */
+/* ROOT */
+
+.root {
+	border-radius: 5px;
+}
+
+.root::before {
+	background-color: var(--color-system-background-100);
+}
+
+.root::after {
+	background-color: var(--color-system-border-100);
+	animation: pulse-animation 2500ms ease-in-out infinite;
+}
+
+/* * */
+/* ANIMATION */
+
+@keyframes pulse-animation {
+	0%, 100% {
+		opacity: .4;
+	}
+	50% {
+		opacity: 0.8;
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"name": "@tmlmobilidade/tsconfig",
+	"description": "Shared TypeScript configuration for the Transportes Metropolitanos de Lisboa Organization!",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"homepage": "https://github.com/tmlmobilidade/tsconfig#readme",
+	"bugs": {
+		"url": "https://github.com/tmlmobilidade/tsconfig/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tmlmobilidade/tsconfig.git"
+	},
+	"keywords": [
+		"public transit",
+		"lisboa",
+		"tsconfig"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"main": "./base.json"
+}

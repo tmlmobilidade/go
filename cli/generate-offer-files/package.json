@@ -1,0 +1,47 @@
+{
+	"name": "@tmlmobilidade/generate-offer-files",
+	"description": "A CLI tool to generate legacy offer files for TML Mobilidade.",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"bin": {
+		"generate-offer-files": "dist/index.js"
+	},
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "tsc && resolve-tspaths && node dist/index.js"
+	},
+	"dependencies": {
+		"@helperkits/writer": "20251103.1250.18",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
+		"commander": "14.0.2",
+		"csv-parse": "6.1.0",
+		"extract-zip": "2.0.1",
+		"gtfs-types": "5.1.0"
+	},
+	"devDependencies": {
+		"@carrismetropolitana/eslint": "20250622.1204.50",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@types/node": "24.10.0",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
+	}
+}
