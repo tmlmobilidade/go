@@ -6,18 +6,18 @@ import { Dates } from '@tmlmobilidade/dates';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
+import { type DemandByProductByLineByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
 
-export const syncDemandByAgencyByDay = async () => {
+export const syncDemandByProductByLineByDay = async () => {
 	//
 
-	Logger.title(`Sync Demand Metrics by Agency by Day`);
+	Logger.title(`Sync Demand Metrics by Product by Line by Day`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_agency_by_day';
+	const METRIC = 'demand_by_product_by_line_by_day';
 
 	//
 	// Delete existing metrics
@@ -80,9 +80,9 @@ export const syncDemandByAgencyByDay = async () => {
 	const limit = pLimit(10);
 
 	//
-	// Process each year in parallel
+	// Process each day in parallel
 
-	const agencyMap = new Map<string, DemandByAgencyByDay>();
+	const productMap = new Map<string, DemandByProductByLineByDay>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
@@ -90,6 +90,7 @@ export const syncDemandByAgencyByDay = async () => {
 
 			const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
 
+			// Aggregation: Get counts by product and line for each day
 			const validationsAgg = await validationsCollection.aggregate([
 				{
 					$match: {
@@ -99,15 +100,19 @@ export const syncDemandByAgencyByDay = async () => {
 				},
 				{
 					$group: {
-						_id: '$agency_id',
-						agency_id: { $first: '$agency_id' },
+						_id: {
+							line_id: '$line_id',
+							product_id: '$product_id',
+						},
 						count: { $sum: 1 },
 						day: { $first: dayLabel },
+						line_id: { $first: '$line_id' },
+						product_id: { $first: '$product_id' },
 					},
 				},
 			], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
 
-			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})`);
+			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} product-line combinations (${chunkTimer.get()})`);
 			return validationsAgg;
 		}),
 	);
@@ -119,24 +124,31 @@ export const syncDemandByAgencyByDay = async () => {
 
 	for (const validationsAgg of allChunksResults) {
 		for (const validation of validationsAgg) {
-			const agency_id = validation.agency_id ?? 'no-agency';
+			const product_id = validation.product_id ?? 'unknown-product';
+			const line_id = validation.line_id ?? 'no-line';
 
-			// Create or get agency document
-			if (!agencyMap.has(agency_id)) {
-				agencyMap.set(agency_id, {
+			// Create unique key for each product-line combination
+			const productLineKey = `${product_id}:${line_id}`;
+
+			// Create or get product-line document
+			if (!productMap.has(productLineKey)) {
+				productMap.set(productLineKey, {
 					data: {},
-					description: `Aggregated passengers for the agency ${agency_id}`,
+					description: `Aggregated passengers for product ${product_id} on line ${line_id}`,
 					generated_at: new Date(),
 					metric: METRIC,
-					properties: { agency_id },
+					properties: {
+						line_id,
+						product_id,
+					},
 				});
 			}
 
-			const agencyDoc = agencyMap.get(agency_id);
+			const productLineDoc = productMap.get(productLineKey);
 			const calendarProps = calendarMap.get(validation.day);
 
-			// Update individual agency data
-			agencyDoc.data[validation.day] = {
+			// Update individual product-line data
+			productLineDoc.data[validation.day] = {
 				day_type: calendarProps.day_type,
 				holiday: calendarProps.holiday,
 				notes: calendarProps.notes,
@@ -146,7 +158,7 @@ export const syncDemandByAgencyByDay = async () => {
 		}
 	}
 
-	const results = Array.from(agencyMap.values());
+	const results = Array.from(productMap.values());
 
 	//
 	// Insert all metrics

@@ -52,3 +52,6 @@ export const RealtimeServiceComplianceSchema = MetricBaseSchema.extend({
 	}),
 	metric: z.literal('realtime_service_compliance'),
 });
+
+export type RealtimeDemand = z.infer<typeof RealtimeDemandSchema>;
+export type RealtimeServiceCompliance = z.infer<typeof RealtimeServiceComplianceSchema>;

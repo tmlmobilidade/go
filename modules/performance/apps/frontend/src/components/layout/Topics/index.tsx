@@ -24,7 +24,7 @@ export default function Topics() {
 
 	return (
 		<Grid columns="abcd" gap="lg">
-			{TOPICS_REGISTRY.map(topic => (
+			{TOPICS_REGISTRY.filter(topic => topic.visible).map(topic => (
 				<ContainerWrapper key={topic.key} onClick={() => handleTopicClick(topic)}>
 					<div className={styles.topicCard}>
 						{topic.icon && <topic.icon />}

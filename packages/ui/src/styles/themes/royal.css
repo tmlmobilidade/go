@@ -4,6 +4,11 @@
 	--theme-royal-color-background: #f0f0ff;
 	--theme-royal-color-contrast: #fff;
 	--theme-royal-color-shadow: #1e0a4640;
+	--theme-royal-chart-color-1: #6e3cc8;
+	--theme-royal-chart-color-2: #7E4DD2;
+	--theme-royal-chart-color-3: #8E5EDC;
+	--theme-royal-chart-color-4: #460a96;
+	--theme-royal-chart-color-5: #350772;
 }
 
 :root[data-mode="dark"] {
@@ -12,6 +17,11 @@
 	--theme-royal-color-background: #1e1e46;
 	--theme-royal-color-contrast: #ebe1ff;
 	--theme-royal-color-shadow: #1e0a4640;
+	--theme-royal-chart-color-1: #783cc8;
+	--theme-royal-chart-color-2: #884DD2;
+	--theme-royal-chart-color-3: #985EDC;
+	--theme-royal-chart-color-4: #460a96;
+	--theme-royal-chart-color-5: #350772;
 }
 
 /* * */
@@ -22,4 +32,9 @@
 	--color-background: var(--theme-royal-color-background);
 	--color-contrast: var(--theme-royal-color-contrast);
 	--color-shadow: var(--theme-royal-color-shadow);
+	--chart-color-1: var(--theme-royal-chart-color-1);
+	--chart-color-2: var(--theme-royal-chart-color-2);
+	--chart-color-3: var(--theme-royal-chart-color-3);
+	--chart-color-4: var(--theme-royal-chart-color-4);
+	--chart-color-5: var(--theme-royal-chart-color-5);
 }

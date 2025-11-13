@@ -1,14 +1,13 @@
 /* * */
 
-import { DemandByDay } from '@/components/visualizations/DemandByDay';
+import { DemandByProductVisualization } from '@/components/visualizations/Demand/ByProduct';
+import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
 import { AGENCIES, AgencyType } from '@/constants';
 import { useNetworkContext } from '@/contexts/Network.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { Combobox, DatePicker, MultiSelect, Section, SegmentedControl, Spacer } from '@tmlmobilidade/ui';
+import { Combobox, DatePicker, MonthPicker, MultiSelect, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
-
-import styles from './styles.module.css';
 
 export default function DemandByTopic() {
 	//
@@ -121,15 +120,36 @@ export default function DemandByTopic() {
 						/>
 					)}
 
-					<DatePicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-					<DatePicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+					{timeView === 'daily' && (
+						<>
+							<DatePicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<DatePicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+						</>
+					)}
+
+					{timeView === 'monthly' && (
+						<>
+							<MonthPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<MonthPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+						</>
+					)}
+
+					{timeView === 'annual' && (
+						<>
+							<YearPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<YearPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+						</>
+					)}
+
 				</Section>
 
 			</Section>
 
 			<Spacer />
 
-			<DemandByDay filters={{ agencyId, dateRange: { endDate, startDate }, lineIds, patternIds }} groupBy={groupBy} height={300} />
+			<DemandVisualization filters={{ agencyId, dateRange: { endDate, startDate }, lineIds, patternIds }} groupBy={groupBy} height={300} timeView={timeView} />
+
+			<DemandByProductVisualization filters={{ agencyId, dateRange: { endDate, startDate }, lineIds, patternIds }} groupBy={groupBy} height={300} timeView={timeView} title="Passageiros transportados por tipo de passe" />
 
 		</Section>
 	);
