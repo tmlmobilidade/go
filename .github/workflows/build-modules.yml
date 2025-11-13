@@ -32,24 +32,20 @@ on:
 # Format: module:app (one app per line)
 env:
   MODULES_APPS: |
-    auth:api
-    auth:frontend
-    auth:nginx
-    auth:cleaner
 
-    exports:api
-    exports:exporter
-    exports:nginx
-    exports:cleaner
-
+    alerts:nginx
     alerts:api
     alerts:frontend
-    alerts:nginx
 
-    controller:api
-    controller:frontend
+    auth:nginx
+    auth:api
+    auth:cleaner
+    auth:frontend
+
     controller:nginx
+    controller:api
     controller:coordinator
+    controller:frontend
     controller:rides-acceptor
     controller:rides-bridge
     controller:rides-cleaner
@@ -59,35 +55,40 @@ env:
     controller:sams-examiner
     controller:sams-feeder
 
+    exports:nginx
+    exports:api
+    exports:cleaner
+    exports:export-drt
+    exports:export-files
+    exports:export-gtfs-merged
+    exports:export-posters
+
+    locations:nginx
     locations:api
     locations:frontend
-    locations:nginx
 
+    performance:nginx
     performance:api
     performance:frontend
-    performance:nginx
     performance:sync-metrics
 
-    plans:api
-    plans:frontend
     plans:nginx
+    plans:api
     plans:cleaner
-    plans:export-drt
-    plans:export-merged
-    plans:export-posters
+    plans:frontend
     plans:validator
 
     replicator:enrich
     replicator:stream
     replicator:sync-apex-locations
-    replicator:sync-vehicle-events
     replicator:sync-apex-on-board-refunds
     replicator:sync-apex-on-board-sales
     replicator:sync-apex-validations
+    replicator:sync-vehicle-events
 
+    stops:nginx
     stops:api
     stops:frontend
-    stops:nginx
     stops:organizer
 
 # # #
