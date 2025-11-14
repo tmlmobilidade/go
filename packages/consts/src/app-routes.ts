@@ -162,9 +162,9 @@ export const API_ROUTES = Object.freeze({
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}`,
-		ORGANIZATIONS_DETAIL_: (id: string) => `${getAppConfig('auth', 'api_url')}/THEME_IMAGE:/auth/api/organizations/${id}/:theme/image`,
 		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/image`,
 		ORGANIZATIONS_DETAIL_LOGO: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/logo`,
+		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/${theme}/image`,
 		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'api_url')}/organizations`,
 
 		// PROPOSED-CHANGES

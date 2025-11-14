@@ -222,7 +222,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	};
 
 	const deleteImage = async (theme: 'dark' | 'light') => {
-		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_(organization_id).replace('THEME_IMAGE:', '').replace(':theme', theme);
+		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_VAR_IMAGE(organization_id, theme);
 		const response = await fetchData<Organization>(themeImageRoute + '?realtime=true', 'DELETE', organization);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
