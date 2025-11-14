@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",
+		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/utils": "*",
 		"mongodb": "7.0.0"
 	},
