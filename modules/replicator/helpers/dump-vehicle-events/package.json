@@ -12,9 +12,9 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch src/index.ts",
 		"lint": "eslint .",
-		"lint:fix": "eslint . --fix"
+		"lint:fix": "eslint . --fix",
+		"start": "tsx watch src/index.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-replicator-pckg-utils": "*",

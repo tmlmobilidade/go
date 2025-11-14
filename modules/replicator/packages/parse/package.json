@@ -12,7 +12,7 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
 		"@tmlmobilidade/types": "*",
