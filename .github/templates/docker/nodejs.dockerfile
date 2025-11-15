@@ -2,11 +2,19 @@
 
 FROM node:24-alpine AS base
 
+
+# # #
+# MODULE CONFIGURATION
+
 ARG MODULE
 ARG APP
 
 ENV MODULE=${MODULE}
 ENV APP=${APP}
+
+
+# # #
+# GLOBAL DEPENDENCIES
 
 RUN npm install -g turbo@^2
 
