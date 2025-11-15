@@ -66,4 +66,4 @@ WORKDIR /app
 
 COPY --from=builder /app .
 
-CMD ["node", "modules/${MODULE}/apps/${APP}/dist/index.js"]
+CMD node modules/${MODULE}/apps/${APP}/dist/index.js
