@@ -1,14 +1,13 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
+import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
+import { pcgidb, rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import { Interval } from 'luxon';
 
 /* * */
@@ -24,7 +23,7 @@ async function syncApexOnBoardSales() {
 		//
 		// Connect to databases and setup DB writers
 
-		await PCGIDB.connect();
+		await pcgidb.connect();
 
 		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
 		const simplifiedApexOnBoardSalesDbWritter = new MongoDbWriter<SimplifiedApexOnBoardSale>({ batch_size: 100000, collection: simplifiedApexOnBoardSalesCollection });
@@ -153,7 +152,7 @@ async function syncApexOnBoardSales() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: PCGIDB.SalesEntity,
+				pcgiCollection: pcgidb.SalesEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

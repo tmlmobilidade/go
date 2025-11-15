@@ -1,14 +1,13 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
+import { pcgidb, rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import { Interval } from 'luxon';
 
 /* * */
@@ -26,7 +25,7 @@ export async function syncApexValidations() {
 
 		/* * */
 
-		await PCGIDB.connect();
+		await pcgidb.connect();
 
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
 		const simplifiedApexValidationsDbWritter = new MongoDbWriter<SimplifiedApexValidation>({ batch_size: 100000, collection: simplifiedApexValidationsCollection });
@@ -154,7 +153,7 @@ export async function syncApexValidations() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: PCGIDB.ValidationEntity,
+				pcgiCollection: pcgidb.ValidationEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

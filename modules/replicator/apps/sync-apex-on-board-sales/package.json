@@ -20,7 +20,6 @@
 		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/go-replicator-pckg-parse": "*",
 		"@tmlmobilidade/go-replicator-pckg-sync": "*",
-		"@tmlmobilidade/go-replicator-pckg-utils": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

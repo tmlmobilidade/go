@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-helpers-dump-apex-validations",
+	"name": "@tmlmobilidade/go-replicator-helpers-dump-data",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -19,7 +19,6 @@
 	"dependencies": {
 		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-replicator-pckg-utils": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",

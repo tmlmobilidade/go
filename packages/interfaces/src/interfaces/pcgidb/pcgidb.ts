@@ -172,4 +172,4 @@ class PCGIDBClass {
 
 /* * */
 
-export const PCGIDB = new PCGIDBClass();
+export const pcgidb = new PCGIDBClass();

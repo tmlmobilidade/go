@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
+import { pcgidb } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -19,7 +19,7 @@ export async function dumpVehicleEventsFromPCGIDB() {
 		//
 		// Connect to databases and setup DB writers
 
-		await PCGIDB.connect();
+		await pcgidb.connect();
 
 		/* * * * * * * * * * * * * * * * */
 		/* * * SETUP YOUR QUERY HERE * * */
@@ -46,7 +46,7 @@ export async function dumpVehicleEventsFromPCGIDB() {
 		//
 		// Perform the lookup
 
-		const vehicleEventsFromPCGIDB = await PCGIDB.VehicleEvents.find(query).toArray();
+		const vehicleEventsFromPCGIDB = await pcgidb.VehicleEvents.find(query).toArray();
 
 		//
 		// Save the results to a JSON file

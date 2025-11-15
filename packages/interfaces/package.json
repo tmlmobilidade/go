@@ -34,11 +34,12 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",
