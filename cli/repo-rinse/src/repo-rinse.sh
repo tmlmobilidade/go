@@ -57,6 +57,11 @@ find . -type f -name "yalc.lock" | xargs rm -f
 echo "✓ Done"
 echo ""
 
+echo "→ Removing '.tsbuildinfo' files..."
+find . -type f -name ".tsbuildinfo" | xargs rm -f
+echo "✓ Done"
+echo ""
+
 echo "→ Removing '.DS_Store' files..."
 find . -type f -name ".DS_Store" | xargs rm -f
 echo "✓ Done"
