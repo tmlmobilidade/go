@@ -51,19 +51,18 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
 # # #
 # RUNNER STAGE
-# Copy only the built app and dependencies,
+# Copy the installed node_modules and built app to a fresh image.
+# Also copy the packages and modules folders, as some local
 # packages need to be included because node_modules symlinks to them.
 
-FROM base AS runner
+FROM node:24-alpine AS runner
 
 WORKDIR /app
 
-# COPY --from=builder /app/packages ./packages
-# COPY --from=builder /app/node_modules ./node_modules
-# COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist/ .
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/modules ./modules
 
-# CMD ["node", "index.js"]
+COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
-COPY --from=builder /app .
-
-CMD node modules/${MODULE}/apps/${APP}/dist/index.js
+CMD ["node", "dist/index.js"]
