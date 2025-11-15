@@ -72,7 +72,7 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 		//
 	}
 	catch (error) {
-		if (process.env.DEBUG_MODE) console.error(`Error parsing simplified APEX Location. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
+		console.error(`Error parsing simplified APEX Location. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
 }

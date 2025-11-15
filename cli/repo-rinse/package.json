@@ -16,8 +16,5 @@
 	},
 	"scripts": {
 		"start": "sh ./src/repo-rinse.sh"
-	},
-	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250622.1204.50"
 	}
 }

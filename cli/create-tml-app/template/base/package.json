@@ -9,7 +9,6 @@
 		"start": "turbo start"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250325.1926.5",
 		"@tmlmobilidade/tsconfig": "20250325.1731.13",
 		"dotenv-cli": "8.0.0",
 		"prettier": "3.5.3",

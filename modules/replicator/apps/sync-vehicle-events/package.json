@@ -20,7 +20,6 @@
 		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/go-replicator-pckg-parse": "*",
 		"@tmlmobilidade/go-replicator-pckg-sync": "*",
-		"@tmlmobilidade/go-replicator-pckg-utils": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
@@ -30,7 +29,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "24.10.0",
+		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

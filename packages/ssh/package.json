@@ -1,23 +1,40 @@
 {
-	"name": "@tmlmobilidade/go-replicator-pckg-sync",
+	"name": "@tmlmobilidade/ssh",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
 		"name": "TML-ISO"
 	},
 	"license": "AGPL-3.0-or-later",
+	"homepage": "https://github.com/tmlmobilidade/go#readme",
+	"bugs": {
+		"url": "https://github.com/tmlmobilidade/go/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tmlmobilidade/go.git"
+	},
+	"keywords": [
+		"public transit",
+		"tml",
+		"transportes metropolitanos de lisboa",
+		"go"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
 	"type": "module",
 	"files": ["dist"],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"lint": "eslint ./src/ && tsc --noEmit",
+		"lint:fix": "eslint ./src/ --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@helperkits/writer": "20251103.1250.18",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

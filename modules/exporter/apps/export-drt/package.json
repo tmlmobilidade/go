@@ -17,7 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@carrismetropolitana/api-types": "20251104.1218.36",
+		"@carrismetropolitana/api-types": "20251114.1440.22",
 		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/connectors": "*",
 		"@tmlmobilidade/dates": "*",
@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "24.10.0",
+		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.20.6",
 		"typescript": "5.9.3"

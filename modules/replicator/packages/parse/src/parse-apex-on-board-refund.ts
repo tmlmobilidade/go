@@ -86,7 +86,7 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 		//
 	}
 	catch (error) {
-		if (process.env.DEBUG_MODE) console.error(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
+		console.error(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
 }

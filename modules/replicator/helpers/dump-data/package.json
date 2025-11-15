@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-pckg-utils",
+	"name": "@tmlmobilidade/go-replicator-helpers-dump-data",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -12,20 +12,27 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"build:watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "tsx watch src/index.ts"
 	},
 	"dependencies": {
+		"@helperkits/writer": "20251103.1250.18",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"@turf/turf": "7.2.0",
-		"mongodb": "7.0.0",
-		"tunnel-ssh": "5.2.0"
+		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "24.10.0",
+		"@types/node": "24.10.1",
+		"@types/papaparse": "5.5.0",
 		"resolve-tspaths": "0.8.23",
-		"tsc-watch": "7.2.0",
+		"tsx": "4.20.6",
 		"typescript": "5.9.3"
 	}
 }

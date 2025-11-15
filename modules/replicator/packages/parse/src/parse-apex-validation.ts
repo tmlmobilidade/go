@@ -79,7 +79,7 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 		};
 	}
 	catch (error) {
-		if (process.env.DEBUG_MODE) console.error(`Error parsing simplified APEX Validation. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
+		console.error(`Error parsing simplified APEX Validation. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
 }

@@ -23,7 +23,6 @@
 		"swr": "2.3.3"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "0.0.0",
 		"@tmlmobilidade/tsconfig": "0.0.0",
 		"@types/node": "22",
 		"@types/react": "19",
