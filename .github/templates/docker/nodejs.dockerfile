@@ -55,7 +55,7 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 # Also copy the packages and modules folders, as some local
 # packages need to be included because node_modules symlinks to them.
 
-FROM node:24-alpine AS runner
+FROM base AS runner
 
 WORKDIR /app
 
