@@ -104,7 +104,7 @@ async function syncVehicleEvents() {
 						{ returnResults: false },
 					);
 
-					Logger.info(`Flush [vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info(`Flush [simplified_vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 					//
 				}
