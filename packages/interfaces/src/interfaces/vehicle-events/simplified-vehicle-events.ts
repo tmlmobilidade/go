@@ -25,13 +25,9 @@ class SimplifiedVehicleEventsClass extends MongoCollectionClass<SimplifiedVehicl
 
 	protected getCollectionIndexes(): IndexDescription[] {
 		return [
-			{ background: true, key: { created_at: 1 } },
 			{ background: true, key: { received_at: 1 } },
 			// eslint-disable-next-line perfectionist/sort-objects
 			{ background: true, key: { trip_id: 1, created_at: 1 } },
-			{ background: true, key: { agency_id: 1, created_at: 1 } },
-			// eslint-disable-next-line perfectionist/sort-objects
-			{ background: true, key: { vehicle_id: 1, created_at: 1 } },
 		];
 	}
 
