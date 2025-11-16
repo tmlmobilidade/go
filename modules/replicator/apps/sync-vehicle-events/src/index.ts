@@ -7,7 +7,7 @@ import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidb, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { getCurrentEnvironment, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 
 /* * */
@@ -40,8 +40,9 @@ async function syncVehicleEvents() {
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
 
-		const earliestDataNeeded = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
+		let earliestDataNeeded: Dates;
+		if (getCurrentEnvironment() === 'production') earliestDataNeeded = Dates.fromOperationalDate('20240101', 'Europe/Lisbon');
+		else earliestDataNeeded = Dates.now('Europe/Lisbon').minus({ weeks: 1 });
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
