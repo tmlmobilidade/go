@@ -8,7 +8,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   wud:
-    image: getwud/wud
+    image: ghcr.io/getwud/wud
     deploy:
       restart_policy:
         condition: any
@@ -26,6 +26,8 @@ services:
       - WUD_TRIGGER_DOCKER_DEFAULT_PRUNE=true
       - WUD_WATCHER_LOCAL_WATCHALL=true
       - WUD_WATCHER_LOCAL_CRON=* * * * *
+    ports:
+      - 80:3000
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -45,6 +47,7 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
