@@ -52,9 +52,9 @@ class PCGIDBClass {
 			const mongoConnector = new MongoConnector(pcgidbConnectionString, mongoClientOptions);
 			await mongoConnector.connect();
 			// Setup collections
-			this.LocationEntity = mongoConnector.client.db('LocationManagement').collection('locationsEntity');
+			this.LocationEntity = mongoConnector.client.db('LocationManagement').collection('locationEntity');
 			this.SalesEntity = mongoConnector.client.db('SalesManagement').collection('salesEntity');
-			this.ValidationEntity = mongoConnector.client.db('ValidationsManagement').collection('validationsEntity');
+			this.ValidationEntity = mongoConnector.client.db('ValidationsManagement').collection('validationEntity');
 			this.VehicleEvents = mongoConnector.client.db('CoreManagement').collection('VehicleEvents');
 			// Log success message
 			Logger.success('Connected to PCGIDB successfully.');
