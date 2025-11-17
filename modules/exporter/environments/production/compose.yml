@@ -159,3 +159,18 @@ services:
       - ./secrets/.env
     secrets:
       - ociprivatekey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  frontend:
+    image: ghcr.io/tmlmobilidade/go-exporter-frontend:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    env_file:
+      - ./secrets/.env
