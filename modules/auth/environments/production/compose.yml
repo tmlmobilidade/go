@@ -2,6 +2,10 @@
 
 name: tmlmobilidade-go-auth-production
 
+secrets:
+  ociprivatekey:
+    file: ./secrets/oci-private-key.pem
+
 services:
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -49,7 +53,6 @@ services:
         max-file: '1'
     ports:
       - 80:80
-      - 443:443
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
