@@ -1,8 +1,8 @@
-import { metrics, rides } from '@tmlmobilidade/interfaces';
-import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -44,6 +44,17 @@ async function processRidesStream(stream, results, operators, mode: 'last_week' 
 
 		const simpleThreeVehicleEvents = rideData.analysis?.SIMPLE_THREE_VEHICLE_EVENTS;
 		const isRideValid = simpleThreeVehicleEvents?.grade === 'pass';
+
+		//
+		// Accomplished rides - rides with sales or valid rides
+
+		if (rideData.passengers_observed > 0 || isRideValid) {
+			results.operators[operator].accomplished_rides[mode]++;
+			results.total.accomplished_rides[mode]++;
+		}
+
+		// Skip trips not valid (3 moments check)
+
 		if (rideData.analysis === null || !isRideValid) continue;
 
 		//
@@ -121,6 +132,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	const results: RealtimeServiceCompliance['data'] = {
 		operators: {},
 		total: {
+			accomplished_rides: { last_week: 0, now: 0 },
 			advanced_rides: { last_week: 0, now: 0 },
 			five_min_delays: { last_week: 0, now: 0 },
 			mean_delay_minutes: { last_week: 0, now: 0 },
@@ -133,6 +145,7 @@ export const syncRealtimeServiceCompliance = async () => {
 
 	operators.forEach((op) => {
 		results.operators[op] = {
+			accomplished_rides: { last_week: 0, now: 0 },
 			advanced_rides: { last_week: 0, now: 0 },
 			five_min_delays: { last_week: 0, now: 0 },
 			mean_delay_minutes: { last_week: 0, now: 0 },

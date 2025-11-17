@@ -36,10 +36,10 @@
 		"90_99": "Atenção! O recorde está a tremer 😏"
 	},
 	"systemStatus": {
-		"negative": "Atenção! A operação está a *value* da performance ideal – é hora de intervir.",
+		"negative": "Atenção! A operação está a *value* da performance ideal.",
 		"positive": "Hoje a operação está a correr muito bem, com *value* de eficiência!",
 		"tooltip": "Índice global de desempenho operacional. Calculado a partir das principais métricas ponderadas do sistema (pontualidade, viagens válidas, atrasos, etc.).",
-		"warning": "Hoje a operação está a *value* da performance ideal – há espaço para melhorar."
+		"warning": "Hoje a operação está a *value* da performance ideal."
 	},
 	"updated_at": {
 		"days": "{count, plural, one {# dia} other {# dias}}",
