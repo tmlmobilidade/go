@@ -7,11 +7,11 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  wud:
-    image: ghcr.io/getwud/wud
+  watchtower:
+    image: containrrr/watchtower
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:
@@ -23,11 +23,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - WUD_TRIGGER_DOCKER_DEFAULT_PRUNE=true
-      - WUD_WATCHER_LOCAL_WATCHALL=true
-      - WUD_WATCHER_LOCAL_CRON=* * * * *
-    ports:
-      - 80:3000
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_REMOVE_VOLUMES=TRUE
+      - WATCHTOWER_INCLUDE_RESTARTING=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_TIMEOUT=30s
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -47,11 +49,6 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
-      - "wud.tag.include=staging"
-
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -71,10 +68,6 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
-      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -94,10 +87,6 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
-      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -117,10 +106,6 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
-      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -140,10 +125,6 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
-      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -163,10 +144,6 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
-      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -186,7 +163,3 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    labels:
-      - "wud.watch=true"
-      - "wud.watch.digest=true"
-      - "wud.tag.include=staging"

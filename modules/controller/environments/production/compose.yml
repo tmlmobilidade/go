@@ -11,11 +11,11 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  wud:
-    image: getwud/wud
+  watchtower:
+    image: containrrr/watchtower
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:
@@ -27,9 +27,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - WUD_TRIGGER_DOCKER_DEFAULT_PRUNE=true
-      - WUD_WATCHER_LOCAL_WATCHALL=true
-      - WUD_WATCHER_LOCAL_CRON=* * * * *
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_REMOVE_VOLUMES=TRUE
+      - WATCHTOWER_INCLUDE_RESTARTING=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_TIMEOUT=30s
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
