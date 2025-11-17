@@ -49,10 +49,6 @@ services:
         max-file: '1'
     ports:
       - 80:80
-      - 443:443
-    depends_on:
-      - api
-      - frontend
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
