@@ -47,6 +47,10 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    labels:
+      - "wud.watch=true"
+      - "wud.watch.digest=true"
+      - "wud.tag.include=staging"
 
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -67,6 +71,10 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    labels:
+      - "wud.watch=true"
+      - "wud.watch.digest=true"
+      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -86,6 +94,10 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    labels:
+      - "wud.watch=true"
+      - "wud.watch.digest=true"
+      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -105,6 +117,10 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    labels:
+      - "wud.watch=true"
+      - "wud.watch.digest=true"
+      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -124,6 +140,10 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    labels:
+      - "wud.watch=true"
+      - "wud.watch.digest=true"
+      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -143,6 +163,10 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    labels:
+      - "wud.watch=true"
+      - "wud.watch.digest=true"
+      - "wud.tag.include=staging"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -162,3 +186,7 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    labels:
+      - "wud.watch=true"
+      - "wud.watch.digest=true"
+      - "wud.tag.include=staging"
