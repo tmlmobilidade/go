@@ -12,7 +12,7 @@ on:
         required: false
         default: true
         type: boolean
-  pull_request:
+#   pull_request:
   push:
     branches:
       - production
@@ -62,6 +62,7 @@ env:
     exporter:export-files
     exporter:export-gtfs-merged
     exporter:export-posters
+    exporter:frontend
 
     locations:nginx
     locations:api
@@ -112,7 +113,7 @@ jobs:
               core.setOutput('has-open-pr', 'false');
               return;
             }
-            
+
             const branch = context.ref.replace('refs/heads/', '');
             const { data: pulls } = await github.rest.pulls.list({
               owner: context.repo.owner,

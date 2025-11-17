@@ -1,8 +1,7 @@
 /* * */
 
+import { LocationsController } from '@/endpoints/locations/locations.controller.js';
 import { FastifyService } from '@tmlmobilidade/fastify';
-
-import { LocationsController } from './locations.controller.js';
 
 /* * */
 

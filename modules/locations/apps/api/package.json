@@ -19,8 +19,8 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.1.0",
-		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.2.0",

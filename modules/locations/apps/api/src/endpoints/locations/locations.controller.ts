@@ -1,9 +1,9 @@
 /* * */
 
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { Filter, FindOptions, locations } from '@tmlmobilidade/interfaces';
-import { District, GetAllDistrictsQuery, GetAllDistrictsQuerySchema, GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, GetAllParishesQuery, GetAllParishesQuerySchema, Locality, Location, Municipality, Parish } from '@tmlmobilidade/types';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
+import { type Filter, type FindOptions, locations } from '@tmlmobilidade/interfaces';
+import { type District, type GetAllDistrictsQuery, GetAllDistrictsQuerySchema, type GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, type GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, type GetAllParishesQuery, GetAllParishesQuerySchema, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /**

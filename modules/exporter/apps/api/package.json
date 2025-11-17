@@ -19,8 +19,8 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "9.3.0",
-		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
 		"pino-pretty": "13.1.2"

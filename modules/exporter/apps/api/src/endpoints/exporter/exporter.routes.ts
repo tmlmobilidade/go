@@ -1,8 +1,7 @@
 /* * */
 
+import { ExporterController } from '@/endpoints/exporter/exporter.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-
-import { ExporterController } from './exporter.controller.js';
 
 /* * */
 

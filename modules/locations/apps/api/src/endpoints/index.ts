@@ -1,1 +1,1 @@
-import './locations/locations.routes';
+import '@/endpoints/locations/locations.routes';
