@@ -68,7 +68,7 @@ export async function processVehicleEvent(databaseOperation) {
 
 			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: 'waiting' }, { returnResults: false });
 
-			Logger.info(`Flush [vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+			Logger.info(`Flush [simplified_vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
 		}
