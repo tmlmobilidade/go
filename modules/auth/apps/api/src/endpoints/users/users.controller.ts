@@ -1,7 +1,7 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { authProvider, users } from '@tmlmobilidade/interfaces';
 import { type CreateUserDto, type UpdateUserDto, type User } from '@tmlmobilidade/types';
 
@@ -98,11 +98,11 @@ export class UsersController {
 			await authProvider.logout(sessionToken);
 			return reply
 				.setCookie(COOKIE_NAME, '', {
-					domain: getAppConfig('auth', 'cookie_domain'),
+					// domain: getAppConfig('auth', 'cookie_domain'),
 					httpOnly: true,
 					maxAge: 0,
 					path: '/',
-					sameSite: 'none',
+					sameSite: 'lax',
 					secure: true,
 				})
 				.send({

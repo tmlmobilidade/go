@@ -67,7 +67,7 @@ export class AuthController {
 			httpOnly: true,
 			maxAge: 30 * 24 * 60 * 60, // 30 days
 			path: '/',
-			sameSite: 'none',
+			sameSite: 'lax',
 			secure: true,
 		});
 
@@ -101,11 +101,11 @@ export class AuthController {
 
 		return reply
 			.setCookie(COOKIE_NAME, '', {
-				domain: getAppConfig('auth', 'cookie_domain'),
+				// domain: getAppConfig('auth', 'cookie_domain'),
 				httpOnly: true,
 				maxAge: 0,
 				path: '/',
-				sameSite: 'none',
+				sameSite: 'lax',
 				secure: true,
 			})
 			.send({
