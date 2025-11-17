@@ -18,7 +18,7 @@ interface AppConfigGroup {
 const DEFAULT_PRODUCTION_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
 	cookie_domain: 'go.tmlmobilidade.pt',
-	cors_origin: new RegExp(`https://.go.tmlmobilidade.pt$`),
+	cors_origin: new RegExp(`https://go.tmlmobilidade.pt$`),
 	frontend_port: 3000,
 };
 

@@ -1,12 +1,12 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
 import { generateRandomToken } from '@tmlmobilidade/strings';
-import { LoginDto, LoginDtoSchema, Permission, Session } from '@tmlmobilidade/types';
+import { type LoginDto, LoginDtoSchema, type Permission, type Session } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -63,7 +63,7 @@ export class AuthController {
 		});
 
 		reply.setCookie(COOKIE_NAME, session.token, {
-			domain: getAppConfig('auth', 'cookie_domain'),
+			// domain: getAppConfig('auth', 'cookie_domain'),
 			httpOnly: true,
 			maxAge: 30 * 24 * 60 * 60, // 30 days
 			path: '/',
