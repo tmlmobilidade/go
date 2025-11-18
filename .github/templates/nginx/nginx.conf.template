@@ -120,6 +120,16 @@ http {
 		proxy_set_header X-Forwarded-Proto $scheme;
 		proxy_set_header X-Real-IP $remote_addr;
 
+		# Custom error pages
+		error_page 500 /error;
+		error_page 502 /error;
+		error_page 503 /error;
+
+		location /error {
+			internal;
+			root /etc/nginx/error.html;
+		}
+
 		location /{{MODULE}}/api/ {
 			proxy_pass http://api_upstream/;
 		}

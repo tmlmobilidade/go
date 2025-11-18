@@ -11,6 +11,8 @@ WORKDIR /app
 
 COPY ./modules/${MODULE}/apps/nginx/configs/. /etc/nginx/.
 
+COPY ./.github/templates/nginx/error.html /etc/nginx/error.html
+
 
 # # #
 # Run Nginx	with auto-reload every 6 hours
