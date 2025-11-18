@@ -2,8 +2,8 @@
 
 /* * */
 
+import { generateColors, generateEventReferenceLines, StackedResult } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
-import { StackedResult } from '@/utils/metrics/unifiedTransforms';
 import { Dates } from '@tmlmobilidade/dates';
 import { BarChart, LineChart, MetricsSkeleton } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -36,23 +36,8 @@ export function StackedLineBarChart({ data, height, style, timeView }: StackedLi
 	const chartType = timeView === 'daily' ? 'line' : 'bar';
 
 	const eventReferenceLines = useMemo(() => {
-		if (timeView !== 'daily') return []; // Only show reference lines for daily data
-
-		return (data.chart as { day_detailed: string, qty: number }[])
-			.filter(item => item.day_detailed?.includes('(')) // contains holiday/notes
-			.map((item) => {
-				// Extract only what's inside parentheses
-				const match = item.day_detailed?.match(/\(([^)]+)\)/);
-				const label = match ? match[1] : item.day_detailed;
-
-				return {
-					color: 'var(--color-primary)',
-					label: label,
-					labelPosition: 'top' as const,
-					x: item.day_detailed,
-				};
-			});
-	}, [data, timeView]);
+		return generateEventReferenceLines(data.chart, timeView);
+	}, [data.chart, timeView]);
 
 	const xAxisFormatter = useMemo(() => {
 		return (value: string) => {
@@ -62,20 +47,10 @@ export function StackedLineBarChart({ data, height, style, timeView }: StackedLi
 		};
 	}, [timeView]);
 
-	const generateChartColor = (index: number) => {
-		const chartColors = [
-			'var(--chart-color-1)',
-			'var(--chart-color-2)',
-			'var(--chart-color-3)',
-			'var(--chart-color-4)',
-			'var(--chart-color-5)',
-		];
+	const colors = generateColors(data.series);
 
-		return chartColors[index % chartColors.length];
-	};
-
-	const series = data.series.map((productId, index) => ({
-		color: generateChartColor(index),
+	const series = data.series.map(productId => ({
+		color: colors[productId],
 		label: productId,
 		name: productId,
 	}));

@@ -153,7 +153,6 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 ];
 
 export const AGENCIES = {
-	ALL: 'all',
 	AREA_1: '41',
 	AREA_2: '42',
 	AREA_3: '43',
@@ -161,5 +160,7 @@ export const AGENCIES = {
 } as const;
 
 export type AgencyType = typeof AGENCIES[keyof typeof AGENCIES];
+
+export type AgencyTypeWithAll = 'all' | AgencyType;
 
 export type SystemStatusType = 'negative' | 'positive' | 'warning';

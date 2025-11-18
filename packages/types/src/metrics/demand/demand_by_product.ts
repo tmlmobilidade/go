@@ -109,9 +109,58 @@ export const DemandByProductByLineByYearSchema = DemandByProductSchema.extend({
 	}),
 });
 
+export const DemandByProductByPatternByDaySchema = DemandByProductSchema.extend({
+	data: z.record(
+		z.string().describe('Date in \'YYYY-MM-DD\' format'),
+		z.object({
+			day_type: z.enum(['1', '2', '3']),
+			holiday: z.boolean(),
+			notes: z.string().nullable(),
+			period: z.enum(['1', '2', '3']),
+			qty: z.number(),
+		}),
+	),
+	metric: z.literal('demand_by_product_by_pattern_by_day'),
+	properties: z.object({
+		pattern_id: z.string(),
+		product_id: z.string(),
+	}),
+});
+
+export const DemandByProductByPatternByMonthSchema = DemandByProductSchema.extend({
+	data: z.record(
+		z.string().describe('Date in \'YYYY-MM\' format'),
+		z.object({
+			qty: z.number(),
+		}),
+	),
+	metric: z.literal('demand_by_product_by_pattern_by_month'),
+	properties: z.object({
+		pattern_id: z.string(),
+		product_id: z.string(),
+	}),
+});
+
+export const DemandByProductByPatternByYearSchema = DemandByProductSchema.extend({
+	data: z.record(
+		z.string().describe('Date in \'YYYY\' format'),
+		z.object({
+			qty: z.number(),
+		}),
+	),
+	metric: z.literal('demand_by_product_by_pattern_by_year'),
+	properties: z.object({
+		pattern_id: z.string(),
+		product_id: z.string(),
+	}),
+});
+
 export type DemandByProductByAgencyByDay = z.infer<typeof DemandByProductByAgencyByDaySchema>;
 export type DemandByProductByAgencyByMonth = z.infer<typeof DemandByProductByAgencyByMonthSchema>;
 export type DemandByProductByAgencyByYear = z.infer<typeof DemandByProductByAgencyByYearSchema>;
 export type DemandByProductByLineByDay = z.infer<typeof DemandByProductByLineByDaySchema>;
 export type DemandByProductByLineByMonth = z.infer<typeof DemandByProductByLineByMonthSchema>;
 export type DemandByProductByLineByYear = z.infer<typeof DemandByProductByLineByYearSchema>;
+export type DemandByProductByPatternByDay = z.infer<typeof DemandByProductByPatternByDaySchema>;
+export type DemandByProductByPatternByMonth = z.infer<typeof DemandByProductByPatternByMonthSchema>;
+export type DemandByProductByPatternByYear = z.infer<typeof DemandByProductByPatternByYearSchema>;

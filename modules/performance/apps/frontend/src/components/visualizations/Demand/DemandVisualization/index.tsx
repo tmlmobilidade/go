@@ -6,8 +6,7 @@ import { LineBarChart } from '@/components/charts/LineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
-import { MetricRouteResolver } from '@/utils/metrics/handlers/MetricRouteResolver';
-import { type DemandMetricItem, transformDemandMetric } from '@/utils/metrics/unifiedTransforms';
+import { buildMetricUrl, DemandMetricItem, TimeSeriesResult, transformDemandMetric } from '@/utils/metrics';
 import { Dates } from '@tmlmobilidade/dates';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -16,7 +15,7 @@ import useSWR from 'swr';
 /* * */
 
 interface Filters {
-	agencyId?: AgencyType
+	agencyIds?: AgencyType[]
 	dateRange?: {
 		endDate: Dates
 		startDate: Dates
@@ -54,8 +53,9 @@ export function DemandVisualization({
 	const endDate = filters?.dateRange?.endDate || Dates.now('Europe/Lisbon');
 
 	const homeContext = useHomeContext();
-	const selectedAgency = filters?.agencyId || homeContext.data.selected_agency;
+	const selectedAgencies = filters?.agencyIds || homeContext.data.agency_array;
 
+	//
 	// B. Fetch data
 
 	const metricUrl = useMemo(() => {
@@ -66,12 +66,14 @@ export function DemandVisualization({
 		};
 
 		const metricFilters = {
+			endDate: endDate.js_date,
 			lineIds: filters?.lineIds,
 			patternIds: filters?.patternIds,
+			startDate: startDate.js_date,
 		};
 
-		return MetricRouteResolver.buildOptimizedMetricUrl(baseConfig, metricFilters);
-	}, [groupBy, timeView, selectedAgency, filters]);
+		return buildMetricUrl(baseConfig, metricFilters);
+	}, [groupBy, timeView, endDate, startDate, filters]);
 
 	const { data } = useSWR<DemandMetricItem[]>(metricUrl);
 
@@ -81,29 +83,15 @@ export function DemandVisualization({
 	const formattedData = useMemo(() => {
 		if (!data) return { all: { chart: [], sum: 0 }, lastUpdated: null };
 
-		let propertyFilter: undefined | { key: string, values?: string[] };
-
-		if (groupBy === 'line' && filters?.lineIds?.length) {
-			propertyFilter = { key: 'line_id', values: filters.lineIds };
-		}
-		else if (groupBy === 'pattern' && filters?.patternIds?.length) {
-			propertyFilter = { key: 'pattern_id', values: filters.patternIds };
-		}
-		else if (groupBy === 'agency' && selectedAgency && selectedAgency !== 'all') {
-			propertyFilter = { key: 'agency_id', values: [selectedAgency] };
-		}
-
 		return transformDemandMetric(data, {
+			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
 			chartType: 'timeseries' as const,
-			endDate,
-			propertyFilter,
-			startDate,
 			t,
 			timeView,
 		});
-	}, [data, groupBy, filters, selectedAgency, startDate, endDate, t]);
+	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t]);
 
-	const chartData = formattedData.all.chart;
+	const chartData = formattedData.all.chart as TimeSeriesResult['chart'];
 
 	//
 	// D. Render components

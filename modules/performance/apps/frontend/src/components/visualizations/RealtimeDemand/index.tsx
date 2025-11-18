@@ -78,9 +78,13 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 				>
 
 					<div className={styles.container}>
-						<RecordDemand agency={selectedAgency} />
+						<RecordDemand />
 						<Spacer size="md" />
-						<DemandVisualization filters={{ agencyId: selectedAgency }} groupBy="agency" height={200} timeView="daily" />
+						<DemandVisualization
+							groupBy="agency"
+							height={200}
+							timeView="daily"
+						/>
 					</div>
 
 				</MetricCard>

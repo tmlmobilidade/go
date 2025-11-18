@@ -4,7 +4,7 @@
 
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { AgencyType } from '@/constants';
+import { AgencyTypeWithAll } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/types';
@@ -17,7 +17,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RecordDemand({ agency }: { agency?: AgencyType }) {
+export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 	//
 
 	// A. Setup variables

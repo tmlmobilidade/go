@@ -1,8 +1,8 @@
-import { metrics, rides } from '@tmlmobilidade/interfaces';
-import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 
 /* * */
 

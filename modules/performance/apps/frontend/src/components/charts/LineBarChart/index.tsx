@@ -2,8 +2,8 @@
 
 /* * */
 
+import { generateEventReferenceLines, TimeSeriesResult } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
-import { type DailyDataPoint, type MonthlyDataPoint, type YearlyDataPoint } from '@/utils/metrics/unifiedTransforms';
 import { Dates } from '@tmlmobilidade/dates';
 import { BarChart, LineChart, MetricsSkeleton } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
@@ -14,7 +14,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface LineBarChartProps {
-	data: DailyDataPoint[] | MonthlyDataPoint[] | YearlyDataPoint[]
+	data: TimeSeriesResult['chart']
 	endDate: Dates
 	height?: number
 	startDate: Dates
@@ -57,63 +57,8 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 	}, [data]);
 
 	const eventReferenceLines = useMemo(() => {
-		if (timeView !== 'daily') return []; // Only show reference lines for daily data
-
-		return (data as { day_detailed: string, qty: number }[])
-			.filter(item => item.day_detailed?.includes('(')) // contains holiday/notes
-			.map((item) => {
-				// Extract only what's inside parentheses
-				const match = item.day_detailed?.match(/\(([^)]+)\)/);
-				const label = match ? match[1] : item.day_detailed;
-
-				return {
-					color: 'var(--color-primary)',
-					label: label,
-					labelPosition: 'top' as const,
-					x: item.day_detailed,
-				};
-			});
+		return generateEventReferenceLines(data as unknown as Record<string, unknown>[], timeView);
 	}, [data, timeView]);
-
-	/**
-     * Calculates optimal Y-axis domain to fill available chart space
-     * @param data Array of chart data points
-     * @param paddingPercent Percentage of padding to add (default: 10%)
-     * @returns [minValue, maxValue] for Y-axis domain
-     */
-	const calculateYAxisDomain = (data: { qty?: number }[], paddingPercent = 10): [number, number] => {
-		if (!data || data.length === 0) return [0, 100];
-
-		const values = data.map(item => item.qty || 0).filter(val => val > 0);
-		if (values.length === 0) return [0, 100];
-
-		const min = Math.min(...values);
-		const max = Math.max(...values);
-
-		// If all values are the same, create a small range around the value
-		if (min === max) {
-			const value = min;
-			const range = Math.max(value * 0.1, 10); // 10% of value or minimum 10
-			return [Math.max(0, value - range), value + range];
-		}
-
-		const range = max - min;
-		const padding = (range * paddingPercent) / 100;
-
-		// Calculate bounds with padding
-		const lowerBound = Math.max(0, min - padding);
-		const upperBound = max + padding;
-
-		// Round to nice numbers for cleaner appearance
-		const roundedMin = Math.floor(lowerBound / Math.pow(10, Math.floor(Math.log10(range)) - 1)) * Math.pow(10, Math.floor(Math.log10(range)) - 1);
-		const roundedMax = Math.ceil(upperBound / Math.pow(10, Math.floor(Math.log10(range)) - 1)) * Math.pow(10, Math.floor(Math.log10(range)) - 1);
-
-		return [roundedMin, roundedMax];
-	};
-
-	const yAxisDomain = useMemo(() => {
-		return calculateYAxisDomain(data);
-	}, [data]);
 
 	const xAxisFormatter = useMemo(() => {
 		return (value: string) => {
@@ -152,7 +97,6 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 							withXAxis={true}
 							withYAxis={true}
 							xAxisProps={{ tickFormatter: xAxisFormatter }}
-							yAxisProps={{ domain: yAxisDomain }}
 							referenceLines={[
 								{
 									color: 'var(--color-system-text-300)',

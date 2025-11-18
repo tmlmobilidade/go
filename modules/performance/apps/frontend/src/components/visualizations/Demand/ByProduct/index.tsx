@@ -5,9 +5,7 @@
 import { StackedLineBarChart } from '@/components/charts/StackedLineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
-import { useHomeContext } from '@/contexts/Home.context';
-import { MetricRouteResolver } from '@/utils/metrics/handlers/MetricRouteResolver';
-import { type DemandMetricItem, StackedResult, transformDemandMetric } from '@/utils/metrics/unifiedTransforms';
+import { buildMetricUrl, DemandMetricItem, PieResult, StackedResult, transformDemandMetric } from '@/utils/metrics';
 import { Dates } from '@tmlmobilidade/dates';
 import { PieChart } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
@@ -19,7 +17,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface Filters {
-	agencyId?: AgencyType
+	agencyIds: AgencyType[]
 	dateRange?: {
 		endDate: Dates
 		startDate: Dates
@@ -29,7 +27,7 @@ interface Filters {
 }
 
 interface DemandByProductVisualizationProps {
-	filters?: Filters
+	filters: Filters
 	groupBy: 'agency' | 'line' | 'pattern'
 	height?: number
 	isInsideFrame?: boolean
@@ -48,89 +46,59 @@ export function DemandByProductVisualization({ filters, groupBy, height, isInsid
 
 	const startDate = filters?.dateRange?.startDate || Dates.now('Europe/Lisbon').minus({ days: 7 });
 	const endDate = filters?.dateRange?.endDate || Dates.now('Europe/Lisbon');
-
-	const homeContext = useHomeContext();
-	const selectedAgency = filters?.agencyId || homeContext.data.selected_agency;
+	const selectedAgencies = filters?.agencyIds;
 
 	// B. Fetch data
 
 	const metricUrl = useMemo(() => {
 		const baseConfig = {
-			breakdowns: ['product'] as ('product')[],
 			groupBy,
-			metricType: 'demand' as const,
+			metricType: 'demand-by-product' as const,
 			timeView,
 		};
 
 		const metricFilters = {
+			endDate: endDate.js_date,
 			lineIds: filters?.lineIds,
 			patternIds: filters?.patternIds,
+			startDate: startDate.js_date,
 		};
 
-		return MetricRouteResolver.buildOptimizedMetricUrl(baseConfig, metricFilters);
-	}, [groupBy, timeView, selectedAgency, filters]);
+		return buildMetricUrl(baseConfig, metricFilters);
+	}, [groupBy, timeView, selectedAgencies, filters]);
 
 	const { data } = useSWR<DemandMetricItem[]>(metricUrl);
 
 	//
-	// C. Transform data - Using unified transform function for stacked chart
+	// C. Transform data
 
 	const stackedData = useMemo(() => {
 		if (!data) return { all: { chart: [], series: [] }, lastUpdated: null };
 
-		let propertyFilter: undefined | { key: string, values?: string[] };
-
-		if (groupBy === 'line' && filters?.lineIds?.length) {
-			propertyFilter = { key: 'line_id', values: filters.lineIds };
-		}
-		else if (groupBy === 'pattern' && filters?.patternIds?.length) {
-			propertyFilter = { key: 'pattern_id', values: filters.patternIds };
-		}
-		else if (groupBy === 'agency' && selectedAgency && selectedAgency !== 'all') {
-			propertyFilter = { key: 'agency_id', values: [selectedAgency] };
-		}
-
 		return transformDemandMetric(data, {
+			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
+			breakdownKey: 'product_id', // TODO: Infer this from MetricType ?
 			chartType: 'stacked' as const,
-			endDate,
-			propertyFilter,
-			startDate,
 			t,
 			timeView,
-			topN: 4, // Show top 4 products + others
+			topN: 4,
 		});
-	}, [data, groupBy, filters, selectedAgency, startDate, endDate, t, timeView]);
+	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t, timeView]);
 
-	// Transform data for pie chart using unified transforms
 	const formattedPieData = useMemo(() => {
 		if (!data) return { all: { chart: [] }, lastUpdated: null };
 
-		// Build property filter same as above
-		let propertyFilter: undefined | { key: string, values?: string[] };
-
-		if (groupBy === 'line' && filters?.lineIds?.length) {
-			propertyFilter = { key: 'line_id', values: filters.lineIds };
-		}
-		else if (groupBy === 'pattern' && filters?.patternIds?.length) {
-			propertyFilter = { key: 'pattern_id', values: filters.patternIds };
-		}
-		else if (groupBy === 'agency' && selectedAgency && selectedAgency !== 'all') {
-			propertyFilter = { key: 'agency_id', values: [selectedAgency] };
-		}
-
-		// Use unified transform function with pie chart type for product totals
 		return transformDemandMetric(data, {
+			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
+			breakdownKey: 'product_id',
 			chartType: 'pie' as const,
-			endDate,
-			propertyFilter,
-			startDate,
 			t,
 			timeView,
-			topN: 4, // Show top 4 products + others
+			topN: 4,
 		});
-	}, [data, groupBy, filters, selectedAgency, startDate, endDate, t, timeView]);
+	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t, timeView]);
 
-	const pieChartData = formattedPieData.all.chart;
+	const pieChartData = formattedPieData.all.chart as PieResult['chart'];
 
 	//
 	// D. Render components

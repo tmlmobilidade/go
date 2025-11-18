@@ -3,85 +3,73 @@ import { MetricsRoutes } from '@/routes';
 /* * */
 
 export interface MetricConfiguration {
-	/** Additional breakdowns */
-	breakdowns?: ('product')[]
-	/** What to group by: agency, line, pattern, product */
-	groupBy: 'agency' | 'line' | 'pattern' | 'product'
+	/** What to group by: agency, line, pattern */
+	groupBy: 'agency' | 'line' | 'pattern'
 	/** Primary metric type */
-	metricType: 'demand'
+	metricType: 'demand' | 'demand-by-category' | 'demand-by-product'
 	/** Time granularity */
 	timeView: 'annual' | 'daily' | 'monthly'
 }
 
 export interface MetricFilters {
-	agencyId?: string | string[]
+	agencyIds?: string[]
+	endDate?: Date | string
 	lineIds?: string[]
 	patternIds?: string[]
-	productIds?: string[]
+	startDate?: Date | string
 }
 
 /* * */
 
-const METRIC_PATTERNS = {
-	// Basic demand metrics (no product breakdown)
-	'demand': {
-		agency: {
-			annual: MetricsRoutes.DEMAND_BY_AGENCY_BY_YEAR,
-			daily: MetricsRoutes.DEMAND_BY_AGENCY_BY_DAY,
-			monthly: MetricsRoutes.DEMAND_BY_AGENCY_BY_MONTH,
-		},
-		line: {
-			annual: MetricsRoutes.DEMAND_BY_LINE_BY_YEAR,
-			daily: MetricsRoutes.DEMAND_BY_LINE_BY_DAY,
-			monthly: MetricsRoutes.DEMAND_BY_LINE_BY_MONTH,
-		},
-		pattern: {
-			annual: MetricsRoutes.DEMAND_BY_PATTERN_BY_YEAR,
-			daily: MetricsRoutes.DEMAND_BY_PATTERN_BY_DAY,
-			monthly: MetricsRoutes.DEMAND_BY_PATTERN_BY_MONTH,
-		},
-	},
-	// Product-broken-down demand metrics
-	'demand-by-product': {
-		agency: {
-			annual: MetricsRoutes.DEMAND_BY_PRODUCT_BY_AGENCY_BY_YEAR,
-			daily: MetricsRoutes.DEMAND_BY_PRODUCT_BY_AGENCY_BY_DAY,
-			monthly: MetricsRoutes.DEMAND_BY_PRODUCT_BY_AGENCY_BY_MONTH,
-		},
-		line: {
-			annual: MetricsRoutes.DEMAND_BY_PRODUCT_BY_LINE_BY_YEAR,
-			daily: MetricsRoutes.DEMAND_BY_PRODUCT_BY_LINE_BY_DAY,
-			monthly: MetricsRoutes.DEMAND_BY_PRODUCT_BY_LINE_BY_MONTH,
-		},
-		// Note: Product by pattern metrics don't exist yet
-	},
-} as const;
-
 /**
  * Get the base API endpoint for a metric configuration
  */
-function getBaseUrl(config: MetricConfiguration): string {
-	const hasProductBreakdown = config.breakdowns?.includes('product');
+function getBaseUrl(config: MetricConfiguration, filters: MetricFilters): string {
+	// Determine the most efficient groupBy based on available filters
+	let effectiveGroupBy = config.groupBy;
 
-	// Determine which metric pattern to use
-	const metricKey = hasProductBreakdown ? 'demand-by-product' : 'demand';
-	const metricPattern = METRIC_PATTERNS[metricKey];
-
-	if (!metricPattern) {
-		throw new Error(`Unsupported metric type: ${config.metricType}`);
+	// Use agency-level endpoint as default for efficiency unless specific IDs are provided
+	if (config.groupBy === 'line' && !filters.lineIds?.length) {
+		effectiveGroupBy = 'agency';
+	}
+	if (config.groupBy === 'pattern' && !filters.patternIds?.length) {
+		effectiveGroupBy = 'agency';
 	}
 
-	const groupPattern = metricPattern[config.groupBy];
-	if (!groupPattern) {
-		throw new Error(`Unsupported groupBy for ${metricKey}: ${config.groupBy}`);
-	}
+	// Build route key dynamically: "DEMAND_BY_AGENCY_BY_DAY"
+	const parts = [
+		config.metricType.toUpperCase().replace(/-/g, '_'),
+		'BY',
+		effectiveGroupBy.toUpperCase(),
+		'BY',
+		config.timeView === 'daily' ? 'DAY' : config.timeView === 'monthly' ? 'MONTH' : 'YEAR',
+	];
 
-	const url = groupPattern[config.timeView];
+	const routeKey = parts.join('_') as keyof typeof MetricsRoutes;
+	const url = MetricsRoutes[routeKey];
+
 	if (!url) {
-		throw new Error(`Unsupported timeView for ${metricKey}-${config.groupBy}: ${config.timeView}`);
+		throw new Error(`Unsupported metric: ${config.metricType}-${effectiveGroupBy}-${config.timeView}`);
 	}
 
 	return url;
+}
+
+/**
+ * Format dates according to timeView for smart API filtering
+ */
+function formatDateForTimeView(date: Date | string, view: 'annual' | 'daily' | 'monthly'): string {
+	if (typeof date === 'string') return date;
+
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+
+	switch (view) {
+		case 'annual': return String(year);
+		case 'daily': return `${year}-${month}-${day}`;
+		case 'monthly': return `${year}-${month}`;
+	}
 }
 
 /**
@@ -90,132 +78,37 @@ function getBaseUrl(config: MetricConfiguration): string {
 function buildQueryParams(config: MetricConfiguration, filters: MetricFilters): string {
 	const params = new URLSearchParams();
 
-	// Add filters based on groupBy type
-	if (config.groupBy === 'line' && filters.lineIds?.length) {
+	// Use specific line IDs when provided
+	if (filters.lineIds?.length && config.groupBy === 'line') {
 		params.set('line_ids', filters.lineIds.join(','));
 	}
-	else if (config.groupBy === 'pattern' && filters.patternIds?.length) {
+
+	// Use specific pattern IDs when provided
+	if (filters.patternIds?.length && config.groupBy === 'pattern') {
 		params.set('pattern_ids', filters.patternIds.join(','));
 	}
-	else if (config.groupBy === 'agency' && filters.agencyId && filters.agencyId !== 'all') {
-		const agencyIds = Array.isArray(filters.agencyId) ? filters.agencyId : [filters.agencyId];
-		params.set('agency_ids', agencyIds.join(','));
-	}
 
-	// Add product filters if applicable
-	if (config.breakdowns?.includes('product') && filters.productIds?.length) {
-		params.set('product_ids', filters.productIds.join(','));
+	// Add date filters
+	if (filters.startDate) {
+		params.set('start_date', formatDateForTimeView(filters.startDate, config.timeView));
+	}
+	if (filters.endDate) {
+		params.set('end_date', formatDateForTimeView(filters.endDate, config.timeView));
 	}
 
 	return params.toString();
 }
 
 /**
- * Check if a metric configuration is supported
+ * Build the complete metric URL with query parameters
  */
-function isSupported(config: MetricConfiguration): boolean {
-	try {
-		getBaseUrl(config);
-		return true;
-	}
-	catch {
-		return false;
-	}
+export function buildMetricUrl(config: MetricConfiguration, filters: MetricFilters = {}): string {
+	const baseUrl = getBaseUrl(config, filters);
+	const params = buildQueryParams(config, filters);
+	return params ? `${baseUrl}?${params}` : baseUrl;
 }
 
 /**
- * Resolver for building metric API URLs based on dimensions and filters
+ * Format dates according to timeView
  */
-export const MetricRouteResolver = {
-	/**
-	 * Build the complete metric URL with query parameters
-	 */
-	buildMetricUrl(config: MetricConfiguration, filters: MetricFilters = {}): string {
-		const baseUrl = getBaseUrl(config);
-		const params = buildQueryParams(config, filters);
-
-		return params ? `${baseUrl}?${params}` : baseUrl;
-	},
-
-	/**
-	 * Build optimized metric URL - automatically chooses the most efficient API endpoint
-	 */
-	buildOptimizedMetricUrl(config: MetricConfiguration, filters: MetricFilters = {}): string {
-		const optimalConfig = this.getOptimalConfig(config, filters);
-		return this.buildMetricUrl(optimalConfig, filters);
-	},
-
-	/**
-	 * Get the base API endpoint for a metric configuration
-	 */
-	getBaseUrl,
-
-	/**
-	 * Determine optimal metric route based on applied filters
-	 * This helps optimize API calls by choosing the most specific metric available
-	 */
-	getOptimalConfig(
-		baseConfig: MetricConfiguration,
-		filters: MetricFilters,
-	): MetricConfiguration {
-		// Check if we actually need the specific groupBy level
-		const hasLineFilters = baseConfig.groupBy === 'line' && filters.lineIds?.length;
-		const hasPatternFilters = baseConfig.groupBy === 'pattern' && filters.patternIds?.length;
-		const hasAgencyFilters = baseConfig.groupBy === 'agency' && filters.agencyId && filters.agencyId !== 'all';
-
-		// If requesting line or pattern data but no specific filters are applied,
-		// we can optimize by using agency-level metrics (much smaller payload, same aggregated data)
-		if ((baseConfig.groupBy === 'line' || baseConfig.groupBy === 'pattern') && !hasLineFilters && !hasPatternFilters) {
-			return {
-				...baseConfig,
-				groupBy: 'agency',
-			};
-		}
-
-		// If requesting agency data but filtering by specific agencies, keep agency groupBy
-		if (baseConfig.groupBy === 'agency' && hasAgencyFilters) {
-			return baseConfig;
-		}
-
-		// Otherwise, keep the original configuration
-		return baseConfig;
-	},
-
-	/**
-	 * Get all supported configurations for a given metric type
-	 */
-	getSupportedConfigurations(metricType: 'demand'): MetricConfiguration[] {
-		const configs: MetricConfiguration[] = [];
-
-		// Basic demand metrics
-		(['agency', 'line', 'pattern'] as const).forEach((groupBy) => {
-			(['daily', 'monthly', 'annual'] as const).forEach((timeView) => {
-				configs.push({
-					groupBy,
-					metricType,
-					timeView,
-				});
-			});
-		});
-
-		// Product breakdown demand metrics
-		(['agency', 'line'] as const).forEach((groupBy) => {
-			(['daily', 'monthly', 'annual'] as const).forEach((timeView) => {
-				configs.push({
-					breakdowns: ['product'],
-					groupBy,
-					metricType,
-					timeView,
-				});
-			});
-		});
-
-		// Filter only supported configurations
-		return configs.filter(config => isSupported(config));
-	},
-
-	/**
-	 * Check if a metric configuration is supported
-	 */
-	isSupported,
-};
+export { formatDateForTimeView };
