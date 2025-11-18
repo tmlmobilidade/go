@@ -34,7 +34,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.1",
-		"@types/nodemailer": "7.0.3",
+		"@types/nodemailer": "7.0.4",
 		"typescript": "5.9.3"
 	}
 }

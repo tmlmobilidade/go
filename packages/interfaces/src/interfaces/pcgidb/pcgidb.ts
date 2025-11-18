@@ -31,8 +31,6 @@ class PCGIDBClass {
 
 		const pcgidbConnectionString = await this.getPcgidbConnectionString();
 
-		console.log('pcgidbConnectionString', pcgidbConnectionString);
-
 		//
 		// Get the database URI from environment variables
 
@@ -74,12 +72,12 @@ class PCGIDBClass {
 		//
 		// Check if the required PCGIDB environment variables are set.
 
-		if (!process.env.PCGIDB_USER || !process.env.PCGIDB_PASSWORD) {
-			throw new Error('Missing PCGIDB_USER or PCGIDB_PASSWORD environment variable.');
+		if (!process.env.PCGIDB_LEGACY_USER || !process.env.PCGIDB_LEGACY_PASSWORD) {
+			throw new Error('Missing PCGIDB_LEGACY_USER or PCGIDB_LEGACY_PASSWORD environment variable.');
 		}
 
-		if (!process.env.PCGIDB_ADDRESS || !process.env.PCGIDB_PORT) {
-			throw new Error('Missing PCGIDB_ADDRESS or PCGIDB_PORT environment variable.');
+		if (!process.env.PCGIDB_LEGACY_ADDRESS || !process.env.PCGIDB_LEGACY_PORT) {
+			throw new Error('Missing PCGIDB_LEGACY_ADDRESS or PCGIDB_LEGACY_PORT environment variable.');
 		}
 
 		//
@@ -87,23 +85,23 @@ class PCGIDBClass {
 		// In 'production' and 'staging', we assume direct connection is used.
 
 		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
-			return `mongodb://${process.env.PCGIDB_USER}:${process.env.PCGIDB_PASSWORD}@${process.env.PCGIDB_ADDRESS}:${process.env.PCGIDB_PORT}/`;
+			return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@${process.env.PCGIDB_LEGACY_ADDRESS}:${process.env.PCGIDB_LEGACY_PORT}/`;
 		}
 
 		//
 		// If we're here, then the SSH Tunnel is to be used.
 		// Check if the required SSH Tunnel environment variables are set.
 
-		if (!process.env.PCGIDB_ADDRESS || !process.env.PCGIDB_PORT) {
-			throw new Error('Missing PCGIDB_ADDRESS or PCGIDB_PORT environment variable.');
+		if (!process.env.PCGIDB_LEGACY_ADDRESS || !process.env.PCGIDB_LEGACY_PORT) {
+			throw new Error('Missing PCGIDB_LEGACY_ADDRESS or PCGIDB_LEGACY_PORT environment variable.');
 		}
 
-		if (!process.env.PCGIDB_TUNNEL_LOCAL_HOST || !process.env.PCGIDB_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing PCGIDB_TUNNEL_LOCAL_HOST or PCGIDB_TUNNEL_LOCAL_PORT environment variable.');
+		if (!process.env.PCGIDB_TUNNEL_LOCAL_PORT) {
+			throw new Error('Missing PCGIDB_TUNNEL_LOCAL_PORT environment variable.');
 		}
 
-		if (!process.env.PCGIDB_TUNNEL_SSH_HOST || !process.env.PCGIDB_TUNNEL_SSH_PORT || !process.env.PCGIDB_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing PCGIDB_TUNNEL_SSH_HOST, PCGIDB_TUNNEL_SSH_PORT or PCGIDB_TUNNEL_SSH_USERNAME environment variable.');
+		if (!process.env.PCGIDB_TUNNEL_SSH_HOST || !process.env.PCGIDB_TUNNEL_SSH_USERNAME) {
+			throw new Error('Missing PCGIDB_TUNNEL_SSH_HOST or PCGIDB_TUNNEL_SSH_USERNAME environment variable.');
 		}
 
 		//
@@ -111,9 +109,9 @@ class PCGIDBClass {
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.PCGIDB_ADDRESS,
-				dstPort: Number(process.env.PCGIDB_PORT),
-				srcAddr: process.env.PCGIDB_TUNNEL_LOCAL_HOST,
+				dstAddr: process.env.PCGIDB_LEGACY_ADDRESS,
+				dstPort: Number(process.env.PCGIDB_LEGACY_PORT),
+				srcAddr: 'localhost',
 				srcPort: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
 			},
 			serverOptions: {
@@ -129,7 +127,7 @@ class PCGIDBClass {
 				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
 				keepaliveInterval: 10000, // Send keep-alive every 10 seconds
-				port: Number(process.env.PCGIDB_TUNNEL_SSH_PORT),
+				port: 22,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
@@ -162,7 +160,7 @@ class PCGIDBClass {
 			throw new Error('Failed to retrieve the SSH tunnel address.');
 		}
 
-		return `mongodb://${process.env.PCGIDB_USER}:${process.env.PCGIDB_PASSWORD}@${process.env.PCGIDB_TUNNEL_LOCAL_HOST}:${localAddress.port}/`;
+		return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@localhost:${localAddress.port}/`;
 
 		//
 	}

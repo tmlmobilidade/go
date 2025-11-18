@@ -3,11 +3,11 @@
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidb, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { getCurrentEnvironment, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 
 /* * */
@@ -40,9 +40,7 @@ async function syncVehicleEvents() {
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
 
-		let earliestDataNeeded: Dates;
-		if (getCurrentEnvironment() === 'production') earliestDataNeeded = Dates.fromOperationalDate('20240101', 'Europe/Lisbon');
-		else earliestDataNeeded = Dates.now('Europe/Lisbon').minus({ weeks: 1 });
+		const earliestDataNeeded = getEarliestDate();
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
