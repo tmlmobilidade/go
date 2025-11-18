@@ -1,6 +1,6 @@
 /* * */
 
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HttpStatus, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
@@ -17,7 +17,7 @@ const COOKIE_NAME = 'session_token';
 export class AuthController {
 	/**
 	 *  Change password on database and delete token
-	*/
+	 */
 	async changePassword(request: FastifyRequest, reply: FastifyReply<void>) {
 		const { password_hash, token } = request.body as { password_hash: string, token: string };
 
@@ -63,7 +63,6 @@ export class AuthController {
 		});
 
 		reply.setCookie(COOKIE_NAME, session.token, {
-			// domain: getAppConfig('auth', 'cookie_domain'),
 			httpOnly: true,
 			maxAge: 30 * 24 * 60 * 60, // 30 days
 			path: '/',
@@ -79,8 +78,6 @@ export class AuthController {
 			})
 			.status(HttpStatus.OK);
 	}
-
-	/* * */
 
 	/**
 	 * Logout - Remove the session token cookie
@@ -101,7 +98,6 @@ export class AuthController {
 
 		return reply
 			.setCookie(COOKIE_NAME, '', {
-				// domain: getAppConfig('auth', 'cookie_domain'),
 				httpOnly: true,
 				maxAge: 0,
 				path: '/',
@@ -117,13 +113,15 @@ export class AuthController {
 
 	/**
 	 * Go check email is valid for send link to reset password
-	*/
+	 */
 	async sendEmailWithResetPasswordURL(request: FastifyRequest, reply: FastifyReply<void>) {
+		//
+
 		const { email } = request.body as { email: string };
 
 		// Search user by Email
-		const user = await users.findByEmail(email);
-		if (!user) throw new HttpException(HttpStatus.NOT_FOUND, `User not found with email ${email}`);
+		const foundUser = await users.findByEmail(email);
+		if (!foundUser) throw new HttpException(HttpStatus.NOT_FOUND, `User not found with email ${email}`);
 
 		const token = generateRandomToken();
 
@@ -131,15 +129,13 @@ export class AuthController {
 		await verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ hours: 1 }).unix_timestamp,
 			token: token,
-			user_id: user._id,
+			user_id: foundUser._id,
 		});
-
-		const url = `${getAppConfig('auth', 'frontend_url')}/reset-password?token=${token}`;
 
 		await sendResetPasswordEmail({
 			props: {
-				first_name: user.first_name,
-				password_reset_link: url,
+				first_name: foundUser.first_name,
+				password_reset_link: `${PAGE_ROUTES.auth.RESET_PASSWORD_LIST}?token=${token}`,
 			},
 			to: email,
 		});
