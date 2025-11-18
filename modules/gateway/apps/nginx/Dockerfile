@@ -35,6 +35,12 @@ RUN envsubst '${NGINX_SERVER_NAME}' < /etc/nginx/nginx.conf.template > /etc/ngin
 
 
 # # #
+# SETUP CUSTOM ERROR PAGES
+
+COPY ./.github/templates/nginx/error.html /etc/nginx/error.html
+
+
+# # #
 # RUN NGINX WITH AUTO RELOAD
 
 CMD ["/bin/sh", "-c", "while :; do sleep 6h & wait ${!}; nginx -s reload; done & nginx -g 'daemon off;'"]

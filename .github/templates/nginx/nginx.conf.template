@@ -124,6 +124,7 @@ http {
 		error_page 500 /error;
 		error_page 502 /error;
 		error_page 503 /error;
+		error_page 504 /error;
 
 		location /error {
 			internal;
