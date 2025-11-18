@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable perfectionist/sort-classes */
 
-import { MongoConnector } from '@tmlmobilidade/mongo';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { MongoConnector } from '@tmlmobilidade/mongo';
 import { Census, District, DistrictDocument, Locality, LocalityDocument, Location, LocationCollections, Municipality, MunicipalityDocument, Parish, ParishDocument } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Collection, Document, Filter, FindOptions, WithId } from 'mongodb';
