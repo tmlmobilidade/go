@@ -70,10 +70,10 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
-    volumes:
-      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
+    secrets:
+      - ociprivatekey
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -106,7 +106,5 @@ services:
       resources:
         limits:
           memory: 2gb
-    volumes:
-      - ./secrets:/secrets
     env_file:
       - ./secrets/.env

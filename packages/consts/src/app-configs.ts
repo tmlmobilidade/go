@@ -7,7 +7,6 @@ import { type Environment, getCurrentEnvironment } from '@tmlmobilidade/types';
 interface AppConfigGroup {
 	api_port: number
 	api_url: string
-	cookie_domain: string
 	cors_origin: RegExp | string | true
 	frontend_port: null | number
 	frontend_url: null | string
@@ -17,14 +16,12 @@ interface AppConfigGroup {
 
 const DEFAULT_PRODUCTION_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
-	cookie_domain: 'go.tmlmobilidade.pt',
 	cors_origin: new RegExp(`https://go.tmlmobilidade.pt$`),
 	frontend_port: 3000,
 };
 
 const DEFAULT_STAGING_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
-	cookie_domain: 'staging.go.tmlmobilidade.pt',
 	cors_origin: new RegExp(`https://staging.go.tmlmobilidade.pt$`),
 	frontend_port: 3000,
 };
@@ -35,7 +32,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52001,
 			api_url: 'http://localhost:52001',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51001,
 			frontend_url: 'http://localhost:51001/alerts',
@@ -56,7 +52,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52000,
 			api_url: 'http://localhost:52000',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51000,
 			frontend_url: 'http://localhost:51000/auth',
@@ -77,7 +72,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52002,
 			api_url: 'http://localhost:52002',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51002,
 			frontend_url: 'http://localhost:51002/controller',
@@ -98,7 +92,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52007,
 			api_url: 'http://localhost:52007',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51007,
 			frontend_url: 'http://localhost:51007/exporter',
@@ -119,7 +112,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52005,
 			api_url: 'http://localhost:52005',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51005,
 			frontend_url: 'http://localhost:51005/locations',
@@ -140,7 +132,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52006,
 			api_url: 'http://localhost:52006',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51006,
 			frontend_url: 'http://localhost:51006/performance',
@@ -161,7 +152,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52004,
 			api_url: 'http://localhost:52004',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51004,
 			frontend_url: 'http://localhost:51004/plans',
@@ -182,7 +172,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		development: {
 			api_port: 52003,
 			api_url: 'http://localhost:52003',
-			cookie_domain: 'localhost',
 			cors_origin: true,
 			frontend_port: 51003,
 			frontend_url: 'http://localhost:51003/stops',
