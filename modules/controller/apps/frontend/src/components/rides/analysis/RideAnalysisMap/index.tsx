@@ -16,7 +16,7 @@ export function RideAnalysisMap() {
 	//
 	// A. Setup variables
 
-	const RideAnalysisContext = useRideAnalysisContext();
+	const rideAnalysisContext = useRideAnalysisContext();
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
 	const [showObservedPath, setShowObservedPath] = useState(true);
@@ -31,18 +31,18 @@ export function RideAnalysisMap() {
 				<MapView id="RideAnalysisMap">
 					<MapOverlayScheduledPath
 						id="2"
-						lineData={RideAnalysisContext.geojson.scheduled_shape}
-						pointsData={RideAnalysisContext.geojson.scheduled_path}
+						lineData={rideAnalysisContext.geojson.scheduled_shape}
+						pointsData={rideAnalysisContext.geojson.scheduled_path}
 						visible={showScheduledPath}
 					/>
 					<MapOverlayObservedPath
 						id="1"
-						lineData={RideAnalysisContext.geojson.observed_shape}
-						pointsData={RideAnalysisContext.geojson.observed_events}
+						lineData={rideAnalysisContext.geojson.observed_shape}
+						pointsData={rideAnalysisContext.geojson.observed_events}
 						visible={showObservedPath}
 					/>
 					<MapOverlayGeofences
-						geofencesData={RideAnalysisContext.geojson.scheduled_path_geofences}
+						geofencesData={rideAnalysisContext.geojson.scheduled_path_geofences}
 						id="geofences"
 						visible={showGeofences}
 					/>

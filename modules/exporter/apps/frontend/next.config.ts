@@ -6,6 +6,9 @@ import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
 	basePath: '/exporter',
+	env: {
+		NEXT_PUBLIC_BASE_PATH: '/exporter',
+	},
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},

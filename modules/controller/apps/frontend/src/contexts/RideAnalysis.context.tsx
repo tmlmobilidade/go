@@ -13,7 +13,7 @@ import { getCssVariableValue } from '@tmlmobilidade/ui';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -84,7 +84,7 @@ export function useRideAnalysisContext() {
 
 /* * */
 
-export const RideAnalysisContextProvider = ({ children, rideId }) => {
+export function RideAnalysisContextProvider({ children, rideId }: PropsWithChildren<{ rideId: string }>) {
 	//
 
 	//
@@ -161,6 +161,13 @@ export const RideAnalysisContextProvider = ({ children, rideId }) => {
 		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayScheduledPathPointsDataProps>();
 		// If no hashed trip data, return the empty feature collection
 		if (!hashedTripData?.path) return featureCollection;
+		// Group simplified apex validations by stop ID
+		const validationsByStopId: Record<string, SimplifiedApexValidation[]> = {};
+		simplifiedApexValidationsData?.forEach((validation) => {
+			if (!validation.stop_id) return;
+			if (!validationsByStopId[validation.stop_id]) validationsByStopId[validation.stop_id] = [];
+			validationsByStopId[validation.stop_id].push(validation);
+		});
 		// Prepare the feature collection with hashed trip data
 		featureCollection.features = hashedTripData.path
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
@@ -173,14 +180,13 @@ export const RideAnalysisContextProvider = ({ children, rideId }) => {
 					arrival_time: waypoint.arrival_time,
 					id: waypoint.stop_id,
 					name: waypoint.stop_name,
-					// color: `#${hashedTripData.data.route_color}`,
+					passengers_observed: validationsByStopId[waypoint.stop_id]?.length || 0,
 					sequence: waypoint.stop_sequence,
-					// text_color: `#${hashedTripData.data.route_text_color}`,
 				},
 				type: 'Feature',
 			}));
 		return featureCollection;
-	}, [hashedTripData]);
+	}, [hashedTripData, simplifiedApexValidationsData]);
 
 	const scheduledPathGeofencesFC: FeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps> = useMemo(() => {
 		// Setup an empty feature collection
