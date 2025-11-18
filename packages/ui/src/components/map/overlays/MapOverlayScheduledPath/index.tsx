@@ -17,6 +17,7 @@ export interface MapOverlayScheduledPathPointsDataProps {
 	arrival_time: string
 	id: string
 	name: string
+	passengers_observed?: number
 	sequence: number
 }
 
@@ -101,6 +102,8 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 						<Divider />
 						<span className={styles.value}>Sequência: {hoveredFeature.properties.sequence}/{pointsData.features.length}</span>
 						<span className={styles.value}>Hora planeada: {hoveredFeature.properties.arrival_time}</span>
+						<Divider />
+						<span className={styles.value}>Entradas: {hoveredFeature.properties.passengers_observed}</span>
 					</div>
 				</Popup>
 			)}
