@@ -2,11 +2,11 @@
 
 import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type DemandByPatternByDay } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type DemandByPatternByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */

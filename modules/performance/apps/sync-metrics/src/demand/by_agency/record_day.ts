@@ -1,8 +1,8 @@
 import { logMetricToFile } from '@/logMetrics.js';
 import { metrics } from '@tmlmobilidade/interfaces';
-import { Metric } from '@tmlmobilidade/types';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { Metric } from '@tmlmobilidade/types';
 
 export const computeTopDemandByAgency = async () => {
 	//

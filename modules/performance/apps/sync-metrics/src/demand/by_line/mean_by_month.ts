@@ -2,9 +2,9 @@
 
 import { logMetricToFile } from '@/logMetrics.js';
 import { metrics } from '@tmlmobilidade/interfaces';
-import { type Metric } from '@tmlmobilidade/types';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type Metric } from '@tmlmobilidade/types';
 
 /* * */
 
