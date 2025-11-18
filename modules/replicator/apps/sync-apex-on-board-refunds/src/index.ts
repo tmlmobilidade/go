@@ -3,7 +3,7 @@
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidb, rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -40,8 +40,7 @@ async function syncApexOnBoardRefunds() {
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
 
-		const earliestDataNeeded = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
+		const earliestDataNeeded = getEarliestDate();
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)

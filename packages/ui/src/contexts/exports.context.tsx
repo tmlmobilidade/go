@@ -2,7 +2,7 @@
 
 /* * */
 
-import { API_ROUTES, getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { CreateFileExportDto, FileExport, FileExportType } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';

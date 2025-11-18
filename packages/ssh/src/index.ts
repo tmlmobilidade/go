@@ -1,5 +1,6 @@
 /* * */
 
+import { Logger } from '@tmlmobilidade/logger';
 import { type AddressInfo, type Server } from 'node:net';
 import { createTunnel, type ForwardOptions, type ServerOptions, type SshOptions, type TunnelOptions } from 'tunnel-ssh';
 
@@ -71,34 +72,31 @@ export class SshTunnelService {
 			}
 
 			const [server] = await createTunnel(this.config.tunnelOptions, this.config.serverOptions, this.config.sshOptions, this.config.forwardOptions);
-			console.log(`⤷ SSH Tunnel connected to host port ${(server.address() as AddressInfo).port}`);
+			Logger.info(`SSH Tunnel connected to host port ${(server.address() as AddressInfo).port}`);
 
 			this._server = server;
 
 			server.on('error', (error) => {
-				console.log(`⤷ SSH Tunnel Error:`, error);
+				Logger.error(`SSH Tunnel Error`, error);
 			});
 
 			server.on('close', () => {
-				console.log(`⤷ SSH Tunnel closed.`);
+				Logger.info('SSH Tunnel closed.');
 			});
 
 			return this._server;
 		}
 		catch (error) {
 			if (error.code === 'EADDRINUSE') {
-				console.log(`⤷ ERROR: Port "${this.config.serverOptions.port}" already in use. Retrying with a different port...`);
-				if (this.config.serverOptions.port) this.config.serverOptions.port++;
-				this.connect();
-				return;
+				Logger.info(`Port "${this.config.serverOptions.port}" already in use. Retrying with a different port...`);
+				this.config.serverOptions.port++;
+				return await this.connect();
 			}
-
-			console.log(`⤷ ERROR: Failed to connect to SSH Tunnel.`, error);
-			if (this.retries < (this.options?.maxRetries || 3)) {
+			else if (this.retries < (this.options?.maxRetries || 3)) {
+				Logger.error(`Failed to connect to SSH Tunnel.`, error);
 				this.retries++;
-				console.log(`⤷ Retrying SSH connection...`);
-				this.connect();
-				return;
+				Logger.info('Retrying SSH connection...');
+				return await this.connect();
 			}
 			else {
 				throw new Error('Error connecting to SSH tunnel', error);
