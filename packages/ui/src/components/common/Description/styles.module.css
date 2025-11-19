@@ -6,7 +6,7 @@
 	margin: 0;
 	font-size: var(--font-size-sm);
 	font-weight: var(--font-weight-medium);
-	line-height: var(font-line-height);
+	line-height: var(--font-line-height);
 	color: var(--color-system-text-200);
 }
 

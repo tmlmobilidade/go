@@ -55,7 +55,7 @@
 
 .sizeSm{
 	font-size: 1px;
-	line-height: var(font-line-height);
+	line-height: var(--font-line-height);
 }
 
 /* * */
