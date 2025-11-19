@@ -30,7 +30,7 @@ export const syncRealtimeMetrics = async () => {
 		Logger.terminate(`Finished Realtime Metrics Sync (${globalTimer.get()})`);
 		Logger.divider();
 
-		setTimeout(runOnInterval, 30_000); // 30 seconds
+		setTimeout(runOnInterval, 1_200_000); // 2 minutes
 	};
 
 	runOnInterval();
