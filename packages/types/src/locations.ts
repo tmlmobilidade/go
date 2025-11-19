@@ -12,7 +12,7 @@
  *    top level and moving the complete Feature to a separate 'geojson' field. This makes
  *    them much easier to work with in application code since you can directly access
  *    properties like location.name instead of location.properties.name.
-*/
+ */
 
 import { PaginationSchema } from '@/_common/index.js';
 import { MultiPolygon } from 'geojson';
