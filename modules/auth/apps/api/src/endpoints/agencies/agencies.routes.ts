@@ -17,13 +17,10 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		// GET /agencies
 		instance.get('/', AgenciesController.getAll);
 
-		// GET /agencies/:id
 		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.read) }, AgenciesController.getById);
 
-		// PUT /agencies/:id
 		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update) }, AgenciesController.update);
 
 		next();

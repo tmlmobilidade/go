@@ -31,12 +31,3 @@ export const UpdateAgencySchema = CreateAgencySchema.omit({ created_by: true }).
 export type Agency = z.infer<typeof AgencySchema>;
 export type CreateAgencyDto = z.infer<typeof CreateAgencySchema>;
 export type UpdateAgencyDto = z.infer<typeof UpdateAgencySchema>;
-
-/* * */
-
-export const AgencyPermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-	municipality_ids: z.array(z.string()),
-});
-
-export type AgencyPermission = z.infer<typeof AgencyPermissionSchema>;

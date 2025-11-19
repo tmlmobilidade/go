@@ -8,6 +8,8 @@ import { type CreateRoleDto, type Role, type UpdateRoleDto } from '@tmlmobilidad
 /* * */
 
 export class RolesController {
+	//
+
 	/**
 	 * Create a new user - Create a new user in the database
 	 * @param {FastifyRequest} request - The request object
