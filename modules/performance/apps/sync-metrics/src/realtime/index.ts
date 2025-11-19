@@ -20,9 +20,9 @@ export const syncRealtimeMetrics = async () => {
 
 		//
 
-		await syncRealtimeDemand(); // 2 seconds
+		await syncRealtimeDemand();
 
-		await syncRealtimeServiceCompliance(); // 24 seconds
+		await syncRealtimeServiceCompliance();
 
 		//
 
@@ -30,7 +30,7 @@ export const syncRealtimeMetrics = async () => {
 		Logger.terminate(`Finished Realtime Metrics Sync (${globalTimer.get()})`);
 		Logger.divider();
 
-		setTimeout(runOnInterval, 1_200_000); // 20 minutes
+		setTimeout(runOnInterval, 1_200_000); // 2 minutes
 	};
 
 	runOnInterval();

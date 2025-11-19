@@ -43,7 +43,7 @@ export default function Home() {
 
 			<Divider />
 
-			<Topics />
+			{/* <Topics /> */}
 		</div>
 	);
 }

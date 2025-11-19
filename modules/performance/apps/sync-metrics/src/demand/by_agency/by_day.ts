@@ -2,11 +2,11 @@
 
 import { logMetricToFile } from '@/logMetrics.js';
 import { CalendarEntry, fetchCalendarData } from '@/utils.js';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import { Dates } from '@tmlmobilidade/dates';
+import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -132,19 +132,7 @@ export const syncDemandByAgencyByDay = async () => {
 				});
 			}
 
-			// Create or get "all" document for aggregated totals
-			if (!agencyMap.has('all')) {
-				agencyMap.set('all', {
-					data: {},
-					description: 'Aggregated passengers for all agencies combined',
-					generated_at: new Date(),
-					metric: METRIC,
-					properties: { agency_id: 'all' },
-				});
-			}
-
 			const agencyDoc = agencyMap.get(agency_id);
-			const allDoc = agencyMap.get('all');
 			const calendarProps = calendarMap.get(validation.day);
 
 			// Update individual agency data
@@ -155,18 +143,6 @@ export const syncDemandByAgencyByDay = async () => {
 				period: calendarProps.period,
 				qty: validation.count,
 			};
-
-			// Update "all" aggregated data
-			if (!allDoc.data[validation.day]) {
-				allDoc.data[validation.day] = {
-					day_type: calendarProps.day_type,
-					holiday: calendarProps.holiday,
-					notes: calendarProps.notes,
-					period: calendarProps.period,
-					qty: 0,
-				};
-			}
-			allDoc.data[validation.day].qty += validation.count;
 		}
 	}
 
