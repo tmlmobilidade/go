@@ -1,7 +1,6 @@
 {
 	"reject": [
 		"zod",
-		"next",
 		"@carrismetropolitana/eslint"
 	]
 }

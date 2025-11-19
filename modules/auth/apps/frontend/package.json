@@ -22,7 +22,7 @@
 		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",
 		"clsx": "2.1.1",
-		"next": "15.5.6",
+		"next": "16.0.3",
 		"nuqs": "2.8.0",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",

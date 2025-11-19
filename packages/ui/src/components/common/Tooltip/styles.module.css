@@ -1,7 +1,7 @@
 .tooltip {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    line-height: var(font-line-height);
+    line-height: var(--font-line-height);
     color: var(--color-system-background-100);
     background-color: var(--color-system-text-100);
     box-shadow: 1px 2px 5px 2px rgb(0 0 0 / 20%);

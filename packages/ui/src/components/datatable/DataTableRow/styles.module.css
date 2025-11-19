@@ -39,7 +39,7 @@
 	text-overflow: ellipsis;
 	font-size: var(--font-size-md);
 	font-weight: var(--font-weight-semibold);
-	line-height: var(font-line-height);
+	line-height: var(--font-line-height);
 	color: var(--color-system-text-100);
 }
 
