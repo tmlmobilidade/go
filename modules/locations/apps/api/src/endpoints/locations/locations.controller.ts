@@ -121,8 +121,6 @@ export class LocationsController {
 			const filter: Filter<Municipality> = query.district_ids ? { district_id: { $in: query.district_ids } } : {};
 			const options: FindOptions = { projection: { geometry: query.geojson === true ? 1 : 0 } };
 
-			console.log('HERE =======> ', filter);
-
 			const municipalities = await locations.findMunicipalities(filter, options);
 
 			return reply.status(HttpStatus.OK).send({

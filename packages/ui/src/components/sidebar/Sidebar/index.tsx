@@ -52,7 +52,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'alerts',
-		href: PAGE_ROUTES.alerts.BASE,
+		href: PAGE_ROUTES.alerts.SCHEDULED_LIST,
 		icon: <IconAlertTriangle size={26} />,
 		label: 'Alertas',
 		permissions: [{ action: Permissions.alerts.actions.read, scope: Permissions.alerts.scope }],
@@ -66,7 +66,7 @@ export const sidebarApps = [
 	},
 	{
 		_id: 'rides',
-		href: PAGE_ROUTES.controller.BASE,
+		href: PAGE_ROUTES.controller.RIDES_LIST,
 		icon: <IconListCheck size={26} />,
 		label: 'Circulações',
 		permissions: [{ action: Permissions.rides.actions.analysis_read, scope: Permissions.rides.scope }],
@@ -80,14 +80,14 @@ export const sidebarApps = [
 	// },
 	{
 		_id: 'stops',
-		href: PAGE_ROUTES.stops.BASE,
+		href: PAGE_ROUTES.stops.STOPS_LIST,
 		icon: <IconBusStop size={26} />,
 		label: 'Paragens',
 		permissions: [{ action: Permissions.stops.actions.read, scope: Permissions.stops.scope }],
 	},
 	{
 		_id: 'plans',
-		href: PAGE_ROUTES.plans.BASE,
+		href: PAGE_ROUTES.plans.APPROVED_LIST,
 		icon: <IconFileCertificate size={26} />,
 		label: 'Planos',
 		permissions: [{ action: Permissions.plans.actions.read, scope: Permissions.plans.scope }],
