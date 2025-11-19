@@ -109,6 +109,10 @@ http {
 		listen [::]:80;
 		server_tokens off;
 
+		# Server limits
+		client_max_body_size 1G;
+		client_body_timeout 5m;
+
 		# Proxy configuration
 		proxy_connect_timeout 10s;
 		proxy_send_timeout 20s;
