@@ -30,7 +30,7 @@ class AuthProvider {
 	 * @param user_id - The user ID (optional if sessionToken is provided)
 	 * @returns The permissions that the user has
 	 */
-	public async getPermissions<T>(params: OneOrTheOther<{ sessionToken: string }, { user_id: string }>): Promise<Permission<T>[]> {
+	public async getPermissions(params: OneOrTheOther<{ sessionToken: string }, { user_id: string }>): Promise<Permission[]> {
 		//
 
 		//
@@ -54,9 +54,9 @@ class AuthProvider {
 
 		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
 
-		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions] as Permission<unknown>[];
+		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions] as Permission[];
 
-		const permissionsMap = new Map<string, Permission<unknown>>();
+		const permissionsMap = new Map<string, Permission>();
 
 		for (const permission of allPermissions) {
 			const key = `${permission.scope}:${permission.action}`;

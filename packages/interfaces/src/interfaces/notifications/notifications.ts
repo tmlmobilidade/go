@@ -115,20 +115,20 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 	 * Collects all effective permissions of a user (direct + via roles),
 	 * merging duplicates by (scope:action).
 	 */
-	private collectUserPermissions(user: User, rolesWithTopic: Role[]): Map<string, Permission<unknown>> {
+	private collectUserPermissions(user: User, rolesWithTopic: Role[]): Map<string, Permission> {
 		const rolePermissions = rolesWithTopic
 			.filter(role => user.role_ids?.includes(role._id))
 			.flatMap(role => role.permissions ?? []);
 
 		const allPermissions = [...rolePermissions, ...(user.permissions ?? [])];
 
-		const map = new Map<string, Permission<unknown>>();
+		const map = new Map<string, Permission>();
 
 		for (const permission of allPermissions) {
 			const key = `${permission.scope}:${permission.action}`;
 			const existing = map.get(key);
 
-			map.set(key, existing ? mergeObjects(existing, permission as Permission<unknown>) : permission as Permission<unknown>);
+			map.set(key, existing ? mergeObjects(existing, permission as Permission) : permission as Permission);
 		}
 
 		return map;
@@ -138,11 +138,11 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 	 * Determines whether a user can receive email notifications for a topic.
 	 */
 	private getNotificationPermission(
-		permissions: Map<string, Permission<unknown>>,
+		permissions: Map<string, Permission>,
 		topic: string,
 	): boolean {
 		const permission = permissions.get(`notifications:${topic}`);
-		return (permission?.resource as NotificationPermission)?.send_mail ?? false;
+		return (permission['resource'] as NotificationPermission)?.send_mail ?? false;
 	}
 }
 

@@ -2,7 +2,7 @@
 
 import { DocumentSchema } from '@/_common/document.js';
 import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
-import { type Permission, PermissionSchema } from '@/auth/permission.js';
+import { PermissionSchema } from '@/permissions/index.js';
 import { z } from 'zod';
 
 /* * */
@@ -35,14 +35,12 @@ export const UserSchema = DocumentSchema.extend({
 	session_ids: z.array(z.string()).default([]),
 	theme_id: z.string().nullish(),
 	verification_token_ids: z.array(z.string()).default([]),
-}).strict();
+}).strip();
 
 export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true }).partial();
 
-export interface User extends Omit<z.infer<typeof UserSchema>, 'permissions'> {
-	permissions: Permission<unknown>[]
-}
+export type User = z.infer<typeof UserSchema>;
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;
 export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
 

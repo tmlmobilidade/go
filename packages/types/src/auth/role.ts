@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { PermissionSchema } from '@/auth/permission.js';
+import { PermissionSchema } from '@/permissions/index.js';
 import { z } from 'zod';
 
 /* * */

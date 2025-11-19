@@ -3,7 +3,7 @@
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { authProvider, users } from '@tmlmobilidade/interfaces';
-import { type CreateUserDto, type UpdateUserDto, type User } from '@tmlmobilidade/types';
+import { type CreateUserDto, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -12,6 +12,8 @@ const COOKIE_NAME = 'session_token';
 /* * */
 
 export class UsersController {
+	//
+
 	/**
 	 * Create a new user - Create a new user in the database
 	 * @param request The request object
@@ -134,11 +136,29 @@ export class UsersController {
 
 		//
 		// Set the updated_by field to the current user's id
+
 		request.body.updated_by = request.me._id;
 
 		//
-		const user = await users.updateById(request.params.id, request.body);
+		// Validate the request body against the UpdateUserDto schema
+
+		const validatedUserData = UpdateUserSchema.safeParse(request.body);
+
+		if (!validatedUserData.success) {
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		}
+
+		//
+		// Update the user in the database
+
+		const user = await users.updateById(request.params.id, validatedUserData.data);
+
+		//
+		// Send the updated user data back in the response
+
 		reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
 
 	/**

@@ -18,14 +18,14 @@ export type WithResourceToggle<T = unknown, K = Record<string, unknown>> = T & {
 	onSendEmailToggle?: (scope: string, action: string, resource: Partial<K>) => void
 };
 
-export interface PermissionSectionInputProps<T = unknown> {
+export interface PermissionSectionInputProps {
 	onToggle: (scope: string, action: string) => void
-	permissions: Permission<T>[]
+	permissions: Permission[]
 }
 
-interface PermissionsSectionProps {
-	actions: PermissionAction[]
-	currentPermissions: Permission<unknown>[]
+interface PermissionsSectionProps<T> {
+	actions: PermissionAction<T>[]
+	currentPermissions: Permission[]
 	description: string
 	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
 	onToggle: (scope: string, action: string, send_email?: boolean) => void
@@ -37,24 +37,13 @@ interface PermissionsSectionProps {
 
 /* * */
 
-export function PermissionsSection({
-	actions,
-	currentPermissions,
-	description,
-	onResourceToggle,
-	onToggle,
-	roles = [],
-	scope,
-	title,
-	userRoleIds = [],
-}: PermissionsSectionProps) {
-	const getPermissionData = (action: string) => {
-		const permission = currentPermissions.find(
-			p => p.scope === scope && p.action === action,
-		);
+export function PermissionsSection<T>({ actions, currentPermissions, description, onResourceToggle, onToggle, roles = [], scope, title, userRoleIds = [] }: PermissionsSectionProps<T>) {
+	//
+
+	const getPermissionData = (action: keyof T) => {
+		const permission = currentPermissions.find(p => p.scope === scope && p.action === action);
 		const hasPermission = !!permission;
 		const fromRole = hasRolePermission(scope, action, userRoleIds, roles);
-
 		return {
 			fromRole,
 			hasPermission,
@@ -69,7 +58,7 @@ export function PermissionsSection({
 						const { fromRole, hasPermission } = getPermissionData(key);
 						return (
 							<CheckCard
-								key={key}
+								key={String(key)}
 								checked={hasPermission}
 								description={description}
 								fromRole={fromRole}

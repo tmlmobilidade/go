@@ -3,7 +3,7 @@
 import { UsersController } from '@/endpoints/users/users.controller.js';
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,19 +16,19 @@ const server = FastifyService.getInstance().server;
 server.register(
 	(instance, opts, next) => {
 		// GET /users
-		instance.get('/', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.read) }, UsersController.getAll);
+		instance.get('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.read) }, UsersController.getAll);
 
 		// GET /users/:id
-		instance.get('/:id', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.read) }, UsersController.getById);
+		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.read) }, UsersController.getById);
 
 		// POST /users
-		instance.post('/', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.create) }, UsersController.create);
+		instance.post('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.create) }, UsersController.create);
 
 		// PUT /users/:id
-		instance.put('/:id', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.update) }, UsersController.update);
+		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update) }, UsersController.update);
 
 		// DELETE /users/:id
-		instance.delete('/:id', { preHandler: authorizationMiddleware(Permissions.users.scope, Permissions.users.actions.delete) }, UsersController.delete);
+		instance.delete('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.delete) }, UsersController.delete);
 
 		// GET /users/me
 		instance.get('/me', { preHandler: authorizationMiddleware() }, UsersController.getMe);

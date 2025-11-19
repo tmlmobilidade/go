@@ -20,7 +20,7 @@ export function RoleDetail() {
 			<PermissionSectionGroup
 				onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
 				onToggle={rolesDetailContext.actions.handlePermissionToggle}
-				permissions={rolesDetailContext.data.form.values.permissions as Permission<unknown>[]}
+				permissions={rolesDetailContext.data.form.values.permissions as Permission[]}
 			/>
 		</Pane>
 	);

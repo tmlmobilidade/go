@@ -94,9 +94,10 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		// to create validations for the GTFS agency
 
 		const hasPermission = meContext.actions.hasPermissionResource<GtfsValidationPermission>({
-			action: Permissions.validations.actions.create,
+			action: Permissions.gtfs_validations.actions.create,
+			permissions: meContext.data.user.permissions || [],
 			resource_key: 'agency_ids',
-			scope: Permissions.validations.scope,
+			scope: Permissions.gtfs_validations.scope,
 			value: event.data.agency.agency_id,
 		});
 

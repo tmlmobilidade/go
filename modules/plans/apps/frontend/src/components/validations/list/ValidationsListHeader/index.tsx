@@ -24,7 +24,7 @@ export function ValidationsListHeader() {
 			<Label size="lg" caps singleLine>Validações GTFS</Label>
 			<Spacer />
 			<SearchInput onChange={validationsListContext.actions.setFilterSearch} value={validationsListContext.filters.search} />
-			<HasPermission action={Permissions.validations.actions.create} scope={Permissions.validations.scope}>
+			<HasPermission action={Permissions.gtfs_validations.actions.create} scope={Permissions.gtfs_validations.scope}>
 				<Button label="Nova validação" leftSection={<IconPlus />} onClick={openCreateValidationModal} />
 			</HasPermission>
 		</Toolbar>

@@ -7,11 +7,11 @@ import { Cache, hasPermission } from '@tmlmobilidade/utils';
 declare module 'fastify' {
 	export interface FastifyRequest {
 		me: User
-		permissions: Permission<unknown>[]
+		permissions: Permission[]
 	}
 }
 
-const REQUEST_CACHE = new Cache<string, { permissions: Permission<unknown>[], user: User }>(5 * 60_000); // 5 minutes TTL
+const REQUEST_CACHE = new Cache<string, { permissions: Permission[], user: User }>(5 * 60_000); // 5 minutes TTL
 
 /**
  * Creates an authorization middleware that validates user authentication and permissions

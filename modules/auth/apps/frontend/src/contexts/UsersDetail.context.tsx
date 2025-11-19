@@ -3,13 +3,13 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateUserDto, CreateUserSchema, UpdateUserSchema, User } from '@tmlmobilidade/types';
+import { CreateUserDto, CreateUserSchema, Permission, UpdateUserSchema, User } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -68,7 +68,7 @@ export function useUsersDetailContext() {
 
 /* * */
 
-export const UsersDetailContextProvider = ({ children, user_id }: { children: React.ReactNode, user_id: string }) => {
+export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildren<{ userId: string }>) => {
 	//
 
 	//
@@ -83,7 +83,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	//
 	// B. Fetch data
 
-	const { data: user, isLoading } = useSWR<User>(user_id === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(user_id));
+	const { data: user, isLoading } = useSWR<User>(userId === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(userId));
 
 	//
 	// C. Initialize form
@@ -116,9 +116,9 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 
 	const handleSaveUser = async () => {
 		setIsSaving(true);
-		const method = user_id === 'new' ? 'POST' : 'PUT';
-		const url = user_id === 'new' ? API_ROUTES.auth.USERS_LIST : API_ROUTES.auth.USERS_DETAIL(user_id);
-		const body = user_id === 'new' ? form.values : convertObject(form.values, UpdateUserSchema);
+		const method = userId === 'new' ? 'POST' : 'PUT';
+		const url = userId === 'new' ? API_ROUTES.auth.USERS_LIST : API_ROUTES.auth.USERS_DETAIL(userId);
+		const body = userId === 'new' ? form.values : convertObject(form.values, UpdateUserSchema);
 		const response = await fetchData<User>(url, method, body);
 
 		if (response.error) {
@@ -147,7 +147,7 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 			title: 'Sucesso',
 		});
 
-		if (user_id === 'new' && response.data?._id) {
+		if (userId === 'new' && response.data?._id) {
 			router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
 		}
 
@@ -155,9 +155,9 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	};
 
 	const handleDeleteUser = async () => {
-		if (user_id === 'new') return;
+		if (userId === 'new') return;
 
-		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(user_id), 'DELETE', user);
+		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'DELETE', user);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -184,7 +184,8 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 			form.setFieldValue('permissions', currentPermissions.filter(permission => permission.scope !== scope || permission.action !== action));
 		}
 		else {
-			form.setFieldValue('permissions', [...currentPermissions, { action, scope }]);
+			const permissionValidated = { action: action, scope: scope } as Permission;
+			form.setFieldValue('permissions', [...currentPermissions, permissionValidated]);
 		}
 	};
 
@@ -192,9 +193,9 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 		const currentPermissions = form.values.permissions;
 		const permission = currentPermissions.find(permission => permission.scope === scope && permission.action === action);
 
-		if (!permission) return;
+		if (!permission || !('resources' in permission)) return;
 
-		permission.resource = { ...permission.resource, ...resource };
+		permission.resources = { ...permission.resources, ...resource };
 		form.setFieldValue('permissions', currentPermissions);
 	};
 
@@ -216,16 +217,16 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 		},
 		data: {
 			form,
-			id: user_id === 'new' ? undefined : user_id,
+			id: userId === 'new' ? undefined : userId,
 		},
 		flags: {
 			canSave,
 			isReadOnly,
 			isSaving,
 			loading: isLoading || loading,
-			mode: user_id === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
+			mode: userId === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
 		},
-	}), [form, handleDeleteUser, handlePermissionResourceToggle, handlePermissionToggle, handleSaveUser, isLoading, isReadOnly, isSaving, loading, user_id]);
+	}), [form, handleDeleteUser, handlePermissionResourceToggle, handlePermissionToggle, handleSaveUser, isLoading, isReadOnly, isSaving, loading, userId]);
 
 	//
 	// F. Render components

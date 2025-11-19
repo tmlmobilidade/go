@@ -19,7 +19,7 @@ export interface SidebarItemProps {
 	href: string
 	icon: React.ReactNode
 	label: string
-	permissions: Permission<unknown>[]
+	permissions: Permission[]
 }
 
 /* * */

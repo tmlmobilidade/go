@@ -3,7 +3,8 @@
 /* * */
 
 import { IconAlertTriangle, IconBuildings, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
-import { PAGE_ROUTES, Permissions } from '@tmlmobilidade/consts';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
@@ -18,8 +19,8 @@ export const sidebarApps = [
 		icon: <IconHome size={26} />,
 		label: 'Home',
 		permissions: [
-			{ action: Permissions.home.actions.read_links, scope: Permissions.home.scope },
-			{ action: Permissions.home.actions.read_wiki, scope: Permissions.home.scope },
+			{ action: PermissionCatalog.all.home.actions.read_links, scope: PermissionCatalog.all.home.scope },
+			{ action: PermissionCatalog.all.home.actions.read_wiki, scope: PermissionCatalog.all.home.scope },
 		],
 	},
 	{
@@ -27,84 +28,84 @@ export const sidebarApps = [
 		href: PAGE_ROUTES.auth.USERS_LIST,
 		icon: <IconUser size={26} />,
 		label: 'Utilizadores',
-		permissions: [{ action: Permissions.users.actions.read, scope: Permissions.users.scope }],
+		permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
 	},
 	{
 		_id: 'roles',
 		href: PAGE_ROUTES.auth.ROLES_LIST,
 		icon: <IconKey size={26} />,
 		label: 'Grupos de Permissões',
-		permissions: [{ action: Permissions.roles.actions.read, scope: Permissions.roles.scope }],
+		permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
 	},
 	{
 		_id: 'agencies',
 		href: PAGE_ROUTES.auth.AGENCIES_LIST,
 		icon: <IconBuildings size={26} />,
 		label: 'Operadores',
-		permissions: [{ action: Permissions.agencies.actions.read, scope: Permissions.agencies.scope }],
+		permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
 	},
 	{
 		_id: 'organizations',
 		href: PAGE_ROUTES.auth.ORGANIZATIONS_LIST,
 		icon: <IconSitemap size={26} />,
 		label: 'Organizações',
-		permissions: [{ action: Permissions.organizations.actions.read, scope: Permissions.organizations.scope }],
+		permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
 	},
 	{
 		_id: 'alerts',
 		href: PAGE_ROUTES.alerts.SCHEDULED_LIST,
 		icon: <IconAlertTriangle size={26} />,
 		label: 'Alertas',
-		permissions: [{ action: Permissions.alerts.actions.read, scope: Permissions.alerts.scope }],
+		permissions: [{ action: PermissionCatalog.all.alerts_scheduled.actions.read, scope: PermissionCatalog.all.alerts_scheduled.scope }],
 	},
 	{
 		_id: 'alerts_realtime',
 		href: PAGE_ROUTES.alerts.REALTIME_LIST,
 		icon: <IconClockExclamation size={26} />,
 		label: 'Alertas - Tempo Real',
-		permissions: [{ action: Permissions.alerts_realtime.actions.read, scope: Permissions.alerts_realtime.scope }],
+		permissions: [{ action: PermissionCatalog.all.alerts_realtime.actions.read, scope: PermissionCatalog.all.alerts_realtime.scope }],
 	},
 	{
 		_id: 'rides',
 		href: PAGE_ROUTES.controller.RIDES_LIST,
 		icon: <IconListCheck size={26} />,
 		label: 'Circulações',
-		permissions: [{ action: Permissions.rides.actions.analysis_read, scope: Permissions.rides.scope }],
+		permissions: [{ action: PermissionCatalog.all.rides.actions.analysis_read, scope: PermissionCatalog.all.rides.scope }],
 	},
 	// {
 	// 	_id: 'sams',
 	// 	href: PAGE_ROUTES.controller.SAMS_LIST,
 	// 	icon: <IconDeviceSim size={26} />,
 	// 	label: 'SAMS',
-	// 	permissions: [{ action: Permissions.rides.actions.read, scope: Permissions.rides.scope }],
+	// 	permissions: [{ action: PermissionCatalog.all.rides.actions.read, scope: PermissionCatalog.all.rides.scope }],
 	// },
 	{
 		_id: 'stops',
 		href: PAGE_ROUTES.stops.STOPS_LIST,
 		icon: <IconBusStop size={26} />,
 		label: 'Paragens',
-		permissions: [{ action: Permissions.stops.actions.read, scope: Permissions.stops.scope }],
+		permissions: [{ action: PermissionCatalog.all.stops.actions.read, scope: PermissionCatalog.all.stops.scope }],
 	},
 	{
 		_id: 'plans',
 		href: PAGE_ROUTES.plans.APPROVED_LIST,
 		icon: <IconFileCertificate size={26} />,
 		label: 'Planos',
-		permissions: [{ action: Permissions.plans.actions.read, scope: Permissions.plans.scope }],
+		permissions: [{ action: PermissionCatalog.all.plans.actions.read, scope: PermissionCatalog.all.plans.scope }],
 	},
 	{
 		_id: 'validations',
 		href: PAGE_ROUTES.plans.VALIDATIONS_LIST,
 		icon: <IconFileCheck size={26} />,
 		label: 'Validações GTFS',
-		permissions: [{ action: Permissions.validations.actions.read, scope: Permissions.validations.scope }],
+		permissions: [{ action: PermissionCatalog.all.gtfs_validations.actions.read, scope: PermissionCatalog.all.gtfs_validations.scope }],
 	},
 	{
 		_id: 'performance',
 		href: PAGE_ROUTES.performance.BASE,
 		icon: <IconRocket size={26} />,
 		label: 'Performance',
-		permissions: [{ action: Permissions.performance.actions.read, scope: Permissions.performance.scope }],
+		permissions: [{ action: PermissionCatalog.all.performance.actions.read, scope: PermissionCatalog.all.performance.scope }],
 	},
 ];
 

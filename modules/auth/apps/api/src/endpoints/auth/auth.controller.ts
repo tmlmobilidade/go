@@ -39,7 +39,7 @@ export class AuthController {
 	/**
 	 * Get Permissions - Get the permissions of the current user
 	 */
-	async getPermissions(request: FastifyRequest, reply: FastifyReply<Permission<unknown>[]>) {
+	async getPermissions(request: FastifyRequest, reply: FastifyReply<Permission[]>) {
 		const session_token = request.cookies[COOKIE_NAME];
 		const permissions = await authProvider.getPermissions({ sessionToken: session_token });
 		return reply.send({ data: permissions, error: null, statusCode: HttpStatus.OK }).status(HttpStatus.OK);

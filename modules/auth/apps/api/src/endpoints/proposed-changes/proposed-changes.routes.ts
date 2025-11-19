@@ -1,10 +1,8 @@
 /* * */
 
+import { ProposedChangesController } from '@/endpoints/proposed-changes/proposed-changes.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
-import { type StopPermission } from '@tmlmobilidade/types';
-
-import { ProposedChangesController } from './proposed-changes.controller.js';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -18,35 +16,35 @@ server.register(
 		// GET /proposed-changes
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read) },
 			ProposedChangesController.getAll,
 		);
 
 		// GET /proposed-changes/:id
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read) },
 			ProposedChangesController.getById,
 		);
 
 		// POST /proposed-changes
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.create) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read) },
 			ProposedChangesController.create,
 		);
 
 		// PUT /proposed-changes/:id
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.approve) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read) },
 			ProposedChangesController.update,
 		);
 
 		// DELETE /proposed-changes/:id
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.proposed_changes.scope, Permissions.proposed_changes.actions.reject) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read) },
 			ProposedChangesController.delete,
 		);
 

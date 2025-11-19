@@ -53,9 +53,9 @@ export function ValidationsDetailHeader() {
 
 			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
 				<HasPermission
-					action={Permissions.validations.actions.request_approval}
+					action={Permissions.gtfs_validations.actions.request_approval}
 					resource_key="agency_ids"
-					scope={Permissions.validations.scope}
+					scope={Permissions.gtfs_validations.scope}
 					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
 				>
 					<Button

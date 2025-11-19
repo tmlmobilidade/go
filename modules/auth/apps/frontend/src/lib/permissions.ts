@@ -1,4 +1,6 @@
-import { Permissions } from '@tmlmobilidade/consts';
+/* * */
+
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -7,15 +9,14 @@ export const RESOURCES_OPTIONS = [
 	'EMAIL_NOTIFICATIONS',
 ] as const;
 
-export interface PermissionAction<T = unknown> {
+export interface PermissionAction<T> {
 	description: string
-	key: keyof T | string
+	key: keyof T
 	label: string
 	resources?: (typeof RESOURCES_OPTIONS)[number][]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface PermissionConfig<T = any> {
+export interface PermissionConfig<T> {
 	actions: PermissionAction<T>[]
 	description: string
 	scope: string
@@ -24,7 +25,7 @@ export interface PermissionConfig<T = any> {
 
 /* * */
 
-const agencyActions: PermissionConfig<typeof Permissions.agencies.actions> = {
+const agencyActions: PermissionConfig<typeof PermissionCatalog.all.agencies.actions> = {
 	actions: [
 		{ description: 'Permite ver operadores', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar um operador', key: 'create', label: 'Criar' },
@@ -33,11 +34,11 @@ const agencyActions: PermissionConfig<typeof Permissions.agencies.actions> = {
 		{ description: 'Permite bloquear/desbloquear um operador', key: 'toggle_lock', label: 'Bloquear/Desbloquear' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de operadores.',
-	scope: Permissions.agencies.scope,
+	scope: PermissionCatalog.all.agencies.scope,
 	title: 'Permissões de Operadores',
 };
 
-const alertActions: PermissionConfig<typeof Permissions.alerts.actions> = {
+const alertActions: PermissionConfig<typeof PermissionCatalog.all.alerts_scheduled.actions> = {
 	actions: [
 		{ description: 'Permite ver alertas', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar um alerta', key: 'create', label: 'Criar' },
@@ -46,11 +47,11 @@ const alertActions: PermissionConfig<typeof Permissions.alerts.actions> = {
 		{ description: 'Permite bloquear/desbloquear um alerta', key: 'toggle_lock', label: 'Bloquear/Desbloquear' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
-	scope: Permissions.alerts.scope,
+	scope: PermissionCatalog.all.alerts_scheduled.scope,
 	title: 'Permissões de Alertas',
 };
 
-const realtimeActions: PermissionConfig<typeof Permissions.alerts_realtime.actions> = {
+const realtimeActions: PermissionConfig<typeof PermissionCatalog.all.alerts_realtime.actions> = {
 	actions: [
 		{ description: 'Permite ver alertas de tempo real', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite criar um alerta de tempo real', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
@@ -59,21 +60,21 @@ const realtimeActions: PermissionConfig<typeof Permissions.alerts_realtime.actio
 		{ description: 'Permite bloquear/desbloquear um alerta de tempo real', key: 'toggle_lock', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas de tempo real.',
-	scope: Permissions.alerts_realtime.scope,
+	scope: PermissionCatalog.all.alerts_realtime.scope,
 	title: 'Permissões de Alertas de Tempo Real',
 };
 
-const homeActions: PermissionConfig<typeof Permissions.home.actions> = {
+const homeActions: PermissionConfig<typeof PermissionCatalog.all.home.actions> = {
 	actions: [
 		{ description: 'Permite ver Quick Links', key: 'read_links', label: 'Ver Quick Links' },
 		{ description: 'Permite ver Wiki', key: 'read_wiki', label: 'Ver Wiki' },
 	],
 	description: 'As ações que o utilizador pode realizar na home.',
-	scope: Permissions.home.scope,
+	scope: PermissionCatalog.all.home.scope,
 	title: 'Permissões da Home',
 };
 
-const planActions: PermissionConfig<typeof Permissions.plans.actions> = {
+const planActions: PermissionConfig<typeof PermissionCatalog.all.plans.actions> = {
 	actions: [
 		{ description: 'Permite ver um plano específico', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite criar um plano', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
@@ -88,42 +89,43 @@ const planActions: PermissionConfig<typeof Permissions.plans.actions> = {
 		{ description: 'Permite alterar o GTFS de um plano', key: 'update_gtfs_plan', label: 'Alterar GTFS', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de planos.',
-	scope: Permissions.plans.scope,
+	scope: PermissionCatalog.all.plans.scope,
 	title: 'Permissões de Planos',
 };
-const topicActions: PermissionConfig<typeof Permissions.topics.actions> = {
-	actions: [
-		{ description: 'Notificações para alterações no estado da aceitação', key: 'acceptance_state_modified', label: `Estado da aceitação modificado`, resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando um plano for ativado', key: 'active_plan', label: 'Plano Ativo', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando um plano for aprovado', key: 'approved_plan', label: 'Plano Aprovado', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando uma validação for aprovada', key: 'approved_validation', label: 'Validação Aprovada', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando uma validação for concluída', key: 'concluded_validation', label: 'Validação Concluida', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando um alerta for criado', key: 'created_alert', label: 'Alerta Criado', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando um plano for criado', key: 'created_plan', label: 'Plano Criado', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando um novo comentário na Aceitação da Ride for criado', key: 'new_comentary_network_acceptance', label: 'Novo comentário na Aceitação da Ride', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando uma ride requer justificação', key: 'ride_requires_justification', label: 'Ride requer justificação', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando uma validação for enviada', key: 'sent_validation', label: 'Validação Enviada', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando uma justificação for submetida', key: 'justification_submit', label: 'Justificação Submetida', resources: ['EMAIL_NOTIFICATIONS'] },
-		{ description: 'Notificações para quando um plano for submetido', key: 'plan_submit', label: 'Plano submetido', resources: ['EMAIL_NOTIFICATIONS'] },
-	],
-	description: 'Os tópicos que o utilizador pode subscrever.',
-	scope: Permissions.topics.scope,
-	title: 'Subscrição de Tópicos',
-};
 
-const proposedChangesActions: PermissionConfig<typeof Permissions.proposed_changes.actions> = {
-	actions: [
-		{ description: 'Criar Proposta de Alterações', key: 'create', label: `Criar Proposta de Alterações` },
-		{ description: 'Aprovar as Alterações Propostas', key: 'approve', label: 'Aprovar Alterações Propostas' },
-		{ description: 'Rejeitar as Alterações Propostas', key: 'reject', label: 'Rejeitar Alterações Propostas' },
-		{ description: 'Consultar Alterações Propostas', key: 'read', label: 'Consultar Alterações Propostas' },
-	],
-	description: 'As acções que o utilizador pode realizar na gestão de alterações propostas.',
-	scope: Permissions.proposed_changes.scope,
-	title: 'Permissões de Alterações Propostas',
-};
+// const topicActions: PermissionConfig<typeof PermissionCatalog.all.topics.actions> = {
+// 	actions: [
+// 		{ description: 'Notificações para alterações no estado da aceitação', key: 'acceptance_state_modified', label: `Estado da aceitação modificado`, resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando um plano for ativado', key: 'active_plan', label: 'Plano Ativo', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando um plano for aprovado', key: 'approved_plan', label: 'Plano Aprovado', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando uma validação for aprovada', key: 'approved_validation', label: 'Validação Aprovada', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando uma validação for concluída', key: 'concluded_validation', label: 'Validação Concluida', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando um alerta for criado', key: 'created_alert', label: 'Alerta Criado', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando um plano for criado', key: 'created_plan', label: 'Plano Criado', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando um novo comentário na Aceitação da Ride for criado', key: 'new_comentary_network_acceptance', label: 'Novo comentário na Aceitação da Ride', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando uma ride requer justificação', key: 'ride_requires_justification', label: 'Ride requer justificação', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando uma validação for enviada', key: 'sent_validation', label: 'Validação Enviada', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando uma justificação for submetida', key: 'justification_submit', label: 'Justificação Submetida', resources: ['EMAIL_NOTIFICATIONS'] },
+// 		{ description: 'Notificações para quando um plano for submetido', key: 'plan_submit', label: 'Plano submetido', resources: ['EMAIL_NOTIFICATIONS'] },
+// 	],
+// 	description: 'Os tópicos que o utilizador pode subscrever.',
+// 	scope: Permissions.topics.scope,
+// 	title: 'Subscrição de Tópicos',
+// };
 
-const userActions: PermissionConfig<typeof Permissions.users.actions> = {
+// const proposedChangesActions: PermissionConfig<typeof Permissions.proposed_changes.actions> = {
+// 	actions: [
+// 		{ description: 'Criar Proposta de Alterações', key: 'create', label: `Criar Proposta de Alterações` },
+// 		{ description: 'Aprovar as Alterações Propostas', key: 'approve', label: 'Aprovar Alterações Propostas' },
+// 		{ description: 'Rejeitar as Alterações Propostas', key: 'reject', label: 'Rejeitar Alterações Propostas' },
+// 		{ description: 'Consultar Alterações Propostas', key: 'read', label: 'Consultar Alterações Propostas' },
+// 	],
+// 	description: 'As acções que o utilizador pode realizar na gestão de alterações propostas.',
+// 	scope: Permissions.proposed_changes.scope,
+// 	title: 'Permissões de Alterações Propostas',
+// };
+
+const userActions: PermissionConfig<typeof PermissionCatalog.all.users.actions> = {
 	actions: [
 		{ description: 'Permite ver utilizadores', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar um utilizador', key: 'create', label: 'Criar' },
@@ -131,22 +133,22 @@ const userActions: PermissionConfig<typeof Permissions.users.actions> = {
 		{ description: 'Permite eliminar um utilizador', key: 'delete', label: 'Eliminar' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de utilizadores.',
-	scope: Permissions.users.scope,
+	scope: PermissionCatalog.all.users.scope,
 	title: 'Permissões de Utilizadores',
 };
 
-const validationActions: PermissionConfig<typeof Permissions.validations.actions> = {
+const gtfsValidationActions: PermissionConfig<typeof PermissionCatalog.all.gtfs_validations.actions> = {
 	actions: [
 		{ description: 'Permite ver validações', key: 'read', label: 'Ver', resources: ['AGENCIES'] },
 		{ description: 'Permite criar uma validação', key: 'create', label: 'Criar', resources: ['AGENCIES'] },
 		{ description: 'Permite solicitar aprovação de uma validação', key: 'request_approval', label: 'Solicitar aprovação', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de validações GTFS.',
-	scope: Permissions.validations.scope,
+	scope: PermissionCatalog.all.gtfs_validations.scope,
 	title: 'Permissões de Validações (GTFS)',
 };
 
-const roleActions: PermissionConfig<typeof Permissions.roles.actions> = {
+const roleActions: PermissionConfig<typeof PermissionCatalog.all.roles.actions> = {
 	actions: [
 		{ description: 'Permite ver grupos de permissões', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar um grupo de permissões', key: 'create', label: 'Criar' },
@@ -154,11 +156,11 @@ const roleActions: PermissionConfig<typeof Permissions.roles.actions> = {
 		{ description: 'Permite eliminar um grupo de permissões', key: 'delete', label: 'Eliminar' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de grupos de permissões.',
-	scope: Permissions.roles.scope,
+	scope: PermissionCatalog.all.roles.scope,
 	title: 'Permissões de Grupos de Permissões',
 };
 
-const organizationActions: PermissionConfig<typeof Permissions.organizations.actions> = {
+const organizationActions: PermissionConfig<typeof PermissionCatalog.all.organizations.actions> = {
 	actions: [
 		{ description: 'Permite ver organizações', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar uma organização', key: 'create', label: 'Criar' },
@@ -166,11 +168,11 @@ const organizationActions: PermissionConfig<typeof Permissions.organizations.act
 		{ description: 'Permite eliminar uma organização', key: 'delete', label: 'Eliminar' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de organizações.',
-	scope: Permissions.organizations.scope,
+	scope: PermissionCatalog.all.organizations.scope,
 	title: 'Permissões de Organizações',
 };
 
-const stopActions: PermissionConfig<typeof Permissions.stops.actions> = {
+const stopActions: PermissionConfig<typeof PermissionCatalog.all.stops.actions> = {
 	actions: [
 		{ description: 'Permite ver paragens', key: 'read', label: 'Ver' },
 		{ description: 'Permite criar uma paragem', key: 'create', label: 'Criar' },
@@ -179,11 +181,11 @@ const stopActions: PermissionConfig<typeof Permissions.stops.actions> = {
 		{ description: 'Permite bloquear/desbloquear uma paragem', key: 'toggle_lock', label: 'Bloquear/Desbloquear' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de paragens.',
-	scope: Permissions.stops.scope,
+	scope: PermissionCatalog.all.stops.scope,
 	title: 'Permissões de Paragens',
 };
 
-const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
+const rideActions: PermissionConfig<typeof PermissionCatalog.all.rides.actions> = {
 	actions: [
 		/* Análise */
 		{ description: 'Permite bloquear/desbloquear uma análise de uma viagem', key: 'analsys_lock', label: 'Análise - Bloquear/Desbloquear', resources: ['AGENCIES'] },
@@ -201,22 +203,22 @@ const rideActions: PermissionConfig<typeof Permissions.rides.actions> = {
 		{ description: 'Permite ver uma justificação de uma viagem', key: 'acceptance_read', label: 'Aceitação - Ver', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de viagens.',
-	scope: Permissions.rides.scope,
+	scope: PermissionCatalog.all.rides.scope,
 	title: 'Permissões de Viagens',
 };
 
-const performanceActions: PermissionConfig<typeof Permissions.performance.actions> = {
+const performanceActions: PermissionConfig<typeof PermissionCatalog.all.performance.actions> = {
 	actions: [
 		{ description: 'Permite ver métricas', key: 'read', label: 'Ver' },
 	],
 	description: 'As ações que o utilizador pode realizar na visualização de métricas.',
-	scope: Permissions.performance.scope,
+	scope: PermissionCatalog.all.performance.scope,
 	title: 'Permissões de Métricas',
 };
 
 /* * */
 
-export const permissionsConfig: PermissionConfig[] = [
+export const permissionsConfig = [
 	agencyActions,
 	alertActions,
 	realtimeActions,
@@ -224,11 +226,11 @@ export const permissionsConfig: PermissionConfig[] = [
 	planActions,
 	userActions,
 	organizationActions,
-	validationActions,
+	gtfsValidationActions,
 	roleActions,
 	stopActions,
 	rideActions,
 	performanceActions,
-	topicActions,
-	proposedChangesActions,
+	// topicActions,
+	// proposedChangesActions,
 ];

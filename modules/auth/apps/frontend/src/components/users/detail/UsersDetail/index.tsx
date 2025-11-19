@@ -24,7 +24,7 @@ export function UsersDetail() {
 			<PermissionSectionGroup
 				onResourceToggle={actions.handlePermissionResourceToggle}
 				onToggle={actions.handlePermissionToggle}
-				permissions={data.form.values.permissions as Permission<unknown>[]}
+				permissions={data.form.values.permissions as Permission[]}
 				roles={roles.raw}
 				userRoleIds={data.form.values.role_ids}
 			/>

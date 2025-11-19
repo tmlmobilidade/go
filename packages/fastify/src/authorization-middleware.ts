@@ -10,13 +10,13 @@ import { Cache, fetchData, hasPermission } from '@tmlmobilidade/utils';
 declare module 'fastify' {
 	export interface FastifyRequest {
 		me: User
-		permissions: Permission<unknown>[]
+		permissions: Permission[]
 	}
 }
 
 /* * */
 
-const REQUEST_CACHE = new Cache<string, { permissions: Permission<unknown>[], user: User }>(5 * 60_000); // 5 minutes TTL
+const REQUEST_CACHE = new Cache<string, { permissions: Permission[], user: User }>(5 * 60_000); // 5 minutes TTL
 
 /**
  * Fetches user data from the authentication API.
@@ -39,9 +39,9 @@ async function fetchUserData(sessionToken: string): Promise<User> {
  * @param sessionToken The session token for authentication.
  * @returns A promise that resolves to an array of user permissions.
  */
-async function fetchUserPermissions<T>(sessionToken: string): Promise<Permission<T>[]> {
+async function fetchUserPermissions(sessionToken: string): Promise<Permission[]> {
 	// Fetch user permissions from the authentication API
-	const permissionsResponse = await fetchData<Permission<T>[]>(API_ROUTES.auth.AUTH_PERMISSIONS, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
+	const permissionsResponse = await fetchData<Permission[]>(API_ROUTES.auth.AUTH_PERMISSIONS, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
 	// Handle errors if response is not OK
 	if (permissionsResponse.statusCode !== HttpStatus.OK) throw new HttpException(permissionsResponse.statusCode, permissionsResponse.error ?? 'Failed to fetch permissions');
 	// Ensure permissions data is present
@@ -57,7 +57,7 @@ async function fetchUserPermissions<T>(sessionToken: string): Promise<Permission
  * @param requireAll Whether all actions must be true or at least one must be true.
  * @returns Fastify middleware function.
  */
-export function authorizationMiddleware<T = unknown>(scope?: string, actions?: string | string[], requireAll = false) {
+export function authorizationMiddleware(scope?: string, actions?: string | string[], requireAll = false) {
 	return async (request: FastifyRequest): Promise<void> => {
 		const sessionToken = request.cookies.session_token;
 
@@ -66,7 +66,7 @@ export function authorizationMiddleware<T = unknown>(scope?: string, actions?: s
 		}
 
 		let user: User;
-		let permissions: Permission<T>[];
+		let permissions: Permission[];
 
 		const cachedRequest = REQUEST_CACHE.get(sessionToken);
 		if (cachedRequest) {
@@ -75,7 +75,7 @@ export function authorizationMiddleware<T = unknown>(scope?: string, actions?: s
 		}
 		else {
 			user = await fetchUserData(sessionToken);
-			permissions = await fetchUserPermissions<T>(sessionToken);
+			permissions = await fetchUserPermissions(sessionToken);
 			REQUEST_CACHE.set(sessionToken, { permissions, user });
 		}
 
