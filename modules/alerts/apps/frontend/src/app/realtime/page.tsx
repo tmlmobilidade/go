@@ -1,15 +1,14 @@
-'use client';
+/* * */
+
+import { RealtimeCreate } from '@/components/realtime/create/RealtimeCreate';
+import { RealtimeCreateContextProvider } from '@/contexts/RealtimeCreate.context';
 
 /* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
-
-/* * */
-
-export default function Page() {
+export default async function Page() {
 	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione um Alerta" />
-		</Surface>
+		<RealtimeCreateContextProvider>
+			<RealtimeCreate />
+		</RealtimeCreateContextProvider>
 	);
 }
