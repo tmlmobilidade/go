@@ -165,6 +165,7 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 		const validationsByStopId: Record<string, SimplifiedApexValidation[]> = {};
 		simplifiedApexValidationsData?.forEach((validation) => {
 			if (!validation.stop_id) return;
+			if (!validation.is_passenger) return;
 			if (!validationsByStopId[validation.stop_id]) validationsByStopId[validation.stop_id] = [];
 			validationsByStopId[validation.stop_id].push(validation);
 		});
