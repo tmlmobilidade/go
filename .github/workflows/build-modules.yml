@@ -70,7 +70,9 @@ env:
     performance:nginx
     performance:api
     performance:frontend
-    performance:sync-metrics
+    performance:sync-metrics-hourly
+    performance:sync-metrics-daily
+    performance:sync-metrics-realtime
 
     plans:nginx
     plans:api
