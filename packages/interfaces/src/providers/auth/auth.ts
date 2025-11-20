@@ -92,9 +92,6 @@ class AuthProvider {
 
 		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
 
-		console.log('User roles data:', rolesData.length);
-		console.log('User data:', userData);
-
 		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions] as Permission[];
 
 		const permissionsMap = new Map<string, Permission>();
