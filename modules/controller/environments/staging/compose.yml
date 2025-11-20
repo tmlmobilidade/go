@@ -11,11 +11,11 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  wud:
-    image: getwud/wud
+  watchtower:
+    image: nickfedor/watchtower
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:
@@ -27,9 +27,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - WUD_TRIGGER_DOCKER_DEFAULT_PRUNE=true
-      - WUD_WATCHER_LOCAL_WATCHALL=true
-      - WUD_WATCHER_LOCAL_CRON=* * * * *
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_REMOVE_VOLUMES=TRUE
+      - WATCHTOWER_INCLUDE_RESTARTING=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_TIMEOUT=30s
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -45,6 +49,49 @@ services:
           memory: 2gb
     ports:
       - 27027:5432
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  nginx:
+    image: ghcr.io/tmlmobilidade/go-controller-nginx:staging
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+      com.centurylinklabs.watchtower.depends-on: 'frontend,api'
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 80:80
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  api:
+    image: ghcr.io/tmlmobilidade/go-controller-api:staging
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
     logging:
       options:
         max-size: '1m'
@@ -74,6 +121,46 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
+  frontend:
+    image: ghcr.io/tmlmobilidade/go-controller-frontend:staging
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  rides-acceptor:
+    image: ghcr.io/tmlmobilidade/go-controller-rides-acceptor:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
   rides-bridge:
     image: ghcr.io/tmlmobilidade/go-controller-rides-bridge:staging
     deploy:
@@ -83,6 +170,25 @@ services:
       resources:
         limits:
           memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  rides-cleaner:
+    image: ghcr.io/tmlmobilidade/go-controller-rides-cleaner:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
     logging:
       options:
         max-size: '1m'
@@ -135,65 +241,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  rides-cleaner:
-    image: ghcr.io/tmlmobilidade/go-controller-rides-cleaner:staging
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  rides-acceptor:
-    image: ghcr.io/tmlmobilidade/go-controller-rides-acceptor:staging
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
   rides-locker:
     image: ghcr.io/tmlmobilidade/go-controller-rides-locker:staging
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sams-feeder:
-    image: ghcr.io/tmlmobilidade/go-controller-sams-feeder:staging
     deploy:
       restart_policy:
         condition: any
@@ -230,64 +279,15 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  nginx:
-    image: ghcr.io/tmlmobilidade/go-controller-nginx:staging
-    labels:
-      com.centurylinklabs.watchtower.enable: true
-      com.centurylinklabs.watchtower.depends-on: 'frontend,api'
+  sams-feeder:
+    image: ghcr.io/tmlmobilidade/go-controller-sams-feeder:staging
     deploy:
       restart_policy:
         condition: any
         delay: 30s
       resources:
         limits:
-          memory: 1gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - api
-      - frontend
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  api:
-    image: ghcr.io/tmlmobilidade/go-controller-api:staging
-    labels:
-      com.centurylinklabs.watchtower.enable: true
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  frontend:
-    image: ghcr.io/tmlmobilidade/go-controller-frontend:staging
-    labels:
-      com.centurylinklabs.watchtower.enable: true
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 2gb
+          memory: 4gb
     logging:
       options:
         max-size: '1m'

@@ -34,20 +34,21 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/mongo": "*",
+		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",
-		"oci-common": "2.121.0",
-		"oci-objectstorage": "2.121.0",
+		"oci-common": "2.122.0",
+		"oci-objectstorage": "2.122.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.1",

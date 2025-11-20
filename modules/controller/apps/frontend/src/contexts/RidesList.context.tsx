@@ -10,6 +10,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized } from '@tmlmobilidade/types';
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
+import { getBasePath } from '@tmlmobilidade/ui';
 import { type HttpResponse } from '@tmlmobilidade/utils';
 import { usePathname } from 'next/navigation';
 import { parseAsInteger, useQueryState } from 'nuqs';
@@ -120,7 +121,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		// Open a new WebSocket connection
 		console.log('Opening WebSocket connection...');
 		const wsProtocol = (window.location.hostname === 'localhost') ? 'ws' : 'wss';
-		webSocketRef.current = new WebSocket(`${wsProtocol}://${window.location.host}/api/rides/ws`);
+		webSocketRef.current = new WebSocket(`${wsProtocol}://${window.location.host}${getBasePath()}/api/rides/ws`);
 		webSocketRef.current.addEventListener('open', handleWebsocketInit);
 		webSocketRef.current.addEventListener('message', handleIncomingMessage);
 		// Cleanup on unmount

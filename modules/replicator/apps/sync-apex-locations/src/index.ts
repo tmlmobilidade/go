@@ -3,9 +3,8 @@
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
-import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { pcgidb, rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
@@ -24,7 +23,7 @@ async function syncApexLocations() {
 		//
 		// Connect to databases and setup DB writers
 
-		await PCGIDB.connect();
+		await pcgidb.connect();
 
 		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
 		const simplifiedApexLocationsDbWritter = new MongoDbWriter<SimplifiedApexLocation>({ batch_size: 100000, collection: simplifiedApexLocationsCollection });
@@ -41,8 +40,7 @@ async function syncApexLocations() {
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
 
-		const earliestDataNeeded = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
+		const earliestDataNeeded = getEarliestDate();
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
@@ -151,7 +149,7 @@ async function syncApexLocations() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: PCGIDB.LocationEntity,
+				pcgiCollection: pcgidb.LocationEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

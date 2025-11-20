@@ -6,6 +6,9 @@ import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
 	basePath: '/performance',
+	env: {
+		NEXT_PUBLIC_BASE_PATH: '/performance',
+	},
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
 	},

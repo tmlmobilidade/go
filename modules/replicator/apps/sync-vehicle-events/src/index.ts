@@ -3,9 +3,8 @@
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
-import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { pcgidb, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
@@ -24,7 +23,7 @@ async function syncVehicleEvents() {
 		//
 		// Connect to databases and setup DB writers
 
-		await PCGIDB.connect();
+		await pcgidb.connect();
 
 		const vehicleEventsCollection = await simplifiedVehicleEvents.getCollection();
 		const vehicleEventsDbWritter = new MongoDbWriter<SimplifiedVehicleEvent>({ batch_size: 100000, collection: vehicleEventsCollection });
@@ -41,8 +40,7 @@ async function syncVehicleEvents() {
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
 
-		const earliestDataNeeded = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
+		const earliestDataNeeded = getEarliestDate();
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
@@ -105,7 +103,7 @@ async function syncVehicleEvents() {
 						{ returnResults: false },
 					);
 
-					Logger.info(`Flush [vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info(`Flush [simplified_vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 					//
 				}
@@ -149,7 +147,7 @@ async function syncVehicleEvents() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: PCGIDB.VehicleEvents,
+				pcgiCollection: pcgidb.VehicleEvents,
 
 				pcgiIdKey: '_id',
 

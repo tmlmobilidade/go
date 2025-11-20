@@ -1,14 +1,13 @@
 /* * */
 
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { Dates } from '@tmlmobilidade/dates';
+import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { pcgidb, rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import { Interval } from 'luxon';
 
 /* * */
@@ -26,7 +25,7 @@ export async function syncApexValidations() {
 
 		/* * */
 
-		await PCGIDB.connect();
+		await pcgidb.connect();
 
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
 		const simplifiedApexValidationsDbWritter = new MongoDbWriter<SimplifiedApexValidation>({ batch_size: 100000, collection: simplifiedApexValidationsCollection });
@@ -43,8 +42,7 @@ export async function syncApexValidations() {
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
 
-		const earliestDataNeeded = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
+		const earliestDataNeeded = getEarliestDate();
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
@@ -154,7 +152,7 @@ export async function syncApexValidations() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: PCGIDB.ValidationEntity,
+				pcgiCollection: pcgidb.ValidationEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

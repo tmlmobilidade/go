@@ -1,6 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { getEarliestDate } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 
 /* * */
@@ -36,18 +37,14 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 
 		if (!pcgiDoc.transaction.transactionDate) throw new Error('Missing transactionDate in transaction.');
 
-		if (!process.env.SYNC_EARLIEST_DATE) throw new Error('Missing SYNC_EARLIEST_DATE environment variable.');
-
-		const earliestTransactionDate = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon')
-			.unix_timestamp;
+		const earliestTransactionDate = getEarliestDate();
 
 		const transactionDate = Dates
 			.fromISO(pcgiDoc.transaction.transactionDate)
 			.setZone('Europe/Lisbon', 'rebase_utc')
 			.unix_timestamp;
 
-		if (transactionDate < earliestTransactionDate) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${process.env.SYNC_EARLIEST_DATE}".`);
+		if (transactionDate < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
 
 		//
 		// Parse the document and return the simplified APEX object
@@ -72,7 +69,7 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 		//
 	}
 	catch (error) {
-		if (process.env.DEBUG_MODE) console.error(`Error parsing simplified APEX Location. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
+		console.error(`Error parsing simplified APEX Location. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
 }

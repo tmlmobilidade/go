@@ -12,7 +12,7 @@
  *    top level and moving the complete Feature to a separate 'geojson' field. This makes
  *    them much easier to work with in application code since you can directly access
  *    properties like location.name instead of location.properties.name.
-*/
+ */
 
 import { PaginationSchema } from '@/_common/index.js';
 import { MultiPolygon } from 'geojson';
@@ -20,12 +20,12 @@ import { z } from 'zod';
 
 /* Database Types */
 
-export interface LocationCollections {
+export interface AvailableLocations {
 	census: Census
-	districts: DistrictDocument
-	localities: LocalityDocument
-	municipalities: MunicipalityDocument
-	parishes: ParishDocument
+	districts: DistrictFeature
+	localities: LocalityFeature
+	municipalities: MunicipalityFeature
+	parishes: ParishFeature
 }
 
 export interface Census extends GeoJSON.Feature<MultiPolygon> {
@@ -222,22 +222,22 @@ export interface Census extends GeoJSON.Feature<MultiPolygon> {
 	}
 }
 
-export interface DistrictDocument extends GeoJSON.Feature<GeoJSON.Polygon> { _id: string, properties: { area_ha: number, name: string } }
+export interface DistrictFeature extends GeoJSON.Feature<GeoJSON.Polygon> { _id: string, properties: { area_ha: number, name: string } }
 
-export interface MunicipalityDocument extends GeoJSON.Feature<GeoJSON.Polygon> { _id: string, properties: { area_ha: number, district_id: string, name: string } }
+export interface MunicipalityFeature extends GeoJSON.Feature<GeoJSON.Polygon> { _id: string, properties: { area_ha: number, district_id: string, name: string } }
 
-export interface ParishDocument extends GeoJSON.Feature<GeoJSON.Polygon> { _id: string, properties: { area_ha: number, district_id: string, municipality_id: string, name: string } }
+export interface ParishFeature extends GeoJSON.Feature<GeoJSON.Polygon> { _id: string, properties: { area_ha: number, district_id: string, municipality_id: string, name: string } }
 
-export type LocalityDocument = ParishDocument;
+export type LocalityFeature = ParishFeature;
 
 /* Codebase Types */
-export type District = DistrictDocument['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
+export type District = DistrictFeature['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
 
-export type Municipality = MunicipalityDocument['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
+export type Municipality = MunicipalityFeature['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
 
-export type Parish = ParishDocument['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
+export type Parish = ParishFeature['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
 
-export type Locality = ParishDocument['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
+export type Locality = ParishFeature['properties'] & { _id: string, geojson: GeoJSON.Feature<GeoJSON.Polygon> };
 
 /* Location Types (Aggregated) */
 export interface Location {

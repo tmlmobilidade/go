@@ -1,14 +1,13 @@
 /* * */
 
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { Dates } from '@tmlmobilidade/dates';
+import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { pcgidb, rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
-import { rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
-import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { PCGIDB } from '@tmlmobilidade/go-replicator-pckg-utils';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
-import { Dates } from '@tmlmobilidade/dates';
 import { Interval } from 'luxon';
 
 /* * */
@@ -24,7 +23,7 @@ async function syncApexOnBoardSales() {
 		//
 		// Connect to databases and setup DB writers
 
-		await PCGIDB.connect();
+		await pcgidb.connect();
 
 		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
 		const simplifiedApexOnBoardSalesDbWritter = new MongoDbWriter<SimplifiedApexOnBoardSale>({ batch_size: 100000, collection: simplifiedApexOnBoardSalesCollection });
@@ -41,8 +40,7 @@ async function syncApexOnBoardSales() {
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
 
-		const earliestDataNeeded = Dates
-			.fromOperationalDate(process.env.SYNC_EARLIEST_DATE, 'Europe/Lisbon');
+		const earliestDataNeeded = getEarliestDate();
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
@@ -153,7 +151,7 @@ async function syncApexOnBoardSales() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: PCGIDB.SalesEntity,
+				pcgiCollection: pcgidb.SalesEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

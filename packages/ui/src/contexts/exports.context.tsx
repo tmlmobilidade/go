@@ -2,7 +2,7 @@
 
 /* * */
 
-import { API_ROUTES, getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { CreateFileExportDto, FileExport, FileExportType } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
@@ -46,7 +46,7 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup variables
-	const { data, error, isLoading, mutate } = useSWR<FileExport[], HttpException>(`${getAppConfig('auth', 'api_url')}/file-exports`);
+	const { data, error, isLoading, mutate } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST);
 
 	//
 	// B. Transform data
@@ -67,7 +67,7 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	async function download(id: string): Promise<void> {
-		const url = await fetchData<string>(`${getAppConfig('auth', 'api_url')}/file-exports/${id}/download`, 'GET');
+		const url = await fetchData<string>(API_ROUTES.exporter.EXPORTER_DETAIL_DOWNLOAD(id), 'GET');
 		if (url.error || !url.data) {
 			useToast.error({ message: url.error ?? 'Failed to download file export' });
 			return;

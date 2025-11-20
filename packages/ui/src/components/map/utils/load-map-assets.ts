@@ -1,15 +1,16 @@
 /* * */
 
-import { getAppConfig } from '@tmlmobilidade/consts';
 import { type Map as MapLibreMap } from 'maplibre-gl';
+
+import { getBasePath } from '../../../utils/get-base-path';
 
 /* * */
 
 const MAP_LOAD_ASSETS = [
-	{ name: 'map-pin', sdf: false, url: `${getAppConfig('auth', 'frontend_url')}/global/map/map-pin.png` },
-	{ name: 'map-line-direction', sdf: true, url: `${getAppConfig('auth', 'frontend_url')}/global/map/map-line-direction.png` },
-	{ name: 'map-line-direction-offset', sdf: true, url: `${getAppConfig('auth', 'frontend_url')}/global/map/map-line-direction-offset.png` },
-	{ name: 'map-line-direction-offset-padding', sdf: true, url: `${getAppConfig('auth', 'frontend_url')}/global/map/map-line-direction-offset-padding.png` },
+	{ name: 'map-pin', sdf: false, url: `${getBasePath()}/global/map/map-pin.png` },
+	{ name: 'map-line-direction', sdf: true, url: `${getBasePath()}/global/map/map-line-direction.png` },
+	{ name: 'map-line-direction-offset', sdf: true, url: `${getBasePath()}/global/map/map-line-direction-offset.png` },
+	{ name: 'map-line-direction-offset-padding', sdf: true, url: `${getBasePath()}/global/map/map-line-direction-offset-padding.png` },
 ];
 
 /**

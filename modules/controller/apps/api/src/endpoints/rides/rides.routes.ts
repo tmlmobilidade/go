@@ -1,8 +1,8 @@
 /* * */
 
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
-import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { Permissions } from '@tmlmobilidade/consts';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { type RidePermission } from '@tmlmobilidade/types';
 
 /* * */
