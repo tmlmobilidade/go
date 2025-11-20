@@ -19,7 +19,7 @@ export const PlansPermissionSchema = z.object({
 		'update_pcgi_legacy',
 	]),
 	resources: z.object({
-		agency_ids: z.array(z.string()).or(z.literal('allow_all')).default([]),
+		agency_ids: z.array(z.string()).default([]),
 	}),
 	scope: z.literal('plans'),
 });

@@ -1,6 +1,6 @@
 'use client';
 
-import { API_ROUTES, PAGE_ROUTES, Permissions } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/types';
 import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';

@@ -1,3 +1,6 @@
+/* * */
+/* ROOT */
+
 .root {
 	display: flex;
 	flex-direction: column;
@@ -6,41 +9,34 @@
 	padding: var(--size-spacing-lg);
 	cursor: pointer;
 	background-color: var(--color-system-background-200);
-	border: 1px solid var(--color-system-border-100);
+	border: 2px solid var(--color-system-border-100);
 	border-radius: var(--border-radius-sm);
-	transition: all 300ms ease-in-out;
-
-	& * {
-		user-select: none;
-	}
-
-	&[aria-checked="false"]:hover {
-		background-color: var(--color-system-background-200);
-		box-shadow: 1px 5px 3px 1px var(--color-system-background-200);
-		scale: 1.01;
-	}
-
-	&[aria-checked="true"] {
-		background-color: var(--color-background);
-		border-color: var(--color-primary);
-	}
-
-	&.fromRole {
-		background-color: var(--color-system-background-100);
-		border-left: 4px solid var(--color-secondary);
-	}
+	transition: all 200ms ease-in-out;
+	user-select: none;
 }
 
-.root.disabled {
+.root:hover {
+	border-color: var(--color-system-text-300);
+}
+
+.root[aria-checked="true"] {
+	background-color: var(--color-background);
+	border-color: var(--color-primary);
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.root[aria-disabled="true"],
+.root[aria-disabled="true"] * {
+	opacity: 0.95;
 	cursor: not-allowed;
-	opacity: 0.5;
-
-	&[aria-checked="false"]:hover {
-		background-color: var(--color-system-background-200);
-		box-shadow: none;
-		scale: 1;
-	}
 }
+
+.root[aria-checked="false"][aria-disabled="true"] {
+	border-color: var(--color-system-border-100);
+}
+
+/* * */
+/* CHECKBOX */
 
 .checkbox {
 	display: flex;

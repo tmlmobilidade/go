@@ -11,7 +11,7 @@ export const GtfsValidationsPermissionSchema = z.object({
 		'request_approval',
 	]),
 	resources: z.object({
-		agency_ids: z.array(z.string()).or(z.literal('allow_all')).default([]),
+		agency_ids: z.array(z.string()).default([]),
 	}),
 	scope: z.literal('gtfs_validations'),
 });

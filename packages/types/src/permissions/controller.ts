@@ -20,7 +20,7 @@ export const RidesPermissionSchema = z.object({
 		'audit_update',
 	]),
 	resources: z.object({
-		agency_ids: z.array(z.string()).or(z.literal('allow_all')).default([]),
+		agency_ids: z.array(z.string()).default([]),
 	}),
 	scope: z.literal('rides'),
 });
