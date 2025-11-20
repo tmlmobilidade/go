@@ -19,9 +19,6 @@ const DemandByPatternSchema = MetricBaseSchema.extend({
 
 export const DemandByPatternByYearSchema = DemandByPatternSchema.extend({
 	metric: z.literal('demand_by_pattern_by_year'),
-	properties: z.object({
-		pattern_id: z.string(),
-	}),
 });
 
 export const DemandByPatternByMonthSchema = DemandByPatternSchema.extend({
@@ -44,25 +41,30 @@ export const DemandByPatternByDaySchema = DemandByPatternSchema.extend({
 
 /* DEMAND BY PATTERN_HOUR */
 
-export const DemandByPatternHourByYearSchema = DemandByPatternSchema.extend({
+const DemandByPatternHourSchema = MetricBaseSchema.extend({
+	data: z.record(
+		z.string(),
+		z.object({
+			qty: z.number(),
+		}),
+	),
+	properties: z.object({
+		hour: z.number().min(0).max(23),
+		line_id: z.string(),
+		minute: z.number().min(0).max(59),
+		pattern_id: z.string(),
+	}),
+});
+
+export const DemandByPatternHourByYearSchema = DemandByPatternHourSchema.extend({
 	metric: z.literal('demand_by_pattern_hour_by_year'),
-	properties: z.object({
-		hour: z.number().min(0).max(23),
-		minute: z.number().min(0).max(59),
-		pattern_id: z.string(),
-	}),
 });
 
-export const DemandByPatternHourByMonthSchema = DemandByPatternSchema.extend({
+export const DemandByPatternHourByMonthSchema = DemandByPatternHourSchema.extend({
 	metric: z.literal('demand_by_pattern_hour_by_month'),
-	properties: z.object({
-		hour: z.number().min(0).max(23),
-		minute: z.number().min(0).max(59),
-		pattern_id: z.string(),
-	}),
 });
 
-export const DemandByPatternHourByDaySchema = DemandByPatternSchema.extend({
+export const DemandByPatternHourByDaySchema = DemandByPatternHourSchema.extend({
 	data: z.record(
 		z.string(),
 		z.object({
@@ -74,12 +76,6 @@ export const DemandByPatternHourByDaySchema = DemandByPatternSchema.extend({
 		}),
 	),
 	metric: z.literal('demand_by_pattern_hour_by_day'),
-	properties: z.object({
-		hour: z.number().min(0).max(23),
-		line_id: z.string(),
-		minute: z.number().min(0).max(59),
-		pattern_id: z.string(),
-	}),
 });
 
 export type DemandByPatternByYear = z.infer<typeof DemandByPatternByYearSchema>;

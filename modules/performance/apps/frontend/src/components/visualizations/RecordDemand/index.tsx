@@ -55,14 +55,14 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 		// Get current passengers
 		const currentData = selectedAgency === 'all'
 			? realtimeLatest.data.total
-			: realtimeLatest.data.operators?.[selectedAgency];
+			: realtimeLatest.data.agencies?.[selectedAgency];
 
 		if (!currentData) return null;
 
 		// Get record data
 		const recordData = selectedAgency === 'all'
 			? topDemandLatest.data.total
-			: topDemandLatest.data.operators?.[selectedAgency];
+			: topDemandLatest.data.agencies?.[selectedAgency];
 
 		if (!recordData) return null;
 

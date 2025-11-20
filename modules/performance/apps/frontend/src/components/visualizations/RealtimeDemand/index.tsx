@@ -47,7 +47,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 
 		const agenciesData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.operators[selectedAgency];
+			: latest.data.agencies[selectedAgency];
 
 		const now = agenciesData.now;
 		const lastWeek = agenciesData.last_week;

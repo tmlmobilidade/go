@@ -15,7 +15,7 @@ const NowLastWeekSchema = z.object({
 
 export const RealtimeDemandSchema = MetricBaseSchema.extend({
 	data: z.object({
-		operators: z.record(
+		agencies: z.record(
 			z.string(),
 			NowLastWeekSchema,
 		),
@@ -26,7 +26,7 @@ export const RealtimeDemandSchema = MetricBaseSchema.extend({
 
 export const RealtimeServiceComplianceSchema = MetricBaseSchema.extend({
 	data: z.object({
-		operators: z.record(
+		agencies: z.record(
 			z.string(),
 			z.object({
 				advanced_rides: NowLastWeekSchema,

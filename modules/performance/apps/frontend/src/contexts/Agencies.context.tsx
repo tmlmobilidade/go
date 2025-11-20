@@ -74,8 +74,8 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 			// Merge metrics
 			const metricsData: Record<string, { last_week: number, now: number }> = {};
 
-			const serviceData = agency === 'all' ? serviceComplianceData[0].data.total : serviceComplianceData[0].data.operators[agency as keyof typeof serviceComplianceData[0]['data']['operators']];
-			const demandMetric = agency === 'all' ? demandData[0].data.total : demandData[0].data.operators[agency as keyof typeof demandData[0]['data']['operators']];
+			const serviceData = agency === 'all' ? serviceComplianceData[0].data.total : serviceComplianceData[0].data.agencies[agency as keyof typeof serviceComplianceData[0]['data']['agencies']];
+			const demandMetric = agency === 'all' ? demandData[0].data.total : demandData[0].data.agencies[agency as keyof typeof demandData[0]['data']['agencies']];
 
 			if (!serviceData || !demandMetric) return;
 

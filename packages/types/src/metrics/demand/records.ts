@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 export const TopDemandByAgencySchema = MetricBaseSchema.extend({
 	data: z.object({
-		operators: z.record(
+		agencies: z.record(
 			z.string(),
 			z.object({
 				day: z.object({
@@ -36,7 +36,7 @@ export const TopDemandByAgencySchema = MetricBaseSchema.extend({
 
 export const TopDemandByAgencyByDayTypeSchema = MetricBaseSchema.extend({
 	data: z.object({
-		operators: z.record(
+		agencies: z.record(
 			z.string().describe('Agency ID'),
 			z.record(
 				z.enum(['day_type_1', 'day_type_2', 'day_type_3']),

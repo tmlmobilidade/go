@@ -52,7 +52,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 
 		const agencyData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.operators[selectedAgency];
+			: latest.data.agencies[selectedAgency];
 
 		const calculatePct = (part: number, total: number) => {
 			return total > 0 ? (part / total) * 100 : 0;

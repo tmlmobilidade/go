@@ -1,2 +1,4 @@
 # Generated metrics data
-apps/sync-metrics/src/metrics-performance.json
+apps/sync-metrics-daily/analysis
+apps/sync-metrics-hourly/analysis
+apps/sync-metrics-realtime/analysis

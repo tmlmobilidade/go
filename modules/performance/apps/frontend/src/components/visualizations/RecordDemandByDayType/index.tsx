@@ -41,7 +41,7 @@ export default function RecordDemandByDayType() {
 		const agencyData = isAllSelected
 			? data.total
 			: selectedAgencies.length === 1
-				? data.operators?.[selectedAgencies[0]]
+				? data.agencies?.[selectedAgencies[0]]
 				: data.total; // Fallback to total for multiple specific agencies
 
 		if (!agencyData) return {};
