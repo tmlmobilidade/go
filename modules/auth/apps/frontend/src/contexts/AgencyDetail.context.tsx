@@ -70,7 +70,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 
 	useEffect(() => {
 		if (!agencyData) return;
-		const initialValues = UpdateAgencySchema.strip().parse(agencyData);
+		const initialValues = UpdateAgencySchema.parse(agencyData);
 		form.initialize(initialValues);
 		setIsReady(true);
 	}, [agencyData]);

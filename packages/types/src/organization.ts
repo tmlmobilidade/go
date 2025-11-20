@@ -10,7 +10,7 @@ export const HomeLinkSchema = z.object({
 	icon: z.string(),
 	order: z.number().min(0),
 	title: z.string(),
-}).strip();
+});
 
 export type HomeLink = z.infer<typeof HomeLinkSchema>;
 
@@ -24,7 +24,7 @@ export const OrganizationSchema = DocumentSchema.extend({
 	long_name: z.string(),
 	short_name: z.string(),
 	theme: z.string().nullable(),
-}).strip();
+});
 
 export const CreateOrganizationSchema = OrganizationSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateOrganizationSchema = CreateOrganizationSchema.omit({ created_by: true }).partial();

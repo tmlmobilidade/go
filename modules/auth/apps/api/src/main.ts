@@ -17,12 +17,12 @@ const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
 		bodyLimit: MAX_BODY_SIZE,
 		logger: {
 			level: 'debug',
-			transport: {
-				options: {
-					colorize: true,
-				},
-				target: 'pino-pretty',
-			},
+			// transport: {
+			// 	options: {
+			// 		colorize: true,
+			// 	},
+			// 	target: 'pino-pretty',
+			// },
 		},
 		origin: getAppConfig('auth', 'cors_origin'),
 		port: getAppConfig('auth', 'api_port'),

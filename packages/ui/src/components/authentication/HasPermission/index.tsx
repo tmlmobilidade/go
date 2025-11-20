@@ -14,12 +14,12 @@ interface HasPermissionProps {
 }
 
 interface ResourceKeyAndValue {
-	resource_key: string
+	resourceKey: string
 	value: string
 }
 
 interface NoResourceKeyOrValue {
-	resource_key?: never
+	resourceKey?: never
 	value?: never
 }
 
@@ -27,7 +27,7 @@ type HasPermissionFinalProps = HasPermissionProps & (NoResourceKeyOrValue | Reso
 
 /* * */
 
-export function HasPermission({ action, children, fallback, resource_key, scope, value }: HasPermissionFinalProps) {
+export function HasPermission({ action, children, fallback, resourceKey, scope, value }: HasPermissionFinalProps) {
 	//
 
 	//
@@ -38,11 +38,11 @@ export function HasPermission({ action, children, fallback, resource_key, scope,
 	//
 	// B. Render components
 
-	if (!resource_key && !value && meContext.actions.hasPermission(scope, action)) {
+	if (!resourceKey && !value && meContext.actions.hasPermission(scope, action)) {
 		return <>{children}</>;
 	}
 
-	if (meContext.actions.hasPermissionResource({ action, resource_key: resource_key, scope, value: value ?? '' })) {
+	if (meContext.actions.hasPermissionResource({ action, resource_key: resourceKey, scope, value: value ?? '' })) {
 		return <>{children}</>;
 	}
 

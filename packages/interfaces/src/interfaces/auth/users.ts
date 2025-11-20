@@ -1,9 +1,9 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { CreateUserDto, PermissionCatalog, UpdateUserDto, UpdateUserSchema, User, UserSchema } from '@tmlmobilidade/types';
+import { type CreateUserDto, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, UserSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
-import { Filter, FindOptions, IndexDescription, WithId } from 'mongodb';
+import { type Filter, type FindOptions, type IndexDescription, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
@@ -40,11 +40,10 @@ class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto
 	}
 
 	/**
-	 * Finds a document by its ID.
-	 *
-	 * @param id - The ID of the document to find
-	 * @param includePasswordHash - Whether to include the password hash in the result
-	 * @returns A promise that resolves to the matching document or null if not found
+	 * Finds a user document by its ID.
+	 * @param id The ID of the user document to find
+	 * @param includePasswordHash Whether to include the password hash in the result
+	 * @returns A promise that resolves to the matching user document or null if not found
 	 */
 	override async findById(id: string, options?: FindOptions, includePasswordHash = false) {
 		const foundUser = await this.mongoCollection.findOne({ _id: id }, options);
@@ -90,6 +89,11 @@ class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto
 		return foundUsers.map(item => this.sanitizeUser(item));
 	}
 
+	/**
+	 * Finds a single document matching the filter criteria.
+	 * @param filter Filter criteria to match the document.
+	 * @returns A promise that resolves to the matching document or null if not found.
+	 */
 	override async findOne(filter: Filter<User>) {
 		const foundUser = await this.mongoCollection.findOne(filter);
 		if (!foundUser) return null;

@@ -172,10 +172,9 @@ export class PermissionCatalog {
 		const cleanedPermissions: Permission[] = [];
 		// Iterate through each permission entry of the user
 		for (const permissionEntry of existingEntries) {
-			// Check if the scope exists in the catalog
-			if (!this.all[permissionEntry.scope]) continue;
-			// Check if the action exists in the catalog for the given scope
-			if (!this.all[permissionEntry.scope][permissionEntry.action]) continue;
+			// Validate the permission entry
+			const validationResult = PermissionSchema.safeParse(permissionEntry);
+			if (!validationResult.success) continue;
 			// Permission is valid; keep it
 			cleanedPermissions.push(permissionEntry);
 		}

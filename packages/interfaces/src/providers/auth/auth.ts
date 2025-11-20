@@ -66,11 +66,11 @@ class AuthProvider {
 
 	/**
 	 * Get Permissions for a user based on their session token or user_id.
-	 * @param sessionToken - The session token (optional if user_id is provided)
-	 * @param user_id - The user ID (optional if sessionToken is provided)
-	 * @returns The permissions that the user has
+	 * @param sessionToken The session token (optional if user_id is provided).
+	 * @param userId The user ID (optional if sessionToken is provided).
+	 * @returns The permissions that the user has.
 	 */
-	public async getPermissions(params: OneOrTheOther<{ sessionToken: string }, { user_id: string }>): Promise<Permission[]> {
+	public async getPermissions(params: OneOrTheOther<{ sessionToken: string }, { userId: string }>): Promise<Permission[]> {
 		//
 
 		//
@@ -79,20 +79,21 @@ class AuthProvider {
 		let userData: User;
 
 		if ('user_id' in params) {
-			const foundUser = await users.findOne({ _id: { $eq: params.user_id } });
-			if (!foundUser) {
-				throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
-			}
+			const foundUser = await users.findOne({ _id: { $eq: params.userId } });
+			if (!foundUser) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
 			userData = foundUser;
 		}
 		else if ('sessionToken' in params) {
 			userData = await this.getUser(params.sessionToken);
 		}
 		else {
-			throw new HttpException(HttpStatus.BAD_REQUEST, 'Either sessionToken or user_id must be provided');
+			throw new HttpException(HttpStatus.BAD_REQUEST, 'Either sessionToken or userId must be provided');
 		}
 
 		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
+
+		console.log('User roles data:', rolesData.length);
+		console.log('User data:', userData);
 
 		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions] as Permission[];
 

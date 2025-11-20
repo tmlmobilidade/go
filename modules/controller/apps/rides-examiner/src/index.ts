@@ -122,7 +122,7 @@ export async function validateRides() {
 				// Update the current Ride with the analysis result
 				// and 'complete' status to indicate that the ride has been processed.
 
-				const validatedRide = UpdateRideSchema.strip().parse(augmentedRideData);
+				const validatedRide = UpdateRideSchema.parse(augmentedRideData);
 
 				await rides.updateById(rideData._id, {
 					...validatedRide,
