@@ -17,19 +17,45 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', OrganizationsController.getAll);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware() },
+			OrganizationsController.getAll,
+		);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware() }, OrganizationsController.getById);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware() },
+			OrganizationsController.getById,
+		);
 
-		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update) }, OrganizationsController.update);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.update]) },
+			OrganizationsController.update,
+		);
 
-		instance.post('/:id/image', { preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update) }, OrganizationsController.uploadImage);
+		instance.post(
+			'/:id/image',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.update]) },
+			OrganizationsController.uploadImage,
+		);
 
-		instance.post('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.create) }, OrganizationsController.create);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.create]) }, OrganizationsController.create);
 
-		instance.delete('/:id/:theme/image', { preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.delete) }, OrganizationsController.deleteImage);
+		instance.delete(
+			'/:id/:theme/image',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
+			OrganizationsController.deleteImage,
+		);
 
-		instance.get('/:id/logo', { preHandler: authorizationMiddleware() }, OrganizationsController.getLogo);
+		instance.get(
+			'/:id/logo',
+			{ preHandler: authorizationMiddleware() },
+			OrganizationsController.getLogo,
+		);
 
 		next();
 	},

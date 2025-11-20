@@ -7,18 +7,27 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
-const server = FastifyService.getInstance().server;
 const NAMESPACE = '/wiki';
 
 /* * */
 
+const server = FastifyService.getInstance().server;
+
 server.register(
 	(instance, opts, next) => {
-		// GET /wiki
-		instance.get('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.home.scope, PermissionCatalog.all.home.actions.read_wiki) }, WikiController.getAll);
+		//
 
-		// GET /wiki/:id
-		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.home.scope, PermissionCatalog.all.home.actions.read_wiki) }, WikiController.getById);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.home.scope, [PermissionCatalog.all.home.actions.read_wiki]) },
+			WikiController.getAll,
+		);
+
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.home.scope, [PermissionCatalog.all.home.actions.read_wiki]) },
+			WikiController.getById,
+		);
 
 		next();
 	},

@@ -15,26 +15,49 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
-		// GET /users
-		instance.get('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.read) }, UsersController.getAll);
+		//
 
-		// GET /users/:id
-		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.read) }, UsersController.getById);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.read]) },
+			UsersController.getAll,
+		);
 
-		// POST /users
-		instance.post('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.create) }, UsersController.create);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.read]) },
+			UsersController.getById,
+		);
 
-		// PUT /users/:id
-		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update) }, UsersController.update);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.create]) },
+			UsersController.create,
+		);
 
-		// DELETE /users/:id
-		instance.delete('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.delete) }, UsersController.delete);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.update]) },
+			UsersController.update,
+		);
 
-		// GET /users/me
-		instance.get('/me', { preHandler: authorizationMiddleware() }, UsersController.getMe);
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.delete]) },
+			UsersController.delete,
+		);
 
-		// PUT /users/me
-		instance.put('/me', { preHandler: authorizationMiddleware() }, UsersController.updateMe);
+		instance.get(
+			'/me',
+			{ preHandler: authorizationMiddleware() },
+			UsersController.getMe,
+		);
+
+		instance.put(
+			'/me',
+			{ preHandler: authorizationMiddleware() },
+			UsersController.updateMe,
+		);
 
 		next();
 	},

@@ -15,20 +15,37 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
-		// GET /roles
-		instance.get('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.read) }, RolesController.getAll);
+		//
 
-		// GET /roles/:id
-		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.read) }, RolesController.getById);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.read]) },
+			RolesController.getAll,
+		);
 
-		// POST /roles
-		instance.post('/', { preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.create) }, RolesController.create);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.read]) },
+			RolesController.getById,
+		);
 
-		// PUT /roles/:id
-		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update) }, RolesController.update);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.create]) },
+			RolesController.create,
+		);
 
-		// DELETE /roles/:id
-		instance.delete('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.delete) }, RolesController.delete);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.update]) },
+			RolesController.update,
+		);
+
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.delete]) },
+			RolesController.delete,
+		);
 
 		next();
 	},

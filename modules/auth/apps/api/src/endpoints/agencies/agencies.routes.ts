@@ -19,9 +19,9 @@ server.register(
 
 		instance.get('/', AgenciesController.getAll);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.read) }, AgenciesController.getById);
+		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.read]) }, AgenciesController.getById);
 
-		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update) }, AgenciesController.update);
+		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.update]) }, AgenciesController.update);
 
 		next();
 	},

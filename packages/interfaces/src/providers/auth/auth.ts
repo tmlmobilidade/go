@@ -1,11 +1,11 @@
 /* * */
 
-import { roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
+import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
 import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
-import { CreateUserDto, LoginDto, OneOrTheOther, Permission, Session, User } from '@tmlmobilidade/types';
+import { CreateUserDto, LoginDto, OneOrTheOther, Organization, Permission, Session, User } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
@@ -22,6 +22,46 @@ class AuthProvider {
 			AuthProvider._instance = new AuthProvider();
 		}
 		return AuthProvider._instance;
+	}
+
+	/**
+	 * Gets a user by their session token.
+	 * @param sessionToken The session token to look up.
+	 * @returns The user associated with the session token.
+	 * @throws An HTTP UNAUTHORIZED error code if user or session not found
+	 */
+	public async getOrganization(sessionToken: string): Promise<Organization> {
+		//
+
+		//
+		// Find the current session in the database
+
+		const sessionData = await sessions.findOne({ token: { $eq: sessionToken } });
+
+		if (!sessionData) {
+			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session not found');
+		}
+
+		//
+		// Find the user associated with the session
+
+		const userData = await users.findOne({ _id: { $eq: sessionData.user_id } });
+
+		if (!userData) {
+			throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
+		}
+
+		//
+		// Find the organization associated with the user
+
+		const organizationData = await organizations.findOne({ _id: { $eq: userData.organization_id } });
+
+		if (!organizationData) return undefined;
+
+		//
+		// Return the user data to the caller
+
+		return organizationData;
 	}
 
 	/**

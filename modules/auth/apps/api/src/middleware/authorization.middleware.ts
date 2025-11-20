@@ -3,7 +3,7 @@
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { authProvider } from '@tmlmobilidade/interfaces';
-import { type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
+import { type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 import { Cache } from '@tmlmobilidade/utils';
 
 /* * */
@@ -11,6 +11,7 @@ import { Cache } from '@tmlmobilidade/utils';
 declare module 'fastify' {
 	export interface FastifyRequest {
 		me: User
+		organization: Organization
 		permissions: Permission[]
 	}
 }
@@ -51,6 +52,7 @@ export function authorizationMiddleware(scope?: string, actions?: string[], requ
 			else {
 				request.me = await authProvider.getUser(sessionToken);
 				request.permissions = await authProvider.getPermissions({ sessionToken });
+				request.organization = await authProvider.getOrganization(sessionToken);
 				REQUEST_CACHE.set(sessionToken, { permissions: request.permissions, user: request.me });
 			}
 
@@ -58,7 +60,7 @@ export function authorizationMiddleware(scope?: string, actions?: string[], requ
 			// Evaluate the retrieved permissions,
 			// if scope and actions are provided.
 
-			if (!scope) return;
+			if (!scope || !actions?.length) return;
 
 			const permissionChecks = actions.map(action => PermissionCatalog.hasPermission(request.permissions, scope, action));
 

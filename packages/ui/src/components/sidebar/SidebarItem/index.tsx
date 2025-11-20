@@ -2,8 +2,7 @@
 
 /* * */
 
-import { type Permission } from '@tmlmobilidade/types';
-import { hasPermission } from '@tmlmobilidade/utils';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
 
@@ -47,7 +46,7 @@ export function SidebarItem({ href, icon, label, permissions }: SidebarItemProps
 		// For all possible permissions...
 		for (const permissionObject of permissions) {
 			// ... check if the user is allowed to see this item
-			return hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action);
+			return PermissionCatalog.hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action);
 		}
 		// If no permissions matched
 		return false;
