@@ -1,4 +1,6 @@
-import { Permission, Role } from '@tmlmobilidade/types';
+/* * */
+
+import { type Permission, PermissionSchema, type Role } from '@tmlmobilidade/types';
 
 /**
  * Calculate permissions that a user has from their assigned roles
@@ -19,11 +21,8 @@ export function calculateRolePermissions(roleIds: string[], roles: Role[]): Perm
 			const existingPermission = rolePermissions.find(p => p.scope === permission.scope && p.action === permission.action);
 
 			if (!existingPermission) {
-				rolePermissions.push({
-					action: permission.action,
-					resource: permission.resource as Record<string, unknown>,
-					scope: permission.scope,
-				});
+				const validatedPermission = PermissionSchema.safeParse(permission);
+				rolePermissions.push(validatedPermission.data);
 			}
 		});
 	});

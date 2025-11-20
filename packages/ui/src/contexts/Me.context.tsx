@@ -4,7 +4,7 @@
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { FileExport, PermissionCatalog, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
-import { fetchData, type HasPermissionResourceArgs, hasPermissionResource as hasPermissionResourceUtils } from '@tmlmobilidade/utils';
+import { fetchData, type HasPermissionResourceArgs } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -73,7 +73,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	function hasPermissionResource(args: HasPermissionResourceArgs) {
 		if (!meData || !meData.permissions) return false;
-		return hasPermissionResourceUtils({ ...args, permissions: meData.permissions });
+		return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
 	}
 
 	async function logout() {

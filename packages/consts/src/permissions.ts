@@ -4,7 +4,7 @@
 
 /* * */
 
-export const ALLOW_ALL_FLAG = 'allow_all';
+// export const ALLOW_ALL_FLAG = 'allow_all';
 
 /* * */
 

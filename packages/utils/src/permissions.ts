@@ -2,8 +2,7 @@
 
 /* * */
 
-import { ALLOW_ALL_FLAG } from '@tmlmobilidade/consts';
-import { type Permission } from '@tmlmobilidade/types';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { mergekit } from 'mergekit';
 
 /**
@@ -77,7 +76,7 @@ export function hasPermissionResource({ action, permissions, resource_key, scope
 	// If resourceValues is an Array, check if value is in the array
 	// or if it contains the ALLOW_ALL_FLAG.
 
-	if (Array.isArray(resourceValues) && resourceValues.includes(ALLOW_ALL_FLAG)) return true;
+	if (Array.isArray(resourceValues) && resourceValues.includes(PermissionCatalog.ALLOW_ALL_FLAG)) return true;
 	if (Array.isArray(resourceValues) && resourceValues.includes(value)) return true;
 
 	//
