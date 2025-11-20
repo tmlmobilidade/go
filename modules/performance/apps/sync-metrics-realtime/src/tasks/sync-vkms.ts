@@ -1,205 +1,205 @@
-import { Dates } from '@tmlmobilidade/dates';
-import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
-import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
+// import { Dates } from '@tmlmobilidade/dates';
+// import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+// import { metrics, rides } from '@tmlmobilidade/interfaces';
+// import { Logger } from '@tmlmobilidade/logger';
+// import { Timer } from '@tmlmobilidade/timer';
+// import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 
-/* * */
+// /* * */
 
-// Helper function to process a rides stream
-async function processRidesStream(stream, results, agencies, mode: 'last_week' | 'now') {
-	for await (const currentRide of stream) {
-		//
+// // Helper function to process a rides stream
+// async function processRidesStream(stream, results, agencies, mode: 'last_week' | 'now') {
+// 	for await (const currentRide of stream) {
+// 		//
 
-		const rideData: Ride = currentRide as Ride;
-		const agency = rideData.agency_id;
-		if (!agencies.includes(agency)) continue;
+// 		const rideData: Ride = currentRide as Ride;
+// 		const agency = rideData.agency_id;
+// 		if (!agencies.includes(agency)) continue;
 
-		//
-		// Skip rides that should not have started yet (relative to reference time)
+// 		//
+// 		// Skip rides that should not have started yet (relative to reference time)
 
-		const referenceNow = Dates.now('Europe/Lisbon');
+// 		const referenceNow = Dates.now('Europe/Lisbon');
 
-		const nowInUnixTimestamp = mode === 'now'
-			? referenceNow.unix_timestamp - 300_000 // 5 minutes ago
-			: referenceNow.minus({ days: 7 }).unix_timestamp - 300_000;
+// 		const nowInUnixTimestamp = mode === 'now'
+// 			? referenceNow.unix_timestamp - 300_000 // 5 minutes ago
+// 			: referenceNow.minus({ days: 7 }).unix_timestamp - 300_000;
 
-		if (nowInUnixTimestamp - rideData.start_time_scheduled < 0) continue;
+// 		if (nowInUnixTimestamp - rideData.start_time_scheduled < 0) continue;
 
-		//
-		// Scheduled rides
+// 		//
+// 		// Scheduled rides
 
-		results.agencies[agency].scheduled_rides[mode]++;
-		results.total.scheduled_rides[mode]++;
+// 		results.agencies[agency].scheduled_rides[mode]++;
+// 		results.total.scheduled_rides[mode]++;
 
-		//
-		// Rides with sales
+// 		//
+// 		// Rides with sales
 
-		if (rideData.passengers_observed > 0) {
-			results.agencies[agency].rides_with_sales[mode]++;
-			results.total.rides_with_sales[mode]++;
-		}
+// 		if (rideData.passengers_observed > 0) {
+// 			results.agencies[agency].rides_with_sales[mode]++;
+// 			results.total.rides_with_sales[mode]++;
+// 		}
 
-		//
+// 		//
 
-		const simpleThreeVehicleEvents = rideData.analysis?.SIMPLE_THREE_VEHICLE_EVENTS;
-		const isRideValid = simpleThreeVehicleEvents?.grade === 'pass';
-		if (rideData.analysis === null || !isRideValid) continue;
+// 		const simpleThreeVehicleEvents = rideData.analysis?.SIMPLE_THREE_VEHICLE_EVENTS;
+// 		const isRideValid = simpleThreeVehicleEvents?.grade === 'pass';
+// 		if (rideData.analysis === null || !isRideValid) continue;
 
-		//
-		// Valid rides
+// 		//
+// 		// Valid rides
 
-		results.agencies[agency].valid_rides[mode]++;
-		results.total.valid_rides[mode]++;
+// 		results.agencies[agency].valid_rides[mode]++;
+// 		results.total.valid_rides[mode]++;
 
-		//
-		// No passenger rides
+// 		//
+// 		// No passenger rides
 
-		if (rideData.passengers_observed === 0) {
-			results.agencies[agency].no_passengers_rides[mode]++;
-			results.total.no_passengers_rides[mode]++;
-		}
+// 		if (rideData.passengers_observed === 0) {
+// 			results.agencies[agency].no_passengers_rides[mode]++;
+// 			results.total.no_passengers_rides[mode]++;
+// 		}
 
-		//
-		// Advanced rides
+// 		//
+// 		// Advanced rides
 
-		if (rideData.analysis.EXPECTED_START_TIME.value <= -1) {
-			results.agencies[agency].advanced_rides[mode]++;
-			results.total.advanced_rides[mode]++;
-		}
+// 		if (rideData.analysis.EXPECTED_START_TIME.value <= -1) {
+// 			results.agencies[agency].advanced_rides[mode]++;
+// 			results.total.advanced_rides[mode]++;
+// 		}
 
-		//
-		// Delays
+// 		//
+// 		// Delays
 
-		if (!rideData.start_time_observed) continue;
+// 		if (!rideData.start_time_observed) continue;
 
-		// 5-minute delays
-		if (rideData.analysis.EXPECTED_START_TIME.value > 5) {
-			results.agencies[agency].five_min_delays[mode]++;
-			results.total.five_min_delays[mode]++;
-		}
+// 		// 5-minute delays
+// 		if (rideData.analysis.EXPECTED_START_TIME.value > 5) {
+// 			results.agencies[agency].five_min_delays[mode]++;
+// 			results.total.five_min_delays[mode]++;
+// 		}
 
-		// Mean delay
-		if (rideData.analysis.EXPECTED_START_TIME.value >= 0) {
-			results.agencies[agency].mean_delay_minutes[mode] += rideData.analysis.EXPECTED_START_TIME.value;
-			results.total.mean_delay_minutes[mode] += rideData.analysis.EXPECTED_START_TIME.value;
-		}
-	}
-}
+// 		// Mean delay
+// 		if (rideData.analysis.EXPECTED_START_TIME.value >= 0) {
+// 			results.agencies[agency].mean_delay_minutes[mode] += rideData.analysis.EXPECTED_START_TIME.value;
+// 			results.total.mean_delay_minutes[mode] += rideData.analysis.EXPECTED_START_TIME.value;
+// 		}
+// 	}
+// }
 
-/* * */
+// /* * */
 
-export const syncRealtimeServiceCompliance = async () => {
-	//
+// export const syncRealtimeServiceCompliance = async () => {
+// 	//
 
-	Logger.title(`Sync Service Compliance Metrics in Realtime`);
-	const globalTimer = new Timer();
+// 	Logger.title(`Sync Service Compliance Metrics in Realtime`);
+// 	const globalTimer = new Timer();
 
-	const METRIC = 'realtime_service_compliance';
+// 	const METRIC = 'realtime_service_compliance';
 
-	//
-	// Delete existing metrics
+// 	//
+// 	// Delete existing metrics
 
-	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
-	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+// 	const deleteTimer = new Timer();
+// 	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+// 	await metrics.deleteMany({ metric: METRIC });
+// 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
-	//
-	// Setup timestamp boundaries
+// 	//
+// 	// Setup timestamp boundaries
 
-	const now = Dates.now('Europe/Lisbon');
-	const currentOperationalDate = now.operational_date;
+// 	const now = Dates.now('Europe/Lisbon');
+// 	const currentOperationalDate = now.operational_date;
 
-	//
-	// Initialize results object
+// 	//
+// 	// Initialize results object
 
-	const agencies = ['41', '42', '43', '44'];
+// 	const agencies = ['41', '42', '43', '44'];
 
-	const results: RealtimeServiceCompliance['data'] = {
-		agencies: {},
-		total: {
-			advanced_rides: { last_week: 0, now: 0 },
-			five_min_delays: { last_week: 0, now: 0 },
-			mean_delay_minutes: { last_week: 0, now: 0 },
-			no_passengers_rides: { last_week: 0, now: 0 },
-			rides_with_sales: { last_week: 0, now: 0 },
-			scheduled_rides: { last_week: 0, now: 0 },
-			valid_rides: { last_week: 0, now: 0 },
-		},
-	};
+// 	const results: RealtimeServiceCompliance['data'] = {
+// 		agencies: {},
+// 		total: {
+// 			advanced_rides: { last_week: 0, now: 0 },
+// 			five_min_delays: { last_week: 0, now: 0 },
+// 			mean_delay_minutes: { last_week: 0, now: 0 },
+// 			no_passengers_rides: { last_week: 0, now: 0 },
+// 			rides_with_sales: { last_week: 0, now: 0 },
+// 			scheduled_rides: { last_week: 0, now: 0 },
+// 			valid_rides: { last_week: 0, now: 0 },
+// 		},
+// 	};
 
-	agencies.forEach((op) => {
-		results.agencies[op] = {
-			advanced_rides: { last_week: 0, now: 0 },
-			five_min_delays: { last_week: 0, now: 0 },
-			mean_delay_minutes: { last_week: 0, now: 0 },
-			no_passengers_rides: { last_week: 0, now: 0 },
-			rides_with_sales: { last_week: 0, now: 0 },
-			scheduled_rides: { last_week: 0, now: 0 },
-			valid_rides: { last_week: 0, now: 0 },
-		};
-	});
+// 	agencies.forEach((op) => {
+// 		results.agencies[op] = {
+// 			advanced_rides: { last_week: 0, now: 0 },
+// 			five_min_delays: { last_week: 0, now: 0 },
+// 			mean_delay_minutes: { last_week: 0, now: 0 },
+// 			no_passengers_rides: { last_week: 0, now: 0 },
+// 			rides_with_sales: { last_week: 0, now: 0 },
+// 			scheduled_rides: { last_week: 0, now: 0 },
+// 			valid_rides: { last_week: 0, now: 0 },
+// 		};
+// 	});
 
-	//
-	// Fetch rides collection
+// 	//
+// 	// Fetch rides collection
 
-	const ridesCollection = await rides.getCollection();
+// 	const ridesCollection = await rides.getCollection();
 
-	//
-	// Today's stream
+// 	//
+// 	// Today's stream
 
-	Logger.info(`Processing rides for current operational date: ${currentOperationalDate}`);
-	const todayTimer = new Timer();
+// 	Logger.info(`Processing rides for current operational date: ${currentOperationalDate}`);
+// 	const todayTimer = new Timer();
 
-	const todayStream = ridesCollection
-		.find({ operational_date: currentOperationalDate, system_status: 'complete' })
-		.stream();
+// 	const todayStream = ridesCollection
+// 		.find({ operational_date: currentOperationalDate, system_status: 'complete' })
+// 		.stream();
 
-	await processRidesStream(todayStream, results, agencies, 'now');
-	Logger.info(`Processed today's rides in ${todayTimer.get()}`);
+// 	await processRidesStream(todayStream, results, agencies, 'now');
+// 	Logger.info(`Processed today's rides in ${todayTimer.get()}`);
 
-	for await (const currentRide of stream) {
-		//
+// 	for await (const currentRide of stream) {
+// 		//
 
-		const rideData: Ride = currentRide as Ride;
-		const agency = rideData.agency_id;
-		if (!agencies.includes(agency)) continue;
+// 		const rideData: Ride = currentRide as Ride;
+// 		const agency = rideData.agency_id;
+// 		if (!agencies.includes(agency)) continue;
 
-		//
-		// Skip rides that should not have started yet (relative to reference time)
+// 		//
+// 		// Skip rides that should not have started yet (relative to reference time)
 
-		const referenceNow = Dates.now('Europe/Lisbon');
+// 		const referenceNow = Dates.now('Europe/Lisbon');
 
-		const nowInUnixTimestamp = mode === 'now'
-			? referenceNow.unix_timestamp - 300_000 // 5 minutes ago
-			: referenceNow.minus({ days: 7 }).unix_timestamp - 300_000;
+// 		const nowInUnixTimestamp = mode === 'now'
+// 			? referenceNow.unix_timestamp - 300_000 // 5 minutes ago
+// 			: referenceNow.minus({ days: 7 }).unix_timestamp - 300_000;
 
-		if (nowInUnixTimestamp - rideData.start_time_scheduled < 0) continue;
-	}
+// 		if (nowInUnixTimestamp - rideData.start_time_scheduled < 0) continue;
+// 	}
 
-	//
-	// Store metric
+// 	//
+// 	// Store metric
 
-	const metricToInsert: RealtimeServiceCompliance = {
-		data: results,
-		description: `Realtime service compliance metrics by agency and total, compared with previous week same time.`,
-		generated_at: new Date(),
-		metric: METRIC,
-	};
+// 	const metricToInsert: RealtimeServiceCompliance = {
+// 		data: results,
+// 		description: `Realtime service compliance metrics by agency and total, compared with previous week same time.`,
+// 		generated_at: new Date(),
+// 		metric: METRIC,
+// 	};
 
-	await metrics.insertOne(metricToInsert);
+// 	await metrics.insertOne(metricToInsert);
 
-	logMetricToFile({
-		approach: { description: 'Stream rides by agency', key: 'stream_rides_by_agency' },
-		metric: METRIC,
-		queryCount: 2,
-		runtime: globalTimer.get(),
-		timestamp: new Date().toISOString(),
-	});
+// 	logMetricToFile({
+// 		approach: { description: 'Stream rides by agency', key: 'stream_rides_by_agency' },
+// 		metric: METRIC,
+// 		queryCount: 2,
+// 		runtime: globalTimer.get(),
+// 		timestamp: new Date().toISOString(),
+// 	});
 
-	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
-};
+// 	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
+// };
 
-//
+// //
