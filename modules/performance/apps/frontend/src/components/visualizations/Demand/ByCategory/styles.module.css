@@ -1,0 +1,5 @@
+.visualizationContainer {
+  display: flex;
+  gap: var(--size-spacing-md);
+  width: 100%;
+}

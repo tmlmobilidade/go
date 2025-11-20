@@ -2,7 +2,6 @@
 
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import Dashboards from '@/components/layout/Dashboards';
-import { Widget } from '@/components/layout/Widget';
 import { TopicDefinition } from '@/constants';
 import { Divider } from '@tmlmobilidade/ui';
 
@@ -34,14 +33,13 @@ export default function TopicsWrapper({ children, topic }: { children?: React.Re
 
 					<p>{topic.description}</p>
 				</div>
-
-				<Widget />
 			</div>
 
 			{children}
 
 			<Divider />
 
+			<h2>Dashboards</h2>
 			<Dashboards topic={topic} />
 		</div>
 	);

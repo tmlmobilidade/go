@@ -1,14 +1,18 @@
 /* * */
 
-import { DemandByDay } from '@/components/visualizations/DemandByDay';
-import { AGENCIES, AgencyType } from '@/constants';
+import { AgenciesSelector } from '@/components/layout/AgenciesSelector';
+import { DemandByCategoryVisualization } from '@/components/visualizations/Demand/ByCategory';
+import { DemandByProductVisualization } from '@/components/visualizations/Demand/ByProduct';
+import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
+import { AgencyType } from '@/constants';
 import { useNetworkContext } from '@/contexts/Network.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { Combobox, DatePicker, MultiSelect, Section, SegmentedControl, Spacer } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { DatePicker, MonthPicker, MultiSelect, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
+import { useEffect, useMemo, useState } from 'react';
 
-import styles from './styles.module.css';
+/* * */
+
+const DEBOUNCE_DELAY_MS = 1000; // Delay before triggering API queries
 
 export default function DemandByTopic() {
 	//
@@ -17,14 +21,18 @@ export default function DemandByTopic() {
 	// A. Setup variables
 
 	const { data: networkData } = useNetworkContext();
-	const t = useTranslations();
 
 	const [timeView, setTimeView] = useState<'annual' | 'daily' | 'monthly'>('daily');
 	const [groupBy, setGroupBy] = useState<'agency' | 'line' | 'pattern'>('agency');
 
+	// Immediate state for UI updates (user sees changes instantly)
+	const [lineIdsInput, setLineIdsInput] = useState<string[]>([]);
+	const [patternIdsInput, setPatternIdsInput] = useState<string[]>([]);
+	const [agencyIds, setAgencyIds] = useState<AgencyType[]>([]);
+
+	// Debounced state for API queries
 	const [lineIds, setLineIds] = useState<string[]>([]);
 	const [patternIds, setPatternIds] = useState<string[]>([]);
-	const [agencyId, setAgencyId] = useState<AgencyType>(AGENCIES.ALL);
 
 	const [startDate, setStartDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').minus({ days: 7 }));
 	const [endDate, setEndDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').minus({ days: 1 }));
@@ -32,24 +40,25 @@ export default function DemandByTopic() {
 	//
 	// B. Transform data
 
-	const lineData = useMemo(() => networkData.lines.map(line => ({
+	const lineData = networkData.lines.map(line => ({
 		label: line,
 		value: line,
-	})), [networkData]);
+	}));
 
-	const patternsData = useMemo(() => networkData.patterns.map(pattern => ({
+	const patternsData = networkData.patterns.map(pattern => ({
 		label: pattern,
 		value: pattern,
-	})), [networkData]);
+	}));
 
-	const agenciesData = useMemo(() => {
-		const agencies = Object.values(AGENCIES)
-			.map(value => ({
-				label: t(`agencies.${value}`),
-				value,
-			}));
-		return agencies;
-	}, [t, agencyId]);
+	const filters = useMemo(() => ({
+		agencyIds,
+		dateRange: { endDate, startDate },
+		lineIds,
+		patternIds,
+	}), [agencyIds, endDate, startDate, lineIds, patternIds]);
+
+	//
+	// C. Handlers
 
 	const handleChangeTimeView = (value: 'annual' | 'daily' | 'monthly') => {
 		setTimeView(value);
@@ -67,15 +76,33 @@ export default function DemandByTopic() {
 		setEndDate(Dates.fromISO(date || ''));
 	};
 
-	const handleChangeAgencyId = (value: AgencyType) => {
-		setAgencyId(value);
-	};
+	//
+	// D. Effects
 
-	// C. Render components
+	// Debounce logic for line IDs
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			setLineIds(lineIdsInput);
+		}, DEBOUNCE_DELAY_MS);
+
+		return () => clearTimeout(timeoutId);
+	}, [lineIdsInput]);
+
+	// Debounce logic for pattern IDs
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			setPatternIds(patternIdsInput);
+		}, DEBOUNCE_DELAY_MS);
+
+		return () => clearTimeout(timeoutId);
+	}, [patternIdsInput]);
+
+	// E. Render components
 
 	return (
 		<Section gap="lg" padding="none">
 			<Section flexDirection="column" gap="md" padding="none">
+
 				<Section flexDirection="row" gap="lg" padding="none">
 					<Section gap="xs" padding="none" width="fit-content">
 						<h3>Vista</h3>
@@ -88,26 +115,22 @@ export default function DemandByTopic() {
 					</Section>
 				</Section>
 
-				<Section flexDirection="row" gap="lg" padding="none">
+				<Section alignItems="center" flexDirection="row" gap="lg" height={70} padding="none">
 
 					{groupBy === 'line' && lineData.length > 0 && (
 						<MultiSelect
 							data={lineData}
 							label="Linha"
 							limit={20}
-							onChange={setLineIds}
-							selected={lineIds}
+							onChange={setLineIdsInput}
+							selected={lineIdsInput}
 							width={500}
 						/>
 					)}
 					{groupBy === 'agency' && (
-						<Combobox
-							data={agenciesData}
-							label="Operador"
-							onChange={handleChangeAgencyId}
-							placeholder="Selecionar"
-							value={agencyId}
-							width={150}
+						<AgenciesSelector
+							onChange={values => setAgencyIds(values as AgencyType[])}
+							selectedAgencies={agencyIds}
 						/>
 					)}
 					{groupBy === 'pattern' && patternsData.length > 0 && (
@@ -115,21 +138,48 @@ export default function DemandByTopic() {
 							data={patternsData}
 							label="Pattern"
 							limit={20}
-							onChange={setPatternIds}
-							selected={patternIds}
+							onChange={setPatternIdsInput}
+							selected={patternIdsInput}
 							width={500}
 						/>
 					)}
 
-					<DatePicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-					<DatePicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+					{timeView === 'daily' && (
+						<>
+							<DatePicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<DatePicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+						</>
+					)}
+
+					{timeView === 'monthly' && (
+						<>
+							<MonthPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<MonthPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+						</>
+					)}
+
+					{timeView === 'annual' && (
+						<>
+							<YearPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<YearPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+						</>
+					)}
+
 				</Section>
 
 			</Section>
 
 			<Spacer />
 
-			<DemandByDay filters={{ agencyId, dateRange: { endDate, startDate }, lineIds, patternIds }} groupBy={groupBy} height={300} />
+			<DemandVisualization filters={filters} groupBy={groupBy} height={300} timeView={timeView} />
+
+			<Spacer />
+
+			<DemandByProductVisualization filters={filters} groupBy={groupBy} height={300} timeView={timeView} title="Passageiros transportados por tipo de passe" />
+
+			<Spacer />
+
+			<DemandByCategoryVisualization filters={filters} groupBy={groupBy} height={300} timeView={timeView} title="Passageiros transportados por categoria de bilhética" />
 
 		</Section>
 	);

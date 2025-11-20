@@ -6,6 +6,7 @@ export interface DashboardDefinition {
 	description?: string
 	key: string
 	label: string
+	visible?: boolean
 }
 
 export interface TopicDefinition {
@@ -15,6 +16,7 @@ export interface TopicDefinition {
 	icon?: React.ComponentType
 	key: string
 	label: string
+	visible?: boolean
 }
 
 export const TOPICS = {
@@ -34,6 +36,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 			{
 				key: 'demand-by',
 				label: 'Procura por...',
+				visible: true,
 			},
 			{
 				key: 'occupancy-rate',
@@ -64,6 +67,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 		icon: IconArrowsLeftRight,
 		key: TOPICS.SUPPLY_DEMAND_ALIGNMENT,
 		label: 'Alinhamento oferta-procura',
+		visible: true,
 	},
 	{
 		dashboards: [
@@ -149,7 +153,6 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 ];
 
 export const AGENCIES = {
-	ALL: 'all',
 	AREA_1: '41',
 	AREA_2: '42',
 	AREA_3: '43',
@@ -157,5 +160,7 @@ export const AGENCIES = {
 } as const;
 
 export type AgencyType = typeof AGENCIES[keyof typeof AGENCIES];
+
+export type AgencyTypeWithAll = 'all' | AgencyType;
 
 export type SystemStatusType = 'negative' | 'positive' | 'warning';

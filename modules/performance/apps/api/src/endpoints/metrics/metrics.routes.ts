@@ -16,9 +16,9 @@ const namespace = '/metrics';
 
 server.register(
 	(instance, opts, next) => {
-		// GET /metrics/:metricName
+		// GET /metrics/:id
 		instance.get(
-			'/:metricName',
+			'/:id',
 			{
 				preHandler: authorizationMiddleware<Metric>(
 					Permissions.performance.scope,

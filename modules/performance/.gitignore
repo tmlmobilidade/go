@@ -1,0 +1,4 @@
+# Generated metrics data
+apps/sync-metrics-daily/analysis
+apps/sync-metrics-hourly/analysis
+apps/sync-metrics-realtime/analysis

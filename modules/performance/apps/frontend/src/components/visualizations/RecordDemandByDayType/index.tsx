@@ -1,11 +1,13 @@
 /* * */
 
+import { AgenciesSelector } from '@/components/layout/AgenciesSelector';
 import { RecordCard } from '@/components/layout/RecordCard';
-import { AGENCIES, AgencyType } from '@/constants';
+import { AgencyType } from '@/constants';
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useDatesContext } from '@/contexts/Dates.context';
 import { Routes } from '@/routes';
 import { TopDemandByAgencyByDayType } from '@tmlmobilidade/types';
-import { BarChart, Combobox, Grid, MetricsSkeleton, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
+import { BarChart, Grid, MetricsSkeleton, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -17,20 +19,30 @@ export default function RecordDemandByDayType() {
 
 	const t = useTranslations();
 	const { utils } = useDatesContext();
-	const { data: recordDemandByDayType, isLoading } = useSWR<TopDemandByAgencyByDayType[]>(Routes.TOP_DEMAND_BY_AGENCY_BY_DAY_TYPE);
-	const [selectedAgency, setSelectedAgency] = useState<AgencyType>(AGENCIES.ALL);
+	const { data: { agencies } } = useAgenciesContext();
+	const [selectedAgencies, setSelectedAgencies] = useState<AgencyType[]>([]);
 
 	//
-	// B. Transform data
+	// B. Fetch data
+
+	const { data: recordDemandByDayType, isLoading } = useSWR<TopDemandByAgencyByDayType[]>(Routes.TOP_DEMAND_BY_AGENCY_BY_DAY_TYPE);
+
+	//
+	// C. Transform data
 
 	const transformedRecordData: Record<string, { date: string, qty: number }[]> = useMemo(() => {
 		if (!recordDemandByDayType) return {};
 
 		const data = recordDemandByDayType[0].data;
 
-		const agencyData = selectedAgency === AGENCIES.ALL
+		// If all agencies are selected or "all" is in selection, use total data
+		const isAllSelected = selectedAgencies.length === 0 || selectedAgencies.length === agencies.length;
+
+		const agencyData = isAllSelected
 			? data.total
-			: data.operators?.[selectedAgency];
+			: selectedAgencies.length === 1
+				? data.agencies?.[selectedAgencies[0]]
+				: data.total; // Fallback to total for multiple specific agencies
 
 		if (!agencyData) return {};
 
@@ -47,17 +59,9 @@ export default function RecordDemandByDayType() {
 		});
 
 		return result;
-	}, [recordDemandByDayType, selectedAgency, utils]);
+	}, [recordDemandByDayType, selectedAgencies, agencies, utils]);
 
-	const agenciesData = useMemo(() =>
-		Object.values(AGENCIES)
-			.map(value => ({
-				label: t(`agencies.${value}`),
-				value,
-			})),
-	[t]);
-
-	// C. Utils - extract this to a helper later
+	// D. Utils - extract this to a helper later
 
 	const getDomain = (points) => {
 		const ys = points.map(p => p.qty ?? p.y);
@@ -76,7 +80,7 @@ export default function RecordDemandByDayType() {
 		return [lower, upper];
 	};
 
-	// D. Render components
+	// E. Render components
 
 	if (isLoading) {
 		return (
@@ -111,7 +115,11 @@ export default function RecordDemandByDayType() {
 				<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
 					<h3>Recordes por dia tipo</h3>
 					<div style={{ width: 150 }}>
-						<Combobox data={agenciesData} onChange={value => setSelectedAgency(value as AgencyType)} value={selectedAgency} />
+						<AgenciesSelector
+							isMultiple={false}
+							onChange={values => setSelectedAgencies(values as AgencyType[])}
+							selectedAgencies={selectedAgencies}
+						/>
 					</div>
 				</Section>
 				<Grid columns="abc" gap="lg">

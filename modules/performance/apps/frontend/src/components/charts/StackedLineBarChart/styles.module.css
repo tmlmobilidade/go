@@ -1,0 +1,11 @@
+.fadeIn {
+  animation: fadeIn 0.8s ease-in-out;
+  width: 100%;
+  height: 100%;
+  padding: 0 var(--size-spacing-md);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

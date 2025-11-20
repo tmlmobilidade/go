@@ -1,7 +1,7 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { Permissions } from '@tmlmobilidade/consts';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
@@ -10,6 +10,7 @@ import { NetworkController } from './network.controller.js';
 /* * */
 
 const server: FastifyInstance = FastifyService.getInstance().server;
+const namespace = '/network';
 
 /* * */
 
@@ -39,4 +40,5 @@ server.register(
 
 		next();
 	},
+	{ prefix: namespace },
 );

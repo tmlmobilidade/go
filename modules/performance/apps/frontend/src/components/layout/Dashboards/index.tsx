@@ -25,7 +25,7 @@ export default function Dashboards({ topic }: { topic: TopicDefinition }) {
 
 	return (
 		<Grid columns="abcd" gap="lg">
-			{topic.dashboards.map(dashboard => (
+			{topic.dashboards.filter(dashboard => dashboard.visible).map(dashboard => (
 				<ContainerWrapper key={dashboard.key} onClick={() => handleDashboardClick(dashboard)}>
 					<div className={styles.topicCard}>
 						{/* {dashboard.icon && <dashboard.icon />} */}
