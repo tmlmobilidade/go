@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateUserDto, CreateUserSchema, type Permission, PermissionSchema, type User } from '@tmlmobilidade/types';
-import { useDebouncedCallback, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { useDebouncedCallback, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
@@ -42,11 +42,14 @@ interface UsersDetailContextState {
 const emptyUser: CreateUserDto = {
 	created_by: '',
 	email: '',
+	email_verified: null,
 	first_name: '',
 	last_name: '',
-	organization_id: '',
+	organization_id: null,
+	password_hash: null,
 	permissions: [],
-	phone: '',
+	phone: null,
+	preferences: {},
 	role_ids: [],
 	session_ids: [],
 	updated_by: '',
@@ -75,6 +78,8 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 
 	const router = useRouter();
 
+	const meContext = useMeContext();
+
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
@@ -82,6 +87,7 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 	//
 	// B. Fetch data
 
+	const { mutate: allUsersMutate } = useSWR<User[]>(API_ROUTES.auth.USERS_LIST);
 	const { data: userData, isLoading: userLoading } = useSWR<User>(userId === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(userId));
 
 	//
@@ -89,10 +95,12 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 
 	const validateForm = useDebouncedCallback(() => {
 		const validationResult = form.validate();
+		console.log('Form validation result:', validationResult);
 		setCanSave(!validationResult.hasErrors);
 	}, 1000);
 
 	const form = useForm<CreateUserDto>({
+		initialValues: emptyUser,
 		mode: 'uncontrolled',
 		onValuesChange: () => validateForm(),
 		validate: zodResolver(CreateUserSchema),
@@ -101,10 +109,6 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 	});
 
 	useEffect(() => {
-		if (userId === 'new') {
-			form.initialize(emptyUser);
-			return;
-		}
 		if (!userData) return;
 		form.initialize(userData);
 	}, [userData]);
@@ -148,6 +152,9 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 			router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
 		}
 
+		meContext.mutate.me();
+		allUsersMutate();
+
 		setIsSaving(false);
 	};
 
@@ -186,19 +193,19 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 		}
 		// If it doesn't exist, add a new permission entry
 		const permissionValidated = PermissionSchema.safeParse({ action: action, scope: scope });
-		form.setFieldValue('permissions', [...latestValues.permissions, permissionValidated.data]);
+		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
 	};
 
 	function handlePermissionResourceToggle(scope: Permission['scope'], action: Permission['action'], resource: Record<string, unknown>) {
 		// Get latest form values
 		const latestValues = form.getValues();
 		// Check if a permission entry with the same scope and action exists
-		const foundPermission = latestValues.permissions.find(p => p.scope === scope && p.action === action);
+		const foundPermission = latestValues.permissions?.find(p => p.scope === scope && p.action === action);
 		if (!foundPermission) return;
 		// Assign the new resources to the found permission
 		foundPermission['resources'] = resource;
 		// Update the resources of the found permission
-		form.setFieldValue('permissions', [...latestValues.permissions]);
+		form.setFieldValue('permissions', [...latestValues.permissions ?? []]);
 	};
 
 	function handleChangePassword(value: string) {

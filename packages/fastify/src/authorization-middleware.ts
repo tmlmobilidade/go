@@ -2,8 +2,8 @@
 
 import { type FastifyRequest } from '@/fastify-service.js';
 import { API_ROUTES, HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { type Permission, type User } from '@tmlmobilidade/types';
-import { Cache, fetchData, hasPermission } from '@tmlmobilidade/utils';
+import { type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
+import { Cache, fetchData } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -57,51 +57,47 @@ async function fetchUserPermissions(sessionToken: string): Promise<Permission[]>
  * @param requireAll Whether all actions must be true or at least one must be true.
  * @returns Fastify middleware function.
  */
-export function authorizationMiddleware(scope?: string, actions?: string | string[], requireAll = false) {
+export function authorizationMiddleware(scope: string, actions: string[], requireAll = false) {
 	return async (request: FastifyRequest): Promise<void> => {
-		const sessionToken = request.cookies.session_token;
-
-		if (!sessionToken) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Invalid authorization token');
-		}
-
-		let user: User;
-		let permissions: Permission[];
-
-		const cachedRequest = REQUEST_CACHE.get(sessionToken);
-		if (cachedRequest) {
-			user = cachedRequest.user;
-			permissions = cachedRequest.permissions;
-		}
-		else {
-			user = await fetchUserData(sessionToken);
-			permissions = await fetchUserPermissions(sessionToken);
-			REQUEST_CACHE.set(sessionToken, { permissions, user });
-		}
-
-		request.me = user;
-		request.permissions = permissions;
+		//
 
 		//
-		// Check Permissions
+		// Extract the session token from request cookies
+
+		const sessionToken = request.cookies.session_token;
+		if (!sessionToken) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Invalid authorization token');
+
+		//
+		// Get user and permissions from cache or auth provider.
+		// Cache is per session token, and valid for 5 minutes.
+		// This reduces the number of calls to the auth provider.
+
+		const cachedRequest = REQUEST_CACHE.get(sessionToken);
+
+		if (cachedRequest) {
+			request.me = cachedRequest.user;
+			request.permissions = cachedRequest.permissions;
+		}
+		else {
+			request.me = await fetchUserData(sessionToken);
+			request.permissions = await fetchUserPermissions(sessionToken);
+			REQUEST_CACHE.set(sessionToken, { permissions: request.permissions, user: request.me });
+		}
+
+		//
+		// Evaluate the retrieved permissions,
+		// if scope and actions are provided.
 
 		if (!scope) return;
 
-		if (Array.isArray(actions)) {
-			const results = actions.map(action => hasPermission(request.permissions, scope, action));
+		const permissionChecks = actions.map(action => PermissionCatalog.hasPermission(request.permissions, scope, action));
 
-			const isAllowed = requireAll
-				? results.every(Boolean) // all must be true
-				: results.some(Boolean); // at least one must be true
+		const isAllowed = requireAll
+			? permissionChecks.every(Boolean) // all must be true
+			: permissionChecks.some(Boolean); // at least one must be true
 
-			if (!isAllowed) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'Insufficient permissions');
-			}
-		}
-		else {
-			if (!hasPermission(request.permissions, scope, actions as string)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'Insufficient permissions');
-			}
-		}
+		if (!isAllowed) throw new HttpException(HttpStatus.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
+
+		//
 	};
 }

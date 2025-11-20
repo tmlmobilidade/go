@@ -3,8 +3,8 @@
 /* * */
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { FileExport, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
-import { fetchData, type HasPermissionResourceArgs, hasPermissionResource as hasPermissionResourceUtils, hasPermission as hasPermissionUtils } from '@tmlmobilidade/utils';
+import { FileExport, PermissionCatalog, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
+import { fetchData, type HasPermissionResourceArgs, hasPermissionResource as hasPermissionResourceUtils } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -17,9 +17,8 @@ interface MeContextState {
 	actions: {
 		getPreference: <T extends UserPreferenceValue>(scope: string, key: string) => T | undefined
 		hasPermission: (scope: string, action: string) => boolean
-		hasPermissionResource: <T>(args: HasPermissionResourceArgs<T>) => boolean
+		hasPermissionResource: (args: HasPermissionResourceArgs) => boolean
 		logout: () => Promise<void>
-		mutateFileExports: () => void
 		updatePreference: (scope: string, key: string, value: undefined | UserPreferenceValue) => Promise<void>
 	}
 	data: {
@@ -29,6 +28,10 @@ interface MeContextState {
 	flags: {
 		error?: HttpException
 		loading: boolean
+	}
+	mutate: {
+		fileExports: () => void
+		me: () => void
 	}
 }
 
@@ -51,7 +54,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Fetch data
 
 	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(API_ROUTES.auth.USERS_ME, { refreshInterval: 15_000 });
-	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: mutateFileExports } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
+	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: fileExportsMutate } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
 
 	//
 	// B. Handle actions
@@ -65,10 +68,10 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	function hasPermission(scope: string, action: string) {
 		if (!meData || !meData.permissions) return false;
-		return hasPermissionUtils(meData.permissions, scope, action);
+		return PermissionCatalog.hasPermission(meData.permissions, scope, action);
 	}
 
-	function hasPermissionResource<T>(args: HasPermissionResourceArgs<T>) {
+	function hasPermissionResource(args: HasPermissionResourceArgs) {
 		if (!meData || !meData.permissions) return false;
 		return hasPermissionResourceUtils({ ...args, permissions: meData.permissions });
 	}
@@ -109,8 +112,6 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			hasPermission,
 			hasPermissionResource,
 			logout,
-			mutate: meMutate,
-			mutateFileExports,
 			updatePreference,
 		},
 		data: {
@@ -120,6 +121,10 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		flags: {
 			error: meError,
 			loading: meLoading,
+		},
+		mutate: {
+			fileExports: fileExportsMutate,
+			me: meMutate,
 		},
 	}), [
 		meData,

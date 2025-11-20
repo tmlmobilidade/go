@@ -58,7 +58,6 @@ async function fetchUsersMap(ids: Set<string>): Promise<UserMap> {
 	for (const u of result) {
 		map.set(u._id as unknown as string, {
 			_id: u._id as unknown as string,
-			avatar: u.avatar ?? undefined,
 			email: u.email,
 			first_name: u.first_name,
 			last_name: u.last_name,

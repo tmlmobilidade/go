@@ -26,17 +26,6 @@ export function getPermission(permissions: Permission[], scope: string, action: 
 }
 
 /**
- * Check if a permission exists in a list of permissions.
- * @param permissions The list of permissions.
- * @param scope The scope of the permission.
- * @param action The action of the permission.
- * @returns The permission object or undefined if not found.
- */
-export function hasPermission(permissions: Permission[], scope: string, action: string): boolean {
-	return permissions.find(permission => permission.scope === scope && permission.action === action) !== undefined;
-}
-
-/**
  * Arguments for hasPermissionResource function.
  * @param T The type of the resource.
  */

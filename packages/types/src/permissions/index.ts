@@ -54,6 +54,13 @@ type PermissionCatalogType = {
  * Use it to reference required permissions in components and services.
  */
 export class PermissionCatalog {
+	//
+
+	/**
+	 * Generates the complete permission catalog by extracting
+	 * scopes and actions from the defined PermissionSchema.
+	 * @return A catalog object mapping scopes to their actions.
+	 */
 	static get all() {
 		// Initialize catalog object
 		const catalog = {};
@@ -71,4 +78,40 @@ export class PermissionCatalog {
 		// Return the completed catalog
 		return catalog as PermissionCatalogType;
 	}
+
+	/**
+	 * Check if a list of permission entries has the requested scope/action pair.
+	 * @param permissionEntries The list of permission entries to check against.
+	 * @param scope The required scope to check.
+	 * @param action The required action to check.
+	 * @returns The permission object or undefined if not found.
+	 */
+	static hasPermission(permissionEntries: Permission[], scope: string, action: string): boolean {
+		return permissionEntries.find(p => p.scope === scope && p.action === action) !== undefined;
+	}
+
+	/**
+	 * Sanitizes a list of permissions by removing any entries
+	 * that do not correspond to valid scopes and actions
+	 * defined in the PermissionCatalog.
+	 * @param existingEntries Array of Permission objects to sanitize.
+	 * @return A cleaned array containing only valid permissions.
+	 */
+	static sanitize(existingEntries: Permission[]): Permission[] {
+		// Create a new array to hold valid permissions
+		const cleanedPermissions: Permission[] = [];
+		// Iterate through each permission entry of the user
+		for (const permissionEntry of existingEntries) {
+			// Check if the scope exists in the catalog
+			if (!this.all[permissionEntry.scope]) continue;
+			// Check if the action exists in the catalog for the given scope
+			if (!this.all[permissionEntry.scope][permissionEntry.action]) continue;
+			// Permission is valid; keep it
+			cleanedPermissions.push(permissionEntry);
+		}
+		// Return the cleaned permissions array
+		return cleanedPermissions;
+	}
+
+	//
 }
