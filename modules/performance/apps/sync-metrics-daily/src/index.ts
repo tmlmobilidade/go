@@ -21,15 +21,15 @@ import { Timer } from '@tmlmobilidade/timer';
 		Logger.divider();
 
 		try {
-			// await syncPatternHourMetrics();
-			// await syncProductMetrics();
-			// await syncCategoryMetrics();
+			await syncPatternHourMetrics();
+			await syncProductMetrics();
+			await syncCategoryMetrics();
 
 			generatePerformanceSummary();
 
-			// Logger.divider();
-			// Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);
-			// Logger.divider();
+			Logger.divider();
+			Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);
+			Logger.divider();
 		}
 		catch (error) {
 			Logger.error('Failed to sync metrics');
