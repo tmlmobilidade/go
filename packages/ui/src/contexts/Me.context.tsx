@@ -3,8 +3,8 @@
 /* * */
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { FileExport, PermissionCatalog, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
-import { fetchData, type HasPermissionResourceArgs } from '@tmlmobilidade/utils';
+import { FileExport, HasPermissionResourceArgs, PermissionCatalog, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -17,7 +17,7 @@ interface MeContextState {
 	actions: {
 		getPreference: <T extends UserPreferenceValue>(scope: string, key: string) => T | undefined
 		hasPermission: (scope: string, action: string) => boolean
-		hasPermissionResource: (args: HasPermissionResourceArgs) => boolean
+		hasPermissionResource: (args: Omit<HasPermissionResourceArgs, 'permissions'>) => boolean
 		logout: () => Promise<void>
 		updatePreference: (scope: string, key: string, value: undefined | UserPreferenceValue) => Promise<void>
 	}
