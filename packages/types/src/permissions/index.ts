@@ -39,7 +39,7 @@ export type Permission = z.infer<typeof PermissionSchema>;
 
 type ActionsOf<S extends Permission['scope']> = Extract<Permission, { scope: S }>['action'];
 
-type PermissionCatalogType = {
+export type PermissionCatalogType = {
 	[S in Permission['scope']]: {
 		actions: {
 			[A in ActionsOf<S>]: A;

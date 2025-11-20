@@ -4,7 +4,8 @@
 
 import { IconAlertTriangle, IconBuildings, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { JSX } from 'react';
 
 import styles from './styles.module.css';
 
@@ -12,7 +13,15 @@ import { SidebarItem } from '../SidebarItem';
 
 /* * */
 
-export const sidebarApps = [
+interface SidebarAppItemConfig {
+	_id: string
+	href: string
+	icon: JSX.Element
+	label: string
+	permissions: Permission[]
+}
+
+export const sidebarApps: SidebarAppItemConfig[] = [
 	{
 		_id: 'home',
 		href: PAGE_ROUTES.auth.HOME_LIST,
@@ -63,14 +72,14 @@ export const sidebarApps = [
 		href: PAGE_ROUTES.alerts.REALTIME_LIST,
 		icon: <IconClockExclamation size={26} />,
 		label: 'Alertas - Tempo Real',
-		permissions: [{ action: PermissionCatalog.all.alerts_realtime.actions.read, scope: PermissionCatalog.all.alerts_realtime.scope }],
+		permissions: [{ action: PermissionCatalog.all.alerts_realtime.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts_realtime.scope }],
 	},
 	{
 		_id: 'rides',
 		href: PAGE_ROUTES.controller.RIDES_LIST,
 		icon: <IconListCheck size={26} />,
 		label: 'Circulações',
-		permissions: [{ action: PermissionCatalog.all.rides.actions.analysis_read, scope: PermissionCatalog.all.rides.scope }],
+		permissions: [{ action: PermissionCatalog.all.rides.actions.analysis_read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.rides.scope }],
 	},
 	// {
 	// 	_id: 'sams',
@@ -91,14 +100,14 @@ export const sidebarApps = [
 		href: PAGE_ROUTES.plans.APPROVED_LIST,
 		icon: <IconFileCertificate size={26} />,
 		label: 'Planos',
-		permissions: [{ action: PermissionCatalog.all.plans.actions.read, scope: PermissionCatalog.all.plans.scope }],
+		permissions: [{ action: PermissionCatalog.all.plans.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.plans.scope }],
 	},
 	{
 		_id: 'validations',
 		href: PAGE_ROUTES.plans.VALIDATIONS_LIST,
 		icon: <IconFileCheck size={26} />,
 		label: 'Validações GTFS',
-		permissions: [{ action: PermissionCatalog.all.gtfs_validations.actions.read, scope: PermissionCatalog.all.gtfs_validations.scope }],
+		permissions: [{ action: PermissionCatalog.all.gtfs_validations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.gtfs_validations.scope }],
 	},
 	{
 		_id: 'performance',
@@ -121,7 +130,7 @@ export function Sidebar() {
 						href={item.href}
 						icon={item.icon}
 						label={item.label}
-						permissions={item.permissions}
+						requiredPermissions={item.permissions}
 					/>
 				))}
 			</div>
