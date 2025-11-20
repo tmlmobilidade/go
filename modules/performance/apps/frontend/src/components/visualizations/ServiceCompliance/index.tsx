@@ -37,6 +37,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 	const formattedData = useMemo(() => {
 		if (!data?.length) {
 			return {
+				accomplishedRides: { last_week: 0, now: 0 },
 				advancedRides: { last_week: 0, now: 0 },
 				delayedRides: { last_week: 0, now: 0 },
 				lastUpdated: null,
@@ -59,6 +60,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 		};
 
 		return {
+			accomplishedRides: { last_week: 0, now: 0 },
 			advancedRides: agencyData.advanced_rides,
 			delayedRides: agencyData.five_min_delays,
 			lastUpdated: new Date(latest.generated_at),
@@ -105,7 +107,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 	// D. Render components
 
 	return (
-		<MetricCard goal="increase" icon={<IconBus />} isLoading={isLoading} previousValue={formattedData.scheduledRides.last_week} title="Total de circulações previstas" updatedAt={formattedData.lastUpdated} value={formattedData.scheduledRides.now}>
+		<MetricCard goal="increase" icon={<IconBus />} isLoading={isLoading} previousValue={formattedData.accomplishedRides.last_week} title="Total de circulações realizadas" updatedAt={formattedData.lastUpdated} value={formattedData.accomplishedRides.now}>
 			<div className={styles.cardsContainer}>
 
 				<div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>

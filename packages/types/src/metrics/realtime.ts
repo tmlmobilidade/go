@@ -29,6 +29,7 @@ export const RealtimeServiceComplianceSchema = MetricBaseSchema.extend({
 		agencies: z.record(
 			z.string(),
 			z.object({
+				accomplished_rides: NowLastWeekSchema,
 				advanced_rides: NowLastWeekSchema,
 				five_min_delays: NowLastWeekSchema,
 				mean_delay_minutes: NowLastWeekSchema,
@@ -40,6 +41,7 @@ export const RealtimeServiceComplianceSchema = MetricBaseSchema.extend({
 			}),
 		),
 		total: z.object({
+			accomplished_rides: NowLastWeekSchema,
 			advanced_rides: NowLastWeekSchema,
 			five_min_delays: NowLastWeekSchema,
 			mean_delay_minutes: NowLastWeekSchema,

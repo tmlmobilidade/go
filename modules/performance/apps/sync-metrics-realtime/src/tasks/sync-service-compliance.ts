@@ -1,5 +1,4 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -45,6 +44,17 @@ async function processRidesStream(stream, results, agencies, mode: 'last_week' |
 
 		const simpleThreeVehicleEvents = rideData.analysis?.SIMPLE_THREE_VEHICLE_EVENTS;
 		const isRideValid = simpleThreeVehicleEvents?.grade === 'pass';
+
+		//
+		// Accomplished rides - rides with sales or valid rides
+
+		if (rideData.passengers_observed > 0 || isRideValid) {
+			results.agencies[agency].accomplished_rides[mode]++;
+			results.total.accomplished_rides[mode]++;
+		}
+
+		// Skip trips not valid (3 moments check)
+
 		if (rideData.analysis === null || !isRideValid) continue;
 
 		//
@@ -90,8 +100,6 @@ async function processRidesStream(stream, results, agencies, mode: 'last_week' |
 
 /* * */
 
-// TODO: Maybe this should be called "sync-performance-home" or similar. basically the metrics present in the performance home dashboard
-
 export const syncRealtimeServiceCompliance = async () => {
 	//
 
@@ -124,6 +132,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	const results: RealtimeServiceCompliance['data'] = {
 		agencies: {},
 		total: {
+			accomplished_rides: { last_week: 0, now: 0 },
 			advanced_rides: { last_week: 0, now: 0 },
 			five_min_delays: { last_week: 0, now: 0 },
 			mean_delay_minutes: { last_week: 0, now: 0 },
@@ -136,6 +145,7 @@ export const syncRealtimeServiceCompliance = async () => {
 
 	agencies.forEach((op) => {
 		results.agencies[op] = {
+			accomplished_rides: { last_week: 0, now: 0 },
 			advanced_rides: { last_week: 0, now: 0 },
 			five_min_delays: { last_week: 0, now: 0 },
 			mean_delay_minutes: { last_week: 0, now: 0 },
@@ -202,15 +212,6 @@ export const syncRealtimeServiceCompliance = async () => {
 	};
 
 	await metrics.insertOne(metricToInsert);
-
-	logMetricToFile({
-		approach: { description: 'Stream rides by agency', key: 'stream_rides_by_agency' },
-		metric: METRIC,
-		queryCount: 2,
-		runtime: globalTimer.get(),
-		timestamp: new Date().toISOString(),
-	});
-
 	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
 };
 
