@@ -1,7 +1,13 @@
+'use client';
+
+/* * */
+
 import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo, useRef } from 'react';
 
 import { FilterWrapper, FilterWrapperRef } from '../FilterWrapper';
+
+/* * */
 
 interface FilterTypeListOption {
 	checked?: boolean
