@@ -43,7 +43,7 @@ class PCGIDBLegacyClass {
 			serverSelectionTimeoutMS: 10_000,
 		};
 
-		Logger.info('Connecting to PCGIDB...');
+		Logger.info('Connecting to PCGIDB Legacy...');
 
 		try {
 			// Connect to the MongoDB database
@@ -55,10 +55,10 @@ class PCGIDBLegacyClass {
 			this.ValidationEntity = mongoConnector.client.db('ValidationsManagement').collection('validationEntity');
 			this.VehicleEvents = mongoConnector.client.db('CoreManagement').collection('VehicleEvents');
 			// Log success message
-			Logger.success('Connected to PCGIDB successfully.');
+			Logger.success('Connected to PCGIDB Legacy successfully.');
 		}
 		catch (error) {
-			throw new Error('Error connecting to PCGIDB:', { cause: error });
+			throw new Error('Error connecting to PCGIDB Legacy:', { cause: error });
 		}
 	}
 
@@ -147,7 +147,7 @@ class PCGIDBLegacyClass {
 			GLOBAL_PCGIDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
 		}
 
-		Logger.info('Setting up SSH Tunnel for PCGIDB...');
+		Logger.info('Setting up SSH Tunnel for PCGIDB Legacy...');
 
 		const sshTunnelConnection = await GLOBAL_PCGIDB_TUNNEL_INSTANCE.connect();
 
@@ -157,7 +157,7 @@ class PCGIDBLegacyClass {
 		const localAddress = sshTunnelConnection.address();
 
 		if (!localAddress || typeof localAddress !== 'object') {
-			throw new Error('Failed to retrieve the SSH tunnel address.');
+			throw new Error('Failed to retrieve the SSH tunnel address for PCGIDB Legacy.');
 		}
 
 		return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@localhost:${localAddress.port}/`;

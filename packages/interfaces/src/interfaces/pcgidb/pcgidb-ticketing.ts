@@ -40,7 +40,7 @@ class PCGIDBTicketingClass {
 			serverSelectionTimeoutMS: 10_000,
 		};
 
-		Logger.info('Connecting to PCGIDB...');
+		Logger.info('Connecting to PCGIDB Ticketing...');
 
 		try {
 			// Connect to the MongoDB database
@@ -49,10 +49,10 @@ class PCGIDBTicketingClass {
 			// Setup collections
 			this.SalesEntity = mongoConnector.client.db('SalesManagement').collection('salesEntity');
 			// Log success message
-			Logger.success('Connected to PCGIDB successfully.');
+			Logger.success('Connected to PCGIDB Ticketing successfully.');
 		}
 		catch (error) {
-			throw new Error('Error connecting to PCGIDB:', { cause: error });
+			throw new Error('Error connecting to PCGIDB Ticketing:', { cause: error });
 		}
 	}
 
@@ -141,7 +141,7 @@ class PCGIDBTicketingClass {
 			GLOBAL_PCGIDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
 		}
 
-		Logger.info('Setting up SSH Tunnel for PCGIDB...');
+		Logger.info('Setting up SSH Tunnel for PCGIDB Ticketing...');
 
 		const sshTunnelConnection = await GLOBAL_PCGIDB_TUNNEL_INSTANCE.connect();
 
@@ -151,7 +151,7 @@ class PCGIDBTicketingClass {
 		const localAddress = sshTunnelConnection.address();
 
 		if (!localAddress || typeof localAddress !== 'object') {
-			throw new Error('Failed to retrieve the SSH tunnel address.');
+			throw new Error('Failed to retrieve the SSH tunnel address for PCGIDB Ticketing.');
 		}
 
 		return `mongodb://${process.env.PCGIDB_TICKETING_USER}:${process.env.PCGIDB_TICKETING_PASSWORD}@localhost:${localAddress.port}/`;
