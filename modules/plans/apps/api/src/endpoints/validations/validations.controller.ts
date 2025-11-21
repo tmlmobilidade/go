@@ -6,8 +6,8 @@ import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
 import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
-import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
-import { fetchData, getPermission, hasPermissionResource } from '@tmlmobilidade/utils';
+import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
@@ -39,7 +39,7 @@ export class GtfsValidationsController {
 		//
 		// Check if the user has permission to create a new GTFS Validation
 
-		const hasPermissionCreateValidation = hasPermissionResource({
+		const hasPermissionCreateValidation = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.create,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
@@ -47,7 +47,7 @@ export class GtfsValidationsController {
 			value: requestDataFields['agency_id'].value,
 		});
 
-		if (!hasPermissionCreateValidation) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		if (!hasPermissionCreateValidation) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: create validation');
 
 		//
 		// Convert form fields to Validation data
@@ -175,7 +175,7 @@ export class GtfsValidationsController {
 		// Get the resource permissions for
 		// GTFS Validations for the current user.
 
-		const userGtfsValidationPermissions: Permission = getPermission(request.permissions, PermissionCatalog.all.gtfs_validations.scope, PermissionCatalog.all.gtfs_validations.actions.read);
+		const userGtfsValidationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.gtfs_validations.scope, PermissionCatalog.all.gtfs_validations.actions.read);
 
 		//
 		// If specific agency permissions are set,
@@ -187,15 +187,15 @@ export class GtfsValidationsController {
 		// If agency IDs are specified and do not include the ALLOW_ALL_FLAG,
 		// filter validations by those agency IDs.
 
-		if ('resource' in userGtfsValidationPermissions && userGtfsValidationPermissions.scope === PermissionCatalog.all.gtfs_validations.scope) {
-			if (userGtfsValidationPermissions.resource['agency_ids'] && !userGtfsValidationPermissions.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters['gtfs_agency.agency_id'] = { $in: userGtfsValidationPermissions.resource['agency_ids'] };
+		if ('resources' in userGtfsValidationPermissions && 'agency_ids' in userGtfsValidationPermissions.resources) {
+			if (!userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				queryFilters['gtfs_agency.agency_id'] = { $in: userGtfsValidationPermissions.resources['agency_ids'] };
 			}
 		}
 
-		if ('resource' in userGtfsValidationPermissions && userGtfsValidationPermissions.scope === PermissionCatalog.all.gtfs_validations.scope) {
+		if ('resources' in userGtfsValidationPermissions) {
 			const filters = {
-				...(userGtfsValidationPermissions.resource['agency_ids'] && !userGtfsValidationPermissions.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userGtfsValidationPermissions.resource['agency_ids'] } }),
+				...(userGtfsValidationPermissions.resources['agency_ids'] && !userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userGtfsValidationPermissions.resources['agency_ids'] } }),
 			};
 
 			const filteredgtfsValidations = await gtfsValidations.findMany(filters, { sort: { created_at: -1 } });
@@ -219,30 +219,31 @@ export class GtfsValidationsController {
 	 * @param reply Fastify reply
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
-		const { id } = request.params;
-
-		const Validation = await gtfsValidations.findById(id);
-
-		if (!Validation) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
-		}
+		//
 
 		//
+		// Get the requested validation data
+
+		const foundValidation = await gtfsValidations.findById(request.params.id);
+		if (!foundValidation) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
 
 		//
 		// Check if the user has permission to read the validation
-		if (!hasPermissionResource({
+
+		if (!PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.read,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.gtfs_validations.scope,
-			value: Validation.gtfs_agency.agency_id,
+			value: foundValidation.gtfs_agency.agency_id,
 		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read validation');
 		}
 
 		//
-		reply.send({ data: Validation, error: null, statusCode: HttpStatus.OK });
+		// Return the found Validation
+
+		reply.send({ data: foundValidation, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -263,14 +264,14 @@ export class GtfsValidationsController {
 
 		//
 		// Check if the user has permission to read the validation
-		if (!hasPermissionResource({
+		if (!PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.read,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: Validation.gtfs_agency.agency_id,
 		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
 		}
 
 		//
@@ -306,7 +307,7 @@ export class GtfsValidationsController {
 		//
 		// Check if the user has permission to request approval for this Validation
 
-		const hasPermissionRequestApproval = hasPermissionResource({
+		const hasPermissionRequestApproval = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.request_approval,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
@@ -314,7 +315,7 @@ export class GtfsValidationsController {
 			value: validationData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionRequestApproval) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		if (!hasPermissionRequestApproval) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: request approval');
 
 		//
 		// Get the TML contact emails for this Agency

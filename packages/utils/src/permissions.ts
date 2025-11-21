@@ -12,6 +12,7 @@ import { mergekit } from 'mergekit';
  * @param scope The resource scope of the permission to filter by.
  * @param action The action of the permission to filter by.
  * @returns The filtered Permission object.
+ * @deprecated Use hasPermissionResource instead.
  */
 export function getPermission(permissions: Permission[], scope: string, action: string): Permission {
 	return mergekit([...(permissions ?? [])], {
@@ -49,6 +50,7 @@ export interface HasPermissionResourceArgs {
  * @param scope The scope of the permission.
  * @param action The action of the permission.
  * @returns The permission.
+ * @deprecated Use hasPermissionResource instead.
  */
 export function hasPermissionResource({ action, permissions, resource_key, scope, value }: HasPermissionResourceArgs) {
 	//
@@ -66,9 +68,9 @@ export function hasPermissionResource({ action, permissions, resource_key, scope
 	if (!foundPermission) return false;
 
 	//
-	// Check if value exists in the permission.resource[resource_key]
+	// Check if value exists in the permission.resources[resource_key]
 
-	const resourceValues = foundPermission['resource']?.[resource_key];
+	const resourceValues = foundPermission['resources']?.[resource_key];
 
 	if (!resourceValues) return false;
 
