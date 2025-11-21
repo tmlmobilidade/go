@@ -68,8 +68,6 @@ export function authorizationMiddleware(scope?: string, actions?: string[], requ
 				? permissionChecks.every(Boolean) // all must be true
 				: permissionChecks.some(Boolean); // at least one must be true
 
-			console.log('Authorization check:', { actions, isAllowed, permissionChecks, permissions: request.permissions, requireAll, scope });
-
 			if (!isAllowed) new HttpException(HttpStatus.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
 
 			//
