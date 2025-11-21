@@ -5,28 +5,28 @@ import { processApexOnBoardRefund } from '@/tasks/process-apex-on-board-refund.j
 import { processApexOnBoardSale } from '@/tasks/process-apex-on-board-sale.js';
 import { processApexValidation } from '@/tasks/process-apex-validation.js';
 import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
-import { pcgidb } from '@tmlmobilidade/interfaces';
+import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade/interfaces';
 
 /* * */
 
 (async function init() {
 	//
 
-	await pcgidb.connect();
+	await pcgidbLegacy.connect();
+	await pcgidbTicketing.connect();
+	await pcgidbValidations.connect();
 
 	//
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
 
-	pcgidb.LocationEntity.watch().on('change', processApexLocation);
+	pcgidbLegacy.VehicleEvents.watch().on('change', processVehicleEvent);
 
-	pcgidb.SalesEntity.watch().on('change', processApexOnBoardRefund);
+	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardRefund);
+	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardSale);
 
-	pcgidb.SalesEntity.watch().on('change', processApexOnBoardSale);
-
-	pcgidb.ValidationEntity.watch().on('change', processApexValidation);
-
-	pcgidb.VehicleEvents.watch().on('change', processVehicleEvent);
+	pcgidbValidations.LocationEntity.watch().on('change', processApexLocation);
+	pcgidbValidations.ValidationEntity.watch().on('change', processApexValidation);
 
 	//
 })();

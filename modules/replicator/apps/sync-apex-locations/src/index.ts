@@ -4,7 +4,7 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { pcgidb, rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
+import { pcgidbValidations, rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
@@ -23,7 +23,7 @@ async function syncApexLocations() {
 		//
 		// Connect to databases and setup DB writers
 
-		await pcgidb.connect();
+		await pcgidbValidations.connect();
 
 		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
 		const simplifiedApexLocationsDbWritter = new MongoDbWriter<SimplifiedApexLocation>({ batch_size: 100000, collection: simplifiedApexLocationsCollection });
@@ -149,7 +149,7 @@ async function syncApexLocations() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: pcgidb.LocationEntity,
+				pcgiCollection: pcgidbValidations.LocationEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

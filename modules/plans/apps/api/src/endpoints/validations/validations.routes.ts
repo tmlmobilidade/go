@@ -2,53 +2,51 @@
 
 import { GtfsValidationsController } from '@/endpoints/validations/validations.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
-import { GtfsValidationPermission } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+
+/* * */
+
+const NAMESPACE = '/validations';
 
 /* * */
 
 const server = FastifyService.getInstance().server;
-const namespace = '/validations';
-
-/* * */
 
 server.register(
 	(instance, opts, next) => {
-		// GET /validations
+		//
+
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<GtfsValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
 			GtfsValidationsController.getAll,
 		);
 
-		// GET /validations/:id
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware<GtfsValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
 			GtfsValidationsController.getById,
 		);
 
-		// POST /validations
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware<GtfsValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.create) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.create]) },
 			GtfsValidationsController.create,
 		);
 
-		// GET /validations/:id/file
 		instance.get(
 			'/:id/file',
-			{ preHandler: authorizationMiddleware<GtfsValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
 			GtfsValidationsController.getFile,
 		);
 
-		// POST /validations/:id/request-approval
 		instance.get(
 			'/:id/request-approval',
-			{ preHandler: authorizationMiddleware<GtfsValidationPermission>(Permissions.validations.scope, Permissions.validations.actions.request_approval) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.request_approval]) },
 			GtfsValidationsController.requestApproval,
 		);
+
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

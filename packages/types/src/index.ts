@@ -17,6 +17,7 @@ export * from '@/metrics/index.js';
 export * from '@/notification.js';
 export * from '@/organization.js';
 export * from '@/pcgi/index.js';
+export * from '@/permissions/index.js';
 export * from '@/plans/index.js';
 export * from '@/proposed-change.js';
 export * from '@/rides/index.js';

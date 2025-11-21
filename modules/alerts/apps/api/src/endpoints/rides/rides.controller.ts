@@ -1,16 +1,18 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AggregationPipeline } from '@tmlmobilidade/interfaces';
 import { rides } from '@tmlmobilidade/interfaces';
-import { Permission, Ride, RidePermission } from '@tmlmobilidade/types';
+import { type Permission, PermissionCatalog, type Ride } from '@tmlmobilidade/types';
 import { getPermission } from '@tmlmobilidade/utils';
 
 /* * */
 
 export class RidesController {
+	//
+
 	/**
 	 * Gets a batch of Rides built with an aggregation pipeline.
 	 */
@@ -46,12 +48,12 @@ export class RidesController {
 
 		//
 		// 4. Filter rides based on permissions for the current user
-		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.analysis_read);
+		const ridePermission: Permission = getPermission(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
 
-		if (ridePermission?.resource) {
+		if ('resource' in ridePermission && ridePermission.scope === PermissionCatalog.all.rides.scope) {
 			// 4.1. Filter rides based on agency IDs
-			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
-				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
+			if (ridePermission.resource['agency_ids'] && !ridePermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource['agency_ids'] } } });
 			}
 		}
 

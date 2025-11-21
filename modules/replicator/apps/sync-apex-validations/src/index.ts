@@ -4,7 +4,7 @@ import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { pcgidb, rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { pcgidbValidations, rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
@@ -25,7 +25,7 @@ export async function syncApexValidations() {
 
 		/* * */
 
-		await pcgidb.connect();
+		await pcgidbValidations.connect();
 
 		const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
 		const simplifiedApexValidationsDbWritter = new MongoDbWriter<SimplifiedApexValidation>({ batch_size: 100000, collection: simplifiedApexValidationsCollection });
@@ -152,7 +152,7 @@ export async function syncApexValidations() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: pcgidb.ValidationEntity,
+				pcgiCollection: pcgidbValidations.ValidationEntity,
 
 				pcgiIdKey: 'transaction.transactionId',
 

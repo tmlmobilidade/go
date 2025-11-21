@@ -2,15 +2,10 @@
 
 /* * */
 
-import { LocationsPage } from '@/components/locations/LocationsPage';
-import { LocationsContextProvider } from '@/contexts/Locations.context';
+import { ErrorDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Page() {
-	return (
-		<LocationsContextProvider>
-			<LocationsPage />
-		</LocationsContextProvider>
-	);
+	return <ErrorDisplay message="Not done yet" />;
 }

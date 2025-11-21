@@ -40,8 +40,6 @@ export const NetworkContextProvider = ({ children }: { children: React.ReactNode
 
 	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<string[]>(API_ROUTES.performance.NETWORK_LINES);
 	const { data: allPatternsData, isLoading: allPatternsLoading } = useSWR<string[]>(API_ROUTES.performance.NETWORK_PATTERNS);
-	// const allPatternsData = [];
-	// const allPatternsLoading = false;
 
 	//
 	// B. Handle actions

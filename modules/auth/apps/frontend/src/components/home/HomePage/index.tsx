@@ -5,7 +5,7 @@
 import { QuickLinks } from '@/components/home/QuickLinks';
 import { WelcomeMessage } from '@/components/home/WelcomeMessage';
 import { WikiList } from '@/components/home/WikiList';
-import { Permissions } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Divider, Pane, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
@@ -21,9 +21,9 @@ export function HomePage() {
 	//
 	// B. Transform data
 
-	const hasQuickLinksPermission = meContext.actions.hasPermission(Permissions.home.scope, Permissions.home.actions.read_links);
+	const hasQuickLinksPermission = meContext.actions.hasPermission(PermissionCatalog.all.home.scope, PermissionCatalog.all.home.actions.read_links);
 
-	const hasWikiListPermission = meContext.actions.hasPermission(Permissions.home.scope, Permissions.home.actions.read_wiki);
+	const hasWikiListPermission = meContext.actions.hasPermission(PermissionCatalog.all.home.scope, PermissionCatalog.all.home.actions.read_wiki);
 
 	//
 	// C. Render components

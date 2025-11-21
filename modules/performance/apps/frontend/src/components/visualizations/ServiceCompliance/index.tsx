@@ -38,6 +38,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 		if (!data?.length) {
 			return {
 				accomplishedRides: { last_week: 0, now: 0 },
+				accomplishedRides: { last_week: 0, now: 0 },
 				advancedRides: { last_week: 0, now: 0 },
 				delayedRides: { last_week: 0, now: 0 },
 				lastUpdated: null,
@@ -53,7 +54,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 
 		const agencyData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.operators[selectedAgency];
+			: latest.data.agencies[selectedAgency];
 
 		const calculatePct = (part: number, total: number) => {
 			return total > 0 ? (part / total) * 100 : 0;

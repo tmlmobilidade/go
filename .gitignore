@@ -48,3 +48,6 @@ coverage
 
 # NextJS public directory
 public
+
+# TypeScript
+next-env.d.ts

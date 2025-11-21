@@ -5,7 +5,8 @@
 import { openChangePlanModal } from '@/components/plans/detail/ChangePlanModal';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconRefresh, IconUpload } from '@tabler/icons-react';
-import { PAGE_ROUTES, Permissions } from '@tmlmobilidade/consts';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -42,9 +43,9 @@ export function PlansDetailHeader() {
 			<Spacer />
 
 			<HasPermission
-				action={Permissions.plans.actions.toggle_lock}
-				resource_key="agency_ids"
-				scope={Permissions.plans.scope}
+				action={PermissionCatalog.all.plans.actions.toggle_lock}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.plans.scope}
 				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<LockButton
@@ -54,9 +55,9 @@ export function PlansDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={Permissions.plans.actions.update_gtfs_plan}
-				resource_key="agency_ids"
-				scope={Permissions.plans.scope}
+				action={PermissionCatalog.all.plans.actions.update_gtfs_plan}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.plans.scope}
 				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<IconButton
@@ -68,9 +69,9 @@ export function PlansDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={Permissions.plans.actions.update}
-				resource_key="agency_ids"
-				scope={Permissions.plans.scope}
+				action={PermissionCatalog.all.plans.actions.update}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.plans.scope}
 				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<Button

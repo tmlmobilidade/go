@@ -1,5 +1,6 @@
 /* * */
 
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useHomeContext } from '@/contexts/Home.context';
 import { StatusInfo } from '@/utils/systemStatus';
 import { Skeleton, Tooltip } from '@tmlmobilidade/ui';
@@ -17,12 +18,14 @@ export default function SystemStatus({ agency }: { agency?: string }) {
 
 	const t = useTranslations('systemStatus');
 	const homeContext = useHomeContext();
+	const agenciesContext = useAgenciesContext();
+
 	const selectedAgency = agency || homeContext.data.selected_agency;
 
 	//
 	// B. Fetch data
 
-	const systemStatus = homeContext.data.systemStatuses[selectedAgency] as StatusInfo | undefined;
+	const systemStatus = agenciesContext.data.systemStatuses[selectedAgency] as StatusInfo | undefined;
 
 	const translationsMap = {
 		negative: t('negative'),

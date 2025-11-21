@@ -13,21 +13,21 @@ interface HasPermissionProps {
 	scope: string
 }
 
-interface ResourceKeyAndValue<T> {
-	resource_key: keyof T
+interface ResourceKeyAndValue {
+	resourceKey: string
 	value: string
 }
 
 interface NoResourceKeyOrValue {
-	resource_key?: never
+	resourceKey?: never
 	value?: never
 }
 
-type HasPermissionFinalProps<T> = HasPermissionProps & (NoResourceKeyOrValue | ResourceKeyAndValue<T>);
+type HasPermissionFinalProps = HasPermissionProps & (NoResourceKeyOrValue | ResourceKeyAndValue);
 
 /* * */
 
-export function HasPermission<T extends Record<string, unknown>>({ action, children, fallback, resource_key, scope, value }: HasPermissionFinalProps<T>) {
+export function HasPermission({ action, children, fallback, resourceKey, scope, value }: HasPermissionFinalProps) {
 	//
 
 	//
@@ -38,11 +38,11 @@ export function HasPermission<T extends Record<string, unknown>>({ action, child
 	//
 	// B. Render components
 
-	if (!resource_key && !value && meContext.actions.hasPermission(scope, action)) {
+	if (!resourceKey && !value && meContext.actions.hasPermission(scope, action)) {
 		return <>{children}</>;
 	}
 
-	if (meContext.actions.hasPermissionResource({ action, resource_key: resource_key ?? '', scope, value: value ?? '' })) {
+	if (meContext.actions.hasPermissionResource({ action, resource_key: resourceKey, scope, value: value ?? '' })) {
 		return <>{children}</>;
 	}
 

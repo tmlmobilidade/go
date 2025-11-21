@@ -1,59 +1,56 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, organizations } from '@tmlmobilidade/interfaces';
-import { type Organization, UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 
 /* * */
 
 export class OrganizationsController {
+	//
+
 	/**
-	 * Create a new organization - Inserts a new organization into the database
-	 * @param {FastifyRequest} request - The request object containing the organization data in the body
-	 * @param {FastifyReply} reply - The reply object used to send the response
+	 * Inserts a new organization into the database.
+	 * @param request The request object containing the organization data in the body.
+	 * @param reply The reply object used to send the response.
 	 */
 	static async create(request: FastifyRequest<{ Body: Omit<Organization, '_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by'> }>, reply: FastifyReply<Organization>) {
-		const result = await organizations.insertOne(request.body);
-
-		// Send the created alert with a 201 status code
+		// Validate the request body
+		const validatedOrganization = CreateOrganizationSchema.safeParse(request.body);
+		if (!validatedOrganization.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Dados inválidos', validatedOrganization.error);
+		// Set the updated_by field to the current user's id
+		validatedOrganization.data.updated_by = request.me._id;
+		// Update the organization in the database
+		const result = await organizations.insertOne(validatedOrganization.data);
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}
 
 	/**
-	 * Delete an organization logo - Deletes an organization logo from the database
-	 * @param {FastifyRequest} request - The request object containing the organization ID in the params
-	 * @param {FastifyReply} reply - The reply object used to send the response
+	 * Delete an organization logo from the database and storage.
+	 * @param request The request object containing the organization ID in the params.
+	 * @param reply The reply object used to send the response.
 	 */
 	static async deleteImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<void>) {
-		const { id, theme } = request.params;
-
-		const organization = await organizations.findById(id);
-
-		if (!organization) {
-			reply.status(HttpStatus.NOT_FOUND).send({ message: 'Organization not found' });
-			return;
-		}
-
-		const logoField = theme === 'dark' ? organization.logo_dark : organization.logo_light;
-
-		if (!logoField) {
-			reply.status(HttpStatus.NOT_FOUND).send({ message: `Logo not found for theme: ${theme}` });
-			return;
-		}
+		// Find the organization by ID
+		const organization = await organizations.findById(request.params.id);
+		if (!organization) return reply.status(HttpStatus.NOT_FOUND).send({ message: 'Organization not found' });
+		// Determine which logo to delete based on theme
+		const logoField = request.params.theme === 'dark' ? organization.logo_dark : organization.logo_light;
+		if (!logoField) return reply.status(HttpStatus.NOT_FOUND).send({ message: `Logo not found for theme: ${request.params.theme}` });
+		// Delete the logo file from storage
 		await files.deleteById(logoField);
-
-		const updateField = theme === 'dark' ? { logo_dark: null } : { logo_light: null };
-
-		await organizations.updateById(id, updateField);
-
+		// Update the organization to remove the logo reference
+		const updatedField = request.params.theme === 'dark' ? { logo_dark: null } : { logo_light: null };
+		await organizations.updateById(request.params.id, updatedField);
+		// Send the response
 		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
 	 * Returns all Organizations sorted by ID.
-	 * @param request The request object
-	 * @param reply The reply object
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Organization[]>) {
 		const allOrganizations = await organizations.findMany({}, { sort: { _id: 1 } });
@@ -72,47 +69,41 @@ export class OrganizationsController {
 	}
 
 	/**
-	 * Get organization logo - Gets organization logo from the database
-	 * @param {FastifyRequest} request - The request object containing the organization ID in the params and the image files in the body
-	 * @param {FastifyReply} reply - The reply object used to send the response
+	 * Gets organization logo from the database.
+	 * @param request The request object containing the organization ID in the params.
+	 * @param reply The reply object used to send the response.
 	 */
 	static async getLogo(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
-		const { id } = request.params;
-
-		const organization = await organizations.findById(id);
-
-		if (!organization) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
-		}
-
+		// Find the organization by ID
+		const organization = await organizations.findById(request.params.id);
+		if (!organization) throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+		// Fetch logo files if they exist
 		const logoDark = await files.findById(organization.logo_dark);
 		const logoLight = await files.findById(organization.logo_light);
-
+		// Send the response with logo URLs
 		reply.send({ data: { logo_dark: logoDark?.url ?? null, logo_light: logoLight?.url ?? null }, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
-	* Updates an Organization in the database
-	* @param request The request object
-	* @param reply The reply object
+	* Updates an Organization in the database.
+	* @param request The request object.
+	* @param reply The reply object.
 	*/
 	static async update(request: FastifyRequest<{ Body: UpdateOrganizationDto, Params: { id: string } }>, reply: FastifyReply<Organization>) {
-		const validatedOrganization = UpdateOrganizationSchema.strip().safeParse(request.body);
+		// Validate the request body
+		const validatedOrganization = UpdateOrganizationSchema.safeParse(request.body);
 		if (!validatedOrganization.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Dados inválidos', validatedOrganization.error);
-
-		//
 		// Set the updated_by field to the current user's id
 		request.body.updated_by = request.me._id;
-
-		//
+		// Update the organization in the database
 		const updatedOrganizationData = await organizations.updateById(request.params.id, validatedOrganization.data);
 		reply.send({ data: updatedOrganizationData, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
 	 * Upload organization logos - Uploads organization logos to the database
-	 * @param {FastifyRequest} request - The request object containing the organization ID in the params and the image files in the body
-	 * @param {FastifyReply} reply - The reply object used to send the response
+	 * @param request - The request object containing the organization ID in the params and the image files in the body
+	 * @param reply - The reply object used to send the response
 	 */
 	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
 		const { id } = request.params;

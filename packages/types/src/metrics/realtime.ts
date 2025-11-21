@@ -15,7 +15,7 @@ const NowLastWeekSchema = z.object({
 
 export const RealtimeDemandSchema = MetricBaseSchema.extend({
 	data: z.object({
-		operators: z.record(
+		agencies: z.record(
 			z.string(),
 			NowLastWeekSchema,
 		),
@@ -26,7 +26,7 @@ export const RealtimeDemandSchema = MetricBaseSchema.extend({
 
 export const RealtimeServiceComplianceSchema = MetricBaseSchema.extend({
 	data: z.object({
-		operators: z.record(
+		agencies: z.record(
 			z.string(),
 			z.object({
 				accomplished_rides: NowLastWeekSchema,
@@ -54,3 +54,6 @@ export const RealtimeServiceComplianceSchema = MetricBaseSchema.extend({
 	}),
 	metric: z.literal('realtime_service_compliance'),
 });
+
+export type RealtimeDemand = z.infer<typeof RealtimeDemandSchema>;
+export type RealtimeServiceCompliance = z.infer<typeof RealtimeServiceComplianceSchema>;

@@ -37,9 +37,23 @@ export function formatDayDetailed(date: DayInfo, t: ReturnType<typeof useTransla
  * e.g., "Seg 28/10"
  */
 export function formatDayShort(date: DayInfo, t: ReturnType<typeof useTranslations>) {
-	if (!date.day_group) return '';
+	return parseAndFormatDate(date.day_group, t);
+}
+
+/**
+ * Format month for chart display
+ */
+export function formatMonthDetailed(date: DayInfo) {
 	const dt = Dates.fromISO(date.day_group);
-	return dt.js_date.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', weekday: 'short' });
+	return dt.js_date.toLocaleDateString('pt-PT', { month: 'short', year: 'numeric' });
+}
+
+/**
+ * Format year for chart display
+ */
+export function formatYearDetailed(date: DayInfo) {
+	const dt = Dates.fromISO(date.day_group);
+	return dt.js_date.getFullYear().toString();
 }
 
 /**

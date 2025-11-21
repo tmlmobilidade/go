@@ -1,13 +1,15 @@
 /* * */
 
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Metric } from '@tmlmobilidade/types';
 
 /* * */
 
 export class NetworkController {
+	//
+
 	/**
 	 * Get distinct lines - Retrieves all unique, non-null, non-empty line IDs from metrics collection
 	 */

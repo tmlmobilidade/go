@@ -1,8 +1,8 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-
-import { NotificationsController } from './notifications.controller.js';
+import { NotificationsController } from '@/endpoints/notifications/notifications.controller.js';
+import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
+import { FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 
@@ -11,8 +11,6 @@ const NAMESPACE = '/notifications';
 /* * */
 
 const server = FastifyService.getInstance().server;
-
-/* * */
 
 server.register(
 	(instance, opts, next) => {

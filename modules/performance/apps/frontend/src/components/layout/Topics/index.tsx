@@ -23,16 +23,19 @@ export default function Topics() {
 	// C. Render components
 
 	return (
-		<Grid columns="abcd" gap="lg">
-			{TOPICS_REGISTRY.map(topic => (
-				<ContainerWrapper key={topic.key} onClick={() => handleTopicClick(topic)}>
-					<div className={styles.topicCard}>
-						{topic.icon && <topic.icon />}
-						<p className={styles.topicCardTitle}>{topic.label}</p>
-					</div>
-				</ContainerWrapper>
-			))}
-		</Grid>
+		<>
+			<h2>Explorar temas</h2>
+			<Grid columns="abcd" gap="lg">
+				{TOPICS_REGISTRY.filter(topic => topic.visible).map(topic => (
+					<ContainerWrapper key={topic.key} onClick={() => handleTopicClick(topic)}>
+						<div className={styles.topicCard}>
+							{topic.icon && <topic.icon />}
+							<p className={styles.topicCardTitle}>{topic.label}</p>
+						</div>
+					</ContainerWrapper>
+				))}
+			</Grid>
+		</>
 	);
 }
 

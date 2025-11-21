@@ -3,13 +3,12 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateUserDto, CreateUserSchema, UpdateUserSchema, User } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { type CreateUserDto, CreateUserSchema, type Permission, PermissionSchema, type User } from '@tmlmobilidade/types';
+import { useDebouncedCallback, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { convertObject } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -43,11 +42,14 @@ interface UsersDetailContextState {
 const emptyUser: CreateUserDto = {
 	created_by: '',
 	email: '',
+	email_verified: null,
 	first_name: '',
 	last_name: '',
-	organization_id: '',
+	organization_id: null,
+	password_hash: null,
 	permissions: [],
-	phone: '',
+	phone: null,
+	preferences: {},
 	role_ids: [],
 	session_ids: [],
 	updated_by: '',
@@ -68,14 +70,16 @@ export function useUsersDetailContext() {
 
 /* * */
 
-export const UsersDetailContextProvider = ({ children, user_id }: { children: React.ReactNode, user_id: string }) => {
+export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildren<{ userId: string }>) => {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
+
+	const meContext = useMeContext();
+
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
@@ -83,43 +87,40 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	//
 	// B. Fetch data
 
-	const { data: user, isLoading } = useSWR<User>(user_id === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(user_id));
+	const { mutate: allUsersMutate } = useSWR<User[]>(API_ROUTES.auth.USERS_LIST);
+	const { data: userData, isLoading: userLoading } = useSWR<User>(userId === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(userId));
 
 	//
-	// C. Initialize form
+	// C. Setup form
+
+	const validateForm = useDebouncedCallback(() => {
+		const validationResult = form.validate();
+		console.log('Form validation result:', validationResult);
+		setCanSave(!validationResult.hasErrors);
+	}, 1000);
 
 	const form = useForm<CreateUserDto>({
 		initialValues: emptyUser,
-		validate: zodResolver(CreateUserSchema) as unknown as FormValidateInput<CreateUserDto>,
+		mode: 'uncontrolled',
+		onValuesChange: () => validateForm(),
+		validate: zodResolver(CreateUserSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
 
 	useEffect(() => {
-		if (!user) return;
-		setLoading(true);
-		form.initialize(convertObject(user, CreateUserSchema));
-		setLoading(false);
-	}, [user]);
-
-	//
-	// C. Transform Data
-
-	// Validate form on change
-	useEffect(() => {
-		form.validate();
-		setCanSave(form.isValid());
-	}, [form.values]);
+		if (!userData) return;
+		form.initialize(userData);
+	}, [userData]);
 
 	//
 	// D. Handle actions
 
 	const handleSaveUser = async () => {
 		setIsSaving(true);
-		const method = user_id === 'new' ? 'POST' : 'PUT';
-		const url = user_id === 'new' ? API_ROUTES.auth.USERS_LIST : API_ROUTES.auth.USERS_DETAIL(user_id);
-		const body = user_id === 'new' ? form.values : convertObject(form.values, UpdateUserSchema);
-		const response = await fetchData<User>(url, method, body);
+		const method = userId === 'new' ? 'POST' : 'PUT';
+		const url = userId === 'new' ? API_ROUTES.auth.USERS_LIST : API_ROUTES.auth.USERS_DETAIL(userId);
+		const response = await fetchData<User>(url, method, form.getValues());
 
 		if (response.error) {
 			if (typeof response.error === 'string') {
@@ -147,17 +148,21 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 			title: 'Sucesso',
 		});
 
-		if (user_id === 'new' && response.data?._id) {
+		if (userId === 'new' && response.data?._id) {
 			router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
 		}
+
+		meContext.mutate.me();
+		allUsersMutate();
 
 		setIsSaving(false);
 	};
 
 	const handleDeleteUser = async () => {
-		if (user_id === 'new') return;
-
-		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(user_id), 'DELETE', user);
+		// Skip if new user
+		if (userId === 'new') return;
+		// Confirm deletion
+		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'DELETE', userData);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -178,29 +183,34 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 	};
 
 	const handlePermissionToggle = (scope: string, action: string) => {
-		const currentPermissions = form.values.permissions;
-
-		if (currentPermissions.find(permission => permission.scope === scope && permission.action === action)) {
-			form.setFieldValue('permissions', currentPermissions.filter(permission => permission.scope !== scope || permission.action !== action));
+		// Get latest form values
+		const latestValues = form.getValues();
+		// Check if a permission entry with the same scope and action already exists
+		if (latestValues.permissions?.find(p => p.scope === scope && p.action === action)) {
+			const updatedPermissions = latestValues.permissions.filter(p => p.scope !== scope || p.action !== action);
+			form.setFieldValue('permissions', updatedPermissions);
+			return;
 		}
-		else {
-			form.setFieldValue('permissions', [...currentPermissions, { action, scope }]);
-		}
+		// If it doesn't exist, add a new permission entry
+		const permissionValidated = PermissionSchema.safeParse({ action: action, scope: scope });
+		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
 	};
 
-	const handlePermissionResourceToggle = (scope: string, action: string, resource: Record<string, unknown>) => {
-		const currentPermissions = form.values.permissions;
-		const permission = currentPermissions.find(permission => permission.scope === scope && permission.action === action);
-
-		if (!permission) return;
-
-		permission.resource = { ...permission.resource, ...resource };
-		form.setFieldValue('permissions', currentPermissions);
+	function handlePermissionResourceToggle(scope: Permission['scope'], action: Permission['action'], resource: Record<string, unknown>) {
+		// Get latest form values
+		const latestValues = form.getValues();
+		// Check if a permission entry with the same scope and action exists
+		const foundPermission = latestValues.permissions?.find(p => p.scope === scope && p.action === action);
+		if (!foundPermission) return;
+		// Assign the new resources to the found permission
+		foundPermission['resources'] = resource;
+		// Update the resources of the found permission
+		form.setFieldValue('permissions', [...latestValues.permissions ?? []]);
 	};
 
 	function handleChangePassword(value: string) {
-		const password_hash = bcrypt.hashSync(value);
-		form.setFieldValue('password_hash', password_hash);
+		const passwordHash = bcrypt.hashSync(value);
+		form.setFieldValue('password_hash', passwordHash);
 	}
 
 	//
@@ -216,16 +226,24 @@ export const UsersDetailContextProvider = ({ children, user_id }: { children: Re
 		},
 		data: {
 			form,
-			id: user_id === 'new' ? undefined : user_id,
+			id: userId === 'new' ? undefined : userId,
 		},
 		flags: {
 			canSave,
 			isReadOnly,
 			isSaving,
-			loading: isLoading || loading,
-			mode: user_id === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
+			loading: userLoading,
+			mode: userId === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
 		},
-	}), [form, handleDeleteUser, handlePermissionResourceToggle, handlePermissionToggle, handleSaveUser, isLoading, isReadOnly, isSaving, loading, user_id]);
+	}), [
+		canSave,
+		form.values,
+		form.isDirty,
+		isReadOnly,
+		isSaving,
+		userId,
+		userLoading,
+	]);
 
 	//
 	// F. Render components

@@ -2,8 +2,7 @@
 
 /* * */
 
-import { type Permission } from '@tmlmobilidade/types';
-import { hasPermission } from '@tmlmobilidade/utils';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
 
@@ -19,12 +18,12 @@ export interface SidebarItemProps {
 	href: string
 	icon: React.ReactNode
 	label: string
-	permissions: Permission<unknown>[]
+	requiredPermissions: Permission[]
 }
 
 /* * */
 
-export function SidebarItem({ href, icon, label, permissions }: SidebarItemProps) {
+export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarItemProps) {
 	//
 
 	//
@@ -45,13 +44,13 @@ export function SidebarItem({ href, icon, label, permissions }: SidebarItemProps
 		// Skip if user has no permissions
 		if (!meContext.data.user?.permissions) return false;
 		// For all possible permissions...
-		for (const permissionObject of permissions) {
+		for (const permissionObject of requiredPermissions) {
 			// ... check if the user is allowed to see this item
-			return hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action);
+			return PermissionCatalog.hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action);
 		}
 		// If no permissions matched
 		return false;
-	}, [meContext.data.user?.permissions, permissions]);
+	}, [meContext.data.user?.permissions, requiredPermissions]);
 
 	const isActive = useMemo(() => {
 		// Skip if window is not defined

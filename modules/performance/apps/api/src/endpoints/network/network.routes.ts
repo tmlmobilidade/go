@@ -1,42 +1,34 @@
 /* * */
 
+import { NetworkController } from '@/endpoints/network/network.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
-import { SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
-
-import { NetworkController } from './network.controller.js';
 
 /* * */
 
 const server: FastifyInstance = FastifyService.getInstance().server;
+const namespace = '/network';
 
 /* * */
 
 server.register(
 	(instance, opts, next) => {
+		//
+
 		instance.get(
 			'/lines',
-			{
-				preHandler: authorizationMiddleware<SimplifiedApexValidation>(
-					Permissions.performance.scope,
-					Permissions.performance.actions.read,
-				),
-			},
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
 			NetworkController.getLines,
 		);
 
 		instance.get(
 			'/patterns',
-			{
-				preHandler: authorizationMiddleware<SimplifiedApexValidation>(
-					Permissions.performance.scope,
-					Permissions.performance.actions.read,
-				),
-			},
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
 			NetworkController.getPatterns,
 		);
 
 		next();
 	},
+	{ prefix: namespace },
 );

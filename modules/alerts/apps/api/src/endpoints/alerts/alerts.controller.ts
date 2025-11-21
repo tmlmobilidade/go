@@ -2,11 +2,11 @@
 
 import { fetchLines } from '@/utils/lines.js';
 import { parseServiceAlert } from '@/utils/service-alert-parser.js';
-import { HttpException, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
-import { type Alert, type File, type GetAllAlertsQuery, GetAllAlertsQuerySchema, type ServiceAlertResponse } from '@tmlmobilidade/types';
+import { type Alert, type File, type GetAllAlertsQuery, GetAllAlertsQuerySchema, PermissionCatalog, type ServiceAlertResponse } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /* * */
@@ -20,7 +20,7 @@ export class AlertsController {
 	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
 		const result = await alerts.insertOne(request.body);
 
-		await notifications.sendNotification(Permissions.alerts.scope, Permissions.topics.actions.created_alert, request.me, result._id, result.title, result.description);
+		await notifications.sendNotification(PermissionCatalog.all.alerts_scheduled.scope, 'created_alert', request.me, result._id, result.title, result.description);
 
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}

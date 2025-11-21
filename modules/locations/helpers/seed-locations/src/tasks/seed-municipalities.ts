@@ -2,7 +2,6 @@
 
 import { municipalities } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { MunicipalityDocument } from '@tmlmobilidade/types';
 
 /* * */
 

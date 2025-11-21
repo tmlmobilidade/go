@@ -37,7 +37,7 @@ RUN envsubst '${NGINX_SERVER_NAME}' < /etc/nginx/nginx.conf.template > /etc/ngin
 # # #
 # SETUP CUSTOM ERROR PAGES
 
-COPY ./modules/gateway/apps/nginx/errors/error.html /var/www/html/error.html
+COPY ./modules/gateway/apps/nginx/errors /var/www/html
 
 
 # # #

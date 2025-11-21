@@ -1,15 +1,13 @@
 /* * */
 
+import { OrganizationsController } from '@/endpoints/organizations/organizations.controller.js';
 import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
 import { FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
-
-import { OrganizationsController } from './organizations.controller.js';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
 const NAMESPACE = '/organizations';
-const permission = Permissions.organizations;
 
 /* * */
 
@@ -19,26 +17,45 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		// GET /organizations
-		instance.get('/', OrganizationsController.getAll);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware() },
+			OrganizationsController.getAll,
+		);
 
-		// GET /organization/:id
-		instance.get('/:id', { preHandler: authorizationMiddleware() }, OrganizationsController.getById);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware() },
+			OrganizationsController.getById,
+		);
 
-		// PUT /organizations/:id
-		instance.put('/:id', { preHandler: authorizationMiddleware(permission.scope, permission.actions.update) }, OrganizationsController.update);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.update]) },
+			OrganizationsController.update,
+		);
 
-		// POST /organizations/:id/image
-		instance.post('/:id/image', { preHandler: authorizationMiddleware(permission.scope, permission.actions.update) }, OrganizationsController.uploadImage);
+		instance.post(
+			'/:id/image',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.update]) },
+			OrganizationsController.uploadImage,
+		);
 
-		// POST /organizations
-		instance.post('/', { preHandler: authorizationMiddleware(permission.scope, permission.actions.create) }, OrganizationsController.create);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.create]) }, OrganizationsController.create);
 
-		// DELETE /organizations/:id/image
-		instance.delete('/:id/:theme/image', { preHandler: authorizationMiddleware(permission.scope, Permissions.organizations.actions.delete) }, OrganizationsController.deleteImage);
+		instance.delete(
+			'/:id/:theme/image',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
+			OrganizationsController.deleteImage,
+		);
 
-		// GET /organizations/:id/logo
-		instance.get('/:id/logo', { preHandler: authorizationMiddleware() }, OrganizationsController.getLogo);
+		instance.get(
+			'/:id/logo',
+			{ preHandler: authorizationMiddleware() },
+			OrganizationsController.getLogo,
+		);
 
 		next();
 	},

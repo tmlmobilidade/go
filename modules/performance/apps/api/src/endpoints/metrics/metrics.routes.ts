@@ -1,34 +1,29 @@
 /* * */
 
-import { Permissions } from '@tmlmobilidade/consts';
+import { MetricsController } from '@/endpoints/metrics/metrics.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { Metric } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
-import { MetricsController } from './metrics.controller.js';
+/* * */
+
+const NAMESPACE = '/metrics';
 
 /* * */
 
 const server: FastifyInstance = FastifyService.getInstance().server;
-const namespace = '/metrics';
-
-/* * */
 
 server.register(
 	(instance, opts, next) => {
-		// GET /metrics/:metricName
+		//
+
 		instance.get(
 			'/:metricName',
-			{
-				preHandler: authorizationMiddleware<Metric>(
-					Permissions.performance.scope,
-					Permissions.performance.actions.read,
-				),
-			},
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
 			MetricsController.getMetric,
 		);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

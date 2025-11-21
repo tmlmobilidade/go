@@ -51,7 +51,7 @@ export function ProposedChangesWrapper<S extends ScopeKey>({ children, inputName
 		<div className={isCheckbox ? styles.checkboxWrapper : ''}>
 			<div className={styles.labelWrapper}>
 				{label}
-				{meContext.data.user?.permissions.find(p => p.action === 'read' && p.scope === 'proposed_changes') && <IconInfoCircle color={colorLevel} onClick={() => setOpened(!opened)} size={18} /> }
+				{meContext.data.user?.permissions.find(p => p.action === 'read' && p.scope === 'sams') && <IconInfoCircle color={colorLevel} onClick={() => setOpened(!opened)} size={18} /> }
 				<ProposedChangesWrapperModal
 					inputName={inputName}
 					isOpen={opened}

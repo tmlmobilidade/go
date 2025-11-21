@@ -1,6 +1,10 @@
+/* * */
+
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { ALLOW_ALL_FLAG } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect } from '@tmlmobilidade/ui';
+
+/* * */
 
 export function AgencyPermissionMultiselect({
 	description,
@@ -24,18 +28,18 @@ export function AgencyPermissionMultiselect({
 
 	agencyOptions.unshift({
 		label: 'Todas as agências',
-		value: ALLOW_ALL_FLAG,
+		value: PermissionCatalog.ALLOW_ALL_FLAG,
 	});
 
 	const handleChange = (value: string[]) => {
-		if (selected.includes(ALLOW_ALL_FLAG)) {
-			const filteredValue = value.filter(v => v !== ALLOW_ALL_FLAG);
+		if (selected.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+			const filteredValue = value.filter(v => v !== PermissionCatalog.ALLOW_ALL_FLAG);
 			onChange(filteredValue);
 			return;
 		}
 
-		if (value.includes(ALLOW_ALL_FLAG)) {
-			onChange([ALLOW_ALL_FLAG]);
+		if (value.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+			onChange([PermissionCatalog.ALLOW_ALL_FLAG]);
 			return;
 		}
 

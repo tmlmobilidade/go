@@ -4,10 +4,9 @@ import { DocumentSchema } from '@/_common/document.js';
 import { operationalDateSchema } from '@/_common/operational-date.js';
 import { DelayStatusSchema, OperationalStatusSchema, ProcessingStatusSchema, SeenStatusSchema } from '@/_common/status.js';
 import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { RideAcceptanceStatusSchema } from '@/rides/ride-acceptance.js';
 import { atLeastOneVehicleEventOnFirstStopSchema, endedAtLastStopSchema, expectedApexValidationIntervalSchema, expectedDriverIdQtySchema, expectedStartTimeSchema, expectedVehicleEventDelaySchema, expectedVehicleEventIntervalSchema, expectedVehicleEventQtySchema, expectedVehicleIdQtySchema, matchingApexLocationsSchema, matchingVehicleIdsSchema, RideAnalysis, simpleOneApexValidationSchema, simpleOneVehicleEventOrApexValidationSchema, simpleThreeVehicleEventsSchema, transactionSequentialitySchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
-
-import { RideAcceptanceStatusSchema } from './ride-acceptance.js';
 
 /* * */
 
@@ -63,7 +62,7 @@ export const RideSchema = DocumentSchema.extend({
 	system_status: ProcessingStatusSchema.default('waiting'),
 	trip_id: z.string(),
 	vehicle_ids: z.array(z.number()),
-}).strip();
+});
 
 export const CreateRideSchema = RideSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });
 export const UpdateRideSchema = CreateRideSchema.omit({ created_by: true }).partial();

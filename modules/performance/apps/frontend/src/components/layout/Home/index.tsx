@@ -1,6 +1,6 @@
 /* * */
 
-import AgencySelector from '@/components/layout/AgencySelector';
+import AgenciesStatus from '@/components/layout/AgenciesStatus';
 import SystemStatus from '@/components/layout/SystemStatus';
 import Topics from '@/components/layout/Topics';
 import { Widget } from '@/components/layout/Widget';
@@ -30,7 +30,7 @@ export default function Home() {
 				<div className={styles.headerContainer}>
 					<h1 className={styles.headerTitle}>🚀 Olá {userName},</h1>
 					<SystemStatus />
-					<AgencySelector />
+					<AgenciesStatus />
 				</div>
 
 				<Widget />
