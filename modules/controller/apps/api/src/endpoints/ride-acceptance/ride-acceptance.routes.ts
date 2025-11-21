@@ -1,10 +1,8 @@
 /* * */
 
+import { RideAcceptanceController } from '@/endpoints/ride-acceptance/ride-acceptance.controller.js';
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
-import { type RidePermission } from '@tmlmobilidade/types';
-
-import { RideAcceptanceController } from './ride-acceptance.controller.js';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,38 +15,33 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		// GET /rides/:id/justification
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_read]) },
 			RideAcceptanceController.get,
 		);
 
-		// PUT /rides/:id/justification/change-status
 		instance.put(
 			'/change-status',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_change_status) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_change_status]) },
 			RideAcceptanceController.changeStatus,
 		);
 
-		// PUT /rides/:id/justification/justify
 		instance.put(
 			'/justify',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_justify) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_justify]) },
 			RideAcceptanceController.justify,
 		);
 
-		// PUT /rides/:id/justification/comment
 		instance.post(
 			'/comment',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, [Permissions.rides.actions.acceptance_justify, Permissions.rides.actions.acceptance_change_status]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_justify, PermissionCatalog.all.rides.actions.acceptance_change_status]) },
 			RideAcceptanceController.comment,
 		);
 
-		// PUT /rides/:id/justification/lock
 		instance.put(
 			'/lock',
-			{ preHandler: authorizationMiddleware<RidePermission>(Permissions.rides.scope, Permissions.rides.actions.acceptance_lock) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_lock]) },
 			RideAcceptanceController.lock,
 		);
 

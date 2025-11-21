@@ -7,8 +7,7 @@ import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
-import { Permissions } from '@tmlmobilidade/consts';
-import { GtfsCause, gtfsCauseSchema, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
+import { GtfsCause, gtfsCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
 import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
@@ -121,8 +120,8 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 		<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
 			<AcceptanceStatusTag grade={grade} />
 			<HasPermission
-				action={Permissions.rides.actions.acceptance_change_status}
-				scope={Permissions.rides.scope}
+				action={PermissionCatalog.all.rides.actions.acceptance_change_status}
+				scope={PermissionCatalog.all.rides.scope}
 			>
 				<IconButton
 					aria-label="Editar estado"
@@ -156,9 +155,9 @@ export function RideAcceptanceJustification() {
 			<Label size="lg" caps>Justificação</Label>
 			<AcceptanceStatus grade={acceptance_status} />
 			<HasPermission
-				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : Permissions.rides.actions.acceptance_justify}
+				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : PermissionCatalog.all.rides.actions.acceptance_justify}
 				fallback={fallback}
-				scope={Permissions.rides.scope}
+				scope={PermissionCatalog.all.rides.scope}
 			>
 				<JustificationEditable
 					cause={cause}

@@ -3,11 +3,11 @@
 /* * */
 
 import { IconChecks, IconClipboardSearch, IconPresentationAnalytics } from '@tabler/icons-react';
-import { API_ROUTES, Permissions } from '@tmlmobilidade/consts';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { getCssVariableValue } from '@tmlmobilidade/ui';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
@@ -22,20 +22,20 @@ export const RideAnalysisViewOptions = {
 	ANALYSIS: {
 		icon: IconPresentationAnalytics,
 		label: 'Análise',
-		permission: Permissions.rides.actions.analysis_read,
+		permission: PermissionCatalog.all.rides.actions.analysis_read,
 		value: 'ANALYSIS',
 	},
 	// eslint-disable-next-line perfectionist/sort-objects
 	ACCEPTANCE: {
 		icon: IconChecks,
 		label: 'Aceitação',
-		permission: Permissions.rides.actions.acceptance_read,
+		permission: PermissionCatalog.all.rides.actions.acceptance_read,
 		value: 'ACCEPTANCE',
 	},
 	AUDIT: {
 		icon: IconClipboardSearch,
 		label: 'Auditoria',
-		permission: Permissions.rides.actions.audit_read,
+		permission: PermissionCatalog.all.rides.actions.audit_read,
 		value: 'AUDIT',
 	},
 } as const;
