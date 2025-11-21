@@ -1,7 +1,6 @@
 /* * */
 
 import Breadcrumb from '@/components/layout/Breadcrumb';
-import { Widget } from '@/components/layout/Widget';
 import { DashboardDefinition, TopicDefinition } from '@/constants';
 
 import styles from './styles.module.css';
@@ -31,8 +30,6 @@ export default function DashboardWrapper({ children, dashboard, topic }: { child
 					</div>
 
 				</div>
-
-				<Widget />
 			</div>
 
 			{children}

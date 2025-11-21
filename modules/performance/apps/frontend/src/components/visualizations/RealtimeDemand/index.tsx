@@ -3,6 +3,7 @@
 /* * */
 
 import { MetricCard } from '@/components/layout/MetricCard';
+import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
 import { RecordDemand } from '@/components/visualizations/RecordDemand';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
@@ -14,8 +15,6 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
-
-import { DemandByDay } from '../DemandByDay';
 
 /* * */
 
@@ -48,7 +47,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 
 		const agenciesData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.operators[selectedAgency];
+			: latest.data.agencies[selectedAgency];
 
 		const now = agenciesData.now;
 		const lastWeek = agenciesData.last_week;
@@ -79,9 +78,13 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 				>
 
 					<div className={styles.container}>
-						<RecordDemand agency={selectedAgency} />
+						<RecordDemand />
 						<Spacer size="md" />
-						<DemandByDay chartType="bar" filters={{ agencyId: selectedAgency }} groupBy="agency" height={200} />
+						<DemandVisualization
+							groupBy="agency"
+							height={200}
+							timeView="daily"
+						/>
 					</div>
 
 				</MetricCard>

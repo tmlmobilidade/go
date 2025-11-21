@@ -91,8 +91,46 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-metrics:
-    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics:staging
+  sync-metrics-realtime:
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-realtime:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-metrics-hourly:
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-hourly:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 2gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-metrics-daily:
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-daily:staging
     deploy:
       restart_policy:
         condition: any

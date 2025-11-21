@@ -8,17 +8,19 @@ import { DatesController } from './dates.controller.js';
 /* * */
 
 const server: FastifyInstance = FastifyService.getInstance().server;
+const namespace = '/dates';
 
 /* * */
 
 server.register(
 	(instance, opts, next) => {
 		instance.get(
-			'/dates',
+			'/',
 			{},
 			DatesController.getCalendar,
 		);
 
 		next();
 	},
+	{ prefix: namespace },
 );

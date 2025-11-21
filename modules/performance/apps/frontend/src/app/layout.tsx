@@ -1,5 +1,6 @@
 /* * */
 
+import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { DatesContextProvider } from '@/contexts/Dates.context';
 import { HomeContextProvider } from '@/contexts/Home.context';
 import { LocaleContextProvider } from '@/contexts/Locale.context';
@@ -28,11 +29,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 						<ThemeProviders>
 							<LocaleContextProvider>
 								<NetworkContextProvider>
-									<DatesContextProvider>
-										<HomeContextProvider>
-											{children}
-										</HomeContextProvider>
-									</DatesContextProvider>
+									<AgenciesContextProvider>
+										<DatesContextProvider>
+											<HomeContextProvider>
+												{children}
+											</HomeContextProvider>
+										</DatesContextProvider>
+									</AgenciesContextProvider>
 								</NetworkContextProvider>
 							</LocaleContextProvider>
 						</ThemeProviders>

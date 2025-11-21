@@ -1,3 +1,8 @@
 .title {
 	color: var(--system-text-200);
 }
+
+/* Fix for PieChart labels being cut off */
+.visualizationContainer :global(.recharts-surface) {
+  overflow: visible !important;
+}
