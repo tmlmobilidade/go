@@ -11,13 +11,13 @@ let GLOBAL_PCGIDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
 
 /* * */
 
-class PCGIDBClass {
+class PCGIDBLegacyClass {
 	//
 
-	LocationEntity: Collection;
-	SalesEntity: Collection;
-	ValidationEntity: Collection;
-	VehicleEvents: Collection;
+	public LocationEntity: Collection;
+	public SalesEntity: Collection;
+	public ValidationEntity: Collection;
+	public VehicleEvents: Collection;
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -29,7 +29,7 @@ class PCGIDBClass {
 		//
 		// Setup SSH Tunnel, if required
 
-		const pcgidbConnectionString = await this.getPcgidbConnectionString();
+		const pcgidbLegacyConnectionString = await this.getPcgidbLegacyConnectionString();
 
 		//
 		// Get the database URI from environment variables
@@ -47,7 +47,7 @@ class PCGIDBClass {
 
 		try {
 			// Connect to the MongoDB database
-			const mongoConnector = new MongoConnector(pcgidbConnectionString, mongoClientOptions);
+			const mongoConnector = new MongoConnector(pcgidbLegacyConnectionString, mongoClientOptions);
 			await mongoConnector.connect();
 			// Setup collections
 			this.LocationEntity = mongoConnector.client.db('LocationManagement').collection('locationEntity');
@@ -66,7 +66,7 @@ class PCGIDBClass {
 	 * Sets up an SSH Tunnel, if required, and returns the appropriate database URL.
 	 * @throws If required environment variables are missing or if the tunnel setup fails.
 	 */
-	public async getPcgidbConnectionString() {
+	public async getPcgidbLegacyConnectionString() {
 		//
 
 		//
@@ -170,4 +170,4 @@ class PCGIDBClass {
 
 /* * */
 
-export const pcgidb = new PCGIDBClass();
+export const pcgidbLegacy = new PCGIDBLegacyClass();
