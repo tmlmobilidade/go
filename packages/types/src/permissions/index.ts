@@ -94,6 +94,17 @@ export class PermissionCatalog {
 	}
 
 	/**
+	 * Get a specific permission from a full list by scope and action.
+	 * @param permissionEntries The full list of permissions of the user.
+	 * @param scope The resource scope of the permission to filter by.
+	 * @param action The action of the permission to filter by.
+	 * @returns The filtered Permission object or undefined if not found.
+	 */
+	static get(permissionEntries: Permission[], scope: string, action: string): Permission | undefined {
+		return permissionEntries.find(p => p.scope === scope && p.action === action);
+	}
+
+	/**
 	 * Check if a list of permission entries has the requested scope/action pair.
 	 * @param permissionEntries The list of permission entries to check against.
 	 * @param scope The required scope to check.
@@ -134,9 +145,9 @@ export class PermissionCatalog {
 		if (!foundPermission) return false;
 
 		//
-		// Check if value exists in the permission.resource[resource_key]
+		// Check if value exists in the permission.resources[resource_key]
 
-		const resourceValues = foundPermission['resource']?.[resource_key];
+		const resourceValues = foundPermission['resources']?.[resource_key];
 
 		if (!resourceValues) return false;
 
@@ -157,7 +168,7 @@ export class PermissionCatalog {
 
 		return false;
 
-	//
+		//
 	}
 
 	/**
@@ -169,17 +180,17 @@ export class PermissionCatalog {
 	 */
 	static sanitize(existingEntries: Permission[]): Permission[] {
 		// Create a new array to hold valid permissions
-		const cleanedPermissions: Permission[] = [];
+		const cleanedPermissions: Record<string, Permission> = {};
 		// Iterate through each permission entry of the user
 		for (const permissionEntry of existingEntries) {
 			// Validate the permission entry
 			const validationResult = PermissionSchema.safeParse(permissionEntry);
 			if (!validationResult.success) continue;
 			// Permission is valid; keep it
-			cleanedPermissions.push(permissionEntry);
+			cleanedPermissions[`${permissionEntry.scope}:${permissionEntry.action}`] = permissionEntry;
 		}
 		// Return the cleaned permissions array
-		return cleanedPermissions;
+		return Object.values(cleanedPermissions);
 	}
 
 	//
