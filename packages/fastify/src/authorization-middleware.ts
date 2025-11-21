@@ -57,7 +57,7 @@ async function fetchUserPermissions(sessionToken: string): Promise<Permission[]>
  * @param requireAll Whether all actions must be true or at least one must be true.
  * @returns Fastify middleware function.
  */
-export function authorizationMiddleware(scope: string, actions: string[], requireAll = false) {
+export function authorizationMiddleware(scope?: string, actions?: string[], requireAll = false) {
 	return async (request: FastifyRequest): Promise<void> => {
 		//
 

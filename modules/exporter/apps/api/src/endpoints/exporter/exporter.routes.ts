@@ -15,16 +15,23 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		// GET /exporter
-		instance.get('/', { preHandler: authorizationMiddleware() }, ExporterController.getAll);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware() },
+			ExporterController.getAll,
+		);
 
-		//
-		// GET /exporter/:id/download
-		instance.get('/:id/download', { preHandler: authorizationMiddleware() }, ExporterController.download);
+		instance.get(
+			'/:id/download',
+			{ preHandler: authorizationMiddleware() },
+			ExporterController.download,
+		);
 
-		//
-		// POST /exporter
-		instance.post('/', { preHandler: authorizationMiddleware() }, ExporterController.create);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware() },
+			ExporterController.create,
+		);
 
 		next();
 	},
