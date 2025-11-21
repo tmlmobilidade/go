@@ -1,12 +1,12 @@
 /* * */
 
 import { MultipartValue } from '@fastify/multipart';
-import { ALLOW_ALL_FLAG, API_ROUTES, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
 import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
-import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, type GtfsValidationPermission, type Permission } from '@tmlmobilidade/types';
+import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { fetchData, getPermission, hasPermissionResource } from '@tmlmobilidade/utils';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
@@ -39,11 +39,11 @@ export class GtfsValidationsController {
 		//
 		// Check if the user has permission to create a new GTFS Validation
 
-		const hasPermissionCreateValidation = hasPermissionResource<GtfsValidationPermission>({
-			action: Permissions.gtfs_validations.actions.create,
+		const hasPermissionCreateValidation = hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.create,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.gtfs_validations.scope,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: requestDataFields['agency_id'].value,
 		});
 
@@ -175,7 +175,7 @@ export class GtfsValidationsController {
 		// Get the resource permissions for
 		// GTFS Validations for the current user.
 
-		const userGtfsValidationPermissions: Permission<GtfsValidationPermission> = getPermission(request.permissions, Permissions.gtfs_validations.scope, Permissions.gtfs_validations.actions.read);
+		const userGtfsValidationPermissions: Permission = getPermission(request.permissions, PermissionCatalog.all.gtfs_validations.scope, PermissionCatalog.all.gtfs_validations.actions.read);
 
 		//
 		// If specific agency permissions are set,
@@ -187,15 +187,15 @@ export class GtfsValidationsController {
 		// If agency IDs are specified and do not include the ALLOW_ALL_FLAG,
 		// filter validations by those agency IDs.
 
-		if (userGtfsValidationPermissions?.resource.agency_ids) {
-			if (userGtfsValidationPermissions.resource.agency_ids && !userGtfsValidationPermissions.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
-				queryFilters['gtfs_agency.agency_id'] = { $in: userGtfsValidationPermissions.resource.agency_ids };
+		if ('resource' in userGtfsValidationPermissions && userGtfsValidationPermissions.scope === PermissionCatalog.all.gtfs_validations.scope) {
+			if (userGtfsValidationPermissions.resource['agency_ids'] && !userGtfsValidationPermissions.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				queryFilters['gtfs_agency.agency_id'] = { $in: userGtfsValidationPermissions.resource['agency_ids'] };
 			}
 		}
 
-		if (userGtfsValidationPermissions?.resource) {
+		if ('resource' in userGtfsValidationPermissions && userGtfsValidationPermissions.scope === PermissionCatalog.all.gtfs_validations.scope) {
 			const filters = {
-				...(userGtfsValidationPermissions.resource.agency_ids && !userGtfsValidationPermissions.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userGtfsValidationPermissions.resource.agency_ids } }),
+				...(userGtfsValidationPermissions.resource['agency_ids'] && !userGtfsValidationPermissions.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userGtfsValidationPermissions.resource['agency_ids'] } }),
 			};
 
 			const filteredgtfsValidations = await gtfsValidations.findMany(filters, { sort: { created_at: -1 } });
@@ -231,11 +231,11 @@ export class GtfsValidationsController {
 
 		//
 		// Check if the user has permission to read the validation
-		if (!hasPermissionResource<GtfsValidationPermission>({
-			action: Permissions.gtfs_validations.actions.read,
+		if (!hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.read,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.gtfs_validations.scope,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: Validation.gtfs_agency.agency_id,
 		})) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
@@ -263,11 +263,11 @@ export class GtfsValidationsController {
 
 		//
 		// Check if the user has permission to read the validation
-		if (!hasPermissionResource<GtfsValidationPermission>({
-			action: Permissions.gtfs_validations.actions.read,
+		if (!hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.read,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.gtfs_validations.scope,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: Validation.gtfs_agency.agency_id,
 		})) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
@@ -306,11 +306,11 @@ export class GtfsValidationsController {
 		//
 		// Check if the user has permission to request approval for this Validation
 
-		const hasPermissionRequestApproval = hasPermissionResource<GtfsValidationPermission>({
-			action: Permissions.gtfs_validations.actions.request_approval,
+		const hasPermissionRequestApproval = hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.request_approval,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.gtfs_validations.scope,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: validationData.gtfs_agency.agency_id,
 		});
 

@@ -7,7 +7,7 @@ import { openApprovePlanModal } from '@/components/validations/detail/ApprovePla
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
-import { Permissions } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { BackButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -53,9 +53,9 @@ export function ValidationsDetailHeader() {
 
 			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
 				<HasPermission
-					action={Permissions.gtfs_validations.actions.request_approval}
-					resource_key="agency_ids"
-					scope={Permissions.gtfs_validations.scope}
+					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
+					resourceKey="agency_ids"
+					scope={PermissionCatalog.all.gtfs_validations.scope}
 					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
 				>
 					<Button
@@ -70,9 +70,9 @@ export function ValidationsDetailHeader() {
 
 			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
 				<HasPermission
-					action={Permissions.plans.actions.create}
-					resource_key="agency_ids"
-					scope={Permissions.plans.scope}
+					action={PermissionCatalog.all.plans.actions.create}
+					resourceKey="agency_ids"
+					scope={PermissionCatalog.all.plans.scope}
 					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
 				>
 					<Button
