@@ -8,6 +8,8 @@ import { Metric } from '@tmlmobilidade/types';
 /* * */
 
 export class NetworkController {
+	//
+
 	/**
 	 * Get distinct lines - Retrieves all unique, non-null, non-empty line IDs from metrics collection
 	 */
