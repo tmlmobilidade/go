@@ -48,7 +48,7 @@ export function BaseProvider({ children }: PropsWithChildren) {
 					<MantineProvider defaultColorScheme="auto" theme={themeData}>
 						<DatesProvider settings={mantineDatesSettings}>
 							<ModalsProvider>
-								<Notifications styles={{ root: { marginTop: '60px' } }} />
+								<Notifications position="bottom-right" />
 								{children}
 							</ModalsProvider>
 						</DatesProvider>

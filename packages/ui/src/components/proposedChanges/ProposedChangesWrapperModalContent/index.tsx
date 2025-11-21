@@ -37,7 +37,7 @@ export function ProposedChangesWrapperModalContent<S extends ScopeKey>({ inputNa
 	const meContext = useMeContext();
 	const [addingNew, setAddingNew] = useState(false);
 	const [proposedChangeData, setProposedChangeData] = useState<CreateProposedChangeDto<ScopeEntityMap[S]> | undefined>(undefined);
-	const permissions = meContext.data.user?.permissions.filter(p => p.scope === 'proposed_changes') || [];
+	const permissions = meContext.data.user?.permissions.filter(p => p.scope === 'sams') || [];
 
 	//
 	// B. Handler Actions
@@ -71,7 +71,7 @@ export function ProposedChangesWrapperModalContent<S extends ScopeKey>({ inputNa
 
 			<div className={styles.modalContentHeaderWrapper}>
 				<span>Valores Propostos</span>
-				{permissions.find(p => p.action === 'create') && (<Button label="Adicionar"onClick={handleNew} />)}
+				{permissions.find(p => p.action === 'read') && (<Button label="Adicionar"onClick={handleNew} />)}
 			</div>
 
 			{addingNew && (

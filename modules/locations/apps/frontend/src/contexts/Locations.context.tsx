@@ -75,10 +75,10 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		if (location) {
 			setSelectedLocations({
-				district: location.district?.geojson?.properties?.name || null,
-				locality: location.locality?.geojson?.properties?.name || null,
-				municipality: location.municipality?.geojson?.properties?.name || null,
-				parish: location.parish?.geojson?.properties?.name || null,
+				district: location.district.name || null,
+				locality: location.locality.name || null,
+				municipality: location.municipality.name || null,
+				parish: location.parish.name || null,
 			});
 
 			// Center map on district initially when new location is loaded
@@ -100,7 +100,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 		for (const locationType of locationPriority) {
 			if (selectedLocations[locationType] && location[locationType]) {
 				// Only center if this location matches the selected name
-				const locationName = location[locationType]?.geojson?.properties?.name;
+				const locationName = location[locationType]?.name;
 				if (locationName === selectedLocations[locationType]) {
 					setTimeout(() => {
 						mapOptionsContext.actions.centerMap(locationType);

@@ -1,13 +1,12 @@
 /* * */
 
 import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
-import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type RideNormalized } from '@tmlmobilidade/types';
-import { type HashedShape, type HashedTrip, type Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type Permission, PermissionCatalog, type Ride, type RideNormalized, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
@@ -70,11 +69,11 @@ export class RidesController {
 		//
 		// Filter rides based on permissions for the current user
 
-		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.analysis_read);
+		const ridePermission: Permission = getPermission(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
 
-		if (ridePermission?.resource) {
-			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
-				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
+		if ('resource' in ridePermission && ridePermission.scope === PermissionCatalog.all.rides.scope) {
+			if (ridePermission.resource['agency_ids'] && !ridePermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource['agency_ids'] } } });
 			}
 		}
 

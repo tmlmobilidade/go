@@ -116,8 +116,6 @@ class Toast {
 
 		return notifications.show({
 			color: color,
-			mt: 10,
-			position: props.position || 'top-right',
 			...props,
 		});
 	}

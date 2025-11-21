@@ -1,110 +1,106 @@
 /* * */
 
 import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
-import { Permissions } from '@tmlmobilidade/consts';
 import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
-import { type Alert, type GetAllAlertsQuery, GetAllAlertsQuerySchema } from '@tmlmobilidade/types';
+import { type GetAllAlertsQuery, GetAllAlertsQuerySchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
 const namespace = '/alerts';
 
 /* * */
 
+const server: FastifyInstance = FastifyService.getInstance().server;
+
 server.register(
 	(instance, opts, next) => {
-		// GET /alerts
+		//
+
 		instance.get(
 			'/',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.read)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.read])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read])(request);
 			} },
 			AlertsController.getAll,
 		);
 
-		// GET /alerts/:id
 		instance.get(
 			'/:id',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.read)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.read])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read])(request);
 			} },
 			AlertsController.getById,
 		);
 
-		// GET /alerts/:id/image
 		instance.get(
 			'/:id/image',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.read)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.read])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read])(request);
 			} },
 			AlertsController.getImage,
 		);
 
-		// POST /alerts
 		instance.post(
 			'/',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.create)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.create])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.create])(request);
 			} },
 			AlertsController.create,
 		);
 
-		// PUT /alerts/:id
 		instance.put(
 			'/:id',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.update)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.update])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update])(request);
 			} },
 			AlertsController.update,
 		);
 
-		// DELETE /alerts/:id
 		instance.delete(
 			'/:id',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.delete)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.delete])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.delete])(request);
 			} },
 			AlertsController.delete,
 		);
 
-		// POST /alerts/:id/image
 		instance.post(
 			'/:id/image',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.update)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.update])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update])(request);
 			} },
 			AlertsController.uploadImage,
 		);
 
-		// DELETE /alerts/:id/image
 		instance.delete(
 			'/:id/image',
 			{ preHandler: async (request) => {
 				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				const scope = parsedQuery.realtime === true ? Permissions.alerts_realtime.scope : Permissions.alerts.scope;
-				await authorizationMiddleware<Alert>(scope, Permissions.alerts.actions.update)(request);
+				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.update])(request);
+				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update])(request);
 			} },
 			AlertsController.deleteImage,
 		);
 
-		// GET /alerts/gtfs
-		instance.get('/gtfs', AlertsController.getGtfs);
+		instance.get(
+			'/gtfs',
+			AlertsController.getGtfs,
+		);
 
 		next();
 	},

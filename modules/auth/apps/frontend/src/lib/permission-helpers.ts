@@ -1,4 +1,6 @@
-import { Permission, Role } from '@tmlmobilidade/types';
+/* * */
+
+import { type Permission, PermissionSchema, type Role } from '@tmlmobilidade/types';
 
 /**
  * Calculate permissions that a user has from their assigned roles
@@ -6,11 +8,8 @@ import { Permission, Role } from '@tmlmobilidade/types';
  * @param roles Array of all available roles with their permissions
  * @returns Array of permissions inherited from roles
  */
-export function calculateRolePermissions(
-	roleIds: string[],
-	roles: Role[],
-): Permission<unknown>[] {
-	const rolePermissions: Permission<unknown>[] = [];
+export function calculateRolePermissions(roleIds: string[], roles: Role[]): Permission[] {
+	const rolePermissions: Permission[] = [];
 
 	// Get all roles assigned to the user
 	const userRoles = roles.filter(role => roleIds.includes(role._id));
@@ -19,16 +18,11 @@ export function calculateRolePermissions(
 	userRoles.forEach((role) => {
 		role.permissions.forEach((permission) => {
 			// Check if this permission is already in the array (avoid duplicates)
-			const existingPermission = rolePermissions.find(
-				p => p.scope === permission.scope && p.action === permission.action,
-			);
+			const existingPermission = rolePermissions.find(p => p.scope === permission.scope && p.action === permission.action);
 
 			if (!existingPermission) {
-				rolePermissions.push({
-					action: permission.action,
-					resource: permission.resource as Record<string, unknown>,
-					scope: permission.scope as string,
-				});
+				const validatedPermission = PermissionSchema.safeParse(permission);
+				rolePermissions.push(validatedPermission.data);
 			}
 		});
 	});
@@ -44,14 +38,7 @@ export function calculateRolePermissions(
  * @param roles Array of all available roles with their permissions
  * @returns true if user has this permission from roles
  */
-export function hasRolePermission(
-	scope: string,
-	action: string,
-	roleIds: string[],
-	roles: Role[],
-): boolean {
+export function hasRolePermission(scope: string, action: string, roleIds: string[], roles: Role[]): boolean {
 	const rolePermissions = calculateRolePermissions(roleIds, roles);
-	return rolePermissions.some(
-		permission => permission.scope === scope && permission.action === action,
-	);
+	return rolePermissions.some(permission => permission.scope === scope && permission.action === action);
 }

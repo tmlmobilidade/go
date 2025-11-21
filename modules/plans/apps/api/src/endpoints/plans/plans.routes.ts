@@ -2,90 +2,79 @@
 
 import { PlansController } from '@/endpoints/plans/plans.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
-import { type PlanPermission } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+
+/* * */
+
+const NAMESPACE = '/plans';
 
 /* * */
 
 const server = FastifyService.getInstance().server;
-const namespace = '/plans';
-
-/* * */
 
 server.register(
 	(instance, opts, next) => {
 		//
 
-		// GET /plans
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
 			PlansController.getAll,
 		);
 
-		// GET /plans/:id
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
 			PlansController.getById,
 		);
 
-		// GET /plans/:id/operation-file
 		instance.get(
 			'/:id/operation-file',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
 			PlansController.getPlanOperationFileById,
 		);
 
-		// POST /plans
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.create) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.create]) },
 			PlansController.create,
 		);
 
-		// PUT /plans/:id
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update]) },
 			PlansController.update,
 		);
 
-		// GET /plans/:id/toggle-lock
 		instance.get(
 			'/:id/toggle-lock',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.toggle_lock) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.toggle_lock]) },
 			PlansController.toggleLockById,
 		);
 
-		// GET /plans/:id/reprocess
 		instance.get(
 			'/:id/controller-reprocess',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update_controller) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_controller]) },
 			PlansController.controllerReprocessPlanById,
 		);
 
-		// DELETE /plans/:id
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.delete) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete]) },
 			PlansController.delete,
 		);
 
-		// PUT /plans/:id/
 		instance.post(
 			'/:id/change-gtfs',
-			{ preHandler: authorizationMiddleware<PlanPermission>(Permissions.plans.scope, Permissions.plans.actions.update_gtfs_plan) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_gtfs_plan]) },
 			PlansController.changeGtfsPlan,
 		);
 
-		// GET /plans/approved
 		instance.get('/approved', PlansController.getApprovedPlans);
 
-		// GET /plans/drt-model/:id
 		instance.get('/drt-model/:id', PlansController.getDrtModel);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

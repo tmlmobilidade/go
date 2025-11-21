@@ -1,7 +1,7 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { agencies } from '@tmlmobilidade/interfaces';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 
@@ -37,14 +37,12 @@ export class AgenciesController {
 	 * @param reply The reply object
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateAgencyDto, Params: { id: string } }>, reply: FastifyReply<Agency>) {
-		const validatedAgency = UpdateAgencySchema.strip().safeParse(request.body);
+		// Validate the request body
+		const validatedAgency = UpdateAgencySchema.safeParse(request.body);
 		if (!validatedAgency.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Dados inválidos', validatedAgency.error);
-
-		//
 		// Set the updated_by field to the current user's id
-		request.body.updated_by = request.me._id;
-
-		//
+		validatedAgency.data.updated_by = request.me._id;
+		// Update the agency in the database
 		const updatedAgencyData = await agencies.updateById(request.params.id, validatedAgency.data);
 		reply.send({ data: updatedAgencyData, error: null, statusCode: HttpStatus.OK });
 	}

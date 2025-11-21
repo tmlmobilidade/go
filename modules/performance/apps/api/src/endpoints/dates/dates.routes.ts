@@ -1,9 +1,8 @@
 /* * */
 
-import { FastifyService } from '@tmlmobilidade/fastify';
+import { DatesController } from '@/endpoints/dates/dates.controller.js';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { FastifyInstance } from 'fastify';
-
-import { DatesController } from './dates.controller.js';
 
 /* * */
 
@@ -14,9 +13,11 @@ const namespace = '/dates';
 
 server.register(
 	(instance, opts, next) => {
+		//
+
 		instance.get(
 			'/',
-			{},
+			{ preHandler: authorizationMiddleware() },
 			DatesController.getCalendar,
 		);
 

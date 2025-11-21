@@ -10,7 +10,7 @@ export const HomeLinkSchema = z.object({
 	icon: z.string(),
 	order: z.number().min(0),
 	title: z.string(),
-}).strict();
+});
 
 export type HomeLink = z.infer<typeof HomeLinkSchema>;
 
@@ -19,13 +19,12 @@ export type HomeLink = z.infer<typeof HomeLinkSchema>;
 export const OrganizationSchema = DocumentSchema.extend({
 	home_links: z.array(HomeLinkSchema).default([]),
 	home_wikis: z.array(z.string()).default([]),
-	logo_dark: z.string().nullish(),
-	logo_light: z.string().nullish(),
-	long_name: z.string().nonempty(),
-	short_name: z.string().nonempty(),
-	theme: z.string().nullish(),
-
-}).strict();
+	logo_dark: z.string().nullable(),
+	logo_light: z.string().nullable(),
+	long_name: z.string(),
+	short_name: z.string(),
+	theme: z.string().nullable(),
+});
 
 export const CreateOrganizationSchema = OrganizationSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateOrganizationSchema = CreateOrganizationSchema.omit({ created_by: true }).partial();

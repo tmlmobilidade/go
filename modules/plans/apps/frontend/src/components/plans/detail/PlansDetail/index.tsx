@@ -9,7 +9,7 @@ import { PlansDetailSectionFeedInfo } from '@/components/plans/detail/PlansDetai
 import { PlansDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
 import { PlansDetailSectionPcgiLegacy } from '@/components/plans/detail/PlansDetailSectionPcgiLegacy';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
-import { Permissions } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -41,18 +41,18 @@ export function PlansDetail() {
 			<PlansDetailSectionFiles />
 
 			<HasPermission
-				action={Permissions.plans.actions.update_pcgi_legacy}
-				resource_key="agency_ids"
-				scope={Permissions.plans.scope}
+				action={PermissionCatalog.all.plans.actions.update_pcgi_legacy}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.plans.scope}
 				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<PlansDetailSectionPcgiLegacy />
 			</HasPermission>
 
 			<HasPermission
-				action={Permissions.plans.actions.update_controller}
-				resource_key="agency_ids"
-				scope={Permissions.plans.scope}
+				action={PermissionCatalog.all.plans.actions.update_controller}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.plans.scope}
 				value={plansDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<PlansDetailSectionController />

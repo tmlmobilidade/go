@@ -1,13 +1,15 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { roles } from '@tmlmobilidade/interfaces';
 import { type CreateRoleDto, type Role, type UpdateRoleDto } from '@tmlmobilidade/types';
 
 /* * */
 
 export class RolesController {
+	//
+
 	/**
 	 * Create a new user - Create a new user in the database
 	 * @param {FastifyRequest} request - The request object

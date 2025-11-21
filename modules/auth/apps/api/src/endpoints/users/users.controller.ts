@@ -3,7 +3,7 @@
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { authProvider, users } from '@tmlmobilidade/interfaces';
-import { type CreateUserDto, type UpdateUserDto, type User } from '@tmlmobilidade/types';
+import { type CreateUserDto, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -12,28 +12,26 @@ const COOKIE_NAME = 'session_token';
 /* * */
 
 export class UsersController {
+	//
+
 	/**
-	 * Create a new user - Create a new user in the database
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Create a new user in the database.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
 	static async create(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<void>) {
-		//
-
-		//
 		// Set the created_by and updated_by fields to the current user's id
 		request.body.created_by = request.me._id;
 		request.body.updated_by = request.me._id;
-
-		//
+		// Register the new user using the auth provider
 		await authProvider.register(request.body);
 		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
-	 * Delete a user - Delete a user from the database
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Delete a user from the database.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		await users.deleteById(request.params.id);
@@ -41,26 +39,24 @@ export class UsersController {
 	}
 
 	/**
-	 * Get all users - Retrieve a list of all users sorted by creation date in descending order
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Retrieve a list of all users sorted by creation date in descending order.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<User[]>) {
-		const userList = await users.findMany({}, { sort: { created_at: -1 } });
-		reply.send({ data: userList, error: null, statusCode: HttpStatus.OK });
+		const foundUsers = await users.findMany({}, { sort: { created_at: -1 } });
+		reply.send({ data: foundUsers, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
-	 * Get user by ID - Retrieve a user by their unique identifier
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Retrieve a user by their unique identifier.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
-		const user = await users.findById(request.params.id);
-
-		if (!user) throw new HttpException(HttpStatus.NOT_FOUND, 'User not found');
-
-		reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
+		const foundUser = await users.findById(request.params.id);
+		if (!foundUser) throw new HttpException(HttpStatus.NOT_FOUND, 'User not found');
+		reply.send({ data: foundUser, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -75,10 +71,7 @@ export class UsersController {
 		// Extract the session token from authentication cookie
 
 		const sessionToken = request.cookies[COOKIE_NAME];
-
-		if (!sessionToken) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session token is missing');
-		}
+		if (!sessionToken) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session token is missing');
 
 		//
 		// Retrieve user data using the session token.
@@ -114,42 +107,43 @@ export class UsersController {
 		//
 		// Retrieve roles and permissions for the user
 		// and merge them into the user data.
+
 		userData.permissions = await authProvider.getPermissions({ sessionToken });
 
 		//
 		// Send the user data back in the response.
 
-		return reply.send({ data: userData, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: userData, error: null, statusCode: HttpStatus.OK });
 
 		//
 	}
 
 	/**
-	 * Update a user - Update a user in the database
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Update a user in the database.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateUserDto, Params: { id: string } }>, reply: FastifyReply<User>) {
-		//
-
-		//
-		// Set the updated_by field to the current user's id
+		// Set the updated_by field to the current user id
 		request.body.updated_by = request.me._id;
-
-		//
-		const user = await users.updateById(request.params.id, request.body);
-		reply.send({ data: user, error: null, statusCode: HttpStatus.OK });
+		// Validate the request body against the UpdateUserDto schema
+		const validatedUserData = UpdateUserSchema.safeParse(request.body);
+		if (!validatedUserData.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		// Update the user in the database
+		const updateResult = await users.updateById(request.params.id, validatedUserData.data);
+		// Send the updated user data back in the response
+		reply.send({ data: updateResult, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
-	 * Get current user - Get the current user from the session token
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Get the current user from the session token.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	*/
 	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto }>, reply: FastifyReply<User>) {
-		const session_token = request.cookies[COOKIE_NAME];
-		const user = await authProvider.getUser(session_token);
-		const updatedUser = await users.updateById(user._id, request.body);
+		const sessionToken = request.cookies[COOKIE_NAME];
+		const userData = await authProvider.getUser(sessionToken);
+		const updatedUser = await users.updateById(userData._id, request.body);
 		reply.send({ data: updatedUser, error: null, statusCode: HttpStatus.OK });
 	}
 }

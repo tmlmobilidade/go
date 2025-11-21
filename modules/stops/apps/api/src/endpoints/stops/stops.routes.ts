@@ -2,54 +2,50 @@
 
 import { StopsController } from '@/endpoints/stops/stops.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
-import { StopPermission } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
 const server = FastifyService.getInstance().server;
-const namespace = '/stops';
+const NAMESPACE = '/stops';
 
 /* * */
 
 server.register(
 	(instance, opts, next) => {
-		// GET /stops
+		//
+
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
 			StopsController.getAll,
 		);
 
-		// GET /stops/:id
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.read) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
 			StopsController.getById,
 		);
 
-		// POST /stops
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.create) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.create]) },
 			StopsController.create,
 		);
 
-		// PUT /stops/:id
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.update) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.update]) },
 			StopsController.update,
 		);
 
-		// DELETE /stops/:id
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware<StopPermission>(Permissions.stops.scope, Permissions.stops.actions.delete) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.delete]) },
 			StopsController.delete,
 		);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );
