@@ -38,7 +38,6 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 		if (!data?.length) {
 			return {
 				accomplishedRides: { last_week: 0, now: 0 },
-				accomplishedRides: { last_week: 0, now: 0 },
 				advancedRides: { last_week: 0, now: 0 },
 				delayedRides: { last_week: 0, now: 0 },
 				lastUpdated: null,

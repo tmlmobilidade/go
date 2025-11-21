@@ -7,7 +7,6 @@ import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
-import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */

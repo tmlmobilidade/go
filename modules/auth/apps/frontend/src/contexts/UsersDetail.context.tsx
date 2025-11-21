@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateUserDto, CreateUserSchema, type Permission, PermissionSchema, type User } from '@tmlmobilidade/types';
+import { type CreateUserDto, CreateUserSchema, PermissionSchema, type User } from '@tmlmobilidade/types';
 import { useDebouncedCallback, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
@@ -193,15 +193,16 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 		}
 		// If it doesn't exist, add a new permission entry
 		const permissionValidated = PermissionSchema.safeParse({ action: action, scope: scope });
+		if (!permissionValidated.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(permissionValidated.error));
 		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
 	};
 
-	function handlePermissionResourceToggle(scope: Permission['scope'], action: Permission['action'], resource: Record<string, unknown>) {
+	function handlePermissionResourceToggle(scope: string, action: string, resource: Record<string, unknown>) {
 		// Get latest form values
 		const latestValues = form.getValues();
 		// Check if a permission entry with the same scope and action exists
 		const foundPermission = latestValues.permissions?.find(p => p.scope === scope && p.action === action);
-		if (!foundPermission) return;
+		if (!foundPermission) return alert('Permissão não encontrada para atualizar recursos');
 		// Assign the new resources to the found permission
 		foundPermission['resources'] = resource;
 		// Update the resources of the found permission
