@@ -28,7 +28,7 @@ export function LocationsMapView() {
 					{locationsContext.data.location?.district && !locationsContext.data.filterOut.includes('district') && (
 						<MapViewGeoJson
 							color="green"
-							data={locationsContext.data.location.district.geojson}
+							data={locationsContext.data.location.district['geojson']}
 							id="district"
 						/>
 					)}
@@ -36,7 +36,7 @@ export function LocationsMapView() {
 					{locationsContext.data.location?.municipality && !locationsContext.data.filterOut.includes('municipality') && (
 						<MapViewGeoJson
 							color="blue"
-							data={locationsContext.data.location.municipality.geojson}
+							data={locationsContext.data.location.municipality['geojson']}
 							id="municipality"
 						/>
 					)}
@@ -44,7 +44,7 @@ export function LocationsMapView() {
 					{locationsContext.data.location?.parish && !locationsContext.data.filterOut.includes('parish') && (
 						<MapViewGeoJson
 							color="red"
-							data={locationsContext.data.location.parish.geojson}
+							data={locationsContext.data.location.parish['geojson']}
 							id="parish"
 						/>
 					)}
@@ -52,7 +52,7 @@ export function LocationsMapView() {
 					{locationsContext.data.location?.locality && !locationsContext.data.filterOut.includes('locality') && (
 						<MapViewGeoJson
 							color="yellow"
-							data={locationsContext.data.location.locality.geojson}
+							data={locationsContext.data.location.locality['geojson']}
 							id="locality"
 						/>
 					)}
