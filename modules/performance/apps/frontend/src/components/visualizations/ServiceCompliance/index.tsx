@@ -38,6 +38,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 		if (!data?.length) {
 			return {
 				accomplishedRides: { last_week: 0, now: 0 },
+				accomplishedRides: { last_week: 0, now: 0 },
 				advancedRides: { last_week: 0, now: 0 },
 				delayedRides: { last_week: 0, now: 0 },
 				lastUpdated: null,
@@ -60,7 +61,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 		};
 
 		return {
-			accomplishedRides: { last_week: 0, now: 0 },
+			accomplishedRides: agencyData.accomplished_rides,
 			advancedRides: agencyData.advanced_rides,
 			delayedRides: agencyData.five_min_delays,
 			lastUpdated: new Date(latest.generated_at),
