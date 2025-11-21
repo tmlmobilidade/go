@@ -20,7 +20,7 @@ export const PlansPermissionSchema = z.object({
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
-	}),
+	}).default({}),
 	scope: z.literal('plans'),
 });
 

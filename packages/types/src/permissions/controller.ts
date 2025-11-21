@@ -21,7 +21,7 @@ export const RidesPermissionSchema = z.object({
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
-	}),
+	}).default({}),
 	scope: z.literal('rides'),
 });
 
