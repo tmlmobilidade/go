@@ -2,7 +2,7 @@
 
 import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
 import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type GtfsValidation, type Plan } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -77,7 +77,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		closeModal(CREATE_PLAN_MODAL_ID);
 
 		if (response.data) {
-			window.location.href = API_ROUTES.plans.PLANS_DETAIL(response.data._id);
+			window.location.href = PAGE_ROUTES.plans.APPROVED_DETAIL(response.data._id);
 		}
 	};
 
