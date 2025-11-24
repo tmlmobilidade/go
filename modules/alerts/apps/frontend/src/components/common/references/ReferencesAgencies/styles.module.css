@@ -9,20 +9,6 @@
     width: fit-content;
 }
 
-.childrenWrapper {
-    display: flex;
-    flex-direction: row;
-    gap: var(--size-spacing-md);
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-}
-
-.icon {
-    color: var(--color-system-text-200);
-    transition: color 300ms ease;
-}
-
 .deleteButtonWrapper {
     display: flex;
     flex-direction: row;
@@ -37,3 +23,4 @@
         }
     }
 }
+

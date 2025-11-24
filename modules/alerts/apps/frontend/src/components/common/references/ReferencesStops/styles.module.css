@@ -23,7 +23,7 @@
     transition: color 300ms ease;
 }
 
-.deleteButtonWrapper {
+.buttonContainer {
     display: flex;
     flex-direction: row;
     gap: var(--size-spacing-md);
@@ -37,3 +37,4 @@
         }
     }
 }
+
