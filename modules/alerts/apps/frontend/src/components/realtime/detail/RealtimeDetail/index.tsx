@@ -4,7 +4,7 @@
 
 import { RealtimeDetailHeader } from '@/components/realtime/detail/RealtimeDetailHeader';
 import { RealtimeDetailSectionCauseEffect } from '@/components/realtime/detail/RealtimeDetailSectionCauseEffect';
-import { RealtimeDetailSectionReferences } from '@/components/realtime/detail/RealtimeDetailSectionReferences';
+import { RealtimeDetailSectionAffectedRides } from '@/components/realtime/detail/RealtimeDetailSectionReferences';
 import { RealtimeDetailSectionTitle } from '@/components/realtime/detail/RealtimeDetailSectionTitle';
 import { RealtimeDetailSectionValidity } from '@/components/realtime/detail/RealtimeDetailSectionValidity';
 import { RealtimeDetailSectionVisibility } from '@/components/realtime/detail/RealtimeDetailSectionVisibility';
@@ -24,7 +24,7 @@ export function RealtimeDetail() {
 			{/* Cause & Effect */}
 			<RealtimeDetailSectionCauseEffect />
 			{/* References */}
-			<RealtimeDetailSectionReferences />
+			<RealtimeDetailSectionAffectedRides />
 		</Pane>
 	);
 }
