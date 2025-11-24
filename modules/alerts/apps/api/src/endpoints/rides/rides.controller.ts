@@ -91,4 +91,19 @@ export class RidesController {
 
 		//
 	}
+
+	/**
+	 * Gets a batch of selected Rides by their IDs.
+	 */
+	static async getSelectedRides(request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<Ride[]>) {
+		//
+
+		const selectedRides = await rides.findMany({ _id: { $in: request.query.ids.split(',').map(id => id.trim()) } });
+
+		reply.send({
+			data: selectedRides ?? [],
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
+	}
 }

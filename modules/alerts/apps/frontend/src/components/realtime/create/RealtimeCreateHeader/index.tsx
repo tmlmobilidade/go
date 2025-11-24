@@ -70,7 +70,7 @@ function SaveButton() {
 
 	return (
 		<Button
-			disabled={realtimeCreateContext.flags.isSaving}
+			disabled={!realtimeCreateContext.flags.canSave || realtimeCreateContext.flags.isSaving}
 			label="Salvar"
 			loading={realtimeCreateContext.flags.isSaving}
 			onClick={() => realtimeCreateContext.actions.saveAlert()}

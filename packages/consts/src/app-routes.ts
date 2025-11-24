@@ -17,7 +17,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// REALTIME
 		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/realtime/${id}`,
 		REALTIME_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime`,
-		REALTIME_NEW_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime/new`,
 
 		// SCHEDULED
 		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/scheduled/${id}`,
@@ -33,6 +32,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// AGENCIES
 		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/agencies/${id}`,
 		AGENCIES_LIST: `${getAppConfig('auth', 'frontend_url')}/agencies`,
+
+		// CHANGE_PASSWORD
+		CHANGE_PASSWORD_LIST: `${getAppConfig('auth', 'frontend_url')}/change-password`,
 
 		// HOME
 		HOME_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/home/${id}`,
@@ -55,9 +57,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// USERS
 		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/users/${id}`,
 		USERS_LIST: `${getAppConfig('auth', 'frontend_url')}/users`,
-
-		// VERIFICATION
-		VERIFICATION_LIST: `${getAppConfig('auth', 'frontend_url')}/verification`,
 	},
 
 	/* * */
@@ -135,6 +134,7 @@ export const API_ROUTES = Object.freeze({
 
 		// RIDES
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
+		RIDES_SELECTED: `${getAppConfig('alerts', 'api_url')}/rides/selected`,
 	},
 
 	/* * */
@@ -151,9 +151,7 @@ export const API_ROUTES = Object.freeze({
 		AUTH_CHANGE_PASSWORD: `${getAppConfig('auth', 'api_url')}/auth/change-password`,
 		AUTH_LOGIN: `${getAppConfig('auth', 'api_url')}/auth/login`,
 		AUTH_LOGOUT: `${getAppConfig('auth', 'api_url')}/auth/logout`,
-		AUTH_PERMISSIONS: `${getAppConfig('auth', 'api_url')}/auth/permissions`,
-		AUTH_VERIFY: `${getAppConfig('auth', 'api_url')}/auth/verify`,
-		AUTH_VERIFY_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/verify-email`,
+		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
 		// NOTIFICATIONS
 		NOTIFICATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}`,

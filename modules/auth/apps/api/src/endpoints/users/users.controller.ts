@@ -83,7 +83,7 @@ export class UsersController {
 		let userData: User;
 
 		try {
-			userData = await authProvider.getUser(sessionToken);
+			userData = await authProvider.getUserFromSessionToken(sessionToken);
 			if (!userData) throw new Error('User not found');
 		}
 		catch (error) {
@@ -108,7 +108,7 @@ export class UsersController {
 		// Retrieve roles and permissions for the user
 		// and merge them into the user data.
 
-		userData.permissions = await authProvider.getPermissions({ sessionToken });
+		userData.permissions = await authProvider.getPermissionsFromSessionToken(sessionToken);
 
 		//
 		// Send the user data back in the response.
@@ -142,7 +142,7 @@ export class UsersController {
 	*/
 	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto }>, reply: FastifyReply<User>) {
 		const sessionToken = request.cookies[COOKIE_NAME];
-		const userData = await authProvider.getUser(sessionToken);
+		const userData = await authProvider.getUserFromSessionToken(sessionToken);
 		const updatedUser = await users.updateById(userData._id, request.body);
 		reply.send({ data: updatedUser, error: null, statusCode: HttpStatus.OK });
 	}

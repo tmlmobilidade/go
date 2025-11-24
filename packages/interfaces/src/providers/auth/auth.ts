@@ -1,11 +1,11 @@
 /* * */
 
 import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HttpStatus, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
-import { CreateUserDto, LoginDto, OneOrTheOther, Organization, Permission, Session, User } from '@tmlmobilidade/types';
+import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
@@ -25,127 +25,83 @@ class AuthProvider {
 	}
 
 	/**
-	 * Gets a user by their session token.
+	 * Get the organization for a user based on their session token.
 	 * @param sessionToken The session token to look up.
 	 * @returns The user associated with the session token.
 	 * @throws An HTTP UNAUTHORIZED error code if user or session not found
 	 */
-	public async getOrganization(sessionToken: string): Promise<Organization> {
-		//
-
-		//
-		// Find the current session in the database
-
-		const sessionData = await sessions.findOne({ token: { $eq: sessionToken } });
-
-		if (!sessionData) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session not found');
-		}
-
-		//
-		// Find the user associated with the session
-
-		const userData = await users.findOne({ _id: { $eq: sessionData.user_id } });
-
-		if (!userData) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
-		}
-
-		//
+	public async getOrganizationFromSessionToken(sessionToken: string): Promise<Organization> {
+		// Get the user associated with the session token
+		const userData = await this.getUserFromSessionToken(sessionToken);
 		// Find the organization associated with the user
-
 		const organizationData = await organizations.findOne({ _id: { $eq: userData.organization_id } });
-
 		if (!organizationData) return undefined;
-
-		//
 		// Return the user data to the caller
-
 		return organizationData;
 	}
 
 	/**
-	 * Get Permissions for a user based on their session token or user_id.
-	 * @param sessionToken The session token (optional if user_id is provided).
+	 * Get Permissions for a user based on their session token.
+	 * @param sessionToken The session token.
+	 * @returns The permissions that the user has.
+	 */
+	public async getPermissionsFromSessionToken(sessionToken: string): Promise<Permission[]> {
+		// Get the user associated with the session token
+		const userData = await this.getUserFromSessionToken(sessionToken);
+		// Return the permissions for the user ID
+		return this.getPermissionsFromUserId(userData._id);
+	}
+
+	/**
+	 * Get Permissions for a user based on their user ID.
 	 * @param userId The user ID (optional if sessionToken is provided).
 	 * @returns The permissions that the user has.
 	 */
-	public async getPermissions(params: OneOrTheOther<{ sessionToken: string }, { userId: string }>): Promise<Permission[]> {
-		//
-
-		//
-		// Get the user and their roles
-
-		let userData: User;
-
-		if ('user_id' in params) {
-			const foundUser = await users.findOne({ _id: { $eq: params.userId } });
-			if (!foundUser) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
-			userData = foundUser;
-		}
-		else if ('sessionToken' in params) {
-			userData = await this.getUser(params.sessionToken);
-		}
-		else {
-			throw new HttpException(HttpStatus.BAD_REQUEST, 'Either sessionToken or userId must be provided');
-		}
-
+	public async getPermissionsFromUserId(userId: string): Promise<Permission[]> {
+		// Get the user associated with the session token
+		const userData = await users.findById(userId);
+		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found.');
+		// Get the roles assigned to the user
 		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
-
-		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions] as Permission[];
-
+		// Combine permissions from roles and user-specific permissions
+		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions];
+		// Merge permissions with the same scope and action
 		const permissionsMap = new Map<string, Permission>();
-
 		for (const permission of allPermissions) {
+			// Setup a unique key based on scope and action
 			const key = `${permission.scope}:${permission.action}`;
-
+			// If the permission already exists, merge them
 			if (permissionsMap.has(key)) {
+				// Get the existing permission
 				const existingPermission = permissionsMap.get(key);
-
-				if (!existingPermission) {
-					throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Error getting permissions');
-				}
-
+				// Merge the existing permission with the new one
 				permissionsMap.set(key, mergeObjects(existingPermission, permission));
-				continue;
 			}
-
-			permissionsMap.set(key, permission);
+			else {
+				// Otherwise, just add the new permission
+				permissionsMap.set(key, permission);
+			}
 		}
-
+		// Return the merged permissions as an array
 		return Array.from(permissionsMap.values());
 	}
 
 	/**
-	 * Gets a user by their session token.
+	 * Get a user object from their session token.
 	 * @param sessionToken The session token to look up.
 	 * @returns The user associated with the session token.
 	 * @throws An HTTP UNAUTHORIZED error code if user or session not found
 	 */
-	public async getUser(sessionToken: string): Promise<User> {
-		//
-
-		//
+	public async getUserFromSessionToken(sessionToken: string): Promise<User> {
 		// Find the current session in the database
-
 		const sessionData = await sessions.findOne({ token: { $eq: sessionToken } });
-
-		if (!sessionData) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session not found');
-		}
-
-		//
+		if (!sessionData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session not found');
 		// Find the user associated with the session
-
 		const userData = await users.findOne({ _id: { $eq: sessionData.user_id } });
-
-		if (!userData) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
-		}
-
-		//
+		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
+		// Sanitize the user data by removing sensitive fields
+		userData.password_hash = undefined;
 		// Return the user data to the caller
-
 		return userData;
 	}
 
@@ -159,30 +115,14 @@ class AuthProvider {
 	 *   - INTERNAL_SERVER_ERROR if login fails
 	 */
 	public async login(loginDto: LoginDto): Promise<Session> {
-		//
-
-		//
 		// Find the user by email
-
 		const userData = await users.findByEmail(loginDto.email, true);
-
-		if (!userData) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
-		}
-
-		//
+		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
 		// Check if the password matches the stored hash
-
 		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData.password_hash ?? '');
-
-		if (!passwordHashMatch) {
-			throw new HttpException(HttpStatus.UNAUTHORIZED, 'Invalid password');
-		}
-
-		//
+		if (!passwordHashMatch) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Invalid password');
 		// Create a new session object if the password matches
-
-		const session: Session = {
+		const newSession: Session = {
 			_id: generateRandomString(),
 			created_at: Dates.now('utc').unix_timestamp,
 			created_by: 'system',
@@ -192,13 +132,10 @@ class AuthProvider {
 			updated_by: 'system',
 			user_id: userData._id.toString(),
 		};
-
-		await sessions.insertOne(session);
-
-		//
+		// Insert the new session into the database
+		await sessions.insertOne(newSession);
 		// Return the session to the caller
-
-		return session;
+		return newSession;
 	}
 
 	/**
@@ -216,19 +153,11 @@ class AuthProvider {
 	 *   - INTERNAL_SERVER_ERROR if user creation fails
 	 */
 	public async register(createUserDto: CreateUserDto): Promise<void> {
-		//
-
-		//
-		// Insert the new user into the database
-		// with the provided data
-
+		// Insert the new user into the database with the provided data
 		const insertNewUserResult = await users.insertOne({ ...createUserDto });
-
-		//
 		// Generate a random token that will be used to verify the user
-
 		const verificationToken = generateRandomToken();
-
+		// Insert the verification token into the database
 		await verificationTokens.insertOne({
 			created_by: 'system',
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_timestamp,
@@ -236,14 +165,11 @@ class AuthProvider {
 			updated_by: 'system',
 			user_id: insertNewUserResult._id,
 		});
-
-		//
 		// Send a welcome email to the user with the verification token
-
-		sendWelcomeEmail({
+		await sendWelcomeEmail({
 			props: {
 				first_name: createUserDto.first_name,
-				setup_password_link: `${getAppConfig('auth', 'frontend_url')}/verification?token=${verificationToken}`,
+				setup_password_link: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
 			},
 			to: createUserDto.email,
 		});
