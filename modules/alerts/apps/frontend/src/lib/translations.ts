@@ -94,7 +94,7 @@ export const CauseEffectPairingDefaultAlert = {
 			title: '{lines} | Serviço Adicional - Obras',
 		},
 		DETOUR: {
-			message: 'Devido a obras, as linhas {lines} efetuarão desvio de percurso por X.',
+			message: 'Devido a obras, as linhas {lines} efetuarão desvio de percurso por {detour}.',
 			title: '{lines} | Desvio de Percurso - Obras',
 		},
 		MODIFIED_SERVICE: {
@@ -914,9 +914,9 @@ export const CauseEffectPairingDefaultAlert = {
 	},
 };
 
-export function getAlertTitleAndDescription(cause: GtfsCause, effect: GtfsEffect, lines: string) {
+export function getAlertTitleAndDescription(cause: GtfsCause, effect: GtfsEffect, lines: string, detour?: string) {
 	return {
-		description: CauseEffectPairingDefaultAlert[cause][effect].message.replace('{lines}', lines),
+		description: CauseEffectPairingDefaultAlert[cause][effect].message.replace('{lines}', lines).replace('{detour}', detour ?? ''),
 		title: CauseEffectPairingDefaultAlert[cause][effect].title.replace('{lines}', lines),
 	};
 }
