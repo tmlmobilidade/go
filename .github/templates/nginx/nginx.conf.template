@@ -101,6 +101,16 @@ http {
 
 
 	# # #
+	# WEBSOCKET SUPPORT
+	# More info: https://nginx.org/en/docs/http/websocket.html
+
+	map $http_upgrade $connection_upgrade {
+		default	upgrade;
+		''		close;
+	}
+
+
+	# # #
 	# HTTP SERVER
 
 	server {
@@ -136,8 +146,8 @@ http {
 		# # #
 		# WebSocket support
 
-		proxy_set_header Connection "upgrade";
 		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection $connection_upgrade;
 
 
 		# # #
