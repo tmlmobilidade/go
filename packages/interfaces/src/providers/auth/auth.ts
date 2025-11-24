@@ -1,7 +1,7 @@
 /* * */
 
 import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
-import { getAppConfig, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HttpStatus, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
@@ -157,7 +157,7 @@ class AuthProvider {
 		await sendWelcomeEmail({
 			props: {
 				first_name: createUserDto.first_name,
-				setup_password_link: `${getAppConfig('auth', 'frontend_url')}/verification?token=${verificationToken}`,
+				setup_password_link: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
 			},
 			to: createUserDto.email,
 		});

@@ -57,9 +57,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// USERS
 		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/users/${id}`,
 		USERS_LIST: `${getAppConfig('auth', 'frontend_url')}/users`,
-
-		// VERIFICATION
-		VERIFICATION_LIST: `${getAppConfig('auth', 'frontend_url')}/verification`,
 	},
 
 	/* * */
