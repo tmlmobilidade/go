@@ -7,7 +7,6 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';
 import { PasswordInput, TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
@@ -18,8 +17,6 @@ export function LoginForm() {
 
 	//
 	// A. Setup variables
-
-	const router = useRouter();
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -52,7 +49,7 @@ export function LoginForm() {
 		// Handle successful login
 		useToast.success({ message: undefined, title: 'Login successful' });
 		// Redirect to the specified page or home
-		router.replace(redirectToValue);
+		window.location.href = redirectToValue;
 	};
 
 	//

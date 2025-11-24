@@ -7,7 +7,6 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';
 import { TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
@@ -18,8 +17,6 @@ export function SendPasswordResetEmailForm() {
 
 	//
 	// A. Setup variables
-
-	const router = useRouter();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -48,7 +45,7 @@ export function SendPasswordResetEmailForm() {
 		}
 		// Show success message and redirect to login page
 		useToast.success({ message: 'Email de recuperação enviado com sucesso', title: 'Sucesso' });
-		router.push(PAGE_ROUTES.auth.LOGIN_LIST);
+		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
 	//

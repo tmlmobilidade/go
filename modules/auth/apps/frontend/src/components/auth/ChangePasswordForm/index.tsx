@@ -11,7 +11,6 @@ import { PasswordInput } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
-import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { useMemo, useState } from 'react';
 
@@ -31,8 +30,6 @@ export function ChangePasswordForm() {
 
 	//
 	// A. Setup variables
-
-	const router = useRouter();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -92,7 +89,7 @@ export function ChangePasswordForm() {
 		}
 		// Show success message and redirect to login page
 		useToast.success({ message: 'Password foi alterada com sucesso', title: 'Sucesso' });
-		router.replace(PAGE_ROUTES.auth.LOGIN_LIST);
+		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
 	//
@@ -109,7 +106,7 @@ export function ChangePasswordForm() {
 			submitLabel="Confirmar"
 			title="Alterar password"
 		>
-			<input defaultValue={emailValue} name="email" type="email" />
+			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
