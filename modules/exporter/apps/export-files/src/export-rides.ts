@@ -5,8 +5,7 @@ import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from 
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { FileExport, Permission, PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
-import { getPermission } from '@tmlmobilidade/utils';
+import { FileExport, PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
 import os from 'os';
 import path from 'path';
 
@@ -38,13 +37,13 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	//
 	// 4. Filter rides based on permissions for the current user
-	const myPermissions = await authProvider.getPermissions({ userId: fileExport.created_by });
-	const ridePermission: Permission = getPermission(myPermissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
+	const myPermissions = await authProvider.getPermissionsFromUserId(fileExport.created_by);
+	const ridesPermission = PermissionCatalog.get(myPermissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
 
-	if ('resource' in ridePermission && ridePermission.scope === PermissionCatalog.all.rides.scope) {
+	if ('resource' in ridesPermission && ridesPermission.scope === PermissionCatalog.all.rides.scope) {
 		// 4.1. Filter rides based on agency IDs
-		if (ridePermission.resource['agency_ids'] && !ridePermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			pipeline.push({ $match: { agency_id: { $in: ridePermission.resource['agency_ids'] } } });
+		if (ridesPermission.resource['agency_ids'] && !ridesPermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+			pipeline.push({ $match: { agency_id: { $in: ridesPermission.resource['agency_ids'] } } });
 		}
 	}
 

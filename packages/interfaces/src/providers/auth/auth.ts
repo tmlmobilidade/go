@@ -41,14 +41,26 @@ class AuthProvider {
 	}
 
 	/**
-	 * Get Permissions for a user based on their session token or user_id.
-	 * @param sessionToken The session token (optional if user_id is provided).
-	 * @param userId The user ID (optional if sessionToken is provided).
+	 * Get Permissions for a user based on their session token.
+	 * @param sessionToken The session token.
 	 * @returns The permissions that the user has.
 	 */
 	public async getPermissionsFromSessionToken(sessionToken: string): Promise<Permission[]> {
 		// Get the user associated with the session token
 		const userData = await this.getUserFromSessionToken(sessionToken);
+		// Return the permissions for the user ID
+		return this.getPermissionsFromUserId(userData._id);
+	}
+
+	/**
+	 * Get Permissions for a user based on their user ID.
+	 * @param userId The user ID (optional if sessionToken is provided).
+	 * @returns The permissions that the user has.
+	 */
+	public async getPermissionsFromUserId(userId: string): Promise<Permission[]> {
+		// Get the user associated with the session token
+		const userData = await users.findById(userId);
+		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found.');
 		// Get the roles assigned to the user
 		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
 		// Combine permissions from roles and user-specific permissions
