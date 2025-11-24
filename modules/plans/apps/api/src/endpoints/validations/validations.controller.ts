@@ -1,6 +1,5 @@
 /* * */
 
-import { MultipartValue } from '@fastify/multipart';
 import { API_ROUTES, HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
@@ -34,8 +33,6 @@ export class GtfsValidationsController {
 
 		if (!requestData) throw new HttpException(HttpStatus.BAD_REQUEST, 'No file provided');
 
-		const requestDataFields = requestData.fields as Record<string, MultipartValue>;
-
 		//
 		// Check if the user has permission to create a new GTFS Validation
 
@@ -44,7 +41,7 @@ export class GtfsValidationsController {
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.gtfs_validations.scope,
-			value: requestDataFields['agency_id'].value,
+			value: requestData.fields.agency_id['value'],
 		});
 
 		if (!hasPermissionCreateValidation) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: create validation');
@@ -55,8 +52,8 @@ export class GtfsValidationsController {
 		const validationData: CreateGtfsValidationDto = {
 			feeder_status: 'waiting',
 			file_id: '',
-			gtfs_agency: JSON.parse(requestDataFields.gtfs_agency.value as string) as GtfsAgency,
-			gtfs_feed_info: JSON.parse(requestDataFields.gtfs_feed_info.value as string) as GtfsFeedInfo,
+			gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
+			gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,
 			notification_sent: false,
 		};
 
