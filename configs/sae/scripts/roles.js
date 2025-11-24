@@ -105,7 +105,6 @@ db.createRole({
 		{ actions: ['find'], resource: { collection: 'organizations', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'agencies', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'alerts', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'users', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'changeStream'], resource: { collection: 'simplified_apex_locations', db: 'production' } },
@@ -114,7 +113,7 @@ db.createRole({
 		{ actions: ['find', 'changeStream'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
 		{ actions: ['find', 'changeStream'], resource: { collection: 'simplified_vehicle_events', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'sams', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find', 'update', 'insert', 'remove', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'hashed_trips', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'hashed_shapes', db: 'production' } },
@@ -138,6 +137,11 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find'], resource: { collection: 'users', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'sessions', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'roles', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'verification_tokens', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'organizations', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'sams', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'simplified_apex_locations', db: 'production' } },
