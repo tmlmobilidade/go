@@ -1,5 +1,6 @@
 /* * */
 
+import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -16,7 +17,11 @@ export async function ensureGtfsFiles() {
 
 	const globalTimer = new Timer();
 
-	// HERE
+	const allPlans = await plans.all();
+
+	for (const planData of allPlans) {
+		Logger.info(`Processing plan ${planData._id}`);
+	}
 
 	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
 
