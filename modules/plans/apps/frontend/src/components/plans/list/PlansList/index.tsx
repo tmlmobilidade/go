@@ -52,13 +52,13 @@ export function PlansList() {
 		},
 		{
 			accessor: 'apps',
-			render: item => <PlanStatusTag status={item.apps.controller.status} timestamp={item.apps.controller.timestamp} />,
+			render: item => <PlanStatusTag status={item.apps?.controller?.status} timestamp={item.apps?.controller?.timestamp} />,
 			title: 'SLA Status',
 			width: 150,
 		},
 		{
 			accessor: 'apps',
-			render: item => <PlanStatusTag status={item.apps.merger.status} timestamp={item.apps.merger.timestamp} />,
+			render: item => <PlanStatusTag status={item.apps?.merger?.status} timestamp={item.apps?.merger?.timestamp} />,
 			title: 'Merger Status',
 			width: 150,
 		},
