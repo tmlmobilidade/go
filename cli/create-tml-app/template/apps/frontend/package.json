@@ -17,7 +17,6 @@
 		"@tmlmobilidade/utils": "0.0.0",
 		"clsx": "2.1.1",
 		"next": "15.2.4",
-		"nuqs": "2.7.1",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"swr": "2.3.3"

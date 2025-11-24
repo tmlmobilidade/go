@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.1.0",
+		"@fastify/multipart": "9.3.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",

@@ -20,9 +20,7 @@ export function UsersListFilterOrganization() {
 	// B. Transform data
 
 	const isActive = useMemo(() => {
-		// Skip if organizations data is not available
-		if (!organizationsContext.data.raw?.length) return false;
-		// The default for this filter is to show all organizations
+		// The default for this filter is to show all statuses
 		const defaultValues = organizationsContext.data.raw.map(item => item._id);
 		const enabledValues = usersListContext.filters.organization_ids;
 		// Check if the arrays are equal by quickly comparing their lengths

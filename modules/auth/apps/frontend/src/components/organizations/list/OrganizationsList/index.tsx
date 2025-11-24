@@ -2,14 +2,12 @@
 
 /* * */
 
+import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
 import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-
-import { OrganizationsListHeader } from '../OrganizationsListHeader';
 
 /* * */
 
@@ -27,7 +25,7 @@ export function OrganizationsList() {
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
 			title: '#ID',
-			width: 50,
+			width: 100,
 		},
 		{
 			accessor: 'long_name',

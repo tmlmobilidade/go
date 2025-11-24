@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { createParser } from 'nuqs';
@@ -46,6 +48,9 @@ const eqFn = (a: string[], b: string[]) => {
 	return a.every(item => b.includes(item)) && b.every(item => a.includes(item));
 };
 
-/* * */
-
+/**
+ * NUQS parser for an array of strings.
+ * Handles parsing, serialization, and equality checking for filters
+ * that accept multiple string values.
+ */
 export const parseAsArrayOfStrings = createParser({ eq: eqFn, parse: parseFn, serialize: serializeFn });

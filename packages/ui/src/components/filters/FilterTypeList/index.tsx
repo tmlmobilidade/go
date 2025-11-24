@@ -27,17 +27,18 @@ interface FilterTypeListProps {
 	withToggleAll?: boolean
 }
 
-export function FilterTypeList({
-	active,
-	disabled,
-	isMultiple = true,
-	label,
-	onChange,
-	onClose,
-	options,
-	withToggleAll,
-}: FilterTypeListProps) {
+/* * */
+
+export function FilterTypeList({ active, disabled, isMultiple = true, label, onChange, onClose, options, withToggleAll }: FilterTypeListProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const filterWrapperRef = useRef<FilterWrapperRef>(null);
+
+	//
+	// B. Transform data
 
 	const isDisabled = useMemo(() => {
 		return !options?.length || disabled;
@@ -53,26 +54,13 @@ export function FilterTypeList({
 		return options.every(o => o.checked);
 	}, [options]);
 
-	const handleToggleAll = () => {
-		if (!onChange || !options) return;
-		if (toggleAllActive) onChange([]);
-		else onChange(options.map(o => o.value));
-	};
-
-	// When isMultiple = false, selecting one option forces it to be the only selected one.
-	const handleSingleSelect = (value: string) => {
-		if (!onChange) return;
-		onChange([value]);
-		// Auto-close dropdown when single selection is made
-		filterWrapperRef.current?.close();
-		onClose?.();
-	};
+	console.log(label, 'Toggle All Active:', toggleAllActive, options);
 
 	// Create options with "all" option when needed
 	const displayOptions = useMemo(() => {
 		if (!options) return [];
-
-		// If single selection mode and withToggleAll is true, add "all" as first option
+		// If single selection mode and withToggleAll is true,
+		// add "all" as first option.
 		if (!isMultiple && withToggleAll) {
 			const allOption = {
 				checked: toggleAllActive,
@@ -82,25 +70,57 @@ export function FilterTypeList({
 			};
 			return [allOption, ...options];
 		}
-
 		return options;
 	}, [options, isMultiple, withToggleAll, toggleAllActive]);
+
+	//
+	// C. Handle actions
+
+	const handleMultiToggleAll = () => {
+		if (!onChange || !options) return;
+		if (toggleAllActive) onChange([]);
+		else onChange(options.map(o => o.value));
+	};
+
+	const handleSingleOptionSelect = (value: string) => {
+		if (!onChange) return;
+		onChange([value]);
+		filterWrapperRef.current?.close();
+		if (onClose) onClose();
+	};
+
+	const handleSingleAllSelect = () => {
+		// For "all" option, select all available options (excluding "all" itself)
+		const allValues = options.map(opt => opt.value) || [];
+		if (onChange) onChange(allValues);
+		// Also close dropdown for "all" selection
+		filterWrapperRef.current?.close();
+		if (onClose) onClose();
+	};
+
+	const handleOptionSelect = (option: FilterTypeListOption) => {
+		if (option.value === 'all') handleSingleAllSelect();
+		else handleSingleOptionSelect(option.value);
+	};
+
+	//
+	// D. Render components
 
 	return (
 		<FilterWrapper ref={filterWrapperRef} active={active} disabled={isDisabled} label={label} onClose={onClose}>
 			<ScrollArea.Autosize mah={400} offsetScrollbars="y" scrollbars="y" type="auto">
 
-				{withToggleAll && isMultiple && (
+				{isMultiple && withToggleAll && (
 					<Checkbox
 						key="toggle-all"
 						checked={toggleAllActive}
 						label="Selecionar Tudo"
-						onChange={handleToggleAll}
+						onChange={handleMultiToggleAll}
 						value="all"
 					/>
 				)}
 
-				{isMultiple ? (
+				{isMultiple && (
 					<Checkbox.Group onChange={onChange} value={checkedOptionValues}>
 						{options?.map(option => (
 							<Checkbox
@@ -111,39 +131,22 @@ export function FilterTypeList({
 							/>
 						))}
 					</Checkbox.Group>
-				) : (
-					<>
-						{displayOptions?.map((option) => {
-							// Handle special "all" option for single selection
-							const handleOptionSelect = () => {
-								if (option.value === 'all') {
-									// For "all" option, select all available options (excluding "all" itself)
-									const allValues = options?.map(opt => opt.value) || [];
-									onChange?.(allValues);
-									// Also close dropdown for "all" selection
-									filterWrapperRef.current?.close();
-									onClose?.();
-								}
-								else {
-									handleSingleSelect(option.value);
-								}
-							};
-
-							return (
-								<Checkbox
-									key={option.value}
-									checked={checkedOptionValues.includes(option.value) || (option.value === 'all' && toggleAllActive)}
-									disabled={option.disabled}
-									label={option.label}
-									onChange={handleOptionSelect}
-									value={option.value}
-								/>
-							);
-						})}
-					</>
 				)}
+
+				{!isMultiple && displayOptions?.map(option => (
+					<Checkbox
+						key={option.value}
+						checked={checkedOptionValues.includes(option.value) || (option.value === 'all' && toggleAllActive)}
+						disabled={option.disabled}
+						label={option.label}
+						onChange={() => handleOptionSelect(option)}
+						value={option.value}
+					/>
+				))}
 
 			</ScrollArea.Autosize>
 		</FilterWrapper>
 	);
+
+	//
 }

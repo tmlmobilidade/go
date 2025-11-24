@@ -150,7 +150,7 @@ export const computeTopDemandByAgency = async () => {
 
 	const metricDoc = {
 		data: { agencies, total },
-		description: 'Top day and month with highest passenger count overall and per operator',
+		description: 'Top day and month with highest passenger count overall and per agency',
 		generated_at: new Date(),
 		metric: METRIC,
 	} as Metric;

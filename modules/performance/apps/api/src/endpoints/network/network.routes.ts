@@ -7,10 +7,11 @@ import { FastifyInstance } from 'fastify';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
-const namespace = '/network';
+const NAMESPACE = '/network';
 
 /* * */
+
+const server: FastifyInstance = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
@@ -19,16 +20,16 @@ server.register(
 		instance.get(
 			'/lines',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
-			NetworkController.getLines,
+			NetworkController.getUniqueLineIds,
 		);
 
 		instance.get(
 			'/patterns',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
-			NetworkController.getPatterns,
+			NetworkController.getUniquePatternIds,
 		);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );
