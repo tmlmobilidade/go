@@ -3,14 +3,13 @@
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized } from '@tmlmobilidade/types';
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { getBasePath } from '@tmlmobilidade/ui';
+import { getBasePath, parseAsArrayOfStrings } from '@tmlmobilidade/ui';
 import { type HttpResponse } from '@tmlmobilidade/utils';
 import { usePathname } from 'next/navigation';
 import { parseAsInteger, useQueryState } from 'nuqs';
