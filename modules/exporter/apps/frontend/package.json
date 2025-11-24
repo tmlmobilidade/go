@@ -23,7 +23,8 @@
 		"@vis.gl/react-maplibre": "8.1.0",
 		"clsx": "2.1.1",
 		"maplibre-gl": "5.13.0",
-		"next": "16.0.3",
+		"next": "16.0.4",
+		"nuqs": "2.8.1",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"swr": "2.3.6"
@@ -31,7 +32,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.1",
-		"@types/react": "19.2.6",
+		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"
 	}
