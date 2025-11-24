@@ -148,12 +148,3 @@ export const UpdateStopSchema = CreateStopSchema.omit({ created_by: true }).part
 export type Stop = z.infer<typeof StopSchema>;
 export type CreateStopDto = z.infer<typeof CreateStopSchema>;
 export type UpdateStopDto = z.infer<typeof UpdateStopSchema>;
-
-/* * */
-
-export const StopPermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-	municipality_ids: z.array(z.string()),
-});
-
-export type StopPermission = z.infer<typeof StopPermissionSchema>;

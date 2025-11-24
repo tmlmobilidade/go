@@ -101,11 +101,3 @@ export interface RideNormalized extends Ride {
 	start_time_observed_display: null | string
 	start_time_scheduled_display: string
 }
-
-/* * */
-
-export const RidePermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-});
-
-export type RidePermission = z.infer<typeof RidePermissionSchema>;

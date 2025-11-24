@@ -6,12 +6,12 @@ import { z } from 'zod';
 
 /* * */
 
-export const PlanControllerSchema = z.object({
-	last_hash: z.string().nullable(),
+export const PlanAppStatusSchema = z.object({
+	last_hash: z.string().nullable().default(null),
 	status: ProcessingStatusSchema.default('waiting'),
-	timestamp: unixTimeStampSchema.nullable(),
-}).strict();
+	timestamp: unixTimeStampSchema.nullable().default(null),
+}).default({});
 
 /* * */
 
-export type PlanController = z.infer<typeof PlanControllerSchema>;
+export type PlanAppStatus = z.infer<typeof PlanAppStatusSchema>;

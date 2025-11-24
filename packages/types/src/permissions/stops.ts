@@ -12,6 +12,10 @@ export const StopsPermissionSchema = z.object({
 		'toggle_lock',
 		'update',
 	]),
+	resources: z.object({
+		agency_ids: z.array(z.string()).default([]),
+		municipality_ids: z.array(z.string()).default([]),
+	}).default({}),
 	scope: z.literal('stops'),
 });
 
