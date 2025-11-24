@@ -26,10 +26,10 @@ export function PlansDetailSectionController() {
 		>
 			<Section gap="sm">
 
-				<PlanStatusTag status={plansDetailContext.data.plan.apps.controller.status} />
+				<PlanStatusTag status={plansDetailContext.data.plan.apps?.controller?.status} />
 
 				<Tag label={plansDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
-				<Tag label={plansDetailContext.data.plan.apps.controller.last_hash || 'N/A'} variant="secondary" />
+				<Tag label={plansDetailContext.data.plan.apps?.controller?.last_hash || 'N/A'} variant="secondary" />
 
 				<Button
 					disabled={plansDetailContext.flags.read_only}
