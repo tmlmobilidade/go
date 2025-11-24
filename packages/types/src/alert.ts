@@ -26,6 +26,7 @@ export const AlertSchema = DocumentSchema.extend({
 	created_by: z.string().min(1),
 	description: z.string(),
 	effect: gtfsEffectSchema,
+	external_id: z.string().nullish(),
 	file_id: z.string().nullish(),
 	info_url: z.string().url().optional().or(z.literal('')),
 	modified_by: z.string().min(1),

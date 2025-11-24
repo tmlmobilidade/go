@@ -26,6 +26,10 @@ class AlertsClass extends MongoCollectionClass<Alert, CreateAlertDto, UpdateAler
 		return AlertsClass._instance;
 	}
 
+	async findByExternalId(external_id: string) {
+		return this.mongoCollection.findOne({ external_id } as Filter<Alert>);
+	}
+
 	async findByMunicipalityId(municipality_id: string) {
 		return this.mongoCollection.find({ municipality_ids: { $in: [municipality_id] } } as Filter<Alert>).toArray();
 	}
