@@ -965,10 +965,13 @@ export async function parsePlan(planData: Plan) {
 		// Mark this plan as 'complete' to indicate that it was processed successfully
 
 		await plans.updateById(planData._id, {
-			controller: {
-				last_hash: planData.hash,
-				status: 'complete',
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			apps: {
+				...planData.apps,
+				controller: {
+					last_hash: planData.hash,
+					status: 'complete',
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
 			},
 		});
 
@@ -987,10 +990,13 @@ export async function parsePlan(planData: Plan) {
 	}
 	catch (error) {
 		await plans.updateById(planData._id, {
-			controller: {
-				last_hash: null,
-				status: 'error',
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			apps: {
+				...planData.apps,
+				controller: {
+					last_hash: null,
+					status: 'error',
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
 			},
 		});
 		Logger.error(`Error processing plan ${planData._id}`, error);

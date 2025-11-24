@@ -1,8 +1,8 @@
 import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
+import { Button, Hr, Section, Text } from '@react-email/components';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDate, type Plan, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Button, Hr, Section, Text } from '@react-email/components';
 
 export interface PlanApprovedEmailProps {
 	first_name: string
@@ -92,10 +92,17 @@ export function PlanApprovedEmail({ first_name, plan }: PlanApprovedEmailProps) 
 
 const mockPlan: Plan = {
 	_id: '64f8b2a3c1d2e3f4a5b6c7d8',
-	controller: {
-		last_hash: 'abcdef1234567890',
-		status: 'complete',
-		timestamp: 1715328000 as UnixTimestamp,
+	apps: {
+		controller: {
+			last_hash: 'abcdef1234567890',
+			status: 'complete',
+			timestamp: 1715328000 as UnixTimestamp,
+		},
+		merger: {
+			last_hash: 'abcdef1234567890',
+			status: 'complete',
+			timestamp: 1715328000 as UnixTimestamp,
+		},
 	},
 	created_at: 1715328000 as UnixTimestamp,
 	created_by: '',
@@ -115,7 +122,6 @@ const mockPlan: Plan = {
 	pcgi_legacy: {
 		operation_plan_id: '123',
 	},
-	status_merger: 'complete',
 	updated_at: 1715328000 as UnixTimestamp,
 	updated_by: '',
 };
