@@ -18,7 +18,7 @@ server.register(
 		//
 
 		instance.get(
-			'/:metricName',
+			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
 			MetricsController.getMetric,
 		);
