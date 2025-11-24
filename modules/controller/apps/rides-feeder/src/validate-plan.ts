@@ -20,7 +20,7 @@ export function validatePlan(planData: Plan): boolean {
 	// Return false if the hash is the same,
 	// as it means the plan did not change since last run
 
-	if (planData.hash === planData.controller.last_hash) {
+	if (planData.hash === planData.apps?.controller?.last_hash) {
 		Logger.error(`Skip processing: Hash is the same as last_hash.`);
 		return false;
 	}
@@ -28,7 +28,7 @@ export function validatePlan(planData: Plan): boolean {
 	//
 	// Return false if its status is 'error'
 
-	if (planData.controller.status === 'error') {
+	if (planData.apps?.controller?.status === 'error') {
 		Logger.error(`Skip processing: status_controller is 'error'.`);
 		return false;
 	}

@@ -25,13 +25,3 @@ export const UpdateZoneSchema = CreateZoneSchema.omit({ created_by: true }).part
 export type Zone = Omit<z.infer<typeof ZoneSchema>, 'geojson'> & { geojson: GeoJSON };
 export type CreateZoneDto = Omit<z.infer<typeof CreateZoneSchema>, 'geojson'> & { geojson: GeoJSON };
 export type UpdateZoneDto = Partial<CreateZoneDto>;
-
-/* * */
-
-export const ZonePermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-	code_contains: z.array(z.string()),
-	municipality_ids: z.array(z.string()),
-});
-
-export type ZonePermission = z.infer<typeof ZonePermissionSchema>;

@@ -49,11 +49,3 @@ export const UpdateGtfsValidationSchema = CreateGtfsValidationSchema.omit({ crea
 export type GtfsValidation = z.infer<typeof GtfsValidationSchema>;
 export type CreateGtfsValidationDto = z.infer<typeof CreateGtfsValidationSchema>;
 export type UpdateGtfsValidationDto = z.infer<typeof UpdateGtfsValidationSchema>;
-
-/* * */
-
-export const GtfsValidationPermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-});
-
-export type GtfsValidationPermission = z.infer<typeof GtfsValidationPermissionSchema>;

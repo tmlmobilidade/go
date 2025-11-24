@@ -2,7 +2,7 @@
 
 /* * */
 
-import { PlanStatusControllerTag } from '@/components/common/PlanStatusControllerTag';
+import { PlanStatusTag } from '@/components/common/PlanStatusTag';
 import { PlansListCellAgency } from '@/components/plans/list/PlansListCellAgency';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
@@ -48,13 +48,19 @@ export function PlansList() {
 				/>
 			),
 			title: 'Datas de Validade',
-			width: 350,
+			width: 310,
 		},
 		{
-			accessor: 'controller',
-			render: item => <PlanStatusControllerTag status={item.controller.status} />,
+			accessor: 'apps',
+			render: item => <PlanStatusTag status={item.apps?.controller?.status} timestamp={item.apps?.controller?.timestamp} />,
 			title: 'SLA Status',
-			width: 220,
+			width: 150,
+		},
+		{
+			accessor: 'apps',
+			render: item => <PlanStatusTag status={item.apps?.merger?.status} timestamp={item.apps?.merger?.timestamp} />,
+			title: 'Merger Status',
+			width: 150,
 		},
 	];
 

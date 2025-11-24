@@ -93,7 +93,7 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		href: PAGE_ROUTES.stops.STOPS_LIST,
 		icon: <IconBusStop size={26} />,
 		label: 'Paragens',
-		permissions: [{ action: PermissionCatalog.all.stops.actions.read, scope: PermissionCatalog.all.stops.scope }],
+		permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
 	},
 	{
 		_id: 'plans',

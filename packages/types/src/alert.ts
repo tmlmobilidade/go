@@ -53,14 +53,6 @@ export type UpdateAlertDto = z.infer<typeof UpdateAlertSchema>;
 
 /* * */
 
-export const AlertPermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-});
-
-export type AlertPermission = z.infer<typeof AlertPermissionSchema>;
-
-/* * */
-
 export const GetAllAlertsQuerySchema = z.object({
 	realtime: z.preprocess(
 		(val: string) => val === 'true' || val === '1',
