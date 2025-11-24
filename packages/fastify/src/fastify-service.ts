@@ -5,16 +5,16 @@ import '@fastify/cors';
 
 /* * */
 
-import cookie from '@fastify/cookie';
-import cors from '@fastify/cors';
+import fastifyCookie from '@fastify/cookie';
+import fastifyCors from '@fastify/cors';
+import fastifyMultipart from '@fastify/multipart';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
-
-/* * */
-
 import fastify from 'fastify';
 import { type FastifyReply as _FastifyReply, type FastifyInstance as FastifyInstanceType } from 'fastify';
 import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, type FastifyServerOptions, type FastifyTypeProviderDefault, type RawReplyDefaultExpression, type RawRequestDefaultExpression, type RawServerBase, type RawServerDefault, type RouteGenericInterface } from 'fastify';
+
+/* * */
 
 export { type FastifyRequest } from 'fastify';
 
@@ -52,6 +52,17 @@ export interface FastifyServiceOptions extends FastifyServerOptions {
 
 }
 
+const defaultFastifyServiceOptions: FastifyServiceOptions = {
+	bodyLimit: 1024 * 1024 * 10, // 10MB
+	host: '0.0.0.0',
+	logger: true,
+	origin: true,
+	port: 5050,
+	routerOptions: {
+		ignoreTrailingSlash: true,
+	},
+};
+
 /**
  * FastifyService is a singleton class that provides a Fastify server instance.
  * It allows for setting up routes, plugins, and starting/stopping the server.
@@ -64,19 +75,17 @@ export class FastifyService {
 	private static _instance: FastifyService;
 
 	public readonly server: FastifyInstance;
-	private readonly host: FastifyServiceOptions['host'];
-	private readonly origin: FastifyServiceOptions['origin'];
-	private readonly port: FastifyServiceOptions['port'];
+
+	private readonly options: FastifyServiceOptions;
 
 	/**
 	 * Creates an instance of FastifyService.
 	 * @param options The options for the Fastify server.
 	 */
 	private constructor(options: FastifyServiceOptions) {
-		this.server = fastify(options);
-		this.origin = options.origin ?? true;
-		this.port = options.port ?? 5050;
-		this.host = options.host ?? '0.0.0.0';
+		const mergedOptions = { ...defaultFastifyServiceOptions, ...options };
+		this.server = fastify(mergedOptions);
+		this.options = mergedOptions;
 		this._setupDefaultRoutes();
 		this._setupPlugins();
 	}
@@ -103,10 +112,10 @@ export class FastifyService {
 	 */
 	async start(): Promise<string> {
 		try {
-			const serverUrl = await this.server.listen({ host: this.host, port: this.port });
+			const serverUrl = await this.server.listen({ host: this.options.host, port: this.options.port });
 			this.server.log.info(`Server is running at ${serverUrl}`);
-			this.server.log.info(`CORS enabled for origin: ${this.origin}`);
-			this.server.log.info(`Listening on ${this.host}:${this.port}`);
+			this.server.log.info(`CORS enabled for origin: ${this.options.origin}`);
+			this.server.log.info(`Listening on ${this.options.host}:${this.options.port}`);
 			return serverUrl;
 		}
 		catch (error) {
@@ -151,21 +160,26 @@ export class FastifyService {
 		 * This ensures consistent error responses for HTTP exceptions throughout the application.
 		 */
 		this.server.setErrorHandler((error, _, reply) => {
+			// Log the error
 			this.server.log.error(error);
-
+			// Handle HttpException errors
 			if (error instanceof HttpException) {
-				reply.status(error.statusCode).send({
-					data: undefined,
-					error: error.message,
-					statusCode: error.statusCode,
-				});
+				reply
+					.status(error.statusCode)
+					.send({
+						data: undefined,
+						error: error.message,
+						statusCode: error.statusCode,
+					});
 			}
 			else {
-				reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-					data: undefined,
-					error: 'Internal server error',
-					statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-				});
+				reply
+					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.send({
+						data: undefined,
+						error: 'Internal server error',
+						statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+					});
 			}
 		});
 
@@ -198,14 +212,18 @@ export class FastifyService {
 	 * @return A promise that resolves when the plugins are set up.
 	 */
 	private async _setupPlugins() {
-		//
-
-		await this.server.register(cors, {
+		// CORS plugin
+		await this.server.register(fastifyCors, {
 			credentials: true,
 			methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'],
-			origin: this.origin,
+			origin: this.options.origin,
 		});
-		await this.server.register(cookie);
+		// Cookie plugin
+		await this.server.register(fastifyCookie);
+		// Multipart plugin
+		await this.server.register(fastifyMultipart, {
+			limits: { fileSize: this.options.bodyLimit },
+		});
 	}
 
 	//

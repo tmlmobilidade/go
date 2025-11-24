@@ -18,14 +18,12 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@fastify/multipart": "9.3.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
 		"gray-matter": "4.0.3",
-		"pino-pretty": "13.1.2",
 		"remark-html": "16.0.1",
 		"remark-parse": "11.0.0"
 	},

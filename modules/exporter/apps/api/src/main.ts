@@ -1,44 +1,16 @@
 /* * */
 
-import fastifyMultipart from '@fastify/multipart';
 import { getAppConfig } from '@tmlmobilidade/consts';
-import { FastifyService, type FastifyServiceOptions } from '@tmlmobilidade/fastify';
-
-/* * */
-
-const MAX_BODY_SIZE = 1024 * 1024 * 10; // 10MB
+import { FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 
 (async function () {
 	//
 
-	const options: FastifyServiceOptions = {
-		bodyLimit: MAX_BODY_SIZE,
-		logger: {
-			level: 'debug',
-			transport: {
-				options: {
-					colorize: true,
-				},
-				target: 'pino-pretty',
-			},
-		},
+	const fastifyService = FastifyService.getInstance({
 		origin: getAppConfig('exporter', 'cors_origin'),
 		port: getAppConfig('exporter', 'api_port'),
-		routerOptions: {
-			ignoreTrailingSlash: true,
-		},
-	};
-
-	// Start Fastify server
-
-	const fastifyService = FastifyService.getInstance(options);
-
-	await fastifyService.server.register(fastifyMultipart, {
-		limits: {
-			fileSize: MAX_BODY_SIZE,
-		},
 	});
 
 	await fastifyService.start();
