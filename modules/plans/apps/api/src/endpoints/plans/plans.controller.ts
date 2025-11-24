@@ -127,7 +127,7 @@ export class PlansController {
 	 */
 	static async controllerReprocessPlanById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		const planData = await plans.findById(request.params.id);
-		const result = await plans.updateById(request.params.id, { controller: { ...planData.controller, last_hash: null, status: 'waiting' } });
+		const result = await plans.updateById(request.params.id, { apps: { ...planData.apps, controller: { last_hash: null, status: 'waiting', timestamp: null } } });
 		return reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 
@@ -168,10 +168,17 @@ export class PlansController {
 			// and save it to the database
 
 			const newPlanData: CreatePlanDto = {
-				controller: {
-					last_hash: null,
-					status: 'waiting',
-					timestamp: null,
+				apps: {
+					controller: {
+						last_hash: null,
+						status: 'waiting',
+						timestamp: null,
+					},
+					merger: {
+						last_hash: null,
+						status: 'waiting',
+						timestamp: null,
+					},
 				},
 				gtfs_agency: validationData.gtfs_agency,
 				gtfs_feed_info: validationData.gtfs_feed_info,
@@ -181,7 +188,6 @@ export class PlansController {
 				pcgi_legacy: {
 					operation_plan_id: '',
 				},
-				status_merger: 'waiting',
 			};
 
 			const planResult = await plansCollection.insertOne(
