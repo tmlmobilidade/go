@@ -3,12 +3,11 @@
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type ValidationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type GtfsValidation, ProcessingStatusSchema } from '@tmlmobilidade/types';
-import { useSearch } from '@tmlmobilidade/ui';
+import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';

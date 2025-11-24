@@ -2,14 +2,14 @@
 
 /* * */
 
-import { UsersListFieldOrganization } from '@/components/users/list/UsersListFieldOrganization';
-import { UsersListFieldRole } from '@/components/users/list/UsersListFieldRole';
 import { UsersListFilterBar } from '@/components/users/list/UsersListFilterBar';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
+import { useOrganizationsContext } from '@/contexts/Organizations.context';
+import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -21,6 +21,9 @@ export function UsersList() {
 	// A. Setup variables
 
 	const router = useRouter();
+
+	const rolesContext = useRolesContext();
+	const organizationsContext = useOrganizationsContext();
 	const usersListContext = useUsersListContext();
 
 	const columns: DataTableColumn<UserNormalized>[] = [
@@ -36,16 +39,16 @@ export function UsersList() {
 			width: 250,
 		},
 		{
-			accessor: 'role_ids',
-			render: item => item.role_ids.map(role => <UsersListFieldRole key={role} role_id={role} />),
-			title: 'Grupos',
-			width: 200,
-		},
-		{
 			accessor: 'organization_id',
-			render: item => <UsersListFieldOrganization organizationId={item.organization_id} />,
+			render: item => <Tag label={organizationsContext.data.raw.find(organizationData => organizationData._id === item.organization_id)?.long_name} variant="secondary" />,
 			title: 'Organização',
 			width: 300,
+		},
+		{
+			accessor: 'role_ids',
+			render: item => <TagGroup tags={item.role_ids.map(roleId => ({ label: rolesContext.data.raw.find(roleData => roleData._id === roleId)?.name, variant: 'secondary' }))} />,
+			title: 'Grupos',
+			width: 500,
 		},
 	];
 
