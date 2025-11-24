@@ -1,54 +1,24 @@
 /* * */
 
 import { type FastifyRequest } from '@/fastify-service.js';
-import { API_ROUTES, HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
-import { Cache, fetchData } from '@tmlmobilidade/utils';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { authProvider } from '@tmlmobilidade/interfaces';
+import { type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
+import { Cache } from '@tmlmobilidade/utils';
 
 /* * */
 
 declare module 'fastify' {
 	export interface FastifyRequest {
 		me: User
+		organization: Organization
 		permissions: Permission[]
 	}
 }
 
 /* * */
 
-const REQUEST_CACHE = new Cache<string, { permissions: Permission[], user: User }>(5 * 60_000); // 5 minutes TTL
-
-/**
- * Fetches user data from the authentication API.
- * @param sessionToken The session token for authentication.
- * @returns A promise that resolves to the user data.
- */
-async function fetchUserData(sessionToken: string): Promise<User> {
-	// Fetch user data from the authentication API
-	const userResponse = await fetchData<User>(API_ROUTES.auth.USERS_ME, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
-	// Handle errors if response is not OK
-	if (userResponse.statusCode !== HttpStatus.OK) throw new HttpException(userResponse.statusCode, userResponse.error ?? 'Failed to fetch user data');
-	// Ensure user data is present
-	if (!userResponse.data) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
-	// Return the fetched user data
-	return userResponse.data;
-}
-
-/**
- * Fetches user permissions from the authentication API.
- * @param sessionToken The session token for authentication.
- * @returns A promise that resolves to an array of user permissions.
- */
-async function fetchUserPermissions(sessionToken: string): Promise<Permission[]> {
-	// Fetch user permissions from the authentication API
-	const permissionsResponse = await fetchData<Permission[]>(API_ROUTES.auth.AUTH_PERMISSIONS, 'GET', undefined, { Cookie: `session_token=${sessionToken}` });
-	// Handle errors if response is not OK
-	if (permissionsResponse.statusCode !== HttpStatus.OK) throw new HttpException(permissionsResponse.statusCode, permissionsResponse.error ?? 'Failed to fetch permissions');
-	// Ensure permissions data is present
-	if (!permissionsResponse.data) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Permissions not found');
-	// Return the fetched permissions data
-	return permissionsResponse.data;
-}
+const REQUEST_CACHE = new Cache<string, { permissions: Permission[], user: User }>(0); // Cache disabled
 
 /**
  * Creates an authorization middleware that validates user authentication and permissions.
@@ -79,8 +49,9 @@ export function authorizationMiddleware(scope?: string, actions?: string[], requ
 			request.permissions = cachedRequest.permissions;
 		}
 		else {
-			request.me = await fetchUserData(sessionToken);
-			request.permissions = await fetchUserPermissions(sessionToken);
+			request.me = await authProvider.getUserFromSessionToken(sessionToken);
+			request.permissions = await authProvider.getPermissionsFromSessionToken(sessionToken);
+			request.organization = await authProvider.getOrganizationFromSessionToken(sessionToken);
 			REQUEST_CACHE.set(sessionToken, { permissions: request.permissions, user: request.me });
 		}
 

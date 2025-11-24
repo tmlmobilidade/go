@@ -33,6 +33,9 @@ export const PAGE_ROUTES = Object.freeze({
 		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/agencies/${id}`,
 		AGENCIES_LIST: `${getAppConfig('auth', 'frontend_url')}/agencies`,
 
+		// CHANGE_PASSWORD
+		CHANGE_PASSWORD_LIST: `${getAppConfig('auth', 'frontend_url')}/change-password`,
+
 		// HOME
 		HOME_DETAIL: (id: string) => `${getAppConfig('auth', 'frontend_url')}/home/${id}`,
 		HOME_LIST: `${getAppConfig('auth', 'frontend_url')}/home`,
@@ -151,9 +154,7 @@ export const API_ROUTES = Object.freeze({
 		AUTH_CHANGE_PASSWORD: `${getAppConfig('auth', 'api_url')}/auth/change-password`,
 		AUTH_LOGIN: `${getAppConfig('auth', 'api_url')}/auth/login`,
 		AUTH_LOGOUT: `${getAppConfig('auth', 'api_url')}/auth/logout`,
-		AUTH_PERMISSIONS: `${getAppConfig('auth', 'api_url')}/auth/permissions`,
-		AUTH_VERIFY: `${getAppConfig('auth', 'api_url')}/auth/verify`,
-		AUTH_VERIFY_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/verify-email`,
+		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
 		// NOTIFICATIONS
 		NOTIFICATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}`,

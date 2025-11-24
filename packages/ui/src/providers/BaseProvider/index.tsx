@@ -7,6 +7,7 @@ import { DatesProvider, DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { swrFetcher } from '@tmlmobilidade/utils';
+import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
@@ -44,16 +45,18 @@ export function BaseProvider({ children }: PropsWithChildren) {
 	return (
 		<html data-mode="system" data-theme="ocean" lang="pt">
 			<body>
-				<SWRConfig value={swrSettings}>
-					<MantineProvider defaultColorScheme="auto" theme={themeData}>
-						<DatesProvider settings={mantineDatesSettings}>
-							<ModalsProvider>
-								<Notifications position="bottom-right" />
-								{children}
-							</ModalsProvider>
-						</DatesProvider>
-					</MantineProvider>
-				</SWRConfig>
+				<NuqsAdapter>
+					<SWRConfig value={swrSettings}>
+						<MantineProvider defaultColorScheme="auto" theme={themeData}>
+							<DatesProvider settings={mantineDatesSettings}>
+								<ModalsProvider>
+									<Notifications position="bottom-right" />
+									{children}
+								</ModalsProvider>
+							</DatesProvider>
+						</MantineProvider>
+					</SWRConfig>
+				</NuqsAdapter>
 			</body>
 		</html>
 	);

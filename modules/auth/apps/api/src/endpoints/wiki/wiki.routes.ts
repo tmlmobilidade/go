@@ -1,8 +1,7 @@
 /* * */
 
 import { WikiController } from '@/endpoints/wiki/wiki.controller.js';
-import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
-import { FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
