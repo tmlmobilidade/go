@@ -17,7 +17,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// REALTIME
 		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/realtime/${id}`,
 		REALTIME_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime`,
-		REALTIME_NEW_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime/new`,
 
 		// SCHEDULED
 		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/scheduled/${id}`,
@@ -135,6 +134,7 @@ export const API_ROUTES = Object.freeze({
 
 		// RIDES
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
+		RIDES_SELECTED: `${getAppConfig('alerts', 'api_url')}/rides/selected`,
 	},
 
 	/* * */

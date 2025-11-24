@@ -6,10 +6,10 @@ import { RideAnalysisContextProvider } from '@/contexts/RideAnalysis.context';
 /* * */
 
 export default async function Layout({ children, params }) {
-	const { ride_id } = await params;
+	const { id } = await params;
 	return (
-		<RideAnalysisContextProvider rideId={decodeURIComponent(ride_id)}>
-			<RideAcceptanceContextProvider rideId={decodeURIComponent(ride_id)}>
+		<RideAnalysisContextProvider rideId={decodeURIComponent(id)}>
+			<RideAcceptanceContextProvider rideId={decodeURIComponent(id)}>
 				{children}
 			</RideAcceptanceContextProvider>
 		</RideAnalysisContextProvider>
