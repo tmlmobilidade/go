@@ -6,7 +6,7 @@ import { fileExports, files } from '@tmlmobilidade/interfaces';
 
 /* * */
 
-export class ExporterController {
+export class GtfsMergedController {
 	//
 
 	/**
@@ -14,15 +14,15 @@ export class ExporterController {
 	 * @param request The request object
 	 * @param reply The reply object
 	 */
-	static async download(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
-		// A. Get Exports and File
-		const foundExport = await exports.findById(request.params.id);
-		if (!exports) throw new HttpException(HttpStatus.NOT_FOUND, 'Exports not found');
-
-		const file = await files.findById(exports.file_id);
-		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-
-		reply.send({ data: file.url, error: null, statusCode: HttpStatus.OK });
+	static async download(request: FastifyRequest, reply: FastifyReply<string>) {
+		// Retrieve file export record from database
+		const foundFileExports = await fileExports.findById('gtfs-merged-latest');
+		if (!foundFileExports) throw new HttpException(HttpStatus.NOT_FOUND, 'File Export not found');
+		// Retrieve file data from database
+		const foundFileData = await files.findById(foundFileExports.file_id);
+		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		// Send file URL as response to client
+		reply.send({ data: foundFileData.url, error: null, statusCode: HttpStatus.OK });
 	}
 
 	//

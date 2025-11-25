@@ -10,8 +10,9 @@ import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsRows } from '@/exports/trips.js';
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { Files } from '@tmlmobilidade/files';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { plans } from '@tmlmobilidade/interfaces';
+import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
@@ -212,9 +213,19 @@ export async function main() {
 		outputZip.end();
 	});
 
-	// const outputZipBuffer = fs.readFileSync(`${exportConfig.workdir}/${exportConfig.version}.zip`);
-
 	Logger.success(`Zipped GTFS export in ${zipTimer.get()}.`);
+
+	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`, 'utf-8');
+
+	await files.upload(fileStream, {
+		created_by: 'system',
+		name: `${exportConfig.version}.zip`,
+		resource_id: 'gtfs-merged-latest',
+		scope: 'exports',
+		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
+		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
+		updated_by: 'system',
+	});
 
 	//
 	// Finalize the export process

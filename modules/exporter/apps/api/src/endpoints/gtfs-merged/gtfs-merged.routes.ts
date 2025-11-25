@@ -1,6 +1,6 @@
 /* * */
 
-import { ExporterController } from '@/endpoints/exporter/exporter.controller.js';
+import { GtfsMergedController } from '@/endpoints/gtfs-merged/gtfs-merged.controller.js';
 import { FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -15,7 +15,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', ExporterController.download);
+		instance.get('/', GtfsMergedController.download);
 
 		next();
 	},
