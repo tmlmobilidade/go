@@ -1,12 +1,12 @@
 /* * */
 
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 
 /* * */
 
@@ -85,10 +85,10 @@ export async function processVehicleEvent(databaseOperation) {
 	//
 	// Publish the heartbeats for each agency
 
-	if (newVehicleEventDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/B7fPoFcoIP77bgkQfL3x4PpiZRqfJAYE?status=up&msg=OK&ping=');
-	if (newVehicleEventDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/4JRIEqablXpp5FCsdrnves1UGxsGadES?status=up&msg=OK&ping=');
-	if (newVehicleEventDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/HwQXlW056WNegEqw2a5igrJIGncfyiia?status=up&msg=OK&ping=');
-	if (newVehicleEventDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/LeX8eyUo3ZI7hwXc67bahTuPydGOXK9T?status=up&msg=OK&ping=');
+	if (newVehicleEventDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/B7fPoFcoIP77bgkQfL3x4PpiZRqfJAYE');
+	if (newVehicleEventDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/4JRIEqablXpp5FCsdrnves1UGxsGadES');
+	if (newVehicleEventDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/HwQXlW056WNegEqw2a5igrJIGncfyiia');
+	if (newVehicleEventDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/LeX8eyUo3ZI7hwXc67bahTuPydGOXK9T');
 
 	//
 };

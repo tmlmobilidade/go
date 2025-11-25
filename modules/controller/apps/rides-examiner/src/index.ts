@@ -150,7 +150,7 @@ export async function validateRides() {
 
 		//
 
-		fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb?status=up&msg=OK&ping=');
+		fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb');
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
