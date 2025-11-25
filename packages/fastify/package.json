@@ -24,7 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -37,10 +39,13 @@
 		"@fastify/cookie": "11.0.2",
 		"@fastify/cors": "11.1.0",
 		"@fastify/multipart": "9.3.0",
+		"@fastify/one-line-logger": "^2.0.2",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.6.2"
+		"fastify": "5.6.2",
+		"pino": "^10.1.0",
+		"pino-pretty": "^13.1.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
