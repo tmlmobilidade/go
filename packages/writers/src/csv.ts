@@ -71,6 +71,10 @@ export class CsvWriter {
 				csvData = this.NEW_LINE_CHARACTER + csvData;
 			}
 
+			// Recurseively ensure that the directory for the file path exists
+			const dirPath = this.FILE_PATH.substring(0, this.FILE_PATH.lastIndexOf('/'));
+			if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
+
 			// Append the csv string to the file
 			fs.appendFileSync(this.FILE_PATH, csvData, 'utf8');
 
