@@ -2,8 +2,8 @@
 
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -71,7 +71,7 @@ export class MongoDbWriter<T> {
 	private IDLE_TIMEOUT_TIMER: NodeJS.Timeout | null = null;
 	private IDLE_TIMEOUT_VALUE = -1;
 
-	private SESSION_TIMER = new TIMETRACKER();
+	private SESSION_TIMER = new Timer();
 
 	/* * */
 
@@ -101,7 +101,7 @@ export class MongoDbWriter<T> {
 		try {
 			//
 
-			const flushTimer = new TIMETRACKER();
+			const flushTimer = new Timer();
 			const sssionTimerResult = this.SESSION_TIMER.get();
 
 			//
@@ -159,7 +159,7 @@ export class MongoDbWriter<T> {
 
 				await this.DB_COLLECTION.bulkWrite(writeOperations);
 
-				LOGGER.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Flush | Length: ${this.DATA_BUCKET_FLUSH_OPS.length} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+				Logger.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Flush | Length: ${this.DATA_BUCKET_FLUSH_OPS.length} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
 
 				//
 				// Call the flush callback, if provided
@@ -176,13 +176,13 @@ export class MongoDbWriter<T> {
 				//
 			}
 			catch (error) {
-				LOGGER.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush().writeOperations(): ${error.message}`);
+				Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush().writeOperations(): ${error.message}`);
 			}
 
 			//
 		}
 		catch (error) {
-			LOGGER.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush(): ${error.message}`);
+			Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush(): ${error.message}`);
 		}
 	}
 
@@ -213,7 +213,7 @@ export class MongoDbWriter<T> {
 		// Check if the batch is full
 
 		if (this.DATA_BUCKET_ALWAYS_AVAILABLE.length >= this.BATCH_SIZE) {
-			LOGGER.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Batch full. Flushing data...`);
+			Logger.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Batch full. Flushing data...`);
 			await this.flush(flushCallback);
 		}
 
@@ -248,7 +248,7 @@ export class MongoDbWriter<T> {
 
 		if (this.IDLE_TIMEOUT_ENABLED && !this.IDLE_TIMEOUT_TIMER) {
 			this.IDLE_TIMEOUT_TIMER = setTimeout(async () => {
-				LOGGER.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Idle timeout reached. Flushing data...`);
+				Logger.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Idle timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
 			}, this.IDLE_TIMEOUT_VALUE);
 		}
@@ -259,7 +259,7 @@ export class MongoDbWriter<T> {
 
 		if (this.BATCH_TIMEOUT_ENABLED && !this.BATCH_TIMEOUT_TIMER) {
 			this.BATCH_TIMEOUT_TIMER = setTimeout(async () => {
-				LOGGER.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Batch timeout reached. Flushing data...`);
+				Logger.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Batch timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
 			}, this.BATCH_TIMEOUT_VALUE);
 		}

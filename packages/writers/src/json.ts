@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 
 /* * */
@@ -29,7 +29,7 @@ export class JsonWriter<T> {
 
 	private MAX_BATCH_SIZE = 5000;
 
-	private SESSION_TIMER = new TIMETRACKER();
+	private SESSION_TIMER = new Timer();
 
 	/* * */
 
@@ -57,7 +57,7 @@ export class JsonWriter<T> {
 
 		if (!this.FILE_PATH) throw new Error('File path is not set. Please provide a valid file path.');
 
-		const flushTimer = new TIMETRACKER();
+		const flushTimer = new Timer();
 		const sssionTimerResult = this.SESSION_TIMER.get();
 
 		if (this.CURRENT_BATCH_DATA.length === 0) return;
@@ -83,7 +83,7 @@ export class JsonWriter<T> {
 
 		// Append the csv string to the file
 		fs.appendFileSync(this.FILE_PATH, writableData);
-		LOGGER.info(`JSONWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+		Logger.info(`JSONWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
 		this.CURRENT_BATCH_DATA = [];
 	}
 

@@ -1,11 +1,11 @@
 /* * */
 
-import { CsvWriter } from '@helperkits/writer';
 import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { FileExport, PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
+import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { CsvWriter } from '@helperkits/writer';
+import { CsvWriter } from '@tmlmobilidade/writers';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

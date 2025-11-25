@@ -24,12 +24,12 @@
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
-		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"commander": "14.0.2",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",

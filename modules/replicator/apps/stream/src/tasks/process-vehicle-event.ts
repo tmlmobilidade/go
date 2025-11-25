@@ -1,6 +1,6 @@
 /* * */
 
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
