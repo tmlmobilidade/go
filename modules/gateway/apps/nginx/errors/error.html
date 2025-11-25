@@ -96,16 +96,16 @@
 		 */
 		function ping() {
 			// Generic ping URL
-			let pingUrl = "https://status.carrismetropolitana.pt/api/push/6Y8qbM6kz52yK5JnYZfbAOS8RN11FINr?status=down&msg=NOK&ping=";
+			let pingUrl = "https://status.carrismetropolitana.pt/api/push/6Y8qbM6kz52yK5JnYZfbAOS8RN11FINr";
 			// Customize ping URL based on the current path
-			if (window.location.pathname.startsWith("/alerts")) pingUrl = "https://status.carrismetropolitana.pt/api/push/PTgVOXKYmTNMDdFKhJhowOCZuz5BFr58?status=down&msg=NOK&ping=";
-			if (window.location.pathname.startsWith("/auth")) pingUrl = "https://status.carrismetropolitana.pt/api/push/HneRxxJeybvRYe83p8WaS0Q5S4UHSSyq?status=down&msg=NOK&ping=";
-			if (window.location.pathname.startsWith("/controller")) pingUrl = "https://status.carrismetropolitana.pt/api/push/A97Y1RYRjy0lH4pOTwW3qmPDjhiDnqW5?status=down&msg=NOK&ping=";
-			if (window.location.pathname.startsWith("/exporter")) pingUrl = "https://status.carrismetropolitana.pt/api/push/Z8bUQNRaTEF1QeXhuuuI9UkuT7qORYgX?status=down&msg=NOK&ping=";
-			if (window.location.pathname.startsWith("/locations")) pingUrl = "https://status.carrismetropolitana.pt/api/push/9kyxYSUTrPa8NviJExD9taiCCV5ROnFu?status=down&msg=NOK&ping=";
-			if (window.location.pathname.startsWith("/performance")) pingUrl = "https://status.carrismetropolitana.pt/api/push/3jIWuUV43OXgSdv1cmV4G4G3Fs6xNt2G?status=down&msg=NOK&ping=";
-			if (window.location.pathname.startsWith("/plans")) pingUrl = "https://status.carrismetropolitana.pt/api/push/87StVYwQPvQd78uEh1db2nLuOaPDhnLo?status=down&msg=NOK&ping=";
-			if (window.location.pathname.startsWith("/stops")) pingUrl = "https://status.carrismetropolitana.pt/api/push/zKnHYH5pgnpkKzCLu4eP4zvLDFHmYwJV?status=down&msg=NOK&ping=";
+			if (window.location.pathname.startsWith("/alerts")) pingUrl = "https://status.carrismetropolitana.pt/api/push/PTgVOXKYmTNMDdFKhJhowOCZuz5BFr58";
+			if (window.location.pathname.startsWith("/auth")) pingUrl = "https://status.carrismetropolitana.pt/api/push/HneRxxJeybvRYe83p8WaS0Q5S4UHSSyq";
+			if (window.location.pathname.startsWith("/controller")) pingUrl = "https://status.carrismetropolitana.pt/api/push/A97Y1RYRjy0lH4pOTwW3qmPDjhiDnqW5";
+			if (window.location.pathname.startsWith("/exporter")) pingUrl = "https://status.carrismetropolitana.pt/api/push/Z8bUQNRaTEF1QeXhuuuI9UkuT7qORYgX";
+			if (window.location.pathname.startsWith("/locations")) pingUrl = "https://status.carrismetropolitana.pt/api/push/9kyxYSUTrPa8NviJExD9taiCCV5ROnFu";
+			if (window.location.pathname.startsWith("/performance")) pingUrl = "https://status.carrismetropolitana.pt/api/push/3jIWuUV43OXgSdv1cmV4G4G3Fs6xNt2G";
+			if (window.location.pathname.startsWith("/plans")) pingUrl = "https://status.carrismetropolitana.pt/api/push/87StVYwQPvQd78uEh1db2nLuOaPDhnLo";
+			if (window.location.pathname.startsWith("/stops")) pingUrl = "https://status.carrismetropolitana.pt/api/push/zKnHYH5pgnpkKzCLu4eP4zvLDFHmYwJV";
 			// Actually send the ping request
 			fetch(pingUrl).then(increaseCounter).catch(err => console.error("Request failed:", err));
 		}
