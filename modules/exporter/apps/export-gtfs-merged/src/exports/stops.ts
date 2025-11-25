@@ -2,8 +2,9 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { stops } from '@tmlmobilidade/interfaces';
+// import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Stop } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -25,7 +26,10 @@ interface ExportedStopsRow {
 export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 	//
 
-	const allStopsList = await stops.findMany({}, { sort: { _id: 1 } });
+	// const allStopsList = await stops.findMany({}, { sort: { _id: 1 } });
+
+	const allStopsRes = await fetch('https://api.carrismetropolitana.pt/v2/stops');
+	const allStopsList = await allStopsRes.json() as Stop[];
 
 	for await (const stopData of allStopsList) {
 		const parsedStopsRow: ExportedStopsRow = {

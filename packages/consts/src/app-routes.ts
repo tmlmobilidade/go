@@ -219,6 +219,9 @@ export const API_ROUTES = Object.freeze({
 		// EXPORTER
 		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getAppConfig('exporter', 'api_url')}/exporter/${id}/download`,
 		EXPORTER_LIST: `${getAppConfig('exporter', 'api_url')}/exporter`,
+
+		// GTFS-MERGED
+		GTFS_MERGED_LIST: `${getAppConfig('exporter', 'api_url')}/gtfs-merged`,
 	},
 
 	/* * */
