@@ -8,32 +8,50 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 
 interface ExportedDatesRow {
 	date: OperationalDate
-	day_type: 1 | 2 | 3
-	holiday: 0 | 1
+	day_type: '1' | '2' | '3'
+	holiday: '0' | '1'
 	notes: string
-	period: 1 | 2 | 3
+	period: '1' | '2' | '3'
+}
+
+interface DateObjApiResponse {
+	date: OperationalDate
+	day_type: '1' | '2' | '3'
+	holiday: '0' | '1'
+	holiday_name: string
+	notes: string
+	period: '1' | '2' | '3'
+	weekday: string
 }
 
 /**
- * Export the feed_info.txt file.
- * @param startDate The feed start date.
- * @param endDate The feed end date.
+ * Export the dates.txt file.
  * @param exportConfig The export configuration.
  */
 export async function exportDatesFile(exportConfig: MergedGtfsExportConfig) {
 	//
 
-	const parsedFeedInfoRow: ExportedDatesRow = {
-		date: exportConfig.startDate,
-		day_type: 1,
-		period: 1,
-		holiday: 0,
-		notes: 'Início do período de validade do feed.',
-	};
+	//
+	// Fetch dates from GO v1 API
 
-	await exportConfig.writers.feed_info.write(parsedFeedInfoRow);
+	const allDatesRes = await fetch('https://go.carrismetropolitana.pt/api/dates/public');
+	const allDatesData = await allDatesRes.json() as DateObjApiResponse[];
 
-	await exportConfig.writers.feed_info.flush();
+	//
+	// Parse and write dates
 
-	Logger.info('Exported feed_info.txt file.');
+	for (const dateData of allDatesData) {
+		const parsedDatesRow: ExportedDatesRow = {
+			date: dateData.date,
+			day_type: dateData.day_type,
+			period: dateData.period,
+			holiday: dateData.holiday,
+			notes: dateData.holiday_name,
+		};
+		await exportConfig.writers.dates.write(parsedDatesRow);
+	}
+
+	await exportConfig.writers.dates.flush();
+
+	Logger.info('Exported dates.txt file.');
 }

@@ -1,13 +1,5 @@
 /* * */
 
-import { exportAgencyFile } from '@/exports/agency.js';
-import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
-import { exportFeedInfoFile } from '@/exports/feed-info.js';
-import { exportRoutesFile } from '@/exports/routes.js';
-import { exportShapesRows } from '@/exports/shapes.js';
-import { exportStopTimesRows } from '@/exports/stop-times.js';
-import { exportStopsFile } from '@/exports/stops.js';
-import { exportTripsRows } from '@/exports/trips.js';
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
@@ -19,6 +11,23 @@ import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
+
+/* * */
+
+import { exportAgencyFile } from '@/exports/agency.js';
+import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
+import { exportDatesFile } from '@/exports/dates.js';
+import { exportFareAttributesFile } from '@/exports/fare-attributes.js';
+import { exportFareRulesFile } from '@/exports/fare-rules.js';
+import { exportFeedInfoFile } from '@/exports/feed-info.js';
+import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
+import { exportPeriodsFile } from '@/exports/periods.js';
+import { exportPlansFile } from '@/exports/plans.js';
+import { exportRoutesFile } from '@/exports/routes.js';
+import { exportShapesRows } from '@/exports/shapes.js';
+import { exportStopTimesRows } from '@/exports/stop-times.js';
+import { exportStopsFile } from '@/exports/stops.js';
+import { exportTripsRows } from '@/exports/trips.js';
 
 /* * */
 
@@ -38,7 +47,13 @@ export async function main() {
 		writers: {
 			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 100000 }),
 			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 100000 }),
+			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 100000 }),
+			fare_attributes: new CsvWriter('fare_attributes.txt', `/tmp/${exportVersion}/fare_attributes.txt`, { batch_size: 100000 }),
+			fare_rules: new CsvWriter('fare_rules.txt', `/tmp/${exportVersion}/fare_rules.txt`, { batch_size: 100000 }),
 			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 100000 }),
+			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 100000 }),
+			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 100000 }),
+			plans: new CsvWriter('plans.txt', `/tmp/${exportVersion}/plans.txt`, { batch_size: 100000 }),
 			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 100000 }),
 			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 100000 }),
 			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 100000 }),
@@ -181,6 +196,11 @@ export async function main() {
 			? planData.gtfs_feed_info.feed_end_date
 			: farthestDateFound;
 
+		//
+		// Finally, write the plan entry into the plans.txt file.
+
+		await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
+
 		Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
 		//
@@ -190,6 +210,11 @@ export async function main() {
 	// Export GTFS files from the merged dataset
 
 	await exportStopsFile(exportConfig);
+	await exportDatesFile(exportConfig);
+	await exportPeriodsFile(exportConfig);
+	await exportMunicipalitiesFile(exportConfig);
+	await exportFareAttributesFile(exportConfig);
+	await exportFareRulesFile(Object.keys(routesMarkedForFinalExport), exportConfig);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), exportConfig);
 	await exportAgencyFile(Array.from(referencedAgencyIds), exportConfig);
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);
@@ -213,6 +238,9 @@ export async function main() {
 	});
 
 	Logger.success(`Zipped GTFS export in ${zipTimer.get()}.`);
+
+	//
+	// Upload the GTFS zip file to the S3 files service
 
 	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`, 'utf-8');
 
