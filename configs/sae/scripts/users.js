@@ -65,13 +65,13 @@ db.createUser({
 });
 
 db.createUser({
-	pwd: USER_PASSWORD_BACKUP,
+	pwd: USER_BACKUP_PASSWORD,
 	roles: [{ db: 'admin', role: 'backup' }],
 	user: 'backup',
 });
 
 db.createUser({
-	pwd: USER_EXPORTS_PASSWORD,
-	roles: [{ db: 'admin', role: 'exports' }],
+	pwd: USER_EXPORTER_PASSWORD,
+	roles: [{ db: 'admin', role: 'exporter' }],
 	user: 'exporter',
 });
