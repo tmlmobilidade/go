@@ -36,14 +36,14 @@ export async function main() {
 		version: exportVersion,
 		workdir: `/tmp/${exportVersion}`,
 		writers: {
-			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 10000 }),
-			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 10000 }),
-			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 10000 }),
-			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 10000 }),
-			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 10000 }),
-			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 10000 }),
-			stops: new CsvWriter('stops.txt', `/tmp/${exportVersion}/stops.txt`, { batch_size: 10000 }),
-			trips: new CsvWriter('trips.txt', `/tmp/${exportVersion}/trips.txt`, { batch_size: 10000 }),
+			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 100000 }),
+			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 100000 }),
+			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 100000 }),
+			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 100000 }),
+			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 100000 }),
+			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 100000 }),
+			stops: new CsvWriter('stops.txt', `/tmp/${exportVersion}/stops.txt`, { batch_size: 100000 }),
+			trips: new CsvWriter('trips.txt', `/tmp/${exportVersion}/trips.txt`, { batch_size: 100000 }),
 		},
 	};
 
@@ -65,8 +65,7 @@ export async function main() {
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
 
 	const allActiveAndUpcomingPlans = await plans.findMany({
-		// 'gtfs_agency.agency_id': { $in: ['41', '42', '43', '44'] },
-		'gtfs_agency.agency_id': { $in: ['43'] },
+		'gtfs_agency.agency_id': { $in: ['41', '42', '43', '44'] },
 		'gtfs_feed_info.feed_end_date': { $gte: currentOperationalDate },
 	});
 
