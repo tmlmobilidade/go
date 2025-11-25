@@ -70,12 +70,15 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 
 		const statuses: Record<string, StatusInfo> = {};
 
+		const serviceDataObj = serviceComplianceData[0].data;
+		const demandDataObj = demandData[0].data;
+
 		targetAgencies.forEach((agency) => {
 			// Merge metrics
 			const metricsData: Record<string, { last_week: number, now: number }> = {};
 
-			const serviceData = agency === 'all' ? serviceComplianceData[0].data.total : serviceComplianceData[0].data.agencies[agency as keyof typeof serviceComplianceData[0]['data']['agencies']];
-			const demandMetric = agency === 'all' ? demandData[0].data.total : demandData[0].data.agencies[agency as keyof typeof demandData[0]['data']['agencies']];
+			const serviceData = agency === 'all' ? serviceDataObj.total : serviceDataObj.agencies?.[agency];
+			const demandMetric = agency === 'all' ? demandDataObj.total : demandDataObj.agencies?.[agency];
 
 			if (!serviceData || !demandMetric) return;
 

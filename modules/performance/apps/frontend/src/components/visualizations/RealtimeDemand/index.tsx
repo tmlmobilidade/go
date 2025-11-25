@@ -26,6 +26,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 	const homeContext = useHomeContext();
 	const selectedAgency = agency || homeContext.data.selected_agency;
 
+	//
 	// B. Fetch data
 
 	const { data, isLoading } = useSWR<RealtimeDemand[]>(MetricsRoutes.REALTIME_DEMAND);

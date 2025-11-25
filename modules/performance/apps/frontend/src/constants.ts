@@ -1,6 +1,6 @@
 /* * */
 
-import { IconArrowsLeftRight, IconBuildingFactory, IconCheckupList, IconCurrencyEuro, IconLeaf, IconMapPin, IconMoodSmile, IconShieldCheck } from '@tabler/icons-react';
+import { IconBuildingFactory, IconBus, IconCheckupList, IconCurrencyEuro, IconLeaf, IconMapPin, IconMoodSmile, IconShieldCheck, IconUsers } from '@tabler/icons-react';
 
 export interface DashboardDefinition {
 	description?: string
@@ -22,11 +22,12 @@ export interface TopicDefinition {
 export const TOPICS = {
 	COVERAGE_AVAILABILITY: 'coverage-availability',
 	CUSTOMER_SATISFACTION: 'customer-satisfaction',
+	DEMAND: 'demand',
 	INSPECTIONS: 'inspections',
 	OPERATIONAL_COSTS: 'operational_costs',
 	REVENUE: 'revenue',
 	SERVICE_COMPLIANCE: 'service_compliance',
-	SUPPLY_DEMAND_ALIGNMENT: 'supply-demand',
+	SUPPLY: 'supply',
 	SUSTAINABILITY: 'sustainability',
 } as const;
 
@@ -64,9 +65,22 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 			},
 		],
 		description: 'O tema Alinhamento oferta-procura analisa o equilíbrio entre a capacidade disponibilizada (oferta) e a utilização efetiva do serviço (procura). O objetivo é avaliar se os recursos estão a ser alocados de forma eficiente — identificando situações de excesso de oferta (veículos subutilizados) ou falta de oferta (sobrelotação e procura não satisfeita).',
-		icon: IconArrowsLeftRight,
-		key: TOPICS.SUPPLY_DEMAND_ALIGNMENT,
-		label: 'Alinhamento oferta-procura',
+		icon: IconUsers,
+		key: TOPICS.DEMAND,
+		label: 'Procura',
+		visible: true,
+	},
+	{
+		dashboards: [
+			{
+				key: 'supply-by',
+				label: 'Oferta por...',
+			},
+		],
+		description: 'O tema Oferta analisa o equilíbrio entre a capacidade disponibilizada (oferta) e a utilização efetiva do serviço (procura). O objetivo é avaliar se os recursos estão a ser alocados de forma eficiente — identificando situações de excesso de oferta (veículos subutilizados) ou falta de oferta (sobrelotação e procura não satisfeita).',
+		icon: IconBus,
+		key: TOPICS.SUPPLY,
+		label: 'Oferta',
 		visible: true,
 	},
 	{

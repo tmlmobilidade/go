@@ -34,6 +34,13 @@ export interface StackedResult {
 	sum: number
 }
 
+/** Result structure for progress bar charts */
+export interface ProgressBarResult {
+	chart: Record<string, number | string | undefined>[]
+	series: string[]
+	sum: number
+}
+
 /** Result structure for pie charts */
 export interface PieResult {
 	chart: { color: string, name: string, value: number }[]
@@ -41,7 +48,7 @@ export interface PieResult {
 }
 
 /** Generic transform result wrapper */
-export interface TransformResult<T = PieResult | StackedResult | TimeSeriesResult> {
+export interface TransformResult<T = PieResult | ProgressBarResult | StackedResult | TimeSeriesResult> {
 	all: T
 	lastUpdated: Date | null
 }

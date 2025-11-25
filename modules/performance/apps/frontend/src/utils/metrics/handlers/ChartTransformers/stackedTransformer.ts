@@ -3,7 +3,7 @@
  * Handles stacked bar/area charts with breakdown by time
  */
 
-import type { DemandMetricItem, StackedResult } from '@/utils/metrics/types';
+import type { RawMetricData, StackedResult } from '@/utils/metrics/types';
 
 import { useTranslations } from 'next-intl';
 
@@ -19,14 +19,15 @@ import {
 /* * */
 
 export function transformToStacked(
-	data: DemandMetricItem[],
+	data: RawMetricData[],
 	breakdownKey: string,
 	topN: number,
 	timeView: 'annual' | 'daily' | 'monthly',
 	t?: ReturnType<typeof useTranslations>,
+	quantityKey = 'qty',
 ): StackedResult {
 	// Get top breakdowns and aggregate them
-	const breakdownTotals = calculateBreakdownTotals(data, breakdownKey);
+	const breakdownTotals = calculateBreakdownTotals(data, breakdownKey, quantityKey);
 	const { otherItems, topItems } = getTopBreakdowns(breakdownTotals, topN);
 
 	// Aggregate by date with breakdown grouping
@@ -58,7 +59,7 @@ export function transformToStacked(
 				}
 			}
 
-			const breakdowns = extractBreakdowns(dayData, item, breakdownKey);
+			const breakdowns = extractBreakdowns(dayData, item, breakdownKey, quantityKey);
 			Object.entries(breakdowns).forEach(([key, qty]) => {
 				const aggregationKey = topItems.includes(key) ? key : 'Outros';
 				const currentQty = (dateMap[date][aggregationKey] as number) || 0;

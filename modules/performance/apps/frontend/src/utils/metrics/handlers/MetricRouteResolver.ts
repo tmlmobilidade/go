@@ -6,7 +6,7 @@ export interface MetricConfiguration {
 	/** What to group by: agency, line, pattern */
 	groupBy: 'agency' | 'line' | 'pattern'
 	/** Primary metric type */
-	metricType: 'demand' | 'demand-by-category' | 'demand-by-product'
+	metricType: 'demand' | 'demand-by-category' | 'demand-by-product' | 'supply'
 	/** Time granularity */
 	timeView: 'annual' | 'daily' | 'monthly'
 }
@@ -49,7 +49,7 @@ function getBaseUrl(config: MetricConfiguration, filters: MetricFilters): string
 	const url = MetricsRoutes[routeKey];
 
 	if (!url) {
-		throw new Error(`Unsupported metric: ${config.metricType}-${effectiveGroupBy}-${config.timeView}`);
+		throw new Error(`Unsupported metric: ${routeKey}`);
 	}
 
 	return url;

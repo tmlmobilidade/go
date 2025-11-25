@@ -2,11 +2,12 @@
 
 /* * */
 
-import { LineBarChart } from '@/components/charts/LineBarChart';
+import { ProgressBarChart } from '@/components/charts/ProgressBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
-import { buildMetricUrl, RawMetricData, TimeSeriesResult, transformDemandMetric } from '@/utils/metrics';
+import { buildMetricUrl, RawMetricData, transformDemandMetric } from '@/utils/metrics';
+import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/dates';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -35,13 +36,13 @@ interface DemandVisualizationProps {
 
 /* * */
 
-export function DemandVisualization({
+export function Circulations({
 	filters,
 	groupBy,
 	height,
-	isInsideFrame,
+	isInsideFrame = true,
 	timeView,
-	title = 'Passageiros transportados',
+	title = 'Circulações previstas vs realizadas',
 }: DemandVisualizationProps) {
 	//
 
@@ -61,7 +62,7 @@ export function DemandVisualization({
 	const metricUrl = useMemo(() => {
 		const baseConfig = {
 			groupBy,
-			metricType: 'demand' as const,
+			metricType: 'supply' as const,
 			timeView,
 		};
 
@@ -81,24 +82,27 @@ export function DemandVisualization({
 	// C. Transform data
 
 	const formattedData = useMemo(() => {
-		if (!data) return { all: { chart: [], sum: 0 }, lastUpdated: null };
+		if (!data) return { all: { chart: [], series: [], sum: 0 }, lastUpdated: null };
 
 		return transformDemandMetric(data, {
+			achievedKey: 'accomplished_rides',
 			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
-			chartType: 'timeseries' as const,
+			chartType: 'bar-progress' as const,
+			quantityKey: 'accomplished_rides',
 			t,
 			timeView,
+			totalKey: 'scheduled_rides',
 		});
 	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t]);
 
-	const chartData = formattedData.all.chart as TimeSeriesResult['chart'];
+	const chartData = formattedData.all as ProgressBarResult;
 
 	//
 	// D. Render components
 
 	return (
 		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={title}>
-			<LineBarChart data={chartData} endDate={endDate} height={height} startDate={startDate} timeView={timeView} />
+			<ProgressBarChart data={chartData} endDate={endDate} height={height} startDate={startDate} timeView={timeView} yAxisLabel="Nº circulações" />
 		</VisualizationWrapper>
 	);
 }

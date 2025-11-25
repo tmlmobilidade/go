@@ -1,8 +1,8 @@
 'use client';
 
+import { LineBarChart } from '@/components/charts/LineBarChart';
 /* * */
 
-import { LineBarChart } from '@/components/charts/LineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
@@ -35,13 +35,13 @@ interface DemandVisualizationProps {
 
 /* * */
 
-export function DemandVisualization({
+export function VmksScheduled({
 	filters,
 	groupBy,
 	height,
-	isInsideFrame,
+	isInsideFrame = true,
 	timeView,
-	title = 'Passageiros transportados',
+	title = 'Vkms planeados',
 }: DemandVisualizationProps) {
 	//
 
@@ -61,7 +61,7 @@ export function DemandVisualization({
 	const metricUrl = useMemo(() => {
 		const baseConfig = {
 			groupBy,
-			metricType: 'demand' as const,
+			metricType: 'supply' as const,
 			timeView,
 		};
 
@@ -81,24 +81,34 @@ export function DemandVisualization({
 	// C. Transform data
 
 	const formattedData = useMemo(() => {
-		if (!data) return { all: { chart: [], sum: 0 }, lastUpdated: null };
+		if (!data) return { all: { chart: [], series: [], sum: 0 }, lastUpdated: null };
 
-		return transformDemandMetric(data, {
+		const transformedData = transformDemandMetric(data, {
 			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
-			chartType: 'timeseries' as const,
+			chartType: 'timeseries',
+			quantityKey: 'vkms_scheduled',
 			t,
 			timeView,
 		});
+
+		// Convert meters to kilometers for timeseries chart data
+		transformedData.all.chart.forEach((item) => {
+			if ('qty' in item && typeof item.qty === 'number') {
+				item.qty = item.qty / 1000;
+			}
+		});
+
+		return transformedData;
 	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t]);
 
-	const chartData = formattedData.all.chart as TimeSeriesResult['chart'];
+	const chartData = formattedData.all as TimeSeriesResult;
 
 	//
 	// D. Render components
 
 	return (
 		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={title}>
-			<LineBarChart data={chartData} endDate={endDate} height={height} startDate={startDate} timeView={timeView} />
+			<LineBarChart data={chartData.chart} endDate={endDate} height={height} startDate={startDate} timeView={timeView} yAxisLabel="Vkms planeados" />
 		</VisualizationWrapper>
 	);
 }

@@ -1,8 +1,8 @@
 /* * */
 
-import type { DailyDataPoint, DemandMetricItem, MonthlyDataPoint, TimeSeriesResult, YearlyDataPoint } from '@/utils/metrics/types';
+import type { DailyDataPoint, MonthlyDataPoint, RawMetricData, TimeSeriesResult, YearlyDataPoint } from '@/utils/metrics/types';
 
-import { extractTotalQuantity, formatDayDetailed, formatDayShort, formatMonth } from '@/utils/metrics/utils';
+import { formatDayDetailed, formatDayShort, formatMonth } from '@/utils/metrics/utils';
 import { useTranslations } from 'next-intl';
 
 /* * */
@@ -10,13 +10,18 @@ import { useTranslations } from 'next-intl';
 /**
  * Transform to simple time series (line/bar chart)
  */
-export function transformToTimeSeries(data: DemandMetricItem[], timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): TimeSeriesResult {
+export function transformToTimeSeries(
+	data: RawMetricData[],
+	timeView: 'annual' | 'daily' | 'monthly',
+	t?: ReturnType<typeof useTranslations>,
+	quantityKey = 'qty',
+): TimeSeriesResult {
 	const dateMap: Record<string, DailyDataPoint | MonthlyDataPoint | YearlyDataPoint> = {};
 	let totalSum = 0;
 
 	for (const item of data) {
 		Object.entries(item.data).forEach(([date, dayData]) => {
-			const qty = extractTotalQuantity(dayData);
+			const qty = dayData?.[quantityKey] ?? 0;
 
 			if (!dateMap[date]) {
 				// Create different formats based on timeView
@@ -48,8 +53,8 @@ export function transformToTimeSeries(data: DemandMetricItem[], timeView: 'annua
 				}
 			}
 
-			dateMap[date].qty += qty;
-			totalSum += qty;
+			dateMap[date].qty += qty as number;
+			totalSum += qty as number;
 		});
 	}
 

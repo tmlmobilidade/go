@@ -5,7 +5,7 @@ import TopLinesTable from '@/components/visualizations/TopLinesTable';
 
 /* * */
 
-export default function SupplyDemandTopic() {
+export default function DemandTopic() {
 	//
 
 	//

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export function AnimatedNumber({ className, duration = 800, value }: { className?: string, duration?: number, value: number }) {
+export function AnimatedNumber({ className, duration = 800, isPercentage, value }: { className?: string, duration?: number, isPercentage?: boolean, value: number }) {
 	const [displayValue, setDisplayValue] = useState(0);
 
 	useEffect(() => {
@@ -18,5 +18,5 @@ export function AnimatedNumber({ className, duration = 800, value }: { className
 		requestAnimationFrame(step);
 	}, [value]);
 
-	return <span className={className}>{Math.round(displayValue).toLocaleString('pt-PT')}</span>;
+	return <span className={className}>{Math.round(displayValue).toLocaleString('pt-PT')}{isPercentage ? '%' : ''}</span>;
 }

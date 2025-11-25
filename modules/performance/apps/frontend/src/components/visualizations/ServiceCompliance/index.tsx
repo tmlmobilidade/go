@@ -60,7 +60,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 		};
 
 		return {
-			accomplishedRides: { last_week: 0, now: 0 },
+			accomplishedRides: agencyData.accomplished_rides,
 			advancedRides: agencyData.advanced_rides,
 			delayedRides: agencyData.five_min_delays,
 			lastUpdated: new Date(latest.generated_at),
