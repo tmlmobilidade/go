@@ -1,6 +1,6 @@
 /* * */
 
-import { type CsvWriter } from '@helperkits/writer';
+import { type CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
 

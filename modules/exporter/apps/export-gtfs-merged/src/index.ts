@@ -9,13 +9,13 @@ import { exportStopTimesRows } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsRows } from '@/exports/trips.js';
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { CsvWriter } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
+import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 

@@ -15,7 +15,7 @@ interface CsvWriterOptions {
 
 /* * */
 
-export default class CsvWriter {
+export class CsvWriter {
 	//
 
 	private CURRENT_BATCH_DATA = [];
@@ -45,64 +45,44 @@ export default class CsvWriter {
 	/* * */
 
 	async flush() {
-		return new Promise<void>((resolve, reject) => {
-			try {
-				//
+		try {
+			//
 
-				if (!this.FILE_PATH) {
-					return resolve();
-				}
+			if (!this.FILE_PATH) return;
 
-				const flushTimer = new Timer();
-				const sssionTimerResult = this.SESSION_TIMER.get();
+			const flushTimer = new Timer();
+			const sssionTimerResult = this.SESSION_TIMER.get();
 
-				if (this.CURRENT_BATCH_DATA.length === 0) return resolve();
+			if (this.CURRENT_BATCH_DATA.length === 0) return;
 
-				// Setup a variable to keep track if the file exists or not
-				let fileAlreadyExists = true;
+			// Setup a variable to keep track if the file exists or not
+			const fileAlreadyExists = fs.existsSync(this.FILE_PATH);
 
-				// Try to access the file and append data to it
-				fs.access(this.FILE_PATH, fs.constants.F_OK, async (error) => {
-					//
-					// If an error is thrown, then the file does not exist
-					if (error) {
-						fileAlreadyExists = false;
-					}
+			// Use papaparse to produce the CSV string
+			let csvData = Papa.unparse(this.CURRENT_BATCH_DATA, { header: !fileAlreadyExists, newline: this.NEW_LINE_CHARACTER, skipEmptyLines: 'greedy' });
 
-					// Use papaparse to produce the CSV string
-					let csvData = Papa.unparse(this.CURRENT_BATCH_DATA, { header: !fileAlreadyExists, newline: this.NEW_LINE_CHARACTER, skipEmptyLines: 'greedy' });
-
-					// Prepend BOM if this is the first write and BOM is enabled
-					if (!fileAlreadyExists && this.INCLUDE_BOM) {
-						csvData = '\uFEFF' + csvData;
-					}
-
-					// Prepend a new line character to csvData string if it is not the first line on the file
-					if (fileAlreadyExists) {
-						csvData = this.NEW_LINE_CHARACTER + csvData;
-					}
-
-					// Append the csv string to the file
-					fs.appendFile(this.FILE_PATH, csvData, (appendErr) => {
-						if (appendErr) {
-							reject(new Error(`Error appending data to file: ${appendErr.message}`));
-						}
-						else {
-							Logger.info(`CSVWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
-							this.CURRENT_BATCH_DATA = [];
-							resolve();
-						}
-					});
-
-					//
-				});
-
-				//
+			// Prepend BOM if this is the first write and BOM is enabled
+			if (!fileAlreadyExists && this.INCLUDE_BOM) {
+				csvData = '\uFEFF' + csvData;
 			}
-			catch (error) {
-				reject(new Error(`Error at flush(): ${error.message}`));
+
+			// Prepend a new line character to csvData string if it is not the first line on the file
+			if (fileAlreadyExists) {
+				csvData = this.NEW_LINE_CHARACTER + csvData;
 			}
-		});
+
+			// Append the csv string to the file
+			fs.appendFileSync(this.FILE_PATH, csvData, 'utf8');
+
+			Logger.info(`CSVWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+
+			this.CURRENT_BATCH_DATA = [];
+
+			//
+		}
+		catch (error) {
+			throw new Error(`Error at flush(): ${error.message}`);
+		}
 	}
 
 	/* * */
