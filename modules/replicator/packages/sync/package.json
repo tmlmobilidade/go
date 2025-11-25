@@ -15,7 +15,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@helperkits/writer": "20251103.1250.18",
+		"@tmlmobilidade/writers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*"

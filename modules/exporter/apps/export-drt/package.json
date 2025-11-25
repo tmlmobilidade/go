@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@carrismetropolitana/api-types": "20251114.1440.22",
-		"@helperkits/writer": "20251103.1250.18",
+		"@tmlmobilidade/writers": "*",
 		"@tmlmobilidade/connectors": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",

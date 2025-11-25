@@ -9,9 +9,10 @@ import '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import fastifyMultipart from '@fastify/multipart';
+import oneLineLogger from '@fastify/one-line-logger';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
-import fastify from 'fastify';
+import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
 import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, type FastifyServerOptions, type FastifyTypeProviderDefault, type RawReplyDefaultExpression, type RawRequestDefaultExpression, type RawServerBase, type RawServerDefault, type RouteGenericInterface } from 'fastify';
 
@@ -64,6 +65,78 @@ const defaultFastifyServiceOptions: FastifyServiceOptions = {
 	},
 };
 
+const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
+	level: 'debug',
+	stream: oneLineLogger({
+		colorize: true, // nice colors,
+		colorizeObjects: true,
+		messageFormat(log, messageKey, _, extras) {
+			const c = extras.colors;
+
+			const palette = {
+				highlight: c.yellowBright, // URLs / routes
+				message: c.whiteBright,
+				method: c.greenBright,
+				methodLabel: c.gray,
+				pipe: c.cyanBright,
+				reqId: c.cyanBright,
+				reqIdLabel: c.gray,
+				status: c.yellowBright,
+				statusLabel: c.gray,
+				timestamp: c.cyanBright,
+			};
+
+			const colorize = (text: string) => {
+				const urlPattern = /(https?:\/\/[^\s]+)/g;
+				const routePattern = /Route "(.+?)"/g;
+				const pathPattern = /([A-Z]+):\/[^\s]+/g;
+
+				return text
+					.replace(urlPattern, palette.highlight('$&'))
+					.replace(routePattern, (_, r) => palette.highlight(`Route "${r}"`))
+					.replace(pathPattern, palette.highlight('$&'));
+			};
+
+			const safe = (val: unknown, fallback = '') =>
+				typeof val === 'string' || typeof val === 'number' ? String(val) : fallback;
+
+			const formatMethod = (method?: string) => {
+				if (!method) return '-----';
+				if (method === 'GET' || method === 'PUT') return `${method}  `;
+				return method.padEnd(5, '-');
+			};
+
+			const timestamp = new Date(log.time as string).toLocaleString('pt-PT', {
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				month: '2-digit',
+				second: '2-digit',
+				year: 'numeric',
+			});
+
+			const reqId = log.reqId ? safe(log.reqId).padEnd(10, ' ') : Array(10).fill('-').join('');
+
+			const statusCode = typeof log.res === 'object' && log.res && 'statusCode' in log.res ? safe(log.res.statusCode).padEnd(3, '-') : '---';
+
+			const method = typeof log.req === 'object' && log.req && 'method' in log.req ? formatMethod((log.req.method as string) ?? '') : '-----';
+
+			const messageRaw = safe(log[messageKey]);
+			const message = palette.message(colorize(messageRaw));
+
+			const parts = [
+				palette.timestamp(timestamp),
+				palette.reqIdLabel(`reqId: ${palette.reqId(reqId)}`),
+				palette.statusLabel(`statusCode: ${palette.status(statusCode)}`),
+				palette.methodLabel(`Method: ${palette.method(method)}`),
+				message,
+			];
+
+			return palette.pipe(parts.join(' | '));
+		},
+	}),
+};
+
 /**
  * FastifyService is a singleton class that provides a Fastify server instance.
  * It allows for setting up routes, plugins, and starting/stopping the server.
@@ -85,7 +158,7 @@ export class FastifyService {
 	 */
 	private constructor(options: FastifyServiceOptions) {
 		const mergedOptions = { ...defaultFastifyServiceOptions, ...options };
-		this.server = fastify(mergedOptions);
+		this.server = fastify({ ...mergedOptions, logger: loggerOptions });
 		this.options = mergedOptions;
 		this._setupDefaultRoutes();
 		this._setupPlugins();

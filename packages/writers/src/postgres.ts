@@ -1,7 +1,7 @@
 /* * */
 
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -24,7 +24,7 @@ export class PostgresWriter {
 
 	private MAX_BATCH_SIZE = 250;
 
-	private SESSION_TIMER = new TIMETRACKER();
+	private SESSION_TIMER = new Timer();
 
 	/* * */
 
@@ -41,7 +41,7 @@ export class PostgresWriter {
 		try {
 			//
 
-			const flushTimer = new TIMETRACKER();
+			const flushTimer = new Timer();
 			const sssionTimerResult = this.SESSION_TIMER.get();
 
 			if (this.CURRENT_BATCH_DATA.length === 0) return;
@@ -67,14 +67,14 @@ export class PostgresWriter {
 
 			await this.DB_CLIENT.query(insertQuery, values);
 
-			LOGGER.info(`POSTGRESWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | DB Table: ${this.DB_TABLE} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+			Logger.info(`POSTGRESWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | DB Table: ${this.DB_TABLE} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
 
 			this.CURRENT_BATCH_DATA = [];
 
 			//
 		}
 		catch (error) {
-			LOGGER.error(`POSTGRESWRITER [${this.INSTANCE_NAME}]: Error @ flush(): ${error.message}`);
+			Logger.error(`POSTGRESWRITER [${this.INSTANCE_NAME}]: Error @ flush(): ${error.message}`);
 		}
 	}
 

@@ -18,7 +18,7 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@helperkits/writer": "20251103.1250.18",
+		"@tmlmobilidade/writers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/interfaces": "*",
