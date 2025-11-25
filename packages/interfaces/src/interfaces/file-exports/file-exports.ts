@@ -44,7 +44,7 @@ class FileExportsClass extends MongoCollectionClass<FileExport, CreateFileExport
 	}
 
 	protected getCollectionName(): string {
-		return 'file_exports';
+		return 'exports';
 	}
 
 	protected getEnvName(): string {
