@@ -1,8 +1,8 @@
 /* * */
 
 import { exportAgencyFile } from '@/exports/agency.js';
-import { exportCalendarDatesRows } from '@/exports/calendar_dates.js';
-import { exportFeedInfoFile } from '@/exports/feed_info.js';
+import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
+import { exportFeedInfoFile } from '@/exports/feed-info.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportShapesRows } from '@/exports/shapes.js';
 import { exportStopTimesRows } from '@/exports/stop-times.js';
