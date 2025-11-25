@@ -67,8 +67,8 @@ import { ZipFile } from 'yazl';
 		const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
 
 		const allActiveAndUpcomingPlans = await plans.findMany({
-			'feed_info.end_date': { $gte: currentOperationalDate },
 			'gtfs_agency.agency_id': { $in: ['41', '42', '43', '44'] },
+			'gtfs_feed_info.feed_end_date': { $gte: currentOperationalDate },
 		});
 
 		if (!allActiveAndUpcomingPlans.length) {
