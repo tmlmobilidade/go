@@ -1,17 +1,40 @@
+'use client';
+
 /* * */
 
 import { type PropsWithChildren, Suspense } from 'react';
 
 import styles from './styles.module.css';
 
-import { Loader } from '../../loaders';
-import { Sidebar } from '../../sidebar';
-import { Topbar } from '../../topbar';
+import { useLayoutContext } from '../../../contexts/Layout.context';
+import { Loader } from '../../loaders/Loader';
+import { Sidebar } from '../../sidebar/Sidebar';
+import { Topbar } from '../../topbar/Topbar';
 import { AppWrapperLogo } from '../AppWrapperLogo';
 
 /* * */
 
 export function AppWrapper({ children }: PropsWithChildren) {
+	//
+
+	//
+	// A. Setup variables
+
+	const layoutContext = useLayoutContext();
+
+	//
+	// B. Render components
+
+	if (layoutContext.data.active_fullscreen) {
+		return (
+			<Suspense fallback={<Loader size="xl" />}>
+				<div className={styles.container}>
+					<div className={styles.content}>{children}</div>
+				</div>
+			</Suspense>
+		);
+	}
+
 	return (
 		<Suspense fallback={<Loader size="xl" />}>
 			<div className={styles.container}>
@@ -22,4 +45,6 @@ export function AppWrapper({ children }: PropsWithChildren) {
 			</div>
 		</Suspense>
 	);
+
+	//
 }
