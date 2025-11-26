@@ -18,9 +18,11 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/timer": "*",
+		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
