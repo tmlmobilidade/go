@@ -9,7 +9,7 @@ import { LiveIcon } from '../LiveIcon';
 
 /* * */
 
-export function VisualizationWrapper({ border, children, height, lastUpdated, padding, style, title, width = '100%' }: { border?: string, children: React.ReactNode, height?: number | string, lastUpdated?: Date, padding?: string, style?: React.CSSProperties, title?: string, width?: number | string }) {
+export function VisualizationWrapper({ border, children, height, lastUpdated, padding, style, title, width = '100%' }: { border?: string, children: React.ReactNode, height?: number | string, lastUpdated?: Date, padding?: string, style?: React.CSSProperties, title?: React.ReactNode | string, width?: number | string }) {
 	//
 
 	//

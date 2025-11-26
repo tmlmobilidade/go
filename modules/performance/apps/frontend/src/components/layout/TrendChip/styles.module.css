@@ -4,6 +4,7 @@
 	color: var(--text-muted, #6b7280);
     gap: 4px;
 	cursor: default;
+		font-weight: var(--font-weight-bold);
 }
 
 .positive {
@@ -20,7 +21,6 @@
 
 .label {
 	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-semibold);
 }
 
 .comparisonLabel {

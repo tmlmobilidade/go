@@ -52,6 +52,6 @@
 
 .kpiValue {
 	font-size: 22px;
-	font-weight: 600;
-color: var(--color-system-text-100);
+	font-weight: var(--font-weight-bold);
+	color: var(--color-system-text-100);
 }

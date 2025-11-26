@@ -120,7 +120,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 						thickness={30}
 						value={Number(formattedData.validRidesPct)}
 						styles={{
-							label: { fontSize: 30 },
+							label: { fontSize: 30, fontWeight: 700 },
 						}}
 					/>
 					<p style={{ textAlign: 'center', width: '250px' }}>Percentagem de circulações válidas (3 momentos)</p>
