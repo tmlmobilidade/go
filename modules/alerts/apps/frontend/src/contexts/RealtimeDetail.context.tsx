@@ -77,8 +77,8 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	const [isDraft, setIsDraft] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 
-	const { data: alert, error, isLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
-	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { data: alert, error, isLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId) + '?realtime=true');
+	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId) + '?realtime=true');
 	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
 
 	useEffect(() => {

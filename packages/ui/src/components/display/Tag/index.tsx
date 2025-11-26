@@ -20,7 +20,14 @@ export interface TagProps {
 /* * */
 
 const TagBody = forwardRef<HTMLDivElement, TagProps>((props, ref) => (
-	<div ref={ref} className={styles.tag} data-clickable={!!props.onClick} data-filled={props.filled} data-variant={props.variant} onClick={props.onClick}>
+	<div
+		ref={ref}
+		className={styles.tag}
+		data-clickable={!!props.onClick}
+		data-filled={props.filled}
+		data-variant={props.variant ?? 'secondary'}
+		onClick={props.onClick}
+	>
 		{React.isValidElement<IconProps>(props.icon) && <span className={styles.icon}>{React.cloneElement(props.icon)}</span>}
 		{props.label !== null && props.label !== undefined && <span className={styles.label}>{props.label}</span>}
 	</div>

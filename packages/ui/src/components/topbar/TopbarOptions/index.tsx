@@ -3,11 +3,11 @@
 /* * */
 
 import { ColorSwatch, Menu } from '@mantine/core';
-import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
 
+import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useNotificationsContext } from '../../../contexts/Notifications.context';
-import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { TopbarMenu } from '../TopbarMenu';
 
 /* * */
@@ -69,6 +69,14 @@ export function TopbarOptions() {
 					))}
 				</Menu.Sub.Dropdown>
 			</Menu.Sub>
+
+			<Menu.Item
+				leftSection={layoutContext.data.active_fullscreen ? <IconMinimize /> : <IconMaximize />}
+				onClick={() => layoutContext.actions.activateFullscreen()}
+				rightSection={layoutContext.data.active_fullscreen ? <IconCheck size={16} /> : null}
+			>
+				{layoutContext.data.active_fullscreen ? 'Sair do Fullscreen' : 'Entrar em Fullscreen'}
+			</Menu.Item>
 
 			<Menu.Divider />
 

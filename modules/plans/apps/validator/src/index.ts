@@ -1,11 +1,11 @@
 /* * */
 
-import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { access, constants, writeFile } from 'fs/promises';
 import { tmpdir } from 'node:os';

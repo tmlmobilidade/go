@@ -8,7 +8,6 @@ import '@fastify/multipart';
 
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
-import fastifyMultipart from '@fastify/multipart';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';

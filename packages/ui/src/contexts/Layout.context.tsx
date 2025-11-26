@@ -6,6 +6,7 @@ import { useColorScheme } from '@mantine/hooks';
 import { IconAB2, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 
+import { useFullscreenState } from '../hooks/use-fullscreen-state';
 import { useUserOrganization } from '../hooks/use-user-organization';
 import { useUserPreference } from '../hooks/use-user-preference';
 
@@ -36,10 +37,12 @@ export type ModeType = (typeof AVAILABLE_MODES)[number]['_id'];
 
 interface LayoutContextState {
 	actions: {
+		activateFullscreen: () => void
 		activateMode: (modeId: ModeType) => void
 		activateTheme: (themeId: ThemeType) => void
 	}
 	data: {
+		active_fullscreen: boolean
 		active_mode: ModeType
 		active_theme: ThemeType
 	}
@@ -71,11 +74,12 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 
 	const defaultTheme: ThemeType = userOrganization && userOrganization.theme && AVAILABLE_THEMES.some(t => t._id === userOrganization.theme) ? userOrganization.theme as ThemeType : 'ocean';
 
+	const [activeFullscreen, setActiveFullscreen] = useFullscreenState();
 	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', defaultTheme);
 	const [activeMode, setActiveMode] = useUserPreference<ModeType>('ui', 'active_mode', 'system');
 
 	//
-	// B. Handle actions
+	// B. Transform data
 
 	useEffect(() => {
 		// Skip if document is unavailable (SSR)
@@ -99,6 +103,16 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 		document.documentElement.setAttribute('data-theme', activeTheme);
 	}, [activeTheme]);
 
+	useEffect(() => {
+		// Skip if document is unavailable (SSR)
+		if (typeof document === 'undefined') return;
+		// Apply the fullscreen state to the document
+		document.documentElement.setAttribute('data-fullscreen', activeFullscreen ? 'true' : 'false');
+	}, [activeFullscreen]);
+
+	//
+	// C. Handle actions
+
 	const activateMode = (modeId: ModeType) => {
 		if (!AVAILABLE_MODES.some(t => t._id === modeId)) return;
 		setActiveMode(modeId);
@@ -109,25 +123,32 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 		setActiveTheme(themeId);
 	};
 
+	const activateFullscreen = () => {
+		setActiveFullscreen();
+	};
+
 	//
-	// C. Define context value
+	// D. Define context value
 
 	const contextValue: LayoutContextState = useMemo(() => ({
 		actions: {
+			activateFullscreen,
 			activateMode,
 			activateTheme,
 		},
 		data: {
+			active_fullscreen: activeFullscreen,
 			active_mode: activeMode,
 			active_theme: activeTheme,
 		},
 	}), [
-		activeTheme,
+		activeFullscreen,
 		activeMode,
+		activeTheme,
 	]);
 
 	//
-	// D. Render components
+	// E. Render components
 
 	return (
 		<LayoutContext.Provider value={contextValue}>

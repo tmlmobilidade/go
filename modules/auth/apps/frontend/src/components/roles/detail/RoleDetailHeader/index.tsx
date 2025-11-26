@@ -5,8 +5,7 @@
 import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { BackButton, Badge, Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, keepUrlParams, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -34,7 +33,8 @@ export function RoleDetailHeader() {
 	return (
 		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
-			<Badge variant="muted">{roleDetailContext.data.id || 'Novo Utilizador'}</Badge>
+			<Tag label={roleDetailContext.data.id || 'Novo Grupo de Permissões'} variant="secondary" />
+			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
 			<Spacer />
 			<Button
 				disabled={!roleDetailContext.flags.canSave}

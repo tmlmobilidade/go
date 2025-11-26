@@ -4,7 +4,6 @@
 import { type MergedGtfsExportConfig } from '@/types.js';
 // import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { Stop } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -21,6 +20,25 @@ interface ExportedStopsRow {
 	platform_code: ''
 }
 
+interface StopObjApiResponse {
+	district_id: string
+	facilities: string[]
+	id: string
+	lat: number
+	line_ids: string[]
+	locality_id: string
+	lon: number
+	long_name: string
+	municipality_id: string
+	operational_status: string
+	pattern_ids: string[]
+	region_id: string
+	route_ids: string[]
+	short_name: string
+	tts_name: string
+	wheelchair_boarding: boolean
+}
+
 /* * */
 
 export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
@@ -29,16 +47,16 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 	// const allStopsList = await stops.findMany({}, { sort: { _id: 1 } });
 
 	const allStopsRes = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-	const allStopsList = await allStopsRes.json() as Stop[];
+	const allStopsList = await allStopsRes.json() as StopObjApiResponse[];
 
 	for await (const stopData of allStopsList) {
 		const parsedStopsRow: ExportedStopsRow = {
-			stop_id: stopData._id,
-			stop_code: stopData._id,
-			stop_name: stopData.name,
+			stop_id: stopData.id,
+			stop_code: stopData.id,
+			stop_name: stopData.long_name,
 			tts_stop_name: stopData.tts_name ?? '',
-			stop_lat: stopData.latitude,
-			stop_lon: stopData.longitude,
+			stop_lat: stopData.lat,
+			stop_lon: stopData.lon,
 			wheelchair_boarding: 0,
 			location_type: 0,
 			parent_station: '',

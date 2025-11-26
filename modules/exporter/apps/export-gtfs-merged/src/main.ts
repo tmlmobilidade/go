@@ -245,14 +245,15 @@ export async function main() {
 	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`, 'utf-8');
 
 	await files.upload(fileStream, {
+		_id: 'gtfs-merged-latest',
 		created_by: 'system',
 		name: `${exportConfig.version}.zip`,
-		resource_id: 'gtfs-merged-latest',
+		resource_id: 'gtfs-merged',
 		scope: 'exports',
 		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
 		updated_by: 'system',
-	});
+	}, { override: true });
 
 	//
 	// Finalize the export process

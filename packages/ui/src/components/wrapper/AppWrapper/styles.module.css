@@ -9,6 +9,11 @@
 	height: 100%;
 }
 
+[data-fullscreen="true"] .container {
+	grid-template-rows: none;
+	grid-template-columns: none;
+}
+
 /* * */
 /* CONTENT */
 
