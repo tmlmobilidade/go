@@ -48,6 +48,8 @@ export async function ensureGtfsFiles() {
 
 		const operationFileZipInstance = await Files.unzip(operationFileData.url);
 
+		Logger.info(`[${planData._id}] Operation file "${operationFileData._id}" downloaded and unzipped.`);
+
 		//
 		// Prepare the output agency.txt file with cleaned data from the plan document
 		// and Agency collection. Update the agency.txt file in the zip archive.
@@ -72,6 +74,8 @@ export async function ensureGtfsFiles() {
 
 		operationFileZipInstance.file('agency.txt', Papa.unparse([updatedAgencyTxtData]));
 
+		Logger.info(`[${planData._id}] agency.txt file updated.`);
+
 		//
 		// Prepare the output feed_info.txt file with cleaned data from the plan document
 		// and Agency collection. Update the feed_info.txt file in the zip archive.
@@ -90,12 +94,14 @@ export async function ensureGtfsFiles() {
 
 		operationFileZipInstance.file('feed_info.txt', Papa.unparse([updatedFeedInfoTxtData]));
 
+		Logger.info(`[${planData._id}] feed_info.txt file updated.`);
+
 		//
 		// Re-zip and upload updated operation file
 
-		const updatedOperationFileData = await operationFileZipInstance.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'arraybuffer' });
+		const updatedOperationFileArrayBuffer = await operationFileZipInstance.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'arraybuffer' });
 
-		const updateFileResult = await files.upload(Buffer.from(updatedOperationFileData), operationFileData);
+		const updateFileResult = await files.upload(Buffer.from(updatedOperationFileArrayBuffer), operationFileData, { override: true });
 
 		Logger.info(`[${planData._id}] Operation file updated: ${updateFileResult.size}`);
 
