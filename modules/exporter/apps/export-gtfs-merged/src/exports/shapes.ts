@@ -24,7 +24,7 @@ export async function exportShapesRows(planData: Plan, sqlTables: GtfsSQLTables,
 	for await (const shapesItem of sqlTables.shapes.stream('ORDER BY shape_id, shape_pt_sequence ASC')) {
 		const shapeData: GTFS_Shape = shapesItem;
 		const parsedShapesRow: ExportedShapesRow = {
-			shape_id: `${planData._id}/${shapeData.shape_id}`,
+			shape_id: `[${planData._id}]${shapeData.shape_id}`,
 			shape_pt_sequence: shapeData.shape_pt_sequence,
 			shape_dist_traveled: shapeData.shape_dist_traveled,
 			shape_pt_lat: shapeData.shape_pt_lat,
