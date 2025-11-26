@@ -36,7 +36,12 @@ export function UsersList() {
 		{
 			accessor: 'full_name',
 			title: 'Nome',
-			width: 250,
+			width: 225,
+		},
+		{
+			accessor: 'email',
+			title: 'Email',
+			width: 350,
 		},
 		{
 			accessor: 'organization_id',
