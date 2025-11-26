@@ -31,7 +31,7 @@ export async function exportAgencyFile(agencyIds: string[], exportConfig: Merged
 	// Get agencies data from the database.
 
 	const foundAgenciesData = await agencies.findMany(
-		{ agency_id: { $in: agencyIds } },
+		{ _id: { $in: agencyIds } },
 		{ sort: { _id: 1 } },
 	);
 
