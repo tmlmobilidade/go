@@ -295,9 +295,9 @@ export class FastifyService {
 		// Cookie plugin
 		await this.server.register(fastifyCookie);
 		// Multipart plugin
-		await this.server.register(fastifyMultipart, {
-			limits: { fileSize: this.options.bodyLimit },
-		});
+		// await this.server.register(fastifyMultipart, {
+		// 	limits: { fileSize: this.options.bodyLimit },
+		// });
 	}
 
 	//
