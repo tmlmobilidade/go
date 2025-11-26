@@ -1,12 +1,12 @@
 /* * */
 
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 
 /* * */
 
@@ -84,10 +84,10 @@ export async function processApexValidation(databaseOperation) {
 	//
 	// Publish the heartbeats for each agency
 
-	if (newSimplifiedApexValidationDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf?status=up&msg=OK&ping=');
-	if (newSimplifiedApexValidationDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV?status=up&msg=OK&ping=');
-	if (newSimplifiedApexValidationDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc?status=up&msg=OK&ping=');
-	if (newSimplifiedApexValidationDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq?status=up&msg=OK&ping=');
+	if (newSimplifiedApexValidationDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
+	if (newSimplifiedApexValidationDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
+	if (newSimplifiedApexValidationDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
+	if (newSimplifiedApexValidationDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
 
 	//
 };
