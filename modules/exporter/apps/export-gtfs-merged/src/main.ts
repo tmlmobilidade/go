@@ -69,7 +69,7 @@ export async function main() {
 	let farthestDateFound: OperationalDate;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport = new Map<string, GTFS_Route_Extended>();
+	const routesMarkedForFinalExport: Record<string, GTFS_Route_Extended> = {};
 
 	//
 	// Get all plans that are active and upcoming.
@@ -179,8 +179,8 @@ export async function main() {
 
 		for await (const routeItem of importedGtfsSql.routes.stream()) {
 			const routeData: GTFS_Route_Extended = routeItem;
-			if (thisIsAnActivePlan || !routesMarkedForFinalExport.has(routeData.route_id)) {
-				routesMarkedForFinalExport.set(routeData.route_id, routeData);
+			if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
+				routesMarkedForFinalExport[routeData.route_id] = routeData;
 			}
 		}
 

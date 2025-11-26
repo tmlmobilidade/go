@@ -33,7 +33,7 @@ export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTabl
 			trip_id: `${planData._id}/${stopTimeData.trip_id}`,
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
-			stop_id: `${planData._id}/${stopTimeData.stop_id}`,
+			stop_id: stopTimeData.stop_id,
 			stop_sequence: stopTimeData.stop_sequence,
 			pickup_type: stopTimeData.pickup_type ?? 0,
 			drop_off_type: stopTimeData.drop_off_type ?? 0,
