@@ -17,6 +17,9 @@ import Papa from 'papaparse';
 export async function ensureGtfsFiles() {
 	//
 
+	Logger.info('Task disabled.');
+	return;
+
 	Logger.init();
 
 	const globalTimer = new Timer();
@@ -54,6 +57,8 @@ export async function ensureGtfsFiles() {
 		// Prepare the output agency.txt file with cleaned data from the plan document
 		// and Agency collection. Update the agency.txt file in the zip archive.
 
+		let agencyTxtChanged = false;
+
 		const foundAgencyData = await agencies.findById(planData.gtfs_agency.agency_id);
 
 		if (!foundAgencyData) {
@@ -72,13 +77,27 @@ export async function ensureGtfsFiles() {
 			agency_url: foundAgencyData.website_url,
 		};
 
-		operationFileZipInstance.file('agency.txt', Papa.unparse([updatedAgencyTxtData]));
+		const updateAgencyTxtString = Papa.unparse([updatedAgencyTxtData]);
 
+		const originalAgencyTxtString = await operationFileZipInstance.file('agency.txt').async('string');
+
+		operationFileZipInstance.file('agency.txt', updateAgencyTxtString);
 		Logger.info(`[${planData._id}] agency.txt file updated.`);
+
+		if (originalAgencyTxtString !== updateAgencyTxtString) {
+			agencyTxtChanged = true;
+			operationFileZipInstance.file('agency.txt', updateAgencyTxtString);
+			Logger.info(`[${planData._id}] agency.txt file updated.`);
+		}
+		else {
+			Logger.info(`[${planData._id}] agency.txt file is already up to date.`);
+		}
 
 		//
 		// Prepare the output feed_info.txt file with cleaned data from the plan document
 		// and Agency collection. Update the feed_info.txt file in the zip archive.
+
+		let feedInfoTxtChanged = false;
 
 		const updatedFeedInfoTxtData: GtfsFeedInfo = {
 			default_lang: 'pt',
@@ -92,18 +111,29 @@ export async function ensureGtfsFiles() {
 			feed_version: planData._id,
 		};
 
-		operationFileZipInstance.file('feed_info.txt', Papa.unparse([updatedFeedInfoTxtData]));
+		const updatedFeedInfoTxtString = Papa.unparse([updatedFeedInfoTxtData]);
 
-		Logger.info(`[${planData._id}] feed_info.txt file updated.`);
+		const originalFeedInfoTxtString = await operationFileZipInstance.file('feed_info.txt').async('string');
+
+		if (originalFeedInfoTxtString !== updatedFeedInfoTxtString) {
+			feedInfoTxtChanged = true;
+			operationFileZipInstance.file('feed_info.txt', updatedFeedInfoTxtString);
+			Logger.info(`[${planData._id}] feed_info.txt file updated.`);
+		}
+		else {
+			Logger.info(`[${planData._id}] feed_info.txt file is already up to date.`);
+		}
 
 		//
 		// Re-zip and upload updated operation file
 
-		const updatedOperationFileArrayBuffer = await operationFileZipInstance.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'arraybuffer' });
+		let updateFileResult = operationFileData;
 
-		const updateFileResult = await files.upload(Buffer.from(updatedOperationFileArrayBuffer), operationFileData, { override: true });
-
-		Logger.info(`[${planData._id}] Operation file updated: ${updateFileResult.size}`);
+		if (agencyTxtChanged || feedInfoTxtChanged === false) {
+			const updatedOperationFileArrayBuffer = await operationFileZipInstance.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'arraybuffer' });
+			updateFileResult = await files.upload(Buffer.from(updatedOperationFileArrayBuffer), operationFileData, { override: true });
+			Logger.info(`[${planData._id}] Operation file updated: ${updateFileResult.size}`);
+		}
 
 		//
 		// Get a hash of all metadata to make it possible
