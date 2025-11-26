@@ -8,7 +8,7 @@ import { ExportsContextProvider } from '../../contexts/exports.context';
 import { MapContextProvider } from '../../contexts/Map.context';
 import { MeContextProvider } from '../../contexts/Me.context';
 import { NotificationsContextProvider } from '../../contexts/Notifications.context';
-import { ThemeContextProvider } from '../../contexts/Theme.context';
+import { LayoutContextProvider } from '../../contexts/Layout.context';
 
 /**
  * `AppProvider` component that wraps the application with necessary context providers.
@@ -20,11 +20,11 @@ export function AppProvider({ children }: PropsWithChildren) {
 		<MeContextProvider>
 			<NotificationsContextProvider>
 				<ExportsContextProvider>
-					<ThemeContextProvider>
+					<LayoutContextProvider>
 						<MapContextProvider>
 							{children}
 						</MapContextProvider>
-					</ThemeContextProvider>
+					</LayoutContextProvider>
 				</ExportsContextProvider>
 			</NotificationsContextProvider>
 		</MeContextProvider>

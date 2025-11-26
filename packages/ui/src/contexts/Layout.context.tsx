@@ -34,7 +34,7 @@ export type ModeType = (typeof AVAILABLE_MODES)[number]['_id'];
 
 /* * */
 
-interface ThemeContextState {
+interface LayoutContextState {
 	actions: {
 		activateMode: (modeId: ModeType) => void
 		activateTheme: (themeId: ThemeType) => void
@@ -47,19 +47,19 @@ interface ThemeContextState {
 
 /* * */
 
-const ThemeContext = createContext<ThemeContextState | undefined>(undefined);
+const LayoutContext = createContext<LayoutContextState | undefined>(undefined);
 
-export function useThemeContext() {
-	const context = useContext(ThemeContext);
+export function useLayoutContext() {
+	const context = useContext(LayoutContext);
 	if (!context) {
-		throw new Error('useThemeContext must be used within a ThemeContextProvider');
+		throw new Error('useLayoutContext must be used within a LayoutContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const ThemeContextProvider = ({ children }: PropsWithChildren) => {
+export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -112,7 +112,7 @@ export const ThemeContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Define context value
 
-	const contextValue: ThemeContextState = useMemo(() => ({
+	const contextValue: LayoutContextState = useMemo(() => ({
 		actions: {
 			activateMode,
 			activateTheme,
@@ -130,9 +130,9 @@ export const ThemeContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Render components
 
 	return (
-		<ThemeContext.Provider value={contextValue}>
+		<LayoutContext.Provider value={contextValue}>
 			{children}
-		</ThemeContext.Provider>
+		</LayoutContext.Provider>
 	);
 
 	//
