@@ -4,10 +4,10 @@ import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/
 import { HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { hashedShapes, hashedTrips, rides, ridesBatchAggregationPipeline, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type HashedShape, type HashedTrip, type Permission, PermissionCatalog, type Ride, type RideNormalized, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
+import { type HashedShape, type HashedTrip, PermissionCatalog, type Ride, type RideNormalized, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
 /* * */
@@ -22,12 +22,12 @@ export class RidesController {
 		//
 
 		//
-		//  Validate the request query parameters
+		// 1. Validate the request query parameters
 
 		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
 
 		//
-		// If search is provided, immediately try to find the ride by ID,
+		// 2. If search is provided, immediately try to find the ride by ID,
 		// and if found, return it right away.
 
 		const searchQuery = parsedQuery.search?.trim() ?? '';
@@ -44,122 +44,46 @@ export class RidesController {
 		}
 
 		//
-		// Setup an aggregation pipeline to filter data
-		// based on the provided parameters.
-
-		const pipeline: AggregationPipeline<Ride> = [];
-
-		pipeline.push({ $match: { start_time_scheduled: { $gte: parsedQuery.date_start, $lte: parsedQuery.date_end } } });
-
-		if (parsedQuery.line_ids) pipeline.push({ $match: { $in: { line_id: parsedQuery.line_ids } } });
-
-		if (parsedQuery.agency_ids) pipeline.push({ $match: { agency_id: { $in: parsedQuery.agency_ids } } });
-
-		//
-		// If search is provided, match rides by ID
-
-		if (searchQuery) {
-			const keywords = searchQuery.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
-			pipeline.push({
-				$match: { _id: { $options: 'i', $regex: pattern } },
-			});
-		}
+		// 3. Get the rides batch using native MongoDB cursor with batchSize to prevent memory issues
+		const pipeline = ridesBatchAggregationPipeline({
+			acceptance_status: parsedQuery.acceptance_status,
+			agency_ids: parsedQuery.agency_ids,
+			analysis_ended_at_last_stop_grade: parsedQuery.analysis_ended_at_last_stop_grade,
+			analysis_expected_apex_validation_interval: parsedQuery.analysis_expected_apex_validation_interval,
+			analysis_simple_three_vehicle_events_grade: parsedQuery.analysis_simple_three_vehicle_events_grade,
+			analysis_transaction_sequentiality: parsedQuery.analysis_transaction_sequentiality,
+			date_end: parsedQuery.date_end,
+			date_start: parsedQuery.date_start,
+			delay_statuses: parsedQuery.delay_statuses,
+			line_ids: parsedQuery.line_ids,
+			operational_statuses: parsedQuery.operational_statuses,
+			search: parsedQuery.search,
+			seen_statuses: parsedQuery.seen_statuses,
+			stop_ids: parsedQuery.stop_ids,
+		});
 
 		//
-		// Filter rides based on permissions for the current user
-
-		const ridePermission: Permission = getPermission(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
-
-		if ('resource' in ridePermission && ridePermission.scope === PermissionCatalog.all.rides.scope) {
-			if (ridePermission.resource['agency_ids'] && !ridePermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource['agency_ids'] } } });
+		// 4. Filter rides based on permissions for the current user
+		const ridesPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
+		if ('resource' in ridesPermission && ridesPermission.scope === PermissionCatalog.all.rides.scope) {
+			if (ridesPermission.resource['agency_ids'] && !ridesPermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				pipeline.push({ $match: { agency_id: { $in: ridesPermission.resource['agency_ids'] } } });
 			}
 		}
 
 		//
-		// Add acceptance status to the pipeline
-		pipeline.push(
-			{ $lookup: { as: 'acceptance', foreignField: 'ride_id', from: 'ride_acceptances', localField: '_id' } },
-			{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
-			{ $addFields: { acceptance_status: { $ifNull: ['$acceptance.acceptance_status', null] } } },
-			{ $project: { acceptance: 0 } },
-		);
-
-		//
-		// Filter by analysis_* items
-
-		const analysisFilters: { field: keyof GetRidesBatchQuery, path: string }[] = [
-			{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
-			{ field: 'analysis_expected_apex_validation_interval', path: 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade' },
-			{ field: 'analysis_simple_three_vehicle_events_grade', path: 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade' },
-		];
-
-		analysisFilters.forEach(({ field, path }) => parsedQuery[field] && pipeline.push({ $match: { [path]: { $in: parsedQuery[field] } } }));
-
-		//
-		// If ride has acceptance_status, filter by it
-		if (
-			parsedQuery.acceptance_status
-			&& parsedQuery.acceptance_status.length > 0
-			&& !parsedQuery.acceptance_status.includes('none')
-		) {
-			pipeline.push(
-				{ $match: { acceptance_status: { $exists: true } } },
-				{ $match: { acceptance_status: { $in: parsedQuery.acceptance_status } } },
-			);
-		}
-
-		//
-		// Impose a hard limit to the number of rides returned
-		// to avoid performance issues.
-
+		// Limit the number of rides to 2000 and sort by start_time_scheduled
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
 		//
-		// Run the aggregation pipeline to fetch the rides data,
-		// and normalize them before sending it to the client.
-
+		// Fetch the rides batch from the database
 		const ridesBatch = await rides.aggregate(pipeline);
-
-		let normalizedRidesBatch = ridesBatch.map(ride => normalizeRide(ride));
-
-		//
-		// Apply additional filtering on the normalized data
-		// to match non-persisted fields like delay_status and operational_status.
-
-		// console.log('HERE =======> ', normalizedRidesBatch.find(ride => ride.operational_status === 'scheduled'));
-
-		if (parsedQuery.delay_statuses) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.delay_statuses.includes(ride.delay_status));
-		}
-		if (parsedQuery.operational_statuses) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.operational_statuses.includes(ride.operational_status));
-		}
-		if (parsedQuery.seen_statuses) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.seen_statuses.includes(ride.seen_status));
-		}
-		if (parsedQuery.analysis_ended_at_last_stop_grade) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_ended_at_last_stop_grade.includes(ride.analysis_ended_at_last_stop_grade));
-		}
-		if (parsedQuery.analysis_expected_apex_validation_interval) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_expected_apex_validation_interval.includes(ride.analysis_expected_apex_validation_interval));
-		}
-		if (parsedQuery.analysis_simple_three_vehicle_events_grade) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_simple_three_vehicle_events_grade.includes(ride.analysis_simple_three_vehicle_events_grade));
-		}
-		if (parsedQuery.analysis_transaction_sequentiality) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_transaction_sequentiality.includes(ride.analysis_transaction_sequentiality));
-		}
-		if (parsedQuery.acceptance_status) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.acceptance_status.includes(ride['acceptance_status']));
-		}
 
 		//
 		// Send the response
 
 		reply.send({
-			data: normalizedRidesBatch ?? [],
+			data: ridesBatch as RideNormalized[] ?? [],
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
