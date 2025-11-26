@@ -2,7 +2,7 @@
 
 import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
 import { getAppConfig } from '@tmlmobilidade/consts';
-import { ThemeContextProvider } from '@tmlmobilidade/ui';
+import { LayoutContextProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
@@ -38,11 +38,11 @@ export default async function Layout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body>
-				<ThemeContextProvider>
+				<LayoutContextProvider>
 					<MapOptionsContextProvider>
 						{children}
 					</MapOptionsContextProvider>
-				</ThemeContextProvider>
+				</LayoutContextProvider>
 			</body>
 		</html>
 	);
