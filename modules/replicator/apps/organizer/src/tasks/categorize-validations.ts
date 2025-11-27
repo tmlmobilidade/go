@@ -4,6 +4,7 @@ import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexValidation
 import { simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /**
  * Ensure that Validations have their category and is_passenger fields correctly set.
@@ -34,7 +35,8 @@ export async function categorizeValidations() {
 			.sort({ created_at: -1 })
 			.stream();
 
-		for await (const validationDocument of allValidationsStream) {
+		for await (const validationItem of allValidationsStream) {
+			const validationDocument = validationItem as SimplifiedApexValidation;
 			// Keep track of total processed Validations
 			totalValidations++;
 			// Log progress every 10,000 Validations
@@ -43,7 +45,7 @@ export async function categorizeValidations() {
 			// If no transaction is found, skip this iteration.
 			await simplifiedApexValidations.updateById(validationDocument._id, {
 				category: getSimplifiedApexValidationCategory(validationDocument.units_qty, validationDocument.on_board_sale_id),
-				is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationDocument.validation_status, validationDocument.event_type, null),
+				is_passenger: validateIfSimplifiedApexValidationIsPassenger(validationDocument.validation_status, validationDocument.event_type, validationDocument.on_board_refund_id),
 			});
 		}
 

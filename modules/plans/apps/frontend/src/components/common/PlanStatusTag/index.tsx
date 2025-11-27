@@ -47,6 +47,10 @@ export function PlanStatusTag({ status, timestamp }: PlanStatusTagProps) {
 		return <Tag label="Erro" tooltip={parsedTimestamp} variant="danger" filled />;
 	}
 
+	if (status === 'skipped') {
+		return <Tag label="Omitido" tooltip={parsedTimestamp} variant="muted" />;
+	}
+
 	return <Tag label="Unknown" tooltip={parsedTimestamp} variant="muted" />;
 
 	//

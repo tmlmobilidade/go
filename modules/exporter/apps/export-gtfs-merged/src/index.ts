@@ -6,7 +6,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-(async function init() {
+(async function () {
 	const runOnInterval = async () => {
 		//
 
@@ -18,7 +18,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 		Logger.terminate(`Operation completed in ${globalTimer.get()}`);
 
-		setTimeout(runOnInterval, 300_000); // 5 minutes
+		setTimeout(runOnInterval, 300_000_000); // 5 hours
 	};
 	runOnInterval();
 })();

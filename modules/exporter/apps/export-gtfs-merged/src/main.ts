@@ -1,6 +1,7 @@
 /* * */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
+import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
@@ -37,7 +38,10 @@ export async function main() {
 	const globalTimer = new Timer();
 
 	//
-	// Setup the export config variables
+	// Setup the global export config object
+	// that will be used throughout the export process.
+	// This includes the working directory, the version string,
+	// and the CSV writers for each GTFS file.
 
 	const exportVersion = Dates.now('Europe/Lisbon').toFormat('yyyyLLdd-HHmm-ss');
 
@@ -62,148 +66,172 @@ export async function main() {
 		},
 	};
 
-	//
-	// Setup variables to keep track of which entities
-	// are being included in the export.
-
 	let farthestDateFound: OperationalDate;
 
 	const referencedAgencyIds = new Set<string>();
 	const routesMarkedForFinalExport: Record<string, GTFS_Route_Extended> = {};
 
-	//
-	// Get all plans that are active and upcoming.
-	// For this regional merge export plans are cut according
-	// to their feed_info dates and stiched back together into
-	// a single GTFS dataset, based on the current date.
-
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
 
-	const allActiveAndUpcomingPlans = await plans.findMany({
-		'gtfs_agency.agency_id': { $in: ['41', '42', '43', '44'] },
-		'gtfs_feed_info.feed_end_date': { $gte: currentOperationalDate },
-	});
+	//
+	// Retrieve all Plans from the database
+	// and iterate on each one.
 
-	if (!allActiveAndUpcomingPlans.length) {
-		Logger.info('No active or upcoming plans found. Exiting...');
-		return;
-	}
+	const allPlansData = await plans.all();
 
-	Logger.info(`Found ${allActiveAndUpcomingPlans.length} active and upcoming plans to process...`);
+	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
+
+	const allPlansDataSorted = allPlansData.sort((a, b) => (b.gtfs_feed_info?.feed_start_date || '').localeCompare(a.gtfs_feed_info?.feed_start_date || ''));
+
+	Logger.info(`Found ${allPlansData.length} Plans to process...`);
 
 	//
 	// For each plan, validate it and import its GTFS into
 	// a database and cut it according to the plan's feed_info dates.
 
-	for (const planData of allActiveAndUpcomingPlans) {
-		//
+	for (const [planIndex, planData] of allPlansDataSorted.entries()) {
+		try {
+			//
 
-		const planTimer = new Timer();
+			const planTimer = new Timer();
 
-		//
-		// Skip if this archive has no associated operation
-		// plan file or no feed_info start and end dates.
+			Logger.spacer(1);
+			Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}`);
 
-		if (!planData.operation_file_id) {
-			Logger.error(`Plan ${planData._id} has no associated operation file. Skipping...`);
-			continue;
-		}
+			//
+			// Validate the Plan data before processing.
+			// If the plan is invalid, skip to the next one
+			// and mark it as 'skipped' in the database.
+			// Otherwise, mark it as 'processing'.
 
-		if (!planData.gtfs_feed_info?.feed_start_date) {
-			Logger.error(`Plan ${planData._id} has no feed_info start date. Skipping...`);
-			continue;
-		}
+			const isValidPlan = validatePlan(planData);
 
-		if (!planData.gtfs_feed_info?.feed_end_date) {
-			Logger.error(`Plan ${planData._id} has no feed_info end date. Skipping...`);
-			continue;
-		}
-
-		//
-		// Find out if this plan is a currently active plan.
-		// Active plans are those whose feed_info dates
-		// encompass the current date, and should be cut only at the end,
-		// not at the start, as to be able to provide a full year of data.
-
-		let thisIsAnActivePlan = false;
-
-		const importConfig: ImportGtfsToDatabaseConfig = {
-			date_range: {
-				end: planData.gtfs_feed_info.feed_end_date,
-				start: planData.gtfs_feed_info.feed_start_date,
-			},
-		};
-
-		if (currentOperationalDate >= planData.gtfs_feed_info.feed_start_date && currentOperationalDate <= planData.gtfs_feed_info.feed_end_date) {
-			// If the plan is currently active, set the start date
-			// to a far past date to be able to provide a full year of data.
-			importConfig.date_range.start = validateOperationalDate('20010101');
-			// Update the flag
-			thisIsAnActivePlan = true;
-		}
-
-		//
-		// Import the GTFS into a SQLite database.
-		// Let the function handle the parsing and cutting,
-		// and return table instances with processed data.
-
-		const importTimer = new Timer();
-
-		const importedGtfsSql = await importGtfsToDatabase(planData, importConfig);
-
-		Logger.success(`Imported plan ${planData._id} in ${importTimer.get()}.`);
-
-		//
-		// Setup the export config and export the GTFS files
-		// into a temporary working directory.
-
-		const exportTimer = new Timer();
-
-		await exportTripsRows(planData, importedGtfsSql, exportConfig);
-		await exportStopTimesRows(planData, importedGtfsSql, exportConfig);
-		await exportShapesRows(planData, importedGtfsSql, exportConfig);
-		await exportCalendarDatesRows(planData, importedGtfsSql, exportConfig);
-
-		Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
-
-		//
-		// Routes behave a little differently as only one version of each will be exported:
-		// 1. If the route exists in an active plan, use that version.
-		// 2. Otherwise, use the most recent version available.
-		// Unlike other files, we do not add Plan ID modifier to the route_id. This is a deliberate
-		// stylistic choice to keep route_ids consistent across plans, making it easier to reference
-		// and manage routes without relying on plan-scoped identifiers. Instead, we track inclusion
-		// at the export scope — each route can only be exported once, even though it may appear in
-		// multiple plans, and could have different attributes in each plan.
-		// This block only determines which routes should be exported; no files are written here.
-
-		for await (const routeItem of importedGtfsSql.routes.stream()) {
-			const routeData: GTFS_Route_Extended = routeItem;
-			if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
-				routesMarkedForFinalExport[routeData.route_id] = routeData;
+			if (!isValidPlan) {
+				await plans.updateById(planData._id, {
+					apps: {
+						...planData.apps,
+						merger: {
+							last_hash: null,
+							status: 'skipped',
+							timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+						},
+					},
+				});
+				Logger.divider();
+				continue;
 			}
+
+			await plans.updateById(planData._id, {
+				apps: {
+					...planData.apps,
+					merger: {
+						last_hash: null,
+						status: 'processing',
+						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+					},
+				},
+			});
+
+			//
+			// Find out if this plan is a currently active plan.
+			// Active plans are those whose feed_info dates
+			// encompass the current date, and should be cut only at the end,
+			// not at the start, as to be able to provide a full year of data.
+
+			let thisIsAnActivePlan = false;
+
+			const importConfig: ImportGtfsToDatabaseConfig = {
+				date_range: {
+					end: planData.gtfs_feed_info.feed_end_date,
+					start: planData.gtfs_feed_info.feed_start_date,
+				},
+			};
+
+			if (currentOperationalDate >= planData.gtfs_feed_info.feed_start_date && currentOperationalDate <= planData.gtfs_feed_info.feed_end_date) {
+				// If the plan is currently active, set the start date
+				// to a far past date to be able to provide a full year of data.
+				importConfig.date_range.start = validateOperationalDate('20010101');
+				// Update the flag
+				thisIsAnActivePlan = true;
+			}
+
+			//
+			// Import the GTFS into a SQLite database.
+			// Let the function handle the parsing and cutting,
+			// and return table instances with processed data.
+
+			const importTimer = new Timer();
+
+			const importedGtfsSql = await importGtfsToDatabase(planData, importConfig);
+
+			Logger.success(`Imported plan ${planData._id} in ${importTimer.get()}.`);
+
+			//
+			// Setup the export config and export the GTFS files
+			// into a temporary working directory.
+
+			const exportTimer = new Timer();
+
+			await exportTripsRows(planData, importedGtfsSql, exportConfig);
+			await exportStopTimesRows(planData, importedGtfsSql, exportConfig);
+			await exportShapesRows(planData, importedGtfsSql, exportConfig);
+			await exportCalendarDatesRows(planData, importedGtfsSql, exportConfig);
+
+			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
+
+			//
+			// Routes behave a little differently as only one version of each will be exported:
+			// 1. If the route exists in an active plan, use that version.
+			// 2. Otherwise, use the most recent version available.
+			// Unlike other files, we do not add Plan ID modifier to the route_id. This is a deliberate
+			// stylistic choice to keep route_ids consistent across plans, making it easier to reference
+			// and manage routes without relying on plan-scoped identifiers. Instead, we track inclusion
+			// at the export scope — each route can only be exported once, even though it may appear in
+			// multiple plans, and could have different attributes in each plan.
+			// This block only determines which routes should be exported; no files are written here.
+
+			for await (const routeItem of importedGtfsSql.routes.stream()) {
+				const routeData: GTFS_Route_Extended = routeItem;
+				if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
+					routesMarkedForFinalExport[routeData.route_id] = routeData;
+				}
+			}
+
+			Logger.info(`Added route references for plan ${planData._id}.`);
+
+			//
+			// Add the plan's referenced agency ID and farthest
+			// feed end date to the global variables for later export.
+
+			referencedAgencyIds.add(planData.gtfs_agency.agency_id);
+
+			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
+				? planData.gtfs_feed_info.feed_end_date
+				: farthestDateFound;
+
+			//
+			// Finally, write the plan entry into the plans.txt file.
+
+			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
+
+			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
+
+		//
 		}
-
-		Logger.info(`Added route references for plan ${planData._id}.`);
-
-		//
-		// Add the plan's referenced agency ID and farthest
-		// feed end date to the global variables for later export.
-
-		referencedAgencyIds.add(planData.gtfs_agency.agency_id);
-
-		farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
-			? planData.gtfs_feed_info.feed_end_date
-			: farthestDateFound;
-
-		//
-		// Finally, write the plan entry into the plans.txt file.
-
-		await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
-
-		Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
-
-		//
+		catch (error) {
+			await plans.updateById(planData._id, {
+				apps: {
+					...planData.apps,
+					merger: {
+						last_hash: null,
+						status: 'error',
+						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+					},
+				},
+			});
+			Logger.error(`Error processing plan ${planData._id}`, error);
+			Logger.divider();
+		}
 	}
 
 	//

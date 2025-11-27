@@ -36,6 +36,8 @@ export async function cleanOldValidations() {
 
 		processing: 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds
 
+		skipped: 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds
+
 		waiting: 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds
 
 	};

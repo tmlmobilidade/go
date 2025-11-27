@@ -29,7 +29,8 @@ services:
       - WATCHTOWER_INCLUDE_RESTARTING=TRUE
       - WATCHTOWER_INCLUDE_STOPPED=TRUE
       - WATCHTOWER_REVIVE_STOPPED=TRUE
-      - WATCHTOWER_TIMEOUT=30s
+      - WATCHTOWER_TIMEOUT=120s
+      - WATCHTOWER_ROLLING_RESTART=TRUE
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -42,7 +43,7 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 2gb
+          memory: 4gb
     logging:
       options:
         max-size: '1m'
@@ -80,7 +81,7 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 2gb
+          memory: 4gb
     logging:
       options:
         max-size: '1m'
