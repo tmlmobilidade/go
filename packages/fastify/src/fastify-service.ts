@@ -73,6 +73,7 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 			const c = extras.colors;
 
 			const palette = {
+				error: c.redBright,
 				highlight: c.yellowBright, // URLs / routes
 				message: c.whiteBright,
 				method: c.greenBright,
@@ -80,6 +81,7 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				pipe: c.cyanBright,
 				reqId: c.cyanBright,
 				reqIdLabel: c.gray,
+				stack: c.red,
 				status: c.yellowBright,
 				statusLabel: c.gray,
 				timestamp: c.cyanBright,
@@ -120,8 +122,26 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 
 			const method = typeof log.req === 'object' && log.req && 'method' in log.req ? formatMethod((log.req.method as string) ?? '') : '-----';
 
-			const messageRaw = safe(log[messageKey]);
-			const message = palette.message(colorize(messageRaw));
+			// Extract error information
+			// Pino serializes errors, so log.err is an object with type, message, stack, etc.
+			const errorObj = log.err || log.error;
+			let errorMessage = safe(log[messageKey]);
+			let errorStack: string | undefined;
+
+			if (errorObj) {
+				// Pino serialized error object
+				errorMessage = (errorObj as Error).message || errorMessage;
+				errorStack = (errorObj as Error).stack;
+			}
+			else if (log[messageKey] instanceof Error) {
+				// Direct Error instance (shouldn't happen with Pino, but just in case)
+				errorMessage = (log[messageKey] as unknown as Error).message || errorMessage;
+				errorStack = (log[messageKey] as Error).stack;
+			}
+
+			const message = palette.message(colorize(errorMessage));
+			// Add stack trace on new lines, indented for readability
+			const stackTrace = errorStack ? `\n${palette.stack(errorStack.split('\n').map(line => `  ${line}`).join('\n'))}` : '';
 
 			const parts = [
 				palette.timestamp(timestamp),
@@ -131,7 +151,7 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				message,
 			];
 
-			return palette.pipe(parts.join(' | '));
+			return palette.pipe(parts.join(' | ')) + stackTrace;
 		},
 	}),
 };
@@ -207,7 +227,7 @@ export class FastifyService {
 			console.log('Fastify server stopped.');
 		}
 		catch (error) {
-			this.server.log.error(error);
+			this.server.log.error({ err: error }, error instanceof Error ? error.message : 'Error stopping server');
 			process.exit(1);
 		}
 	}
@@ -233,8 +253,9 @@ export class FastifyService {
 		 * This ensures consistent error responses for HTTP exceptions throughout the application.
 		 */
 		this.server.setErrorHandler((error, _, reply) => {
-			// Log the error
-			this.server.log.error(error);
+			// Log the error with full stack trace
+			const errorMessage = error instanceof Error ? error.message : 'Unhandled error';
+			this.server.log.error({ err: error }, errorMessage);
 			// Handle HttpException errors
 			if (error instanceof HttpException) {
 				reply
