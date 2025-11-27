@@ -34,8 +34,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  enrich:
-    image: ghcr.io/tmlmobilidade/go-replicator-enrich:production
+  organizer:
+    image: ghcr.io/tmlmobilidade/go-replicator-organizer:production
     deploy:
       restart_policy:
         condition: any

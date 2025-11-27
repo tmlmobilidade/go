@@ -81,7 +81,7 @@ env:
     plans:frontend
     plans:validator
 
-    replicator:enrich
+    replicator:organizer
     replicator:stream
     replicator:sync-apex-locations
     replicator:sync-apex-on-board-refunds
