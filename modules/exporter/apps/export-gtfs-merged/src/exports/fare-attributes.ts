@@ -42,7 +42,7 @@ export async function exportFareAttributesFile(agencyIds: string[], exportConfig
 		for (const fareAttributeData of allFareAttributesData) {
 			const parsedFareAttributesRow: ExportedDatesRow = {
 				agency_id: agencyId,
-				fare_id: fareAttributeData.fare_id,
+				fare_id: `${agencyId}-${fareAttributeData.fare_id}`,
 				price: fareAttributeData.price,
 				payment_method: fareAttributeData.payment_method,
 				currency_type: fareAttributeData.currency_type,
