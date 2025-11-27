@@ -212,6 +212,20 @@ export async function main() {
 
 			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
 
+			//
+			// Mark the plan as complete in the database.
+
+			await plans.updateById(planData._id, {
+				apps: {
+					...planData.apps,
+					merger: {
+						last_hash: null,
+						status: 'complete',
+						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+					},
+				},
+			});
+
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
 		//
