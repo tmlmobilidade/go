@@ -5,7 +5,7 @@ import { z } from 'zod';
 /* PROCESSING STATUS */
 /* * */
 
-export const ProcessingStatusSchema = z.enum(['waiting', 'processing', 'complete', 'error']);
+export const ProcessingStatusSchema = z.enum(['waiting', 'processing', 'complete', 'error', 'skipped']);
 export type ProcessingStatus = z.infer<typeof ProcessingStatusSchema>;
 
 /* DELAY STATUS */
