@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-plans-validator
+name: tmlmobilidade-go-plans-validator-staging
 
 volumes:
   certbotdata:
@@ -37,7 +37,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   validator:
-    image: ghcr.io/tmlmobilidade/sae-plans-validator:staging
+    image: ghcr.io/tmlmobilidade/go-plans-validator:staging
     deploy:
       restart_policy:
         condition: on-failure
