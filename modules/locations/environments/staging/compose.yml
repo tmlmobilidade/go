@@ -43,7 +43,7 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 2gb
+          memory: 4gb
     logging:
       options:
         max-size: '1m'
@@ -81,7 +81,7 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 2gb
+          memory: 4gb
     logging:
       options:
         max-size: '1m'
