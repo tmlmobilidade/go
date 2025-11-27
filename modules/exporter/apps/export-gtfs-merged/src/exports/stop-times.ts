@@ -8,7 +8,7 @@ import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedStopTimesRow {
+export interface ExportedStopTimesRow {
 	trip_id: string
 	arrival_time: string
 	departure_time: string

@@ -7,7 +7,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedFeedInfoRow {
+export interface ExportedFeedInfoRow {
 	feed_version: string
 	feed_start_date: OperationalDate
 	feed_end_date: OperationalDate

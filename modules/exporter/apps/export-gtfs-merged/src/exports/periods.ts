@@ -5,7 +5,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-interface ExportedPeriodsRow {
+export interface ExportedPeriodsRow {
 	period_id: 1 | 2 | 3
 	period_name: string
 }

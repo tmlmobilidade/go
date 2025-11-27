@@ -6,7 +6,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedDatesRow {
+export interface ExportedDatesRow {
 	date: OperationalDate
 	day_type: '1' | '2' | '3'
 	holiday: '0' | '1'

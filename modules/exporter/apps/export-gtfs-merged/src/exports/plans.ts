@@ -6,7 +6,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedPlansRow {
+export interface ExportedPlansRow {
 	agency_id: string
 	plan_end_date: OperationalDate
 	plan_id: string

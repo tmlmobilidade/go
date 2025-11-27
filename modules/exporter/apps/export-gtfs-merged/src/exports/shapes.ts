@@ -8,7 +8,7 @@ import { type GTFS_Shape, type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedShapesRow {
+export interface ExportedShapesRow {
 	shape_id: string
 	shape_pt_sequence: number
 	shape_dist_traveled: number

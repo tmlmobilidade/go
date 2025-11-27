@@ -7,7 +7,7 @@ import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/ty
 
 /* * */
 
-interface ExportedRoutesRow {
+export interface ExportedRoutesRow {
 	agency_id: string
 	line_id: number
 	line_short_name: string

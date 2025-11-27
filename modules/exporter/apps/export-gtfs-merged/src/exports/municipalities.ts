@@ -6,7 +6,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-interface ExportedMunicipalitiesRow {
+export interface ExportedMunicipalitiesRow {
 	district_id: string
 	district_name: string
 	municipality_id: string
