@@ -15,10 +15,10 @@ interface CsvWriterOptions {
 
 /* * */
 
-export class CsvWriter {
+export class CsvWriter<T> {
 	//
 
-	private CURRENT_BATCH_DATA = [];
+	private CURRENT_BATCH_DATA: T[] = [];
 
 	private FILE_PATH = null;
 
@@ -55,28 +55,43 @@ export class CsvWriter {
 
 			if (this.CURRENT_BATCH_DATA.length === 0) return;
 
+			//
 			// Setup a variable to keep track if the file exists or not
+
 			const fileAlreadyExists = fs.existsSync(this.FILE_PATH);
 
+			//
 			// Use papaparse to produce the CSV string
+
 			let csvData = Papa.unparse(this.CURRENT_BATCH_DATA, { header: !fileAlreadyExists, newline: this.NEW_LINE_CHARACTER, skipEmptyLines: 'greedy' });
 
+			//
 			// Prepend BOM if this is the first write and BOM is enabled
+
 			if (!fileAlreadyExists && this.INCLUDE_BOM) {
 				csvData = '\uFEFF' + csvData;
 			}
 
-			// Prepend a new line character to csvData string if it is not the first line on the file
+			//
+			// Prepend a new line character to csvData string
+			// if it is not the first line on the file.
+
 			if (fileAlreadyExists) {
 				csvData = this.NEW_LINE_CHARACTER + csvData;
 			}
 
-			// Recurseively ensure that the directory for the file path exists
+			//
+			// Recurseively ensure that the directory
+			// for the file path exists.
+
 			const dirPath = this.FILE_PATH.substring(0, this.FILE_PATH.lastIndexOf('/'));
+
 			if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
 
+			//
 			// Append the csv string to the file
-			fs.appendFileSync(this.FILE_PATH, csvData, 'utf8');
+
+			fs.appendFileSync(this.FILE_PATH, csvData, { encoding: 'utf-8', flush: true });
 
 			Logger.info(`CSVWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
 
@@ -91,24 +106,24 @@ export class CsvWriter {
 
 	/* * */
 
-	async write(data) {
+	async write(data: T | T[]) {
+		//
+
+		//
 		// Check if the batch is full
-		if (this.CURRENT_BATCH_DATA.length >= this.MAX_BATCH_SIZE) {
-			await this.flush();
-		}
 
+		if (this.CURRENT_BATCH_DATA.length >= this.MAX_BATCH_SIZE) await this.flush();
+
+		//
 		// Reset the timer
-		if (this.CURRENT_BATCH_DATA.length === 0) {
-			this.SESSION_TIMER.reset();
-		}
 
+		if (this.CURRENT_BATCH_DATA.length === 0) this.SESSION_TIMER.reset();
+
+		//
 		// Add the data to the batch
-		if (Array.isArray(data)) {
-			this.CURRENT_BATCH_DATA = [...this.CURRENT_BATCH_DATA, ...data];
-		}
-		else {
-			this.CURRENT_BATCH_DATA.push(data);
-		}
+
+		if (Array.isArray(data)) this.CURRENT_BATCH_DATA.push(...data);
+		else this.CURRENT_BATCH_DATA.push(data);
 
 		//
 	}
