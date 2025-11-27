@@ -5,7 +5,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-interface ExportedDatesRow {
+export interface ExportedFareAttributesRow {
 	agency_id: string
 	currency_type: string
 	fare_id: string
@@ -40,7 +40,7 @@ export async function exportFareAttributesFile(agencyIds: string[], exportConfig
 
 	for (const agencyId of agencyIds) {
 		for (const fareAttributeData of allFareAttributesData) {
-			const parsedFareAttributesRow: ExportedDatesRow = {
+			const parsedFareAttributesRow: ExportedFareAttributesRow = {
 				agency_id: agencyId,
 				fare_id: `${agencyId}-${fareAttributeData.fare_id}`,
 				price: fareAttributeData.price,

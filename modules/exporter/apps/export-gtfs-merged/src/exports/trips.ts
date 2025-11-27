@@ -8,7 +8,7 @@ import { type GTFS_Trip_Extended, type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedTripsRow {
+export interface ExportedTripsRow {
 	route_id: string
 	service_id: string
 	trip_id: string

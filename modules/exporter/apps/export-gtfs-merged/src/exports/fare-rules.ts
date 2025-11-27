@@ -3,7 +3,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-interface ExportedDatesRow {
+export interface ExportedFareRulesRow {
 	fare_id: string
 	route_id: string
 }
@@ -33,7 +33,7 @@ export async function exportFareRulesFile(routeIds: string[], exportConfig: Merg
 		// Skip fare rules that are not related to the exported routes
 		if (!routeIds.includes(fareRuleData.route_id)) continue;
 		// Parse data row
-		const parsedFareRulesRow: ExportedDatesRow = {
+		const parsedFareRulesRow: ExportedFareRulesRow = {
 			// WORKAROUND: Prefix fare_id with '4' and first
 			// character of route_id to avoid fare_id collisions between agencies.
 			fare_id: `4${fareRuleData.route_id.substring(0, 1)}-${fareRuleData.fare_id}`,

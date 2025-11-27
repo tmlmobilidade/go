@@ -7,7 +7,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-interface ExportedAgencyRow {
+export interface ExportedAgencyRow {
 	agency_id: string
 	agency_name: string
 	agency_email: string

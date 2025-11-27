@@ -34,8 +34,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  enrich:
-    image: ghcr.io/tmlmobilidade/go-replicator-enrich:staging
+  organizer:
+    image: ghcr.io/tmlmobilidade/go-replicator-organizer:staging
     deploy:
       restart_policy:
         condition: any

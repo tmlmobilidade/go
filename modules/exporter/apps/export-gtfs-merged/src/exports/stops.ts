@@ -2,12 +2,11 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-// import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-interface ExportedStopsRow {
+export interface ExportedStopsRow {
 	stop_id: string
 	stop_code: string
 	stop_name: string

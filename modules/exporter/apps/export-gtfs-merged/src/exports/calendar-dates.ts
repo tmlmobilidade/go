@@ -8,7 +8,7 @@ import { type OperationalDate, type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedCalendarDatesRow {
+export interface ExportedCalendarDatesRow {
 	service_id: string
 	date: OperationalDate
 	exception_type: 1 // Only type 1 (added) is supported in merged exports

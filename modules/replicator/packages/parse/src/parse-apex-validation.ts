@@ -93,8 +93,11 @@ export function validateIfSimplifiedApexValidationIsPassenger(validationStatus: 
 /* * */
 
 export function getSimplifiedApexValidationCategory(unitsQuantity: null | number, onBoardSaleId: null | string): SimplifiedApexValidation['category'] {
-	const hasUnitsQuantityField = !!unitsQuantity;
+	// Allow 0 as valid unitsQuantity value
+	const hasUnitsQuantityField = !!unitsQuantity || unitsQuantity === 0;
+	// Check if onBoardSaleId is present
 	const hasOnBoardSaleId = !!onBoardSaleId;
+	// Determine category based on the presence of fields
 	if (hasUnitsQuantityField) return 'prepaid';
 	if (hasOnBoardSaleId) return 'on_board_sale';
 	return 'subscription';

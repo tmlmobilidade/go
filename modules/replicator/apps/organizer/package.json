@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-enrich",
+	"name": "@tmlmobilidade/go-replicator-organizer",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,11 +17,12 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/writers": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-replicator-pckg-parse": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
