@@ -1,12 +1,12 @@
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { RideNormalized } from '@tmlmobilidade/types';
 import { Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface Props {
-	startTimeObserved: string
+	startTimeObserved: null | string
 	status: RideNormalized['start_delay_status']
 }
 
@@ -14,6 +14,10 @@ interface Props {
 
 export function StartTimeStatusTag({ startTimeObserved, status }: Props) {
 	//
+
+	if (!startTimeObserved) {
+		return null;
+	}
 
 	if (status === 'ontime') {
 		return (

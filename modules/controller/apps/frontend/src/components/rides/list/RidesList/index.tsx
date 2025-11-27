@@ -14,7 +14,7 @@ import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -30,8 +30,8 @@ export function RidesList() {
 	const router = useRouter();
 	const ridesListContext = useRidesListContext();
 
-	const formatTimestamp = (timestamp: number) => {
-		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : 'N/A';
+	const formatTimestamp = (timestamp: UnixTimestamp) => {
+		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
 	};
 
 	const columns: DataTableColumn<RideNormalized>[] = [
