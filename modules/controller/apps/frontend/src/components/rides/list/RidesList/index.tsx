@@ -67,7 +67,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'start_time_observed',
-			render: item => <StartTimeStatusTag startTimeObserved={formatTimestamp(item.start_time_observed)} status={item.delay_status} />,
+			render: item => <StartTimeStatusTag startTimeObserved={formatTimestamp(item.start_time_observed)} status={item.start_delay_status} />,
 			title: 'Observado',
 			width: 200,
 		},

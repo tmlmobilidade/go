@@ -6,8 +6,8 @@ import { Section, Tag } from '@tmlmobilidade/ui';
 /* * */
 
 interface Props {
-	startTimeObserved?: RideNormalized['start_time_observed_display']
-	status?: RideNormalized['delay_status']
+	startTimeObserved: string
+	status: RideNormalized['start_delay_status']
 }
 
 /* * */
