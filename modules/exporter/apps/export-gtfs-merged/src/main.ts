@@ -77,11 +77,9 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const allPlansData = await plans.all();
+	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
-
-	const allPlansDataSorted = allPlansData.sort((a, b) => (b.gtfs_feed_info?.feed_start_date || '').localeCompare(a.gtfs_feed_info?.feed_start_date || ''));
 
 	Logger.info(`Found ${allPlansData.length} Plans to process...`);
 
@@ -89,7 +87,7 @@ export async function main() {
 	// For each plan, validate it and import its GTFS into
 	// a database and cut it according to the plan's feed_info dates.
 
-	for (const [planIndex, planData] of allPlansDataSorted.entries()) {
+	for (const [planIndex, planData] of allPlansData.entries()) {
 		try {
 			//
 
