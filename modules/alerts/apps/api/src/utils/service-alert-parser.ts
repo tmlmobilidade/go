@@ -62,7 +62,8 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				alert.references.forEach((reference) => {
 					informed_entity.push({
 						trip: {
-							trip_id: reference.parent_id.split('-').pop() ?? '',
+							// TODO: Should fetch from rides collection instead of regexing
+							trip_id: `[${reference.parent_id.split('-').shift() ?? ''}]${reference.parent_id.split('-').pop() ?? ''}`, // "[plan_id]-[trip_id]"
 						},
 					});
 				});
