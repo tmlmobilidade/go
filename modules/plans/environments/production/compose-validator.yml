@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-sae-plans-validator
+name: tmlmobilidade-go-plans-validator-production
 
 volumes:
   certbotdata:
@@ -11,11 +11,11 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  wud:
-    image: getwud/wud
+  watchtower:
+    image: nickfedor/watchtower
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
         delay: 30s
       resources:
         limits:
@@ -27,28 +27,30 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - WUD_TRIGGER_DOCKER_DEFAULT_PRUNE=true
-      - WUD_WATCHER_LOCAL_WATCHALL=true
-      - WUD_WATCHER_LOCAL_CRON=* * * * *
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_ROLLING_RESTART=FALSE
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   validator:
-    image: ghcr.io/tmlmobilidade/sae-plans-validator:production
+    image: ghcr.io/tmlmobilidade/go-plans-validator:production
     deploy:
       restart_policy:
         condition: on-failure
         delay: 30s
       resources:
         limits:
-          memory: 14gb
+          memory: 12gb
     logging:
       options:
         max-size: '1m'
         max-file: '1'
     environment:
-      - GOMEMLIMIT=14GiB
+      - GOMEMLIMIT=8GiB
     volumes:
       - ./secrets:/secrets
     env_file:
