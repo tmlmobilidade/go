@@ -6,6 +6,7 @@ import { Logger } from '@tmlmobilidade/logger';
 /* * */
 
 interface ExportedDatesRow {
+	agency_id: string
 	currency_type: string
 	fare_id: string
 	payment_method: string
@@ -25,7 +26,7 @@ interface FareAttributeObjApiResponse {
  * Export the fare_attributes.txt file.
  * @param exportConfig The export configuration.
  */
-export async function exportFareAttributesFile(exportConfig: MergedGtfsExportConfig) {
+export async function exportFareAttributesFile(agencyIds: string[], exportConfig: MergedGtfsExportConfig) {
 	//
 
 	//
@@ -37,15 +38,18 @@ export async function exportFareAttributesFile(exportConfig: MergedGtfsExportCon
 	//
 	// Parse and write dates
 
-	for (const fareAttributeData of allFareAttributesData) {
-		const parsedFareAttributesRow: ExportedDatesRow = {
-			fare_id: fareAttributeData.fare_id,
-			price: fareAttributeData.price,
-			payment_method: fareAttributeData.payment_method,
-			currency_type: fareAttributeData.currency_type,
-			transfers: fareAttributeData.transfers,
-		};
-		await exportConfig.writers.fare_attributes.write(parsedFareAttributesRow);
+	for (const agencyId of agencyIds) {
+		for (const fareAttributeData of allFareAttributesData) {
+			const parsedFareAttributesRow: ExportedDatesRow = {
+				agency_id: agencyId,
+				fare_id: `${agencyId}-${fareAttributeData.fare_id}`,
+				price: fareAttributeData.price,
+				payment_method: fareAttributeData.payment_method,
+				currency_type: fareAttributeData.currency_type,
+				transfers: fareAttributeData.transfers,
+			};
+			await exportConfig.writers.fare_attributes.write(parsedFareAttributesRow);
+		}
 	}
 
 	await exportConfig.writers.fare_attributes.flush();
