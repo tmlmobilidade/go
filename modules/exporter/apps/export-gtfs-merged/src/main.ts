@@ -213,7 +213,7 @@ export async function main() {
 	await exportDatesFile(exportConfig);
 	await exportPeriodsFile(exportConfig);
 	await exportMunicipalitiesFile(exportConfig);
-	await exportFareAttributesFile(exportConfig);
+	await exportFareAttributesFile(Array.from(referencedAgencyIds), exportConfig);
 	await exportFareRulesFile(Object.keys(routesMarkedForFinalExport), exportConfig);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), exportConfig);
 	await exportAgencyFile(Array.from(referencedAgencyIds), exportConfig);
