@@ -260,29 +260,34 @@ export async function main() {
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);
 
 	//
-	// Zip the exported GTFS files into a single archive
+	// Zip the exported GTFS files into a single archive.
+	// YAZL is used here for its focus on performance and low memory usage.
 
 	const zipTimer = new Timer();
 
 	const outputZip = new ZipFile();
 
 	await new Promise<void>((resolve) => {
+		// Read the working directory contents
 		const workdirDirContents = fs.readdirSync(exportConfig.workdir, { withFileTypes: true });
-		workdirDirContents.forEach((outputDirFile) => {
-			outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name);
-		});
+		// Add each file to the zip
+		workdirDirContents.forEach(outputDirFile => outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name));
+		// Setup a write stream to the final zip file
 		outputZip.outputStream
 			.pipe(fs.createWriteStream(`${exportConfig.workdir}/${exportConfig.version}.zip`))
 			.on('close', resolve);
+		// Finalize the zip creation, which triggers
+		// the piping and writing process.
 		outputZip.end();
 	});
 
 	Logger.success(`Zipped GTFS export in ${zipTimer.get()}.`);
 
 	//
-	// Upload the GTFS zip file to the S3 files service
+	// Upload the GTFS zip file to the Files collection,
+	// which handles storage and retrieval.
 
-	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`, 'utf-8');
+	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
 	await files.upload(fileStream, {
 		_id: 'gtfs-merged-latest',
