@@ -10,6 +10,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
@@ -29,6 +30,10 @@ import { exportShapesRows } from '@/exports/shapes.js';
 import { exportStopTimesRows } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsRows } from '@/exports/trips.js';
+
+/* * */
+
+let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 /* * */
 
@@ -82,6 +87,23 @@ export async function main() {
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
 	Logger.info(`Found ${allPlansData.length} Plans to process...`);
+
+	//
+	// Hash the allPlansData response and check if it differs
+	// from the last processed hash stored in memory. This way,
+	// if no Plans were changed/added/removed since the last export,
+	// we can skip the entire export process.
+
+	const currentPlansListHash = crypto
+		.createHash('sha1')
+		.update(JSON.stringify(allPlansData.map(plan => plan.hash)))
+		.digest('hex');
+
+	if (PREVIOUS_PLANS_LIST_HASH === currentPlansListHash) {
+		return Logger.terminate('No changes detected in Plans list since last export. Skipping this run...');
+	}
+
+	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
 
 	//
 	// For each plan, validate it and import its GTFS into

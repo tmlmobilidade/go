@@ -18,7 +18,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 		Logger.terminate(`Operation completed in ${globalTimer.get()}`);
 
-		setTimeout(runOnInterval, 300_000_000); // 5 hours
+		setTimeout(runOnInterval, 60_000); // 1 minute
 	};
 	runOnInterval();
 })();
