@@ -17,11 +17,12 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/gtfs-validator": "20251127.2242.10",
+		"@tmlmobilidade/gtfs-validator": "20251128.1629.25",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rabbitmq": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"csv-parse": "6.1.0"
 	},
