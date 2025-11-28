@@ -7,7 +7,7 @@ import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
-import { access, constants, writeFile } from 'fs/promises';
+import { access, constants, unlink, writeFile } from 'fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -20,9 +20,7 @@ interface ValidationMessage {
 
 /* * */
 
-async function validateFile(filePath: string): Promise<GTFSValidatorResult['summary']> {
-	//
-
+async function validateFile(filePath: string, outputFilePath: string): Promise<GTFSValidatorResult['summary']> {
 	//
 	// Get the environment and rules path
 	const environment = getCurrentEnvironment();
@@ -44,12 +42,15 @@ async function validateFile(filePath: string): Promise<GTFSValidatorResult['summ
 	}
 
 	try {
+		Logger.info(`Writing validation output to: ${outputFilePath}`);
 		const validationResult = await GTFSValidator(filePath, {
 			lang: 'pt',
+			log_level: 'debug',
+			out_file: outputFilePath,
 			rules_path: rulesPath,
-			timeout: 1000 * 60 * 15, // 15 minutes for large feeds
 		});
 
+		Logger.info(`Validation completed in ${validationResult.executionTime}ms`);
 		return validationResult.summary;
 	}
 	catch (err) {
@@ -58,8 +59,17 @@ async function validateFile(filePath: string): Promise<GTFSValidatorResult['summ
 				case 'BINARY_NOT_FOUND':
 					Logger.error(`GTFS validator binary not found for platform ${process.platform}-${process.arch}`);
 					break;
+				case 'ERROR_OUTPUT_TOO_LARGE':
+					Logger.error(`Validation error output exceeded maximum size.`);
+					break;
 				case 'INPUT_NOT_ACCESSIBLE':
 					Logger.error(`Cannot access GTFS file: ${filePath}`);
+					break;
+				case 'OUTPUT_TOO_LARGE':
+					Logger.error(`Validation output exceeded maximum size. The GTFS feed may be too large.`);
+					break;
+				case 'PARSE_ERROR':
+					Logger.error(`Failed to parse validation results. The validator may have crashed or produced invalid output.`);
 					break;
 				case 'VALIDATION_TIMEOUT':
 					Logger.error(`GTFS validation timed out - feed may be too large or complex`);
@@ -85,6 +95,9 @@ async function validateFile(filePath: string): Promise<GTFSValidatorResult['summ
 }
 
 async function processValidation(message: ValidationMessage) {
+	const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
+	const outputFilePath = join(tmpdir(), `gtfs_validation_${message.validation_id}.json`);
+
 	try {
 		Logger.info('Processing validation...');
 		// 1. Update validation status to processing
@@ -105,17 +118,16 @@ async function processValidation(message: ValidationMessage) {
 		// 3. Download and write file to temp directory for validation
 		Logger.info(`Downloading file from ${file.url}`);
 		const fileBuffer = await fetch(file.url).then(res => res.arrayBuffer());
-		const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
 		await writeFile(tempFilePath, Buffer.from(fileBuffer));
 
 		Logger.info(`File downloaded and written to temp directory: ${tempFilePath}`);
 
-		// 4. Run GTFS validation
+		// 4. Run GTFS validation with output file
 		Logger.info(`Validating file: ${tempFilePath}`);
 
 		let validationResult: GTFSValidatorResult['summary'];
 		try {
-			validationResult = await validateFile(tempFilePath);
+			validationResult = await validateFile(tempFilePath, outputFilePath);
 		}
 		catch (error) {
 			validationResult = {
@@ -136,13 +148,13 @@ async function processValidation(message: ValidationMessage) {
 
 		Logger.info(`File validated, updating document in MongoDB`);
 
-		// 6. Update validation status based on results
+		// 5. Update validation status based on results
 		await gtfsValidations.updateById(message.validation_id, {
 			feeder_status: validationResult.total_errors > 0 ? 'error' : 'complete',
 			summary: validationResult,
 		});
 
-		// Send email to user
+		// 6. Send email to user
 		try {
 			const latest_validation = await gtfsValidations.findById(message.validation_id);
 			await sendGtfsValidationEmail({
@@ -161,7 +173,6 @@ async function processValidation(message: ValidationMessage) {
 		Logger.divider();
 	}
 	catch (error) {
-		console.log('ERROR:', error);
 		Logger.error('Error processing validation:', error);
 
 		// Send email to system
@@ -177,28 +188,50 @@ async function processValidation(message: ValidationMessage) {
 				});
 			}
 		}
-		catch (error) {
-			Logger.error('Error sending email:', error);
+		catch (emailError) {
+			Logger.error('Error sending email:', emailError);
 		}
 
 		// Update validation status to error
-		await gtfsValidations.updateById(message.validation_id, {
-			feeder_status: 'error',
-			summary: {
-				messages: [
-					{
-						field: 'N/A',
-						file_name: 'Erro do sistema',
-						message: error instanceof Error ? error.message : JSON.stringify(error),
-						rows: [],
-						severity: 'error',
-						validation_id: message.validation_id,
-					},
-				],
-				total_errors: 1,
-				total_warnings: 0,
-			},
-		});
+		try {
+			await gtfsValidations.updateById(message.validation_id, {
+				feeder_status: 'error',
+				summary: {
+					messages: [
+						{
+							field: 'N/A',
+							file_name: 'Erro do sistema',
+							message: error instanceof Error ? error.message : JSON.stringify(error),
+							rows: [],
+							severity: 'error',
+							validation_id: message.validation_id,
+						},
+					],
+					total_errors: 1,
+					total_warnings: 0,
+				},
+			});
+		}
+		catch (updateError) {
+			Logger.error('Error updating validation status:', updateError);
+		}
+	}
+	finally {
+		// Clean up temporary files
+		try {
+			await Promise.allSettled([
+				unlink(tempFilePath).catch(() => {
+					// Ignore errors if file doesn't exist
+				}),
+				unlink(outputFilePath).catch(() => {
+					// Ignore errors if file doesn't exist
+				}),
+			]);
+			Logger.info('Temporary files cleaned up');
+		}
+		catch (cleanupError) {
+			Logger.error('Error cleaning up temporary files:', cleanupError);
+		}
 	}
 }
 
