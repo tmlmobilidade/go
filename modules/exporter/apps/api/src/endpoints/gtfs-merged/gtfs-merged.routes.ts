@@ -19,6 +19,8 @@ server.register(
 
 		instance.get('/test-2', GtfsMergedController.download2);
 
+		instance.get('/test-3', GtfsMergedController.download2);
+
 		next();
 	},
 	{ prefix: NAMESPACE },
