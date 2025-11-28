@@ -123,6 +123,7 @@ export function initGtfsSqlTables(): ImportGtfsContext['gtfs'] {
 	});
 
 	return {
+		_db: database.databaseInstance,
 		calendar_dates: calendarDatesMap,
 		routes: routesTable,
 		shapes: shapesTable,

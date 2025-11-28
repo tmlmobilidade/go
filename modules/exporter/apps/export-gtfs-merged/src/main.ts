@@ -250,7 +250,14 @@ export async function main() {
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
-		//
+			//
+			// Force the closure of the SQLite database connection to release resources.
+			// Since SQLite sets up memory using C-level allocations, it is not possible
+			// to rely on garbage collection alone to free up memory in a timely manner.
+
+			importedGtfsSql._db.close();
+
+			//
 		}
 		catch (error) {
 			await plans.updateById(planData._id, {
