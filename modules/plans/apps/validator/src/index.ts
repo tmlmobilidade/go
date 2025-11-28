@@ -5,18 +5,11 @@ import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/e
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
-import { getCurrentEnvironment } from '@tmlmobilidade/types';
+import { Timer } from '@tmlmobilidade/timer';
+import { getCurrentEnvironment, type GtfsValidation } from '@tmlmobilidade/types';
 import { access, constants, unlink, writeFile } from 'fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-
-/* * */
-
-interface ValidationMessage {
-	file_id: string
-	validation_id: string
-}
 
 /* * */
 
@@ -45,7 +38,7 @@ async function validateFile(filePath: string, outputFilePath: string): Promise<G
 		Logger.info(`Writing validation output to: ${outputFilePath}`);
 		const validationResult = await GTFSValidator(filePath, {
 			lang: 'pt',
-			log_level: 'debug',
+			log_level: getCurrentEnvironment() === 'production' ? 'info' : 'debug',
 			out_file: outputFilePath,
 			rules_path: rulesPath,
 		});
@@ -94,23 +87,23 @@ async function validateFile(filePath: string, outputFilePath: string): Promise<G
 	}
 }
 
-async function processValidation(message: ValidationMessage) {
-	const tempFilePath = join(tmpdir(), `gtfs_${message.file_id}.zip`);
-	const outputFilePath = join(tmpdir(), `gtfs_validation_${message.validation_id}.json`);
+async function processValidation(validation: GtfsValidation) {
+	const tempFilePath = join(tmpdir(), `gtfs_${validation.file_id}.zip`);
+	const outputFilePath = join(tmpdir(), `gtfs_validation_${validation._id}.json`);
 
 	try {
 		Logger.info('Processing validation...');
 		// 1. Update validation status to processing
-		const validation = await gtfsValidations.updateById(message.validation_id, {
+		const updatedValidation = await gtfsValidations.updateById(validation._id, {
 			feeder_status: 'processing',
 		});
 
-		Logger.info(`Validation set to processing: ${validation.feeder_status}`);
+		Logger.info(`Validation set to processing: ${updatedValidation.feeder_status}`);
 
 		// 2. Get the file from MongoDB
-		const file = await files.findById(message.file_id);
+		const file = await files.findById(validation.file_id);
 		if (!file) {
-			throw new Error(`File not found: ${message.file_id}`);
+			throw new Error(`File not found: ${validation.file_id}`);
 		}
 
 		Logger.info(`Getting file from MongoDB: ${file._id}`);
@@ -138,7 +131,7 @@ async function processValidation(message: ValidationMessage) {
 						message: error instanceof Error ? error.message : String(error),
 						rows: [],
 						severity: 'error',
-						validation_id: message.validation_id,
+						validation_id: validation._id,
 					},
 				],
 				total_errors: 1,
@@ -149,14 +142,14 @@ async function processValidation(message: ValidationMessage) {
 		Logger.info(`File validated, updating document in MongoDB`);
 
 		// 5. Update validation status based on results
-		await gtfsValidations.updateById(message.validation_id, {
+		await gtfsValidations.updateById(validation._id, {
 			feeder_status: validationResult.total_errors > 0 ? 'error' : 'complete',
 			summary: validationResult,
 		});
 
 		// 6. Send email to user
 		try {
-			const latest_validation = await gtfsValidations.findById(message.validation_id);
+			const latest_validation = await gtfsValidations.findById(validation._id);
 			await sendGtfsValidationEmail({
 				props: {
 					first_name: '',
@@ -194,7 +187,7 @@ async function processValidation(message: ValidationMessage) {
 
 		// Update validation status to error
 		try {
-			await gtfsValidations.updateById(message.validation_id, {
+			await gtfsValidations.updateById(validation._id, {
 				feeder_status: 'error',
 				summary: {
 					messages: [
@@ -204,7 +197,7 @@ async function processValidation(message: ValidationMessage) {
 							message: error instanceof Error ? error.message : JSON.stringify(error),
 							rows: [],
 							severity: 'error',
-							validation_id: message.validation_id,
+							validation_id: validation._id,
 						},
 					],
 					total_errors: 1,
@@ -235,33 +228,47 @@ async function processValidation(message: ValidationMessage) {
 	}
 }
 
-async function main() {
-	// Subscribe to validation queue
-	await rabbitMQ.subscribe('gtfs-validation', async (message) => {
-		const validationMessage = JSON.parse(message.toString()) as ValidationMessage;
+const RUN_INTERVAL = 10_000; // 10 seconds
 
-		Logger.spacer(3);
-		Logger.title('🚀 Validation message received');
-		Logger.info(JSON.stringify(validationMessage));
+/* * */
 
-		await processValidation(validationMessage);
-	});
+(async function init() {
+	const runOnInterval = async () => {
+		Logger.init();
 
-	Logger.divider('🚀 GTFS Validator service started');
-}
+		const globalTimer = new Timer();
 
-(async function startMainLoop() {
-	while (true) {
 		try {
-			await main();
-			break; // Exit loop if main resolves without error
+			// Query for waiting validations
+			const waitingValidations = await gtfsValidations.findMany(
+				{ feeder_status: { $in: ['waiting', 'processing'] } },
+				{ sort: { created_at: 1 } }, // Process oldest first
+			);
+
+			Logger.info(`Found ${waitingValidations.length} waiting or stuck validations`);
+
+			// Process each waiting validation
+			for (const validation of waitingValidations) {
+				Logger.spacer(3);
+				Logger.title('🚀 Processing validation...');
+				Logger.info(`Validation ID: ${validation._id}, File ID: ${validation.file_id}`);
+
+				await processValidation(validation);
+			}
+
+			if (waitingValidations.length === 0) {
+				Logger.info('No waiting validations to process');
+			}
 		}
-		catch (err) {
-			Logger.error('Fatal error in main():', err);
-			Logger.info('Restarting main() in 5 seconds...');
-			await new Promise(res => setTimeout(res, 5000));
+		catch (error) {
+			Logger.error('Error processing validations:', error);
 		}
-	}
+
+		Logger.terminate(`Validation check completed in ${globalTimer.get()}`);
+
+		setTimeout(runOnInterval, RUN_INTERVAL);
+	};
+	runOnInterval();
 })();
 
 /* * */
