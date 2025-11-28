@@ -10,16 +10,32 @@ export class GtfsMergedController {
 	//
 
 	/**
-	 * Downloads a FileExport by ID.
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Download the latest GTFS merged file.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
-	static async download(request: FastifyRequest, reply: FastifyReply<string>) {
+	static async download1(request: FastifyRequest, reply: FastifyReply<string>) {
 		// Retrieve file data from database
 		const foundFileData = await files.findById('gtfs-merged-latest');
 		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-		// Send file URL as response to client
-		reply.send({ data: foundFileData.url, error: null, statusCode: HttpStatus.OK });
+		// Stream the file in the given URL to the client
+		return reply.redirect(foundFileData.url);
+	}
+
+	/**
+	 * Download the latest GTFS merged file.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async download2(request: FastifyRequest, reply: FastifyReply<string>) {
+		// Retrieve file data from database
+		const foundFileData = await files.findById('gtfs-merged-latest');
+		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		// Download the file in the given URL to the client
+		return reply
+			.status(200)
+			.header('Content-Disposition', 'attachment; filename="gtfs-merged-latest.zip"')
+			.redirect(foundFileData.url);
 	}
 
 	//
