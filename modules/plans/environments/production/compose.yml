@@ -71,6 +71,8 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
     secrets:
@@ -111,6 +113,31 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - ociprivatekey
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  validator:
+    image: ghcr.io/tmlmobilidade/go-plans-validator:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 12gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    environment:
+      - GOMEMLIMIT=8GiB
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
     secrets:
