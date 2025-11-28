@@ -134,6 +134,8 @@ services:
         max-file: '1'
     environment:
       - GOMEMLIMIT=8GiB
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
     secrets:
