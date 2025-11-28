@@ -10,6 +10,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
@@ -29,6 +30,10 @@ import { exportShapesRows } from '@/exports/shapes.js';
 import { exportStopTimesRows } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsRows } from '@/exports/trips.js';
+
+/* * */
+
+let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 /* * */
 
@@ -82,6 +87,23 @@ export async function main() {
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
 	Logger.info(`Found ${allPlansData.length} Plans to process...`);
+
+	//
+	// Hash the allPlansData response and check if it differs
+	// from the last processed hash stored in memory. This way,
+	// if no Plans were changed/added/removed since the last export,
+	// we can skip the entire export process.
+
+	const currentPlansListHash = crypto
+		.createHash('sha1')
+		.update(JSON.stringify(allPlansData.map(plan => plan.hash)))
+		.digest('hex');
+
+	if (PREVIOUS_PLANS_LIST_HASH === currentPlansListHash) {
+		return Logger.terminate('No changes detected in Plans list since last export. Skipping this run...');
+	}
+
+	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
 
 	//
 	// For each plan, validate it and import its GTFS into
@@ -260,29 +282,34 @@ export async function main() {
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);
 
 	//
-	// Zip the exported GTFS files into a single archive
+	// Zip the exported GTFS files into a single archive.
+	// YAZL is used here for its focus on performance and low memory usage.
 
 	const zipTimer = new Timer();
 
 	const outputZip = new ZipFile();
 
 	await new Promise<void>((resolve) => {
+		// Read the working directory contents
 		const workdirDirContents = fs.readdirSync(exportConfig.workdir, { withFileTypes: true });
-		workdirDirContents.forEach((outputDirFile) => {
-			outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name);
-		});
+		// Add each file to the zip
+		workdirDirContents.forEach(outputDirFile => outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name));
+		// Setup a write stream to the final zip file
 		outputZip.outputStream
 			.pipe(fs.createWriteStream(`${exportConfig.workdir}/${exportConfig.version}.zip`))
 			.on('close', resolve);
+		// Finalize the zip creation, which triggers
+		// the piping and writing process.
 		outputZip.end();
 	});
 
 	Logger.success(`Zipped GTFS export in ${zipTimer.get()}.`);
 
 	//
-	// Upload the GTFS zip file to the S3 files service
+	// Upload the GTFS zip file to the Files collection,
+	// which handles storage and retrieval.
 
-	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`, 'utf-8');
+	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
 	await files.upload(fileStream, {
 		_id: 'gtfs-merged-latest',
