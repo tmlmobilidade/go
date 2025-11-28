@@ -15,7 +15,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', GtfsMergedController.download);
+		instance.get('/test-1', GtfsMergedController.download);
 
 		next();
 	},

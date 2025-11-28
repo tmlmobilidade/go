@@ -40,7 +40,18 @@ async function main() {
 				// Validate the Plan data before processing
 
 				const isValidPlan = validatePlan(currentPlan);
-				if (!isValidPlan) continue;
+				if (!isValidPlan) {
+					await plans.updateById(currentPlan._id, {
+						apps: {
+							...currentPlan.apps,
+							controller: {
+								last_hash: null,
+								status: 'skipped',
+								timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+							},
+						},
+					});
+				}
 
 				//
 				// At this point, the plan will be processed.

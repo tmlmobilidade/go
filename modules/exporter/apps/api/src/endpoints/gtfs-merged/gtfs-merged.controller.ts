@@ -2,7 +2,7 @@
 
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { fileExports, files } from '@tmlmobilidade/interfaces';
+import { files } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -10,19 +10,25 @@ export class GtfsMergedController {
 	//
 
 	/**
-	 * Downloads a FileExport by ID.
-	 * @param request The request object
-	 * @param reply The reply object
+	 * Download the latest GTFS merged file.
+	 * @param request The request object.
+	 * @param reply The reply object.
 	 */
 	static async download(request: FastifyRequest, reply: FastifyReply<string>) {
-		// Retrieve file export record from database
-		const foundFileExports = await fileExports.findById('gtfs-merged-latest');
-		if (!foundFileExports) throw new HttpException(HttpStatus.NOT_FOUND, 'File Export not found');
 		// Retrieve file data from database
-		const foundFileData = await files.findById(foundFileExports.file_id);
+		const foundFileData = await files.findById('gtfs-merged-latest');
 		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-		// Send file URL as response to client
-		reply.send({ data: foundFileData.url, error: null, statusCode: HttpStatus.OK });
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="gtfs-merged-latest.zip"`);
+		reply.header('Content-Type', 'application/zip');
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	//
