@@ -69,10 +69,7 @@ async function main() {
 		// Comment out the line below to skip uploading to storage during development
 		await saveAllAgencyDatabasesToStorage(baseConfig, AGENCY_IDS);
 
-		Logger.divider();
-
-		// Exit the application
-		process.exit(0);
+		Logger.terminate('DRT export completed successfully.');
 	}
 	catch (error) {
 		Logger.error('Error parsing plan.', error);

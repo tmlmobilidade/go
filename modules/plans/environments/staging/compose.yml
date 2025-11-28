@@ -138,3 +138,5 @@ services:
       - ./secrets:/secrets
     env_file:
       - ./secrets/.env
+    secrets:
+      - ociprivatekey
