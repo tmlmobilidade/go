@@ -41,6 +41,7 @@ jobs:
         with:
           files: |
             packages/**
+            .github/workflows/publish-packages.yml
           base_sha: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
           sha: ${{ github.sha }}
           include_all_old_new_renamed_files: true
@@ -59,10 +60,12 @@ jobs:
             const packages = [];
             
             const isManual = context.eventName === 'workflow_dispatch';
-            const hasAnyChanges = process.env.CHANGED_FILES?.split('\n').some(f => f.startsWith('packages/'));
+            const changedFiles = (process.env.CHANGED_FILES || '').split('\n').filter(Boolean);
+            const hasPackageChanges = changedFiles.some(f => f.startsWith('packages/'));
+            const hasWorkflowChanges = changedFiles.some(f => f === '.github/workflows/publish-packages.yml');
             
-            // If manual run or any package changed, publish all packages
-            const publishAll = isManual || hasAnyChanges;
+            // If manual run, any package changed, or workflow file changed, publish all packages
+            const publishAll = isManual || hasPackageChanges || hasWorkflowChanges;
             
             if (!publishAll) {
               console.log('No packages changed, skipping publish');
