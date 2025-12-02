@@ -1,0 +1,109 @@
+name: 'Environment Sync | Daily Sync'
+
+on:
+  schedule:
+    # Run daily at 1:00 AM UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  generate-package-lock:
+    name: Generate package-lock.json
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: npm install --package-lock-only
+
+      - name: Save package-lock.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-lock.json
+          path: package-lock.json
+          retention-days: 1
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-environments:
+    name: Sync Production to Staging
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+        with:
+          node-version: '20'
+          directory: '.'
+          with-npm-cache: 'true'
+          with-turbo-cache: 'false'
+
+      - name: Install MongoDB tools
+        run: |
+          curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
+          echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-database-tools
+
+      - name: Install RClone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Build env-sync CLI
+        working-directory: ./cli/env-sync
+        run: |
+          npm ci
+          npm run build
+
+      - name: Setup OCI Key File
+        working-directory: ./cli/env-sync
+        run: |
+          mkdir -p secrets
+          echo "${{ secrets.OCI_KEY_FILE_CONTENT }}" > secrets/oci_key.pem
+          chmod 600 secrets/oci_key.pem
+
+      - name: Create .env file
+        working-directory: ./cli/env-sync
+        run: |
+          echo "${{ secrets.ENV_SYNC_ENV }}" > .env
+          chmod 600 .env
+
+      - name: Run environment sync
+        working-directory: ./cli/env-sync
+        run: |
+          # Run both database and storage sync (non-interactive)
+          node dist/index.js --verbose --db-only
+          node dist/index.js --verbose --storage-only
+
+      - name: Upload backup artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-artifacts
+          path: |
+            cli/env-sync/backups/**
+          retention-days: 7
+          if-no-files-found: ignore
+
