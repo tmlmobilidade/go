@@ -352,9 +352,28 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
 		{ field: 'analysis_expected_apex_validation_interval', path: 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade' },
 		{ field: 'analysis_simple_three_vehicle_events_grade', path: 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade' },
+		{ field: 'analysis_transaction_sequentiality', path: 'analysis.TRANSACTION_SEQUENTIALITY.grade' },
 	];
 
-	analysisFilters.forEach(({ field, path }) => filter[field] && pipeline.push({ $match: { [path]: { $in: filter[field] } } }));
+	analysisFilters.forEach(({ field, path }) => {
+		if (!filter[field]) return;
+
+		if (filter[field].includes('none')) {
+			// When 'none' is included, set the field to 'none' if it doesn't exist, then match on the filter array
+			pipeline.push({
+				$addFields: {
+					[path]: { $ifNull: [`$${path}`, 'none'] },
+				},
+			});
+		}
+
+		// Match documents where the field value is in the filter array
+		pipeline.push({
+			$match: {
+				[path]: { $in: filter[field] },
+			},
+		});
+	});
 
 	// Stage 7: Filter by acceptance status
 	// Only applies filter if acceptance_status is provided and doesn't include 'none'
