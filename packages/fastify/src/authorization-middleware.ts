@@ -2,7 +2,7 @@
 
 import { FastifyReply, type FastifyRequest } from '@/fastify-service.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { authProvider } from '@tmlmobilidade/interfaces';
+import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/interfaces';
 import { type ActionsOf, type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 
 /* * */
@@ -14,10 +14,6 @@ declare module 'fastify' {
 		permissions: Permission[]
 	}
 }
-
-/* * */
-
-const COOKIE_NAME = 'session_token';
 
 /**
  * Creates an authorization middleware that validates user authentication and permissions.
@@ -37,7 +33,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 
 		if (!sessionToken) {
 			return reply
-				.setCookie(COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
 				.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
 		}
 
@@ -46,19 +42,27 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 		// Cache is per session token, and valid for 5 minutes.
 		// This reduces the number of calls to the auth provider.
 
-		const userData = await authProvider.getUserFromSessionToken(sessionToken);
-		const permissionsData = await authProvider.getPermissionsFromSessionToken(sessionToken);
-		const organizationData = await authProvider.getOrganizationFromSessionToken(sessionToken);
+		try {
+			const userData = await authProvider.getUserFromSessionToken(sessionToken);
+			const permissionsData = await authProvider.getPermissionsFromSessionToken(sessionToken);
+			const organizationData = await authProvider.getOrganizationFromSessionToken(sessionToken);
 
-		if (!userData || !permissionsData || !organizationData) {
+			if (!userData || !permissionsData || !organizationData) {
+				return reply
+					.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+					.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
+			}
+
+			request.me = userData;
+			request.permissions = permissionsData;
+			request.organization = organizationData;
+		}
+		catch (error) {
+			console.error('Authorization Middleware Error:', error);
 			return reply
-				.setCookie(COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
 				.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
 		}
-
-		request.me = userData;
-		request.permissions = permissionsData;
-		request.organization = organizationData;
 
 		//
 		// Evaluate the retrieved permissions,
