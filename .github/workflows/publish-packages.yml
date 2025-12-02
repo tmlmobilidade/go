@@ -155,6 +155,9 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
       # # #
+      - name: Setup Turbo
+        run: npm install -g turbo@^2
+      # # #
       - name: Download package-lock.json artifact
         uses: actions/download-artifact@v4
         with:
