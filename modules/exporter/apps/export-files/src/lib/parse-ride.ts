@@ -12,7 +12,7 @@ function parseTime(time: null | UnixTimestamp): null | string {
 export function parseRide(ride: RideNormalized & { acceptance: null | RideAcceptance }): RideExportData {
 	return {
 		/* META */
-	/* * */
+		/* * */
 		_id: ride._id,
 		agency_id: ride.agency_id,
 		driver_ids: ride.driver_ids.join('|'),
@@ -81,6 +81,7 @@ export function parseRide(ride: RideNormalized & { acceptance: null | RideAccept
 		analysis_SIMPLE_ONE_APEX_VALIDATION: ride.analysis?.SIMPLE_ONE_APEX_VALIDATION?.grade ?? null,
 		analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: ride.analysis?.SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION?.grade ?? null,
 		analysis_SIMPLE_THREE_VEHICLE_EVENTS: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade ?? null,
+		analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.reason ?? null,
 		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_first: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_first?.join('|') ?? null,
 		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_last: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_last?.join('|') ?? null,
 		analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_middle: ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.stop_ids_middle?.join('|') ?? null,
