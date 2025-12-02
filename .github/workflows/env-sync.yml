@@ -55,6 +55,30 @@ jobs:
           echo "${{ secrets.ENV_SYNC_ENV }}" > .env
           chmod 600 .env
 
+      - name: Update OCI_KEY_FILE path in .env
+        working-directory: ./cli/env-sync
+        run: |
+          # Get absolute path to the OCI key file
+          KEY_FILE_PATH="$(pwd)/secrets/oci_key.pem"
+          
+          # Verify the key file exists first
+          if [ ! -f "$KEY_FILE_PATH" ]; then
+            echo "Error: OCI key file not found at $KEY_FILE_PATH"
+            exit 1
+          fi
+          
+          # Update OCI_KEY_FILE in .env file to use absolute path
+          if grep -q "^OCI_KEY_FILE=" .env; then
+            # Replace existing OCI_KEY_FILE line
+            sed -i "s|^OCI_KEY_FILE=.*|OCI_KEY_FILE=$KEY_FILE_PATH|" .env
+          else
+            # Append if not found
+            echo "OCI_KEY_FILE=$KEY_FILE_PATH" >> .env
+          fi
+          
+          echo "Updated OCI_KEY_FILE to: $KEY_FILE_PATH"
+          echo "Key file permissions: $(ls -l "$KEY_FILE_PATH")"
+
       - name: Run environment sync
         working-directory: ./cli/env-sync
         run: |
