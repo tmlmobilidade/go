@@ -71,7 +71,21 @@ export class UsersController {
 		// Extract the session token from authentication cookie
 
 		const sessionToken = request.cookies[COOKIE_NAME];
-		if (!sessionToken) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session token is missing');
+		if (!sessionToken) {
+			return reply
+				.setCookie(COOKIE_NAME, '', {
+					httpOnly: true,
+					maxAge: 0,
+					path: '/',
+					sameSite: 'lax',
+					secure: true,
+				})
+				.send({
+					data: 'Session token is missing',
+					error: null,
+					statusCode: HttpStatus.UNAUTHORIZED,
+				});
+		}
 
 		//
 		// Retrieve user data using the session token.
