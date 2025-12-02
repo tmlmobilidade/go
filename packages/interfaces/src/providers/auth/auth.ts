@@ -11,6 +11,10 @@ import bcrypt from 'bcryptjs';
 
 /* * */
 
+export const AUTH_SESSION_COOKIE_NAME = 'session_token';
+
+/* * */
+
 class AuthProvider {
 	private static _instance: AuthProvider;
 
