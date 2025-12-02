@@ -71,21 +71,6 @@ export class UsersController {
 		// Extract the session token from authentication cookie
 
 		const sessionToken = request.cookies[COOKIE_NAME];
-		if (!sessionToken) {
-			return reply
-				.setCookie(COOKIE_NAME, '', {
-					httpOnly: true,
-					maxAge: 0,
-					path: '/',
-					sameSite: 'lax',
-					secure: true,
-				})
-				.send({
-					data: 'Session token is missing',
-					error: null,
-					statusCode: HttpStatus.UNAUTHORIZED,
-				});
-		}
 
 		//
 		// Retrieve user data using the session token.
@@ -104,18 +89,8 @@ export class UsersController {
 			console.error('Error retrieving user data:', error);
 			await authProvider.logout(sessionToken);
 			return reply
-				.setCookie(COOKIE_NAME, '', {
-					httpOnly: true,
-					maxAge: 0,
-					path: '/',
-					sameSite: 'lax',
-					secure: true,
-				})
-				.send({
-					data: undefined,
-					error: null,
-					statusCode: HttpStatus.OK,
-				});
+				.setCookie(COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 		}
 
 		//
