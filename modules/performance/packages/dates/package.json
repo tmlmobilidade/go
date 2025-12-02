@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/utils": "*",
-		"@turf/turf": "7.3.0",
+		"@turf/turf": "7.3.1",
 		"mongodb": "7.0.0",
 		"tunnel-ssh": "5.2.0"
 	},

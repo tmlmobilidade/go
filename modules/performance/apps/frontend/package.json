@@ -20,12 +20,12 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.0.4",
-		"next-intl": "4.5.5",
-		"nuqs": "2.8.1",
+		"next": "16.0.6",
+		"next-intl": "4.5.7",
+		"nuqs": "2.8.2",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
-		"swr": "2.3.6"
+		"swr": "2.3.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
