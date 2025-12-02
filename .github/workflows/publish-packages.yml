@@ -32,25 +32,10 @@ jobs:
       # # #
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: ${{ github.event_name == 'push' && '0' || '2' }}
-      # # #
-      - name: Get changed files
-        id: changed
-        uses: tj-actions/changed-files@v45
-        with:
-          files: |
-            packages/**
-            .github/workflows/publish-packages.yml
-          base_sha: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
-          sha: ${{ github.sha }}
-          include_all_old_new_renamed_files: true
       # # #
       - name: Discover publishable packages
         id: discover
         uses: actions/github-script@v7
-        env:
-          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
         with:
           script: |
             const fs = require('fs');
@@ -58,20 +43,6 @@ jobs:
             
             const packagesDir = 'packages';
             const packages = [];
-            
-            const isManual = context.eventName === 'workflow_dispatch';
-            const changedFiles = (process.env.CHANGED_FILES || '').split('\n').filter(Boolean);
-            const hasPackageChanges = changedFiles.some(f => f.startsWith('packages/'));
-            const hasWorkflowChanges = changedFiles.some(f => f === '.github/workflows/publish-packages.yml');
-            
-            // If manual run, any package changed, or workflow file changed, publish all packages
-            const publishAll = isManual || hasPackageChanges || hasWorkflowChanges;
-            
-            if (!publishAll) {
-              console.log('No packages changed, skipping publish');
-              core.setOutput('packages', JSON.stringify([]));
-              return;
-            }
             
             // Get all directories in packages/
             const entries = fs.readdirSync(packagesDir, { withFileTypes: true });
@@ -108,7 +79,6 @@ jobs:
   generate-package-lock:
     name: Generate package-lock.json
     needs: discover-packages
-    if: needs.discover-packages.outputs.packages != '[]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
