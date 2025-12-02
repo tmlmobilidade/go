@@ -193,12 +193,7 @@ jobs:
       # # #
       - name: Bump package version
         working-directory: packages/${{ matrix.package }}
-        run: |
-          VERSION="${{ needs.version-number.outputs.version_number }}"
-          # Read current version from package.json
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          # Set new version using timestamp format as prerelease
-          npm version --no-git-tag-version "${CURRENT_VERSION}-${VERSION}"
+        run: npm version --no-git-tag-version ${{ needs.version-number.outputs.version_number }}
       # # #
       - name: Publish package
         working-directory: packages/${{ matrix.package }}
