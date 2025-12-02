@@ -30,15 +30,13 @@ export class RidesController {
 
 		//
 		// Detect which agency_ids the user has access to,
-		// based on their permissions.
-
-		let allowedAgencyIds: string[] = [];
+		// based on their permissions. If none, return an empty array.
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
 
-		if (ridesPermission?.resources?.agency_ids && !ridesPermission.resources.agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			allowedAgencyIds = ridesPermission.resources.agency_ids;
-		}
+		if (!ridesPermission?.resources?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HttpStatus.OK });
+
+		const allowAllAgencies = ridesPermission.resources.agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 		//
 		// If search is provided, immediately try to find the ride by ID,
@@ -48,7 +46,7 @@ export class RidesController {
 
 		const foundRideById = await rides.findOne({
 			_id: searchQuery,
-			...(allowedAgencyIds.length > 0 ? { agency_id: { $in: allowedAgencyIds } } : {}),
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission.resources.agency_ids } }),
 		});
 
 		if (foundRideById) {
@@ -66,7 +64,7 @@ export class RidesController {
 
 		const pipeline = ridesBatchAggregationPipeline({
 			acceptance_status: parsedQuery.acceptance_status,
-			agency_ids: parsedQuery.agency_ids.filter(id => allowedAgencyIds.length === 0 || allowedAgencyIds.includes(id)),
+			agency_ids: parsedQuery.agency_ids.filter(id => allowAllAgencies || ridesPermission.resources.agency_ids.includes(id)),
 			analysis_ended_at_last_stop_grade: parsedQuery.analysis_ended_at_last_stop_grade,
 			analysis_expected_apex_validation_interval: parsedQuery.analysis_expected_apex_validation_interval,
 			analysis_simple_three_vehicle_events_grade: parsedQuery.analysis_simple_three_vehicle_events_grade,
