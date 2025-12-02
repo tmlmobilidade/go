@@ -9,14 +9,12 @@ on:
 
 jobs:
 
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  generate-package-lock:
-    name: Generate package-lock.json
+  sync-environments:
+    name: Sync Production to Staging
     runs-on: ubuntu-latest
     permissions:
       contents: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,43 +23,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Install dependencies
-        run: npm install --package-lock-only
-
-      - name: Save package-lock.json as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-lock.json
-          path: package-lock.json
-          retention-days: 1
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-environments:
-    name: Sync Production to Staging
-    needs: generate-package-lock
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download package-lock.json artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: package-lock.json
-          path: .
-
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-node
-        with:
-          node-version: '20'
-          directory: '.'
-          with-npm-cache: 'true'
-          with-turbo-cache: 'false'
 
       - name: Install MongoDB tools
         run: |
@@ -75,14 +36,11 @@ jobs:
           curl https://rclone.org/install.sh | sudo bash
 
       - name: Install dependencies
-        run: |
-          npm ci
+        run: npm i
 
       - name: Build env-sync CLI
         working-directory: ./cli/env-sync
-        run: |
-          npm ci
-          npm run build
+        run: npm run build
 
       - name: Setup OCI Key File
         working-directory: ./cli/env-sync

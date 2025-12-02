@@ -30,7 +30,7 @@
 	"dependencies": {
 		"@clack/core": "0.5.0",
 		"@clack/prompts": "0.11.0",
-		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/consts": "20251202.1817.5",
 		"chalk": "5.6.2",
 		"dotenv": "16.4.7",
 		"mongodb": "7.0.0"
