@@ -103,6 +103,7 @@ jobs:
             }
 
   # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
 
   generate-package-lock:
     name: Generate package-lock.json
@@ -130,6 +131,23 @@ jobs:
           path: package-lock.json
           retention-days: 1
 
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+  
+  version-number:
+    name: 'Version Number'
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate-version-number
+        run: |
+          version="$(date +%Y%m%d).$(date +%H%M).$(date +%S)"
+          echo "Generated version: $version"
+          echo "version_number=$version" >> "$GITHUB_OUTPUT"
+    outputs:
+      version_number: ${{ steps.generate-version-number.outputs.version_number }}
+      npm_tag: ${{ steps.generate-version-number.outputs.npm_tag }}
+  
+  # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   publish-package:
@@ -173,10 +191,15 @@ jobs:
       - name: Build packages
         working-directory: .
         run: turbo run build --filter=@tmlmobilidade/${{ matrix.package }}
+        # # #
+      - name: Set version number
+        id: set-version-number
+        run: |
+            echo "VERSION_NUMBER=${{ needs.version-number.outputs.version_number }}" >> "$GITHUB_OUTPUT"
       # # #
       - name: Publish to NPM
         working-directory: packages/${{ matrix.package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: npm publish --access public --tag latest
+        run: npm publish --access public
 
