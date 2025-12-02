@@ -145,14 +145,13 @@ jobs:
           echo "version_number=$version" >> "$GITHUB_OUTPUT"
     outputs:
       version_number: ${{ steps.generate-version-number.outputs.version_number }}
-      npm_tag: ${{ steps.generate-version-number.outputs.npm_tag }}
   
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   publish-package:
     name: Publish ${{ matrix.package }}
-    needs: [discover-packages, generate-package-lock]
+    needs: [discover-packages, generate-package-lock, version-number]
     if: needs.discover-packages.outputs.packages != '[]'
     runs-on: ubuntu-latest
     concurrency:
@@ -191,15 +190,24 @@ jobs:
       - name: Build packages
         working-directory: .
         run: turbo run build --filter=@tmlmobilidade/${{ matrix.package }}
-        # # #
-      - name: Set version number
-        id: set-version-number
-        run: |
-            echo "VERSION_NUMBER=${{ needs.version-number.outputs.version_number }}" >> "$GITHUB_OUTPUT"
       # # #
-      - name: Publish to NPM
+      - name: Bump package version
+        working-directory: packages/${{ matrix.package }}
+        run: |
+          VERSION="${{ needs.version-number.outputs.version_number }}"
+          # Read current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          # Set new version using timestamp format as prerelease
+          npm version --no-git-tag-version "${CURRENT_VERSION}-${VERSION}"
+      # # #
+      - name: Publish package
         working-directory: packages/${{ matrix.package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: npm publish --access public
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          
+          echo "Publishing ${PACKAGE_NAME}@${PACKAGE_VERSION} to npm"
+          npm publish --access public
 
