@@ -3,7 +3,7 @@
 import { type FastifyRequest } from '@/fastify-service.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { authProvider } from '@tmlmobilidade/interfaces';
-import { type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
+import { type ActionsOf, type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 import { Cache } from '@tmlmobilidade/utils';
 
 /* * */
@@ -27,7 +27,7 @@ const REQUEST_CACHE = new Cache<string, { permissions: Permission[], user: User 
  * @param requireAll Whether all actions must be true or at least one must be true.
  * @returns Fastify middleware function.
  */
-export function authorizationMiddleware(scope?: string, actions?: string[], requireAll = false) {
+export function authorizationMiddleware<S extends Permission['scope']>(scope?: S, actions?: ActionsOf<S>[], requireAll = false) {
 	return async (request: FastifyRequest): Promise<void> => {
 		//
 
