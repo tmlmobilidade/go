@@ -79,6 +79,49 @@ jobs:
           echo "Updated OCI_KEY_FILE to: $KEY_FILE_PATH"
           echo "Key file permissions: $(ls -l "$KEY_FILE_PATH")"
 
+      - name: Verify .env configuration
+        working-directory: ./cli/env-sync
+        run: |
+          # Check that all required OCI variables are present and non-empty
+          REQUIRED_VARS=(
+            "OCI_TENANCY"
+            "OCI_USER"
+            "OCI_FINGERPRINT"
+            "OCI_KEY_FILE"
+            "OCI_REGION"
+            "RCLONE_REMOTE_NAME"
+            "RCLONE_TYPE"
+            "RCLONE_COMPARTMENT"
+            "RCLONE_NAMESPACE"
+            "RCLONE_REGION"
+            "OCI_SOURCE"
+            "OCI_DEST"
+          )
+          
+          MISSING_VARS=()
+          for var in "${REQUIRED_VARS[@]}"; do
+            if ! grep -q "^${var}=" .env || [ -z "$(grep "^${var}=" .env | cut -d'=' -f2- | tr -d '[:space:]')" ]; then
+              MISSING_VARS+=("$var")
+            fi
+          done
+          
+          if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+            echo "Error: Missing or empty required environment variables:"
+            printf '  - %s\n' "${MISSING_VARS[@]}"
+            exit 1
+          fi
+          
+          echo "✓ All required OCI configuration variables are present"
+          
+          # Verify OCI_KEY_FILE points to an existing file
+          KEY_FILE=$(grep "^OCI_KEY_FILE=" .env | cut -d'=' -f2-)
+          if [ ! -f "$KEY_FILE" ]; then
+            echo "Error: OCI_KEY_FILE points to non-existent file: $KEY_FILE"
+            exit 1
+          fi
+          
+          echo "✓ OCI_KEY_FILE points to existing file: $KEY_FILE"
+
       - name: Run environment sync
         working-directory: ./cli/env-sync
         run: |

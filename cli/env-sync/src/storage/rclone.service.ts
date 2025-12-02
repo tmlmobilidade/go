@@ -1,5 +1,7 @@
 import type { StorageConfig } from '../config/config-loader.js';
 
+import { existsSync } from 'fs';
+
 import { checkCommandAvailable, execCommandStream } from '../utils/exec.js';
 import { logger } from '../utils/logger.js';
 
@@ -72,11 +74,35 @@ export async function syncStorage(config: StorageConfig): Promise<void> {
 	const ociSource = rcloneEnv.OCI_SOURCE || config.ociSource;
 	const ociDest = rcloneEnv.OCI_DEST || config.ociDest;
 
+	// Verify required configuration values are present
+	const rcloneRemoteEnvName = config.rcloneRemoteName
+		.toUpperCase()
+		.replace(/[^A-Z0-9]/g, '_')
+		.replace(/__+/g, '_')
+		.replace(/^_|_$/g, '');
+
+	const tenancyEnvVar = `RCLONE_CONFIG_${rcloneRemoteEnvName}_TENANCY`;
+	const keyFileEnvVar = `RCLONE_CONFIG_${rcloneRemoteEnvName}_KEY_FILE`;
+
+	if (!rcloneEnv[tenancyEnvVar]) {
+		throw new Error(`Missing OCI_TENANCY configuration. Please ensure OCI_TENANCY is set in your .env file.`);
+	}
+
+	if (!rcloneEnv[keyFileEnvVar]) {
+		throw new Error(`Missing OCI_KEY_FILE configuration. Please ensure OCI_KEY_FILE is set in your .env file.`);
+	}
+
+	if (!existsSync(rcloneEnv[keyFileEnvVar] as string)) {
+		throw new Error(`OCI key file not found at: ${rcloneEnv[keyFileEnvVar]}. Please verify the OCI_KEY_FILE path in your .env file.`);
+	}
+
 	logger.info(`Source: ${ociSource}`);
 	logger.info(`Destination: ${ociDest}`);
 	logger.verbose(`RClone remote: ${config.rcloneRemoteName}`);
 	logger.verbose(`RClone type: ${config.rcloneType}`);
 	logger.verbose(`OCI region: ${config.ociRegion}`);
+	logger.verbose(`OCI tenancy configured: ${rcloneEnv[tenancyEnvVar] ? 'yes' : 'no'}`);
+	logger.verbose(`OCI key file: ${rcloneEnv[keyFileEnvVar]}`);
 
 	// Sync production to staging
 	logger.info('Syncing files from production to staging...');

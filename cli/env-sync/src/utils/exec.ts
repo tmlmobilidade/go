@@ -58,19 +58,70 @@ export async function execCommandStream(
 	options: ExecOptions = {},
 ): Promise<void> {
 	return new Promise((resolve, reject) => {
-		// Parse command and arguments
-		const parts = command.split(/\s+/);
-		const cmd = parts[0];
-		const args = parts.slice(1);
-
 		// Mask sensitive information in verbose output
 		const maskedCommand = command.replace(/--password=([^\s]+)/g, '--password=***');
 		logger.verbose(`Executing: ${maskedCommand}`);
 
+		// Parse command properly handling quoted strings
+		// This avoids the deprecation warning from using shell: true with arguments
+		const parts: string[] = [];
+		let current = '';
+		let inQuotes = false;
+		let quoteChar = '';
+		let escaped = false;
+
+		for (const char of command) {
+			if (escaped) {
+				current += char;
+				escaped = false;
+				continue;
+			}
+
+			if (char === '\\') {
+				escaped = true;
+				continue;
+			}
+
+			if ((char === '"' || char === '\'') && !escaped) {
+				if (!inQuotes) {
+					inQuotes = true;
+					quoteChar = char;
+				}
+				else if (char === quoteChar) {
+					inQuotes = false;
+					quoteChar = '';
+				}
+				else {
+					current += char;
+				}
+			}
+			else if (char === ' ' && !inQuotes) {
+				if (current) {
+					parts.push(current);
+					current = '';
+				}
+			}
+			else {
+				current += char;
+			}
+		}
+
+		if (current) {
+			parts.push(current);
+		}
+
+		if (parts.length === 0) {
+			reject(new Error(`Invalid command: ${command}`));
+			return;
+		}
+
+		const cmd = parts[0];
+		const args = parts.slice(1);
+
 		const childProcess = spawn(cmd, args, {
 			cwd: options.cwd,
 			env: { ...process.env, ...options.env },
-			shell: true,
+			shell: false,
 			stdio: 'inherit', // This allows rclone's progress output to be displayed in real-time
 		});
 
