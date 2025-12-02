@@ -39,8 +39,9 @@ export class RidesController {
 		const allowAllAgencies = ridesPermission.resources.agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 		//
-		// If search is provided, immediately try to find the ride by ID,
-		// and if found, return it right away.
+		// If search is provided, immediately try to find the ride by ID.
+		// If found, return it as the only result. This optimizes
+		// for the common case of searching by ride ID.
 
 		const searchQuery = parsedQuery.search?.trim() ?? '';
 
@@ -51,11 +52,7 @@ export class RidesController {
 
 		if (foundRideById) {
 			const normalizedRide = normalizeRide(foundRideById);
-			return reply.send({
-				data: [normalizedRide],
-				error: null,
-				statusCode: HttpStatus.OK,
-			});
+			return reply.send({ data: [normalizedRide], error: null, statusCode: HttpStatus.OK });
 		}
 
 		//
