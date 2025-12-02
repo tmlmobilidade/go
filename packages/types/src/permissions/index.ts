@@ -37,7 +37,7 @@ export type Permission = z.infer<typeof PermissionSchema>;
 
 /* * */
 
-type ActionsOf<S extends Permission['scope']> = Extract<Permission, { scope: S }>['action'];
+export type ActionsOf<S extends Permission['scope']> = Extract<Permission, { scope: S }>['action'];
 
 export type PermissionCatalogType = {
 	[S in Permission['scope']]: {
@@ -100,8 +100,8 @@ export class PermissionCatalog {
 	 * @param action The action of the permission to filter by.
 	 * @returns The filtered Permission object or undefined if not found.
 	 */
-	static get(permissionEntries: Permission[], scope: string, action: string): Permission | undefined {
-		return permissionEntries.find(p => p.scope === scope && p.action === action);
+	static get<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>): Extract<Permission, { action: ActionsOf<S>, scope: S }> | undefined {
+		return permissionEntries.find((p): p is Extract<Permission, { action: ActionsOf<S>, scope: S }> => p.scope === scope && p.action === action);
 	}
 
 	/**
@@ -111,7 +111,7 @@ export class PermissionCatalog {
 	 * @param action The required action to check.
 	 * @returns The permission object or undefined if not found.
 	 */
-	static hasPermission(permissionEntries: Permission[], scope: string, action: string): boolean {
+	static hasPermission<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>): boolean {
 		return permissionEntries.find(p => p.scope === scope && p.action === action) !== undefined;
 	}
 

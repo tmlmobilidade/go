@@ -64,26 +64,37 @@ export const FlatRideSchema = z.object({
 
 	/* ANALYSIS */
 	/* * */
+	// At Least One Vehicle Event On First Stop
 	analysis_AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: z.string().nullable(),
+	// Ended At Last Stop
 	analysis_ENDED_AT_LAST_STOP: z.string().nullable(),
+	// Expected Apex Validation Interval
 	analysis_EXPECTED_APEX_VALIDATION_INTERVAL: z.string().nullable(),
+	// Driver ID
 	analysis_EXPECTED_DRIVER_ID_QTY: z.string().nullable(),
+	// Start Time
 	analysis_EXPECTED_START_TIME: z.string().nullable(),
 	analysis_EXPECTED_START_TIME_value: z.number().nullable(),
+	// Vehicle Event
 	analysis_EXPECTED_VEHICLE_EVENT_DELAY: z.string().nullable(),
 	analysis_EXPECTED_VEHICLE_EVENT_INTERVAL: z.string().nullable(),
 	analysis_EXPECTED_VEHICLE_EVENT_QTY: z.string().nullable(),
 	analysis_EXPECTED_VEHICLE_EVENT_QTY_expected_qty: z.number().nullable(),
 	analysis_EXPECTED_VEHICLE_EVENT_QTY_found_qty: z.number().nullable(),
 	analysis_EXPECTED_VEHICLE_ID_QTY: z.string().nullable(),
+	// Matching Apex Locations
 	analysis_MATCHING_APEX_LOCATIONS: z.string().nullable(),
 	analysis_MATCHING_VEHICLE_IDS: z.string().nullable(),
+	// Simple One Apex Validation
 	analysis_SIMPLE_ONE_APEX_VALIDATION: z.string().nullable(),
 	analysis_SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: z.string().nullable(),
+	// Simple Three Vehicle Events
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS: z.string().nullable(),
+	analysis_SIMPLE_THREE_VEHICLE_EVENTS_reason: z.string().nullable(),
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_first: z.string().nullable(),
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_last: z.string().nullable(),
 	analysis_SIMPLE_THREE_VEHICLE_EVENTS_stop_ids_middle: z.string().nullable(),
+	// Transaction Sequentiality
 	analysis_TRANSACTION_SEQUENTIALITY: z.string().nullable(),
 	analysis_TRANSACTION_SEQUENTIALITY_expected_qty: z.number().nullable(),
 	analysis_TRANSACTION_SEQUENTIALITY_found_qty: z.number().nullable(),

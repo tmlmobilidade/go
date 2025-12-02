@@ -221,7 +221,7 @@ export const API_ROUTES = Object.freeze({
 		EXPORTER_LIST: `${getAppConfig('exporter', 'api_url')}/exporter`,
 
 		// GTFS-MERGED
-		GTFS_MERGED_LIST: `${getAppConfig('exporter', 'api_url')}/gtfs-merged`,
+		GTFS_MERGED_DOWNLOAD: `${getAppConfig('exporter', 'api_url')}/gtfs-merged/download`,
 	},
 
 	/* * */

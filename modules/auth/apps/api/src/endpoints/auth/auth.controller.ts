@@ -4,13 +4,9 @@ import { HttpException, HttpStatus, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
+import { AUTH_SESSION_COOKIE_NAME, authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
-
-/* * */
-
-const COOKIE_NAME = 'session_token';
 
 /* * */
 
@@ -49,7 +45,7 @@ export class AuthController {
 			password: result.data.password,
 		});
 		// Set the session token cookie in the response
-		reply.setCookie(COOKIE_NAME, newSession.token, {
+		reply.setCookie(AUTH_SESSION_COOKIE_NAME, newSession.token, {
 			httpOnly: true,
 			maxAge: 30 * 24 * 60 * 60, // 30 days
 			path: '/',
@@ -66,10 +62,10 @@ export class AuthController {
 	static async logout(request: FastifyRequest, reply: FastifyReply<void>) {
 		// Extract the session token from the request cookies
 		// and call the authProvider to log out the user.
-		const sessionToken = request.cookies[COOKIE_NAME];
+		const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
 		await authProvider.logout(sessionToken);
 		// Clear the session token by expiring the cookie
-		reply.setCookie(COOKIE_NAME, '', {
+		reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', {
 			httpOnly: true,
 			maxAge: 0,
 			path: '/',

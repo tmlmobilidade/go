@@ -1,12 +1,11 @@
 /* * */
 
-import { API_ROUTES, HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
+import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
 import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
-import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
@@ -317,12 +316,10 @@ export class GtfsValidationsController {
 		//
 		// Get the TML contact emails for this Agency
 
-		const agencyData = await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(validationData.gtfs_agency.agency_id), 'GET', undefined, {
-			Cookie: `session_token=${request.cookies.session_token}`,
-		});
+		const agencyData = await agencies.findById(validationData.gtfs_agency.agency_id);
 
-		if (!agencyData?.data || agencyData?.error) {
-			throw new HttpException(agencyData.statusCode, agencyData.error);
+		if (!agencyData) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Agency not found');
 		}
 
 		//
@@ -333,7 +330,7 @@ export class GtfsValidationsController {
 				solicited_by: request.me.first_name + ' ' + request.me.last_name,
 				validation: validationData,
 			},
-			to: agencyData.data.contact_emails_pta || [],
+			to: agencyData.contact_emails_pta || [],
 		});
 
 		//

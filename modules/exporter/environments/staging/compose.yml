@@ -138,7 +138,7 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 4gb
+          memory: 6gb
     env_file:
       - ./secrets/.env
     secrets:

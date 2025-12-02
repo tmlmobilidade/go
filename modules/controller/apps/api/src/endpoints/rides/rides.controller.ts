@@ -17,37 +17,51 @@ export class RidesController {
 
 	/**
 	 * Gets a batch of Rides built with an aggregation pipeline.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) {
 		//
 
 		//
-		// 1. Validate the request query parameters
+		// Validate the request query parameters
 
 		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
 
 		//
-		// 2. If search is provided, immediately try to find the ride by ID,
-		// and if found, return it right away.
+		// Detect which agency_ids the user has access to,
+		// based on their permissions. If none, return an empty array.
+
+		const ridesPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
+
+		if (!ridesPermission?.resources?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HttpStatus.OK });
+
+		const allowAllAgencies = ridesPermission.resources.agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+		//
+		// If search is provided, immediately try to find the ride by ID.
+		// If found, return it as the only result. This optimizes
+		// for the common case of searching by ride ID.
 
 		const searchQuery = parsedQuery.search?.trim() ?? '';
 
-		const foundRideById = await rides.findById(searchQuery);
+		const foundRideById = await rides.findOne({
+			_id: searchQuery,
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission.resources.agency_ids } }),
+		});
 
 		if (foundRideById) {
 			const normalizedRide = normalizeRide(foundRideById);
-			return reply.send({
-				data: [normalizedRide],
-				error: null,
-				statusCode: HttpStatus.OK,
-			});
+			return reply.send({ data: [normalizedRide], error: null, statusCode: HttpStatus.OK });
 		}
 
 		//
-		// 3. Get the rides batch using native MongoDB cursor with batchSize to prevent memory issues
+		// Get the rides batch using native MongoDB cursor
+		// with batchSize to prevent memory issues
+
 		const pipeline = ridesBatchAggregationPipeline({
 			acceptance_status: parsedQuery.acceptance_status,
-			agency_ids: parsedQuery.agency_ids,
+			agency_ids: parsedQuery.agency_ids.filter(id => allowAllAgencies || ridesPermission.resources.agency_ids.includes(id)),
 			analysis_ended_at_last_stop_grade: parsedQuery.analysis_ended_at_last_stop_grade,
 			analysis_expected_apex_validation_interval: parsedQuery.analysis_expected_apex_validation_interval,
 			analysis_simple_three_vehicle_events_grade: parsedQuery.analysis_simple_three_vehicle_events_grade,
@@ -63,20 +77,13 @@ export class RidesController {
 		});
 
 		//
-		// 4. Filter rides based on permissions for the current user
-		const ridesPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
-		if ('resource' in ridesPermission && ridesPermission.scope === PermissionCatalog.all.rides.scope) {
-			if (ridesPermission.resource['agency_ids'] && !ridesPermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				pipeline.push({ $match: { agency_id: { $in: ridesPermission.resource['agency_ids'] } } });
-			}
-		}
-
-		//
 		// Limit the number of rides to 2000 and sort by start_time_scheduled
+
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
 		//
 		// Fetch the rides batch from the database
+
 		const ridesBatch = await rides.aggregate(pipeline);
 
 		//
@@ -92,82 +99,71 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get a HashedShape by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getHashedShapeByRideId(request: FastifyRequest, reply: FastifyReply<HashedShape>) {
-		try {
-			//
+		//
+		// Validate the request parameters
 
-			//
-			// Validate the request parameters
+		const rideId = request.params['id'];
 
-			const rideId = request.params['id'];
-
-			if (!rideId) {
-				return reply
-					.status(HttpStatus.BAD_REQUEST)
-					.send({
-						data: null,
-						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
-					});
-			}
-
-			//
-			// Fetch the ride data from the database
-
-			const rideData = await rides.findById(rideId);
-
-			if (!rideData) {
-				return reply
-					.status(HttpStatus.NOT_FOUND)
-					.send({
-						data: null,
-						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
-					});
-			}
-
-			//
-			// Fetch the corresponding vehicle events data
-			// and send it back to the client
-
-			const hashedShapeData = await hashedShapes.findById(rideData.hashed_shape_id);
-
-			if (!hashedShapeData) {
-				return reply
-					.status(HttpStatus.NOT_FOUND)
-					.send({
-						data: null,
-						error: 'HashedShape not found.',
-						status: HttpStatus.NOT_FOUND,
-					});
-			}
-
-			//
-			// Send the ride data back to the client
-
-			reply.send({
-				data: hashedShapeData,
-				error: null,
-				statusCode: HttpStatus.OK,
-			});
+		if (!rideId) {
+			return reply
+				.status(HttpStatus.BAD_REQUEST)
+				.send({
+					data: null,
+					error: 'Missing ride_id parameter.',
+					status: HttpStatus.BAD_REQUEST,
+				});
 		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
+
+		//
+		// Fetch the ride data from the database
+
+		const rideData = await rides.findById(rideId);
+
+		if (!rideData) {
+			return reply
+				.status(HttpStatus.NOT_FOUND)
+				.send({
+					data: null,
+					error: 'Ride not found.',
+					status: HttpStatus.NOT_FOUND,
+				});
 		}
+
+		//
+		// Fetch the corresponding vehicle events data
+		// and send it back to the client
+
+		const hashedShapeData = await hashedShapes.findById(rideData.hashed_shape_id);
+
+		if (!hashedShapeData) {
+			return reply
+				.status(HttpStatus.NOT_FOUND)
+				.send({
+					data: null,
+					error: 'HashedShape not found.',
+					status: HttpStatus.NOT_FOUND,
+				});
+		}
+
+		//
+		// Send the ride data back to the client
+
+		reply.send({
+			data: hashedShapeData,
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get a HashedTrip by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getHashedTripByRideId(request: FastifyRequest, reply: FastifyReply<HashedTrip>) {
 		try {
@@ -237,9 +233,8 @@ export class RidesController {
 
 	/**
 	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
 		try {
@@ -292,10 +287,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get a SimplifiedApexLocation by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexLocationsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexLocation[]>) {
 		try {
@@ -360,10 +354,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedApexOnBoardRefunds by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexOnBoardRefundsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexOnBoardRefund[]>) {
 		try {
@@ -428,10 +421,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedApexOnBoardSales by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexOnBoardSalesByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexOnBoardSale[]>) {
 		try {
@@ -496,10 +488,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedApexValidations by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexValidationsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexValidation[]>) {
 		try {
@@ -564,10 +555,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedVehicleEvents by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getVehicleEventsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
 		try {
@@ -632,10 +622,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Reprocess a Ride by ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async reprocessRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
 		try {
@@ -689,7 +678,7 @@ export class RidesController {
 
 	/**
 	 * WebSocket event handler.
-	 * @param socket
+	 * @param socket The WebSocket object.
 	 */
 	static websocket(socket: WebSocket) {
 		socket.on('message', async () => {

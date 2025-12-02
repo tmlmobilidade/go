@@ -1,10 +1,9 @@
 /* * */
 
-import { type FastifyRequest } from '@/fastify-service.js';
+import { FastifyReply, type FastifyRequest } from '@/fastify-service.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
-import { authProvider } from '@tmlmobilidade/interfaces';
-import { type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
-import { Cache } from '@tmlmobilidade/utils';
+import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/interfaces';
+import { type ActionsOf, type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,10 +15,6 @@ declare module 'fastify' {
 	}
 }
 
-/* * */
-
-const REQUEST_CACHE = new Cache<string, { permissions: Permission[], user: User }>(0); // Cache disabled
-
 /**
  * Creates an authorization middleware that validates user authentication and permissions.
  * @param scope The permission scope to check (optional).
@@ -27,32 +22,46 @@ const REQUEST_CACHE = new Cache<string, { permissions: Permission[], user: User 
  * @param requireAll Whether all actions must be true or at least one must be true.
  * @returns Fastify middleware function.
  */
-export function authorizationMiddleware(scope?: string, actions?: string[], requireAll = false) {
-	return async (request: FastifyRequest): Promise<void> => {
+export function authorizationMiddleware<S extends Permission['scope']>(scope?: S, actions?: ActionsOf<S>[], requireAll = false) {
+	return async (request: FastifyRequest, reply: FastifyReply<string>): Promise<void> => {
 		//
 
 		//
 		// Extract the session token from request cookies
 
 		const sessionToken = request.cookies.session_token;
-		if (!sessionToken) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Invalid authorization token');
+
+		if (!sessionToken) {
+			return reply
+				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
+		}
 
 		//
 		// Get user and permissions from cache or auth provider.
 		// Cache is per session token, and valid for 5 minutes.
 		// This reduces the number of calls to the auth provider.
 
-		const cachedRequest = REQUEST_CACHE.get(sessionToken);
+		try {
+			const userData = await authProvider.getUserFromSessionToken(sessionToken);
+			const permissionsData = await authProvider.getPermissionsFromSessionToken(sessionToken);
+			const organizationData = await authProvider.getOrganizationFromSessionToken(sessionToken);
 
-		if (cachedRequest) {
-			request.me = cachedRequest.user;
-			request.permissions = cachedRequest.permissions;
+			if (!userData || !permissionsData || !organizationData) {
+				return reply
+					.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+					.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
+			}
+
+			request.me = userData;
+			request.permissions = permissionsData;
+			request.organization = organizationData;
 		}
-		else {
-			request.me = await authProvider.getUserFromSessionToken(sessionToken);
-			request.permissions = await authProvider.getPermissionsFromSessionToken(sessionToken);
-			request.organization = await authProvider.getOrganizationFromSessionToken(sessionToken);
-			REQUEST_CACHE.set(sessionToken, { permissions: request.permissions, user: request.me });
+		catch (error) {
+			console.error('Authorization Middleware Error:', error);
+			return reply
+				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
 		}
 
 		//

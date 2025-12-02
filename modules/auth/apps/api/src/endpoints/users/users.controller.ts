@@ -2,12 +2,8 @@
 
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { authProvider, users } from '@tmlmobilidade/interfaces';
+import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
 import { type CreateUserDto, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
-
-/* * */
-
-const COOKIE_NAME = 'session_token';
 
 /* * */
 
@@ -70,8 +66,7 @@ export class UsersController {
 		//
 		// Extract the session token from authentication cookie
 
-		const sessionToken = request.cookies[COOKIE_NAME];
-		if (!sessionToken) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session token is missing');
+		const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
 
 		//
 		// Retrieve user data using the session token.
@@ -90,18 +85,8 @@ export class UsersController {
 			console.error('Error retrieving user data:', error);
 			await authProvider.logout(sessionToken);
 			return reply
-				.setCookie(COOKIE_NAME, '', {
-					httpOnly: true,
-					maxAge: 0,
-					path: '/',
-					sameSite: 'lax',
-					secure: true,
-				})
-				.send({
-					data: undefined,
-					error: null,
-					statusCode: HttpStatus.OK,
-				});
+				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
 		}
 
 		//
@@ -141,7 +126,7 @@ export class UsersController {
 	 * @param reply The reply object.
 	*/
 	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto }>, reply: FastifyReply<User>) {
-		const sessionToken = request.cookies[COOKIE_NAME];
+		const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
 		const userData = await authProvider.getUserFromSessionToken(sessionToken);
 		const updatedUser = await users.updateById(userData._id, request.body);
 		reply.send({ data: updatedUser, error: null, statusCode: HttpStatus.OK });

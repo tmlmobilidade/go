@@ -1,0 +1,95 @@
+import type { StorageConfig } from '../config/config-loader.js';
+
+import { checkCommandAvailable, execCommandStream } from '../utils/exec.js';
+import { logger } from '../utils/logger.js';
+
+export function setupRcloneEnvironment(config: StorageConfig): NodeJS.ProcessEnv {
+	// Disable rclone config file to force use of environment variables only
+	const env: NodeJS.ProcessEnv = {
+		...process.env,
+		RCLONE_CONFIG: '/dev/null',
+	};
+
+	// Convert remote name: uppercase for env vars, lowercase for paths
+	const rcloneRemoteEnvName = config.rcloneRemoteName
+		.toUpperCase()
+		.replace(/[^A-Z0-9]/g, '_')
+		.replace(/__+/g, '_')
+		.replace(/^_|_$/g, '');
+	const rcloneRemotePathName = config.rcloneRemoteName
+		.toLowerCase()
+		.replace(/[^a-z0-9]/g, '_')
+		.replace(/__+/g, '_')
+		.replace(/^_|_$/g, '');
+
+	// Set rclone remote configuration via environment variables (must be UPPERCASE)
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_TYPE`] = config.rcloneType;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_COMPARTMENT`] = config.rcloneCompartment;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_NAMESPACE`] = config.rcloneNamespace;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_REGION`] = config.rcloneRegion;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_USER`] = config.ociUser;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_FINGERPRINT`] = config.ociFingerprint;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_KEY_FILE`] = config.ociKeyFile;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_TENANCY`] = config.ociTenancy;
+
+	// Normalize OCI_SOURCE and OCI_DEST to use the sanitized remote name
+	let ociSource = config.ociSource;
+	let ociDest = config.ociDest;
+
+	if (ociSource && ociSource.includes(':')) {
+		const sourcePath = ociSource.split(':').slice(1).join(':');
+		ociSource = `${rcloneRemotePathName}:${sourcePath}`;
+	}
+	else if (ociSource) {
+		ociSource = `${rcloneRemotePathName}:${ociSource}`;
+	}
+
+	if (ociDest && ociDest.includes(':')) {
+		const destPath = ociDest.split(':').slice(1).join(':');
+		ociDest = `${rcloneRemotePathName}:${destPath}`;
+	}
+	else if (ociDest) {
+		ociDest = `${rcloneRemotePathName}:${ociDest}`;
+	}
+
+	env.OCI_SOURCE = ociSource;
+	env.OCI_DEST = ociDest;
+
+	return env;
+}
+
+export async function syncStorage(config: StorageConfig): Promise<void> {
+	logger.info('Starting OCI file sync...');
+
+	// Check if rclone is available
+	if (!(await checkCommandAvailable('rclone'))) {
+		throw new Error('rclone not found. Please install rclone.');
+	}
+
+	// Setup RClone environment
+	const rcloneEnv = setupRcloneEnvironment(config);
+
+	const ociSource = rcloneEnv.OCI_SOURCE || config.ociSource;
+	const ociDest = rcloneEnv.OCI_DEST || config.ociDest;
+
+	logger.info(`Source: ${ociSource}`);
+	logger.info(`Destination: ${ociDest}`);
+	logger.verbose(`RClone remote: ${config.rcloneRemoteName}`);
+	logger.verbose(`RClone type: ${config.rcloneType}`);
+	logger.verbose(`OCI region: ${config.ociRegion}`);
+
+	// Sync production to staging
+	logger.info('Syncing files from production to staging...');
+
+	const syncCmd = `rclone sync "${ociSource}" "${ociDest}" --progress --verbose`;
+
+	try {
+		// Use streaming execution to show rclone progress in real-time
+		await execCommandStream(syncCmd, { env: rcloneEnv });
+		logger.success('OCI file sync completed successfully');
+	}
+	catch (error) {
+		logger.error(`OCI file sync failed: ${error instanceof Error ? error.message : String(error)}`);
+		throw error;
+	}
+}
