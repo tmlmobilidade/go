@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { FileExport, HasPermissionResourceArgs, PermissionCatalog, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
+import { type ActionsOf, type FileExport, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -66,7 +66,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		if (!meData) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	}, [meLoading, meData]);
 
-	function hasPermission(scope: string, action: string) {
+	function hasPermission<S extends Permission['scope']>(scope: S, action: ActionsOf<S>) {
 		if (!meData || !meData.permissions) return false;
 		return PermissionCatalog.hasPermission(meData.permissions, scope, action);
 	}
