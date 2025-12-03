@@ -1,141 +1,134 @@
-name: 'Environment Sync | Daily Sync'
+name: "Environment Sync | Daily Sync"
 
 on:
   schedule:
-    # Run daily at 1:00 AM UTC
-    - cron: '0 1 * * *'
+    - cron: "0 1 * * *" # Daily at 01:00 UTC
   workflow_dispatch:
-    # Allow manual triggering
 
 jobs:
-
   sync-environments:
     name: Sync Production to Staging
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
+      # # # # # # # # # # # # # # # # # # # # #
+      # Checkout + Node Setup
+      # # # # # # # # # # # # # # # # # # # # #
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: 24
+          cache: npm
+          cache-dependency-path: "**/package-lock.json"
 
-      - name: Install MongoDB tools
+      # # # # # # # # # # # # # # # # # # # # #
+      # System tools
+      # # # # # # # # # # # # # # # # # # # # #
+      - name: Install MongoDB Tools
         run: |
-          curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
-          echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+          curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc \
+            | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+
+          echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] \
+            https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" \
+            | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
           sudo apt-get update
           sudo apt-get install -y mongodb-database-tools
 
-      - name: Install RClone
+      - name: Install rclone
         run: |
           curl https://rclone.org/install.sh | sudo bash
 
+      # # # # # # # # # # # # # # # # # # # # #
+      # Install dependencies + Build CLI
+      # # # # # # # # # # # # # # # # # # # # #
       - name: Install dependencies
-        run: npm i
+        run: npm install
 
       - name: Build env-sync CLI
         working-directory: ./cli/env-sync
         run: npm run build
 
-      - name: Setup OCI Key File
+      # # # # # # # # # # # # # # # # # # # # #
+      # Secrets / Environment Setup
+      # # # # # # # # # # # # # # # # # # # # #
+      - name: Configure Secrets (.env + key file)
         working-directory: ./cli/env-sync
         run: |
           mkdir -p secrets
-          echo "${{ secrets.OCI_KEY_FILE_CONTENT }}" > secrets/oci_key.pem
-          chmod 600 secrets/oci_key.pem
 
-      - name: Create .env file
-        working-directory: ./cli/env-sync
-        run: |
+          # Write OCI private key
+          echo "${{ secrets.OCI_KEY_FILE_CONTENT }}" > oci_key.pem
+          chmod 600 oci_key.pem
+
+          # Write .env and patch OCI_KEY_FILE to absolute path
+          ABS_KEY="$(pwd)/oci_key.pem"
           echo "${{ secrets.ENV_SYNC_ENV }}" > .env
           chmod 600 .env
 
-      - name: Update OCI_KEY_FILE path in .env
-        working-directory: ./cli/env-sync
-        run: |
-          # Get absolute path to the OCI key file
-          KEY_FILE_PATH="$(pwd)/secrets/oci_key.pem"
-          
-          # Verify the key file exists first
-          if [ ! -f "$KEY_FILE_PATH" ]; then
-            echo "Error: OCI key file not found at $KEY_FILE_PATH"
-            exit 1
-          fi
-          
-          # Update OCI_KEY_FILE in .env file to use absolute path
+          # Ensure OCI_KEY_FILE is correctly set
           if grep -q "^OCI_KEY_FILE=" .env; then
-            # Replace existing OCI_KEY_FILE line
-            sed -i "s|^OCI_KEY_FILE=.*|OCI_KEY_FILE=$KEY_FILE_PATH|" .env
+            sed -i "s|^OCI_KEY_FILE=.*|OCI_KEY_FILE=${ABS_KEY}|" .env
           else
-            # Append if not found
-            echo "OCI_KEY_FILE=$KEY_FILE_PATH" >> .env
+            echo "OCI_KEY_FILE=${ABS_KEY}" >> .env
           fi
-          
-          echo "Updated OCI_KEY_FILE to: $KEY_FILE_PATH"
-          echo "Key file permissions: $(ls -l "$KEY_FILE_PATH")"
+
+          echo "Final .env:"
+          sed 's/=.*/=***hidden***/' .env
 
       - name: Verify .env configuration
-        working-directory: ./cli/env-sync
-        run: |
-          # Check that all required OCI variables are present and non-empty
-          REQUIRED_VARS=(
-            "OCI_TENANCY"
-            "OCI_USER"
-            "OCI_FINGERPRINT"
-            "OCI_KEY_FILE"
-            "OCI_REGION"
-            "RCLONE_REMOTE_NAME"
-            "RCLONE_TYPE"
-            "RCLONE_COMPARTMENT"
-            "RCLONE_NAMESPACE"
-            "RCLONE_REGION"
-            "OCI_SOURCE"
-            "OCI_DEST"
-          )
-          
-          MISSING_VARS=()
-          for var in "${REQUIRED_VARS[@]}"; do
-            if ! grep -q "^${var}=" .env || [ -z "$(grep "^${var}=" .env | cut -d'=' -f2- | tr -d '[:space:]')" ]; then
-              MISSING_VARS+=("$var")
-            fi
-          done
-          
-          if [ ${#MISSING_VARS[@]} -gt 0 ]; then
-            echo "Error: Missing or empty required environment variables:"
-            printf '  - %s\n' "${MISSING_VARS[@]}"
-            exit 1
-          fi
-          
-          echo "✓ All required OCI configuration variables are present"
-          
-          # Verify OCI_KEY_FILE points to an existing file
-          KEY_FILE=$(grep "^OCI_KEY_FILE=" .env | cut -d'=' -f2-)
-          if [ ! -f "$KEY_FILE" ]; then
-            echo "Error: OCI_KEY_FILE points to non-existent file: $KEY_FILE"
-            exit 1
-          fi
-          
-          echo "✓ OCI_KEY_FILE points to existing file: $KEY_FILE"
+        uses: ./.github/actions/verify-env
+        with:
+          env-path: ./cli/env-sync/.env
+          required-vars: |
+            OCI_KEY_FILE
+            OCI_COMPARTMENT
+            OCI_FINGERPRINT
+            OCI_NAMESPACE
+            OCI_REGION
+            OCI_TENANCY
+            OCI_USER
+            STORAGE_SOURCE
+            STORAGE_DEST
+            STORAGE_REMOTE_NAME
+            STORAGE_TYPE
+            PROD_HOST
+            PROD_USERNAME
+            PROD_PASSWORD
+            PROD_AUTH_DATABASE
+            PROD_DB
+            STAGING_HOST
+            STAGING_USERNAME
+            STAGING_PASSWORD
+            STAGING_AUTH_DATABASE
+            STAGING_DB
+            EXCLUDED_COLLECTIONS
 
-      - name: Run environment sync
+      # -------------------------------------------------------
+      # Run Sync
+      # -------------------------------------------------------
+      - name: Run Environment Sync
         working-directory: ./cli/env-sync
         run: |
-          # Run both database and storage sync (non-interactive)
+          set -e
+          echo "Running DB sync..."
           node dist/index.js --verbose --db-only
+
+          echo "Running Storage sync..."
           node dist/index.js --verbose --storage-only
 
+      # -------------------------------------------------------
+      # Upload artifacts
+      # -------------------------------------------------------
       - name: Upload backup artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: backup-artifacts
-          path: |
-            cli/env-sync/backups/**
+          path: cli/env-sync/backups
           retention-days: 7
           if-no-files-found: ignore
-
