@@ -4,7 +4,9 @@
 
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
+import { MultiSelect } from '@mantine/core';
+import { Grid, Section } from '@tmlmobilidade/ui';
+// import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -32,9 +34,9 @@ export function UsersDetailRoles() {
 		<Section>
 			<Grid columns="a" gap="md">
 				<MultiSelect
+					key={usersDetailContext.data.form.key('role_ids')}
 					data={availableRoles}
 					label="Roles"
-					selected={usersDetailContext.data.form.values.role_ids ?? []}
 					{...usersDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>

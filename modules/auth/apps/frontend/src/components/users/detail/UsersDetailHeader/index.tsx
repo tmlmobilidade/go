@@ -35,6 +35,7 @@ export function UsersDetailHeader() {
 		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
 			<Tag label={usersDetailContext.data.id || 'Novo Utilizador'} variant="muted" />
+			<Tag label={usersDetailContext.flags.isDirty ? 'dirty' : 'clean'} variant="muted" />
 			<Label size="lg" singleLine>{usersDetailContext.data.form.values.email}</Label>
 			<Spacer />
 			<Button
@@ -48,7 +49,7 @@ export function UsersDetailHeader() {
 			{usersDetailContext.flags.mode === UsersDetailMode.EDIT && (
 				<Button
 					icon={<IconTrash size={28} />}
-					label="Apagar"
+					label="Eliminar"
 					onClick={usersDetailContext.actions.deleteUser}
 					variant="danger"
 				/>

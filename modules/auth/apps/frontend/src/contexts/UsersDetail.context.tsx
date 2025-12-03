@@ -4,11 +4,11 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateUserDto, CreateUserSchema, PermissionSchema, type User } from '@tmlmobilidade/types';
-import { useDebouncedCallback, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -27,34 +27,19 @@ interface UsersDetailContextState {
 		saveUser: () => void
 	}
 	data: {
+		errors: Record<string, unknown>
 		form: UseFormReturnType<CreateUserDto>
 		id: string | undefined
 	}
 	flags: {
 		canSave: boolean
+		isDirty: boolean
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
 		mode: UsersDetailMode
 	}
 }
-
-const emptyUser: CreateUserDto = {
-	created_by: '',
-	email: '',
-	email_verified: null,
-	first_name: '',
-	last_name: '',
-	organization_id: null,
-	password_hash: null,
-	permissions: [],
-	phone: null,
-	preferences: {},
-	role_ids: [],
-	session_ids: [],
-	updated_by: '',
-	verification_token_ids: [],
-};
 
 /* * */
 
@@ -82,7 +67,6 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
-	const [canSave, setCanSave] = useState(false);
 
 	//
 	// B. Fetch data
@@ -93,25 +77,9 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 	//
 	// C. Setup form
 
-	const validateForm = useDebouncedCallback(() => {
-		const validationResult = form.validate();
-		console.log('Form validation result:', validationResult);
-		setCanSave(!validationResult.hasErrors);
-	}, 1000);
+	const { errors: formErrors, flags: formFlags, form } = useTypicalForm<CreateUserDto>(CreateUserSchema, userData);
 
-	const form = useForm<CreateUserDto>({
-		initialValues: emptyUser,
-		mode: 'uncontrolled',
-		onValuesChange: () => validateForm(),
-		validate: zodResolver(CreateUserSchema),
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
-
-	useEffect(() => {
-		if (!userData) return;
-		form.initialize(userData);
-	}, [userData]);
+	console.log(form.getDirty(), userData);
 
 	//
 	// D. Handle actions
@@ -226,20 +194,22 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 			saveUser: handleSaveUser,
 		},
 		data: {
+			errors: formErrors,
 			form,
 			id: userId === 'new' ? undefined : userId,
 		},
 		flags: {
-			canSave,
+			canSave: formFlags.isValid,
+			isDirty: formFlags.isDirty,
 			isReadOnly,
 			isSaving,
 			loading: userLoading,
 			mode: userId === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
 		},
 	}), [
-		canSave,
-		form.values,
-		form.isDirty,
+		formFlags.isValid,
+		formFlags.isDirty,
+		formErrors,
 		isReadOnly,
 		isSaving,
 		userId,

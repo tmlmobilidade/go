@@ -28,6 +28,7 @@ export function UsersDetailBasicInfo() {
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
 					<TextInput
+						key={usersDetailContext.data.form.key('first_name')}
 						label="Primeiro Nome"
 						maxLength={255}
 						placeholder="..."
@@ -35,6 +36,7 @@ export function UsersDetailBasicInfo() {
 						{...usersDetailContext.data.form.getInputProps('first_name')}
 					/>
 					<TextInput
+						key={usersDetailContext.data.form.key('last_name')}
 						label="Último Nome"
 						maxLength={255}
 						placeholder="..."
@@ -42,6 +44,7 @@ export function UsersDetailBasicInfo() {
 						{...usersDetailContext.data.form.getInputProps('last_name')}
 					/>
 					<TextInput
+						key={usersDetailContext.data.form.key('email')}
 						label="Email"
 						leftSection={<IconMail size={18} />}
 						placeholder="user@example.com"
@@ -49,6 +52,7 @@ export function UsersDetailBasicInfo() {
 						{...usersDetailContext.data.form.getInputProps('email')}
 					/>
 					<TextInput
+						key={usersDetailContext.data.form.key('phone')}
 						label="Telemóvel"
 						leftSection={<IconPhone size={18} />}
 						placeholder="912345678"
@@ -56,6 +60,7 @@ export function UsersDetailBasicInfo() {
 						{...usersDetailContext.data.form.getInputProps('phone')}
 					/>
 					<PasswordInput
+						key={usersDetailContext.data.form.key('password')}
 						autoComplete="new-password"
 						label="Change Password"
 						onChange={event => usersDetailContext.actions.handleChangePassword(event.target.value)}

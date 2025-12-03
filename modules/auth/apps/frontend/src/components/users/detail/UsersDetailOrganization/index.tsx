@@ -4,7 +4,7 @@
 
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { Combobox, Grid, Section } from '@tmlmobilidade/ui';
+import { Grid, Section, Select } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -31,11 +31,12 @@ export function UsersDetailOrganization() {
 	return (
 		<Section>
 			<Grid columns="a" gap="md">
-				<Combobox
+				<Select
+					key={userDetailsContext.data.form.key('organization_id')}
+					clearable={false}
 					data={organizationItems}
-					label="Organizações"
-					value={userDetailsContext.data.form.values.organization_id}
-					fullWidth
+					label="Organização"
+					required
 					{...userDetailsContext.data.form.getInputProps('organization_id')}
 				/>
 			</Grid>
