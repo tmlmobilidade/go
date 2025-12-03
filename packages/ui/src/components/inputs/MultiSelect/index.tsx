@@ -6,7 +6,13 @@ import { MultiSelect as MantineMultiSelect, type MultiSelectProps as MantineMult
 
 /* * */
 
-type MultiSelectProps = MantineMultiSelectProps;
+interface MultiSelectProps extends MantineMultiSelectProps {
+	/**
+	 * The `key` prop is required to ensure correct re-mounting behavior.
+	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
+	 */
+	key: string
+};
 
 /**
  * Renders a multi-select dropdown component.

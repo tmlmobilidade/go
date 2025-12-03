@@ -10,6 +10,11 @@ import { useEffect, useState } from 'react';
 
 export interface NumberInputProps extends MantineNumberInputProps {
 	hideControls?: boolean
+	/**
+	 * The `key` prop is required to ensure correct re-mounting behavior.
+	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
+	 */
+	key: string
 	tooltip?: string
 	validation?: RegExp
 }
