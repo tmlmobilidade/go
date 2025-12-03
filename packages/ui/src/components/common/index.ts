@@ -19,6 +19,7 @@ export * from './PillGroup';
 export * from './Popover';
 export * from './Progress';
 export * from './SegmentedControl';
+export * from './Select';
 export * from './SemiCircleProgress';
 export * from './Skeleton';
 export * from './Slider';
