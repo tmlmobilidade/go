@@ -1,7 +1,7 @@
 /* * */
-/* DESCRIPTION */
+/* ROOT */
 
-.description {
+.root {
 	padding: 0;
 	margin: 0;
 	font-size: var(--font-size-sm);
@@ -11,9 +11,9 @@
 }
 
 /* * */
-/* DESCRIPTION / SINGLE LINE */
+/* SINGLE LINE */
 
-.description[data-single-line="true"] {
+.root[data-single-line="true"] {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	line-clamp: 1;

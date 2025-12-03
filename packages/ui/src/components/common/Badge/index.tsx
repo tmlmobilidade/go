@@ -23,8 +23,10 @@ export interface BadgeProps extends MantineBadgeProps {
 	variant?: 'active' | 'danger' | 'disabled' | 'info' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
 
-/* * */
-
+/**
+ * Badge component to display a badge with various styles and options.
+ * @deprecated Use the Tag component instead.
+ */
 export default function Badge({
 	children,
 	className,
