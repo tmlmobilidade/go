@@ -4,7 +4,7 @@ import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
-import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
+// import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
 import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
@@ -122,10 +122,10 @@ export class GtfsValidationsController {
 			//
 			// Publish a message to RabbitMQ for asynchronous processing
 
-			await rabbitMQ.publish('gtfs-validation', JSON.stringify({
-				file_id: uploadFileResult._id,
-				validation_id: insertValidationResult._id,
-			}), { persistent: true });
+			// await rabbitMQ.publish('gtfs-validation', JSON.stringify({
+			// 	file_id: uploadFileResult._id,
+			// 	validation_id: insertValidationResult._id,
+			// }), { persistent: true });
 
 			//
 			// Return the complete Validation object
