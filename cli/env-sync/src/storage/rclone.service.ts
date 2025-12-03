@@ -71,7 +71,9 @@ export async function syncStorage(config: StorageConfig): Promise<void> {
 	// instead of treating source/dest as local filesystem paths.
 	const sourcePath = `${config.remoteName}:${config.source}`;
 	const destPath = `${config.remoteName}:${config.dest}`;
-	const syncCmd = `rclone sync "${sourcePath}" "${destPath}" --config ${rcloneConfigFile} --progress --verbose`;
+	const baseCmd = `rclone sync "${sourcePath}" "${destPath}" --config ${rcloneConfigFile}`;
+	const verboseFlags = logger.isVerbose() ? ' --progress --verbose' : '';
+	const syncCmd = `${baseCmd}${verboseFlags}`;
 
 	try {
 		// Use streaming execution to show rclone progress in real-time
