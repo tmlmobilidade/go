@@ -11,14 +11,10 @@
 /* INPUT */
 
 .input {
-	padding: 0 15px;
 	font-size: 16px;
 	font-weight: var(--font-weight-regular);
 	line-height: 1;
 	color: var(--color-system-text-100);
-	background-color: var(--color-system-background-100);
-	border: 2px solid var(--color-system-border-100);
-	border-radius: 5px;
 	transition: all 200ms ease-in-out;
 }
 
@@ -30,17 +26,28 @@
 	cursor: not-allowed;
 }
 
-.input:focus {
+/* * */
+/* WRAPPER */
+
+.wrapper {
+	padding: 0 15px;
+	background-color: var(--color-system-background-100);
+	border: 2px solid var(--color-system-border-100);
+	border-radius: 6px;
+	transition: all 200ms ease-in-out;
+}
+
+.wrapper:focus-within {
 	background-color: var(--color-system-background-100);
 	border-color: var(--color-primary);
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
 }
 
-.wrapper[data-with-left-section="true"] .input {
+.wrapper[data-with-left-section="true"] {
 	padding-left: calc(var(--size-spacing-sm) + 30px);
 }
 
-.wrapper[data-with-right-section="true"] .input {
+.wrapper[data-with-right-section="true"] {
 	padding-right: calc(var(--size-spacing-sm) + 30px);
 }
 

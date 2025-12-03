@@ -9,7 +9,7 @@ import { MultiSelect as MantineMultiSelect, type MultiSelectProps as MantineMult
 type MultiSelectProps = MantineMultiSelectProps;
 
 /**
- * Renders a Select component with customized default props.
+ * Renders a multi-select dropdown component.
  */
 export function MultiSelect({ ...props }: MultiSelectProps) {
 	return (

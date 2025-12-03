@@ -46,7 +46,7 @@ export function UsersDetailBasicInfo() {
 					<TextInput
 						key={usersDetailContext.data.form.key('email')}
 						label="Email"
-						leftSection={<IconMail size={18} />}
+						leftSection={<IconMail size={22} />}
 						placeholder="user@example.com"
 						withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 						{...usersDetailContext.data.form.getInputProps('email')}
@@ -54,7 +54,7 @@ export function UsersDetailBasicInfo() {
 					<TextInput
 						key={usersDetailContext.data.form.key('phone')}
 						label="Telemóvel"
-						leftSection={<IconPhone size={18} />}
+						leftSection={<IconPhone size={22} />}
 						placeholder="912345678"
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...usersDetailContext.data.form.getInputProps('phone')}
