@@ -24,7 +24,7 @@ export const UserSchema = DocumentSchema.extend({
 	email_verified: unixTimeStampSchema.nullable().default(null),
 	first_name: z.string().min(2),
 	last_name: z.string().min(2),
-	organization_id: z.string().nullable().default(null),
+	organization_id: z.string(),
 	password_hash: z.string().nullable().default(null),
 	permissions: z.array(PermissionSchema).default([]),
 	phone: z.string().nullable().default(null),
