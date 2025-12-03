@@ -43,34 +43,3 @@ export function PermissionSection({ configActions, description, enabledPermissio
 		</Collapsible>
 	);
 }
-
-// {/* {actions.map(({ description, key, label, resources }) => {
-// const { fromRole, hasPermission } = getPermissionData(key);
-// return (
-// 	<CheckCard
-// 		key={key}
-// 		checked={hasPermission}
-// 		description={description}
-// 		fromRole={fromRole}
-// 		label={label}
-// 		onChange={() => onToggle(scope, key)}
-// 	>
-// 		{onResourceToggle && resources?.includes('AGENCIES') && (
-// 			<AgencyPermissionMultiselect
-// 				description="Agências ao qual o utilizador tem acesso a para esta ação"
-// 				label="Agências"
-// 				onChange={value => onResourceToggle(scope, key, { agency_ids: value || [] })}
-// 				selected={(currentPermissions.find(p => p.scope === scope && p.action === key)['resources'] as Record<string, unknown>)?.agency_ids as string[] || []}
-// 			/>
-// 		)}
-// 		{onResourceToggle && resources?.includes('EMAIL_NOTIFICATIONS') && (
-// 			<EnableEmailNotificationsSwitch
-// 				checked={(currentPermissions.find(p => p.scope === scope && p.action === key)['resources'] as Record<string, unknown>)?.send_mail as boolean || false}
-// 				description="Notificações por email para esta ação"
-// 				label="Notificações por Email"
-// 				onChange={value => onResourceToggle(scope, key, { send_mail: value || false })}
-// 			/>
-// 		)}
-// 	</CheckCard>
-// );
-// 	// })} */}

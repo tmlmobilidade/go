@@ -27,7 +27,7 @@ export function UsersDetail() {
 		<Pane header={[<UsersDetailHeader />]}>
 			<UsersDetailBasicInfo />
 			<UsersDetailRolesAndOrganization />
-			{/* {permissionsConfig.map(item => (
+			{permissionsConfig.map(item => (
 				<PermissionSection
 					key={item.scope}
 					configActions={item.actions}
@@ -39,7 +39,7 @@ export function UsersDetail() {
 					scope={item.scope}
 					title={item.title}
 				/>
-			))} */}
+			))}
 		</Pane>
 	);
 
