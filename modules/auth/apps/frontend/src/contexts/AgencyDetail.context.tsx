@@ -4,7 +4,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -60,7 +60,8 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	// C. Setup form
 
 	const form = useForm<UpdateAgencyDto>({
-		validate: zodResolver(UpdateAgencySchema) as unknown as FormValidateInput<UpdateAgencyDto>,
+		mode: 'uncontrolled',
+		validate: zodResolver(UpdateAgencySchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});

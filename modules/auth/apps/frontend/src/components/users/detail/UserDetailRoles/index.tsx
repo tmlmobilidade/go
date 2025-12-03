@@ -4,9 +4,7 @@
 
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { MultiSelect } from '@mantine/core';
-import { Grid, Section } from '@tmlmobilidade/ui';
-// import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
 
 /* * */
 

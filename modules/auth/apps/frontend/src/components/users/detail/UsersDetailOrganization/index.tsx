@@ -5,6 +5,7 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
 import { Grid, Section, Select } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -15,18 +16,21 @@ export function UsersDetailOrganization() {
 	// A. Setup variables
 
 	const userDetailsContext = useUsersDetailContext();
-	const { data: organizations } = useOrganizationsContext();
+	const organizationsContext = useOrganizationsContext();
 
 	//
 	// B. Transform data
 
-	const organizationItems = organizations.raw?.map(organization => ({
-		label: organization.long_name,
-		value: organization._id,
-	})) ?? [];
+	const organizationItems = useMemo(() => {
+		if (!organizationsContext.data?.raw) return [];
+		return organizationsContext.data.raw.map(organization => ({
+			label: organization.long_name,
+			value: organization._id,
+		}));
+	}, [organizationsContext.data.raw]);
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Section>

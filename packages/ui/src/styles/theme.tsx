@@ -24,7 +24,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, NumberInput, PasswordInput, PillsInput, PillsInputField, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, PillsInput, PillsInputField, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -36,6 +36,7 @@ import ButtonOverride from './mantine/Button.module.css';
 import CheckboxOverride from './mantine/Checkbox.module.css';
 import CheckboxGroupOverride from './mantine/CheckboxGroup.module.css';
 import MenuOverride from './mantine/Menu.module.css';
+import MultiSelectOverride from './mantine/MultiSelect.module.css';
 import PasswordInputOverride from './mantine/PasswordInput.module.css';
 import PillsInputOverride from './mantine/PillsInput.module.css';
 import PopoverOverride from './mantine/Popover.module.css';
@@ -97,6 +98,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		Menu: Menu.extend({
 			classNames: {
 				...MenuOverride,
+			},
+		}),
+
+		MultiSelect: MultiSelect.extend({
+			classNames: {
+				...MultiSelectOverride,
 			},
 		}),
 
