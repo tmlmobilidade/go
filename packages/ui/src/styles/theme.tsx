@@ -24,7 +24,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, PillsInput, PillsInputField, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea, TextInput } from '@mantine/core';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -40,8 +40,6 @@ import MultiSelectOverride from './mantine/MultiSelect.module.css';
 import PasswordInputOverride from './mantine/PasswordInput.module.css';
 import PillOverride from './mantine/Pill.module.css';
 import PillGroupOverride from './mantine/PillGroup.module.css';
-import PillsInputOverride from './mantine/PillsInput.module.css';
-import PillsInputFieldOverride from './mantine/PillsInputField.module.css';
 import PopoverOverride from './mantine/Popover.module.css';
 import SegmentedControlOverrideSm from './mantine/SegmentedControl-sm.module.css';
 import SegmentedControlOverride from './mantine/SegmentedControl.module.css';
@@ -49,6 +47,7 @@ import SelectOverride from './mantine/Select.module.css';
 import SkeletonOverride from './mantine/Skeleton.module.css';
 import SliderOverride from './mantine/Slider.module.css';
 import SwitchOverride from './mantine/Switch.module.css';
+import TagsInputOverride from './mantine/TagsInput.module.css';
 import TextOverride from './mantine/Text.module.css';
 import TextareaOverrideComment from './mantine/Textarea-comment.module.css';
 import TextareaOverride from './mantine/Textarea.module.css';
@@ -152,18 +151,6 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
-		PillsInput: PillsInput.extend({
-			classNames: {
-				...PillsInputOverride,
-			},
-		}),
-
-		PillsInputField: PillsInputField.extend({
-			classNames: {
-				...PillsInputFieldOverride,
-			},
-		}),
-
 		Popover: Popover.extend({
 			classNames: {
 				...PopoverOverride,
@@ -200,6 +187,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		Switch: Switch.extend({
 			classNames: {
 				...SwitchOverride,
+			},
+		}),
+
+		TagsInput: TagsInput.extend({
+			classNames: {
+				...TagsInputOverride,
 			},
 		}),
 
