@@ -104,11 +104,11 @@ jobs:
             STAGING_PASSWORD
             STAGING_AUTH_DATABASE
             STAGING_DB
-            EXCLUDED_COLLECTIONS
+            EXCLUDE_COLLECTIONS
 
-      # -------------------------------------------------------
+      # # # # # # # # # # # # # # # # # # # # #
       # Run Sync
-      # -------------------------------------------------------
+      # # # # # # # # # # # # # # # # # # # # #
       - name: Run Environment Sync
         working-directory: ./cli/env-sync
         run: |
@@ -119,9 +119,9 @@ jobs:
           echo "Running Storage sync..."
           node dist/index.js --verbose --storage-only
 
-      # -------------------------------------------------------
+      # # # # # # # # # # # # # # # # # # # # #
       # Upload artifacts
-      # -------------------------------------------------------
+      # # # # # # # # # # # # # # # # # # # # #
       - name: Upload backup artifacts
         if: always()
         uses: actions/upload-artifact@v4
