@@ -38,7 +38,7 @@ export function AgencyDetailHeader() {
 			<Label size="lg" singleLine>{agencyDetailContext.data.form.values.name}</Label>
 			<Spacer />
 			<Button
-				disabled={agencyDetailContext.flags.read_only}
+				disabled={agencyDetailContext.flags.read_only || !agencyDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label="Guardar"
 				loading={agencyDetailContext.flags.saving}

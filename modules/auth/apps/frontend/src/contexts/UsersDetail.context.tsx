@@ -27,13 +27,10 @@ interface UsersDetailContextState {
 		saveUser: () => void
 	}
 	data: {
-		errors: Record<string, unknown>
 		form: UseFormReturnType<CreateUserDto>
 		id: string | undefined
 	}
 	flags: {
-		canSave: boolean
-		isDirty: boolean
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
@@ -77,9 +74,7 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 	//
 	// C. Setup form
 
-	const { errors: formErrors, flags: formFlags, form } = useTypicalForm<CreateUserDto>(CreateUserSchema, userData);
-
-	console.log(form.getDirty(), userData);
+	const { form } = useTypicalForm<CreateUserDto>(CreateUserSchema, userData);
 
 	//
 	// D. Handle actions
@@ -194,22 +189,16 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 			saveUser: handleSaveUser,
 		},
 		data: {
-			errors: formErrors,
 			form,
 			id: userId === 'new' ? undefined : userId,
 		},
 		flags: {
-			canSave: formFlags.isValid,
-			isDirty: formFlags.isDirty,
 			isReadOnly,
 			isSaving,
 			loading: userLoading,
 			mode: userId === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
 		},
 	}), [
-		formFlags.isValid,
-		formFlags.isDirty,
-		formErrors,
 		isReadOnly,
 		isSaving,
 		userId,

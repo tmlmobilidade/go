@@ -35,11 +35,10 @@ export function UsersDetailHeader() {
 		<Toolbar>
 			<BackButton onClick={handleClose} type="close" />
 			<Tag label={usersDetailContext.data.id || 'Novo Utilizador'} variant="muted" />
-			<Tag label={usersDetailContext.flags.isDirty ? 'dirty' : 'clean'} variant="muted" />
 			<Label size="lg" singleLine>{usersDetailContext.data.form.values.email}</Label>
 			<Spacer />
 			<Button
-				disabled={!usersDetailContext.flags.canSave}
+				disabled={!usersDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label={usersDetailContext.flags.mode === UsersDetailMode.CREATE ? 'Publicar' : 'Guardar'}
 				loading={usersDetailContext.flags.isSaving}

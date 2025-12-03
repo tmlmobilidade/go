@@ -28,6 +28,7 @@ export function AgencyDetailBasicInfo() {
 			<Section gap="lg">
 				<Grid columns="aab" gap="lg">
 					<TextInput
+						key={agencyDetailContext.data.form.key('name')}
 						label="Nome do Operador"
 						maxLength={255}
 						placeholder="Carris Metropolitana"
@@ -35,6 +36,7 @@ export function AgencyDetailBasicInfo() {
 						{...agencyDetailContext.data.form.getInputProps('name')}
 					/>
 					<TextInput
+						key={agencyDetailContext.data.form.key('short_name')}
 						label="Nome Curto"
 						maxLength={3}
 						placeholder="CM"
@@ -44,6 +46,7 @@ export function AgencyDetailBasicInfo() {
 				</Grid>
 				<Grid columns="abc" gap="lg">
 					<TextInput
+						key={agencyDetailContext.data.form.key('public_email')}
 						label="Email da agência"
 						placeholder="email@example.com"
 						type="email"
@@ -51,6 +54,7 @@ export function AgencyDetailBasicInfo() {
 						{...agencyDetailContext.data.form.getInputProps('public_email')}
 					/>
 					<TextInput
+						key={agencyDetailContext.data.form.key('phone')}
 						label="Telemóvel da agência"
 						placeholder="912345678"
 						type="tel"
@@ -58,6 +62,7 @@ export function AgencyDetailBasicInfo() {
 						{...agencyDetailContext.data.form.getInputProps('phone')}
 					/>
 					<TextInput
+						key={agencyDetailContext.data.form.key('website_url')}
 						label="URL da agência"
 						placeholder="https://www.carrismetropolitana.pt"
 						type="url"
@@ -65,6 +70,7 @@ export function AgencyDetailBasicInfo() {
 						{...agencyDetailContext.data.form.getInputProps('website_url')}
 					/>
 					<TextInput
+						key={agencyDetailContext.data.form.key('fare_url')}
 						label="URL de tarifário da agência"
 						placeholder="https://www.carrismetropolitana.pt/tarifas"
 						type="url"
@@ -72,6 +78,7 @@ export function AgencyDetailBasicInfo() {
 						{...agencyDetailContext.data.form.getInputProps('fare_url')}
 					/>
 					<Combobox
+						key={agencyDetailContext.data.form.key('timezone')}
 						data={Dates.TIMEZONE_LIST as unknown as string[]}
 						label="Timezone da agência"
 						{...agencyDetailContext.data.form.getInputProps('timezone')}

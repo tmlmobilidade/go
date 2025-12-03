@@ -3,8 +3,7 @@
 /* * */
 
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { CreateAgencySchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, NumberInput, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -26,19 +25,17 @@ export function AgencySectionFinacial() {
 		>
 			<Section gap="lg">
 				<Grid columns="ab" gap="lg">
-					<TextInput
+					<NumberInput
+						key={agencyDetailContext.data.form.key('financials.price_per_km')}
 						label="Preço por km"
 						placeholder="1.50"
-						step="0.01"
-						type="number"
-						withAsterisk={!CreateAgencySchema.shape.financials.shape.price_per_km.isOptional()}
+						step={0.01}
 						{...agencyDetailContext.data.form.getInputProps('financials.price_per_km')}
 					/>
-					<TextInput
+					<NumberInput
+						key={agencyDetailContext.data.form.key('financials.total_vkm_per_year')}
 						label="Total de km por ano"
 						placeholder="1000000"
-						type="number"
-						withAsterisk={!CreateAgencySchema.shape.financials.shape.total_vkm_per_year.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('financials.total_vkm_per_year')}
 					/>
 				</Grid>

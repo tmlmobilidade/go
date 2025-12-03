@@ -4,9 +4,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -48,7 +48,6 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// A. Setup variables
 
-	const [isReady, setIsReady] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 
 	//
@@ -59,22 +58,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// C. Setup form
 
-	const form = useForm<UpdateAgencyDto>({
-		mode: 'uncontrolled',
-		validate: zodResolver(UpdateAgencySchema),
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
-
-	//
-	// D. Transform data
-
-	useEffect(() => {
-		if (!agencyData) return;
-		const initialValues = UpdateAgencySchema.parse(agencyData);
-		form.initialize(initialValues);
-		setIsReady(true);
-	}, [agencyData]);
+	const { form } = useTypicalForm<UpdateAgencyDto>(UpdateAgencySchema, agencyData);
 
 	//
 	// E. Handle actions
@@ -131,7 +115,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 		},
 		flags: {
 			error: agencyError,
-			loading: agencyLoading || !isReady,
+			loading: agencyLoading,
 			read_only: agencyLoading || isSaving,
 			saving: isSaving,
 		},
