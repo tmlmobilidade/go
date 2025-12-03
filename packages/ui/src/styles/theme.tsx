@@ -24,7 +24,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillsInput, PillsInputField, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, PillsInput, PillsInputField, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -39,7 +39,9 @@ import MenuOverride from './mantine/Menu.module.css';
 import MultiSelectOverride from './mantine/MultiSelect.module.css';
 import PasswordInputOverride from './mantine/PasswordInput.module.css';
 import PillOverride from './mantine/Pill.module.css';
+import PillGroupOverride from './mantine/PillGroup.module.css';
 import PillsInputOverride from './mantine/PillsInput.module.css';
+import PillsInputFieldOverride from './mantine/PillsInputField.module.css';
 import PopoverOverride from './mantine/Popover.module.css';
 import SegmentedControlOverrideSm from './mantine/SegmentedControl-sm.module.css';
 import SegmentedControlOverride from './mantine/SegmentedControl.module.css';
@@ -144,18 +146,21 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
+		PillGroup: PillGroup.extend({
+			classNames: {
+				...PillGroupOverride,
+			},
+		}),
+
 		PillsInput: PillsInput.extend({
 			classNames: {
-				description: TextInputOverride.description,
-				error: TextInputOverride.error,
-				label: TextInputOverride.label,
-				root: PillsInputOverride.root,
+				...PillsInputOverride,
 			},
 		}),
 
 		PillsInputField: PillsInputField.extend({
 			classNames: {
-				field: TextInputOverride.input,
+				...PillsInputFieldOverride,
 			},
 		}),
 
