@@ -67,12 +67,14 @@ export function LoginForm() {
 			title="Login no GO+"
 		>
 			<TextInput
+				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
 				placeholder="Email"
 				value={emailValue}
 			/>
 			<PasswordInput
+				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
 				placeholder="Password"
