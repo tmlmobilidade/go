@@ -30,13 +30,9 @@ export function setupRcloneEnvironment(config: StorageConfig): NodeJS.ProcessEnv
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_COMPARTMENT`] = config.rcloneCompartment;
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_NAMESPACE`] = config.rcloneNamespace;
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_REGION`] = config.rcloneRegion;
-	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_USER`] = config.ociUser;
-	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_FINGERPRINT`] = config.ociFingerprint;
-	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_KEY_FILE`] = config.ociKeyFile;
-	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_TENANCY`] = config.ociTenancy;
 
-	// Set standard OCI environment variables for rclone's env_auth mode
-	// rclone's OCI Object Storage backend with env_auth expects these standard OCI variables
+	// When env_auth=true, rclone's OOS backend uses ONLY the standard OCI environment variables
+	// and ignores RCLONE_CONFIG_* auth variables. Set the standard OCI variables.
 	env.OCI_TENANCY = config.ociTenancy;
 	env.OCI_USER = config.ociUser;
 	env.OCI_FINGERPRINT = config.ociFingerprint;
@@ -83,35 +79,40 @@ export async function syncStorage(config: StorageConfig): Promise<void> {
 	const ociSource = rcloneEnv.OCI_SOURCE || config.ociSource;
 	const ociDest = rcloneEnv.OCI_DEST || config.ociDest;
 
-	// Verify required configuration values are present
-	const rcloneRemoteEnvName = config.rcloneRemoteName
-		.toUpperCase()
-		.replace(/[^A-Z0-9]/g, '_')
-		.replace(/__+/g, '_')
-		.replace(/^_|_$/g, '');
-
-	const tenancyEnvVar = `RCLONE_CONFIG_${rcloneRemoteEnvName}_TENANCY`;
-	const keyFileEnvVar = `RCLONE_CONFIG_${rcloneRemoteEnvName}_KEY_FILE`;
-
-	if (!rcloneEnv[tenancyEnvVar]) {
+	// Verify required OCI environment variables are present (for env_auth mode)
+	if (!rcloneEnv.OCI_TENANCY || !rcloneEnv.OCI_TENANCY.trim()) {
 		throw new Error(`Missing OCI_TENANCY configuration. Please ensure OCI_TENANCY is set in your .env file.`);
 	}
 
-	if (!rcloneEnv[keyFileEnvVar]) {
+	if (!rcloneEnv.OCI_USER || !rcloneEnv.OCI_USER.trim()) {
+		throw new Error(`Missing OCI_USER configuration. Please ensure OCI_USER is set in your .env file.`);
+	}
+
+	if (!rcloneEnv.OCI_FINGERPRINT || !rcloneEnv.OCI_FINGERPRINT.trim()) {
+		throw new Error(`Missing OCI_FINGERPRINT configuration. Please ensure OCI_FINGERPRINT is set in your .env file.`);
+	}
+
+	if (!rcloneEnv.OCI_KEY_FILE || !rcloneEnv.OCI_KEY_FILE.trim()) {
 		throw new Error(`Missing OCI_KEY_FILE configuration. Please ensure OCI_KEY_FILE is set in your .env file.`);
 	}
 
-	if (!existsSync(rcloneEnv[keyFileEnvVar] as string)) {
-		throw new Error(`OCI key file not found at: ${rcloneEnv[keyFileEnvVar]}. Please verify the OCI_KEY_FILE path in your .env file.`);
+	if (!rcloneEnv.OCI_REGION || !rcloneEnv.OCI_REGION.trim()) {
+		throw new Error(`Missing OCI_REGION configuration. Please ensure OCI_REGION is set in your .env file.`);
+	}
+
+	if (!existsSync(rcloneEnv.OCI_KEY_FILE)) {
+		throw new Error(`OCI key file not found at: ${rcloneEnv.OCI_KEY_FILE}. Please verify the OCI_KEY_FILE path in your .env file.`);
 	}
 
 	logger.info(`Source: ${ociSource}`);
 	logger.info(`Destination: ${ociDest}`);
 	logger.verbose(`RClone remote: ${config.rcloneRemoteName}`);
 	logger.verbose(`RClone type: ${config.rcloneType}`);
-	logger.verbose(`OCI region: ${config.ociRegion}`);
-	logger.verbose(`OCI tenancy configured: ${rcloneEnv[tenancyEnvVar] ? 'yes' : 'no'}`);
-	logger.verbose(`OCI key file: ${rcloneEnv[keyFileEnvVar]}`);
+	logger.verbose(`OCI region: ${rcloneEnv.OCI_REGION}`);
+	logger.verbose(`OCI tenancy configured: ${rcloneEnv.OCI_TENANCY ? 'yes' : 'no'}`);
+	logger.verbose(`OCI user: ${rcloneEnv.OCI_USER}`);
+	logger.verbose(`OCI fingerprint: ${rcloneEnv.OCI_FINGERPRINT}`);
+	logger.verbose(`OCI key file: ${rcloneEnv.OCI_KEY_FILE}`);
 
 	// Sync production to staging
 	logger.info('Syncing files from production to staging...');
