@@ -24,7 +24,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, NumberInput, PasswordInput, PillsInput, PillsInputField, Popover, SegmentedControl, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, NumberInput, PasswordInput, PillsInput, PillsInputField, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -41,6 +41,7 @@ import PillsInputOverride from './mantine/PillsInput.module.css';
 import PopoverOverride from './mantine/Popover.module.css';
 import SegmentedControlOverrideSm from './mantine/SegmentedControl-sm.module.css';
 import SegmentedControlOverride from './mantine/SegmentedControl.module.css';
+import SelectOverride from './mantine/Select.module.css';
 import SkeletonOverride from './mantine/Skeleton.module.css';
 import SliderOverride from './mantine/Slider.module.css';
 import SwitchOverride from './mantine/Switch.module.css';
@@ -156,6 +157,12 @@ export const themeData: MantineThemeOverride = createTheme({
 					...SegmentedControlOverride,
 					...(props.size === 'sm' && SegmentedControlOverrideSm),
 				};
+			},
+		}),
+
+		Select: Select.extend({
+			classNames: {
+				...SelectOverride,
 			},
 		}),
 
