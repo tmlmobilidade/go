@@ -26,6 +26,7 @@ export function setupRcloneEnvironment(config: StorageConfig): NodeJS.ProcessEnv
 
 	// Set rclone remote configuration via environment variables (must be UPPERCASE)
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_TYPE`] = config.rcloneType;
+	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_ENV_AUTH`] = 'true';
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_COMPARTMENT`] = config.rcloneCompartment;
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_NAMESPACE`] = config.rcloneNamespace;
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_REGION`] = config.rcloneRegion;
@@ -33,6 +34,14 @@ export function setupRcloneEnvironment(config: StorageConfig): NodeJS.ProcessEnv
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_FINGERPRINT`] = config.ociFingerprint;
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_KEY_FILE`] = config.ociKeyFile;
 	env[`RCLONE_CONFIG_${rcloneRemoteEnvName}_TENANCY`] = config.ociTenancy;
+
+	// Set standard OCI environment variables for rclone's env_auth mode
+	// rclone's OCI Object Storage backend with env_auth expects these standard OCI variables
+	env.OCI_TENANCY = config.ociTenancy;
+	env.OCI_USER = config.ociUser;
+	env.OCI_FINGERPRINT = config.ociFingerprint;
+	env.OCI_KEY_FILE = config.ociKeyFile;
+	env.OCI_REGION = config.ociRegion;
 
 	// Normalize OCI_SOURCE and OCI_DEST to use the sanitized remote name
 	let ociSource = config.ociSource;
