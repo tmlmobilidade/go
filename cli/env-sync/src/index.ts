@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import type { SyncConfig } from './config/config-loader.js';
+
 import { cancel, isCancel, multiselect, outro, spinner } from '@clack/prompts';
 import { ASCII_TMLMOBILIDADE } from '@tmlmobilidade/consts';
 import chalk from 'chalk';
@@ -23,6 +25,84 @@ export const renderTitle = () => {
 	console.log(text);
 };
 
+interface SyncTargets {
+	syncDb: boolean
+	syncStorage: boolean
+}
+
+async function determineSyncTargets(options: ReturnType<typeof parseArgs>): Promise<SyncTargets> {
+	// If flags are provided, use them (non-interactive mode)
+	if (options.dbOnly || options.storageOnly) {
+		return {
+			syncDb: Boolean(options.dbOnly),
+			syncStorage: Boolean(options.storageOnly),
+		};
+	}
+
+	// Interactive mode: ask user what to sync
+	const syncOptions = await multiselect({
+		message: 'What would you like to sync?',
+		options: [
+			{
+				hint: 'Sync MongoDB database from production to staging',
+				label: 'Database',
+				value: 'database',
+			},
+			{
+				hint: 'Sync OCI storage files from production to staging',
+				label: 'Storage',
+				value: 'storage',
+			},
+		],
+		required: true,
+	});
+
+	if (isCancel(syncOptions)) {
+		cancel('Operation cancelled');
+		process.exit(0);
+	}
+
+	const selected = syncOptions as string[];
+
+	return {
+		syncDb: selected.includes('database'),
+		syncStorage: selected.includes('storage'),
+	};
+}
+
+async function runStorageSync(config: SyncConfig): Promise<void> {
+	const s = spinner();
+	s.start('Syncing storage...');
+
+	try {
+		await syncStorageService(config);
+		s.stop('Storage sync completed successfully');
+	}
+	catch (error) {
+		s.stop('Storage sync failed');
+		logger.error(error instanceof Error ? error.message : String(error));
+		process.exit(1);
+	}
+}
+
+async function runDatabaseSync(config: SyncConfig, options: ReturnType<typeof parseArgs>): Promise<void> {
+	const s = spinner();
+	s.start('Syncing database...');
+
+	try {
+		await syncMongoDB(config, {
+			skipCleanup: options.noCleanup || false,
+			useReplicaSet: options.replicaSet,
+		});
+		s.stop('Database sync completed successfully');
+	}
+	catch (error) {
+		s.stop('Database sync failed');
+		logger.error(error instanceof Error ? error.message : String(error));
+		process.exit(1);
+	}
+}
+
 async function main() {
 	const args = process.argv.slice(2);
 	const options = parseArgs(args);
@@ -45,77 +125,14 @@ async function main() {
 		const config = loadConfig();
 		logger.verbose('Configuration loaded successfully');
 
-		// Determine what to sync
-		let syncDb = false;
-		let syncStorage = false;
+		const { syncDb, syncStorage } = await determineSyncTargets(options);
 
-		// If flags are provided, use them
-		if (options.dbOnly) {
-			syncDb = true;
-		}
-		else if (options.storageOnly) {
-			syncStorage = true;
-		}
-		else {
-			// Interactive mode: ask user what to sync
-			const syncOptions = await multiselect({
-				message: 'What would you like to sync?',
-				options: [
-					{
-						hint: 'Sync MongoDB database from production to staging',
-						label: 'Database',
-						value: 'database',
-					},
-					{
-						hint: 'Sync OCI storage files from production to staging',
-						label: 'Storage',
-						value: 'storage',
-					},
-				],
-				required: true,
-			});
-
-			if (isCancel(syncOptions)) {
-				cancel('Operation cancelled');
-				process.exit(0);
-			}
-
-			const selected = syncOptions as string[];
-			syncDb = selected.includes('database');
-			syncStorage = selected.includes('storage');
-		}
-
-		// Sync storage
 		if (syncStorage) {
-			const s = spinner();
-			s.start('Syncing storage...');
-			try {
-				await syncStorageService(config);
-				s.stop('Storage sync completed successfully');
-			}
-			catch (error) {
-				s.stop('Storage sync failed');
-				logger.error(error instanceof Error ? error.message : String(error));
-				process.exit(1);
-			}
+			await runStorageSync(config);
 		}
 
-		// Sync database
 		if (syncDb) {
-			const s = spinner();
-			s.start('Syncing database...');
-			try {
-				await syncMongoDB(config, {
-					skipCleanup: options.noCleanup || false,
-					useReplicaSet: options.replicaSet,
-				});
-				s.stop('Database sync completed successfully');
-			}
-			catch (error) {
-				s.stop('Database sync failed');
-				logger.error(error instanceof Error ? error.message : String(error));
-				process.exit(1);
-			}
+			await runDatabaseSync(config, options);
 		}
 
 		outro('Environment sync completed successfully!');
