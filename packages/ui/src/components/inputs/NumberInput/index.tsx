@@ -12,7 +12,7 @@ export interface NumberInputProps extends MantineNumberInputProps {
 	 * The `key` prop is required to ensure correct re-mounting behavior.
 	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
 	 */
-	key: string
+	key?: string
 	tooltip?: string
 }
 
