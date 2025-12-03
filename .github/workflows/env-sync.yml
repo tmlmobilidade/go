@@ -111,10 +111,10 @@ jobs:
         run: |
           set -e
           echo "Running DB sync..."
-          node dist/index.js --verbose --db-only
+          node dist/index.js --db-only
 
           echo "Running Storage sync..."
-          node dist/index.js --verbose --storage-only
+          node dist/index.js --storage-only
 
       # # # # # # # # # # # # # # # # # # # # #
       # Upload artifacts
