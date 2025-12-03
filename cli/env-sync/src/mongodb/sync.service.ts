@@ -50,7 +50,7 @@ export async function syncMongoDB(config: SyncConfig, options: MongoSyncOptions 
 	logger.info('Dumping production database...');
 	try {
 		await dumpMongoDB({
-			config: config.prodMongo,
+			config: config.databaseProduction,
 			excludeCollections: config.excludeCollections,
 			outputPath: dumpPath,
 			useReplicaSet: effectiveReplicaSet,
@@ -65,7 +65,7 @@ export async function syncMongoDB(config: SyncConfig, options: MongoSyncOptions 
 	logger.info('Restoring to staging database...');
 	try {
 		await restoreMongoDB({
-			config: config.stagingMongo,
+			config: config.databaseStaging,
 			dumpPath,
 		});
 	}

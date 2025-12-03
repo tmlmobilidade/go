@@ -11,27 +11,26 @@ export interface MongoConfig {
 }
 
 export interface StorageConfig {
-	ociDest: string
-	ociFingerprint: string
-	ociKeyFile: string
-	ociRegion: string
-	ociSource: string
-	ociTenancy: string
-	ociUser: string
-	rcloneCompartment: string
-	rcloneNamespace: string
-	rcloneRegion: string
-	rcloneRemoteName: string
-	rcloneType: string
+	compartment: string
+	dest: string
+	fingerprint: string
+	keyFile: string
+	namespace: string
+	region: string
+	remoteName: string
+	source: string
+	tenancy: string
+	type: string
+	user: string
 }
 
 export interface SyncConfig {
 	backupDir: string
 	backupRetentionDays: number
+	databaseProduction: MongoConfig
+	databaseStaging: MongoConfig
 	excludeCollections: string[]
-	prodMongo: MongoConfig
 	scriptDir: string
-	stagingMongo: MongoConfig
 	storage: StorageConfig
 }
 
@@ -80,18 +79,7 @@ export function loadConfig(): SyncConfig {
 	}
 
 	// Validate required Storage variables
-	const requiredStorageVars = [
-		'RCLONE_REMOTE_NAME',
-		'RCLONE_TYPE',
-		'RCLONE_COMPARTMENT',
-		'RCLONE_NAMESPACE',
-		'RCLONE_REGION',
-		'OCI_USER',
-		'OCI_FINGERPRINT',
-		'OCI_KEY_FILE',
-		'OCI_TENANCY',
-		'OCI_REGION',
-	];
+	const requiredStorageVars = ['STORAGE_SOURCE', 'STORAGE_DEST', 'STORAGE_REMOTE_NAME', 'STORAGE_TYPE', 'OCI_COMPARTMENT', 'OCI_FINGERPRINT', 'OCI_KEY_FILE', 'OCI_NAMESPACE', 'OCI_REGION', 'OCI_TENANCY', 'OCI_USER'];
 	for (const varName of requiredStorageVars) {
 		if (!envVars[varName]) {
 			throw new Error(`Storage configuration missing: ${varName} is required in ${envFile}`);
@@ -103,37 +91,38 @@ export function loadConfig(): SyncConfig {
 	return {
 		backupDir,
 		backupRetentionDays: parseEnvNumber(envVars.BACKUP_RETENTION_DAYS, 7),
-		excludeCollections: parseEnvValue(envVars.EXCLUDE_COLLECTIONS, '')
-			.split(/\s+/)
-			.filter(c => c.length > 0),
-		prodMongo: {
+		databaseProduction: {
 			authDatabase: parseEnvValue(envVars.PROD_AUTH_DATABASE, 'admin'),
 			database: parseEnvValue(envVars.PROD_DB),
 			host: parseEnvValue(envVars.PROD_HOST),
 			password: parseEnvValue(envVars.PROD_PASSWORD),
 			username: parseEnvValue(envVars.PROD_USERNAME),
 		},
-		scriptDir,
-		stagingMongo: {
+		databaseStaging: {
 			authDatabase: parseEnvValue(envVars.STAGING_AUTH_DATABASE, 'admin'),
 			database: parseEnvValue(envVars.STAGING_DB),
 			host: parseEnvValue(envVars.STAGING_HOST),
 			password: parseEnvValue(envVars.STAGING_PASSWORD),
 			username: parseEnvValue(envVars.STAGING_USERNAME),
 		},
+		excludeCollections: parseEnvValue(envVars.EXCLUDE_COLLECTIONS, '')
+			.split(/\s+/)
+			.filter(c => c.length > 0),
+		scriptDir,
 		storage: {
-			ociDest: parseEnvValue(envVars.OCI_DEST),
-			ociFingerprint: parseEnvValue(envVars.OCI_FINGERPRINT),
-			ociKeyFile: parseEnvValue(envVars.OCI_KEY_FILE),
-			ociRegion: parseEnvValue(envVars.OCI_REGION),
-			ociSource: parseEnvValue(envVars.OCI_SOURCE),
-			ociTenancy: parseEnvValue(envVars.OCI_TENANCY),
-			ociUser: parseEnvValue(envVars.OCI_USER),
-			rcloneCompartment: parseEnvValue(envVars.RCLONE_COMPARTMENT),
-			rcloneNamespace: parseEnvValue(envVars.RCLONE_NAMESPACE),
-			rcloneRegion: parseEnvValue(envVars.RCLONE_REGION),
-			rcloneRemoteName: parseEnvValue(envVars.RCLONE_REMOTE_NAME),
-			rcloneType: parseEnvValue(envVars.RCLONE_TYPE),
+			//
+			dest: parseEnvValue(envVars.STORAGE_DEST),
+			remoteName: parseEnvValue(envVars.STORAGE_REMOTE_NAME),
+			source: parseEnvValue(envVars.STORAGE_SOURCE),
+			type: parseEnvValue(envVars.STORAGE_TYPE),
+			//
+			compartment: parseEnvValue(envVars.OCI_COMPARTMENT),
+			fingerprint: parseEnvValue(envVars.OCI_FINGERPRINT),
+			keyFile: parseEnvValue(envVars.OCI_KEY_FILE),
+			namespace: parseEnvValue(envVars.OCI_NAMESPACE),
+			region: parseEnvValue(envVars.OCI_REGION),
+			tenancy: parseEnvValue(envVars.OCI_TENANCY),
+			user: parseEnvValue(envVars.OCI_USER),
 		},
 	};
 }
