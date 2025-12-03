@@ -4,10 +4,10 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization, UpdateOrganizationSchema } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { convertObject, fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -32,7 +32,6 @@ interface OrganizationsDetailContextState {
 		logoLightUrl: null | string
 	}
 	flags: {
-		canSave: boolean
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
@@ -71,10 +70,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	// A. Setup variables
 
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
-	const [canSave, setCanSave] = useState(false);
 	const [imageDark, setImageDark] = useState<File | null>(null);
 	const [imageLight, setImageLight] = useState<File | null>(null);
 
@@ -83,32 +80,14 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	const orgDetailKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
 	const orgLogoKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organization_id);
+
 	const { data: organization, isLoading, mutate } = useSWR<Organization>(orgDetailKey);
 	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(orgLogoKey);
 
 	//
 	// C. Initialize form
 
-	const form = useForm<CreateOrganizationDto>({
-		initialValues: emptyOrganization,
-		validate: zodResolver(CreateOrganizationSchema) as unknown as FormValidateInput<CreateOrganizationDto>,
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
-
-	useEffect(() => {
-		if (!organization) return;
-		setLoading(true);
-		form.initialize(convertObject(organization, CreateOrganizationSchema));
-		setLoading(false);
-	}, [organization]);
-
-	// C. Transform Data
-
-	useEffect(() => {
-		form.validate();
-		setCanSave(form.isValid());
-	}, [form.values]);
+	const { form } = useTypicalForm<CreateOrganizationDto>(CreateOrganizationSchema, emptyOrganization);
 
 	//
 	// D. Handle actions
@@ -118,7 +97,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 		const method = organization_id === 'new' ? 'POST' : 'PUT';
 		const url = organization_id === 'new' ? API_ROUTES.auth.ORGANIZATIONS_LIST : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
-		const body = organization_id === 'new' ? form.values : convertObject(form.values, UpdateOrganizationSchema);
+		const body = organization_id === 'new' ? form.getValues() : convertObject(form.getValues(), UpdateOrganizationSchema);
 		const response = await fetchData<Organization>(url, method, body);
 
 		if (response.error) {
@@ -253,13 +232,18 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			logoLightUrl: logo?.logo_light,
 		},
 		flags: {
-			canSave,
 			isReadOnly,
 			isSaving,
-			loading: isLoading || loading,
+			loading: isLoading || isLogoLoading,
 			mode: organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT,
 		},
-	}), [form, handleDeleteOrganization, handleSaveOrganization, isLoading, isLogoLoading, isReadOnly, isSaving, loading, organization_id]);
+	}), [
+		isLoading,
+		isLogoLoading,
+		isReadOnly,
+		isSaving,
+		organization_id,
+	]);
 
 	//
 	// F. Render components

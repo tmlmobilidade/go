@@ -37,7 +37,7 @@ export function RoleDetailHeader() {
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
 			<Spacer />
 			<Button
-				disabled={!roleDetailContext.flags.canSave}
+				disabled={!roleDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label={roleDetailContext.flags.mode === RoleDetailMode.CREATE ? 'Publicar' : 'Salvar'}
 				loading={roleDetailContext.flags.isSaving}

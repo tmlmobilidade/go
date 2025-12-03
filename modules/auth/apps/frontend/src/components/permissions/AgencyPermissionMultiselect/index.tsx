@@ -6,20 +6,26 @@ import { MultiSelect } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AgencyPermissionMultiselect({
-	description,
-	disabled,
-	label,
-	onChange,
-	selected,
-}: {
+interface AgencyPermissionMultiselectProps {
 	description: string
 	disabled?: boolean
 	label: string
 	onChange: (value: string[]) => void
 	selected: string[]
-}) {
+}
+
+/* * */
+
+export function AgencyPermissionMultiselect({ description, disabled, label, onChange, selected }: AgencyPermissionMultiselectProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const agencyListContext = useAgenciesContext();
+
+	//
+	// B. Transform data
 
 	const agencyOptions = agencyListContext.data.raw.map(agency => ({
 		label: `${agency._id} - ${agency.name}`,
@@ -30,6 +36,9 @@ export function AgencyPermissionMultiselect({
 		label: 'Todas as agências',
 		value: PermissionCatalog.ALLOW_ALL_FLAG,
 	});
+
+	//
+	// C. Handle actions
 
 	const handleChange = (value: string[]) => {
 		if (selected.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
@@ -46,14 +55,20 @@ export function AgencyPermissionMultiselect({
 		onChange(value);
 	};
 
+	//
+	// D. Render components
+
 	return (
 		<MultiSelect
+			key="agency-multiselect"
 			data={agencyOptions}
 			description={description}
 			disabled={disabled}
 			label={label}
 			onChange={handleChange}
-			selected={selected}
+			value={selected}
 		/>
 	);
+
+	//
 }

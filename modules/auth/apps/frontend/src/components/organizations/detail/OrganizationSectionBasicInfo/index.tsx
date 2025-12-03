@@ -28,6 +28,7 @@ export function OrganizationDetailBasicInfo() {
 			<Section gap="lg">
 				<Grid columns="aab" gap="lg">
 					<TextInput
+						key={organizationDetailContext.data.form.key('long_name')}
 						label="Nome da organização"
 						maxLength={255}
 						placeholder="Carris Metropolitana"
@@ -35,6 +36,7 @@ export function OrganizationDetailBasicInfo() {
 						{...organizationDetailContext.data.form.getInputProps('long_name')}
 					/>
 					<TextInput
+						key={organizationDetailContext.data.form.key('short_name')}
 						label="Sigla"
 						maxLength={10}
 						placeholder="CM"

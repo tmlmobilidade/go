@@ -38,7 +38,7 @@ export function OrganizationDetailHeader() {
 			<Label size="lg" singleLine>{organizationDetailContext.data.form.values.long_name}</Label>
 			<Spacer />
 			<Button
-				disabled={!organizationDetailContext.flags.canSave}
+				disabled={!organizationDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label={organizationDetailContext.flags.mode === OrganizationsDetailMode.CREATE ? 'Publicar' : 'Guardar'}
 				loading={organizationDetailContext.flags.isSaving}

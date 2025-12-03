@@ -4,10 +4,10 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateRoleDto, CreateRoleSchema, PermissionSchema, type Role } from '@tmlmobilidade/types';
-import { useDebouncedCallback, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -29,20 +29,12 @@ interface RoleDetailContextState {
 		id: string | undefined
 	}
 	flags: {
-		canSave: boolean
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
 		mode: RoleDetailMode
 	}
 }
-
-const emptyRole: CreateRoleDto = {
-	created_by: '',
-	name: '',
-	permissions: [],
-	updated_by: '',
-};
 
 /* * */
 
@@ -70,7 +62,6 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
-	const [canSave, setCanSave] = useState(false);
 
 	//
 	// B. Fetch data
@@ -81,25 +72,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const validateForm = useDebouncedCallback(() => {
-		const validationResult = form.validate();
-		console.log('Form validation result:', validationResult);
-		setCanSave(!validationResult.hasErrors);
-	}, 1000);
-
-	const form = useForm<CreateRoleDto>({
-		initialValues: emptyRole,
-		mode: 'uncontrolled',
-		onValuesChange: () => validateForm(),
-		validate: zodResolver(CreateRoleSchema),
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
-
-	useEffect(() => {
-		if (!roleData) return;
-		form.initialize(roleData);
-	}, [roleData]);
+	const { form } = useTypicalForm<CreateRoleDto>(CreateRoleSchema, roleData);
 
 	//
 	// D. Handle actions
@@ -212,19 +185,16 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 			id: roleId === 'new' ? undefined : roleId,
 		},
 		flags: {
-			canSave,
 			isReadOnly,
 			isSaving,
 			loading: roleLoading,
 			mode: roleId === 'new' ? RoleDetailMode.CREATE : RoleDetailMode.EDIT,
 		},
 	}), [
-		canSave,
 		isReadOnly,
 		isSaving,
 		roleId,
 		roleLoading,
-		form,
 	]);
 
 	//

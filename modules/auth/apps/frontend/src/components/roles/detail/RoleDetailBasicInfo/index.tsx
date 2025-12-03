@@ -26,6 +26,7 @@ export function RoleDetailBasicInfo() {
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
 					<TextInput
+						key={roleDetailContext.data.form.key('name')}
 						label="Nome do grupo"
 						maxLength={255}
 						placeholder="..."
