@@ -12,6 +12,7 @@
 	box-shadow: 0 1px 3px 0 brown;
 }
 
+.root, /* DEFAULT */
 .root[data-variant='primary'] {
 	color: var(--color-contrast);
 	background-color: var(--color-primary);

@@ -5,7 +5,7 @@
 import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { CreateAgencySchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -77,12 +77,11 @@ export function AgencyDetailBasicInfo() {
 						withAsterisk={!CreateAgencySchema.shape.fare_url.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('fare_url')}
 					/>
-					<Combobox
+					<Select
 						key={agencyDetailContext.data.form.key('timezone')}
-						data={Dates.TIMEZONE_LIST as unknown as string[]}
+						data={Dates.TIMEZONE_LIST}
 						label="Timezone da agência"
 						{...agencyDetailContext.data.form.getInputProps('timezone')}
-						searchable
 					/>
 				</Grid>
 			</Section>

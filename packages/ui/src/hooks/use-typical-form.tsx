@@ -23,22 +23,23 @@ interface UseTypicalFormReturnType<T> {
 }
 
 /**
- * A custom hook to read and keep track of a CSS variable's value.
- * @param variableName The name of the CSS variable to read.
- * @param defaultValue The default value to use if the variable is not set.
- * @param refreshRate The rate at which to refresh the variable's value. Defaults to `100` ms.
+ * A custom hook that sets up a typical form with validation and state management
+ * using Mantine's useForm and Zod schema. It also handles form initialization with
+ * API data and prevents navigation if the form is dirty.
+ * @param schema The Zod schema to validate the form data.
+ * @param apiData Optional initial data to populate the form.
  * @returns The current value of the CSS variable, or the default value or undefined if not set.
  */
 export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema, apiData?: null | T | undefined): UseTypicalFormReturnType<T> {
 	//
 
 	//
-	// A. Setup variables
+	// Setup variables
 
 	const [formErrors, setFormErrors] = useState<FormErrors>({});
 
 	//
-	// B. Handle actions
+	// Setup form and its related logic
 
 	const validateForm = useDebouncedCallback(() => {
 		const validationResult = form.validate();
@@ -54,6 +55,9 @@ export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema
 		validateInputOnChange: false,
 	});
 
+	//
+	// Initialize form with API data
+
 	useEffect(() => {
 		// Skip if no API data
 		if (!apiData) return;
@@ -66,25 +70,13 @@ export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema
 		Logger.success(`[${apiData._id}] Form initialized with values from API.`);
 	}, [apiData]);
 
-	// const iuhdiush = usePreventNavigation(form.isDirty());
+	//
+	// Prevent navigation if form is dirty
 
-	// useEffect(() => {
-	// 	// Setup before unload listener to warn user about unsaved changes
-	// 	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-	// 		event.preventDefault();
-	// 		event.returnValue = '';
-	// 	};
-	// 	// Add or remove listener based on form dirty state
-	// 	if (form.isDirty()) window.addEventListener('beforeunload', handleBeforeUnload);
-	// 	else window.removeEventListener('beforeunload', handleBeforeUnload);
-	// 	// Cleanup listener on unmount
-	// 	return () => {
-	// 		window.removeEventListener('beforeunload', handleBeforeUnload);
-	// 	};
-	// }, [form.isDirty()]);
+	usePreventNavigation(form.isDirty());
 
 	//
-	// C. Render components
+	// Return hook values and functions
 
 	return {
 		errors: formErrors,

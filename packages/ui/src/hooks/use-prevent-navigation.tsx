@@ -2,102 +2,118 @@
 
 import { Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
-/* * */
-
+/**
+ * A custom hook to prevent navigation when there are unsaved changes.
+ * @param shouldBlock A boolean indicating whether to block or allow navigation.
+ */
 export function usePreventNavigation(shouldBlock: boolean) {
 	//
 
+	//
+	// A. Setup variables
+
 	const router = useRouter();
 
-	const pathname = usePathname();
+	const destinationUrl = useRef<null | string>(null);
 
-	const [nextRoute, setNextRoute] = useState<null | string>(null);
-	const originalPushRef = useRef(router.push); // Store original router.push
-	const lastLocationRef = useRef<null | string>(null); // Store last visited route
+	const originalPushFunctionRef = useRef<null | typeof router.push>(null);
 
-	// ✅ Check if navigation is allowed
+	//
+	// B. Transform data
 
 	useEffect(() => {
+		// Function to handle navigation attempts
 		const handleNavigation = (url: string) => {
-			setNextRoute(url);
-			if (!shouldBlock || url === pathname) {
-				originalPushRef.current(url);
-				return;
-			}
-			openModal();
+			// Store intended destination
+			destinationUrl.current = url;
+			// Proceed or block navigation based on shouldBlock flag
+			if (!shouldBlock && originalPushFunctionRef.current) originalPushFunctionRef.current(url);
+			// Otherwise, open confirmation modal
+			else openModal();
 		};
-		router.push = ((url, _options) => {
-			handleNavigation(url);
-		}) as typeof router.push;
+		// Store original router.push function
+		if (!originalPushFunctionRef.current) originalPushFunctionRef.current = router.push;
+		// Override router.push to intercept navigation attempts
+		router.push = (url => handleNavigation(url)) as typeof router.push;
+		// Cleanup on unmount
 		return () => {
-			router.push = originalPushRef.current;
+			router.push = originalPushFunctionRef.current;
+			originalPushFunctionRef.current = null;
 		};
-	}, [shouldBlock, pathname]);
+	}, [shouldBlock]);
 
-	// 🔄 Prevent Page Reloads
 	useEffect(() => {
+		// Setup before unload listener to warn user about unsaved changes
 		const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+			// Warn user about unsaved changes
 			if (shouldBlock) {
+				// Prevent the default behavior of the event
 				event.preventDefault();
+				// Chrome requires returnValue to be set
 				event.returnValue = 'Are you sure you want to leave?';
 			}
 		};
+		// Setup before unload listener based (navigation change)
 		window.addEventListener('beforeunload', handleBeforeUnload);
+		// Cleanup listener on unmount or when shouldBlock changes
 		return () => {
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
 	}, [shouldBlock]);
 
-	// 🔙 Handle Back Button Navigation
 	useEffect(() => {
+		// Handle back/forward button press
 		const handleBackButton = (event: PopStateEvent) => {
 			if (shouldBlock) {
+				// Prevent navigation
 				event.preventDefault();
-				const previousURL = lastLocationRef.current || document.referrer || '/'; // Fallback to home if unknown
-				setNextRoute(previousURL);
-				history.pushState(null, '', window.location.href); // Keep user on the same page
+				event.stopPropagation();
+				// Store intended destination
+				destinationUrl.current = document.referrer;
+				// Re-add current state to history to prevent navigation
+				history.pushState(null, '', window.location.href);
+				// Open confirmation modal
 				openModal();
 			}
 		};
-		lastLocationRef.current = pathname; // Track last known location
-		history.pushState(null, '', window.location.href);
+		// Setup listener for popstate events (back/forward navigation)
 		window.addEventListener('popstate', handleBackButton);
+		// Cleanup listener on unmount or when shouldBlock changes
 		return () => {
 			window.removeEventListener('popstate', handleBackButton);
 		};
-	}, [shouldBlock, pathname]);
+	}, [shouldBlock]);
 
-	// ✅ Proceed or Cancel Navigation
+	//
+	// C. Handle actions
 
 	const proceedNavigation = () => {
-		console.log('Navigating to:', nextRoute);
-		if (nextRoute) {
-			originalPushRef.current(nextRoute); // Navigate to previous or next route
-			setNextRoute(null);
-		}
+		// Skip if no destination URL
+		if (!destinationUrl.current) return;
+		// Use the original push function to navigate
+		originalPushFunctionRef.current(destinationUrl.current);
+		// Clear destination URL
+		destinationUrl.current = null;
 	};
 
 	const cancelNavigation = () => {
-		setNextRoute(null);
+		destinationUrl.current = null;
 	};
 
+	//
+	// D. Render components
+
 	const openModal = () => modals.openConfirmModal({
-		children: (
-			<Text size="sm">
-				This action is so important that you are required to confirm it with a modal. Please click
-				one of these buttons to proceed.
-			</Text>
-		),
-		labels: { cancel: 'Cancel', confirm: 'Confirm' },
+		children: <Text size="sm">Todas as alterações não guardadas serão perdidas.</Text>,
+		confirmProps: { variant: 'danger' },
+		labels: { cancel: 'Cancelar', confirm: 'Sim, quero sair' },
 		onCancel: cancelNavigation,
 		onConfirm: proceedNavigation,
-		title: 'Please confirm your action',
+		title: 'Tem a certeza que pretende sair desta página?',
 	});
-
-	return { cancelNavigation, proceedNavigation };
 
 	//
 };
