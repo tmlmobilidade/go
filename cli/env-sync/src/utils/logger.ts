@@ -7,12 +7,6 @@ function getTimestamp(): string {
 }
 
 export const logger = {
-	setVerbose(enabled: boolean) {
-		verboseMode = enabled;
-	},
-	isVerbose() {
-		return verboseMode;
-	},
 	clearPreviousLine() {
 		process.stdout.clearLine(0);
 		process.stdout.cursorTo(0);
@@ -23,8 +17,14 @@ export const logger = {
 	info(...args: unknown[]) {
 		console.log(chalk.green(`[${getTimestamp()}]`), ...args);
 	},
+	isVerbose() {
+		return verboseMode;
+	},
 	log(...args: unknown[]) {
 		console.log(...args);
+	},
+	setVerbose(enabled: boolean) {
+		verboseMode = enabled;
 	},
 	success(...args: unknown[]) {
 		console.log(chalk.green(`[${getTimestamp()}]`), ...args);
