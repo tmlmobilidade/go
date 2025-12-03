@@ -123,7 +123,7 @@ export default function DemandByTopic() {
 							label="Linha"
 							limit={20}
 							onChange={setLineIdsInput}
-							selected={lineIdsInput}
+							value={lineIdsInput}
 							width={500}
 						/>
 					)}
@@ -139,7 +139,7 @@ export default function DemandByTopic() {
 							label="Pattern"
 							limit={20}
 							onChange={setPatternIdsInput}
-							selected={patternIdsInput}
+							value={patternIdsInput}
 							width={500}
 						/>
 					)}

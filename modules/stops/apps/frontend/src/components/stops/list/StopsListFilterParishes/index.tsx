@@ -35,7 +35,7 @@ export function StopsListFilterParish() {
 			data={parsedOptions}
 			label="Freguesia"
 			onChange={stopsListContext.actions.setFilterParishes}
-			selected={stopsListContext.filters.parishes}
+			value={stopsListContext.filters.parishes}
 			clearable
 		/>
 	);

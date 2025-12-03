@@ -168,7 +168,7 @@ function ReferencesRoutesItem({
 						description="Selecione as paragens que serão afetadas pelo alerta"
 						label="Paragens Afetadas"
 						onChange={value => onUpdateReference(index, 'child_ids', value)}
-						selected={reference.child_ids}
+						value={reference.child_ids}
 					/>
 				</div>
 				<div className={styles.deleteButtonWrapper}>

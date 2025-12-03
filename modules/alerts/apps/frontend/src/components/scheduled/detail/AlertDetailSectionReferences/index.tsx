@@ -48,7 +48,7 @@ export function AlertDetailSectionReferences() {
 					description="Selecione os munícios que serão afetados pelo alerta"
 					label="Municípios Afetados"
 					onChange={ids => alertDetailContext.data.form.setFieldValue('municipality_ids', ids)}
-					selected={alertDetailContext.data.form.values.municipality_ids}
+					value={alertDetailContext.data.form.values.municipality_ids}
 				/>
 
 				<ReferencesGroup

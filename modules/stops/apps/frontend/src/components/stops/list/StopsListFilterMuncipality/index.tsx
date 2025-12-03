@@ -33,12 +33,11 @@ export function StopsListFilterMunicipality() {
 	// C. Render components
 
 	return (
-
 		<MultiSelect
 			data={parsedOptions}
 			label="Municipio"
 			onChange={stopsListContext.actions.setFilterMunicipalities}
-			selected={stopsListContext.filters.municipalities}
+			value={stopsListContext.filters.municipalities}
 			clearable
 		/>
 	);
