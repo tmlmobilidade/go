@@ -61,7 +61,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	const { form } = useTypicalForm<UpdateAgencyDto>(UpdateAgencySchema, agencyData);
 
 	//
-	// E. Handle actions
+	// D. Handle actions
 
 	const handleSaveAgency = async () => {
 		setIsSaving(true);
@@ -102,7 +102,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	};
 
 	//
-	// F. Define context value
+	// E. Define context value
 
 	const contextValue: AgencyDetailContextState = useMemo(() => ({
 		actions: {
@@ -129,7 +129,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	]);
 
 	//
-	// G. Render components
+	// F. Render components
 
 	return (
 		<AgencyDetailContext.Provider value={contextValue}>

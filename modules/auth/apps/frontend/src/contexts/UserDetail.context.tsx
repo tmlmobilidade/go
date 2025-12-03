@@ -18,7 +18,7 @@ export enum UsersDetailMode {
 	EDIT = 'edit',
 }
 
-interface UsersDetailContextState {
+interface UserDetailContextState {
 	actions: {
 		deleteUser: () => void
 		handleChangePassword: (scope: string) => void
@@ -40,19 +40,19 @@ interface UsersDetailContextState {
 
 /* * */
 
-const UsersDetailContext = createContext<undefined | UsersDetailContextState>(undefined);
+const UserDetailContext = createContext<undefined | UserDetailContextState>(undefined);
 
-export function useUsersDetailContext() {
-	const context = useContext(UsersDetailContext);
+export function useUserDetailContext() {
+	const context = useContext(UserDetailContext);
 	if (!context) {
-		throw new Error('useUsersDetailContext must be used within a UsersDetailContextProvider');
+		throw new Error('useUserDetailContext must be used within a UserDetailContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildren<{ userId: string }>) => {
+export const UserDetailContextProvider = ({ children, userId }: PropsWithChildren<{ userId: string }>) => {
 	//
 
 	//
@@ -180,7 +180,7 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 	//
 	// E. Define context value
 
-	const contextValue: UsersDetailContextState = useMemo(() => ({
+	const contextValue: UserDetailContextState = useMemo(() => ({
 		actions: {
 			deleteUser: handleDeleteUser,
 			handleChangePassword,
@@ -199,6 +199,7 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 			mode: userId === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
 		},
 	}), [
+		form,
 		isReadOnly,
 		isSaving,
 		userId,
@@ -209,9 +210,9 @@ export const UsersDetailContextProvider = ({ children, userId }: PropsWithChildr
 	// F. Render components
 
 	return (
-		<UsersDetailContext.Provider value={contextValue}>
+		<UserDetailContext.Provider value={contextValue}>
 			{children}
-		</UsersDetailContext.Provider>
+		</UserDetailContext.Provider>
 	);
 
 	//

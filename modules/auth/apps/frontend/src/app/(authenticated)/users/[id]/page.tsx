@@ -1,7 +1,7 @@
 /* * */
 
 import { UsersDetail } from '@/components/users/detail/UsersDetail';
-import { UsersDetailContextProvider } from '@/contexts/UsersDetail.context';
+import { UserDetailContextProvider } from '@/contexts/UserDetail.context';
 
 /* * */
 
@@ -14,8 +14,8 @@ interface Props {
 export default async function Page({ params }: Props) {
 	const { id } = await params;
 	return (
-		<UsersDetailContextProvider userId={id}>
+		<UserDetailContextProvider userId={id}>
 			<UsersDetail />
-		</UsersDetailContextProvider>
+		</UserDetailContextProvider>
 	);
 }

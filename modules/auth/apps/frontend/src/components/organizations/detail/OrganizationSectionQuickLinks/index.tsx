@@ -80,7 +80,7 @@ export function OrganizationDetailQuickLinks() {
 	};
 
 	const quickLinkOptions = useMemo(() => {
-		return organizationDetailContext.data.form.values.home_links.map(link => ({
+		return organizationDetailContext.data.form.values.home_links?.map(link => ({
 			...link,
 			actions: <OrganizationDetailQuickLinksActions handleDelete={handleDelete} handleEdit={handleEdit} link={link} />,
 		}));

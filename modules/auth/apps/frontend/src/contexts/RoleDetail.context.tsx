@@ -191,6 +191,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 			mode: roleId === 'new' ? RoleDetailMode.CREATE : RoleDetailMode.EDIT,
 		},
 	}), [
+		form,
 		isReadOnly,
 		isSaving,
 		roleId,

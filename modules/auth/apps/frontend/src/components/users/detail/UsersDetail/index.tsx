@@ -6,7 +6,7 @@ import { PermissionSection } from '@/components/permissions/PermissionSection';
 import { UsersDetailBasicInfo } from '@/components/users/detail/UsersDetailBasicInfo';
 import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
 import { UsersDetailRolesAndOrganization } from '@/components/users/detail/UsersDetailRolesAndOrganization';
-import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
+import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { permissionsConfig } from '@/lib/permissions';
 import { Pane } from '@tmlmobilidade/ui';
 
@@ -18,7 +18,7 @@ export function UsersDetail() {
 	//
 	// A. Setup variables
 
-	const usersDetailContext = useUsersDetailContext();
+	const usersDetailContext = useUserDetailContext();
 
 	//
 	// B. Render components

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
+import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, PasswordInput, Section, TextInput } from '@tmlmobilidade/ui';
@@ -15,7 +15,7 @@ export function UsersDetailBasicInfo() {
 	//
 	// A. Setup variables
 
-	const usersDetailContext = useUsersDetailContext();
+	const usersDetailContext = useUserDetailContext();
 
 	//
 	// B. Render components

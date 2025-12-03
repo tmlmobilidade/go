@@ -3,7 +3,7 @@
 /* * */
 
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
-import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
+import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { Grid, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -15,7 +15,7 @@ export function UsersDetailOrganization() {
 	//
 	// A. Setup variables
 
-	const userDetailsContext = useUsersDetailContext();
+	const userDetailsContext = useUserDetailContext();
 	const organizationsContext = useOrganizationsContext();
 
 	//

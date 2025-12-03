@@ -3,7 +3,7 @@
 /* * */
 
 import { useRolesContext } from '@/contexts/Roles.context';
-import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
+import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -15,7 +15,7 @@ export function UsersDetailRoles() {
 	// A. Setup variables
 
 	const rolesContext = useRolesContext();
-	const usersDetailContext = useUsersDetailContext();
+	const usersDetailContext = useUserDetailContext();
 
 	//
 	// B. Transform data

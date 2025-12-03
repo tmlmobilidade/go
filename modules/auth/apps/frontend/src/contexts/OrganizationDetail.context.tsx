@@ -39,16 +39,6 @@ interface OrganizationsDetailContextState {
 	}
 }
 
-const emptyOrganization: CreateOrganizationDto = {
-	home_links: [],
-	home_wikis: [],
-	logo_dark: '',
-	logo_light: '',
-	long_name: '',
-	short_name: '',
-	theme: '',
-};
-
 /* * */
 
 const OrganizationsDetailContext = createContext<OrganizationsDetailContextState | undefined>(undefined);
@@ -81,13 +71,13 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	const orgDetailKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
 	const orgLogoKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organization_id);
 
-	const { data: organization, isLoading, mutate } = useSWR<Organization>(orgDetailKey);
+	const { data: organizationData, isLoading: organizationLoading, mutate: organizationMutate } = useSWR<Organization>(orgDetailKey);
 	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(orgLogoKey);
 
 	//
 	// C. Initialize form
 
-	const { form } = useTypicalForm<CreateOrganizationDto>(CreateOrganizationSchema, emptyOrganization);
+	const { form } = useTypicalForm<CreateOrganizationDto>(CreateOrganizationSchema, organizationData);
 
 	//
 	// D. Handle actions
@@ -128,8 +118,10 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			title: 'Sucesso',
 		});
 
+		form.resetDirty();
+
 		if (orgDetailKey) {
-			mutate();
+			organizationMutate();
 		}
 
 		if (organization_id === 'new' && response.data?._id) {
@@ -142,7 +134,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	const handleDeleteOrganization = async () => {
 		if (organization_id === 'new') return;
 
-		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id), 'DELETE', organization);
+		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id), 'DELETE', organizationData);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -202,7 +194,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 
 	const deleteImage = async (theme: 'dark' | 'light') => {
 		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_VAR_IMAGE(organization_id, theme);
-		const response = await fetchData<Organization>(themeImageRoute + '?realtime=true', 'DELETE', organization);
+		const response = await fetchData<Organization>(themeImageRoute + '?realtime=true', 'DELETE', organizationData);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -234,11 +226,12 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 		flags: {
 			isReadOnly,
 			isSaving,
-			loading: isLoading || isLogoLoading,
+			loading: organizationLoading || isLogoLoading,
 			mode: organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT,
 		},
 	}), [
-		isLoading,
+		form,
+		organizationLoading,
 		isLogoLoading,
 		isReadOnly,
 		isSaving,

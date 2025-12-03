@@ -2,7 +2,7 @@
 
 /* * */
 
-import { UsersDetailMode, useUsersDetailContext } from '@/contexts/UsersDetail.context';
+import { UsersDetailMode, useUserDetailContext } from '@/contexts/UserDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams, Label } from '@tmlmobilidade/ui';
@@ -18,7 +18,7 @@ export function UsersDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const usersDetailContext = useUsersDetailContext();
+	const usersDetailContext = useUserDetailContext();
 
 	//
 	// B. Handle actions
