@@ -43,7 +43,7 @@ export function BaseProvider({ children }: PropsWithChildren) {
 	// B. Render components
 
 	return (
-		<html data-mode="system" data-theme="ocean" lang="pt">
+		<html data-mode="light" data-theme="ocean" lang="pt">
 			<body>
 				<NuqsAdapter>
 					<SWRConfig value={swrSettings}>

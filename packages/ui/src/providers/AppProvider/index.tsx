@@ -5,10 +5,10 @@
 import { type PropsWithChildren } from 'react';
 
 import { ExportsContextProvider } from '../../contexts/exports.context';
+import { LayoutContextProvider } from '../../contexts/Layout.context';
 import { MapContextProvider } from '../../contexts/Map.context';
 import { MeContextProvider } from '../../contexts/Me.context';
 import { NotificationsContextProvider } from '../../contexts/Notifications.context';
-import { LayoutContextProvider } from '../../contexts/Layout.context';
 
 /**
  * `AppProvider` component that wraps the application with necessary context providers.
