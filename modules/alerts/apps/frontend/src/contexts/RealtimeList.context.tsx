@@ -3,12 +3,11 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { parseAsArrayOfStrings } from '@/lib/parse-string-array';
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
-import { useSearch } from '@tmlmobilidade/ui';
+import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';

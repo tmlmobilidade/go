@@ -3,7 +3,7 @@
 import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
 import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
-import { CsvWriter } from '@helperkits/writer';
+import { CsvWriter } from '@tmlmobilidade/writers';
 import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';

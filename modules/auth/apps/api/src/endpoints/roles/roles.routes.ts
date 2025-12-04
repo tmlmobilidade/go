@@ -1,9 +1,8 @@
 /* * */
 
 import { RolesController } from '@/endpoints/roles/roles.controller.js';
-import { authorizationMiddleware } from '@/middleware/authorization.middleware.js';
-import { FastifyService } from '@tmlmobilidade/fastify';
-import { Permissions } from '@tmlmobilidade/consts';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,20 +14,37 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
-		// GET /roles
-		instance.get('/', { preHandler: authorizationMiddleware(Permissions.roles.scope, Permissions.roles.actions.read) }, RolesController.getAll);
+		//
 
-		// GET /roles/:id
-		instance.get('/:id', { preHandler: authorizationMiddleware(Permissions.roles.scope, Permissions.roles.actions.read) }, RolesController.getById);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.read]) },
+			RolesController.getAll,
+		);
 
-		// POST /roles
-		instance.post('/', { preHandler: authorizationMiddleware(Permissions.roles.scope, Permissions.roles.actions.create) }, RolesController.create);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.read]) },
+			RolesController.getById,
+		);
 
-		// PUT /roles/:id
-		instance.put('/:id', { preHandler: authorizationMiddleware(Permissions.roles.scope, Permissions.roles.actions.update) }, RolesController.update);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.create]) },
+			RolesController.create,
+		);
 
-		// DELETE /roles/:id
-		instance.delete('/:id', { preHandler: authorizationMiddleware(Permissions.roles.scope, Permissions.roles.actions.delete) }, RolesController.delete);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.update]) },
+			RolesController.update,
+		);
+
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.delete]) },
+			RolesController.delete,
+		);
 
 		next();
 	},

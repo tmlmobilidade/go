@@ -3,7 +3,7 @@
 /* * */
 
 import { RideAnalysisViewOptions, useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { Permissions } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Label, Section, SegmentedControl, useMeContext } from '@tmlmobilidade/ui';
 import React from 'react';
 
@@ -29,7 +29,7 @@ export function RideAnalysisViewNavigation() {
 	// C. Render components
 
 	const renderViewsOptions = () => {
-		return Object.values(RideAnalysisViewOptions).map(option => me.actions.hasPermission(Permissions.rides.scope, option.permission) && ({
+		return Object.values(RideAnalysisViewOptions).map(option => me.actions.hasPermission(PermissionCatalog.all.rides.scope, option.permission) && ({
 			label: (
 				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
 					{React.createElement(option.icon)}

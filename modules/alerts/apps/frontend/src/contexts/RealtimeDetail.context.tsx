@@ -1,5 +1,7 @@
 'use client';
 
+/* * */
+
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
@@ -7,21 +9,23 @@ import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } 
 import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
+
+import { RidesData } from './Rides.context';
+
+/* * */
 
 interface RealtimeDetailContextState {
 	actions: {
-		addReference: () => void
 		deleteAlert: () => void
-		deleteImage: () => void
-		removeReference: (index: number) => void
 		saveAlert: () => Promise<void>
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
 		id: string | undefined
 		imageUrl?: FileType
+		selectedRides: RidesData[]
 	}
 	flags: {
 		canSave: boolean
@@ -73,8 +77,20 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 	const [isDraft, setIsDraft] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 
-	const { data: alert, error, isLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
-	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { data: alert, error, isLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId) + '?realtime=true');
+	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId) + '?realtime=true');
+	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
+
+	useEffect(() => {
+		const fetchSelectedRides = async () => {
+			if (!alert?.references) return;
+
+			const response = await fetchData<RidesData[]>(`${API_ROUTES.alerts.RIDES_SELECTED}?ids=${alert?.references.map(reference => reference.parent_id).join(',')}`);
+			setSelectedRides(response.data ?? []);
+		};
+
+		fetchSelectedRides();
+	}, [alert?.references]);
 
 	//
 	// B. Define form
@@ -129,17 +145,6 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 
 	//
 	// D. Define actions
-	const addReference = () => {
-		const currentReferences = form.values.references || [];
-		currentReferences.push({ child_ids: [], parent_id: '' });
-		form.setFieldValue('references', currentReferences);
-	};
-
-	const removeReference = (index: number) => {
-		const currentReferences = form.values.references || [];
-		form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
-	};
-
 	const saveAlert = async () => {
 		setIsSaving(true);
 
@@ -181,34 +186,18 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 		setIsSaving(false);
 	};
 
-	const deleteImage = async () => {
-		const response = await fetchData<Alert>(`${API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId)}?realtime=true`, 'DELETE', alert);
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao apagar imagem' });
-			}
-			return;
-		}
-
-		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
-		alertMutate();
-	};
-
 	//
 	// E. Define context value
-	const contextValue: RealtimeDetailContextState = {
+	const contextValue: RealtimeDetailContextState = useMemo(() => ({
 		actions: {
-			addReference,
 			deleteAlert,
-			deleteImage,
-			removeReference,
 			saveAlert: () => saveAlert(),
 		},
 		data: {
 			form,
 			id: alertId,
 			imageUrl: alertImage,
+			selectedRides,
 		},
 		flags: {
 			canSave,
@@ -216,7 +205,7 @@ export const RealtimeDetailContextProvider = ({ alertId, children }: { alertId: 
 			isSaving,
 			loading: isLoading || loading || alertImageLoading,
 		},
-	};
+	}), [alert, alertImage, alertId, canSave, form, isDraft, isSaving, loading, selectedRides, alertImageLoading]);
 
 	//
 	// F. Render components

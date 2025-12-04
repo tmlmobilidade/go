@@ -122,7 +122,7 @@ export async function validateRides() {
 				// Update the current Ride with the analysis result
 				// and 'complete' status to indicate that the ride has been processed.
 
-				const validatedRide = UpdateRideSchema.strip().parse(augmentedRideData);
+				const validatedRide = UpdateRideSchema.parse(augmentedRideData);
 
 				await rides.updateById(rideData._id, {
 					...validatedRide,
@@ -150,7 +150,7 @@ export async function validateRides() {
 
 		//
 
-		fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb?status=up&msg=OK&ping=');
+		fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb');
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 

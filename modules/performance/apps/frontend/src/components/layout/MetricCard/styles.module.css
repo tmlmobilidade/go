@@ -46,6 +46,6 @@
 
 .value {
 	font-size: 28px;
-	font-weight: var(--font-weight-semibold);
+	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);
 }

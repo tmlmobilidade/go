@@ -1,82 +1,62 @@
 'use client';
 
-import { Checkbox, Description, Label, Section } from '@tmlmobilidade/ui';
-import React, { useCallback } from 'react';
+/* * */
+
+import { Checkbox, Description } from '@tmlmobilidade/ui';
+import { type KeyboardEvent, type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
 
+/* * */
+
 export interface CheckCardProps {
 	checked: boolean
-	children?: React.ReactNode
-	description: string
+	description?: string
 	disabled?: boolean
-	fromRole?: boolean
+	footnote?: string
 	label: string
 	onChange: (checked: boolean) => void
 }
 
-export default function CheckCard({
-	checked,
-	children,
-	description,
-	disabled = false,
-	fromRole = false,
-	label,
-	onChange,
-}: CheckCardProps) {
-	const handleChange = useCallback(
-		(newChecked: boolean) => {
-			if (!disabled) {
-				onChange(newChecked);
-			}
-		},
-		[disabled, onChange],
-	);
+export function CheckCard({ checked, children, description, disabled = false, footnote, label, onChange }: PropsWithChildren<CheckCardProps>) {
+	//
 
-	const handleCardClick = useCallback(() => {
-		handleChange(!checked);
-	}, [checked, handleChange]);
+	//
+	// A. Handle actions
+
+	const handleToggle = () => {
+		if (disabled) return;
+		onChange(!checked);
+	};
+
+	const handleKeyDown = (e: KeyboardEvent) => {
+		// Handle toggle on Space or Enter key
+		if (e.key === ' ' || e.key === 'Enter') {
+			e.preventDefault();
+			handleToggle();
+		}
+	};
+
+	//
+	// B. Render components
 
 	return (
 		<div
 			aria-checked={checked}
 			aria-disabled={disabled}
-			className={`${styles.root} ${disabled ? styles.disabled : ''} ${fromRole ? styles.fromRole : ''}`}
-			onClick={disabled ? undefined : handleCardClick}
+			className={styles.root}
+			onClick={handleToggle}
+			onKeyDown={handleKeyDown}
 			role="checkbox"
 			tabIndex={disabled ? -1 : 0}
-			onKeyDown={
-				disabled
-					? undefined
-					: (e) => {
-						if (e.key === ' ' || e.key === 'Enter') {
-							e.preventDefault();
-							handleCardClick();
-						}
-					}
-			}
 		>
-			<Section flexDirection="row" gap="sm" padding="none">
-				<div className={styles.checkbox}>
-					<Checkbox
-						checked={checked}
-						disabled={disabled}
-						onChange={() => handleChange(!checked)}
-					/>
-				</div>
-
-				<div className={styles.content}>
-					<Label>{label}</Label>
-					<Description>{description}</Description>
-					{fromRole && (
-						<div className={styles.roleIndicator}>
-							<Description>
-								✓ Herdado do grupo de permissões
-							</Description>
-						</div>
-					)}
-				</div>
-			</Section>
+			<Checkbox
+				checked={checked}
+				description={description}
+				disabled={disabled}
+				label={label}
+				onChange={handleToggle}
+			/>
 			<div
 				aria-disabled={!checked || disabled}
 				className={styles.children}
@@ -93,6 +73,9 @@ export default function CheckCard({
 			>
 				{children}
 			</div>
+			{footnote && <Description>{footnote}</Description>}
 		</div>
 	);
+
+	//
 }

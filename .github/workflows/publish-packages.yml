@@ -1,0 +1,178 @@
+# # #
+
+name: 'Publish Packages to NPM'
+
+# # #
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_all:
+        description: 'Publish all packages (ignores file changes)'
+        required: false
+        default: true
+        type: boolean
+  push:
+    branches:
+      - production
+    paths:
+      - 'packages/**'
+      - '.github/workflows/publish-packages.yml'
+
+# # #
+
+jobs:
+
+  discover-packages:
+    name: Discover Packages
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.discover.outputs.packages }}
+    steps:
+      # # #
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # # #
+      - name: Discover publishable packages
+        id: discover
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            const packagesDir = 'packages';
+            const packages = [];
+            
+            // Get all directories in packages/
+            const entries = fs.readdirSync(packagesDir, { withFileTypes: true });
+            
+            for (const entry of entries) {
+              if (!entry.isDirectory()) continue;
+              
+              const packagePath = path.join(packagesDir, entry.name, 'package.json');
+              
+              if (!fs.existsSync(packagePath)) continue;
+              
+              try {
+                const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+                
+                // Check if package has publishConfig (indicating it should be published)
+                if (packageJson.publishConfig) {
+                  packages.push(entry.name);
+                }
+              } catch (error) {
+                console.warn(`Failed to parse package.json for ${entry.name}:`, error.message);
+              }
+            }
+            
+            core.setOutput('packages', JSON.stringify(packages));
+            console.log('Packages to publish:', packages);
+            
+            if (packages.length === 0) {
+              console.log('No packages to publish');
+            }
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  generate-package-lock:
+    name: Generate package-lock.json
+    needs: discover-packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          
+      - name: Install dependencies
+        run: npm install --package-lock-only
+
+      - name: Save package-lock.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-lock.json
+          path: package-lock.json
+          retention-days: 1
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+  
+  version-number:
+    name: 'Version Number'
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate-version-number
+        run: |
+          version="$(date +%Y%m%d).$(date +%H%M).$(date +%S)"
+          echo "Generated version: $version"
+          echo "version_number=$version" >> "$GITHUB_OUTPUT"
+    outputs:
+      version_number: ${{ steps.generate-version-number.outputs.version_number }}
+  
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  publish-package:
+    name: Publish ${{ matrix.package }}
+    needs: [discover-packages, generate-package-lock, version-number]
+    if: needs.discover-packages.outputs.packages != '[]'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: publish-${{ matrix.package }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.discover-packages.outputs.packages) }}
+    steps:
+      # # #
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # # #
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      # # #
+      - name: Setup Turbo
+        run: npm install -g turbo@^2
+      # # #
+      - name: Download package-lock.json artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: package-lock.json
+          path: .
+      # # #
+      - name: Install dependencies
+        run: npm ci
+      # # #
+      - name: Build packages
+        working-directory: .
+        run: turbo run build --filter=@tmlmobilidade/${{ matrix.package }}
+      # # #
+      - name: Bump package version
+        working-directory: packages/${{ matrix.package }}
+        run: npm version --no-git-tag-version ${{ needs.version-number.outputs.version_number }}
+      # # #
+      - name: Publish package
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          
+          echo "Publishing ${PACKAGE_NAME}@${PACKAGE_VERSION} to npm"
+          npm publish --access public
+

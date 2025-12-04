@@ -1,18 +1,18 @@
 db.createRole({
 	privileges: [
 		{ actions: ['find'], resource: { collection: 'agencies', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'organizations', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'users', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'sessions', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'roles', db: 'production' } },
-		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'verification_tokens', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'census', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'districts', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'localities', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'municipalities', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'parishes', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'verification_tokens', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'organizations', db: 'production' } },
-		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'notifications', db: 'production' } },
+		{ actions: ['find', 'insert'], resource: { collection: 'notifications', db: 'production' } },
 	],
 	role: 'common',
 	roles: [],
@@ -20,45 +20,41 @@ db.createRole({
 
 db.createRole({
 	privileges: [
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'file_exports', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
+		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'exports', db: 'production' } },
 	],
-	role: 'exports',
+	role: 'exporter',
 	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
 	privileges: [
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'agencies', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'users', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'sessions', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'roles', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'files', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'verification_tokens', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'organizations', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'proposed_changes', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'agencies', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'users', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'sessions', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'roles', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'verification_tokens', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'organizations', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'proposed_changes', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'notifications', db: 'production' } },
 	],
 	role: 'auth',
-	roles: [{
-		db: 'admin',
-		role: 'common',
-	}],
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
 	privileges: [
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'plans', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'gtfs_validations', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'plans', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'gtfs_validations', db: 'production' } },
 	],
 	role: 'plans',
-	roles: [{
-		db: 'admin',
-		role: 'common',
-	}],
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
@@ -68,40 +64,31 @@ db.createRole({
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 	],
 	role: 'alerts',
-	roles: [{
-		db: 'admin',
-		role: 'common',
-	}],
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
 	privileges: [
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'stops', db: 'production' } }],
 	role: 'stops',
-	roles: [{
-		db: 'admin',
-		role: 'common',
-	}],
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
 	privileges: [
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'census', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'districts', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'localities', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'municipalities', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'parishes', db: 'production' } },
+		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'localities', db: 'production' } },
 	],
 	role: 'locations',
-	roles: [],
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
 	privileges: [
-		{ actions: ['find'], resource: { collection: 'agencies', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'alerts', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'users', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'changeStream'], resource: { collection: 'simplified_apex_locations', db: 'production' } },
 		{ actions: ['find', 'changeStream'], resource: { collection: 'simplified_apex_on_board_refunds', db: 'production' } },
@@ -109,13 +96,13 @@ db.createRole({
 		{ actions: ['find', 'changeStream'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
 		{ actions: ['find', 'changeStream'], resource: { collection: 'simplified_vehicle_events', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'sams', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find', 'update', 'insert', 'remove', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'hashed_trips', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'hashed_shapes', db: 'production' } },
 	],
 	role: 'controller',
-	roles: [],
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
@@ -142,7 +129,7 @@ db.createRole({
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'metrics', db: 'production' } },
 	],
 	role: 'performance',
-	roles: [],
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({

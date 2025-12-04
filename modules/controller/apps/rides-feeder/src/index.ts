@@ -40,17 +40,30 @@ async function main() {
 				// Validate the Plan data before processing
 
 				const isValidPlan = validatePlan(currentPlan);
-				if (!isValidPlan) continue;
+				if (!isValidPlan) {
+					await plans.updateById(currentPlan._id, {
+						apps: {
+							...currentPlan.apps,
+							controller: {
+								last_hash: null,
+								status: 'skipped',
+								timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+							},
+						},
+					});
+				}
 
 				//
 				// At this point, the plan will be processed.
 				// Mark it as 'processing' to prevent multiple concurrent runs.
 
 				await plans.updateById(currentPlan._id, {
-					controller: {
-						...currentPlan.controller,
-						status: 'processing',
-					},
+					apps: {
+						...currentPlan.apps,
+						controller: {
+							...currentPlan.apps.controller,
+							status: 'processing',
+						} },
 				});
 
 				Logger.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
@@ -65,10 +78,13 @@ async function main() {
 			}
 			catch (error) {
 				await plans.updateById(currentPlan._id, {
-					controller: {
-						last_hash: null,
-						status: 'error',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+					apps: {
+						...currentPlan.apps,
+						controller: {
+							last_hash: null,
+							status: 'error',
+							timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+						},
 					},
 				});
 				Logger.error(`Error processing plan ${currentPlan._id}`, error);

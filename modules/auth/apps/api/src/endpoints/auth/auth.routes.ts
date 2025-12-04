@@ -10,27 +10,18 @@ const NAMESPACE = '/auth';
 /* * */
 
 const server = FastifyService.getInstance().server;
-const controller = new AuthController();
 
 server.register(
 	(instance, opts, next) => {
-		// Login route
-		instance.post('/login', controller.login);
+		//
 
-		// Logout route
-		instance.get('/logout', controller.logout);
+		instance.post('/login', AuthController.login);
 
-		// Get permissions route
-		instance.get('/permissions', controller.getPermissions);
+		instance.get('/logout', AuthController.logout);
 
-		// Verify route
-		instance.post('/verify', controller.verify);
+		instance.post('/send-password-reset-email', AuthController.sendPasswordResetEmail);
 
-		// Verify Email
-		instance.post('/verify-email', controller.sendEmailWithResetPasswordURL);
-
-		// Change password
-		instance.post('/change-password', controller.changePassword);
+		instance.post('/change-password', AuthController.changePassword);
 
 		next();
 	},

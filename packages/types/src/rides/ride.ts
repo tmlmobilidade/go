@@ -2,12 +2,10 @@
 
 import { DocumentSchema } from '@/_common/document.js';
 import { operationalDateSchema } from '@/_common/operational-date.js';
-import { DelayStatusSchema, OperationalStatusSchema, ProcessingStatusSchema, SeenStatusSchema } from '@/_common/status.js';
+import { ProcessingStatusSchema } from '@/_common/status.js';
 import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
-import { atLeastOneVehicleEventOnFirstStopSchema, endedAtLastStopSchema, expectedApexValidationIntervalSchema, expectedDriverIdQtySchema, expectedStartTimeSchema, expectedVehicleEventDelaySchema, expectedVehicleEventIntervalSchema, expectedVehicleEventQtySchema, expectedVehicleIdQtySchema, matchingApexLocationsSchema, matchingVehicleIdsSchema, RideAnalysis, simpleOneApexValidationSchema, simpleOneVehicleEventOrApexValidationSchema, simpleThreeVehicleEventsSchema, transactionSequentialitySchema } from '@/rides/ride-analysis.js';
+import { atLeastOneVehicleEventOnFirstStopSchema, endedAtLastStopSchema, expectedApexValidationIntervalSchema, expectedDriverIdQtySchema, expectedStartTimeSchema, expectedVehicleEventDelaySchema, expectedVehicleEventIntervalSchema, expectedVehicleEventQtySchema, expectedVehicleIdQtySchema, matchingApexLocationsSchema, matchingVehicleIdsSchema, simpleOneApexValidationSchema, simpleOneVehicleEventOrApexValidationSchema, simpleThreeVehicleEventsSchema, transactionSequentialitySchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
-
-import { RideAcceptanceStatusSchema } from './ride-acceptance.js';
 
 /* * */
 
@@ -63,7 +61,7 @@ export const RideSchema = DocumentSchema.extend({
 	system_status: ProcessingStatusSchema.default('waiting'),
 	trip_id: z.string(),
 	vehicle_ids: z.array(z.number()),
-}).strip();
+});
 
 export const CreateRideSchema = RideSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });
 export const UpdateRideSchema = CreateRideSchema.omit({ created_by: true }).partial();
@@ -71,42 +69,3 @@ export const UpdateRideSchema = CreateRideSchema.omit({ created_by: true }).part
 export type Ride = z.infer<typeof RideSchema>;
 export type CreateRideDto = z.infer<typeof CreateRideSchema>;
 export type UpdateRideDto = z.infer<typeof UpdateRideSchema>;
-
-/* * */
-
-export interface RideNormalized extends Ride {
-	acceptance_status: typeof RideAcceptanceStatusSchema.options[number]
-	analysis_ended_at_last_stop_grade: 'none' | RideAnalysis['grade']
-	analysis_expected_apex_validation_interval: 'none' | RideAnalysis['grade']
-	analysis_simple_three_vehicle_events_grade: 'none' | RideAnalysis['grade']
-	analysis_transaction_sequentiality: 'none' | RideAnalysis['grade']
-
-	/**
-	 * @deprecated use `start_time_observed_display` instead
-	 */
-	delay_status: typeof DelayStatusSchema.options[number]
-
-	/**
-	 * @deprecated use `start_time_observed_display` instead
-	 */
-	delay_value_display: null | string
-
-	end_delay_status: typeof DelayStatusSchema.options[number]
-	end_delay_value_display: null | string
-	end_time_observed_display: null | string
-	end_time_scheduled_display: string
-	operational_status: typeof OperationalStatusSchema.options[number]
-	seen_status: typeof SeenStatusSchema.options[number]
-	start_delay_status: typeof DelayStatusSchema.options[number]
-	start_delay_value_display: null | string
-	start_time_observed_display: null | string
-	start_time_scheduled_display: string
-}
-
-/* * */
-
-export const RidePermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-});
-
-export type RidePermission = z.infer<typeof RidePermissionSchema>;

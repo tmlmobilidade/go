@@ -34,7 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@turf/turf": "7.3.0"
+		"@turf/turf": "7.3.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

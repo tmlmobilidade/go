@@ -2,23 +2,12 @@
 
 /* * */
 
-import { API_ROUTES, Permissions } from '@tmlmobilidade/consts';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Agency, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
-
-/* * */
-
-export const availablePermissions = Object.entries(Permissions).map(([scope, value]) => ({
-	children: Object.entries(value.actions).map(([action]) => ({
-		label: action,
-		value: `${scope}-${action}`,
-	})),
-	label: scope,
-	value: scope,
-}));
 
 /* * */
 
@@ -87,7 +76,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 
 	useEffect(() => {
 		if (!agencyData) return;
-		const initialValues = UpdateAgencySchema.strip().parse(agencyData);
+		const initialValues = UpdateAgencySchema.parse(agencyData);
 		form.initialize(initialValues);
 		setIsReady(true);
 	}, [agencyData]);

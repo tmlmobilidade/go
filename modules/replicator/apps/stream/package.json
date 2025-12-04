@@ -17,7 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@helperkits/writer": "20251103.1250.18",
+		"@tmlmobilidade/writers": "*",
 		"@tmlmobilidade/go-replicator-pckg-parse": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
@@ -28,7 +28,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.6",
+		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	}
 }

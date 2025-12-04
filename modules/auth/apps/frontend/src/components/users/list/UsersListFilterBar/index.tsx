@@ -9,8 +9,8 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 export function UsersListFilterBar() {
 	return (
 		<FiltersBar>
-			<UsersListFilterRole />
 			<UsersListFilterOrganization />
+			<UsersListFilterRole />
 		</FiltersBar>
 	);
 }

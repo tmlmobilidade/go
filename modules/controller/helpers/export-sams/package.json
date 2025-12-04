@@ -27,9 +27,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "24.10.1",
-		"@types/papaparse": "5.5.0",
+		"@types/papaparse": "5.5.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.6",
+		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	}
 }

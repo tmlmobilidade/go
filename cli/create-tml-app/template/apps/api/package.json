@@ -17,13 +17,10 @@
 		"@tmlmobilidade/interfaces": "0.0.0",
 		"@tmlmobilidade/types": "0.0.0",
 		"@tmlmobilidade/utils": "0.0.0",
-		"fastify": "5.6.2",
-		"pino-pretty": "13.0.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.19.3"
 	},
 	"devDependencies": {
-		"@fastify/multipart": "9.0.3",
 		"@tmlmobilidade/tsconfig": "0.0.0",
 		"@types/jest": "29.5.14",
 		"@types/node": "22.13.13",

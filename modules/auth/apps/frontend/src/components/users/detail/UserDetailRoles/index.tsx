@@ -4,7 +4,7 @@
 
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { Combobox, Grid, Section } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,13 +14,13 @@ export function UsersDetailRoles() {
 	//
 	// A. Setup variables
 
-	const { data } = useUsersDetailContext();
-	const { data: roles } = useRolesContext();
+	const rolesContext = useRolesContext();
+	const usersDetailContext = useUsersDetailContext();
 
 	//
 	// B. Transform data
 
-	const roleItems = roles.raw.map(role => ({
+	const availableRoles = rolesContext.data.raw.map(role => ({
 		label: role.name,
 		value: role._id,
 	}));
@@ -31,12 +31,11 @@ export function UsersDetailRoles() {
 	return (
 		<Section>
 			<Grid columns="a" gap="md">
-				<Combobox
-					data={roleItems}
+				<MultiSelect
+					data={availableRoles}
 					label="Roles"
-					fullWidth
-					multiple
-					{...data.form.getInputProps('role_ids', { multiple: true })}
+					selected={usersDetailContext.data.form.values.role_ids ?? []}
+					{...usersDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>
 		</Section>

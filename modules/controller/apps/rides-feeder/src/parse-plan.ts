@@ -1,7 +1,6 @@
 /* * */
 
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
-import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@helperkits/writer';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
@@ -9,6 +8,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -965,10 +965,13 @@ export async function parsePlan(planData: Plan) {
 		// Mark this plan as 'complete' to indicate that it was processed successfully
 
 		await plans.updateById(planData._id, {
-			controller: {
-				last_hash: planData.hash,
-				status: 'complete',
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			apps: {
+				...planData.apps,
+				controller: {
+					last_hash: planData.hash,
+					status: 'complete',
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
 			},
 		});
 
@@ -987,10 +990,13 @@ export async function parsePlan(planData: Plan) {
 	}
 	catch (error) {
 		await plans.updateById(planData._id, {
-			controller: {
-				last_hash: null,
-				status: 'error',
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			apps: {
+				...planData.apps,
+				controller: {
+					last_hash: null,
+					status: 'error',
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
 			},
 		});
 		Logger.error(`Error processing plan ${planData._id}`, error);

@@ -16,11 +16,9 @@ export enum AlertDetailMode {
 
 interface AlertDetailContextState {
 	actions: {
-		addReference: () => void
 		deleteAlert: () => void
 		deleteImage: () => void
 		fileChanged: (file: File) => void
-		removeReference: (index: number) => void
 		saveAlert: (type: 'draft' | 'publish') => void
 	}
 	data: {
@@ -144,17 +142,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	//
 	// D. Define actions
-	const addReference = () => {
-		const currentReferences = form.values.references || [];
-		currentReferences.push({ child_ids: [], parent_id: '' });
-		form.setFieldValue('references', currentReferences);
-	};
-
-	const removeReference = (index: number) => {
-		const currentReferences = form.values.references || [];
-		form.setFieldValue('references', currentReferences.filter((_, i) => i !== index));
-	};
-
 	const saveAlert = async (type: 'draft' | 'publish') => {
 		setIsSaving(true);
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
@@ -225,11 +212,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// E. Define context value
 	const contextValue: AlertDetailContextState = {
 		actions: {
-			addReference,
 			deleteAlert,
 			deleteImage,
 			fileChanged: (file: File) => setImage(file),
-			removeReference,
 			saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
 		},
 		data: {

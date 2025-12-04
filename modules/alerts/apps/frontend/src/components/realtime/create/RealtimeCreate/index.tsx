@@ -4,7 +4,7 @@
 
 import { RealtimeCreateHeader } from '@/components/realtime/create/RealtimeCreateHeader';
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { Permissions } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, Pane, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
@@ -16,7 +16,7 @@ export function RealtimeCreate() {
 	const context = useRealtimeCreateContext();
 	const meContext = useMeContext();
 
-	const hasPermissionToCreate = meContext.actions.hasPermission(Permissions.alerts_realtime.scope, Permissions.alerts_realtime.actions.create);
+	const hasPermissionToCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts_realtime.scope, PermissionCatalog.all.alerts_realtime.actions.create);
 
 	//
 	// C. Render components

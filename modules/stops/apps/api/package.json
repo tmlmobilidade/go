@@ -17,19 +17,17 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
-		"@fastify/multipart": "9.3.0",
-		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/utils": "*",
-		"pino-pretty": "13.1.2"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.6",
+		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	}
 }

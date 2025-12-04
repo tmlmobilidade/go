@@ -15,7 +15,6 @@ import useSWR from 'swr';
 
 interface PlansDetailContextState {
 	actions: {
-		approvePlan: () => void
 		controllerReprocessPlan: () => void
 		savePlan: () => void
 		toggleLock: () => void
@@ -59,6 +58,7 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 	//
 	// B. Fetch data
 
+	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: fileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
 
@@ -97,10 +97,6 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 	//
 	// E. Handle actions
 
-	const handleApprovePlan = () => {
-		console.log('approvePlan');
-	};
-
 	const handleControllerReprocessPlan = async () => {
 		try {
 			setIsSaving(true);
@@ -120,6 +116,7 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 		}
 		finally {
 			planMutate();
+			plansListMutate();
 			setIsSaving(false);
 		}
 	};
@@ -160,6 +157,7 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 		finally {
 			planMutate();
 			fileMutate();
+			plansListMutate();
 			setIsSaving(false);
 		}
 	};
@@ -182,6 +180,7 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 		}
 		finally {
 			planMutate();
+			plansListMutate();
 		}
 	};
 
@@ -190,7 +189,6 @@ export const PlansDetailContextProvider = ({ children, planId }: PropsWithChildr
 
 	const contextValue: PlansDetailContextState = useMemo(() => ({
 		actions: {
-			approvePlan: handleApprovePlan,
 			controllerReprocessPlan: handleControllerReprocessPlan,
 			savePlan: handleSavePlan,
 			toggleLock: handleToggleLock,

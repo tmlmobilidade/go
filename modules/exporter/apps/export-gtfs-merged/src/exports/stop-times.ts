@@ -8,7 +8,7 @@ import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ExportedStopTimesRow {
+export interface ExportedStopTimesRow {
 	trip_id: string
 	arrival_time: string
 	departure_time: string
@@ -30,10 +30,10 @@ export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTabl
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
 		const parsedStopTimesRow: ExportedStopTimesRow = {
-			trip_id: `${planData._id}/${stopTimeData.trip_id}`,
+			trip_id: `[${planData._id}]${stopTimeData.trip_id}`,
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
-			stop_id: `${planData._id}/${stopTimeData.stop_id}`,
+			stop_id: stopTimeData.stop_id,
 			stop_sequence: stopTimeData.stop_sequence,
 			pickup_type: stopTimeData.pickup_type ?? 0,
 			drop_off_type: stopTimeData.drop_off_type ?? 0,

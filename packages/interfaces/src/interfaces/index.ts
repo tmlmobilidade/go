@@ -1,6 +1,5 @@
 export * from '@/interfaces/agencies/index.js';
 export * from '@/interfaces/alerts/index.js';
-export * from '@/interfaces/apex/index.js';
 export * from '@/interfaces/auth/index.js';
 export * from '@/interfaces/file-exports/index.js';
 export * from '@/interfaces/files/index.js';
@@ -14,6 +13,7 @@ export * from '@/interfaces/plans/index.js';
 export * from '@/interfaces/proposed-changes/index.js';
 export * from '@/interfaces/rides/index.js';
 export * from '@/interfaces/sams/index.js';
+export * from '@/interfaces/simplified-apex/index.js';
 export * from '@/interfaces/stops/index.js';
 export * from '@/interfaces/vehicle-events/index.js';
 export * from '@/interfaces/zones/index.js';

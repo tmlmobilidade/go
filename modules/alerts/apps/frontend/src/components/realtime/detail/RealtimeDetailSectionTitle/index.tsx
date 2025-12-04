@@ -2,7 +2,6 @@
 
 /* * */
 
-import { UploadImage } from '@/components/common/UploadImage';
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
@@ -24,6 +23,7 @@ export function RealtimeDetailSectionTitle() {
 		<Collapsible
 			description="Breve descrição do que motivou a criação do realtimea"
 			title="Título e Descrição"
+			defaultOpen
 		>
 			<Section gap="md">
 				<TextInput
@@ -44,12 +44,6 @@ export function RealtimeDetailSectionTitle() {
 					withAsterisk
 					{...realtimeDetailContext.data.form.getInputProps('description')}
 				/>
-				{/* <UploadImage
-					imageUrl={realtimeDetailContext.data.imageUrl?.url}
-					label="Imagem"
-					onDelete={realtimeDetailContext.actions.deleteImage}
-					onFileChange={realtimeDetailContext.actions.fileChanged}
-				/> */}
 				<CoordinatesInput
 					description="Ponto de referência do realtimea, para que seja possível localizar o realtimea no mapa."
 					{...realtimeDetailContext.data.form.getInputProps('coordinates')}

@@ -4,8 +4,8 @@
 
 import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
 import { type WorkerMessage } from '@/types/worker';
-import { API_ROUTES, Permissions } from '@tmlmobilidade/consts';
-import { type CreateGtfsValidationDto, type GtfsValidation, type GtfsValidationPermission } from '@tmlmobilidade/types';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type CreateGtfsValidationDto, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -93,10 +93,10 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 		// Check if the current user has permission
 		// to create validations for the GTFS agency
 
-		const hasPermission = meContext.actions.hasPermissionResource<GtfsValidationPermission>({
-			action: Permissions.validations.actions.create,
+		const hasPermission = meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.create,
 			resource_key: 'agency_ids',
-			scope: Permissions.validations.scope,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: event.data.agency.agency_id,
 		});
 

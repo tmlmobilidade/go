@@ -13,7 +13,8 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -28,6 +29,10 @@ export function RidesList() {
 
 	const router = useRouter();
 	const ridesListContext = useRidesListContext();
+
+	const formatTimestamp = (timestamp: UnixTimestamp) => {
+		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
+	};
 
 	const columns: DataTableColumn<RideNormalized>[] = [
 		{
@@ -55,14 +60,14 @@ export function RidesList() {
 			width: 500,
 		},
 		{
-			accessor: 'start_time_scheduled_display',
-			render: item => <Tag label={item.start_time_scheduled_display} variant="muted" />,
+			accessor: 'start_time_scheduled',
+			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
 			title: 'Partida',
 			width: 80,
 		},
 		{
-			accessor: 'start_time_observed_display',
-			render: item => <StartTimeStatusTag startTimeObserved={item.start_time_observed_display} status={item.delay_status} />,
+			accessor: 'start_time_observed',
+			render: item => <StartTimeStatusTag startTimeObserved={formatTimestamp(item.start_time_observed)} status={item.start_delay_status} />,
 			title: 'Observado',
 			width: 200,
 		},
@@ -74,25 +79,25 @@ export function RidesList() {
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',
-			render: item => <AnalysisStatusTag grade={item.analysis_simple_three_vehicle_events_grade} />,
+			render: item => <AnalysisStatusTag grade={item.analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade} />,
 			title: '3 Eventos',
 			width: 120,
 		},
 		{
 			accessor: 'analysis_ended_at_last_stop_grade',
-			render: item => <AnalysisStatusTag grade={item.analysis_ended_at_last_stop_grade} />,
+			render: item => <AnalysisStatusTag grade={item.analysis.ENDED_AT_LAST_STOP.grade} />,
 			title: 'Last Stop',
 			width: 120,
 		},
 		{
 			accessor: 'analysis_expected_apex_validation_interval',
-			render: item => <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval} />,
+			render: item => <AnalysisStatusTag grade={item.analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade} />,
 			title: 'Int. APEX',
 			width: 120,
 		},
 		{
 			accessor: 'analysis_transaction_sequentiality',
-			render: item => <AnalysisStatusTag grade={item.analysis_transaction_sequentiality} />,
+			render: item => <AnalysisStatusTag grade={item.analysis.TRANSACTION_SEQUENTIALITY.grade} />,
 			title: 'Seq. APEX',
 			width: 120,
 		},

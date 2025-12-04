@@ -15,7 +15,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { mutate } from 'swr';
 
 import { RidesData } from './Rides.context';
@@ -27,14 +27,17 @@ type RealtimeCreateContextState = UseMultiStepFormState & {
 		addAllTrips: (trips: RidesData[]) => void
 		removeAllRides: () => void
 		saveAlert: () => Promise<void>
+		setDetour: (detour: string) => void
 		toggleTripReference: (trip: RidesData) => void
 	}
 	data: {
+		detour: string
 		form: UseFormReturnType<CreateAlertDto>
 		selectedRides: RidesData[]
 		steps: Step[]
 	}
 	flags: {
+		canSave: boolean
 		isSaving: boolean
 	}
 };
@@ -97,6 +100,7 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 	const multiStepForm = useMultiStepForm({ steps: STEPS });
 	const [isSaving, setIsSaving] = useState(false);
 	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
+	const [detour, setDetour] = useState<string>('');
 
 	//
 	// B. Define form
@@ -130,7 +134,6 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 			form.setFieldValue('references', [...form.values.references, { child_ids: [], parent_id: trip._id }]);
 			setSelectedRides([...selectedRides, trip]);
 		}
-		form.values.references.push({ child_ids: [], parent_id: trip._id });
 	};
 
 	const removeAllRides = () => {
@@ -144,6 +147,7 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 		form.setFieldValue('references', []);
 		multiStepForm.actions.goToStep(0);
 		setSelectedRides([]);
+		setDetour('');
 	}
 
 	async function saveAlert() {
@@ -177,30 +181,47 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 	};
 
 	//
-	// D. Define State
-
-	const contextValue: RealtimeCreateContextState = useMemo(() => ({
-		actions: {
-			addAllTrips,
-			removeAllRides,
-			saveAlert,
-			toggleTripReference,
-			...multiStepForm.actions,
-		},
-		data: {
-			form,
-			selectedRides,
-			...multiStepForm.data,
-			steps: STEPS,
-		},
-		flags: {
-			isSaving,
-			...multiStepForm.flags,
-		},
-	}), [form, multiStepForm]);
+	// D. Reset detour when cause/effect changes
+	useEffect(() => {
+		const needsDetour = form.values.effect === 'DETOUR' && form.values.cause === 'CONSTRUCTION';
+		if (!needsDetour && detour.length > 0) {
+			setDetour('');
+		}
+	}, [form.values.effect, form.values.cause, detour.length]);
 
 	//
-	// C. Return state
+	// E. Define State
+
+	const contextValue: RealtimeCreateContextState = useMemo(() => {
+		const needsDetour = form.values.effect === 'DETOUR' && form.values.cause === 'CONSTRUCTION';
+		const hasValidDetour = !needsDetour || detour.trim().length > 0;
+
+		return {
+			actions: {
+				addAllTrips,
+				removeAllRides,
+				saveAlert,
+				setDetour,
+				toggleTripReference,
+				...multiStepForm.actions,
+			},
+			data: {
+				detour,
+				form,
+				selectedRides,
+				...multiStepForm.data,
+				steps: STEPS,
+			},
+			flags: {
+				canSave: form.isValid() && hasValidDetour,
+				isSaving,
+				...multiStepForm.flags,
+			},
+		};
+	}, [form, isSaving, multiStepForm, detour]);
+
+	//
+	// F. Return state
 	return (
 		<RealtimeCreateContext.Provider value={contextValue}>
 			{children}

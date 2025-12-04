@@ -24,12 +24,12 @@
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
-		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"commander": "14.0.2",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",
@@ -40,7 +40,7 @@
 		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.6",
+		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	}
 }

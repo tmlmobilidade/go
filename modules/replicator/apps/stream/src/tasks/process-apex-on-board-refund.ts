@@ -1,12 +1,12 @@
 /* * */
 
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@helperkits/writer';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 
 /* * */
 
@@ -84,10 +84,10 @@ export async function processApexOnBoardRefund(databaseOperation) {
 	//
 	// Publish the heartbeats for each agency
 
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/eQxccZISJfTCE7mSDQhodV2NVcarw3Ge?status=up&msg=OK&ping=');
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/XMDCLOEuYfaJyhkOCvwCZ1MUDDgF5xu7?status=up&msg=OK&ping=');
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/WPU6a61aIIf2g2bZrCWK7eVQOwchM0Gk?status=up&msg=OK&ping=');
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/bReYHiH3nq7FLENX5KRGdrECfZbTN9m6?status=up&msg=OK&ping=');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/eQxccZISJfTCE7mSDQhodV2NVcarw3Ge');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/XMDCLOEuYfaJyhkOCvwCZ1MUDDgF5xu7');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/WPU6a61aIIf2g2bZrCWK7eVQOwchM0Gk');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/bReYHiH3nq7FLENX5KRGdrECfZbTN9m6');
 
 	//
 };

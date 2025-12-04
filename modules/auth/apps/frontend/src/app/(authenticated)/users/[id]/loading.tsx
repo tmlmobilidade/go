@@ -1,9 +1,9 @@
 /* * */
 
-import { Loader } from '@tmlmobilidade/ui';
+import { LoadingOverlay } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default async function Loading() {
-	return <Loader />;
+	return <LoadingOverlay />;
 }

@@ -1,13 +1,11 @@
 /* * */
 
-import { CsvWriter } from '@helperkits/writer';
-import { ALLOW_ALL_FLAG, Permissions } from '@tmlmobilidade/consts';
 import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { FileExport, Permission, RideAcceptance, RideNormalized, RidePermission } from '@tmlmobilidade/types';
-import { getPermission } from '@tmlmobilidade/utils';
+import { FileExport, PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
+import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';
 
@@ -39,13 +37,13 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	//
 	// 4. Filter rides based on permissions for the current user
-	const myPermissions = await authProvider.getPermissions({ user_id: fileExport.created_by });
-	const ridePermission: Permission<RidePermission> = getPermission(myPermissions, Permissions.rides.scope, Permissions.rides.actions.analysis_read);
+	const myPermissions = await authProvider.getPermissionsFromUserId(fileExport.created_by);
+	const ridesPermission = PermissionCatalog.get(myPermissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
 
-	if (ridePermission?.resource) {
+	if ('resource' in ridesPermission && ridesPermission.scope === PermissionCatalog.all.rides.scope) {
 		// 4.1. Filter rides based on agency IDs
-		if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
-			pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
+		if (ridesPermission.resource['agency_ids'] && !ridesPermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+			pipeline.push({ $match: { agency_id: { $in: ridesPermission.resource['agency_ids'] } } });
 		}
 	}
 

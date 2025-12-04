@@ -1,13 +1,10 @@
 /* * */
 
-import { MultipartValue } from '@fastify/multipart';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { rabbitMQ } from '@tmlmobilidade/rabbitmq';
-import { ALLOW_ALL_FLAG, API_ROUTES, HttpException, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
-import { files, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
-import { Agency, type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, type GtfsValidationPermission, type Permission } from '@tmlmobilidade/types';
-import { fetchData, getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
+import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
@@ -20,44 +17,48 @@ export class GtfsValidationsController {
 	//
 
 	/**
-	 * Creates a new Validation
-	 * @param request Fastify request containing Validation data and operation Validation file in multipart form
+	 * Creates a new GTFS Validation from multipart form data.
+	 * @param request Fastify request containing Validation data and operation Validation file in multipart form.
 	 * @param reply Fastify reply
 	 */
 	static async create(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		const data = await request.file();
-
-		if (!data) {
-			throw new HttpException(HttpStatus.BAD_REQUEST, 'No file provided');
-		}
-
-		const fields = data.fields as Record<string, MultipartValue>;
-
 		//
 
 		//
-		// Check if the user has permission to create a plan
-		if (!hasAPIResourcePermission<GtfsValidationPermission>(request, {
-			action: Permissions.validations.actions.create,
+		// Parse multipart form data from the request
+
+		const requestData = await request.file();
+
+		if (!requestData) throw new HttpException(HttpStatus.BAD_REQUEST, 'No file provided');
+
+		//
+		// Check if the user has permission to create a new GTFS Validation
+
+		const hasPermissionCreateValidation = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.create,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.validations.scope,
-			value: fields['agency_id'].value,
-		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
-		}
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+			value: requestData.fields.agency_id['value'],
+		});
+
+		if (!hasPermissionCreateValidation) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: create validation');
 
 		//
-
 		// Convert form fields to Validation data
+
 		const validationData: CreateGtfsValidationDto = {
 			feeder_status: 'waiting',
 			file_id: '',
-			gtfs_agency: JSON.parse(fields.gtfs_agency.value as string) as GtfsAgency,
-			gtfs_feed_info: JSON.parse(fields.gtfs_feed_info.value as string) as GtfsFeedInfo,
+			gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
+			gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,
 			notification_sent: false,
 		};
 
-		// Stream file to temporary disk location to avoid OOM, then upload
+		//
+		// Stream file to temporary disk location
+		// to avoid Out Of Memory issues with large files
+
 		let buffer: Buffer;
 		let size: number;
 		let tempFilePath: null | string = null;
@@ -65,11 +66,9 @@ export class GtfsValidationsController {
 		try {
 			// Create temporary file path
 			tempFilePath = join(tmpdir(), `validation-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
-
 			// Stream directly to disk to avoid memory issues
 			const writeStream = createWriteStream(tempFilePath);
-			await pipeline(data.file, writeStream);
-
+			await pipeline(requestData.file, writeStream);
 			// Read file back as buffer for upload
 			buffer = readFileSync(tempFilePath);
 			size = buffer.length;
@@ -78,49 +77,61 @@ export class GtfsValidationsController {
 			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 		}
 
+		//
+		// Use Transaction Manager to ensure data consistency
+		// across multiple collections (Validation creation and file upload).
+
 		const transactionManager = new TransactionManager([gtfsValidations, files] as const);
 
-		// Start transaction
 		const result = await transactionManager.withTransaction(async (collections, transactions) => {
-			const [gtfsValidationsCollection, filesCollection] = collections;
+			//
 
-			// Get the appropriate transaction for each collection
+			//
+			// Destructure collections for easier access
+			// and get the appropriate transaction for each collection
+
+			const [gtfsValidationsCollection, filesCollection] = collections;
 			const gtfsValidationsTransaction = transactions.get(gtfsValidationsCollection);
+
 			const filesTransaction = transactions.get(filesCollection);
 
-			// 1. Create the Validation
-			const ValidationResult = await gtfsValidationsCollection.insertOne(validationData, { options: { session: gtfsValidationsTransaction.getSession() } });
+			//
+			// Insert the new Validation document
 
-			// 2. Upload the operation Validation file
-			const fileResult = await filesCollection.upload(buffer, {
+			const insertValidationResult = await gtfsValidationsCollection.insertOne(validationData, { options: { session: gtfsValidationsTransaction.getSession() } });
+
+			//
+			// Upload the operation Validation file
+
+			const uploadFileResult = await filesCollection.upload(buffer, {
 				created_by: request.me.email,
-				name: data.filename,
-				resource_id: ValidationResult._id.toString(),
+				name: requestData.filename,
+				resource_id: insertValidationResult._id.toString(),
 				scope: 'gtfsValidations',
 				size: size,
-				type: data.mimetype,
+				type: requestData.mimetype,
 				updated_by: request.me.email,
 			}, { session: filesTransaction.getSession() });
 
-			// 3. Update the Validation with the file reference
-			await gtfsValidationsCollection.updateById(ValidationResult._id, { file_id: fileResult._id }, { session: gtfsValidationsTransaction.getSession() });
+			//
+			// Update the Validation with the file reference
 
-			await rabbitMQ.publish(
-				'gtfs-validation',
-				JSON.stringify({
-					file_id: fileResult._id,
-					validation_id: ValidationResult._id,
-				}),
-				{ persistent: true },
-			);
+			await gtfsValidationsCollection.updateById(insertValidationResult._id, { file_id: uploadFileResult._id }, { session: gtfsValidationsTransaction.getSession() });
+
+			//
+			// Return the complete Validation object
 
 			return {
-				...ValidationResult,
-				file_id: fileResult._id,
+				...insertValidationResult,
+				file_id: uploadFileResult._id,
 			};
+
+			//
 		});
 
+		//
 		// Clean up temporary file
+
 		if (tempFilePath) {
 			try {
 				unlinkSync(tempFilePath);
@@ -130,11 +141,17 @@ export class GtfsValidationsController {
 			}
 		}
 
+		//
+		// Return the created Validation
+
 		return reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
 
 	/**
-	 * Retrieves all gtfsValidations, sorted by creation date descending
+	 * Retrieves all GTFS Validation objects, filtered
+	 * by user permissions and sorted by creation date.
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
@@ -142,16 +159,30 @@ export class GtfsValidationsController {
 		//
 
 		//
-		// Extract permissions from the request
+		// Get the resource permissions for
+		// GTFS Validations for the current user.
 
-		const GtfsvalidationPermission: Permission<GtfsValidationPermission> = getPermission(request.permissions, Permissions.validations.scope, Permissions.validations.actions.read);
+		const userGtfsValidationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.gtfs_validations.scope, PermissionCatalog.all.gtfs_validations.actions.read);
 
 		//
-		// Filter gtfsValidations based on permissions for the current user
+		// If specific agency permissions are set,
+		// setup the database filters accordingly.
 
-		if (GtfsvalidationPermission?.resource) {
+		const queryFilters: Filter<GtfsValidation> = {};
+
+		//
+		// If agency IDs are specified and do not include the ALLOW_ALL_FLAG,
+		// filter validations by those agency IDs.
+
+		if ('resources' in userGtfsValidationPermissions && 'agency_ids' in userGtfsValidationPermissions.resources) {
+			if (!userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				queryFilters['gtfs_agency.agency_id'] = { $in: userGtfsValidationPermissions.resources['agency_ids'] };
+			}
+		}
+
+		if ('resources' in userGtfsValidationPermissions) {
 			const filters = {
-				...(GtfsvalidationPermission.resource.agency_ids && !GtfsvalidationPermission.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: GtfsvalidationPermission.resource.agency_ids } }),
+				...(userGtfsValidationPermissions.resources['agency_ids'] && !userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userGtfsValidationPermissions.resources['agency_ids'] } }),
 			};
 
 			const filteredgtfsValidations = await gtfsValidations.findMany(filters, { sort: { created_at: -1 } });
@@ -174,33 +205,32 @@ export class GtfsValidationsController {
 	 * @param request Fastify request containing Validation ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(
-		request: FastifyRequest<{ Params: { id: string } }>,
-		reply: FastifyReply<GtfsValidation>,
-	) {
-		const { id } = request.params;
-
-		const Validation = await gtfsValidations.findById(id);
-
-		if (!Validation) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
-		}
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
+		//
 
 		//
+		// Get the requested validation data
+
+		const foundValidation = await gtfsValidations.findById(request.params.id);
+		if (!foundValidation) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
 
 		//
 		// Check if the user has permission to read the validation
-		if (!hasAPIResourcePermission<GtfsValidationPermission>(request, {
-			action: Permissions.validations.actions.read,
+
+		if (!PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.read,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.validations.scope,
-			value: Validation.gtfs_agency.agency_id,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+			value: foundValidation.gtfs_agency.agency_id,
 		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read validation');
 		}
 
 		//
-		reply.send({ data: Validation, error: null, statusCode: HttpStatus.OK });
+		// Return the found Validation
+
+		reply.send({ data: foundValidation, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -221,13 +251,14 @@ export class GtfsValidationsController {
 
 		//
 		// Check if the user has permission to read the validation
-		if (!hasAPIResourcePermission<GtfsValidationPermission>(request, {
-			action: Permissions.validations.actions.read,
+		if (!PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.read,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.validations.scope,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: Validation.gtfs_agency.agency_id,
 		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
 		}
 
 		//
@@ -258,31 +289,28 @@ export class GtfsValidationsController {
 		//
 		// Check if the notification has already been sent
 
-		if (validationData.notification_sent) {
-			throw new HttpException(HttpStatus.BAD_REQUEST, 'Notification has already been sent');
-		}
+		if (validationData.notification_sent) throw new HttpException(HttpStatus.BAD_REQUEST, 'Notification has already been sent');
 
 		//
 		// Check if the user has permission to request approval for this Validation
 
-		const hasPermissionRequestApproval = hasAPIResourcePermission<GtfsValidationPermission>(request, {
-			action: Permissions.validations.actions.request_approval,
+		const hasPermissionRequestApproval = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.request_approval,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.validations.scope,
+			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: validationData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionRequestApproval) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		if (!hasPermissionRequestApproval) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: request approval');
 
 		//
 		// Get the TML contact emails for this Agency
 
-		const agencyData = await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(validationData.gtfs_agency.agency_id), 'GET', undefined, {
-			Cookie: `session_token=${request.cookies.session_token}`,
-		});
+		const agencyData = await agencies.findById(validationData.gtfs_agency.agency_id);
 
-		if (!agencyData?.data || agencyData?.error) {
-			throw new HttpException(agencyData.statusCode, agencyData.error);
+		if (!agencyData) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Agency not found');
 		}
 
 		//
@@ -293,7 +321,7 @@ export class GtfsValidationsController {
 				solicited_by: request.me.first_name + ' ' + request.me.last_name,
 				validation: validationData,
 			},
-			to: agencyData.data.contact_emails_pta || [],
+			to: agencyData.contact_emails_pta || [],
 		});
 
 		//

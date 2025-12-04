@@ -2,7 +2,7 @@
 
 /* * */
 
-import { PlanStatusControllerTag } from '@/components/common/PlanStatusControllerTag';
+import { PlanStatusTag } from '@/components/common/PlanStatusTag';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { Button, Collapsible, Section, Tag } from '@tmlmobilidade/ui';
 
@@ -26,10 +26,10 @@ export function PlansDetailSectionController() {
 		>
 			<Section gap="sm">
 
-				<PlanStatusControllerTag status={plansDetailContext.data.plan.controller.status} />
+				<PlanStatusTag status={plansDetailContext.data.plan.apps?.controller?.status} />
 
 				<Tag label={plansDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
-				<Tag label={plansDetailContext.data.plan.controller.last_hash || 'N/A'} variant="secondary" />
+				<Tag label={plansDetailContext.data.plan.apps?.controller?.last_hash || 'N/A'} variant="secondary" />
 
 				<Button
 					disabled={plansDetailContext.flags.read_only}

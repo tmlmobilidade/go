@@ -1,14 +1,13 @@
 /* * */
 
 import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
-import { ALLOW_ALL_FLAG, HttpStatus, Permissions } from '@tmlmobilidade/consts';
+import { HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AggregationPipeline, hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { hashedShapes, hashedTrips, rides, ridesBatchAggregationPipeline, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type RideNormalized } from '@tmlmobilidade/types';
-import { type HashedShape, type HashedTrip, type Permission, type Ride, RidePermission, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { getPermission, HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
+import { type HashedShape, type HashedTrip, PermissionCatalog, type Ride, type RideNormalized, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { HttpResponse, validateQueryParams } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
 
 /* * */
@@ -18,149 +17,80 @@ export class RidesController {
 
 	/**
 	 * Gets a batch of Rides built with an aggregation pipeline.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) {
 		//
 
 		//
-		//  Validate the request query parameters
+		// Validate the request query parameters
 
 		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
 
 		//
-		// If search is provided, immediately try to find the ride by ID,
-		// and if found, return it right away.
+		// Detect which agency_ids the user has access to,
+		// based on their permissions. If none, return an empty array.
+
+		const ridesPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
+
+		if (!ridesPermission?.resources?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HttpStatus.OK });
+
+		const allowAllAgencies = ridesPermission.resources.agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+		//
+		// If search is provided, immediately try to find the ride by ID.
+		// If found, return it as the only result. This optimizes
+		// for the common case of searching by ride ID.
 
 		const searchQuery = parsedQuery.search?.trim() ?? '';
 
-		const foundRideById = await rides.findById(searchQuery);
+		const foundRideById = await rides.findOne({
+			_id: searchQuery,
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission.resources.agency_ids } }),
+		});
 
 		if (foundRideById) {
 			const normalizedRide = normalizeRide(foundRideById);
-			return reply.send({
-				data: [normalizedRide],
-				error: null,
-				statusCode: HttpStatus.OK,
-			});
+			return reply.send({ data: [normalizedRide], error: null, statusCode: HttpStatus.OK });
 		}
 
 		//
-		// Setup an aggregation pipeline to filter data
-		// based on the provided parameters.
+		// Get the rides batch using native MongoDB cursor
+		// with batchSize to prevent memory issues
 
-		const pipeline: AggregationPipeline<Ride> = [];
-
-		pipeline.push({ $match: { start_time_scheduled: { $gte: parsedQuery.date_start, $lte: parsedQuery.date_end } } });
-
-		if (parsedQuery.line_ids) pipeline.push({ $match: { $in: { line_id: parsedQuery.line_ids } } });
-
-		if (parsedQuery.agency_ids) pipeline.push({ $match: { agency_id: { $in: parsedQuery.agency_ids } } });
-
-		//
-		// If search is provided, match rides by ID
-
-		if (searchQuery) {
-			const keywords = searchQuery.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
-			pipeline.push({
-				$match: { _id: { $options: 'i', $regex: pattern } },
-			});
-		}
+		const pipeline = ridesBatchAggregationPipeline({
+			acceptance_status: parsedQuery.acceptance_status,
+			agency_ids: parsedQuery.agency_ids.filter(id => allowAllAgencies || ridesPermission.resources.agency_ids.includes(id)),
+			analysis_ended_at_last_stop_grade: parsedQuery.analysis_ended_at_last_stop_grade,
+			analysis_expected_apex_validation_interval: parsedQuery.analysis_expected_apex_validation_interval,
+			analysis_simple_three_vehicle_events_grade: parsedQuery.analysis_simple_three_vehicle_events_grade,
+			analysis_transaction_sequentiality: parsedQuery.analysis_transaction_sequentiality,
+			date_end: parsedQuery.date_end,
+			date_start: parsedQuery.date_start,
+			delay_statuses: parsedQuery.delay_statuses,
+			line_ids: parsedQuery.line_ids,
+			operational_statuses: parsedQuery.operational_statuses,
+			search: parsedQuery.search,
+			seen_statuses: parsedQuery.seen_statuses,
+			stop_ids: parsedQuery.stop_ids,
+		});
 
 		//
-		// Filter rides based on permissions for the current user
-
-		const ridePermission: Permission<RidePermission> = getPermission(request.permissions, Permissions.rides.scope, Permissions.rides.actions.analysis_read);
-
-		if (ridePermission?.resource) {
-			if (ridePermission.resource.agency_ids && !ridePermission.resource.agency_ids.includes(ALLOW_ALL_FLAG)) {
-				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource.agency_ids } } });
-			}
-		}
-
-		//
-		// Add acceptance status to the pipeline
-		pipeline.push(
-			{ $lookup: { as: 'acceptance', foreignField: 'ride_id', from: 'ride_acceptances', localField: '_id' } },
-			{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
-			{ $addFields: { acceptance_status: { $ifNull: ['$acceptance.acceptance_status', null] } } },
-			{ $project: { acceptance: 0 } },
-		);
-
-		//
-		// Filter by analysis_* items
-
-		const analysisFilters: { field: keyof GetRidesBatchQuery, path: string }[] = [
-			{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
-			{ field: 'analysis_expected_apex_validation_interval', path: 'analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade' },
-			{ field: 'analysis_simple_three_vehicle_events_grade', path: 'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade' },
-		];
-
-		analysisFilters.forEach(({ field, path }) => parsedQuery[field] && pipeline.push({ $match: { [path]: { $in: parsedQuery[field] } } }));
-
-		//
-		// If ride has acceptance_status, filter by it
-		if (
-			parsedQuery.acceptance_status
-			&& parsedQuery.acceptance_status.length > 0
-			&& !parsedQuery.acceptance_status.includes('none')
-		) {
-			pipeline.push(
-				{ $match: { acceptance_status: { $exists: true } } },
-				{ $match: { acceptance_status: { $in: parsedQuery.acceptance_status } } },
-			);
-		}
-
-		//
-		// Impose a hard limit to the number of rides returned
-		// to avoid performance issues.
+		// Limit the number of rides to 2000 and sort by start_time_scheduled
 
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
 		//
-		// Run the aggregation pipeline to fetch the rides data,
-		// and normalize them before sending it to the client.
+		// Fetch the rides batch from the database
 
 		const ridesBatch = await rides.aggregate(pipeline);
-
-		let normalizedRidesBatch = ridesBatch.map(ride => normalizeRide(ride));
-
-		//
-		// Apply additional filtering on the normalized data
-		// to match non-persisted fields like delay_status and operational_status.
-
-		// console.log('HERE =======> ', normalizedRidesBatch.find(ride => ride.operational_status === 'scheduled'));
-
-		if (parsedQuery.delay_statuses) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.delay_statuses.includes(ride.delay_status));
-		}
-		if (parsedQuery.operational_statuses) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.operational_statuses.includes(ride.operational_status));
-		}
-		if (parsedQuery.seen_statuses) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.seen_statuses.includes(ride.seen_status));
-		}
-		if (parsedQuery.analysis_ended_at_last_stop_grade) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_ended_at_last_stop_grade.includes(ride.analysis_ended_at_last_stop_grade));
-		}
-		if (parsedQuery.analysis_expected_apex_validation_interval) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_expected_apex_validation_interval.includes(ride.analysis_expected_apex_validation_interval));
-		}
-		if (parsedQuery.analysis_simple_three_vehicle_events_grade) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_simple_three_vehicle_events_grade.includes(ride.analysis_simple_three_vehicle_events_grade));
-		}
-		if (parsedQuery.analysis_transaction_sequentiality) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.analysis_transaction_sequentiality.includes(ride.analysis_transaction_sequentiality));
-		}
-		if (parsedQuery.acceptance_status) {
-			normalizedRidesBatch = normalizedRidesBatch.filter(ride => parsedQuery.acceptance_status.includes(ride['acceptance_status']));
-		}
 
 		//
 		// Send the response
 
 		reply.send({
-			data: normalizedRidesBatch ?? [],
+			data: ridesBatch as RideNormalized[] ?? [],
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
@@ -169,82 +99,71 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get a HashedShape by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getHashedShapeByRideId(request: FastifyRequest, reply: FastifyReply<HashedShape>) {
-		try {
-			//
+		//
+		// Validate the request parameters
 
-			//
-			// Validate the request parameters
+		const rideId = request.params['id'];
 
-			const rideId = request.params['id'];
-
-			if (!rideId) {
-				return reply
-					.status(HttpStatus.BAD_REQUEST)
-					.send({
-						data: null,
-						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
-					});
-			}
-
-			//
-			// Fetch the ride data from the database
-
-			const rideData = await rides.findById(rideId);
-
-			if (!rideData) {
-				return reply
-					.status(HttpStatus.NOT_FOUND)
-					.send({
-						data: null,
-						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
-					});
-			}
-
-			//
-			// Fetch the corresponding vehicle events data
-			// and send it back to the client
-
-			const hashedShapeData = await hashedShapes.findById(rideData.hashed_shape_id);
-
-			if (!hashedShapeData) {
-				return reply
-					.status(HttpStatus.NOT_FOUND)
-					.send({
-						data: null,
-						error: 'HashedShape not found.',
-						status: HttpStatus.NOT_FOUND,
-					});
-			}
-
-			//
-			// Send the ride data back to the client
-
-			reply.send({
-				data: hashedShapeData,
-				error: null,
-				statusCode: HttpStatus.OK,
-			});
+		if (!rideId) {
+			return reply
+				.status(HttpStatus.BAD_REQUEST)
+				.send({
+					data: null,
+					error: 'Missing ride_id parameter.',
+					status: HttpStatus.BAD_REQUEST,
+				});
 		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
+
+		//
+		// Fetch the ride data from the database
+
+		const rideData = await rides.findById(rideId);
+
+		if (!rideData) {
+			return reply
+				.status(HttpStatus.NOT_FOUND)
+				.send({
+					data: null,
+					error: 'Ride not found.',
+					status: HttpStatus.NOT_FOUND,
+				});
 		}
+
+		//
+		// Fetch the corresponding vehicle events data
+		// and send it back to the client
+
+		const hashedShapeData = await hashedShapes.findById(rideData.hashed_shape_id);
+
+		if (!hashedShapeData) {
+			return reply
+				.status(HttpStatus.NOT_FOUND)
+				.send({
+					data: null,
+					error: 'HashedShape not found.',
+					status: HttpStatus.NOT_FOUND,
+				});
+		}
+
+		//
+		// Send the ride data back to the client
+
+		reply.send({
+			data: hashedShapeData,
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get a HashedTrip by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getHashedTripByRideId(request: FastifyRequest, reply: FastifyReply<HashedTrip>) {
 		try {
@@ -314,9 +233,8 @@ export class RidesController {
 
 	/**
 	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
 		try {
@@ -369,10 +287,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get a SimplifiedApexLocation by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexLocationsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexLocation[]>) {
 		try {
@@ -437,10 +354,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedApexOnBoardRefunds by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexOnBoardRefundsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexOnBoardRefund[]>) {
 		try {
@@ -505,10 +421,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedApexOnBoardSales by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexOnBoardSalesByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexOnBoardSale[]>) {
 		try {
@@ -573,10 +488,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedApexValidations by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getSimplifiedApexValidationsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedApexValidation[]>) {
 		try {
@@ -641,10 +555,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Get SimplifiedVehicleEvents by Ride ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async getVehicleEventsByRideId(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
 		try {
@@ -709,10 +622,9 @@ export class RidesController {
 	}
 
 	/**
-	 * Get a Ride by ID.
-	 * @param request
-	 * @param reply
-	 * @returns
+	 * Reprocess a Ride by ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
 	static async reprocessRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
 		try {
@@ -766,7 +678,7 @@ export class RidesController {
 
 	/**
 	 * WebSocket event handler.
-	 * @param socket
+	 * @param socket The WebSocket object.
 	 */
 	static websocket(socket: WebSocket) {
 		socket.on('message', async () => {

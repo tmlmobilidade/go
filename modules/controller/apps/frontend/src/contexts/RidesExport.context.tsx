@@ -75,6 +75,7 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 
 		const fileName = `${Dates.fromUnixTimestamp(filterDateStart).setZone('Europe/Lisbon', 'offset_only').operational_date}_${Dates.fromUnixTimestamp(filterDateEnd).setZone('Europe/Lisbon', 'offset_only').operational_date}.csv`;
 		const createFileExportDto: CreateFileExportDto<RideExportProperties> = {
+			file_id: null,
 			file_name: fileName,
 			processing_status: 'waiting',
 			properties: {

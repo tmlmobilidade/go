@@ -1,27 +1,21 @@
 'use client';
 
-import { API_ROUTES, PAGE_ROUTES, Permissions } from '@tmlmobilidade/consts';
-import { CreateRoleDto, CreateRoleSchema, Role, RoleSchema, UpdateRoleSchema } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+/* * */
+
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type CreateRoleDto, CreateRoleSchema, PermissionSchema, type Role } from '@tmlmobilidade/types';
+import { useDebouncedCallback, useForm, UseFormReturnType, useMeContext, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { convertObject } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
+
+/* * */
 
 export enum RoleDetailMode {
 	CREATE = 'create',
 	EDIT = 'edit',
 }
-
-export const availablePermissions = Object.entries(Permissions).map(([scope, value]) => ({
-	children: Object.entries(value.actions).map(([action]) => ({
-		label: action,
-		value: `${scope}-${action}`,
-	})),
-	label: scope,
-	value: scope,
-}));
 
 interface RoleDetailContextState {
 	actions: {
@@ -50,6 +44,8 @@ const emptyRole: CreateRoleDto = {
 	updated_by: '',
 };
 
+/* * */
+
 const RoleDetailContext = createContext<RoleDetailContextState | undefined>(undefined);
 
 export function useRoleDetailContext() {
@@ -60,53 +56,59 @@ export function useRoleDetailContext() {
 	return context;
 }
 
-export const RoleDetailContextProvider = ({ children, role_id }: { children: React.ReactNode, role_id: string }) => {
+/* * */
+
+export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildren<{ roleId: string }>) => {
+	//
+
 	//
 	// A. Setup variables
+
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
+
+	const meContext = useMeContext();
+
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [canSave, setCanSave] = useState(false);
 
-	const { data: role, isLoading } = useSWR<Role>(role_id === 'new' ? null : API_ROUTES.auth.ROLES_DETAIL(role_id));
+	//
+	// B. Fetch data
+
+	const { mutate: allRolesMutate } = useSWR<Role[]>(API_ROUTES.auth.ROLES_LIST);
+	const { data: roleData, isLoading: roleLoading } = useSWR<Role>(roleId === 'new' ? null : API_ROUTES.auth.ROLES_DETAIL(roleId));
 
 	//
-	// B. Define form
+	// C. Setup form
+
+	const validateForm = useDebouncedCallback(() => {
+		const validationResult = form.validate();
+		console.log('Form validation result:', validationResult);
+		setCanSave(!validationResult.hasErrors);
+	}, 1000);
+
 	const form = useForm<CreateRoleDto>({
-		initialValues: role || emptyRole,
-		validate: zodResolver(role_id === 'new' ? CreateRoleSchema : RoleSchema),
+		initialValues: emptyRole,
+		mode: 'uncontrolled',
+		onValuesChange: () => validateForm(),
+		validate: zodResolver(CreateRoleSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
 
-	// Update form
 	useEffect(() => {
-		if (!role) return;
-
-		setLoading(true);
-
-		form.initialize(role);
-
-		setLoading(false);
-	}, [role]);
-
-	//
-	// C. Transform Data
-	// Validate form on change
-	useEffect(() => {
-		form.validate();
-		setCanSave(form.isValid());
-	}, [form.values]);
+		if (!roleData) return;
+		form.initialize(roleData);
+	}, [roleData]);
 
 	//
 	// D. Handle actions
+
 	const handleSaveRole = async () => {
 		setIsSaving(true);
-		const method = role_id === 'new' ? 'POST' : 'PUT';
-		const url = role_id === 'new' ? API_ROUTES.auth.ROLES_LIST : API_ROUTES.auth.ROLES_DETAIL(role_id);
-		const body = role_id === 'new' ? form.values : convertObject(form.values, UpdateRoleSchema);
-		const response = await fetchData<Role>(url, method, body);
+		const method = roleId === 'new' ? 'POST' : 'PUT';
+		const url = roleId === 'new' ? API_ROUTES.auth.ROLES_LIST : API_ROUTES.auth.ROLES_DETAIL(roleId);
+		const response = await fetchData<Role>(url, method, form.getValues());
 
 		if (response.error) {
 			if (typeof response.error === 'string') {
@@ -126,7 +128,6 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 			}
 
 			setIsSaving(false);
-			router.replace(PAGE_ROUTES.auth.ROLES_DETAIL(response.data?._id));
 			return;
 		}
 
@@ -135,17 +136,21 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 			title: 'Sucesso',
 		});
 
-		if (role_id === 'new' && response.data?._id) {
+		if (roleId === 'new' && response.data?._id) {
 			router.replace(PAGE_ROUTES.auth.ROLES_DETAIL(response.data._id));
 		}
+
+		meContext.mutate.me();
+		allRolesMutate();
 
 		setIsSaving(false);
 	};
 
 	const handleDeleteRole = async () => {
-		if (role_id === 'new') return;
-
-		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(role_id), 'DELETE');
+		// Skip if new user
+		if (roleId === 'new') return;
+		// Confirm deletion
+		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'DELETE');
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
@@ -166,30 +171,36 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 	};
 
 	const handlePermissionToggle = (scope: string, action: string) => {
-		console.log('HERE =======> ', 'permission');
-		const currentPermissions = form.values.permissions;
-
-		if (currentPermissions.find(permission => permission.scope === scope && permission.action === action)) {
-			form.setFieldValue('permissions', currentPermissions.filter(permission => permission.scope !== scope || permission.action !== action));
+		// Get latest form values
+		const latestValues = form.getValues();
+		// Check if a permission entry with the same scope and action already exists
+		if (latestValues.permissions?.find(p => p.scope === scope && p.action === action)) {
+			const updatedPermissions = latestValues.permissions.filter(p => p.scope !== scope || p.action !== action);
+			form.setFieldValue('permissions', updatedPermissions);
+			return;
 		}
-		else {
-			form.setFieldValue('permissions', [...currentPermissions, { action, scope }]);
-		}
+		// If it doesn't exist, add a new permission entry
+		const permissionValidated = PermissionSchema.safeParse({ action: action, scope: scope });
+		if (!permissionValidated.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(permissionValidated.error));
+		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
 	};
 
-	const handlePermissionResourceToggle = (scope: string, action: string, resource: Record<string, unknown>) => {
-		const currentPermissions = form.values.permissions;
-		const permission = currentPermissions.find(permission => permission.scope === scope && permission.action === action);
-
-		if (!permission) return;
-
-		permission.resource = { ...permission.resource, ...resource };
-		form.setFieldValue('permissions', currentPermissions);
+	function handlePermissionResourceToggle(scope: string, action: string, resource: Record<string, unknown>) {
+		// Get latest form values
+		const latestValues = form.getValues();
+		// Check if a permission entry with the same scope and action exists
+		const foundPermission = latestValues.permissions?.find(p => p.scope === scope && p.action === action);
+		if (!foundPermission) return alert('Permissão não encontrada para atualizar recursos');
+		// Assign the new resources to the found permission
+		foundPermission['resources'] = resource;
+		// Update the resources of the found permission
+		form.setFieldValue('permissions', [...latestValues.permissions ?? []]);
 	};
 
 	//
 	// E. Define context value
-	const contextValue: RoleDetailContextState = {
+
+	const contextValue: RoleDetailContextState = useMemo(() => ({
 		actions: {
 			deleteRole: handleDeleteRole,
 			handlePermissionResourceToggle,
@@ -198,22 +209,32 @@ export const RoleDetailContextProvider = ({ children, role_id }: { children: Rea
 		},
 		data: {
 			form,
-			id: role_id === 'new' ? undefined : role_id,
+			id: roleId === 'new' ? undefined : roleId,
 		},
 		flags: {
 			canSave,
 			isReadOnly,
 			isSaving,
-			loading: isLoading || loading,
-			mode: role_id === 'new' ? RoleDetailMode.CREATE : RoleDetailMode.EDIT,
+			loading: roleLoading,
+			mode: roleId === 'new' ? RoleDetailMode.CREATE : RoleDetailMode.EDIT,
 		},
-	};
+	}), [
+		canSave,
+		isReadOnly,
+		isSaving,
+		roleId,
+		roleLoading,
+		form,
+	]);
 
 	//
 	// F. Render components
+
 	return (
 		<RoleDetailContext.Provider value={contextValue}>
 			{children}
 		</RoleDetailContext.Provider>
 	);
+
+	//
 };

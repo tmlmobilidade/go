@@ -1,11 +1,10 @@
 /* * */
 
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
+import { HttpException, HttpStatus, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { ALLOW_ALL_FLAG, HttpException, HttpStatus, mimeTypes, Permissions } from '@tmlmobilidade/consts';
-import { files, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
-import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, type Permission, type Plan, type PlanPermission, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
-import { getPermission, hasAPIResourcePermission } from '@tmlmobilidade/utils';
+import { files, type Filter, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
 /* * */;
@@ -33,10 +32,11 @@ export class PlansController {
 		//
 		// Check if the user has permission to change the GTFS of the Plan
 
-		const hasPermissionChangeGtfsPlan = hasAPIResourcePermission<PlanPermission>(request, {
-			action: Permissions.plans.actions.update_gtfs_plan,
+		const hasPermissionChangeGtfsPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.plans.scope,
+			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
 
@@ -77,7 +77,7 @@ export class PlansController {
 
 			const updateFileResult = await filesCollection.clone(
 				validationData.file_id,
-				Permissions.plans.scope,
+				PermissionCatalog.all.plans.scope,
 				planData._id.toString(),
 				{ session: filesTransaction.getSession() },
 			);
@@ -127,7 +127,7 @@ export class PlansController {
 	 */
 	static async controllerReprocessPlanById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		const planData = await plans.findById(request.params.id);
-		const result = await plans.updateById(request.params.id, { controller: { ...planData.controller, last_hash: null, status: 'waiting' } });
+		const result = await plans.updateById(request.params.id, { apps: { ...planData.apps, controller: { last_hash: null, status: 'waiting', timestamp: null } } });
 		return reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 
@@ -168,10 +168,17 @@ export class PlansController {
 			// and save it to the database
 
 			const newPlanData: CreatePlanDto = {
-				controller: {
-					last_hash: null,
-					status: 'waiting',
-					timestamp: null,
+				apps: {
+					controller: {
+						last_hash: null,
+						status: 'waiting',
+						timestamp: null,
+					},
+					merger: {
+						last_hash: null,
+						status: 'waiting',
+						timestamp: null,
+					},
 				},
 				gtfs_agency: validationData.gtfs_agency,
 				gtfs_feed_info: validationData.gtfs_feed_info,
@@ -181,7 +188,6 @@ export class PlansController {
 				pcgi_legacy: {
 					operation_plan_id: '',
 				},
-				status_merger: 'waiting',
 			};
 
 			const planResult = await plansCollection.insertOne(
@@ -195,7 +201,7 @@ export class PlansController {
 
 			const fileResult = await filesCollection.clone(
 				validationData.file_id,
-				Permissions.plans.scope,
+				PermissionCatalog.all.plans.scope,
 				planResult._id.toString(),
 				{ session: filesTransaction.getSession() },
 			);
@@ -253,13 +259,14 @@ export class PlansController {
 
 		//
 		// Check if the user has permission to create a plan
-		if (!hasAPIResourcePermission<PlanPermission>(request, {
-			action: Permissions.plans.actions.delete,
+		if (!PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.delete,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.plans.scope,
+			scope: PermissionCatalog.all.plans.scope,
 			value: plan.gtfs_agency.agency_id,
 		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
 		}
 
 		//
@@ -278,19 +285,33 @@ export class PlansController {
 		//
 
 		//
-		// Extract permissions from the request
+		// Get the resource permissions for
+		// GTFS Validations for the current user.
 
-		const planPermission: Permission<PlanPermission> = getPermission(request.permissions, Permissions.plans.scope, Permissions.plans.actions.read);
+		const userPlanPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.read);
 
 		//
-		// Filter plans based on permissions for the current user
+		// If specific agency permissions are set,
+		// setup the database filters accordingly.
 
-		if (planPermission?.resource) {
-			const filter = {
-				...(planPermission.resource.agency_ids && !planPermission.resource.agency_ids.includes(ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: planPermission.resource.agency_ids } }),
+		const queryFilters: Filter<Plan> = {};
+
+		//
+		// If agency IDs are specified and do not include the ALLOW_ALL_FLAG,
+		// filter validations by those agency IDs.
+
+		if ('resources' in userPlanPermissions && 'agency_ids' in userPlanPermissions.resources) {
+			if (!userPlanPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				queryFilters['gtfs_agency.agency_id'] = { $in: userPlanPermissions.resources['agency_ids'] };
+			}
+		}
+
+		if ('resources' in userPlanPermissions) {
+			const filters = {
+				...(userPlanPermissions.resources['agency_ids'] && !userPlanPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userPlanPermissions.resources['agency_ids'] } }),
 			};
 
-			const filteredPlans = await plans.findMany(filter, { sort: { created_at: -1 } });
+			const filteredPlans = await plans.findMany(filters, { sort: { created_at: -1 } });
 
 			return reply.send({ data: filteredPlans, error: null, statusCode: HttpStatus.OK });
 		}
@@ -298,7 +319,7 @@ export class PlansController {
 		//
 		// If no specific permissions are set, return all plans
 
-		const allPlans = await plans.all();
+		const allPlans = await plans.findMany({}, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allPlans, error: null, statusCode: HttpStatus.OK });
 
@@ -344,14 +365,15 @@ export class PlansController {
 		//
 		// Check if the user has permission to read the Plan
 
-		const hasPermissionReadPlan = hasAPIResourcePermission<PlanPermission>(request, {
-			action: Permissions.plans.actions.read,
+		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.read,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.plans.scope,
+			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read plan');
 
 		//
 		// Fetch the plan data
@@ -396,14 +418,15 @@ export class PlansController {
 		//
 		// Check if the user has permission to read the Plan
 
-		const hasPermissionReadPlan = hasAPIResourcePermission<PlanPermission>(request, {
-			action: Permissions.plans.actions.read,
+		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.read,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.plans.scope,
+			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read plan');
 
 		//
 		// Fetch the file associated with the plan
@@ -439,14 +462,15 @@ export class PlansController {
 		//
 		// Check if the user has permission to toggle lock the Plan
 
-		const hasPermissionToggleLockPlan = hasAPIResourcePermission<PlanPermission>(request, {
-			action: Permissions.plans.actions.toggle_lock,
+		const hasPermissionToggleLockPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.toggle_lock,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.plans.scope,
+			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionToggleLockPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action');
+		if (!hasPermissionToggleLockPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock plan');
 
 		//
 		// Toggle the lock status of the plan
@@ -480,10 +504,11 @@ export class PlansController {
 		//
 		// Check if the user has permission to update the Plan
 
-		const hasPermissionReadPlan = hasAPIResourcePermission<PlanPermission>(request, {
-			action: Permissions.plans.actions.update,
+		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.update,
+			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: Permissions.plans.scope,
+			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
 
@@ -509,10 +534,11 @@ export class PlansController {
 			//
 			// Check if the user has permission to update the PCGI legacy field
 
-			const hasPermissionUpdateFeedInfoDates = hasAPIResourcePermission<PlanPermission>(request, {
-				action: Permissions.plans.actions.update_feed_info_dates,
+			const hasPermissionUpdateFeedInfoDates = PermissionCatalog.hasPermissionResource({
+				action: PermissionCatalog.all.plans.actions.update_feed_info_dates,
+				permissions: request.permissions,
 				resource_key: 'agency_ids',
-				scope: Permissions.plans.scope,
+				scope: PermissionCatalog.all.plans.scope,
 				value: planData.gtfs_agency.agency_id,
 			});
 
@@ -589,10 +615,11 @@ export class PlansController {
 			//
 			// Check if the user has permission to update the PCGI legacy field
 
-			const hasPermissionUpdatePcgiLegacy = hasAPIResourcePermission<PlanPermission>(request, {
-				action: Permissions.plans.actions.update_pcgi_legacy,
+			const hasPermissionUpdatePcgiLegacy = PermissionCatalog.hasPermissionResource({
+				action: PermissionCatalog.all.plans.actions.update_pcgi_legacy,
+				permissions: request.permissions,
 				resource_key: 'agency_ids',
-				scope: Permissions.plans.scope,
+				scope: PermissionCatalog.all.plans.scope,
 				value: planData.gtfs_agency.agency_id,
 			});
 

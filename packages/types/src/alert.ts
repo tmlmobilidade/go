@@ -26,6 +26,7 @@ export const AlertSchema = DocumentSchema.extend({
 	created_by: z.string().min(1),
 	description: z.string(),
 	effect: gtfsEffectSchema,
+	external_id: z.string().nullish(),
 	file_id: z.string().nullish(),
 	info_url: z.string().url().optional().or(z.literal('')),
 	modified_by: z.string().min(1),
@@ -49,14 +50,6 @@ export const UpdateAlertSchema = CreateAlertSchema.omit({ created_by: true }).pa
 export type Alert = z.infer<typeof AlertSchema>;
 export type CreateAlertDto = z.infer<typeof CreateAlertSchema>;
 export type UpdateAlertDto = z.infer<typeof UpdateAlertSchema>;
-
-/* * */
-
-export const AlertPermissionSchema = z.object({
-	agency_ids: z.array(z.string()),
-});
-
-export type AlertPermission = z.infer<typeof AlertPermissionSchema>;
 
 /* * */
 

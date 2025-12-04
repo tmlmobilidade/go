@@ -1,25 +1,26 @@
 /* * */
 
-import '@fastify/cookie';
 import '@fastify/cors';
+import '@fastify/cookie';
+import '@fastify/multipart';
 
 /* * */
 
-import cookie from '@fastify/cookie';
-import cors from '@fastify/cors';
+import fastifyCookie from '@fastify/cookie';
+import fastifyCors from '@fastify/cors';
+import oneLineLogger from '@fastify/one-line-logger';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
+import fastify, { FastifyLoggerOptions } from 'fastify';
+import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
+import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, type FastifyServerOptions, type FastifyTypeProviderDefault, type RawReplyDefaultExpression, type RawRequestDefaultExpression, type RawServerBase, type RawServerDefault, type RouteGenericInterface } from 'fastify';
 
 /* * */
-
-import fastify from 'fastify';
-import { type FastifyReply as _FastifyReply, type FastifyInstance as FastifyInstanceType } from 'fastify';
-import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, type FastifyServerOptions, type FastifyTypeProviderDefault, type RawReplyDefaultExpression, type RawRequestDefaultExpression, type RawServerBase, type RawServerDefault, type RouteGenericInterface } from 'fastify';
 
 export { type FastifyRequest } from 'fastify';
 
-export type FastifyReply<T> = _FastifyReply<RouteGenericInterface, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | ReadableStream | WithPagination<HttpResponse<T>>>;
-export type FastifyResponse<T> = _FastifyReply<RouteGenericInterface & { Reply: HttpResponse<T> | WithPagination<HttpResponse<T>> }, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | WithPagination<HttpResponse<T>>>;
+export type FastifyReply<T> = FastifyReplyType<RouteGenericInterface, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | ReadableStream | WithPagination<HttpResponse<T>>>;
+export type FastifyResponse<T> = FastifyReplyType<RouteGenericInterface & { Reply: HttpResponse<T> | WithPagination<HttpResponse<T>> }, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | WithPagination<HttpResponse<T>>>;
 export type FastifyInstance = FastifyInstanceType<RawServerDefault, RawRequestDefaultExpression, RawReplyDefaultExpression, FastifyBaseLogger, FastifyTypeProviderDefault>;
 
 /**
@@ -52,6 +53,109 @@ export interface FastifyServiceOptions extends FastifyServerOptions {
 
 }
 
+const defaultFastifyServiceOptions: FastifyServiceOptions = {
+	bodyLimit: 1024 * 1024 * 10, // 10MB
+	host: '0.0.0.0',
+	logger: true,
+	origin: true,
+	port: 5050,
+	routerOptions: {
+		ignoreTrailingSlash: true,
+	},
+};
+
+const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
+	level: 'debug',
+	stream: oneLineLogger({
+		colorize: true, // nice colors,
+		colorizeObjects: true,
+		messageFormat(log, messageKey, _, extras) {
+			const c = extras.colors;
+
+			const palette = {
+				error: c.redBright,
+				highlight: c.yellowBright, // URLs / routes
+				message: c.whiteBright,
+				method: c.greenBright,
+				methodLabel: c.gray,
+				pipe: c.cyanBright,
+				reqId: c.cyanBright,
+				reqIdLabel: c.gray,
+				stack: c.red,
+				status: c.yellowBright,
+				statusLabel: c.gray,
+				timestamp: c.cyanBright,
+			};
+
+			const colorize = (text: string) => {
+				const urlPattern = /(https?:\/\/[^\s]+)/g;
+				const routePattern = /Route "(.+?)"/g;
+				const pathPattern = /([A-Z]+):\/[^\s]+/g;
+
+				return text
+					.replace(urlPattern, palette.highlight('$&'))
+					.replace(routePattern, (_, r) => palette.highlight(`Route "${r}"`))
+					.replace(pathPattern, palette.highlight('$&'));
+			};
+
+			const safe = (val: unknown, fallback = '') =>
+				typeof val === 'string' || typeof val === 'number' ? String(val) : fallback;
+
+			const formatMethod = (method?: string) => {
+				if (!method) return '-----';
+				if (method === 'GET' || method === 'PUT') return `${method}  `;
+				return method.padEnd(5, '-');
+			};
+
+			const timestamp = new Date(log.time as string).toLocaleString('pt-PT', {
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				month: '2-digit',
+				second: '2-digit',
+				year: 'numeric',
+			});
+
+			const reqId = log.reqId ? safe(log.reqId).padEnd(10, ' ') : Array(10).fill('-').join('');
+
+			const statusCode = typeof log.res === 'object' && log.res && 'statusCode' in log.res ? safe(log.res.statusCode).padEnd(3, '-') : '---';
+
+			const method = typeof log.req === 'object' && log.req && 'method' in log.req ? formatMethod((log.req.method as string) ?? '') : '-----';
+
+			// Extract error information
+			// Pino serializes errors, so log.err is an object with type, message, stack, etc.
+			const errorObj = log.err || log.error;
+			let errorMessage = safe(log[messageKey]);
+			let errorStack: string | undefined;
+
+			if (errorObj) {
+				// Pino serialized error object
+				errorMessage = (errorObj as Error).message || errorMessage;
+				errorStack = (errorObj as Error).stack;
+			}
+			else if (log[messageKey] instanceof Error) {
+				// Direct Error instance (shouldn't happen with Pino, but just in case)
+				errorMessage = (log[messageKey] as unknown as Error).message || errorMessage;
+				errorStack = (log[messageKey] as Error).stack;
+			}
+
+			const message = palette.message(colorize(errorMessage));
+			// Add stack trace on new lines, indented for readability
+			const stackTrace = errorStack ? `\n${palette.stack(errorStack.split('\n').map(line => `  ${line}`).join('\n'))}` : '';
+
+			const parts = [
+				palette.timestamp(timestamp),
+				palette.reqIdLabel(`reqId: ${palette.reqId(reqId)}`),
+				palette.statusLabel(`statusCode: ${palette.status(statusCode)}`),
+				palette.methodLabel(`Method: ${palette.method(method)}`),
+				message,
+			];
+
+			return palette.pipe(parts.join(' | ')) + stackTrace;
+		},
+	}),
+};
+
 /**
  * FastifyService is a singleton class that provides a Fastify server instance.
  * It allows for setting up routes, plugins, and starting/stopping the server.
@@ -64,19 +168,17 @@ export class FastifyService {
 	private static _instance: FastifyService;
 
 	public readonly server: FastifyInstance;
-	private readonly host: FastifyServiceOptions['host'];
-	private readonly origin: FastifyServiceOptions['origin'];
-	private readonly port: FastifyServiceOptions['port'];
+
+	private readonly options: FastifyServiceOptions;
 
 	/**
 	 * Creates an instance of FastifyService.
 	 * @param options The options for the Fastify server.
 	 */
 	private constructor(options: FastifyServiceOptions) {
-		this.server = fastify(options);
-		this.origin = options.origin ?? true;
-		this.port = options.port ?? 5050;
-		this.host = options.host ?? '0.0.0.0';
+		const mergedOptions = { ...defaultFastifyServiceOptions, ...options };
+		this.server = fastify({ ...mergedOptions, logger: loggerOptions });
+		this.options = mergedOptions;
 		this._setupDefaultRoutes();
 		this._setupPlugins();
 	}
@@ -103,10 +205,10 @@ export class FastifyService {
 	 */
 	async start(): Promise<string> {
 		try {
-			const serverUrl = await this.server.listen({ host: this.host, port: this.port });
+			const serverUrl = await this.server.listen({ host: this.options.host, port: this.options.port });
 			this.server.log.info(`Server is running at ${serverUrl}`);
-			this.server.log.info(`CORS enabled for origin: ${this.origin}`);
-			this.server.log.info(`Listening on ${this.host}:${this.port}`);
+			this.server.log.info(`CORS enabled for origin: ${this.options.origin}`);
+			this.server.log.info(`Listening on ${this.options.host}:${this.options.port}`);
 			return serverUrl;
 		}
 		catch (error) {
@@ -125,7 +227,7 @@ export class FastifyService {
 			console.log('Fastify server stopped.');
 		}
 		catch (error) {
-			this.server.log.error(error);
+			this.server.log.error({ err: error }, error instanceof Error ? error.message : 'Error stopping server');
 			process.exit(1);
 		}
 	}
@@ -151,21 +253,27 @@ export class FastifyService {
 		 * This ensures consistent error responses for HTTP exceptions throughout the application.
 		 */
 		this.server.setErrorHandler((error, _, reply) => {
-			this.server.log.error(error);
-
+			// Log the error with full stack trace
+			const errorMessage = error instanceof Error ? error.message : 'Unhandled error';
+			this.server.log.error({ err: error }, errorMessage);
+			// Handle HttpException errors
 			if (error instanceof HttpException) {
-				reply.status(error.statusCode).send({
-					data: undefined,
-					error: error.message,
-					statusCode: error.statusCode,
-				});
+				reply
+					.status(error.statusCode)
+					.send({
+						data: undefined,
+						error: error.message,
+						statusCode: error.statusCode,
+					});
 			}
 			else {
-				reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-					data: undefined,
-					error: 'Internal server error',
-					statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-				});
+				reply
+					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.send({
+						data: undefined,
+						error: 'Internal server error',
+						statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+					});
 			}
 		});
 
@@ -198,14 +306,18 @@ export class FastifyService {
 	 * @return A promise that resolves when the plugins are set up.
 	 */
 	private async _setupPlugins() {
-		//
-
-		await this.server.register(cors, {
+		// CORS plugin
+		await this.server.register(fastifyCors, {
 			credentials: true,
 			methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'],
-			origin: this.origin,
+			origin: this.options.origin,
 		});
-		await this.server.register(cookie);
+		// Cookie plugin
+		await this.server.register(fastifyCookie);
+		// Multipart plugin
+		// await this.server.register(fastifyMultipart, {
+		// 	limits: { fileSize: this.options.bodyLimit },
+		// });
 	}
 
 	//

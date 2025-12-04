@@ -93,7 +93,15 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 
 	// calcular recordes de dias uteis e fins de semana
 	return (
-		<VisualizationWrapper border="none" padding="0" title={`Recorde de passageiros diário: ${recordPassengers.qty.toLocaleString('pt-PT')} (${t('dates.formatted', { date: recordPassengers.date })})`}>
+		<VisualizationWrapper
+			border="none"
+			padding="0"
+			title={(
+				<>
+					Recorde de passageiros diário: <strong>{recordPassengers.qty.toLocaleString('pt-PT')}</strong> ({t('dates.formatted', { date: recordPassengers.date })})
+				</>
+			)}
+		>
 			<div className={styles.progressContainer}>
 				<Progress.Root size={30} w="100%">
 					<Tooltip label={`${getTooltipLabel(progressPercentage)} (${progressPercentage.toFixed(1)}%)`}>

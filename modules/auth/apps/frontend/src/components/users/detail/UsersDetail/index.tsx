@@ -2,32 +2,46 @@
 
 /* * */
 
-import { PermissionSectionGroup } from '@/components/permissions/PermissionSectionGroup';
+import { PermissionSection } from '@/components/permissions/PermissionSection';
 import { UsersDetailBasicInfo } from '@/components/users/detail/UsersDetailBasicInfo';
 import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
 import { UsersDetailRolesAndOrganization } from '@/components/users/detail/UsersDetailRolesAndOrganization';
-import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersDetailContext } from '@/contexts/UsersDetail.context';
-import { Permission } from '@tmlmobilidade/types';
+import { permissionsConfig } from '@/lib/permissions';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function UsersDetail() {
-	const { actions, data } = useUsersDetailContext();
-	const { data: roles } = useRolesContext();
+	//
+
+	//
+	// A. Setup variables
+
+	const usersDetailContext = useUsersDetailContext();
+
+	//
+	// B. Render components
 
 	return (
 		<Pane header={[<UsersDetailHeader />]}>
 			<UsersDetailBasicInfo />
 			<UsersDetailRolesAndOrganization />
-			<PermissionSectionGroup
-				onResourceToggle={actions.handlePermissionResourceToggle}
-				onToggle={actions.handlePermissionToggle}
-				permissions={data.form.values.permissions as Permission<unknown>[]}
-				roles={roles.raw}
-				userRoleIds={data.form.values.role_ids}
-			/>
+			{permissionsConfig.map(item => (
+				<PermissionSection
+					key={item.scope}
+					configActions={item.actions}
+					description={item.description}
+					enabledPermissions={usersDetailContext.data.form.values.permissions}
+					enabledRoleIds={usersDetailContext.data.form.values.role_ids}
+					onResourceToggle={usersDetailContext.actions.handlePermissionResourceToggle}
+					onToggle={usersDetailContext.actions.handlePermissionToggle}
+					scope={item.scope}
+					title={item.title}
+				/>
+			))}
 		</Pane>
 	);
+
+	//
 }

@@ -1,0 +1,45 @@
+{
+	"name": "@tmlmobilidade/env-sync",
+	"description": "CLI tool to sync production and staging environments (MongoDB and Storage)",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE",
+		"package.json"
+	],
+	"main": "./dist/index.js",
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"bin": {
+		"env-sync": "./dist/index.js"
+	},
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx src/index.ts",
+		"lint": "eslint ./src && tsc --noEmit",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@clack/core": "0.5.0",
+		"@clack/prompts": "0.11.0",
+		"@tmlmobilidade/consts": "20251202.1817.5",
+		"@tmlmobilidade/types": "20251202.1817.5",
+		"chalk": "5.6.2",
+		"dotenv": "17.2.3",
+		"mongodb": "7.0.0"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "20251202.1817.5",
+		"@types/node": "24.10.1",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.21.0"
+	}
+}

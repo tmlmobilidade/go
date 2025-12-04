@@ -17,11 +17,12 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
-		"@tmlmobilidade/rabbitmq": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/gtfs-validator": "20250909.1736.14",
+		"@tmlmobilidade/gtfs-validator": "20251128.1629.25",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"csv-parse": "6.1.0"
 	},
@@ -30,7 +31,7 @@
 		"@tmlmobilidade/types": "*",
 		"@types/node": "24.10.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.20.6",
+		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	}
 }

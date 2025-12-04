@@ -14,7 +14,7 @@ interface Props {
 export default async function Page({ params }: Props) {
 	const { id } = await params;
 	return (
-		<RoleDetailContextProvider role_id={id}>
+		<RoleDetailContextProvider roleId={id}>
 			<RoleDetail />
 		</RoleDetailContextProvider>
 	);

@@ -2,11 +2,13 @@
 
 /* * */
 
+import { useOrganizationsContext } from '@/contexts/Organizations.context';
+import { useRolesContext } from '@/contexts/Roles.context';
 import { type UserNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
-import { useSearch } from '@tmlmobilidade/ui';
+import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
@@ -56,9 +58,13 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Setup variables
 
-	const [filterOrganizationIds, setFilterOrganizationIds] = useQueryState('organization_ids', { defaultValue: '', parse: value => value ? value.split(',') : [], serialize: value => value.join(',') });
-	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', { defaultValue: '', parse: value => value ? value.split(',') : [], serialize: value => value.join(',') });
+	const rolesContext = useRolesContext();
+	const organizationsContext = useOrganizationsContext();
+
+	const [filterOrganizationIds, setFilterOrganizationIds] = useQueryState('organization_ids', parseAsArrayOfStrings.withDefault(organizationsContext.data.raw.map(item => item._id)));
+	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', parseAsArrayOfStrings.withDefault(rolesContext.data.raw.map(item => item._id)));
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+
 	const pathname = usePathname();
 
 	const selectedId = useMemo(() => {
@@ -93,28 +99,26 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	}, [allUsersData]);
 
 	const searchResultsData = useSearch<UserNormalized>({
-		accessors: ['first_name_normalized', 'last_name_normalized'],
+		accessors: ['first_name_normalized', 'last_name_normalized', 'email'],
 		data: normalizedUsersData,
 		query: filterSearch,
 	});
 
-	const roleFilteredData = useMemo(() => {
-		// Skip if no role filter is applied
-		if (!filterRoleIds.length) return searchResultsData;
-		// Filter users by selected roles
-		return searchResultsData.filter(user =>
-			user.role_ids.some(roleId => filterRoleIds.includes(roleId)),
-		);
-	}, [searchResultsData, filterRoleIds]);
-
-	const organizationFilteredData = useMemo(() => {
-		// Skip if no organization filter is applied
-		if (!filterOrganizationIds.length) return roleFilteredData;
-		// Filter users by selected organizations
-		return roleFilteredData.filter(user =>
-			filterOrganizationIds.includes(user.organization_id),
-		);
-	}, [roleFilteredData, filterOrganizationIds]);
+	const filterResultsData = useMemo(() => {
+		// Skip if no data is available
+		if (!searchResultsData) return [];
+		// 1. Convert filter arrays to sets for O(1) membership checks
+		const organizationIdsSet = new Set(filterOrganizationIds);
+		const roleIdsSet = new Set(filterRoleIds);
+		return searchResultsData.filter((item: UserNormalized) => {
+			// Filter by organization_ids
+			if (!organizationIdsSet.has(item.organization_id)) return false;
+			// Filter by role_ids
+			if (!item.role_ids.some(roleId => roleIdsSet.has(roleId))) return false;
+			// Return true if all filters pass
+			return true;
+		});
+	}, [searchResultsData, filterOrganizationIds, filterRoleIds]);
 
 	//
 	// D. Define context value
@@ -126,7 +130,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 			setFilterSearch,
 		},
 		data: {
-			filtered: organizationFilteredData,
+			filtered: filterResultsData,
 			raw: allUsersData ?? [],
 			selectedId,
 		},
@@ -143,7 +147,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		allUsersData,
 		allUsersError,
 		allUsersLoading,
-		organizationFilteredData,
+		filterResultsData,
 		filterOrganizationIds,
 		filterRoleIds,
 		filterSearch,

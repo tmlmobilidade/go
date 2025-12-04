@@ -84,7 +84,7 @@ http {
 	upstream api_upstream {
 		least_conn;
 		zone api_upstream 64K;
-		server api:5050 max_fails=1 fail_timeout=3s;
+		server api:5050 max_fails=999 fail_timeout=3s;
 		keepalive 10;
 		keepalive_time 120s;
 		keepalive_timeout 10s;
@@ -93,10 +93,20 @@ http {
 	upstream frontend_upstream {
 		least_conn;
 		zone frontend_upstream 64K;
-		server frontend:3000 max_fails=1 fail_timeout=3s;
+		server frontend:3000 max_fails=999 fail_timeout=3s;
 		keepalive 10;
 		keepalive_time 120s;
 		keepalive_timeout 10s;
+	}
+
+
+	# # #
+	# WEBSOCKET SUPPORT
+	# More info: https://nginx.org/en/docs/http/websocket.html
+
+	map $http_upgrade $connection_upgrade {
+		default	upgrade;
+		''		close;
 	}
 
 
@@ -136,8 +146,8 @@ http {
 		# # #
 		# WebSocket support
 
-		proxy_set_header Connection "upgrade";
 		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection $connection_upgrade;
 
 
 		# # #

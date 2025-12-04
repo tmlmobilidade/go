@@ -81,7 +81,7 @@ env:
     plans:frontend
     plans:validator
 
-    replicator:enrich
+    replicator:organizer
     replicator:stream
     replicator:sync-apex-locations
     replicator:sync-apex-on-board-refunds
@@ -168,6 +168,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          
       - name: Install dependencies
         run: npm install --package-lock-only
 

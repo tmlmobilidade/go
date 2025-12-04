@@ -3,11 +3,11 @@
 /* * */
 
 import { ColorSwatch, Menu } from '@mantine/core';
-import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
 
+import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useNotificationsContext } from '../../../contexts/Notifications.context';
-import { AVAILABLE_MODES, AVAILABLE_THEMES, useThemeContext } from '../../../contexts/Theme.context';
 import { TopbarMenu } from '../TopbarMenu';
 
 /* * */
@@ -19,7 +19,7 @@ export function TopbarOptions() {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const themeContext = useThemeContext();
+	const layoutContext = useLayoutContext();
 	const notificationsContext = useNotificationsContext();
 
 	//
@@ -41,8 +41,8 @@ export function TopbarOptions() {
 						<Menu.Item
 							key={item._id}
 							leftSection={item.icon}
-							onClick={() => themeContext.actions.activateMode(item._id)}
-							rightSection={themeContext.data.active_mode === item._id ? <IconCheck size={16} /> : null}
+							onClick={() => layoutContext.actions.activateMode(item._id)}
+							rightSection={layoutContext.data.active_mode === item._id ? <IconCheck size={16} /> : null}
 						>
 							{item.name}
 						</Menu.Item>
@@ -61,14 +61,22 @@ export function TopbarOptions() {
 						<Menu.Item
 							key={item._id}
 							leftSection={<ColorSwatch color={item.primary_color} size={16} />}
-							onClick={() => themeContext.actions.activateTheme(item._id)}
-							rightSection={themeContext.data.active_theme === item._id ? <IconCheck size={16} /> : null}
+							onClick={() => layoutContext.actions.activateTheme(item._id)}
+							rightSection={layoutContext.data.active_theme === item._id ? <IconCheck size={16} /> : null}
 						>
 							{item.name}
 						</Menu.Item>
 					))}
 				</Menu.Sub.Dropdown>
 			</Menu.Sub>
+
+			<Menu.Item
+				leftSection={layoutContext.data.active_fullscreen ? <IconMinimize /> : <IconMaximize />}
+				onClick={() => layoutContext.actions.activateFullscreen()}
+				rightSection={layoutContext.data.active_fullscreen ? <IconCheck size={16} /> : null}
+			>
+				{layoutContext.data.active_fullscreen ? 'Sair do Fullscreen' : 'Entrar em Fullscreen'}
+			</Menu.Item>
 
 			<Menu.Divider />
 
