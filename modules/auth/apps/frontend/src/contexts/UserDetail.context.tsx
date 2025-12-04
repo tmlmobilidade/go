@@ -13,11 +13,6 @@ import useSWR from 'swr';
 
 /* * */
 
-export enum UsersDetailMode {
-	CREATE = 'create',
-	EDIT = 'edit',
-}
-
 interface UserDetailContextState {
 	actions: {
 		deleteUser: () => void
@@ -34,7 +29,6 @@ interface UserDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: UsersDetailMode
 	}
 }
 
@@ -81,50 +75,27 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 
 	const handleSaveUser = async () => {
 		setIsSaving(true);
-		const method = userId === 'new' ? 'POST' : 'PUT';
-		const url = userId === 'new' ? API_ROUTES.auth.USERS_LIST : API_ROUTES.auth.USERS_DETAIL(userId);
-		const response = await fetchData<User>(url, method, form.getValues());
-
+		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'PUT', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({
-					message: response.error,
-					title: 'Erro ao salvar utilizador',
-				});
+				useToast.error({ message: response.error, title: 'Erro ao salvar utilizador' });
 			}
 			else {
 				const errors = JSON.parse(response.error);
 				for (const error of errors) {
-					useToast.error({
-						message: error.message,
-						title: 'Erro ao salvar utilizador',
-					});
+					useToast.error({ message: error.message, title: 'Erro ao salvar utilizador' });
 				}
 			}
-
 			setIsSaving(false);
 			return;
 		}
-
-		useToast.success({
-			message: 'Utilizador salvo com sucesso',
-			title: 'Sucesso',
-		});
-
-		if (userId === 'new' && response.data?._id) {
-			router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
-		}
-
+		useToast.success({ message: 'Utilizador salvo com sucesso', title: 'Sucesso' });
 		meContext.mutate.me();
 		allUsersMutate();
-
 		setIsSaving(false);
 	};
 
 	const handleDeleteUser = async () => {
-		// Skip if new user
-		if (userId === 'new') return;
-		// Confirm deletion
 		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'DELETE', userData);
 		if (response.error) {
 			const errors = JSON.parse(response.error);
@@ -136,12 +107,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 			}
 			return;
 		}
-
-		useToast.success({
-			message: 'Utilizador apagado com sucesso',
-			title: 'Sucesso',
-		});
-
+		useToast.success({ message: 'Utilizador apagado com sucesso', title: 'Sucesso' });
 		router.replace(PAGE_ROUTES.auth.USERS_LIST);
 	};
 
@@ -196,7 +162,6 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 			isReadOnly,
 			isSaving,
 			loading: userLoading,
-			mode: userId === 'new' ? UsersDetailMode.CREATE : UsersDetailMode.EDIT,
 		},
 	}), [
 		form,

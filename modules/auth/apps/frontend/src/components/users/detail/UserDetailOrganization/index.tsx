@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-export function UsersDetailOrganization() {
+export function UserDetailOrganization() {
 	//
 
 	//

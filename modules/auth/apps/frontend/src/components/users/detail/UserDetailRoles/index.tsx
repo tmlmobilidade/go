@@ -8,14 +8,14 @@ import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function UsersDetailRoles() {
+export function UserDetailRoles() {
 	//
 
 	//
 	// A. Setup variables
 
 	const rolesContext = useRolesContext();
-	const usersDetailContext = useUserDetailContext();
+	const userDetailContext = useUserDetailContext();
 
 	//
 	// B. Transform data
@@ -32,11 +32,11 @@ export function UsersDetailRoles() {
 		<Section>
 			<Grid columns="a" gap="md">
 				<MultiSelect
-					key={usersDetailContext.data.form.key('role_ids')}
+					key={userDetailContext.data.form.key('role_ids')}
 					data={availableRoles}
 					label="Roles"
 					placeholder="Selecione uma opção..."
-					{...usersDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
+					{...userDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>
 		</Section>

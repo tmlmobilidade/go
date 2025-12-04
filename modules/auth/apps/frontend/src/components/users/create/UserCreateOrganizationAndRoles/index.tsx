@@ -3,20 +3,23 @@
 /* * */
 
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
+import { useRolesContext } from '@/contexts/Roles.context';
 import { useUserCreateContext } from '@/contexts/UserCreate.context';
-import { Grid, Section, Select } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function UserCreateOrganization() {
+export function UserCreateOrganizationAndRoles() {
 	//
 
 	//
 	// A. Setup variables
 
-	const userCreateContext = useUserCreateContext();
+	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
+
+	const userCreateContext = useUserCreateContext();
 
 	//
 	// B. Transform data
@@ -28,6 +31,14 @@ export function UserCreateOrganization() {
 			value: organization._id,
 		}));
 	}, [organizationsContext.data.raw]);
+
+	const availableRoles = useMemo(() => {
+		if (!rolesContext.data?.raw) return [];
+		return rolesContext.data.raw.map(role => ({
+			label: role.name,
+			value: role._id,
+		}));
+	}, [rolesContext.data.raw]);
 
 	//
 	// C. Render components
@@ -42,6 +53,13 @@ export function UserCreateOrganization() {
 					label="Organização"
 					required
 					{...userCreateContext.data.form.getInputProps('organization_id')}
+				/>
+				<MultiSelect
+					key={userCreateContext.data.form.key('role_ids')}
+					data={availableRoles}
+					label="Roles"
+					placeholder="Selecione uma opção..."
+					{...userCreateContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>
 		</Section>

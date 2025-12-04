@@ -4,8 +4,7 @@
 
 import { UserCreateBasicInfo } from '@/components/users/create/UserCreateBasicInfo';
 import { UserCreateHeader } from '@/components/users/create/UserCreateHeader';
-import { UserCreateOrganization } from '@/components/users/create/UserCreateOrganization';
-import { UserCreateRoles } from '@/components/users/create/UserCreateRoles';
+import { UserCreateOrganizationAndRoles } from '@/components/users/create/UserCreateOrganizationAndRoles';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Divider, FormModal, keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -38,8 +37,7 @@ export function UserCreate() {
 		>
 			<UserCreateBasicInfo />
 			<Divider />
-			<UserCreateOrganization />
-			<UserCreateRoles />
+			<UserCreateOrganizationAndRoles />
 		</FormModal>
 	);
 
