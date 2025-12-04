@@ -21,10 +21,10 @@
 		"@tmlmobilidade/utils": "*",
 		"clsx": "2.1.1",
 		"luxon": "3.7.2",
-		"next": "16.0.6",
+		"next": "16.0.7",
 		"nuqs": "2.8.2",
-		"react": "19.2.0",
-		"react-dom": "19.2.0",
+		"react": "19.2.1",
+		"react-dom": "19.2.1",
 		"react-viewport-list": "7.1.2",
 		"swr": "2.3.7"
 	},

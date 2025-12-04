@@ -33,7 +33,7 @@
 		"@tmlmobilidade/consts": "20251202.1817.5",
 		"@tmlmobilidade/types": "20251202.1817.5",
 		"chalk": "5.6.2",
-		"dotenv": "16.4.7",
+		"dotenv": "17.2.3",
 		"mongodb": "7.0.0"
 	},
 	"devDependencies": {
