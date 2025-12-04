@@ -20,7 +20,6 @@ interface FormModalProps {
 
 	/**
 	 * Indicates whether the modal is open or closed.
-	 * @default true
 	 */
 	isOpen?: boolean
 
@@ -33,7 +32,7 @@ interface FormModalProps {
 
 /* * */
 
-export function FormModal({ children, header, isOpen = true, onClose }: PropsWithChildren<FormModalProps>) {
+export function FormModal({ children, header, isOpen, onClose }: PropsWithChildren<FormModalProps>) {
 	return (
 		<Modal
 			closeOnClickOutside={false}

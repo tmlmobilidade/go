@@ -5,9 +5,8 @@
 import { UserCreateBasicInfo } from '@/components/users/create/UserCreateBasicInfo';
 import { UserCreateHeader } from '@/components/users/create/UserCreateHeader';
 import { UserCreateOrganizationAndRoles } from '@/components/users/create/UserCreateOrganizationAndRoles';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Divider, FormModal, keepUrlParams } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useUserCreateContext } from '@/contexts/UserCreate.context';
+import { Divider, FormModal } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,25 +14,18 @@ export function UserCreate() {
 	//
 
 	//
-	// C. Setup variables
+	// A. Setup variables
 
-	const router = useRouter();
-
-	//
-	// C. Handle actions
-
-	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.USERS_LIST, window.location.search);
-		router.push(destUrl);
-	};
+	const userCreateContext = useUserCreateContext();
 
 	//
 	// C. Render components
 
 	return (
 		<FormModal
-			header={[<UserCreateHeader onClose={handleClose} />]}
-			onClose={handleClose}
+			header={[<UserCreateHeader onClose={userCreateContext.modal.close} />]}
+			isOpen={userCreateContext.modal.state}
+			onClose={userCreateContext.modal.close}
 		>
 			<UserCreateBasicInfo />
 			<Divider />

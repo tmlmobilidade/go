@@ -23,6 +23,11 @@ interface UserCreateContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 	}
+	modal: {
+		close: () => void
+		open: () => void
+		state: boolean
+	}
 }
 
 /* * */
@@ -49,6 +54,7 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
+	const [modalState, setModalState] = useState(false);
 
 	//
 	// B. Fetch data
@@ -103,8 +109,14 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 			isReadOnly,
 			isSaving,
 		},
+		modal: {
+			close: () => setModalState(false),
+			open: () => setModalState(true),
+			state: modalState,
+		},
 	}), [
 		form,
+		modalState,
 		isReadOnly,
 		isSaving,
 	]);
