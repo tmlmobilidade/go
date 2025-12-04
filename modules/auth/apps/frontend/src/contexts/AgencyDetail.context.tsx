@@ -71,6 +71,12 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	// C. Setup form
 
 	const form = useForm<UpdateAgencyDto>({
+		initialValues: {
+			financials: {
+				price_per_km: 0,
+				vkm_per_month: Array(12).fill(0),
+			},
+		},
 		validate: zodResolver(UpdateAgencySchema) as unknown as FormValidateInput<UpdateAgencyDto>,
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
