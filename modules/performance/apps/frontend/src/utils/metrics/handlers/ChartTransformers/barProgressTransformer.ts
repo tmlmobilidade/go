@@ -46,7 +46,7 @@ export function transformToProgressBar(
 						break;
 
 					case 'monthly':
-						dateMap[date] = { month: formatMonth(date) };
+						dateMap[date] = { month: formatMonth(date), month_index: new Date(date).getMonth() };
 						break;
 				}
 			}

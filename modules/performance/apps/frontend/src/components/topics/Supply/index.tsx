@@ -17,11 +17,11 @@ export default function SupplyTopic() {
 	//
 	// A. Setup variables
 
-	const [timeView, setTimeView] = useState<'annual' | 'daily' | 'monthly'>('daily');
+	const [timeView, setTimeView] = useState<'annual' | 'daily' | 'monthly'>('monthly');
 	const [agencyIds, setAgencyIds] = useState<AgencyType[]>([]);
 
-	const [startDate, setStartDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').minus({ days: 7 }));
-	const [endDate, setEndDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').minus({ days: 1 }));
+	const [startDate, setStartDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').set({ day: 1, month: 1 }));
+	const [endDate, setEndDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').set({ day: 31, month: 12 }));
 
 	//
 	// B. Transform data

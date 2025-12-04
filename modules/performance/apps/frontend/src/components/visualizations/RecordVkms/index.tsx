@@ -2,6 +2,7 @@
 
 import { RecordCard } from '@/components/layout/RecordCard';
 import { AgencyType } from '@/constants';
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { filterDataByAgencies } from '@/utils/metrics/handlers/ChartTransformers';
 import { buildMetricUrl } from '@/utils/metrics/handlers/MetricRouteResolver';
 import { RawMetricData } from '@/utils/metrics/types/metricData';
@@ -23,14 +24,10 @@ interface Filters {
 export default function RecordSupply({ filters, timeView }: { filters: Filters, timeView: 'annual' | 'daily' | 'monthly' }) {
 	//
 
+	//
 	// A. Setup variables
 
-	const vkms_contracted = {
-		41: 28_527_689,
-		42: 25_799_790,
-		43: 19_004_512,
-		44: 15_128_877,
-	};
+	const agenciesContext = useAgenciesContext();
 
 	//
 	// B. Fetch data
@@ -80,8 +77,18 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 		};
 	}, [data, filters]);
 
-	const vkmsContracted = Object.values(vkms_contracted).reduce((a, b) => a + b, 0);
+	const vkmsContracted = useMemo(() => {
+		const selectedAgencies = filters?.agencyIds?.includes('all' as AgencyType) || !filters?.agencyIds
+			? agenciesContext.data.agencies
+			: agenciesContext.data.agencies.filter(agency => filters.agencyIds?.includes(agency.id));
 
+		return selectedAgencies.reduce((total, agency) => {
+			const contractedVkms = agency.financials?.vkm_per_month?.reduce((sum, vkms) => sum + vkms, 0) || 0;
+			return total + contractedVkms;
+		}, 0);
+	}, [agenciesContext.data.agencies, filters?.agencyIds]);
+
+	//
 	// E. Render components
 
 	if (isLoading) {
@@ -116,12 +123,12 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 				<Grid columns="abc" gap="lg">
 					<RecordCard
 						description="no período selecionado"
-						title="Vkms contratados"
+						title="Vkms referência"
 						value={vkmsContracted}
 					/>
 					<RecordCard
 						description={`de ${transformedRecordData.scheduledRides.toLocaleString('pt-PT')} viagens`}
-						title="Vkms previstos"
+						title="Vkms planeados"
 						totalValue={vkmsContracted}
 						value={transformedRecordData.vmksScheduled}
 					/>

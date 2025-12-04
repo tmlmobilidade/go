@@ -6,7 +6,7 @@ import { generateColors } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/dates';
-import { BarChart, MetricsSkeleton } from '@tmlmobilidade/ui';
+import { CompositeChart, CompositeChartSeries, MetricsSkeleton } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -17,6 +17,7 @@ interface ProgressBarChartProps {
 	data: ProgressBarResult
 	endDate: Dates
 	height?: number
+	referenceVariable?: string
 	startDate: Dates
 	style?: React.CSSProperties
 	timeView: 'annual' | 'daily' | 'monthly'
@@ -25,7 +26,7 @@ interface ProgressBarChartProps {
 
 /* * */
 
-export function ProgressBarChart({ data, height, style, timeView }: ProgressBarChartProps) {
+export function ProgressBarChart({ data, height, referenceVariable, style, timeView }: ProgressBarChartProps) {
 	//
 
 	// A. Setup variables
@@ -43,34 +44,36 @@ export function ProgressBarChart({ data, height, style, timeView }: ProgressBarC
 		};
 	}, [timeView]);
 
-	const colors = generateColors(data.series);
+	const colors = generateColors(data?.series);
 
-	const series = data.series.map(valueType => ({
-		color: valueType === 'achieved' ? 'url(#achievedStripes)' : colors[valueType],
+	const series = data?.series?.map(valueType => ({
+		color: valueType === 'achieved' ? colors[valueType] : 'url(#achievedStripes)',
 		label: valueType === 'achieved' ? 'Executado' : 'Planeado',
 		name: valueType,
+		type: 'bar',
 	}));
+
+	// Add reference line if applicable
+	if (referenceVariable) series.push({
+		color: 'var(--color-secondary)',
+		label: referenceVariable,
+		name: 'reference',
+		type: 'line',
+	});
 
 	//
 	// C. Render components
-
-	const bigBarWidth = 100; // make this dynamic
-	const ratio = 0.5;
-	const smallBarWidth = bigBarWidth * ratio;
-	const barGap = (bigBarWidth + smallBarWidth) / -2;
 
 	return (
 		<div style={{ width: '100%', ...style }}>
 			{data.chart.length > 0 ? (
 				<div className={styles.fadeIn}>
-					<BarChart
-						// barChartProps={{ barGap: barGap }}
-						// barProps={data => ({ barSize: data.name === 'total' ? bigBarWidth : smallBarWidth })}
+					<CompositeChart
 						data={data.chart}
 						dataKey={dataKey}
 						h={height || 200}
 						legendProps={{ verticalAlign: 'bottom' }}
-						series={series}
+						series={series as CompositeChartSeries[]}
 						valueFormatter={v => v.toLocaleString('pt-PT')}
 						withLegend={true}
 						withXAxis={true}
@@ -92,7 +95,7 @@ export function ProgressBarChart({ data, height, style, timeView }: ProgressBarC
 								/>
 							</pattern>
 						</defs>
-					</BarChart>
+					</CompositeChart>
 				</div>
 			) : (
 				<div style={{ height: height || 200 }}>

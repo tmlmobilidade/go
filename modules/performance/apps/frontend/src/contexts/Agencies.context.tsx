@@ -13,7 +13,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface Agency {
+interface Agency extends APIAgency {
 	id: AgencyType
 	label: string
 }
@@ -115,6 +115,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		return allAgenciesData
 			.filter(agency => targetAgencies.includes(agency._id as AgencyType))
 			.map(agency => ({
+				...agency,
 				id: agency._id as AgencyType,
 				label: t(`agencies.${agency._id}`),
 			}));
@@ -135,7 +136,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 			result.push({
 				id: 'all' as AgencyType,
 				label: t('agencies.all'),
-			});
+			} as Agency);
 		}
 
 		return [...result, ...agenciesWithStatus];

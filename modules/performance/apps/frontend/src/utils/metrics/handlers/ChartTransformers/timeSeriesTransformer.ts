@@ -47,6 +47,7 @@ export function transformToTimeSeries(
 					case 'monthly':
 						dateMap[date] = {
 							month: formatMonth(date),
+							month_index: new Date(date).getMonth(),
 							qty: 0,
 						} as MonthlyDataPoint;
 						break;

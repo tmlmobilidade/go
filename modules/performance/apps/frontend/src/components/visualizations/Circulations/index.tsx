@@ -42,7 +42,7 @@ export function Circulations({
 	height,
 	isInsideFrame = true,
 	timeView,
-	title = 'Circulações previstas vs realizadas',
+	title = 'Circulações planeadas vs executadas',
 }: DemandVisualizationProps) {
 	//
 
