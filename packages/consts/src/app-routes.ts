@@ -82,14 +82,14 @@ export const PAGE_ROUTES = Object.freeze({
 		// AREAS_2
 		AREAS_2_LIST: `${getAppConfig('performance', 'frontend_url')}/areas/2`,
 
-		// SUPPLY_DEMAND_DEMAND_BY
-		SUPPLY_DEMAND_DEMAND_BY_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand/demand-by`,
+		// DEMAND_DEMAND_BY
+		DEMAND_DEMAND_BY_LIST: `${getAppConfig('performance', 'frontend_url')}/demand/demand-by`,
 
-		// SUPPLY_DEMAND
-		SUPPLY_DEMAND_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand`,
+		// DEMAND
+		DEMAND_LIST: `${getAppConfig('performance', 'frontend_url')}/demand`,
 
-		// SUPPLY_DEMAND_OCCUPANCY_RATE
-		SUPPLY_DEMAND_OCCUPANCY_RATE_LIST: `${getAppConfig('performance', 'frontend_url')}/supply-demand/occupancy-rate`,
+		// SUPPLY
+		SUPPLY_LIST: `${getAppConfig('performance', 'frontend_url')}/supply`,
 	},
 
 	/* * */
