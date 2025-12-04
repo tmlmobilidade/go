@@ -28,7 +28,15 @@
 .input {
 	display: flex;
 	align-items: center;
+	background-color: transparent;
 	border: none;
+}
+
+/* * */
+/* DROPDOWN */
+
+.dropdown {
+	background-color: var(--color-system-background-200);
 }
 
 /* * */

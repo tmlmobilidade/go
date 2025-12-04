@@ -16,7 +16,7 @@
 	font-weight: var(--font-weight-regular);
 	line-height: 1;
 	color: var(--color-system-text-100);
-	background-color: var(--color-system-background-100);
+	background-color: transparent;
 	border: 2px solid var(--color-system-border-100);
 	border-radius: 5px;
 	transition: all 200ms ease-in-out;
@@ -44,6 +44,12 @@
 	padding-right: calc(var(--size-spacing-sm) + 30px);
 }
 
+/* * */
+/* DROPDOWN */
+
+.dropdown {
+	background-color: var(--color-system-background-200);
+}
 
 /* * */
 /* SECTION */

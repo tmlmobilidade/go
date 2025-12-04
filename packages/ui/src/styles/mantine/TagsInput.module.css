@@ -31,7 +31,15 @@
 	align-items: center;
 	justify-content: flex-start;
 	margin: 0;
+	background-color: transparent;
 	border: none;
+}
+
+/* * */
+/* DROPDOWN */
+
+.dropdown {
+	background-color: var(--color-system-background-200);
 }
 
 /* * */
