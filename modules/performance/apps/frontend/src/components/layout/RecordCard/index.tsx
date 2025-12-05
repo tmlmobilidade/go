@@ -51,7 +51,7 @@ export function RecordCard({
 					{isLoading ? <Skeleton height={50} width="50%" /> : (
 						<AnimatedNumber className={styles.value} isPercentage={valueIsPercentage} value={value} />
 					)}
-					{totalValue && <IndicatorChip goal="decrease" targetValue={100} totalValue={totalValue} value={value} />}
+					{totalValue > 0 && <IndicatorChip goal="decrease" targetValue={100} totalValue={totalValue} value={value} />}
 				</div>
 
 				{description && (
