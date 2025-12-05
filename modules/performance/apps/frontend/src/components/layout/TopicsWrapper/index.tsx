@@ -17,6 +17,8 @@ export default function TopicsWrapper({ children, topic }: { children?: React.Re
 		{ href: topic.key, title: topic.label },
 	];
 
+	const hasDashboards = topic.dashboards.filter(dashboard => dashboard.visible).length > 0;
+
 	// B. Render components
 
 	return (
@@ -37,10 +39,13 @@ export default function TopicsWrapper({ children, topic }: { children?: React.Re
 
 			{children}
 
-			<Divider />
-
-			<h2>Dashboards</h2>
-			<Dashboards topic={topic} />
+			{hasDashboards && (
+				<>
+					<Divider />
+					<h2>Dashboards</h2>
+					<Dashboards topic={topic} />
+				</>
+			)}
 		</div>
 	);
 }

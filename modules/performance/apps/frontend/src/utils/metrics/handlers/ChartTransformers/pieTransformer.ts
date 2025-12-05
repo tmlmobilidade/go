@@ -3,15 +3,15 @@
  * Handles pie charts with breakdown aggregation
  */
 
-import type { DemandMetricItem, PieResult } from '@/utils/metrics/types';
+import type { PieResult, RawMetricData } from '@/utils/metrics/types';
 
 import { calculateBreakdownTotals, generateColors, getTopBreakdowns } from '@/utils/metrics/utils';
 
 /* * */
 
-export function transformToPie(data: DemandMetricItem[], breakdownKey: string, topN = 10): PieResult {
+export function transformToPie(data: RawMetricData[], breakdownKey: string, topN = 10, quantityKey = 'qty'): PieResult {
 	// Aggregate breakdown totals across all data points
-	const breakdownTotals = calculateBreakdownTotals(data, breakdownKey);
+	const breakdownTotals = calculateBreakdownTotals(data, breakdownKey, quantityKey);
 
 	// Get top N breakdowns and calculate others
 	const { otherItems, topItems } = getTopBreakdowns(breakdownTotals, topN);

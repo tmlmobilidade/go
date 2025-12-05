@@ -1,12 +1,14 @@
 import { DemandByAgencyByDayByProductSchema, DemandByAgencyByDaySchema, DemandByAgencyByMonthSchema, DemandByAgencyByYearSchema, DemandByCategoryByAgencyByDaySchema, DemandByCategoryByAgencyByMonthSchema, DemandByCategoryByAgencyByYearSchema, DemandByCategoryByLineByDaySchema, DemandByCategoryByLineByMonthSchema, DemandByCategoryByLineByYearSchema, DemandByCategoryByPatternByDaySchema, DemandByCategoryByPatternByMonthSchema, DemandByCategoryByPatternByYearSchema, DemandByLineByDaySchema, DemandByLineByMonthSchema, DemandByLineByYearSchema, DemandByPatternByDaySchema, DemandByPatternByMonthSchema, DemandByPatternByYearSchema, DemandByPatternHourByDaySchema, DemandByPatternHourByMonthSchema, DemandByPatternHourByYearSchema, DemandByProductByAgencyByDaySchema, DemandByProductByAgencyByMonthSchema, DemandByProductByAgencyByYearSchema, DemandByProductByLineByDaySchema, DemandByProductByLineByMonthSchema, DemandByProductByLineByYearSchema, DemandByProductByPatternByDaySchema, DemandByProductByPatternByMonthSchema, DemandByProductByPatternByYearSchema, MeanDemandByLineByMonthSchema, TopDemandByAgencyByDayTypeSchema, TopDemandByAgencySchema, TopLines30DayPerformanceSchema, TopMeanDemandByLineByMonthSchema } from '@/metrics/demand/index.js';
 import { z } from 'zod';
 
-import { RealtimeDemandSchema, RealtimeServiceComplianceSchema } from './realtime.js';
+import { RealtimeDemandSchema, RealtimeServiceComplianceSchema } from './realtime/index.js';
+import { SupplyByAgencyByDaySchema, SupplyByAgencyByMonthSchema, SupplyByAgencyByYearSchema } from './supply/supply_by_agency.js';
 
 /* * */
 
 export * from './demand/index.js';
-export * from './realtime.js';
+export * from './realtime/index.js';
+export * from './supply/index.js';
 
 /* * */
 
@@ -50,6 +52,9 @@ export const MetricSchema = z.discriminatedUnion('metric', [
 	RealtimeServiceComplianceSchema,
 	TopDemandByAgencyByDayTypeSchema,
 	TopLines30DayPerformanceSchema,
+	SupplyByAgencyByDaySchema,
+	SupplyByAgencyByMonthSchema,
+	SupplyByAgencyByYearSchema,
 ]);
 
 /* * */

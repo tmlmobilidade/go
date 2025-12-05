@@ -77,7 +77,7 @@ export const syncDemandByProductByPatternByDay = async () => {
 	//
 	// Set max concurrent queries and batch processing
 
-	const limit = pLimit(10);
+	const limit = pLimit(5); // Reduce concurrent queries
 	const BATCH_SIZE = 50; // Process chunks in smaller batches
 	const FLUSH_THRESHOLD = 10000; // Flush to DB when we have this many combinations
 
