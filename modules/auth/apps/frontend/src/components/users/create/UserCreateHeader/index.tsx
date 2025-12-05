@@ -4,7 +4,7 @@
 
 import { useUserCreateContext } from '@/contexts/UserCreate.context';
 import { IconPlus } from '@tabler/icons-react';
-import { BackButton, Button, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -28,7 +28,7 @@ export function UserCreateHeader({ onClose }: UserCreateHeaderProps) {
 	return (
 		<Toolbar>
 			<BackButton onClick={onClose} type="close" />
-			<Label size="lg" singleLine>Novo Utilizador</Label>
+			<Tag label="Novo Utilizador" variant="secondary" />
 			<Spacer />
 			<Button
 				disabled={!userCreateContext.data.form.isValid()}
