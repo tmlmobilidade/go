@@ -30,18 +30,6 @@ export function RoleCreate() {
 			onClose={rolesCreateContext.modal.close}
 		>
 			<RoleCreateBasicInfo />
-			{permissionsConfig.map(item => (
-				<PermissionSection
-					key={item.scope}
-					configActions={item.actions}
-					description={item.description}
-					enabledPermissions={rolesCreateContext.data.form.values.permissions}
-					onResourceToggle={rolesCreateContext.actions.handlePermissionResourceToggle}
-					onToggle={rolesCreateContext.actions.handlePermissionToggle}
-					scope={item.scope}
-					title={item.title}
-				/>
-			))}
 		</FormModal>
 	);
 
