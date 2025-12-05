@@ -1,10 +1,12 @@
 /* * */
 
+import { LiveIcon } from '@/components/layout/LiveIcon';
 import { TrendChip } from '@/components/layout/TrendChip';
+import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { Routes } from '@/routes';
 import { Center, Skeleton, Table, Text } from '@mantine/core';
 import { type TopLines30DayPerformance } from '@tmlmobilidade/types';
-import { Section, Surface } from '@tmlmobilidade/ui';
+import { Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -88,9 +90,12 @@ export default function TopLinesTable() {
 	};
 
 	return (
-		<Surface overflow="visible">
-			<Section gap="md" padding="md">
-				<h3>Performance das Linhas (Últimos 30 Dias)</h3>
+		<VisualizationWrapper>
+			<Section gap="md" padding="none">
+				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
+					<h3>Performance das Linhas (Últimos 30 Dias)</h3>
+					<LiveIcon updatedAt={topLinesArray?.[0]?.generated_at} />
+				</Section>
 
 				{isLoading || !topLinesArray?.length ? (
 					<Skeleton height={300} />
@@ -125,7 +130,7 @@ export default function TopLinesTable() {
 					</Table>
 				)}
 			</Section>
-		</Surface>
+		</VisualizationWrapper>
 	);
 }
 

@@ -50,7 +50,7 @@ export function MetricCard({
 							<span className={styles.value}>
 								{value.toLocaleString()}
 							</span>
-							{previousValue && (
+							{previousValue > 0 && (
 								<TrendChip goal={goal} previousValue={previousValue} value={value} />
 							)}
 						</>

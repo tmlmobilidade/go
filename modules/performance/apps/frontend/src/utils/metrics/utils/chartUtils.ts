@@ -6,6 +6,7 @@
  * Generate colors for chart series
  */
 export function generateColors(items: string[]): Record<string, string> {
+	if (!items) return {};
 	const colors: Record<string, string> = {};
 	const chartColors = [
 		'var(--chart-color-1)',

@@ -14,7 +14,7 @@ import styles from './style.module.css';
 interface Props {
 	className?: string
 	color?: string
-	updatedAt?: Date
+	updatedAt?: Date | string
 }
 
 /* * */
@@ -36,7 +36,8 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 
 		const now = DateTime.now();
 
-		const updated = DateTime.fromJSDate(updatedAt).setZone('Europe/Lisbon');
+		const updatedAtDate = typeof updatedAt === 'string' ? new Date(updatedAt) : updatedAt;
+		const updated = DateTime.fromJSDate(updatedAtDate).setZone('Europe/Lisbon');
 
 		const diffInMinutes = Math.floor(now.diff(updated, 'minutes').minutes);
 
