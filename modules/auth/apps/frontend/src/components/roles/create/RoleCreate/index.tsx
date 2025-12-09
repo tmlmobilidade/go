@@ -2,10 +2,7 @@
 
 /* * */
 
-import { PermissionSection } from '@/components/permissions/PermissionSection';
 import { useRoleCreateContext } from '@/contexts/RoleCreate.context';
-import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
-import { permissionsConfig } from '@/lib/permissions';
 import { FormModal } from '@tmlmobilidade/ui';
 
 import { RoleCreateBasicInfo } from '../RoleCreateBasicInfo';
