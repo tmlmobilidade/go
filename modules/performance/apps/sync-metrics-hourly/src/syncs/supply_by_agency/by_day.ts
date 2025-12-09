@@ -49,8 +49,8 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	const earliestDataNeeded = Dates.now('Europe/Lisbon').set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 1, second: 0, year: 2024 });
 
-	// Count until end of the current year - change this
-	const latest = Dates.now('Europe/Lisbon').set({ day: 1, hour: 3, millisecond: 0, minute: 59, month: 1, second: 59, year: 2026 });
+	const latestOperationalData = (await ridesCollection.findOne({}, { sort: { operational_date: -1 } })).operational_date;
+	const latest = Dates.fromOperationalDate(latestOperationalData, 'Europe/Lisbon').set({ hour: 4, millisecond: 0, minute: 0, second: 0 }).plus({ days: 1 });
 
 	const allTimestampChunks: { operationalDate: string, start: number }[] = [];
 	let cursor = earliestDataNeeded;

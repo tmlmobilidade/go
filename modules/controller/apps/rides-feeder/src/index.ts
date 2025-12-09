@@ -2,7 +2,6 @@
 
 import { cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
-import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -37,34 +36,45 @@ async function main() {
 				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.gtfs_agency.agency_id} - Plan ${currentPlan._id}`);
 
 				//
-				// Validate the Plan data before processing
+				// Only process Plans for specific agency IDs
 
-				const isValidPlan = validatePlan(currentPlan);
-				if (!isValidPlan) {
-					await plans.updateById(currentPlan._id, {
-						apps: {
-							...currentPlan.apps,
-							controller: {
-								last_hash: null,
-								status: 'skipped',
-								timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-							},
-						},
-					});
+				if (!['41', '42', '43', '44'].includes(currentPlan.gtfs_agency?.agency_id)) {
+					Logger.error(`Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '41', '42', '43', or '44' are allowed.`);
+					await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'skipped', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+					continue;
+				}
+
+				//
+				// If the hash is the same continue
+				// as it means the plan did not change since last run
+
+				if (currentPlan.hash === currentPlan.apps?.controller?.last_hash) {
+					Logger.error(`Skip processing: Hash is the same as last_hash.`);
+					continue;
+				}
+
+				//
+				// Skip if its status is 'error'
+
+				if (currentPlan.apps?.controller?.status === 'error') {
+					Logger.error(`Skip processing: status_controller is 'error'.`);
+					continue;
+				}
+
+				//
+				// Mark as error if it does not have an associated operation file
+
+				if (!currentPlan.operation_file_id) {
+					Logger.error(`Skip processing: No operation file found.`);
+					await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+					continue;
 				}
 
 				//
 				// At this point, the plan will be processed.
 				// Mark it as 'processing' to prevent multiple concurrent runs.
 
-				await plans.updateById(currentPlan._id, {
-					apps: {
-						...currentPlan.apps,
-						controller: {
-							...currentPlan.apps.controller,
-							status: 'processing',
-						} },
-				});
+				await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { ...currentPlan.apps.controller, status: 'processing' } } });
 
 				Logger.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
 				Logger.spacer(1);
@@ -77,16 +87,7 @@ async function main() {
 				//
 			}
 			catch (error) {
-				await plans.updateById(currentPlan._id, {
-					apps: {
-						...currentPlan.apps,
-						controller: {
-							last_hash: null,
-							status: 'error',
-							timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-						},
-					},
-				});
+				await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
 				Logger.error(`Error processing plan ${currentPlan._id}`, error);
 				Logger.divider();
 			}

@@ -169,6 +169,7 @@ db.createRole({
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_apex_on_board_refunds', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_apex_on_board_sales', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_vehicle_events', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'metrics', db: 'production' } },
 	],
