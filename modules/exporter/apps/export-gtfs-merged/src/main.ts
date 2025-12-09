@@ -89,13 +89,6 @@ export async function main() {
 	Logger.info(`Found ${allPlansData.length} Plans to process...`);
 
 	//
-	// Mark as plans as 'waiting' in the database.
-
-	for (const planData of allPlansData) {
-		await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
-	}
-
-	//
 	// Hash the allPlansData response and check if it differs
 	// from the last processed hash stored in memory. This way,
 	// if no Plans were changed/added/removed since the last export,
@@ -111,6 +104,13 @@ export async function main() {
 	}
 
 	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
+
+	//
+	// Mark as plans as 'waiting' in the database.
+
+	for (const planData of allPlansData) {
+		await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+	}
 
 	//
 	// For each plan, validate it and import its GTFS into
