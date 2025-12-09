@@ -1,9 +1,9 @@
 'use client';
 
-import { CHANGE_PLAN_MODAL_ID } from '@/components/plans/detail/ChangePlanModal';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 /* * */
 
+import { CHANGE_PLAN_MODAL_ID } from '@/components/plans/detail/ChangePlanModal';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { GtfsValidation, type Plan } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -47,6 +47,7 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 
 	//
 	// A. Setup variables
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedValidation, setSelectedValidation] = useState<GtfsValidation | undefined>(undefined);
 	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>(API_ROUTES.plans.VALIDATIONS_LIST);
@@ -56,7 +57,7 @@ export const ChangePlanContextProvider = ({ children, plan }: PropsWithChildren<
 
 	const availableValidations = useMemo(() => {
 		if (!allValidationsData) return [];
-		return allValidationsData.filter(item => item.gtfs_agency.agency_id === plan?.gtfs_agency.agency_id);
+		return allValidationsData.filter(item => item.gtfs_agency.agency_id === plan?.gtfs_agency.agency_id && item.feeder_status === 'complete');
 	}, [allValidationsData, plan]);
 
 	//
