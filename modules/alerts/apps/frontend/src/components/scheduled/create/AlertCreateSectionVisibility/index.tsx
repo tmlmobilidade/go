@@ -7,7 +7,7 @@ import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AlertDetailSectionVisibility() {
+export function AlertCreateSectionVisibility() {
 	//
 
 	//

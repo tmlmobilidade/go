@@ -45,7 +45,7 @@ export function AlertDetailSectionReferences() {
 			<Section gap="md">
 				<MultiSelect
 					data={municipalitiesOptions}
-					description="Selecione os munícios que serão afetados pelo alerta"
+					description="Selecione os municípios que serão afetados pelo alerta"
 					label="Municípios Afetados"
 					onChange={ids => alertDetailContext.data.form.setFieldValue('municipality_ids', ids)}
 					value={alertDetailContext.data.form.values.municipality_ids}

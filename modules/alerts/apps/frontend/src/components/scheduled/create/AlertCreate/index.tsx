@@ -3,13 +3,13 @@
 /* * */
 
 import { AlertCreateHeader } from '@/components/scheduled/create/AlertCreateHeader';
+import { AlertCreateSectionCauseEffect } from '@/components/scheduled/create/AlertCreateSectionCauseEffect';
+import { AlertCreateSectionReferences } from '@/components/scheduled/create/AlertCreateSectionReferences';
+import { AlertCreateSectionTitle } from '@/components/scheduled/create/AlertCreateSectionTitle';
+import { AlertCreateSectionValidity } from '@/components/scheduled/create/AlertCreateSectionValidity';
+import { AlertCreateSectionVisibility } from '@/components/scheduled/create/AlertCreateSectionVisibility';
 import { useAlertCreateContext } from '@/contexts/AlertCreate.context';
 import { FormModal } from '@tmlmobilidade/ui';
-
-import { AlertCreateSectionCauseEffect } from '../AlertCreateSectionCauseEffect';
-import { AlertCreateSectionReferences } from '../AlertCreateSectionReferences';
-import { AlertCreateSectionTitle } from '../AlertCreateSectionTitle';
-import { AlertCreateSectionValidity } from '../AlertCreateSectionValidity';
 
 /* * */
 
@@ -31,10 +31,11 @@ export function AlertCreate() {
 			onClose={alertCreateContext.modal.close}
 		>
 			<AlertCreateSectionTitle />
+			<AlertCreateSectionVisibility />
 			<AlertCreateSectionValidity />
 			<AlertCreateSectionCauseEffect />
 			<AlertCreateSectionReferences />
-			<AlertCreateSectionValidity />
+
 		</FormModal>
 	);
 
