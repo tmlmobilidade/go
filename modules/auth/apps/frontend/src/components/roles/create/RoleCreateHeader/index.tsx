@@ -30,7 +30,7 @@ export function RoleCreateHeader({ onClose }: RoleCreateHeaderProps) {
 			<Label size="lg" singleLine>{roleCreateContext.data.form.values.name}</Label>
 			<Spacer />
 			<Button
-				disabled={!roleCreateContext.data.form.isValid()}
+				disabled={!roleCreateContext.data.form.values.name}
 				icon={<IconUpload size={28} />}
 				label="Criar"
 				loading={roleCreateContext.flags.isSaving}

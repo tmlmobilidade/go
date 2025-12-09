@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateRoleDto, CreateRoleSchema, PermissionSchema, Role } from '@tmlmobilidade/types';
+import { CreateRoleDto, CreateRoleSchema, Role } from '@tmlmobilidade/types';
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -14,8 +14,6 @@ import useSWR from 'swr';
 
 interface RoleCreateContextState {
 	actions: {
-		handlePermissionResourceToggle: (scope: string, action: string, resource: Record<string, unknown>) => void
-		handlePermissionToggle: (scope: string, action: string) => void
 		saveRole: () => void
 	}
 	data: {
@@ -73,6 +71,7 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const handleSaveRole = async () => {
 		setIsSaving(true);
+		form.setFieldValue('permissions', []);
 		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
@@ -96,40 +95,11 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 		setIsSaving(false);
 	};
 
-	const handlePermissionToggle = (scope: string, action: string) => {
-		// Get latest form values
-		const latestValues = form.getValues();
-		// Check if a permission entry with the same scope and action already exists
-		if (latestValues.permissions?.find(p => p.scope === scope && p.action === action)) {
-			const updatedPermissions = latestValues.permissions.filter(p => p.scope !== scope || p.action !== action);
-			form.setFieldValue('permissions', updatedPermissions);
-			return;
-		}
-		// If it doesn't exist, add a new permission entry
-		const permissionValidated = PermissionSchema.safeParse({ action: action, scope: scope });
-		if (!permissionValidated.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(permissionValidated.error));
-		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
-	};
-
-	function handlePermissionResourceToggle(scope: string, action: string, resource: Record<string, unknown>) {
-		// Get latest form values
-		const latestValues = form.getValues();
-		// Check if a permission entry with the same scope and action exists
-		const foundPermission = latestValues.permissions?.find(p => p.scope === scope && p.action === action);
-		if (!foundPermission) return alert('Permissão não encontrada para atualizar recursos');
-		// Assign the new resources to the found permission
-		foundPermission['resources'] = resource;
-		// Update the resources of the found permission
-		form.setFieldValue('permissions', [...latestValues.permissions ?? []]);
-	};
-
 	//
 	// E. Define context value
 
 	const contextValue: RoleCreateContextState = useMemo(() => ({
 		actions: {
-			handlePermissionResourceToggle,
-			handlePermissionToggle,
 			saveRole: handleSaveRole,
 		},
 		data: {
