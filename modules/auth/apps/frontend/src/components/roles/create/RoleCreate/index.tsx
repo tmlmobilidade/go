@@ -2,11 +2,10 @@
 
 /* * */
 
+import { RoleCreateHeader } from '@/components/roles/create//RoleCreateHeader';
+import { RoleCreateBasicInfo } from '@/components/roles/create/RoleCreateBasicInfo';
 import { useRoleCreateContext } from '@/contexts/RoleCreate.context';
 import { FormModal } from '@tmlmobilidade/ui';
-
-import { RoleCreateBasicInfo } from '../RoleCreateBasicInfo';
-import { RoleCreateHeader } from '../RoleCreateHeader';
 
 /* * */
 

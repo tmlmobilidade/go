@@ -85,10 +85,9 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	const handleSaveOrganization = async () => {
 		setIsSaving(true);
 
-		const method = organization_id === 'new' ? 'POST' : 'PUT';
-		const url = organization_id === 'new' ? API_ROUTES.auth.ORGANIZATIONS_LIST : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
-		const body = organization_id === 'new' ? form.getValues() : convertObject(form.getValues(), UpdateOrganizationSchema);
-		const response = await fetchData<Organization>(url, method, body);
+		const url = API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
+		const body = convertObject(form.getValues(), UpdateOrganizationSchema);
+		const response = await fetchData<Organization>(url, 'PUT', body);
 
 		if (response.error) {
 			if (typeof response.error === 'string') {

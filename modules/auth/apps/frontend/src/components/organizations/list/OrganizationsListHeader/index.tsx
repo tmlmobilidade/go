@@ -1,8 +1,9 @@
+'use client';
 /* * */
 
+import { useOrganizationCreateContext } from '@/contexts/OrganizationCreate.context';
 import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,6 +15,7 @@ export function OrganizationsListHeader() {
 	// A. Setup variables
 
 	const organizationsListContext = useOrganizationsListContext();
+	const organizationCreateContext = useOrganizationCreateContext();
 
 	//
 	// B. Render components
@@ -23,7 +25,7 @@ export function OrganizationsListHeader() {
 			<Label size="lg" caps singleLine>Organizações</Label>
 			<Spacer />
 			<SearchInput onChange={organizationsListContext.actions.setFilterSearch} value={organizationsListContext.filters.search} />
-			<Button href={PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL('new')} icon={<IconPlus size={20} />} label="Nova organização" />
+			<Button icon={<IconPlus size={20} />} label="Nova organização" onClick={organizationCreateContext.modal.open} />
 		</Toolbar>
 	);
 
