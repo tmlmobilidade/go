@@ -30,7 +30,7 @@ export function OrganizationCreateHeader({ onClose }: OrganizationCreateHeaderPr
 			<Label size="lg" singleLine>{organizationCreateContext.data.form.values.long_name}</Label>
 			<Spacer />
 			<Button
-				disabled={!organizationCreateContext.data.form.values.short_name}
+				disabled={!organizationCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label="Publicar"
 				loading={organizationCreateContext.flags.isSaving}

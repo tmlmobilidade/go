@@ -4,7 +4,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Alert, CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
-import { UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -48,11 +48,10 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup variables
+
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [modalState, setModalState] = useState(false);
-
-	const meContext = useMeContext();
 
 	//
 	// B. Fetch data

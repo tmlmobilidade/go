@@ -24,7 +24,7 @@ export const OrganizationSchema = DocumentSchema.extend({
 	long_name: z.string(),
 	short_name: z.string(),
 	theme: z.string().nullish(),
-});
+}).strict();
 
 export const CreateOrganizationSchema = OrganizationSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateOrganizationSchema = CreateOrganizationSchema.omit({ created_by: true }).partial();

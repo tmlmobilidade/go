@@ -27,6 +27,39 @@ export class OrganizationsController {
 	}
 
 	/**
+	 * Deletes an Organization from the database.
+	 * @param request The request object containing the organization ID in the params.
+	 * @param reply The reply object used to send the response.
+	 */
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		// Find the organization by ID
+		const organization = await organizations.findById(request.params.id);
+		if (!organization) {
+			throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+		}
+		// Delete associated logo files if they exist
+		if (organization.logo_dark) {
+			try {
+				await files.deleteById(organization.logo_dark);
+			}
+			catch (error) {
+				console.error('Error deleting dark logo:', error);
+			}
+		}
+		if (organization.logo_light) {
+			try {
+				await files.deleteById(organization.logo_light);
+			}
+			catch (error) {
+				console.error('Error deleting light logo:', error);
+			}
+		}
+		// Delete the organization from the database
+		await organizations.deleteById(request.params.id);
+		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
 	 * Delete an organization logo from the database and storage.
 	 * @param request The request object containing the organization ID in the params.
 	 * @param reply The reply object used to send the response.

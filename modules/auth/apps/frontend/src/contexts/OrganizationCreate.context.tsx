@@ -2,10 +2,11 @@
 
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@tmlmobilidade/types';
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -49,6 +50,8 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	//
 	// A. Setup variables
 
+	const router = useRouter();
+
 	const [isSaving, setIsSaving] = useState(false);
 	const [isReadOnly] = useState(false);
 	const [modalState, setModalState] = useState(false);
@@ -89,6 +92,12 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 				}
 			}
 
+			form.resetDirty();
+			console.log('response', response);
+			useToast.success({ message: 'Utilizador salvo com sucesso', title: 'Sucesso' });
+			if (response.data?._id) {
+				router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
+			}
 			setIsSaving(false);
 			return;
 		}
