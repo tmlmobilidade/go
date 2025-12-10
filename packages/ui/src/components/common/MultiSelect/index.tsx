@@ -85,7 +85,7 @@ export default function MultiSelect({
 	};
 
 	const values = value.map(item => (
-		<Pill key={item.value} className={styles.pill} onRemove={() => handleValueRemove(item)} withRemoveButton>
+		<Pill key={item.value} className={styles.pill} onRemove={disabled ? undefined : () => handleValueRemove(item)} withRemoveButton={!disabled}>
 			{item.icon && <span style={{ marginRight: '0.25rem' }}>{item.icon}</span>}
 			{item.label}
 		</Pill>
@@ -225,7 +225,7 @@ export default function MultiSelect({
 								/>
 							</Combobox.EventsTarget>
 
-							{clearable && (
+							{clearable && !disabled && (
 								<Combobox.ClearButton
 									className={styles.clearButton}
 									onClear={() => {
