@@ -2,10 +2,11 @@
 
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Alert, CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -48,6 +49,8 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
+	const router = useRouter();
+
 	const [isSaving, setIsSaving] = useState(false);
 	const [modalState, setModalState] = useState(false);
 
@@ -66,20 +69,37 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const handleSaveAlert = async (type: 'draft' | 'publish') => {
 		setIsSaving(true);
-		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
-		const url = API_ROUTES.alerts.ALERTS_LIST;
-		const body = saveAlert;
-		const response = await fetchData<Alert>(url, 'POST', body);
 
-		if (!response.isOk) {
-			useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
+		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
+		const body = saveAlert;
+
+		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', body);
+
+		if (response.error) {
+			if (typeof response.error === 'string') {
+				useToast.error({ message: response.error, title: 'Erro ao salvar Alerta' });
+			}
+			else {
+				const errors = JSON.parse(response.error);
+				for (const error of errors) {
+					useToast.error({ message: error.message, title: 'Erro ao salvar Alerta' });
+				}
+			}
 			setIsSaving(false);
 			return;
 		}
 
-		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
+		form.resetDirty();
+		console.log('response', response);
+		useToast.success({ message: 'Alerta criado com sucesso', title: 'Sucesso' });
+
+		if (response.data?._id) {
+			router.replace(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id));
+		}
+
 		allAlertsMutate();
 		setIsSaving(false);
+		setModalState(false);
 	};
 
 	//

@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Alert, AlertSchema, CreateAlertDto, CreateAlertSchema, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, AlertTypeSchema, CreateAlertDto, CreateAlertSchema, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { convertObject, fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -39,10 +39,13 @@ const emptyAlert: CreateAlertDto = {
 	active_period_end_date: undefined,
 	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
 	cause: Object.values(gtfsCauseSchema.enum)[0],
+	coordinates: [0, 0],
 	created_by: 'temp',
 	description: '',
 	effect: Object.values(gtfsEffectSchema.enum)[0],
-	modified_by: 'temp',
+	external_id: '',
+	file_id: '',
+	info_url: '',
 	municipality_ids: [],
 	publish_end_date: undefined,
 	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
@@ -50,7 +53,7 @@ const emptyAlert: CreateAlertDto = {
 	reference_type: ReferenceTypeSchema.options[0],
 	references: [],
 	title: '',
-	type: 'PLANNED',
+	type: AlertTypeSchema.options[0],
 };
 
 const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
