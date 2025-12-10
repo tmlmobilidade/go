@@ -5,7 +5,6 @@ import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * This analyzer tests if there are Location Transactions for all stops of the trip.
- *
  * GRADES:
  * → PASS = At least one Location Transaction for each stop of the trip.
  * → FAIL = Missing Location Transaction for any stop of the trip.
@@ -28,38 +27,40 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): Ride[
 			};
 		}
 
-		// 1.
+		//
 		// Initiate Sets
 
-		const pathStopIds = new Set();
-		const locationTransactionsStopIds = new Set();
+		const pathStopIds = new Set<string>();
+		const existingSamSerialNumbers = new Set<number>();
 
-		// 2.
-		// Save references to all stops for each source type
+		//
+		// Save references for each data type
 
 		for (const pathStop of analysisData.hashed_trip.path) {
 			pathStopIds.add(pathStop.stop_id);
 		}
 
 		for (const locationTransaction of analysisData.simplified_apex_locations) {
-			locationTransactionsStopIds.add(locationTransaction.stop_id);
+			existingSamSerialNumbers.add(locationTransaction.mac_sam_serial_number);
 		}
 
-		// 3.
-		// Check if all locationTransactionsStopIds are available in pathStopIds
+		//
+		// For each SAM Serial Number found,
+		// check if all locationTransactionsStopIds are available in pathStopIds
 
-		const missingStopIds = new Set();
+		let allStopsFoundInLocations = false;
 
-		for (const pathStopId of pathStopIds.values()) {
-			if (!locationTransactionsStopIds.has(pathStopId)) {
-				missingStopIds.add(pathStopId);
-			}
+		for (const samSerialNumber of existingSamSerialNumbers.values()) {
+			// Get all location transactions for this SAM Serial Number
+			const locationTransactionsForSam = analysisData.simplified_apex_locations.filter(doc => doc.mac_sam_serial_number === samSerialNumber);
+			// Check if every stop in the path is represented in the location transactions
+			allStopsFoundInLocations = Array.from(pathStopIds).every(stopId => locationTransactionsForSam.some(doc => doc.stop_id === stopId));
 		}
 
-		// 4.
+		//
 		// Assign grades to analysis
 
-		if (missingStopIds.size > 0) {
+		if (!allStopsFoundInLocations) {
 			return {
 				grade: 'fail',
 				reason: 'MISSING_APEX_LOCATION_FOR_AT_LEAST_ONE_STOP',
