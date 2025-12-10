@@ -71,45 +71,29 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 
 	const handleSaveOrganization = async () => {
 		setIsSaving(true);
-		const url = API_ROUTES.auth.ORGANIZATIONS_LIST;
-		const body = form.getValues();
-		const response = await fetchData<Organization>(url, 'POST', body);
-
+		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({
-					message: response.error,
-					title: 'Erro ao salvar organização',
-				});
+				useToast.error({ message: response.error, title: 'Erro ao salvar Organização' });
 			}
 			else {
 				const errors = JSON.parse(response.error);
 				for (const error of errors) {
-					useToast.error({
-						message: error.message,
-						title: 'Erro ao salvar organização',
-					});
+					useToast.error({ message: error.message, title: 'Erro ao salvar Organização' });
 				}
-			}
-
-			form.resetDirty();
-			console.log('response', response);
-			useToast.success({ message: 'Utilizador salvo com sucesso', title: 'Sucesso' });
-			if (response.data?._id) {
-				router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
 			}
 			setIsSaving(false);
 			return;
 		}
-
-		useToast.success({
-			message: 'Organização salva com sucesso',
-			title: 'Sucesso',
-		});
-
 		form.resetDirty();
+		console.log('response', response);
+		useToast.success({ message: 'Organização criada com sucesso', title: 'Sucesso' });
+		if (response.data?._id) {
+			router.replace(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id));
+		}
 		allOrganizationsMutate();
 		setIsSaving(false);
+		setModalState(false);
 	};
 
 	//
