@@ -141,6 +141,7 @@ export const RideExportPropertiesSchema = z.object({
 
 		/* * */
 		acceptance_status: z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none'])).optional().nullable(),
+		search: z.string().optional().nullable(),
 	}),
 	type: z.literal('ride'),
 });
