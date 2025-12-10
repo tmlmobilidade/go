@@ -83,6 +83,8 @@ async function fetchRides(
 	startDate: string,
 	endDate: string,
 	tripId?: string,
+	patternId?: string,
+	routeId?: string,
 ): Promise<Ride[]> {
 	const startTimestamp = getStartOfDayTimestamp(startDate);
 	const endTimestamp = getEndOfDayTimestamp(endDate);
@@ -98,6 +100,16 @@ async function fetchRides(
 	if (tripId) {
 		query.trip_id = tripId;
 		logger.verbose(`Filtering by trip_id: ${tripId}`);
+	}
+
+	if (patternId) {
+		query.pattern_id = patternId;
+		logger.verbose(`Filtering by pattern_id: ${patternId}`);
+	}
+
+	if (routeId) {
+		query.route_id = routeId;
+		logger.verbose(`Filtering by route_id: ${routeId}`);
 	}
 
 	const rides = await ridesCollection.find(query).toArray();
@@ -224,6 +236,8 @@ export async function fetchRidesData(
 			options.startDate,
 			options.endDate,
 			options.tripId,
+			options.patternId,
+			options.routeId,
 		);
 
 		if (rides.length === 0) {

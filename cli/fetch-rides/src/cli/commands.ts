@@ -3,6 +3,8 @@ export interface CliOptions {
 	help?: boolean
 	includeVehicleEvents?: boolean
 	output?: string
+	patternId?: string
+	routeId?: string
 	startDate?: string
 	tripId?: string
 	verbose?: boolean
@@ -36,6 +38,22 @@ export function parseArgs(args: string[]): CliOptions {
 				}
 				else {
 					throw new Error('--output requires a value\nRun \'fetch-rides --help\' for more information.');
+				}
+				break;
+			case '--pattern-id':
+				if (i + 1 < args.length) {
+					options.patternId = args[++i];
+				}
+				else {
+					throw new Error('--pattern-id requires a value\nRun \'fetch-rides --help\' for more information.');
+				}
+				break;
+			case '--route-id':
+				if (i + 1 < args.length) {
+					options.routeId = args[++i];
+				}
+				else {
+					throw new Error('--route-id requires a value\nRun \'fetch-rides --help\' for more information.');
 				}
 				break;
 			case '--start-date':
@@ -89,6 +107,10 @@ OPTIONS
     
     --trip-id <id>             Optional: Filter rides by specific trip_id
     
+    --pattern-id <id>          Optional: Filter rides by specific pattern_id
+    
+    --route-id <id>            Optional: Filter rides by specific route_id
+    
     --include-vehicle-events   Optional: Include vehicle-events in the export
     
     --output <path>            Optional: Output directory for the zip file (default: ./exports)
@@ -103,6 +125,12 @@ EXAMPLES
 
     # Fetch rides for specific trip
     fetch-rides --start-date 20240101 --end-date 20240131 --trip-id "trip_123"
+
+    # Fetch rides for specific pattern
+    fetch-rides --start-date 20240101 --end-date 20240131 --pattern-id "pattern_123"
+
+    # Fetch rides for specific route
+    fetch-rides --start-date 20240101 --end-date 20240131 --route-id "route_123"
 
     # Include vehicle events
     fetch-rides --start-date 20240101 --end-date 20240131 --include-vehicle-events
