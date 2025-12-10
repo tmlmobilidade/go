@@ -46,6 +46,7 @@ export function AlertCreateSectionCauseEffect() {
 			<Section flexDirection="row" gap="md">
 				<div className={styles.container}>
 					<Combobox
+						key={alertCreateContext.data.form.key('cause')}
 						data={causeItems}
 						description="O que aconteceu"
 						label="Causa"
@@ -54,6 +55,7 @@ export function AlertCreateSectionCauseEffect() {
 				</div>
 				<div className={styles.container}>
 					<Combobox
+						key={alertCreateContext.data.form.key('effect')}
 						data={effectItems}
 						description="O que aconteceu como consequência"
 						label="Efeito"

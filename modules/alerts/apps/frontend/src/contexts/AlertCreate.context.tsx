@@ -19,7 +19,6 @@ interface AlertCreateContextState {
 		form: UseFormReturnType<CreateAlertDto>
 	}
 	flags: {
-		isReadOnly: boolean
 		isSaving: boolean
 	}
 	modal: {
@@ -50,7 +49,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
 	const [modalState, setModalState] = useState(false);
 
 	//
@@ -95,7 +93,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			form,
 		},
 		flags: {
-			isReadOnly,
 			isSaving,
 		},
 		modal: {
@@ -106,7 +103,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}), [
 		form,
 		modalState,
-		isReadOnly,
 		isSaving,
 	]);
 

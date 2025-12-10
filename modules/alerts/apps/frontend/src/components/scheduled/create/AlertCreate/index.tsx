@@ -30,12 +30,16 @@ export function AlertCreate() {
 			isOpen={alertCreateContext.modal.state}
 			onClose={alertCreateContext.modal.close}
 		>
+			{/* Title & Description */}
 			<AlertCreateSectionTitle />
+			{/* Visibility Scheduling */}
 			<AlertCreateSectionVisibility />
+			{/* Validity Scheduling */}
 			<AlertCreateSectionValidity />
+			{/* Cause & Effect */}
 			<AlertCreateSectionCauseEffect />
+			{/* References */}
 			<AlertCreateSectionReferences />
-
 		</FormModal>
 	);
 

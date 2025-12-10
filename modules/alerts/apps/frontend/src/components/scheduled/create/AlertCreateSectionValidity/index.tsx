@@ -31,6 +31,7 @@ export function AlertCreateSectionValidity() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
+					key={alertCreateContext.data.form.key('active_period_start_date')}
 					label="Data de Início"
 					fullWidth
 					{...alertCreateContext.data.form.getInputProps('active_period_start_date')}
@@ -40,6 +41,7 @@ export function AlertCreateSectionValidity() {
 					}}
 				/>
 				<DateTimePicker
+					key={alertCreateContext.data.form.key('active_period_end_date')}
 					label="Data de Fim"
 					clearable
 					fullWidth
