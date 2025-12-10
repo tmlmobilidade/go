@@ -29,7 +29,7 @@ export function AlertCreateHeader({ onClose }: AlertCreateHeaderProps) {
 			<Tag label="Novo Alerta" variant="secondary" />
 			<Spacer />
 			<Button
-				disabled={!alertCreateContext.data.form.values.title || !alertCreateContext.data.form.values.description}
+				disabled={!alertCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label="Salvar como rascunho"
 				loading={alertCreateContext.flags.isSaving}
@@ -37,7 +37,7 @@ export function AlertCreateHeader({ onClose }: AlertCreateHeaderProps) {
 				variant="secondary"
 			/>
 			<Button
-				disabled={!alertCreateContext.data.form.values.title || !alertCreateContext.data.form.values.description}
+				disabled={!alertCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label="publicar"
 				loading={alertCreateContext.flags.isSaving}

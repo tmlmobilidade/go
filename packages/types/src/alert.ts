@@ -23,17 +23,16 @@ export const AlertSchema = DocumentSchema.extend({
 	active_period_start_date: unixTimeStampSchema,
 	cause: gtfsCauseSchema,
 	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
-	created_by: z.string().min(1),
+	created_by: z.string().nullable(),
 	description: z.string(),
 	effect: gtfsEffectSchema,
 	external_id: z.string().nullable().default(null),
 	file_id: z.string().nullable().default(null),
 	info_url: z.string().url().nullable().default(null),
-	modified_by: z.string().nullable().default(null),
 	municipality_ids: z.array(z.string().min(1)).default([]),
 	publish_end_date: unixTimeStampSchema.nullable().default(Date.now()),
 	publish_start_date: unixTimeStampSchema.nullable().default(Date.now()),
-	publish_status: PublishStatusSchema,
+	publish_status: PublishStatusSchema.default('DRAFT'),
 	reference_type: ReferenceTypeSchema.nullable().default(ReferenceTypeSchema.options[0]),
 	references: z.array(z.object({
 		child_ids: z.array(z.string().min(1)),
@@ -43,8 +42,8 @@ export const AlertSchema = DocumentSchema.extend({
 	type: AlertTypeSchema.nullable().default(AlertTypeSchema.options[0]),
 }).strict();
 
-export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, modified_by: true, updated_at: true });
-export const UpdateAlertSchema = CreateAlertSchema.omit({ created_by: true }).partial();
+export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const UpdateAlertSchema = CreateAlertSchema.partial();
 
 // Define the Alert interface
 export type Alert = z.infer<typeof AlertSchema>;

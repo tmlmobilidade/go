@@ -62,11 +62,9 @@ export function AlertDetailHeader() {
 				loading={alertDetailContext.flags.isSaving}
 				onClick={() => alertDetailContext.actions.saveAlert('publish')}
 				variant="primary"
-				label={
-					alertDetailContext.flags.mode === AlertDetailMode.CREATE
-						? 'Publicar'
-						: 'Salvar'
-				}
+				label={alertDetailContext.data.form.getValues().publish_status === 'DRAFT'
+					? 'Publicar'
+					: 'Salvar'}
 			/>
 			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
 				<Button

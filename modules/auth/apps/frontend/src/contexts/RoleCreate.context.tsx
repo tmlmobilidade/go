@@ -71,28 +71,30 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const handleSaveRole = async () => {
 		setIsSaving(true);
-		form.setFieldValue('permissions', []);
+		form.setFieldValue('permissions', form.getValues().permissions || []);
 		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao salvar Role' });
+				useToast.error({ message: response.error, title: 'Erro ao salvar Grupo' });
 			}
 			else {
 				const errors = JSON.parse(response.error);
 				for (const error of errors) {
-					useToast.error({ message: error.message, title: 'Erro ao salvar Role' });
+					useToast.error({ message: error.message, title: 'Erro ao salvar Grupo' });
 				}
 			}
 			setIsSaving(false);
 			return;
 		}
 		form.resetDirty();
-		useToast.success({ message: 'Role salvo com sucesso', title: 'Sucesso' });
+		console.log('response', response);
+		useToast.success({ message: 'Grupo criado com sucesso', title: 'Sucesso' });
 		if (response.data?._id) {
 			router.replace(PAGE_ROUTES.auth.ROLES_DETAIL(response.data._id));
 		}
 		allRolesMutate();
 		setIsSaving(false);
+		setModalState(false);
 	};
 
 	//

@@ -3,6 +3,7 @@
 /* * */
 
 import { useAlertCreateContext } from '@/contexts/AlertCreate.context';
+import { CreateAlertSchema } from '@tmlmobilidade/types';
 import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -40,8 +41,8 @@ export function AlertCreateSectionTitle() {
 					maxRows={10}
 					minRows={4}
 					placeholder="..."
+					withAsterisk={!CreateAlertSchema.shape.description.isOptional()}
 					autosize
-					withAsterisk
 					{...alertCreateContext.data.form.getInputProps('description')}
 				/>
 				<CoordinatesInput

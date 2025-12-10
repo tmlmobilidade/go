@@ -50,7 +50,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema
 	const form = useForm<T>({
 		mode: 'uncontrolled',
 		onValuesChange: validateForm,
-		validate: zodResolver(schema),
+		validate: zodResolver(schema as Schema<T>),
 		validateInputOnBlur: false,
 		validateInputOnChange: false,
 	});

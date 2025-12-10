@@ -3,6 +3,7 @@
 /* * */
 
 import { useAlertCreateContext } from '@/contexts/AlertCreate.context';
+import { CreateAlertSchema } from '@tmlmobilidade/types';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
 
 /* * */

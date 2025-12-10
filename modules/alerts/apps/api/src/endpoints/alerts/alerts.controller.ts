@@ -18,7 +18,7 @@ export class AlertsController {
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
 	static async create(request: FastifyRequest<{ Body: Alert }>, reply: FastifyReply<Alert>) {
-		const result = await alerts.insertOne(request.body);
+		const result = await alerts.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
 
 		await notifications.sendNotification(PermissionCatalog.all.alerts_scheduled.scope, 'created_alert', request.me, result._id, result.title, result.description);
 
