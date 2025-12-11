@@ -2,8 +2,8 @@
 
 /* * */
 
+import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { useStopCreateContext } from '@/contexts/StopCreate.context';
 import { Divider, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function CreateStopStep3Summary() {
+export function StopCreateStep3Summary() {
 	//
 
 	//

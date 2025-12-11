@@ -2,15 +2,15 @@
 
 /* * */
 
-import { CreateStopStep1 } from '@/components/stops/create/CreateStopStep1';
-import { CreateStopStep2 } from '@/components/stops/create/CreateStopStep2';
-import { CreateStopStep3 } from '@/components/stops/create/CreateStopStep3';
-import { useStopCreateContext } from '@/contexts/StopCreate.context';
+import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
+import { StopCreateStep1 } from '@/components/stops/create/StopCreateStep1';
+import { StopCreateStep2 } from '@/components/stops/create/StopCreateStep2';
+import { StopCreateStep3 } from '@/components/stops/create/StopCreateStep3';
 import { ErrorDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function CreateStopModalSwitch() {
+export function StopCreateModalSwitch() {
 	//
 
 	//
@@ -22,15 +22,15 @@ export function CreateStopModalSwitch() {
 	// B. Render components
 
 	if (stopCreateContext.modal.current_step === 1) {
-		return <CreateStopStep1 />;
+		return <StopCreateStep1 />;
 	}
 
 	if (stopCreateContext.modal.current_step === 2) {
-		return <CreateStopStep2 />;
+		return <StopCreateStep2 />;
 	}
 
 	if (stopCreateContext.modal.current_step === 3) {
-		return <CreateStopStep3 />;
+		return <StopCreateStep3 />;
 	}
 
 	return <ErrorDisplay message={`Invalid modal step: ${stopCreateContext.modal.current_step}`} />;

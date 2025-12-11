@@ -2,12 +2,12 @@
 
 /* * */
 
-import { useStopCreateContext } from '@/contexts/StopCreate.context';
+import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function CreateStopModalHeader() {
+export function StopCreateModalHeader() {
 	//
 
 	//

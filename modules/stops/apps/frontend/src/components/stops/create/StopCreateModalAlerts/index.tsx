@@ -2,12 +2,12 @@
 
 /* * */
 
-import { useStopCreateContext } from '@/contexts/StopCreate.context';
+import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { AlertMessage } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function CreateStopModalAlerts() {
+export function StopCreateModalAlerts() {
 	//
 
 	//

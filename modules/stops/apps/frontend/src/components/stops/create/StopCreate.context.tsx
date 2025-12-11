@@ -2,63 +2,18 @@
 
 /* * */
 
+import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { StopOptions } from '@/schemas/options';
 import { abbreviateName } from '@/utils/abreviate-stop-name';
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { type CreateStopDto, Stop } from '@tmlmobilidade/types';
-import { keepUrlParams, useForm, UseFormReturnType } from '@tmlmobilidade/ui';
+import { type CreateStopDto, CreateStopSchema, Stop } from '@tmlmobilidade/types';
+import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
+import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
-
-/* * */
-
-const emptyStop: CreateStopDto = {
-	bench_status: 'unknown',
-	comments: [],
-	connections: [],
-	district_id: '',
-	electricity_status: 'unknown',
-	equipment: [],
-	facilities: [],
-	file_ids: [],
-	has_bench: 'unknown',
-	has_mupi: 'unknown',
-	has_network_map: 'unknown',
-	has_schedules: 'unknown',
-	has_shelter: 'unknown',
-	has_stop_sign: 'unknown',
-	image_ids: [],
-	is_archived: false,
-	is_locked: false,
-	jurisdiction: 'unknown',
-	last_infrastructure_check: undefined,
-	last_infrastructure_maintenance: undefined,
-	last_schedules_check: undefined,
-	last_schedules_maintenance: undefined,
-	latitude: 0,
-	legacy_id: '',
-	lifecycle_status: 'voided',
-	locality_id: '',
-	longitude: 0,
-	municipality_id: '',
-	name: '',
-	new_name: '',
-	parish_id: '',
-	pole_status: 'unknown',
-	road_type: 'unknown',
-	shelter_code: '',
-	shelter_frame_size: undefined,
-	shelter_installation_date: undefined,
-	shelter_maintainer: '',
-	shelter_make: undefined,
-	shelter_model: undefined,
-	shelter_status: 'unknown',
-	short_name: '',
-	tts_name: '',
-};
 
 /* * */
 
@@ -72,7 +27,7 @@ interface StopCreateContextState {
 	}
 	flags: {
 		error: Error | null
-		loading: boolean
+		isSaving: boolean
 	}
 	modal: {
 		current_step: number
@@ -102,10 +57,12 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
+	const router = useRouter();
+
 	const locationsContext = useLocationsContext();
 
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isError, setIsError] = useState<Error | null>(null);
+	const [isSaving, setIsSaving] = useState(false);
 
 	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
 	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
@@ -118,12 +75,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const form = useForm<CreateStopDto>({
-		initialValues: emptyStop,
-		// validate: validationSchema,
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
+	const { form } = useTypicalForm<CreateStopDto>(CreateStopSchema);
 
 	//
 	// D. Handle actions
@@ -215,20 +167,28 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.setValues({ short_name: shortName, tts_name: ttsName });
 	}, [form.values.name]);
 
-	const createNewStop = async () => {
-		// Update UI
-		setIsLoading(true);
-		// Fetch the API with the new stop data
+	const handleCreateStop = async () => {
+		setIsSaving(true);
 		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues());
-		// Handle the API response error
 		if (response.error) {
-			setIsError(new Error(response.error));
-			setIsLoading(false);
+			if (typeof response.error === 'string') {
+				useToast.error({ message: response.error, title: 'Erro ao criar organização' });
+				setIsSaving(false);
+				return;
+			}
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({ message: error.message, title: 'Erro ao criar organização' });
+			}
+			setIsSaving(false);
 			return;
 		}
-		// Handle the success
+		form.reset();
 		allStopsMutate();
-		window.location.href = keepUrlParams(`/stops/${response.data._id}`, window.location.search);
+		setIsSaving(false);
+		closeCreateStopModal();
+		useToast.success({ message: 'Paragem criada com sucesso', title: 'Sucesso' });
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(response.data._id), window.location.search));
 	};
 
 	//
@@ -236,7 +196,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: StopCreateContextState = useMemo(() => ({
 		actions: {
-			createNewStop,
+			createNewStop: handleCreateStop,
 			setLatLng,
 		},
 		data: {
@@ -244,7 +204,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: isError,
-			loading: isLoading,
+			isSaving,
 		},
 		modal: {
 			current_step: modalCurrentStepState,
@@ -255,7 +215,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}), [
 		form,
 		isError,
-		isLoading,
+		isSaving,
 		modalCurrentStepState,
 		modalCurrentStepValidState,
 	]);

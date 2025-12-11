@@ -2,12 +2,12 @@
 
 /* * */
 
-import { useStopCreateContext } from '@/contexts/StopCreate.context';
+import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { Divider, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function CreateStopStep2Inputs() {
+export function StopCreateStep2Inputs() {
 	//
 
 	//

@@ -2,12 +2,12 @@
 
 /* * */
 
-import { useStopCreateContext } from '@/contexts/StopCreate.context';
+import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { CoordinatesInput, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function CreateStopStep1Coordinates() {
+export function StopCreateStep1Coordinates() {
 	//
 
 	//

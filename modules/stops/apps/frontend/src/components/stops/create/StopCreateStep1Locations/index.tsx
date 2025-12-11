@@ -2,14 +2,14 @@
 
 /* * */
 
+import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { useStopCreateContext } from '@/contexts/StopCreate.context';
 import { Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function CreateStopStep1Locations() {
+export function StopCreateStep1Locations() {
 	//
 
 	//
