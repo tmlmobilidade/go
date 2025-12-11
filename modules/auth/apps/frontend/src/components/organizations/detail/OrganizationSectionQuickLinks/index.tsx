@@ -65,14 +65,14 @@ export function OrganizationDetailQuickLinks() {
 			organizationDetailContext.data.form.values.home_links = updatedLinks;
 		}
 
-		organizationDetailContext.actions.saveOrganization();
+		organizationDetailContext.actions.updateOrganization();
 	};
 
 	const handleDelete = (link: HomeLink) => {
 		if (!organizationDetailContext.data.form) return;
 		const updatedLinks = organizationDetailContext.data.form.values.home_links.filter(l => l.title !== link.title);
 		organizationDetailContext.data.form.values.home_links = updatedLinks;
-		organizationDetailContext.actions.saveOrganization();
+		organizationDetailContext.actions.updateOrganization();
 	};
 
 	const handleEdit = (link: HomeLink) => {

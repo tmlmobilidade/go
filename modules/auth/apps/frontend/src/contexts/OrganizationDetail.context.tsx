@@ -12,18 +12,13 @@ import useSWR from 'swr';
 
 /* * */
 
-export enum OrganizationsDetailMode {
-	CREATE = 'create',
-	EDIT = 'edit',
-}
-
 interface OrganizationsDetailContextState {
 	actions: {
 		deleteImage: (theme: 'dark' | 'light') => void
 		deleteOrganization: () => void
 		fileChangedDark: (file: File) => void
 		fileChangedLight: (file: File) => void
-		saveOrganization: () => void
+		updateOrganization: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateOrganizationDto>
@@ -35,7 +30,6 @@ interface OrganizationsDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: OrganizationsDetailMode
 	}
 }
 
@@ -68,8 +62,8 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	//
 	// B. Fetch data
 
-	const orgDetailKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
-	const orgLogoKey = organization_id === 'new' ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organization_id);
+	const orgDetailKey = !organization_id ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
+	const orgLogoKey = !organization_id ? null : API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organization_id);
 
 	const { data: organizationData, isLoading: organizationLoading, mutate: organizationMutate } = useSWR<Organization>(orgDetailKey);
 	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(orgLogoKey);
@@ -82,7 +76,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	//
 	// D. Handle actions
 
-	const handleSaveOrganization = async () => {
+	const handleUpdateOrganization = async () => {
 		setIsSaving(true);
 
 		const url = API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id);
@@ -123,7 +117,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			organizationMutate();
 		}
 
-		if (organization_id === 'new' && response.data?._id) {
+		if (response.data?._id) {
 			router.replace(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id));
 		}
 
@@ -131,7 +125,7 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 	};
 
 	const handleDeleteOrganization = async () => {
-		if (organization_id === 'new') return;
+		if (!organization_id) return;
 
 		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organization_id), 'DELETE', organizationData);
 		if (response.error) {
@@ -214,11 +208,11 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			deleteOrganization: handleDeleteOrganization,
 			fileChangedDark: (file: File) => setImageDark(file),
 			fileChangedLight: (file: File) => setImageLight(file),
-			saveOrganization: handleSaveOrganization,
+			updateOrganization: handleUpdateOrganization,
 		},
 		data: {
 			form,
-			id: organization_id === 'new' ? undefined : organization_id,
+			id: organization_id,
 			logoDarkUrl: logo?.logo_dark,
 			logoLightUrl: logo?.logo_light,
 		},
@@ -226,7 +220,6 @@ export const OrganizationsDetailContextProvider = ({ children, organization_id }
 			isReadOnly,
 			isSaving,
 			loading: organizationLoading || isLogoLoading,
-			mode: organization_id === 'new' ? OrganizationsDetailMode.CREATE : OrganizationsDetailMode.EDIT,
 		},
 	}), [
 		form,

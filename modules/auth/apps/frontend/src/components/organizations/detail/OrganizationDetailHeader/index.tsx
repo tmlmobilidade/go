@@ -1,8 +1,7 @@
 'use client';
 
-import { OrganizationsDetailMode, useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
 /* * */
-
+import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams, Label } from '@tmlmobilidade/ui';
@@ -40,19 +39,17 @@ export function OrganizationDetailHeader() {
 			<Button
 				disabled={!organizationDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label={organizationDetailContext.flags.mode === OrganizationsDetailMode.CREATE ? 'Publicar' : 'Guardar'}
+				label="Guardar"
 				loading={organizationDetailContext.flags.isSaving}
-				onClick={organizationDetailContext.actions.saveOrganization}
+				onClick={organizationDetailContext.actions.updateOrganization}
 				variant="primary"
 			/>
-			{organizationDetailContext.flags.mode === OrganizationsDetailMode.EDIT && (
-				<Button
-					icon={<IconTrash size={28} />}
-					label="Apagar"
-					onClick={organizationDetailContext.actions.deleteOrganization}
-					variant="danger"
-				/>
-			)}
+			<Button
+				icon={<IconTrash size={28} />}
+				label="Apagar"
+				onClick={organizationDetailContext.actions.deleteOrganization}
+				variant="danger"
+			/>
 		</Toolbar>
 	);
 
