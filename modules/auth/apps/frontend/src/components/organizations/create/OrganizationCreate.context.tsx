@@ -2,9 +2,10 @@
 
 /* * */
 
+import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@tmlmobilidade/types';
-import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -20,13 +21,7 @@ interface OrganizationCreateContextState {
 		form: UseFormReturnType<CreateOrganizationDto>
 	}
 	flags: {
-		isReadOnly: boolean
 		isSaving: boolean
-	}
-	modal: {
-		close: () => void
-		open: () => void
-		state: boolean
 	}
 }
 
@@ -53,8 +48,6 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	const router = useRouter();
 
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
-	const [modalState, setModalState] = useState(false);
 
 	//
 	// B. Fetch data
@@ -69,31 +62,28 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	//
 	// D. Handle actions
 
-	const handleSaveOrganization = async () => {
+	const handleCreateOrganization = async () => {
 		setIsSaving(true);
 		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao salvar Organização' });
+				useToast.error({ message: response.error, title: 'Erro ao criar organização' });
+				setIsSaving(false);
+				return;
 			}
-			else {
-				const errors = JSON.parse(response.error);
-				for (const error of errors) {
-					useToast.error({ message: error.message, title: 'Erro ao salvar Organização' });
-				}
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({ message: error.message, title: 'Erro ao criar organização' });
 			}
 			setIsSaving(false);
 			return;
 		}
-		form.resetDirty();
-		console.log('response', response);
-		useToast.success({ message: 'Organização criada com sucesso', title: 'Sucesso' });
-		if (response.data?._id) {
-			router.replace(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id));
-		}
+		form.reset();
 		allOrganizationsMutate();
 		setIsSaving(false);
-		setModalState(false);
+		closeCreateOrganizationModal();
+		useToast.success({ message: 'Organização criada com sucesso', title: 'Sucesso' });
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id), window.location.search));
 	};
 
 	//
@@ -101,24 +91,16 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 
 	const contextValue: OrganizationCreateContextState = useMemo(() => ({
 		actions: {
-			saveOrganization: handleSaveOrganization,
+			saveOrganization: handleCreateOrganization,
 		},
 		data: {
 			form,
 		},
 		flags: {
-			isReadOnly,
 			isSaving,
-		},
-		modal: {
-			close: () => setModalState(false),
-			open: () => setModalState(true),
-			state: modalState,
 		},
 	}), [
 		form,
-		modalState,
-		isReadOnly,
 		isSaving,
 	]);
 

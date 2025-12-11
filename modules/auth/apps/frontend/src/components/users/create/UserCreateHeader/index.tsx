@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useUserCreateContext } from '@/contexts/UserCreate.context';
+import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
 import { IconPlus } from '@tabler/icons-react';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 

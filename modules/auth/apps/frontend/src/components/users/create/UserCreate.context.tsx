@@ -2,6 +2,7 @@
 
 /* * */
 
+import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/types';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
@@ -20,13 +21,7 @@ interface UserCreateContextState {
 		form: UseFormReturnType<CreateUserDto>
 	}
 	flags: {
-		isReadOnly: boolean
 		isSaving: boolean
-	}
-	modal: {
-		close: () => void
-		open: () => void
-		state: boolean
 	}
 }
 
@@ -53,8 +48,6 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const router = useRouter();
 
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
-	const [modalState, setModalState] = useState(false);
 
 	//
 	// B. Fetch data
@@ -88,7 +81,7 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.reset();
 		allUsersMutate();
 		setIsSaving(false);
-		setModalState(false);
+		closeCreateUserModal();
 		useToast.success({ message: 'Utilizador criado com sucesso', title: 'Sucesso' });
 		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id), window.location.search));
 	};
@@ -104,18 +97,10 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 			form,
 		},
 		flags: {
-			isReadOnly,
 			isSaving,
-		},
-		modal: {
-			close: () => setModalState(false),
-			open: () => setModalState(true),
-			state: modalState,
 		},
 	}), [
 		form,
-		modalState,
-		isReadOnly,
 		isSaving,
 	]);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRoleCreateContext } from '@/contexts/RoleCreate.context';
+import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
 /* * */
 
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';

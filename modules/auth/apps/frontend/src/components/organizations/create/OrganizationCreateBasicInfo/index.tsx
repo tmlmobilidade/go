@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useOrganizationCreateContext } from '@/contexts/OrganizationCreate.context';
+import { useOrganizationCreateContext } from '@/components/organizations/create/OrganizationCreate.context';
 import { CreateOrganizationSchema } from '@tmlmobilidade/types';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
 

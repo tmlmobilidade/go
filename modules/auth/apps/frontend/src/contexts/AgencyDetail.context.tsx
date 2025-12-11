@@ -53,6 +53,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// B. Fetch data
 
+	const { mutate: allAgenciesMutate } = useSWR<Agency>(API_ROUTES.auth.AGENCIES_LIST);
 	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId));
 
 	//
@@ -97,6 +98,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 		}
 		finally {
 			agencyMutate();
+			allAgenciesMutate();
 			setIsSaving(false);
 		}
 	};

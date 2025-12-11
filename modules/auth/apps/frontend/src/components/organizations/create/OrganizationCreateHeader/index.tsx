@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useOrganizationCreateContext } from '@/contexts/OrganizationCreate.context';
+import { useOrganizationCreateContext } from '@/components/organizations/create/OrganizationCreate.context';
 import { IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
