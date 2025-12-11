@@ -9,7 +9,7 @@ import { zodResolver } from 'mantine-form-zod-resolver';
 import { useEffect, useState } from 'react';
 import { type Schema } from 'zod';
 
-import { usePreventNavigation } from './use-prevent-navigation';
+// import { usePreventNavigation } from './use-prevent-navigation';
 
 /* * */
 
@@ -73,7 +73,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema
 	//
 	// Prevent navigation if form is dirty
 
-	usePreventNavigation(form.isDirty());
+	// usePreventNavigation(form.isDirty());
 
 	//
 	// Return hook values and functions
