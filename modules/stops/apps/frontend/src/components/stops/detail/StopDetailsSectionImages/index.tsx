@@ -2,7 +2,7 @@
 
 /* * */
 
-import { UploadImage } from '@/components/Common/UploadImage';
+import { UploadImage } from '@/components/common2/UploadImage';
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
