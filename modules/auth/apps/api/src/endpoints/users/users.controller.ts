@@ -15,13 +15,16 @@ export class UsersController {
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<void>) {
+	static async create(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<User>) {
 		// Set the created_by and updated_by fields to the current user's id
 		request.body.created_by = request.me._id;
 		request.body.updated_by = request.me._id;
 		// Register the new user using the auth provider
 		await authProvider.register(request.body);
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		// Fetch the newly created user to ensure it was created successfully
+		// and send a response back to the client
+		const newUser = await users.findByEmail(request.body.email);
+		reply.send({ data: newUser, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
