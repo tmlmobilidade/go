@@ -1,11 +1,11 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Alert, AlertSchema, CreateAlertDto, File as FileType, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, CreateAlertDto, File as FileType, ReferenceTypeSchema, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { convertObject, fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 interface AlertDetailContextState {
@@ -16,13 +16,11 @@ interface AlertDetailContextState {
 		saveAlert: (type: 'draft' | 'publish') => void
 	}
 	data: {
-		form: UseFormReturnType<CreateAlertDto>
+		form: UseFormReturnType<UpdateAlertDto>
 		id: string | undefined
 		imageUrl?: FileType
 	}
 	flags: {
-		canSave: boolean
-		isDraft: boolean
 		isSaving: boolean
 		loading: boolean
 	}
@@ -43,71 +41,28 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	// A. Setup variables
 
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
-	const [isDraft, setIsDraft] = useState(false);
-	const [canSave, setCanSave] = useState(false);
 	const [image, setImage] = useState<File | null>(null);
 
 	const copyURL = new URLSearchParams(window.location.search).get('copy');
 
-	const { data: alert, error, isLoading } = useSWR<Alert>(copyURL ? API_ROUTES.alerts.ALERTS_DETAIL(copyURL) : API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+	//
+	// B. Fetch Data
+
+	const { data: alertData, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(copyURL ? API_ROUTES.alerts.ALERTS_DETAIL(copyURL) : API_ROUTES.alerts.ALERTS_DETAIL(alertId));
 
 	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
-	// B. Define form
-	const { form } = useTypicalForm<CreateAlertDto>(AlertSchema, alert);
+	// C. Define form
 
-	//
-	// C. Transform Data
-
-	// Update form
-	useEffect(() => {
-		if (!alert) return;
-
-		let myAlert: CreateAlertDto = alert;
-
-		if (copyURL) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { _id, created_at, updated_at, ...rest } = alert;
-			myAlert = { ...rest, publish_status: 'DRAFT' };
-		}
-
-		setLoading(true);
-
-		if (!myAlert.reference_type) {
-			myAlert.reference_type = ReferenceTypeSchema.options[0];
-			myAlert.references = [];
-		}
-
-		setIsDraft(myAlert.publish_status === 'DRAFT');
-		form.reset();
-		form.setValues(myAlert);
-		form.resetDirty();
-
-		setLoading(false);
-	}, [alert]);
-
-	// Handle error
-	useEffect(() => {
-		if (!error) return;
-
-		useToast.error({ message: error.message, title: 'Erro ao carregar alerta' });
-		router.replace('/');
-	}, [error]);
-
-	// Validate form on change
-	useEffect(() => {
-		form.validate();
-		setCanSave(form.isValid());
-	}, [form.values]);
+	const { form } = useTypicalForm<UpdateAlertDto>(AlertSchema, alertData);
 
 	//
 	// D. Define actions
 	const saveAlert = async (type: 'draft' | 'publish') => {
 		setIsSaving(true);
-		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
+		const saveAlert: UpdateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
 		const body = convertObject(saveAlert, UpdateAlertSchema);
 		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', body);
 
@@ -171,7 +126,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	//
 	// E. Define context value
-	const contextValue: AlertDetailContextState = {
+	const contextValue: AlertDetailContextState = useMemo(() => ({
 		actions: {
 			deleteAlert,
 			deleteImage,
@@ -184,12 +139,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			imageUrl: alertImage,
 		},
 		flags: {
-			canSave,
-			isDraft,
 			isSaving,
-			loading: isLoading || loading || alertImageLoading,
+			loading: alertImageLoading || alertLoading,
 		},
-	};
+	}), [
+		form,
+		alertLoading,
+		alertImageLoading,
+		isSaving,
+		alertId,
+	]);
 
 	//
 	// F. Render components
