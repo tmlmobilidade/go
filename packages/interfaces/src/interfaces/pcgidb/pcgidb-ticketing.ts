@@ -70,8 +70,8 @@ class PCGIDBTicketingClass {
 			throw new Error('Missing PCGIDB_TICKETING_USER or PCGIDB_TICKETING_PASSWORD environment variable.');
 		}
 
-		if (!process.env.PCGIDB_TICKETING_ADDRESS || !process.env.PCGIDB_TICKETING_PORT) {
-			throw new Error('Missing PCGIDB_TICKETING_ADDRESS or PCGIDB_TICKETING_PORT environment variable.');
+		if (!process.env.PCGIDB_TICKETING_ADDRESS_1 || !process.env.PCGIDB_TICKETING_ADDRESS_2 || !process.env.PCGIDB_TICKETING_ADDRESS_3 || !process.env.PCGIDB_TICKETING_PORT) {
+			throw new Error('Missing PCGIDB_TICKETING_ADDRESS_1, PCGIDB_TICKETING_ADDRESS_2, PCGIDB_TICKETING_ADDRESS_3 or PCGIDB_TICKETING_PORT environment variable.');
 		}
 
 		//
@@ -79,16 +79,12 @@ class PCGIDBTicketingClass {
 		// In 'production' and 'staging', we assume direct connection is used.
 
 		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
-			return `mongodb://${process.env.PCGIDB_TICKETING_USER}:${process.env.PCGIDB_TICKETING_PASSWORD}@${process.env.PCGIDB_TICKETING_ADDRESS}:${process.env.PCGIDB_TICKETING_PORT}/`;
+			return `mongodb://${process.env.PCGIDB_TICKETING_USER}:${process.env.PCGIDB_TICKETING_PASSWORD}@${process.env.PCGIDB_TICKETING_ADDRESS_1}:${process.env.PCGIDB_TICKETING_PORT},${process.env.PCGIDB_TICKETING_ADDRESS_2}:${process.env.PCGIDB_TICKETING_PORT},${process.env.PCGIDB_TICKETING_ADDRESS_3}:${process.env.PCGIDB_TICKETING_PORT}/`;
 		}
 
 		//
 		// If we're here, then the SSH Tunnel is to be used.
 		// Check if the required SSH Tunnel environment variables are set.
-
-		if (!process.env.PCGIDB_TICKETING_ADDRESS || !process.env.PCGIDB_TICKETING_PORT) {
-			throw new Error('Missing PCGIDB_TICKETING_ADDRESS or PCGIDB_TICKETING_PORT environment variable.');
-		}
 
 		if (!process.env.PCGIDB_TUNNEL_LOCAL_PORT) {
 			throw new Error('Missing PCGIDB_TUNNEL_LOCAL_PORT environment variable.');
@@ -103,7 +99,7 @@ class PCGIDBTicketingClass {
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.PCGIDB_TICKETING_ADDRESS,
+				dstAddr: process.env.PCGIDB_TICKETING_ADDRESS_1,
 				dstPort: Number(process.env.PCGIDB_TICKETING_PORT),
 				srcAddr: 'localhost',
 				srcPort: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),

@@ -32,8 +32,15 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 	await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
 
 	//
+	// Extract and prepare the search query
+	const searchQuery = (fileExport.properties as typeof fileExport.properties & { search?: string }).search?.trim() ?? '';
+
+	//
 	// Get the rides batch using native MongoDB cursor with batchSize to prevent memory issues
-	const pipeline = ridesBatchAggregationPipeline(fileExport.properties);
+	const pipeline = ridesBatchAggregationPipeline({
+		...fileExport.properties,
+		search: searchQuery || undefined,
+	});
 
 	//
 	// 4. Filter rides based on permissions for the current user

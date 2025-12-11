@@ -13,6 +13,12 @@ const RUN_INTERVAL = 300_000; // 5 minutes in milliseconds
 /* * */
 
 (async function init() {
+	// Only run in production environment
+	if (process.env.ENVIRONMENT !== 'production') {
+		Logger.info('Cleaner is disabled in non-production environments');
+		return;
+	}
+
 	const runOnInterval = async () => {
 		Logger.init();
 
