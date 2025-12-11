@@ -29,6 +29,7 @@ export function UserCreateBasicInfo() {
 					maxLength={255}
 					placeholder="..."
 					withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
+					data-autofocus
 					{...userCreateContext.data.form.getInputProps('first_name')}
 				/>
 				<TextInput

@@ -3,18 +3,13 @@
 /* * */
 
 import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
+import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface UserCreateHeaderProps {
-	onClose?: () => void
-}
-
-/* * */
-
-export function UserCreateHeader({ onClose }: UserCreateHeaderProps) {
+export function UserCreateHeader() {
 	//
 
 	//
@@ -27,7 +22,7 @@ export function UserCreateHeader({ onClose }: UserCreateHeaderProps) {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={onClose} type="close" />
+			<BackButton onClick={closeCreateUserModal} type="close" />
 			<Tag label="Novo Utilizador" variant="secondary" />
 			<Spacer />
 			<Button

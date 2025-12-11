@@ -1,6 +1,6 @@
 /* * */
 
-import { DataProviders } from '@/providers/DataProviders';
+import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

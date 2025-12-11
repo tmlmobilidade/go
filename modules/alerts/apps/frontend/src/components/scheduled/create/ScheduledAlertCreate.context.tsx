@@ -12,9 +12,9 @@ import useSWR from 'swr';
 
 /* * */
 
-interface AlertCreateContextState {
+interface ScheduledAlertCreateContextState {
 	actions: {
-		saveAlert: (type: 'draft' | 'publish') => void
+		saveAlert: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
@@ -31,19 +31,19 @@ interface AlertCreateContextState {
 
 /* * */
 
-const AlertCreateContext = createContext<AlertCreateContextState | undefined>(undefined);
+const ScheduledAlertCreateContext = createContext<ScheduledAlertCreateContextState | undefined>(undefined);
 
-export function useAlertCreateContext() {
-	const context = useContext(AlertCreateContext);
+export function useScheduledAlertCreateContext() {
+	const context = useContext(ScheduledAlertCreateContext);
 	if (!context) {
-		throw new Error('useAlertCreateContext must be used within a AlertCreateContextProvider');
+		throw new Error('useScheduledAlertCreateContext must be used within a ScheduledAlertCreateContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
+export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -94,7 +94,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: AlertCreateContextState = useMemo(() => ({
+	const contextValue: ScheduledAlertCreateContextState = useMemo(() => ({
 		actions: {
 			saveAlert: handleCreateAlert,
 		},
@@ -119,9 +119,9 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// F. Render components
 
 	return (
-		<AlertCreateContext.Provider value={contextValue}>
+		<ScheduledAlertCreateContext.Provider value={contextValue}>
 			{children}
-		</AlertCreateContext.Provider>
+		</ScheduledAlertCreateContext.Provider>
 	);
 
 	//

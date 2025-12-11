@@ -4,7 +4,7 @@
 
 import { UserCreate } from '@/components/users/create/UserCreate';
 import { UserCreateContextProvider } from '@/components/users/create/UserCreate.context';
-import { DataProviders } from '@/providers/DataProviders';
+import { DataProviders } from '@/providers/data-providers';
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 
 /* * */

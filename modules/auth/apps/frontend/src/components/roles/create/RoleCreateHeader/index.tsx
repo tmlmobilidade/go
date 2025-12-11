@@ -3,16 +3,13 @@
 /* * */
 
 import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
+import { closeCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface RoleCreateHeaderProps {
-	onClose?: () => void
-}
-
-export function RoleCreateHeader({ onClose }: RoleCreateHeaderProps) {
+export function RoleCreateHeader() {
 	//
 
 	//
@@ -21,11 +18,11 @@ export function RoleCreateHeader({ onClose }: RoleCreateHeaderProps) {
 	const roleCreateContext = useRoleCreateContext();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-			<BackButton onClick={onClose} type="close" />
+			<BackButton onClick={closeCreateRoleModal} type="close" />
 			<Tag label="Novo Grupo de Permissões" variant="secondary" />
 			<Label size="lg" singleLine>{roleCreateContext.data.form.values.name}</Label>
 			<Spacer />

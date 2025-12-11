@@ -1,8 +1,8 @@
 'use client';
 
-import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
 /* * */
 
+import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -20,12 +20,13 @@ export function RoleCreateBasicInfo() {
 
 	return (
 		<Section gap="md">
-			<Grid columns="ab" gap="xl">
+			<Grid columns="a" gap="xl">
 				<TextInput
 					key={roleCreateContext.data.form.key('name')}
 					label="Nome do grupo"
 					maxLength={255}
 					placeholder="..."
+					data-autofocus
 					withAsterisk
 					{...roleCreateContext.data.form.getInputProps('name')}
 				/>
