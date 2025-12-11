@@ -48,7 +48,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	//
 	// B. Fetch Data
-
+	const { mutate: allAlertsMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 	const { data: alertData, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(copyURL ? API_ROUTES.alerts.ALERTS_DETAIL(copyURL) : API_ROUTES.alerts.ALERTS_DETAIL(alertId));
 
 	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
@@ -77,6 +77,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		if (response.data?._id) {
 			router.replace(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id.toString()));
 		}
+
+		form.resetDirty();
+		alertMutate();
+		allAlertsMutate();
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
 
 		setIsSaving(false);

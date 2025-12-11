@@ -27,6 +27,7 @@ export function AlertDetailSectionTitle() {
 		>
 			<Section gap="md">
 				<TextInput
+					key={alertDetailContext.data.form.key('title')}
 					description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
 					label="Título Curto"
 					maxLength={255}
@@ -35,6 +36,7 @@ export function AlertDetailSectionTitle() {
 					{...alertDetailContext.data.form.getInputProps('title')}
 				/>
 				<Textarea
+					key={alertDetailContext.data.form.key('description')}
 					description="Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação."
 					label="Descrição"
 					maxRows={10}
@@ -51,10 +53,12 @@ export function AlertDetailSectionTitle() {
 					onFileChange={alertDetailContext.actions.fileChanged}
 				/>
 				<CoordinatesInput
+					key={alertDetailContext.data.form.key('coordinates')}
 					description="Ponto de referência do alerta, para que seja possível localizar o alerta no mapa."
 					{...alertDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput
+					key={alertDetailContext.data.form.key('link')}
 					description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"
 					label="Link Adicional"
 					leftSection={<IconLink size={18} />}

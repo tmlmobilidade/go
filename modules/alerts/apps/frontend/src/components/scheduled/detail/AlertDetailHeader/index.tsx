@@ -55,7 +55,7 @@ export function AlertDetailHeader() {
 				variant="secondary"
 			/>
 			<Button
-				disabled={!alertDetailContext.flags.canSave || alertDetailContext.flags.isSaving}
+				disabled={alertDetailContext.flags.isSaving}
 				icon={<IconUpload size={28} />}
 				loading={alertDetailContext.flags.isSaving}
 				onClick={() => alertDetailContext.actions.saveAlert('publish')}

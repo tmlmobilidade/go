@@ -44,6 +44,7 @@ export function AlertDetailSectionReferences() {
 		>
 			<Section gap="md">
 				<MultiSelect
+					key={alertDetailContext.data.form.key('municipality_ids')}
 					data={municipalitiesOptions}
 					description="Selecione os municípios que serão afetados pelo alerta"
 					label="Municípios Afetados"
