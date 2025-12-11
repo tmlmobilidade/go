@@ -4,7 +4,7 @@
 
 import { useScheduledAlertCreateContext } from '@/components/scheduled/create/ScheduledAlertCreate.context';
 import { closeCreateScheduledAlertModal } from '@/components/scheduled/create/ScheduledAlertCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -18,7 +18,7 @@ export function ScheduledAlertCreateHeader() {
 	const scheduledAlertCreateContext = useScheduledAlertCreateContext();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
@@ -27,8 +27,8 @@ export function ScheduledAlertCreateHeader() {
 			<Spacer />
 			<Button
 				disabled={!scheduledAlertCreateContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Salvar como rascunho"
+				icon={<IconPlus size={28} />}
+				label="Criar como rascunho"
 				loading={scheduledAlertCreateContext.flags.isSaving}
 				onClick={scheduledAlertCreateContext.actions.saveAlert}
 				variant="secondary"

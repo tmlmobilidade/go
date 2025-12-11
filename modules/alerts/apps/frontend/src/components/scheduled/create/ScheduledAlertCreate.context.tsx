@@ -2,6 +2,7 @@
 
 /* * */
 
+import { closeCreateScheduledAlertModal } from '@/components/scheduled/create/ScheduledAlertCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Alert, CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
@@ -21,11 +22,6 @@ interface ScheduledAlertCreateContextState {
 	}
 	flags: {
 		isSaving: boolean
-	}
-	modal: {
-		close: () => void
-		open: () => void
-		state: boolean
 	}
 }
 
@@ -52,7 +48,6 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 	const router = useRouter();
 
 	const [isSaving, setIsSaving] = useState(false);
-	const [modalState, setModalState] = useState(false);
 
 	//
 	// B. Fetch data
@@ -86,7 +81,7 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 		form.reset();
 		allAlertsMutate();
 		setIsSaving(false);
-		setModalState(false);
+		closeCreateScheduledAlertModal();
 		useToast.success({ message: 'Alerta criado com sucesso', title: 'Sucesso' });
 		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id), window.location.search));
 	};
@@ -104,14 +99,8 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 		flags: {
 			isSaving,
 		},
-		modal: {
-			close: () => setModalState(false),
-			open: () => setModalState(true),
-			state: modalState,
-		},
 	}), [
 		form,
-		modalState,
 		isSaving,
 	]);
 
