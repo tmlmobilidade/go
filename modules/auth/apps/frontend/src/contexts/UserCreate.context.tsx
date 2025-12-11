@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/types';
-import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -69,30 +69,28 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// D. Handle actions
 
-	const handleSaveUser = async () => {
+	const handleCreateUser = async () => {
 		setIsSaving(true);
 		const response = await fetchData<User>(API_ROUTES.auth.USERS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao salvar utilizador' });
+				useToast.error({ message: response.error, title: 'Erro ao criar utilizador' });
+				setIsSaving(false);
+				return;
 			}
-			else {
-				const errors = JSON.parse(response.error);
-				for (const error of errors) {
-					useToast.error({ message: error.message, title: 'Erro ao salvar utilizador' });
-				}
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({ message: error.message, title: 'Erro ao criar utilizador' });
 			}
 			setIsSaving(false);
 			return;
 		}
-		form.resetDirty();
-		console.log('response', response);
-		useToast.success({ message: 'Utilizador salvo com sucesso', title: 'Sucesso' });
-		if (response.data?._id) {
-			router.replace(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id));
-		}
+		form.reset();
 		allUsersMutate();
 		setIsSaving(false);
+		setModalState(false);
+		useToast.success({ message: 'Utilizador criado com sucesso', title: 'Sucesso' });
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id), window.location.search));
 	};
 
 	//
@@ -100,7 +98,7 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: UserCreateContextState = useMemo(() => ({
 		actions: {
-			saveUser: handleSaveUser,
+			saveUser: handleCreateUser,
 		},
 		data: {
 			form,
