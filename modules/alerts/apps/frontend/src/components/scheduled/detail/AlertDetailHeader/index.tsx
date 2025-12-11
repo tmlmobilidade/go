@@ -2,7 +2,7 @@
 
 /* * */
 
-import { AlertDetailMode, useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -43,14 +43,12 @@ export function AlertDetailHeader() {
 			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 			<Spacer />
-			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
-				<Button
-					icon={<IconCopy size={28} />}
-					label="Duplicar"
-					onClick={handleDuplicate}
-					variant="secondary"
-				/>
-			)}
+			<Button
+				icon={<IconCopy size={28} />}
+				label="Duplicar"
+				onClick={handleDuplicate}
+				variant="secondary"
+			/>
 			<Button
 				label="Salvar como rascunho"
 				onClick={() => alertDetailContext.actions.saveAlert('draft')}
@@ -66,15 +64,13 @@ export function AlertDetailHeader() {
 					? 'Publicar'
 					: 'Salvar'}
 			/>
-			{alertDetailContext.flags.mode === AlertDetailMode.EDIT && (
-				<Button
-					disabled={alertDetailContext.flags.isSaving}
-					icon={<IconTrash size={28} />}
-					label="Apagar"
-					onClick={alertDetailContext.actions.deleteAlert}
-					variant="danger"
-				/>
-			)}
+			<Button
+				disabled={alertDetailContext.flags.isSaving}
+				icon={<IconTrash size={28} />}
+				label="Apagar"
+				onClick={alertDetailContext.actions.deleteAlert}
+				variant="danger"
+			/>
 		</Toolbar>
 	);
 

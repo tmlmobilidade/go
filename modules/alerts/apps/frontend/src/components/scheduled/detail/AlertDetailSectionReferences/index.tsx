@@ -52,6 +52,7 @@ export function AlertDetailSectionReferences() {
 				/>
 
 				<ReferencesGroup
+					keys={alertDetailContext.data.form.values.reference_type}
 					municipality_ids={alertDetailContext.data.form.values.municipality_ids}
 					onSetFieldValue={alertDetailContext.data.form.setFieldValue}
 					reference_type={alertDetailContext.data.form.values.reference_type}

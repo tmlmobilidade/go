@@ -1,18 +1,12 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { Alert, AlertSchema, AlertTypeSchema, CreateAlertDto, CreateAlertSchema, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { Alert, AlertSchema, CreateAlertDto, File as FileType, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { convertObject, fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
-
-export enum AlertDetailMode {
-	CREATE = 'create',
-	EDIT = 'edit',
-}
 
 interface AlertDetailContextState {
 	actions: {
@@ -31,30 +25,8 @@ interface AlertDetailContextState {
 		isDraft: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: AlertDetailMode
 	}
 }
-
-const emptyAlert: CreateAlertDto = {
-	active_period_end_date: undefined,
-	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(gtfsCauseSchema.enum)[0],
-	coordinates: [0, 0],
-	created_by: 'temp',
-	description: '',
-	effect: Object.values(gtfsEffectSchema.enum)[0],
-	external_id: '',
-	file_id: '',
-	info_url: '',
-	municipality_ids: [],
-	publish_end_date: undefined,
-	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	publish_status: 'DRAFT',
-	reference_type: ReferenceTypeSchema.options[0],
-	references: [],
-	title: '',
-	type: AlertTypeSchema.options[0],
-};
 
 const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
 
@@ -69,7 +41,6 @@ export function useAlertDetailContext() {
 export const AlertDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
 	//
 	// A. Setup variables
-	const MODE = alertId === 'new' ? AlertDetailMode.CREATE : AlertDetailMode.EDIT;
 
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
@@ -80,24 +51,13 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 	const copyURL = new URLSearchParams(window.location.search).get('copy');
 
-	const { data: alert, error, isLoading } = useSWR<Alert>(MODE === AlertDetailMode.CREATE
-		? copyURL ? API_ROUTES.alerts.ALERTS_DETAIL(copyURL) : null
-		: API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+	const { data: alert, error, isLoading } = useSWR<Alert>(copyURL ? API_ROUTES.alerts.ALERTS_DETAIL(copyURL) : API_ROUTES.alerts.ALERTS_DETAIL(alertId));
 
-	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(
-		MODE === AlertDetailMode.CREATE
-			? undefined
-			: API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId),
-	);
+	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// B. Define form
-	const form = useForm<CreateAlertDto>({
-		initialValues: emptyAlert,
-		validate: zodResolver(alert && MODE === AlertDetailMode.EDIT ? AlertSchema : CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
+	const { form } = useTypicalForm<CreateAlertDto>(AlertSchema, alert);
 
 	//
 	// C. Transform Data
@@ -148,10 +108,8 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	const saveAlert = async (type: 'draft' | 'publish') => {
 		setIsSaving(true);
 		const saveAlert: CreateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
-		const method = MODE === AlertDetailMode.CREATE ? 'POST' : 'PUT';
-		const url = MODE === AlertDetailMode.CREATE ? API_ROUTES.alerts.ALERTS_LIST : API_ROUTES.alerts.ALERTS_DETAIL(alertId);
-		const body = MODE === AlertDetailMode.CREATE ? saveAlert : convertObject(saveAlert, UpdateAlertSchema);
-		const response = await fetchData<Alert>(url, method, body);
+		const body = convertObject(saveAlert, UpdateAlertSchema);
+		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', body);
 
 		if (!response.isOk) {
 			useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
@@ -161,7 +119,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 
 		if (response.data) await uploadImage(response.data._id.toString());
 
-		if (response.data && MODE === AlertDetailMode.CREATE) {
+		if (response.data?._id) {
 			router.replace(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id.toString()));
 		}
 		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
@@ -170,7 +128,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	};
 
 	const deleteAlert = async () => {
-		if (MODE === AlertDetailMode.CREATE) return;
+		if (!alertId) return;
 
 		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE', alert);
 		if (response.error) {
@@ -187,7 +145,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 	};
 
 	const deleteImage = async () => {
-		if (MODE === AlertDetailMode.CREATE) return;
+		if (!alertId) return;
 
 		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE', alert);
 		if (response.error) {
@@ -222,7 +180,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 		},
 		data: {
 			form,
-			id: MODE === AlertDetailMode.CREATE ? undefined : alertId,
+			id: alertId,
 			imageUrl: alertImage,
 		},
 		flags: {
@@ -230,7 +188,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: { alertId: str
 			isDraft,
 			isSaving,
 			loading: isLoading || loading || alertImageLoading,
-			mode: MODE,
 		},
 	};
 

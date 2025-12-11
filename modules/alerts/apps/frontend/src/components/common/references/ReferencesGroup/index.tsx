@@ -17,7 +17,7 @@ interface Reference {
 }
 
 interface ReferencesGroupProps {
-	key: string
+	keys: string
 	municipality_ids?: string[]
 	onSetFieldValue: <T>(path: string, value: T) => void
 	reference_type: ReferenceType
@@ -25,7 +25,7 @@ interface ReferencesGroupProps {
 }
 
 export function ReferencesGroup({
-	key,
+	keys,
 	municipality_ids,
 	onSetFieldValue,
 	reference_type,
@@ -100,7 +100,7 @@ export function ReferencesGroup({
 	return (
 		<Section gap="md">
 			<SegmentedControl
-				key={key}
+				key={keys}
 				data={ReferenceTypeSchema.options.map(parseOptionsLabel).filter(option => option.value !== 'TRIP')}
 				onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
 				value={reference_type}
