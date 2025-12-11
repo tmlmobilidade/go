@@ -8,7 +8,7 @@ import { StopOptions } from '@/schemas/options';
 import { abbreviateName } from '@/utils/abreviate-stop-name';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { type CreateStopDto, CreateStopSchema, Stop } from '@tmlmobilidade/types';
+import { type CreateStopDto, CreateStopSchema, type Stop } from '@tmlmobilidade/types';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -136,11 +136,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [modalCurrentStepState, form.getValues()]);
 
 	useEffect(() => {
+		// Get latest form values
+		const currentValues = form.getValues();
 		// Skip if no coordinates are set
-		if (!form.values.latitude || !form.values.longitude) return;
+		if (!currentValues.latitude || !currentValues.longitude) return;
 		// Fetch the locations API for the given coordinates
 		(async () => {
-			const locationData = await locationsContext.actions.queryLocations(form.values.latitude, form.values.longitude);
+			const locationData = await locationsContext.actions.queryLocations(currentValues.latitude, currentValues.longitude);
 			form.setValues({
 				district_id: locationData?.district?._id,
 				locality_id: locationData?.locality?._id,
@@ -148,17 +150,19 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 				parish_id: locationData?.parish?._id,
 			});
 		})();
-	}, [form.values.latitude, form.values.longitude]);
+	}, [form.getValues().latitude, form.getValues().longitude]);
 
 	useEffect(() => {
+		// Get latest form values
+		const currentValues = form.getValues();
 		// Skip if no name is set
-		if (typeof form.values.name !== 'string') return;
+		if (typeof currentValues.name !== 'string') return;
 		// Build the abreviated and TTS names
-		const shortName = abbreviateName(form.values.name);
-		const ttsName = form.values.name.replace(/\s+/g, ' ').trim();
+		const shortName = abbreviateName(currentValues.name);
+		const ttsName = currentValues.name.replace(/\s+/g, ' ').trim();
 		// Set the form values
 		form.setValues({ short_name: shortName, tts_name: ttsName });
-	}, [form.values.name]);
+	}, [form.getValues().name]);
 
 	const handleCreateStop = async () => {
 		setIsSaving(true);

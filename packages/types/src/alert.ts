@@ -40,7 +40,7 @@ export const AlertSchema = DocumentSchema.extend({
 	})).default([]),
 	title: z.string().min(1),
 	type: AlertTypeSchema.nullable().default(AlertTypeSchema.options[0]),
-}).strict();
+});
 
 export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
 export const UpdateAlertSchema = CreateAlertSchema.partial();
