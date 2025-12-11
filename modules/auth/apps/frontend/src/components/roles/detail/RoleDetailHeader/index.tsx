@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RoleDetailMode, useRoleDetailContext } from '@/contexts/RoleDetail.context';
+import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { BackButton, Button, keepUrlParams, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
@@ -39,19 +39,17 @@ export function RoleDetailHeader() {
 			<Button
 				disabled={!roleDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label={roleDetailContext.flags.mode === RoleDetailMode.CREATE ? 'Publicar' : 'Salvar'}
+				label="Salvar"
 				loading={roleDetailContext.flags.isSaving}
-				onClick={roleDetailContext.actions.saveRole}
+				onClick={roleDetailContext.actions.updateRole}
 				variant="primary"
 			/>
-			{roleDetailContext.flags.mode === RoleDetailMode.EDIT && (
-				<Button
-					icon={<IconTrash size={28} />}
-					label="Apagar"
-					onClick={roleDetailContext.actions.deleteRole}
-					variant="danger"
-				/>
-			)}
+			<Button
+				icon={<IconTrash size={28} />}
+				label="Apagar"
+				onClick={roleDetailContext.actions.deleteRole}
+				variant="danger"
+			/>
 		</Toolbar>
 	);
 

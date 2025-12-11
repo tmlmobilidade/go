@@ -12,17 +12,12 @@ import useSWR from 'swr';
 
 /* * */
 
-export enum RoleDetailMode {
-	CREATE = 'create',
-	EDIT = 'edit',
-}
-
 interface RoleDetailContextState {
 	actions: {
 		deleteRole: () => void
 		handlePermissionResourceToggle: (scope: string, action: string, resource: Record<string, unknown>) => void
 		handlePermissionToggle: (scope: string, action: string) => void
-		saveRole: () => void
+		updateRole: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateRoleDto>
@@ -32,7 +27,6 @@ interface RoleDetailContextState {
 		isReadOnly: boolean
 		isSaving: boolean
 		loading: boolean
-		mode: RoleDetailMode
 	}
 }
 
@@ -67,7 +61,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: allRolesMutate } = useSWR<Role[]>(API_ROUTES.auth.ROLES_LIST);
-	const { data: roleData, isLoading: roleLoading } = useSWR<Role>(roleId === 'new' ? null : API_ROUTES.auth.ROLES_DETAIL(roleId));
+	const { data: roleData, isLoading: roleLoading } = useSWR<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId));
 
 	//
 	// C. Setup form
@@ -77,17 +71,16 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	//
 	// D. Handle actions
 
-	const handleSaveRole = async () => {
+	const handleUpdateRole = async () => {
 		setIsSaving(true);
-		const method = roleId === 'new' ? 'POST' : 'PUT';
-		const url = roleId === 'new' ? API_ROUTES.auth.ROLES_LIST : API_ROUTES.auth.ROLES_DETAIL(roleId);
-		const response = await fetchData<Role>(url, method, form.getValues());
+
+		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'PUT', form.getValues());
 
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({
 					message: response.error,
-					title: 'Erro ao salvar utilizador',
+					title: 'Erro ao salvar grupo',
 				});
 			}
 			else {
@@ -95,7 +88,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 				for (const error of errors) {
 					useToast.error({
 						message: error.message,
-						title: 'Erro ao salvar utilizador',
+						title: 'Erro ao salvar grupo',
 					});
 				}
 			}
@@ -109,10 +102,6 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 			title: 'Sucesso',
 		});
 
-		if (roleId === 'new' && response.data?._id) {
-			router.replace(PAGE_ROUTES.auth.ROLES_DETAIL(response.data._id));
-		}
-
 		meContext.mutate.me();
 		allRolesMutate();
 
@@ -120,7 +109,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	};
 
 	const handleDeleteRole = async () => {
-		// Skip if new user
+		// Skip if new role
 		if (roleId === 'new') return;
 		// Confirm deletion
 		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'DELETE');
@@ -178,17 +167,16 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 			deleteRole: handleDeleteRole,
 			handlePermissionResourceToggle,
 			handlePermissionToggle,
-			saveRole: handleSaveRole,
+			updateRole: handleUpdateRole,
 		},
 		data: {
 			form,
-			id: roleId === 'new' ? undefined : roleId,
+			id: roleId,
 		},
 		flags: {
 			isReadOnly,
 			isSaving,
 			loading: roleLoading,
-			mode: roleId === 'new' ? RoleDetailMode.CREATE : RoleDetailMode.EDIT,
 		},
 	}), [
 		form,
