@@ -107,9 +107,19 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		}
 		// Update the form with the validated values
 		form.setValues({ latitude: validatedLatitude, longitude: validatedLongitude });
+		// Fetch the locations API for the given coordinates
+		(async () => {
+			const locationData = await locationsContext.actions.queryLocations(validatedLatitude, validatedLongitude);
+			form.setValues({
+				district_id: locationData?.district?._id,
+				locality_id: locationData?.locality?._id,
+				municipality_id: locationData?.municipality?._id,
+				parish_id: locationData?.parish?._id,
+			});
+		})();
 	};
 
-	useEffect(() => {
+	const validateCurrentStep = () => {
 		// Get latest form values
 		const currentValues = form.getValues();
 		// By default, set the current step as invalid
@@ -133,36 +143,28 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (modalCurrentStepState === 3) {
 			setModalCurrentStepValidState(true);
 		}
-	}, [modalCurrentStepState, form.getValues()]);
+	};
 
-	useEffect(() => {
-		// Get latest form values
-		const currentValues = form.getValues();
-		// Skip if no coordinates are set
-		if (!currentValues.latitude || !currentValues.longitude) return;
-		// Fetch the locations API for the given coordinates
-		(async () => {
-			const locationData = await locationsContext.actions.queryLocations(currentValues.latitude, currentValues.longitude);
-			form.setValues({
-				district_id: locationData?.district?._id,
-				locality_id: locationData?.locality?._id,
-				municipality_id: locationData?.municipality?._id,
-				parish_id: locationData?.parish?._id,
-			});
-		})();
-	}, [form.getValues().latitude, form.getValues().longitude]);
+	form.watch('name', validateCurrentStep);
+	form.watch('short_name', validateCurrentStep);
+	form.watch('tts_name', validateCurrentStep);
+	form.watch('latitude', validateCurrentStep);
+	form.watch('longitude', validateCurrentStep);
+	form.watch('district_id', validateCurrentStep);
+	form.watch('municipality_id', validateCurrentStep);
+	form.watch('parish_id', validateCurrentStep);
+	useEffect(validateCurrentStep, [modalCurrentStepState]);
 
-	useEffect(() => {
-		// Get latest form values
-		const currentValues = form.getValues();
+	form.watch('name', ({ value }) => {
 		// Skip if no name is set
-		if (typeof currentValues.name !== 'string') return;
+		if (typeof value !== 'string') return;
 		// Build the abreviated and TTS names
-		const shortName = abbreviateName(currentValues.name);
-		const ttsName = currentValues.name.replace(/\s+/g, ' ').trim();
+		const shortName = abbreviateName(value);
+		const ttsName = value.replace(/\s+/g, ' ').trim();
 		// Set the form values
-		form.setValues({ short_name: shortName, tts_name: ttsName });
-	}, [form.getValues().name]);
+		form.setFieldValue('short_name', shortName);
+		form.setFieldValue('tts_name', ttsName);
+	});
 
 	const handleCreateStop = async () => {
 		setIsSaving(true);

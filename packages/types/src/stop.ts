@@ -123,7 +123,7 @@ export const StopSchema = DocumentSchema.extend({
 	//
 	// Notes & Comments
 
-	comments: z.array(CommentSchema),
+	comments: z.array(CommentSchema).default([]),
 	observations: z.string().nullable().default(null),
 
 });

@@ -48,6 +48,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema
 	}, 750);
 
 	const form = useForm<T>({
+		cascadeUpdates: true,
 		mode: 'uncontrolled',
 		onValuesChange: validateForm,
 		validate: zodResolver(schema as Schema<T>),

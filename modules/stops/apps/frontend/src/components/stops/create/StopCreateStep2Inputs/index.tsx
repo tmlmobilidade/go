@@ -39,15 +39,15 @@ export function StopCreateStep2Inputs() {
 			<Section>
 				<Grid columns="a" gap="md">
 					<TextInput
+						defaultValue={stopCreateContext.data.form.values.short_name}
 						description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
 						label="Nome Curto (automático)"
-						value={stopCreateContext.data.form.values.short_name}
 						readOnly
 					/>
 					<TextInput
+						defaultValue={stopCreateContext.data.form.values.tts_name}
 						description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
 						label="Nome TTS (automático)"
-						value={stopCreateContext.data.form.values.tts_name}
 						readOnly
 					/>
 				</Grid>
