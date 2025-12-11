@@ -11,7 +11,7 @@ import { z } from 'zod';
 // Define constants for enum values for better maintainability
 
 const JURISDICTION_VALUES = ['ip', 'municipality', 'other', 'unknown'] as const;
-const STOP_LIFECYCLE_STATUS_VALUES = ['active', 'inactive', 'provisional', 'seasonal', 'voided'] as const;
+const STOP_LIFECYCLE_STATUS_VALUES = ['draft', 'active', 'inactive', 'provisional', 'seasonal', 'archived'] as const;
 const ELECTRICITY_STATUS_VALUES = ['available', 'unavailable', 'unknown'] as const;
 const ROAD_TYPE_VALUES = ['complementary_itinerary', 'highway', 'main_itinerary', 'national_road', 'regional_road', 'secondary_road', 'unknown'] as const;
 const INFRASTRUCTURE_STATUS_VALUES = ['not_applicable', 'unknown', 'missing', 'damaged', 'ok'] as const;
@@ -50,69 +50,69 @@ export const StopSchema = DocumentSchema.extend({
 	_id: z.string(),
 	is_archived: z.boolean().default(false),
 	is_locked: z.boolean().default(false),
-	jurisdiction: jurisdictionSchema,
-	legacy_id: z.string().nullish(),
-	lifecycle_status: stopLifecycleStatusSchema,
+	jurisdiction: jurisdictionSchema.default('unknown'),
+	legacy_id: z.string().nullable().default(null),
+	lifecycle_status: stopLifecycleStatusSchema.default('draft'),
 	name: z.string(),
-	new_name: z.string().nullish(),
-	short_name: z.string().nullish(),
-	tts_name: z.string().nullish(),
+	new_name: z.string().nullable().default(null),
+	short_name: z.string(),
+	tts_name: z.string(),
 
 	//
 	// Location
 
 	district_id: z.string(),
 	latitude: z.number(),
-	locality_id: z.string().nullish(),
+	locality_id: z.string().nullable().default(null),
 	longitude: z.number(),
 	municipality_id: z.string(),
-	parish_id: z.string().nullish(),
+	parish_id: z.string().nullable().default(null),
 
 	//
 	// Infrastructure
 
-	bench_status: infrastructureStatusSchema,
-	electricity_status: electricityStatusSchema,
-	pole_status: infrastructureStatusSchema,
-	road_type: roadTypeSchema,
+	bench_status: infrastructureStatusSchema.default('unknown'),
+	electricity_status: electricityStatusSchema.default('unknown'),
+	pole_status: infrastructureStatusSchema.default('unknown'),
+	road_type: roadTypeSchema.default('unknown'),
 
 	//
 	// Shelter
 
-	shelter_code: z.string().nullish(),
-	shelter_frame_size: z.tuple([z.number(), z.number()]).nullish(),
-	shelter_installation_date: unixTimeStampSchema.nullish(),
-	shelter_maintainer: z.string().nullish(),
-	shelter_make: z.string().nullish(),
-	shelter_model: z.string().nullish(),
-	shelter_status: infrastructureStatusSchema,
+	shelter_code: z.string().nullable().default(null),
+	shelter_frame_size: z.tuple([z.number(), z.number()]).nullable().default(null),
+	shelter_installation_date: unixTimeStampSchema.nullable().default(null),
+	shelter_maintainer: z.string().nullable().default(null),
+	shelter_make: z.string().nullable().default(null),
+	shelter_model: z.string().nullable().default(null),
+	shelter_status: infrastructureStatusSchema.default('unknown'),
 
 	//
 	// Checks
 
-	last_infrastructure_check: unixTimeStampSchema.nullish(),
-	last_infrastructure_maintenance: unixTimeStampSchema.nullish(),
-	last_schedules_check: unixTimeStampSchema.nullish(),
-	last_schedules_maintenance: unixTimeStampSchema.nullish(),
+	last_infrastructure_check: unixTimeStampSchema.nullable().default(null),
+	last_infrastructure_maintenance: unixTimeStampSchema.nullable().default(null),
+	last_schedules_check: unixTimeStampSchema.nullable().default(null),
+	last_schedules_maintenance: unixTimeStampSchema.nullable().default(null),
 
 	//
 	// Facilities
 
-	connections: z.array(connectionsSchema),
-	facilities: z.array(facilitiesSchema),
+	connections: z.array(connectionsSchema).default([]),
+	facilities: z.array(facilitiesSchema).default([]),
 
 	//
 	// Equipments
 
-	equipment: z.array(equipmentSchema),
+	equipment: z.array(equipmentSchema).default([]),
 
 	// Has ...
-	has_bench: hasAnySchema,
-	has_mupi: hasAnySchema,
-	has_network_map: hasAnySchema,
-	has_schedules: hasAnySchema,
-	has_shelter: hasAnySchema,
-	has_stop_sign: hasAnySchema,
+	has_bench: hasAnySchema.default('unknown'),
+	has_mupi: hasAnySchema.default('unknown'),
+	has_network_map: hasAnySchema.default('unknown'),
+	has_schedules: hasAnySchema.default('unknown'),
+	has_shelter: hasAnySchema.default('unknown'),
+	has_stop_sign: hasAnySchema.default('unknown'),
 
 	//
 	// Images & Files
@@ -124,20 +124,20 @@ export const StopSchema = DocumentSchema.extend({
 	// Notes & Comments
 
 	comments: z.array(CommentSchema),
-	observations: z.string().nullish(),
+	observations: z.string().nullable().default(null),
 
-}).strict();
+});
 
 export const parentStationSchema = DocumentSchema.extend({
 	_id: z.string(),
 	agency_id: z.string(),
 	stop_ids: z.array(z.string()),
-}).strict();
+});
 
 export const stopAreaSchema = DocumentSchema.extend({
 	_id: z.string(),
 	parent_station_ids: z.array(z.string()),
-}).strict();
+});
 
 export const CreateStopSchema = StopSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateStopSchema = CreateStopSchema.omit({ created_by: true }).partial();

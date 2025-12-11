@@ -3,7 +3,6 @@
 /* * */
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
-import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal';
 import { Button, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -33,14 +32,6 @@ export function StopCreateModalControls() {
 					label={stopCreateContext.modal.current_step === 3 ? 'Criar Paragem' : 'Próximo Passo'}
 					loading={stopCreateContext.flags.isSaving}
 					onClick={stopCreateContext.modal.current_step === 3 ? stopCreateContext.actions.createNewStop : stopCreateContext.modal.nextStep}
-				/>
-			</Grid>
-			<Grid columns="a" gap="md">
-				<Button
-					disabled={stopCreateContext.flags.isSaving}
-					label="Cancelar"
-					onClick={closeCreateStopModal}
-					variant="danger"
 				/>
 			</Grid>
 		</Section>

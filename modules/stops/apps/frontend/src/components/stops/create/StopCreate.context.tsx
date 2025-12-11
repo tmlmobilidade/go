@@ -110,37 +110,30 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	useEffect(() => {
+		// Get latest form values
+		const currentValues = form.getValues();
 		// By default, set the current step as invalid
 		setModalCurrentStepValidState(false);
 		// Validate Step 1
 		if (modalCurrentStepState === 1) {
-			const hasValidLatitude = isValidLatitude(form.values.latitude);
-			const hasValidLongitude = isValidLongitude(form.values.longitude);
-			const hasValidDistrict = form.values.district_id !== undefined;
-			const hasValidMunicipality = form.values.municipality_id !== undefined;
-			const hasValidParish = true; // form.values.parish_id !== undefined; // TODO - Verify missing parishes
+			const hasValidLatitude = isValidLatitude(currentValues.latitude);
+			const hasValidLongitude = isValidLongitude(currentValues.longitude);
+			const hasValidDistrict = currentValues.district_id !== undefined;
+			const hasValidMunicipality = currentValues.municipality_id !== undefined;
+			const hasValidParish = true; // currentValues.parish_id !== undefined; // TODO - Verify missing parishes
 			setModalCurrentStepValidState(hasValidLatitude && hasValidLongitude && hasValidDistrict && hasValidMunicipality && hasValidParish);
 		}
 		// Validate Step 2
 		if (modalCurrentStepState === 2) {
-			const hasNameWithinLimits = form.values.name.length >= StopOptions.stop_name_min_length && form.values.name.length <= StopOptions.stop_name_max_length;
-			const hasShortNameWithinLimits = form.values.short_name.length >= StopOptions.stop_short_name_min_length && form.values.short_name.length <= StopOptions.stop_short_name_max_length;
+			const hasNameWithinLimits = currentValues.name?.length >= StopOptions.stop_name_min_length && currentValues.name?.length <= StopOptions.stop_name_max_length;
+			const hasShortNameWithinLimits = currentValues.short_name?.length >= StopOptions.stop_short_name_min_length && currentValues.short_name?.length <= StopOptions.stop_short_name_max_length;
 			setModalCurrentStepValidState(hasNameWithinLimits && hasShortNameWithinLimits);
 		}
 		// Validate Step 3
 		if (modalCurrentStepState === 3) {
 			setModalCurrentStepValidState(true);
 		}
-	}, [
-		modalCurrentStepState,
-		form.values.latitude,
-		form.values.longitude,
-		form.values.district_id,
-		form.values.municipality_id,
-		form.values.parish_id,
-		form.values.name,
-		form.values.short_name,
-	]);
+	}, [modalCurrentStepState, form.getValues()]);
 
 	useEffect(() => {
 		// Skip if no coordinates are set
