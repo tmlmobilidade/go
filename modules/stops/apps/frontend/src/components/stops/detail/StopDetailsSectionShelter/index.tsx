@@ -37,7 +37,6 @@ export function StopDetailsSectionShelter() {
 		>
 			<Section>
 				<Grid columns="abc" gap="md">
-
 					<ProposedChangesWrapper
 						inputName="has_shelter"
 						label="Existe Abrigo?"
@@ -45,21 +44,19 @@ export function StopDetailsSectionShelter() {
 						scope={scopeOption}
 					>
 						<Select
+							key={stopDetailContext.data.form.key('has_shelter')}
 							data={hasShelterOptions}
-							placeholder="Selecione uma opção..."
 							{...stopDetailContext.data.form.getInputProps('has_shelter')}
 						/>
 					</ProposedChangesWrapper>
 					<TextInput
+						key={stopDetailContext.data.form.key('shelter_code')}
 						label="Código do Abrigo"
-						miw="100%"
-						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('shelter_code')}
 					/>
 					<TextInput
+						key={stopDetailContext.data.form.key('shelter_maintainer')}
 						label="Entidade Gestora do Abrigo"
-						miw="100%"
-						placeholder="..."
 						{...stopDetailContext.data.form.getInputProps('shelter_maintainer')}
 					/>
 				</Grid>
@@ -67,8 +64,8 @@ export function StopDetailsSectionShelter() {
 			</Section>
 			<Section>
 				<TextInput
+					key={stopDetailContext.data.form.key('shelter_material')}
 					label="Data de Instalação do abrigo"
-					miw="100%"
 					placeholder="2023-02-10"
 					{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
 				/>

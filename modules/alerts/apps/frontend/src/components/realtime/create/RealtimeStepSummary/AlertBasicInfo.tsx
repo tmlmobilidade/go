@@ -21,7 +21,6 @@ export function AlertBasicInfo() {
 					<>
 						<TextInput
 							label="Percurso alternativo"
-							placeholder="..."
 							value={realtimeContext.data.detour}
 							onChange={(event) => {
 								realtimeContext.actions.setDetour(event.target.value);

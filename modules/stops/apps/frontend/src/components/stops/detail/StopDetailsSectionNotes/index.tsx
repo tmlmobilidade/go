@@ -25,8 +25,10 @@ export function StopDetailsSectionNotes() {
 		>
 			<Section>
 				<Textarea
-					mih="100px"
-					miw="100%"
+					key={stopDetailContext.data.form.key('comments')}
+					// mih="100px"
+					// miw="100%"
+					minRows={10}
 					placeholder="Construção planeada a..."
 					{...stopDetailContext.data.form.getInputProps('comments')}
 				/>

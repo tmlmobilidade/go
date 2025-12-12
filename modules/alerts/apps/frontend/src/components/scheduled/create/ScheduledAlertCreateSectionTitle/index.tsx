@@ -26,7 +26,6 @@ export function ScheduledAlertCreateSectionTitle() {
 				description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
 				label="Título Curto"
 				maxLength={255}
-				placeholder="..."
 				data-autofocus
 				withAsterisk
 				{...scheduledAlertCreateContext.data.form.getInputProps('title')}
@@ -37,7 +36,6 @@ export function ScheduledAlertCreateSectionTitle() {
 				label="Descrição"
 				maxRows={10}
 				minRows={4}
-				placeholder="..."
 				withAsterisk={!CreateAlertSchema.shape.description.isOptional()}
 				autosize
 				{...scheduledAlertCreateContext.data.form.getInputProps('description')}

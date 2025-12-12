@@ -29,7 +29,6 @@ export function RoleDetailBasicInfo() {
 						key={roleDetailContext.data.form.key('name')}
 						label="Nome do grupo"
 						maxLength={255}
-						placeholder="..."
 						withAsterisk
 						{...roleDetailContext.data.form.getInputProps('name')}
 					/>

@@ -31,7 +31,6 @@ export function AlertDetailSectionTitle() {
 					description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
 					label="Título Curto"
 					maxLength={255}
-					placeholder="..."
 					withAsterisk
 					{...alertDetailContext.data.form.getInputProps('title')}
 				/>
@@ -41,7 +40,6 @@ export function AlertDetailSectionTitle() {
 					label="Descrição"
 					maxRows={10}
 					minRows={4}
-					placeholder="..."
 					autosize
 					withAsterisk
 					{...alertDetailContext.data.form.getInputProps('description')}

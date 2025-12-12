@@ -27,7 +27,6 @@ export function UserCreateBasicInfo() {
 					key={userCreateContext.data.form.key('first_name')}
 					label="Primeiro Nome"
 					maxLength={255}
-					placeholder="..."
 					withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 					data-autofocus
 					{...userCreateContext.data.form.getInputProps('first_name')}
@@ -36,7 +35,6 @@ export function UserCreateBasicInfo() {
 					key={userCreateContext.data.form.key('last_name')}
 					label="Último Nome"
 					maxLength={255}
-					placeholder="..."
 					withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 					{...userCreateContext.data.form.getInputProps('last_name')}
 				/>

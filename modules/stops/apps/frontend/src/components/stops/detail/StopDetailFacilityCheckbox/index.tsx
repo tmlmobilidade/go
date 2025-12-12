@@ -20,6 +20,7 @@ export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDe
 
 	//
 	// A. Setup variables
+
 	const stopDetailContext = useStopDetailContext();
 	const form = stopDetailContext.data.form;
 	const stopId = stopDetailContext.data.stop?._id;

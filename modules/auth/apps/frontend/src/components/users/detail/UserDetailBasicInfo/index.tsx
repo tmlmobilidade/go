@@ -31,7 +31,6 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('first_name')}
 						label="Primeiro Nome"
 						maxLength={255}
-						placeholder="..."
 						withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('first_name')}
 					/>
@@ -39,7 +38,6 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('last_name')}
 						label="Último Nome"
 						maxLength={255}
-						placeholder="..."
 						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('last_name')}
 					/>
@@ -64,7 +62,6 @@ export function UserDetailBasicInfo() {
 						autoComplete="new-password"
 						label="Change Password"
 						onChange={event => userDetailContext.actions.handleChangePassword(event.target.value)}
-						placeholder="..."
 					/>
 				</Grid>
 			</Section>

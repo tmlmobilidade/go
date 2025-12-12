@@ -25,6 +25,7 @@ export function Select({ ...props }: SelectProps) {
 			allowDeselect={props.clearable ?? true}
 			clearable={props.clearable ?? true}
 			nothingFoundMessage={props.nothingFoundMessage || 'Nenhum resultado encontrado'}
+			placeholder="Selecione uma opção..."
 			searchable
 			withAlignedLabels
 			{...props}

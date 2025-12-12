@@ -25,7 +25,6 @@ export function RoleCreateBasicInfo() {
 					key={roleCreateContext.data.form.key('name')}
 					label="Nome do grupo"
 					maxLength={255}
-					placeholder="..."
 					data-autofocus
 					withAsterisk
 					{...roleCreateContext.data.form.getInputProps('name')}
