@@ -36,7 +36,6 @@ class PCGIDBLegacyClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
-			directConnection: true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -76,8 +75,8 @@ class PCGIDBLegacyClass {
 			throw new Error('Missing PCGIDB_LEGACY_USER or PCGIDB_LEGACY_PASSWORD environment variable.');
 		}
 
-		if (!process.env.PCGIDB_LEGACY_ADDRESS || !process.env.PCGIDB_LEGACY_PORT) {
-			throw new Error('Missing PCGIDB_LEGACY_ADDRESS or PCGIDB_LEGACY_PORT environment variable.');
+		if (!process.env.PCGIDB_LEGACY_ADDRESS_1 || !process.env.PCGIDB_LEGACY_ADDRESS_2 || !process.env.PCGIDB_LEGACY_ADDRESS_3 || !process.env.PCGIDB_LEGACY_PORT) {
+			throw new Error('Missing PCGIDB_LEGACY_ADDRESS_1, PCGIDB_LEGACY_ADDRESS_2, PCGIDB_LEGACY_ADDRESS_3 or PCGIDB_LEGACY_PORT environment variable.');
 		}
 
 		//
@@ -85,16 +84,12 @@ class PCGIDBLegacyClass {
 		// In 'production' and 'staging', we assume direct connection is used.
 
 		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
-			return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@${process.env.PCGIDB_LEGACY_ADDRESS}:${process.env.PCGIDB_LEGACY_PORT}/`;
+			return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@${process.env.PCGIDB_LEGACY_ADDRESS_1}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_2}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_3}:${process.env.PCGIDB_LEGACY_PORT}/`;
 		}
 
 		//
 		// If we're here, then the SSH Tunnel is to be used.
 		// Check if the required SSH Tunnel environment variables are set.
-
-		if (!process.env.PCGIDB_LEGACY_ADDRESS || !process.env.PCGIDB_LEGACY_PORT) {
-			throw new Error('Missing PCGIDB_LEGACY_ADDRESS or PCGIDB_LEGACY_PORT environment variable.');
-		}
 
 		if (!process.env.PCGIDB_TUNNEL_LOCAL_PORT) {
 			throw new Error('Missing PCGIDB_TUNNEL_LOCAL_PORT environment variable.');
@@ -109,7 +104,7 @@ class PCGIDBLegacyClass {
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.PCGIDB_LEGACY_ADDRESS,
+				dstAddr: process.env.PCGIDB_LEGACY_ADDRESS_1,
 				dstPort: Number(process.env.PCGIDB_LEGACY_PORT),
 				srcAddr: 'localhost',
 				srcPort: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
