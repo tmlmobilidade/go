@@ -3,7 +3,7 @@
 import { type OriginalStopType } from '@/original-stop.type.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { stops } from '@tmlmobilidade/interfaces';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop, StopSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -25,71 +25,61 @@ import { type Stop } from '@tmlmobilidade/types';
 		const originalStopsResponse = await fetch('https://go.carrismetropolitana.pt/api/stops/public');
 		const originalStopsData = await originalStopsResponse.json() as OriginalStopType[];
 
-		const preparedStops = originalStopsData.map((originalStop) => {
-			//
-
-			//
-			// Prepare stop data
-
-			const newStop: Stop = {
-				_id: originalStop.code,
-				bench_status: 'unknown',
-				comments: [],
-				connections: [],
-				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-				district_id: '',
-				electricity_status: 'unknown',
-				equipment: [],
-				facilities: [],
-				file_ids: [],
-				has_bench: 'unknown',
-				has_mupi: 'unknown',
-				has_network_map: 'unknown',
-				has_schedules: 'unknown',
-				has_shelter: 'unknown',
-				has_stop_sign: 'unknown',
-				image_ids: [],
-				is_archived: false,
-				is_locked: false,
-				jurisdiction: 'unknown',
-				last_infrastructure_check: null,
-				last_infrastructure_maintenance: null,
-				last_schedules_check: null,
-				last_schedules_maintenance: null,
-				latitude: originalStop.latitude,
-				legacy_id: originalStop.code,
-				lifecycle_status: 'active',
-				locality_id: '',
-				longitude: originalStop.longitude,
-				municipality_id: '',
-				name: originalStop.name,
-				new_name: originalStop.name_new ?? '',
-				observations: '',
-				parish_id: '',
-				pole_status: 'unknown',
-				road_type: 'unknown',
-				shelter_code: originalStop.shelter_code ?? null,
-				shelter_frame_size: undefined,
-				shelter_installation_date: null,
-				shelter_maintainer: null,
-				shelter_make: null,
-				shelter_model: null,
-				shelter_status: 'unknown',
-				short_name: originalStop.short_name,
-				tts_name: originalStop.tts_name,
-				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			};
-
-			return newStop;
-		});
+		const preparedStops = originalStopsData.map(originalStop => StopSchema.parse({
+			_id: originalStop.code,
+			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			created_by: 'system',
+			district_id: '',
+			has_shelter: transformHasShelter(originalStop.has_shelter),
+			is_archived: false,
+			is_locked: false,
+			latitude: originalStop.latitude,
+			legacy_id: originalStop.code,
+			lifecycle_status: transformLifeCycleStatus(originalStop.operational_status),
+			longitude: originalStop.longitude,
+			municipality_id: '',
+			name: originalStop.name,
+			new_name: originalStop.name_new ?? '',
+			short_name: originalStop.short_name,
+			tts_name: originalStop.tts_name,
+			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			updated_by: 'system',
+		}));
 
 		console.log(`Prepared ${preparedStops.length} stops`);
 
 		//
-		// Insert stop into DB
+		// Download and prepare deleted stops
 
-		await stops.insertMany(preparedStops);
+		const deletedStopsResponse = await fetch('https://go.carrismetropolitana.pt/api/stops/public-deleted');
+		const deletedStopsData = await deletedStopsResponse.json() as OriginalStopType[];
+
+		const preparedDeletedStops = deletedStopsData.map(deletedStop => StopSchema.parse({
+			_id: deletedStop.code,
+			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			created_by: 'system',
+			district_id: '',
+			is_archived: true,
+			is_locked: false,
+			latitude: deletedStop.latitude,
+			legacy_id: deletedStop.code,
+			lifecycle_status: 'voided',
+			longitude: deletedStop.longitude,
+			municipality_id: '',
+			name: deletedStop.name,
+			new_name: '',
+			short_name: '',
+			tts_name: '',
+			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			updated_by: 'system',
+		}));
+
+		//
+		// Insert stops into DB
+
+		await stops.insertMany([...preparedStops, ...preparedDeletedStops]);
 		console.log(`Inserted ${preparedStops.length} stops`);
+		console.log(`Inserted ${preparedDeletedStops.length} deleted stops`);
 
 		process.exit(0);
 
@@ -100,3 +90,21 @@ import { type Stop } from '@tmlmobilidade/types';
 		process.exit(1);
 	}
 })();
+
+/* * */
+
+function transformLifeCycleStatus(value: string): Stop['lifecycle_status'] {
+	if (value === 'ACTIVE') return 'active';
+	if (value === 'INACTIVE') return 'inactive';
+	if (value === 'PROVISIONAL') return 'provisional';
+	if (value === 'VOIDED') return 'voided';
+	return 'draft';
+}
+
+/* * */
+
+function transformHasShelter(value: number | string): Stop['has_shelter'] {
+	if (value === 'YES') return 'yes';
+	if (value === 'NO' || value === '0' || value === 0) return 'no';
+	return 'unknown';
+}

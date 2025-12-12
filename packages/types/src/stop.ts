@@ -11,7 +11,7 @@ import { z } from 'zod';
 // Define constants for enum values for better maintainability
 
 const JURISDICTION_VALUES = ['ip', 'municipality', 'other', 'unknown'] as const;
-const STOP_LIFECYCLE_STATUS_VALUES = ['draft', 'active', 'inactive', 'provisional', 'seasonal', 'archived'] as const;
+const STOP_LIFECYCLE_STATUS_VALUES = ['draft', 'active', 'inactive', 'provisional', 'seasonal', 'voided'] as const;
 const ELECTRICITY_STATUS_VALUES = ['available', 'unavailable', 'unknown'] as const;
 const ROAD_TYPE_VALUES = ['complementary_itinerary', 'highway', 'main_itinerary', 'national_road', 'regional_road', 'secondary_road', 'unknown'] as const;
 const INFRASTRUCTURE_STATUS_VALUES = ['not_applicable', 'unknown', 'missing', 'damaged', 'ok'] as const;
