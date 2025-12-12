@@ -71,6 +71,17 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
+	/* DATES */
+	dates: {
+		// BASE
+		BASE: `${getAppConfig('dates', 'frontend_url')}`,
+
+		// ANNOTATIONS
+		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/annotations/${id}`,
+		ANNOTATIONS_LIST: `${getAppConfig('dates', 'frontend_url')}/annotations`,
+	},
+
+	/* * */
 	/* PERFORMANCE */
 	performance: {
 		// BASE
@@ -208,6 +219,18 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/vehicle-events`,
 		RIDES_LIST: `${getAppConfig('controller', 'api_url')}/rides`,
 		RIDES_WS: `${getAppConfig('controller', 'api_url')}/rides/ws`,
+	},
+
+	/* * */
+	/* DATES */
+	dates: {
+		// BASE
+		BASE: `${getAppConfig('dates', 'api_url')}`,
+
+		// ANNOTATIONS
+		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
+		ANNOTATIONS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/toggle-lock`,
+		ANNOTATIONS_LIST: `${getAppConfig('dates', 'api_url')}/annotations`,
 	},
 
 	/* * */

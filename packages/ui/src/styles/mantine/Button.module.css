@@ -7,9 +7,6 @@
 	overflow: visible;
 	cursor: pointer;
 	user-select: none;
-	background-color: red;
-	border: 2px solid brown;
-	box-shadow: 0 1px 3px 0 brown;
 }
 
 .root, /* DEFAULT */
