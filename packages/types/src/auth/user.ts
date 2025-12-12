@@ -35,7 +35,7 @@ export const UserSchema_UNSAFE = DocumentSchema.extend({
 });
 
 export const CreateUserSchema = UserSchema_UNSAFE.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true }).partial();
+export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }).partial();
 export const UserSchema = UserSchema_UNSAFE.omit({ password_hash: true, session_ids: true, verification_token_ids: true });
 
 /* * */

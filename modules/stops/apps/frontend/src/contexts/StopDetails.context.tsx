@@ -121,10 +121,16 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const handleLockStop = async () => {
 		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId));
 		if (response.error) {
+			if (typeof response.error === 'string') {
+				useToast.error({ message: response.error, title: 'Erro ao bloquear paragem' });
+				setIsSaving(false);
+				return;
+			}
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
 				useToast.error({ message: error.message, title: 'Erro ao bloquear paragem' });
 			}
+			setIsSaving(false);
 			return;
 		}
 		useToast.success({ message: 'Paragem bloqueada com sucesso.', title: 'Sucesso' });
