@@ -216,6 +216,19 @@ const performanceActions: PermissionConfig = {
 	title: 'Permissões do Performance Explorer',
 };
 
+const datesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read_annotations', description: 'Permite ver anotações', label: 'Ver anotações', resources: ['AGENCIES'] },
+		{ action: 'create_annotations', description: 'Permite criar uma anotação', label: 'Criar anotação', resources: ['AGENCIES'] },
+		{ action: 'update_annotations', description: 'Permite editar uma anotação', label: 'Editar anotação', resources: ['AGENCIES'] },
+		{ action: 'delete_annotations', description: 'Permite eliminar uma anotação', label: 'Eliminar anotação', resources: ['AGENCIES'] },
+		{ action: 'toggle_lock_annotations', description: 'Permite bloquear/desbloquear uma anotação', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de datas.',
+	scope: PermissionCatalog.all.dates.scope,
+	title: 'Permissões de Datas',
+};
+
 /* * */
 
 export const permissionsConfig = [
@@ -231,6 +244,7 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
+	datesActions,
 	// topicActions,
 	// proposedChangesActions,
 ];
