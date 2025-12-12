@@ -48,7 +48,9 @@
 /* DROPDOWN */
 
 .dropdown {
-	background-color: var(--color-system-background-200);
+	background-color: var(--color-system-background-100);
+	box-shadow: 2px 2px 10px 0 var(--color-shadow);
+	border: 2px solid var(--color-primary);
 }
 
 /* * */
