@@ -27,10 +27,7 @@ i18next
 		resources: resourceKeys,
 	});
 
-export function registerModuleTranslations(namespace: string, translations: Record<string, unknown>) {
-	console.log('enterd translations ');
-	for (const [lng, data] of Object.entries(translations)) {
-		console.log('registernig in function', lng, namespace, data);
+export function registerModuleTranslations(namespace: string, translations: Record<string, unknown>) {	for (const [lng, data] of Object.entries(translations)) {
 		i18next.addResourceBundle(lng, namespace, data, true, false);
 	}
 }
