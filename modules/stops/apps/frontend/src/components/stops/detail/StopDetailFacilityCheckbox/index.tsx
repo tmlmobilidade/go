@@ -1,6 +1,6 @@
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { StopFacilitySchema } from '@tmlmobilidade/types';
 import { Checkbox, ProposedChangesWrapper } from '@tmlmobilidade/ui';
 import React from 'react';

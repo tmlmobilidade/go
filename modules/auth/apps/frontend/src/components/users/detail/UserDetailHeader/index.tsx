@@ -38,7 +38,7 @@ export function UserDetailHeader() {
 			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
 			<Spacer />
 			<Button
-				disabled={!userDetailContext.data.form.isValid()}
+				disabled={!userDetailContext.data.form.isDirty() || !userDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label="Guardar"
 				loading={userDetailContext.flags.isSaving}

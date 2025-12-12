@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Collapsible, Grid, Section, Textarea } from '@tmlmobilidade/ui';
 
 /* * */

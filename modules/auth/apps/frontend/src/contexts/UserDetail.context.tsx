@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateUserDto, CreateUserSchema, PermissionSchema, type User } from '@tmlmobilidade/types';
+import { PermissionSchema, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 import { UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
@@ -22,7 +22,7 @@ interface UserDetailContextState {
 		saveUser: () => void
 	}
 	data: {
-		form: UseFormReturnType<CreateUserDto>
+		form: UseFormReturnType<UpdateUserDto>
 		id: string | undefined
 	}
 	flags: {
@@ -68,7 +68,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateUserDto>(CreateUserSchema, userData);
+	const { form } = useTypicalForm<UpdateUserDto>(UpdateUserSchema, userData);
 
 	//
 	// D. Handle actions

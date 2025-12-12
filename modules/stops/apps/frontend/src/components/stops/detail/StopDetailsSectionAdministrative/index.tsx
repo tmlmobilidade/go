@@ -3,7 +3,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
 import { StopJurisdictionSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, Select, ValueDisplay } from '@tmlmobilidade/ui';

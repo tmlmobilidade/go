@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
 import { ScopeOption } from '@/types/proposed-changes';
 import { AvailabilityStatusSchema } from '@tmlmobilidade/types';

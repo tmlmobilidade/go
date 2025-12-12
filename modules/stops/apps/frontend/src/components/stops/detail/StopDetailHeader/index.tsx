@@ -2,9 +2,10 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { BackButton, Button, DeleteButton, HasPermission, keepUrlParams, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -42,7 +43,7 @@ export function StopDetailHeader() {
 				onClick={stopDetailContext.actions.save}
 				variant="primary"
 			/>
-			<HasPermission action="lock" scope="stops">
+			<HasPermission action={PermissionCatalog.all.stops.actions.lock} scope={PermissionCatalog.all.stops.scope}>
 				<LockButton
 					isLocked={stopDetailContext.data.stop?.is_locked}
 					onClick={stopDetailContext.actions.lock}

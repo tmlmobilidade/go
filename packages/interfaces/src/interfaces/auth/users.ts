@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type CreateUserDto, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, type User_UNSAFE, UserSchema } from '@tmlmobilidade/types';
+import { type CreateUserDto, CreateUserSchema, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, type User_UNSAFE } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, type FindOptions, type IndexDescription, type WithId } from 'mongodb';
 import { z } from 'zod';
@@ -16,7 +16,7 @@ interface SafeUserOptions {
 
 class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, UpdateUserDto> {
 	private static _instance: UsersClass;
-	protected override createSchema: z.ZodSchema = UserSchema;
+	protected override createSchema: z.ZodSchema = CreateUserSchema;
 	protected override updateSchema: z.ZodSchema = UpdateUserSchema;
 
 	private constructor() {
