@@ -57,3 +57,10 @@ export type ConditionStatus = z.infer<typeof ConditionStatusSchema>;
 export const LifecycleStatusValues = ['draft', 'active', 'inactive', 'provisional', 'seasonal', 'voided'] as const;
 export const LifecycleStatusSchema = z.enum(LifecycleStatusValues);
 export type LifecycleStatus = z.infer<typeof LifecycleStatusSchema>;
+
+/* * */
+/* AVAILABILITY STATUS */
+
+export const AvailabilityStatusValues = ['available', 'unavailable', 'unknown'] as const;
+export const AvailabilityStatusSchema = z.enum(AvailabilityStatusValues);
+export type AvailabilityStatus = z.infer<typeof AvailabilityStatusSchema>;
