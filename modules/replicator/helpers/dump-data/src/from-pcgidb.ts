@@ -4,6 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { pcgidbLegacy } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 
 /* * */
@@ -27,17 +28,17 @@ export async function dumpVehicleEventsFromPCGIDB() {
 
 		const startDateUnixTimestamp = Dates
 			.now('Europe/Lisbon')
-			.set({ day: 1, hour: 4, millisecond: 0, minute: 0, month: 7, second: 0, year: 2025 })
+			.set({ day: 13, hour: 4, millisecond: 0, minute: 0, month: 10, second: 0, year: 2025 })
 			.unix_timestamp;
 
 		const endDateUnixTimestamp = Dates
 			.now('Europe/Lisbon')
-			.set({ day: 2, hour: 4, millisecond: 0, minute: 0, month: 7, second: 0, year: 2025 })
+			.set({ day: 20, hour: 4, millisecond: 0, minute: 0, month: 10, second: 0, year: 2025 })
 			.unix_timestamp;
 
 		const query = {
-			'content.entity.vehicle.trip.tripId': '3510_0_1_2300_2329_0_VER_DU',
-			'millis': { $gte: startDateUnixTimestamp, $lt: endDateUnixTimestamp },
+			// 'content.entity.vehicle.trip.tripId': '3510_0_1_2300_2329_0_VER_DU',
+			millis: { $gte: startDateUnixTimestamp, $lt: endDateUnixTimestamp },
 		};
 
 		/* * * * * * * * * * * * * * * * */
@@ -46,16 +47,28 @@ export async function dumpVehicleEventsFromPCGIDB() {
 		//
 		// Perform the lookup
 
-		const vehicleEventsFromPCGIDB = await pcgidbLegacy.VehicleEvents.find(query).toArray();
+		const stream = pcgidbLegacy.VehicleEvents.find(query).stream();
 
 		//
 		// Save the results to a JSON file
 
-		const jsonData = JSON.stringify(vehicleEventsFromPCGIDB, null, 2);
+		const veWriter = new CsvWriter('vehicle-events', 'output/events.csv');
 
-		if (!fs.existsSync('output')) fs.mkdirSync('output');
+		for await (const doc of stream) {
+			//
 
-		fs.writeFileSync(`output/events-${startDateUnixTimestamp}-${endDateUnixTimestamp}.json`, jsonData);
+			veWriter.write(doc);
+
+			//
+		}
+
+		veWriter.flush();
+
+		// const jsonData = JSON.stringify(vehicleEventsFromPCGIDB, null, 2);
+
+		// if (!fs.existsSync('output')) fs.mkdirSync('output');
+
+		// fs.writeFileSync(`output/events-${startDateUnixTimestamp}-${endDateUnixTimestamp}.json`, jsonData);
 
 		//
 

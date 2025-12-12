@@ -2,6 +2,7 @@
 
 import { DatesController } from '@/endpoints/dates/dates.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { FastifyInstance } from 'fastify';
 
 /* * */
@@ -17,7 +18,7 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware() },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
 			DatesController.getCalendar,
 		);
 

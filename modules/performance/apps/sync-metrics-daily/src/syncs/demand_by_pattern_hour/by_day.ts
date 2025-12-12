@@ -71,108 +71,134 @@ export const syncDemandByPatternHourByDay = async () => {
 	}
 
 	//
-	// Set concurrency limit
+	// Set concurrency limit and batch processing
 
-	const limit = pLimit(10);
+	const limit = pLimit(5); // Reduce concurrent queries
+	const BATCH_SIZE = 50; // Process chunks in smaller batches
+	const FLUSH_THRESHOLD = 10000; // Flush to DB when we have this many patterns
+
+	//
+	// Process chunks in batches to avoid memory issues
+
 	const patternHourMap = new Map<string, Metric>();
+	let totalProcessed = 0;
 
-	//
-	// Process each day in parallel
+	for (let i = 0; i < allTimestampChunks.length; i += BATCH_SIZE) {
+		const batchChunks = allTimestampChunks.slice(i, i + BATCH_SIZE);
 
-	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
-		limit(async () => {
-			const chunkTimer = new Timer();
+		Logger.info(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})`);
 
-			const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
+		const batchPromises = batchChunks.map((chunkData, batchIndex) =>
+			limit(async () => {
+				const chunkTimer = new Timer();
+				const chunkIndex = i + batchIndex;
 
-			const ridesAgg = await ridesCollection
-				.aggregate([
-					{
-						$match: {
-							passengers_observed: { $gt: 0 },
-							start_time_scheduled: {
-								$gte: chunkData.start,
-								$lt: chunkData.end,
+				const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
+
+				const ridesAgg = await ridesCollection
+					.aggregate([
+						{
+							$match: {
+								passengers_observed: { $gt: 0 },
+								start_time_scheduled: {
+									$gte: chunkData.start,
+									$lt: chunkData.end,
+								},
 							},
 						},
-					},
-					{
-						$group: {
-							_id: {
-								hour: { $hour: { $toDate: '$start_time_scheduled' } },
-								line_id: '$line_id',
-								minute: { $minute: { $toDate: '$start_time_scheduled' } },
-								pattern_id: '$pattern_id',
+						{
+							$group: {
+								_id: {
+									hour: { $hour: { $toDate: '$start_time_scheduled' } },
+									line_id: '$line_id',
+									minute: { $minute: { $toDate: '$start_time_scheduled' } },
+									pattern_id: '$pattern_id',
+								},
+								hour: { $first: { $hour: { $toDate: '$start_time_scheduled' } } },
+								line_id: { $first: '$line_id' },
+								minute: { $first: { $minute: { $toDate: '$start_time_scheduled' } } },
+								pattern_id: { $first: '$pattern_id' },
+								total_passengers: { $sum: '$passengers_observed' },
 							},
-							hour: { $first: { $hour: { $toDate: '$start_time_scheduled' } } },
-							line_id: { $first: '$line_id' },
-							minute: { $first: { $minute: { $toDate: '$start_time_scheduled' } } },
-							pattern_id: { $first: '$pattern_id' },
-							total_passengers: { $sum: '$passengers_observed' },
 						},
-					},
-				])
-				.toArray();
+					])
+					.toArray();
 
-			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`);
+				Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`);
 
-			return { dayLabel, ridesAgg };
-		}),
-	);
+				return { dayLabel, ridesAgg };
+			}),
+		);
 
-	const allChunksResults = await Promise.all(dayPromises);
+		//
+		// Process batch results
 
-	//
-	// Transform into Metric objects
+		const batchResults = await Promise.all(batchPromises);
 
-	for (const { dayLabel, ridesAgg } of allChunksResults) {
-		for (const ride of ridesAgg) {
-			const key = `${ride.pattern_id}_${ride.hour}_${ride.minute}`;
-			if (!patternHourMap.has(key)) {
-				patternHourMap.set(key, {
-					data: {} as Record<string, { qty: number }>,
-					description: `Aggregated passengers for pattern ${ride.pattern_id} at ${ride.hour}:${ride.minute
-						.toString()
-						.padStart(2, '0')}`,
-					generated_at: new Date(),
-					metric: METRIC,
-					properties: {
-						hour: ride.hour,
-						line_id: ride.line_id.toString(),
-						minute: ride.minute,
-						pattern_id: ride.pattern_id,
-					},
-				} as Metric);
+		for (const { dayLabel, ridesAgg } of batchResults) {
+			for (const ride of ridesAgg) {
+				const key = `${ride.pattern_id}_${ride.hour}_${ride.minute}`;
+				if (!patternHourMap.has(key)) {
+					patternHourMap.set(key, {
+						data: {} as Record<string, { qty: number }>,
+						description: `Aggregated passengers for pattern ${ride.pattern_id} at ${ride.hour}:${ride.minute
+							.toString()
+							.padStart(2, '0')}`,
+						generated_at: new Date(),
+						metric: METRIC,
+						properties: {
+							hour: ride.hour,
+							line_id: ride.line_id.toString(),
+							minute: ride.minute,
+							pattern_id: ride.pattern_id,
+						},
+					} as Metric);
+				}
+
+				const metric = patternHourMap.get(key);
+				const calendarProps = calendarMap.get(dayLabel);
+
+				metric.data[dayLabel] = {
+					day_type: calendarProps.day_type,
+					holiday: calendarProps.holiday,
+					notes: calendarProps.notes,
+					period: calendarProps.period,
+					qty: ride.total_passengers,
+				};
 			}
+		}
 
-			const metric = patternHourMap.get(key);
+		totalProcessed += batchResults.reduce((sum, batch) => sum + batch.ridesAgg.length, 0);
 
-			const calendarProps = calendarMap.get(dayLabel);
+		// Flush to database periodically to avoid memory issues
+		if (patternHourMap.size >= FLUSH_THRESHOLD) {
+			const flushTimer = new Timer();
+			const results = Array.from(patternHourMap.values());
 
-			metric.data[dayLabel] = {
-				day_type: calendarProps.day_type,
-				holiday: calendarProps.holiday,
-				notes: calendarProps.notes,
-				period: calendarProps.period,
-				qty: ride.total_passengers,
-			};
+			Logger.info(`Flushing ${results.length} documents to database...`);
+			await metrics.insertMany(results);
+			Logger.info(`Flushed ${results.length} documents (${flushTimer.get()})`);
+
+			patternHourMap.clear(); // Free memory
 		}
 	}
 
-	const results = Array.from(patternHourMap.values());
-
 	//
-	// Insert all metrics
+	// Insert remaining metrics
 
-	await metrics.insertMany(results);
+	if (patternHourMap.size > 0) {
+		const results = Array.from(patternHourMap.values());
+		Logger.info(`Inserting final ${results.length} documents...`);
+		await metrics.insertMany(results);
+	}
 
 	logMetricToFile({
-		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },
+		approach: { description: 'Loop by day, aggregate on mongo (batched)', key: 'loop_day_batched' },
 		metric: METRIC,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});
 
-	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${totalProcessed} total pattern-hour combinations from ${allTimestampChunks.length} chunks (${globalTimer.get()})`);
 };

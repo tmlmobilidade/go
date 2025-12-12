@@ -213,7 +213,7 @@ const performanceActions: PermissionConfig = {
 	],
 	description: 'As ações que o utilizador pode realizar na visualização de métricas.',
 	scope: PermissionCatalog.all.performance.scope,
-	title: 'Permissões de Métricas',
+	title: 'Permissões do Performance Explorer',
 };
 
 /* * */

@@ -50,6 +50,7 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'gtfs_validations', db: 'production' } },
 	],
@@ -59,6 +60,7 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'alerts', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
@@ -167,6 +169,7 @@ db.createRole({
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_apex_on_board_refunds', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_apex_on_board_sales', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_vehicle_events', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'metrics', db: 'production' } },
 	],

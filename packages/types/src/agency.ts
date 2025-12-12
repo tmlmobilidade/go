@@ -11,9 +11,9 @@ export const AgencySchema = DocumentSchema.extend({
 	contact_emails_pto: z.array(z.string().email()).default([]),
 	fare_url: z.string().url(),
 	financials: z.object({
-		price_per_km: z.number().min(0).default(0),
-		total_vkm_per_year: z.number().min(0).default(0),
-	}).default({}),
+		price_per_km: z.coerce.number(),
+		vkm_per_month: z.array(z.coerce.number()).length(12),
+	}),
 	name: z.string(),
 	operation_start_date: operationalDateSchema.nullable().default(null),
 	phone: z.string(),

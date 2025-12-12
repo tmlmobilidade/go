@@ -34,7 +34,6 @@ class PCGIDBValidationsClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
-			directConnection: true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -72,8 +71,8 @@ class PCGIDBValidationsClass {
 			throw new Error('Missing PCGIDB_VALIDATIONS_USER or PCGIDB_VALIDATIONS_PASSWORD environment variable.');
 		}
 
-		if (!process.env.PCGIDB_VALIDATIONS_ADDRESS || !process.env.PCGIDB_VALIDATIONS_PORT) {
-			throw new Error('Missing PCGIDB_VALIDATIONS_ADDRESS or PCGIDB_VALIDATIONS_PORT environment variable.');
+		if (!process.env.PCGIDB_VALIDATIONS_ADDRESS_1 || !process.env.PCGIDB_VALIDATIONS_ADDRESS_2 || !process.env.PCGIDB_VALIDATIONS_ADDRESS_3 || !process.env.PCGIDB_VALIDATIONS_PORT) {
+			throw new Error('Missing PCGIDB_VALIDATIONS_ADDRESS_1, PCGIDB_VALIDATIONS_ADDRESS_2, PCGIDB_VALIDATIONS_ADDRESS_3 or PCGIDB_VALIDATIONS_PORT environment variable.');
 		}
 
 		//
@@ -81,16 +80,12 @@ class PCGIDBValidationsClass {
 		// In 'production' and 'staging', we assume direct connection is used.
 
 		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
-			return `mongodb://${process.env.PCGIDB_VALIDATIONS_USER}:${process.env.PCGIDB_VALIDATIONS_PASSWORD}@${process.env.PCGIDB_VALIDATIONS_ADDRESS}:${process.env.PCGIDB_VALIDATIONS_PORT}/`;
+			return `mongodb://${process.env.PCGIDB_VALIDATIONS_USER}:${process.env.PCGIDB_VALIDATIONS_PASSWORD}@${process.env.PCGIDB_VALIDATIONS_ADDRESS_1}:${process.env.PCGIDB_VALIDATIONS_PORT},${process.env.PCGIDB_VALIDATIONS_ADDRESS_2}:${process.env.PCGIDB_VALIDATIONS_PORT},${process.env.PCGIDB_VALIDATIONS_ADDRESS_3}:${process.env.PCGIDB_VALIDATIONS_PORT}/`;
 		}
 
 		//
 		// If we're here, then the SSH Tunnel is to be used.
 		// Check if the required SSH Tunnel environment variables are set.
-
-		if (!process.env.PCGIDB_VALIDATIONS_ADDRESS || !process.env.PCGIDB_VALIDATIONS_PORT) {
-			throw new Error('Missing PCGIDB_VALIDATIONS_ADDRESS or PCGIDB_VALIDATIONS_PORT environment variable.');
-		}
 
 		if (!process.env.PCGIDB_TUNNEL_LOCAL_PORT) {
 			throw new Error('Missing PCGIDB_TUNNEL_LOCAL_PORT environment variable.');
@@ -105,7 +100,7 @@ class PCGIDBValidationsClass {
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.PCGIDB_VALIDATIONS_ADDRESS,
+				dstAddr: process.env.PCGIDB_VALIDATIONS_ADDRESS_1,
 				dstPort: Number(process.env.PCGIDB_VALIDATIONS_PORT),
 				srcAddr: 'localhost',
 				srcPort: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),

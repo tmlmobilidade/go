@@ -1,7 +1,9 @@
 /* * */
 
 import { AgenciesSelector } from '@/components/layout/AgenciesSelector';
+import { LiveIcon } from '@/components/layout/LiveIcon';
 import { RecordCard } from '@/components/layout/RecordCard';
+import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useDatesContext } from '@/contexts/Dates.context';
@@ -89,13 +91,13 @@ export default function RecordDemandByDayType() {
 					<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
 						<h3>Recordes por dia tipo</h3>
 						<div style={{ width: 150 }}>
-							<Skeleton height={60} radius="sm" />
+							<Skeleton height={25} radius="sm" />
 						</div>
 					</Section>
 					<Grid columns="abc" gap="lg">
 						{[1, 2, 3].map(index => (
 							<Section key={index} flexDirection="column" gap="lg" padding="none">
-								<Skeleton height={120} radius="md" />
+								<Skeleton height={140} radius="md" />
 								<MetricsSkeleton key={index} height={100} />
 							</Section>
 						))}
@@ -110,56 +112,60 @@ export default function RecordDemandByDayType() {
 	}
 
 	return (
-		<Surface overflow="visible">
-			<Section gap="lg">
-				<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
+		<VisualizationWrapper>
+
+			<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
+				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
 					<h3>Recordes por dia tipo</h3>
-					<div style={{ width: 150 }}>
-						<AgenciesSelector
-							isMultiple={false}
-							onChange={values => setSelectedAgencies(values as AgencyType[])}
-							selectedAgencies={selectedAgencies}
-						/>
-					</div>
+					<LiveIcon updatedAt={recordDemandByDayType?.[0]?.generated_at} />
 				</Section>
-				<Grid columns="abc" gap="lg">
-					{['day_type_1', 'day_type_2', 'day_type_3'].map((dayTypeKey) => {
-						const points = transformedRecordData[dayTypeKey];
-						if (!points || points.length === 0) return null;
 
-						const topDay = points[0];
-						return (
-							<Section key={dayTypeKey} flexDirection="column" gap="lg" padding="none">
-								<RecordCard
-									description={utils.getDayLabel(topDay.date, false)}
-									title={t(`dates.day_types.${dayTypeKey}`)}
-									value={topDay.qty}
-								/>
-
-								<BarChart
-									data={points}
-									dataKey="detailed_date"
-									h={100}
-									tooltipProps={{ position: { x: 0, y: 75 } }}
-									withYAxis={false}
-									xAxisProps={{ tickFormatter: value => utils.getShortLabelFromDetailed(value) }}
-									series={[
-										{
-											color: 'var(--color-primary)',
-											label: 'Nº de passageiros',
-											name: 'qty',
-										},
-									]}
-									yAxisProps={{
-										domain: getDomain(points),
-									}}
-								/>
-							</Section>
-						);
-					})}
-				</Grid>
+				<div style={{ width: 150 }}>
+					<AgenciesSelector
+						isMultiple={false}
+						onChange={values => setSelectedAgencies(values as AgencyType[])}
+						selectedAgencies={selectedAgencies}
+					/>
+				</div>
 			</Section>
-		</Surface>
+
+			<Grid columns="abc" gap="lg">
+				{['day_type_1', 'day_type_2', 'day_type_3'].map((dayTypeKey) => {
+					const points = transformedRecordData[dayTypeKey];
+					if (!points || points.length === 0) return null;
+
+					const topDay = points[0];
+					return (
+						<Section key={dayTypeKey} flexDirection="column" gap="lg" padding="none">
+							<RecordCard
+								description={utils.getDayLabel(topDay.date, false)}
+								title={t(`dates.day_types.${dayTypeKey}`)}
+								value={topDay.qty}
+							/>
+
+							<BarChart
+								data={points}
+								dataKey="detailed_date"
+								h={100}
+								tooltipProps={{ position: { x: 0, y: 75 } }}
+								withYAxis={false}
+								xAxisProps={{ tickFormatter: value => utils.getShortLabelFromDetailed(value) }}
+								series={[
+									{
+										color: 'var(--color-primary)',
+										label: 'Nº de passageiros',
+										name: 'qty',
+									},
+								]}
+								yAxisProps={{
+									domain: getDomain(points),
+								}}
+							/>
+						</Section>
+					);
+				})}
+			</Grid>
+		</VisualizationWrapper>
 	);
 }
 

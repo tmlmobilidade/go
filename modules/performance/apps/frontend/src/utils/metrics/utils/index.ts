@@ -6,7 +6,6 @@
 export {
 	calculateBreakdownTotals,
 	extractBreakdowns,
-	extractTotalQuantity,
 	getTopBreakdowns,
 } from './breakdownExtractors';
 

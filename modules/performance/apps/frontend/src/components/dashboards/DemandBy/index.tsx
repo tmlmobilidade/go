@@ -43,12 +43,12 @@ export default function DemandByTopic() {
 	const lineData = networkData.lines.map(line => ({
 		label: line,
 		value: line,
-	}));
+	})).sort((a, b) => a.label.localeCompare(b.label));
 
 	const patternsData = networkData.patterns.map(pattern => ({
 		label: pattern,
 		value: pattern,
-	}));
+	})).sort((a, b) => a.label.localeCompare(b.label));
 
 	const filters = useMemo(() => ({
 		agencyIds,

@@ -75,105 +75,131 @@ export const syncDemandByProductByAgencyByDay = async () => {
 	}
 
 	//
-	// Set max concurrent queries
+	// Set max concurrent queries and batch processing
 
-	const limit = pLimit(10);
+	const limit = pLimit(5); // Reduce concurrent queries
+	const BATCH_SIZE = 50; // Process chunks in smaller batches
+	const FLUSH_THRESHOLD = 10000; // Flush to DB when we have this many combinations
 
 	//
-	// Process each day in parallel
+	// Process chunks in batches to avoid memory issues
 
 	const productMap = new Map<string, DemandByProductByAgencyByDay>();
+	let totalProcessed = 0;
 
-	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
-		limit(async () => {
-			const chunkTimer = new Timer();
+	for (let i = 0; i < allTimestampChunks.length; i += BATCH_SIZE) {
+		const batchChunks = allTimestampChunks.slice(i, i + BATCH_SIZE);
 
-			const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
+		Logger.info(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})`);
 
-			// Aggregation: Get counts by product and agency for each day
-			const validationsAgg = await validationsCollection.aggregate([
-				{
-					$match: {
-						created_at: { $gte: chunkData.start, $lt: chunkData.end },
-						is_passenger: true,
-					},
-				},
-				{
-					$group: {
-						_id: {
-							agency_id: '$agency_id',
-							product_id: '$product_id',
+		const batchPromises = batchChunks.map((chunkData, batchIndex) =>
+			limit(async () => {
+				const chunkTimer = new Timer();
+				const chunkIndex = i + batchIndex;
+
+				const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
+
+				// Aggregation: Get counts by product and agency for each day
+				const validationsAgg = await validationsCollection.aggregate([
+					{
+						$match: {
+							created_at: { $gte: chunkData.start, $lt: chunkData.end },
+							is_passenger: true,
 						},
-						agency_id: { $first: '$agency_id' },
-						count: { $sum: 1 },
-						day: { $first: dayLabel },
-						product_id: { $first: '$product_id' },
 					},
-				},
-			], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
-
-			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} product-agency combinations (${chunkTimer.get()})`);
-			return validationsAgg;
-		}),
-	);
-
-	//
-	// Transform into Metric objects
-
-	const allChunksResults = await Promise.all(dayPromises);
-
-	for (const validationsAgg of allChunksResults) {
-		for (const validation of validationsAgg) {
-			const product_id = validation.product_id ?? 'unknown-product';
-			const agency_id = validation.agency_id ?? 'no-agency';
-
-			// Create unique key for each product-agency combination
-			const productAgencyKey = `${product_id}:${agency_id}`;
-
-			// Create or get product-agency document
-			if (!productMap.has(productAgencyKey)) {
-				productMap.set(productAgencyKey, {
-					data: {},
-					description: `Aggregated passengers for product ${product_id} in agency ${agency_id}`,
-					generated_at: new Date(),
-					metric: METRIC,
-					properties: {
-						agency_id,
-						product_id,
+					{
+						$group: {
+							_id: {
+								agency_id: '$agency_id',
+								product_id: '$product_id',
+							},
+							agency_id: { $first: '$agency_id' },
+							count: { $sum: 1 },
+							day: { $first: dayLabel },
+							product_id: { $first: '$product_id' },
+						},
 					},
-				});
+				], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
+
+				Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} product-agency combinations (${chunkTimer.get()})`);
+				return validationsAgg;
+			}),
+		);
+
+		//
+		// Process batch results
+
+		const batchResults = await Promise.all(batchPromises);
+
+		for (const validationsAgg of batchResults) {
+			for (const validation of validationsAgg) {
+				const product_id = validation.product_id ?? 'unknown-product';
+				const agency_id = validation.agency_id ?? 'no-agency';
+
+				// Create unique key for each product-agency combination
+				const productAgencyKey = `${product_id}:${agency_id}`;
+
+				// Create or get product-agency document
+				if (!productMap.has(productAgencyKey)) {
+					productMap.set(productAgencyKey, {
+						data: {},
+						description: `Aggregated passengers for product ${product_id} in agency ${agency_id}`,
+						generated_at: new Date(),
+						metric: METRIC,
+						properties: {
+							agency_id,
+							product_id,
+						},
+					});
+				}
+
+				const productAgencyDoc = productMap.get(productAgencyKey);
+				const calendarProps = calendarMap.get(validation.day);
+
+				// Update individual product-agency data
+				productAgencyDoc.data[validation.day] = {
+					day_type: calendarProps?.day_type || '1',
+					holiday: calendarProps?.holiday || '0',
+					notes: calendarProps?.notes || '',
+					period: calendarProps?.period || '1',
+					qty: validation.count,
+				};
 			}
+		}
 
-			const productAgencyDoc = productMap.get(productAgencyKey);
-			const calendarProps = calendarMap.get(validation.day);
+		totalProcessed += batchResults.reduce((sum, batch) => sum + batch.length, 0);
 
-			// Update individual product-agency data
-			productAgencyDoc.data[validation.day] = {
-				day_type: calendarProps.day_type,
-				holiday: calendarProps.holiday,
-				notes: calendarProps.notes,
-				period: calendarProps.period,
-				qty: validation.count,
-			};
+		// Flush to database periodically to avoid memory issues
+		if (productMap.size >= FLUSH_THRESHOLD) {
+			const flushTimer = new Timer();
+			const results = Array.from(productMap.values());
+
+			Logger.info(`Flushing ${results.length} documents to database...`);
+			await metrics.insertMany(results);
+			Logger.info(`Flushed ${results.length} documents (${flushTimer.get()})`);
+
+			productMap.clear(); // Free memory
 		}
 	}
 
-	const results = Array.from(productMap.values());
-
 	//
-	// Insert all metrics
+	// Insert remaining metrics
 
-	await metrics.insertMany(results);
+	if (productMap.size > 0) {
+		const results = Array.from(productMap.values());
+		Logger.info(`Inserting final ${results.length} documents...`);
+		await metrics.insertMany(results);
+	}
 
 	logMetricToFile({
-		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },
+		approach: { description: 'Loop by day, aggregate on mongo (batched)', key: 'loop_day_batched' },
 		metric: METRIC,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});
 
-	Logger.terminate(`Processed ${results.length} results (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${totalProcessed} total combinations from ${allTimestampChunks.length} chunks (${globalTimer.get()})`);
 };
 
 //
