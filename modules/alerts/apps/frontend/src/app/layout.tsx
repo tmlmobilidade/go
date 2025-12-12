@@ -1,6 +1,7 @@
 /* * */
 
 import { DataProviders } from '@/providers/data-providers';
+import ptTranslation from '@/translations/pt.json';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider>
-			<AppProvider>
+			<AppProvider i18n={[{ namespace: 'alerts', pt: ptTranslation }]}>
 				<NuqsAdapter>
 					<DataProviders>
 						<AppWrapper>

@@ -1,4 +1,5 @@
 'use client';
+
 /* * */
 
 import i18next from 'i18next';
@@ -7,13 +8,11 @@ import { initReactI18next } from 'react-i18next';
 
 /* * */
 
-import enKeys from '@/translations/en.json' with { type: 'json' }; ;
-import ptKeys from '@/translations/pt.json' with { type: 'json' }; ;
+import ptKeys from './translations/pt.json' with { type: 'json' };
 
 /* * */
 
 export const resourceKeys = {
-	en: { global: enKeys },
 	pt: { global: ptKeys },
 } as const;
 

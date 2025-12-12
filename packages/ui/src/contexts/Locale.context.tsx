@@ -1,10 +1,20 @@
 'use client';
 /* * */
 
+import '@tmlmobilidade/ui';
 import i18next from 'i18next';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
+import { registerModuleTranslations } from '../i18n';
+
 /* * */
+
+export interface LocaleContextProps extends PropsWithChildren {
+	i18n?: {
+		namespace: string
+		pt: object
+	}[]
+};
 
 interface LocaleContextState {
 	actions: {
@@ -29,7 +39,7 @@ export function useLocaleContext() {
 
 /* * */
 
-export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
+export const LocaleContextProvider = ({ children, i18n }: LocaleContextProps) => {
 	//
 	//
 
@@ -52,6 +62,12 @@ export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
 		i18next.changeLanguage(locale);
 	}, [locale]);
 
+	useEffect(() => {
+		if (!i18n?.length) return;
+		for (const namespaceConfig of i18n) {
+			registerModuleTranslations(namespaceConfig.namespace, { pt: namespaceConfig.pt });
+		}
+	}, [i18n]);
 	//
 	// C. Context value
 

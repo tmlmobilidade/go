@@ -4,10 +4,13 @@
 
 import { ColorSwatch, Menu } from '@mantine/core';
 import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
+import { useLocaleContext } from '../../../contexts';
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useNotificationsContext } from '../../../contexts/Notifications.context';
+import { Button } from '../../buttons';
 import { TopbarMenu } from '../TopbarMenu';
 
 /* * */
@@ -21,6 +24,7 @@ export function TopbarOptions() {
 	const meContext = useMeContext();
 	const layoutContext = useLayoutContext();
 	const notificationsContext = useNotificationsContext();
+	const localeContext = useLocaleContext();
 
 	//
 	// B. Render components
@@ -89,6 +93,9 @@ export function TopbarOptions() {
 			>
 				{notificationsContext.flags.enabled ? 'Notificações Ativadas' : 'Ativar Notificações'}
 			</Menu.Item>
+
+			<Button label="PT" onClick={() => localeContext.actions.setLocale('pt')} variant="primary" />
+			<Button label="EN" onClick={() => localeContext.actions.setLocale('en')} variant="primary" />
 
 			<Menu.Item
 				color="var(--color-status-danger-primary)"

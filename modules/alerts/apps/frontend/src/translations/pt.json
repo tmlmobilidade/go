@@ -1,0 +1,10 @@
+{
+	"scheduled": {
+		"list": {
+			"header": {
+				"newAlert": "Novo Alerta",
+				"title": "Alertas"
+			}
+		}
+	}
+}
