@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, keepUrlParams, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -23,7 +23,7 @@ export function StopDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(PAGE_ROUTES.stops.STOPS_LIST, { scroll: false });
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST, window.location.search));
 	};
 
 	//
@@ -35,10 +35,10 @@ export function StopDetailHeader() {
 			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
 			<Spacer />
 			<Button
-				disabled={!stopDetailContext.flags.can_save}
+				disabled={!stopDetailContext.data.form.isDirty() || !stopDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label="Guardar"
-				loading={stopDetailContext.flags.saving}
+				loading={stopDetailContext.flags.isSaving}
 				onClick={stopDetailContext.actions.saveStop}
 				variant="primary"
 			/>

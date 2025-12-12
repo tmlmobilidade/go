@@ -4,58 +4,11 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { convertObject, fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
-
-/* * */
-
-const emptyStop: CreateStopDto = {
-	bench_status: 'unknown',
-	comments: [],
-	connections: [],
-	district_id: '',
-	electricity_status: 'unknown',
-	equipment: [],
-	facilities: [],
-	file_ids: [],
-	has_bench: 'unknown',
-	has_mupi: 'unknown',
-	has_network_map: 'unknown',
-	has_schedules: 'unknown',
-	has_shelter: 'unknown',
-	has_stop_sign: 'unknown',
-	image_ids: [],
-	is_archived: false,
-	is_locked: false,
-	jurisdiction: 'unknown',
-	last_infrastructure_check: undefined,
-	last_infrastructure_maintenance: undefined,
-	last_schedules_check: undefined,
-	last_schedules_maintenance: undefined,
-	latitude: Number(),
-	legacy_id: '',
-	lifecycle_status: 'voided',
-	locality_id: '',
-	longitude: Number(),
-	municipality_id: '',
-	name: '',
-	new_name: '',
-	parish_id: '',
-	pole_status: 'unknown',
-	road_type: 'unknown',
-	shelter_code: '',
-	shelter_frame_size: undefined,
-	shelter_installation_date: undefined,
-	shelter_maintainer: '',
-	shelter_make: undefined,
-	shelter_model: undefined,
-	shelter_status: 'unknown',
-	short_name: '',
-	tts_name: '',
-};
 
 /* * */
 
@@ -72,11 +25,9 @@ interface StopDetailContextState {
 		stop: Stop | undefined
 	}
 	flags: {
-		can_save: boolean
 		error: Error | undefined
+		isSaving: boolean
 		loading: boolean
-		read_only: boolean
-		saving: boolean
 	}
 }
 
@@ -103,9 +54,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const router = useRouter();
 
 	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
-	const [canSave, setCanSave] = useState(false);
-	// const [image, setImage] = useState<File | null>(null);
 
 	//
 	// B. Fetch data
@@ -113,41 +61,10 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
 
-	// const { data: imageUrl, isLoading: imageUrlLoading } = useSWR<undefined | { data: string, message: string }>(
-	// 	stopId === 'new'
-	// 		? undefined
-	// 		: Routes.API + Routes.STOPS_DETAIL(stopId),
-	// );
-
 	//
 	// C. Setup form
 
-	const form = useForm<CreateStopDto | UpdateStopDto>({
-		initialValues: stopData || emptyStop,
-		// validate: zodResolver(stop ? StopSchema : CreateStopSchema) as unknown as FormValidateInput<CreateStopDto>,
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
-
-	//
-	// D. Transform data
-
-	//
-	// E. Handle actions
-
-	useEffect(() => {
-		if (!stopData) return;
-		form.reset();
-		form.setValues(stopData);
-		form.resetDirty();
-	}, [stopData]);
-
-	// Validate form on change
-
-	useEffect(() => {
-		form.validate();
-		setCanSave(form.isValid());
-	}, [form.values]);
+	const { form } = useTypicalForm<UpdateStopDto>(UpdateStopSchema, stopData);
 
 	//
 	// B. Handle actions
@@ -273,19 +190,15 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			stop: stopData,
 		},
 		flags: {
-			can_save: canSave,
 			error: stopError,
+			isSaving,
 			loading: stopLoading,
-			read_only: isReadOnly,
-			saving: isSaving,
 		},
 	}), [
 		stopData,
 		stopLoading,
 		stopError,
 		form,
-		canSave,
-		isReadOnly,
 		isSaving,
 		stopId,
 	]);
