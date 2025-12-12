@@ -6,7 +6,7 @@ import { useLocationsContext } from '@/contexts/Locations.context';
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop } from '@tmlmobilidade/types';
+import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop, stopLifecycleStatusSchema } from '@tmlmobilidade/types';
 import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
@@ -20,6 +20,7 @@ interface StopsListContextState {
 		setFilterDistricts: (values: string[]) => void
 		setFilterEquipment: (values: string[]) => void
 		setFilterFacilities: (values: string[]) => void
+		setFilterLifecycleStatus: (values: string[]) => void
 		setFilterLocalities: (values: string[]) => void
 		setFilterMunicipalities: (values: string[]) => void
 		setFilterParishes: (values: string[]) => void
@@ -34,6 +35,7 @@ interface StopsListContextState {
 		districts: string[]
 		equipment: string[]
 		facilities: string[]
+		lifecycle_status: string[]
 		localities: string[]
 		municipalities: string[]
 		parishes: string[]
@@ -75,6 +77,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const [filterFacilities, setFilterFacilities] = useQueryState<string[]>('facilities', parseAsArrayOfStrings.withDefault(facilitiesSchema.options));
 	const [filterEquipment, setFilterEquipment] = useQueryState<string[]>('equipment', parseAsArrayOfStrings.withDefault(equipmentSchema.options));
 	const [filterConnections, setFilterConnections] = useQueryState<string[]>('connections', parseAsArrayOfStrings.withDefault(connectionsSchema.options));
+	const [filterLifecycleStatus, setFilterLifecycleStatus] = useQueryState<string[]>('lifecycle_status', parseAsArrayOfStrings.withDefault(stopLifecycleStatusSchema.options));
 
 	//
 	// B. Fetch data
@@ -119,6 +122,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		// Apply filter values
 		return searchResultsData
 			.filter((stopData: StopNormalized) => {
+				const lifecycleStatusMatch = filterLifecycleStatus.includes(stopData.lifecycle_status);
 				const matchesDistrict = true; // filterDistrictsSet.has(stopData.district_id);
 				const matchesMunicipality = true;// filterMunicipalitiesSet.has(stopData.municipality_id);
 				const matchesParish = true; // filterParishesSet.has(stopData.parish_id);
@@ -127,7 +131,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 				const matchesEquipment = true; // stopData.equipment.some(item => filterEquipmentSet.has(item));
 				const matchesConnections = true; // stopData.connections.some(item => filterConnectionsSet.has(item));
 				// Evaluate conditions
-				return matchesDistrict && matchesMunicipality && matchesParish && matchesLocality && matchesFacilities && matchesEquipment && matchesConnections;
+				return lifecycleStatusMatch && matchesDistrict && matchesMunicipality && matchesParish && matchesLocality && matchesFacilities && matchesEquipment && matchesConnections;
 			})
 			.sort((a, b) => {
 				return a._id.localeCompare(b._id);
@@ -139,6 +143,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		filterParishes,
 		filterLocalities,
 		filterFacilities,
+		filterLifecycleStatus,
 		filterEquipment,
 		filterConnections,
 	]);
@@ -152,6 +157,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			setFilterDistricts,
 			setFilterEquipment,
 			setFilterFacilities,
+			setFilterLifecycleStatus,
 			setFilterLocalities,
 			setFilterMunicipalities,
 			setFilterParishes,
@@ -166,6 +172,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			districts: filterDistricts,
 			equipment: filterEquipment,
 			facilities: filterFacilities,
+			lifecycle_status: filterLifecycleStatus,
 			localities: filterLocalities,
 			municipalities: filterMunicipalities,
 			parishes: filterParishes,
@@ -181,6 +188,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		filterResultsData,
 		filterConnections,
 		filterDistricts,
+		filterLifecycleStatus,
 		filterEquipment,
 		filterFacilities,
 		filterLocalities,

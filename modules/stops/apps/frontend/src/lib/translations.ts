@@ -47,11 +47,11 @@ export const Translations = {
 	},
 	LIFECYCLE_STATUS: {
 		active: 'Paragem ativa',
-		archived: 'Arquivada',
 		draft: 'Rascunho',
 		inactive: 'Paragem inativa',
 		provisional: 'Provisória',
 		seasonal: 'Sazonal',
+		voided: 'Anulada',
 	},
 	ROAD_TYPE: {
 		complementary_itinerary: 'Itinerário Complementar',
