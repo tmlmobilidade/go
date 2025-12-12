@@ -6,6 +6,7 @@ import { type PropsWithChildren } from 'react';
 
 import { ExportsContextProvider } from '../../contexts/exports.context';
 import { LayoutContextProvider } from '../../contexts/Layout.context';
+import { LocaleContextProvider } from '../../contexts/Locale.context';
 import { MapContextProvider } from '../../contexts/Map.context';
 import { MeContextProvider } from '../../contexts/Me.context';
 import { NotificationsContextProvider } from '../../contexts/Notifications.context';
@@ -18,15 +19,17 @@ import { NotificationsContextProvider } from '../../contexts/Notifications.conte
 export function AppProvider({ children }: PropsWithChildren) {
 	return (
 		<MeContextProvider>
-			<NotificationsContextProvider>
-				<ExportsContextProvider>
-					<LayoutContextProvider>
-						<MapContextProvider>
-							{children}
-						</MapContextProvider>
-					</LayoutContextProvider>
-				</ExportsContextProvider>
-			</NotificationsContextProvider>
+			<LocaleContextProvider>
+				<NotificationsContextProvider>
+					<ExportsContextProvider>
+						<LayoutContextProvider>
+							<MapContextProvider>
+								{children}
+							</MapContextProvider>
+						</LayoutContextProvider>
+					</ExportsContextProvider>
+				</NotificationsContextProvider>
+			</LocaleContextProvider>
 		</MeContextProvider>
 	);
 }

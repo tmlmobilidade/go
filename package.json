@@ -40,6 +40,10 @@
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"watch:packages": "npm run build:packages && turbo run watch --filter=./packages/**/*"
 	},
+	"dependencies": {
+		"i18next": "25.7.2",
+		"react-i18next": "16.5.0"
+	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
 		"@dotenv-run/cli": "1.3.6",

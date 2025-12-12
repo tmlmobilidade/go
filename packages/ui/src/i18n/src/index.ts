@@ -1,3 +1,4 @@
+'use client';
 /* * */
 
 import i18next from 'i18next';
@@ -25,3 +26,11 @@ i18next
 		fallbackLng: 'pt',
 		resources: resourceKeys,
 	});
+
+export function registerModuleTranslations(namespace: string, translations: Record<string, unknown>) {
+	console.log('enterd translations ');
+	for (const [lng, data] of Object.entries(translations)) {
+		console.log('registernig in function', lng, namespace, data);
+		i18next.addResourceBundle(lng, namespace, data, true, false);
+	}
+}
