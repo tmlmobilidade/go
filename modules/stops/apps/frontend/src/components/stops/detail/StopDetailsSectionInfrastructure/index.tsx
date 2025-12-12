@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { hasAnySchema, roadTypeSchema } from '@tmlmobilidade/types';
+import { AvailabilityStatusSchema, StopRoadTypeSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -20,12 +20,12 @@ export function StopDetailsSectionInfrastructure() {
 	//
 	// B. Transform data
 
-	const hasThisOptions = hasAnySchema.options.map(value => ({
+	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
 		label: Translations.HAS_ANY[value],
 		value: value,
 	}));
 
-	const roadTypeOptions = roadTypeSchema.options.map(value => ({
+	const roadTypeOptions = StopRoadTypeSchema.options.map(value => ({
 		label: Translations.ROAD_TYPE[value],
 		value: value,
 	}));
@@ -42,19 +42,19 @@ export function StopDetailsSectionInfrastructure() {
 				<Grid columns="ab" gap="md">
 					<Select
 						key={stopDetailContext.data.form.key('has_mupi')}
-						data={hasThisOptions}
+						data={availabilityStatusOptions}
 						label="Existe Mupi?"
 						{...stopDetailContext.data.form.getInputProps('has_mupi')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_bench')}
-						data={hasThisOptions}
+						data={availabilityStatusOptions}
 						label="Existe Banco?"
 						{...stopDetailContext.data.form.getInputProps('has_bench')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('electricity_status')}
-						data={hasThisOptions}
+						data={availabilityStatusOptions}
 						label="Existe Ligação Elétrica?"
 						{...stopDetailContext.data.form.getInputProps('electricity_status')}
 					/>

@@ -4,7 +4,7 @@
 
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { Translations } from '@/lib/translations';
-import { stopLifecycleStatusSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -22,15 +22,15 @@ export function StopsListFilterLifecycleStatus() {
 	// B. Transform data
 
 	const isActive = useMemo(() => {
-		const defaultValues = Array.from(stopLifecycleStatusSchema.options) as string[];
+		const defaultValues = Array.from(LifecycleStatusSchema.options) as string[];
 		const enabledValues = stopsListContext.filters.lifecycle_status;
 		if (defaultValues.length !== enabledValues.length) return true;
 		return !defaultValues.every(item => enabledValues.includes(item));
 	}, [stopsListContext.filters.lifecycle_status]);
 
 	const parsedOptions = useMemo(() => {
-		if (!stopLifecycleStatusSchema.options?.length) return [];
-		return stopLifecycleStatusSchema.options.map(item => ({
+		if (!LifecycleStatusSchema.options?.length) return [];
+		return LifecycleStatusSchema.options.map(item => ({
 			checked: stopsListContext.filters.lifecycle_status.includes(item),
 			label: Translations.LIFECYCLE_STATUS[item],
 			value: item,

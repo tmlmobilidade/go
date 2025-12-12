@@ -6,7 +6,7 @@ import { useLocationsContext } from '@/contexts/Locations.context';
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { connectionsSchema, equipmentSchema, facilitiesSchema, Stop, stopLifecycleStatusSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusSchema, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
 import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
@@ -74,10 +74,10 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const [filterMunicipalities, setFilterMunicipalities] = useQueryState<string[]>('municipalities', parseAsArrayOfStrings.withDefault(locationsContext.data.municipality_ids));
 	const [filterParishes, setFilterParishes] = useQueryState<string[]>('parishes', parseAsArrayOfStrings.withDefault(locationsContext.data.parish_ids));
 	const [filterLocalities, setFilterLocalities] = useQueryState<string[]>('localities', parseAsArrayOfStrings.withDefault(locationsContext.data.locality_ids));
-	const [filterFacilities, setFilterFacilities] = useQueryState<string[]>('facilities', parseAsArrayOfStrings.withDefault(facilitiesSchema.options));
-	const [filterEquipment, setFilterEquipment] = useQueryState<string[]>('equipment', parseAsArrayOfStrings.withDefault(equipmentSchema.options));
-	const [filterConnections, setFilterConnections] = useQueryState<string[]>('connections', parseAsArrayOfStrings.withDefault(connectionsSchema.options));
-	const [filterLifecycleStatus, setFilterLifecycleStatus] = useQueryState<string[]>('lifecycle_status', parseAsArrayOfStrings.withDefault(stopLifecycleStatusSchema.options));
+	const [filterFacilities, setFilterFacilities] = useQueryState<string[]>('facilities', parseAsArrayOfStrings.withDefault(StopFacilitySchema.options));
+	const [filterEquipment, setFilterEquipment] = useQueryState<string[]>('equipment', parseAsArrayOfStrings.withDefault(StopEquipmentSchema.options));
+	const [filterConnections, setFilterConnections] = useQueryState<string[]>('connections', parseAsArrayOfStrings.withDefault(StopConnectionSchema.options));
+	const [filterLifecycleStatus, setFilterLifecycleStatus] = useQueryState<string[]>('lifecycle_status', parseAsArrayOfStrings.withDefault(LifecycleStatusSchema.options));
 
 	//
 	// B. Fetch data

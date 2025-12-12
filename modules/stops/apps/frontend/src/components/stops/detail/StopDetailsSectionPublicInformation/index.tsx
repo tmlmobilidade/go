@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { hasAnySchema } from '@tmlmobilidade/types';
+import { AvailabilityStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -20,7 +20,7 @@ export function StopDetailsSectionPublicInformation() {
 	//
 	// B. Transform data
 
-	const hasThisOptions = hasAnySchema.options.map (value => ({
+	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
 		label: Translations.HAS_ANY[value],
 		value: value,
 	}));
@@ -37,19 +37,19 @@ export function StopDetailsSectionPublicInformation() {
 				<Grid columns="a" gap="md">
 					<Select
 						key={stopDetailContext.data.form.key('has_stop_sign')}
-						data={hasThisOptions}
+						data={availabilityStatusOptions}
 						label="Tem Postalete?"
 						{...stopDetailContext.data.form.getInputProps('has_stop_sign')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_schedules')}
-						data={hasThisOptions}
+						data={availabilityStatusOptions}
 						label="Tem Horários?"
 						{...stopDetailContext.data.form.getInputProps('has_schedules')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_network_map')}
-						data={hasThisOptions}
+						data={availabilityStatusOptions}
 						label="Tem Mapa de Rede?"
 						{...stopDetailContext.data.form.getInputProps('has_network_map')}
 					/>

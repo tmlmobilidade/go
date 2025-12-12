@@ -104,7 +104,7 @@ function transformLifeCycleStatus(value: string): Stop['lifecycle_status'] {
 /* * */
 
 function transformHasShelter(value: number | string): Stop['has_shelter'] {
-	if (value === 'YES') return 'yes';
-	if (value === 'NO' || value === '0' || value === 0) return 'no';
+	if (value === 'YES') return 'available';
+	if (value === 'NO' || value === '0' || value === 0) return 'unavailable';
 	return 'unknown';
 }

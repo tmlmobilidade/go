@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { stopLifecycleStatusSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
@@ -20,7 +20,7 @@ export function StopDetailsSectionGeneral() {
 	//
 	// B. Transform data
 
-	const lifecycleStatusItems = stopLifecycleStatusSchema.options.map(value => ({
+	const lifecycleStatusItems = LifecycleStatusSchema.options.map(value => ({
 		label: Translations.LIFECYCLE_STATUS[value],
 		value: value,
 	}));
@@ -59,7 +59,7 @@ export function StopDetailsSectionGeneral() {
 			<Section gap="md">
 				<SegmentedControl
 					data={lifecycleStatusItems}
-					onChange={(value: typeof stopLifecycleStatusSchema.options[number]) => stopDetailContext.data.form.setFieldValue('lifecycle_status', value)}
+					onChange={(value: typeof LifecycleStatusSchema.options[number]) => stopDetailContext.data.form.setFieldValue('lifecycle_status', value)}
 					value={stopDetailContext.data.form.values.lifecycle_status}
 					fullWidth
 				/>
