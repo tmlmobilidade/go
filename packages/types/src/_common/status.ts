@@ -2,37 +2,58 @@
 
 import { z } from 'zod';
 
-/* PROCESSING STATUS */
 /* * */
+/* PROCESSING STATUS */
 
-export const ProcessingStatusSchema = z.enum(['waiting', 'processing', 'complete', 'error', 'skipped']);
+export const ProcessingStatusValues = ['waiting', 'processing', 'complete', 'error', 'skipped'] as const;
+export const ProcessingStatusSchema = z.enum(ProcessingStatusValues);
 export type ProcessingStatus = z.infer<typeof ProcessingStatusSchema>;
 
-/* DELAY STATUS */
 /* * */
+/* DELAY STATUS */
 
-export const DelayStatusSchema = z.enum(['delayed', 'early', 'ontime', 'none']);
+export const DelayStatusValues = ['delayed', 'early', 'ontime', 'none'] as const;
+export const DelayStatusSchema = z.enum(DelayStatusValues);
 export type DelayStatus = z.infer<typeof DelayStatusSchema>;
 
-/* SEEN STATUS */
 /* * */
+/* SEEN STATUS */
 
-export const SeenStatusSchema = z.enum(['gone', 'seen', 'unseen']);
+export const SeenStatusValues = ['unseen', 'seen', 'gone'] as const;
+export const SeenStatusSchema = z.enum(SeenStatusValues);
 export type SeenStatus = z.infer<typeof SeenStatusSchema>;
 
-/* OPERATIONAL STATUS */
 /* * */
+/* OPERATIONAL STATUS */
 
-export const OperationalStatusSchema = z.enum(['ended', 'missed', 'running', 'scheduled']);
+export const OperationalStatusValues = ['ended', 'missed', 'running', 'scheduled'] as const;
+export const OperationalStatusSchema = z.enum(OperationalStatusValues);
 export type OperationalStatus = z.infer<typeof OperationalStatusSchema>;
 
-/* PUBLISH STATUS */
 /* * */
-export const PublishStatusSchema = z.enum(['PUBLISHED', 'ARCHIVED', 'DRAFT']);
+/* PUBLISH STATUS */
+
+export const PublishStatusValues = ['PUBLISHED', 'ARCHIVED', 'DRAFT'] as const;
+export const PublishStatusSchema = z.enum(PublishStatusValues);
 export type PublishStatus = z.infer<typeof PublishStatusSchema>;
 
-/* APPROVAL STATUS */
 /* * */
+/* APPROVAL STATUS */
 
-export const ApprovalStatusSchema = z.enum(['pending', 'approved', 'rejected', 'none']);
+export const ApprovalStatusValues = ['pending', 'approved', 'rejected', 'none'] as const;
+export const ApprovalStatusSchema = z.enum(ApprovalStatusValues);
 export type ApprovalStatus = z.infer<typeof ApprovalStatusSchema>;
+
+/* * */
+/* CONDITION STATUS */
+
+const ConditionStatusValues = ['not_applicable', 'unknown', 'missing', 'damaged', 'ok'] as const;
+export const ConditionStatusSchema = z.enum(ConditionStatusValues);
+export type ConditionStatus = z.infer<typeof ConditionStatusSchema>;
+
+/* * */
+/* LIFECYCLE STATUS */
+
+export const LifecycleStatusValues = ['draft', 'active', 'inactive', 'provisional', 'seasonal', 'voided'] as const;
+export const LifecycleStatusSchema = z.enum(LifecycleStatusValues);
+export type LifecycleStatus = z.infer<typeof LifecycleStatusSchema>;

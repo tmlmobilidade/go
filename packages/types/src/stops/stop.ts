@@ -2,44 +2,34 @@
 
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
+import { ConditionStatusSchema, LifecycleStatusSchema } from '@/_common/status.js';
 import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
+
+import { StopConnectionSchema } from './connections.js';
+import { StopFacilitySchema } from './facilities.js';
+import { StopJurisdictionSchema } from './jurisdiction.js';
 
 /* * */
 
 //
 // Define constants for enum values for better maintainability
 
-const JURISDICTION_VALUES = ['ip', 'municipality', 'other', 'unknown'] as const;
-const STOP_LIFECYCLE_STATUS_VALUES = ['draft', 'active', 'inactive', 'provisional', 'seasonal', 'voided'] as const;
 const ELECTRICITY_STATUS_VALUES = ['available', 'unavailable', 'unknown'] as const;
 const ROAD_TYPE_VALUES = ['complementary_itinerary', 'highway', 'main_itinerary', 'national_road', 'regional_road', 'secondary_road', 'unknown'] as const;
-const INFRASTRUCTURE_STATUS_VALUES = ['not_applicable', 'unknown', 'missing', 'damaged', 'ok'] as const;
-const CONNECTIONS_VALUES = ['ferry', 'light_rail', 'subway', 'train', 'boat', 'airport', 'bike_sharing', 'bike_parking', 'car_parking'] as const;
-const FACILITIES_VALUES = ['fire_station', 'health_clinic', 'historic_building', 'hospital', 'police_station', 'school', 'shopping', 'transit_office', 'university', 'beach'] as const;
 const HAS_ANY = ['yes', 'no', 'unknown'] as const;
 const EQUIPMENT_VALUES = ['pip', 'mupi', 'mini_pip'] as const;
 
-export const jurisdictionSchema = z.enum(JURISDICTION_VALUES);
-export const stopLifecycleStatusSchema = z.enum(STOP_LIFECYCLE_STATUS_VALUES);
 export const electricityStatusSchema = z.enum(ELECTRICITY_STATUS_VALUES);
 export const roadTypeSchema = z.enum(ROAD_TYPE_VALUES);
-export const infrastructureStatusSchema = z.enum(INFRASTRUCTURE_STATUS_VALUES);
-export const connectionsSchema = z.enum(CONNECTIONS_VALUES);
-export const facilitiesSchema = z.enum(FACILITIES_VALUES);
 export const hasAnySchema = z.enum(HAS_ANY);
 export const equipmentSchema = z.enum(EQUIPMENT_VALUES);
 
 //
 // Define types based on schemas
 
-export type Jurisdiction = z.infer<typeof jurisdictionSchema>;
-export type StopLifecycleStatus = z.infer<typeof stopLifecycleStatusSchema>;
 export type ElectricityStatus = z.infer<typeof electricityStatusSchema>;
 export type RoadType = z.infer<typeof roadTypeSchema>;
-export type InfrastructureStatus = z.infer<typeof infrastructureStatusSchema>;
-export type Connections = z.infer<typeof connectionsSchema>;
-export type Facilities = z.infer<typeof facilitiesSchema>;
 export type Equipment = z.infer<typeof equipmentSchema>;
 
 export const StopSchema = DocumentSchema.extend({
@@ -50,9 +40,9 @@ export const StopSchema = DocumentSchema.extend({
 	_id: z.string(),
 	is_archived: z.boolean().default(false),
 	is_locked: z.boolean().default(false),
-	jurisdiction: jurisdictionSchema.default('unknown'),
+	jurisdiction: StopJurisdictionSchema.default('unknown'),
 	legacy_id: z.string().nullable().default(null),
-	lifecycle_status: stopLifecycleStatusSchema.default('draft'),
+	lifecycle_status: LifecycleStatusSchema.default('draft'),
 	name: z.string(),
 	new_name: z.string().nullable().default(null),
 	short_name: z.string(),
@@ -71,9 +61,9 @@ export const StopSchema = DocumentSchema.extend({
 	//
 	// Infrastructure
 
-	bench_status: infrastructureStatusSchema.default('unknown'),
+	bench_status: ConditionStatusSchema.default('unknown'),
 	electricity_status: electricityStatusSchema.default('unknown'),
-	pole_status: infrastructureStatusSchema.default('unknown'),
+	pole_status: ConditionStatusSchema.default('unknown'),
 	road_type: roadTypeSchema.default('unknown'),
 
 	//
@@ -85,7 +75,7 @@ export const StopSchema = DocumentSchema.extend({
 	shelter_maintainer: z.string().nullable().default(null),
 	shelter_make: z.string().nullable().default(null),
 	shelter_model: z.string().nullable().default(null),
-	shelter_status: infrastructureStatusSchema.default('unknown'),
+	shelter_status: ConditionStatusSchema.default('unknown'),
 
 	//
 	// Checks
@@ -98,8 +88,8 @@ export const StopSchema = DocumentSchema.extend({
 	//
 	// Facilities
 
-	connections: z.array(connectionsSchema).default([]),
-	facilities: z.array(facilitiesSchema).default([]),
+	connections: z.array(StopConnectionSchema).default([]),
+	facilities: z.array(StopFacilitySchema).default([]),
 
 	//
 	// Equipments

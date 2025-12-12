@@ -53,16 +53,10 @@ export function StopDetailsSectionInfrastructure() {
 						{...stopDetailContext.data.form.getInputProps('has_bench')}
 					/>
 					<Select
-						key={stopDetailContext.data.form.key('has_lighting')}
-						data={hasThisOptions}
-						label="Existe Iluminação?"
-						{...stopDetailContext.data.form.getInputProps('has_lighting')}
-					/>
-					<Select
-						key={stopDetailContext.data.form.key('has_electricity')}
+						key={stopDetailContext.data.form.key('electricity_status')}
 						data={hasThisOptions}
 						label="Existe Ligação Elétrica?"
-						{...stopDetailContext.data.form.getInputProps('has_electricity')}
+						{...stopDetailContext.data.form.getInputProps('electricity_status')}
 					/>
 				</Grid>
 				<Spacer />
