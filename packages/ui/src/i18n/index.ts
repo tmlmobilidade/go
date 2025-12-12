@@ -13,7 +13,9 @@ import ptKeys from './translations/pt.json' with { type: 'json' };
 /* * */
 
 export const resourceKeys = {
-	pt: { global: ptKeys },
+	pt: {
+		global: ptKeys,
+	},
 } as const;
 
 /* * */

@@ -17,7 +17,7 @@ export function AlertsListHeader() {
 	const alertsListContext = useAlertListContext();
 	const alertCreateContext = useAlertCreateContext();
 
-	const { t } = useTranslation('', { keyPrefix: 'scheduled.list.header' });
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.header' });
 	//
 	// B. Render components
 
