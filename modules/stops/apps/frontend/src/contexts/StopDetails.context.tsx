@@ -14,10 +14,11 @@ import useSWR from 'swr';
 
 interface StopDetailContextState {
 	actions: {
+		archive: () => void
 		deleteImage: () => void
-		deleteStop: () => void
+		lock: () => void
 		// fileChanged: (file: File) => void
-		saveStop: () => void
+		save: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateStopDto | UpdateStopDto>
@@ -102,25 +103,34 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		setIsSaving(false);
 	};
 
-	//
-
-	const handleDeleteStop = async () => {
-		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'DELETE');
+	const handleArchiveStop = async () => {
+		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_ARCHIVE(stopId));
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao apagar paragem',
-				});
+				useToast.error({ message: error.message, title: 'Erro ao apagar paragem' });
 			}
 			return;
 		}
 		useToast.success({ message: 'Paragem arquivada com sucesso.', title: 'Sucesso' });
-		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST), { scroll: false });
+		stopMutate();
+		allStopsMutate();
+		// router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST), { scroll: false });
 	};
 
-	//
+	const handleLockStop = async () => {
+		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId));
+		if (response.error) {
+			const errors = JSON.parse(response.error);
+			for (const error of errors) {
+				useToast.error({ message: error.message, title: 'Erro ao bloquear paragem' });
+			}
+			return;
+		}
+		useToast.success({ message: 'Paragem bloqueada com sucesso.', title: 'Sucesso' });
+		stopMutate();
+		allStopsMutate();
+	};
 
 	const deleteImage = async () => {
 		// const response = await fetchData<Stop>(Routes.API + Routes.STOPS_DETAIL(stopId), 'DELETE', alert);
@@ -169,10 +179,11 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
+			archive: handleArchiveStop,
 			deleteImage,
-			deleteStop: handleDeleteStop,
+			lock: handleLockStop,
 			// fileChanged: (file: File) => setImage(file),
-			saveStop: handleSaveStop,
+			save: handleSaveStop,
 		},
 		data: {
 			form,

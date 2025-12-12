@@ -89,7 +89,7 @@ export function DeleteButton({ size = 'md', variant = 'danger', ...props }: Dele
 			modals.openConfirmModal({
 				children: props.confirmMessage,
 				confirmProps: {
-					color: 'var(--color-status-danger-primary)',
+					variant: 'danger',
 				},
 				labels: {
 					cancel: props.cancelLabel ?? 'Cancelar',

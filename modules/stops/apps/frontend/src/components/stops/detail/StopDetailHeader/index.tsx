@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { BackButton, Button, DeleteButton, keepUrlParams, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, DeleteButton, keepUrlParams, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -39,12 +39,18 @@ export function StopDetailHeader() {
 				icon={<IconUpload size={28} />}
 				label="Guardar"
 				loading={stopDetailContext.flags.isSaving}
-				onClick={stopDetailContext.actions.saveStop}
+				onClick={stopDetailContext.actions.save}
 				variant="primary"
 			/>
+			<LockButton
+				isLocked={stopDetailContext.data.stop.is_locked}
+				onClick={stopDetailContext.actions.lock}
+			/>
 			<DeleteButton
-				onDelete={stopDetailContext.actions.deleteStop}
-				variant="danger"
+				confirmMessage="Tem a certeza que pretende arquivar esta paragem? A paragem ficará indisponível para utilização futura."
+				confirmTitle="Arquivar Paragem"
+				onDelete={stopDetailContext.actions.archive}
+				showConfirmation={true}
 			/>
 		</Toolbar>
 	);
