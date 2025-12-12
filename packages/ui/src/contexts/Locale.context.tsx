@@ -7,11 +7,11 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, 
 /* * */
 
 interface LocaleContextState {
+	actions: {
+		setLocale: (locale: string) => void
+	}
 	data: {
 		locale: string
-	}
-	actions:{
-		setLocale: (locale: string) => void
 	}
 }
 
@@ -35,18 +35,18 @@ export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup Variables
-	
-	const [locale, setLocale] = useState<string, undefined>(undefined);
+
+	const [locale, setLocale] = useState<string | undefined>(undefined);
 
 	//
-	//B. Transform Data
+	// B. Transform Data
 
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
-			const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
-			const lang = browserLocales[0] || 'pt';
-			setLocale(lang.split('-')[0]);
-	}, [])
+		const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
+		const lang = browserLocales[0] || 'pt';
+		setLocale(lang.split('-')[0]);
+	}, []);
 
 	useEffect(() => {
 		i18next.changeLanguage(locale);
@@ -56,12 +56,12 @@ export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Context value
 
 	const contextValue: LocaleContextState = useMemo(() => ({
+		actions: {
+			setLocale,
+		},
 		data: {
 			locale,
 		},
-		actions:{
-			setLocale,
-		}
 	}), [locale]);
 
 	//

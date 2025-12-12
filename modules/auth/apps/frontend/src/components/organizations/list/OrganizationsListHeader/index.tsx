@@ -7,13 +7,13 @@ import pt from '@/app/translations/pt.json';
 import { useOrganizationCreateContext } from '@/contexts/OrganizationCreate.context';
 import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { registerModuleTranslations } from '@tmlmobilidade/ui';
+import { registerModuleTranslations, useLocaleContext } from '@tmlmobilidade/ui';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-registerModuleTranslations('translation', { en: en, pt: pt });
+registerModuleTranslations('auth', { en: en, pt: pt });
 
 /* * */
 
@@ -26,7 +26,9 @@ export function OrganizationsListHeader() {
 	const organizationsListContext = useOrganizationsListContext();
 	const organizationCreateContext = useOrganizationCreateContext();
 
-	const { t } = useTranslation('translation', { keyPrefix: 'organizations.list.header' });
+	const localeContext = useLocaleContext();
+
+	const { t } = useTranslation('auth', { keyPrefix: 'organizations.list.header' });
 
 	//
 	// B. Render components
@@ -37,6 +39,8 @@ export function OrganizationsListHeader() {
 			<Spacer />
 			<SearchInput onChange={organizationsListContext.actions.setFilterSearch} value={organizationsListContext.filters.search} />
 			<Button icon={<IconPlus size={20} />} label="Nova organização" onClick={organizationCreateContext.modal.open} />
+			<Button label="pt" onClick={() => localeContext.actions.setLocale('pt')} />
+			<Button label="en" onClick={() => localeContext.actions.setLocale('en')} />
 		</Toolbar>
 	);
 

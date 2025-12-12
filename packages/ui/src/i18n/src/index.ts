@@ -13,8 +13,8 @@ import ptKeys from '@/translations/pt.json' with { type: 'json' }; ;
 /* * */
 
 export const resourceKeys = {
-	en: { translation: enKeys },
-	pt: { translation: ptKeys },
+	en: { global: enKeys },
+	pt: { global: ptKeys },
 } as const;
 
 /* * */
@@ -27,7 +27,8 @@ i18next
 		resources: resourceKeys,
 	});
 
-export function registerModuleTranslations(namespace: string, translations: Record<string, unknown>) {	for (const [lng, data] of Object.entries(translations)) {
+export function registerModuleTranslations(namespace: string, translations: Record<string, unknown>) {
+	for (const [lng, data] of Object.entries(translations)) {
 		i18next.addResourceBundle(lng, namespace, data, true, false);
 	}
 }
