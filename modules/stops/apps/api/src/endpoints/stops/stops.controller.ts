@@ -3,7 +3,7 @@
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { stops } from '@tmlmobilidade/interfaces';
-import { Stop, UpdateStopDto } from '@tmlmobilidade/types';
+import { type Stop, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
@@ -12,7 +12,17 @@ export class StopsController {
 	//
 
 	/**
-	 * Creates a new stop
+	 * Toggles the archived status of a stop by ID.
+	 * @param request Fastify request containing stop ID in params
+	 * @param reply Fastify reply
+	 */
+	static async archive(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		await stops.toggleArchiveById(request.params.id);
+		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
+	 * Creates a new Stop
 	 * @param request Fastify request containing stop data in body
 	 * @param reply Fastify reply
 	 */
@@ -20,17 +30,6 @@ export class StopsController {
 		const data = request.body as Stop;
 		const result = await stops.insertOne(data);
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED });
-	}
-
-	/**
-	 * Deletes an stop by ID
-	 * @param request Fastify request containing stop ID in params
-	 * @param reply Fastify reply
-	 */
-	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		const { id } = request.params;
-		await stops.deleteById(id);
-		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -52,6 +51,16 @@ export class StopsController {
 		const foundStop = await stops.findById(request.params.id);
 		if (!foundStop) throw new HttpException(HttpStatus.NOT_FOUND, 'Stop not found');
 		reply.send({ data: foundStop, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
+	 * Toggles the lock status of a stop by ID.
+	 * @param request Fastify request containing stop ID in params
+	 * @param reply Fastify reply
+	 */
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		await stops.toggleLockById(request.params.id);
+		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**

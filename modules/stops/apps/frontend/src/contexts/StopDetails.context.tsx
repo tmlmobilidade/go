@@ -4,8 +4,8 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { convertObject, fetchData } from '@tmlmobilidade/utils';
+import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -71,10 +71,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const handleSaveStop = async () => {
 		setIsSaving(true);
-		const method = stopId ? 'PUT' : 'POST';
-		const url = !stopId ? API_ROUTES.stops.STOPS_LIST : API_ROUTES.stops.STOPS_DETAIL(stopId);
-		const body = !stopId ? form.values : convertObject(form.values, UpdateStopSchema);
-		const response = await fetchData<Stop>(url, method, body);
+		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({
@@ -99,21 +96,15 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			message: 'Paragem salva com sucesso',
 			title: 'Sucesso',
 		});
-
-		if (stopId && response.data?._id) {
-			router.replace(PAGE_ROUTES.stops.STOPS_DETAIL(response.data._id));
-		}
-
 		setIsSaving(false);
 		stopMutate();
 		allStopsMutate();
 		setIsSaving(false);
-		return;
 	};
 
 	//
 
-	const handleDeleterStop = async () => {
+	const handleDeleteStop = async () => {
 		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'DELETE');
 		if (response.error) {
 			const errors = JSON.parse(response.error);
@@ -126,7 +117,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			return;
 		}
 		useToast.success({ message: 'Paragem arquivada com sucesso.', title: 'Sucesso' });
-		router.push('/stops', { scroll: false });
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST), { scroll: false });
 	};
 
 	//
@@ -179,7 +170,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
 			deleteImage,
-			deleteStop: handleDeleterStop,
+			deleteStop: handleDeleteStop,
 			// fileChanged: (file: File) => setImage(file),
 			saveStop: handleSaveStop,
 		},

@@ -3,9 +3,9 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { BackButton, Button, keepUrlParams, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { BackButton, Button, DeleteButton, keepUrlParams, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -42,10 +42,8 @@ export function StopDetailHeader() {
 				onClick={stopDetailContext.actions.saveStop}
 				variant="primary"
 			/>
-			<Button
-				icon={<IconTrash size={28} />}
-				label="Eliminar"
-				onClick={stopDetailContext.actions.deleteStop}
+			<DeleteButton
+				onDelete={stopDetailContext.actions.deleteStop}
 				variant="danger"
 			/>
 		</Toolbar>

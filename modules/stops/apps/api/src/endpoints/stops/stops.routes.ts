@@ -39,10 +39,16 @@ server.register(
 			StopsController.update,
 		);
 
-		instance.delete(
-			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.delete]) },
-			StopsController.delete,
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.lock]) },
+			StopsController.lock,
+		);
+
+		instance.get(
+			'/:id/archive',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.archive]) },
+			StopsController.archive,
 		);
 
 		next();
