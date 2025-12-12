@@ -77,7 +77,7 @@ export function AnnotationsDetailHeader() {
 			>
 				<DeleteButton
 					confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Ocorrência"
+					confirmTitle="Apagar Anotação"
 					onDelete={annotationsDetailContext.actions.deleteAnnotation}
 					showConfirmation
 				/>

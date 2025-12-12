@@ -116,7 +116,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 			useToast.update(toastId, {
 				loading: false,
 				message: 'As alterações foram guardadas.',
-				title: 'Ocorrência guardada com sucesso',
+				title: 'Anotação guardada com sucesso',
 				type: 'success',
 			});
 			form.resetDirty();
@@ -147,7 +147,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 				return;
 			}
 
-			useToast.success({ message: 'Ocorrência apagada com sucesso', title: 'Sucesso' });
+			useToast.success({ message: 'Anotação apagada com sucesso', title: 'Sucesso' });
 
 			router.replace(PAGE_ROUTES.dates.ANNOTATIONS_LIST);
 		}
@@ -168,14 +168,14 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 			if (response.error) {
 				return useToast.error({
 					message: response.error,
-					title: 'Erro ao bloquear ocorrência',
+					title: 'Erro ao bloquear anotação',
 				});
 			}
 		}
 		catch (error) {
 			useToast.error({
 				message: error.message,
-				title: 'Erro ao bloquear ocorrência',
+				title: 'Erro ao bloquear anotação',
 			});
 		}
 		finally {

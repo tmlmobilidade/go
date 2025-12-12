@@ -67,7 +67,7 @@ export const AnnotationsCreateContextProvider = ({ children }: PropsWithChildren
 
 		const toastId = useToast.loading({
 			message: 'Por favor aguarde...',
-			title: 'A criar ocorrência',
+			title: 'A criar anotação',
 		});
 
 		try {
@@ -77,7 +77,7 @@ export const AnnotationsCreateContextProvider = ({ children }: PropsWithChildren
 				useToast.update(toastId, {
 					loading: false,
 					message: response.error,
-					title: 'Erro ao criar ocorrência',
+					title: 'Erro ao criar anotação',
 					type: 'error',
 				});
 				setIsLoading(false);
@@ -86,7 +86,7 @@ export const AnnotationsCreateContextProvider = ({ children }: PropsWithChildren
 
 			useToast.update(toastId, {
 				loading: false,
-				message: 'Ocorrência criada com sucesso',
+				message: 'Anotação criada com sucesso',
 				title: 'Sucesso',
 				type: 'success',
 			});
@@ -103,7 +103,7 @@ export const AnnotationsCreateContextProvider = ({ children }: PropsWithChildren
 			useToast.update(toastId, {
 				loading: false,
 				message: error.message,
-				title: 'Erro ao criar ocorrência',
+				title: 'Erro ao criar anotação',
 				type: 'error',
 			});
 			setIsLoading(false);

@@ -120,7 +120,7 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		_id: 'dates',
 		href: PAGE_ROUTES.dates.BASE,
 		icon: <IconCalendarEvent size={26} />,
-		label: 'Ocorrências',
+		label: 'Anotações',
 		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
 	},
 ];

@@ -21,11 +21,11 @@ export function AnnotationsListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>Ocorrências</Label>
+			<Label size="lg" caps singleLine>Anotações</Label>
 			<Spacer />
 			<SearchInput onChange={annotationsListContext.actions.setFilterSearch} value={annotationsListContext.filters.search} />
 			<HasPermission action={PermissionCatalog.all.dates.actions.create_annotations} scope={PermissionCatalog.all.dates.scope}>
-				<Button label="Nova ocorrência" leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
+				<Button label="Nova anotação" leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
 			</HasPermission>
 		</Toolbar>
 	);

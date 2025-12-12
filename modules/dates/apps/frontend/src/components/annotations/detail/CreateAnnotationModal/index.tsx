@@ -49,8 +49,8 @@ export default function CreateAnnotationModal() {
 		<>
 
 			<Section gap="xs">
-				<Label size="lg" caps>Nova Ocorrência</Label>
-				<Text size="sm">Crie uma ocorrência para registar eventos ou observações em datas específicas.</Text>
+				<Label size="lg" caps>Nova Anotação</Label>
+				<Text size="sm">Crie uma anotação para registar eventos ou observações em datas específicas.</Text>
 			</Section>
 
 			<Divider />
@@ -87,7 +87,7 @@ export default function CreateAnnotationModal() {
 					/>
 					<Button
 						disabled={annotationsCreateContext.flags.loading || !annotationsCreateContext.data.form.isValid()}
-						label="Criar Ocorrência"
+						label="Criar Anotação"
 						loading={annotationsCreateContext.flags.loading}
 						onClick={annotationsCreateContext.actions.createAnnotation}
 					/>
