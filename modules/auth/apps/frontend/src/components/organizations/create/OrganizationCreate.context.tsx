@@ -59,8 +59,6 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 
 	const { form } = useTypicalForm<CreateOrganizationDto>(CreateOrganizationSchema);
 
-	console.log(form.values);
-
 	//
 	// D. Handle actions
 

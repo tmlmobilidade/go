@@ -1,6 +1,6 @@
 /* * */
 
-import { AgenciesContextProvider } from '@/contexts/Agencies.context';
+import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider>
-			<AgenciesContextProvider>
+			<DataProviders>
 				<NuqsAdapter>
 					<AppProvider>
 						<AppWrapper>
@@ -26,7 +26,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 						</AppWrapper>
 					</AppProvider>
 				</NuqsAdapter>
-			</AgenciesContextProvider>
+			</DataProviders>
 		</BaseProvider>
 	);
 }

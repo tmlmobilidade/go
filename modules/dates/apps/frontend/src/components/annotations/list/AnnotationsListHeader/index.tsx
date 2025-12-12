@@ -1,6 +1,6 @@
 /* * */
 
-import { openCreateAnnotationModal } from '@/components/annotations/detail/CreateAnnotationModal';
+import { openCreateAnnotationModal } from '@/components/annotations/create/AnnotationCreate.modal';
 import { useAnnotationsListContext } from '@/contexts/AnnotationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
