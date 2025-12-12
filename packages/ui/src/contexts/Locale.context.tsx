@@ -10,7 +10,9 @@ interface LocaleContextState {
 	data: {
 		locale: string
 	}
-	setLocale: (locale: string) => void
+	actions:{
+		setLocale: (locale: string) => void
+	}
 }
 
 /* * */
@@ -29,14 +31,22 @@ export function useLocaleContext() {
 
 export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
 	//
-	const [locale, setLocale] = useState(() => {
-		if (typeof window !== 'undefined') {
+	//
+
+	//
+	// A. Setup Variables
+	
+	const [locale, setLocale] = useState<string, undefined>(undefined);
+
+	//
+	//B. Transform Data
+
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
 			const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
 			const lang = browserLocales[0] || 'pt';
-			return lang.split('-')[0];
-		}
-		return 'pt';
-	});
+			setLocale(lang.split('-')[0]);
+	}, [])
 
 	useEffect(() => {
 		i18next.changeLanguage(locale);
@@ -49,7 +59,9 @@ export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
 		data: {
 			locale,
 		},
-		setLocale,
+		actions:{
+			setLocale,
+		}
 	}), [locale]);
 
 	//
