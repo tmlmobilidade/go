@@ -23,7 +23,7 @@ export function StopDetailsSectionShelter() {
 	// B. Transform data
 
 	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
-		label: Translations.HAS_ANY[value],
+		label: Translations.AVAILABILITY_STATUS[value],
 		value: value,
 	}));
 

@@ -1,4 +1,16 @@
 export const Translations = {
+	AVAILABILITY_STATUS: {
+		available: 'Disponível',
+		unavailable: 'Indisponível',
+		unknown: 'Desconhecido',
+	},
+	CONDITION_STATUS: {
+		damaged: 'Danificado',
+		missing: 'Ausente',
+		not_applicable: 'Não instalado',
+		ok: 'Ok',
+		unknown: 'Desconhecido',
+	},
 	CONNECTIONS: {
 		airport: 'Aeroporto',
 		bike_parking: 'Estacionamento de bicicletas',
@@ -26,18 +38,6 @@ export const Translations = {
 		shopping: 'Zona Comercial',
 		transit_office: 'Espaço navegante®',
 		university: 'Universidade',
-	},
-	HAS_ANY: {
-		no: 'Não',
-		unknown: 'Desconhecido',
-		yes: 'Sim',
-	},
-	INFRAESTRUCTURES_STATUS: {
-		damaged: 'Danificado',
-		missing: 'Ausente',
-		not_applicable: 'Não instalado',
-		ok: 'Ok',
-		unknown: 'Desconhecido',
 	},
 	JURISDICTION: {
 		ip: 'IP',
