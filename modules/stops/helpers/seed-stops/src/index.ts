@@ -91,6 +91,8 @@ import { type Stop } from '@tmlmobilidade/types';
 		await stops.insertMany(preparedStops);
 		console.log(`Inserted ${preparedStops.length} stops`);
 
+		process.exit(0);
+
 		//
 	}
 	catch (err) {
