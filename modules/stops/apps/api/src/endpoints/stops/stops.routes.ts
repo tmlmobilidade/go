@@ -6,10 +6,11 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
-const server = FastifyService.getInstance().server;
 const NAMESPACE = '/stops';
 
 /* * */
+
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {

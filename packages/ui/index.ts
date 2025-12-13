@@ -2,6 +2,7 @@ export * from './src/components';
 export * from './src/contexts';
 export * from './src/hooks';
 export * from './src/providers';
+export * from './src/types';
 export * from './src/utils';
 export * from '@mantine/charts';
 export * from '@mantine/form';

@@ -2,34 +2,22 @@
 
 /* * */
 
-import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateStopDto, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { DetailContextStateTemplate, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface StopDetailContextState {
-	actions: {
-		archive: () => void
-		deleteImage: () => void
-		lock: () => void
-		// fileChanged: (file: File) => void
-		save: () => void
-	}
+interface StopDetailContextState extends DetailContextStateTemplate {
+	actions: DetailContextStateTemplate['actions']
 	data: {
-		form: UseFormReturnType<CreateStopDto | UpdateStopDto>
-		// imageUrl: string | undefined
+		form: UseFormReturnType<UpdateStopDto>
 		stop: Stop | undefined
 	}
-	flags: {
-		error: Error | undefined
-		isSaving: boolean
-		loading: boolean
-	}
+	flags: DetailContextStateTemplate['flags']
 }
 
 /* * */
@@ -52,10 +40,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// A. Setup variables
 
-	const router = useRouter();
-
-	const [isSaving, setIsSaving] = useState(false);
-
 	//
 	// B. Fetch data
 
@@ -70,137 +54,53 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// B. Handle actions
 
-	const handleSaveStop = async () => {
-		setIsSaving(true);
-		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'POST', form.getValues());
-		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({
-					message: response.error,
-					title: 'Erro ao salvar paragem',
-				});
-			}
-			else {
-				const errors = JSON.parse(response.error);
-				for (const error of errors) {
-					useToast.error({
-						message: error.message,
-						title: 'Erro ao salvar paragem',
-					});
-				}
-			}
-			setIsSaving(false);
-			return;
-		}
+	const { action: handleSaveStop, isLoading: isSaving } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
+		onSuccess: () => {
+			form.resetDirty();
+			stopMutate();
+			allStopsMutate();
+		},
+	});
 
-		useToast.success({
-			message: 'Paragem salva com sucesso',
-			title: 'Sucesso',
-		});
-		setIsSaving(false);
-		stopMutate();
-		allStopsMutate();
-		setIsSaving(false);
-	};
+	const { action: handleArchiveStop, isLoading: isArchiving } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_ARCHIVE(stopId)),
+		onSuccess: () => {
+			form.resetDirty();
+			stopMutate();
+			allStopsMutate();
+		},
+	});
 
-	const handleArchiveStop = async () => {
-		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_ARCHIVE(stopId));
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao apagar paragem' });
-			}
-			return;
-		}
-		useToast.success({ message: 'Paragem arquivada com sucesso.', title: 'Sucesso' });
-		stopMutate();
-		allStopsMutate();
-		// router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST), { scroll: false });
-	};
-
-	const handleLockStop = async () => {
-		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId));
-		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao bloquear paragem' });
-				setIsSaving(false);
-				return;
-			}
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao bloquear paragem' });
-			}
-			setIsSaving(false);
-			return;
-		}
-		useToast.success({ message: 'Paragem bloqueada com sucesso.', title: 'Sucesso' });
-		stopMutate();
-		allStopsMutate();
-	};
-
-	const deleteImage = async () => {
-		// const response = await fetchData<Stop>(Routes.API + Routes.STOPS_DETAIL(stopId), 'DELETE', alert);
-		// if (response.error) {
-		// 	const errors = JSON.parse(response.error);
-		// 	for (const error of errors) {
-		// 		useToast.error({
-		// 			message: error.message,
-		// 			title: 'Erro ao apagar imagem',
-		// 		});
-		// 	}
-		// 	return;
-		// }
-		useToast.success({
-			message: 'Imagem apagada com sucesso',
-			title: 'Sucesso',
-		});
-	};
-
-	//
-
-	// const uploadImage = async (stopId: string) => {
-	// if (stopId === 'new' || !image) return;
-
-	// const response = await uploadFile(
-	// 	Routes.API + Routes.STOPS_DETAIL(stopId),
-	// 	image,
-	// );
-
-	// if (response.error) {
-	// 	useToast.error({
-	// 		message: response.error,
-	// 		title: 'Erro ao carregar imagem',
-	// 	});
-	// 	return;
-	// }
-
-	// useToast.success({
-	// 	message: 'A imagem foi carregada com sucesso',
-	// 	title: 'Imagem carregada com sucesso',
-	// });
-	// };
+	const { action: handleLockStop, isLoading: isLocking } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId)),
+		onSuccess: () => {
+			form.resetDirty();
+			stopMutate();
+			allStopsMutate();
+		},
+	});
 
 	//
 	// F. Define context value
 
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
-			archive: handleArchiveStop,
-			deleteImage,
+			delete: handleArchiveStop,
 			lock: handleLockStop,
-			// fileChanged: (file: File) => setImage(file),
 			save: handleSaveStop,
 		},
 		data: {
 			form,
 			id: stopId,
-			// imageUrl: imageUrl?.data,
 			stop: stopData,
 		},
 		flags: {
 			error: stopError,
-			isSaving,
 			loading: stopLoading,
+			locking: false,
+			read_only: false,
+			saving: isSaving,
 		},
 	}), [
 		stopData,

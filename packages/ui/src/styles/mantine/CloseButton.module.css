@@ -2,6 +2,8 @@
 /* ROOT */
 
 .root {
+	--cb-icon-size: 26px;
+	--cb-size: 40px;
 	color: var(--color-system-text-200);
 }
 
