@@ -7,14 +7,14 @@ import { IconChevronLeft } from '@tabler/icons-react';
 
 /* * */
 
-interface BackButtonProps {
+interface CloseButtonProps {
 	onClick?: () => void
 	type?: 'back' | 'close'
 }
 
 /* * */
 
-export function CloseButton({ onClick, type = 'back' }: BackButtonProps) {
+export function CloseButton({ onClick, type = 'back' }: CloseButtonProps) {
 	//
 
 	//

@@ -5,7 +5,7 @@
 import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
 import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,7 +22,7 @@ export function UserCreateHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={closeCreateUserModal} type="close" />
+			<CloseButton onClick={closeCreateUserModal} type="close" />
 			<Tag label="Novo Utilizador" variant="secondary" />
 			<Spacer />
 			<Button

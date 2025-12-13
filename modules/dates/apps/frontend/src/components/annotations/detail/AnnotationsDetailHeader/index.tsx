@@ -6,7 +6,7 @@ import { useAnnotationsDetailContext } from '@/contexts/AnnotationsDetail.contex
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { BackButton, Button, DeleteButton, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, DeleteButton, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -35,7 +35,7 @@ export function AnnotationsDetailHeader() {
 	return (
 		<Toolbar>
 
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={annotationsDetailContext.data.annotation._id} variant="secondary" />
 

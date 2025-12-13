@@ -6,7 +6,7 @@ import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -33,7 +33,7 @@ export function RealtimeDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={realtimeDetailContext.data.form.getValues().publish_status} variant={realtimeDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
 			<Label size="lg" caps>{realtimeDetailContext.data.id}</Label>
 			<Spacer />

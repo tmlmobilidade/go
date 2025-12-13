@@ -8,7 +8,7 @@ import { openRequestApprovalModalModal } from '@/components/validations/detail/R
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { BackButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -45,7 +45,7 @@ export function ValidationsDetailHeader() {
 	return (
 		<Toolbar>
 
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<ValidationStatusTag status={validationsDetailContext.data.validation?.feeder_status} />
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 			<Label size="md" caps>{validationsDetailContext.data.validation?._id}</Label>

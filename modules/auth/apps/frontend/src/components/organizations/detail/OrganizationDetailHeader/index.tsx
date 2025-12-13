@@ -5,7 +5,7 @@ import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.con
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams, Label } from '@tmlmobilidade/ui';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -32,7 +32,7 @@ export function OrganizationDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={organizationDetailContext.data.id || 'Nova Organização'} variant="muted" />
 			<Label size="lg" singleLine>{organizationDetailContext.data.form.values.long_name}</Label>
 			<Spacer />

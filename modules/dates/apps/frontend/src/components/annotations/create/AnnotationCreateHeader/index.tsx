@@ -5,7 +5,7 @@
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
 import { closeCreateAnnotationModal } from '@/components/annotations/create/AnnotationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,7 +22,7 @@ export function AnnotationCreateHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={closeCreateAnnotationModal} type="close" />
+			<CloseButton onClick={closeCreateAnnotationModal} type="close" />
 			<Tag label="Nova Anotação" variant="muted" />
 			<Label size="lg" singleLine>{annotationCreateContext.data.form.values.title}</Label>
 			<Spacer />

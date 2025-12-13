@@ -6,7 +6,7 @@ import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams, Label } from '@tmlmobilidade/ui';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -33,7 +33,7 @@ export function UserDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={userDetailContext.data.id || 'Novo Utilizador'} variant="muted" />
 			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
 			<Spacer />

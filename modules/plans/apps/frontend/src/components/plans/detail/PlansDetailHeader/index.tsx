@@ -7,7 +7,7 @@ import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { IconRefresh, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -36,7 +36,7 @@ export function PlansDetailHeader() {
 	return (
 		<Toolbar>
 
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={plansDetailContext.data.plan._id} variant="secondary" />
 

@@ -5,7 +5,7 @@
 import { useScheduledAlertCreateContext } from '@/components/scheduled/create/ScheduledAlertCreate.context';
 import { closeCreateScheduledAlertModal } from '@/components/scheduled/create/ScheduledAlertCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,7 +22,7 @@ export function ScheduledAlertCreateHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={closeCreateScheduledAlertModal} type="close" />
+			<CloseButton onClick={closeCreateScheduledAlertModal} type="close" />
 			<Tag label="Novo Alerta" variant="secondary" />
 			<Spacer />
 			<Button

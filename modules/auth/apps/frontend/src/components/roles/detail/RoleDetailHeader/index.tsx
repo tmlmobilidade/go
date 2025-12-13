@@ -5,7 +5,7 @@
 import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { BackButton, Button, keepUrlParams, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, keepUrlParams, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -32,7 +32,7 @@ export function RoleDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={roleDetailContext.data.id || 'Novo Grupo de Permissões'} variant="secondary" />
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
 			<Spacer />

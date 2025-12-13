@@ -6,7 +6,7 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { BackButton, Button, CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
