@@ -7,10 +7,15 @@ import { z } from 'zod';
 export const DatesPermissionSchema = z.object({
 	action: z.enum([
 		'create_annotations',
+		'create_periods',
 		'delete_annotations',
+		'delete_periods',
 		'read_annotations',
-		'update_annotations',
+		'read_periods',
 		'toggle_lock_annotations',
+		'toggle_lock_periods',
+		'update_annotations',
+		'update_periods',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

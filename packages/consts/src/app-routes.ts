@@ -79,6 +79,13 @@ export const PAGE_ROUTES = Object.freeze({
 		// ANNOTATIONS
 		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/annotations/${id}`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'frontend_url')}/annotations`,
+
+		// CALENDAR
+		CALENDAR_LIST: `${getAppConfig('dates', 'frontend_url')}/calendar`,
+
+		// PERIODS
+		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/periods/${id}`,
+		PERIODS_LIST: `${getAppConfig('dates', 'frontend_url')}/periods`,
 	},
 
 	/* * */
@@ -231,6 +238,11 @@ export const API_ROUTES = Object.freeze({
 		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
 		ANNOTATIONS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/toggle-lock`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'api_url')}/annotations`,
+
+		// PERIODS
+		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}`,
+		PERIODS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}/toggle-lock`,
+		PERIODS_LIST: `${getAppConfig('dates', 'api_url')}/periods`,
 	},
 
 	/* * */
