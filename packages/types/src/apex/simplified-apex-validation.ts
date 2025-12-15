@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -115,7 +115,7 @@ export const SimplifiedApexValidationSchema = DocumentSchema
 		on_board_sale_id: z.string().nullable(),
 		pattern_id: z.string(),
 		product_id: z.string(),
-		received_at: unixTimeStampSchema,
+		received_at: UnixTimeStampSchema,
 		stop_id: z.string(),
 		trip_id: z.string(),
 		units_qty: z.number().nullable(),

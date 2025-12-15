@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -17,7 +17,7 @@ export const SimplifiedVehicleEventSchema = DocumentSchema
 		longitude: z.number(),
 		odometer: z.number(),
 		pattern_id: z.string(),
-		received_at: unixTimeStampSchema,
+		received_at: UnixTimeStampSchema,
 		stop_id: z.string(),
 		trigger_activity: z.string(),
 		trigger_door: z.string(),

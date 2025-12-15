@@ -1,7 +1,7 @@
 /* * */
 
 import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { FileExportBaseSchema } from '@/file-exports/common.js';
 import { gtfsCauseSchema } from '@/gtfs/cause-effetcs.js';
 import { RideAcceptanceStatusSchema, RideJustificationSourceSchema } from '@/rides/ride-acceptance.js';
@@ -125,8 +125,8 @@ export const RideExportPropertiesSchema = z.object({
 
 		/* * */
 
-		date_end: unixTimeStampSchema,
-		date_start: unixTimeStampSchema,
+		date_end: UnixTimeStampSchema,
+		date_start: UnixTimeStampSchema,
 
 		/* * */
 
