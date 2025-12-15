@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-interface UseFlagReadOnlyProps {
+interface UseFlagCanSaveProps {
 
 	/**
 	 * Indicates if the user has permission to update the item.
@@ -28,6 +28,12 @@ interface UseFlagReadOnlyProps {
 	isDeleting?: boolean
 
 	/**
+	 * Indicates if the form has unsaved changes.
+	 * This is a mandatory field.
+	 */
+	isDirty: boolean
+
+	/**
 	 * Indicates if the item is loading.
 	 * If undefined, the item is considered not loading.
 	 */
@@ -46,19 +52,19 @@ interface UseFlagReadOnlyProps {
 	isLocking?: boolean
 
 	/**
-	 * Indicates if the item is being saved.
-	 * If undefined, the item is considered not currently saving.
+	 * Indicates if the form is valid.
+	 * This is a mandatory field.
 	 */
-	isSaving?: boolean
+	isValid: boolean
 
 }
 
-interface UseFlagReadOnlyReturnType {
+interface UseFlagCanSaveReturnType {
 
 	/**
-	 * Indicates if the item is in read-only mode.
+	 * Indicates if the item can be saved.
 	 */
-	isReadOnly: boolean
+	canSave: boolean
 
 }
 
@@ -66,44 +72,45 @@ interface UseFlagReadOnlyReturnType {
  * Hook to determine if an item should be in read-only mode
  * based on user permissions and item state.
  * @param props The properties to determine read-only status.
- * @returns An object containing the isReadOnly flag.
+ * @returns An object containing the isCanSave flag.
  */
-export function useFlagReadOnly(props: UseFlagReadOnlyProps): UseFlagReadOnlyReturnType {
+export function useFlagCanSave(props: UseFlagCanSaveProps): UseFlagCanSaveReturnType {
 	//
 
 	//
 	// A. Handle actions
 
-	const isReadOnlyValue = useMemo(() => {
+	const canSaveValue = useMemo(() => {
 		// If the user does not have an update permission,
 		// then the item is read-only, regardless of other conditions.
-		if (!props.hasPermission) return true;
+		if (!props.hasPermission) return false;
 		// If isDeleted is undefined, we consider it as not deleted.
 		// Some document types do not have the isDeleted property.
-		if (props.isDeleted !== undefined && props.isDeleted) return true;
+		if (props.isDeleted !== undefined && props.isDeleted) return false;
 		// If isDeleting is undefined, we consider it as not deleting.
 		// Some document types do not have the isDeleting property.
-		if (props.isDeleting !== undefined && props.isDeleting) return true;
+		if (props.isDeleting !== undefined && props.isDeleting) return false;
 		// If isLoading is undefined, we consider it as not loading.
 		// Some document types do not have the isLoading property.
-		if (props.isLoading !== undefined && props.isLoading) return true;
+		if (props.isLoading !== undefined && props.isLoading) return false;
 		// If isLocked is undefined, we consider it as not locked.
 		// Some document types may not have the isLocked property.
-		if (props.isLocked !== undefined && props.isLocked) return true;
+		if (props.isLocked !== undefined && props.isLocked) return false;
 		// If isLocking is undefined, we consider it as not locking.
 		// Some document types do not have the isLocking property.
-		if (props.isLocking !== undefined && props.isLocking) return true;
-		// If isSaving is undefined, we consider it as not saving.
-		// Some document types do not have the isSaving property.
-		if (props.isSaving !== undefined && props.isSaving) return true;
-		// If the user has permission and the item is not locked,
-		// then the item is not read-only.
+		if (props.isLocking !== undefined && props.isLocking) return false;
+		// If the form is dirty, we can save.
+		if (props.isDirty) return true;
+		// If the form is valid, we can save.
+		if (props.isValid) return true;
+		// Otherwise, we cannot save.
 		return false;
 	}, [props]);
+
 	//
 	// B. Return value
 
-	return { isReadOnly: isReadOnlyValue };
+	return { canSave: canSaveValue };
 
 	//
 };
