@@ -9,6 +9,7 @@ export const DocumentSchema = z.object({
 	_id: z.string(),
 	created_at: unixTimeStampSchema,
 	created_by: z.string().optional(),
+	is_locked: z.boolean().default(false),
 	updated_at: unixTimeStampSchema,
 	updated_by: z.string().optional(),
 });

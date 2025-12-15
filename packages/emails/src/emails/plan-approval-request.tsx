@@ -85,6 +85,7 @@ const mockValidation: GtfsValidation = {
 	gtfs_feed_info: {
 		feed_lang: 'pt',
 	},
+	is_locked: false,
 	notification_sent: false,
 	summary: {
 		messages: [],

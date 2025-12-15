@@ -7,7 +7,7 @@ import { z } from 'zod';
 export const StopsPermissionSchema = z.object({
 	action: z.enum([
 		'create',
-		'archive',
+		'delete',
 		'read',
 		'lock',
 		'update',

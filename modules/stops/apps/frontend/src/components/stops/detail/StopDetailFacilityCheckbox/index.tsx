@@ -22,7 +22,6 @@ export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDe
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	const form = stopDetailContext.data.form;
 	const stopId = stopDetailContext.data.stop?._id;
 
 	//
@@ -30,13 +29,13 @@ export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDe
 
 	const checkbox = (
 		<Checkbox
-			checked={form.values.facilities?.includes(value) ?? false}
+			checked={stopDetailContext.data.form.values.facilities?.includes(value) ?? false}
 			label={label}
 			onChange={(e) => {
-				const facilities = form.values.facilities ?? [];
+				const facilities = stopDetailContext.data.form.values.facilities ?? [];
 				const isChecked = e.target.checked;
 				const newFacilities = isChecked ? [...facilities, value] : facilities.filter(f => f !== value);
-				form.setFieldValue('facilities', newFacilities);
+				stopDetailContext.data.form.setFieldValue('facilities', newFacilities);
 			}}
 		/>
 	);

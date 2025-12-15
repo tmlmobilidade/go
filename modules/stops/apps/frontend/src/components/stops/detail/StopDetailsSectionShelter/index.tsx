@@ -46,17 +46,20 @@ export function StopDetailsSectionShelter() {
 						<Select
 							key={stopDetailContext.data.form.key('has_shelter')}
 							data={availabilityStatusOptions}
+							readOnly={stopDetailContext.flags.isReadOnly}
 							{...stopDetailContext.data.form.getInputProps('has_shelter')}
 						/>
 					</ProposedChangesWrapper>
 					<TextInput
 						key={stopDetailContext.data.form.key('shelter_code')}
 						label="Código do Abrigo"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('shelter_code')}
 					/>
 					<TextInput
 						key={stopDetailContext.data.form.key('shelter_maintainer')}
 						label="Entidade Gestora do Abrigo"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('shelter_maintainer')}
 					/>
 				</Grid>
@@ -67,6 +70,7 @@ export function StopDetailsSectionShelter() {
 					key={stopDetailContext.data.form.key('shelter_material')}
 					label="Data de Instalação do abrigo"
 					placeholder="2023-02-10"
+					readOnly={stopDetailContext.flags.isReadOnly}
 					{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}
 				/>
 			</Section>

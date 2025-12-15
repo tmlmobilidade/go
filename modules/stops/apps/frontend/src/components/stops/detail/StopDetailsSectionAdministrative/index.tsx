@@ -2,8 +2,8 @@
 
 /* * */
 
-import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { Translations } from '@/lib/translations';
 import { StopJurisdictionSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, Select, ValueDisplay } from '@tmlmobilidade/ui';
@@ -93,14 +93,15 @@ export function StopDetailsSectionAdministrative() {
 			title="Informação Administrativa"
 		>
 			<Section>
-				<Select
-					key={stopDetailContext.data.form.key('jurisdiction')}
-					data={stopJurisdictionOptions}
-					defaultValue={Translations.JURISDICTION.unknown}
-					label="Jurisdição"
-					w="100%"
-					{...stopDetailContext.data.form.getInputProps('jurisdiction')}
-				/>
+				<Grid>
+					<Select
+						key={stopDetailContext.data.form.key('jurisdiction')}
+						data={stopJurisdictionOptions}
+						label="Jurisdição"
+						readOnly={stopDetailContext.flags.isReadOnly}
+						{...stopDetailContext.data.form.getInputProps('jurisdiction')}
+					/>
+				</Grid>
 			</Section>
 			<Section>
 				<Grid columns="ab" gap="md">

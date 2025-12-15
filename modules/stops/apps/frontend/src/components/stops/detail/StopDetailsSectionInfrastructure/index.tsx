@@ -44,18 +44,21 @@ export function StopDetailsSectionInfrastructure() {
 						key={stopDetailContext.data.form.key('has_mupi')}
 						data={availabilityStatusOptions}
 						label="Existe Mupi?"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_mupi')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_bench')}
 						data={availabilityStatusOptions}
 						label="Existe Banco?"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_bench')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('electricity_status')}
 						data={availabilityStatusOptions}
 						label="Existe Ligação Elétrica?"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('electricity_status')}
 					/>
 				</Grid>
@@ -68,6 +71,7 @@ export function StopDetailsSectionInfrastructure() {
 						key={stopDetailContext.data.form.key('road_type')}
 						data={roadTypeOptions}
 						label="Tipo de Relação com a Via"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('road_type')}
 					/>
 				</Grid>
@@ -79,12 +83,14 @@ export function StopDetailsSectionInfrastructure() {
 						key={stopDetailContext.data.form.key('last_infrastructure_maintenance')}
 						label="Última Manutenção da Infraestrutura"
 						placeholder="2023-02-10"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_infrastructure_maintenance')}
 					/>
 					<TextInput
 						key={stopDetailContext.data.form.key('last_infrastructure_check')}
 						label="Última Verificação da Infraestrutura"
 						placeholder="2023-02-10"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_infrastructure_check')}
 					/>
 				</Grid>

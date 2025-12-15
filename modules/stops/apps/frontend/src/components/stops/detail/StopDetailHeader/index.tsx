@@ -34,6 +34,7 @@ export function StopDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
+			{stopDetailContext.data.stop?.is_archived && <Tag label="Paragem Eliminada" variant="danger" />}
 
 			<Spacer />
 
@@ -42,7 +43,7 @@ export function StopDetailHeader() {
 				scope={PermissionCatalog.all.stops.scope}
 			>
 				<SaveButton
-					disabled={!stopDetailContext.data.form.isDirty() || !stopDetailContext.data.form.isValid()}
+					disabled={!stopDetailContext.flags.canSave}
 					loading={stopDetailContext.flags.isSaving}
 					onClick={stopDetailContext.actions.save}
 				/>
@@ -66,7 +67,10 @@ export function StopDetailHeader() {
 				<DeleteButton
 					confirmMessage="Tem a certeza que pretende arquivar esta paragem? A paragem ficará indisponível para utilização futura."
 					confirmTitle="Arquivar Paragem"
+					isDeleted={stopDetailContext.data.stop?.is_archived}
+					isLoading={stopDetailContext.flags.isDeleting}
 					onDelete={stopDetailContext.actions.delete}
+					onRestore={stopDetailContext.actions.delete}
 					showConfirmation={true}
 				/>
 			</HasPermission>

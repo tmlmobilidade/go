@@ -29,6 +29,7 @@ export function StopDetailsSectionNotes() {
 						key={stopDetailContext.data.form.key('comments')}
 						minRows={10}
 						placeholder="Construção planeada a..."
+						readOnly={stopDetailContext.flags.isReadOnly}
 						autosize
 						{...stopDetailContext.data.form.getInputProps('comments')}
 					/>

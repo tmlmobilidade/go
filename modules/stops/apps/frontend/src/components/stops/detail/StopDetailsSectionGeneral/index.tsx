@@ -56,15 +56,16 @@ export function StopDetailsSectionGeneral() {
 				</Grid>
 			</Section>
 
-			<Section gap="md">
-				<SegmentedControl
-					key={stopDetailContext.data.form.key('lifecycle_status')}
-					data={lifecycleStatusItems}
-					readOnly={stopDetailContext.flags.isReadOnly}
-					value={stopDetailContext.data.form.values.lifecycle_status}
-					fullWidth
-					{...stopDetailContext.data.form.getInputProps('lifecycle_status')}
-				/>
+			<Section>
+				<Grid>
+					<SegmentedControl
+						key={stopDetailContext.data.form.key('lifecycle_status')}
+						data={lifecycleStatusItems}
+						readOnly={stopDetailContext.flags.isReadOnly}
+						value={stopDetailContext.data.form.values.lifecycle_status}
+						{...stopDetailContext.data.form.getInputProps('lifecycle_status')}
+					/>
+				</Grid>
 			</Section>
 
 			<Section>
@@ -76,7 +77,10 @@ export function StopDetailsSectionGeneral() {
 						relatedId={stopDetailContext.data.stop?._id}
 						scope="stop"
 					>
-						<TextInput {...stopDetailContext.data.form.getInputProps('name')} />
+						<TextInput
+							readOnly={stopDetailContext.flags.isReadOnly}
+							{...stopDetailContext.data.form.getInputProps('name')}
+						/>
 					</ProposedChangesWrapper>
 
 					<ProposedChangesWrapper
@@ -85,7 +89,10 @@ export function StopDetailsSectionGeneral() {
 						relatedId={stopDetailContext.data.stop?._id}
 						scope="stop"
 					>
-						<TextInput {...stopDetailContext.data.form.getInputProps('new_name')} />
+						<TextInput
+							readOnly={stopDetailContext.flags.isReadOnly}
+							{...stopDetailContext.data.form.getInputProps('new_name')}
+						/>
 					</ProposedChangesWrapper>
 
 				</Grid>

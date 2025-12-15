@@ -12,16 +12,6 @@ export class StopsController {
 	//
 
 	/**
-	 * Toggles the archived status of a stop by ID.
-	 * @param request Fastify request containing stop ID in params
-	 * @param reply Fastify reply
-	 */
-	static async archive(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		await stops.toggleArchiveById(request.params.id);
-		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
-	}
-
-	/**
 	 * Creates a new Stop
 	 * @param request Fastify request containing stop data in body
 	 * @param reply Fastify reply
@@ -30,6 +20,16 @@ export class StopsController {
 		const data = request.body as Stop;
 		const result = await stops.insertOne(data);
 		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED });
+	}
+
+	/**
+	 * Toggles the deleted status of a stop by ID.
+	 * @param request Fastify request containing stop ID in params
+	 * @param reply Fastify reply
+	 */
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		await stops.toggleArchiveById(request.params.id);
+		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**

@@ -4,14 +4,43 @@
 
 import { ActionIcon } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconTrash } from '@tabler/icons-react';
+import { IconRestore, IconTrash } from '@tabler/icons-react';
 
 import { Tooltip } from '../../common/Tooltip';
 import { Label } from '../../display/Label';
 
 /* * */
 
-interface DeleteButtonWithConfirmationProps {
+interface DeleteButtonBaseProps {
+
+	/**
+	 * Flag to indicate if the item is deleted.
+	 */
+	isDeleted?: boolean
+
+	/**
+	 * Flag to indicate if the button is disabled.
+	 */
+	isDisabled?: boolean
+
+	/**
+	 * Flag to indicate if the button is in loading state.
+	 */
+	isLoading?: boolean
+
+	/**
+	 * Callback function to execute when the delete action is confirmed.
+	 */
+	onDelete: () => void
+
+	/**
+	 * Callback function to execute when the restore action is confirmed.
+	 */
+	onRestore?: () => void
+
+}
+
+interface DeleteButtonWithConfirmationProps extends DeleteButtonBaseProps {
 
 	/**
 	 * Label for the cancel button.
@@ -41,11 +70,6 @@ interface DeleteButtonWithConfirmationProps {
 	onCancel?: () => void
 
 	/**
-	 * Callback function to execute when the confirm button is clicked.
-	 */
-	onDelete: () => void
-
-	/**
 	 * Flag to indicate if the confirmation modal should be shown.
 	 */
 	showConfirmation: true
@@ -55,12 +79,7 @@ interface DeleteButtonWithConfirmationProps {
 /**
  * Props for hiding confirmation modal.
  */
-interface DeleteButtonWithoutConfirmationProps {
-
-	/**
-	 * Callback function to execute when the action icon is clicked.
-	 */
-	onDelete: () => void
+interface DeleteButtonWithoutConfirmationProps extends DeleteButtonBaseProps {
 
 	/**
 	 * Flag to indicate if the confirmation modal should be hidden.
@@ -79,7 +98,7 @@ export function DeleteButton(props: DeleteButtonProps) {
 	//
 	// A. Handle actions
 
-	const handleClick = () => {
+	const handleDelete = () => {
 		if (props.showConfirmation) {
 			modals.openConfirmModal({
 				children: props.confirmMessage,
@@ -100,8 +119,32 @@ export function DeleteButton(props: DeleteButtonProps) {
 		}
 	};
 
+	const handleRestore = () => {
+		if (props.onRestore) props.onRestore();
+	};
+
 	//
 	// B. Render components
+
+	if (props.isDeleted) {
+		return (
+			<Tooltip
+				label="Recuperar"
+				position="bottom"
+				withArrow
+			>
+				<ActionIcon
+					color="var(--color-status-warning-primary)"
+					disabled={props.isDisabled}
+					loading={props.isLoading}
+					onClick={handleRestore}
+					variant="subtle"
+				>
+					<IconRestore />
+				</ActionIcon>
+			</Tooltip>
+		);
+	}
 
 	return (
 		<Tooltip
@@ -111,7 +154,9 @@ export function DeleteButton(props: DeleteButtonProps) {
 		>
 			<ActionIcon
 				color="var(--color-status-danger-primary)"
-				onClick={handleClick}
+				disabled={props.isDisabled}
+				loading={props.isLoading}
+				onClick={handleDelete}
 				variant="subtle"
 			>
 				<IconTrash />
