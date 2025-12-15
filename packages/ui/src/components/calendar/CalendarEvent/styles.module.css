@@ -5,6 +5,8 @@
 	display: flex;
 	gap: 4px;
 	align-items: center;
+	min-width: 0;
+	max-width: 100%;
 	min-height: 24px;
 	padding: 2px 6px;
 	overflow: hidden;
@@ -28,6 +30,7 @@
 .eventTitle {
 	display: block;
 	flex: 1;
+	min-width: 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
