@@ -31,17 +31,17 @@ export function AgencyDetailBasicInfo() {
 				<Grid columns="aab" gap="lg">
 					<TextInput
 						key={agencyDetailContext.data.form.key('name')}
-						label={t('fields.agency_name')}
+						label={t('fields.name')}
 						maxLength={255}
-						placeholder={t('fields.agency_name_placeholder')}
+						placeholder={t('fields.name_placeholder')}
 						withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('name')}
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('short_name')}
-						label={t('fields.agency_short_name')}
+						label={t('fields.short_name')}
 						maxLength={3}
-						placeholder={t('fields.agency_short_name_placeholder')}
+						placeholder={t('fields.short_name_placeholder')}
 						withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('short_name')}
 					/>
@@ -49,32 +49,32 @@ export function AgencyDetailBasicInfo() {
 				<Grid columns="abc" gap="lg">
 					<TextInput
 						key={agencyDetailContext.data.form.key('public_email')}
-						label={t('fields.agency_email')}
-						placeholder={t('fields.agency_email_placeholder')}
+						label={t('fields.email')}
+						placeholder={t('fields.email_placeholder')}
 						type="email"
 						withAsterisk={!CreateAgencySchema.shape.public_email.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('public_email')}
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('phone')}
-						label={t('fields.agency_phone')}
-						placeholder={t('fields.agency_phone_placeholder')}
+						label={t('fields.phone')}
+						placeholder={t('fields.phone_placeholder')}
 						type="tel"
 						withAsterisk={!CreateAgencySchema.shape.phone.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('phone')}
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('website_url')}
-						label={t('fields.agency_website')}
-						placeholder={t('fields.agency_website_placeholder')}
+						label={t('fields.website')}
+						placeholder={t('fields.website_placeholder')}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.website_url.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('website_url')}
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('fare_url')}
-						label={t('fields.agency_fare_url')}
-						placeholder={t('fields.agency_fare_url_placeholder')}
+						label={t('fields.fare_url')}
+						placeholder={t('fields.fare_url_placeholder')}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.fare_url.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('fare_url')}
@@ -82,7 +82,7 @@ export function AgencyDetailBasicInfo() {
 					<Select
 						key={agencyDetailContext.data.form.key('timezone')}
 						data={Dates.TIMEZONE_LIST}
-						label={t('fields.agency_timezone')}
+						label={t('fields.timezone')}
 						{...agencyDetailContext.data.form.getInputProps('timezone')}
 					/>
 				</Grid>

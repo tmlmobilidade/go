@@ -4,26 +4,53 @@
 			"BasicInfo": {
 				"description": "Detalhes como nome, email, telefone, URL e timezone da agência.",
 				"fields": {
-					"agency_email": "Email da Agência",
-					"agency_email_placeholder": "",
-					"agency_fare_url": "URL de Tarifário da Agência",
-					"agency_fare_url_placeholder": "https://www.carrismetropolitana.pt/tar",
-					"agency_name": "Nome do Operador",
-					"agency_name_placeholder": "912345678",
-					"agency_phone": "Telemóvel da Agência",
-					"agency_phone_placeholder": "",
-					"agency_short_name": "Nome Curto",
-					"agency_short_name_placeholder": "CM",
-					"agency_timezone": "Timezone da Agência",
-					"agency_website": "URL da Agência",
-					"agency_website_placeholder": "https://www.carrismetropolitana.pt"
+					"email": "Email da Agência",
+					"email_placeholder": "",
+					"fare_url": "URL de Tarifário da Agência",
+					"fare_url_placeholder": "https://www.carrismetropolitana.pt/tar",
+					"name": "Nome do Operador",
+					"name_placeholder": "912345678",
+					"phone": "Telemóvel da Agência",
+					"phone_placeholder": "",
+					"short_name": "Nome Curto",
+					"short_name_placeholder": "CM",
+					"timezone": "Timezone da Agência",
+					"website": "URL da Agência",
+					"website_placeholder": "https://www.carrismetropolitana.pt"
 				},
 				"title": "Informações gerais"
 
 			},
+			"Contacts": {
+				"description": "Informação de contatos da agência",
+				"fields": {
+					"contact_email_pta": "Emails de contacto da Autoridade",
+					"contact_email_pta_label": "Notificações serão enviadas para os emails de contacto da TML.",
+					"contact_emails_pto": "Notificações serão enviadas para os emails de contacto da agência.",
+					"contact_emails_pto_label": "Emails de contacto do Operador"
+				},
+				"title": "Informação de contatos"
+			},
+			"Financial": {
+				"description": "Informação Financeira",
+				"fields": {
+					"price_per_km": "Preço por km",
+					"price_per_km_placeholder": "1.50",
+					"total_vkm_per_year": "Total de km por ano",
+					"total_vkm_per_year_placeholder": "1000000"
+				},
+				"title": "Informação financeira da agência"
+			},
 			"header": {
 				"save": "Guardar"
 			}
+		},
+		"list": {
+			"header": {
+				"title": "Operadores"
+			},
+			"tableHeaderID": "#ID",
+			"tableHeaderName": "Nome"
 		},
 		"noDataLabel": {
 			"text": "Selecione uma Agência"
