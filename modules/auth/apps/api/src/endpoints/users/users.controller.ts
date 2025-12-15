@@ -107,6 +107,18 @@ export class UsersController {
 	}
 
 	/**
+	 * Toggles the lock status of a user by ID.
+	 * @param request Fastify request containing user ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
+		await users.toggleLockById(request.params.id);
+		const foundUser = await users.findById(request.params.id);
+		if (!foundUser) throw new HttpException(HttpStatus.NOT_FOUND, 'User not found');
+		reply.send({ data: foundUser, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
 	 * Update a user in the database.
 	 * @param request The request object.
 	 * @param reply The reply object.

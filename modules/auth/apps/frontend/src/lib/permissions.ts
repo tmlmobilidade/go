@@ -130,6 +130,7 @@ const userActions: PermissionConfig = {
 		{ action: 'read', description: 'Permite ver utilizadores', label: 'Ver' },
 		{ action: 'create', description: 'Permite criar um utilizador', label: 'Criar' },
 		{ action: 'update', description: 'Permite editar um utilizador', label: 'Editar' },
+		{ action: 'lock', description: 'Permite bloquear um utilizador', label: 'Bloquear' },
 		{ action: 'delete', description: 'Permite eliminar um utilizador', label: 'Eliminar' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de utilizadores.',

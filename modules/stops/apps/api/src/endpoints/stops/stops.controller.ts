@@ -45,9 +45,9 @@ export class StopsController {
 	}
 
 	/**
-	 * Retrieves a single stop by ID
-	 * @param request Fastify request containing stop ID in params
-	 * @param reply Fastify reply
+	 * Retrieves a single stop by ID.
+	 * @param request Fastify request containing stop ID in params.
+	 * @param reply Fastify reply.
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
 		const foundStop = await stops.findById(request.params.id);
@@ -57,8 +57,8 @@ export class StopsController {
 
 	/**
 	 * Toggles the lock status of a stop by ID.
-	 * @param request Fastify request containing stop ID in params
-	 * @param reply Fastify reply
+	 * @param request Fastify request containing stop ID in params.
+	 * @param reply Fastify reply.
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
 		await stops.toggleLockById(request.params.id);

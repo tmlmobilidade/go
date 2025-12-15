@@ -5,7 +5,7 @@
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DeleteButton, HasPermission, keepUrlParams, Label, SaveButton } from '@tmlmobilidade/ui';
+import { DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton } from '@tmlmobilidade/ui';
 import { CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -50,9 +50,9 @@ export function UserDetailHeader() {
 				/>
 			</HasPermission>
 
-			{/* <HasPermission
-				action={PermissionCatalog.all.stops.actions.lock}
-				scope={PermissionCatalog.all.stops.scope}
+			<HasPermission
+				action={PermissionCatalog.all.users.actions.lock}
+				scope={PermissionCatalog.all.users.scope}
 			>
 				<LockButton
 					isDisabled={!userDetailContext.flags.canLock}
@@ -60,11 +60,11 @@ export function UserDetailHeader() {
 					isLocked={userDetailContext.data.user?.is_locked}
 					onClick={userDetailContext.actions.lock}
 				/>
-			</HasPermission> */}
+			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.stops.actions.delete}
-				scope={PermissionCatalog.all.stops.scope}
+				action={PermissionCatalog.all.users.actions.delete}
+				scope={PermissionCatalog.all.users.scope}
 			>
 				<DeleteButton
 					confirmMessage="Tem a certeza que pretende eliminar este utilizador? Esta ação é irreversível."

@@ -83,15 +83,15 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		},
 	});
 
-	// const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-	// 	fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL_LOCK(userId)),
-	// 	onSuccess: (updatedItem) => {
-	// 		form.resetDirty();
-	// 		meContext.mutate.me();
-	// 		userMutate(updatedItem);
-	// 		allUsersMutate();
-	// 	},
-	// });
+	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL_LOCK(userId)),
+		onSuccess: (updatedItem) => {
+			form.resetDirty();
+			meContext.mutate.me();
+			userMutate(updatedItem);
+			allUsersMutate();
+		},
+	});
 
 	const handlePermissionToggle = (scope: string, action: string) => {
 		// Get latest form values
@@ -133,7 +133,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		isDeleting: isDeleting,
 		isLoading: userLoading,
 		isLocked: userData?.is_locked,
-		// isLocking: isLocking,
+		isLocking: isLocking,
 		isSaving: isSaving,
 	});
 
@@ -143,7 +143,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		isDirty: form.isDirty(),
 		isLoading: userLoading,
 		isLocked: userData?.is_locked,
-		// isLocking: isLocking,
+		isLocking: isLocking,
 		isValid: form.isValid(),
 	});
 
@@ -152,7 +152,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: userLoading,
-		// isLocking: isLocking,
+		isLocking: isLocking,
 		isValid: form.isValid(),
 	});
 
@@ -162,7 +162,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		isDirty: form.isDirty(),
 		isLoading: userLoading,
 		isLocked: userData?.is_locked,
-		// isLocking: isLocking,
+		isLocking: isLocking,
 		isValid: form.isValid(),
 	});
 
@@ -175,6 +175,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 			handleChangePassword,
 			handlePermissionResourceToggle,
 			handlePermissionToggle,
+			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
@@ -189,7 +190,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 			error: userError,
 			isDeleting,
 			isLoading: userLoading,
-			// isLocking,
+			isLocking,
 			isReadOnly,
 			isSaving,
 		},
@@ -200,7 +201,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		userError,
 		isDeleting,
 		userLoading,
-		// isLocking,
+		isLocking,
 		isReadOnly,
 		isSaving,
 		form,
