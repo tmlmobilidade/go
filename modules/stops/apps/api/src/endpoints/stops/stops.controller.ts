@@ -27,9 +27,11 @@ export class StopsController {
 	 * @param request Fastify request containing stop ID in params
 	 * @param reply Fastify reply
 	 */
-	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
 		await stops.toggleDeleteById(request.params.id);
-		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
+		const foundStop = await stops.findById(request.params.id);
+		if (!foundStop) throw new HttpException(HttpStatus.NOT_FOUND, 'Stop not found');
+		reply.send({ data: foundStop, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**

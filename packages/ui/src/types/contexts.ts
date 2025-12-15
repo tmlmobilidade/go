@@ -7,8 +7,8 @@
  */
 export interface DetailContextStateTemplate {
 	actions: {
-		delete: () => void
-		lock: () => void
+		delete?: () => void
+		lock?: () => void
 		save: () => void
 	}
 	flags: {

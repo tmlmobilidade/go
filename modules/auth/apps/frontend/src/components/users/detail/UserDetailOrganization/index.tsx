@@ -3,7 +3,7 @@
 /* * */
 
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
-import { useUserDetailContext } from '@/contexts/UserDetail.context';
+import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { Grid, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

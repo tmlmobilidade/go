@@ -3,7 +3,7 @@
 /* * */
 
 import { useRolesContext } from '@/contexts/Roles.context';
-import { useUserDetailContext } from '@/contexts/UserDetail.context';
+import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
 
 /* * */

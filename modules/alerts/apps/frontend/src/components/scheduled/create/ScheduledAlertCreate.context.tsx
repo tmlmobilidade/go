@@ -83,7 +83,7 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 		setIsSaving(false);
 		closeCreateScheduledAlertModal();
 		useToast.success({ message: 'Alerta criado com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id), window.location.search));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id)));
 	};
 
 	//

@@ -1,7 +1,7 @@
 /* * */
 
 import { UserDetail } from '@/components/users/detail/UserDetail';
-import { UserDetailContextProvider } from '@/contexts/UserDetail.context';
+import { UserDetailContextProvider } from '@/components/users/detail/UserDetail.context';
 
 /* * */
 

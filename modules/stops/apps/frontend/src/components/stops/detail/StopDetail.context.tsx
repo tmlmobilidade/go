@@ -4,7 +4,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -72,7 +72,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleLockStop, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId)),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
@@ -131,7 +131,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
-			lock: handleLockStop,
+			lock: handleLock,
 			save: handleSave,
 		},
 		data: {

@@ -3,32 +3,26 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionSchema, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
-import { UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { PermissionCatalog, PermissionSchema, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
+import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface UserDetailContextState {
-	actions: {
-		deleteUser: () => void
+interface UserDetailContextState extends DetailContextStateTemplate {
+	actions: DetailContextStateTemplate['actions'] & {
 		handleChangePassword: (scope: string) => void
 		handlePermissionResourceToggle: (scope: string, action: string, resource: Record<string, unknown>) => void
 		handlePermissionToggle: (scope: string, action: string) => void
-		saveUser: () => void
 	}
 	data: {
 		form: UseFormReturnType<UpdateUserDto>
 		id: string | undefined
-	}
-	flags: {
-		isReadOnly: boolean
-		isSaving: boolean
-		loading: boolean
+		user: undefined | User
 	}
 }
 
@@ -56,14 +50,11 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 
 	const meContext = useMeContext();
 
-	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
-
 	//
 	// B. Fetch data
 
 	const { mutate: allUsersMutate } = useSWR<User[]>(API_ROUTES.auth.USERS_LIST);
-	const { data: userData, isLoading: userLoading } = useSWR<User>(userId === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(userId));
+	const { data: userData, error: userError, isLoading: userLoading, mutate: userMutate } = useSWR<User>(userId === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(userId));
 
 	//
 	// C. Setup form
@@ -73,43 +64,34 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	//
 	// D. Handle actions
 
-	const handleSaveUser = async () => {
-		setIsSaving(true);
-		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'PUT', form.getValues());
-		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao salvar utilizador' });
-			}
-			else {
-				const errors = JSON.parse(response.error);
-				for (const error of errors) {
-					useToast.error({ message: error.message, title: 'Erro ao salvar utilizador' });
-				}
-			}
-			setIsSaving(false);
-			return;
-		}
-		useToast.success({ message: 'Utilizador salvo com sucesso', title: 'Sucesso' });
-		meContext.mutate.me();
-		allUsersMutate();
-		setIsSaving(false);
-	};
+	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'PUT', form.getValues()),
+		onSuccess: (updatedItem) => {
+			form.resetDirty();
+			meContext.mutate.me();
+			userMutate(updatedItem);
+			allUsersMutate();
+		},
+	});
 
-	const handleDeleteUser = async () => {
-		const response = await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'DELETE', userData);
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao apagar utilizador',
-				});
-			}
-			return;
-		}
-		useToast.success({ message: 'Utilizador apagado com sucesso', title: 'Sucesso' });
-		router.replace(PAGE_ROUTES.auth.USERS_LIST);
-	};
+	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'DELETE'),
+		onSuccess: () => {
+			meContext.mutate.me();
+			allUsersMutate();
+			router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_LIST));
+		},
+	});
+
+	// const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	// 	fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL_LOCK(userId)),
+	// 	onSuccess: (updatedItem) => {
+	// 		form.resetDirty();
+	// 		meContext.mutate.me();
+	// 		userMutate(updatedItem);
+	// 		allUsersMutate();
+	// 	},
+	// });
 
 	const handlePermissionToggle = (scope: string, action: string) => {
 		// Get latest form values
@@ -144,31 +126,86 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	}
 
 	//
+	// E. Setup flags
+
+	const { isReadOnly } = useFlagReadOnly({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update),
+		isDeleting: isDeleting,
+		isLoading: userLoading,
+		isLocked: userData?.is_locked,
+		// isLocking: isLocking,
+		isSaving: isSaving,
+	});
+
+	const { canSave } = useFlagCanSave({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: userLoading,
+		isLocked: userData?.is_locked,
+		// isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	const { canLock } = useFlagCanLock({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: userLoading,
+		// isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	const { canDelete } = useFlagCanDelete({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: userLoading,
+		isLocked: userData?.is_locked,
+		// isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	//
 	// E. Define context value
 
 	const contextValue: UserDetailContextState = useMemo(() => ({
 		actions: {
-			deleteUser: handleDeleteUser,
+			delete: handleDelete,
 			handleChangePassword,
 			handlePermissionResourceToggle,
 			handlePermissionToggle,
-			saveUser: handleSaveUser,
+			save: handleSave,
 		},
 		data: {
 			form,
 			id: userId === 'new' ? undefined : userId,
+			user: userData,
 		},
 		flags: {
+			canDelete,
+			canLock,
+			canSave,
+			error: userError,
+			isDeleting,
+			isLoading: userLoading,
+			// isLocking,
 			isReadOnly,
 			isSaving,
-			loading: userLoading,
 		},
 	}), [
-		form,
+		canDelete,
+		canLock,
+		canSave,
+		userError,
+		isDeleting,
+		userLoading,
+		// isLocking,
 		isReadOnly,
 		isSaving,
+		form,
+		userData,
 		userId,
-		userLoading,
 	]);
 
 	//
