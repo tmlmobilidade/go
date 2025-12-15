@@ -55,6 +55,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(API_ROUTES.auth.USERS_ME, { refreshInterval: 15_000 });
 	const { data: fileExportsData, error: fileExportsError, isLoading: fileExportsLoading, mutate: fileExportsMutate } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
+	const { mutate: userMutate } = useSWR<User>(API_ROUTES.auth.USERS_DETAIL(meData?._id));
 
 	//
 	// B. Handle actions
@@ -99,9 +100,10 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchData(API_ROUTES.auth.USERS_ME, 'PUT', { preferences: updatedPreferences });
+		await fetchData<User>(API_ROUTES.auth.USERS_ME, 'PUT', { preferences: updatedPreferences });
 		// Mutate the SWR cache to update user data
 		meMutate();
+		userMutate();
 	}
 
 	//
