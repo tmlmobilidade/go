@@ -1,6 +1,7 @@
 /* * */
 
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
 import { type CreateUserDto, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
@@ -102,6 +103,11 @@ export class UsersController {
 		// Send the user data back in the response.
 
 		reply.send({ data: userData, error: null, statusCode: HttpStatus.OK });
+
+		//
+		// Add seen_last_at for this user asynchronously
+
+		users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
 
 		//
 	}
