@@ -5,18 +5,20 @@
 import { ActionIcon } from '@mantine/core';
 import { IconLockFilled, IconLockOpen2 } from '@tabler/icons-react';
 
+import { Tooltip } from '../../common/Tooltip';
+
 /* * */
 
 interface LockButtonProps {
+	isDisabled?: boolean
 	isLoading?: boolean
 	isLocked: boolean
-	isReadOnly?: boolean
 	onClick: () => void
 }
 
 /* * */
 
-export function LockButton({ isLoading, isLocked, isReadOnly, onClick }: LockButtonProps) {
+export function LockButton({ isDisabled, isLoading, isLocked, onClick }: LockButtonProps) {
 	//
 
 	//
@@ -25,7 +27,7 @@ export function LockButton({ isLoading, isLocked, isReadOnly, onClick }: LockBut
 	const handleClick = () => {
 		// If the button is loading or in read-only mode,
 		// do not trigger the onClick action
-		if (isLoading || isReadOnly) return;
+		if (isLoading || isDisabled) return;
 		// Trigger the onClick action
 		onClick();
 	};
@@ -35,26 +37,38 @@ export function LockButton({ isLoading, isLocked, isReadOnly, onClick }: LockBut
 
 	if (isLocked) {
 		return (
-			<ActionIcon
-				color="var(--color-status-success-primary)"
-				loading={isLoading}
-				onClick={handleClick}
-				variant="subtle"
+			<Tooltip
+				label="Desbloquear"
+				position="bottom"
+				withArrow
 			>
-				<IconLockFilled />
-			</ActionIcon>
+				<ActionIcon
+					color="var(--color-status-success-primary)"
+					loading={isLoading}
+					onClick={handleClick}
+					variant="subtle"
+				>
+					<IconLockFilled />
+				</ActionIcon>
+			</Tooltip>
 		);
 	}
 
 	return (
-		<ActionIcon
-			color="var(--color-primary)"
-			loading={isLoading}
-			onClick={handleClick}
-			variant="subtle"
+		<Tooltip
+			label="Bloquear"
+			position="bottom"
+			withArrow
 		>
-			<IconLockOpen2 />
-		</ActionIcon>
+			<ActionIcon
+				color="var(--color-primary)"
+				loading={isLoading}
+				onClick={handleClick}
+				variant="subtle"
+			>
+				<IconLockOpen2 />
+			</ActionIcon>
+		</Tooltip>
 	);
 
 	//

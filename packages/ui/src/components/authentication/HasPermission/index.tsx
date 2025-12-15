@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useMeContext } from '../../../contexts';
+import { useMeContext } from '../../../contexts/Me.context';
 
 /* * */
 

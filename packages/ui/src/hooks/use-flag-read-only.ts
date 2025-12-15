@@ -9,7 +9,7 @@ import { useToast } from './toast';
 
 /* * */
 
-interface UseHandleUpdateProps<T> {
+interface UseFlagReadOnlyProps<T> {
 	fetchFn: () => Promise<HttpResponse<T>>
 	labels?: {
 		error_message?: string
@@ -21,17 +21,17 @@ interface UseHandleUpdateProps<T> {
 	onSuccess: (item: T) => void
 }
 
-interface UseHandleUpdateReturnType {
+interface UseFlagReadOnlyReturnType {
 	action: () => Promise<void>
 	isError: Error | undefined
 	isLoading: boolean
 }
 
 /**
- * Handles the update of an item.
+ * Handles the read-only flag of an item.
  * @param params The parameters for the update operation.
  */
-export function useHandleUpdate<T>({ fetchFn, labels, onError, onSuccess }: UseHandleUpdateProps<T>): UseHandleUpdateReturnType {
+export function useFlagReadOnly<T>({ fetchFn, labels, onError, onSuccess }: UseFlagReadOnlyProps<T>): UseFlagReadOnlyReturnType {
 	//
 
 	//

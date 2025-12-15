@@ -6,13 +6,11 @@ import { ActionIcon } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { IconTrash } from '@tabler/icons-react';
 
-import styles from './styles.module.css';
+import { Tooltip } from '../../common/Tooltip';
+import { Label } from '../../display/Label';
 
 /* * */
 
-/**
- * Props for showing confirmation modal.
- */
 interface DeleteButtonWithConfirmationProps {
 
 	/**
@@ -23,7 +21,7 @@ interface DeleteButtonWithConfirmationProps {
 
 	/**
 	 * Label for the confirm button.
-	 * @default 'Confirmar'
+	 * @default 'Eliminar'
 	 */
 	confirmLabel?: string
 
@@ -71,14 +69,11 @@ interface DeleteButtonWithoutConfirmationProps {
 
 }
 
-type DeleteButtonProps = (DeleteButtonWithConfirmationProps | DeleteButtonWithoutConfirmationProps) & {
-	size?: 'lg' | 'md' | 'sm'
-	variant?: 'danger' | 'subtle'
-};
+type DeleteButtonProps = (DeleteButtonWithConfirmationProps | DeleteButtonWithoutConfirmationProps);
 
 /* * */
 
-export function DeleteButton({ size = 'md', variant = 'danger', ...props }: DeleteButtonProps) {
+export function DeleteButton(props: DeleteButtonProps) {
 	//
 
 	//
@@ -97,7 +92,7 @@ export function DeleteButton({ size = 'md', variant = 'danger', ...props }: Dele
 				},
 				onCancel: props.onCancel,
 				onConfirm: props.onDelete,
-				title: props.confirmTitle,
+				title: <Label caps>{props.confirmTitle}</Label>,
 			});
 		}
 		else {
@@ -106,12 +101,22 @@ export function DeleteButton({ size = 'md', variant = 'danger', ...props }: Dele
 	};
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
-		<ActionIcon classNames={{ root: styles.root }} data-variant={variant} onClick={handleClick} variant={variant}>
-			<IconTrash size={size === 'sm' ? 16 : size === 'md' ? 20 : 24} />
-		</ActionIcon>
+		<Tooltip
+			label="Eliminar"
+			position="bottom"
+			withArrow
+		>
+			<ActionIcon
+				color="var(--color-status-danger-primary)"
+				onClick={handleClick}
+				variant="subtle"
+			>
+				<IconTrash />
+			</ActionIcon>
+		</Tooltip>
 	);
 
 	//

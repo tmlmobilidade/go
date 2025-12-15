@@ -12,10 +12,12 @@ export interface DetailContextStateTemplate {
 		save: () => void
 	}
 	flags: {
+		canSave?: boolean
 		error: Error | undefined
-		loading: boolean
-		locking: boolean
-		read_only: boolean
-		saving: boolean
+		isDeleting?: boolean
+		isLoading: boolean
+		isLocking?: boolean
+		isReadOnly?: boolean
+		isSaving?: boolean
 	}
 }

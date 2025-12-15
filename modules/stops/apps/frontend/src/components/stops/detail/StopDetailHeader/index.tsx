@@ -3,10 +3,9 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, Button, CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -32,30 +31,46 @@ export function StopDetailHeader() {
 
 	return (
 		<Toolbar>
+
 			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
+
 			<Spacer />
-			<Button
-				disabled={!stopDetailContext.data.form.isDirty() || !stopDetailContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={stopDetailContext.flags.saving}
-				onClick={stopDetailContext.actions.save}
-				variant="primary"
-			/>
-			<HasPermission action={PermissionCatalog.all.stops.actions.lock} scope={PermissionCatalog.all.stops.scope}>
+
+			<HasPermission
+				action={PermissionCatalog.all.stops.actions.update}
+				scope={PermissionCatalog.all.stops.scope}
+			>
+				<SaveButton
+					disabled={!stopDetailContext.data.form.isDirty() || !stopDetailContext.data.form.isValid()}
+					loading={stopDetailContext.flags.isSaving}
+					onClick={stopDetailContext.actions.save}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.stops.actions.lock}
+				scope={PermissionCatalog.all.stops.scope}
+			>
 				<LockButton
-					isLoading={stopDetailContext.flags.saving}
+					isLoading={stopDetailContext.flags.isLocking}
 					isLocked={stopDetailContext.data.stop?.is_locked}
 					onClick={stopDetailContext.actions.lock}
 				/>
 			</HasPermission>
-			<DeleteButton
-				confirmMessage="Tem a certeza que pretende arquivar esta paragem? A paragem ficará indisponível para utilização futura."
-				confirmTitle="Arquivar Paragem"
-				onDelete={stopDetailContext.actions.delete}
-				showConfirmation={true}
-			/>
+
+			<HasPermission
+				action={PermissionCatalog.all.stops.actions.archive}
+				scope={PermissionCatalog.all.stops.scope}
+			>
+				<DeleteButton
+					confirmMessage="Tem a certeza que pretende arquivar esta paragem? A paragem ficará indisponível para utilização futura."
+					confirmTitle="Arquivar Paragem"
+					onDelete={stopDetailContext.actions.delete}
+					showConfirmation={true}
+				/>
+			</HasPermission>
+
 		</Toolbar>
 	);
 

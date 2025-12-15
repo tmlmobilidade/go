@@ -3,8 +3,8 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
+import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { DetailContextStateTemplate, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -12,12 +12,10 @@ import useSWR from 'swr';
 /* * */
 
 interface StopDetailContextState extends DetailContextStateTemplate {
-	actions: DetailContextStateTemplate['actions']
 	data: {
 		form: UseFormReturnType<UpdateStopDto>
 		stop: Stop | undefined
 	}
-	flags: DetailContextStateTemplate['flags']
 }
 
 /* * */
@@ -40,55 +38,78 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// A. Setup variables
 
+	const meContext = useMeContext();
+
 	//
-	// B. Fetch data
+	// A. Fetch data
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
 
 	//
-	// C. Setup form
+	// B. Setup form
 
 	const { form } = useTypicalForm<UpdateStopDto>(UpdateStopSchema, stopData);
 
 	//
-	// B. Handle actions
+	// C. Handle actions
 
-	const { action: handleSaveStop, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
-		onSuccess: () => {
+		onSuccess: (updatedItem) => {
 			form.resetDirty();
-			stopMutate();
+			stopMutate(updatedItem);
 			allStopsMutate();
 		},
 	});
 
-	const { action: handleArchiveStop, isLoading: isArchiving } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_ARCHIVE(stopId)),
-		onSuccess: () => {
+		onSuccess: (updatedItem) => {
 			form.resetDirty();
-			stopMutate();
+			stopMutate(updatedItem);
 			allStopsMutate();
 		},
 	});
 
 	const { action: handleLockStop, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId)),
-		onSuccess: () => {
+		onSuccess: (updatedItem) => {
 			form.resetDirty();
-			stopMutate();
+			stopMutate(updatedItem);
 			allStopsMutate();
 		},
 	});
 
 	//
-	// F. Define context value
+	// D. Setup flags
+
+	const isReadOnly = useMemo(() => {
+		// ReadOnly is used to determine if the field are enabled or not.
+		if (stopData?.is_locked) return true;
+		if (stopData?.is_archived) return true;
+		const hasPermissions = meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update);
+		console.log('hasPermissions', hasPermissions);
+		if (!hasPermissions) return true;
+		return false;
+	}, [stopData]);
+
+	const isSaveable = useMemo(() => {
+		if (stopData?.is_locked) return false;
+		if (stopData?.is_archived) return false;
+		if (form.isDirty()) return true;
+		if (form.isValid()) return true;
+		return !meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update);
+	}, [stopData]);
+
+	//
+	// D. Define context value
 
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
-			delete: handleArchiveStop,
+			delete: handleDelete,
 			lock: handleLockStop,
-			save: handleSaveStop,
+			save: handleSave,
 		},
 		data: {
 			form,
@@ -96,23 +117,27 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			stop: stopData,
 		},
 		flags: {
+			canSave: isSaveable,
 			error: stopError,
-			loading: stopLoading,
-			locking: false,
-			read_only: false,
-			saving: isSaving,
+			isDeleting,
+			isLoading: stopLoading,
+			isLocking,
+			isReadOnly,
+			isSaving,
 		},
 	}), [
 		stopData,
 		stopLoading,
 		stopError,
 		form,
+		isReadOnly,
+		isLocking,
 		isSaving,
 		stopId,
 	]);
 
 	//
-	// G. Render components
+	// E. Render components
 
 	return (
 		<StopDetailContext.Provider value={contextValue}>

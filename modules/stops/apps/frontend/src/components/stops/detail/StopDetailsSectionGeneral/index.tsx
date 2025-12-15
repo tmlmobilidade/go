@@ -58,10 +58,12 @@ export function StopDetailsSectionGeneral() {
 
 			<Section gap="md">
 				<SegmentedControl
+					key={stopDetailContext.data.form.key('lifecycle_status')}
 					data={lifecycleStatusItems}
-					onChange={(value: typeof LifecycleStatusSchema.options[number]) => stopDetailContext.data.form.setFieldValue('lifecycle_status', value)}
+					readOnly={stopDetailContext.flags.isReadOnly}
 					value={stopDetailContext.data.form.values.lifecycle_status}
 					fullWidth
+					{...stopDetailContext.data.form.getInputProps('lifecycle_status')}
 				/>
 			</Section>
 
