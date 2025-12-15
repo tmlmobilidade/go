@@ -34,7 +34,7 @@ export function StopDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
-			{stopDetailContext.data.stop?.is_archived && <Tag label="Paragem Eliminada" variant="danger" />}
+			{stopDetailContext.data.stop?.is_deleted && <Tag label="Paragem Eliminada" variant="danger" />}
 
 			<Spacer />
 
@@ -67,7 +67,7 @@ export function StopDetailHeader() {
 				<DeleteButton
 					confirmMessage="Tem a certeza que pretende arquivar esta paragem? A paragem ficará indisponível para utilização futura."
 					confirmTitle="Arquivar Paragem"
-					isDeleted={stopDetailContext.data.stop?.is_archived}
+					isDeleted={stopDetailContext.data.stop?.is_deleted}
 					isLoading={stopDetailContext.flags.isDeleting}
 					onDelete={stopDetailContext.actions.delete}
 					onRestore={stopDetailContext.actions.delete}

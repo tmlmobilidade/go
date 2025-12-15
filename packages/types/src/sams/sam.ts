@@ -8,19 +8,21 @@ import { z } from 'zod';
 
 /* * */
 
-export const SamSchema = DocumentSchema.extend({
-	_id: z.number(),
-	agency_id: z.string(),
-	analysis: z.array(SamAnalysisSchema).default([]),
-	latest_apex_version: z.string().nullable(),
-	remarks: z.string().nullable().default(null),
-	seen_first_at: unixTimeStampSchema.nullable(),
-	seen_last_at: unixTimeStampSchema.nullable(),
-	system_status: ProcessingStatusSchema.default('waiting'),
-	transactions_expected: z.number().nullable(),
-	transactions_found: z.number().nullable(),
-	transactions_missing: z.number().nullable(),
-}).strict();
+export const SamSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		_id: z.number(),
+		agency_id: z.string(),
+		analysis: z.array(SamAnalysisSchema).default([]),
+		latest_apex_version: z.string().nullable(),
+		remarks: z.string().nullable().default(null),
+		seen_first_at: unixTimeStampSchema.nullable(),
+		seen_last_at: unixTimeStampSchema.nullable(),
+		system_status: ProcessingStatusSchema.default('waiting'),
+		transactions_expected: z.number().nullable(),
+		transactions_found: z.number().nullable(),
+		transactions_missing: z.number().nullable(),
+	});
 
 export const CreateSamSchema = SamSchema.omit({ created_at: true, updated_at: true });
 export const UpdateSamSchema = CreateSamSchema.omit({ created_by: true }).partial();

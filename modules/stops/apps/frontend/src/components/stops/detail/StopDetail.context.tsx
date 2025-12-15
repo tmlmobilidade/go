@@ -86,7 +86,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const { isReadOnly } = useFlagReadOnly({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
-		isDeleted: stopData?.is_archived,
+		isDeleted: stopData?.is_deleted,
 		isDeleting: isDeleting,
 		isLoading: stopLoading,
 		isLocked: stopData?.is_locked,
@@ -96,7 +96,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
-		isDeleted: stopData?.is_archived,
+		isDeleted: stopData?.is_deleted,
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: stopLoading,

@@ -6,22 +6,24 @@ import { z } from 'zod';
 
 /* * */
 
-export const SimplifiedVehicleEventSchema = DocumentSchema.extend({
-	agency_id: z.string(),
-	driver_id: z.string(),
-	event_id: z.string(),
-	extra_trip_id: z.string().nullish(),
-	latitude: z.number(),
-	longitude: z.number(),
-	odometer: z.number(),
-	pattern_id: z.string(),
-	received_at: unixTimeStampSchema,
-	stop_id: z.string(),
-	trigger_activity: z.string(),
-	trigger_door: z.string(),
-	trip_id: z.string(),
-	vehicle_id: z.string(),
-}).strict();
+export const SimplifiedVehicleEventSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		agency_id: z.string(),
+		driver_id: z.string(),
+		event_id: z.string(),
+		extra_trip_id: z.string().nullish(),
+		latitude: z.number(),
+		longitude: z.number(),
+		odometer: z.number(),
+		pattern_id: z.string(),
+		received_at: unixTimeStampSchema,
+		stop_id: z.string(),
+		trigger_activity: z.string(),
+		trigger_door: z.string(),
+		trip_id: z.string(),
+		vehicle_id: z.string(),
+	});
 
 /**
  * Vehicle Events are produced by the vehicle's on-board computer on a regular schedule

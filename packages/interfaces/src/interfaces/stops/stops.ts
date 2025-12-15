@@ -82,7 +82,7 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	async toggleArchiveById(id: string, forceValue?: boolean): Promise<void> {
 		const foundDoc = await this.findById(id);
 		if (!foundDoc) throw new Error('Stop not found');
-		await this.updateById(id, { is_archived: forceValue !== undefined ? forceValue : !foundDoc.is_archived });
+		await this.updateById(id, { is_deleted: forceValue !== undefined ? forceValue : !foundDoc.is_deleted });
 	}
 
 	/**

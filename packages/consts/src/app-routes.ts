@@ -309,7 +309,6 @@ export const API_ROUTES = Object.freeze({
 
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
-		STOPS_DETAIL_ARCHIVE: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/archive`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,
 	},
