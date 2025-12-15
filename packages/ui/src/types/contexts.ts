@@ -12,6 +12,8 @@ export interface DetailContextStateTemplate {
 		save: () => void
 	}
 	flags: {
+		canDelete?: boolean
+		canLock?: boolean
 		canSave?: boolean
 		error: Error | undefined
 		isDeleting?: boolean

@@ -43,8 +43,8 @@ export function StopDetailHeader() {
 				scope={PermissionCatalog.all.stops.scope}
 			>
 				<SaveButton
-					disabled={!stopDetailContext.flags.canSave}
-					loading={stopDetailContext.flags.isSaving}
+					isDisabled={!stopDetailContext.flags.canSave}
+					isLoading={stopDetailContext.flags.isSaving}
 					onClick={stopDetailContext.actions.save}
 				/>
 			</HasPermission>
@@ -54,6 +54,7 @@ export function StopDetailHeader() {
 				scope={PermissionCatalog.all.stops.scope}
 			>
 				<LockButton
+					isDisabled={!stopDetailContext.flags.canLock}
 					isLoading={stopDetailContext.flags.isLocking}
 					isLocked={stopDetailContext.data.stop?.is_locked}
 					onClick={stopDetailContext.actions.lock}
@@ -61,13 +62,14 @@ export function StopDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.stops.actions.archive}
+				action={PermissionCatalog.all.stops.actions.delete}
 				scope={PermissionCatalog.all.stops.scope}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende arquivar esta paragem? A paragem ficará indisponível para utilização futura."
-					confirmTitle="Arquivar Paragem"
+					confirmMessage="Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura."
+					confirmTitle="Eliminar Paragem"
 					isDeleted={stopDetailContext.data.stop?.is_deleted}
+					isDisabled={!stopDetailContext.flags.canDelete}
 					isLoading={stopDetailContext.flags.isDeleting}
 					onDelete={stopDetailContext.actions.delete}
 					onRestore={stopDetailContext.actions.delete}

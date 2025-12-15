@@ -4,7 +4,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -64,7 +64,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_ARCHIVE(stopId)),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'DELETE'),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			stopMutate(updatedItem);
@@ -105,6 +105,26 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		isValid: form.isValid(),
 	});
 
+	const { canLock } = useFlagCanLock({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
+		isDeleted: stopData?.is_deleted,
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: stopLoading,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	const { canDelete } = useFlagCanDelete({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: stopLoading,
+		isLocked: stopData?.is_locked,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
 	//
 	// F. Define context value
 
@@ -120,6 +140,8 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			stop: stopData,
 		},
 		flags: {
+			canDelete,
+			canLock,
 			canSave,
 			error: stopError,
 			isDeleting,
@@ -132,6 +154,8 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		form,
 		stopId,
 		stopData,
+		canDelete,
+		canLock,
 		canSave,
 		stopError,
 		isDeleting,

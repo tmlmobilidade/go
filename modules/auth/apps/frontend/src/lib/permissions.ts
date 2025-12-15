@@ -177,7 +177,7 @@ const stopActions: PermissionConfig = {
 		{ action: 'read', description: 'Permite ver paragens', label: 'Ver' },
 		{ action: 'create', description: 'Permite criar uma paragem', label: 'Criar' },
 		{ action: 'update', description: 'Permite editar uma paragem', label: 'Editar' },
-		{ action: 'archive', description: 'Permite arquivar uma paragem', label: 'Arquivar' },
+		{ action: 'delete', description: 'Permite eliminar uma paragem', label: 'Eliminar' },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma paragem', label: 'Bloquear/Desbloquear' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de paragens.',

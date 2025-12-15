@@ -8,14 +8,14 @@ import { Button } from '../Button';
 /* * */
 
 interface SaveButtonProps {
-	disabled?: boolean
-	loading?: boolean
+	isDisabled?: boolean
+	isLoading?: boolean
 	onClick: () => void
 }
 
 /* * */
 
-export function SaveButton({ disabled, loading, onClick }: SaveButtonProps) {
+export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) {
 	//
 
 	//
@@ -24,7 +24,7 @@ export function SaveButton({ disabled, loading, onClick }: SaveButtonProps) {
 	const handleClick = () => {
 		// If the button is loading or in read-only mode,
 		// do not trigger the onClick action
-		if (loading || disabled) return;
+		if (isLoading || isDisabled) return;
 		// Trigger the onClick action
 		onClick();
 	};
@@ -34,15 +34,15 @@ export function SaveButton({ disabled, loading, onClick }: SaveButtonProps) {
 
 	return (
 		<Tooltip
-			disabled={disabled}
+			disabled={isDisabled}
 			label="Guardar Alterações"
 			position="bottom"
 			withArrow
 		>
 			<Button
-				disabled={disabled}
+				disabled={isDisabled}
 				label="Guardar"
-				loading={loading}
+				loading={isLoading}
 				onClick={handleClick}
 				variant="primary"
 			/>

@@ -28,7 +28,7 @@ export class StopsController {
 	 * @param reply Fastify reply
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		await stops.toggleArchiveById(request.params.id);
+		await stops.toggleDeleteById(request.params.id);
 		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
 	}
 

@@ -72,14 +72,14 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	}
 
 	/**
-	 * Toogle the lock status of a document by its ID.
+	 * Toogle the delete status of a document by its ID.
 	 * Stop documents are never truly deleted to preserve
 	 * data integrity and prevent ID reuse.
-	 * @param id The ID of the stop document to archive.
-	 * @param forceValue Optional boolean to explicitly set the archived status.
-	 * @returns A promise that resolves to the result of the archive operation.
+	 * @param id The ID of the stop document to delete.
+	 * @param forceValue Optional boolean to explicitly set the deleted status.
+	 * @returns A promise that resolves to the result of the delete operation.
 	 */
-	async toggleArchiveById(id: string, forceValue?: boolean): Promise<void> {
+	async toggleDeleteById(id: string, forceValue?: boolean): Promise<void> {
 		const foundDoc = await this.findById(id);
 		if (!foundDoc) throw new Error('Stop not found');
 		await this.updateById(id, { is_deleted: forceValue !== undefined ? forceValue : !foundDoc.is_deleted });

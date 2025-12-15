@@ -44,6 +44,7 @@ export function LockButton({ isDisabled, isLoading, isLocked, onClick }: LockBut
 			>
 				<ActionIcon
 					color="var(--color-status-success-primary)"
+					disabled={isDisabled}
 					loading={isLoading}
 					onClick={handleClick}
 					variant="subtle"
@@ -62,6 +63,7 @@ export function LockButton({ isDisabled, isLoading, isLocked, onClick }: LockBut
 		>
 			<ActionIcon
 				color="var(--color-primary)"
+				disabled={isDisabled}
 				loading={isLoading}
 				onClick={handleClick}
 				variant="subtle"

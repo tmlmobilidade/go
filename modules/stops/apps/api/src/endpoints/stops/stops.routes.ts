@@ -48,7 +48,7 @@ server.register(
 
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.archive]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.delete]) },
 			StopsController.delete,
 		);
 
