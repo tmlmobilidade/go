@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
+import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

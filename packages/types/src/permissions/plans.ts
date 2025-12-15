@@ -11,7 +11,7 @@ export const PlansPermissionSchema = z.object({
 		'read',
 		'read_controller',
 		'read_pcgi_legacy',
-		'toggle_lock',
+		'lock',
 		'update',
 		'update_controller',
 		'update_feed_info_dates',

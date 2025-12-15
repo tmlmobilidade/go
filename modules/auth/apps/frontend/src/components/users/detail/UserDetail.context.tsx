@@ -47,7 +47,6 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	// A. Setup variables
 
 	const router = useRouter();
-
 	const meContext = useMeContext();
 
 	//

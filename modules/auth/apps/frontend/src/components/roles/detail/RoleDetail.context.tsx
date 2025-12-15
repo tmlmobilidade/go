@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateRoleDto, CreateRoleSchema, PermissionSchema, type Role } from '@tmlmobilidade/types';
-import { UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -12,21 +12,15 @@ import useSWR from 'swr';
 
 /* * */
 
-interface RoleDetailContextState {
-	actions: {
-		deleteRole: () => void
+interface RoleDetailContextState extends DetailContextStateTemplate {
+	actions: DetailContextStateTemplate['actions'] & {
 		handlePermissionResourceToggle: (scope: string, action: string, resource: Record<string, unknown>) => void
 		handlePermissionToggle: (scope: string, action: string) => void
-		updateRole: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateRoleDto>
 		id: string | undefined
-	}
-	flags: {
-		isReadOnly: boolean
-		isSaving: boolean
-		loading: boolean
+		role: Role | undefined
 	}
 }
 
@@ -51,17 +45,13 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	// A. Setup variables
 
 	const router = useRouter();
-
 	const meContext = useMeContext();
-
-	const [isSaving, setIsSaving] = useState(false);
-	const [isReadOnly] = useState(false);
 
 	//
 	// B. Fetch data
 
 	const { mutate: allRolesMutate } = useSWR<Role[]>(API_ROUTES.auth.ROLES_LIST);
-	const { data: roleData, isLoading: roleLoading } = useSWR<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId));
+	const { data: roleData, error: roleError, isLoading: roleLoading, mutate: roleMutate } = useSWR<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId));
 
 	//
 	// C. Setup form
@@ -71,66 +61,34 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	//
 	// D. Handle actions
 
-	const handleUpdateRole = async () => {
-		setIsSaving(true);
+	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'PUT', form.getValues()),
+		onSuccess: (updatedItem) => {
+			form.resetDirty();
+			meContext.mutate.me();
+			roleMutate(updatedItem);
+			allRolesMutate();
+		},
+	});
 
-		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'PUT', form.getValues());
+	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'DELETE'),
+		onSuccess: () => {
+			meContext.mutate.me();
+			allRolesMutate();
+			router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_LIST));
+		},
+	});
 
-		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({
-					message: response.error,
-					title: 'Erro ao salvar grupo',
-				});
-			}
-			else {
-				const errors = JSON.parse(response.error);
-				for (const error of errors) {
-					useToast.error({
-						message: error.message,
-						title: 'Erro ao salvar grupo',
-					});
-				}
-			}
-
-			setIsSaving(false);
-			return;
-		}
-
-		useToast.success({
-			message: 'Grupo guardado com sucesso',
-			title: 'Sucesso',
-		});
-
-		meContext.mutate.me();
-		allRolesMutate();
-
-		setIsSaving(false);
-	};
-
-	const handleDeleteRole = async () => {
-		// Skip if new role
-		if (roleId === 'new') return;
-		// Confirm deletion
-		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'DELETE');
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({
-					message: error.message,
-					title: 'Erro ao apagar grupo',
-				});
-			}
-			return;
-		}
-
-		useToast.success({
-			message: 'Grupo apagado com sucesso',
-			title: 'Sucesso',
-		});
-
-		router.replace(PAGE_ROUTES.auth.ROLES_LIST);
-	};
+	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL_LOCK(roleId)),
+		onSuccess: (updatedItem) => {
+			form.resetDirty();
+			meContext.mutate.me();
+			roleMutate(updatedItem);
+			allRolesMutate();
+		},
+	});
 
 	const handlePermissionToggle = (scope: string, action: string) => {
 		// Get latest form values

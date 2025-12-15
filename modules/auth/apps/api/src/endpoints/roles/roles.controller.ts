@@ -61,6 +61,18 @@ export class RolesController {
 	}
 
 	/**
+	 * Toggles the lock status of a role by ID.
+	 * @param request Fastify request containing role ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Role>) {
+		await roles.toggleLockById(request.params.id);
+		const foundRole = await roles.findById(request.params.id);
+		if (!foundRole) throw new HttpException(HttpStatus.NOT_FOUND, 'Role not found');
+		reply.send({ data: foundRole, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
 	 * Update a user - Update a user in the database
 	 * @param {FastifyRequest} request - The request object
 	 * @param {FastifyReply} reply - The reply object

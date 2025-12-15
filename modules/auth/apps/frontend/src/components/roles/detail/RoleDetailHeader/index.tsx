@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
+import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, CloseButton, keepUrlParams, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';

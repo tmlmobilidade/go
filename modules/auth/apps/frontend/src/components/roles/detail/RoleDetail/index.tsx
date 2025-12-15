@@ -5,7 +5,7 @@
 import { PermissionSection } from '@/components/permissions/PermissionSection';
 import { RoleDetailBasicInfo } from '@/components/roles/detail/RoleDetailBasicInfo';
 import { RoleDetailHeader } from '@/components/roles/detail/RoleDetailHeader';
-import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
+import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { permissionsConfig } from '@/lib/permissions';
 import { Pane } from '@tmlmobilidade/ui';
 
