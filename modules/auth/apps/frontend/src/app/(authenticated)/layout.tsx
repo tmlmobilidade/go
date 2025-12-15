@@ -1,9 +1,9 @@
 /* * */
 
-import ptTranslation from '@/app/translations/pt.json';
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { OrganizationsContextProvider } from '@/contexts/Organizations.context';
 import { RolesContextProvider } from '@/contexts/Roles.context';
+import ptTranslation from '@/translations/pt.json';
 import { AppProvider, AppWrapper } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

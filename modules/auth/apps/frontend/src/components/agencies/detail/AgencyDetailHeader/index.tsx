@@ -8,6 +8,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,6 +20,7 @@ export function AgencyDetailHeader() {
 
 	const router = useRouter();
 	const agencyDetailContext = useAgencyDetailContext();
+	const { t } = useTranslation('auth', { keyPrefix: 'agencies.detail.header' });
 
 	//
 	// B. Handle actions
@@ -40,7 +42,7 @@ export function AgencyDetailHeader() {
 			<Button
 				disabled={agencyDetailContext.flags.read_only || !agencyDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label="Guardar"
+				label={t('save')}
 				loading={agencyDetailContext.flags.saving}
 				onClick={agencyDetailContext.actions.saveAgency}
 				variant="primary"

@@ -1,4 +1,38 @@
 {
+	"agencies": {
+		"detail": {
+			"BasicInfo": {
+				"description": "Detalhes como nome, email, telefone, URL e timezone da agência.",
+				"fields": {
+					"agency_email": "Email da Agência",
+					"agency_email_placeholder": "",
+					"agency_fare_url": "URL de Tarifário da Agência",
+					"agency_fare_url_placeholder": "https://www.carrismetropolitana.pt/tar",
+					"agency_name": "Nome do Operador",
+					"agency_name_placeholder": "912345678",
+					"agency_phone": "Telemóvel da Agência",
+					"agency_phone_placeholder": "",
+					"agency_short_name": "Nome Curto",
+					"agency_short_name_placeholder": "CM",
+					"agency_timezone": "Timezone da Agência",
+					"agency_website": "URL da Agência",
+					"agency_website_placeholder": "https://www.carrismetropolitana.pt"
+				},
+				"title": "Informações gerais"
+
+			},
+			"header": {
+				"save": "Guardar"
+			}
+		},
+		"noDataLabel": {
+			"text": "Selecione uma Agência"
+		}
+	},
+	"home": {
+		"tableHeaderCategory": "Categorias",
+		"tableHeaderTitle": "Título"
+	},
 	"organizations": {
 		"list": {
 			"header": {
