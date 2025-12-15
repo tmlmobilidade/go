@@ -156,7 +156,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	});
 
 	const { canDelete } = useFlagCanDelete({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: userLoading,
@@ -166,7 +166,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	});
 
 	//
-	// E. Define context value
+	// F. Define context value
 
 	const contextValue: UserDetailContextState = useMemo(() => ({
 		actions: {
@@ -209,7 +209,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	]);
 
 	//
-	// F. Render components
+	// G. Render components
 
 	return (
 		<UserDetailContext.Provider value={contextValue}>

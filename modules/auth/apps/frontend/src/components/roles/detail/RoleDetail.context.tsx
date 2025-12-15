@@ -3,11 +3,11 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateRoleDto, CreateRoleSchema, PermissionSchema, type Role } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { PermissionCatalog, PermissionSchema, type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/types';
+import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -18,7 +18,7 @@ interface RoleDetailContextState extends DetailContextStateTemplate {
 		handlePermissionToggle: (scope: string, action: string) => void
 	}
 	data: {
-		form: UseFormReturnType<CreateRoleDto>
+		form: UseFormReturnType<UpdateRoleDto>
 		id: string | undefined
 		role: Role | undefined
 	}
@@ -56,7 +56,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateRoleDto>(CreateRoleSchema, roleData);
+	const { form } = useTypicalForm<UpdateRoleDto>(UpdateRoleSchema, roleData);
 
 	//
 	// D. Handle actions
@@ -118,34 +118,90 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	};
 
 	//
-	// E. Define context value
+	// E. Setup flags
+
+	const { isReadOnly } = useFlagReadOnly({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update),
+		isDeleting: isDeleting,
+		isLoading: roleLoading,
+		isLocked: roleData?.is_locked,
+		isLocking: isLocking,
+		isSaving: isSaving,
+	});
+
+	const { canSave } = useFlagCanSave({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: roleLoading,
+		isLocked: roleData?.is_locked,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	const { canLock } = useFlagCanLock({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: roleLoading,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	const { canDelete } = useFlagCanDelete({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: roleLoading,
+		isLocked: roleData?.is_locked,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	//
+	// F. Define context value
 
 	const contextValue: RoleDetailContextState = useMemo(() => ({
 		actions: {
-			deleteRole: handleDeleteRole,
+			delete: handleDelete,
 			handlePermissionResourceToggle,
 			handlePermissionToggle,
-			updateRole: handleUpdateRole,
+			lock: handleLock,
+			save: handleSave,
 		},
 		data: {
 			form,
 			id: roleId,
+			role: roleData,
 		},
 		flags: {
+			canDelete,
+			canLock,
+			canSave,
+			error: roleError,
+			isDeleting,
+			isLoading: roleLoading,
+			isLocking,
 			isReadOnly,
 			isSaving,
-			loading: roleLoading,
 		},
 	}), [
-		form,
+		canDelete,
+		canLock,
+		canSave,
+		roleError,
+		isDeleting,
+		roleLoading,
+		isLocking,
 		isReadOnly,
 		isSaving,
+		form,
+		roleData,
 		roleId,
-		roleLoading,
 	]);
 
 	//
-	// F. Render components
+	// G. Render components
 
 	return (
 		<RoleDetailContext.Provider value={contextValue}>

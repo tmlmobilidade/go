@@ -3,9 +3,9 @@
 /* * */
 
 import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, keepUrlParams, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { CloseButton, DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -31,24 +31,50 @@ export function RoleDetailHeader() {
 
 	return (
 		<Toolbar>
+
 			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={roleDetailContext.data.id || 'Novo Grupo de Permissões'} variant="secondary" />
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
+
 			<Spacer />
-			<Button
-				disabled={!roleDetailContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Salvar"
-				loading={roleDetailContext.flags.isSaving}
-				onClick={roleDetailContext.actions.updateRole}
-				variant="primary"
-			/>
-			<Button
-				icon={<IconTrash size={28} />}
-				label="Apagar"
-				onClick={roleDetailContext.actions.deleteRole}
-				variant="danger"
-			/>
+
+			<HasPermission
+				action={PermissionCatalog.all.roles.actions.update}
+				scope={PermissionCatalog.all.roles.scope}
+			>
+				<SaveButton
+					isDisabled={!roleDetailContext.flags.canSave}
+					isLoading={roleDetailContext.flags.isSaving}
+					onClick={roleDetailContext.actions.save}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.roles.actions.lock}
+				scope={PermissionCatalog.all.roles.scope}
+			>
+				<LockButton
+					isLoading={roleDetailContext.flags.isLocking}
+					isLocked={roleDetailContext.data.role?.is_locked}
+					onClick={roleDetailContext.actions.lock}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.roles.actions.delete}
+				scope={PermissionCatalog.all.roles.scope}
+			>
+				<DeleteButton
+					confirmMessage="Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível."
+					confirmTitle="Eliminar Grupo de Permissões"
+					isDisabled={!roleDetailContext.flags.canDelete}
+					isLoading={roleDetailContext.flags.isDeleting}
+					onDelete={roleDetailContext.actions.delete}
+					onRestore={roleDetailContext.actions.delete}
+					showConfirmation={true}
+				/>
+			</HasPermission>
+
 		</Toolbar>
 	);
 

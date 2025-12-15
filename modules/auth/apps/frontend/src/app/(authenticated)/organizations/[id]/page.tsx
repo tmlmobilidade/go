@@ -1,7 +1,7 @@
 /* * */
 
 import { OrganizationDetail } from '@/components/organizations/detail/OrganizationDetail';
-import { OrganizationsDetailContextProvider } from '@/contexts/OrganizationDetail.context';
+import { OrganizationsDetailContextProvider } from '@/components/organizations/detail/OrganizationDetail.context';
 
 /* * */
 

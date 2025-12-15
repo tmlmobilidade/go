@@ -29,6 +29,7 @@ export function RoleDetailBasicInfo() {
 						key={roleDetailContext.data.form.key('name')}
 						label="Nome do grupo"
 						maxLength={255}
+						readOnly={roleDetailContext.flags.isReadOnly}
 						withAsterisk
 						{...roleDetailContext.data.form.getInputProps('name')}
 					/>

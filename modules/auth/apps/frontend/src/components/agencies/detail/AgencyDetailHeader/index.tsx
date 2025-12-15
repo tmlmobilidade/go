@@ -2,11 +2,11 @@
 
 /* * */
 
-import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { IconUpload } from '@tabler/icons-react';
+import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { HasPermission, keepUrlParams, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -32,18 +32,35 @@ export function AgencyDetailHeader() {
 
 	return (
 		<Toolbar>
+
 			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={agencyDetailContext.data.id} variant="secondary" />
 			<Label size="lg" singleLine>{agencyDetailContext.data.form.values.name}</Label>
+
 			<Spacer />
-			<Button
-				disabled={agencyDetailContext.flags.read_only || !agencyDetailContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={agencyDetailContext.flags.saving}
-				onClick={agencyDetailContext.actions.saveAgency}
-				variant="primary"
-			/>
+
+			<HasPermission
+				action={PermissionCatalog.all.agencies.actions.update}
+				scope={PermissionCatalog.all.agencies.scope}
+			>
+				<SaveButton
+					isDisabled={!agencyDetailContext.flags.canSave}
+					isLoading={agencyDetailContext.flags.isSaving}
+					onClick={agencyDetailContext.actions.save}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.agencies.actions.lock}
+				scope={PermissionCatalog.all.agencies.scope}
+			>
+				<LockButton
+					isLoading={agencyDetailContext.flags.isLocking}
+					isLocked={agencyDetailContext.data.agency?.is_locked}
+					onClick={agencyDetailContext.actions.lock}
+				/>
+			</HasPermission>
+
 		</Toolbar>
 	);
 

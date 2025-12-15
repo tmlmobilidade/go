@@ -31,6 +31,7 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('first_name')}
 						label="Primeiro Nome"
 						maxLength={255}
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('first_name')}
 					/>
@@ -38,6 +39,7 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('last_name')}
 						label="Último Nome"
 						maxLength={255}
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('last_name')}
 					/>
@@ -46,6 +48,7 @@ export function UserDetailBasicInfo() {
 						label="Email"
 						leftSection={<IconMail size={22} />}
 						placeholder="user@example.com"
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 						{...userDetailContext.data.form.getInputProps('email')}
 					/>
@@ -54,6 +57,7 @@ export function UserDetailBasicInfo() {
 						label="Telemóvel"
 						leftSection={<IconPhone size={22} />}
 						placeholder="912345678"
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...userDetailContext.data.form.getInputProps('phone')}
 					/>
@@ -62,6 +66,7 @@ export function UserDetailBasicInfo() {
 						autoComplete="new-password"
 						label="Change Password"
 						onChange={event => userDetailContext.actions.handleChangePassword(event.target.value)}
+						readOnly={userDetailContext.flags.isReadOnly}
 					/>
 				</Grid>
 			</Section>
