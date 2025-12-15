@@ -2,18 +2,18 @@
 
 /* * */
 
-import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Collapsible, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function PlansDetailSectionPcgiLegacy() {
+export function PlanDetailSectionPcgiLegacy() {
 	//
 
 	//
 	// A. Setup variables
 
-	const plansDetailContext = usePlansDetailContext();
+	const planDetailContext = usePlanDetailContext();
 
 	//
 	// B. Render components
@@ -26,11 +26,12 @@ export function PlansDetailSectionPcgiLegacy() {
 			<Section gap="sm">
 
 				<TextInput
+					key={planDetailContext.data.form.key('pcgi_legacy.operation_plan_id')}
 					label="Operation Plan ID da PCGI"
 					miw="50%"
 					placeholder="operationPlanId"
-					{...plansDetailContext.data.form.getInputProps('pcgi_legacy.operation_plan_id')}
-					readOnly={plansDetailContext.flags.read_only}
+					{...planDetailContext.data.form.getInputProps('pcgi_legacy.operation_plan_id')}
+					readOnly={planDetailContext.flags.isReadOnly}
 				/>
 
 			</Section>

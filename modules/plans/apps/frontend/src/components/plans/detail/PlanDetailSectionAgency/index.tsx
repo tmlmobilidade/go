@@ -1,23 +1,23 @@
 /* * */
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
-import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function PlansDetailSectionAgency() {
+export function PlanDetailSectionAgency() {
 	//
 
 	//
 	// A. Setup variables
 
-	const plansDetailContext = usePlansDetailContext();
+	const planDetailContext = usePlanDetailContext();
 
 	//
 	// B. Render components
 
-	if (!plansDetailContext.data.plan?.gtfs_agency) {
+	if (!planDetailContext.data.plan?.gtfs_agency) {
 		return null;
 	}
 
@@ -27,7 +27,7 @@ export function PlansDetailSectionAgency() {
 			title="Dados do Operador"
 		>
 			<Section gap="sm">
-				<AgencyDisplay data={plansDetailContext.data.plan.gtfs_agency} />
+				<AgencyDisplay data={planDetailContext.data.plan.gtfs_agency} />
 			</Section>
 		</Collapsible>
 	);
