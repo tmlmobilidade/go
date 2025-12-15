@@ -80,21 +80,13 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	 * @returns A promise that resolves to the result of the delete operation.
 	 */
 	async toggleDeleteById(id: string, forceValue?: boolean): Promise<void> {
+		// Get the current document from the database
 		const foundDoc = await this.findById(id);
 		if (!foundDoc) throw new Error('Stop not found');
-		await this.updateById(id, { is_deleted: forceValue !== undefined ? forceValue : !foundDoc.is_deleted });
-	}
-
-	/**
-	 * Toogle the lock status of a document by its ID.
-	 * @param id The ID of the document to toggle lock status.
-	 * @param forceValue Optional boolean to explicitly set the lock status.
-	 * @returns A promise that resolves to the result of the update operation.
-	 */
-	public async toggleLockById(id: string, forceValue?: boolean): Promise<void> {
-		const foundDoc = await this.findById(id);
-		if (!foundDoc) throw new Error('Stop not found');
-		await this.updateById(id, { is_locked: forceValue !== undefined ? forceValue : !foundDoc.is_locked });
+		// Determine the new deleted status
+		const newDeletedStatus = forceValue !== undefined ? forceValue : !foundDoc.is_deleted;
+		// If the document is deleted, we allow the operation even if it's locked
+		await this.updateById(id, { is_deleted: newDeletedStatus }, { forceIfLocked: !newDeletedStatus && foundDoc.is_locked });
 	}
 
 	protected getCollectionIndexes(): IndexDescription[] {
