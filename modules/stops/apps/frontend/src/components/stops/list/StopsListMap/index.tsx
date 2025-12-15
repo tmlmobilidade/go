@@ -49,8 +49,7 @@ export function StopsListMap() {
 	// C. Handle actions
 
 	const handleStopClick = (value: MapOverlayMultipleStopsDataProps) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(value.id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(value.id)));
 	};
 
 	//

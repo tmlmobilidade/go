@@ -5,7 +5,7 @@ import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.con
 import { IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams, Label } from '@tmlmobilidade/ui';
-import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -23,8 +23,7 @@ export function OrganizationDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_LIST));
 	};
 
 	//

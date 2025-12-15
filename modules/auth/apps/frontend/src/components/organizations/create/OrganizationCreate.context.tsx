@@ -83,7 +83,7 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 		setIsSaving(false);
 		closeCreateOrganizationModal();
 		useToast.success({ message: 'Organização criada com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id), window.location.search));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id)));
 	};
 
 	//

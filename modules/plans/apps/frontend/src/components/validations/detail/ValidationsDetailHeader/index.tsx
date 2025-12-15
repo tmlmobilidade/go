@@ -7,8 +7,9 @@ import { openApprovePlanModal } from '@/components/validations/detail/ApprovePla
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -27,8 +28,7 @@ export function ValidationsDetailHeader() {
 	// C. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams('/validations', window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.plans.VALIDATIONS_LIST));
 	};
 
 	const handleApprovePlan = () => {

@@ -24,8 +24,7 @@ export function UserDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.USERS_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_LIST));
 	};
 
 	//

@@ -81,7 +81,7 @@ export const AnnotationCreateContextProvider = ({ children }: PropsWithChildren)
 		setIsSaving(false);
 		closeCreateAnnotationModal();
 		useToast.success({ message: 'Anotação criada com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(response.data._id), window.location.search));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(response.data._id)));
 	};
 
 	//

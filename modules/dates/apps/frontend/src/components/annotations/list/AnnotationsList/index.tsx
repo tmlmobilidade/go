@@ -56,8 +56,7 @@ export function AnnotationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: AnnotationNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(item._id)));
 	};
 
 	//

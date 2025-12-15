@@ -76,9 +76,7 @@ export function AlertList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: Alert) => {
-		// Always redirect to the detail page for the selected alert, preserving URL params
-		const destUrl = keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(item._id)));
 	};
 
 	//

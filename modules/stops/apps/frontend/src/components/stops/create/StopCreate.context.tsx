@@ -187,7 +187,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		setIsSaving(false);
 		closeCreateStopModal();
 		useToast.success({ message: 'Paragem criada com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(response.data._id), window.location.search));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(response.data._id)));
 	};
 
 	//

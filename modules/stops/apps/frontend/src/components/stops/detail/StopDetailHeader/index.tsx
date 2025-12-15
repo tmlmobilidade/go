@@ -23,7 +23,7 @@ export function StopDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST, window.location.search));
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST));
 	};
 
 	//

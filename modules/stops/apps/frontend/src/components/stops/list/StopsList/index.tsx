@@ -70,8 +70,7 @@ export function StopsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: StopNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(item._id)));
 	};
 
 	//

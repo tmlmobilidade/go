@@ -27,8 +27,7 @@ export function RidesDetailHeader() {
 	// B. Handle actions
 
 	const handleGoBack = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST));
 	};
 
 	//
