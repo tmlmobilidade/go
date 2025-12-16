@@ -5,6 +5,7 @@ export * from './use-current-url';
 export * from './use-flag-can-delete';
 export * from './use-flag-can-lock';
 export * from './use-flag-can-save';
+export * from './use-flag-custom';
 export * from './use-flag-read-only';
 export * from './use-organization-logo';
 export * from './use-prevent-navigation';

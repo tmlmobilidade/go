@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type File, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
@@ -21,6 +21,9 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		id: string
 		operation_file: File | null
 		plan: null | Plan
+	}
+	flags: DetailContextStateTemplate['flags'] & {
+		canChangePlan: boolean
 	}
 }
 
@@ -142,6 +145,17 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		isValid: form.isValid(),
 	});
 
+	const { flag: canChangePlan } = useFlagCustom('all', [
+		!isReadOnly,
+		!planData?.is_locked,
+		!isLocking,
+		!isDeleting,
+		!isReprocessing,
+		!planLoading,
+		!isSaving,
+		meContext.actions.hasPermission(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.update_gtfs_plan),
+	]);
+
 	//
 	// F. Define context value
 
@@ -159,6 +173,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			plan: planData,
 		},
 		flags: {
+			canChangePlan,
 			canDelete,
 			canLock,
 			canSave,
@@ -176,6 +191,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		canDelete,
 		canLock,
 		canSave,
+		canChangePlan,
 		operationFileError,
 		planError,
 		operationFileLoading,

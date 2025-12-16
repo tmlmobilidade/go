@@ -6,7 +6,7 @@ import { Select as MantineSelect, type SelectProps as MantineSelectProps } from 
 
 /* * */
 
-interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect'> {
+export interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect'> {
 
 	/**
 	 * The `key` prop is required to ensure correct re-mounting behavior.

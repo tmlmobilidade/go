@@ -2,7 +2,7 @@
 
 /* * */
 
-import { openChangePlanModal } from '@/components/plans/detail/ChangePlanModal';
+import { openPlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { IconRefresh } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
@@ -60,9 +60,9 @@ export function PlanDetailHeader() {
 				value={planDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<IconButton
-					disabled={planDetailContext.data.plan.is_locked}
+					disabled={!planDetailContext.flags.canChangePlan}
 					icon={<IconRefresh />}
-					onClick={() => openChangePlanModal(planDetailContext.data.plan)}
+					onClick={() => openPlanChangeModal(planDetailContext.data.plan._id)}
 					tooltip="Alterar Plano"
 				/>
 			</HasPermission>

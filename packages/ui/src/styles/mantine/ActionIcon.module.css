@@ -30,11 +30,12 @@
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
 }
 
+.root[data-disabled],
 .root[data-variant='disabled'] {
 	color: var(--color-system-border-100);
 	cursor: not-allowed;
 	background-color: var(--color-system-background-200);
-	border-color: var(--color-system-border-100);
+	border-color: transparent;
 	box-shadow: unset;
 }
 
