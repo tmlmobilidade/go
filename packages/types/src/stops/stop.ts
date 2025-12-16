@@ -23,9 +23,9 @@ export const StopSchema = DocumentSchema.extend({
 	jurisdiction: StopJurisdictionSchema.default('unknown'),
 	legacy_id: z.string().nullable().default(null),
 	lifecycle_status: LifecycleStatusSchema.default('draft'),
-	name: z.string().min(5).max(100),
+	name: z.string().min(2).max(100),
 	new_name: z.string().min(5).max(100).nullable().default(null),
-	short_name: z.string().min(5).max(55),
+	short_name: z.string().min(2).max(55),
 	tts_name: z.string(),
 
 	//
