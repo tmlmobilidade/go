@@ -33,7 +33,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.0.1",
+		"@types/node": "25.0.2",
 		"@types/nodemailer": "7.0.4",
 		"typescript": "5.9.3"
 	}
