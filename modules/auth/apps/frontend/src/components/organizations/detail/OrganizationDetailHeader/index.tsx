@@ -17,7 +17,7 @@ export function OrganizationDetailHeader() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('organizations', { keyPrefix: 'detail.header' });
+	const { t } = useTranslation('auth', { keyPrefix: 'organizations.detail.header' });
 
 	const router = useRouter();
 	const organizationDetailContext = useOrganizationsDetailContext();

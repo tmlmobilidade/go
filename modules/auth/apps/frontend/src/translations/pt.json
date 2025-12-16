@@ -113,10 +113,34 @@
 			}
 		},
 		"detail": {
+			"BasicInfo": {
+				"description": "Detalhes como nome, sigla, logótipo, links da página inicial.",
+				"fields": {
+					"logo_dark": "Logótipo em Modo Escuro",
+					"logo_light": "Logótipo em Modo Claro",
+					"long_name": "Nome da Organização",
+					"long_name_placeholder": "Carris Metropolitana",
+					"short_name": "Sigla",
+					"short_name_placeholder": "CM"
+				},
+				"title": "Informações gerais"
+			},
 			"header": {
 				"delete_button_label": "Apagar",
 				"new_organization_button_label": "Nova organização",
 				"save_button_label": "Guardar"
+			},
+			"quick_links": {
+				"add_quick_link_button_label": "Adicionar Link Rápido",
+				"description": "Links rápidos que aparecem na página inicial.",
+				"no_organization_label": "Crie primeiro a organização para adicionar links rápidos.",
+				"table_columns": {
+					"actions": "Ações",
+					"icon": "Ícone",
+					"link": "Link",
+					"name": "Nome"
+				},
+				"title": "Links Rápidos"
 			}
 		},
 		"list": {

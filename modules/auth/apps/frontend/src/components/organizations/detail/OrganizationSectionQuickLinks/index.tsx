@@ -8,6 +8,7 @@ import { HomeLink } from '@tmlmobilidade/types';
 import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { openOrganizationQuickLinksModal } from '../OrganizationDetailQuickLinksModal';
 import { OrganizationDetailQuickLinksActions } from '../OrganizationSectionQuickLinksActions';
@@ -22,27 +23,29 @@ export function OrganizationDetailQuickLinks() {
 
 	const organizationDetailContext = useOrganizationsDetailContext();
 
+	const { t } = useTranslation('auth', { keyPrefix: 'organizations.detail.quick_links' });
+
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
-			title: 'Nome',
+			title: t('table_columns.name'),
 			width: 250,
 		},
 		{
 			accessor: 'href',
-			title: 'Link',
+			title: t('table_columns.link'),
 			width: 400,
 		},
 		{
 			accessor: 'icon',
 			render: item => iconMap[item.icon],
-			title: 'Ícone',
+			title: t('table_columns.icon'),
 			width: 300,
 		},
 		{
 			accessor: 'actions',
 			render: item => item.actions,
-			title: 'Ações',
+			title: t('table_columns.actions'),
 			width: 300,
 		},
 	];
@@ -91,18 +94,18 @@ export function OrganizationDetailQuickLinks() {
 
 	return (
 		<Collapsible
-			description="Links rápidos que aparecem na página inicial."
-			title="Links rápidos"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section gap="lg">
 				<Button
 					disabled={!organizationDetailContext.data.id}
-					label="Adicionar link rápido"
+					label={t('add_quick_link_button_label')}
 					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
 				{!organizationDetailContext.data.id && (
-					<p>Crie primeiro a organização para adicionar links rápidos.</p>
+					<p>{t('no_organization_label')}</p>
 				)}
 				{organizationDetailContext.data.id && (
 					<DataTable
