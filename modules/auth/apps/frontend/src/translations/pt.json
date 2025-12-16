@@ -125,6 +125,18 @@
 				},
 				"title": "Informações gerais"
 			},
+			"QuickLinksModal": {
+				"error": {
+					"missing_fields": "Por favor preencha todos os campos",
+					"wrong_url": "Por favor, insira uma URL válida"
+				},
+				"fields": {
+					"cancel": "Cancelar",
+					"link": "Link",
+					"save": "Guardar",
+					"title": "Nome"
+				}
+			},
 			"header": {
 				"delete_button_label": "Apagar",
 				"new_organization_button_label": "Nova organização",
