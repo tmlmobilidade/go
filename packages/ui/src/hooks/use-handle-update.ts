@@ -64,7 +64,7 @@ export function useHandleUpdate<T>({ fetchFn, labels, onError, onSuccess }: UseH
 			return;
 		}
 		setIsLoading(false);
-		useToast.success({ message: labels?.success_message ?? 'Paragem bloqueada com sucesso.', title: labels?.success_title ?? 'Sucesso' });
+		useToast.success({ message: labels?.success_message, title: labels?.success_title ?? 'Sucesso' });
 		onSuccess(response.data);
 	};
 
