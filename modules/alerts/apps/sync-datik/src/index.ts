@@ -51,13 +51,18 @@ async function main() {
 			);
 
 			const createAlertDto: CreateAlertDto = {
+				active_period_end_date: null,
 				active_period_start_date: undefined,
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
-				created_by: 'system',
+				coordinates: null,
 				description: description,
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
-				modified_by: 'system',
+				external_id: serviceAlert.id,
+				file_id: null,
+				info_url: null,
+				is_locked: false,
 				municipality_ids: [],
+				publish_end_date: null,
 				publish_start_date: undefined,
 				publish_status: 'PUBLISHED',
 				reference_type: 'TRIP',
