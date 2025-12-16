@@ -6,6 +6,7 @@ import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { Grid, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function UserDetailOrganization() {
 
 	const userDetailsContext = useUserDetailContext();
 	const organizationsContext = useOrganizationsContext();
+	const { t } = useTranslation('auth', { keyPrefix: 'users.detail.organization' });
 
 	//
 	// B. Transform data
@@ -39,7 +41,7 @@ export function UserDetailOrganization() {
 					key={userDetailsContext.data.form.key('organization_id')}
 					clearable={false}
 					data={organizationItems}
-					label="Organização"
+					label={t('organization_label')}
 					required
 					{...userDetailsContext.data.form.getInputProps('organization_id')}
 				/>

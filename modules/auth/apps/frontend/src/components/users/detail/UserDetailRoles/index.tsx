@@ -5,6 +5,7 @@
 import { useRolesContext } from '@/contexts/Roles.context';
 import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function UserDetailRoles() {
 	const rolesContext = useRolesContext();
 	const userDetailContext = useUserDetailContext();
 
+	const { t } = useTranslation('auth', { keyPrefix: 'users.detail.roles' });
 	//
 	// B. Transform data
 
@@ -34,8 +36,8 @@ export function UserDetailRoles() {
 				<MultiSelect
 					key={userDetailContext.data.form.key('role_ids')}
 					data={availableRoles}
-					label="Roles"
-					placeholder="Selecione uma opção..."
+					label={t('roles_label')}
+					placeholder={t('roles_placeholder')}
 					{...userDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>

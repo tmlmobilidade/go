@@ -261,6 +261,17 @@
 			"header": {
 				"new_user_button_label": "Novo Utizador",
 				"save_button_label": "Criar"
+			},
+			"organization": {
+				"organization_label": "Organização"
+			},
+			"roles": {
+				"roles_label": "Roles",
+				"roles_placeholder": "Selecione uma opção..."
+			},
+			"rolesAndOrganization": {
+				"descripton": "O conjunto de permissões que o utilizador tem atribuído no sistema e as organizações a que pertence.",
+				"title": "Roles & Organizações"
 			}
 		}
 	}
