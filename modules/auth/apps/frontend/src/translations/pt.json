@@ -240,6 +240,28 @@
 					"roles_placeholder": "Selecione uma opção..."
 				}
 			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"description": "Informação básica do utilizador",
+				"fields": {
+					"change_password": "Alterar Palavra-passe",
+					"email": "Email",
+					"email_placeholder": "user@example.com",
+					"first_name": "Primeiro Nome",
+					"first_name_placeholder": "...",
+					"last_name": "Último Nome",
+					"last_name_placeholder": "...",
+					"password_placeholder": "...",
+					"phone": "Telemóvel",
+					"phone_placeholder": "912345678"
+				},
+				"title": "Informação Básica"
+			},
+			"header": {
+				"new_user_button_label": "Novo Utizador",
+				"save_button_label": "Criar"
+			}
 		}
 	}
 
