@@ -1,11 +1,8 @@
 /* * */
 
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { useTranslation } from 'react-i18next';
 
 /* * */
-
-const { t } = useTranslation('global', { keyPrefix: 'permissions' });
 
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
@@ -30,28 +27,28 @@ export interface PermissionConfig {
 
 const agencyActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver operadores', label: 'Ver' },
-		{ action: 'create', description: 'Permite criar um operador', label: 'Criar' },
-		{ action: 'update', description: 'Permite editar um operador', label: 'Editar' },
-		{ action: 'delete', description: 'Permite eliminar um operador', label: 'Eliminar' },
-		{ action: 'toggle_lock', description: 'Permite bloquear/desbloquear um operador', label: 'Bloquear/Desbloquear' },
+		{ action: 'read', description: 'agencyActions.descriptions.read', label: 'agencyActions.labels.read' },
+		{ action: 'create', description: 'agencyActions.descriptions.create', label: 'agencyActions.labels.create' },
+		{ action: 'update', description: 'agencyActions.descriptions.update', label: 'agencyActions.labels.update' },
+		{ action: 'delete', description: 'agencyActions.descriptions.delete', label: 'agencyActions.labels.delete' },
+		{ action: 'toggle_lock', description: 'agencyActions.descriptions.toggle_lock', label: 'agencyActions.labels.toggle_lock' },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de operadores.',
+	description: 'agencyActions.description',
 	scope: PermissionCatalog.all.agencies.scope,
-	title: 'Permissões de Operadores',
+	title: 'agencyActions.title',
 };
 
 const alertActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver alertas', label: 'Ver' },
-		{ action: 'create', description: 'Permite criar um alerta', label: 'Criar' },
-		{ action: 'update', description: 'Permite editar um alerta', label: 'Editar' },
-		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar' },
-		{ action: 'toggle_lock', description: 'Permite bloquear/desbloquear um alerta', label: 'Bloquear/Desbloquear' },
+		{ action: 'read', description: 'alertActions.descriptions.read', label: 'alertActions.labels.read' },
+		{ action: 'create', description: 'alertActions.descriptions.create', label: 'alertActions.labels.create' },
+		{ action: 'update', description: 'alertActions.descriptions.update', label: 'alertActions.labels.update' },
+		{ action: 'delete', description: 'alertActions.descriptions.delete', label: 'alertActions.labels.delete' },
+		{ action: 'toggle_lock', description: 'alertActions.descriptions.toggle_lock', label: 'alertActions.labels.toggle_lock' },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
+	description: 'alertActions.description',
 	scope: PermissionCatalog.all.alerts_scheduled.scope,
-	title: 'Permissões de Alertas',
+	title: 'alertActions.title',
 };
 
 const realtimeActions: PermissionConfig = {

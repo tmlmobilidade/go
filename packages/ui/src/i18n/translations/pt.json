@@ -8,5 +8,43 @@
 		"delete": "Apagar",
 		"edit": "Editar",
 		"save": "Salvar"
+	},
+	"permissions": {
+		"agencyActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de operadores.",
+			"descriptions": {
+				"create": "Permite criar um operador",
+				"delete": "Permite eliminar um operador",
+				"read": "Permite ver operadores",
+				"toggle_lock": "Permite bloquear/desbloquear um operador",
+				"update": "Permite editar um operador"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggle_lock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Operadores"
+		},
+		"alertActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de alertas.",
+			"descriptions": {
+				"create": "Permite criar um alerta",
+				"delete": "Permite eliminar um alerta",
+				"read": "Permite ver alertas",
+				"toggle_lock": "Permite bloquear/desbloquear um alerta",
+				"update": "Permite editar um alerta"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggle_lock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Alertas"
+		}
 	}
 }

@@ -8,6 +8,7 @@ import { RoleDetailHeader } from '@/components/roles/detail/RoleDetailHeader';
 import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { permissionsConfig } from '@/lib/permissions';
 import { Pane } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +19,7 @@ export function RoleDetail() {
 	// A. Setup variables
 
 	const rolesDetailContext = useRoleDetailContext();
+	const { t } = useTranslation('global', { keyPrefix: 'permissions' });
 
 	//
 	// B. Render components
@@ -29,12 +31,12 @@ export function RoleDetail() {
 				<PermissionSection
 					key={item.scope}
 					configActions={item.actions}
-					description={item.description}
+					description={t(item.description)}
 					enabledPermissions={rolesDetailContext.data.form.values.permissions}
 					onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
-					onToggle={rolesDetailContext.actions.handlePermissionToggle}
+					onToggle={() => console.log('choruizo', t(item.title))}
 					scope={item.scope}
-					title={item.title}
+					title={t(item.title)}
 				/>
 			))}
 		</Pane>

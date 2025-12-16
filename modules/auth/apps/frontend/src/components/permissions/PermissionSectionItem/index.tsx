@@ -33,7 +33,8 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 
 	const rolesContext = useRolesContext();
 
-	const { t } = useTranslation('auth', { keyPrefix: 'permissions.SectionItems' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'permissions' });
+	const { t: tAuth } = useTranslation('auth', { keyPrefix: 'permissions.SectionItems' });
 
 	//
 	// B. Transform data
@@ -71,20 +72,20 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	return (
 		<CheckCard
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
-			description={configAction.description}
+			description={tGlobal(configAction.description)}
 			disabled={hasPermissionFromRole}
-			label={configAction.label}
+			label={tGlobal(configAction.label)}
 			onChange={handleToggle}
 		>
 			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 				<AgencyPermissionMultiselect
-					description={t('description')}
-					label={t('label')}
+					description={tAuth('description')}
+					label={tAuth('label')}
 					onChange={handleResourceToggle}
 					selected={selectedAgencyIds}
 				/>
 			)}
-			{hasPermissionFromRole && <Label caps>{t('inherited_permission')}</Label>}
+			{hasPermissionFromRole && <Label caps>{tAuth('inherited_permission')}</Label>}
 		</CheckCard>
 	);
 
