@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBuildings, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { JSX } from 'react';
@@ -117,9 +117,9 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		permissions: [{ action: PermissionCatalog.all.performance.actions.read, scope: PermissionCatalog.all.performance.scope }],
 	},
 	{
-		_id: 'dates',
-		href: PAGE_ROUTES.dates.BASE,
-		icon: <IconCalendarEvent size={26} />,
+		_id: 'annotations',
+		href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
+		icon: <IconNote size={26} />,
 		label: 'Anotações',
 		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
 	},
