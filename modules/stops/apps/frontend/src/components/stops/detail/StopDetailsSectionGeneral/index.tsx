@@ -100,8 +100,8 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.stop?.short_name ?? 'N/A'} bordered />
-					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.stop?.tts_name ?? 'N/A'} bordered />
+					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} bordered />
+					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 
