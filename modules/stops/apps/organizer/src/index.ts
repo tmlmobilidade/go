@@ -28,13 +28,11 @@ import { Timer } from '@tmlmobilidade/timer';
 		for (const [stopIndex, stopData] of allStopsData.entries()) {
 			//
 
-			Logger.title(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
+			Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
 
 			const normalizedStopData = await normalizeStop(stopData);
 
 			await stops.updateById(stopData._id, normalizedStopData);
-
-			Logger.divider();
 
 			//
 		}
