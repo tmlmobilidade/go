@@ -1,6 +1,7 @@
 {
-	"home": {
-		"tableHeaderCategory": "Categorias",
-		"tableHeaderTitle": "Título"
+	"operations": {
+		"delete": "Apagar",
+		"edit": "Editar",
+		"save": "Salvar"
 	}
 }

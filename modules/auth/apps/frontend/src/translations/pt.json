@@ -91,6 +91,16 @@
 			"password_placeholder": "Password",
 			"submit_label": "Login",
 			"title": "Login no GO+"
+		},
+		"permissions": {
+			"AgencyPermissionMultiselect": {
+				"label": "Operadores"
+			},
+			"SectionItems": {
+				"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
+				"inherited_permission": "Permissão Herdada pelo grupo de permissões",
+				"label": "Itens de Secção"
+			}
 		}
 	},
 	"home": {
@@ -165,5 +175,61 @@
 				"name": "Nome"
 			}
 		}
+	},
+	"roles": {
+		"create": {
+			"basicInfo": {
+				"fields": {
+					"name": "Nome do Grupo",
+					"placeholder": "..."
+				}
+			},
+			"header": {
+				"new_role_button_label": "Novo Grupo de Permissões",
+				"save_button_label": "Criar"
+			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"description": "Informação básica do utilizador",
+				"fields": {
+					"name": "Nome do grupo",
+					"placeholder": "..."
+				},
+				"title": "Informação Básica"
+			},
+			"header": {
+				"delete_button_label": "Apagar",
+				"new_role_button_label": "Novo Grupo de Permissões",
+				"save_button_label": "Guardar"
+			}
+		},
+		"list": {
+			"header": {
+				"new_role_button_label": "Novo Grupo de Permissões",
+				"title": "Grupos de Permissões"
+			},
+			"table_columns": {
+				"id": "#ID",
+				"name": "Nome",
+				"permissions": "Permissões"
+			}
+		}
+	},
+	"users": {
+		"create": {
+			"basicInfo": {
+				"fields": {
+					"email": "Email",
+					"first_name": "Nome",
+					"last_name": "Sobrenome"
+				}
+			},
+			"header": {
+				"new_user_button_label": "Novo Utilizador",
+				"save_button_label": "Criar"
+			}
+		}
 	}
+
 }

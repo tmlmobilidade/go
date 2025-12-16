@@ -79,7 +79,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 			/>
 			<TextInput
 				key="link-href"
-				error={isUrl(newLink.href) ? null : 'Por favor, insira um URL válido'}
+				error={isUrl(newLink.href) ? null : t('error.wrong_url')}
 				label={t('fields.link')}
 				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
 				value={newLink.href}

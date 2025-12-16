@@ -3,6 +3,7 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -22,6 +23,8 @@ export function AgencyPermissionMultiselect({ description, disabled, label, onCh
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('auth', { keyPrefix: 'permissions.AgencyPermissionMultiselect' });
+
 	const agencyListContext = useAgenciesContext();
 
 	//
@@ -33,7 +36,7 @@ export function AgencyPermissionMultiselect({ description, disabled, label, onCh
 	}));
 
 	agencyOptions.unshift({
-		label: 'Todas as agências',
+		label: t('label'),
 		value: PermissionCatalog.ALLOW_ALL_FLAG,
 	});
 

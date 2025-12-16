@@ -4,6 +4,7 @@
 
 import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,20 +15,21 @@ export function RoleDetailBasicInfo() {
 	// A. Setup variables
 
 	const roleDetailContext = useRoleDetailContext();
+	const { t } = useTranslation('auth', { keyPrefix: 'roles.detail.BasicInfo' });
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description="Informação básica do utilizador"
-			title="Informação Básica"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
 					<TextInput
 						key={roleDetailContext.data.form.key('name')}
-						label="Nome do grupo"
+						label={t('fields.name')}
 						maxLength={255}
 						placeholder="..."
 						withAsterisk

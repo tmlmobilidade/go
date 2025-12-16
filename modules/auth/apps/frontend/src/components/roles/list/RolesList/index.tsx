@@ -8,6 +8,7 @@ import { type RoleNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,23 +20,24 @@ export function RolesList() {
 
 	const router = useRouter();
 	const rolesListContext = useRolesListContext();
+	const { t } = useTranslation('auth', { keyPrefix: 'roles.list' });
 
 	const columns: DataTableColumn<RoleNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('table_columns.id'),
 			width: 120,
 		},
 		{
 			accessor: 'name',
-			title: 'Nome',
+			title: t('table_columns.name'),
 			width: 200,
 		},
 		{
 			accessor: 'permissions',
 			render: item => <TagGroup tags={item.permissions.map(i => ({ label: `${i.scope}/${i.action}`, variant: 'secondary' }))} />,
-			title: 'Permissões',
+			title: t('table_columns.permissions'),
 			width: 500,
 		},
 	];

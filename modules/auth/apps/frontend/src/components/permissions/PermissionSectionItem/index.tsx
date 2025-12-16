@@ -9,7 +9,8 @@ import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission } from '@tmlmobilidade/types';
 import { Label } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { use, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -31,6 +32,8 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	// A. Setup variables
 
 	const rolesContext = useRolesContext();
+
+	const { t } = useTranslation('auth', { keyPrefix: 'permissions.SectionItems' });
 
 	//
 	// B. Transform data
@@ -75,13 +78,13 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 		>
 			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 				<AgencyPermissionMultiselect
-					description="Operadores ao qual o utilizador tem acesso para esta acção."
-					label="Operadores"
+					description={t('description')}
+					label={t('label')}
 					onChange={handleResourceToggle}
 					selected={selectedAgencyIds}
 				/>
 			)}
-			{hasPermissionFromRole && <Label caps>Permissão Herdada pelo grupo de permissões</Label>}
+			{hasPermissionFromRole && <Label caps>{t('inherited_permission')}</Label>}
 		</CheckCard>
 	);
 
