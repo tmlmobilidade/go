@@ -46,6 +46,20 @@
 			},
 			"title": "Permissões de Alertas"
 		},
+		"gtfsValidationActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de validações GTFS.",
+			"descriptions": {
+				"create": "Permite criar uma validação",
+				"read": "Permite ver validações",
+				"request_approval": "Permite solicitar aprovação de uma validação"
+			},
+			"labels": {
+				"create": "Criar",
+				"read": "Ver",
+				"request_approval": "Solicitar aprovação"
+			},
+			"title": "Permissões de Validações (GTFS)"
+		},
 		"homeActions": {
 			"description": "As ações que o utilizador pode realizar na home.",
 			"descriptions": {
@@ -57,6 +71,62 @@
 				"see_wiki_links": "Ver wiki"
 			},
 			"title": "Permissões da Home"
+		},
+		"organizationActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de organizações.",
+			"descriptions": {
+				"create": "Permite criar uma organização",
+				"delete": "Permite eliminar uma organização",
+				"read": "Permite ver organizações",
+				"update": "Permite editar uma organização"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"update": "Editar"
+			},
+			"title": "Permissões de Organizações"
+		},
+		"performanceActions": {
+			"description": "As ações que o utilizador pode realizar na visualização de métricas.",
+			"descriptions": {
+				"read": "Permite ver métricas"
+			},
+			"labels": {
+				"read": "Ver"
+			},
+			"title": "Permissões de Métricas"
+		},
+		"planActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de planos.",
+			"descriptions": {
+				"create": "Permite criar um plano",
+				"delete": "Permite eliminar um plano",
+				"read": "Permite ver um plano específico",
+				"read_controller": "Permite ver a configuração dos SLAs de um plano",
+				"read_pcgi_legacy": "Permite ver os dados da PCGI Legacy",
+				"toggle_lock": "Permite bloquear/desbloquear um plano",
+				"update": "Permite editar um plano",
+				"update_controller": "Permite configurar os SLAs de um plano",
+				"update_feed_info_dates": "Permite editar as datas de informação do feed",
+				"update_gtfs_plan": "Permite alterar o GTFS de um plano",
+				"update_pcgi_legacy": "Permite editar os dados da PCGI Legacy"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"read_controller": "Ver SLA Controller",
+				"read_pcgi_legacy": "Ver PCGI Legacy",
+				"toggle_lock": "Bloquear/Desbloquear",
+				"update": "Editar",
+				"update_controller": "Editar SLA Controller",
+				"update_feed_info_dates": "Editar Datas de Validade",
+				"update_gtfs_plan": "Alterar GTFS",
+				"update_pcgi_legacy": "Editar PCGI Legacy"
+			},
+			"title": "Permissões de Planos"
 		},
 		"realtimeActions": {
 			"description": "As ações que o utilizador pode realizar na gestão de alertas de tempo real.",
@@ -75,6 +145,86 @@
 				"update": "Editar"
 			},
 			"title": "Permissões de Alertas de Tempo Real"
+		},
+		"rideActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de viagens.",
+			"descriptions": {
+				"acceptance_change_status": "Permite alterar o estado de uma justificação de uma viagem",
+				"acceptance_justify": "Permite justificar uma viagem",
+				"acceptance_lock": "Permite bloquear/desbloquear uma justificação de uma viagem",
+				"acceptance_read": "Permite ver uma justificação de uma viagem",
+				"analsys_lock": "Permite bloquear/desbloquear uma análise de uma viagem",
+				"analysis_read": "Permite ver uma análise de uma viagem",
+				"analysis_reprocess": "Permite reprocessar uma análise de uma viagem",
+				"analysis_update": "Permite editar uma análise de uma viagem",
+				"audit_lock": "Permite bloquear/desbloquear uma auditoria de uma viagem",
+				"audit_read": "Permite ver uma auditoria de uma viagem",
+				"audit_update": "Permite editar uma auditoria de uma viagem"
+			},
+			"labels": {
+				"acceptance_change_status": "Aceitação - Alterar estado",
+				"acceptance_justify": "Aceitação - Justificar",
+				"acceptance_lock": "Aceitação - Bloquear/Desbloquear",
+				"acceptance_read": "Aceitação - Ver",
+				"analsys_lock": "Análise - Bloquear/Desbloquear",
+				"analysis_read": "Análise - Ver",
+				"analysis_reprocess": "Análise - Reprocessar",
+				"analysis_update": "Análise - Editar",
+				"audit_lock": "Auditoria - Bloquear/Desbloquear",
+				"audit_read": "Auditoria - Ver",
+				"audit_update": "Auditoria - Editar"
+			},
+			"title": "Permissões de Viagens"
+		},
+		"roleActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de grupos de permissões.",
+			"descriptions": {
+				"create": "Permite criar um grupo de permissões",
+				"delete": "Permite eliminar um grupo de permissões",
+				"read": "Permite ver grupos de permissões",
+				"update": "Permite editar um grupo de permissões"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"update": "Editar"
+			},
+			"title": "Permissões de Grupos de Permissões"
+		},
+		"stopActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de paragens.",
+			"descriptions": {
+				"create": "Permite criar uma paragem",
+				"delete": "Permite eliminar uma paragem",
+				"read": "Permite ver paragens",
+				"toggle_lock": "Permite bloquear/desbloquear uma paragem",
+				"update": "Permite editar uma paragem"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggle_lock": "Bloquear/Desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Paragens"
+		},
+		"userActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de utilizadores.",
+			"descriptions": {
+				"create": "Permite criar um utilizador",
+				"delete": "Permite eliminar um utilizador",
+				"read": "Permite ver utilizadores",
+				"update": "Permite editar um utilizador"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"update": "Editar"
+			},
+			"title": "Permissões de Utilizadores"
 		}
 	}
 }
