@@ -9,6 +9,7 @@ import { PasswordInput, TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -24,6 +25,8 @@ export function LoginForm() {
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 	const [passwordValue, setPasswordValue] = useState('');
+
+	const { t } = useTranslation('auth', { keyPrefix: 'loginForm' });
 
 	//
 	// B. Handle actions
@@ -57,27 +60,27 @@ export function LoginForm() {
 
 	return (
 		<AuthenticationForm
-			description="Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas."
-			footerLabel="Recuperar password"
+			description={t('description')}
+			footerLabel={t('footer_label')}
 			footerUrl={PAGE_ROUTES.auth.RESET_PASSWORD_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={passwordValue.length < 8 || emailValue.length === 0}
-			submitLabel="Login"
-			title="Login no GO+"
+			submitLabel={t('submit_label')}
+			title={t('title')}
 		>
 			<TextInput
 				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
-				placeholder="Email"
+				placeholder={t('email_placeholder')}
 				value={emailValue}
 			/>
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder="Password"
+				placeholder={t('password_placeholder')}
 				value={passwordValue}
 			/>
 		</AuthenticationForm>

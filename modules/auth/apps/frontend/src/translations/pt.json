@@ -56,6 +56,43 @@
 			"text": "Selecione uma Agência"
 		}
 	},
+	"auth": {
+		"SendPasswordResetEmailForm": {
+			"description": "Introduza seu email para recuperar a sua palavra-passe",
+			"email_placeholder": "Email de Recuperação",
+			"footer_label": "Voltar ao login",
+			"submit_label": "Enviar email",
+			"title": "Recuperar Password"
+		},
+		"changePasswordForm": {
+			"confirm_password_placeholder": "Confirmar Password",
+			"description": "Introduza a sua nova password",
+			"footer_label": "Voltar ao login",
+			"password_placeholder": "Password",
+			"submit_label": "Confirmar",
+			"title": "Alterar password"
+		},
+		"common": {
+			"icon_chooser": "Ícones",
+			"upload_image": {
+				"delete_button_confirm_message": "Tem certeza que deseja apagar a imagem?",
+				"delete_button_confirm_title": "Apagar imagem",
+				"error": {
+					"message": "O tamanho do ficheiro execede o limite permitido",
+					"title": "Erro ao carregar imagem"
+				},
+				"file_button_label": "Carregar imagem"
+			}
+		},
+		"loginForm": {
+			"description": "Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.",
+			"email_placeholder": "Email",
+			"footer_label": "Recuperar Password",
+			"password_placeholder": "Password",
+			"submit_label": "Login",
+			"title": "Login no GO+"
+		}
+	},
 	"home": {
 		"tableHeaderCategory": "Categorias",
 		"tableHeaderTitle": "Título"

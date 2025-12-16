@@ -2,6 +2,7 @@
 
 import { iconMap } from '@/lib/icons';
 import { Combobox } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,7 +20,12 @@ export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps)
 	//
 
 	//
-	// A. Handle actions
+	// A. Setup Variables
+
+	const { t } = useTranslation('auth', { keyPrefix: 'common' });
+
+	//
+	// B. Handle actions
 
 	const handleIconChange = (icon) => {
 		setSelectedIcon(icon);
@@ -27,11 +33,11 @@ export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps)
 
 	//
 	//
-	// B. Render components
+	// C. Render components
 	return (
 		<Combobox
 			data={iconData}
-			label="Ícones"
+			label={t('icon_chooser')}
 			onChange={handleIconChange}
 			value={iconData.find(item => item.value === selectedIcon)?.value}
 			clearable

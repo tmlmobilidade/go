@@ -9,6 +9,7 @@ import { TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -21,6 +22,8 @@ export function SendPasswordResetEmailForm() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
+
+	const { t } = useTranslation('auth', { keyPrefix: 'SendPasswordResetEmailForm' });
 
 	//
 	// B. Handle actions
@@ -53,20 +56,20 @@ export function SendPasswordResetEmailForm() {
 
 	return (
 		<AuthenticationForm
-			description="Introduza seu email para recuperar a sua palavra-passe"
-			footerLabel="Voltar ao login"
+			description={t('description')}
+			footerLabel={t('footer_label')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={emailValue.length === 0}
-			submitLabel="Enviar email"
-			title="Recuperar password"
+			submitLabel={t('submit_label')}
+			title={t('title')}
 		>
 			<TextInput
 				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
-				placeholder="Email de recuperação"
+				placeholder={t('email_placeholder')}
 				value={emailValue}
 			/>
 		</AuthenticationForm>

@@ -13,6 +13,7 @@ import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useQueryState } from 'nuqs';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -30,6 +31,8 @@ export function ChangePasswordForm() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.header' });
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -97,28 +100,28 @@ export function ChangePasswordForm() {
 
 	return (
 		<AuthenticationForm
-			description="Introduza a sua nova password"
-			footerLabel="Voltar ao login"
+			description={t('description')}
+			footerLabel={t('footerLabel')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={isDisabled}
-			submitLabel="Confirmar"
-			title="Alterar password"
+			submitLabel={t('submit_label')}
+			title={t('title')}
 		>
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder="Password"
+				placeholder={t('password_placeholder')}
 				value={passwordValue}
 			/>
 			<PasswordInput
 				key="password-confirm"
 				disabled={isLoading}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
-				placeholder="Confirm password"
+				placeholder={t('confirm_password_placeholder')}
 				value={confirmPasswordValue}
 			/>
 			<div className={styles.passwordRequirements}>
