@@ -4,19 +4,23 @@ import { DocumentSchema } from '@/_common/document.js';
 import { ProcessingStatusSchema } from '@/_common/status.js';
 import { z } from 'zod';
 
-export const FILE_EXPORT_TYPES = ['ride'] as const;
-export const FileExportTypeSchema = z.enum(FILE_EXPORT_TYPES);
+/* * */
+
+export const FileExportTypes = ['ride'] as const;
+export const FileExportTypeSchema = z.enum(FileExportTypes);
 export type FileExportType = z.infer<typeof FileExportTypeSchema>;
 
 /* * */
 
-export const FileExportBaseSchema = DocumentSchema.extend({
-	file_id: z.string().nullish(),
-	file_name: z.string(),
-	processing_status: ProcessingStatusSchema,
-	properties: z.record(z.any()),
-	type: FileExportTypeSchema,
-});
+export const FileExportBaseSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		file_id: z.string().nullish(),
+		file_name: z.string(),
+		processing_status: ProcessingStatusSchema,
+		properties: z.record(z.any()),
+		type: FileExportTypeSchema,
+	});
 
 export const UpdateFileExportSchema = FileExportBaseSchema.omit({ _id: true, created_at: true, created_by: true, properties: true, type: true, updated_at: true }).partial();
 
