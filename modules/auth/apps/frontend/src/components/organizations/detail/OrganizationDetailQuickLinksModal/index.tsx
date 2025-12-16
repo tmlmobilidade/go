@@ -65,7 +65,6 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 		setSelectedIcon(icon);
 	};
 
-	console.log('Loaded i18n namespaces:', useTranslation().i18n.options?.ns);
 	//
 	// C. Render components
 

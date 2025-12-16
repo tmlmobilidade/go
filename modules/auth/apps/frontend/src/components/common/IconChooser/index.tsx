@@ -22,7 +22,7 @@ export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps)
 	//
 	// A. Setup Variables
 
-	const { t } = useTranslation('auth', { keyPrefix: 'common' });
+	const { t } = useTranslation('auth', { keyPrefix: 'auth.common' });
 
 	//
 	// B. Handle actions
