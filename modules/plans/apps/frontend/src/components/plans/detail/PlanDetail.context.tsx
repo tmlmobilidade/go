@@ -2,14 +2,12 @@
 
 /* * */
 
-import { validatePlanUpdateValues } from '@/utils/validate-plan-update-values';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { type File, type OperationalDate, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/types';
+import { type File, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -62,29 +60,10 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { form } = useTypicalForm<UpdatePlanDto>(UpdatePlanSchema, planData);
 
 	//
-	// D. Transform data
-
-	useEffect(() => {
-		if (!planData) return;
-		form.initialize({
-			...planData,
-			gtfs_feed_info: {
-				...planData.gtfs_feed_info,
-				feed_end_date: Dates
-					.fromOperationalDate(planData.gtfs_feed_info.feed_end_date, 'Europe/Lisbon')
-					.toFormat('yyyy-MM-dd') as OperationalDate,
-				feed_start_date: Dates
-					.fromOperationalDate(planData.gtfs_feed_info.feed_start_date, 'Europe/Lisbon')
-					.toFormat('yyyy-MM-dd') as OperationalDate,
-			},
-		});
-	}, [planData]);
-
-	//
-	// E. Handle actions
+	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', validatePlanUpdateValues(form.getValues())),
+		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			planMutate(updatedItem);
@@ -123,7 +102,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	//
-	// F. Setup flags
+	// E. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.update),
@@ -164,7 +143,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	//
-	// G. Define context value
+	// F. Define context value
 
 	const contextValue: PlanDetailContextState = useMemo(() => ({
 		actions: {
@@ -210,7 +189,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	]);
 
 	//
-	// H. Render components
+	// G. Render components
 
 	return (
 		<PlanDetailContext.Provider value={contextValue}>

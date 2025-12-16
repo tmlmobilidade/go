@@ -25,6 +25,7 @@ import './themes/street.css';
 /* * */
 
 import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea, TextInput } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -36,6 +37,7 @@ import ButtonOverride from './mantine/Button.module.css';
 import CheckboxOverride from './mantine/Checkbox.module.css';
 import CheckboxGroupOverride from './mantine/CheckboxGroup.module.css';
 import CloseButtonOverride from './mantine/CloseButton.module.css';
+import DateInputOverride from './mantine/DateInput.module.css';
 import MenuOverride from './mantine/Menu.module.css';
 import MultiSelectOverride from './mantine/MultiSelect.module.css';
 import PasswordInputOverride from './mantine/PasswordInput.module.css';
@@ -101,6 +103,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		CloseButton: CloseButton.extend({
 			classNames: {
 				...CloseButtonOverride,
+			},
+		}),
+
+		DateInput: DateInput.extend({
+			classNames: {
+				...DateInputOverride,
 			},
 		}),
 

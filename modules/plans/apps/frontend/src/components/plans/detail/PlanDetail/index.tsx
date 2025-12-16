@@ -7,8 +7,8 @@ import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSectionAgency';
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
 import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailSectionFeedInfo';
-import { PlanDetailSectionFiles } from '@/components/plans/detail/PlanDetailSectionFiles';
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
+import { PlanDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 

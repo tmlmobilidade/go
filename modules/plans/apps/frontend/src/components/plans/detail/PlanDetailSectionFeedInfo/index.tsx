@@ -2,7 +2,7 @@
 
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
-import { Collapsible, DatePicker, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DateInput, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -29,15 +29,15 @@ export function PlanDetailSectionFeedInfo() {
 
 			<Section gap="sm">
 				<Grid columns="ab" gap="sm">
-					<DatePicker
+					<DateInput
 						key={planDetailContext.data.form.key('gtfs_feed_info.feed_start_date')}
+						readOnly={planDetailContext.flags.isReadOnly}
 						{...planDetailContext.data.form.getInputProps('gtfs_feed_info.feed_start_date')}
-						readOnly={planDetailContext.flags.isReadOnly}
 					/>
-					<DatePicker
+					<DateInput
 						key={planDetailContext.data.form.key('gtfs_feed_info.feed_end_date')}
-						{...planDetailContext.data.form.getInputProps('gtfs_feed_info.feed_end_date')}
 						readOnly={planDetailContext.flags.isReadOnly}
+						{...planDetailContext.data.form.getInputProps('gtfs_feed_info.feed_end_date')}
 					/>
 				</Grid>
 			</Section>

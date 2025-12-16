@@ -73,7 +73,6 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	function hasPermissionResource(args: HasPermissionResourceArgs) {
-		console.log('hasPermissionResource called with args:', args);
 		if (!meData || !meData.permissions) return false;
 		return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
 	}

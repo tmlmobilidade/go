@@ -7,7 +7,7 @@ import { DemandVisualization } from '@/components/visualizations/Demand/DemandVi
 import { AgencyType } from '@/constants';
 import { useNetworkContext } from '@/contexts/Network.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { DatePicker, MonthPicker, MultiSelect, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
+import { DateInput, MonthPicker, MultiSelect, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -146,8 +146,8 @@ export default function DemandByTopic() {
 
 					{timeView === 'daily' && (
 						<>
-							<DatePicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<DatePicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<DateInput label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<DateInput label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
 						</>
 					)}
 
