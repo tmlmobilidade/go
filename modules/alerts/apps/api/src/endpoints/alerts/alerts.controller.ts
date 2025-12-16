@@ -186,7 +186,6 @@ export class AlertsController {
 
 		const result = await files.upload(buffer, {
 			created_by: request.me._id,
-			is_locked: false,
 			name: data.filename,
 			resource_id: id,
 			scope: 'alerts',

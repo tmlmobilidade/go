@@ -169,7 +169,6 @@ export class OrganizationsController {
 
 			const result = await files.upload(buffer, {
 				created_by: request.me._id,
-				is_locked: false,
 				name: file.filename,
 				resource_id: id,
 				scope: 'organizations',

@@ -41,7 +41,7 @@ export function AnnotationsDetailHeader() {
 			<Spacer />
 
 			<HasPermission
-				action={PermissionCatalog.all.plans.actions.toggle_lock}
+				action={PermissionCatalog.all.plans.actions.lock}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
 				value={annotationsDetailContext.data.annotation.agency_ids}

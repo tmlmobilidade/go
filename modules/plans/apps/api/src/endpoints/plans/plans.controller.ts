@@ -541,7 +541,6 @@ export class PlansController {
 
 			const updatedFileData: CreateFileDto = {
 				created_by: updateDatesResult.info.created_by,
-				is_locked: false,
 				name: updateDatesResult.info.name,
 				resource_id: updateDatesResult.info.resource_id,
 				scope: updateDatesResult.info.scope,

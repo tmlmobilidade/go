@@ -106,7 +106,6 @@ export class GtfsValidationsController {
 
 			const uploadFileResult = await filesCollection.upload(buffer, {
 				created_by: request.me.email,
-				is_locked: false,
 				name: requestData.filename,
 				resource_id: insertValidationResult._id.toString(),
 				scope: 'gtfsValidations',
