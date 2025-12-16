@@ -19,12 +19,14 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/utils": "*",
+		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "25.0.2",
+		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

@@ -1,9 +1,19 @@
 /* * */
 
-import { type OriginalStopType } from '@/original-stop.type.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { stops } from '@tmlmobilidade/interfaces';
-import { type Stop, StopSchema } from '@tmlmobilidade/types';
+import { StopSchema } from '@tmlmobilidade/types';
+import Papa from 'papaparse';
+
+/* * */
+
+interface UtXStopType {
+	stop_id: string
+	stop_lat: string
+	stop_lon: string
+	stop_name: string
+	zone_id: string
+}
 
 /* * */
 
@@ -14,66 +24,41 @@ export async function seedFromTmp() {
 		//
 		// Download and prepare GO stops data
 
-		const originalStopsResponse = await fetch('https://go.carrismetropolitana.pt/api/stops/public');
-		const originalStopsData = await originalStopsResponse.json() as OriginalStopType[];
+		const ut1StopsResponse = await fetch('https://storage.carrismetropolitana.pt/static/test/tmp/ut1/stops.txt');
+		const ut1StopsText = await ut1StopsResponse.text();
 
-		const preparedStops = originalStopsData.map(originalStop => StopSchema.parse({
-			_id: originalStop.code,
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			created_by: 'system',
-			district_id: '',
-			has_shelter: transformHasShelter(originalStop.has_shelter),
-			is_deleted: false,
-			is_locked: false,
-			latitude: originalStop.latitude,
-			legacy_id: originalStop.code,
-			lifecycle_status: transformLifeCycleStatus(originalStop.operational_status),
-			longitude: originalStop.longitude,
-			municipality_id: '',
-			name: originalStop.name,
-			new_name: originalStop.name_new ?? '',
-			short_name: originalStop.short_name,
-			tts_name: originalStop.tts_name,
-			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			updated_by: 'system',
-		}));
+		const ut1StopsData = Papa.parse<UtXStopType>(ut1StopsText, { header: true });
+
+		const preparedStops = ut1StopsData.data.map((originalStop) => {
+			const stop = StopSchema.safeParse({
+				_id: originalStop.stop_id,
+				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				created_by: 'system',
+				district_id: '',
+				is_deleted: false,
+				is_locked: false,
+				latitude: Number(originalStop.stop_lat),
+				legacy_id: originalStop.stop_id,
+				lifecycle_status: 'active',
+				longitude: Number(originalStop.stop_lon),
+				municipality_id: '',
+				name: originalStop.stop_name || 'unnamed',
+				new_name: '',
+				short_name: '',
+				tts_name: '',
+				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				updated_by: 'system',
+			});
+			if (stop.success) return stop.data;
+		}).filter(Boolean);
 
 		console.log(`Prepared ${preparedStops.length} stops`);
 
 		//
-		// Download and prepare deleted stops
-
-		const deletedStopsResponse = await fetch('https://go.carrismetropolitana.pt/api/stops/public-deleted');
-		const deletedStopsData = await deletedStopsResponse.json() as OriginalStopType[];
-
-		const preparedDeletedStops = deletedStopsData.map(deletedStop => StopSchema.parse({
-			_id: deletedStop.code,
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			created_by: 'system',
-			district_id: '',
-			is_deleted: true,
-			is_locked: false,
-			latitude: deletedStop.latitude,
-			legacy_id: deletedStop.code,
-			lifecycle_status: 'voided',
-			longitude: deletedStop.longitude,
-			municipality_id: '',
-			name: deletedStop.name,
-			new_name: '',
-			short_name: '',
-			tts_name: '',
-			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			updated_by: 'system',
-		}));
-
-		//
 		// Insert stops into DB
 
-		await stops.insertMany([...preparedStops, ...preparedDeletedStops]);
+		await stops.insertMany(preparedStops);
 		console.log(`Inserted ${preparedStops.length} stops`);
-		console.log(`Inserted ${preparedDeletedStops.length} deleted stops`);
-
-		process.exit(0);
 
 		//
 	}
@@ -81,22 +66,4 @@ export async function seedFromTmp() {
 		console.error('Error importing stops:', err);
 		process.exit(1);
 	}
-}
-
-/* * */
-
-function transformLifeCycleStatus(value: string): Stop['lifecycle_status'] {
-	if (value === 'ACTIVE') return 'active';
-	if (value === 'INACTIVE') return 'inactive';
-	if (value === 'PROVISIONAL') return 'provisional';
-	if (value === 'VOIDED') return 'voided';
-	return 'draft';
-}
-
-/* * */
-
-function transformHasShelter(value: number | string): Stop['has_shelter'] {
-	if (value === 'YES') return 'available';
-	if (value === 'NO' || value === '0' || value === 0) return 'unavailable';
-	return 'unknown';
 }

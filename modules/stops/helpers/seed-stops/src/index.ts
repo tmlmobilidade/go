@@ -1,6 +1,7 @@
 /* * */
 
 import { seedFromGoV1 } from '@/tasks/seed-from-go-v1.js';
+import { seedFromTmp } from '@/tasks/seed-from-tmp.js';
 import { stops } from '@tmlmobilidade/interfaces';
 
 /* * */
@@ -18,6 +19,7 @@ import { stops } from '@tmlmobilidade/interfaces';
 	// Run tasks
 
 	await seedFromGoV1();
+	await seedFromTmp();
 
 	//
 })();

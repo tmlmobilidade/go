@@ -73,8 +73,6 @@ export async function seedFromGoV1() {
 		console.log(`Inserted ${preparedStops.length} stops`);
 		console.log(`Inserted ${preparedDeletedStops.length} deleted stops`);
 
-		process.exit(0);
-
 		//
 	}
 	catch (err) {
