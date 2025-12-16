@@ -16,7 +16,7 @@ export const FileExportBaseSchema = DocumentSchema.extend({
 	processing_status: ProcessingStatusSchema,
 	properties: z.record(z.any()),
 	type: FileExportTypeSchema,
-}).strict();
+});
 
 export const UpdateFileExportSchema = FileExportBaseSchema.omit({ _id: true, created_at: true, created_by: true, properties: true, type: true, updated_at: true }).partial();
 

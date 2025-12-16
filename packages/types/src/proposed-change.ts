@@ -22,7 +22,7 @@ export const ProposedChangeSchema = DocumentSchema.extend({
 	related_id: z.string(),
 	scope: ScopeSchema,
 	status: ApprovalStatusSchema,
-}).strict();
+});
 
 //
 // Define the Proposed Change types

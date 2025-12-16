@@ -16,7 +16,7 @@ export const FileSchema = DocumentSchema.extend({
 	type: z.string().describe('mime type'),
 	updated_by: z.string(),
 	url: z.string().nullish(),
-}).strict();
+});
 
 export const CreateFileSchema = FileSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateFileSchema = FileSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true }).partial();

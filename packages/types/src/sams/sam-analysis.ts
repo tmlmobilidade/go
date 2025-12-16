@@ -21,6 +21,6 @@ export const SamAnalysisSchema = z.object({
 	transactions_found: z.number(),
 	transactions_missing: z.number(),
 	vehicle_id: z.number().nullable(),
-}).strict();
+});
 
 export type SamAnalysis = z.infer<typeof SamAnalysisSchema>;
