@@ -108,13 +108,25 @@
 				"shortname_placeholder": "CM"
 			},
 			"header": {
-				"publish_button_lalbel": "Publicar",
+				"publish_button_label": "Publicar",
 				"title": "Criar Organização"
+			}
+		},
+		"detail": {
+			"header": {
+				"delete_button_label": "Apagar",
+				"new_organization_button_label": "Nova organização",
+				"save_button_label": "Guardar"
 			}
 		},
 		"list": {
 			"header": {
+				"new_organization_button_label": "Nova organização",
 				"title": "Organizações"
+			},
+			"table_columns": {
+				"id": "#ID",
+				"name": "Nome"
 			}
 		}
 	}

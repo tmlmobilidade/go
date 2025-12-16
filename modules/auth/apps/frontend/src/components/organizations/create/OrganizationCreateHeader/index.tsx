@@ -35,7 +35,7 @@ export function OrganizationCreateHeader({ onClose }: OrganizationCreateHeaderPr
 			<Button
 				disabled={!organizationCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label={t('publish_button_lalbel')}
+				label={t('publish_button_label')}
 				loading={organizationCreateContext.flags.isSaving}
 				onClick={organizationCreateContext.actions.saveOrganization}
 				variant="primary"
