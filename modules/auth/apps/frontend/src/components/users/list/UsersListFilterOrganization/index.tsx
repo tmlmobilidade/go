@@ -4,6 +4,7 @@ import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useUsersListContext } from '@/contexts/UsersList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,8 @@ export function UsersListFilterOrganization() {
 
 	const organizationsContext = useOrganizationsContext();
 	const usersListContext = useUsersListContext();
+
+	const { t } = useTranslation('auth', { keyPrefix: 'users.list.filterBar.organization' });
 
 	//
 	// B. Transform data
@@ -47,7 +50,7 @@ export function UsersListFilterOrganization() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Organização"
+			label={t('label')}
 			onChange={usersListContext.actions.setFilterOrganizationIds}
 			options={parsedOptions}
 			withToggleAll

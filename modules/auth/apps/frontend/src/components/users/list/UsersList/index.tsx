@@ -11,6 +11,7 @@ import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,6 +20,8 @@ export function UsersList() {
 
 	//
 	// A. Setup variables
+
+	const t = useTranslation('auth', { keyPrefix: 'users.list' }).t;
 
 	const router = useRouter();
 
@@ -30,29 +33,29 @@ export function UsersList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('table_columns.id'),
 			width: 120,
 		},
 		{
 			accessor: 'full_name',
-			title: 'Nome',
+			title: t('table_columns.name'),
 			width: 225,
 		},
 		{
 			accessor: 'email',
-			title: 'Email',
+			title: t('table_columns.email'),
 			width: 350,
 		},
 		{
 			accessor: 'organization_id',
 			render: item => <Tag label={organizationsContext.data.raw.find(organizationData => organizationData._id === item.organization_id)?.long_name} variant="secondary" />,
-			title: 'Organização',
+			title: t('table_columns.organization_id'),
 			width: 300,
 		},
 		{
 			accessor: 'role_ids',
 			render: item => <TagGroup tags={item.role_ids.map(roleId => ({ label: rolesContext.data.raw.find(roleData => roleData._id === roleId)?.name, variant: 'secondary' }))} />,
-			title: 'Grupos',
+			title: t('table_columns.role_ids'),
 			width: 500,
 		},
 	];

@@ -273,6 +273,30 @@
 				"descripton": "O conjunto de permissões que o utilizador tem atribuído no sistema e as organizações a que pertence.",
 				"title": "Roles & Organizações"
 			}
+		},
+		"list": {
+			"filterBar": {
+				"organization": {
+					"label": "Organização"
+				},
+				"role": {
+					"label": "Grupos"
+				}
+			},
+			"header": {
+				"new_user_button_label": "Novo Utilizador",
+				"title": "Utilizadores"
+			},
+			"idle": {
+				"text": "Selecione um Utilizador"
+			},
+			"table_columns": {
+				"email": "Email",
+				"id": "#ID",
+				"name": "Nome",
+				"organization_id": "Organização",
+				"role_ids": "Grupos"
+			}
 		}
 	}
 

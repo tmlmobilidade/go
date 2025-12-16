@@ -1,8 +1,11 @@
 /* * */
 
 import { PermissionCatalog } from '@tmlmobilidade/types';
+import { useTranslation } from 'react-i18next';
 
 /* * */
+
+const { t } = useTranslation('global', { keyPrefix: 'permissions' });
 
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
