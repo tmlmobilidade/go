@@ -4,11 +4,10 @@
 
 import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { StopOptions } from '@/schemas/options';
-import { abbreviateName } from '@/utils/abreviate-stop-name';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { type CreateStopDto, CreateStopSchema, type Stop } from '@tmlmobilidade/types';
+import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-normalize';
+import { type CreateStopDto, CreateStopSchema, type Stop, StopSchema } from '@tmlmobilidade/types';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -135,8 +134,8 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		}
 		// Validate Step 2
 		if (modalCurrentStepState === 2) {
-			const hasNameWithinLimits = currentValues.name?.length >= StopOptions.stop_name_min_length && currentValues.name?.length <= StopOptions.stop_name_max_length;
-			const hasShortNameWithinLimits = currentValues.short_name?.length >= StopOptions.stop_short_name_min_length && currentValues.short_name?.length <= StopOptions.stop_short_name_max_length;
+			const hasNameWithinLimits = currentValues.name?.length >= StopSchema.shape.name.minLength && currentValues.name?.length <= StopSchema.shape.name.maxLength;
+			const hasShortNameWithinLimits = currentValues.short_name?.length >= StopSchema.shape.short_name.minLength && currentValues.short_name?.length <= StopSchema.shape.short_name.maxLength;
 			setModalCurrentStepValidState(hasNameWithinLimits && hasShortNameWithinLimits);
 		}
 		// Validate Step 3
@@ -158,9 +157,9 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	form.watch('name', ({ value }) => {
 		// Skip if no name is set
 		if (typeof value !== 'string') return;
-		// Build the abreviated and TTS names
-		const shortName = abbreviateName(value);
-		const ttsName = value.replace(/\s+/g, ' ').trim();
+		// Build the abbreviated and TTS names
+		const shortName = getStopShortName(value);
+		const ttsName = getStopTtsName(value);
 		// Set the form values
 		form.setFieldValue('short_name', shortName);
 		form.setFieldValue('tts_name', ttsName);

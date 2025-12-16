@@ -17,7 +17,9 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@carrismetropolitana/tts": "20250418.51.6",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/go-stops-pckg-normalize": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*"

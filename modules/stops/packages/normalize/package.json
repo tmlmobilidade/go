@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-pckg-sync",
+	"name": "@tmlmobilidade/go-stops-pckg-normalize",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -15,10 +15,8 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/writers": "*"
+		"@tmlmobilidade/strings": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
