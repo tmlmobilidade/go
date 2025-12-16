@@ -10,7 +10,7 @@ export const DatesPermissionSchema = z.object({
 		'delete_annotations',
 		'read_annotations',
 		'update_annotations',
-		'toggle_lock_annotations',
+		'lock_annotations',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
