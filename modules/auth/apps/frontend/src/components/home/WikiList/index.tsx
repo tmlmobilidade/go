@@ -17,7 +17,7 @@ export function WikiList() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('auth', { keyPrefix: 'home' });
+	const { t } = useTranslation('auth', { keyPrefix: 'home.wikiList' });
 
 	const router = useRouter();
 

@@ -94,10 +94,24 @@
 		}
 	},
 	"home": {
-		"tableHeaderCategory": "Categorias",
-		"tableHeaderTitle": "Título"
+		"wikiList": {
+			"tableHeaderCategory": "Categorias",
+			"tableHeaderTitle": "Título"
+		}
 	},
 	"organizations": {
+		"create": {
+			"basic_info": {
+				"longname_label": "Nome da organização",
+				"longname_placeholder": "Carris Metropolitana",
+				"shortname_label": "Sigla",
+				"shortname_placeholder": "CM"
+			},
+			"header": {
+				"publish_button_lalbel": "Publicar",
+				"title": "Criar Organização"
+			}
+		},
 		"list": {
 			"header": {
 				"title": "Organizações"
