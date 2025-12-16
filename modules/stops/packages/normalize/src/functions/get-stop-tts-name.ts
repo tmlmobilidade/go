@@ -1,7 +1,6 @@
 /* * */
 
 import tts from '@carrismetropolitana/tts';
-import { Logger } from '@tmlmobilidade/logger';
 
 /**
  * Sets the TTS name for a stop based on its regular name.
@@ -11,10 +10,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export function getStopTtsName(name: string): string {
 	//
 
-	if (!name) {
-		Logger.error(`Stop does not have a name.`);
-		return name;
-	}
+	if (!name) return name;
 
 	//
 	// Generate the TTS name

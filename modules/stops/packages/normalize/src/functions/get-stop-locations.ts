@@ -38,10 +38,7 @@ export async function getStopLocations(lat: number, lon: number): Promise<GetSto
 		parish_id: null,
 	};
 
-	if (!lat || !lon) {
-		Logger.error(`No latitude or longitude provided.`);
-		return result;
-	}
+	if (!lat || !lon) return result;
 
 	//
 	// Fetch the relevant Location data for this coordinate pair
@@ -51,7 +48,7 @@ export async function getStopLocations(lat: number, lon: number): Promise<GetSto
 	const { data: locationsData } = await fetchData<LocationsApiResponse>(locationsApiUrl);
 
 	if (!locationsData) {
-		Logger.error(`No locations data found for coordinates ${lat}, ${lon}.`);
+		Logger.info(`No locations data found for coordinates ${lat}, ${lon}.`);
 		return result;
 	}
 

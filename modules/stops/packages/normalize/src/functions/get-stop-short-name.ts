@@ -1,7 +1,5 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { normalizeString } from '@tmlmobilidade/strings';
 import { StopNameAbbreviationRules } from '@tmlmobilidade/types';
 
 /**
@@ -12,10 +10,7 @@ import { StopNameAbbreviationRules } from '@tmlmobilidade/types';
 export function getStopShortName(name: string): string {
 	//
 
-	if (!name) {
-		Logger.error(`Stop name is not provided.`);
-		return '';
-	}
+	if (!name) return '';
 
 	//
 	// Generate the short name
@@ -24,12 +19,13 @@ export function getStopShortName(name: string): string {
 		.filter(r => r.enabled)
 		.sort((a, b) => b.phrase.length - a.phrase.length);
 
-	let shortenedName = normalizeString(name);
+	let shortenedName = name;
 
 	for (const rule of activeRules) {
 		const escaped = rule.phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 		const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
 		shortenedName = shortenedName.replace(regex, (match) => {
+			console.log('Match:', match, 'Replacement:', rule.replacement);
 			if (match[0] === match[0].toUpperCase()) {
 				return rule.replacement.charAt(0).toUpperCase() + rule.replacement.slice(1);
 			}
