@@ -73,7 +73,7 @@ async function main() {
 				const searchTimestampStart = Dates
 					.now('Europe/Lisbon')
 					.startOf('day')
-					.set({ day: 1, hour: 4, minute: 0, month: 10, year: 2025 });
+					.set({ day: 1, hour: 4, minute: 0, month: 12, year: 2025 });
 
 				// if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
 				// 	searchTimestampStart = Dates
