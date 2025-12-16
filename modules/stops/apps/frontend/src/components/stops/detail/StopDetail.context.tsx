@@ -3,6 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -52,7 +53,21 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const { form } = useTypicalForm<UpdateStopDto>(UpdateStopSchema, stopData);
 
 	//
-	// D. Handle actions
+	// D. Transform data
+
+	form.watch('name', ({ value }) => {
+		// Skip if no name is set
+		if (typeof value !== 'string') return;
+		// Build the abbreviated and TTS names
+		const shortName = getStopShortName(value);
+		const ttsName = getStopTtsName(value);
+		// Set the form values
+		form.setFieldValue('short_name', shortName);
+		form.setFieldValue('tts_name', ttsName);
+	});
+
+	//
+	// E. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
@@ -82,7 +97,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	});
 
 	//
-	// E. Setup flags
+	// F. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
@@ -126,7 +141,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	});
 
 	//
-	// F. Define context value
+	// G. Define context value
 
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
@@ -166,7 +181,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	]);
 
 	//
-	// G. Render components
+	// H. Render components
 
 	return (
 		<StopDetailContext.Provider value={contextValue}>

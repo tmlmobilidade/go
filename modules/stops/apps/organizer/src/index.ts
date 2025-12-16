@@ -1,6 +1,6 @@
 /* * */
 
-import { normalizeStop } from '@tmlmobilidade/go-stops-pckg-normalize';
+import { organizeStop } from '@tmlmobilidade/go-stops-pckg-organize';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -30,9 +30,9 @@ import { Timer } from '@tmlmobilidade/timer';
 
 			Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
 
-			const normalizedStopData = await normalizeStop(stopData);
+			const organizedStopData = await organizeStop(stopData);
 
-			await stops.updateById(stopData._id, normalizedStopData);
+			await stops.updateById(stopData._id, organizedStopData);
 
 			//
 		}

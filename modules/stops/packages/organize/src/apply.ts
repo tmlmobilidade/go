@@ -6,11 +6,11 @@ import { getStopTtsName } from '@/functions/get-stop-tts-name.js';
 import { type Stop } from '@tmlmobilidade/types';
 
 /**
- * Normalizes a stop by applying various normalization functions.
- * @param stopData The stop data object to normalize.
- * @returns The normalized stop data object.
+ * Organizes a stop by applying various organization functions.
+ * @param stopData The stop data object to organize.
+ * @returns The organized stop data object.
  */
-export async function normalizeStop(stopData: Stop): Promise<Stop> {
+export async function organizeStop(stopData: Stop): Promise<Stop> {
 	//
 
 	const updatedStopData = { ...stopData };
@@ -31,7 +31,7 @@ export async function normalizeStop(stopData: Stop): Promise<Stop> {
 	updatedStopData.parish_id = stopLocations.parish_id;
 
 	//
-	// Return the normalized stop data
+	// Return the organized stop data
 
 	return updatedStopData;
 

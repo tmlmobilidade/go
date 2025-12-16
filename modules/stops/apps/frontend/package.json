@@ -18,7 +18,7 @@
 		"@tabler/icons-react": "3.36.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-stops-pckg-normalize": "*",
+		"@tmlmobilidade/go-stops-pckg-organize": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",

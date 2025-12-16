@@ -6,7 +6,7 @@ import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-normalize';
+import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { type CreateStopDto, CreateStopSchema, type Stop, StopSchema } from '@tmlmobilidade/types';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
