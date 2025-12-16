@@ -1,4 +1,9 @@
 {
+	"components": {
+		"select": {
+			"nothing_found_message": "Nenhum resultado encontrado"
+		}
+	},
 	"operations": {
 		"delete": "Apagar",
 		"edit": "Editar",

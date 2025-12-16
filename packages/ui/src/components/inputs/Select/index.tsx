@@ -3,6 +3,7 @@
 /* * */
 
 import { Select as MantineSelect, type SelectProps as MantineSelectProps } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,11 +19,21 @@ interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect'> {
  * Renders a Select component with customized default props.
  */
 export function Select({ ...props }: SelectProps) {
+	//
+
+	//
+	// A. Setup Variables
+
+	const { t } = useTranslation('global', { keyPrefix: 'components.select' });
+
+	//
+	// B. Render Components
+
 	return (
 		<MantineSelect
 			allowDeselect={props.clearable ?? true}
 			clearable={props.clearable ?? true}
-			nothingFoundMessage={props.nothingFoundMessage || 'Nenhum resultado encontrado'}
+			nothingFoundMessage={props.nothingFoundMessage || t('nothing_found_message')}
 			searchable
 			withAlignedLabels
 			{...props}

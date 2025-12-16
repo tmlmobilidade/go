@@ -221,13 +221,24 @@
 			"basicInfo": {
 				"fields": {
 					"email": "Email",
-					"first_name": "Nome",
-					"last_name": "Sobrenome"
+					"email_placeholder": "user@example.com",
+					"first_name": "Primeiro Nome",
+					"first_name_placeholder": "...",
+					"last_name": "Último Nome",
+					"last_name_placeholder": "..."
 				}
 			},
 			"header": {
 				"new_user_button_label": "Novo Utilizador",
 				"save_button_label": "Criar"
+			},
+			"organizationAndRoles": {
+				"fields": {
+					"organization": "Organização",
+					"organization_placeholder": "Selecione uma opção...",
+					"roles": "Roles",
+					"roles_placeholder": "Selecione uma opção..."
+				}
 			}
 		}
 	}
