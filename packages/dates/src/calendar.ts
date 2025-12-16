@@ -27,9 +27,10 @@ export interface MonthGrid {
  * Generates a calendar grid for a specific month, including overflow days from previous and next months
  * @param year The year (e.g., 2025)
  * @param month The month (1-12)
+ * @param fixedWeeks If true, always generates exactly 6 weeks (42 days) for consistent height
  * @returns A MonthGrid object containing all days to display in a monthly calendar view
  */
-export function generateMonthGrid(year: number, month: number): MonthGrid {
+export function generateMonthGrid(year: number, month: number, fixedWeeks = false): MonthGrid {
 	//
 	// Create the first day of the target month
 	const firstDayOfMonth = Dates.fromFormat(`${year}-${String(month).padStart(2, '0')}-01`, 'yyyy-MM-dd', 'Europe/Lisbon');
@@ -49,7 +50,7 @@ export function generateMonthGrid(year: number, month: number): MonthGrid {
 
 	// Calculate how many days from next month to show
 	const lastDayOfWeekNumber = Number(lastDayOfMonth.toFormat('c')) % 7;
-	const daysFromNextMonth = lastDayOfWeekNumber === 0 ? 0 : 7 - lastDayOfWeekNumber;
+	const naturalDaysFromNextMonth = lastDayOfWeekNumber === 0 ? 0 : 7 - lastDayOfWeekNumber;
 
 	const days: CalendarDay[] = [];
 
@@ -84,6 +85,11 @@ export function generateMonthGrid(year: number, month: number): MonthGrid {
 			isWeekend: [0, 6].includes(Number(date.toFormat('c')) % 7),
 		});
 	}
+
+	// Calculate how many days from next month to show
+	// If fixedWeeks is true, ensure 6 weeks (42 days total) for consistent height in yearly view
+	// Otherwise, use natural calculation to avoid unnecessary empty rows in monthly view
+	const daysFromNextMonth = fixedWeeks ? 42 - days.length : naturalDaysFromNextMonth;
 
 	// Add days from next month
 	for (let i = 1; i <= daysFromNextMonth; i++) {

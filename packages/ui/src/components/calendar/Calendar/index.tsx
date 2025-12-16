@@ -1,8 +1,8 @@
 'use client';
 
-import { Dates, generateMonthGrid } from '@tmlmobilidade/dates';
-import { type CalendarEvent } from '@tmlmobilidade/types';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Dates } from '@tmlmobilidade/dates';
+import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import styles from './styles.module.css';
 
@@ -10,17 +10,17 @@ import { Pane } from '../../panes';
 import { CalendarGrid } from '../CalendarGrid';
 import { CalendarHeader } from '../CalendarHeader';
 import { CalendarSidebar } from '../CalendarSidebar';
+import { YearlyCalendarMonth } from '../YearlyCalendarMonth';
 import { useCalendarUIContext } from './index.context';
 
 /* * */
 
 export interface CalendarProps {
-	events?: CalendarEvent[]
 	eventTypes?: {
 		checked: boolean
 		color?: string
 		count?: number
-		id: string
+		id: CalendarEventType
 		label: string
 	}[]
 	onDayClick?: (date: Dates) => void
@@ -31,7 +31,6 @@ export interface CalendarProps {
 /* * */
 
 export function Calendar({
-	events = [],
 	eventTypes = [],
 	onDayClick,
 	onEventClick,
@@ -41,18 +40,14 @@ export function Calendar({
 
 	// Get context
 	const context = useCalendarUIContext();
-	const { month, year } = context.state;
-	const { nextMonth, previousMonth, setMonth, today } = context.actions;
+	const { month, view, year } = context.state;
+	const { eventsByMonth, filteredEvents, monthGrid, monthsData } = context.data;
+	const { nextMonth, previousMonth, setMonth, setView, today } = context.actions;
 
 	// Refs for wheel event handling
 	const calendarRef = useRef<HTMLDivElement>(null);
 	const isNavigatingRef = useRef(false);
 	const lastNavigationRef = useRef(0);
-
-	// Generate the month grid
-	const monthGrid = useMemo(() => {
-		return generateMonthGrid(year, month);
-	}, [year, month]);
 
 	// Navigation handlers
 	const handleNavigate = useCallback((newYear: number, newMonth: number) => {
@@ -63,12 +58,36 @@ export function Calendar({
 		if (onDayClick) {
 			onDayClick(day.date);
 		}
-	}, [onDayClick]);
+		else {
+			// If no callback provided, navigate to the day's month and switch to month view
+			const jsDate = new Date(day.date.js_date);
+			const dayMonth = jsDate.getMonth() + 1;
+			const dayYear = jsDate.getFullYear();
+
+			if (dayMonth !== month || dayYear !== year || view === 'year') {
+				setMonth(dayMonth, dayYear);
+				setView('month');
+			}
+		}
+	}, [onDayClick, month, year, view, setMonth, setView]);
+
+	const handleViewChange = useCallback((newView: 'month' | 'year') => {
+		setView(newView);
+	}, [setView]);
+
+	const handleMonthClick = useCallback((clickedMonth: number) => {
+		setMonth(clickedMonth, year);
+		setView('month');
+	}, [setMonth, setView, year]);
+
+	const handleYearNavigate = useCallback((newYear: number) => {
+		setMonth(month, newYear);
+	}, [setMonth, month]);
 
 	// Handle horizontal scroll/wheel events
 	useEffect(() => {
 		const calendarElement = calendarRef.current;
-		if (!calendarElement) return;
+		if (!calendarElement || view === 'year') return;
 
 		const handleWheel = (e: WheelEvent) => {
 			// Only handle horizontal scroll or shift+vertical scroll
@@ -112,7 +131,7 @@ export function Calendar({
 		return () => {
 			calendarElement.removeEventListener('wheel', handleWheel);
 		};
-	}, [year, month, nextMonth, previousMonth]);
+	}, [view, year, month, nextMonth, previousMonth]);
 
 	return (
 		<div className={styles.container}>
@@ -127,14 +146,34 @@ export function Calendar({
 						monthName={monthGrid.monthName}
 						onNavigate={handleNavigate}
 						onToday={today}
+						onViewChange={handleViewChange}
+						onYearNavigate={handleYearNavigate}
+						view={view}
 						year={year}
 					/>
-					<CalendarGrid
-						events={events}
-						onDayClick={handleDayClick}
-						onEventClick={onEventClick}
-						weeks={monthGrid.weeks}
-					/>
+					{view === 'month' ? (
+						<CalendarGrid
+							events={filteredEvents}
+							onDayClick={handleDayClick}
+							onEventClick={onEventClick}
+							weeks={monthGrid.weeks}
+						/>
+					) : (
+						<div className={styles.yearlyGrid}>
+							{monthsData.map(({ grid, month: m }) => (
+								<YearlyCalendarMonth
+									key={m}
+									events={eventsByMonth.get(m) || []}
+									month={m}
+									monthGrid={grid}
+									onDayClick={handleDayClick}
+									onEventClick={onEventClick}
+									onMonthClick={() => handleMonthClick(m)}
+									year={year}
+								/>
+							))}
+						</div>
+					)}
 				</div>
 			</Pane>
 		</div>

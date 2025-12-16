@@ -13,3 +13,23 @@
 	height: 100%;
 	overflow: hidden;
 }
+
+.yearlyGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-md);
+	overflow: auto;
+}
+
+@media (width >= 768px) {
+        .yearlyGrid {
+                grid-template-columns: repeat(3, 1fr);
+        }
+}
+
+@media (width >= 1400px) {
+        .yearlyGrid {
+                grid-template-columns: repeat(4, 1fr);
+        }
+}

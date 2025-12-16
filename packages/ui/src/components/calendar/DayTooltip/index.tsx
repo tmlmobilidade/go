@@ -56,7 +56,7 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 
 			{otherEvents.length > 0 && (
 				<div className={styles.section}>
-					<div className={styles.sectionTitle}>Eventos</div>
+					<div className={styles.sectionTitle}>Anotações</div>
 					{otherEvents.map((event) => {
 						const Icon = event.icon;
 						return (

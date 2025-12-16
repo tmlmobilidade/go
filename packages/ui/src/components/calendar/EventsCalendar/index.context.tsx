@@ -11,7 +11,7 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 import useSWR from 'swr';
 
 import { useToast } from '../../../hooks';
-import { CalendarUIContextProvider, useCalendarUIContext } from '../Calendar/index.context';
+import { CalendarUIContextProvider } from '../Calendar/index.context';
 
 /* * */
 
@@ -26,7 +26,6 @@ interface EventsCalendarContextState {
 			annotations: number
 			periods: number
 		}
-		filteredEvents: CalendarEvent[]
 		periods: Period[]
 	}
 	flags: {
@@ -53,17 +52,9 @@ export const EventsCalendarProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	return (
-		<CalendarUIContextProvider
-			showSidebar={true}
-			initialEventTypeFilters={{
-				annotations: true,
-				periods: true,
-			}}
-		>
-			<EventsCalendarDataProvider>
-				{children}
-			</EventsCalendarDataProvider>
-		</CalendarUIContextProvider>
+		<EventsCalendarDataProvider>
+			{children}
+		</EventsCalendarDataProvider>
 	);
 };
 
@@ -84,8 +75,6 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 		API_ROUTES.dates.ANNOTATIONS_LIST,
 		{ refreshInterval: 10000 },
 	);
-
-	const uiContext = useCalendarUIContext();
 
 	//
 	// B. Handle errors and loading states
@@ -158,19 +147,6 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 	//
 	// D. Filter events based on UI context
 
-	const filteredEvents = useMemo(() => {
-		return calendarEvents.filter((event) => {
-			if (event.type === 'period') {
-				return uiContext.state.eventTypeFilters.get('periods') !== false;
-			}
-			if (event.type === 'event') {
-				return uiContext.state.eventTypeFilters.get('annotations') !== false;
-			}
-			return true;
-		});
-	}, [calendarEvents, uiContext.state.eventTypeFilters]);
-
-	//
 	// E. Count events by type
 
 	const eventTypeCounts = useMemo(() => {
@@ -241,22 +217,30 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 			annotations: annotationsData || [],
 			events: calendarEvents,
 			eventTypeCounts,
-			filteredEvents,
 			periods: periodsData || [],
 		},
 		flags: {
 			error: hasError || null,
 			loading: isLoading,
 		},
-	}), [addDatesToPeriod, annotationsData, calendarEvents, eventTypeCounts, filteredEvents, hasError, isLoading, periodsData]);
+	}), [addDatesToPeriod, annotationsData, calendarEvents, eventTypeCounts, hasError, isLoading, periodsData]);
 
 	//
 	// H. Render
 
 	return (
-		<EventsCalendarContext.Provider value={contextValue}>
-			{children}
-		</EventsCalendarContext.Provider>
+		<CalendarUIContextProvider
+			events={calendarEvents}
+			showSidebar={true}
+			initialEventTypeFilters={{
+				event: true,
+				period: true,
+			}}
+		>
+			<EventsCalendarContext.Provider value={contextValue}>
+				{children}
+			</EventsCalendarContext.Provider>
+		</CalendarUIContextProvider>
 	);
 
 	//

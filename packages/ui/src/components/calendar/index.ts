@@ -8,3 +8,4 @@ export * from './DayTooltip';
 export * from './EventsCalendar';
 export * from './EventsCalendar/index.context';
 export * from './MiniCalendar';
+export * from './YearlyCalendarMonth';

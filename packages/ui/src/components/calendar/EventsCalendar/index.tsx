@@ -9,37 +9,19 @@ import { LoadingOverlay } from '../../loaders/LoadingOverlay';
 import { Pane } from '../../panes/Pane';
 import { Calendar } from '../Calendar';
 import { useCalendarUIContext } from '../Calendar/index.context';
-import { EventsCalendarProvider, useEventsCalendarContext } from './index.context';
+import { useEventsCalendarContext } from './index.context';
 
 /* * */
 
 export interface EventsCalendarProps {
-	onDateClick?: (date: Dates) => void
+	onDayClick?: (date: Dates) => void
 	onEventClick?: (eventId: string, eventType: 'annotation' | 'period') => void
 }
 
 /* * */
 
 export function EventsCalendar({
-	onDateClick,
-	onEventClick,
-}: EventsCalendarProps) {
-	//
-
-	return (
-		<EventsCalendarProvider>
-			<EventsCalendarContent
-				onDateClick={onDateClick}
-				onEventClick={onEventClick}
-			/>
-		</EventsCalendarProvider>
-	);
-}
-
-/* * */
-
-function EventsCalendarContent({
-	onDateClick,
+	onDayClick,
 	onEventClick,
 }: EventsCalendarProps) {
 	//
@@ -52,12 +34,6 @@ function EventsCalendarContent({
 
 	//
 	// B. Handle interactions
-
-	const handleDayClick = (date: Dates) => {
-		if (onDateClick) {
-			onDateClick(date);
-		}
-	};
 
 	const handleEventClick = (event: CalendarEvent) => {
 		if (onEventClick && event.metadata) {
@@ -88,23 +64,22 @@ function EventsCalendarContent({
 		<Pane>
 			<Section flexDirection="row" height="100%">
 				<Calendar
-					events={eventsContext.data.filteredEvents}
-					onDayClick={handleDayClick}
+					onDayClick={onDayClick}
 					onEventClick={handleEventClick}
 					showSidebar={true}
 					eventTypes={[
 						{
-							checked: uiContext.state.eventTypeFilters.get('periods') !== false,
+							checked: uiContext.state.eventTypeFilters.get('period') !== false,
 							color: 'var(--color-primary)',
 							count: eventsContext.data.eventTypeCounts.periods,
-							id: 'periods',
+							id: 'period',
 							label: 'Períodos',
 						},
 						{
-							checked: uiContext.state.eventTypeFilters.get('annotations') !== false,
+							checked: uiContext.state.eventTypeFilters.get('event') !== false,
 							color: '#f59e0b',
 							count: eventsContext.data.eventTypeCounts.annotations,
-							id: 'annotations',
+							id: 'event',
 							label: 'Anotações',
 						},
 					]}

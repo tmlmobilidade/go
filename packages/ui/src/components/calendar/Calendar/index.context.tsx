@@ -2,6 +2,9 @@
 
 /* * */
 
+import type { CalendarEvent } from '@tmlmobilidade/types';
+
+import { Dates, generateMonthGrid, type MonthGrid } from '@tmlmobilidade/dates';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -9,15 +12,25 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useMemo
 interface CalendarUIContextState {
 	actions: {
 		nextMonth: () => void
+		nextYear: () => void
 		previousMonth: () => void
+		previousYear: () => void
 		setMonth: (month: number, year: number) => void
+		setView: (view: 'month' | 'year') => void
 		today: () => void
 		toggleEventType: (id: string) => void
+	}
+	data: {
+		eventsByMonth: Map<number, CalendarEvent[]>
+		filteredEvents: CalendarEvent[]
+		monthGrid: MonthGrid
+		monthsData: { grid: MonthGrid, month: number }[]
 	}
 	state: {
 		eventTypeFilters: Map<string, boolean>
 		month: number
 		showSidebar: boolean
+		view: 'month' | 'year'
 		year: number
 	}
 }
@@ -37,8 +50,10 @@ export const useCalendarUIContext = () => {
 /* * */
 
 interface CalendarUIContextProviderProps extends PropsWithChildren {
+	events?: CalendarEvent[]
 	initialEventTypeFilters?: Record<string, boolean>
 	initialMonth?: number
+	initialView?: 'month' | 'year'
 	initialYear?: number
 	showSidebar?: boolean
 }
@@ -47,8 +62,10 @@ interface CalendarUIContextProviderProps extends PropsWithChildren {
 
 export const CalendarUIContextProvider = ({
 	children,
+	events = [],
 	initialEventTypeFilters = {},
 	initialMonth,
+	initialView = 'month',
 	initialYear,
 	showSidebar = true,
 }: CalendarUIContextProviderProps) => {
@@ -60,6 +77,7 @@ export const CalendarUIContextProvider = ({
 	const now = new Date();
 	const [month, setMonthState] = useState(initialMonth || now.getMonth() + 1);
 	const [year, setYearState] = useState(initialYear || now.getFullYear());
+	const [view, setView] = useState<'month' | 'year'>(initialView);
 	const [eventTypeFilters, setEventTypeFilters] = useState<Map<string, boolean>>(
 		new Map(Object.entries(initialEventTypeFilters)),
 	);
@@ -87,6 +105,14 @@ export const CalendarUIContextProvider = ({
 		}
 	}, [month, year]);
 
+	const nextYear = useCallback(() => {
+		setYearState(year + 1);
+	}, [year]);
+
+	const previousYear = useCallback(() => {
+		setYearState(year - 1);
+	}, [year]);
+
 	const today = useCallback(() => {
 		const now = new Date();
 		setMonthState(now.getMonth() + 1);
@@ -107,26 +133,93 @@ export const CalendarUIContextProvider = ({
 	}, []);
 
 	//
-	// C. Define context value
+	// C. Generate calendar grids
+
+	const monthGrid = useMemo(() => {
+		return generateMonthGrid(year, month);
+	}, [year, month]);
+
+	const monthsData = useMemo(() => {
+		return Array.from({ length: 12 }, (_, index) => {
+			const monthNumber = index + 1;
+			return {
+				grid: generateMonthGrid(year, monthNumber, true),
+				month: monthNumber,
+			};
+		});
+	}, [year]);
+
+	//
+	// D. Filter events based on UI filters
+
+	const filteredEvents = useMemo(() => {
+		return events.filter((event) => {
+			// Filter by event type - if filter exists for this type, respect it
+			const filterValue = eventTypeFilters.get(event.type);
+			return filterValue !== false;
+		});
+	}, [events, eventTypeFilters]);
+
+	//
+	// E. Filter events by month for year view
+
+	const eventsByMonth = useMemo(() => {
+		const map = new Map<number, CalendarEvent[]>();
+
+		filteredEvents.forEach((event) => {
+			const startOp = Dates.fromISO(event.startDate).operational_date;
+			const endOp = event.endDate
+				? Dates.fromISO(event.endDate).operational_date
+				: startOp;
+
+			// Add event to all months it spans
+			for (let m = 1; m <= 12; m++) {
+				const monthStartOp = `${year}${String(m).padStart(2, '0')}01`;
+				const monthEndDay = new Date(year, m, 0).getDate();
+				const monthEndOp = `${year}${String(m).padStart(2, '0')}${String(monthEndDay).padStart(2, '0')}`;
+
+				// Check if event overlaps with this month using operational dates
+				if (startOp <= monthEndOp && endOp >= monthStartOp) {
+					const existing = map.get(m) || [];
+					map.set(m, [...existing, event]);
+				}
+			}
+		});
+
+		return map;
+	}, [filteredEvents, year]);
+
+	//
+	// F. Define context value
 
 	const contextValue: CalendarUIContextState = useMemo(() => ({
 		actions: {
 			nextMonth,
+			nextYear,
 			previousMonth,
+			previousYear,
 			setMonth,
+			setView,
 			today,
 			toggleEventType,
+		},
+		data: {
+			eventsByMonth,
+			filteredEvents,
+			monthGrid,
+			monthsData,
 		},
 		state: {
 			eventTypeFilters,
 			month,
 			showSidebar,
+			view,
 			year,
 		},
-	}), [eventTypeFilters, month, year, showSidebar, nextMonth, previousMonth, setMonth, today, toggleEventType]);
+	}), [eventTypeFilters, month, year, view, showSidebar, nextMonth, previousMonth, nextYear, previousYear, setMonth, setView, today, toggleEventType, monthGrid, monthsData, eventsByMonth, filteredEvents]);
 
 	//
-	// D. Render components
+	// G. Render components
 
 	return (
 		<CalendarUIContext.Provider value={contextValue}>
