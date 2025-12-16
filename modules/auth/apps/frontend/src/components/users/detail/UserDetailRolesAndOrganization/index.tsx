@@ -46,7 +46,6 @@ export function UserDetailRolesAndOrganization() {
 		<Collapsible
 			description="O conjunto de permissões que o utilizador tem atribuído no sistema e as organizações a que pertence."
 			title="Roles & Organizações"
-			defaultOpen
 		>
 			<Section>
 				<Grid columns="a" gap="md">
