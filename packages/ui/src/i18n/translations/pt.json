@@ -45,6 +45,36 @@
 				"update": "Editar"
 			},
 			"title": "Permissões de Alertas"
+		},
+		"homeActions": {
+			"description": "As ações que o utilizador pode realizar na home.",
+			"descriptions": {
+				"see_quick_links": "Permite ver links rápidos",
+				"see_wiki_links": "Permite ver wiki"
+			},
+			"labels": {
+				"see_quick_links": "Ver links rápidos",
+				"see_wiki_links": "Ver wiki"
+			},
+			"title": "Permissões da Home"
+		},
+		"realtimeActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de alertas de tempo real.",
+			"descriptions": {
+				"create": "Permite criar um alerta de tempo real ",
+				"delete": "Permite eliminar um alerta de tempo real",
+				"read": "Permite ver alertas em tempo real",
+				"toggle_lock": "Permite bloquear/desbloquear um alerta de tempo real",
+				"update": "Permite editar um alerta de tempo real"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggle_lock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Alertas de Tempo Real"
 		}
 	}
 }

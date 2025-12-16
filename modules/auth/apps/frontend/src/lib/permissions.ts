@@ -53,25 +53,25 @@ const alertActions: PermissionConfig = {
 
 const realtimeActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver alertas de tempo real', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create', description: 'Permite criar um alerta de tempo real', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update', description: 'Permite editar um alerta de tempo real', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete', description: 'Permite eliminar um alerta de tempo real', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'toggle_lock', description: 'Permite bloquear/desbloquear um alerta de tempo real', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'realtimeActions.descriptions.read', label: 'realtimeActions.labels.read', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'realtimeActions.descriptions.create', label: 'realtimeActions.labels.create', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'realtimeActions.descriptions.update', label: 'realtimeActions.labels.update', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'realtimeActions.descriptions.delete', label: 'realtimeActions.labels.delete', resources: ['AGENCIES'] },
+		{ action: 'toggle_lock', description: 'realtimeActions.descriptions.toggle_lock', label: 'realtimeActions.labels.toggle_lock', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de alertas de tempo real.',
+	description: 'realtimeActions.description',
 	scope: PermissionCatalog.all.alerts_realtime.scope,
-	title: 'Permissões de Alertas de Tempo Real',
+	title: 'realtimeActions.title',
 };
 
 const homeActions: PermissionConfig = {
 	actions: [
-		{ action: 'read_links', description: 'Permite ver Quick Links', label: 'Ver Quick Links' },
-		{ action: 'read_wiki', description: 'Permite ver Wiki', label: 'Ver Wiki' },
+		{ action: 'read_links', description: 'homeActions.descriptions.see_quick_links', label: 'homeActions.labels.see_quick_links' },
+		{ action: 'read_wiki', description: 'homeActions.descriptions.see_wiki_links', label: 'homeActions.labels.see_wiki_links' },
 	],
-	description: 'As ações que o utilizador pode realizar na home.',
+	description: 'homeActions.description',
 	scope: PermissionCatalog.all.home.scope,
-	title: 'Permissões da Home',
+	title: 'homeActions.title',
 };
 
 const planActions: PermissionConfig = {

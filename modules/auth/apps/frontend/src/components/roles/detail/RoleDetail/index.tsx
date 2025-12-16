@@ -34,7 +34,7 @@ export function RoleDetail() {
 					description={t(item.description)}
 					enabledPermissions={rolesDetailContext.data.form.values.permissions}
 					onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
-					onToggle={() => console.log('choruizo', t(item.title))}
+					onToggle={rolesDetailContext.actions.handlePermissionToggle}
 					scope={item.scope}
 					title={t(item.title)}
 				/>
