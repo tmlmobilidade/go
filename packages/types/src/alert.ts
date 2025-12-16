@@ -2,7 +2,7 @@
 
 import { DocumentSchema } from '@/_common/document.js';
 import { PublishStatusSchema } from '@/_common/status.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@/gtfs/cause-effetcs.js';
 import { z } from 'zod';
 
@@ -19,32 +19,31 @@ export type ReferenceType = z.infer<typeof ReferenceTypeSchema>;
 
 // Base schema for alerts with common validation rules
 export const AlertSchema = DocumentSchema.extend({
-	active_period_end_date: unixTimeStampSchema.nullish(),
-	active_period_start_date: unixTimeStampSchema,
+	active_period_end_date: UnixTimeStampSchema.nullable().default(null),
+	active_period_start_date: UnixTimeStampSchema,
 	cause: gtfsCauseSchema,
-	coordinates: z.tuple([z.number(), z.number()]).nullish(),
-	created_by: z.string().min(1),
+	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
+	created_by: z.string().nullable(),
 	description: z.string(),
 	effect: gtfsEffectSchema,
-	external_id: z.string().nullish(),
-	file_id: z.string().nullish(),
-	info_url: z.string().url().optional().or(z.literal('')),
-	modified_by: z.string().min(1),
-	municipality_ids: z.array(z.string().min(1)),
-	publish_end_date: unixTimeStampSchema.nullish(),
-	publish_start_date: unixTimeStampSchema,
-	publish_status: PublishStatusSchema,
-	reference_type: ReferenceTypeSchema,
+	external_id: z.string().nullable().default(null),
+	file_id: z.string().nullable().default(null),
+	info_url: z.string().url().nullable().default(null),
+	municipality_ids: z.array(z.string().min(1)).default([]),
+	publish_end_date: UnixTimeStampSchema.nullable().default(Date.now()),
+	publish_start_date: UnixTimeStampSchema.nullable().default(Date.now()),
+	publish_status: PublishStatusSchema.default('DRAFT'),
+	reference_type: ReferenceTypeSchema.nullable().default(ReferenceTypeSchema.options[0]),
 	references: z.array(z.object({
 		child_ids: z.array(z.string().min(1)),
 		parent_id: z.string().min(1),
-	})),
+	})).default([]),
 	title: z.string().min(1),
-	type: AlertTypeSchema,
-}).strict();
+	type: AlertTypeSchema.nullable().default(AlertTypeSchema.options[0]),
+});
 
-export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateAlertSchema = CreateAlertSchema.omit({ created_by: true }).partial();
+export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const UpdateAlertSchema = CreateAlertSchema.partial();
 
 // Define the Alert interface
 export type Alert = z.infer<typeof AlertSchema>;

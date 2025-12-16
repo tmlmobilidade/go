@@ -1,7 +1,7 @@
 /* * */
 
 import { useAlertListContext } from '@/contexts/AlertList.context';
-import { AlertSchema } from '@tmlmobilidade/types';
+import { PublishStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -20,7 +20,7 @@ export function AlertsListFilterPublishStatus() {
 
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
-		const defaultValues = Array.from(AlertSchema.shape.publish_status.options) as string[];
+		const defaultValues = Array.from(PublishStatusSchema.options) as string[];
 		const enabledValues = alertsListContext.filters.publish_status;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
@@ -31,9 +31,9 @@ export function AlertsListFilterPublishStatus() {
 
 	const parsedOptions = useMemo(() => {
 		// Skip if options are not provided or are empty.
-		if (!AlertSchema.shape.publish_status.options?.length) return [];
+		if (!PublishStatusSchema.options?.length) return [];
 		// Parse options to the expected format.
-		return AlertSchema.shape.publish_status.options.map(item => ({
+		return PublishStatusSchema.options.map(item => ({
 			checked: alertsListContext.filters.publish_status.includes(item),
 			label: item,
 			value: item,

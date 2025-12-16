@@ -1,34 +1,36 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
 
-export const SimplifiedApexOnBoardRefundSchema = DocumentSchema.extend({
-	agency_id: z.string(),
-	apex_version: z.string(),
-	block_id: z.string().nullable(),
-	card_physical_type: z.number(),
-	card_serial_number: z.string(),
-	device_id: z.string(),
-	duty_id: z.string().nullable(),
-	line_id: z.string().nullable(),
-	mac_ase_counter_value: z.number(),
-	mac_sam_serial_number: z.number(),
-	on_board_sale_id: z.string().nullable(),
-	pattern_id: z.string().nullable(),
-	payment_method: z.number(),
-	price: z.number(),
-	product_long_id: z.string(),
-	product_quantity: z.number(),
-	received_at: unixTimeStampSchema,
-	stop_id: z.string().nullable(),
-	trip_id: z.string().nullable(),
-	validation_id: z.string().nullable(),
-	vehicle_id: z.number().nullable(),
-}).strict();
+export const SimplifiedApexOnBoardRefundSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		agency_id: z.string(),
+		apex_version: z.string(),
+		block_id: z.string().nullable(),
+		card_physical_type: z.number(),
+		card_serial_number: z.string(),
+		device_id: z.string(),
+		duty_id: z.string().nullable(),
+		line_id: z.string().nullable(),
+		mac_ase_counter_value: z.number(),
+		mac_sam_serial_number: z.number(),
+		on_board_sale_id: z.string().nullable(),
+		pattern_id: z.string().nullable(),
+		payment_method: z.number(),
+		price: z.number(),
+		product_long_id: z.string(),
+		product_quantity: z.number(),
+		received_at: UnixTimeStampSchema,
+		stop_id: z.string().nullable(),
+		trip_id: z.string().nullable(),
+		validation_id: z.string().nullable(),
+		vehicle_id: z.number().nullable(),
+	});
 
 export const UpdateSimplifiedApexOnBoardRefundSchema = SimplifiedApexOnBoardRefundSchema.partial();
 

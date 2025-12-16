@@ -156,6 +156,7 @@ export const API_ROUTES = Object.freeze({
 
 		// AGENCIES
 		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}`,
+		AGENCIES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}/lock`,
 		AGENCIES_LIST: `${getAppConfig('auth', 'api_url')}/agencies`,
 
 		// AUTH
@@ -172,6 +173,7 @@ export const API_ROUTES = Object.freeze({
 		// ORGANIZATIONS
 		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}`,
 		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/image`,
+		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/lock`,
 		ORGANIZATIONS_DETAIL_LOGO: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/logo`,
 		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/${theme}/image`,
 		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'api_url')}/organizations`,
@@ -182,10 +184,12 @@ export const API_ROUTES = Object.freeze({
 
 		// ROLES
 		ROLES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}`,
+		ROLES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}/lock`,
 		ROLES_LIST: `${getAppConfig('auth', 'api_url')}/roles`,
 
 		// USERS
 		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}`,
+		USERS_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}/lock`,
 		USERS_LIST: `${getAppConfig('auth', 'api_url')}/users`,
 		USERS_ME: `${getAppConfig('auth', 'api_url')}/users/me`,
 
@@ -289,14 +293,15 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/controller-reprocess`,
+		PLANS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
-		PLANS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/toggle-lock`,
 		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
 
 		// VALIDATIONS
 		VALIDATIONS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file`,
+		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/lock`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/request-approval`,
 		VALIDATIONS_LIST: `${getAppConfig('plans', 'api_url')}/validations`,
 	},
@@ -309,6 +314,7 @@ export const API_ROUTES = Object.freeze({
 
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
+		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,
 	},
 } as const);

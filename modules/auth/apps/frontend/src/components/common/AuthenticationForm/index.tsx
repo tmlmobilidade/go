@@ -30,7 +30,7 @@ export function AuthenticationForm({ children, description, footerLabel, footerU
 	// A. Handle actions
 
 	const handleFooterClick = () => {
-		window.location.href = keepUrlParams(footerUrl, window.location.search);
+		window.location.href = keepUrlParams(footerUrl);
 	};
 
 	//

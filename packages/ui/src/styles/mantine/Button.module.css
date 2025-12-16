@@ -7,8 +7,10 @@
 	overflow: visible;
 	cursor: pointer;
 	user-select: none;
+	border: 2px solid transparent;
 }
 
+.root, /* DEFAULT */
 .root[data-variant='primary'] {
 	color: var(--color-contrast);
 	background-color: var(--color-primary);
@@ -47,7 +49,7 @@
 
 .root[data-variant='transparent'] {
 	background-color: transparent;
-	border: 2px solid transparent;
+	border-color: transparent;
 	box-shadow: unset;
 }
 

@@ -2,10 +2,9 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
-import { ScopeOption } from '@/types/proposed-changes';
-import { stopLifecycleStatusSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
@@ -17,12 +16,11 @@ export function StopDetailsSectionGeneral() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	const scopeOption: ScopeOption = 'stop';
 
 	//
 	// B. Transform data
 
-	const lifecycleStatusItems = stopLifecycleStatusSchema.options.map(value => ({
+	const lifecycleStatusItems = LifecycleStatusSchema.options.map(value => ({
 		label: Translations.LIFECYCLE_STATUS[value],
 		value: value,
 	}));
@@ -46,6 +44,7 @@ export function StopDetailsSectionGeneral() {
 		<Collapsible
 			description="Informações gerais sobre esta paragem."
 			title="Detalhes desta Paragem"
+			defaultOpen
 		>
 
 			<Section>
@@ -57,13 +56,16 @@ export function StopDetailsSectionGeneral() {
 				</Grid>
 			</Section>
 
-			<Section gap="md">
-				<SegmentedControl
-					data={lifecycleStatusItems}
-					onChange={(value: typeof stopLifecycleStatusSchema.options[number]) => stopDetailContext.data.form.setFieldValue('lifecycle_status', value)}
-					value={stopDetailContext.data.form.values.lifecycle_status}
-					fullWidth
-				/>
+			<Section>
+				<Grid>
+					<SegmentedControl
+						key={stopDetailContext.data.form.key('lifecycle_status')}
+						data={lifecycleStatusItems}
+						readOnly={stopDetailContext.flags.isReadOnly}
+						value={stopDetailContext.data.form.values.lifecycle_status}
+						{...stopDetailContext.data.form.getInputProps('lifecycle_status')}
+					/>
+				</Grid>
 			</Section>
 
 			<Section>
@@ -73,18 +75,22 @@ export function StopDetailsSectionGeneral() {
 						inputName="name"
 						label="Antigo Nome da Paragem (p/ alterar)"
 						relatedId={stopDetailContext.data.stop?._id}
-						scope={scopeOption}
+						scope="stop"
 					>
-						<TextInput {...stopDetailContext.data.form.getInputProps('name')} />
+						<TextInput
+							readOnly={stopDetailContext.flags.isReadOnly}
+							{...stopDetailContext.data.form.getInputProps('name')}
+						/>
 					</ProposedChangesWrapper>
 
 					<ProposedChangesWrapper
 						inputName="new_name"
 						label="Nome da Paragem (depois da correção)"
 						relatedId={stopDetailContext.data.stop?._id}
-						scope={scopeOption}
+						scope="stop"
 					>
 						<TextInput
+							readOnly={stopDetailContext.flags.isReadOnly}
 							{...stopDetailContext.data.form.getInputProps('new_name')}
 						/>
 					</ProposedChangesWrapper>

@@ -7,7 +7,7 @@ import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { RideAnalysisSystemStatus } from '@/components/rides/analysis/RideAnalysisSystemStatus';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { BackButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -27,8 +27,7 @@ export function RidesDetailHeader() {
 	// B. Handle actions
 
 	const handleGoBack = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST));
 	};
 
 	//
@@ -36,7 +35,7 @@ export function RidesDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleGoBack} type="close" />
+			<CloseButton onClick={handleGoBack} type="close" />
 			<Tag label={rideAnalysisContext.data.ride_id} variant="muted" />
 			<Spacer />
 			<RideAnalysisSystemStatus />

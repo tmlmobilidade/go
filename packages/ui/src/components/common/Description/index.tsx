@@ -2,22 +2,22 @@
 
 /* * */
 
-import React from 'react';
+import { type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export interface DescriptionProps {
-	children?: React.ReactNode
+interface DescriptionProps {
 	singleLine?: boolean
 }
 
-/* * */
-
-export default function Description({ children, singleLine = false }: DescriptionProps) {
+/**
+ * Description component to display descriptive text.
+ */
+export function Description({ children, singleLine = false }: PropsWithChildren<DescriptionProps>) {
 	return (
-		<p className={styles.description} data-single-line={singleLine}>
+		<p className={styles.root} data-single-line={singleLine}>
 			{children}
 		</p>
 	);

@@ -8,7 +8,7 @@ export const AlertsScheduledPermissionSchema = z.object({
 	action: z.enum(['create',
 		'delete',
 		'read',
-		'toggle_lock',
+		'lock',
 		'update',
 	]),
 	scope: z.literal('alerts_scheduled'),
@@ -22,7 +22,7 @@ export const AlertsRealtimePermissionSchema = z.object({
 	action: z.enum(['create',
 		'delete',
 		'read',
-		'toggle_lock',
+		'lock',
 		'update',
 	]),
 	resources: z.object({

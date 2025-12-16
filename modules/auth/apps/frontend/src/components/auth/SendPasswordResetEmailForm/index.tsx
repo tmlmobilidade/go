@@ -63,6 +63,7 @@ export function SendPasswordResetEmailForm() {
 			title="Recuperar password"
 		>
 			<TextInput
+				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
 				placeholder="Email de recuperação"

@@ -68,12 +68,14 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 	return (
 		<Section flexDirection="column" gap="sm" padding="lg">
 			<TextInput
+				key="link-title"
 				label="Nome"
 				onChange={e => setNewLink(prev => ({ ...prev, title: e.target.value }))}
 				value={newLink.title}
 				required
 			/>
 			<TextInput
+				key="link-href"
 				error={isUrl(newLink.href) ? null : 'Por favor, insira um URL válido'}
 				label="Link"
 				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}

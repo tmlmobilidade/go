@@ -1,24 +1,26 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
 
-export const SimplifiedApexLocationSchema = DocumentSchema.extend({
-	agency_id: z.string(),
-	apex_version: z.string(),
-	device_id: z.string(),
-	line_id: z.string(),
-	mac_ase_counter_value: z.number(),
-	mac_sam_serial_number: z.number(),
-	pattern_id: z.string(),
-	received_at: unixTimeStampSchema,
-	stop_id: z.string(),
-	trip_id: z.string(),
-	vehicle_id: z.number(),
-}).strict();
+export const SimplifiedApexLocationSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		agency_id: z.string(),
+		apex_version: z.string(),
+		device_id: z.string(),
+		line_id: z.string(),
+		mac_ase_counter_value: z.number(),
+		mac_sam_serial_number: z.number(),
+		pattern_id: z.string(),
+		received_at: UnixTimeStampSchema,
+		stop_id: z.string(),
+		trip_id: z.string(),
+		vehicle_id: z.number(),
+	});
 
 export const UpdateSimplifiedApexLocationSchema = SimplifiedApexLocationSchema.partial();
 

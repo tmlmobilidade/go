@@ -24,7 +24,8 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, createTheme, MantineThemeOverride, Menu, NumberInput, PasswordInput, PillsInput, PillsInputField, Popover, SegmentedControl, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea, TextInput } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -35,15 +36,21 @@ import AvatarOverride from './mantine/Avatar.module.css';
 import ButtonOverride from './mantine/Button.module.css';
 import CheckboxOverride from './mantine/Checkbox.module.css';
 import CheckboxGroupOverride from './mantine/CheckboxGroup.module.css';
+import CloseButtonOverride from './mantine/CloseButton.module.css';
+import DateInputOverride from './mantine/DateInput.module.css';
 import MenuOverride from './mantine/Menu.module.css';
+import MultiSelectOverride from './mantine/MultiSelect.module.css';
 import PasswordInputOverride from './mantine/PasswordInput.module.css';
-import PillsInputOverride from './mantine/PillsInput.module.css';
+import PillOverride from './mantine/Pill.module.css';
+import PillGroupOverride from './mantine/PillGroup.module.css';
 import PopoverOverride from './mantine/Popover.module.css';
 import SegmentedControlOverrideSm from './mantine/SegmentedControl-sm.module.css';
 import SegmentedControlOverride from './mantine/SegmentedControl.module.css';
+import SelectOverride from './mantine/Select.module.css';
 import SkeletonOverride from './mantine/Skeleton.module.css';
 import SliderOverride from './mantine/Slider.module.css';
 import SwitchOverride from './mantine/Switch.module.css';
+import TagsInputOverride from './mantine/TagsInput.module.css';
 import TextOverride from './mantine/Text.module.css';
 import TextareaOverrideComment from './mantine/Textarea-comment.module.css';
 import TextareaOverride from './mantine/Textarea.module.css';
@@ -93,9 +100,27 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
+		CloseButton: CloseButton.extend({
+			classNames: {
+				...CloseButtonOverride,
+			},
+		}),
+
+		DateInput: DateInput.extend({
+			classNames: {
+				...DateInputOverride,
+			},
+		}),
+
 		Menu: Menu.extend({
 			classNames: {
 				...MenuOverride,
+			},
+		}),
+
+		MultiSelect: MultiSelect.extend({
+			classNames: {
+				...MultiSelectOverride,
 			},
 		}),
 
@@ -129,18 +154,15 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
-		PillsInput: PillsInput.extend({
+		Pill: Pill.extend({
 			classNames: {
-				description: TextInputOverride.description,
-				error: TextInputOverride.error,
-				label: TextInputOverride.label,
-				root: PillsInputOverride.root,
+				...PillOverride,
 			},
 		}),
 
-		PillsInputField: PillsInputField.extend({
+		PillGroup: PillGroup.extend({
 			classNames: {
-				field: TextInputOverride.input,
+				...PillGroupOverride,
 			},
 		}),
 
@@ -159,6 +181,12 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
+		Select: Select.extend({
+			classNames: {
+				...SelectOverride,
+			},
+		}),
+
 		Skeleton: Skeleton.extend({
 			classNames: {
 				...SkeletonOverride,
@@ -174,6 +202,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		Switch: Switch.extend({
 			classNames: {
 				...SwitchOverride,
+			},
+		}),
+
+		TagsInput: TagsInput.extend({
+			classNames: {
+				...TagsInputOverride,
 			},
 		}),
 

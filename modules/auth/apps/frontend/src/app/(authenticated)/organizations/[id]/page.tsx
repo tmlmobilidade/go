@@ -1,7 +1,7 @@
 /* * */
 
 import { OrganizationDetail } from '@/components/organizations/detail/OrganizationDetail';
-import { OrganizationsDetailContextProvider } from '@/contexts/OrganizationDetail.context';
+import { OrganizationsDetailContextProvider } from '@/components/organizations/detail/OrganizationDetail.context';
 
 /* * */
 
@@ -14,7 +14,7 @@ interface Props {
 export default async function Page({ params }: Props) {
 	const { id } = await params;
 	return (
-		<OrganizationsDetailContextProvider organization_id={id}>
+		<OrganizationsDetailContextProvider organizationId={id}>
 			<OrganizationDetail />
 		</OrganizationsDetailContextProvider>
 	);

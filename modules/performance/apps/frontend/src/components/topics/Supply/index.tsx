@@ -6,7 +6,7 @@ import RecordSupply from '@/components/visualizations/RecordVkms';
 import { VmksScheduled } from '@/components/visualizations/VkmsScheduled';
 import { AgencyType } from '@/constants';
 import { Dates } from '@tmlmobilidade/dates';
-import { DatePicker, MonthPicker, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
+import { DateInput, MonthPicker, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 /* * */
@@ -61,8 +61,8 @@ export default function SupplyTopic() {
 
 					{timeView === 'daily' && (
 						<>
-							<DatePicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<DatePicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<DateInput label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
+							<DateInput label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
 						</>
 					)}
 

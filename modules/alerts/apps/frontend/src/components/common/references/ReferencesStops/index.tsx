@@ -159,7 +159,7 @@ function ReferencesStopsItem({
 						description="Selecione as linhas que serão afetadas pelo alerta"
 						label="Linhas Afetadas"
 						onChange={value => onUpdateReference(index, 'child_ids', value)}
-						selected={reference.child_ids}
+						value={reference.child_ids}
 					/>
 				</div>
 				<div className={styles.buttonContainer}>

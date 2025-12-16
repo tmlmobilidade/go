@@ -9,6 +9,7 @@ import { ValidationsListFiltersBar } from '@/components/validations/list/Validat
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { type ValidationNormalized } from '@/types/normalized';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -49,8 +50,7 @@ export function ValidationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: ValidationNormalized) => {
-		const destUrl = keepUrlParams(`/validations/${item._id}`, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.plans.VALIDATIONS_DETAIL(item._id)));
 	};
 
 	//

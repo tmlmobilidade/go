@@ -1,14 +1,15 @@
-import { IconNote } from '@tabler/icons-react';
+'use client';
 
-import styles from './page.module.css';
+/* * */
+
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Page() {
 	return (
-		<div className={styles.container}>
-			<IconNote size={100} />
-			<h2>Selecione uma ocorrência</h2>
-		</div>
+		<Surface align="center" justify="center" variant="transparent">
+			<NoDataLabel text="Selecione uma Anotação" />
+		</Surface>
 	);
 }

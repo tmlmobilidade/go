@@ -9,6 +9,7 @@ export const UsersPermissionSchema = z.object({
 		'create',
 		'delete',
 		'read',
+		'lock',
 		'update',
 	]),
 	scope: z.literal('users'),

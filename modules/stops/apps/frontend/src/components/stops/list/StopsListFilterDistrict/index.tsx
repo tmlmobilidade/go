@@ -37,7 +37,7 @@ export function StopsListFilterDistrict() {
 			data={parsedOptions}
 			label="Distrito"
 			onChange={stopsListContext.actions.setFilterDistricts}
-			selected={stopsListContext.filters.districts}
+			value={stopsListContext.filters.districts}
 			clearable
 		/>
 	);

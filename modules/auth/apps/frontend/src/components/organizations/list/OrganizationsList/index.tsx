@@ -38,8 +38,7 @@ export function OrganizationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: OrganizationNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(item._id)));
 	};
 
 	//

@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { PermissionSchema } from '@/permissions/index.js';
 import { z } from 'zod';
 
@@ -19,27 +19,34 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 /* * */
 
-export const UserSchema = DocumentSchema.extend({
+export const UserSchema_UNSAFE = DocumentSchema.extend({
 	email: z.string().email(),
-	email_verified: unixTimeStampSchema.nullable(),
+	email_verified: UnixTimeStampSchema.nullable().default(null),
 	first_name: z.string().min(2),
 	last_name: z.string().min(2),
-	organization_id: z.string().nullable(),
-	password_hash: z.string().nullable(),
+	organization_id: z.string(),
+	password_hash: z.string().nullable().default(null),
 	permissions: z.array(PermissionSchema).default([]),
-	phone: z.string().nullable(),
-	preferences: z.record(z.record(UserPreferenceValueSchema)).nullable(),
+	phone: z.string().nullable().default(null),
+	preferences: z.record(z.record(UserPreferenceValueSchema)).nullable().default(null),
 	role_ids: z.array(z.string()).default([]),
+	seen_last_at: UnixTimeStampSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),
 	verification_token_ids: z.array(z.string()).default([]),
 });
 
-export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true }).partial();
+export const CreateUserSchema = UserSchema_UNSAFE.omit({ _id: true, created_at: true, updated_at: true });
+export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }).partial();
+export const UserSchema = UserSchema_UNSAFE.omit({ password_hash: true, session_ids: true, verification_token_ids: true });
 
-export type User = z.infer<typeof UserSchema>;
+/* * */
+
+export type User_UNSAFE = z.infer<typeof UserSchema_UNSAFE>;
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;
 export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
+export type User = z.infer<typeof UserSchema>;
+
+/* * */
 
 export const UserDisplayFields = { _id: true, email: true, first_name: true, last_name: true, phone: true } as const;
 export const UserDisplaySchema = UserSchema.pick(UserDisplayFields);
