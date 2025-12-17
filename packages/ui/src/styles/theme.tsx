@@ -32,6 +32,7 @@ import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 import DropdownBase from './mantine/base/dropdown.module.css';
 import InputBase from './mantine/base/input.module.css';
+import MultiSelectBase from './mantine/base/multi-select-input.module.css';
 
 /* * */
 
@@ -52,7 +53,6 @@ import SegmentedControlOverride from './mantine/overrides/SegmentedControl.modul
 import SkeletonOverride from './mantine/overrides/Skeleton.module.css';
 import SliderOverride from './mantine/overrides/Slider.module.css';
 import SwitchOverride from './mantine/overrides/Switch.module.css';
-import TagsInputOverride from './mantine/overrides/TagsInput.module.css';
 import TextOverride from './mantine/overrides/Text.module.css';
 import TextareaOverrideComment from './mantine/overrides/Textarea-comment.module.css';
 import TextareaOverride from './mantine/overrides/Textarea.module.css';
@@ -123,6 +123,8 @@ export const themeData: MantineThemeOverride = createTheme({
 			classNames: {
 				...InputBase,
 				...DropdownBase,
+				input: `${InputBase.input} ${MultiSelectBase.input}`,
+				wrapper: `${InputBase.wrapper} ${MultiSelectBase.wrapper}`,
 			},
 		}),
 
@@ -201,8 +203,8 @@ export const themeData: MantineThemeOverride = createTheme({
 			classNames: {
 				...InputBase,
 				...DropdownBase,
-				input: `${InputBase.input} ${TagsInputOverride.input}`,
-				wrapper: `${InputBase.wrapper} ${TagsInputOverride.wrapper}`,
+				input: `${InputBase.input} ${MultiSelectBase.input}`,
+				wrapper: `${InputBase.wrapper} ${MultiSelectBase.wrapper}`,
 			},
 		}),
 
