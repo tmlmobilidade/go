@@ -17,6 +17,10 @@
 			"title": "Nova validação GTFS"
 		},
 		"detail": {
+			"foot_note": {
+				"created_by_label": "Validação criada por {createdBy} a {formattedDateString}",
+				"label": "As validações são eliminadas automaticamente ao fim de 30 dias após a sua data de criação. Poderão ser eliminadas mais cedo se necessário."
+			},
 			"header": {
 				"submit_for_tml_approval_button": "Solicitar aprovação à TML"
 			},
