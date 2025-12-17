@@ -71,12 +71,13 @@
 		},
 		"permissions": {
 			"AgencyPermissionMultiselect": {
+				"all_label": "Todas as agências",
+				"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
 				"label": "Operadores"
+
 			},
 			"SectionItems": {
-				"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
-				"inherited_permission": "Permissão Herdada pelo grupo de permissões",
-				"label": "Itens de Secção"
+				"label": "Permissão Herdada pelo grupo de permissões"
 			}
 		}
 	},

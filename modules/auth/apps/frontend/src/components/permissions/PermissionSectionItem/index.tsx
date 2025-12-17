@@ -9,6 +9,7 @@ import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission } from '@tmlmobilidade/types';
 import { Label } from '@tmlmobilidade/ui';
+import i18next from 'i18next';
 import { use, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +35,7 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	const rolesContext = useRolesContext();
 
 	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'permissions' });
-	const { t: tAuth } = useTranslation('auth', { keyPrefix: 'permissions.SectionItems' });
+	const { t: tAuth } = useTranslation('auth', { keyPrefix: 'auth.permissions' });
 
 	//
 	// B. Transform data
@@ -79,13 +80,13 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 		>
 			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 				<AgencyPermissionMultiselect
-					description={tAuth('description')}
-					label={tAuth('label')}
+					description={tAuth('AgencyPermissionMultiselect.description')}
+					label={tAuth('AgencyPermissionMultiselect.label')}
 					onChange={handleResourceToggle}
 					selected={selectedAgencyIds}
 				/>
 			)}
-			{hasPermissionFromRole && <Label caps>{tAuth('inherited_permission')}</Label>}
+			{hasPermissionFromRole && <Label caps>{tAuth('SectionItems.label')}</Label>}
 		</CheckCard>
 	);
 

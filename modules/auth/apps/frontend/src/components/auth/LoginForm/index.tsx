@@ -56,8 +56,6 @@ export function LoginForm() {
 		window.location.href = redirectToValue;
 	};
 
-	console.log('Loaded namespaces:', i18next.options.resources.pt);
-
 	//
 	// C. Render components
 
