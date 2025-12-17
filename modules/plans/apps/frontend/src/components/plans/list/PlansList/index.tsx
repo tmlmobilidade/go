@@ -13,6 +13,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -24,18 +25,19 @@ export function PlansList() {
 
 	const router = useRouter();
 	const plansListContext = usePlansListContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.list' });
 
 	const columns: DataTableColumn<PlanNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('table_columns._id'),
 			width: 100,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PlansListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: 'Operador',
+			title: t('table_columns.agency_id_normalized'),
 			width: 300,
 		},
 		{
@@ -47,19 +49,19 @@ export function PlansList() {
 					validityStatus={item.validity_status}
 				/>
 			),
-			title: 'Datas de Validade',
+			title: t('table_columns.gtfs_feed_info'),
 			width: 310,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.controller?.status} timestamp={item.apps?.controller?.timestamp} />,
-			title: 'SLA Status',
+			title: t('table_columns.apps_controller'),
 			width: 220,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.merger?.status} timestamp={item.apps?.merger?.timestamp} />,
-			title: 'Merger Status',
+			title: t('table_columns.apps_merger'),
 			width: 220,
 		},
 	];

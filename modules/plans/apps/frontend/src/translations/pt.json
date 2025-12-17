@@ -19,6 +19,11 @@
 				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
 				"title": "Dados do Operador"
 			},
+			"section_controller": {
+				"description": "Configuração dos SLAs associados a este plano.",
+				"reprocess_plan_button": "Reprocessar Plano",
+				"title": "Configuração dos SLAs"
+			},
 			"section_feed_info": {
 				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
 				"title": "Dados do Arquivo"
@@ -35,6 +40,15 @@
 				"title": "Dados da PCGI Legacy"
 			}
 
+		},
+		"list": {
+			"table_columns": {
+				"_id": "#ID",
+				"agency_id_normalized": "Operador",
+				"apps_controller": "SLA Status",
+				"apps_merger": "Merger Status",
+				"gtfs_feed_info": "Data de Validade"
+			}
 		}
 	},
 	"validations": {
