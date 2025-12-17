@@ -3,7 +3,8 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { type ProcessingStatus, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { use, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,7 +19,12 @@ export function PlanStatusTag({ status, timestamp }: PlanStatusTagProps) {
 	//
 
 	//
-	// A. Transform data
+	// A. Setup variables
+
+	const { t } = useTranslation('global', { keyPrefix: 'statuses' });
+
+	//
+	// B. Transform data
 
 	const parsedTimestamp = useMemo(() => {
 		if (!timestamp) return;
@@ -29,29 +35,29 @@ export function PlanStatusTag({ status, timestamp }: PlanStatusTagProps) {
 	}, [timestamp]);
 
 	//
-	// B. Render components
+	// C. Render components
 
 	if (status === 'waiting') {
-		return <Tag label="Em Espera" tooltip={parsedTimestamp} variant="primary" />;
+		return <Tag label={t('waiting')} tooltip={parsedTimestamp} variant="primary" />;
 	}
 
 	if (status === 'processing') {
-		return <Tag label="Em Processamento" tooltip={parsedTimestamp} variant="primary" filled />;
+		return <Tag label={t('processing')} tooltip={parsedTimestamp} variant="primary" filled />;
 	}
 
 	if (status === 'complete') {
-		return <Tag label="Finalizado" tooltip={parsedTimestamp} variant="success" />;
+		return <Tag label={t('complete')} tooltip={parsedTimestamp} variant="success" />;
 	}
 
 	if (status === 'error') {
-		return <Tag label="Erro" tooltip={parsedTimestamp} variant="danger" filled />;
+		return <Tag label={t('error')} tooltip={parsedTimestamp} variant="danger" filled />;
 	}
 
 	if (status === 'skipped') {
-		return <Tag label="Omitido" tooltip={parsedTimestamp} variant="muted" />;
+		return <Tag label={t('skipped')} tooltip={parsedTimestamp} variant="muted" />;
 	}
 
-	return <Tag label="Unknown" tooltip={parsedTimestamp} variant="muted" />;
+	return <Tag label={t('unknown')} tooltip={parsedTimestamp} variant="muted" />;
 
 	//
 }

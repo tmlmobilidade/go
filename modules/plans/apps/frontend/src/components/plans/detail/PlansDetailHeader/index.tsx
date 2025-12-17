@@ -10,6 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 import { BackButton, Button, HasPermission, IconButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -21,6 +22,8 @@ export function PlansDetailHeader() {
 
 	const router = useRouter();
 	const plansDetailContext = usePlansDetailContext();
+	const { t: tPlans } = useTranslation('plans', { keyPrefix: 'plans.detail.header' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// B. Handle actions
@@ -64,7 +67,7 @@ export function PlansDetailHeader() {
 					disabled={plansDetailContext.data.plan.is_locked}
 					icon={<IconRefresh />}
 					onClick={() => openChangePlanModal(plansDetailContext.data.plan)}
-					tooltip="Alterar Plano"
+					tooltip={tPlans('change_plan')}
 				/>
 			</HasPermission>
 
@@ -77,7 +80,7 @@ export function PlansDetailHeader() {
 				<Button
 					disabled={plansDetailContext.flags.saving || !plansDetailContext.data.form.isDirty()}
 					icon={<IconUpload size={28} />}
-					label="Guardar"
+					label={tGlobal('save')}
 					loading={plansDetailContext.flags.saving}
 					onClick={plansDetailContext.actions.savePlan}
 					variant="primary"

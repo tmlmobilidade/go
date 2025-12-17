@@ -270,6 +270,7 @@
 		"default": "Desconhecido",
 		"error": "Inválido",
 		"processing": "A processar",
+		"skipped": "Ignorado",
 		"waiting": "Em espera"
 	}
 }

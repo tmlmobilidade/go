@@ -3,6 +3,7 @@
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
 import { Collapsible, DatePicker, Grid, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,14 +14,15 @@ export function PlansDetailSectionFeedInfo() {
 	// A. Setup variables
 
 	const plansDetailContext = usePlansDetailContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.section_feed_info' });
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description="Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt"
-			title="Dados do Arquivo"
+			description={t('description')}
+			title={t('title')}
 		>
 
 			<Section gap="sm">
