@@ -2,6 +2,7 @@
 
 import { type ProcessingStatus } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,23 +15,31 @@ interface ValidationStatusTagProps {
 export function ValidationStatusTag({ status }: ValidationStatusTagProps) {
 	//
 
+	//
+	// A. Setup Variables
+
+	const { t } = useTranslation('global', { keyPrefix: 'statuses' });
+
+	//
+	// B. Render components
+
 	if (status === 'waiting') {
-		return <Tag label="Em Espera" variant="secondary" />;
+		return <Tag label={t('waiting')} variant="secondary" />;
 	}
 
 	if (status === 'processing') {
-		return <Tag label="Em Análise" variant="primary" />;
+		return <Tag label={t('processing')} variant="primary" />;
 	}
 
 	if (status === 'complete') {
-		return <Tag label="Válido" variant="success" filled />;
+		return <Tag label={t('complete')} variant="success" filled />;
 	}
 
 	if (status === 'error') {
-		return <Tag label="Inválido" variant="danger" filled />;
+		return <Tag label={t('error')} variant="danger" filled />;
 	}
 
-	return <Tag label="Missing feeder_status value" variant="muted" />;
+	return <Tag label={t('default')} variant="muted" />;
 
 	//
 }

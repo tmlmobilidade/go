@@ -11,6 +11,11 @@
 		}
 	},
 	"validations": {
+		"create": {
+			"description": "Selecione um arquivo GTFS para iniciar a validação.",
+			"select_file": "Selecionar arquivo GTFS",
+			"title": "Nova validação GTFS"
+		},
 		"list": {
 			"filterBar": {
 				"filter_agency": {

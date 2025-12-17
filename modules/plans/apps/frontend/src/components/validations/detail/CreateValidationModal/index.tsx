@@ -6,6 +6,7 @@ import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { useValidationsCreateContext, ValidationsCreateContextProvider } from '@/contexts/ValidationsCreate.context';
 import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, MeContextProvider, openModal, Section, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -39,6 +40,8 @@ export default function CreateValidationModal() {
 	// A. Setup variables
 
 	const validationsCreateContext = useValidationsCreateContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.create' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// B. Render Components
@@ -47,15 +50,15 @@ export default function CreateValidationModal() {
 		<>
 
 			<Section gap="xs">
-				<Label size="lg" caps>Nova Validação GTFS</Label>
-				<Text>Selecione um arquivo GTFS para iniciar a validação.</Text>
+				<Label size="lg" caps>{t('title')}</Label>
+				<Text>{t('description')}</Text>
 			</Section>
 
 			<Divider />
 
 			{validationsCreateContext.flags.error && validationsCreateContext.flags.error.name === 'ValidationError' && (
 				<>
-					<AlertMessage title={validationsCreateContext.flags.error?.message ?? 'odjisodj'} variant="danger" />
+					<AlertMessage title={validationsCreateContext.flags.error?.message ?? 'error'} variant="danger" />
 					<Divider />
 				</>
 			)}
@@ -83,7 +86,7 @@ export default function CreateValidationModal() {
 			<Section>
 				<FileUpload
 					accept="application/zip"
-					label="Selecionar Arquivo GTFS"
+					label={t('select_file')}
 					maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
 					onFileChange={validationsCreateContext.actions.setValidationFile}
 				/>
@@ -95,13 +98,13 @@ export default function CreateValidationModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={validationsCreateContext.flags.loading}
-						label="Cancelar"
+						label={tGlobal('cancel')}
 						onClick={() => closeModal(CREATE_VALIDATION_MODAL_ID)}
 						variant="secondary"
 					/>
 					<Button
 						disabled={!validationsCreateContext.flags.can_create}
-						label="Criar validação"
+						label={tGlobal('create_validation')}
 						loading={validationsCreateContext.flags.loading}
 						onClick={validationsCreateContext.actions.createValidation}
 					/>

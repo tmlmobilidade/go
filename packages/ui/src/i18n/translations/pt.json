@@ -34,6 +34,9 @@
 		"title": "Login no GO+"
 	},
 	"operations": {
+		"approve_plan": "Aprovar plano",
+		"cancel": "Cancelar",
+		"create_validation": "Criar validação",
 		"delete": "Apagar",
 		"edit": "Editar",
 		"save": "Salvar"
@@ -255,5 +258,12 @@
 			},
 			"title": "Permissões de Utilizadores"
 		}
+	},
+	"statuses": {
+		"complete": "Válido",
+		"default": "Desconhecido",
+		"error": "Inválido",
+		"processing": "A processar",
+		"waiting": "Em espera"
 	}
 }
