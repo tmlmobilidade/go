@@ -6,12 +6,13 @@ import React, { useCallback, useEffect, useRef } from 'react';
 
 import styles from './styles.module.css';
 
-import { Pane } from '../../panes';
+import { Pane } from '../../../panes';
+import { useCalendarUIContext } from '../../contexts/CalendarUI.context';
+import { useRangeHover, useWheelNavigation } from '../../hooks';
 import { CalendarGrid } from '../CalendarGrid';
 import { CalendarHeader } from '../CalendarHeader';
 import { CalendarSidebar } from '../CalendarSidebar';
 import { YearlyCalendarMonth } from '../YearlyCalendarMonth';
-import { useCalendarUIContext } from './index.context';
 
 /* * */
 
@@ -23,8 +24,10 @@ export interface CalendarProps {
 		id: CalendarEventType
 		label: string
 	}[]
+	initialView?: 'month' | 'year'
 	onDayClick?: (date: Dates) => void
 	onEventClick?: (event: CalendarEvent) => void
+	onRangeSelect?: (range: { end: Dates, start: Dates }, clearSelection: () => void) => void
 	showSidebar?: boolean
 }
 
@@ -32,30 +35,63 @@ export interface CalendarProps {
 
 export function Calendar({
 	eventTypes = [],
+	initialView = 'month',
 	onDayClick,
 	onEventClick,
+	onRangeSelect,
 	showSidebar = true,
 }: CalendarProps) {
 	//
 
 	// Get context
 	const context = useCalendarUIContext();
-	const { month, view, year } = context.state;
+	const { month, rangeSelection, view, year } = context.state;
 	const { eventsByMonth, filteredEvents, monthGrid, monthsData } = context.data;
-	const { nextMonth, previousMonth, setMonth, setView, today } = context.actions;
+	const { clearRangeSelection, nextMonth, previousMonth, setMonth, setRangeEnd, setRangeStart, setView, today } = context.actions;
 
-	// Refs for wheel event handling
+	// Refs
 	const calendarRef = useRef<HTMLDivElement>(null);
-	const isNavigatingRef = useRef(false);
-	const lastNavigationRef = useRef(0);
+	const yearlyGridRef = useRef<HTMLDivElement>(null);
 
-	// Navigation handlers
-	const handleNavigate = useCallback((newYear: number, newMonth: number) => {
-		setMonth(newMonth, newYear);
-	}, [setMonth]);
+	// Set initial view
+	useEffect(() => {
+		setView(initialView);
+	}, [initialView, setView]);
 
+	// Day click handler - handles range selection in year view
 	const handleDayClick = useCallback((day) => {
-		if (onDayClick) {
+		// In year view, handle range selection
+		if (view === 'year' && onRangeSelect) {
+			const { end, start } = rangeSelection;
+
+			// First click: set start
+			if (!start) {
+				setRangeStart(day.date);
+			}
+			// Second click: set end and finalize
+			else if (start && !end) {
+				let finalStart = start;
+				let finalEnd = day.date;
+
+				// Swap if end is before start
+				if (finalEnd.operational_date < finalStart.operational_date) {
+					[finalStart, finalEnd] = [finalEnd, finalStart];
+				}
+
+				setRangeEnd(finalEnd);
+
+				// Fire the callback
+				if (onRangeSelect) {
+					onRangeSelect({ end: finalEnd, start: finalStart }, clearRangeSelection);
+				}
+			}
+			// Third click: restart selection
+			else {
+				setRangeStart(day.date);
+			}
+		}
+		// In month view or when onDayClick is provided
+		else if (onDayClick) {
 			onDayClick(day.date);
 		}
 		else {
@@ -64,74 +100,32 @@ export function Calendar({
 			const dayMonth = jsDate.getMonth() + 1;
 			const dayYear = jsDate.getFullYear();
 
-			if (dayMonth !== month || dayYear !== year || view === 'year') {
+			if (dayMonth !== month || dayYear !== year) {
 				setMonth(dayMonth, dayYear);
 				setView('month');
 			}
 		}
-	}, [onDayClick, month, year, view, setMonth, setView]);
+	}, [view, rangeSelection, onDayClick, onRangeSelect, setRangeStart, setRangeEnd, clearRangeSelection, month, year, setMonth, setView]);
 
-	const handleViewChange = useCallback((newView: 'month' | 'year') => {
-		setView(newView);
-	}, [setView]);
-
+	// Month click handler - navigate to clicked month in year view
 	const handleMonthClick = useCallback((clickedMonth: number) => {
 		setMonth(clickedMonth, year);
 		setView('month');
 	}, [setMonth, setView, year]);
 
-	const handleYearNavigate = useCallback((newYear: number) => {
-		setMonth(month, newYear);
-	}, [setMonth, month]);
+	// Performance optimizations via custom hooks
+	useRangeHover({
+		containerRef: yearlyGridRef,
+		isEnabled: view === 'year',
+		rangeSelection,
+	});
 
-	// Handle horizontal scroll/wheel events
-	useEffect(() => {
-		const calendarElement = calendarRef.current;
-		if (!calendarElement || view === 'year') return;
-
-		const handleWheel = (e: WheelEvent) => {
-			// Only handle horizontal scroll or shift+vertical scroll
-			const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
-
-			if (isHorizontal) {
-				e.preventDefault();
-
-				// Prevent rapid navigation - minimum 300ms between navigations
-				const now = Date.now();
-				if (isNavigatingRef.current || now - lastNavigationRef.current < 300) {
-					return;
-				}
-
-				const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
-				const threshold = 30; // Lower threshold for more responsive feel
-
-				if (Math.abs(delta) > threshold) {
-					isNavigatingRef.current = true;
-					lastNavigationRef.current = now;
-
-					if (delta > 0) {
-						// Scroll right = next month
-						nextMonth();
-					}
-					else {
-						// Scroll left = previous month
-						previousMonth();
-					}
-
-					// Reset navigation flag after a short delay
-					setTimeout(() => {
-						isNavigatingRef.current = false;
-					}, 100);
-				}
-			}
-		};
-
-		calendarElement.addEventListener('wheel', handleWheel, { passive: false });
-
-		return () => {
-			calendarElement.removeEventListener('wheel', handleWheel);
-		};
-	}, [view, year, month, nextMonth, previousMonth]);
+	useWheelNavigation({
+		calendarRef,
+		isEnabled: view === 'month',
+		nextMonth,
+		previousMonth,
+	});
 
 	return (
 		<div className={styles.container}>
@@ -144,10 +138,10 @@ export function Calendar({
 					<CalendarHeader
 						month={month}
 						monthName={monthGrid.monthName}
-						onNavigate={handleNavigate}
+						onNavigate={setMonth}
 						onToday={today}
-						onViewChange={handleViewChange}
-						onYearNavigate={handleYearNavigate}
+						onViewChange={setView}
+						onYearNavigate={newYear => setMonth(month, newYear)}
 						view={view}
 						year={year}
 					/>
@@ -159,7 +153,7 @@ export function Calendar({
 							weeks={monthGrid.weeks}
 						/>
 					) : (
-						<div className={styles.yearlyGrid}>
+						<div ref={yearlyGridRef} className={styles.yearlyGrid}>
 							{monthsData.map(({ grid, month: m }) => (
 								<YearlyCalendarMonth
 									key={m}
@@ -169,6 +163,7 @@ export function Calendar({
 									onDayClick={handleDayClick}
 									onEventClick={onEventClick}
 									onMonthClick={() => handleMonthClick(m)}
+									rangeState={rangeSelection}
 									year={year}
 								/>
 							))}

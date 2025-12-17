@@ -6,16 +6,15 @@ import React from 'react';
 
 import styles from './styles.module.css';
 
-import { IconButton } from '../../buttons';
-import { Button } from '../../buttons/Button';
-import { Divider } from '../../layout';
+import { Button, IconButton } from '../../../buttons';
+import { Divider } from '../../../layout';
 
 /* * */
 
 export interface CalendarHeaderProps {
 	month?: number
 	monthName?: string
-	onNavigate?: (year: number, month: number) => void
+	onNavigate?: (month: number, year: number) => void
 	onToday?: () => void
 	onViewChange?: (view: 'month' | 'year') => void
 	onYearNavigate?: (year: number) => void
@@ -31,7 +30,7 @@ export function CalendarHeader({ month, monthName, onNavigate, onToday, onViewCh
 	const handlePrevious = () => {
 		if (view === 'month' && month && onNavigate) {
 			const prev = getPreviousMonth(year, month);
-			onNavigate(prev.year, prev.month);
+			onNavigate(prev.month, prev.year);
 		}
 		else if (view === 'year' && onYearNavigate) {
 			onYearNavigate(year - 1);
@@ -41,7 +40,7 @@ export function CalendarHeader({ month, monthName, onNavigate, onToday, onViewCh
 	const handleNext = () => {
 		if (view === 'month' && month && onNavigate) {
 			const next = getNextMonth(year, month);
-			onNavigate(next.year, next.month);
+			onNavigate(next.month, next.year);
 		}
 		else if (view === 'year' && onYearNavigate) {
 			onYearNavigate(year + 1);

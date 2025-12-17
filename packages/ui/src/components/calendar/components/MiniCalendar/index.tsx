@@ -7,7 +7,7 @@ import 'dayjs/locale/pt';
 
 import styles from './styles.module.css';
 
-import { useCalendarUIContext } from '../Calendar/index.context';
+import { useCalendarUIContext } from '../../contexts/CalendarUI.context';
 
 /* * */
 

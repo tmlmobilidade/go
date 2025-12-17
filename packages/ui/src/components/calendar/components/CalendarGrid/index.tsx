@@ -81,7 +81,7 @@ export function CalendarGrid({ events = [], onDayClick, onEventClick, weeks }: C
 						{week.map((day, dayIndex) => {
 							const dayEventPositions = eventsByDate.get(day.date.operational_date) || [];
 							const periodEventPositions = dayEventPositions.filter(ep => ep.event.type === 'period');
-							const otherEventPositions = dayEventPositions.filter(ep => ep.event.type === 'event');
+							const otherEventPositions = dayEventPositions.filter(ep => ep.event.type !== 'period');
 
 							const getContainerClass = (baseClass: string, eventPositions: EventPosition[]) => {
 								const hasMultiDay = eventPositions.some(ep => !ep.isStart || !ep.isEnd);

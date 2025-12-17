@@ -32,6 +32,7 @@ export function CalendarEventComponent({ event, isEnd = true, isMiddle = false, 
 	// Build className based on position in multi-day event
 	const isSingleDay = isStart && isEnd;
 	const positionClasses = [
+		event.type !== 'period' ? styles.event : '',
 		styles[`${event.type}`],
 		!isSingleDay && isStart && !isEnd && styles.eventStart,
 		!isSingleDay && isMiddle && styles.eventMiddle,

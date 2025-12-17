@@ -1,9 +1,10 @@
 /* * */
 
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { periods } from '@tmlmobilidade/interfaces';
-import { type CreatePeriodDto, type Period, PermissionCatalog, type UpdatePeriodDto } from '@tmlmobilidade/types';
+import { type CreatePeriodDto, OperationalDate, type Period, PermissionCatalog, type UpdatePeriodDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -11,7 +12,79 @@ export class PeriodsController {
 	//
 
 	/**
+	 * Check for date conflicts with existing periods.
+	 * Returns information about which periods would be affected by assigning the given dates.
+	 * @param request Fastify request containing agency_id, dates, and optional period_id
+	 * @param reply Fastify reply
+	 */
+	static async checkConflicts(
+		request: FastifyRequest<{
+			Body: {
+				agency_id: string
+				dates: OperationalDate[]
+				period_id?: string
+			}
+		}>,
+		reply: FastifyReply<{ conflicts: { dates: OperationalDate[], period: Period }[] }>,
+	) {
+		//
+
+		//
+		// Check if the user has permission to read periods
+
+		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.read_periods)) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods');
+		}
+
+		//
+		// Get parameters
+
+		const { agency_id, dates: newDates, period_id } = request.body;
+
+		//
+		// Find all periods for the same agency (excluding the current period if provided)
+
+		const query: { _id?: { $ne: string }, agency_id: string } = { agency_id };
+		if (period_id) {
+			query._id = { $ne: period_id };
+		}
+
+		const agencyPeriods = await periods.findMany(query);
+
+		//
+		// Find conflicts
+
+		const conflicts: { dates: OperationalDate[], period: Period }[] = [];
+
+		for (const otherPeriod of agencyPeriods) {
+			if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;
+
+			// Find dates that conflict between the new dates and this period
+			const conflictingDates = findCommonDates(newDates, otherPeriod.dates);
+
+			if (conflictingDates.length > 0) {
+				conflicts.push({
+					dates: conflictingDates,
+					period: otherPeriod,
+				});
+			}
+		}
+
+		//
+		// Return conflicts
+
+		return reply.send({
+			data: { conflicts },
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
+
+		//
+	}
+
+	/**
 	 * Creates a new period.
+	 * If dates are provided, handles conflicts by removing those dates from other periods of the same agency.
 	 * @param request Fastify request containing period data
 	 * @param reply Fastify reply
 	 */
@@ -23,6 +96,14 @@ export class PeriodsController {
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.create_periods)) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create periods');
+		}
+
+		//
+		// If dates are provided, handle conflicts with other periods of the same agency
+
+		if (request.body.dates && request.body.dates.length > 0) {
+			const newDates = request.body.dates as OperationalDate[];
+			request.body.dates = await PeriodsController.handleDateAssignment(request.body.agency_id, newDates);
 		}
 
 		//
@@ -167,7 +248,8 @@ export class PeriodsController {
 	}
 
 	/**
-	 * Updates an existing period by ID
+	 * Updates an existing period by ID.
+	 * If dates are provided, merges with existing dates and handles conflicts by removing those dates from other periods of the same agency.
 	 * @param request Fastify request containing period ID in params and update data in body
 	 * @param reply Fastify reply
 	 */
@@ -189,6 +271,20 @@ export class PeriodsController {
 		}
 
 		//
+		// If dates are provided, handle conflicts with other periods of the same agency
+
+		if (request.body.dates && request.body.dates.length > 0) {
+			const newDates = request.body.dates as OperationalDate[];
+			const existingDates = periodData.dates || [];
+			request.body.dates = await PeriodsController.handleDateAssignment(
+				periodData.agency_id,
+				newDates,
+				periodData._id,
+				existingDates,
+			);
+		}
+
+		//
 		// Update the period
 
 		const updatedPeriod = await periods.updateById(periodData._id, request.body);
@@ -201,6 +297,62 @@ export class PeriodsController {
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
+
+		//
+	}
+
+	/**
+	 * Utility function to handle date assignment with conflict resolution.
+	 * Merges new dates with existing dates and removes conflicts from other periods of the same agency.
+	 * @param agencyId - The agency ID
+	 * @param newDates - Array of new dates to assign
+	 * @param periodId - Optional period ID to exclude from conflict resolution (for updates)
+	 * @param existingDates - Optional array of existing dates to merge with
+	 * @returns The merged dates array
+	 */
+	private static async handleDateAssignment(
+		agencyId: string,
+		newDates: OperationalDate[],
+		periodId?: string,
+		existingDates: OperationalDate[] = [],
+	): Promise<OperationalDate[]> {
+		//
+
+		//
+		// Merge with existing dates if provided
+
+		const mergedDates = existingDates.length > 0 ? mergeDateArrays(existingDates, newDates) : newDates;
+
+		//
+		// Find all periods for the same agency (excluding the current period if provided)
+
+		const query: { _id?: { $ne: string }, agency_id: string } = { agency_id: agencyId };
+		if (periodId) {
+			query._id = { $ne: periodId };
+		}
+
+		const agencyPeriods = await periods.findMany(query);
+
+		//
+		// For each period with overlapping dates, remove the conflicting dates
+
+		for (const otherPeriod of agencyPeriods) {
+			if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;
+
+			// Find dates that conflict between the merged dates and this period
+			const conflicts = findCommonDates(mergedDates, otherPeriod.dates);
+
+			if (conflicts.length > 0) {
+				// Remove conflicting dates from this period
+				const updatedDates = removeDatesFromArray(otherPeriod.dates, conflicts);
+				await periods.updateById(otherPeriod._id, { dates: updatedDates });
+			}
+		}
+
+		//
+		// Return the merged dates
+
+		return mergedDates;
 
 		//
 	}

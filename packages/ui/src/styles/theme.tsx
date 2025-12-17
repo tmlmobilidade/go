@@ -24,7 +24,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, ColorInput, createTheme, MantineThemeOverride, Menu, NumberInput, PasswordInput, PillsInput, PillsInputField, Popover, SegmentedControl, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, ColorInput, createTheme, MantineThemeOverride, Menu, NumberInput, PasswordInput, PillsInput, PillsInputField, Popover, Radio, SegmentedControl, Skeleton, Slider, Switch, Text, Textarea, TextInput } from '@mantine/core';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -40,6 +40,7 @@ import MenuOverride from './mantine/Menu.module.css';
 import PasswordInputOverride from './mantine/PasswordInput.module.css';
 import PillsInputOverride from './mantine/PillsInput.module.css';
 import PopoverOverride from './mantine/Popover.module.css';
+import RadioOverride from './mantine/Radio.module.css';
 import SegmentedControlOverrideSm from './mantine/SegmentedControl-sm.module.css';
 import SegmentedControlOverride from './mantine/SegmentedControl.module.css';
 import SkeletonOverride from './mantine/Skeleton.module.css';
@@ -154,6 +155,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		Popover: Popover.extend({
 			classNames: {
 				...PopoverOverride,
+			},
+		}),
+
+		Radio: Radio.extend({
+			classNames: {
+				...RadioOverride,
 			},
 		}),
 

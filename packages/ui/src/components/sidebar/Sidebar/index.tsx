@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClock, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { JSX } from 'react';
@@ -122,6 +122,13 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		icon: <IconNote size={26} />,
 		label: 'Ocorrências',
 		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
+	},
+	{
+		_id: 'periods',
+		href: PAGE_ROUTES.dates.PERIODS_LIST,
+		icon: <IconClock size={26} />,
+		label: 'Períodos',
+		permissions: [{ action: PermissionCatalog.all.dates.actions.read_periods, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
 	},
 	{
 		_id: 'dates',

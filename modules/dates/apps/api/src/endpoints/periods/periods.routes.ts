@@ -34,6 +34,12 @@ server.register(
 			PeriodsController.create,
 		);
 
+		instance.post(
+			'/check-conflicts',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.read_periods]) },
+			PeriodsController.checkConflicts,
+		);
+
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.update_periods]) },

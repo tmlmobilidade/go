@@ -1,5 +1,7 @@
 'use client';
 
+import type { DateRangeState } from '../../contexts/CalendarUI.context';
+
 import { Tooltip } from '@mantine/core';
 import { type CalendarDay, Dates } from '@tmlmobilidade/dates';
 import { type CalendarEvent } from '@tmlmobilidade/types';
@@ -7,6 +9,7 @@ import React, { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
+import { getDayRangeStatus } from '../../utils/rangeSelection';
 import { DayTooltip } from '../DayTooltip';
 
 /* * */
@@ -18,6 +21,7 @@ export interface YearlyCalendarMonthProps {
 	onDayClick?: (day: CalendarDay) => void
 	onEventClick?: (event: CalendarEvent) => void
 	onMonthClick?: () => void
+	rangeState?: DateRangeState
 	year: number
 }
 
@@ -27,12 +31,17 @@ const WEEK_DAYS_SHORT = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
 /* * */
 
+// MAKE DAY CELLS SQUARES (or fixed aspect ratio)
+
+// Handle date selections (adding/replacing periods, etc)
+
 export function YearlyCalendarMonth({
 	events = [],
 	monthGrid,
 	onDayClick,
 	onEventClick,
 	onMonthClick,
+	rangeState,
 }: YearlyCalendarMonthProps) {
 	//
 
@@ -97,7 +106,14 @@ export function YearlyCalendarMonth({
 					<div key={weekIndex} className={styles.week}>
 						{week.map((day, dayIndex) => {
 							const dayEvents = eventsByDate.get(day.date.operational_date) || [];
+							const periodEvents = dayEvents.filter(e => e.type === 'period');
+							const otherEvents = dayEvents.filter(e => e.type !== 'period');
 							const hasEvents = dayEvents.length > 0;
+
+							// Get range status for styling
+							const rangeStatus = rangeState
+								? getDayRangeStatus(day.date, rangeState)
+								: { isEnd: false, isInRange: false, isStart: false };
 
 							const dayClassName = [
 								styles.day,
@@ -105,6 +121,9 @@ export function YearlyCalendarMonth({
 								day.isToday && styles.today,
 								day.isWeekend && styles.weekend,
 								hasEvents && styles.hasEvents,
+								rangeStatus.isStart && day.isCurrentMonth && styles.daySelectedStart,
+								rangeStatus.isEnd && day.isCurrentMonth && styles.daySelectedEnd,
+								rangeStatus.isInRange && styles.dayInRange,
 							].filter(Boolean).join(' ');
 
 							const tooltipDate = day.date.toFormat('cccc d \'de\' MMMM \'de\' yyyy')
@@ -114,14 +133,27 @@ export function YearlyCalendarMonth({
 								<div
 									key={dayIndex}
 									className={dayClassName}
+									data-date={day.date.operational_date}
 									onClick={() => handleDayClick(day)}
 								>
+									{periodEvents.length > 0 && (
+										<div className={styles.periodStrips}>
+											{periodEvents.slice(0, 2).map(event => (
+												<div
+													key={event.id}
+													className={styles.periodStrip}
+													onClick={e => handleEventClick(event, e)}
+													style={{ backgroundColor: event.color }}
+												/>
+											))}
+										</div>
+									)}
 									<div className={styles.dayNumber}>
 										{day.dayOfMonth}
 									</div>
-									{hasEvents && (
+									{otherEvents.length > 0 && (
 										<div className={styles.eventIndicators}>
-											{dayEvents.slice(0, 3).map(event => (
+											{otherEvents.slice(0, 3).map(event => (
 												<div
 													key={event.id}
 													className={styles.eventDot}
@@ -129,9 +161,9 @@ export function YearlyCalendarMonth({
 													style={{ backgroundColor: event.color }}
 												/>
 											))}
-											{dayEvents.length > 3 && (
+											{otherEvents.length > 3 && (
 												<div className={styles.moreIndicator}>
-													+{dayEvents.length - 3}
+													+{otherEvents.length - 3}
 												</div>
 											)}
 										</div>

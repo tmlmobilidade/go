@@ -5,7 +5,7 @@ import React from 'react';
 
 import styles from './styles.module.css';
 
-import { useCalendarUIContext } from '../Calendar/index.context';
+import { useCalendarUIContext } from '../../contexts/CalendarUI.context';
 import { MiniCalendar } from '../MiniCalendar';
 
 /* * */

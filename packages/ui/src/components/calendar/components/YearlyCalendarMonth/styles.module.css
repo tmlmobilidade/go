@@ -1,3 +1,4 @@
+/* Container */
 .monthContainer {
 	display: flex;
 	flex-direction: column;
@@ -8,18 +9,24 @@
 	transition: box-shadow 150ms;
 }
 
+/* Header */
 .monthHeader {
 	padding: var(--size-spacing-md);
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--color-system-text-100);
 	text-align: center;
-    cursor: pointer;
+	cursor: pointer;
 	background: var(--color-system-background-200);
 	border-bottom: 1px solid var(--color-system-border-100);
 	transition: background-color 150ms;
 }
 
+.monthHeader:hover {
+	background: var(--color-system-background-300);
+}
+
+/* Week header */
 .weekDays {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
@@ -36,6 +43,7 @@
 	text-transform: uppercase;
 }
 
+/* Weeks grid */
 .weeksContainer {
 	display: flex;
 	flex-direction: column;
@@ -50,7 +58,9 @@
 	border-bottom: 1px solid var(--color-system-border-100);
 }
 
-.day {
+/* Day cells */
+.day,
+.emptyDay {
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -59,36 +69,68 @@
 	min-width: 0;
 	min-height: 32px;
 	padding: 4px;
-	cursor: pointer;
 	background: var(--color-system-background-100);
 	border-right: 1px solid var(--color-system-border-100);
 	transition: background-color 150ms;
 }
 
-.day:last-child {
+.day {
+	cursor: pointer;
+}
+
+.day:last-child,
+.emptyDay:last-child {
 	border-right: none;
 }
 
 .day:hover {
-	background: var(--color-system-background-200);
+	background: var(--color-background)
 }
 
+/* Period strips */
+.periodStrips {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+
+	/* gap: 1px; */
+	/* padding: 1px; */
+}
+
+.periodStrip {
+	width: 100%;
+	height: 3px;
+	cursor: pointer;
+
+	/* border-radius: 1px; */
+	transition: height 150ms;
+}
+
+.periodStrip:hover {
+	height: 4px;
+}
+
+/* Day number */
 .dayNumber {
 	font-size: 11px;
 	font-weight: 500;
 	color: var(--color-system-text-100);
 }
 
-.day.otherMonth {
-	background: var(--color-system-background-200);
+.dayHoveredEnd .dayNumber {
+	font-weight: 600;
 }
 
-.day.otherMonth .dayNumber {
-	font-weight: 400;
-	color: var(--color-system-text-300);
+.daySelectedStart .dayNumber,
+.daySelectedEnd .dayNumber {
+	font-weight: 700;
+	color: var(--color-contrast);
 }
 
-.day.today .dayNumber {
+.today .dayNumber {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -100,14 +142,51 @@
 	border-radius: 50%;
 }
 
-.day.weekend .dayNumber {
-	color: var(--color-status-danger-primary);
+/* Day states */
+.otherMonth {
+	background: var(--color-system-background-200);
 }
 
-.day.otherMonth.weekend .dayNumber {
+.otherMonth .dayNumber {
+	font-weight: 400;
 	color: var(--color-system-text-300);
 }
 
+.weekend .dayNumber {
+	color: var(--color-status-danger-primary);
+}
+
+.otherMonth.weekend .dayNumber {
+	color: var(--color-system-text-300);
+}
+
+/* Range selection - base layer */
+.dayInRange,
+.dayInHoverRange,
+.dayHoveredEnd {
+	background: var(--color-background);
+}
+
+/* Range selection - top layer (start/end override everything) */
+.daySelectedStart,
+.daySelectedEnd {
+	background: var(--color-primary);
+}
+
+.daySelectedStart {
+	border-radius: 2px 0 0 2px;
+}
+
+.daySelectedEnd {
+	border-radius: 0 2px 2px 0;
+}
+
+.daySelectedStart:hover,
+.daySelectedEnd:hover {
+	background: var(--color-primary);
+}
+
+/* Events */
 .eventIndicators {
 	display: flex;
 	gap: 2px;
@@ -132,8 +211,4 @@
 	font-size: 8px;
 	font-weight: 600;
 	color: var(--color-system-text-200);
-}
-
-.day.hasEvents {
-	background: var(--color-system-background-100);
 }

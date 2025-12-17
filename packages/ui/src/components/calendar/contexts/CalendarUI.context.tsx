@@ -9,13 +9,23 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useMemo
 
 /* * */
 
+export interface DateRangeState {
+	end: Dates | null
+	start: Dates | null
+}
+
+/* * */
+
 interface CalendarUIContextState {
 	actions: {
+		clearRangeSelection: () => void
 		nextMonth: () => void
 		nextYear: () => void
 		previousMonth: () => void
 		previousYear: () => void
 		setMonth: (month: number, year: number) => void
+		setRangeEnd: (date: Dates) => void
+		setRangeStart: (date: Dates) => void
 		setView: (view: 'month' | 'year') => void
 		today: () => void
 		toggleEventType: (id: string) => void
@@ -29,6 +39,7 @@ interface CalendarUIContextState {
 	state: {
 		eventTypeFilters: Map<string, boolean>
 		month: number
+		rangeSelection: DateRangeState
 		showSidebar: boolean
 		view: 'month' | 'year'
 		year: number
@@ -53,7 +64,6 @@ interface CalendarUIContextProviderProps extends PropsWithChildren {
 	events?: CalendarEvent[]
 	initialEventTypeFilters?: Record<string, boolean>
 	initialMonth?: number
-	initialView?: 'month' | 'year'
 	initialYear?: number
 	showSidebar?: boolean
 }
@@ -65,7 +75,6 @@ export const CalendarUIContextProvider = ({
 	events = [],
 	initialEventTypeFilters = {},
 	initialMonth,
-	initialView = 'month',
 	initialYear,
 	showSidebar = true,
 }: CalendarUIContextProviderProps) => {
@@ -77,10 +86,14 @@ export const CalendarUIContextProvider = ({
 	const now = new Date();
 	const [month, setMonthState] = useState(initialMonth || now.getMonth() + 1);
 	const [year, setYearState] = useState(initialYear || now.getFullYear());
-	const [view, setView] = useState<'month' | 'year'>(initialView);
+	const [view, setView] = useState<'month' | 'year'>('month');
 	const [eventTypeFilters, setEventTypeFilters] = useState<Map<string, boolean>>(
 		new Map(Object.entries(initialEventTypeFilters)),
 	);
+	const [rangeSelection, setRangeSelection] = useState<DateRangeState>({
+		end: null,
+		start: null,
+	});
 
 	//
 	// B. Actions
@@ -129,6 +142,27 @@ export const CalendarUIContextProvider = ({
 			const newMap = new Map(prev);
 			newMap.set(id, !prev.get(id));
 			return newMap;
+		});
+	}, []);
+
+	const setRangeStart = useCallback((date: Dates) => {
+		setRangeSelection({
+			end: null,
+			start: date,
+		});
+	}, []);
+
+	const setRangeEnd = useCallback((date: Dates) => {
+		setRangeSelection(prev => ({
+			...prev,
+			end: date,
+		}));
+	}, []);
+
+	const clearRangeSelection = useCallback(() => {
+		setRangeSelection({
+			end: null,
+			start: null,
 		});
 	}, []);
 
@@ -194,11 +228,14 @@ export const CalendarUIContextProvider = ({
 
 	const contextValue: CalendarUIContextState = useMemo(() => ({
 		actions: {
+			clearRangeSelection,
 			nextMonth,
 			nextYear,
 			previousMonth,
 			previousYear,
 			setMonth,
+			setRangeEnd,
+			setRangeStart,
 			setView,
 			today,
 			toggleEventType,
@@ -212,11 +249,12 @@ export const CalendarUIContextProvider = ({
 		state: {
 			eventTypeFilters,
 			month,
+			rangeSelection,
 			showSidebar,
 			view,
 			year,
 		},
-	}), [eventTypeFilters, month, year, view, showSidebar, nextMonth, previousMonth, nextYear, previousYear, setMonth, setView, today, toggleEventType, monthGrid, monthsData, eventsByMonth, filteredEvents]);
+	}), [eventTypeFilters, month, year, view, showSidebar, rangeSelection, nextMonth, previousMonth, nextYear, previousYear, setMonth, setView, today, toggleEventType, clearRangeSelection, setRangeStart, setRangeEnd, monthGrid, monthsData, eventsByMonth, filteredEvents]);
 
 	//
 	// G. Render components

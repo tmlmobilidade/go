@@ -32,8 +32,9 @@ export interface MonthGrid {
  */
 export function generateMonthGrid(year: number, month: number, fixedWeeks = false): MonthGrid {
 	//
-	// Create the first day of the target month
-	const firstDayOfMonth = Dates.fromFormat(`${year}-${String(month).padStart(2, '0')}-01`, 'yyyy-MM-dd', 'Europe/Lisbon');
+
+	// Create the first day of the target month at noon to avoid operational date shifting
+	const firstDayOfMonth = Dates.fromFormat(`${year}-${String(month).padStart(2, '0')}-01 12:00`, 'yyyy-MM-dd HH:mm', 'Europe/Lisbon');
 
 	// Get the last day of the month
 	const lastDayOfMonth = firstDayOfMonth.endOf('month');

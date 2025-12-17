@@ -3,7 +3,6 @@
 /* * */
 
 import { PeriodsListCellAgency } from '@/components/periods/list/PeriodsListCellAgency';
-import { PeriodsListCellDates } from '@/components/periods/list/PeriodsListCellDates';
 import { PeriodsListHeader } from '@/components/periods/list/PeriodsListHeader';
 import { usePeriodsListContext } from '@/contexts/PeriodsList.context';
 import { type PeriodNormalized } from '@/types/normalized';
@@ -36,18 +35,12 @@ export function PeriodsList() {
 			accessor: 'name',
 			render: item => <Text>{item.name}</Text>,
 			title: 'Nome',
-			width: 200,
+			width: 400,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PeriodsListCellAgency agencyId={item.agency_id} />,
 			title: 'Operador',
-			width: 300,
-		},
-		{
-			accessor: 'date_range_normalized',
-			render: item => <PeriodsListCellDates endDate={item.end_date} startDate={item.start_date} />,
-			title: 'Período',
 			width: 300,
 		},
 	];
