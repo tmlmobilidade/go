@@ -2,11 +2,11 @@
 
 /* * */
 
+import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { AnnotationsListCellAgencies } from '@/components/annotations/list/AnnotationsListCellAgencies';
 import { AnnotationsListCellDates } from '@/components/annotations/list/AnnotationsListCellDates';
 import { AnnotationsListFiltersBar } from '@/components/annotations/list/AnnotationsListFiltersBar';
 import { AnnotationsListHeader } from '@/components/annotations/list/AnnotationsListHeader';
-import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { type AnnotationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
@@ -34,19 +34,19 @@ export function AnnotationsList() {
 		{
 			accessor: 'title',
 			title: 'Título',
-			width: 200,
+			width: 400,
 		},
 		{
 			accessor: 'agency_ids_normalized',
 			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
 			title: 'Operadores',
-			width: 300,
+			width: 200,
 		},
 		{
 			accessor: 'dates',
 			render: item => <AnnotationsListCellDates dates={item.dates} />,
 			title: 'Datas',
-			width: 310,
+			width: 500,
 		},
 	];
 

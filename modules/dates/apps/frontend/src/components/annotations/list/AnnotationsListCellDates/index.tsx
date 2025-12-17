@@ -32,7 +32,7 @@ export function AnnotationsListCellDates({ dates }: AnnotationsListCellDatesProp
 	//
 	// B. Render components
 
-	return <TagGroup limit={2} tags={preparedTags} />;
+	return <TagGroup limit={4} tags={preparedTags} />;
 
 	//
 }
