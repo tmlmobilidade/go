@@ -20,8 +20,6 @@ export default function Page() {
 	//
 	// B. Render components
 
-	console.log('damn', i18next.options.resources);
-
 	return (
 		<div className={styles.container}>
 			<IconFileCertificate size={100} />
