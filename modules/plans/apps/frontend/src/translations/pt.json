@@ -1,0 +1,38 @@
+{
+	"approved": {
+		"page": {
+			"step1": "Validar o ficheiro GTFS",
+			"step1_description": "Aceda a este <a href={link}>link</a> e faça o upload do seu ficheiro GTFS para iniciar a validação.",
+			"step2": "Aguardar o resultado da validação",
+			"step2_description": "O sistema analisará o ficheiro e indicará se está <b>válido</b> ou se existem <b>erros a corrigir</b>.",
+			"step3": "Converter GTFS em plano",
+			"step3_description": "Após uma <b>validação bem-sucedida</b>, será possível converter a validação num plano.",
+			"title": "Validar um plano GTFS"
+		}
+	},
+	"validations": {
+		"list": {
+			"header": {
+				"new_validation_button": "Nova validação",
+				"search_placeholder": "Pesquisar validações por operador...",
+				"title": "Validações GTFS"
+			},
+			"table_columns": {
+				"agency_name": "Operador",
+				"created_at": "Data de submissão",
+				"feeder_status": "Estado"
+			},
+			"title": "Validações GTFS"
+		},
+		"page": {
+			"step1": "Validar o ficheiro GTFS",
+			"step1_description": "Clique no botão <b>Nova validação</b> para iniciar a carregar um plano GTFS.",
+			"step2": "Aguardar o resultado da validação",
+			"step2_description": "O sistema analisará o ficheiro e indicará se está <b>válido</b> ou se existem <b>erros a corrigir</b>.",
+			"step3": "Converter GTFS em plano",
+			"step3_description": "Após uma <b>validação bem-sucedida</b>, será possível converter a validação num <a href={link}>plano</a>.",
+			"title": "Validar um plano GTFS"
+		}
+
+	}
+}

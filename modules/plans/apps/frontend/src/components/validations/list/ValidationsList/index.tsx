@@ -12,6 +12,7 @@ import { type ValidationNormalized } from '@/types/normalized';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -23,24 +24,25 @@ export function ValidationsList() {
 
 	const router = useRouter();
 	const validationsListContext = useValidationsListContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.list' });
 
 	const columns: DataTableColumn<ValidationNormalized>[] = [
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: 'Operador',
+			title: t('table_columns.agency_name'),
 			width: 300,
 		},
 		{
 			accessor: 'feeder_status',
 			render: item => <ValidationStatusTag status={item.feeder_status} />,
-			title: 'Estado',
+			title: t('table_columns.feeder_status'),
 			width: 150,
 		},
 		{
 			accessor: 'created_at',
 			render: item => <ValidationsListCellDate value={item.created_at} />,
-			title: 'Data de Submissão',
+			title: t('table_columns.created_at'),
 			width: 300,
 		},
 	];

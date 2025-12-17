@@ -15,6 +15,9 @@
 		"title": "Alterar password"
 	},
 	"components": {
+		"search_input": {
+			"placeholder": "Pesquisar..."
+		},
 		"select": {
 			"nothing_found_message": "Nenhum resultado encontrado"
 		}

@@ -5,6 +5,7 @@
 import { ActionIcon as MantineActionIcon, TextInput as MantineTextInput } from '@mantine/core';
 import { IconSearch, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,13 +18,14 @@ export interface SearchInputProps {
 
 /* * */
 
-export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'md', value }: SearchInputProps) {
+export function SearchInput({ onChange, placeholder = 'placeholder', size = 'md', value }: SearchInputProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const [isInUse, setIsInUse] = useState(false);
+	const { t } = useTranslation('global', { keyPrefix: 'components.search_input' });
 
 	//
 	// B. Handle actions
@@ -57,7 +59,7 @@ export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'md
 			onBlur={handleBlur}
 			onChange={handleChange}
 			onFocus={handleFocus}
-			placeholder={placeholder}
+			placeholder={placeholder === 'placeholder' ? t('placeholder') : placeholder}
 			size={size}
 			styles={{ root: { width: isInUse || size === 'xl' ? '100%' : 200 } }}
 			value={value ?? ''}

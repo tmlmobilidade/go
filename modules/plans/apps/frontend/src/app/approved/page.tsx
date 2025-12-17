@@ -1,29 +1,50 @@
+'use client';
+
 import { IconFileCertificate } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import i18next from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 import styles from './page.module.css';
 
 /* * */
 
 export default function Page() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation('plans', { keyPrefix: 'approved.page' });
+
+	//
+	// B. Render components
+
+	console.log('damn', i18next.options.resources);
+
 	return (
 		<div className={styles.container}>
 			<IconFileCertificate size={100} />
-			<h2>Como criar um plano GTFS</h2>
+			<h2>{t('title')}</h2>
 			<ol>
 				<li>
-					<h3>Validar o ficheiro GTFS</h3>
-					Aceda a este <a href={PAGE_ROUTES.plans.VALIDATIONS_LIST}>link</a> e faça o upload do seu ficheiro GTFS para iniciar a validação.
+					<h3>{t('step1')}</h3>
+					<span dangerouslySetInnerHTML={{
+						__html: t('step1_description', { link: PAGE_ROUTES.plans.VALIDATIONS_LIST }),
+					}}
+					/>
 				</li>
 				<li>
-					<h3>Aguardar o resultado da validação</h3>
-					O sistema analisará o ficheiro e indicará se está <strong>válido</strong> ou se existem <strong>erros a corrigir</strong>.
+					<h3>{t('step2')}</h3>
+					<span dangerouslySetInnerHTML={{ __html: t('step2_description') }} />
 				</li>
 				<li>
-					<h3>Converter GTFS em plano</h3>
-					Após uma <strong>validação bem-sucedida</strong>, será possível converter a validação num plano.
+					<h3>{t('step3')}</h3>
+					<span dangerouslySetInnerHTML={{ __html: t('step3_description') }} />
 				</li>
 			</ol>
 		</div>
 	);
+
+	//
 }
