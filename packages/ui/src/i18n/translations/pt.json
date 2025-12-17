@@ -15,6 +15,9 @@
 		"title": "Alterar password"
 	},
 	"components": {
+		"filter_type_list": {
+			"toggle_all_label": "Selecionar tudo"
+		},
 		"search_input": {
 			"placeholder": "Pesquisar..."
 		},

@@ -4,6 +4,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useValidationsListContext } from '@/contexts/ValidationsList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function ValidationsListFilterAgency() {
 
 	const agenciesContext = useAgenciesContext();
 	const validationsListContext = useValidationsListContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.list.filterBar.filter_agency' });
 
 	//
 	// B. Transform data
@@ -47,7 +49,7 @@ export function ValidationsListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Operador"
+			label={t('label')}
 			onChange={validationsListContext.actions.setFilterAgency}
 			options={parsedOptions}
 			withToggleAll

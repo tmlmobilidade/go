@@ -5,6 +5,7 @@ import { validationProcessingStatus } from '@/types/normalized';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function ValidationsListFilterProcessingStatus() {
 	// A. Setup variables
 
 	const validationsListContext = useValidationsListContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.list.filterBar.filter_processing_status' });
 
 	//
 	// B. Transform data
@@ -46,7 +48,7 @@ export function ValidationsListFilterProcessingStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Estado"
+			label={t('label')}
 			onChange={validationsListContext.actions.setFilterProcessingStatus}
 			options={parsedOptions}
 			withToggleAll

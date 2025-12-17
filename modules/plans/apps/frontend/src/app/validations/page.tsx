@@ -4,7 +4,6 @@
 
 import { IconFileCheck } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import styles from './page.module.css';

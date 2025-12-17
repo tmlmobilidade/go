@@ -12,6 +12,14 @@
 	},
 	"validations": {
 		"list": {
+			"filterBar": {
+				"filter_agency": {
+					"label": "Operador"
+				},
+				"filter_processing_status": {
+					"label": "Estado"
+				}
+			},
 			"header": {
 				"new_validation_button": "Nova validação",
 				"search_placeholder": "Pesquisar validações por operador...",
