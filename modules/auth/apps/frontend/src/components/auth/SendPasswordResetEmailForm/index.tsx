@@ -23,7 +23,7 @@ export function SendPasswordResetEmailForm() {
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 
-	const { t } = useTranslation('auth', { keyPrefix: 'SendPasswordResetEmailForm' });
+	const { t } = useTranslation('global', { keyPrefix: 'SendPasswordResetEmailForm' });
 
 	//
 	// B. Handle actions

@@ -32,7 +32,7 @@ export function ChangePasswordForm() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.header' });
+	const { t } = useTranslation('global', { keyPrefix: 'changePasswordForm' });
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 

@@ -7,8 +7,9 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';
 import { PasswordInput, TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
+import i18next from 'i18next';
 import { useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -26,7 +27,7 @@ export function LoginForm() {
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 	const [passwordValue, setPasswordValue] = useState('');
 
-	const { t } = useTranslation('auth', { keyPrefix: 'loginForm' });
+	const { t } = useTranslation('global', { keyPrefix: 'loginForm' });
 
 	//
 	// B. Handle actions
@@ -54,6 +55,8 @@ export function LoginForm() {
 		// Redirect to the specified page or home
 		window.location.href = redirectToValue;
 	};
+
+	console.log('Loaded namespaces:', i18next.options.resources.pt);
 
 	//
 	// C. Render components
