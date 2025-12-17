@@ -24,6 +24,7 @@ export function AgencyDetailBasicInfo() {
 		<Collapsible
 			description="Detalhes como nome, email, telefone, URL e timezone da agência."
 			title="Informações gerais"
+			defaultOpen
 		>
 			<Section gap="lg">
 				<Grid columns="aab" gap="lg">

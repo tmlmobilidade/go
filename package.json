@@ -37,6 +37,7 @@
 		"dev:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 		"generate-routes": "bash ./scripts/generate-routes.sh",
+		"helper:controller:export-sams:production": "dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-controller-helpers-export-sams",
 		"helper:locations:seed-locations:production": "dotenv-run -f ./modules/locations/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:locations:seed-locations:staging": "dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:stops:seed-stops": "dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",

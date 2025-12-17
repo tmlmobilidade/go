@@ -11,13 +11,13 @@ import { useState } from 'react';
 export interface SearchInputProps {
 	onChange: (value: string) => void
 	placeholder?: string
-	size?: 'md' | 'sm' | 'xl'
+	size?: 'sm' | 'xl'
 	value?: null | string
 }
 
 /* * */
 
-export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'md', value }: SearchInputProps) {
+export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'sm', value }: SearchInputProps) {
 	//
 
 	//

@@ -1,15 +1,49 @@
+/* * */
+/* ROOT */
+
 .root,
 .wrapper {
+	--input-size: 40px;
+	--input-height: 40px;
 	min-width: 200px;
 	overflow: visible;
-	transition: width 300ms ease-in-out;
+	transition: width 300ms ease-in-out
 }
+
+
+/* * */
+/* INPUT */
+
+.input {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	overflow: scroll;
+	font-size: 16px;
+	font-weight: var(--font-weight-regular);
+	line-height: 1;
+	color: var(--color-system-text-100);
+	outline: none;
+	background-color: var(--color-system-background-100);
+	border: none;
+	transition: all 200ms ease-in-out;
+}
+
+.input::placeholder {
+	color: var(--color-system-text-300);
+}
+
+.input:disabled {
+	cursor: not-allowed;
+}
+
 
 /* * */
 /* WRAPPER */
 
 .wrapper {
-	padding: 0;
+	padding: 0 15px;
 	background-color: var(--color-system-background-100);
 	border: 2px solid var(--color-system-border-100);
 	border-radius: 6px;
@@ -22,25 +56,22 @@
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
 }
 
-/* * */
-/* INPUT */
-
-.input {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: flex-start;
-	margin: 0;
-	background-color: transparent;
-	border: none;
+.wrapper[data-with-left-section="true"] {
+	padding-left: calc(var(--size-spacing-sm) + 30px);
 }
 
-/* * */
-/* DROPDOWN */
-
-.dropdown {
-	background-color: var(--color-system-background-200);
+.wrapper[data-with-right-section="true"] {
+	padding-right: calc(var(--size-spacing-sm) + 30px);
 }
+
+
+/* * */
+/* SECTION */
+
+.section {
+	color: var(--color-system-text-300);
+}
+
 
 /* * */
 /* LABEL */
