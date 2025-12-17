@@ -39,7 +39,8 @@
 		"create_validation": "Criar validação",
 		"delete": "Apagar",
 		"edit": "Editar",
-		"save": "Salvar"
+		"save": "Salvar",
+		"submit_for_approval": "Submeter para aprovação"
 	},
 	"permissions": {
 		"agencyActions": {
@@ -258,6 +259,11 @@
 			},
 			"title": "Permissões de Utilizadores"
 		}
+	},
+	"severitys": {
+		"error": "Erro",
+		"forbidden": "Proibido",
+		"warning": "Aviso"
 	},
 	"statuses": {
 		"complete": "Válido",

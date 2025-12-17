@@ -11,6 +11,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 import { BackButton, Button, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -22,6 +23,7 @@ export function ValidationsDetailHeader() {
 
 	const router = useRouter();
 	const validationsDetailContext = useValidationsDetailContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.detail.header' });
 
 	//
 	// C. Handle actions
@@ -61,7 +63,7 @@ export function ValidationsDetailHeader() {
 					<Button
 						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
 						icon={<IconMailFast />}
-						label="Solicitar aprovação à TML"
+						label={t('submit_for_tml_approval_button')}
 						onClick={handleRequestApproval}
 						variant="secondary"
 					/>

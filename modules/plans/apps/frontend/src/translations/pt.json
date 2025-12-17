@@ -16,6 +16,31 @@
 			"select_file": "Selecionar arquivo GTFS",
 			"title": "Nova validação GTFS"
 		},
+		"detail": {
+			"header": {
+				"submit_for_tml_approval_button": "Solicitar aprovação à TML"
+			},
+			"section_agency": {
+				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
+				"title": "Dados do Operador"
+			},
+			"section_feed_info": {
+				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
+				"no_file_selected": "Nenhum ficheiro selecionado",
+				"title": "Dados do Arquivo"
+			},
+			"section_result": {
+				"description": "Informações, avisos e erros encontrados no arquivo GTFS",
+				"table_columns": {
+					"field": "Campo ",
+					"file_name": "Ficheiro",
+					"message": "Mensagem",
+					"rows": "Linhas do Ficheiro",
+					"severity": "Severidade"
+				},
+				"title ": "Resultado da Validação"
+			}
+		},
 		"list": {
 			"filterBar": {
 				"filter_agency": {

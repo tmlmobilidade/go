@@ -8,6 +8,7 @@ import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.contex
 import { type GTFSValidatorMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,32 +20,34 @@ export function ValidationsDetailSectionResult() {
 
 	const validationsDetailContext = useValidationsDetailContext();
 
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.detail.section_result' });
+
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
 			accessor: 'file_name',
-			title: 'Ficheiro',
+			title: t('table_columns.file_name'),
 			width: 180,
 		},
 		{
 			accessor: 'field',
-			title: 'Campo',
+			title: t('table_columns.field'),
 			width: 250,
 		},
 		{
 			accessor: 'severity',
 			render: item => <SeverityTag severity={item.severity} />,
-			title: 'Severidade',
+			title: t('table_columns.severity'),
 			width: 100,
 		},
 		{
 			accessor: 'message',
-			title: 'Mensagem',
+			title: t('table_columns.message'),
 			width: 500,
 		},
 		{
 			accessor: 'rows',
 			render: item => <ValidationsDetailSectionResultCellRows rows={item.rows} />,
-			title: 'Linhas do Ficheiro',
+			title: t('table_columns.rows'),
 			width: 600,
 		},
 	];
@@ -77,8 +80,8 @@ export function ValidationsDetailSectionResult() {
 	return (
 		<Collapsible
 			defaultOpen={true}
-			description="Informações, avisos e erros encontrados no arquivo GTFS"
-			title="Resultado da Validação"
+			description={t('description')}
+			title={t('title ')}
 		>
 			<Section flexDirection="row" gap="md">
 				<SeverityTag label={errorCountLabel} severity="error" />
