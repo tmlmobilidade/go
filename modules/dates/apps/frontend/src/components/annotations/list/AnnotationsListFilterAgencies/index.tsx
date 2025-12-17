@@ -1,7 +1,7 @@
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useAnnotationsListContext } from '@/contexts/AnnotationsList.context';
+import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

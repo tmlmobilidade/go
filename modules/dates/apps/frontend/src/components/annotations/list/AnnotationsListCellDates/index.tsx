@@ -2,9 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
-import { Tag, Tooltip } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,33 +18,21 @@ export function AnnotationsListCellDates({ dates }: AnnotationsListCellDatesProp
 	//
 	// A. Transform data
 
-	const MAX_VISIBLE_DATES = 2;
-
-	const allDatesFormatted = dates
+	const preparedTags = dates
 		.sort((a, b) => Number(a) - Number(b))
-		.map(date => Dates
-			.fromOperationalDate(date, 'Europe/Lisbon')
-			.toFormat('dd-MM-yyyy'),
-		);
-
-	const visibleDates = allDatesFormatted.slice(0, MAX_VISIBLE_DATES);
-	const remainingCount = allDatesFormatted.length - MAX_VISIBLE_DATES;
+		.map((item): TagProps => {
+			return {
+				label: Dates
+					.fromOperationalDate(item, 'Europe/Lisbon')
+					.toFormat('dd-MM-yyyy'),
+				variant: 'muted',
+			};
+		});
 
 	//
 	// B. Render components
 
-	return (
-		<div className={styles.wrapper}>
-			{visibleDates.map(dateFormatted => (
-				<Tag key={dateFormatted} label={dateFormatted} variant="secondary" />
-			))}
-			{remainingCount > 0 && (
-				<Tooltip label={allDatesFormatted.slice(MAX_VISIBLE_DATES).join(', ')}>
-					<Tag label={`+${remainingCount} mais`} variant="muted" />
-				</Tooltip>
-			)}
-		</div>
-	);
+	return <TagGroup limit={2} tags={preparedTags} />;
 
 	//
 }

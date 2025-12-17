@@ -4,15 +4,14 @@
 
 import { AnnotationsListCellAgencies } from '@/components/annotations/list/AnnotationsListCellAgencies';
 import { AnnotationsListCellDates } from '@/components/annotations/list/AnnotationsListCellDates';
+import { AnnotationsListFiltersBar } from '@/components/annotations/list/AnnotationsListFiltersBar';
 import { AnnotationsListHeader } from '@/components/annotations/list/AnnotationsListHeader';
-import { useAnnotationsListContext } from '@/contexts/AnnotationsList.context';
+import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { type AnnotationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-
-import { AnnotationsListFiltersBar } from '../AnnotationsListFiltersBar';
 
 /* * */
 
@@ -34,7 +33,6 @@ export function AnnotationsList() {
 		},
 		{
 			accessor: 'title',
-			render: item => <Text>{item.title}</Text>,
 			title: 'Título',
 			width: 200,
 		},

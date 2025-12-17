@@ -1,8 +1,6 @@
 /* * */
 
-import { Tag } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -13,11 +11,17 @@ interface AnnotationsListCellAgenciesProps {
 /* * */
 
 export function AnnotationsListCellAgencies({ agencyIds }: AnnotationsListCellAgenciesProps) {
-	return (
-		<div className={styles.wrapper}>
-			{agencyIds.map(agencyId => (
-				<Tag key={agencyId} label={agencyId} />
-			))}
-		</div>
-	);
+	//
+
+	//
+	// A. Transform data
+
+	const preparedTags = agencyIds.map((item): TagProps => ({ label: item, variant: 'muted' }));
+
+	//
+	// B. Render components
+
+	return <TagGroup limit={2} tags={preparedTags} />;
+
+	//
 }
