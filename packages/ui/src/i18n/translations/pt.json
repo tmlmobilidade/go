@@ -15,6 +15,10 @@
 		"title": "Alterar password"
 	},
 	"components": {
+		"coordinates_input": {
+			"latitude_placeholder": "Latitude (-90 to 90)",
+			"longitude_placeholder": "Longitude (-180 to 180)"
+		},
 		"filter_type_list": {
 			"toggle_all_label": "Selecionar tudo"
 		},
@@ -23,6 +27,13 @@
 		},
 		"select": {
 			"nothing_found_message": "Nenhum resultado encontrado"
+		},
+		"uploadImage": {
+			"delete_image_confirmation_message": "Tem certeza que deseja apagar a imagem?",
+			"delete_image_title": "Apagar imagem",
+			"error_message": "O tamanho do ficheiro excede o limite permitido.",
+			"error_title": "Erro ao carregar imagem",
+			"file_button_label": "Carregar Imagem"
 		}
 	},
 	"loginForm": {

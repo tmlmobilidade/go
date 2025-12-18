@@ -1,5 +1,24 @@
 {
 	"scheduled": {
+		"detail": {
+			"sectionTitle": {
+				"description": "Breve descrição do que motivou a criação do alerta",
+				"fields": {
+					"coordinates_description": "Ponto de referência do alerta, para que seja possível localizar o alerta no mapa.",
+					"description_description": "Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
+					"description_label": "Descrição",
+					"description_placeholder": "...",
+					"image_label": "Imagem",
+					"link_description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
+					"link_label": "Link Adicional",
+					"link_placeholder": "https://www.cm-setubal.com/...",
+					"title_description": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
+					"title_label": "Título Curto",
+					"title_placeholder": "..."
+				},
+				"title": "Título e Descrição"
+			}
+		},
 		"list": {
 			"filterBar": {
 				"cause": "Causa",
@@ -20,6 +39,7 @@
 				"stops": "Paragens",
 				"title": "Título"
 			}
+
 		}
 	}
 }

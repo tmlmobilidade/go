@@ -3,6 +3,7 @@
 /* * */
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Description } from '../../common';
 import { Label } from '../../display';
@@ -36,6 +37,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 	// A. Setup variables
 
 	const [coordinates, setCoordinates] = useState<[number, number]>(value ?? [0, 0]);
+	const { t } = useTranslation('global', { keyPrefix: 'components.coordinates_input' });
 
 	//
 	// B. Setup functions
@@ -106,7 +108,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 					disabled={disabled}
 					onBlur={() => handleBlur(0)}
 					onPaste={handlePaste}
-					placeholder="Latitude (-90 to 90)"
+					placeholder={t('latitude_placeholder')}
 					step={0.000001}
 					style={{ flex: 1 }}
 					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[0]}
@@ -123,7 +125,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 					disabled={disabled}
 					onBlur={() => handleBlur(1)}
 					onPaste={handlePaste}
-					placeholder="Longitude (-180 to 180)"
+					placeholder={t('longitude_placeholder')}
 					step={0.000001}
 					style={{ flex: 1 }}
 					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[1]}
