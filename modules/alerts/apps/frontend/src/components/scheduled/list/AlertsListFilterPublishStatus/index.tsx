@@ -4,6 +4,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { PublishStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,7 +15,7 @@ export function AlertsListFilterPublishStatus() {
 	// A. Setup variables
 
 	const alertsListContext = useAlertListContext();
-
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.filterBar' });
 	//
 	// B. Transform data
 
@@ -46,7 +47,7 @@ export function AlertsListFilterPublishStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Estado"
+			label={t('publish_status')}
 			onChange={alertsListContext.actions.setFilterPublishStatus}
 			options={parsedOptions}
 			withToggleAll

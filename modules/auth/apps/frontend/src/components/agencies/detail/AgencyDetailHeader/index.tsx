@@ -21,6 +21,7 @@ export function AgencyDetailHeader() {
 	const router = useRouter();
 	const agencyDetailContext = useAgencyDetailContext();
 	const { t } = useTranslation('auth', { keyPrefix: 'agencies.detail.header' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// B. Handle actions
@@ -42,7 +43,7 @@ export function AgencyDetailHeader() {
 			<Button
 				disabled={agencyDetailContext.flags.read_only || !agencyDetailContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label={t('save')}
+				label={tGlobal('save')}
 				loading={agencyDetailContext.flags.saving}
 				onClick={agencyDetailContext.actions.saveAgency}
 				variant="primary"

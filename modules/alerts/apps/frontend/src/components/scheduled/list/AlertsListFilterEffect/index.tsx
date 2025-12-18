@@ -4,6 +4,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { AlertSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,8 +15,7 @@ export function AlertsListFilterEffect() {
 	// A. Setup variables
 
 	const alertsListContext = useAlertListContext();
-
-	//
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.filterBar' });	//
 	// B. Transform data
 
 	const isActive = useMemo(() => {
@@ -46,7 +46,7 @@ export function AlertsListFilterEffect() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Efeito"
+			label={t('effect')}
 			onChange={alertsListContext.actions.setFilterEffect}
 			options={parsedOptions}
 			withToggleAll

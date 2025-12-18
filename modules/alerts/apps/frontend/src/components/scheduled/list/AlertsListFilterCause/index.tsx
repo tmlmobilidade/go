@@ -4,6 +4,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { AlertSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,7 +15,7 @@ export function AlertsListFilterCause() {
 	// A. Setup variables
 
 	const alertsListContext = useAlertListContext();
-
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.filterBar' });
 	//
 	// B. Transform data
 
@@ -46,7 +47,7 @@ export function AlertsListFilterCause() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Causa"
+			label={t('cause')}
 			onChange={alertsListContext.actions.setFilterCause}
 			options={parsedOptions}
 			withToggleAll

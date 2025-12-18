@@ -26,7 +26,7 @@ export function AlertsListHeader() {
 			<Label size="lg" caps singleLine>{t('title')}</Label>
 			<Spacer />
 			<SearchInput onChange={alertsListContext.actions.setFilterSearch} value={alertsListContext.filters.search} />
-			<Button icon={<IconPlus size={20} />} label={t('newAlert')} onClick={alertCreateContext.modal.open} />
+			<Button icon={<IconPlus size={20} />} label={t('new_alert')} onClick={alertCreateContext.modal.open} />
 		</Toolbar>
 	);
 

@@ -4,6 +4,7 @@ import { useAlertListContext } from '@/contexts/AlertList.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,7 +16,7 @@ export function AlertsListFilterMunicipality() {
 
 	const alertsListContext = useAlertListContext();
 	const locationsContext = useLocationsContext();
-
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.filterBar' });
 	//
 	// B. Transform data
 
@@ -47,7 +48,7 @@ export function AlertsListFilterMunicipality() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Município"
+			label={t('municipality')}
 			onChange={alertsListContext.actions.setFilterMunicipality}
 			options={parsedOptions}
 			withToggleAll

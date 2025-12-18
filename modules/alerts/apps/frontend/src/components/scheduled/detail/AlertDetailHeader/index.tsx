@@ -8,6 +8,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,6 +20,7 @@ export function AlertDetailHeader() {
 
 	const router = useRouter();
 	const alertDetailContext = useAlertDetailContext();
+	const { t } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// B. Handle actions
@@ -45,12 +47,12 @@ export function AlertDetailHeader() {
 			<Spacer />
 			<Button
 				icon={<IconCopy size={28} />}
-				label="Duplicar"
+				label={t('duplicate')}
 				onClick={handleDuplicate}
 				variant="secondary"
 			/>
 			<Button
-				label="Salvar como rascunho"
+				label={t('save_as_draft')}
 				onClick={() => alertDetailContext.actions.saveAlert('draft')}
 				variant="secondary"
 			/>
@@ -61,13 +63,13 @@ export function AlertDetailHeader() {
 				onClick={() => alertDetailContext.actions.saveAlert('publish')}
 				variant="primary"
 				label={alertDetailContext.data.form.getValues().publish_status === 'DRAFT'
-					? 'Publicar'
-					: 'Salvar'}
+					? t('publish')
+					: t('save')}
 			/>
 			<Button
 				disabled={alertDetailContext.flags.isSaving}
 				icon={<IconTrash size={28} />}
-				label="Apagar"
+				label={t('delete')}
 				onClick={alertDetailContext.actions.deleteAlert}
 				variant="danger"
 			/>

@@ -38,8 +38,11 @@
 		"cancel": "Cancelar",
 		"create_validation": "Criar validação",
 		"delete": "Apagar",
+		"duplicate": "Duplicar",
 		"edit": "Editar",
+		"publish": "Publicar",
 		"save": "Salvar",
+		"save_as_draft": "Salvar como rascunho",
 		"submit_for_approval": "Submeter para aprovação"
 	},
 	"permissions": {

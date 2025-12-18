@@ -1,9 +1,24 @@
 {
 	"scheduled": {
 		"list": {
+			"filterBar": {
+				"cause": "Causa",
+				"effect": " Efeito",
+				"municipality": "Município",
+				"publish_status": "Estado"
+			},
 			"header": {
-				"newAlert": "Novo Alerta",
+				"new_alert": "Novo Alerta",
 				"title": "Alertas"
+			},
+			"table_columns": {
+				"lines": "Linhas",
+				"municipality": "Municípios",
+				"publish_end_date": "Data de Fim",
+				"publish_start_date": "Data de Início",
+				"status": "Estado",
+				"stops": "Paragens",
+				"title": "Título"
 			}
 		}
 	}
