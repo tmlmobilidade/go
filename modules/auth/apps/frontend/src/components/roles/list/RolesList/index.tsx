@@ -3,7 +3,7 @@
 /* * */
 
 import { RolesListHeader } from '@/components/roles/list/RolesListHeader';
-import { useRolesListContext } from '@/contexts/RolesList.context';
+import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { type RoleNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';

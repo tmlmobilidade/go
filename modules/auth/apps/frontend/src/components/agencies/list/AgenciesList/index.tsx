@@ -3,7 +3,7 @@
 /* * */
 
 import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeader';
-import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
+import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
 import { type AgencyNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';

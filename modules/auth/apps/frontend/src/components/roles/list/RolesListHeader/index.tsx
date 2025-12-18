@@ -3,7 +3,7 @@
 /* * */
 
 import { openCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
-import { useRolesListContext } from '@/contexts/RolesList.context';
+import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 

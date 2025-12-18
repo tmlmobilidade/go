@@ -3,7 +3,7 @@
 /* * */
 
 import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
-import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
+import { useOrganizationsListContext } from '@/components/organizations/list/OrganizationsList.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
