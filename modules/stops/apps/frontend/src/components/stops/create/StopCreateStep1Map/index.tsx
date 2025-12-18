@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
-import { useStopsListContext } from '@/contexts/StopsList.context';
+import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';

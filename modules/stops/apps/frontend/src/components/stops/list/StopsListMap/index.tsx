@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useStopsListContext } from '@/contexts/StopsList.context';
+import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { keepUrlParams, MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView, Pane } from '@tmlmobilidade/ui';

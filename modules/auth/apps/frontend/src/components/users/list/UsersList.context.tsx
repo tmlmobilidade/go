@@ -9,9 +9,8 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
 import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
-import { useParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -25,7 +24,6 @@ interface UsersListContextState {
 	data: {
 		filtered: UserNormalized[]
 		raw: User[]
-		selectedId: string | undefined
 	}
 	filters: {
 		organization_ids: string[]
@@ -52,21 +50,18 @@ export const useUsersListContext = () => {
 
 /* * */
 
-export const UsersListContextProvider = ({ children }: { children: React.ReactNode }) => {
+export function UsersListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
 	// A. Setup variables
 
-	const params = useParams<{ id?: string }>();
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
 
 	const [filterOrganizationIds, setFilterOrganizationIds] = useQueryState('organization_ids', parseAsArrayOfStrings.withDefault(organizationsContext.data.raw.map(item => item._id)));
 	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', parseAsArrayOfStrings.withDefault(rolesContext.data.raw.map(item => item._id)));
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-
-	const selectedId = useMemo(() => params?.id, [params]);
 
 	//
 	// B. Fetch data
@@ -127,7 +122,6 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		data: {
 			filtered: filterResultsData,
 			raw: allUsersData ?? [],
-			selectedId,
 		},
 		filters: {
 			organization_ids: filterOrganizationIds,
@@ -146,7 +140,6 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 		filterOrganizationIds,
 		filterRoleIds,
 		filterSearch,
-		selectedId,
 	]);
 
 	//

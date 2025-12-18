@@ -11,7 +11,7 @@ import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -22,6 +22,7 @@ export function UsersList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
 
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
@@ -93,7 +94,7 @@ export function UsersList() {
 				onRowClick={handleRowClick}
 				records={usersListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={usersListContext.data.selectedId}
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

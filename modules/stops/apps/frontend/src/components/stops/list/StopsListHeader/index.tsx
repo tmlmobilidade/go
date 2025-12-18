@@ -1,7 +1,7 @@
 /* * */
 
 import { openCreateStopModal } from '@/components/stops/create/StopCreate.modal';
-import { useStopsListContext } from '@/contexts/StopsList.context';
+import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
