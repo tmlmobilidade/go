@@ -41,7 +41,7 @@ export function PlanDetail() {
 			<PlanDetailSectionFiles />
 
 			<HasPermission
-				action={PermissionCatalog.all.plans.actions.update_pcgi_legacy}
+				action={PermissionCatalog.all.plans.actions.read_pcgi_legacy}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
 				value={planDetailContext.data.plan.gtfs_agency.agency_id}
@@ -50,7 +50,7 @@ export function PlanDetail() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.plans.actions.update_controller}
+				action={PermissionCatalog.all.plans.actions.read_controller}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
 				value={planDetailContext.data.plan.gtfs_agency.agency_id}
