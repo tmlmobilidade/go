@@ -39,6 +39,7 @@ export function AlertDetailSectionCauseEffect() {
 
 	//
 	// C. Render components
+	console.log('data', alertDetailContext.data.form.values);
 
 	return (
 		<Collapsible
@@ -51,6 +52,7 @@ export function AlertDetailSectionCauseEffect() {
 						data={causeItems}
 						description={t('cause_description')}
 						label={t('cause_label')}
+						value={alertDetailContext.data.form.values.cause}
 						{...alertDetailContext.data.form.getInputProps('cause')}
 					/>
 				</div>
@@ -59,6 +61,7 @@ export function AlertDetailSectionCauseEffect() {
 						data={effectItems}
 						description={t('effect_description')}
 						label={t('effect_label')}
+						value={alertDetailContext.data.form.values.effect}
 						{...alertDetailContext.data.form.getInputProps('effect')}
 					/>
 				</div>

@@ -15,25 +15,25 @@
 			"header": {
 				"change_plan": "Alterar plano"
 			},
-			"section_agency": {
+			"sectionAgency": {
 				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
 				"title": "Dados do Operador"
 			},
-			"section_controller": {
+			"sectionController": {
 				"description": "Configuração dos SLAs associados a este plano.",
 				"reprocess_plan_button": "Reprocessar Plano",
 				"title": "Configuração dos SLAs"
 			},
-			"section_feed_info": {
+			"sectionFeedInfo": {
 				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
 				"title": "Dados do Arquivo"
 			},
-			"section_files": {
+			"sectionFiles": {
 				"description": "Ficheiros GTFS referentes a este plano.",
 				"no_file_selected": "Nenhum ficheiro selecionado",
 				"title": "Ficheiros GTFS"
 			},
-			"section_pcgi_legacy": {
+			"sectionPCgiLegacy": {
 				"description": "Dados da PCGI Legacy associados a este plano.",
 				"operation_plan_id_label": "Operation Plan ID da PCGI",
 				"operation_plan_id_placeholder": "operationPlanId",
@@ -50,7 +50,7 @@
 					"label": "Estado"
 				}
 			},
-			"table_columns": {
+			"tableColumns": {
 				"_id": "#ID",
 				"agency_id_normalized": "Operador",
 				"apps_controller": "SLA Status",
