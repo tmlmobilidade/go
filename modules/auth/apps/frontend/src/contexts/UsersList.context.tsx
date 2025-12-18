@@ -9,7 +9,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
 import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -58,6 +58,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	//
 	// A. Setup variables
 
+	const params = useParams<{ id?: string }>();
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
 
@@ -65,13 +66,7 @@ export const UsersListContextProvider = ({ children }: { children: React.ReactNo
 	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', parseAsArrayOfStrings.withDefault(rolesContext.data.raw.map(item => item._id)));
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 
-	const pathname = usePathname();
-
-	const selectedId = useMemo(() => {
-		const userId = pathname.split('/users/').pop()?.split('?').shift();
-		if (!userId) return undefined;
-		return decodeURIComponent(userId);
-	}, [pathname]);
+	const selectedId = useMemo(() => params?.id, [params]);
 
 	//
 	// B. Fetch data
