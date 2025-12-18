@@ -4,6 +4,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { usePlansListContext } from '@/contexts/PlansList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function PlansListFilterAgency() {
 
 	const agenciesContext = useAgenciesContext();
 	const plansListContext = usePlansListContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.list.filterBar' });
 
 	//
 	// B. Transform data
@@ -47,7 +49,7 @@ export function PlansListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Operador"
+			label={t('filter_agency.label')}
 			onChange={plansListContext.actions.setFilterAgency}
 			options={parsedOptions}
 			withToggleAll

@@ -4,6 +4,7 @@ import { usePlansListContext } from '@/contexts/PlansList.context';
 import { planValidityStatus, planValidityStatusValues } from '@/types/normalized';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function PlansListFilterValidityStatus() {
 	// A. Setup variables
 
 	const plansListContext = usePlansListContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.list.filterBar' });
 
 	//
 	// B. Transform data
@@ -46,7 +48,7 @@ export function PlansListFilterValidityStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Estado de Validade"
+			label={t('filter_validity_status.label')}
 			onChange={plansListContext.actions.setFilterValidityStatus}
 			options={parsedOptions}
 			withToggleAll

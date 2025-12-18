@@ -42,13 +42,22 @@
 
 		},
 		"list": {
+			"filterBar": {
+				"filter_agency": {
+					"label": "Operador"
+				},
+				"filter_validity_status": {
+					"label": "Estado"
+				}
+			},
 			"table_columns": {
 				"_id": "#ID",
 				"agency_id_normalized": "Operador",
 				"apps_controller": "SLA Status",
 				"apps_merger": "Merger Status",
 				"gtfs_feed_info": "Data de Validade"
-			}
+			},
+			"title": "Planos"
 		}
 	},
 	"validations": {

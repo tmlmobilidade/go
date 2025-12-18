@@ -24,6 +24,7 @@ export function ValidationsDetailHeader() {
 	const router = useRouter();
 	const validationsDetailContext = useValidationsDetailContext();
 	const { t } = useTranslation('plans', { keyPrefix: 'validations.detail.header' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// C. Handle actions
@@ -80,7 +81,7 @@ export function ValidationsDetailHeader() {
 					<Button
 						disabled={validationsDetailContext.flags.loading}
 						icon={<IconRosetteDiscountCheckFilled />}
-						label="Aprovar Plano"
+						label={t('approve_plan')}
 						loading={validationsDetailContext.flags.loading}
 						onClick={handleApprovePlan}
 					/>
