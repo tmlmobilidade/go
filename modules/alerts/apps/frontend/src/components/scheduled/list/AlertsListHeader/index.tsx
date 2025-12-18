@@ -1,7 +1,7 @@
 /* * */
 
 import { openCreateScheduledAlertModal } from '@/components/scheduled/create/ScheduledAlertCreate.modal';
-import { useAlertListContext } from '@/contexts/AlertList.context';
+import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
@@ -13,7 +13,7 @@ export function AlertsListHeader() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Render components

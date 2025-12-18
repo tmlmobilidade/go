@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
 
 /* * */
