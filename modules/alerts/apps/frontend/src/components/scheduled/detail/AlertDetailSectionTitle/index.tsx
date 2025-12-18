@@ -53,6 +53,7 @@ export function AlertDetailSectionTitle() {
 				<CoordinatesInput
 					key={alertDetailContext.data.form.key('coordinates')}
 					description="Ponto de referência do alerta, para que seja possível localizar o alerta no mapa."
+					value={alertDetailContext.data.form.values.coordinates}
 					{...alertDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput

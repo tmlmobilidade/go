@@ -50,6 +50,7 @@ export function AlertDetailSectionCauseEffect() {
 						data={causeItems}
 						description="O que aconteceu"
 						label="Causa"
+						value={alertDetailContext.data.form.values.cause}
 						{...alertDetailContext.data.form.getInputProps('cause')}
 					/>
 				</div>
@@ -59,6 +60,7 @@ export function AlertDetailSectionCauseEffect() {
 						data={effectItems}
 						description="O que aconteceu como consequência"
 						label="Efeito"
+						value={alertDetailContext.data.form.values.effect}
 						{...alertDetailContext.data.form.getInputProps('effect')}
 					/>
 				</div>
