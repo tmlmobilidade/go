@@ -6,7 +6,6 @@ import { useRolesContext } from '@/contexts/Roles.context';
 import { type RoleNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { useSearch } from '@tmlmobilidade/ui';
-import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -18,7 +17,6 @@ interface RolesListContextState {
 	}
 	data: {
 		filtered: RoleNormalized[]
-		selectedId: string | undefined
 	}
 	filters: {
 		search: string
@@ -50,15 +48,8 @@ export const RolesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const rolesContext = useRolesContext();
-	const pathname = usePathname();
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-
-	const selectedId = useMemo(() => {
-		const roleId = pathname.split('/roles/').pop()?.split('?').shift();
-		if (!roleId) return undefined;
-		return decodeURIComponent(roleId);
-	}, [pathname]);
 
 	//
 	// B. Transform data
@@ -88,7 +79,6 @@ export const RolesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		data: {
 			filtered: searchResultsData,
-			selectedId,
 		},
 		filters: {
 			search: filterSearch,
@@ -102,7 +92,6 @@ export const RolesListContextProvider = ({ children }: PropsWithChildren) => {
 		rolesContext.flags.loading,
 		searchResultsData,
 		filterSearch,
-		selectedId,
 	]);
 
 	//

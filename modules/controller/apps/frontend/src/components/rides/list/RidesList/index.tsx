@@ -17,7 +17,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -28,6 +28,8 @@ export function RidesList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const ridesListContext = useRidesListContext();
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
@@ -128,7 +130,7 @@ export function RidesList() {
 				onRowClick={handleRowClick}
 				records={ridesListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={ridesListContext.data.selectedRideId}
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

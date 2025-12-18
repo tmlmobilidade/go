@@ -1,7 +1,7 @@
 /* * */
 
 import { PlansList } from '@/components/plans/list/PlansList';
-import { PlansListContextProvider } from '@/contexts/PlansList.context';
+import { PlansListContextProvider } from '@/components/plans/list/PlansList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

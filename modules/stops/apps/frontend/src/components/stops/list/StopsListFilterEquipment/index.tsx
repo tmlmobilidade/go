@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useStopsListContext } from '@/contexts/StopsList.context';
+import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { Translations } from '@/lib/translations';
 import { StopEquipmentSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';

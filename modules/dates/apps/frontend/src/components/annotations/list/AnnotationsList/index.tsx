@@ -11,7 +11,7 @@ import { type AnnotationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -22,6 +22,8 @@ export function AnnotationsList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const annotationsListContext = useAnnotationsListContext();
 
 	const columns: DataTableColumn<AnnotationNormalized>[] = [
@@ -79,6 +81,7 @@ export function AnnotationsList() {
 				onRowClick={handleRowClick}
 				records={annotationsListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

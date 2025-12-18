@@ -2,12 +2,12 @@
 
 /* * */
 
+import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { RolesListHeader } from '@/components/roles/list/RolesListHeader';
-import { useRolesListContext } from '@/contexts/RolesList.context';
 import { type RoleNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -18,6 +18,8 @@ export function RolesList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const rolesListContext = useRolesListContext();
 
 	const columns: DataTableColumn<RoleNormalized>[] = [
@@ -59,16 +61,13 @@ export function RolesList() {
 	}
 
 	return (
-		<Pane header={[
-			<RolesListHeader />,
-		]}
-		>
+		<Pane header={[<RolesListHeader />]}>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
 				records={rolesListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={rolesListContext.data.selectedId}
+				selectedId={params.id}
 			/>
 		</Pane>
 	);
