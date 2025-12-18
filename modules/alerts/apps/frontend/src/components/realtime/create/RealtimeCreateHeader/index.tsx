@@ -3,7 +3,7 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,7 +20,7 @@ export function RealtimeCreateHeader() {
 
 	return (
 		<Toolbar>
-			{!realtimeCreateContext.flags.isFirst && <BackButton onClick={() => realtimeCreateContext.actions.prevStep()} />}
+			{!realtimeCreateContext.flags.isFirst && <CloseButton onClick={() => realtimeCreateContext.actions.prevStep()} />}
 			<Tag label="Criar alerta" variant="primary" />
 			<Spacer />
 			<TripNextButton />

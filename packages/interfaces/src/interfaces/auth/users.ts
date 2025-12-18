@@ -1,16 +1,22 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type CreateUserDto, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, UserSchema } from '@tmlmobilidade/types';
+import { type CreateUserDto, CreateUserSchema, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, type User_UNSAFE } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, type FindOptions, type IndexDescription, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
-class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto> {
+interface SafeUserOptions {
+	includeUnsafeProperties: boolean
+}
+
+/* * */
+
+class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, UpdateUserDto> {
 	private static _instance: UsersClass;
-	protected override createSchema: z.ZodSchema = UserSchema;
+	protected override createSchema: z.ZodSchema = CreateUserSchema;
 	protected override updateSchema: z.ZodSchema = UpdateUserSchema;
 
 	private constructor() {
@@ -29,38 +35,41 @@ class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto
 	/**
 	 * Finds a user document by its email.
 	 * @param email The email of the user to find.
-	 * @param includePasswordHash - Whether to include the password hash in the result.
+	 * @param options.includeUnsafeProperties Whether to include the password hash in the result.
 	 * @returns A promise that resolves to the matching user document or null if not found.
 	 */
-	async findByEmail(email: string, includePasswordHash = false) {
+	async findByEmail(email: string, options: SafeUserOptions & { includeUnsafeProperties: true }): Promise<null | WithId<User_UNSAFE>>;
+	async findByEmail(email: string, options?: SafeUserOptions): Promise<null | WithId<User>>;
+	async findByEmail(email: string, options?: SafeUserOptions) {
 		const foundUser = await this.mongoCollection.findOne({ email: { $eq: email } });
 		if (!foundUser) return null;
-		if (includePasswordHash) return foundUser;
+		if (options?.includeUnsafeProperties) return foundUser;
 		return this.sanitizeUser(foundUser);
 	}
 
 	/**
 	 * Finds a user document by its ID.
 	 * @param id The ID of the user document to find
-	 * @param includePasswordHash Whether to include the password hash in the result
+	 * @param includeUnsafeProperties Whether to include the password hash in the result
 	 * @returns A promise that resolves to the matching user document or null if not found
 	 */
-	override async findById(id: string, options?: FindOptions, includePasswordHash = false) {
+	override async findById(id: string, options: FindOptions & { includeUnsafeProperties: true }): Promise<null | WithId<User_UNSAFE>>;
+	override async findById(id: string): Promise<null | WithId<User>>;
+	override async findById(id: string, options?: FindOptions & SafeUserOptions) {
 		const foundUser = await this.mongoCollection.findOne({ _id: id }, options);
 		if (!foundUser) return null;
-		if (includePasswordHash) return foundUser;
+		if (options?.includeUnsafeProperties) return foundUser;
 		return this.sanitizeUser(foundUser);
 	}
 
 	/**
 	 * Finds users by their organization code.
 	 * @param code The code of the organization to find users for.
-	 * @param includePasswordHash Whether to include the password hash in the result.
+	 * @param includeUnsafeProperties Whether to include the password hash in the result.
 	 * @returns A promise that resolves to the matching user documents or null if not found.
 	 */
-	async findByOrganization(id: string, includePasswordHash = false) {
+	async findByOrganization(id: string) {
 		const foundUsers = await this.mongoCollection.find({ organization_id: { $in: [id] } }).toArray();
-		if (includePasswordHash) return foundUsers;
 		return foundUsers.map(item => this.sanitizeUser(item));
 	}
 
@@ -69,9 +78,8 @@ class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto
 	 * @param role The role of the user to find.
 	 * @returns A promise that resolves to the matching user document or null if not found.
 	 */
-	async findByRole(role: string, includePasswordHash = false) {
+	async findByRole(role: string) {
 		const foundUsers = await this.mongoCollection.find({ role_ids: { $in: [role] } }).toArray();
-		if (includePasswordHash) return foundUsers;
 		return foundUsers.map(item => this.sanitizeUser(item));
 	}
 
@@ -122,6 +130,8 @@ class UsersClass extends MongoCollectionClass<User, CreateUserDto, UpdateUserDto
 			...user,
 			password_hash: null,
 			permissions: PermissionCatalog.sanitize(user.permissions),
+			session_ids: null,
+			verification_token_ids: null,
 		};
 	}
 }

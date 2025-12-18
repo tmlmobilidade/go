@@ -6,7 +6,7 @@ import { Tag } from '@tmlmobilidade/ui';
 /* * */
 
 interface AlertTagPublishStatusProps {
-	value: typeof AlertSchema.shape.publish_status.options[number]
+	value: typeof AlertSchema.shape.publish_status._type
 }
 
 /* * */

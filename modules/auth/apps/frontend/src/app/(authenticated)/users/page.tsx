@@ -1,13 +1,9 @@
 /* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { UsersListIdle } from '@/components/users/list/UsersListIdle/page';
 
 /* * */
 
 export default function Page() {
-	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione um Utilizador" />
-		</Surface>
-	);
+	return <UsersListIdle />;
 }

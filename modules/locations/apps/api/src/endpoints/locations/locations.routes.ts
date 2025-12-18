@@ -5,29 +5,27 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 
-const server = FastifyService.getInstance().server;
-const namespace = '/locations';
+const NAMESPACE = '/locations';
 
 /* * */
 
+const server = FastifyService.getInstance().server;
+
 server.register(
 	(instance, _, next) => {
-		// GET /
+		//
+
 		instance.get('/coordinates', LocationsController.findByCoordinates);
 
-		// GET /districts
 		instance.get('/districts', LocationsController.getDistricts);
 
-		// GET /localities
 		instance.get('/localities', LocationsController.getLocalities);
 
-		// GET /municipalities
 		instance.get('/municipalities', LocationsController.getMunicipalities);
 
-		// GET /parishes
 		instance.get('/parishes', LocationsController.getParishes);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

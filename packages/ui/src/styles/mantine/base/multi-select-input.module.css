@@ -1,0 +1,15 @@
+/* * */
+/* WRAPPER */
+
+.wrapper {
+	padding: 0;
+}
+
+
+/* * */
+/* INPUT */
+
+.input {
+	height: auto;
+	min-height: 40px;
+}

@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type WikiArticle } from '@tmlmobilidade/types';
-import { BackButton, Label, Spacer, TagGroup, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Label, Spacer, TagGroup, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -33,7 +33,7 @@ export function WikiDetailHeader({ data }: WikiDetailHeaderProps) {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} />
+			<CloseButton onClick={handleClose} />
 			<Label size="lg" singleLine>{data.title}</Label>
 			<Spacer />
 			<TagGroup limit={10} tags={data.tags.map(tag => ({ label: tag, variant: 'secondary' }))} />

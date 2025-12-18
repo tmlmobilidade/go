@@ -1,7 +1,7 @@
 /* * */
 
 import { AgencyDetail } from '@/components/agencies/detail/AgencyDetail';
-import { AgencyDetailContextProvider } from '@/contexts/AgencyDetail.context';
+import { AgencyDetailContextProvider } from '@/components/agencies/detail/AgencyDetail.context';
 
 /* * */
 

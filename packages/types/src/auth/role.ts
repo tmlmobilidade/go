@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 export const RoleSchema = DocumentSchema.extend({
 	name: z.string(),
-	permissions: z.array(PermissionSchema),
+	permissions: z.array(PermissionSchema).default([]),
 });
 
 export const CreateRoleSchema = RoleSchema.omit({ _id: true, created_at: true, updated_at: true });

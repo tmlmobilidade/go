@@ -45,10 +45,7 @@ export function TopbarNotificationsItem({ notification }: { notification: Notifi
 					</div>
 				</Section>
 			</div>
-			<DeleteButton
-				onDelete={() => { notificationsContext.actions.deleteNotification(notification._id); }}
-				variant="subtle"
-			/>
+			<DeleteButton onDelete={() => { notificationsContext.actions.deleteNotification(notification._id); }} />
 		</div>
 	);
 

@@ -46,6 +46,12 @@ server.register(
 			RolesController.delete,
 		);
 
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.lock]) },
+			RolesController.lock,
+		);
+
 		next();
 	},
 	{ prefix: NAMESPACE },

@@ -1,7 +1,7 @@
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { facilitiesSchema } from '@tmlmobilidade/types';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { StopFacilitySchema } from '@tmlmobilidade/types';
 import { Checkbox, ProposedChangesWrapper } from '@tmlmobilidade/ui';
 import React from 'react';
 
@@ -10,7 +10,7 @@ import React from 'react';
 interface StopDetailFacilityCheckboxProps {
 	label: string
 	proposeable?: boolean
-	value: typeof facilitiesSchema.options[number]
+	value: typeof StopFacilitySchema.options[number]
 }
 
 /* * */
@@ -20,8 +20,8 @@ export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDe
 
 	//
 	// A. Setup variables
+
 	const stopDetailContext = useStopDetailContext();
-	const form = stopDetailContext.data.form;
 	const stopId = stopDetailContext.data.stop?._id;
 
 	//
@@ -29,13 +29,13 @@ export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDe
 
 	const checkbox = (
 		<Checkbox
-			checked={form.values.facilities?.includes(value) ?? false}
+			checked={stopDetailContext.data.form.values.facilities?.includes(value) ?? false}
 			label={label}
 			onChange={(e) => {
-				const facilities = form.values.facilities ?? [];
+				const facilities = stopDetailContext.data.form.values.facilities ?? [];
 				const isChecked = e.target.checked;
 				const newFacilities = isChecked ? [...facilities, value] : facilities.filter(f => f !== value);
-				form.setFieldValue('facilities', newFacilities);
+				stopDetailContext.data.form.setFieldValue('facilities', newFacilities);
 			}}
 		/>
 	);

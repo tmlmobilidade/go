@@ -34,6 +34,9 @@ const TagBody = forwardRef<HTMLDivElement, TagProps>((props, ref) => (
 ),
 );
 
+/**
+ * Tag component used to display a small badge with optional icon and tooltip.
+ */
 export function Tag(props: TagProps) {
 	//
 

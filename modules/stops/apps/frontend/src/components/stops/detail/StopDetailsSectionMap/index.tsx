@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';

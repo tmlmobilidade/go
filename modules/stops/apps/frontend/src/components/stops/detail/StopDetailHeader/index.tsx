@@ -2,10 +2,10 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -23,7 +23,7 @@ export function StopDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(PAGE_ROUTES.stops.STOPS_LIST, { scroll: false });
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST));
 	};
 
 	//
@@ -31,23 +31,52 @@ export function StopDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
+			{stopDetailContext.data.stop?.is_deleted && <Tag label="Paragem Eliminada" variant="danger" />}
+
 			<Spacer />
-			<Button
-				disabled={!stopDetailContext.flags.can_save}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={stopDetailContext.flags.saving}
-				onClick={stopDetailContext.actions.saveStop}
-				variant="primary"
-			/>
-			<Button
-				icon={<IconTrash size={28} />}
-				label="Eliminar"
-				onClick={stopDetailContext.actions.deleteStop}
-				variant="danger"
-			/>
+
+			<HasPermission
+				action={PermissionCatalog.all.stops.actions.update}
+				scope={PermissionCatalog.all.stops.scope}
+			>
+				<SaveButton
+					isDisabled={!stopDetailContext.flags.canSave}
+					isLoading={stopDetailContext.flags.isSaving}
+					onClick={stopDetailContext.actions.save}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.stops.actions.lock}
+				scope={PermissionCatalog.all.stops.scope}
+			>
+				<LockButton
+					isDisabled={!stopDetailContext.flags.canLock}
+					isLoading={stopDetailContext.flags.isLocking}
+					isLocked={stopDetailContext.data.stop?.is_locked}
+					onClick={stopDetailContext.actions.lock}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.stops.actions.delete}
+				scope={PermissionCatalog.all.stops.scope}
+			>
+				<DeleteButton
+					confirmMessage="Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura."
+					confirmTitle="Eliminar Paragem"
+					isDeleted={stopDetailContext.data.stop?.is_deleted}
+					isDisabled={!stopDetailContext.flags.canDelete}
+					isLoading={stopDetailContext.flags.isDeleting}
+					onDelete={stopDetailContext.actions.delete}
+					onRestore={stopDetailContext.actions.delete}
+					showConfirmation={true}
+				/>
+			</HasPermission>
+
 		</Toolbar>
 	);
 

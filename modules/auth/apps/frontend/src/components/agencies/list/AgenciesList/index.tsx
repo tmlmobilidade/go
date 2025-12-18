@@ -39,8 +39,7 @@ export function AgenciesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: AgencyNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id)));
 	};
 
 	//

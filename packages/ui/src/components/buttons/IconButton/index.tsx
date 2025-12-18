@@ -4,7 +4,7 @@
 
 import { ActionIcon } from '@mantine/core';
 
-import { Tooltip } from '../../common';
+import { Tooltip } from '../../common/Tooltip';
 
 /* * */
 
@@ -37,10 +37,6 @@ export function IconButton({ color, disabled, icon, isLoading, isReadOnly, toolt
 	// A. Define variables
 	const isLink = props.type === 'link';
 
-	if (disabled) {
-		variant = 'disabled';
-	}
-
 	//
 	// B. Handle actions
 	const handleClick = () => {
@@ -62,7 +58,6 @@ export function IconButton({ color, disabled, icon, isLoading, isReadOnly, toolt
 			<ActionIcon
 				color={color ?? 'var(--color-primary)'}
 				component={isLink ? 'a' : 'button'}
-				data-disabled={disabled}
 				disabled={disabled}
 				href={isLink ? (props as LinkProps).href : undefined}
 				loading={isLoading}

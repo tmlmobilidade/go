@@ -15,7 +15,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.35.0",
+		"@tabler/icons-react": "3.36.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
@@ -27,11 +27,11 @@
 		"nuqs": "2.8.5",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
-		"swr": "2.3.7"
+		"swr": "2.3.8"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.0.1",
+		"@types/node": "25.0.2",
 		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"

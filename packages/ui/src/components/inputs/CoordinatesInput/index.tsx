@@ -18,6 +18,11 @@ const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, 
 interface CoordinatesInputProps {
 	description?: string
 	disabled?: boolean
+	/**
+	 * The `key` prop is required to ensure correct re-mounting behavior.
+	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
+	 */
+	key?: string
 	label?: string
 	onChange?: (changed: [number, number]) => void
 	onPaste?: (pastedValues: string[]) => void
@@ -27,31 +32,27 @@ interface CoordinatesInputProps {
 export function CoordinatesInput({ description, disabled = false, label = 'Coordenadas', onChange, onPaste, value }: CoordinatesInputProps) {
 	//
 
+	//
 	// A. Setup variables
 
 	const [coordinates, setCoordinates] = useState<[number, number]>(value ?? [0, 0]);
 
 	//
 	// B. Setup functions
+
 	useEffect(() => {
-		if (
-			value
-			&& (value[0] !== coordinates[0] || value[1] !== coordinates[1])
-		) {
+		if (value && (value[0] !== coordinates[0] || value[1] !== coordinates[1])) {
 			setCoordinates(value);
 		}
 	}, [value]);
 
-	const updateCoordinates = useCallback(
-		(newCoords: [number, number]) => {
-			setCoordinates(newCoords);
-			onChange?.(newCoords);
-		},
-		[onChange],
-	);
+	const updateCoordinates = useCallback((newCoords: [number, number]) => {
+		setCoordinates(newCoords);
+		onChange?.(newCoords);
+	}, [onChange]);
 
 	//
-	// C. Setup handlers
+	// C. Handle actions
 
 	const handlePaste = useCallback(
 		(event: React.ClipboardEvent<HTMLInputElement>) => {
@@ -101,6 +102,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 			{description && <Description>{description}</Description>}
 			<Section flexDirection="row" gap="sm" padding="none">
 				<NumberInput
+					key="lat"
 					disabled={disabled}
 					onBlur={() => handleBlur(0)}
 					onPaste={handlePaste}
@@ -117,6 +119,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 				/>
 
 				<NumberInput
+					key="lon"
 					disabled={disabled}
 					onBlur={() => handleBlur(1)}
 					onPaste={handlePaste}

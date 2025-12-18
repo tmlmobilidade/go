@@ -15,7 +15,7 @@ export const AgencySchema = DocumentSchema.extend({
 		vkm_per_month: z.array(z.coerce.number()).length(12),
 	}),
 	name: z.string(),
-	operation_start_date: operationalDateSchema,
+	operation_start_date: operationalDateSchema.nullable().default(null),
 	phone: z.string(),
 	public_email: z.string().email(),
 	short_name: z.string(),

@@ -88,6 +88,26 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		},
 	},
 
+	dates: {
+		development: {
+			api_port: 52008,
+			api_url: 'http://localhost:52008',
+			cors_origin: true,
+			frontend_port: 51008,
+			frontend_url: 'http://localhost:51008/dates',
+		},
+		production: {
+			api_url: 'https://go.tmlmobilidade.pt/dates/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/dates',
+			...DEFAULT_PRODUCTION_CONFIG,
+		},
+		staging: {
+			api_url: 'https://staging.go.tmlmobilidade.pt/dates/api',
+			frontend_url: 'https://staging.go.tmlmobilidade.pt/dates',
+			...DEFAULT_STAGING_CONFIG,
+		},
+	},
+
 	exporter: {
 		development: {
 			api_port: 52007,

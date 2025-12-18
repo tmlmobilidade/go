@@ -107,8 +107,7 @@ export function RidesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: RideNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.controller.RIDES_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_DETAIL(item._id)));
 	};
 
 	//

@@ -108,12 +108,14 @@ export function ChangePasswordForm() {
 		>
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
+				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
 				placeholder="Password"
 				value={passwordValue}
 			/>
 			<PasswordInput
+				key="password-confirm"
 				disabled={isLoading}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
 				placeholder="Confirm password"

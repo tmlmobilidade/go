@@ -2,10 +2,8 @@
 
 /* * */
 
-import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { isEmail } from '@tmlmobilidade/strings';
-import { CreateAgencySchema } from '@tmlmobilidade/types';
-import { Collapsible, PillsInput, Section } from '@tmlmobilidade/ui';
+import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
+import { Collapsible, Grid, Section, TagsInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -26,33 +24,23 @@ export function AgencySectionContacts() {
 			title="Informação de contatos"
 		>
 			<Section gap="lg">
-
-				<PillsInput
-					description="Notificações serão enviadas para os emails de contacto da agência."
-					label="Emails de contacto do Operador"
-					values={agencyDetailContext.data.form.values.contact_emails_pto}
-					withAsterisk={!CreateAgencySchema.shape.contact_emails_pto.isOptional()}
-					onChange={(value) => {
-						agencyDetailContext.data.form.setFieldValue('contact_emails_pto', value);
-					}}
-					validate={{
-						message: 'Insira um email válido',
-						validator: isEmail,
-					}}
-				/>
-				<PillsInput
-					description="Notificações serão enviadas para os emails de contacto da TML."
-					label="Emails de contacto da Autoridade"
-					values={agencyDetailContext.data.form.values.contact_emails_pta}
-					withAsterisk={!CreateAgencySchema.shape.contact_emails_pta.isOptional()}
-					onChange={(value) => {
-						agencyDetailContext.data.form.setFieldValue('contact_emails_pta', value);
-					}}
-					validate={{
-						message: 'Insira um email válido',
-						validator: isEmail,
-					}}
-				/>
+				<Grid>
+					<TagsInput
+						key={agencyDetailContext.data.form.key('contact_emails_pto')}
+						description="Notificações serão enviadas para os emails de contacto da agência."
+						label="Emails de contacto do Operador"
+						readOnly={agencyDetailContext.flags.isReadOnly}
+						{...agencyDetailContext.data.form.getInputProps('contact_emails_pto')}
+					/>
+					<TagsInput
+						key={agencyDetailContext.data.form.key('contact_emails_pta')}
+						description="Notificações serão enviadas para os emails de contacto da TML."
+						label="Emails de contacto da Autoridade"
+						readOnly={agencyDetailContext.flags.isReadOnly}
+						w="100%"
+						{...agencyDetailContext.data.form.getInputProps('contact_emails_pta')}
+					/>
+				</Grid>
 			</Section>
 		</Collapsible>
 	);

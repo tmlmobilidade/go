@@ -36,7 +36,6 @@ class PCGIDBLegacyClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
-			// directConnection: true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',

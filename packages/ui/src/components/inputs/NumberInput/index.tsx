@@ -4,41 +4,22 @@
 
 import { Center, NumberInput as MantineNumberInput, NumberInputProps as MantineNumberInputProps, Tooltip } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
 
 /* * */
 
 export interface NumberInputProps extends MantineNumberInputProps {
-	hideControls?: boolean
+	/**
+	 * The `key` prop is required to ensure correct re-mounting behavior.
+	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
+	 */
+	key?: string
 	tooltip?: string
-	validation?: RegExp
 }
 
 /* * */
 
-export function NumberInput({ error, hideControls = true, validation, value, ...props }: NumberInputProps) {
+export function NumberInput(props: NumberInputProps) {
 	//
-
-	//
-	// A. Setup variables
-
-	const [isValid, setIsValid] = useState(true);
-
-	//
-	// B.Transform data
-
-	useEffect(() => {
-		if (!value || !error || !validation || value.toString().length === 0) {
-			setIsValid(true);
-		}
-		else {
-			const isValid = validation.test(value.toString());
-			setIsValid(isValid);
-		}
-	}, [value]);
-
-	//
-	// C. Render components
 
 	const renderTooltip = (tooltip?: string) => (
 		<Tooltip
@@ -55,10 +36,7 @@ export function NumberInput({ error, hideControls = true, validation, value, ...
 
 	return (
 		<MantineNumberInput
-			error={error ? error : isValid ? '' : error}
-			hideControls={hideControls}
 			rightSection={props.tooltip && renderTooltip(props.tooltip)}
-			value={value}
 			{...props}
 		/>
 	);

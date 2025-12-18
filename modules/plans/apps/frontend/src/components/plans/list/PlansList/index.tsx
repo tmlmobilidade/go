@@ -68,8 +68,7 @@ export function PlansList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: PlanNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.plans.APPROVED_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.plans.APPROVED_DETAIL(item._id)));
 	};
 
 	//

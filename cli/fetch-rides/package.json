@@ -41,7 +41,7 @@
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "^1.0.0",
 		"@tmlmobilidade/tsconfig": "20251202.1817.5",
-		"@types/node": "25.0.1",
+		"@types/node": "25.0.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0"
 	}

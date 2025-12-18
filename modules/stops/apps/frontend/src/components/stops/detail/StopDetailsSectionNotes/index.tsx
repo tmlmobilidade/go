@@ -2,8 +2,8 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
-import { Collapsible, Section, Textarea } from '@tmlmobilidade/ui';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { Collapsible, Grid, Section, Textarea } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -24,12 +24,16 @@ export function StopDetailsSectionNotes() {
 			title="Notas e Comentários"
 		>
 			<Section>
-				<Textarea
-					mih="100px"
-					miw="100%"
-					placeholder="Construção planeada a..."
-					{...stopDetailContext.data.form.getInputProps('comments')}
-				/>
+				<Grid>
+					<Textarea
+						key={stopDetailContext.data.form.key('comments')}
+						minRows={10}
+						placeholder="Construção planeada a..."
+						readOnly={stopDetailContext.flags.isReadOnly}
+						autosize
+						{...stopDetailContext.data.form.getInputProps('comments')}
+					/>
+				</Grid>
 			</Section>
 		</Collapsible>
 	);

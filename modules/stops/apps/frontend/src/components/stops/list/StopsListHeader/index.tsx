@@ -1,11 +1,10 @@
 /* * */
 
-import { CreateStopModal } from '@/components/stops/create/CreateStopModal';
+import { openCreateStopModal } from '@/components/stops/create/StopCreate.modal';
 import { useStopsListContext } from '@/contexts/StopsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { useState } from 'react';
 
 /* * */
 
@@ -17,26 +16,18 @@ export function StopsListHeader() {
 
 	const stopsListContext = useStopsListContext();
 
-	const [createStopModalState, setCreateStopModalState] = useState<boolean>(false);
-
 	//
 	// B. Render components
 
 	return (
-		<>
-			<CreateStopModal
-				onClose={() => setCreateStopModalState(false)}
-				opened={createStopModalState}
-			/>
-			<Toolbar>
-				<Label size="lg" caps>Paragens</Label>
-				<Spacer />
-				<SearchInput onChange={stopsListContext.actions.setFilterSearch} value={stopsListContext.filters.search} />
-				<HasPermission action={PermissionCatalog.all.stops.actions.create} scope={PermissionCatalog.all.stops.scope}>
-					<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={() => setCreateStopModalState(true)} />
-				</HasPermission>
-			</Toolbar>
-		</>
+		<Toolbar>
+			<Label size="lg" caps>Paragens</Label>
+			<Spacer />
+			<SearchInput onChange={stopsListContext.actions.setFilterSearch} value={stopsListContext.filters.search} />
+			<HasPermission action={PermissionCatalog.all.stops.actions.create} scope={PermissionCatalog.all.stops.scope}>
+				<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={openCreateStopModal} />
+			</HasPermission>
+		</Toolbar>
 	);
 
 	//

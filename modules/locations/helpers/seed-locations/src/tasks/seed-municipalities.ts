@@ -22,10 +22,10 @@ export async function seedMunicipalities() {
 		// Parse the JSON data into
 		// the Municipality format
 
-		const parsedMunicipalities = municipalitiesData.map((item) => {
-			console.log(item);
-			process.exit(0);
-		});
+		const parsedMunicipalities = municipalitiesData; // .map((item) => {
+		// console.log(item);
+		// process.exit(0);
+		// });
 
 		Logger.info(`Parsed ${parsedMunicipalities.length} municipalities.`);
 

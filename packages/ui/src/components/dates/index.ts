@@ -1,4 +1,4 @@
-export * from './DatePicker';
+export * from './DateInput';
 export * from './DateTimePicker';
 export * from './MonthPicker';
 export * from './YearPicker';

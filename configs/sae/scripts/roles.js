@@ -136,6 +136,14 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'annotations', db: 'production' } },
+	],
+	role: 'dates',
+	roles: [{ db: 'admin', role: 'common' }],
+});
+
+db.createRole({
+	privileges: [
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'alerts', db: 'production' } },
@@ -172,6 +180,11 @@ db.createRole({
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'simplified_vehicle_events', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'metrics', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'census', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'districts', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'localities', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'municipalities', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'parishes', db: 'production' } },
 	],
 	role: 'dgc-user',
 	roles: [],

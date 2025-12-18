@@ -65,7 +65,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 	const locationsContext = useLocationsContext();
 	const pathname = usePathname();
 
-	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status.options);
+	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(AlertSchema.shape.publish_status._def.innerType._def.values);
 	const [filterCause, setFilterCause] = useState<string[]>(AlertSchema.shape.cause.options);
 	const [filterEffect, setFilterEffect] = useState<string[]>(AlertSchema.shape.effect.options);
 	const [filterMunicipality, setFilterMunicipality] = useState<string[]>(locationsContext.data.municipality_ids);
@@ -94,7 +94,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 		setFilterCause(queryCause.length === 0 ? AlertSchema.shape.cause.options : queryCause);
 		setFilterEffect(queryEffect.length === 0 ? AlertSchema.shape.effect.options : queryEffect);
 		setFilterMunicipality(queryMunicipality.length === 0 ? locationsContext.data.municipality_ids : queryMunicipality);
-		setFilterPublishStatus(queryPublishStatus.length === 0 ? AlertSchema.shape.publish_status.options : queryPublishStatus);
+		setFilterPublishStatus(queryPublishStatus.length === 0 ? AlertSchema.shape.publish_status._def.innerType.options : queryPublishStatus);
 	}, [queryCause, queryEffect, queryMunicipality, queryPublishStatus]);
 
 	const normalizedAlertsData: AlertNormalized[] = useMemo(() => {
@@ -162,7 +162,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 	};
 
 	const handleSetFilterPublishStatus = (values: string[]) => {
-		setQueryPublishStatus(values.length === AlertSchema.shape.publish_status.options.length ? [] : values);
+		setQueryPublishStatus(values.length === AlertSchema.shape.publish_status._def.innerType.options.length ? [] : values);
 		setFilterPublishStatus(values);
 	};
 

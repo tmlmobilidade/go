@@ -47,9 +47,9 @@ server.register(
 		);
 
 		instance.get(
-			'/:id/toggle-lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.toggle_lock]) },
-			PlansController.toggleLockById,
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.lock]) },
+			PlansController.lock,
 		);
 
 		instance.get(
