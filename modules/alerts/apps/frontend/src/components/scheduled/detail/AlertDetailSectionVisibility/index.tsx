@@ -4,6 +4,7 @@
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,14 +21,15 @@ export function AlertDetailSectionVisibility() {
 
 	const startDateValue = alertDetailContext.data.form.getValues().publish_start_date;
 	const endDateValue = alertDetailContext.data.form.getValues().publish_end_date;
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.detail.sectionVisibility' });
 
 	//
 	// C. Render components
 
 	return (
 		<Collapsible
-			description="É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência."
-			title="Visibilidade e Agendamento"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker

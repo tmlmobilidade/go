@@ -17,6 +17,12 @@
 					"title_placeholder": "..."
 				},
 				"title": "Título e Descrição"
+			},
+			"sectionVisibility": {
+				"description": "É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.",
+				"publish_end_date_label": "Data de Fim",
+				"publish_start_date_label": "Data de Início",
+				"title": "Visibilidade e Agendamento"
 			}
 		},
 		"list": {
