@@ -22,6 +22,35 @@
 		"filter_type_list": {
 			"toggle_all_label": "Selecionar tudo"
 		},
+		"reference_group": {
+			"confirm_change_reference": "Tem certeza que deseja mudar a referência?",
+			"lose_all_changes": "Você está prestes a perder as referências que já foram adicionadas.",
+			"no_reference_available": "Não há referencias disponíveis.",
+			"reference_agencies": {
+				"add_button_label": "Adicionar Rota",
+				"combobox_aria_label": "Agência Afetada",
+				"combobox_label": "Agências Afetada"
+			},
+			"reference_routes": {
+				"add_button_label": "Adicionar Rota",
+				"affected_stops_aria_label": "Paragens Afetadas",
+				"affected_stops_description": "Selecione as paragens que serão afetadas pelo alerta",
+				"affected_stops_label": "Paragens Afetadas",
+				"combobox_aria_label": "Linha Afetada",
+				"combobox_label": "Linhas Afetada"
+			},
+			"reference_stops": {
+				"add_button_label": "Adicionar Paragem",
+				"affected_lines_aria_label": "Linhas Afetadas",
+				"affected_lines_description": "Selecione as linhas que serão afetadas pelo alerta",
+				"affected_lines_label": "Linhas Afetadas",
+				"affected_stops_aria_label": "Paragem Afetada",
+				"affected_stops_description": "Selecione as paragens que serão afetadas pelo alerta",
+				"affected_stops_label": "Paragens Afetadas",
+				"combobox_aria_label": "Paragem Afetada",
+				"combobox_label": "Paragem Afetada"
+			}
+		},
 		"search_input": {
 			"placeholder": "Pesquisar..."
 		},
@@ -47,10 +76,13 @@
 	"operations": {
 		"approve_plan": "Aprovar plano",
 		"cancel": "Cancelar",
+		"continue": "Continuar",
 		"create_validation": "Criar validação",
 		"delete": "Apagar",
 		"duplicate": "Duplicar",
 		"edit": "Editar",
+		"eliminate": "Eliminar",
+		"exclude": "Excluir",
 		"publish": "Publicar",
 		"save": "Salvar",
 		"save_as_draft": "Salvar como rascunho",
@@ -273,6 +305,12 @@
 			},
 			"title": "Permissões de Utilizadores"
 		}
+	},
+	"referenceTypes": {
+		"agency": "Agências",
+		"line": "Linha",
+		"stop": "Paragem",
+		"trips": "Viagem"
 	},
 	"severitys": {
 		"error": "Erro",

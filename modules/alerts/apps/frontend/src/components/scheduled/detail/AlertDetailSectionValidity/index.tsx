@@ -4,6 +4,7 @@
 
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,18 +21,19 @@ export function AlertDetailSectionValidity() {
 
 	const startDateValue = alertDetailContext.data.form.getValues().active_period_start_date;
 	const endDateValue = alertDetailContext.data.form.getValues().active_period_end_date;
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.detail.sectionValidity' });
 
 	//
 	// C. Render components
 
 	return (
 		<Collapsible
-			description="Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias)."
-			title="Período de Vigência"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					label="Data de Início"
+					label={t('active_period_start_date_label')}
 					fullWidth
 					{...alertDetailContext.data.form.getInputProps('active_period_start_date')}
 					value={startDateValue}
@@ -40,7 +42,7 @@ export function AlertDetailSectionValidity() {
 					}}
 				/>
 				<DateTimePicker
-					label="Data de Fim"
+					label={t('active_period_end_date_label')}
 					clearable
 					fullWidth
 					{...alertDetailContext.data.form.getInputProps('active_period_end_date')}

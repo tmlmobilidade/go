@@ -7,6 +7,7 @@ import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Collapsible, MultiSelect, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function AlertDetailSectionReferences() {
 
 	const locationsContext = useLocationsContext();
 	const alertDetailContext = useAlertDetailContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.detail.sectionReferences' });
 
 	//
 	// B. Transform data
@@ -39,14 +41,14 @@ export function AlertDetailSectionReferences() {
 
 	return (
 		<Collapsible
-			description="As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste alerta."
-			title="Referências"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section gap="md">
 				<MultiSelect
 					data={municipalitiesOptions}
-					description="Selecione os municípios que serão afetados pelo alerta"
-					label="Municípios Afetados"
+					description={t('municipalities_description')}
+					label={t('municipalities_label')}
 					onChange={ids => alertDetailContext.data.form.setFieldValue('municipality_ids', ids)}
 					value={alertDetailContext.data.form.values.municipality_ids}
 				/>

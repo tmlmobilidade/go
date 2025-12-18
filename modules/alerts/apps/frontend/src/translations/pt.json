@@ -1,6 +1,21 @@
 {
 	"scheduled": {
 		"detail": {
+			"sectionCauseEffect": {
+				"cause_description": "O que aconteceu",
+				"cause_label": "Causa",
+				"description": "A causa é o que aconteceu, o efeito é o que aconteceu como consequência.",
+				"effect_description": "O que aconteceu como consequência",
+				"effect_label": "Efeito",
+				"title": "Causa e Efeito"
+			},
+			"sectionReferences": {
+				"description": "As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste alerta.",
+				"municipalities_description": "Selecione os municípios que serão afetados pelo alerta",
+				"municipalities_label": "Municípios Afetados",
+				"stops_label": "Paragens Afetadas",
+				"title": "Referências"
+			},
 			"sectionTitle": {
 				"description": "Breve descrição do que motivou a criação do alerta",
 				"fields": {
@@ -17,6 +32,12 @@
 					"title_placeholder": "..."
 				},
 				"title": "Título e Descrição"
+			},
+			"sectionValidity": {
+				"active_period_end_date": "Data de Fim",
+				"active_period_start_date": "Data de Início",
+				"description": "Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).",
+				"title": "Período de Vigência"
 			},
 			"sectionVisibility": {
 				"description": "É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.",

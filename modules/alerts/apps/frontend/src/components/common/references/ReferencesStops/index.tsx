@@ -8,6 +8,7 @@ import { Line, Stop } from '@carrismetropolitana/api-types/network';
 import { IconCornerDownRight, IconPlus, IconTrash } from '@tabler/icons-react';
 import { Button, Combobox, Label, MultiSelect, Section, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -33,13 +34,14 @@ export function ReferencesStops({ municipality_ids, onAddReference, onRemoveRefe
 
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
+	const { t } = useTranslation('global', { keyPrefix: 'components.reference_group' });
 
 	return (
 		<div className={styles.container}>
 			{references.length === 0 ? (
 				<Surface>
 					<Section>
-						<Label size="md" caps>Não há referências disponíveis.</Label>
+						<Label size="md" caps>{t('no_reference_available')}</Label>
 					</Section>
 				</Surface>
 			) : (
@@ -59,7 +61,7 @@ export function ReferencesStops({ municipality_ids, onAddReference, onRemoveRefe
 			<Button
 				className={styles.button}
 				icon={<IconPlus size={18} />}
-				label="Adicionar Paragem"
+				label={t('reference_stops.add_button_label')}
 				onClick={onAddReference}
 				variant="primary"
 			/>
@@ -91,6 +93,8 @@ function ReferencesStopsItem({
 	//
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation('global');
 
 	//
 	// B. Transform data
@@ -141,9 +145,9 @@ function ReferencesStopsItem({
 		<Surface>
 			<Section gap="md">
 				<Combobox
-					aria-label="Paragem Afetada"
+					aria-label={t('components.reference_group.reference_stops.combobox_aria_label')}
 					data={availableStops}
-					label="Paragem Afetada"
+					label={t('components.reference_group.reference_stops.affected_stops_label')}
 					onChange={value => onUpdateReference(index, 'parent_id', value || '')}
 					placeholder={municipality_ids.length === 0 ? 'Selecione os Municípios' : 'Selecione a Paragem'}
 					value={reference.parent_id}
@@ -154,10 +158,10 @@ function ReferencesStopsItem({
 				<div className={styles.childrenWrapper}>
 					<IconCornerDownRight className={styles.icon} size={28} />
 					<MultiSelect
-						aria-label="Linhas Afetadas"
+						aria-label={t('components.reference_group.reference_stops.affected_lines_aria_label')}
 						data={availableRoutes}
-						description="Selecione as linhas que serão afetadas pelo alerta"
-						label="Linhas Afetadas"
+						description={t('components.reference_group.reference_stops.affected_lines_description')}
+						label={t('components.reference_group.reference_stops.affected_lines_label')}
 						onChange={value => onUpdateReference(index, 'child_ids', value)}
 						value={reference.child_ids}
 					/>
@@ -166,7 +170,7 @@ function ReferencesStopsItem({
 					<Button
 						className={styles.button}
 						icon={<IconTrash size={18} />}
-						label="Eliminar"
+						label={t('operations.eliminate')}
 						onClick={() => onRemoveReference(index)}
 						variant="danger"
 					/>

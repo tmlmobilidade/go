@@ -4,6 +4,7 @@
 
 import { Alert, ReferenceType, ReferenceTypeSchema } from '@tmlmobilidade/types';
 import { openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { ReferencesAgencies } from '../ReferencesAgencies';
 import { ReferencesRoutes } from '../ReferencesRoutes';
@@ -35,19 +36,21 @@ export function ReferencesGroup({
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('global');
+
 	//
 	// B. Handle actions
 
 	const parseOptionsLabel = (value: Alert['reference_type']) => {
 		switch (value) {
 			case 'AGENCY':
-				return { label: 'Agências', value };
+				return { label: t('referenceTypes.agency'), value };
 			case 'LINE':
-				return { label: 'Linhas', value };
+				return { label: t('referenceTypes.line'), value };
 			case 'STOP':
-				return { label: 'Paragens', value };
+				return { label: t('referenceTypes.stop'), value };
 			case 'TRIP':
-				return { label: 'Viagens', value };
+				return { label: t('referenceTypes.trip'), value };
 		}
 	};
 
@@ -77,16 +80,16 @@ export function ReferencesGroup({
 				centered: true,
 				children: (
 					<>
-						<div>Você está prestes a perder as referências que já foram adicionadas.</div>
+						<div>{t('reference_group.lose_all_changes')}</div>
 					</>
 				),
 				closeOnClickOutside: true,
-				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
+				labels: { cancel: t('operations.cancel'), confirm: t('operations.continue') },
 				onConfirm: () => {
 					onSetFieldValue('reference_type', value);
 					onSetFieldValue('references', []);
 				},
-				title: 'Tem certeza que deseja mudar a referência?',
+				title: t('reference_group.confirm_change_reference'),
 			});
 		}
 		else {

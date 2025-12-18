@@ -7,6 +7,7 @@ import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -19,6 +20,7 @@ export function AlertDetailSectionCauseEffect() {
 	// A. Setup variables
 
 	const alertDetailContext = useAlertDetailContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.detail.sectionCauseEffect' });
 
 	//
 	// B. Transform data
@@ -40,23 +42,23 @@ export function AlertDetailSectionCauseEffect() {
 
 	return (
 		<Collapsible
-			description="A causa é o que aconteceu, o efeito é o que aconteceu como consequência."
-			title="Causa e Efeito"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<div className={styles.container}>
 					<Combobox
 						data={causeItems}
-						description="O que aconteceu"
-						label="Causa"
+						description={t('cause_description')}
+						label={t('cause_label')}
 						{...alertDetailContext.data.form.getInputProps('cause')}
 					/>
 				</div>
 				<div className={styles.container}>
 					<Combobox
 						data={effectItems}
-						description="O que aconteceu como consequência"
-						label="Efeito"
+						description={t('effect_description')}
+						label={t('effect_label')}
 						{...alertDetailContext.data.form.getInputProps('effect')}
 					/>
 				</div>

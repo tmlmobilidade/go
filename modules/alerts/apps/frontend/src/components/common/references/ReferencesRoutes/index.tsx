@@ -8,6 +8,7 @@ import { Line, Stop } from '@carrismetropolitana/api-types/network';
 import { IconCornerDownRight, IconPlus, IconTrash } from '@tabler/icons-react';
 import { Button, Combobox, Label, MultiSelect, Section, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -38,6 +39,7 @@ export function ReferencesRoutes({
 
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
+	const { t } = useTranslation('global', { keyPrefix: 'components.reference_group' });
 
 	//
 	// B. Render components
@@ -47,7 +49,7 @@ export function ReferencesRoutes({
 			{references.length === 0 ? (
 				<Surface>
 					<Section>
-						<Label size="md" caps>Não há referências disponíveis.</Label>
+						<Label size="md" caps>{t('no_reference_available')}</Label>
 					</Section>
 				</Surface>
 			) : (
@@ -67,7 +69,7 @@ export function ReferencesRoutes({
 			<Button
 				className={styles.button}
 				icon={<IconPlus size={18} />}
-				label="Adicionar Rota"
+				label={t('reference_routes.add_button_label')}
 				onClick={onAddReference}
 				variant="primary"
 			/>
@@ -101,6 +103,8 @@ function ReferencesRoutesItem({
 	//
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation('global');
 
 	//
 	// B. Transform data
@@ -151,9 +155,9 @@ function ReferencesRoutesItem({
 		<Surface>
 			<Section gap="md">
 				<Combobox
-					aria-label="Linha Afetada"
+					aria-label={t('components.reference_group.reference_routes.combobox_aria_label')}
 					data={availableLines}
-					label="Linha Afetada"
+					label={t('components.reference_group.reference_routes.combobox_label')}
 					onChange={value => onUpdateReference(index, 'parent_id', value || '')}
 					value={reference.parent_id}
 					clearable
@@ -163,10 +167,10 @@ function ReferencesRoutesItem({
 				<div className={styles.childrenWrapper}>
 					<IconCornerDownRight className={styles.icon} size={28} />
 					<MultiSelect
-						aria-label="Paragens Afetadas"
+						aria-label={t('components.reference_group.reference_routes.affected_stops_aria_label')}
 						data={availableStops}
-						description="Selecione as paragens que serão afetadas pelo alerta"
-						label="Paragens Afetadas"
+						description={t('components.reference_group.reference_routes.affected_stops_description')}
+						label={t('components.reference_group.reference_routes.affected_stops_label')}
 						onChange={value => onUpdateReference(index, 'child_ids', value)}
 						value={reference.child_ids}
 					/>
@@ -175,7 +179,7 @@ function ReferencesRoutesItem({
 					<Button
 						className={styles.button}
 						icon={<IconTrash size={18} />}
-						label="Eliminar"
+						label={t('operations.exclude')}
 						onClick={() => onRemoveReference(index)}
 						variant="danger"
 					/>

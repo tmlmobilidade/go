@@ -4,21 +4,22 @@
 
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 import { Button, Combobox, Label, Section, Surface } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface Reference {
-	child_ids: string[];
-	parent_id: string;
+	child_ids: string[]
+	parent_id: string
 }
 
 interface ReferencesAgenciesProps {
-	onAddReference: () => void;
-	onRemoveReference: (index: number) => void;
-	onUpdateReference: (index: number, parent_id: string) => void;
-	references: Reference[];
+	onAddReference: () => void
+	onRemoveReference: (index: number) => void
+	onUpdateReference: (index: number, parent_id: string) => void
+	references: Reference[]
 }
 
 export function ReferencesAgencies({
@@ -32,6 +33,7 @@ export function ReferencesAgencies({
 	// A. Setup variables
 
 	const availableAgencies = [{ label: 'Carris Metropolitana', value: 'CM' }];
+	const { t } = useTranslation('global', { keyPrefix: 'components.reference_group' });
 
 	//
 	// B. Render components
@@ -41,25 +43,25 @@ export function ReferencesAgencies({
 			{references.length === 0 ? (
 				<Surface>
 					<Section>
-						<Label size="md" caps>Não há referências disponíveis.</Label>
+						<Label size="md" caps>{t('no_reference_available')}</Label>
 					</Section>
 				</Surface>
 			) : (
 				references.map((reference, index) => (
 					<ReferencesAgenciesItem
 						key={index}
-						index={index}
-						reference={reference}
 						availableAgencies={availableAgencies}
+						index={index}
 						onRemoveReference={onRemoveReference}
 						onUpdateReference={onUpdateReference}
+						reference={reference}
 					/>
 				))
 			)}
 			<Button
 				className={styles.button}
 				icon={<IconPlus size={18} />}
-				label="Adicionar Rota"
+				label={t('reference_agencies.add_button_label')}
 				onClick={onAddReference}
 				variant="primary"
 			/>
@@ -72,23 +74,25 @@ export function ReferencesAgencies({
 /* * */
 
 interface ReferencesAgenciesItemProps {
-	index: number;
-	reference: Reference;
-	availableAgencies: Array<{ label: string; value: string }>;
-	onRemoveReference: (index: number) => void;
-	onUpdateReference: (index: number, parent_id: string) => void;
+	availableAgencies: { label: string, value: string }[]
+	index: number
+	onRemoveReference: (index: number) => void
+	onUpdateReference: (index: number, parent_id: string) => void
+	reference: Reference
 }
 
 function ReferencesAgenciesItem({
-	index,
-	reference,
 	availableAgencies,
+	index,
 	onRemoveReference,
 	onUpdateReference,
+	reference,
 }: ReferencesAgenciesItemProps) {
 	//
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation('global');
 
 	//
 	// B. Render components
@@ -97,11 +101,11 @@ function ReferencesAgenciesItem({
 		<Surface>
 			<Section gap="md">
 				<Combobox
-					aria-label="Agência Afetada"
+					aria-label={t('components.reference_group.reference_agencies.combobox_aria_label')}
 					data={availableAgencies}
-					label="Agência Afetada"
+					label={t('components.reference_group.reference_agencies.combobox_label')}
+					onChange={value => onUpdateReference(index, value || '')}
 					value={reference.parent_id}
-					onChange={(value) => onUpdateReference(index, value || '')}
 					clearable
 					fullWidth
 				/>
@@ -109,7 +113,7 @@ function ReferencesAgenciesItem({
 					<Button
 						className={styles.button}
 						icon={<IconTrash size={18} />}
-						label="Eliminar"
+						label={t('operations.eliminate')}
 						onClick={() => onRemoveReference(index)}
 						variant="danger"
 					/>
@@ -120,4 +124,3 @@ function ReferencesAgenciesItem({
 
 	//
 }
-
