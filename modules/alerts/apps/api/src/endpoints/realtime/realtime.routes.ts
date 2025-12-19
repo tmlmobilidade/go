@@ -1,13 +1,13 @@
 /* * */
 
-import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
+import { AlertsController } from '@/endpoints/scheduled/scheduled.controller.js';
 import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { type GetAllAlertsQuery, GetAllAlertsQuerySchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /* * */
 
-const namespace = '/alerts';
+const namespace = '/realtime';
 
 /* * */
 

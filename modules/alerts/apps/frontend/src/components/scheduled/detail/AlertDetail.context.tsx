@@ -1,30 +1,31 @@
 'use client';
 
+/* * */
+
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Alert, AlertSchema, CreateAlertDto, File as FileType, ReferenceTypeSchema, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { convertObject, fetchData, uploadFile } from '@tmlmobilidade/utils';
+import { type Alert, type File as FileType, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { DetailContextStateTemplate, keepUrlParams, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-interface AlertDetailContextState {
-	actions: {
-		deleteAlert: () => void
+/* * */
+
+interface AlertDetailContextState extends DetailContextStateTemplate {
+	actions: DetailContextStateTemplate['actions'] & {
 		deleteImage: () => void
 		fileChanged: (file: File) => void
-		saveAlert: (type: 'draft' | 'publish') => void
+		publish: () => void
 	}
 	data: {
 		form: UseFormReturnType<UpdateAlertDto>
 		id: string | undefined
-		imageUrl?: FileType
-	}
-	flags: {
-		isSaving: boolean
-		loading: boolean
+		image_url: FileType | undefined
 	}
 }
+
+/* * */
 
 const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
 
@@ -36,129 +37,144 @@ export function useAlertDetailContext() {
 	return context;
 }
 
-export const AlertDetailContextProvider = ({ alertId, children }: { alertId: string, children: React.ReactNode }) => {
+/* * */
+
+export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChildren<{ alertId: string }>) => {
+	//
+
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const [isSaving, setIsSaving] = useState(false);
-	const [image, setImage] = useState<File | null>(null);
+	const meContext = useMeContext();
 
-	const copyURL = new URLSearchParams(window.location.search).get('copy');
+	const [image, setImage] = useState<File | null>(null);
 
 	//
 	// B. Fetch Data
-	const { mutate: allAlertsMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
-	const { data: alertData, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(copyURL ? API_ROUTES.alerts.ALERTS_DETAIL(copyURL) : API_ROUTES.alerts.ALERTS_DETAIL(alertId));
 
-	const { data: alertImage, isLoading: alertImageLoading } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
+	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+	const { data: alertImage, error: alertImageError, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Define form
 
-	const { form } = useTypicalForm<UpdateAlertDto>(AlertSchema, alertData);
+	const { form } = useTypicalForm<UpdateAlertDto>(UpdateAlertSchema, alertData);
 
 	//
-	// D. Define actions
-	const saveAlert = async (type: 'draft' | 'publish') => {
-		setIsSaving(true);
-		const saveAlert: UpdateAlertDto = { ...form.values, publish_status: type === 'publish' ? 'PUBLISHED' : 'DRAFT' };
-		const body = convertObject(saveAlert, UpdateAlertSchema);
-		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', body);
+	// D. Handle actions
 
-		if (!response.isOk) {
-			useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
-			setIsSaving(false);
-			return;
-		}
+	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
+		onSuccess: (updatedItem) => {
+			form.resetDirty();
+			alertMutate(updatedItem);
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
 
-		if (response.data) await uploadImage(response.data._id.toString());
+	const { action: handlePublish, isLoading: isPublishing } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
+		onSuccess: (updatedItem) => {
+			form.resetDirty();
+			alertMutate(updatedItem);
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
 
-		if (response.data?._id) {
-			router.replace(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id.toString()));
-		}
+	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE'),
+		onSuccess: () => {
+			form.resetDirty();
+			alertsListMutate();
+			router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST));
+		},
+	});
 
-		form.resetDirty();
-		alertMutate();
-		allAlertsMutate();
-		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
+	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
+		onSuccess: () => {
+			form.resetDirty();
+			alertMutate();
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
 
-		setIsSaving(false);
-	};
+	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_LOCK(alertId)),
+		onSuccess: (updatedItem) => {
+			form.resetDirty();
+			alertMutate(updatedItem);
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
 
-	const deleteAlert = async () => {
-		if (!alertId) return;
-
-		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE', alert);
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao salvar alerta' });
-			}
-			return;
-		}
-
-		useToast.success({ message: 'Alerta apagado com sucesso', title: 'Sucesso' });
-
-		router.replace(PAGE_ROUTES.alerts.SCHEDULED_LIST);
-	};
-
-	const deleteImage = async () => {
-		if (!alertId) return;
-
-		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE', alert);
-		if (response.error) {
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao apagar imagem' });
-			}
-			return;
-		}
-
-		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
-	};
-
-	const uploadImage = async (alert_id: string) => {
-		if (!image) return;
-		const response = await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alert_id), image);
-		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao carregar imagem' });
-			return;
-		}
-		useToast.success({ message: 'A imagem foi carregada com sucesso', title: 'Imagem carregada com sucesso' });
-	};
+	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
+		fetchFn: async () => await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), image),
+		onSuccess: () => {
+			form.resetDirty();
+			alertMutate();
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
 
 	//
 	// E. Define context value
+
 	const contextValue: AlertDetailContextState = useMemo(() => ({
 		actions: {
-			deleteAlert,
-			deleteImage,
-			fileChanged: (file: File) => setImage(file),
-			saveAlert: (type: 'draft' | 'publish') => saveAlert(type),
+			delete: handleDelete,
+			deleteImage: handleDeleteImage,
+			fileChanged: setImage,
+			lock: handleLock,
+			publish: handlePublish,
+			save: handleSave,
+			uploadImage: handleUploadImage,
 		},
 		data: {
 			form,
 			id: alertId,
-			imageUrl: alertImage,
+			image_url: alertImage,
 		},
 		flags: {
-			isSaving,
-			loading: alertImageLoading || alertLoading,
+			error: alertError,
+			isDeleting: isDeleting,
+			isDeletingImage: isDeletingImage,
+			isDirty: form.isDirty(),
+			isLoading: alertLoading || alertImageLoading,
+			isLocked: alertData?.is_locked,
+			isPublishing: isPublishing,
+			isSaving: isSaving,
+			isUploadingImage: isUploadingImage,
 		},
 	}), [
-		form,
-		alertLoading,
-		alertImageLoading,
-		isSaving,
 		alertId,
+		alertData,
+		alertImage,
+		alertImageLoading,
+		alertLoading,
+		isDeleting,
+		isDeletingImage,
+		isPublishing,
+		isSaving,
+		isUploadingImage,
+		form,
 	]);
 
 	//
 	// F. Render components
+
 	return (
 		<AlertDetailContext.Provider value={contextValue}>
 			{children}
 		</AlertDetailContext.Provider>
 	);
+
+	//
 };

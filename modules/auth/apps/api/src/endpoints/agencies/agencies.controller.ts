@@ -32,10 +32,10 @@ export class AgenciesController {
 	}
 
 	/**
-		 * Toggles the lock status of an agency by ID.
-		 * @param request Fastify request containing agency ID in params.
-		 * @param reply Fastify reply.
-		 */
+	 * Toggles the lock status of an agency by ID.
+	 * @param request Fastify request containing agency ID in params.
+	 * @param reply Fastify reply.
+	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
 		await agencies.toggleLockById(request.params.id);
 		const foundAgency = await agencies.findById(request.params.id);

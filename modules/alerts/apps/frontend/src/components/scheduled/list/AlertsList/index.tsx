@@ -7,15 +7,15 @@ import { AlertsListCellLines } from '@/components/common/AlertsListCellLines';
 import { AlertsListCellMunicipalities } from '@/components/common/AlertsListCellMunicipalities';
 import { AlertsListCellStops } from '@/components/common/AlertsListCellStops';
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
+import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
 import { AlertsListFiltersBar } from '@/components/scheduled/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/scheduled/list/AlertsListHeader';
-import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -26,6 +26,8 @@ export function AlertList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const alertsListContext = useAlertsListContext();
 
 	const columns: DataTableColumn<Alert>[] = [
@@ -101,7 +103,7 @@ export function AlertList() {
 				onRowClick={handleRowClick}
 				records={alertsListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={alertsListContext.data.selectedId}
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

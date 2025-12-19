@@ -137,15 +137,21 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('alerts', 'api_url')}`,
 
-		// ALERTS
-		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
-		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
-		ALERTS_GTFS: `${getAppConfig('alerts', 'api_url')}/alerts/gtfs`,
-		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
+		// REALTIME
+		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/realtime/${id}`,
+		REALTIME_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/realtime/${id}/image`,
+		REALTIME_GTFS: `${getAppConfig('alerts', 'api_url')}/realtime/gtfs`,
+		REALTIME_LIST: `${getAppConfig('alerts', 'api_url')}/realtime`,
 
 		// RIDES
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
 		RIDES_SELECTED: `${getAppConfig('alerts', 'api_url')}/rides/selected`,
+
+		// SCHEDULED
+		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/scheduled/${id}`,
+		SCHEDULED_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/scheduled/${id}/image`,
+		SCHEDULED_GTFS: `${getAppConfig('alerts', 'api_url')}/scheduled/gtfs`,
+		SCHEDULED_LIST: `${getAppConfig('alerts', 'api_url')}/scheduled`,
 	},
 
 	/* * */

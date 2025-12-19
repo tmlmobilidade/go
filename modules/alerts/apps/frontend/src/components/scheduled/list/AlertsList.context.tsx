@@ -9,7 +9,6 @@ import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertSchema, PublishStatusSchema } from '@tmlmobilidade/types';
 import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
 import { swrFetcher } from '@tmlmobilidade/utils';
-import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -27,7 +26,6 @@ interface AlertsListContextState {
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
-		selectedId: string | undefined
 	}
 	filters: {
 		cause: string[]
@@ -63,7 +61,6 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const locationsContext = useLocationsContext();
-	const pathname = usePathname();
 
 	const [filterPublishStatus, setFilterPublishStatus] = useState<string[]>(PublishStatusSchema.options);
 	const [filterCause, setFilterCause] = useState<string[]>(AlertSchema.shape.cause.options);
@@ -75,12 +72,6 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	const [queryCause, setQueryCause] = useQueryState<string[]>('cause', parseAsArrayOfStrings.withDefault([]));
 	const [queryEffect, setQueryEffect] = useQueryState<string[]>('effect', parseAsArrayOfStrings.withDefault([]));
 	const [queryMunicipality, setQueryMunicipality] = useQueryState<string[]>('municipality', parseAsArrayOfStrings.withDefault([]));
-
-	const selectedId = useMemo(() => {
-		const alertId = pathname.split('/alerts/').pop()?.split('?').shift();
-		if (!alertId) return undefined;
-		return decodeURIComponent(alertId);
-	}, [pathname]);
 
 	//
 	// B. Fetch data
@@ -180,7 +171,6 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 		data: {
 			filtered: filterResultsData,
 			raw: allAlertsData,
-			selectedId,
 		},
 		filters: {
 			cause: filterCause,
@@ -203,7 +193,6 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 		filterEffect,
 		filterMunicipality,
 		querySearch,
-		selectedId,
 	]);
 
 	//
