@@ -44,7 +44,9 @@ export function PlanDetailHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.update}
+				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
+				value={planDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<SaveButton
 					isDisabled={!planDetailContext.flags.canSave}
@@ -69,7 +71,9 @@ export function PlanDetailHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.lock}
+				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
+				value={planDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<LockButton
 					isDisabled={!planDetailContext.flags.canLock}
@@ -81,7 +85,9 @@ export function PlanDetailHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.delete}
+				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
+				value={planDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<DeleteButton
 					confirmMessage="Tem a certeza que pretende eliminar este plano? O plano ficará indisponível para utilização futura."

@@ -26,7 +26,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function MunicipalityFilter() {
-// 	const { actions, filters } = useAlertListContext();
+// 	const { actions, filters } = useAlertsListContext();
 // 	const { data: { municipalities } } = useLocationsContext();
 
 // 	const parseMunicipality = (id: string) => {
@@ -75,7 +75,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function LineFilter() {
-// 	const { actions, filters } = useAlertListContext();
+// 	const { actions, filters } = useAlertsListContext();
 // 	const { data: { lines } } = useLinesContext();
 
 // 	const parseLine = (line_id: string) => {
@@ -111,7 +111,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function StopFilter() {
-// 	const { actions, filters } = useAlertListContext();
+// 	const { actions, filters } = useAlertsListContext();
 // 	const { data: { stops } } = useStopsContext();
 
 // 	const parseStop = (stop_id: string) => {
@@ -147,7 +147,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function PublishDateFilter() {
-// 	const { actions, filters } = useAlertListContext();
+// 	const { actions, filters } = useAlertsListContext();
 
 // 	const hasChanged = filters.publishDateStart || filters.publishDateEnd;
 
@@ -170,7 +170,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function ValidityDateFilter() {
-// 	const { actions, filters } = useAlertListContext();
+// 	const { actions, filters } = useAlertsListContext();
 
 // 	const hasChanged = filters.validityDateStart || filters.validityDateEnd;
 

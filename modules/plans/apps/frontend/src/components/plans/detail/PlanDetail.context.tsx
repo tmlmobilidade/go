@@ -108,7 +108,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	// E. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.update,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData?.gtfs_agency.agency_id ?? '',
+		}),
 		isDeleting: isDeleting,
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
@@ -117,7 +122,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	const { canSave } = useFlagCanSave({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.update,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData?.gtfs_agency.agency_id ?? '',
+		}),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: planLoading || isReprocessing,
@@ -127,7 +137,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	const { canLock } = useFlagCanLock({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.lock,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData?.gtfs_agency.agency_id ?? '',
+		}),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: planLoading || isReprocessing,
@@ -136,7 +151,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	const { canDelete } = useFlagCanDelete({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.delete,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData?.gtfs_agency.agency_id ?? '',
+		}),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: planLoading || isReprocessing,
@@ -153,7 +173,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		!isReprocessing,
 		!planLoading,
 		!isSaving,
-		meContext.actions.hasPermission(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.update_gtfs_plan),
+		meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData?.gtfs_agency.agency_id ?? '',
+		}),
 	]);
 
 	//

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
 import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';

@@ -16,7 +16,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface AlertListContextState {
+interface AlertsListContextState {
 	actions: {
 		setFilterCause: (values: string[]) => void
 		setFilterEffect: (values: string[]) => void
@@ -44,19 +44,19 @@ interface AlertListContextState {
 
 /* * */
 
-const AlertListContext = createContext<AlertListContextState | undefined>(undefined);
+const AlertsListContext = createContext<AlertsListContextState | undefined>(undefined);
 
-export const useAlertListContext = () => {
-	const context = useContext(AlertListContext);
+export const useAlertsListContext = () => {
+	const context = useContext(AlertsListContext);
 	if (!context) {
-		throw new Error('useAlertListContext must be used within an AlertListContextProvider');
+		throw new Error('useAlertsListContext must be used within an AlertsListContextProvider');
 	}
 	return context;
 };
 
 /* * */
 
-export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
+export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -169,7 +169,7 @@ export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: AlertListContextState = useMemo(() => ({
+	const contextValue: AlertsListContextState = useMemo(() => ({
 		actions: {
 			setFilterCause: handleSetFilterCause,
 			setFilterEffect: handleSetFilterEffect,
@@ -210,9 +210,9 @@ export const AlertListContextProvider = ({ children }: PropsWithChildren) => {
 	// E. Render components
 
 	return (
-		<AlertListContext.Provider value={contextValue}>
+		<AlertsListContext.Provider value={contextValue}>
 			{children}
-		</AlertListContext.Provider>
+		</AlertsListContext.Provider>
 	);
 
 	//
