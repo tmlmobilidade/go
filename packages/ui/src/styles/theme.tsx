@@ -133,8 +133,7 @@ export const themeData: MantineThemeOverride = createTheme({
 		MultiSelect: MultiSelect.extend({
 			classNames: {
 				...DropdownBase,
-				input: MultiSelectBase.input,
-				wrapper: MultiSelectBase.wrapper,
+				...MultiSelectBase,
 			},
 		}),
 
@@ -204,8 +203,7 @@ export const themeData: MantineThemeOverride = createTheme({
 		TagsInput: TagsInput.extend({
 			classNames: {
 				...DropdownBase,
-				input: MultiSelectBase.input,
-				wrapper: MultiSelectBase.wrapper,
+				...MultiSelectBase,
 			},
 		}),
 

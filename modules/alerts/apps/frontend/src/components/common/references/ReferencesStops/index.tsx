@@ -19,14 +19,14 @@ interface Reference {
 }
 
 interface ReferencesStopsProps {
-	municipality_ids?: string[]
+	municipalityIds?: string[]
 	onAddReference: () => void
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
 	references: Reference[]
 }
 
-export function ReferencesStops({ municipality_ids, onAddReference, onRemoveReference, onUpdateReference, references }: ReferencesStopsProps) {
+export function ReferencesStops({ municipalityIds, onAddReference, onRemoveReference, onUpdateReference, references }: ReferencesStopsProps) {
 	//
 	//
 	// A. Render components
@@ -48,7 +48,7 @@ export function ReferencesStops({ municipality_ids, onAddReference, onRemoveRefe
 						key={index}
 						index={index}
 						lines={linesContext.data.lines}
-						municipality_ids={municipality_ids}
+						municipalityIds={municipalityIds}
 						onRemoveReference={onRemoveReference}
 						onUpdateReference={onUpdateReference}
 						reference={reference}
@@ -72,7 +72,7 @@ export function ReferencesStops({ municipality_ids, onAddReference, onRemoveRefe
 interface ReferencesStopsItemProps {
 	index: number
 	lines: Line[]
-	municipality_ids: string[]
+	municipalityIds: string[]
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
 	reference: Reference
@@ -82,7 +82,7 @@ interface ReferencesStopsItemProps {
 function ReferencesStopsItem({
 	index,
 	lines,
-	municipality_ids,
+	municipalityIds,
 	onRemoveReference,
 	onUpdateReference,
 	reference,
@@ -97,17 +97,17 @@ function ReferencesStopsItem({
 
 	const availableStops = useMemo(() => {
 		if (!stops) return [];
-		if (!municipality_ids || municipality_ids.length === 0) return [];
+		if (!municipalityIds || municipalityIds.length === 0) return [];
 
 		return stops
 			.filter(stop =>
-				municipality_ids.includes(stop.municipality_id),
+				municipalityIds.includes(stop.municipality_id),
 			)
 			.map(stop => ({
 				label: `[${stop.id}] ${stop.long_name}`,
 				value: stop.id,
 			}));
-	}, [stops, municipality_ids]);
+	}, [stops, municipalityIds]);
 
 	const availableRoutes = useMemo(() => {
 		if (!lines) return [];
@@ -129,7 +129,7 @@ function ReferencesStopsItem({
 		);
 	}, [
 		lines,
-		municipality_ids,
+		municipalityIds,
 		reference.parent_id,
 		stops,
 	]);
@@ -145,7 +145,7 @@ function ReferencesStopsItem({
 					data={availableStops}
 					label="Paragem Afetada"
 					onChange={value => onUpdateReference(index, 'parent_id', value || '')}
-					placeholder={municipality_ids.length === 0 ? 'Selecione os Municípios' : 'Selecione a Paragem'}
+					placeholder={municipalityIds.length === 0 ? 'Selecione os Municípios' : 'Selecione a Paragem'}
 					value={reference.parent_id}
 					clearable
 					fullWidth

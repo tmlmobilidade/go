@@ -13,3 +13,7 @@
 	height: auto;
 	min-height: 40px;
 }
+
+.inputField::placeholder {
+	color: var(--color-system-text-300);
+}

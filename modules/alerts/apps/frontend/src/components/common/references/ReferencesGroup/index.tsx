@@ -2,41 +2,28 @@
 
 /* * */
 
-import { Alert, ReferenceType, ReferenceTypeSchema } from '@tmlmobilidade/types';
-import { openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
-
-import { ReferencesAgencies } from '../ReferencesAgencies';
-import { ReferencesRoutes } from '../ReferencesRoutes';
-import { ReferencesStops } from '../ReferencesStops';
+import { ReferencesAgencies } from '@/components/common/references/ReferencesAgencies';
+import { ReferencesLines } from '@/components/common/references/ReferencesLines';
+import { ReferencesStops } from '@/components/common/references/ReferencesStops';
+import { type Alert, type ReferenceType, ReferenceTypeSchema } from '@tmlmobilidade/types';
+import { Grid, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface Reference {
-	child_ids: string[]
-	parent_id: string
-}
-
 interface ReferencesGroupProps {
-	keys: string
-	municipality_ids?: string[]
+	municipalityIds?: string[]
 	onSetFieldValue: <T>(path: string, value: T) => void
-	reference_type: ReferenceType
-	references: Reference[]
+	references: Alert['references']
+	referenceType: ReferenceType
 }
 
-export function ReferencesGroup({
-	keys,
-	municipality_ids,
-	onSetFieldValue,
-	reference_type,
-	references,
-}: ReferencesGroupProps) {
+/* * */
+
+export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, referenceType }: ReferencesGroupProps) {
 	//
-	//
-	// A. Setup variables
 
 	//
-	// B. Handle actions
+	// A. Handle actions
 
 	const parseOptionsLabel = (value: Alert['reference_type']) => {
 		switch (value) {
@@ -52,9 +39,9 @@ export function ReferencesGroup({
 	};
 
 	const handleAddReference = () => {
-		const currentReferences = references || [];
-		currentReferences.push({ child_ids: [], parent_id: '' });
-		onSetFieldValue('references', currentReferences);
+		const updatedReferences = Array.from(references || []);
+		updatedReferences.push({ child_ids: [], parent_id: '' });
+		onSetFieldValue('references', updatedReferences);
 	};
 
 	const handleRemoveReference = (index: number) => {
@@ -98,41 +85,46 @@ export function ReferencesGroup({
 	// C. Render components
 
 	return (
-		<Section gap="md">
-			<SegmentedControl
-				key={keys}
-				data={ReferenceTypeSchema.options.map(parseOptionsLabel).filter(option => option.value !== 'TRIP')}
-				onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
-				value={reference_type}
-				fullWidth
-			/>
+		<Section padding="none">
+			<Grid gap="md">
 
-			{reference_type === 'LINE' && (
-				<ReferencesRoutes
-					municipality_ids={municipality_ids}
-					onAddReference={handleAddReference}
-					onRemoveReference={handleRemoveReference}
-					onUpdateReference={handleUpdateReference}
-					references={references}
+				<SegmentedControl
+					data={ReferenceTypeSchema.options.map(parseOptionsLabel).filter(option => option.value !== 'TRIP')}
+					onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
+					value={referenceType}
+					fullWidth
 				/>
-			)}
-			{reference_type === 'STOP' && (
-				<ReferencesStops
-					municipality_ids={municipality_ids}
-					onAddReference={handleAddReference}
-					onRemoveReference={handleRemoveReference}
-					onUpdateReference={handleUpdateReference}
-					references={references}
-				/>
-			)}
-			{reference_type === 'AGENCY' && (
-				<ReferencesAgencies
-					onAddReference={handleAddReference}
-					onRemoveReference={handleRemoveReference}
-					onUpdateReference={(index, parent_id) => handleUpdateReference(index, 'parent_id', parent_id)}
-					references={references}
-				/>
-			)}
+
+				{referenceType === 'LINE' && (
+					<ReferencesLines
+						municipalityIds={municipalityIds}
+						onAddReference={handleAddReference}
+						onRemoveReference={handleRemoveReference}
+						onUpdateReference={handleUpdateReference}
+						references={references}
+					/>
+				)}
+
+				{referenceType === 'STOP' && (
+					<ReferencesStops
+						municipalityIds={municipalityIds}
+						onAddReference={handleAddReference}
+						onRemoveReference={handleRemoveReference}
+						onUpdateReference={handleUpdateReference}
+						references={references}
+					/>
+				)}
+
+				{referenceType === 'AGENCY' && (
+					<ReferencesAgencies
+						onAddReference={handleAddReference}
+						onRemoveReference={handleRemoveReference}
+						onUpdateReference={(index, parent_id) => handleUpdateReference(index, 'parent_id', parent_id)}
+						references={references}
+					/>
+				)}
+
+			</Grid>
 		</Section>
 	);
 }

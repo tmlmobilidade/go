@@ -22,7 +22,6 @@ export function ScheduledDetailSectionValidity() {
 		<Collapsible
 			description="Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias)."
 			title="Período de Vigência"
-			defaultOpen
 		>
 			<Section>
 				<Grid columns="ab" gap="md">

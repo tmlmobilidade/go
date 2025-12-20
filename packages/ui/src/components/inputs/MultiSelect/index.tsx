@@ -22,6 +22,7 @@ export function MultiSelect({ ...props }: MultiSelectProps) {
 		<MantineMultiSelect
 			clearable={props.clearable ?? true}
 			nothingFoundMessage={props.nothingFoundMessage || 'Nenhum resultado encontrado'}
+			placeholder="Selecione uma ou mais opções..."
 			searchable
 			withAlignedLabels
 			{...props}

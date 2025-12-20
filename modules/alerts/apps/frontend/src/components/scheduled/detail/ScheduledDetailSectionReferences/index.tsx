@@ -5,7 +5,7 @@
 import { ReferencesGroup } from '@/components/common/references/ReferencesGroup';
 import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { Collapsible, MultiSelect, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -22,17 +22,9 @@ export function ScheduledDetailSectionReferences() {
 	//
 	// B. Transform data
 
-	const references = useMemo(() => scheduledDetailContext.data.form.values.references, [
-		scheduledDetailContext.data.form.values.references,
-	]);
-
 	const municipalitiesOptions = useMemo(() => {
 		if (!locationsContext.data.municipalities) return [];
-
-		return locationsContext.data.municipalities.map(municipality => ({
-			label: municipality.name,
-			value: municipality.id,
-		}));
+		return locationsContext.data.municipalities.map(item => ({ label: item.name, value: item.id }));
 	}, [locationsContext.data.municipalities]);
 
 	//
@@ -42,24 +34,24 @@ export function ScheduledDetailSectionReferences() {
 		<Collapsible
 			description="As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste alerta."
 			title="Referências"
+			defaultOpen
 		>
-			<Section gap="md">
-				<MultiSelect
-					key={scheduledDetailContext.data.form.key('municipality_ids')}
-					data={municipalitiesOptions}
-					description="Selecione os municípios que serão afetados pelo alerta"
-					label="Municípios Afetados"
-					onChange={ids => scheduledDetailContext.data.form.setFieldValue('municipality_ids', ids)}
-					value={scheduledDetailContext.data.form.values.municipality_ids}
-				/>
-
-				<ReferencesGroup
-					keys={scheduledDetailContext.data.form.values.reference_type}
-					municipality_ids={scheduledDetailContext.data.form.values.municipality_ids}
-					onSetFieldValue={scheduledDetailContext.data.form.setFieldValue}
-					reference_type={scheduledDetailContext.data.form.values.reference_type}
-					references={references}
-				/>
+			<Section>
+				<Grid gap="md">
+					<MultiSelect
+						key={scheduledDetailContext.data.form.key('municipality_ids')}
+						data={municipalitiesOptions}
+						description="Selecione os municípios que serão afetados pelo alerta"
+						label="Municípios Afetados"
+						{...scheduledDetailContext.data.form.getInputProps('municipality_ids')}
+					/>
+					<ReferencesGroup
+						municipalityIds={scheduledDetailContext.data.form.getValues().municipality_ids}
+						onSetFieldValue={scheduledDetailContext.data.form.setFieldValue}
+						references={scheduledDetailContext.data.form.getValues().references}
+						referenceType={scheduledDetailContext.data.form.getValues().reference_type}
+					/>
+				</Grid>
 			</Section>
 		</Collapsible>
 	);
