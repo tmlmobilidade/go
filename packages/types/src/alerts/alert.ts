@@ -1,0 +1,42 @@
+/* * */
+
+import { DocumentSchema } from '@/_common/document.js';
+import { PublishStatusSchema } from '@/_common/status.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { AlertTypeSchema } from '@/alerts/alert-type.js';
+import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
+import { gtfsCauseSchema, gtfsEffectSchema } from '@/gtfs/cause-effetcs.js';
+import { z } from 'zod';
+
+/* * */
+
+export const AlertSchema = DocumentSchema.extend({
+	active_period_end_date: UnixTimeStampSchema.nullable().default(null),
+	active_period_start_date: UnixTimeStampSchema,
+	agency_ids: z.array(z.string()).min(1),
+	cause: gtfsCauseSchema,
+	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
+	description: z.string(),
+	effect: gtfsEffectSchema,
+	external_id: z.string().nullable().default(null),
+	file_id: z.string().nullable().default(null),
+	info_url: z.string().url().nullable().default(null),
+	municipality_ids: z.array(z.string()).default([]),
+	publish_end_date: UnixTimeStampSchema.nullable().default(null),
+	publish_start_date: UnixTimeStampSchema.nullable().default(null),
+	publish_status: PublishStatusSchema.default('draft'),
+	reference_type: AlertReferenceTypeSchema.default(AlertReferenceTypeSchema.options[0]),
+	references: z.array(z.object({
+		child_ids: z.array(z.string()),
+		parent_id: z.string(),
+	})).default([]),
+	title: z.string(),
+	type: AlertTypeSchema,
+});
+
+export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const UpdateAlertSchema = CreateAlertSchema.partial();
+
+export type Alert = z.infer<typeof AlertSchema>;
+export type CreateAlertDto = z.infer<typeof CreateAlertSchema>;
+export type UpdateAlertDto = z.infer<typeof UpdateAlertSchema>;

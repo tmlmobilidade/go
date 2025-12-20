@@ -2,7 +2,6 @@
 
 /* * */
 
-import { ReferencesAgencies } from '@/components/common/references/ReferencesAgencies';
 import { ReferencesLines } from '@/components/common/references/ReferencesLines';
 import { ReferencesStops } from '@/components/common/references/ReferencesStops';
 import { type Alert, ReferenceTypeSchema } from '@tmlmobilidade/types';
@@ -107,15 +106,6 @@ export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, 
 						onAddReference={handleAddReference}
 						onRemoveReference={handleRemoveReference}
 						onUpdateReference={handleUpdateReference}
-						references={references}
-					/>
-				)}
-
-				{referenceType === 'AGENCY' && (
-					<ReferencesAgencies
-						onAddReference={handleAddReference}
-						onRemoveReference={handleRemoveReference}
-						onUpdateReference={(index, parent_id) => handleUpdateReference(index, 'parent_id', parent_id)}
 						references={references}
 					/>
 				)}
