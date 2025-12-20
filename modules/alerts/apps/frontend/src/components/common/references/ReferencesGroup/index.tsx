@@ -5,8 +5,8 @@
 import { ReferencesAgencies } from '@/components/common/references/ReferencesAgencies';
 import { ReferencesLines } from '@/components/common/references/ReferencesLines';
 import { ReferencesStops } from '@/components/common/references/ReferencesStops';
-import { type Alert, type ReferenceType, ReferenceTypeSchema } from '@tmlmobilidade/types';
-import { Grid, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { type Alert, ReferenceTypeSchema } from '@tmlmobilidade/types';
+import { Grid, Label, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,7 +14,7 @@ interface ReferencesGroupProps {
 	municipalityIds?: string[]
 	onSetFieldValue: <T>(path: string, value: T) => void
 	references: Alert['references']
-	referenceType: ReferenceType
+	referenceType: Alert['reference_type']
 }
 
 /* * */
@@ -62,18 +62,14 @@ export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, 
 		if (references.length > 0) {
 			openConfirmModal({
 				centered: true,
-				children: (
-					<>
-						<div>Você está prestes a perder as referências que já foram adicionadas.</div>
-					</>
-				),
+				children: <Label>Ao alterar o tipo, irá perder as referências que já foram adicionadas.</Label>,
 				closeOnClickOutside: true,
 				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
 				onConfirm: () => {
 					onSetFieldValue('reference_type', value);
 					onSetFieldValue('references', []);
 				},
-				title: 'Tem certeza que deseja mudar a referência?',
+				title: 'Tem a certeza que pretende mudar de tipo de referência?',
 			});
 		}
 		else {

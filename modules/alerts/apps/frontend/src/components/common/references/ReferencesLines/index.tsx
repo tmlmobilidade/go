@@ -19,6 +19,8 @@ interface ReferencesLinesProps {
 	references: Alert['references']
 }
 
+/* * */
+
 export function ReferencesLines({ municipalityIds, onAddReference, onRemoveReference, onUpdateReference, references }: ReferencesLinesProps) {
 	//
 
@@ -37,7 +39,7 @@ export function ReferencesLines({ municipalityIds, onAddReference, onRemoveRefer
 			{!references?.length && (
 				<Surface>
 					<Section alignItems="center">
-						<NoDataLabel text="Nenhuma linha selecionada" />
+						<NoDataLabel text="Nenhuma linha adicionada" />
 					</Section>
 				</Surface>
 			)}

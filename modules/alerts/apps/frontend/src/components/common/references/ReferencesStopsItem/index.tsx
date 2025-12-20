@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-interface ReferencesLinesItemProps {
+interface ReferencesStopsItemProps {
 	index: number
 	lines: Line[]
 	municipalityIds: string[]
@@ -22,35 +22,38 @@ interface ReferencesLinesItemProps {
 
 /* * */
 
-export function ReferencesLinesItem({ index, lines, municipalityIds, onRemoveReference, onUpdateReference, reference, stops }: ReferencesLinesItemProps) {
+export function ReferencesStopsItem({ index, lines, municipalityIds, onRemoveReference, onUpdateReference, reference, stops }: ReferencesStopsItemProps) {
 	//
 
 	//
 	// A. Transform data
 
-	const availableLines = useMemo(() => {
-		if (!lines) return [];
-		return lines.map(line => ({ label: `[${line.id}] ${line.long_name}`, value: line.id }));
-	}, [lines, municipalityIds]);
-
 	const availableStops = useMemo(() => {
 		if (!stops) return [];
+		return stops.map(stop => ({ label: `[${stop.id}] ${stop.long_name}`, value: stop.id }));
+	}, [stops, municipalityIds]);
+
+	const availableLines = useMemo(() => {
+		if (!lines?.length) return [];
 		if (!reference.parent_id) return [];
-		return stops
-			.filter(stop => stop.line_ids.includes(reference.parent_id))
-			.map(stop => ({ label: `[${stop.id}] ${stop.long_name}`, value: stop.id }));
-	}, [stops, reference.parent_id]);
+		const selectedStop = stops.find(stop => stop.id === reference.parent_id);
+		if (!selectedStop?.line_ids?.length) return [];
+		return selectedStop?.line_ids.map(lineId => ({
+			label: `[${lineId}] ${lines.find(line => line.id === lineId)?.long_name}`,
+			value: lineId,
+		}));
+	}, [lines, municipalityIds, reference.parent_id, stops]);
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Surface>
 			<Section gap="md">
 				<Grid gap="md">
 					<Select
-						data={availableLines}
-						label="Linha Afetada"
+						data={availableStops}
+						label="Paragem Afetada"
 						limit={25}
 						onChange={value => onUpdateReference(index, 'parent_id', value)}
 						onClear={() => onUpdateReference(index, 'child_ids', [])}
@@ -59,10 +62,10 @@ export function ReferencesLinesItem({ index, lines, municipalityIds, onRemoveRef
 					<Section flexDirection="row" gap="sm" padding="none">
 						<IconCornerDownRight color="var(--color-system-text-300)" size={30} />
 						<MultiSelect
-							data={availableStops}
-							description="Selecione as paragens que serão afetadas pelo alerta"
+							data={availableLines}
+							description="Selecione as linhas que serão afetadas pelo alerta"
 							disabled={!reference.parent_id}
-							label="Paragens Afetadas"
+							label="Linhas Afetadas"
 							onChange={value => onUpdateReference(index, 'child_ids', value)}
 							value={reference.child_ids}
 							w="100%"
@@ -72,7 +75,7 @@ export function ReferencesLinesItem({ index, lines, municipalityIds, onRemoveRef
 				<Section alignItems="flex-end" padding="none">
 					<Button
 						icon={<IconMinus />}
-						label="Remover Linha"
+						label="Remover Paragem"
 						onClick={() => onRemoveReference(index)}
 						variant="danger"
 					/>
