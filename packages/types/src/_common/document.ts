@@ -11,5 +11,5 @@ export const DocumentSchema = z.object({
 	created_by: z.string().nullable().default(null),
 	is_locked: z.boolean().default(false),
 	updated_at: UnixTimeStampSchema,
-	updated_by: z.string().nullable().default(null),
+	updated_by: z.string().optional(),
 });
