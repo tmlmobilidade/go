@@ -45,7 +45,7 @@ export function ScheduledDetailSectionTitle() {
 					{...scheduledDetailContext.data.form.getInputProps('description')}
 				/>
 				<UploadImage
-					imageUrl={scheduledDetailContext.data.imageUrl?.url}
+					imageUrl={scheduledDetailContext.data.image?.url}
 					label="Imagem"
 					onDelete={scheduledDetailContext.actions.deleteImage}
 					onFileChange={scheduledDetailContext.actions.fileChanged}
@@ -53,7 +53,6 @@ export function ScheduledDetailSectionTitle() {
 				<CoordinatesInput
 					key={scheduledDetailContext.data.form.key('coordinates')}
 					description="Ponto de referência do alerta, para que seja possível localizar o alerta no mapa."
-					value={scheduledDetailContext.data.form.values.coordinates}
 					{...scheduledDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput

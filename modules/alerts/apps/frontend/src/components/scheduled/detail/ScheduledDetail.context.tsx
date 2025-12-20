@@ -3,8 +3,8 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, type File as FileType, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -19,9 +19,10 @@ interface ScheduledDetailContextState extends DetailContextStateTemplate {
 		publish: () => void
 	}
 	data: {
+		alert: Alert | undefined
 		form: UseFormReturnType<UpdateAlertDto>
 		id: string | undefined
-		image_url: FileType | undefined
+		image: FileType | undefined
 	}
 }
 
@@ -55,7 +56,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.SCHEDULED_LIST);
 	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId));
-	const { data: alertImage, error: alertImageError, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId));
+	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Define form
@@ -125,6 +126,47 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 	});
 
 	//
+	// F. Setup flags
+
+	const { isReadOnly } = useFlagReadOnly({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		isDeleting: isDeleting,
+		isLoading: alertLoading,
+		isLocked: alertData?.is_locked,
+		isLocking: isLocking,
+		isSaving: isSaving,
+	});
+
+	const { canSave } = useFlagCanSave({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: alertLoading,
+		isLocked: alertData?.is_locked,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	const { canLock } = useFlagCanLock({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: alertLoading,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	const { canDelete } = useFlagCanDelete({
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		isDeleting: isDeleting,
+		isDirty: form.isDirty(),
+		isLoading: alertLoading,
+		isLocked: alertData?.is_locked,
+		isLocking: isLocking,
+		isValid: form.isValid(),
+	});
+
+	//
 	// E. Define context value
 
 	const contextValue: ScheduledDetailContextState = useMemo(() => ({
@@ -138,19 +180,23 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 			uploadImage: handleUploadImage,
 		},
 		data: {
+			alert: alertData,
 			form,
 			id: alertId,
-			image_url: alertImage,
+			image: alertImage,
 		},
 		flags: {
+			canDelete,
+			canLock,
+			canSave,
 			error: alertError,
-			isDeleting: isDeleting,
+			isDeleting,
 			isDeletingImage: isDeletingImage,
 			isDirty: form.isDirty(),
 			isLoading: alertLoading || alertImageLoading,
-			isLocked: alertData?.is_locked,
-			isPublishing: isPublishing,
-			isSaving: isSaving,
+			isLocking: isLocking,
+			isReadOnly,
+			isSaving,
 			isUploadingImage: isUploadingImage,
 		},
 	}), [

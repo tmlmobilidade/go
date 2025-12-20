@@ -25,7 +25,7 @@ import './themes/street.css';
 /* * */
 
 import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea, TextInput } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import { DateInput, TimePicker } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 /* * */
@@ -56,6 +56,7 @@ import SwitchOverride from './mantine/overrides/Switch.module.css';
 import TextOverride from './mantine/overrides/Text.module.css';
 import TextareaOverrideComment from './mantine/overrides/Textarea-comment.module.css';
 import TextareaOverride from './mantine/overrides/Textarea.module.css';
+import TimePickerOverride from './mantine/overrides/TimePicker.module.css';
 
 /* * */
 
@@ -226,6 +227,15 @@ export const themeData: MantineThemeOverride = createTheme({
 		TextInput: TextInput.extend({
 			classNames: {
 				...InputBase,
+			},
+		}),
+
+		TimePicker: TimePicker.extend({
+			classNames: {
+				...InputBase,
+				...DropdownBase,
+				...TimePickerOverride,
+				wrapper: `${InputBase.wrapper} ${TimePickerOverride.wrapper}`,
 			},
 		}),
 

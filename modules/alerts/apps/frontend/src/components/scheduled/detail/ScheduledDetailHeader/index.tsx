@@ -2,11 +2,12 @@
 
 /* * */
 
+import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
-import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -27,49 +28,67 @@ export function ScheduledDetailHeader() {
 		router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST));
 	};
 
-	const handleDuplicate = () => {
-		const id = scheduledDetailContext.data.id;
-
-		router.replace(`${PAGE_ROUTES.alerts.SCHEDULED_DETAIL('new')}?copy=${id}`);
-	};
+	// const handleDuplicate = () => {
+	// 	const id = scheduledDetailContext.data.id;
+	// 	router.replace(`${PAGE_ROUTES.alerts.SCHEDULED_DETAIL('new')}?copy=${id}`);
+	// };
 
 	//
 	// C. Render components
 
 	return (
 		<Toolbar>
+
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={scheduledDetailContext.data.form.getValues().publish_status} variant={scheduledDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
+			<AlertTagPublishStatus value={scheduledDetailContext.data.alert?.publish_status} />
 			<Label size="lg" caps>{scheduledDetailContext.data.id}</Label>
+
 			<Spacer />
-			<Button
+
+			{/* <Button
 				icon={<IconCopy size={28} />}
 				label="Duplicar"
 				onClick={handleDuplicate}
 				variant="secondary"
-			/>
-			<Button
-				label="Salvar como rascunho"
-				onClick={scheduledDetailContext.actions.save}
-				variant="secondary"
-			/>
-			<Button
-				disabled={scheduledDetailContext.flags.isSaving}
-				icon={<IconUpload size={28} />}
-				loading={scheduledDetailContext.flags.isSaving}
-				onClick={scheduledDetailContext.actions.save}
-				variant="primary"
-				label={scheduledDetailContext.data.form.getValues().publish_status === 'DRAFT'
-					? 'Publicar'
-					: 'Salvar'}
-			/>
-			<Button
-				disabled={scheduledDetailContext.flags.isSaving}
-				icon={<IconTrash size={28} />}
-				label="Apagar"
-				onClick={scheduledDetailContext.actions.delete}
-				variant="danger"
-			/>
+			/> */}
+
+			<HasPermission
+				action={PermissionCatalog.all.alerts_scheduled.actions.update}
+				scope={PermissionCatalog.all.alerts_scheduled.scope}
+			>
+				<SaveButton
+					isDisabled={!scheduledDetailContext.flags.canSave}
+					isLoading={scheduledDetailContext.flags.isSaving}
+					onClick={scheduledDetailContext.actions.save}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.alerts_scheduled.actions.lock}
+				scope={PermissionCatalog.all.alerts_scheduled.scope}
+			>
+				<LockButton
+					isDisabled={!scheduledDetailContext.flags.canLock}
+					isLoading={scheduledDetailContext.flags.isLocking}
+					isLocked={scheduledDetailContext.data.alert?.is_locked}
+					onClick={scheduledDetailContext.actions.lock}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.alerts_scheduled.actions.delete}
+				scope={PermissionCatalog.all.alerts_scheduled.scope}
+			>
+				<DeleteButton
+					confirmMessage="Tem a certeza que pretende eliminar este Alerta? Esta ação é irreversível."
+					confirmTitle="Eliminar Alerta"
+					isDisabled={!scheduledDetailContext.flags.canDelete}
+					isLoading={scheduledDetailContext.flags.isDeleting}
+					onDelete={scheduledDetailContext.actions.delete}
+					showConfirmation={true}
+				/>
+			</HasPermission>
+
 		</Toolbar>
 	);
 

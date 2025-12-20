@@ -3,7 +3,7 @@
 /* * */
 
 import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
-import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DateTimeInput, DateTimePicker, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -28,17 +28,25 @@ export function ScheduledDetailSectionValidity() {
 		<Collapsible
 			description="Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias)."
 			title="Período de Vigência"
+			defaultOpen
 		>
 			<Section flexDirection="row" gap="md">
-				<DateTimePicker
+				<DateTimeInput
+					key={scheduledDetailContext.data.form.key('active_period_start_date')}
+					label="Data de Início"
+					{...scheduledDetailContext.data.form.getInputProps('active_period_start_date')}
+				/>
+				<DateTimeInput
+					key={scheduledDetailContext.data.form.key('active_period_end_date')}
+					label="Data de Fim"
+					clearable
+					{...scheduledDetailContext.data.form.getInputProps('active_period_end_date')}
+				/>
+				{/* <DateTimePicker
 					key={scheduledDetailContext.data.form.key('active_period_start_date')}
 					label="Data de Início"
 					fullWidth
 					{...scheduledDetailContext.data.form.getInputProps('active_period_start_date')}
-					value={startDateValue}
-					onChange={(date) => {
-						scheduledDetailContext.data.form.setFieldValue('active_period_start_date', date);
-					}}
 				/>
 				<DateTimePicker
 					key={scheduledDetailContext.data.form.key('active_period_end_date')}
@@ -46,11 +54,7 @@ export function ScheduledDetailSectionValidity() {
 					clearable
 					fullWidth
 					{...scheduledDetailContext.data.form.getInputProps('active_period_end_date')}
-					value={endDateValue}
-					onChange={(date) => {
-						scheduledDetailContext.data.form.setFieldValue('active_period_end_date', date);
-					}}
-				/>
+				/> */}
 			</Section>
 		</Collapsible>
 	);
