@@ -1,7 +1,7 @@
 /* * */
 
-import { AlertList } from '@/components/scheduled/list/AlertsList';
-import { AlertsListContextProvider } from '@/components/scheduled/list/AlertsList.context';
+import { AlertList } from '@/components/scheduled/list/ScheduledList';
+import { ScheduledListContextProvider } from '@/components/scheduled/list/ScheduledList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
@@ -12,9 +12,9 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="alerts-scheduled"
 			panes={[
-				<AlertsListContextProvider>
+				<ScheduledListContextProvider>
 					<AlertList />
-				</AlertsListContextProvider>,
+				</ScheduledListContextProvider>,
 				children,
 			]}
 		/>

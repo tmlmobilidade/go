@@ -1,19 +1,19 @@
 /* * */
 
 import { openCreateScheduledAlertModal } from '@/components/scheduled/create/ScheduledAlertCreate.modal';
-import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
+import { useScheduledListContext } from '@/components/scheduled/list/ScheduledList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AlertsListHeader() {
+export function ScheduledListHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertsListContext();
+	const alertsListContext = useScheduledListContext();
 
 	//
 	// B. Render components

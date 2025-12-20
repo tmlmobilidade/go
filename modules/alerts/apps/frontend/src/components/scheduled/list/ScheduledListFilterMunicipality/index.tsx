@@ -1,19 +1,19 @@
 /* * */
 
-import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
+import { useScheduledListContext } from '@/components/scheduled/list/ScheduledList.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function AlertsListFilterMunicipality() {
+export function ScheduledListFilterMunicipality() {
 	//
 
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertsListContext();
+	const alertsListContext = useScheduledListContext();
 	const locationsContext = useLocationsContext();
 
 	//

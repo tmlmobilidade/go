@@ -1,20 +1,20 @@
 /* * */
 
-import { AlertsListFilterCause } from '@/components/scheduled/list/AlertsListFilterCause';
-import { AlertsListFilterEffect } from '@/components/scheduled/list/AlertsListFilterEffect';
-import { AlertsListFilterMunicipality } from '@/components/scheduled/list/AlertsListFilterMunicipality';
-import { AlertsListFilterPublishStatus } from '@/components/scheduled/list/AlertsListFilterPublishStatus';
+import { ScheduledListFilterCause } from '@/components/scheduled/list/ScheduledListFilterCause';
+import { ScheduledListFilterEffect } from '@/components/scheduled/list/ScheduledListFilterEffect';
+import { ScheduledListFilterMunicipality } from '@/components/scheduled/list/ScheduledListFilterMunicipality';
+import { ScheduledListFilterPublishStatus } from '@/components/scheduled/list/ScheduledListFilterPublishStatus';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AlertsListFiltersBar() {
+export function ScheduledListFiltersBar() {
 	return (
 		<FiltersBar>
-			<AlertsListFilterPublishStatus />
-			<AlertsListFilterCause />
-			<AlertsListFilterEffect />
-			<AlertsListFilterMunicipality />
+			<ScheduledListFilterPublishStatus />
+			<ScheduledListFilterCause />
+			<ScheduledListFilterEffect />
+			<ScheduledListFilterMunicipality />
 			{/* <LineFilter /> */}
 			{/* <StopFilter /> */}
 			{/* <PublishDateFilter /> */}
@@ -26,7 +26,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function MunicipalityFilter() {
-// 	const { actions, filters } = useAlertsListContext();
+// 	const { actions, filters } = useScheduledListContext();
 // 	const { data: { municipalities } } = useLocationsContext();
 
 // 	const parseMunicipality = (id: string) => {
@@ -75,7 +75,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function LineFilter() {
-// 	const { actions, filters } = useAlertsListContext();
+// 	const { actions, filters } = useScheduledListContext();
 // 	const { data: { lines } } = useLinesContext();
 
 // 	const parseLine = (line_id: string) => {
@@ -111,7 +111,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function StopFilter() {
-// 	const { actions, filters } = useAlertsListContext();
+// 	const { actions, filters } = useScheduledListContext();
 // 	const { data: { stops } } = useStopsContext();
 
 // 	const parseStop = (stop_id: string) => {
@@ -147,7 +147,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function PublishDateFilter() {
-// 	const { actions, filters } = useAlertsListContext();
+// 	const { actions, filters } = useScheduledListContext();
 
 // 	const hasChanged = filters.publishDateStart || filters.publishDateEnd;
 
@@ -170,7 +170,7 @@ export function AlertsListFiltersBar() {
 /* * */
 
 // function ValidityDateFilter() {
-// 	const { actions, filters } = useAlertsListContext();
+// 	const { actions, filters } = useScheduledListContext();
 
 // 	const hasChanged = filters.validityDateStart || filters.validityDateEnd;
 

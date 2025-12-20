@@ -1,19 +1,19 @@
 /* * */
 
-import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
+import { useScheduledListContext } from '@/components/scheduled/list/ScheduledList.context';
 import { AlertSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function AlertsListFilterEffect() {
+export function ScheduledListFilterEffect() {
 	//
 
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertsListContext();
+	const alertsListContext = useScheduledListContext();
 
 	//
 	// B. Transform data
