@@ -21,7 +21,7 @@
 		"@tmlmobilidade/utils": "*",
 		"clsx": "2.1.1",
 		"luxon": "3.7.2",
-		"next": "16.0.10",
+		"next": "16.1.0",
 		"nuqs": "2.8.5",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
