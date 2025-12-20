@@ -12,6 +12,7 @@ import { useMemo } from 'react';
 
 export function ScheduledDetailSectionReferences() {
 	//
+
 	//
 	// A. Setup variables
 
