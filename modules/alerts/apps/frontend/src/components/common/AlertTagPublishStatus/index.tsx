@@ -6,21 +6,22 @@ import { Tag } from '@tmlmobilidade/ui';
 /* * */
 
 interface AlertTagPublishStatusProps {
+	onClick?: () => void
 	value: typeof AlertSchema.shape.publish_status._type
 }
 
 /* * */
 
-export function AlertTagPublishStatus({ value }: AlertTagPublishStatusProps) {
+export function AlertTagPublishStatus({ onClick, value }: AlertTagPublishStatusProps) {
 	//
 
 	if (!value) return;
 
-	if (value === 'DRAFT') return <Tag label="Rascunho" variant="muted" />;
-	if (value === 'ARCHIVED') return <Tag label="Arquivado" variant="primary" />;
-	if (value === 'PUBLISHED') return <Tag label="Publicado" variant="primary" filled />;
+	if (value === 'draft') return <Tag label="Rascunho" onClick={onClick} variant="muted" />;
+	if (value === 'archived') return <Tag label="Arquivado" onClick={onClick} variant="primary" />;
+	if (value === 'published') return <Tag label="Publicado" onClick={onClick} variant="primary" filled />;
 
-	return <Tag label="UNKNOWN PUBLISH STATUS" variant="danger" />;
+	return <Tag label="UNKNOWN PUBLISH STATUS" onClick={onClick} variant="danger" />;
 
 	//
 }

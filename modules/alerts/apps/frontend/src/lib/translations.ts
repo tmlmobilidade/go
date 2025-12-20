@@ -1,6 +1,10 @@
-import { GtfsCause, GtfsEffect } from '@tmlmobilidade/types';
+import { AlertType, GtfsCause, GtfsEffect, PublishStatus } from '@tmlmobilidade/types';
 
-export const Translations: { CAUSE: Record<GtfsCause, string>, EFFECT: Record<GtfsEffect, string> } = {
+export const Translations: { ALERT_TYPE: Record<AlertType, string>, CAUSE: Record<GtfsCause, string>, EFFECT: Record<GtfsEffect, string>, PUBLISH_STATUS: Record<PublishStatus, string> } = {
+	ALERT_TYPE: {
+		realtime: 'Alerta Tempo Real',
+		scheduled: 'Alerta Planeado',
+	},
 	CAUSE: {
 		ACCIDENT: 'Acidente',
 		CONSTRUCTION: 'Obras',
@@ -34,6 +38,11 @@ export const Translations: { CAUSE: Record<GtfsCause, string>, EFFECT: Record<Gt
 		SIGNIFICANT_DELAYS: 'Atrasos Significativos',
 		STOP_MOVED: 'Paragem Deslocada',
 		UNKNOWN_EFFECT: 'Desconhecido',
+	},
+	PUBLISH_STATUS: {
+		archived: 'Arquivado',
+		draft: 'Rascunho',
+		published: 'Publicado',
 	},
 };
 

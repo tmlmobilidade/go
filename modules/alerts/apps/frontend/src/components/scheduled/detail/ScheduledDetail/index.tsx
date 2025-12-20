@@ -15,11 +15,11 @@ import { Pane } from '@tmlmobilidade/ui';
 export function ScheduledDetail() {
 	return (
 		<Pane header={[<ScheduledDetailHeader />]}>
-			<ScheduledDetailSectionReferences />
 			<ScheduledDetailSectionTitle />
 			<ScheduledDetailSectionVisibility />
 			<ScheduledDetailSectionValidity />
 			<ScheduledDetailSectionCauseEffect />
+			<ScheduledDetailSectionReferences />
 		</Pane>
 	);
 }

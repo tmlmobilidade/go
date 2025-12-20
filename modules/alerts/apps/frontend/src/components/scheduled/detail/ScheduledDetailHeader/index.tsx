@@ -2,13 +2,15 @@
 
 /* * */
 
-import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
+import { ScheduledDetailPublishStatus } from '@/components/scheduled/detail/ScheduledDetailPublishStatus';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton } from '@tmlmobilidade/ui';
 import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+
+import { ScheduledDetailAlertType } from '../ScheduledDetailAlertType';
 
 /* * */
 
@@ -40,7 +42,9 @@ export function ScheduledDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<AlertTagPublishStatus value={scheduledDetailContext.data.alert?.publish_status} />
+			<ScheduledDetailPublishStatus />
+			<ScheduledDetailAlertType />
+			{/* <AlertTagPublishStatus value={scheduledDetailContext.data.alert?.publish_status} /> */}
 			<Label size="lg" caps>{scheduledDetailContext.data.id}</Label>
 
 			<Spacer />

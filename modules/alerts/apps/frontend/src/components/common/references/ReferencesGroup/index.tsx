@@ -4,8 +4,8 @@
 
 import { ReferencesLines } from '@/components/common/references/ReferencesLines';
 import { ReferencesStops } from '@/components/common/references/ReferencesStops';
-import { type Alert, ReferenceTypeSchema } from '@tmlmobilidade/types';
-import { Grid, Label, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { type Alert, AlertReferenceTypeSchema } from '@tmlmobilidade/types';
+import { Grid, Label, NoDataLabel, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -26,14 +26,12 @@ export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, 
 
 	const parseOptionsLabel = (value: Alert['reference_type']) => {
 		switch (value) {
-			case 'AGENCY':
-				return { label: 'Agências', value };
-			case 'LINE':
+			case 'lines':
 				return { label: 'Linhas', value };
-			case 'STOP':
+			case 'rides':
+				return { label: 'Circulações', value };
+			case 'stops':
 				return { label: 'Paragens', value };
-			case 'TRIP':
-				return { label: 'Viagens', value };
 		}
 	};
 
@@ -84,13 +82,13 @@ export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, 
 			<Grid gap="md">
 
 				<SegmentedControl
-					data={ReferenceTypeSchema.options.map(parseOptionsLabel).filter(option => option.value !== 'TRIP')}
+					data={AlertReferenceTypeSchema.options.map(parseOptionsLabel)}
 					onChange={(value: string) => handleSegmentedControlChange(value as Alert['reference_type'])}
 					value={referenceType}
 					fullWidth
 				/>
 
-				{referenceType === 'LINE' && (
+				{referenceType === 'lines' && (
 					<ReferencesLines
 						municipalityIds={municipalityIds}
 						onAddReference={handleAddReference}
@@ -100,7 +98,7 @@ export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, 
 					/>
 				)}
 
-				{referenceType === 'STOP' && (
+				{referenceType === 'stops' && (
 					<ReferencesStops
 						municipalityIds={municipalityIds}
 						onAddReference={handleAddReference}
@@ -108,6 +106,10 @@ export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, 
 						onUpdateReference={handleUpdateReference}
 						references={references}
 					/>
+				)}
+
+				{referenceType === 'rides' && (
+					<NoDataLabel text="under construction" />
 				)}
 
 			</Grid>
