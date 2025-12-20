@@ -13,7 +13,7 @@ export function ScheduledListHeader() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useScheduledListContext();
+	const scheduledListContext = useScheduledListContext();
 
 	//
 	// B. Render components
@@ -22,7 +22,7 @@ export function ScheduledListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Alertas</Label>
 			<Spacer />
-			<SearchInput onChange={alertsListContext.actions.setFilterSearch} value={alertsListContext.filters.search} />
+			<SearchInput onChange={scheduledListContext.actions.setFilterSearch} value={scheduledListContext.filters.search} />
 			<Button icon={<IconPlus size={20} />} label="Novo Alerta" onClick={openCreateScheduledAlertModal} />
 		</Toolbar>
 	);

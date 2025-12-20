@@ -2,11 +2,11 @@
 
 /* * */
 
-import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { AlertsListCellDate } from '@/components/common/AlertsListCellDate';
 import { AlertsListCellLines } from '@/components/common/AlertsListCellLines';
 import { AlertsListCellMunicipalities } from '@/components/common/AlertsListCellMunicipalities';
 import { AlertsListCellStops } from '@/components/common/AlertsListCellStops';
+import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { useScheduledListContext } from '@/components/scheduled/list/ScheduledList.context';
 import { ScheduledListFiltersBar } from '@/components/scheduled/list/ScheduledListFiltersBar';
 import { ScheduledListHeader } from '@/components/scheduled/list/ScheduledListHeader';
@@ -28,7 +28,7 @@ export function AlertList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const alertsListContext = useScheduledListContext();
+	const scheduledListContext = useScheduledListContext();
 
 	const columns: DataTableColumn<Alert>[] = [
 		{
@@ -84,12 +84,12 @@ export function AlertList() {
 	//
 	// C. Render components
 
-	if (alertsListContext.flags.loading) {
+	if (scheduledListContext.flags.loading) {
 		return <LoadingOverlay />;
 	}
 
-	if (alertsListContext.flags.error) {
-		return <ErrorDisplay message={alertsListContext.flags.error.message} />;
+	if (scheduledListContext.flags.error) {
+		return <ErrorDisplay message={scheduledListContext.flags.error.message} />;
 	}
 
 	return (
@@ -101,7 +101,7 @@ export function AlertList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={alertsListContext.data.filtered}
+				records={scheduledListContext.data.filtered}
 				rowIdAccessor="_id"
 				selectedId={params.id}
 			/>

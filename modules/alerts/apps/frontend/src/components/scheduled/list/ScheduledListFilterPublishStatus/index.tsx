@@ -13,7 +13,7 @@ export function ScheduledListFilterPublishStatus() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useScheduledListContext();
+	const scheduledListContext = useScheduledListContext();
 
 	//
 	// B. Transform data
@@ -21,24 +21,24 @@ export function ScheduledListFilterPublishStatus() {
 	const isActive = useMemo(() => {
 		// The default for this filter is to show all statuses
 		const defaultValues = Array.from(PublishStatusSchema.options) as string[];
-		const enabledValues = alertsListContext.filters.publish_status;
+		const enabledValues = scheduledListContext.filters.publish_status;
 		// Check if the arrays are equal by quickly comparing their lengths
 		if (defaultValues.length !== enabledValues.length) return true;
 		// If the length is the same ensure they're equal by also
 		// checking if every item in one array is included in the other.
 		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [alertsListContext.filters.publish_status]);
+	}, [scheduledListContext.filters.publish_status]);
 
 	const parsedOptions = useMemo(() => {
 		// Skip if options are not provided or are empty.
 		if (!PublishStatusSchema.options?.length) return [];
 		// Parse options to the expected format.
 		return PublishStatusSchema.options.map(item => ({
-			checked: alertsListContext.filters.publish_status.includes(item),
+			checked: scheduledListContext.filters.publish_status.includes(item),
 			label: item,
 			value: item,
 		}));
-	}, [alertsListContext.filters.publish_status]);
+	}, [scheduledListContext.filters.publish_status]);
 
 	//
 	// C. Render components
@@ -47,7 +47,7 @@ export function ScheduledListFilterPublishStatus() {
 		<FilterTypeList
 			active={isActive}
 			label="Estado"
-			onChange={alertsListContext.actions.setFilterPublishStatus}
+			onChange={scheduledListContext.actions.setFilterPublishStatus}
 			options={parsedOptions}
 			withToggleAll
 		/>
