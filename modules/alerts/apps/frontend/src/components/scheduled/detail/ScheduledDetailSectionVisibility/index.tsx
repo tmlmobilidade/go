@@ -13,13 +13,13 @@ export function ScheduledDetailSectionVisibility() {
 	//
 	// A. Setup variables
 
-	const alertDetailContext = useScheduledDetailContext();
+	const scheduledDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Transform data
 
-	const startDateValue = alertDetailContext.data.form.getValues().publish_start_date;
-	const endDateValue = alertDetailContext.data.form.getValues().publish_end_date;
+	const startDateValue = scheduledDetailContext.data.form.getValues().publish_start_date;
+	const endDateValue = scheduledDetailContext.data.form.getValues().publish_end_date;
 
 	//
 	// C. Render components
@@ -31,24 +31,24 @@ export function ScheduledDetailSectionVisibility() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					key={alertDetailContext.data.form.key('publish_start_date')}
+					key={scheduledDetailContext.data.form.key('publish_start_date')}
 					label="Data de Início"
 					fullWidth
-					{...alertDetailContext.data.form.getInputProps('publish_start_date')}
+					{...scheduledDetailContext.data.form.getInputProps('publish_start_date')}
 					value={startDateValue}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('publish_start_date', date);
+						scheduledDetailContext.data.form.setFieldValue('publish_start_date', date);
 					}}
 				/>
 				<DateTimePicker
-					key={alertDetailContext.data.form.key('publish_end_date')}
+					key={scheduledDetailContext.data.form.key('publish_end_date')}
 					label="Data de Fim"
 					clearable
 					fullWidth
-					{...alertDetailContext.data.form.getInputProps('publish_end_date')}
+					{...scheduledDetailContext.data.form.getInputProps('publish_end_date')}
 					value={endDateValue}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('publish_end_date', date);
+						scheduledDetailContext.data.form.setFieldValue('publish_end_date', date);
 					}}
 				/>
 			</Section>

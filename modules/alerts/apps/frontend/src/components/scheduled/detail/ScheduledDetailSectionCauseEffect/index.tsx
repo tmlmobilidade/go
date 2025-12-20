@@ -18,7 +18,7 @@ export function ScheduledDetailSectionCauseEffect() {
 	//
 	// A. Setup variables
 
-	const alertDetailContext = useScheduledDetailContext();
+	const scheduledDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Transform data
@@ -46,22 +46,22 @@ export function ScheduledDetailSectionCauseEffect() {
 			<Section flexDirection="row" gap="md">
 				<div className={styles.container}>
 					<Combobox
-						key={alertDetailContext.data.form.key('cause')}
+						key={scheduledDetailContext.data.form.key('cause')}
 						data={causeItems}
 						description="O que aconteceu"
 						label="Causa"
-						value={alertDetailContext.data.form.values.cause}
-						{...alertDetailContext.data.form.getInputProps('cause')}
+						value={scheduledDetailContext.data.form.values.cause}
+						{...scheduledDetailContext.data.form.getInputProps('cause')}
 					/>
 				</div>
 				<div className={styles.container}>
 					<Combobox
-						key={alertDetailContext.data.form.key('effect')}
+						key={scheduledDetailContext.data.form.key('effect')}
 						data={effectItems}
 						description="O que aconteceu como consequência"
 						label="Efeito"
-						value={alertDetailContext.data.form.values.effect}
-						{...alertDetailContext.data.form.getInputProps('effect')}
+						value={scheduledDetailContext.data.form.values.effect}
+						{...scheduledDetailContext.data.form.getInputProps('effect')}
 					/>
 				</div>
 			</Section>

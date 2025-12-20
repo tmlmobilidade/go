@@ -16,13 +16,13 @@ export function ScheduledDetailSectionReferences() {
 	// A. Setup variables
 
 	const locationsContext = useLocationsContext();
-	const alertDetailContext = useScheduledDetailContext();
+	const scheduledDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Transform data
 
-	const references = useMemo(() => alertDetailContext.data.form.values.references, [
-		alertDetailContext.data.form.values.references,
+	const references = useMemo(() => scheduledDetailContext.data.form.values.references, [
+		scheduledDetailContext.data.form.values.references,
 	]);
 
 	const municipalitiesOptions = useMemo(() => {
@@ -44,19 +44,19 @@ export function ScheduledDetailSectionReferences() {
 		>
 			<Section gap="md">
 				<MultiSelect
-					key={alertDetailContext.data.form.key('municipality_ids')}
+					key={scheduledDetailContext.data.form.key('municipality_ids')}
 					data={municipalitiesOptions}
 					description="Selecione os municípios que serão afetados pelo alerta"
 					label="Municípios Afetados"
-					onChange={ids => alertDetailContext.data.form.setFieldValue('municipality_ids', ids)}
-					value={alertDetailContext.data.form.values.municipality_ids}
+					onChange={ids => scheduledDetailContext.data.form.setFieldValue('municipality_ids', ids)}
+					value={scheduledDetailContext.data.form.values.municipality_ids}
 				/>
 
 				<ReferencesGroup
-					keys={alertDetailContext.data.form.values.reference_type}
-					municipality_ids={alertDetailContext.data.form.values.municipality_ids}
-					onSetFieldValue={alertDetailContext.data.form.setFieldValue}
-					reference_type={alertDetailContext.data.form.values.reference_type}
+					keys={scheduledDetailContext.data.form.values.reference_type}
+					municipality_ids={scheduledDetailContext.data.form.values.municipality_ids}
+					onSetFieldValue={scheduledDetailContext.data.form.setFieldValue}
+					reference_type={scheduledDetailContext.data.form.values.reference_type}
 					references={references}
 				/>
 			</Section>

@@ -13,13 +13,13 @@ export function ScheduledDetailSectionValidity() {
 	//
 	// A. Setup variables
 
-	const alertDetailContext = useScheduledDetailContext();
+	const scheduledDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Transform data
 
-	const startDateValue = alertDetailContext.data.form.getValues().active_period_start_date;
-	const endDateValue = alertDetailContext.data.form.getValues().active_period_end_date;
+	const startDateValue = scheduledDetailContext.data.form.getValues().active_period_start_date;
+	const endDateValue = scheduledDetailContext.data.form.getValues().active_period_end_date;
 
 	//
 	// C. Render components
@@ -31,24 +31,24 @@ export function ScheduledDetailSectionValidity() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					key={alertDetailContext.data.form.key('active_period_start_date')}
+					key={scheduledDetailContext.data.form.key('active_period_start_date')}
 					label="Data de Início"
 					fullWidth
-					{...alertDetailContext.data.form.getInputProps('active_period_start_date')}
+					{...scheduledDetailContext.data.form.getInputProps('active_period_start_date')}
 					value={startDateValue}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('active_period_start_date', date);
+						scheduledDetailContext.data.form.setFieldValue('active_period_start_date', date);
 					}}
 				/>
 				<DateTimePicker
-					key={alertDetailContext.data.form.key('active_period_end_date')}
+					key={scheduledDetailContext.data.form.key('active_period_end_date')}
 					label="Data de Fim"
 					clearable
 					fullWidth
-					{...alertDetailContext.data.form.getInputProps('active_period_end_date')}
+					{...scheduledDetailContext.data.form.getInputProps('active_period_end_date')}
 					value={endDateValue}
 					onChange={(date) => {
-						alertDetailContext.data.form.setFieldValue('active_period_end_date', date);
+						scheduledDetailContext.data.form.setFieldValue('active_period_end_date', date);
 					}}
 				/>
 			</Section>

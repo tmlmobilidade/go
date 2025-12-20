@@ -18,7 +18,7 @@ export function ScheduledDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const alertDetailContext = useScheduledDetailContext();
+	const scheduledDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Handle actions
@@ -28,7 +28,7 @@ export function ScheduledDetailHeader() {
 	};
 
 	const handleDuplicate = () => {
-		const id = alertDetailContext.data.id;
+		const id = scheduledDetailContext.data.id;
 
 		router.replace(`${PAGE_ROUTES.alerts.SCHEDULED_DETAIL('new')}?copy=${id}`);
 	};
@@ -39,8 +39,8 @@ export function ScheduledDetailHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
-			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
+			<Tag label={scheduledDetailContext.data.form.getValues().publish_status} variant={scheduledDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
+			<Label size="lg" caps>{scheduledDetailContext.data.id}</Label>
 			<Spacer />
 			<Button
 				icon={<IconCopy size={28} />}
@@ -50,24 +50,24 @@ export function ScheduledDetailHeader() {
 			/>
 			<Button
 				label="Salvar como rascunho"
-				onClick={() => alertDetailContext.actions.saveAlert('draft')}
+				onClick={scheduledDetailContext.actions.save}
 				variant="secondary"
 			/>
 			<Button
-				disabled={alertDetailContext.flags.isSaving}
+				disabled={scheduledDetailContext.flags.isSaving}
 				icon={<IconUpload size={28} />}
-				loading={alertDetailContext.flags.isSaving}
-				onClick={() => alertDetailContext.actions.saveAlert('publish')}
+				loading={scheduledDetailContext.flags.isSaving}
+				onClick={scheduledDetailContext.actions.save}
 				variant="primary"
-				label={alertDetailContext.data.form.getValues().publish_status === 'DRAFT'
+				label={scheduledDetailContext.data.form.getValues().publish_status === 'DRAFT'
 					? 'Publicar'
 					: 'Salvar'}
 			/>
 			<Button
-				disabled={alertDetailContext.flags.isSaving}
+				disabled={scheduledDetailContext.flags.isSaving}
 				icon={<IconTrash size={28} />}
 				label="Apagar"
-				onClick={alertDetailContext.actions.deleteAlert}
+				onClick={scheduledDetailContext.actions.delete}
 				variant="danger"
 			/>
 		</Toolbar>

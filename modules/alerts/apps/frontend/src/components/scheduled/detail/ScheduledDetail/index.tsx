@@ -15,15 +15,10 @@ import { Pane } from '@tmlmobilidade/ui';
 export function ScheduledDetail() {
 	return (
 		<Pane header={[<ScheduledDetailHeader />]}>
-			{/* Title & Description */}
 			<ScheduledDetailSectionTitle />
-			{/* Visibility Scheduling */}
 			<ScheduledDetailSectionVisibility />
-			{/* Validity Scheduling */}
 			<ScheduledDetailSectionValidity />
-			{/* Cause & Effect */}
 			<ScheduledDetailSectionCauseEffect />
-			{/* References */}
 			<ScheduledDetailSectionReferences />
 		</Pane>
 	);
