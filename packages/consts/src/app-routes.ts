@@ -150,6 +150,7 @@ export const API_ROUTES = Object.freeze({
 		// SCHEDULED
 		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/scheduled/${id}`,
 		SCHEDULED_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/scheduled/${id}/image`,
+		SCHEDULED_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/scheduled/${id}/lock`,
 		SCHEDULED_GTFS: `${getAppConfig('alerts', 'api_url')}/scheduled/gtfs`,
 		SCHEDULED_LIST: `${getAppConfig('alerts', 'api_url')}/scheduled`,
 	},

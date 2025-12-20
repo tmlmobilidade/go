@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertsController } from '@/endpoints/scheduled/scheduled.controller.js';
+import { ScheduledController } from '@/endpoints/scheduled/scheduled.controller.js';
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -19,60 +19,55 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read]) },
-			AlertsController.getAll,
+			ScheduledController.getAll,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read]) },
-			AlertsController.getById,
+			ScheduledController.getById,
 		);
 
 		instance.get(
 			'/:id/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read]) },
-			AlertsController.getImage,
+			ScheduledController.getImage,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.create]) },
-			AlertsController.create,
+			ScheduledController.create,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update]) },
-			AlertsController.update,
+			ScheduledController.update,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.delete]) },
-			AlertsController.delete,
+			ScheduledController.delete,
 		);
 
 		instance.post(
 			'/:id/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update]) },
-			AlertsController.uploadImage,
+			ScheduledController.uploadImage,
 		);
 
 		instance.delete(
 			'/:id/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update]) },
-			AlertsController.deleteImage,
+			ScheduledController.deleteImage,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.lock]) },
-			AlertsController.lock,
-		);
-
-		instance.get(
-			'/gtfs',
-			AlertsController.getGtfs,
+			ScheduledController.lock,
 		);
 
 		next();
