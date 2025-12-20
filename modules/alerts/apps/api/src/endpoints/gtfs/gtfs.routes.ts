@@ -16,8 +16,8 @@ server.register(
 		//
 
 		instance.get(
-			'/:agency_ids',
-			GtfsController.getGtfs,
+			'/carris-metropolitana',
+			GtfsController.carrisMetropolitana,
 		);
 
 		next();
