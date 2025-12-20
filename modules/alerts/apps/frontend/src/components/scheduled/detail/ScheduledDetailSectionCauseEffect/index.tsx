@@ -6,9 +6,7 @@ import { useScheduledDetailContext } from '@/components/scheduled/detail/Schedul
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Section } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -43,27 +41,23 @@ export function ScheduledDetailSectionCauseEffect() {
 			description="A causa é o que aconteceu, o efeito é o que aconteceu como consequência."
 			title="Causa e Efeito"
 		>
-			<Section flexDirection="row" gap="md">
-				<div className={styles.container}>
-					<Combobox
+			<Section>
+				<Grid columns="ab" gap="md">
+					<Select
 						key={scheduledDetailContext.data.form.key('cause')}
 						data={causeItems}
 						description="O que aconteceu"
 						label="Causa"
-						value={scheduledDetailContext.data.form.values.cause}
 						{...scheduledDetailContext.data.form.getInputProps('cause')}
 					/>
-				</div>
-				<div className={styles.container}>
-					<Combobox
+					<Select
 						key={scheduledDetailContext.data.form.key('effect')}
 						data={effectItems}
 						description="O que aconteceu como consequência"
 						label="Efeito"
-						value={scheduledDetailContext.data.form.values.effect}
 						{...scheduledDetailContext.data.form.getInputProps('effect')}
 					/>
-				</div>
+				</Grid>
 			</Section>
 		</Collapsible>
 	);
