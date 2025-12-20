@@ -2,18 +2,18 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
+import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AlertDetailSectionVisibility() {
+export function ScheduledDetailSectionVisibility() {
 	//
 
 	//
 	// A. Setup variables
 
-	const alertDetailContext = useAlertDetailContext();
+	const alertDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Transform data

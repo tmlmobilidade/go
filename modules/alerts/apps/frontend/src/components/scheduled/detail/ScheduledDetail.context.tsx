@@ -12,7 +12,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface AlertDetailContextState extends DetailContextStateTemplate {
+interface ScheduledDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		deleteImage: () => void
 		fileChanged: (file: File) => void
@@ -27,19 +27,19 @@ interface AlertDetailContextState extends DetailContextStateTemplate {
 
 /* * */
 
-const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
+const ScheduledDetailContext = createContext<ScheduledDetailContextState | undefined>(undefined);
 
-export function useAlertDetailContext() {
-	const context = useContext(AlertDetailContext);
+export function useScheduledDetailContext() {
+	const context = useContext(ScheduledDetailContext);
 	if (!context) {
-		throw new Error('useAlertDetailContext must be used within a AlertDetailContextProvider');
+		throw new Error('useScheduledDetailContext must be used within a ScheduledDetailContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChildren<{ alertId: string }>) => {
+export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithChildren<{ alertId: string }>) => {
 	//
 
 	//
@@ -53,9 +53,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// B. Fetch Data
 
-	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
-	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
-	const { data: alertImage, error: alertImageError, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.SCHEDULED_LIST);
+	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId));
+	const { data: alertImage, error: alertImageError, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Define form
@@ -66,7 +66,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			alertMutate(updatedItem);
@@ -76,7 +76,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { action: handlePublish, isLoading: isPublishing } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			alertMutate(updatedItem);
@@ -86,7 +86,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE'),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId), 'DELETE'),
 		onSuccess: () => {
 			form.resetDirty();
 			alertsListMutate();
@@ -95,7 +95,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId), 'DELETE'),
 		onSuccess: () => {
 			form.resetDirty();
 			alertMutate();
@@ -105,7 +105,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_LOCK(alertId)),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL_LOCK(alertId)),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			alertMutate(updatedItem);
@@ -115,7 +115,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
-		fetchFn: async () => await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), image),
+		fetchFn: async () => await uploadFile(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId), image),
 		onSuccess: () => {
 			form.resetDirty();
 			alertMutate();
@@ -127,7 +127,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// E. Define context value
 
-	const contextValue: AlertDetailContextState = useMemo(() => ({
+	const contextValue: ScheduledDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			deleteImage: handleDeleteImage,
@@ -171,9 +171,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// F. Render components
 
 	return (
-		<AlertDetailContext.Provider value={contextValue}>
+		<ScheduledDetailContext.Provider value={contextValue}>
 			{children}
-		</AlertDetailContext.Provider>
+		</ScheduledDetailContext.Provider>
 	);
 
 	//

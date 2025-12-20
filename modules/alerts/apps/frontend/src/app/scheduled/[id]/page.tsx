@@ -1,15 +1,15 @@
 /* * */
 
-import { AlertDetail } from '@/components/scheduled/detail/AlertDetail';
-import { AlertDetailContextProvider } from '@/components/scheduled/detail/AlertDetail.context';
+import { ScheduledDetail } from '@/components/scheduled/detail/ScheduledDetail';
+import { ScheduledDetailContextProvider } from '@/components/scheduled/detail/ScheduledDetail.context';
 
 /* * */
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	return (
-		<AlertDetailContextProvider alertId={id}>
-			<AlertDetail />
-		</AlertDetailContextProvider>
+		<ScheduledDetailContextProvider alertId={id}>
+			<ScheduledDetail />
+		</ScheduledDetailContextProvider>
 	);
 }

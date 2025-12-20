@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
+import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
 import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -11,14 +11,14 @@ import { useRouter } from 'next/navigation';
 
 /* * */
 
-export function AlertDetailHeader() {
+export function ScheduledDetailHeader() {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const alertDetailContext = useAlertDetailContext();
+	const alertDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Handle actions

@@ -3,19 +3,19 @@
 /* * */
 
 import { UploadImage } from '@/components/common/UploadImage';
-import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
+import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AlertDetailSectionTitle() {
+export function ScheduledDetailSectionTitle() {
 	//
 
 	//
 	// A. Setup variables
 
-	const alertDetailContext = useAlertDetailContext();
+	const alertDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Render components

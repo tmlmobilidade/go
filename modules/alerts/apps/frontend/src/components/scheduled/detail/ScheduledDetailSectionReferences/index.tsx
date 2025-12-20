@@ -3,20 +3,20 @@
 /* * */
 
 import { ReferencesGroup } from '@/components/common/references/ReferencesGroup';
-import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
+import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Collapsible, MultiSelect, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function AlertDetailSectionReferences() {
+export function ScheduledDetailSectionReferences() {
 	//
 	//
 	// A. Setup variables
 
 	const locationsContext = useLocationsContext();
-	const alertDetailContext = useAlertDetailContext();
+	const alertDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Transform data

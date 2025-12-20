@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
+import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
@@ -12,13 +12,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function AlertDetailSectionCauseEffect() {
+export function ScheduledDetailSectionCauseEffect() {
 	//
 
 	//
 	// A. Setup variables
 
-	const alertDetailContext = useAlertDetailContext();
+	const alertDetailContext = useScheduledDetailContext();
 
 	//
 	// B. Transform data
