@@ -8,10 +8,5 @@
 }
 
 .root:hover {
-	background-color: var(--color-system-background-200);
-}
-
-.root[data-size='lg'] {
-	--cb-icon-size: 26px;
-	--cb-size: 40px;
+	color: var(--color-system-text-100);
 }

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Fieldset } from '@mantine/core';
+import { Fieldset, Input } from '@mantine/core';
 import { DateInput as MantineDateInput, TimePicker as MantineTimePicker } from '@mantine/dates';
 import { IconCalendar, IconClock } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
@@ -157,7 +157,6 @@ export function DateTimeInput(props: DateTimeInputProps) {
 			/>
 			<MantineTimePicker
 				classNames={{ dropdown: styles.timePicker_dropdown, root: styles.timePicker_root, wrapper: styles.timePicker_wrapper }}
-				clearable={props.clearable}
 				description={props.description ? ' ' : undefined}
 				format="24h"
 				label={props.label ? ' ' : undefined}
@@ -170,6 +169,16 @@ export function DateTimeInput(props: DateTimeInputProps) {
 					{ label: 'Tarde', values: ['14:00:00', '16:00:00', '18:00:00'] },
 					{ label: 'Noite', values: ['20:00:00', '22:00:00', '23:59:59'] },
 				]}
+				rightSection={
+					// Even though Mantine TimePicker has a clearable prop,
+					// it is based on the CloseButton component and not on the
+					// other Inputs ClearButton default component.
+					// Therefore, we replace the TimePicker's rightSection
+					// with the Input.ClearButton to ensure consistency across all inputs.
+					props.clearable && timePickerValue !== ''
+						? <Input.ClearButton onClick={() => setTimePickerValue('')} />
+						: undefined
+				}
 				withDropdown
 			/>
 		</Fieldset>

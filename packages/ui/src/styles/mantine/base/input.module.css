@@ -5,6 +5,7 @@
 .wrapper {
 	--input-size: 40px;
 	--input-height: 40px;
+	--input-bg: var(--color-system-background-100);
 	min-width: 200px;
 	overflow: visible;
 	transition: width 300ms ease-in-out
@@ -25,7 +26,6 @@
 	line-height: 1;
 	color: var(--color-system-text-100);
 	outline: none;
-	background-color: var(--color-system-background-100);
 	border: none;
 	transition: all 200ms ease-in-out;
 }
@@ -44,14 +44,13 @@
 
 .wrapper {
 	padding: 0 15px;
-	background-color: var(--color-system-background-100);
+	background-color: var(--input-bg);
 	border: 2px solid var(--color-system-border-100);
 	border-radius: 6px;
 	transition: all 200ms ease-in-out;
 }
 
 .wrapper:focus-within {
-	background-color: var(--color-system-background-100);
 	border-color: var(--color-primary);
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
 }
