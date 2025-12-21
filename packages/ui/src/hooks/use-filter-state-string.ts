@@ -20,10 +20,10 @@ export interface UseFilterStateStringReturnType {
  * if the filter is active. Use this hook with the `UseFilterStateStringReturnType`
  * interface to manage filter states in list contexts.
  * @param key The key to use in the URL query string.
- * @param defaults The default value for the filter.
+ * @param defaults The default value for the filter. Defaults to an empty string.
  * @returns The filter state management object.
  */
-export function useFilterStateString(key: string, defaults: string): UseFilterStateStringReturnType {
+export function useFilterStateString(key: string, defaults = ''): UseFilterStateStringReturnType {
 	//
 
 	//

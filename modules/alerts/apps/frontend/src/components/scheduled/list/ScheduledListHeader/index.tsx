@@ -22,7 +22,7 @@ export function ScheduledListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Alertas</Label>
 			<Spacer />
-			<SearchInput onChange={scheduledListContext.actions.setFilterSearch} value={scheduledListContext.filters.search} />
+			<SearchInput onChange={scheduledListContext.filters.search.set} value={scheduledListContext.filters.search.value} />
 			<Button icon={<IconPlus size={20} />} label="Novo Alerta" onClick={openCreateScheduledAlertModal} />
 		</Toolbar>
 	);

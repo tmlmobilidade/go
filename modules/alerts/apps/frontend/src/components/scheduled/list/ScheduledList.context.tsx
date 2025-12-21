@@ -6,31 +6,23 @@ import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertSchema, PublishStatusSchema } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface ScheduledListContextState {
-	actions: {
-		setFilterCause: (values: string[]) => void
-		setFilterEffect: (values: string[]) => void
-		setFilterMunicipality: (values: string[]) => void
-		setFilterPublishStatus: (values: string[]) => void
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
 	}
 	filters: {
-		cause: string[]
-		effect: string[]
-		municipality: string[]
-		publish_status: string[]
-		search: string
+		cause: UseFilterStateListReturnType
+		effect: UseFilterStateListReturnType
+		municipality: UseFilterStateListReturnType
+		publish_status: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -60,19 +52,22 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 
 	const locationsContext = useLocationsContext();
 
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-	const [filterPublishStatus, setFilterPublishStatus] = useQueryState<string[]>('publish_status', parseAsArrayOfStrings.withDefault(PublishStatusSchema.options));
-	const [filterCause, setFilterCause] = useQueryState<string[]>('cause', parseAsArrayOfStrings.withDefault(AlertSchema.shape.cause.options));
-	const [filterEffect, setFilterEffect] = useQueryState<string[]>('effect', parseAsArrayOfStrings.withDefault(AlertSchema.shape.effect.options));
-	const [filterMunicipality, setFilterMunicipality] = useQueryState<string[]>('municipality', parseAsArrayOfStrings.withDefault(locationsContext.data.municipality_ids));
-
 	//
 	// B. Fetch data
 
 	const { data: allAlertsData, error: allAlertsError, isLoading: allAlertsLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.SCHEDULED_LIST);
 
 	//
-	// C. Transform data
+	// C. Setup filters
+
+	const filterSearch = useFilterStateString('search');
+	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: item, value: item })));
+	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: item, value: item })));
+	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: item, value: item })));
+	const filterMunicipality = useFilterStateList('municipality', locationsContext.data.municipality_ids, locationsContext.data.municipalities.map(item => ({ label: item.name, value: item.id })));
+
+	//
+	// D. Transform data
 
 	const normalizedAlertsData: AlertNormalized[] = useMemo(() => {
 		// Skip if no data is available
@@ -88,24 +83,20 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 	const searchResultsData = useSearch<AlertNormalized>({
 		accessors: ['title_normalized', 'description_normalized'],
 		data: normalizedAlertsData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
-
 		// Skip if no query filters are set
-		if (filterPublishStatus.length === 0 && filterCause.length === 0 && filterEffect.length === 0 && filterMunicipality.length === 0) return searchResultsData;
-
+		if (filterPublishStatus.value.length === 0 && filterCause.value.length === 0 && filterEffect.value.length === 0 && filterMunicipality.value.length === 0) return searchResultsData;
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const filterPublishStatusSet = new Set(filterPublishStatus);
-		const filterCauseSet = new Set(filterCause);
-		const filterEffectSet = new Set(filterEffect);
-		const filterMunicipalitySet = new Set(filterMunicipality);
-
+		const filterPublishStatusSet = new Set(filterPublishStatus.value);
+		const filterCauseSet = new Set(filterCause.value);
+		const filterEffectSet = new Set(filterEffect.value);
+		const filterMunicipalitySet = new Set(filterMunicipality.value);
 		// 2. Filter by query filters
-
 		return searchResultsData.filter((alert: AlertNormalized) => {
 			// Filter by publish_status
 			if (!filterPublishStatusSet.has(alert.publish_status)) return false;
@@ -114,23 +105,26 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 			// Filter by effect
 			if (!filterEffectSet.has(alert.effect)) return false;
 			// Filter by municipality
-			if (filterMunicipality.length > 0 && !alert.municipality_ids.some((mId: string) => filterMunicipalitySet.has(mId))) return false;
+			if (filterMunicipality.value.length > 0 && !alert.municipality_ids.some((mId: string) => filterMunicipalitySet.has(mId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
-	}, [searchResultsData, filterPublishStatus, filterCause, filterEffect, filterMunicipality, filterPublishStatus, filterCause, filterEffect, filterMunicipality]);
+	}, [
+		searchResultsData,
+		filterPublishStatus,
+		filterCause,
+		filterEffect,
+		filterMunicipality,
+		filterPublishStatus,
+		filterCause,
+		filterEffect,
+		filterMunicipality,
+	]);
 
 	//
 	// E. Define context value
 
 	const contextValue: ScheduledListContextState = useMemo(() => ({
-		actions: {
-			setFilterCause: setFilterCause,
-			setFilterEffect: setFilterEffect,
-			setFilterMunicipality: setFilterMunicipality,
-			setFilterPublishStatus: setFilterPublishStatus,
-			setFilterSearch: setFilterSearch,
-		},
 		data: {
 			filtered: filterResultsData,
 			raw: allAlertsData,
