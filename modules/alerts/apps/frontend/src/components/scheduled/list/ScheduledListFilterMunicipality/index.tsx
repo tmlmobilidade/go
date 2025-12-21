@@ -1,8 +1,7 @@
 /* * */
 
 import { useScheduledListContext } from '@/components/scheduled/list/ScheduledList.context';
-import { useLocationsContext } from '@/contexts/Locations.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

@@ -60,6 +60,10 @@
 	padding-right: calc(var(--size-spacing-sm) + 30px);
 }
 
+.wrapper[data-disabled="true"] {
+	opacity: 0.5;
+}
+
 
 /* * */
 /* SECTION */

@@ -2,12 +2,11 @@
 
 /* * */
 
-import { useLocationsContext } from '@/contexts/Locations.context';
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertSchema, PublishStatusSchema } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
+import { parseAsArrayOfStrings, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';

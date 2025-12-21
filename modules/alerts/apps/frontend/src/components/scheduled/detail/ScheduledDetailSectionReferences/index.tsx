@@ -4,9 +4,7 @@
 
 import { ReferencesGroup } from '@/components/common/references/ReferencesGroup';
 import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
-import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useLocationsContext } from '@/contexts/Locations.context';
-import { Collapsible, Grid, MultiSelect, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, MultiSelect, Section, useAgenciesContext, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -23,11 +21,6 @@ export function ScheduledDetailSectionReferences() {
 
 	//
 	// B. Transform data
-
-	const agenciesOptions = useMemo(() => {
-		if (!agenciesContext.data.raw) return [];
-		return agenciesContext.data.raw.map(agency => ({ label: agency.name, value: agency._id }));
-	}, [agenciesContext.data.raw]);
 
 	const municipalitiesOptions = useMemo(() => {
 		if (!locationsContext.data.municipalities) return [];
@@ -47,7 +40,7 @@ export function ScheduledDetailSectionReferences() {
 				<Grid gap="md">
 					<MultiSelect
 						key={scheduledDetailContext.data.form.key('agency_ids')}
-						data={agenciesOptions}
+						data={agenciesContext.data.as_options}
 						description="Selecione os municípios que serão afetados pelo alerta"
 						label="Operadores afetados"
 						{...scheduledDetailContext.data.form.getInputProps('agency_ids')}

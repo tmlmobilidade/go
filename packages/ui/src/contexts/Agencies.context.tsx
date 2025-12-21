@@ -7,10 +7,13 @@ import { type Agency } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
+import { SelectDataItem } from '../components/inputs/Select';
+
 /* * */
 
 interface AgenciesContextState {
 	data: {
+		as_options: SelectDataItem[]
 		raw: Agency[]
 	}
 	flags: {
@@ -42,10 +45,21 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
 
 	//
-	// B. Define context value
+	// B. Transform data
+
+	const asOptionsData: SelectDataItem[] = useMemo(() => {
+		if (!allAgenciesData) return [];
+		return allAgenciesData
+			.map(item => ({ label: `${item._id} - ${item.name}`, value: item._id }))
+			.sort((a, b) => Number(a.value) - Number(b.value));
+	}, [allAgenciesData]);
+
+	//
+	// C. Define context value
 
 	const contextValue: AgenciesContextState = useMemo(() => ({
 		data: {
+			as_options: asOptionsData,
 			raw: allAgenciesData ?? [],
 		},
 		flags: {
@@ -53,13 +67,14 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 			loading: allAgenciesLoading,
 		},
 	}), [
+		asOptionsData,
 		allAgenciesData,
 		allAgenciesError,
 		allAgenciesLoading,
 	]);
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<AgenciesContext.Provider value={contextValue}>
