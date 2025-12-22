@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { CreateVerificationTokenDto, UpdateVerificationTokenDto, VerificationToken, VerificationTokenSchema } from '@tmlmobilidade/types';
+import { type CreateVerificationTokenDto, CreateVerificationTokenSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type VerificationToken } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,8 +10,8 @@ import { z } from 'zod';
 
 class VerificationTokensClass extends MongoCollectionClass<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto> {
 	private static _instance: VerificationTokensClass;
-	protected override createSchema: z.ZodSchema = VerificationTokenSchema;
-	protected override updateSchema: z.ZodSchema = VerificationTokenSchema;
+	protected override createSchema: z.ZodSchema = CreateVerificationTokenSchema;
+	protected override updateSchema: z.ZodSchema = UpdateVerificationTokenSchema;
 
 	private constructor() {
 		super();
@@ -28,9 +28,8 @@ class VerificationTokensClass extends MongoCollectionClass<VerificationToken, Cr
 
 	/**
 	 * Finds a verification token by its token.
-	 *
-	 * @param token - The token to find
-	 * @returns The verification token or null if not found
+	 * @param token The token to find.
+	 * @returns The verification token or null if not found.
 	 */
 	async findByToken(token: string) {
 		return this.findOne({ token });
