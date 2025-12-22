@@ -1,27 +1,36 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { getAlertTitleAndDescription } from '@/lib/translations';
 import { CoordinatesInput, Description, Label, Section, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 export function AlertBasicInfo() {
-	const realtimeContext = useRealtimeCreateContext();
+	//
 
+	//
+	// A. Setup variables
+
+	const realtimeContext = useRealtimeCreateContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepSummary.alertBasicInfo' });
+
+	//
+	// B. Render components
 	return (
 		<Section gap="md">
-			<Label size="lg">Resumo do alerta</Label>
+			<Label size="lg">{t('title')}</Label>
 			<div>
-				<Label size="md">Título</Label>
+				<Label size="md">{t('title_label')}</Label>
 				<Description>{realtimeContext.data.form.values.title}</Description>
 			</div>
 			<div>
-				<Label size="md">Descrição</Label>
+				<Label size="md">{t('description_label')}</Label>
 				<Description>{realtimeContext.data.form.values.description}</Description>
 			</div>
 			{
 				realtimeContext.data.form.values.effect === 'DETOUR' && realtimeContext.data.form.values.cause === 'CONSTRUCTION' && (
 					<>
 						<TextInput
-							label="Percurso alternativo"
-							placeholder="..."
+							label={t('fields.detour')}
+							placeholder={t('fields.detour_placeholder')}
 							value={realtimeContext.data.detour}
 							onChange={(event) => {
 								realtimeContext.actions.setDetour(event.target.value);
@@ -35,7 +44,7 @@ export function AlertBasicInfo() {
 				)
 			}
 			<CoordinatesInput
-				description="Ponto de referência do alerta, para que seja possível localizar o alerta no mapa."
+				description={t('fields.coordinates_description')}
 				{...realtimeContext.data.form.getInputProps('coordinates')}
 			/>
 		</Section>

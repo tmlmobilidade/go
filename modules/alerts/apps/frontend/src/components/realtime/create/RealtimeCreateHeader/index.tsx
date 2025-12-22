@@ -4,6 +4,7 @@
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function RealtimeCreateHeader() {
 	// A. Setup variables
 
 	const realtimeCreateContext = useRealtimeCreateContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.header' });
 
 	//
 	// C. Render components
@@ -21,7 +23,7 @@ export function RealtimeCreateHeader() {
 	return (
 		<Toolbar>
 			{!realtimeCreateContext.flags.isFirst && <BackButton onClick={() => realtimeCreateContext.actions.prevStep()} />}
-			<Tag label="Criar alerta" variant="primary" />
+			<Tag label={t('create_alert')} variant="primary" />
 			<Spacer />
 			<TripNextButton />
 			<SaveButton />
@@ -39,6 +41,7 @@ function TripNextButton() {
 
 	const realtimeCreateContext = useRealtimeCreateContext();
 	const isTripStep = realtimeCreateContext.flags.currentIndex === realtimeCreateContext.data.steps.findIndex(step => step.id === 'trip');
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// C. Render components
@@ -48,7 +51,7 @@ function TripNextButton() {
 	return (
 		<Button
 			disabled={realtimeCreateContext.data.selectedRides.length === 0}
-			label="Seguinte"
+			label={tGlobal('next')}
 			onClick={() => realtimeCreateContext.actions.nextStep()}
 			variant="primary"
 		/>
@@ -62,6 +65,7 @@ function SaveButton() {
 	// A. Setup variables
 
 	const realtimeCreateContext = useRealtimeCreateContext();
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// C. Render components
@@ -71,7 +75,7 @@ function SaveButton() {
 	return (
 		<Button
 			disabled={!realtimeCreateContext.flags.canSave || realtimeCreateContext.flags.isSaving}
-			label="Salvar"
+			label={tGlobal('save')}
 			loading={realtimeCreateContext.flags.isSaving}
 			onClick={() => realtimeCreateContext.actions.saveAlert()}
 			variant="primary"

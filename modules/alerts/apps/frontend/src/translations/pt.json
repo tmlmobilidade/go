@@ -3,9 +3,29 @@
 	"realtime": {
 		"create": {
 			"header": {
-				"new_alert_button_label": "Novo Alerta"
+				"create_alert": "Criar Alerta"
 			},
-			"no_permission": "Não tem permissão para criar alertas"
+			"no_permission": "Não tem permissão para criar alertas",
+			"stepSummary": {
+				"affectedRides": {
+					"tableColumns": {
+						"headsign": "Destino",
+						"id": "ID",
+						"start_time_scheduled": "Partida"
+					},
+					"title": "Viagens afetadas"
+				},
+				"alertBasicInfo": {
+					"description_label": "Descrição",
+					"fields": {
+						"coordinates_description": "Ponto de referência do alerta, para que seja possível localizar o alerta no mapa.",
+						"detour": "Percurso Alternativo",
+						"detour_placeholder": "..."
+					},
+					"title": "Resumo do Alerta",
+					"title_label": "Título"
+				}
+			}
 		},
 		"detail": {
 			"sectionCauseEffect": {
