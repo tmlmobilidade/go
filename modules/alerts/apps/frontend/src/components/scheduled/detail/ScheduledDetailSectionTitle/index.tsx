@@ -56,12 +56,12 @@ export function ScheduledDetailSectionTitle() {
 					{...scheduledDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput
-					key={scheduledDetailContext.data.form.key('link')}
+					key={scheduledDetailContext.data.form.key('info_url')}
 					description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"
 					label="Link Adicional"
 					leftSection={<IconLink size={18} />}
 					placeholder="https://www.cm-setubal.com/..."
-					{...scheduledDetailContext.data.form.getInputProps('link')}
+					{...scheduledDetailContext.data.form.getInputProps('info_url')}
 				/>
 			</Section>
 		</Collapsible>

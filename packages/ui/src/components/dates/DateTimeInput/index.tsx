@@ -34,6 +34,12 @@ export interface DateTimeInputProps {
 	description?: string
 
 	/**
+	 * Whether the input is disabled.
+	 * @default false
+	 */
+	disabled?: boolean
+
+	/**
 	 * An error message for the input.
 	 */
 	error?: string
@@ -147,6 +153,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				classNames={{ root: styles.dateInput_root, wrapper: styles.dateInput_wrapper }}
 				clearable={props.clearable}
 				description={props.description}
+				disabled={props.disabled}
 				error={props.error}
 				label={props.label}
 				leftSection={<IconCalendar size={20} />}
@@ -158,6 +165,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 			<MantineTimePicker
 				classNames={{ dropdown: styles.timePicker_dropdown, root: styles.timePicker_root, wrapper: styles.timePicker_wrapper }}
 				description={props.description ? ' ' : undefined}
+				disabled={props.disabled}
 				format="24h"
 				label={props.label ? ' ' : undefined}
 				leftSection={<IconClock size={20} />}

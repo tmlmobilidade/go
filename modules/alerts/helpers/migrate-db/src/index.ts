@@ -1,7 +1,7 @@
 /* * */
 
 import { alerts } from '@tmlmobilidade/interfaces';
-import { type Alert } from '@tmlmobilidade/types';
+import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,12 +19,16 @@ import { type Alert } from '@tmlmobilidade/types';
 	const migratedAlerts = existingAlerts.map((alert) => {
 		const formattedAlert: Alert = {
 			...alert,
+			created_by: 'system',
 			publish_status: parsePublishStatus(alert.publish_status),
 			reference_type: parseReferenceType(alert.reference_type),
 			type: parseAlertType(alert.type),
+			updated_by: 'system',
 		};
 		formattedAlert.agency_ids = parseAlertAgencyIds(formattedAlert.reference_type, alert.references);
-		return formattedAlert;
+		if (alert.reference_type === 'AGENCY') formattedAlert.references = [];
+		const result = AlertSchema.parse(formattedAlert);
+		return result;
 	});
 
 	console.log('Updating alerts in database...');
@@ -33,7 +37,7 @@ import { type Alert } from '@tmlmobilidade/types';
 		return {
 			updateOne: {
 				filter: { _id: alert._id },
-				update: { $set: alert },
+				update: { $set: alert, $unset: { modified_by: 1 } },
 			},
 		};
 	});
@@ -58,6 +62,7 @@ function parseReferenceType(value: string): Alert['reference_type'] {
 	if (value === 'LINE') return 'lines';
 	if (value === 'STOP') return 'stops';
 	if (value === 'TRIP') return 'rides';
+	if (value === 'AGENCY') return 'lines';
 	return value as Alert['reference_type'];
 }
 
@@ -70,7 +75,17 @@ function parseAlertType(value: string): Alert['type'] {
 function parseAlertAgencyIds(referenceType: Alert['reference_type'], references: Alert['references']): Alert['agency_ids'] {
 	const agencyIdsSet = new Set<string>();
 	references.forEach((reference) => {
-		if (referenceType === 'lines') agencyIdsSet.add(`4${reference.parent_id.substring(0, 1)}`);
+		if (referenceType === 'lines') {
+			if (reference.parent_id.length === 4) {
+				agencyIdsSet.add(`4${reference.parent_id.substring(0, 1)}`);
+			}
+		}
 	});
+	if (agencyIdsSet.size === 0) {
+		agencyIdsSet.add('41');
+		agencyIdsSet.add('42');
+		agencyIdsSet.add('43');
+		agencyIdsSet.add('44');
+	}
 	return Array.from(agencyIdsSet);
 }
