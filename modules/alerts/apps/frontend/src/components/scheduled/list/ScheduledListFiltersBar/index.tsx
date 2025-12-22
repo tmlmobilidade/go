@@ -1,5 +1,6 @@
 /* * */
 
+import { ScheduledListFilterAgency } from '@/components/scheduled/list/ScheduledListFilterAgency';
 import { ScheduledListFilterCause } from '@/components/scheduled/list/ScheduledListFilterCause';
 import { ScheduledListFilterEffect } from '@/components/scheduled/list/ScheduledListFilterEffect';
 import { ScheduledListFilterMunicipality } from '@/components/scheduled/list/ScheduledListFilterMunicipality';
@@ -11,6 +12,7 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 export function ScheduledListFiltersBar() {
 	return (
 		<FiltersBar>
+			<ScheduledListFilterAgency />
 			<ScheduledListFilterPublishStatus />
 			<ScheduledListFilterCause />
 			<ScheduledListFilterEffect />
