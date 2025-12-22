@@ -1,4 +1,4 @@
-import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
+import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
 import { getAlertTitleAndDescription } from '@/lib/translations';
 import { CoordinatesInput, Description, Label, Section, TextInput } from '@tmlmobilidade/ui';
 

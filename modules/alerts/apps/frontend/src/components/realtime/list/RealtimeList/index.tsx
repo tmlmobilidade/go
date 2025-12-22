@@ -7,14 +7,14 @@ import { AlertsListCellLines } from '@/components/common/AlertsListCellLines';
 import { AlertsListCellMunicipalities } from '@/components/common/AlertsListCellMunicipalities';
 import { AlertsListCellStops } from '@/components/common/AlertsListCellStops';
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
+import { useRealtimeListContext } from '@/components/realtime/list/RealtimeList.context';
+import { RealtimeListFiltersBar } from '@/components/realtime/list/RealtimeListFiltersBar';
 import { RealtimeListHeader } from '@/components/realtime/list/RealtimeListHeader';
-import { useRealtimeListContext } from '@/contexts/RealtimeList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -25,6 +25,8 @@ export function RealtimeList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const realtimeListContext = useRealtimeListContext();
 
 	const columns: DataTableColumn<Alert>[] = [
@@ -92,7 +94,7 @@ export function RealtimeList() {
 	return (
 		<Pane header={[
 			<RealtimeListHeader />,
-			// <RealtimeListFiltersBar />,
+			<RealtimeListFiltersBar />,
 		]}
 		>
 			<DataTable
@@ -100,7 +102,7 @@ export function RealtimeList() {
 				onRowClick={handleRowClick}
 				records={realtimeListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={realtimeListContext.data.selectedId}
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

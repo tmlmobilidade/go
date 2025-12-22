@@ -12,7 +12,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface ScheduledListContextState {
+interface RealtimeListContextState {
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
@@ -33,19 +33,19 @@ interface ScheduledListContextState {
 
 /* * */
 
-const ScheduledListContext = createContext<ScheduledListContextState | undefined>(undefined);
+const RealtimeListContext = createContext<RealtimeListContextState | undefined>(undefined);
 
-export const useScheduledListContext = () => {
-	const context = useContext(ScheduledListContext);
+export const useRealtimeListContext = () => {
+	const context = useContext(RealtimeListContext);
 	if (!context) {
-		throw new Error('useScheduledListContext must be used within an ScheduledListContextProvider');
+		throw new Error('useRealtimeListContext must be used within an RealtimeListContextProvider');
 	}
 	return context;
 };
 
 /* * */
 
-export const ScheduledListContextProvider = ({ children }: PropsWithChildren) => {
+export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -56,9 +56,9 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// B. Fetch data
 
-	const { data: allAlertsScheduledData, error: allAlertsScheduledError, isLoading: allAlertsScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.SCHEDULED_LIST);
+	const { data: allAlertsRealtimeData, error: allAlertsRealtimeError, isLoading: allAlertsRealtimeLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.REALTIME_LIST);
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.read);
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.alerts_realtime.scope, PermissionCatalog.all.alerts_realtime.actions.read);
 
 	//
 	// C. Setup filters
@@ -75,14 +75,14 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 
 	const normalizedAlertsData: AlertNormalized[] = useMemo(() => {
 		// Skip if no data is available
-		if (!allAlertsScheduledData) return [];
+		if (!allAlertsRealtimeData) return [];
 		// Normalize record fields
-		return allAlertsScheduledData.map(item => ({
+		return allAlertsRealtimeData.map(item => ({
 			...item,
 			description_normalized: normalizeString(item.description),
 			title_normalized: normalizeString(item.title),
 		}));
-	}, [allAlertsScheduledData]);
+	}, [allAlertsRealtimeData]);
 
 	const searchResultsData = useSearch<AlertNormalized>({
 		accessors: ['title_normalized', 'description_normalized'],
@@ -131,10 +131,10 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// E. Define context value
 
-	const contextValue: ScheduledListContextState = useMemo(() => ({
+	const contextValue: RealtimeListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allAlertsScheduledData,
+			raw: allAlertsRealtimeData,
 		},
 		filters: {
 			agency: filterAgency,
@@ -145,15 +145,15 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 			search: filterSearch,
 		},
 		flags: {
-			error: allAlertsScheduledError,
-			loading: allAlertsScheduledLoading,
+			error: allAlertsRealtimeError,
+			loading: allAlertsRealtimeLoading,
 		},
 	}), [
-		allAlertsScheduledData,
+		allAlertsRealtimeData,
 		filterResultsData,
-		allAlertsScheduledLoading,
+		allAlertsRealtimeLoading,
 		filterAgency,
-		allAlertsScheduledError,
+		allAlertsRealtimeError,
 		filterPublishStatus,
 		filterCause,
 		filterEffect,
@@ -165,9 +165,9 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 	// F. Render components
 
 	return (
-		<ScheduledListContext.Provider value={contextValue}>
+		<RealtimeListContext.Provider value={contextValue}>
 			{children}
-		</ScheduledListContext.Provider>
+		</RealtimeListContext.Provider>
 	);
 
 	//

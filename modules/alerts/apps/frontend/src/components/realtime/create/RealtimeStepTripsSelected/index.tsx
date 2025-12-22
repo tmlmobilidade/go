@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
+import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
 import { IconListCheck } from '@tabler/icons-react';
 import { Button, Label, Section } from '@tmlmobilidade/ui';
 import { ViewportList } from 'react-viewport-list';

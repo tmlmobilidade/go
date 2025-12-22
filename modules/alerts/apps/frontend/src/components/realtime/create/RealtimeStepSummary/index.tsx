@@ -1,6 +1,6 @@
 /* * */
 
-import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
+import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
 import { getAlertTitleAndDescription } from '@/lib/translations';
 import { Separator } from '@tmlmobilidade/ui';
 import { useEffect } from 'react';

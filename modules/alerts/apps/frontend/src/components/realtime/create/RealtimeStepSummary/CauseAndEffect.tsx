@@ -1,4 +1,4 @@
-import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
+import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { Label, Section } from '@tmlmobilidade/ui';

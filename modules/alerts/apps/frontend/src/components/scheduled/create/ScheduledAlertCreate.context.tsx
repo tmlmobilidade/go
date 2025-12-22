@@ -5,23 +5,23 @@
 import { closeCreateScheduledAlertModal } from '@/components/scheduled/create/ScheduledAlertCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Alert, CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
-import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { keepUrlParams, UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface ScheduledAlertCreateContextState {
 	actions: {
-		saveAlert: () => void
+		create: () => void
 	}
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
 	}
 	flags: {
-		isSaving: boolean
+		isCreating: boolean
 	}
 }
 
@@ -47,12 +47,10 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 
 	const router = useRouter();
 
-	const [isSaving, setIsSaving] = useState(false);
-
 	//
 	// B. Fetch data
 
-	const { mutate: allAlertsMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.SCHEDULED_LIST);
 
 	//
 	// C. Setup form
@@ -62,46 +60,31 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 	//
 	// D. Handle actions
 
-	const handleCreateAlert = async () => {
-		setIsSaving(true);
-		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues());
-		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao criar alerta' });
-				setIsSaving(false);
-				return;
-			}
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao criar alerta' });
-			}
-			setIsSaving(false);
-			return;
-		}
-		form.reset();
-		allAlertsMutate();
-		setIsSaving(false);
-		closeCreateScheduledAlertModal();
-		useToast.success({ message: 'Alerta criado com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id)));
-	};
+	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_LIST, 'POST', form.getValues()),
+		onSuccess: (updatedItem) => {
+			alertsListMutate();
+			closeCreateScheduledAlertModal();
+			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(updatedItem._id)));
+		},
+	});
 
 	//
 	// E. Define context value
 
 	const contextValue: ScheduledAlertCreateContextState = useMemo(() => ({
 		actions: {
-			saveAlert: handleCreateAlert,
+			create: handleCreate,
 		},
 		data: {
 			form,
 		},
 		flags: {
-			isSaving,
+			isCreating,
 		},
 	}), [
 		form,
-		isSaving,
+		isCreating,
 	]);
 
 	//

@@ -6,27 +6,23 @@ import { RealtimeStepCause } from '@/components/realtime/create/RealtimeStepCaus
 import { RealtimeStepEffect } from '@/components/realtime/create/RealtimeStepEffect';
 import { RealtimeStepSummary } from '@/components/realtime/create/RealtimeStepSummary';
 import { RealtimeStepTrips } from '@/components/realtime/create/RealtimeStepTrips';
-
-/* * */
-
+import { RidesData } from '@/contexts/Rides.context';
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { Alert, CreateAlertDto, CreateAlertSchema, gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
-import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
+import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { mutate } from 'swr';
-
-import { RidesData } from './Rides.context';
+import { useRouter } from 'next/navigation';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import useSWR from 'swr';
 
 /* * */
 
 type RealtimeCreateContextState = UseMultiStepFormState & {
 	actions: {
 		addAllTrips: (trips: RidesData[]) => void
+		create: () => Promise<void>
 		removeAllRides: () => void
-		saveAlert: () => Promise<void>
 		setDetour: (detour: string) => void
 		toggleTripReference: (trip: RidesData) => void
 	}
@@ -38,7 +34,7 @@ type RealtimeCreateContextState = UseMultiStepFormState & {
 	}
 	flags: {
 		canSave: boolean
-		isSaving: boolean
+		isCreating: boolean
 	}
 };
 
@@ -73,49 +69,41 @@ const STEPS: Step[] = [
 	},
 ];
 
-const emptyAlert: CreateAlertDto = {
-	active_period_end_date: Dates.now('Europe/Lisbon').plus({ hours: Dates.STANDARD_WINDOW_HOURS }).unix_timestamp,
-	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(gtfsCauseSchema)[0],
-	coordinates: null,
-	description: '',
-	effect: Object.values(gtfsEffectSchema)[0],
-	external_id: null,
-	file_id: null,
-	info_url: null,
-	is_locked: false,
-	municipality_ids: [],
-	publish_end_date: Dates.now('Europe/Lisbon').plus({ hours: Dates.STANDARD_WINDOW_HOURS }).unix_timestamp,
-	publish_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	publish_status: 'PUBLISHED',
-	reference_type: 'TRIP',
-	references: [],
-	title: '',
-	type: 'REALTIME',
-};
-
 /* * */
 
-export const RealtimeCreateContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) => {
+	//
+
 	//
 	// A. Setup variables
 
+	const router = useRouter();
+
 	const multiStepForm = useMultiStepForm({ steps: STEPS });
-	const [isSaving, setIsSaving] = useState(false);
-	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
+
 	const [detour, setDetour] = useState<string>('');
+	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
 
 	//
-	// B. Define form
-	const form = useForm<CreateAlertDto>({
-		initialValues: emptyAlert,
-		validate: zodResolver(CreateAlertSchema) as FormValidateInput<CreateAlertDto>,
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
+	// B. Fetch data
+
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.REALTIME_LIST);
+
+	//
+	// C. Setup form
+
+	const { form } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
+
+	//
+	// D. Handle actions
+
+	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.REALTIME_LIST, 'POST', form.getValues()),
+		onSuccess: (updatedItem) => {
+			alertsListMutate();
+			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.REALTIME_DETAIL(updatedItem._id)));
+		},
 	});
-
-	//
-	// C. Handle actions
 
 	const addAllTrips = (trips: RidesData[]) => {
 		const newRides = trips.filter(trip => !selectedRides.some(ride => ride._id === trip._id));
@@ -144,47 +132,6 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 		form.setFieldValue('references', []);
 	};
 
-	async function reset() {
-		form.reset();
-		form.resetDirty();
-		form.setFieldValue('references', []);
-		multiStepForm.actions.goToStep(0);
-		setSelectedRides([]);
-		setDetour('');
-	}
-
-	async function saveAlert() {
-		setIsSaving(true);
-
-		// Validate form
-		const validation = form.validate();
-		if (validation.hasErrors) {
-			useToast.error({ message: 'Por favor, preencha todos os campos obrigatórios', title: 'Erro ao salvar alerta' });
-			setIsSaving(false);
-			return;
-		}
-
-		// Handle Save Alert
-		const saveAlert: CreateAlertDto = { ...form.values, publish_status: 'PUBLISHED' };
-		const url = `${API_ROUTES.alerts.ALERTS_LIST}?realtime=true`;
-		const body = saveAlert;
-		const response = await fetchData<Alert>(url, 'POST', body);
-
-		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao salvar alerta' });
-			setIsSaving(false);
-			return;
-		}
-
-		mutate(API_ROUTES.alerts.ALERTS_LIST + '?realtime=true');
-		useToast.success({ message: 'Alerta salvo com sucesso', title: 'Sucesso' });
-
-		reset();
-		setIsSaving(false);
-	};
-
-	//
-	// D. Reset detour when cause/effect changes
 	useEffect(() => {
 		const needsDetour = form.values.effect === 'DETOUR' && form.values.cause === 'CONSTRUCTION';
 		if (!needsDetour && detour.length > 0) {
@@ -202,8 +149,8 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 		return {
 			actions: {
 				addAllTrips,
+				create: handleCreate,
 				removeAllRides,
-				saveAlert,
 				setDetour,
 				toggleTripReference,
 				...multiStepForm.actions,
@@ -217,17 +164,25 @@ export const RealtimeCreateContextProvider = ({ children }: { children: React.Re
 			},
 			flags: {
 				canSave: form.isValid() && hasValidDetour,
-				isSaving,
+				isCreating,
 				...multiStepForm.flags,
 			},
 		};
-	}, [form, isSaving, multiStepForm, detour]);
+	}, [
+		form,
+		isCreating,
+		multiStepForm,
+		detour,
+	]);
 
 	//
 	// F. Return state
+
 	return (
 		<RealtimeCreateContext.Provider value={contextValue}>
 			{children}
 		</RealtimeCreateContext.Provider>
 	);
+
+	//
 };

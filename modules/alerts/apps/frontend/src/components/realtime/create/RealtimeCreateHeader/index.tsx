@@ -2,8 +2,8 @@
 
 /* * */
 
-import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
+import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -70,10 +70,10 @@ function SaveButton() {
 
 	return (
 		<Button
-			disabled={!realtimeCreateContext.flags.canSave || realtimeCreateContext.flags.isSaving}
+			disabled={!realtimeCreateContext.flags.canSave || realtimeCreateContext.flags.isCreating}
 			label="Salvar"
-			loading={realtimeCreateContext.flags.isSaving}
-			onClick={() => realtimeCreateContext.actions.saveAlert()}
+			loading={realtimeCreateContext.flags.isCreating}
+			onClick={realtimeCreateContext.actions.create}
 			variant="primary"
 		/>
 	);

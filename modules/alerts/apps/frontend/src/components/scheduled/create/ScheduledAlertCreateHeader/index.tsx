@@ -5,7 +5,7 @@
 import { useScheduledAlertCreateContext } from '@/components/scheduled/create/ScheduledAlertCreate.context';
 import { closeCreateScheduledAlertModal } from '@/components/scheduled/create/ScheduledAlertCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
-import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -29,8 +29,8 @@ export function ScheduledAlertCreateHeader() {
 				disabled={!scheduledAlertCreateContext.data.form.isValid()}
 				icon={<IconPlus size={28} />}
 				label="Criar como rascunho"
-				loading={scheduledAlertCreateContext.flags.isSaving}
-				onClick={scheduledAlertCreateContext.actions.saveAlert}
+				loading={scheduledAlertCreateContext.flags.isCreating}
+				onClick={scheduledAlertCreateContext.actions.create}
 				variant="secondary"
 			/>
 		</Toolbar>
