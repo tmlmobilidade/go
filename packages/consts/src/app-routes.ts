@@ -127,8 +127,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('alerts', 'api_url')}`,
 
 		// ALERTS
-		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
+		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_GTFS: `${getAppConfig('alerts', 'api_url')}/alerts/gtfs`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
 
@@ -154,15 +154,15 @@ export const API_ROUTES = Object.freeze({
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
 		// NOTIFICATIONS
-		NOTIFICATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}`,
 		NOTIFICATIONS_DETAIL_MARK_AS_READ: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}/mark-as-read`,
+		NOTIFICATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}`,
 		NOTIFICATIONS_LIST: `${getAppConfig('auth', 'api_url')}/notifications`,
 
 		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}`,
 		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/image`,
 		ORGANIZATIONS_DETAIL_LOGO: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/logo`,
 		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/${theme}/image`,
+		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}`,
 		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'api_url')}/organizations`,
 
 		// PROPOSED-CHANGES
@@ -263,18 +263,18 @@ export const API_ROUTES = Object.freeze({
 
 		// PLANS
 		PLANS_APPROVED: `${getAppConfig('plans', 'api_url')}/plans/approved`,
-		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/controller-reprocess`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
 		PLANS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/toggle-lock`,
+		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,
 		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
 
 		// VALIDATIONS
-		VALIDATIONS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/request-approval`,
+		VALIDATIONS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}`,
 		VALIDATIONS_LIST: `${getAppConfig('plans', 'api_url')}/validations`,
 	},
 

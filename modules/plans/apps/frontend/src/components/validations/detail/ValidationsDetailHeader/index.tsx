@@ -81,7 +81,7 @@ export function ValidationsDetailHeader() {
 					<Button
 						disabled={validationsDetailContext.flags.loading}
 						icon={<IconRosetteDiscountCheckFilled />}
-						label={t('approve_plan')}
+						label={tGlobal('approve_plan')}
 						loading={validationsDetailContext.flags.loading}
 						onClick={handleApprovePlan}
 					/>

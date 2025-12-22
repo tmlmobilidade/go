@@ -50,7 +50,7 @@
 					"label": "Estado"
 				}
 			},
-			"tableColumns": {
+			"table_columns": {
 				"_id": "#ID",
 				"agency_id_normalized": "Operador",
 				"apps_controller": "SLA Status",
