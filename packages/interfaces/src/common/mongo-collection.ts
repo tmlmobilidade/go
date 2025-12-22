@@ -276,6 +276,13 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 				if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
 				// Validate the document against the create schema
 				parsedDocument = this.createSchema.parse(parsedDocument);
+				// Add the missing default fields, if present in the original document.
+				// The schema might have omitted these fields, so we need to add them back.
+				if (doc._id) parsedDocument._id = doc._id;
+				if (doc.created_at) parsedDocument.created_at = doc.created_at;
+				if (doc.created_by) parsedDocument.created_by = doc.created_by;
+				if (doc.updated_at) parsedDocument.updated_at = doc.updated_at;
+				if (doc.updated_by) parsedDocument.updated_by = doc.updated_by;
 			}
 			catch (error) {
 				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
