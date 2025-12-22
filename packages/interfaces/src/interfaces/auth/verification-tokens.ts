@@ -51,4 +51,6 @@ class VerificationTokensClass extends MongoCollectionClass<VerificationToken, Cr
 	}
 }
 
+/* * */
+
 export const verificationTokens = AsyncSingletonProxy(VerificationTokensClass);

@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { Alert, AlertSchema, CreateAlertDto, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 class AlertsClass extends MongoCollectionClass<Alert, CreateAlertDto, UpdateAlertDto> {
 	private static _instance: AlertsClass;
-	protected override createSchema: z.ZodSchema = AlertSchema;
+	protected override createSchema: z.ZodSchema = CreateAlertSchema;
 	protected override updateSchema: z.ZodSchema = UpdateAlertSchema;
 
 	private constructor() {

@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type Annotation, AnnotationSchema, type CreateAnnotationDto, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/types';
+import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 class AnnotationsClass extends MongoCollectionClass<Annotation, CreateAnnotationDto, UpdateAnnotationDto> {
 	private static _instance: AnnotationsClass;
-	protected override createSchema: z.ZodSchema = AnnotationSchema;
+	protected override createSchema: z.ZodSchema = CreateAnnotationSchema;
 	protected override updateSchema: z.ZodSchema = UpdateAnnotationSchema;
 
 	private constructor() {
