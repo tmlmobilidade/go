@@ -27,13 +27,13 @@ export function AlertCreateSectionValidity() {
 
 	return (
 		<Collapsible
-			description="Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias)."
-			title="Período de Vigência"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
 					key={alertCreateContext.data.form.key('active_period_start_date')}
-					label="Data de Início"
+					label={t('fields.active_period_start_date_label')}
 					fullWidth
 					{...alertCreateContext.data.form.getInputProps('active_period_start_date')}
 					value={startDateValue}
@@ -43,7 +43,7 @@ export function AlertCreateSectionValidity() {
 				/>
 				<DateTimePicker
 					key={alertCreateContext.data.form.key('active_period_end_date')}
-					label="Data de Fim"
+					label={t('fields.active_period_end_date_label')}
 					clearable
 					fullWidth
 					{...alertCreateContext.data.form.getInputProps('active_period_end_date')}
