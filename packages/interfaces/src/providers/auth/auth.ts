@@ -158,15 +158,13 @@ class AuthProvider {
 	 */
 	public async register(createUserDto: CreateUserDto): Promise<void> {
 		// Insert the new user into the database with the provided data
-		const insertNewUserResult = await users.insertOne({ ...createUserDto });
+		const insertNewUserResult = await users.insertOne(createUserDto);
 		// Generate a random token that will be used to verify the user
 		const verificationToken = generateRandomToken();
 		// Insert the verification token into the database
 		await verificationTokens.insertOne({
-			created_by: 'system',
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_timestamp,
 			token: verificationToken,
-			updated_by: 'system',
 			user_id: insertNewUserResult._id,
 		});
 		// Send a welcome email to the user with the verification token

@@ -261,57 +261,49 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 	/**
 	 * Inserts a single document into the collection.
-	 * @param doc - The document to insert
-	 * @param options - The options for the insert operation
-	 * @returns A promise that resolves to the result of the insert operation
+	 * @param doc The document to insert.
+	 * @param options The options for the insert operation.
+	 * @returns A promise that resolves to the result of the insert operation.
 	 */
-	public async insertOne<TReturnDocument extends boolean = true>(
-		doc: TCreate & { _id?: string, created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string },
-		{ options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {},
-	): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
-		const newDocument = {
-			...doc,
-			_id: doc._id || generateRandomString({ length: 5 }),
-			created_at: doc.created_at || Dates.now('utc').unix_timestamp,
-			created_by: doc.created_by || 'system',
-			updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
-			updated_by: doc.updated_by || 'system',
-		} as unknown as OptionalUnlessRequiredId<T>;
-
-		if (!doc._id) {
-			while (await this.findById(newDocument._id as T['_id'])) {
-				newDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-			}
-		}
-
-		let parsedDocument = newDocument;
+	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: string, created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
+		// Setup a copy of the document to be inserted
+		let parsedDocument = { ...doc } as OptionalUnlessRequiredId<T>;
+		// Validate the document against the create schema if unsafe is false
 		if (!unsafe) {
 			try {
-				if (!this.createSchema) {
-					throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
-				}
-				parsedDocument = this.createSchema.parse(newDocument);
+				// If no create schema is defined, throw an error.
+				// In safe mode, a schema is required to validate the document.
+				if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
+				// Validate the document against the create schema
+				parsedDocument = this.createSchema.parse(parsedDocument);
 			}
 			catch (error) {
 				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
-
+		// Add default fields if they are missing from the original document
+		if (!doc.created_at) parsedDocument.created_at = Dates.now('utc').unix_timestamp;
+		if (!doc.created_by) parsedDocument.created_by = 'system';
+		if (!doc.updated_at) parsedDocument.updated_at = Dates.now('utc').unix_timestamp;
+		if (!doc.updated_by) parsedDocument.updated_by = 'system';
+		// Add the ID if it is missing from the original document
+		// If the document is missing any default fields, add them
+		if (!doc._id) {
+			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
+			while (await this.findById(parsedDocument._id as T['_id'])) {
+				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
+			}
+		}
+		// Attempt to insert the document into the collection
 		const result = await this.mongoCollection.insertOne(parsedDocument, options);
-
-		if (!result.acknowledged) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
-		}
-
+		// Check if the insert operation was acknowledged
+		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
+		// If returnResult is false, return the insert result directly
 		if (options && options.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
-
-		const inserted_doc = await this.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
-
-		if (!inserted_doc) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
-		}
-
-		return inserted_doc as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
+		// Otherwise, fetch and return the inserted document
+		const insertedDoc = await this.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
+		if (!insertedDoc) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
+		return insertedDoc as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
 	}
 
 	/**

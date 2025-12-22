@@ -14,8 +14,8 @@ export const VerificationTokenSchema = DocumentSchema
 		user_id: z.string(),
 	});
 
-export const CreateVerificationTokenSchema = VerificationTokenSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateVerificationTokenSchema = CreateVerificationTokenSchema.omit({ created_by: true }).partial();
+export const CreateVerificationTokenSchema = VerificationTokenSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const UpdateVerificationTokenSchema = CreateVerificationTokenSchema.partial();
 
 /* * */
 

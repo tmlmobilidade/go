@@ -20,7 +20,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.0.10",
+		"next": "16.1.0",
 		"next-intl": "4.6.1",
 		"nuqs": "2.8.5",
 		"react": "19.2.3",

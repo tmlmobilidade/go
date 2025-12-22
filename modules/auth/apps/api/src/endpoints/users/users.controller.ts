@@ -135,6 +135,9 @@ export class UsersController {
 		// Validate the request body against the UpdateUserDto schema
 		const validatedUserData = UpdateUserSchema.safeParse(request.body);
 		if (!validatedUserData.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		// Remove password field if not provided to avoid
+		// overwriting existing password with undefined
+		if (!validatedUserData.data.password_hash) delete validatedUserData.data.password_hash;
 		// Update the user in the database
 		const updateResult = await users.updateById(request.params.id, validatedUserData.data);
 		// Send the updated user data back in the response
