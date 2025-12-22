@@ -7,7 +7,7 @@ import { PeriodsListHeader } from '@/components/periods/list/PeriodsListHeader';
 import { usePeriodsListContext } from '@/contexts/PeriodsList.context';
 import { type PeriodNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { ColorSwatch, DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -33,7 +33,12 @@ export function PeriodsList() {
 		},
 		{
 			accessor: 'name',
-			render: item => <Text>{item.name}</Text>,
+			render: item => (
+				<div style={{ alignItems: 'center', display: 'flex', gap: '8px' }}>
+					<ColorSwatch color={item.color || '#3b82f6'} size={14} />
+					<Text>{item.name}</Text>
+				</div>
+			),
 			title: 'Nome',
 			width: 400,
 		},

@@ -8,7 +8,7 @@ import { PeriodsAssignContextProvider, usePeriodsAssignContext } from '@/context
 import { PeriodsListContextProvider, usePeriodsListContext } from '@/contexts/PeriodsList.context';
 import { IconAlertTriangle, IconCalendar } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { Alert, Button, closeModal, ColorInput, Combobox, Label, openModal, Radio, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { Alert, Button, closeModal, ColorInput, ColorSwatch, Combobox, Label, openModal, Radio, Section, Text, TextInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -68,16 +68,7 @@ function AssignPeriodModal() {
 		return periodsListContext.data.all
 			.filter(period => period.agency_id === periodsAssignContext.data.form.values.agency_id)
 			.map(period => ({
-				icon: (
-					<div
-						style={{
-							backgroundColor: period.color || '#3b82f6',
-							borderRadius: '50%',
-							height: '12px',
-							width: '12px',
-						}}
-					/>
-				),
+				icon: <ColorSwatch color={period.color || '#3b82f6'} size={14} />,
 				label: period.name,
 				value: period._id,
 			}));

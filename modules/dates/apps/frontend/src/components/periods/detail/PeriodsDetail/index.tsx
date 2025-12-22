@@ -5,8 +5,10 @@
 import { AgencySelect } from '@/components/common/AgencySelect';
 import { PeriodsDetailHeader } from '@/components/periods/detail/PeriodsDetailHeader';
 import { usePeriodsDetailContext } from '@/contexts/PeriodsDetail.context';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PeriodSchema } from '@tmlmobilidade/types';
-import { ColorInput, ErrorDisplay, LoadingOverlay, Pane, Section, TextInput } from '@tmlmobilidade/ui';
+import { Button, ColorInput, ErrorDisplay, LoadingOverlay, Pane, Section, TextInput } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -17,17 +19,17 @@ export function PeriodsDetail() {
 	// A. Setup variables
 
 	const periodsDetailContext = usePeriodsDetailContext();
-	// const { actions: { setCurrentPeriodColor, toggleShowCalendar } } = usePeriodsLeftPaneContext();
+	const router = useRouter();
 
 	//
+	// B. Handle actions
 
-	// const openCalendarForPeriod = () => {
-	// 	setCurrentPeriodColor(periodsDetailContext.data.form.values.color);
-	// 	toggleShowCalendar();
-	// };
+	const openCalendar = () => {
+		router.push(PAGE_ROUTES.dates.PERIODS_LIST);
+	};
 
 	//
-	// B. Render components
+	// C. Render components
 
 	if (periodsDetailContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -56,8 +58,6 @@ export function PeriodsDetail() {
 					{...periodsDetailContext.data.form.getInputProps('agency_id')}
 				/>
 
-				{/* <Button label="Selecionar Datas" onClick={openCalendarForPeriod} /> */}
-
 				<ColorInput
 					label="Cor"
 					readOnly={periodsDetailContext.flags.read_only}
@@ -65,6 +65,8 @@ export function PeriodsDetail() {
 					withEyeDropper={false}
 					{...periodsDetailContext.data.form.getInputProps('color')}
 				/>
+
+				<Button label="Atribuir Datas" onClick={openCalendar} />
 
 			</Section>
 		</Pane>

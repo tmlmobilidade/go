@@ -3,6 +3,7 @@ export * from './AppLogos';
 export { default as Badge } from './Badge';
 export * from './Breadcrumbs';
 export * from './Checkbox';
+export * from './ColorSwatch';
 export { default as Combobox } from './Combobox';
 export type { DataItem } from './Combobox';
 export { default as ComponentWrapper } from './ComponentWrapper';

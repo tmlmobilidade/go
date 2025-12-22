@@ -40,7 +40,7 @@ export function generateMonthGrid(year: number, month: number, fixedWeeks = fals
 	const lastDayOfMonth = firstDayOfMonth.endOf('month');
 
 	// Get current date for comparison
-	const today = Dates.now('Europe/Lisbon').startOf('day');
+	const today = Dates.now('Europe/Lisbon');
 
 	// Get day of week for first day (0 = Sunday, 6 = Saturday)
 	const firstDayOfWeek = firstDayOfMonth.toFormat('c'); // 1 = Monday, 7 = Sunday in Luxon

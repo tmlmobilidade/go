@@ -6,7 +6,7 @@ import { AgencySelect } from '@/components/common/AgencySelect';
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { PeriodsCreateContextProvider, usePeriodsCreateContext } from '@/contexts/PeriodsCreate.context';
 import { PeriodSchema } from '@tmlmobilidade/types';
-import { Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { Button, closeModal, ColorInput, Divider, Grid, Label, MeContextProvider, openModal, Section, Text, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -70,6 +70,13 @@ export default function CreatePeriodModal() {
 					required={!PeriodSchema.shape.agency_id.isOptional()}
 					value={periodsCreateContext.data.form.values.agency_id || ''}
 					{...periodsCreateContext.data.form.getInputProps('agency_id')}
+				/>
+
+				<ColorInput
+					label="Cor"
+					required={!PeriodSchema.shape.color.isOptional()}
+					withEyeDropper={false}
+					{...periodsCreateContext.data.form.getInputProps('color')}
 				/>
 			</Section>
 

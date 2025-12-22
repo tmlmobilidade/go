@@ -49,6 +49,7 @@ export const PeriodsCreateContextProvider = ({ children }: PropsWithChildren) =>
 	const form = useForm<CreatePeriodDto>({
 		initialValues: {
 			agency_id: '',
+			color: '',
 			is_locked: false,
 			name: '',
 		},
