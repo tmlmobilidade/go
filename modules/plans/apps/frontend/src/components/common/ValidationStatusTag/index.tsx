@@ -19,7 +19,7 @@ export function ValidationStatusTag({ status }: ValidationStatusTagProps) {
 	}
 
 	if (status === 'processing') {
-		return <Tag label="Em Análise" variant="primary" />;
+		return <Tag label="Em Análise" variant="primary" filled />;
 	}
 
 	if (status === 'complete') {

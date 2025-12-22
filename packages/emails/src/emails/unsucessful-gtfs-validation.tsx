@@ -83,6 +83,7 @@ const validation: GtfsValidation = {
 	gtfs_feed_info: {
 		feed_lang: 'en',
 	},
+	is_locked: false,
 	notification_sent: false,
 	summary: {
 		messages: [],

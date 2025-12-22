@@ -6,10 +6,11 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
-const server = FastifyService.getInstance().server;
 const NAMESPACE = '/stops';
 
 /* * */
+
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
@@ -37,6 +38,12 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.update]) },
 			StopsController.update,
+		);
+
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.lock]) },
+			StopsController.lock,
 		);
 
 		instance.delete(

@@ -1,15 +1,15 @@
 /* * */
 
-import { PlansDetail } from '@/components/plans/detail/PlansDetail';
-import { PlansDetailContextProvider } from '@/contexts/PlansDetail.context';
+import { PlanDetail } from '@/components/plans/detail/PlanDetail';
+import { PlanDetailContextProvider } from '@/components/plans/detail/PlanDetail.context';
 
 /* * */
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	return (
-		<PlansDetailContextProvider planId={id}>
-			<PlansDetail />
-		</PlansDetailContextProvider>
+		<PlanDetailContextProvider planId={id}>
+			<PlanDetail />
+		</PlanDetailContextProvider>
 	);
 }

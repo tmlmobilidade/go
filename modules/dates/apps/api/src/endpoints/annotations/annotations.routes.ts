@@ -42,7 +42,7 @@ server.register(
 
 		instance.get(
 			'/:id/toggle-lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.toggle_lock_annotations]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.lock_annotations]) },
 			AnnotationsController.toggleLockById,
 		);
 

@@ -15,23 +15,32 @@ export type CrudCommentSchemaAction = z.infer<typeof CrudCommentSchemaActionSche
 
 /* * */
 
-export const NoteCommentSchema = DocumentSchema.extend({
-	message: z.string(),
-	type: z.literal(CommentTypeSchema.enum.note),
-}).partial({ _id: true });
+export const NoteCommentSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		message: z.string(),
+		type: z.literal(CommentTypeSchema.enum.note),
+	})
+	.partial({ _id: true });
 
-export const FieldChangedCommentSchema = DocumentSchema.extend({
-	curr_value: z.any(),
-	field: z.string(),
-	metadata: z.record(z.unknown()).nullish(),
-	prev_value: z.any(),
-	type: z.literal(CommentTypeSchema.enum.field_changed),
-}).partial({ _id: true });
+export const FieldChangedCommentSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		curr_value: z.any(),
+		field: z.string(),
+		metadata: z.record(z.unknown()).nullish(),
+		prev_value: z.any(),
+		type: z.literal(CommentTypeSchema.enum.field_changed),
+	})
+	.partial({ _id: true });
 
-export const CrudCommentSchema = DocumentSchema.extend({
-	action: CrudCommentSchemaActionSchema,
-	type: z.literal(CommentTypeSchema.enum.crud),
-}).partial({ _id: true });
+export const CrudCommentSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		action: CrudCommentSchemaActionSchema,
+		type: z.literal(CommentTypeSchema.enum.crud),
+	})
+	.partial({ _id: true });
 
 /* * */
 

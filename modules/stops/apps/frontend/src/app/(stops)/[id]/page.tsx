@@ -1,7 +1,7 @@
 /* * */
 
 import { StopDetail } from '@/components/stops/detail/StopDetail';
-import { StopDetailContextProvider } from '@/contexts/StopDetails.context';
+import { StopDetailContextProvider } from '@/components/stops/detail/StopDetail.context';
 import { ProposedChangesContextProvider } from '@tmlmobilidade/ui';
 
 /* * */

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -31,6 +31,7 @@ export function AlertDetailSectionVisibility() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
+					key={alertDetailContext.data.form.key('publish_start_date')}
 					label="Data de Início"
 					fullWidth
 					{...alertDetailContext.data.form.getInputProps('publish_start_date')}
@@ -40,6 +41,7 @@ export function AlertDetailSectionVisibility() {
 					}}
 				/>
 				<DateTimePicker
+					key={alertDetailContext.data.form.key('publish_end_date')}
 					label="Data de Fim"
 					clearable
 					fullWidth

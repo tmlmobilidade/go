@@ -3,7 +3,7 @@
 /* * */
 
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { useStopsListContext } from '@/contexts/StopsList.context';
+import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -37,7 +37,7 @@ export function StopsListFilterDistrict() {
 			data={parsedOptions}
 			label="Distrito"
 			onChange={stopsListContext.actions.setFilterDistricts}
-			selected={stopsListContext.filters.districts}
+			value={stopsListContext.filters.districts}
 			clearable
 		/>
 	);

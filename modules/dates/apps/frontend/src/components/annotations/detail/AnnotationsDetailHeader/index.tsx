@@ -6,7 +6,7 @@ import { useAnnotationsDetailContext } from '@/contexts/AnnotationsDetail.contex
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { BackButton, Button, DeleteButton, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -25,8 +25,7 @@ export function AnnotationsDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_LIST));
 	};
 
 	//
@@ -35,14 +34,14 @@ export function AnnotationsDetailHeader() {
 	return (
 		<Toolbar>
 
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={annotationsDetailContext.data.annotation._id} variant="secondary" />
 
 			<Spacer />
 
 			<HasPermission
-				action={PermissionCatalog.all.plans.actions.toggle_lock}
+				action={PermissionCatalog.all.plans.actions.lock}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
 				value={annotationsDetailContext.data.annotation.agency_ids}
@@ -77,7 +76,7 @@ export function AnnotationsDetailHeader() {
 			>
 				<DeleteButton
 					confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Ocorrência"
+					confirmTitle="Apagar Anotação"
 					onDelete={annotationsDetailContext.actions.deleteAnnotation}
 					showConfirmation
 				/>

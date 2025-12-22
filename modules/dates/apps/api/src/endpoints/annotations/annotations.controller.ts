@@ -143,7 +143,7 @@ export class AnnotationsController {
 		// Check if the user has permission to toggle lock the Annotation
 
 		const hasPermissionToggleLockAnnotation = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.dates.actions.toggle_lock_annotations,
+			action: PermissionCatalog.all.dates.actions.lock_annotations,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.dates.scope,

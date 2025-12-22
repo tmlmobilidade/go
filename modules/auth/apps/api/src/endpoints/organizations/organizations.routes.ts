@@ -45,6 +45,12 @@ server.register(
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.create]) }, OrganizationsController.create);
 
 		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
+			OrganizationsController.delete,
+		);
+
+		instance.delete(
 			'/:id/:theme/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
 			OrganizationsController.deleteImage,
@@ -54,6 +60,12 @@ server.register(
 			'/:id/logo',
 			{ preHandler: authorizationMiddleware() },
 			OrganizationsController.getLogo,
+		);
+
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.lock]) },
+			OrganizationsController.lock,
 		);
 
 		next();

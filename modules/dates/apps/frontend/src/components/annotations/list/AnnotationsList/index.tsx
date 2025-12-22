@@ -2,17 +2,16 @@
 
 /* * */
 
+import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { AnnotationsListCellAgencies } from '@/components/annotations/list/AnnotationsListCellAgencies';
 import { AnnotationsListCellDates } from '@/components/annotations/list/AnnotationsListCellDates';
+import { AnnotationsListFiltersBar } from '@/components/annotations/list/AnnotationsListFiltersBar';
 import { AnnotationsListHeader } from '@/components/annotations/list/AnnotationsListHeader';
-import { useAnnotationsListContext } from '@/contexts/AnnotationsList.context';
 import { type AnnotationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
-
-import { AnnotationsListFiltersBar } from '../AnnotationsListFiltersBar';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -23,6 +22,8 @@ export function AnnotationsList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const annotationsListContext = useAnnotationsListContext();
 
 	const columns: DataTableColumn<AnnotationNormalized>[] = [
@@ -34,21 +35,20 @@ export function AnnotationsList() {
 		},
 		{
 			accessor: 'title',
-			render: item => <Text>{item.title}</Text>,
 			title: 'Título',
-			width: 200,
+			width: 400,
 		},
 		{
 			accessor: 'agency_ids_normalized',
 			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
 			title: 'Operadores',
-			width: 300,
+			width: 200,
 		},
 		{
 			accessor: 'dates',
 			render: item => <AnnotationsListCellDates dates={item.dates} />,
 			title: 'Datas',
-			width: 310,
+			width: 500,
 		},
 	];
 
@@ -56,8 +56,7 @@ export function AnnotationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: AnnotationNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(item._id)));
 	};
 
 	//
@@ -82,6 +81,7 @@ export function AnnotationsList() {
 				onRowClick={handleRowClick}
 				records={annotationsListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

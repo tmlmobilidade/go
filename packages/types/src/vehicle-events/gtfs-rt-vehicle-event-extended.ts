@@ -1,12 +1,11 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsRtVehicleEventExtendedSchema = DocumentSchema.extend({
+export const GtfsRtVehicleEventExtendedSchema = z.object({
 	agency_id: z.string(),
 	driver_id: z.string(),
 	event_id: z.string(),
@@ -15,13 +14,13 @@ export const GtfsRtVehicleEventExtendedSchema = DocumentSchema.extend({
 	longitude: z.number(),
 	odometer: z.number(),
 	pattern_id: z.string(),
-	received_at: unixTimeStampSchema,
+	received_at: UnixTimeStampSchema,
 	stop_id: z.string(),
 	trigger_activity: z.string(),
 	trigger_door: z.string(),
 	trip_id: z.string(),
 	vehicle_id: z.string(),
-}).strict();
+});
 
 /**
  * Vehicle Events are produced by the vehicle's on-board computer on a regular schedule

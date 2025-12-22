@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertListContext } from '@/contexts/AlertList.context';
+import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
 import { AlertSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -13,7 +13,7 @@ export function AlertsListFilterCause() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Transform data

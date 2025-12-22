@@ -120,7 +120,7 @@ class AuthProvider {
 	 */
 	public async login(loginDto: LoginDto): Promise<Session> {
 		// Find the user by email
-		const userData = await users.findByEmail(loginDto.email, true);
+		const userData = await users.findByEmail(loginDto.email, { includeUnsafeProperties: true });
 		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
 		// Check if the password matches the stored hash
 		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData.password_hash ?? '');

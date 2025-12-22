@@ -2,9 +2,9 @@
 
 /* * */
 
-import { useStopsListContext } from '@/contexts/StopsList.context';
+import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { Translations } from '@/lib/translations';
-import { connectionsSchema } from '@tmlmobilidade/types';
+import { StopConnectionSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -22,15 +22,15 @@ export function StopsListFilterConnections() {
 	// B. Transform data
 
 	const isActive = useMemo(() => {
-		const defaultValues = Array.from(connectionsSchema.options) as string[];
+		const defaultValues = Array.from(StopConnectionSchema.options) as string[];
 		const enabledValues = stopsListContext.filters.connections;
 		if (defaultValues.length !== enabledValues.length) return true;
 		return !defaultValues.every(item => enabledValues.includes(item));
 	}, [stopsListContext.filters.connections]);
 
 	const parsedOptions = useMemo(() => {
-		if (!connectionsSchema.options?.length) return [];
-		return connectionsSchema.options.map(item => ({
+		if (!StopConnectionSchema.options?.length) return [];
+		return StopConnectionSchema.options.map(item => ({
 			checked: stopsListContext.filters.connections.includes(item),
 			label: Translations.CONNECTIONS[item],
 			value: item,

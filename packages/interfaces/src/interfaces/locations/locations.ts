@@ -144,7 +144,7 @@ class LocationsClass {
 		const _census = census ? await this.findCensusByGeo(lat, lon, { projection: { _id: 1, properties: 1 } }) : undefined;
 
 		return {
-			census: { ..._census.properties, _id: _census._id },
+			census: { ..._census?.properties, _id: _census?._id },
 			district: district,
 			latitude: lat,
 			locality: locality,
@@ -208,7 +208,7 @@ class LocationsClass {
 
 		return {
 			_id: doc._id,
-			...doc.properties,
+			...doc?.properties,
 			geojson,
 		} as U;
 	}

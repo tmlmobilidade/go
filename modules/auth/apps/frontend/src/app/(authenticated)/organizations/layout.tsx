@@ -1,7 +1,7 @@
 /* * */
 
 import { OrganizationsList } from '@/components/organizations/list/OrganizationsList';
-import { OrganizationsListContextProvider } from '@/contexts/OrganizationsList.context';
+import { OrganizationsListContextProvider } from '@/components/organizations/list/OrganizationsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

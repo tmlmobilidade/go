@@ -12,9 +12,9 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx src/index.ts",
 		"lint": "eslint ./src",
-		"lint:fix": "eslint --fix ./src"
+		"lint:fix": "eslint --fix ./src",
+		"start": "tsx src/index.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/logger": "*",
@@ -24,7 +24,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "24.10.1",
+		"@types/node": "25.0.3",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

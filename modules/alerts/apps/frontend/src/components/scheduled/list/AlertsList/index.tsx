@@ -9,7 +9,7 @@ import { AlertsListCellStops } from '@/components/common/AlertsListCellStops';
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
 import { AlertsListFiltersBar } from '@/components/scheduled/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/scheduled/list/AlertsListHeader';
-import { useAlertListContext } from '@/contexts/AlertList.context';
+import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
@@ -26,7 +26,7 @@ export function AlertList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const alertsListContext = useAlertListContext();
+	const alertsListContext = useAlertsListContext();
 
 	const columns: DataTableColumn<Alert>[] = [
 		{
@@ -76,9 +76,7 @@ export function AlertList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: Alert) => {
-		// Always redirect to the detail page for the selected alert, preserving URL params
-		const destUrl = keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(item._id)));
 	};
 
 	//

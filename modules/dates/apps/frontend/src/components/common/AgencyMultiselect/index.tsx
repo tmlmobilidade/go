@@ -5,19 +5,7 @@ import { MultiSelect } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AgencyMultiselect({
-	description,
-	label,
-	onChange,
-	readOnly,
-	selected,
-}: {
-	description?: string
-	label: string
-	onChange: (value: string[]) => void
-	readOnly?: boolean
-	selected: string[]
-}) {
+export function AgencyMultiselect({ description, label, onChange, readOnly, selected }: { description?: string, label: string, onChange: (value: string[]) => void, readOnly?: boolean, selected: string[] }) {
 	const agencyListContext = useAgenciesContext();
 
 	const agencyOptions = agencyListContext.data.raw.map(agency => ({
@@ -32,7 +20,7 @@ export function AgencyMultiselect({
 			disabled={readOnly}
 			label={label}
 			onChange={onChange}
-			selected={selected}
+			value={selected}
 		/>
 	);
 }

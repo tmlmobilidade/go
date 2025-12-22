@@ -75,8 +75,7 @@ export function RealtimeList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: Alert) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.alerts.REALTIME_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.alerts.REALTIME_DETAIL(item._id)));
 	};
 
 	//

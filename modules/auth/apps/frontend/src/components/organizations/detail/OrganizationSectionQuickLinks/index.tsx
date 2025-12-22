@@ -1,11 +1,10 @@
 'use client';
 
-import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
-import { HomeLink } from '@tmlmobilidade/types';
-
 /* * */
 
+import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { iconMap } from '@/lib/icons';
+import { HomeLink } from '@tmlmobilidade/types';
 import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import React from 'react';
@@ -66,14 +65,14 @@ export function OrganizationDetailQuickLinks() {
 			organizationDetailContext.data.form.values.home_links = updatedLinks;
 		}
 
-		organizationDetailContext.actions.saveOrganization();
+		organizationDetailContext.actions.save();
 	};
 
 	const handleDelete = (link: HomeLink) => {
 		if (!organizationDetailContext.data.form) return;
 		const updatedLinks = organizationDetailContext.data.form.values.home_links.filter(l => l.title !== link.title);
 		organizationDetailContext.data.form.values.home_links = updatedLinks;
-		organizationDetailContext.actions.saveOrganization();
+		organizationDetailContext.actions.save();
 	};
 
 	const handleEdit = (link: HomeLink) => {
@@ -81,7 +80,7 @@ export function OrganizationDetailQuickLinks() {
 	};
 
 	const quickLinkOptions = useMemo(() => {
-		return organizationDetailContext.data.form.values.home_links.map(link => ({
+		return organizationDetailContext.data.form.values.home_links?.map(link => ({
 			...link,
 			actions: <OrganizationDetailQuickLinksActions handleDelete={handleDelete} handleEdit={handleEdit} link={link} />,
 		}));

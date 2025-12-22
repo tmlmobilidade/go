@@ -11,7 +11,6 @@ import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types
 import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { getBasePath, parseAsArrayOfStrings } from '@tmlmobilidade/ui';
 import { type HttpResponse } from '@tmlmobilidade/utils';
-import { usePathname } from 'next/navigation';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
@@ -34,7 +33,6 @@ export interface RidesListContextState {
 	}
 	data: {
 		filtered: RideNormalized[]
-		selectedRideId: string | undefined
 	}
 	filters: {
 		acceptance_status: string[]
@@ -76,8 +74,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const pathname = usePathname();
-
 	const agenciesContext = useAgenciesContext();
 
 	const webSocketRef = useRef<null | WebSocket>(null);
@@ -99,12 +95,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [flagsLastUpdateState, setFlagsLastUpdateState] = useDebouncedState<null | UnixTimestamp>(null, 100);
 
 	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
-
-	const selectedRideId = useMemo(() => {
-		const rideId = pathname.split('/rides/').pop()?.split('?').shift();
-		if (!rideId) return undefined;
-		return decodeURIComponent(rideId);
-	}, [pathname]);
 
 	//
 	// B. Fetch data
@@ -211,7 +201,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		data: {
 			filtered: ridesData ?? [],
-			selectedRideId,
 		},
 		filters: {
 			acceptance_status: filterAcceptanceStatus,
@@ -233,7 +222,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 	}), [
 		ridesData,
-		selectedRideId,
 		filterAgency,
 		filterDateEnd,
 		filterDateStart,

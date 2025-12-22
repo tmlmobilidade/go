@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
+import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -26,9 +26,10 @@ export function RoleDetailBasicInfo() {
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
 					<TextInput
+						key={roleDetailContext.data.form.key('name')}
 						label="Nome do grupo"
 						maxLength={255}
-						placeholder="..."
+						readOnly={roleDetailContext.flags.isReadOnly}
 						withAsterisk
 						{...roleDetailContext.data.form.getInputProps('name')}
 					/>

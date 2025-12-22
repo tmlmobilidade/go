@@ -1,7 +1,7 @@
 /* * */
 
 import { useRolesContext } from '@/contexts/Roles.context';
-import { useUsersListContext } from '@/contexts/UsersList.context';
+import { useUsersListContext } from '@/components/users/list/UsersList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

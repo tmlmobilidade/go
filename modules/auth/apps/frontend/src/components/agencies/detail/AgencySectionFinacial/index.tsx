@@ -2,9 +2,8 @@
 
 /* * */
 
-import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
-import { CreateAgencySchema } from '@tmlmobilidade/types';
-import { Collapsible, Divider, Grid, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
+import { Collapsible, Divider, Grid, NumberInput, Section, Text, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -36,33 +35,33 @@ export function AgencySectionFinacial() {
 		>
 			<Section gap="lg">
 				<Grid columns="ab" gap="lg">
-					<TextInput
+					<NumberInput
+						key={agencyDetailContext.data.form.key('financials.price_per_km')}
 						label="Preço por km"
 						placeholder="1.50"
-						step="0.01"
-						type="number"
-						withAsterisk={!CreateAgencySchema.shape.financials.shape.price_per_km.isOptional()}
+						readOnly={agencyDetailContext.flags.isReadOnly}
+						step={0.01}
 						{...agencyDetailContext.data.form.getInputProps('financials.price_per_km')}
 					/>
-
 					<TextInput
+						defaultValue={totalVkmsPerYear.toLocaleString('pt-PT', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
 						label="Total de km por ano"
 						placeholder="1000000"
-						type="string"
-						value={totalVkmsPerYear.toLocaleString('pt-PT', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-						disabled
+						readOnly
 					/>
 				</Grid>
 
 				<Divider />
 
 				<Text weight="bold">Total de kms em</Text>
+
 				<Grid columns="ab" gap="lg">
 					{months.map((month, index) => (
 						<TextInput
-							key={month}
+							key={agencyDetailContext.data.form.key(`financials.vkm_per_month.${index}`)}
 							label={month}
 							placeholder="100000"
+							readOnly={agencyDetailContext.flags.isReadOnly}
 							type="number"
 							{...agencyDetailContext.data.form.getInputProps(`financials.vkm_per_month.${index}`)}
 						/>

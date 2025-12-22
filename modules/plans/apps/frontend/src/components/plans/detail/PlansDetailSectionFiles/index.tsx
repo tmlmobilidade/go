@@ -3,18 +3,18 @@
 /* * */
 
 import { FileComponent } from '@/components/common/FileComponent';
-import { usePlansDetailContext } from '@/contexts/PlansDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function PlansDetailSectionFiles() {
+export function PlanDetailSectionFiles() {
 	//
 
 	//
 	// A. Setup variables
 
-	const plansDetailContext = usePlansDetailContext();
+	const planDetailContext = usePlanDetailContext();
 
 	//
 	// B. Render components
@@ -26,8 +26,8 @@ export function PlansDetailSectionFiles() {
 		>
 
 			<Section gap="sm">
-				{plansDetailContext.data.operation_file ? (
-					<FileComponent file={plansDetailContext.data.operation_file} />
+				{planDetailContext.data.operation_file ? (
+					<FileComponent file={planDetailContext.data.operation_file} />
 				) : (
 					<Label>Nenhum ficheiro selecionado</Label>
 				)}

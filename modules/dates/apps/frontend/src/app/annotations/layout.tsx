@@ -1,7 +1,7 @@
 /* * */
 
 import { AnnotationsList } from '@/components/annotations/list/AnnotationsList';
-import { AnnotationsListContextProvider } from '@/contexts/AnnotationsList.context';
+import { AnnotationsListContextProvider } from '@/components/annotations/list/AnnotationsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

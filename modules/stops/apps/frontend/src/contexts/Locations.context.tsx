@@ -2,7 +2,7 @@
 
 /* * */
 
-import { API_ROUTES, getAppConfig } from '@tmlmobilidade/consts';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -97,7 +97,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 
 	const queryLocations = async (latitude: number, longitude: number) => {
 		setIsLoading(true);
-		const result = await fetchData<Location>(`${getAppConfig('locations', 'frontend_url', 'production')}${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${latitude}&lon=${longitude}`);
+		const result = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${latitude}&lon=${longitude}`);
 		setIsLoading(false);
 		return result.data ?? null;
 	};

@@ -2,15 +2,16 @@
 
 /* * */
 
+import { useUsersListContext } from '@/components/users/list/UsersList.context';
 import { UsersListFilterBar } from '@/components/users/list/UsersListFilterBar';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
-import { useUsersListContext } from '@/contexts/UsersList.context';
 import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -21,6 +22,7 @@ export function UsersList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
 
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
@@ -55,14 +57,19 @@ export function UsersList() {
 			title: 'Grupos',
 			width: 500,
 		},
+		{
+			accessor: 'seen_last_at',
+			render: item => item.seen_last_at && <Tag label={Dates.fromUnixTimestamp(item.seen_last_at).toLocaleString(Dates.FORMATS.DATETIME_MEDIUM, 'pt-PT')} variant="secondary" />,
+			title: 'Última Visita',
+			width: 200,
+		},
 	];
 
 	//
 	// B. Handle actions
 
 	const handleRowClick = (item: UserNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.USERS_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_DETAIL(item._id)));
 	};
 
 	//
@@ -87,7 +94,7 @@ export function UsersList() {
 				onRowClick={handleRowClick}
 				records={usersListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={usersListContext.data.selectedId}
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

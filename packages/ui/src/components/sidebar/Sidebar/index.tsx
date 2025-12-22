@@ -120,7 +120,7 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		_id: 'annotations',
 		href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 		icon: <IconNote size={26} />,
-		label: 'Ocorrências',
+		label: 'Anotações',
 		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
 	},
 	{
