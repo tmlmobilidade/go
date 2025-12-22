@@ -1,4 +1,86 @@
 {
+
+	"realtime": {
+		"create": {
+			"header": {
+				"new_alert_button_label": "Novo Alerta"
+			}
+		},
+		"detail": {
+			"sectionCauseEffect": {
+				"description": "A causa é o que aconteceu, o efeito é o que aconteceu como consequência.",
+				"fields": {
+					"cause_description": "O que aconteceu",
+					"cause_label": "Causa",
+					"effect_description": "O que aconteceu como consequência",
+					"effect_label": "Efeito"
+				},
+				"title": "Causa e Efeito"
+			},
+			"sectionReferences": {
+				"description": "As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste realtime.",
+				"fields": {
+					"affected_rides": "Viagens afetadas",
+					"headsign": "Destino",
+					"id": "ID",
+					"start_time": "Partida"
+				}
+			},
+			"sectionTitle": {
+				"description": "Breve descrição do que motivou a criação do realtimea",
+				"fields": {
+					"coordinates_description": "Ponto de referência do realtimea, para que seja possível localizar o realtimea no mapa.",
+					"description_description": "Um bom realtime explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
+					"description_label": "Descrição",
+					"description_placeholder": "...",
+					"link_description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
+					"link_label": "Link Adicional",
+					"link_placeholder": "https://www.cm-setubal.com/...",
+					"title_description": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
+					"title_label": "Título Curto",
+					"title_placeholder": "..."
+				},
+				"title": "Título e Descrição"
+			},
+			"sectionValidity": {
+				"description": "Período em que o realtime é válido. Distinto da visibilidade. O realtime pode estar visível mas não ser ainda válido (ex: um realtime para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).",
+				"fields": {
+					"active_period_end_date_label": "Data de Fim",
+					"active_period_start_date_label": "Data de Início"
+				},
+				"title": "Período de Vigência"
+			},
+			"sectionVisibility": {
+				"description": "É possível agendar a permanência do realtime nos canais digitais. A visibilidade do realtime é diferente do seu período de vigência.",
+				"fields": {
+					"publish_end_date_label": "Data de Fim",
+					"publish_start_date_label": "Data de Início"
+				},
+				"title": "Visibilidade e Agendamento"
+			}
+		},
+		"list": {
+			"filterBar": {
+				"cause": "Causa",
+				"effect": " Efeito",
+				"municipality": "Município",
+				"publish_status": "Estado"
+			},
+			"header": {
+				"new_alert": "Novo Alerta",
+				"title": "Alertas - Tempo Real"
+			},
+			"tableColumns": {
+				"lines": "Linhas",
+				"municipality": "Municípios",
+				"publish_end_date": "Data de Fim",
+				"publish_start_date": "Data de Início",
+				"status": "Estado",
+				"stops": "Paragens",
+				"title": "Título"
+			}
+		}
+	},
 	"scheduled": {
 		"create": {
 			"header": {
@@ -47,6 +129,12 @@
 			},
 			"sectionReferences": {
 				"description": "As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste alerta.",
+				"fields": {
+					"affected_rides": "Viagens afetadas",
+					"headsign": "Destino",
+					"id": "ID",
+					"start_time": "Partida"
+				},
 				"municipalities_description": "Selecione os municípios que serão afetados pelo alerta",
 				"municipalities_label": "Municípios Afetados",
 				"stops_label": "Paragens Afetadas",

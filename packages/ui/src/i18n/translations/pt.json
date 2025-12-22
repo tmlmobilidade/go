@@ -318,11 +318,14 @@
 		"warning": "Aviso"
 	},
 	"statuses": {
+		"archived": "Arquivado",
 		"complete": "Válido",
-		"default": "Desconhecido",
+		"draft": "Rascunho",
 		"error": "Inválido",
 		"processing": "A processar",
+		"published": "Publicado",
 		"skipped": "Ignorado",
+		"unknown": "Desconhecido",
 		"waiting": "Em espera"
 	}
 }

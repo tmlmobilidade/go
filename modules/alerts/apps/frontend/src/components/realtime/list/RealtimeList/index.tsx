@@ -16,6 +16,7 @@ import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
+
 /* * */
 
 export function RealtimeList() {
@@ -26,6 +27,7 @@ export function RealtimeList() {
 
 	const router = useRouter();
 	const realtimeListContext = useRealtimeListContext();
+	const {t} = useTranslation('alerts', keyPrefix:{'realtime.list'});
 
 	const columns: DataTableColumn<Alert>[] = [
 		{

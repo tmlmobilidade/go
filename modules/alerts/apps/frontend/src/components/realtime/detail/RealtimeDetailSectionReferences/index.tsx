@@ -7,6 +7,7 @@ import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { RidesData } from '@/contexts/Rides.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { DataTable, DataTableColumn, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function RealtimeDetailSectionAffectedRides() {
 	// A. Setup variables
 
 	const realtimeDetailContext = useRealtimeDetailContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.detail.sectionReferences' });
 
 	//
 	// B. Transform data
@@ -23,12 +25,12 @@ export function RealtimeDetailSectionAffectedRides() {
 	const columns: DataTableColumn<RidesData>[] = [
 		{
 			accessor: '_id',
-			title: 'ID',
+			title: t('fields.id'),
 			width: 400,
 		},
 		{
 			accessor: 'headsign',
-			title: 'Destino',
+			title: t('fields.headsign'),
 			width: 300,
 		},
 		{
@@ -39,14 +41,14 @@ export function RealtimeDetailSectionAffectedRides() {
 					status={getDelayStatus(item.start_time_scheduled, item.start_time_observed)}
 				/>
 			),
-			title: 'Partida',
+			title: t('fields.start_time'),
 			width: 300,
 		},
 	];
 
 	return (
 		<Section gap="md">
-			<Label size="md" caps>Viagens afetadas</Label>
+			<Label size="md" caps>{t('fields.affected_rides')}</Label>
 			<div style={{ overflowX: 'scroll', width: '100%' }}>
 				<DataTable
 					columns={columns as DataTableColumn<unknown>[]}

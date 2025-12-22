@@ -4,6 +4,7 @@
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,7 +15,7 @@ export function RealtimeDetailSectionVisibility() {
 	// A. Setup variables
 
 	const realtimeDetailContext = useRealtimeDetailContext();
-
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.detail.sectionVisibility' });
 	//
 	// B. Transform data
 
@@ -26,12 +27,12 @@ export function RealtimeDetailSectionVisibility() {
 
 	return (
 		<Collapsible
-			description="É possível agendar a permanência do realtimea nos canais digitais. A visibilidade do realtimea é diferente do seu período de vigência."
-			title="Visibilidade e Agendamento"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					label="Data de Início"
+					label={t('fields.publish_start_date_label')}
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('publish_start_date')}
 					value={startDateValue}
@@ -40,7 +41,7 @@ export function RealtimeDetailSectionVisibility() {
 					}}
 				/>
 				<DateTimePicker
-					label="Data de Fim"
+					label={t('fields.publish_end_date_label')}
 					clearable
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('publish_end_date')}

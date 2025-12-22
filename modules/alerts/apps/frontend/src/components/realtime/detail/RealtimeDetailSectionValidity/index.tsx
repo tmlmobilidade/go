@@ -4,6 +4,7 @@
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,7 +15,7 @@ export function RealtimeDetailSectionValidity() {
 	// A. Setup variables
 
 	const realtimeDetailContext = useRealtimeDetailContext();
-
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.detail.sectionValidity' });
 	//
 	// B. Transform data
 
@@ -26,12 +27,12 @@ export function RealtimeDetailSectionValidity() {
 
 	return (
 		<Collapsible
-			description="Período em que o realtimea é válido. Distinto da visibilidade. O realtimea pode estar visível mas não ser ainda válido (ex: um realtimea para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias)."
-			title="Período de Vigência"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					label="Data de Início"
+					label={t('fields.active_period_start_date_label')}
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('active_period_start_date')}
 					value={startDateValue}
@@ -40,7 +41,7 @@ export function RealtimeDetailSectionValidity() {
 					}}
 				/>
 				<DateTimePicker
-					label="Data de Fim"
+					label={t('fields.active_period_end_date_label')}
 					clearable
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('active_period_end_date')}
