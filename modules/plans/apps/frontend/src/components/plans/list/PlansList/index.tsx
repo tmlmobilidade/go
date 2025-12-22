@@ -31,13 +31,13 @@ export function PlansList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('table_columns._id'),
+			title: t('tableColumns._id'),
 			width: 100,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PlansListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: t('table_columns.agency_id_normalized'),
+			title: t('tableColumns.agency_id_normalized'),
 			width: 300,
 		},
 		{
@@ -49,19 +49,19 @@ export function PlansList() {
 					validityStatus={item.validity_status}
 				/>
 			),
-			title: t('table_columns.gtfs_feed_info'),
+			title: t('tableColumns.gtfs_feed_info'),
 			width: 310,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.controller?.status} timestamp={item.apps?.controller?.timestamp} />,
-			title: t('table_columns.apps_controller'),
+			title: t('tableColumns.apps_controller'),
 			width: 220,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.merger?.status} timestamp={item.apps?.merger?.timestamp} />,
-			title: t('table_columns.apps_merger'),
+			title: t('tableColumns.apps_merger'),
 			width: 220,
 		},
 	];

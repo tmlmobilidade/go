@@ -3,8 +3,8 @@
 /* * */
 
 import { useAlertCreateContext } from '@/contexts/AlertCreate.context';
-import { CreateAlertSchema } from '@tmlmobilidade/types';
 import { Collapsible, DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,7 +15,7 @@ export function AlertCreateSectionValidity() {
 	// A. Setup variables
 
 	const alertCreateContext = useAlertCreateContext();
-
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.create.sectionValidity' });
 	//
 	// B. Transform data
 

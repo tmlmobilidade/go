@@ -31,7 +31,7 @@ export function UploadImage({
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('auth', { keyPrefix: 'common.upload_image' });
+	const { t } = useTranslation('global', { keyPrefix: 'components.uploadImage' });
 
 	const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
 

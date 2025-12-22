@@ -25,29 +25,29 @@ export function ValidationsDetailSectionResult() {
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
 			accessor: 'file_name',
-			title: t('table_columns.file_name'),
+			title: t('tableColumns.file_name'),
 			width: 180,
 		},
 		{
 			accessor: 'field',
-			title: t('table_columns.field'),
+			title: t('tableColumns.field'),
 			width: 250,
 		},
 		{
 			accessor: 'severity',
 			render: item => <SeverityTag severity={item.severity} />,
-			title: t('table_columns.severity'),
+			title: t('tableColumns.severity'),
 			width: 100,
 		},
 		{
 			accessor: 'message',
-			title: t('table_columns.message'),
+			title: t('tableColumns.message'),
 			width: 500,
 		},
 		{
 			accessor: 'rows',
 			render: item => <ValidationsDetailSectionResultCellRows rows={item.rows} />,
-			title: t('table_columns.rows'),
+			title: t('tableColumns.rows'),
 			width: 600,
 		},
 	];

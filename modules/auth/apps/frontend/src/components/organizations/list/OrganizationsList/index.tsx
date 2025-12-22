@@ -21,7 +21,7 @@ export function OrganizationsList() {
 	const router = useRouter();
 	const organizationsListContext = useOrganizationsListContext();
 
-	const { t } = useTranslation('auth', { keyPrefix: 'organizations.list.table_columns' });
+	const { t } = useTranslation('auth', { keyPrefix: 'organizations.list.tableColumns' });
 
 	const columns: DataTableColumn<OrganizationNormalized>[] = [
 		{

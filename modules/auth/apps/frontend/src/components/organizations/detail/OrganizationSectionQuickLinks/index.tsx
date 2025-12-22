@@ -28,24 +28,24 @@ export function OrganizationDetailQuickLinks() {
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
-			title: t('table_columns.name'),
+			title: t('tableColumns.name'),
 			width: 250,
 		},
 		{
 			accessor: 'href',
-			title: t('table_columns.link'),
+			title: t('tableColumns.link'),
 			width: 400,
 		},
 		{
 			accessor: 'icon',
 			render: item => iconMap[item.icon],
-			title: t('table_columns.icon'),
+			title: t('tableColumns.icon'),
 			width: 300,
 		},
 		{
 			accessor: 'actions',
 			render: item => item.actions,
-			title: t('table_columns.actions'),
+			title: t('tableColumns.actions'),
 			width: 300,
 		},
 	];

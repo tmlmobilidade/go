@@ -26,18 +26,18 @@ export function RolesList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('table_columns.id'),
+			title: t('tableColumns.id'),
 			width: 120,
 		},
 		{
 			accessor: 'name',
-			title: t('table_columns.name'),
+			title: t('tableColumns.name'),
 			width: 200,
 		},
 		{
 			accessor: 'permissions',
 			render: item => <TagGroup tags={item.permissions.map(i => ({ label: `${i.scope}/${i.action}`, variant: 'secondary' }))} />,
-			title: t('table_columns.permissions'),
+			title: t('tableColumns.permissions'),
 			width: 500,
 		},
 	];

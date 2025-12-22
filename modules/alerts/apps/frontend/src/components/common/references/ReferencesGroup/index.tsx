@@ -80,7 +80,7 @@ export function ReferencesGroup({
 				centered: true,
 				children: (
 					<>
-						<div>{t('reference_group.lose_all_changes')}</div>
+						<div>{t('components.reference_group.lose_all_changes')}</div>
 					</>
 				),
 				closeOnClickOutside: true,
@@ -89,7 +89,7 @@ export function ReferencesGroup({
 					onSetFieldValue('reference_type', value);
 					onSetFieldValue('references', []);
 				},
-				title: t('reference_group.confirm_change_reference'),
+				title: t('components.reference_group.confirm_change_reference'),
 			});
 		}
 		else {

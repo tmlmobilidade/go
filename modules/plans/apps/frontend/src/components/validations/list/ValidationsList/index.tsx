@@ -30,19 +30,19 @@ export function ValidationsList() {
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: t('table_columns.agency_name'),
+			title: t('tableColumns.agency_name'),
 			width: 300,
 		},
 		{
 			accessor: 'feeder_status',
 			render: item => <ValidationStatusTag status={item.feeder_status} />,
-			title: t('table_columns.feeder_status'),
+			title: t('tableColumns.feeder_status'),
 			width: 150,
 		},
 		{
 			accessor: 'created_at',
 			render: item => <ValidationsListCellDate value={item.created_at} />,
-			title: t('table_columns.created_at'),
+			title: t('tableColumns.created_at'),
 			width: 300,
 		},
 	];

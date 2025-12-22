@@ -50,7 +50,7 @@
 					"label": "Estado"
 				}
 			},
-			"table_columns": {
+			"tableColumns": {
 				"_id": "#ID",
 				"agency_id_normalized": "Operador",
 				"apps_controller": "SLA Status",
@@ -85,7 +85,7 @@
 			},
 			"section_result": {
 				"description": "Informações, avisos e erros encontrados no arquivo GTFS",
-				"table_columns": {
+				"tableColumns": {
 					"field": "Campo ",
 					"file_name": "Ficheiro",
 					"message": "Mensagem",
@@ -109,7 +109,7 @@
 				"search_placeholder": "Pesquisar validações por operador...",
 				"title": "Validações GTFS"
 			},
-			"table_columns": {
+			"tableColumns": {
 				"agency_name": "Operador",
 				"created_at": "Data de submissão",
 				"feeder_status": "Estado"

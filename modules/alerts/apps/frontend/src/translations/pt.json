@@ -34,8 +34,8 @@
 				"title": "Título e Descrição"
 			},
 			"sectionValidity": {
-				"active_period_end_date": "Data de Fim",
-				"active_period_start_date": "Data de Início",
+				"active_period_end_date_label": "Data de Fim",
+				"active_period_start_date_label": "Data de Início",
 				"description": "Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).",
 				"title": "Período de Vigência"
 			},
@@ -57,7 +57,7 @@
 				"new_alert": "Novo Alerta",
 				"title": "Alertas"
 			},
-			"table_columns": {
+			"tableColumns": {
 				"lines": "Linhas",
 				"municipality": "Municípios",
 				"publish_end_date": "Data de Fim",

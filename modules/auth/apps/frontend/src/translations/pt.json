@@ -65,8 +65,7 @@
 				"error": {
 					"message": "O tamanho do ficheiro execede o limite permitido",
 					"title": "Erro ao carregar imagem"
-				},
-				"file_button_label": "Carregar imagem"
+				}
 			}
 		},
 		"permissions": {
@@ -134,7 +133,7 @@
 				"add_quick_link_button_label": "Adicionar Link Rápido",
 				"description": "Links rápidos que aparecem na página inicial.",
 				"no_organization_label": "Crie primeiro a organização para adicionar links rápidos.",
-				"table_columns": {
+				"tableColumns": {
 					"actions": "Ações",
 					"icon": "Ícone",
 					"link": "Link",
@@ -148,7 +147,7 @@
 				"new_organization_button_label": "Nova organização",
 				"title": "Organizações"
 			},
-			"table_columns": {
+			"tableColumns": {
 				"id": "#ID",
 				"name": "Nome"
 			}
@@ -187,7 +186,7 @@
 				"new_role_button_label": "Novo Grupo de Permissões",
 				"title": "Grupos de Permissões"
 			},
-			"table_columns": {
+			"tableColumns": {
 				"id": "#ID",
 				"name": "Nome",
 				"permissions": "Permissões"
@@ -268,7 +267,7 @@
 			"idle": {
 				"text": "Selecione um Utilizador"
 			},
-			"table_columns": {
+			"tableColumns": {
 				"email": "Email",
 				"id": "#ID",
 				"name": "Nome",

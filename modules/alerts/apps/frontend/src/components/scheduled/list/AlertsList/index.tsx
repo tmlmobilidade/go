@@ -34,43 +34,43 @@ export function AlertList() {
 		{
 			accessor: 'publish_status',
 			render: item => <AlertTagPublishStatus value={item.publish_status} />,
-			title: t('table_columns.status'),
+			title: t('tableColumns.status'),
 			width: 150,
 
 		},
 		{
 			accessor: 'title',
-			title: t('table_columns.title'),
+			title: t('tableColumns.title'),
 			width: 600,
 		},
 		{
 			accessor: 'municipality_ids',
 			render: item => <AlertsListCellMunicipalities values={item.municipality_ids} />,
-			title: t('table_columns.municipality'),
+			title: t('tableColumns.municipality'),
 			width: 300,
 		},
 		{
 			accessor: 'publish_start_date',
 			render: item => <AlertsListCellDate value={item.publish_start_date} />,
-			title: t('table_columns.publish_start_date'),
+			title: t('tableColumns.publish_start_date'),
 			width: 300,
 		},
 		{
 			accessor: 'publish_end_date',
 			render: item => <AlertsListCellDate value={item.publish_end_date} />,
-			title: t('table_columns.publish_end_date'),
+			title: t('tableColumns.publish_end_date'),
 			width: 300,
 		},
 		{
 			accessor: '_id',
 			render: item => <AlertsListCellLines values={getAvailableLines(item)} />,
-			title: t('table_columns.lines'),
+			title: t('tableColumns.lines'),
 			width: 300,
 		},
 		{
 			accessor: '_id',
 			render: item => <AlertsListCellStops values={getAvailableStops(item)} />,
-			title: t('table_columns.stops'),
+			title: t('tableColumns.stops'),
 			width: 800,
 		},
 	];

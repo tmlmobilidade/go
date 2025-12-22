@@ -33,29 +33,29 @@ export function UsersList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('table_columns.id'),
+			title: t('tableColumns.id'),
 			width: 120,
 		},
 		{
 			accessor: 'full_name',
-			title: t('table_columns.name'),
+			title: t('tableColumns.name'),
 			width: 225,
 		},
 		{
 			accessor: 'email',
-			title: t('table_columns.email'),
+			title: t('tableColumns.email'),
 			width: 350,
 		},
 		{
 			accessor: 'organization_id',
 			render: item => <Tag label={organizationsContext.data.raw.find(organizationData => organizationData._id === item.organization_id)?.long_name} variant="secondary" />,
-			title: t('table_columns.organization_id'),
+			title: t('tableColumns.organization_id'),
 			width: 300,
 		},
 		{
 			accessor: 'role_ids',
 			render: item => <TagGroup tags={item.role_ids.map(roleId => ({ label: rolesContext.data.raw.find(roleData => roleData._id === roleId)?.name, variant: 'secondary' }))} />,
-			title: t('table_columns.role_ids'),
+			title: t('tableColumns.role_ids'),
 			width: 500,
 		},
 	];
