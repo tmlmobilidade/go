@@ -49,7 +49,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.plans.actions.read, PermissionCatalog.all.plans.scope);
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.read);
 
 	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(API_ROUTES.plans.PLANS_LIST, { refreshInterval: 5_000 });
 
