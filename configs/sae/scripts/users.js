@@ -81,3 +81,9 @@ db.createUser({
 	roles: [{ db: 'admin', role: 'exporter' }],
 	user: 'exporter',
 });
+
+db.createUser({
+	pwd: USER_FLEET_PASSWORD,
+	roles: [{ db: 'admin', role: 'fleet' }],
+	user: 'fleet',
+});
