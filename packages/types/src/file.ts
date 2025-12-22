@@ -21,7 +21,7 @@ export const FileSchema = DocumentSchema
 	});
 
 export const CreateFileSchema = FileSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateFileSchema = FileSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true }).partial();
+export const UpdateFileSchema = CreateFileSchema.omit({ created_by: true }).partial();
 
 export type File = z.infer<typeof FileSchema>;
 export type CreateFileDto = z.infer<typeof CreateFileSchema>;

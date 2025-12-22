@@ -42,7 +42,7 @@
 		"@tmlmobilidade/utils": "*",
 		"@types/nodemailer": "7.0.4",
 		"browserslist": "4.28.1",
-		"nodemailer": "7.0.11",
+		"nodemailer": "7.0.12",
 		"react": "19.2.3",
 		"react-email": "5.1.0"
 	},

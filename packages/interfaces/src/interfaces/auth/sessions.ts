@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { CreateSessionDto, Session, SessionSchema, UpdateSessionDto } from '@tmlmobilidade/types';
+import { type CreateSessionDto, CreateSessionSchema, Session, type UpdateSessionDto, UpdateSessionSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,8 +10,8 @@ import { z } from 'zod';
 
 class SessionsClass extends MongoCollectionClass<Session, CreateSessionDto, UpdateSessionDto> {
 	private static _instance: SessionsClass;
-	protected override createSchema: z.ZodSchema = SessionSchema;
-	protected override updateSchema: z.ZodSchema = SessionSchema;
+	protected override createSchema: z.ZodSchema = CreateSessionSchema;
+	protected override updateSchema: z.ZodSchema = UpdateSessionSchema;
 
 	private constructor() {
 		super();
@@ -42,5 +42,7 @@ class SessionsClass extends MongoCollectionClass<Session, CreateSessionDto, Upda
 		return 'DATABASE_URI';
 	}
 }
+
+/* * */
 
 export const sessions = AsyncSingletonProxy(SessionsClass);
