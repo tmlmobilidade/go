@@ -2,7 +2,6 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
-import { Label } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -21,21 +20,17 @@ export function AlertsListCellDate({ value }: AlertsListCellDateProps) {
 
 	const formattedDateString = useMemo(() => {
 		// Skip if no value
-		if (!value) return 'N/A';
-		// Convert the Unix timestamp to a Date object.
+		if (!value) return '-';
+		// Formate the date string
 		return Dates
 			.fromUnixTimestamp(value)
-			.toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT');
+			.toFormat('d MMM y \'às\' HH:mm');
 	}, [value]);
 
 	//
 	// B. Render components
 
-	return (
-		<Label>
-			{formattedDateString}
-		</Label>
-	);
+	return formattedDateString;
 
 	//
 }

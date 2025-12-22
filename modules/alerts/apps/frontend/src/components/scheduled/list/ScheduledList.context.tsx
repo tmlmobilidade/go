@@ -102,14 +102,16 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 		const filterMunicipalitySet = new Set(filterMunicipality.value);
 		// 2. Filter by query filters
 		return searchResultsData.filter((alert: AlertNormalized) => {
+			// Filter by agency IDs
+			if (!alert.agency_ids.some((aId: string) => filterAgency.value.includes(aId))) return false;
 			// Filter by publish_status
 			if (!filterPublishStatusSet.has(alert.publish_status)) return false;
 			// Filter by cause
 			if (!filterCauseSet.has(alert.cause)) return false;
 			// Filter by effect
 			if (!filterEffectSet.has(alert.effect)) return false;
-			// Filter by municipality
-			if (filterMunicipality.value.length > 0 && !alert.municipality_ids.some((mId: string) => filterMunicipalitySet.has(mId))) return false;
+			// Filter by municipality IDs
+			if (!alert.municipality_ids.some((mId: string) => filterMunicipalitySet.has(mId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
@@ -118,6 +120,7 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 		filterPublishStatus,
 		filterCause,
 		filterEffect,
+		filterAgency,
 		filterMunicipality,
 		filterPublishStatus,
 		filterCause,

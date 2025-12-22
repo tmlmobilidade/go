@@ -56,7 +56,17 @@ export class ScheduledController {
 	 * @param reply The reply object.
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
-		const allAlerts = await alerts.findMany({}, { sort: { _id: 1 } });
+		// Retrieve permissions for the current user
+		const userReadPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.read);
+		// Setup a query filter based on permissions
+		const queryFilter = userReadPermissions.resources?.agency_ids?.includes(PermissionCatalog.ALLOW_ALL_FLAG)
+			// If user has access to all agencies, no filter is applied
+			? {}
+			// Otherwise, filter by the allowed agency IDs
+			: { agency_ids: { $in: userReadPermissions.resources?.agency_ids ?? [] } };
+		// Retrieve and send all alerts
+		const allAlerts = await alerts.findMany(queryFilter, { sort: { active_period_start_date: -1 } });
+		// Send the alerts to the client
 		reply.send({ data: allAlerts, error: null, statusCode: HttpStatus.OK });
 	}
 

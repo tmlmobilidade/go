@@ -23,13 +23,22 @@ import { type Alert } from '@tmlmobilidade/types';
 			reference_type: parseReferenceType(alert.reference_type),
 			type: parseAlertType(alert.type),
 		};
-		console.log(`Alert ${alert._id} migrated.`);
+		formattedAlert.agency_ids = parseAlertAgencyIds(formattedAlert.reference_type, alert.references);
 		return formattedAlert;
 	});
 
 	console.log('Updating alerts in database...');
 
-	await alertsCollection.updateMany({}, { $set: { ...migratedAlerts } });
+	const updateInstructions = migratedAlerts.map((alert) => {
+		return {
+			updateOne: {
+				filter: { _id: alert._id },
+				update: { $set: alert },
+			},
+		};
+	});
+
+	await alertsCollection.bulkWrite(updateInstructions);
 
 	console.log('Alerts migration completed.');
 
@@ -56,4 +65,12 @@ function parseAlertType(value: string): Alert['type'] {
 	if (value === 'PLANNED') return 'scheduled';
 	if (value === 'REALTIME') return 'realtime';
 	return value as Alert['type'];
+}
+
+function parseAlertAgencyIds(referenceType: Alert['reference_type'], references: Alert['references']): Alert['agency_ids'] {
+	const agencyIdsSet = new Set<string>();
+	references.forEach((reference) => {
+		if (referenceType === 'lines') agencyIdsSet.add(`4${reference.parent_id.substring(0, 1)}`);
+	});
+	return Array.from(agencyIdsSet);
 }
