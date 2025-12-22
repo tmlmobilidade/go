@@ -15,7 +15,7 @@ import { type Alert } from '@tmlmobilidade/types';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -27,48 +27,48 @@ export function RealtimeList() {
 
 	const router = useRouter();
 	const realtimeListContext = useRealtimeListContext();
-	const {t} = useTranslation('alerts', keyPrefix:{'realtime.list'});
+	const { t } = useTranslation('alert', { keyPrefix: 'realtime.list' });
 
 	const columns: DataTableColumn<Alert>[] = [
 		{
 			accessor: 'publish_status',
 			render: item => <AlertTagPublishStatus value={item.publish_status} />,
-			title: 'Estado',
+			title: t('tableColumns.publish_status'),
 			width: 150,
 		},
 		{
 			accessor: 'title',
-			title: 'Título',
+			title: t('tableColumns.title'),
 			width: 600,
 		},
 		{
 			accessor: 'municipality_ids',
 			render: item => <AlertsListCellMunicipalities values={item.municipality_ids} />,
-			title: 'Municípios',
+			title: t('tableColumns.municipality'),
 			width: 300,
 		},
 		{
 			accessor: 'publish_start_date',
 			render: item => <AlertsListCellDate value={item.publish_start_date} />,
-			title: 'Data de início',
+			title: t('tableColumns.publish_start_date'),
 			width: 300,
 		},
 		{
 			accessor: 'publish_end_date',
 			render: item => <AlertsListCellDate value={item.publish_end_date} />,
-			title: 'Data de fim',
+			title: t('tableColumns.publish_end_date'),
 			width: 300,
 		},
 		{
 			accessor: '_id',
 			render: item => <AlertsListCellLines values={getAvailableLines(item)} />,
-			title: 'Linhas',
+			title: t('tableColumns.lines'),
 			width: 300,
 		},
 		{
 			accessor: '_id',
 			render: item => <AlertsListCellStops values={getAvailableStops(item)} />,
-			title: 'Paragens',
+			title: t('tableColumns.stops'),
 			width: 800,
 		},
 	];
