@@ -70,22 +70,22 @@ async function main() {
 
 				const aggregationTimer = new Timer();
 
-				const searchTimestampStart = Dates
+				let searchTimestampStart = Dates
 					.now('Europe/Lisbon')
 					.startOf('day')
-					.set({ day: 8, hour: 4, minute: 0, month: 12, year: 2025 });
+					.set({ day: 1, hour: 4, minute: 0, month: 1, year: 2025 });
 
-				// if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
-				// 	searchTimestampStart = Dates
-				// 		.now('Europe/Lisbon')
-				// 		.startOf('day')
-				// 		.set({ day: 22, hour: 4, minute: 0, month: 8, year: 2025 });
-				// }
+				if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
+					searchTimestampStart = Dates
+						.now('Europe/Lisbon')
+						.startOf('day')
+						.set({ day: 8, hour: 4, minute: 0, month: 12, year: 2025 });
+				}
 
 				const searchTimestampEnd = Dates
 					.now('Europe/Lisbon')
 					.startOf('day')
-					.set({ day: 1, hour: 4, minute: 0, month: 11, year: 2025 });
+					.set({ day: 1, hour: 4, minute: 0, month: 12, year: 2025 });
 
 				Logger.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
 
