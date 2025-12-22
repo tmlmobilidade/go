@@ -5,10 +5,11 @@
 import { IconNote } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Agency, type Annotation, type CalendarEvent, type Period } from '@tmlmobilidade/types';
+import { Agency, type Annotation, type CalendarEvent, type Period, PermissionCatalog } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
+import { useMeContext } from '../../../contexts/Me.context';
 import { CalendarUIContextProvider } from './CalendarUI.context';
 
 /* * */
@@ -59,28 +60,43 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Fetch data
+	// A. Setup variables
 
-	const { data: periodsData, error: periodsError, isLoading: periodsLoading, mutate: mutatePeriods } = useSWR<Period[]>(
-		API_ROUTES.dates.PERIODS_LIST,
+	const meContext = useMeContext();
+
+	const canReadPeriods = meContext.actions.hasPermission(
+		PermissionCatalog.all.dates.scope,
+		PermissionCatalog.all.dates.actions.read_periods,
+	);
+
+	const canReadAnnotations = meContext.actions.hasPermission(
+		PermissionCatalog.all.dates.scope,
+		PermissionCatalog.all.dates.actions.read_annotations,
+	);
+
+	//
+	// B. Fetch data
+
+	const { data: periodsData, error: periodsError, isLoading: periodsLoading } = useSWR<Period[]>(
+		canReadPeriods ? API_ROUTES.dates.PERIODS_LIST : null,
 		{ refreshInterval: 10000 },
 	);
 
 	const { data: annotationsData, error: annotationsError, isLoading: annotationsLoading } = useSWR<Annotation[]>(
-		API_ROUTES.dates.ANNOTATIONS_LIST,
+		canReadAnnotations ? API_ROUTES.dates.ANNOTATIONS_LIST : null,
 		{ refreshInterval: 10000 },
 	);
 
 	const { data: agenciesData } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
 
 	//
-	// B. Handle errors and loading states
+	// C. Handle errors and loading states
 
 	const hasError = periodsError || annotationsError;
 	const isLoading = periodsLoading || annotationsLoading;
 
 	//
-	// C. Transform data to calendar events
+	// D. Transform data
 
 	// Helper function to group consecutive dates into ranges
 	const groupConsecutiveDates = (dates: string[]): string[][] => {
@@ -179,8 +195,6 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 	}, [periodsData, annotationsData, agenciesData]);
 
 	//
-	// D. Filter events based on UI context
-
 	// E. Count events by type
 
 	const eventTypeCounts = useMemo(() => {
