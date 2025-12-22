@@ -27,7 +27,7 @@ export function RealtimeList() {
 
 	const router = useRouter();
 	const realtimeListContext = useRealtimeListContext();
-	const { t } = useTranslation('alert', { keyPrefix: 'realtime.list' });
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.list' });
 
 	const columns: DataTableColumn<Alert>[] = [
 		{

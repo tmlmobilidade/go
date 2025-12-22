@@ -15,7 +15,7 @@ export function RealtimeListHeader() {
 	// A. Setup variables
 
 	const realtimeListContext = useRealtimeListContext();
-	const { t } = useTranslation('alert', { keyPrefix: 'realtime.list.header' });
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.list.header' });
 
 	//
 	// B. Render components

@@ -4,7 +4,8 @@
 		"create": {
 			"header": {
 				"new_alert_button_label": "Novo Alerta"
-			}
+			},
+			"no_permission": "Não tem permissão para criar alertas"
 		},
 		"detail": {
 			"sectionCauseEffect": {
@@ -75,7 +76,7 @@
 				"municipality": "Municípios",
 				"publish_end_date": "Data de Fim",
 				"publish_start_date": "Data de Início",
-				"status": "Estado",
+				"publish_status": "Estado",
 				"stops": "Paragens",
 				"title": "Título"
 			}
