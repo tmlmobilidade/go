@@ -52,7 +52,7 @@ interface UseDataAgenciesReturnType {
  * @param props The properties to determine read-only status.
  * @returns An object containing the isCanSave flag.
  */
-export function useDataAgencies(action: string, scope: string): UseDataAgenciesReturnType {
+export function useDataAgencies(scope?: string, action?: string): UseDataAgenciesReturnType {
 	//
 
 	//
@@ -71,6 +71,8 @@ export function useDataAgencies(action: string, scope: string): UseDataAgenciesR
 	const filteredData = useMemo(() => {
 		// Skip if no data is available
 		if (!allAgenciesData?.length) return [];
+		// Check if permissions are set
+		if (!action || !scope) return allAgenciesData;
 		// Map data to SelectDataItem format
 		return allAgenciesData.filter(item => meContext.actions.hasPermissionResource({
 			action: action,

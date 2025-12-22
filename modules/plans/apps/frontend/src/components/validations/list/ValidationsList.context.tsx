@@ -5,28 +5,22 @@
 import { type ValidationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type GtfsValidation, ProcessingStatusSchema } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useAgenciesContext, useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { type GtfsValidation, PermissionCatalog, ProcessingStatusSchema } from '@tmlmobilidade/types';
+import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface ValidationsListContextState {
-	actions: {
-		setFilterAgency: (values: string[]) => void
-		setFilterProcessingStatus: (values: string[]) => void
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: ValidationNormalized[]
 		raw: GtfsValidation[]
 	}
 	filters: {
-		agency: string[]
-		processing_status: string[]
-		search: string
+		agency: UseFilterStateListReturnType
+		processing_status: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -52,18 +46,18 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const agenciesContext = useAgenciesContext();
-
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
-	const [filterProcessingStatus, setFilterProcessingStatus] = useQueryState<string[]>('processing_status', parseAsArrayOfStrings.withDefault(ProcessingStatusSchema.options));
-
-	//
-	// B. Fetch data
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.gtfs_validations.actions.read, PermissionCatalog.all.gtfs_validations.scope);
 
 	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>(API_ROUTES.plans.VALIDATIONS_LIST, { refreshInterval: 3_000 });
+
+	//
+	// B. Setup filters
+
+	const filterSearch = useFilterStateString('search');
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterProcessingStatus = useFilterStateList('processing_status', ProcessingStatusSchema.options, ProcessingStatusSchema.options.map(item => ({ label: item, value: item })));
 
 	//
 	// C. Transform data
@@ -82,15 +76,15 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	const searchResultsData = useSearch<ValidationNormalized>({
 		accessors: ['_id', 'agency_name_normalized'],
 		data: normalizedValidationsData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const agencySet = new Set(filterAgency);
-		const validityStatusSet = new Set(filterProcessingStatus);
+		const agencySet = new Set(filterAgency.value);
+		const validityStatusSet = new Set(filterProcessingStatus.value);
 		const filteredResultsData = searchResultsData.filter((item: ValidationNormalized) => {
 			// Filter by agency
 			if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
@@ -106,11 +100,6 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	// D. Define context value
 
 	const contextValue: ValidationsListContextState = useMemo(() => ({
-		actions: {
-			setFilterAgency,
-			setFilterProcessingStatus,
-			setFilterSearch,
-		},
 		data: {
 			filtered: filterResultsData,
 			raw: allValidationsData ?? [],

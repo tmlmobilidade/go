@@ -56,7 +56,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search', '');
+	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterValidityStatus = useFilterStateList('validity_status', planValidityStatusValues, planValidityStatusOptions);
 
