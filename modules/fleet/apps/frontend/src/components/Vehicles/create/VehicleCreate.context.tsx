@@ -65,13 +65,13 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 		const response = await fetchData<Vehicle>(API_ROUTES.dates.ANNOTATIONS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao criar anotação' });
+				useToast.error({ message: response.error, title: 'Erro ao criar veículo' });
 				setIsSaving(false);
 				return;
 			}
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao criar anotação' });
+				useToast.error({ message: error.message, title: 'Erro ao criar veículo' });
 			}
 			setIsSaving(false);
 			return;

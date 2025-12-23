@@ -44,7 +44,7 @@ export function VehiclesDetailHeader() {
 				action={PermissionCatalog.all.plans.actions.lock}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
-				value={vehiclesDetailContext.data.vehicle.agency_ids}
+				value={vehiclesDetailContext.data.vehicle.agency_id}
 			>
 				<LockButton
 					isLocked={vehiclesDetailContext.data.vehicle.is_locked}
@@ -53,10 +53,10 @@ export function VehiclesDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.dates.actions.update_vehicles}
+				action={PermissionCatalog.all.fleet.actions.update_vehicles}
 				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.dates.scope}
-				value={vehiclesDetailContext.data.vehicle.agency_ids}
+				scope={PermissionCatalog.all.fleet.scope}
+				value={vehiclesDetailContext.data.vehicle.agency_id}
 			>
 				<Button
 					disabled={vehiclesDetailContext.flags.read_only || vehiclesDetailContext.flags.saving || !vehiclesDetailContext.data.form.isDirty()}
@@ -69,14 +69,14 @@ export function VehiclesDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.dates.actions.delete_vehicles}
+				action={PermissionCatalog.all.fleet.actions.delete_vehicles}
 				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.dates.scope}
-				value={vehiclesDetailContext.data.vehicle.agency_ids}
+				scope={PermissionCatalog.all.fleet.scope}
+				value={vehiclesDetailContext.data.vehicle.agency_id}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Anotação"
+					confirmMessage="Tem a certeza que deseja apagar este veículo? Esta ação não pode ser revertida."
+					confirmTitle="Apagar Veículo"
 					onDelete={vehiclesDetailContext.actions.deleteVehicle}
 					showConfirmation
 				/>

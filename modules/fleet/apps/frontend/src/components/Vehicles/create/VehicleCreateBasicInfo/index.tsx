@@ -22,20 +22,19 @@ export function VehicleCreateBasicInfo() {
 	return (
 		<Section gap="md">
 			<TextInput
-				label="Título"
-				placeholder="Ex: Greve de transportes"
-				// required={!vehicleSchema.shape..isOptional()}
+				label="Dono do veículo"
+				placeholder="..."
+				// required={!vehicleSchema.shape.owner.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('title')}
+				{...vehicleCreateContext.data.form.getInputProps('owner')}
 			/>
 
 			<Textarea
-				label="Descrição"
-				minRows={2}
-				placeholder="Descreva o evento ou observação..."
+				label="Operador do veículo"
+				placeholder="Ex : Empresa X"
 				// required={!vehicleSchema.shape.description.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('description')}
+				{...vehicleCreateContext.data.form.getInputProps('')}
 			/>
 		</Section>
 	);
