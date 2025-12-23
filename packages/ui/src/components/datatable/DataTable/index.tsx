@@ -49,9 +49,14 @@ export interface DataTableProps<T> {
 	rowIdAccessor?: keyof T
 
 	/**
-	 * The id of the selected record.
+	 * The ID of the row to mark as selected.
 	 */
 	selectedId?: string
+
+	/**
+	 * A list of IDs of the rows to mark as selected.
+	 */
+	selectedIds?: string[]
 
 }
 

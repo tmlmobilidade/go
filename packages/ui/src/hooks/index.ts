@@ -3,6 +3,7 @@ export * from './toast';
 export * from './use-css-variable';
 export * from './use-current-url';
 export * from './use-data-agencies';
+export * from './use-filter-state-enum';
 export * from './use-filter-state-list';
 export * from './use-filter-state-string';
 export * from './use-flag-can-delete';

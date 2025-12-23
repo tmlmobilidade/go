@@ -16,13 +16,22 @@ type Props<T> = Omit<DataTableProps<T>, 'records'>;
 
 /* * */
 
-export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId }: Props<T>) {
+export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId, selectedIds }: Props<T>) {
 	//
 
 	//
 	// A. Setup Variables
 
 	const dataTableContext = useDataTableContext<T>();
+
+	//
+	// B. Transform data
+
+	const isSelected = (record: T) => {
+		if (rowIdAccessor && selectedId) return getValueAtPath(record, rowIdAccessor) === selectedId;
+		if (rowIdAccessor && selectedIds?.length) return selectedIds.includes(getValueAtPath(record, rowIdAccessor) as string);
+		return false;
+	};
 
 	//
 	// B. Render Components
@@ -39,7 +48,7 @@ export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onR
 					<DataTableRow
 						key={rowIdAccessor ? (getValueAtPath(record, rowIdAccessor) as string) : rowIndex}
 						columns={columns}
-						isSelected={rowIdAccessor ? (getValueAtPath(record, rowIdAccessor) as string) === selectedId : false}
+						isSelected={isSelected(record)}
 						onRowClick={onRowClick}
 						onRowContextMenu={onRowContextMenu}
 						onRowDoubleClick={onRowDoubleClick}

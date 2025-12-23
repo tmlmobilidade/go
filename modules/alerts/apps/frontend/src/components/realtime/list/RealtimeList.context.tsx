@@ -103,7 +103,7 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 		// 2. Filter by query filters
 		return searchResultsData.filter((alert: AlertNormalized) => {
 			// Filter by agency IDs
-			if (!alert.agency_ids.some((aId: string) => filterAgency.value.includes(aId))) return false;
+			if (!alert.agency_ids?.some((aId: string) => filterAgency.value.includes(aId))) return false;
 			// Filter by publish_status
 			if (!filterPublishStatusSet.has(alert.publish_status)) return false;
 			// Filter by cause

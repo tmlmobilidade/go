@@ -3,8 +3,7 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
-import { Translations } from '@/lib/translations';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -39,16 +38,14 @@ function TripNextButton() {
 	// A. Setup variables
 
 	const realtimeCreateContext = useRealtimeCreateContext();
-	const isTripStep = realtimeCreateContext.flags.currentIndex === realtimeCreateContext.data.steps.findIndex(step => step.id === 'trip');
 
 	//
 	// C. Render components
 
-	if (!isTripStep) return null;
+	if (realtimeCreateContext.data.currentStep.id !== 'trip') return null;
 
 	return (
 		<Button
-			disabled={realtimeCreateContext.data.selectedRides.length === 0}
 			label="Seguinte"
 			onClick={() => realtimeCreateContext.actions.nextStep()}
 			variant="primary"

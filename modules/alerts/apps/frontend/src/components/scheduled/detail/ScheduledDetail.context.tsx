@@ -54,7 +54,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 	//
 	// B. Fetch Data
 
-	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.SCHEDULED_LIST);
+	const { mutate: scheduledListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.SCHEDULED_LIST);
 	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId));
 	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId));
 
@@ -72,7 +72,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 			form.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
-			alertsListMutate();
+			scheduledListMutate();
 		},
 	});
 
@@ -82,7 +82,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 			form.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
-			alertsListMutate();
+			scheduledListMutate();
 		},
 	});
 
@@ -90,7 +90,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId), 'DELETE'),
 		onSuccess: () => {
 			form.resetDirty();
-			alertsListMutate();
+			scheduledListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST));
 		},
 	});
@@ -101,7 +101,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 			form.resetDirty();
 			alertMutate();
 			alertImageMutate();
-			alertsListMutate();
+			scheduledListMutate();
 		},
 	});
 
@@ -111,7 +111,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 			form.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
-			alertsListMutate();
+			scheduledListMutate();
 		},
 	});
 
@@ -121,7 +121,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 			form.resetDirty();
 			alertMutate();
 			alertImageMutate();
-			alertsListMutate();
+			scheduledListMutate();
 		},
 	});
 

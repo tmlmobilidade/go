@@ -21,6 +21,7 @@ export function MultiSelect({ ...props }: MultiSelectProps) {
 	return (
 		<MantineMultiSelect
 			clearable={props.clearable ?? true}
+			limit={25}
 			nothingFoundMessage={props.nothingFoundMessage || 'Nenhum resultado encontrado'}
 			placeholder="Selecione uma ou mais opções..."
 			searchable

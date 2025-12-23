@@ -2,11 +2,13 @@
 
 /* * */
 
-import { RidesData } from '@/contexts/Rides.context';
-import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
+import { useLinesContext } from '@/contexts/Lines.context';
+import { useStopsContext } from '@/contexts/Stops.context';
+import { RidesData, useDataRides } from '@/hooks/Rides.context';
+import { useMultiStepForm, type UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
+import { keepUrlParams, useFilterStateEnum, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -20,13 +22,18 @@ type RealtimeCreateContextState = UseMultiStepFormState & {
 		create: () => Promise<void>
 		removeAllRides: () => void
 		setDetour: (detour: string) => void
-		toggleTripReference: (trip: RidesData) => void
+		toggleRideSelection: (rideId: string) => void
 	}
 	data: {
 		detour: string
+		filtered_rides: RidesData[]
 		form: UseFormReturnType<CreateAlertDto>
-		selectedRides: RidesData[]
-		steps: Step[]
+	}
+	filters: {
+		lines: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
+		stops: UseFilterStateListReturnType
+		view_mode?: UseFilterStateStringReturnType
 	}
 	flags: {
 		canSave: boolean
@@ -46,27 +53,6 @@ export function useRealtimeCreateContext() {
 
 /* * */
 
-const STEPS: Step[] = [
-	{
-		component: null,
-		id: 'cause',
-	},
-	{
-		component: null,
-		id: 'effect',
-	},
-	{
-		component: null,
-		id: 'trip',
-	},
-	{
-		component: null,
-		id: 'summary',
-	},
-];
-
-/* * */
-
 export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
@@ -75,15 +61,31 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 
 	const router = useRouter();
 
-	const multiStepForm = useMultiStepForm({ steps: STEPS });
+	const linesContext = useLinesContext();
+	const stopsContext = useStopsContext();
+
+	const multiStepForm = useMultiStepForm({ steps: [{ component: null, id: 'cause' }, { component: null, id: 'effect' }, { component: null, id: 'trip' }, { component: null, id: 'summary' }] });
 
 	const [detour, setDetour] = useState<string>('');
-	const [selectedRides, setSelectedRides] = useState<RidesData[]>([]);
+
+	const filterSearch = useFilterStateString('search');
+	const filterLines = useFilterStateList('lines', [], linesContext.data.options);
+	const filterStops = useFilterStateList('stops', [], stopsContext.data.options);
+
+	const filterViewMode = useFilterStateString('view_mode', 'all');
 
 	//
 	// B. Fetch data
 
-	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.REALTIME_LIST);
+	const { mutate: realtimeListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.REALTIME_LIST);
+
+	const { raw: ridesData } = useDataRides({
+		filters: {
+			line_ids: filterLines.value,
+			search: filterSearch.value,
+			stop_ids: filterStops.value,
+		},
+	});
 
 	//
 	// C. Setup form
@@ -96,15 +98,14 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.REALTIME_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
-			alertsListMutate();
+			realtimeListMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.REALTIME_DETAIL(updatedItem._id)));
 		},
 	});
 
 	const addAllTrips = (trips: RidesData[]) => {
-		const newRides = trips.filter(trip => !selectedRides.some(ride => ride._id === trip._id));
+		const newRides = trips.filter(trip => !form.getValues().references.some(reference => reference.parent_id === trip._id));
 		if (newRides.length > 0) {
-			setSelectedRides(prevRides => [...prevRides, ...newRides]);
 			form.setFieldValue('references', [
 				...form.values.references,
 				...newRides.map(trip => ({ child_ids: [], parent_id: trip._id })),
@@ -112,19 +113,17 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 		}
 	};
 
-	const toggleTripReference = (trip: RidesData) => {
-		if (form.values.references.some(reference => reference.parent_id === trip._id)) {
-			form.setFieldValue('references', form.values.references.filter(reference => reference.parent_id !== trip._id));
-			setSelectedRides(selectedRides.filter(ride => ride._id !== trip._id));
+	const toggleRideSelection = (rideId: string) => {
+		const existingReferences = form.getValues().references ?? [];
+		if (existingReferences?.some(reference => reference.parent_id === rideId)) {
+			form.setFieldValue('references', form.values.references.filter(reference => reference.parent_id !== rideId));
 		}
 		else {
-			form.setFieldValue('references', [...form.values.references, { child_ids: [], parent_id: trip._id }]);
-			setSelectedRides([...selectedRides, trip]);
+			form.setFieldValue('references', [...existingReferences, { child_ids: [], parent_id: rideId }]);
 		}
 	};
 
 	const removeAllRides = () => {
-		setSelectedRides([]);
 		form.setFieldValue('references', []);
 	};
 
@@ -148,15 +147,20 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 				create: handleCreate,
 				removeAllRides,
 				setDetour,
-				toggleTripReference,
+				toggleRideSelection,
 				...multiStepForm.actions,
 			},
 			data: {
 				detour,
+				filtered_rides: ridesData,
 				form,
-				selectedRides,
 				...multiStepForm.data,
-				steps: STEPS,
+			},
+			filters: {
+				lines: filterLines,
+				search: filterSearch,
+				stops: filterStops,
+				view_mode: filterViewMode,
 			},
 			flags: {
 				canSave: form.isValid() && hasValidDetour,
@@ -165,8 +169,15 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 			},
 		};
 	}, [
+		detour,
+		handleCreate,
+		filterStops,
+		ridesData,
 		form,
 		isCreating,
+		filterLines,
+		filterSearch,
+		filterViewMode,
 		multiStepForm,
 		detour,
 	]);

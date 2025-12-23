@@ -6,6 +6,7 @@ import type { CachedResource } from '@carrismetropolitana/api-types/common';
 import type { DemandMetricsByLine, ServiceMetrics } from '@carrismetropolitana/api-types/metrics';
 import type { Line } from '@carrismetropolitana/api-types/network';
 
+import { type SelectDataItem } from '@tmlmobilidade/ui';
 import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -21,6 +22,7 @@ interface LinesContextState {
 	data: {
 		demand_metrics: DemandMetricsByLine[]
 		lines: Line[]
+		options: SelectDataItem[]
 		service_metrics: ServiceMetrics[]
 	}
 	flags: {
@@ -72,6 +74,17 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// C. Define context value
 
+	const asOptions = useMemo(() => {
+		if (!allLinesData) return [];
+		return allLinesData.map(line => ({
+			label: `${line.short_name} | ${line.long_name}`,
+			value: line.id,
+		}));
+	}, [allLinesData]);
+
+	//
+	// C. Define context value
+
 	const contextValue: LinesContextState = useMemo(() => ({
 		actions: {
 			getDemandMetricsByLineId,
@@ -81,6 +94,7 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 		data: {
 			demand_metrics: demandByLineData || [],
 			lines: allLinesData || [],
+			options: asOptions,
 			service_metrics: serviceMetricsData?.data || [],
 		},
 		flags: {
@@ -89,6 +103,7 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	}), [
 		allLinesData,
 		allLinesLoading,
+		asOptions,
 		demandByLineData,
 		demandByLineDataLoading,
 		serviceMetricsData,

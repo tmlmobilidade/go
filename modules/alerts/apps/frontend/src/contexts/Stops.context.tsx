@@ -4,8 +4,9 @@
 
 import type { Stop } from '@carrismetropolitana/api-types/network';
 
+import { SelectDataItem } from '@tmlmobilidade/ui';
 import { standardSwrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -17,6 +18,7 @@ interface StopsContextState {
 		getStopById: (stopId: string) => Stop | undefined
 	}
 	data: {
+		options: SelectDataItem[]
 		stops: Stop[]
 	}
 	flags: {
@@ -56,11 +58,23 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// C. Define context value
 
+	const asOptions = useMemo(() => {
+		if (!allStopsData) return [];
+		return allStopsData.map(stop => ({
+			label: `${stop.short_name} | ${stop.long_name}`,
+			value: stop.id,
+		}));
+	}, [allStopsData]);
+
+	//
+	// C. Define context value
+
 	const contextValue: StopsContextState = {
 		actions: {
 			getStopById,
 		},
 		data: {
+			options: asOptions,
 			stops: allStopsData || [],
 		},
 		flags: {

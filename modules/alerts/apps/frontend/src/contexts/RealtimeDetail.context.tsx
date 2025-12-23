@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-import { RidesData } from './Rides.context';
+import { RidesData } from '../hooks/Rides.context';
 
 /* * */
 

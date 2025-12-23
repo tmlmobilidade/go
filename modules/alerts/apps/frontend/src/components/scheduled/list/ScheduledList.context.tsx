@@ -56,7 +56,7 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// B. Fetch data
 
-	const { data: allAlertsScheduledData, error: allAlertsScheduledError, isLoading: allAlertsScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.SCHEDULED_LIST);
+	const { data: allScheduledData, error: allScheduledError, isLoading: allScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.SCHEDULED_LIST);
 
 	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.read);
 
@@ -75,14 +75,14 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 
 	const normalizedAlertsData: AlertNormalized[] = useMemo(() => {
 		// Skip if no data is available
-		if (!allAlertsScheduledData) return [];
+		if (!allScheduledData) return [];
 		// Normalize record fields
-		return allAlertsScheduledData.map(item => ({
+		return allScheduledData.map(item => ({
 			...item,
 			description_normalized: normalizeString(item.description),
 			title_normalized: normalizeString(item.title),
 		}));
-	}, [allAlertsScheduledData]);
+	}, [allScheduledData]);
 
 	const searchResultsData = useSearch<AlertNormalized>({
 		accessors: ['title_normalized', 'description_normalized'],
@@ -134,7 +134,7 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 	const contextValue: ScheduledListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allAlertsScheduledData,
+			raw: allScheduledData,
 		},
 		filters: {
 			agency: filterAgency,
@@ -145,15 +145,15 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 			search: filterSearch,
 		},
 		flags: {
-			error: allAlertsScheduledError,
-			loading: allAlertsScheduledLoading,
+			error: allScheduledError,
+			loading: allScheduledLoading,
 		},
 	}), [
-		allAlertsScheduledData,
+		allScheduledData,
 		filterResultsData,
-		allAlertsScheduledLoading,
+		allScheduledLoading,
 		filterAgency,
-		allAlertsScheduledError,
+		allScheduledError,
 		filterPublishStatus,
 		filterCause,
 		filterEffect,

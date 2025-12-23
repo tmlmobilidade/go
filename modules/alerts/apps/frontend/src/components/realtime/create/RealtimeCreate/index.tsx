@@ -6,10 +6,13 @@ import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeC
 import { RealtimeCreateHeader } from '@/components/realtime/create/RealtimeCreateHeader';
 import { RealtimeCreateStepCause } from '@/components/realtime/create/RealtimeCreateStepCause';
 import { RealtimeCreateStepEffect } from '@/components/realtime/create/RealtimeCreateStepEffect';
-import { RealtimeCreateStepRides } from '@/components/realtime/create/RealtimeCreateStepRides';
 import { RealtimeCreateStepSummary } from '@/components/realtime/create/RealtimeCreateStepSummary';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { NoDataLabel, Pane, useMeContext } from '@tmlmobilidade/ui';
+
+import { RealtimeCreateStepRidesFilters } from '../RealtimeCreateStepRidesFilters';
+import { RealtimeCreateStepRidesSelection } from '../RealtimeCreateStepRidesSelection';
+import { RealtimeCreateStepRidesSelectionControls } from '../RealtimeCreateStepRidesSelectionControls';
 
 /* * */
 
@@ -32,10 +35,16 @@ export function RealtimeCreate() {
 	}
 
 	return (
-		<Pane header={[<RealtimeCreateHeader />]}>
+		<Pane header={[
+			<RealtimeCreateHeader />,
+			realtimeCreateContext.data.currentStep.id === 'trip' && <RealtimeCreateStepRidesFilters />,
+			realtimeCreateContext.data.currentStep.id === 'trip' && <RealtimeCreateStepRidesSelectionControls />,
+
+		]}
+		>
 			{realtimeCreateContext.data.currentStep.id === 'cause' && <RealtimeCreateStepCause />}
 			{realtimeCreateContext.data.currentStep.id === 'effect' && <RealtimeCreateStepEffect />}
-			{realtimeCreateContext.data.currentStep.id === 'trip' && <RealtimeCreateStepRides />}
+			{realtimeCreateContext.data.currentStep.id === 'trip' && <RealtimeCreateStepRidesSelection />}
 			{realtimeCreateContext.data.currentStep.id === 'summary' && <RealtimeCreateStepSummary />}
 		</Pane>
 	);

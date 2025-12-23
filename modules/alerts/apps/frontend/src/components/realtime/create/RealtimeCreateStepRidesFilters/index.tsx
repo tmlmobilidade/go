@@ -2,48 +2,45 @@
 
 /* * */
 
-import { useRidesContext } from '@/contexts/Rides.context';
-import { Button, Grid, Label, LineSelect, SearchInput, Section, StopSelect } from '@tmlmobilidade/ui';
+import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
+import { IconArrowLoopRight } from '@tabler/icons-react';
+import { Grid, MultiSelect, SearchInput, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function RealtimeCreateStepRidesFilters() {
 	//
+
+	//
 	// A. Setup variables
 
-	const ridesContext = useRidesContext();
+	const realtimeCreateContext = useRealtimeCreateContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Section gap="lg">
-			<Grid columns="aab">
-				<SearchInput onChange={ridesContext.actions.setFilterSearch} value={ridesContext.filters.search} />
-				<Button
-					label="Limpar Filtros"
-					onClick={ridesContext.actions.clearFilters}
-					variant="danger"
-				/>
+		<Section gap="md">
+			<Grid columns="a">
+				<SearchInput onChange={realtimeCreateContext.filters.search.set} value={realtimeCreateContext.filters.search.value} />
 			</Grid>
-			<Grid columns="ab" gap="sm">
-				<LineSelect
-					data={ridesContext.data.filteredLines}
-					label="Linha"
-					loading={ridesContext.flags.isFiltering}
-					onSelectLineId={ridesContext.actions.setFilterLineId}
-					selectedLineId={ridesContext.filters.lineId}
-					variant="default"
+			<Grid columns="ab" gap="md">
+				<MultiSelect
+					data={realtimeCreateContext.filters.lines.options}
+					leftSection={<IconArrowLoopRight size={20} />}
+					onChange={realtimeCreateContext.filters.lines.set}
+					placeholder="Filtrar por linhas..."
+					value={realtimeCreateContext.filters.lines.value}
 				/>
-				<StopSelect
-					data={ridesContext.data.filteredStops}
-					label="Paragem"
-					loading={ridesContext.flags.isFiltering}
-					onSelectStopId={ridesContext.actions.setFilterStopId}
-					selectedStopId={ridesContext.filters.stopId}
-					variant="default"
+				<MultiSelect
+					data={realtimeCreateContext.filters.stops.options}
+					onChange={realtimeCreateContext.filters.stops.set}
+					placeholder="Filtrar por paragens..."
+					value={realtimeCreateContext.filters.stops.value}
 				/>
 			</Grid>
 		</Section>
 	);
+
+	//
 }

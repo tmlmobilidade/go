@@ -4,7 +4,7 @@
 
 import { getDelayStatus, StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
-import { RidesData } from '@/contexts/Rides.context';
+import { RidesData } from '@/hooks/Rides.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { DataTable, DataTableColumn, Label, Section } from '@tmlmobilidade/ui';
 

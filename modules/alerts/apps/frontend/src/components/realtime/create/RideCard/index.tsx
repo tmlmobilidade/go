@@ -1,7 +1,7 @@
 /* * */
 
 import { getDelayStatus, StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
-import { RidesData } from '@/contexts/Rides.context';
+import { RidesData } from '@/hooks/Rides.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { Badge, Label, Section } from '@tmlmobilidade/ui';
 
