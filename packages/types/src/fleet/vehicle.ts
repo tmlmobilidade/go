@@ -49,11 +49,11 @@ export const vehicleSchema = DocumentSchema.extend({
 	contactless: z.boolean(),
 });
 
-export const CreatevehicleSchema = vehicleSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdatevehicleSchema = CreatevehicleSchema.omit({ created_by: true }).partial();
+export const CreateVehicleSchema = vehicleSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const UpdateVehicleSchema = CreateVehicleSchema.omit({ created_by: true }).partial();
 
 /* * */
 
-export type vehicle = z.infer<typeof vehicleSchema>;
-export type CreatevehicleDto = z.infer<typeof CreatevehicleSchema>;
-export type UpdatevehicleDto = z.infer<typeof UpdatevehicleSchema>;
+export type Vehicle = z.infer<typeof vehicleSchema>;
+export type CreateVehicleDto = z.infer<typeof CreateVehicleSchema>;
+export type UpdateVehicleDto = z.infer<typeof UpdateVehicleSchema>;
