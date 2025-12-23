@@ -1,0 +1,52 @@
+{
+	"rides": {
+		"list": {
+			"filterBar": {
+				"acceptance_status": {
+					"label": "Aceitação"
+				},
+				"agency": {
+					"label": "Operador"
+				},
+				"analysis_ended_at_last_stop": {
+					"label": "Fim na Última Paragem"
+				},
+				"analysis_expected_apex_validation_interval": {
+					"label": "Intervalo Validações"
+				},
+				"analysis_simple_three_events": {
+					"label": "3 Momentos"
+				},
+				"analysis_transaction_sequentiality": {
+					"label": "Sequencialidade APEX"
+				},
+				"date_range": {
+					"label": "Intervalo de datas"
+				},
+				"delay_status": {
+					"label": "Atraso"
+				},
+				"operational_status": {
+					"label": "Estado"
+				}
+			},
+			"header": {
+				"title": "Circulações"
+			},
+			"tableColumns": {
+				"analysis_ended_at_last_stop_grade": "Last Stop",
+				"analysis_expected_apex_validation_interval_grade": "ApInt. APEex",
+				"analysis_simple_three_vehicle_events_grade": "3 Eventos",
+				"analysis_transaction_sequentiality": "Seq.APEX",
+				"headsign": "Pattern",
+				"operational_date": "Data Operacional",
+				"operational_status": "Estado",
+				"passengers_observed": "Passageiros",
+				"seen_last_at": "",
+				"start_time_observed": "Observado",
+				"start_time_scheduled": "Partida"
+
+			}
+		}
+	}
+}

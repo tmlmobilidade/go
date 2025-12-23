@@ -4,6 +4,7 @@ import { useRidesListContext } from '@/contexts/RidesList.context';
 import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysis_ended_at_last_stop' });
 
 	//
 	// B. Transform data
@@ -44,7 +46,7 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Fim na Última Paragem"
+			label={t('label')}
 			onChange={ridesListContext.actions.setFilterAnalysisEndedAtLastStop}
 			options={parsedOptions}
 			withToggleAll

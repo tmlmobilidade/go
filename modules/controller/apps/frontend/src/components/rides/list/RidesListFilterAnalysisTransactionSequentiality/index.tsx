@@ -4,6 +4,7 @@ import { useRidesListContext } from '@/contexts/RidesList.context';
 import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function RidesListFilterAnalysisTransactionSequentiality() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysis_transaction_sequentiality' });
 
 	//
 	// B. Transform data
@@ -44,7 +46,7 @@ export function RidesListFilterAnalysisTransactionSequentiality() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Sequencialidade APEX"
+			label={t('label')}
 			onChange={ridesListContext.actions.setFilterAnalysisTransactionSequentiality}
 			options={parsedOptions}
 			withToggleAll
