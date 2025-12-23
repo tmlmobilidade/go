@@ -82,6 +82,17 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
+	/* FLEET */
+	fleet: {
+		// BASE
+		BASE: `${getAppConfig('fleet', 'frontend_url')}`,
+
+		// ANNOTATIONS
+		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/annotations/${id}`,
+		ANNOTATIONS_LIST: `${getAppConfig('fleet', 'frontend_url')}/annotations`,
+	},
+
+	/* * */
 	/* PERFORMANCE */
 	performance: {
 		// BASE
@@ -249,6 +260,18 @@ export const API_ROUTES = Object.freeze({
 
 		// GTFS-MERGED
 		GTFS_MERGED_DOWNLOAD: `${getAppConfig('exporter', 'api_url')}/gtfs-merged/download`,
+	},
+
+	/* * */
+	/* FLEET */
+	fleet: {
+		// BASE
+		BASE: `${getAppConfig('fleet', 'api_url')}`,
+
+		// ANNOTATIONS
+		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/annotations/${id}`,
+		ANNOTATIONS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/annotations/${id}/toggle-lock`,
+		ANNOTATIONS_LIST: `${getAppConfig('fleet', 'api_url')}/annotations`,
 	},
 
 	/* * */
