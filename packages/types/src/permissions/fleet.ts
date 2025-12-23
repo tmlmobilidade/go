@@ -13,8 +13,7 @@ export const VehiclesPermissionSchema = z.object({
 		'update',
 	]),
 	resources: z.object({
-		agency_ids: z.array(z.string()).default([]),
-		municipality_ids: z.array(z.string()).default([]),
+		agency_id: z.array(z.string()).default([]),
 	}).default({}),
 	scope: z.literal('fleet'),
 });

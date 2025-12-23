@@ -24,7 +24,7 @@ export function VehiclesListHeader() {
 			<Label size="lg" caps singleLine>Anotações</Label>
 			<Spacer />
 			<SearchInput onChange={vehiclesListContext.actions.setFilterSearch} value={vehiclesListContext.filters.search} />
-			<HasPermission action={PermissionCatalog.all.dates.actions.create_vehicles} scope={PermissionCatalog.all.dates.scope}>
+			<HasPermission action={PermissionCatalog.all.fleet.actions.create} scope={PermissionCatalog.all.fleet.scope}>
 				<Button label="Nova anotação" leftSection={<IconPlus />} onClick={openCreateVehicleModal} />
 			</HasPermission>
 		</Toolbar>

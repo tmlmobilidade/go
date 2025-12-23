@@ -32,7 +32,7 @@ const wheelchair = [
 ] as const;
 
 export const vehicleSchema = DocumentSchema.extend({
-	agency_id: z.array(z.string()).default([]),
+	agency_id: z.string(),
 	bikes_allowed: z.boolean(),
 	capacity_seated: z.number(),
 	capacity_standing: z.number(),

@@ -34,11 +34,6 @@ export function VehiclesList() {
 			width: 100,
 		},
 		{
-			accessor: 'title',
-			title: 'Título',
-			width: 400,
-		},
-		{
 			accessor: 'agency_id',
 			render: item => <VehiclesListCellAgencies agencyIds={item.agency_id} />,
 			title: 'Operadores',

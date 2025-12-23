@@ -57,8 +57,8 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	//
 	// B. Fetch data
 
-	const { mutate: vehiclesListMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.ANNOTATIONS_LIST);
-	const { data: vehicleData, error: vehicleError, isLoading: vehicleLoading, mutate: vehicleMutate } = useSWR<Vehicle>(API_ROUTES.fleet.ANNOTATIONS_DETAIL(vehicleId), { refreshInterval: 5000 });
+	const { mutate: vehiclesListMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
+	const { data: vehicleData, error: vehicleError, isLoading: vehicleLoading, mutate: vehicleMutate } = useSWR<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), { refreshInterval: 5000 });
 
 	//
 	// C. Setup form
@@ -66,9 +66,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	const form = useForm<UpdateVehicleDto>({
 		initialValues: {
 			agency_id: '',
-			dates: [],
-			description: '',
-			title: '',
+			registration_date: [],
 			updated_by: '',
 		},
 		validateInputOnBlur: true,
@@ -102,7 +100,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			title: 'A guardar ocorrência',
 		});
 		try {
-			const response = await fetchData<Vehicle>(API_ROUTES.dates.VEHICLE_DETAIL(vehicleId), 'PUT', form.getValues());
+			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), 'PUT', form.getValues());
 			if (response.error) {
 				return useToast.update(toastId, {
 					loading: false,
@@ -136,7 +134,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 
 	const handleDeleteVehicle = async () => {
 		try {
-			const response = await fetchData<Vehicle>(API_ROUTES.dates.VEHICLE_DETAIL(vehicleId), 'DELETE', vehicleData);
+			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), 'DELETE', vehicleData);
 			if (response.error) {
 				const errors = JSON.parse(response.error);
 				for (const error of errors) {
@@ -162,7 +160,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 
 	const handleToggleLock = async () => {
 		try {
-			const response = await fetchData<Vehicle>(API_ROUTES.dates.VEHICLE_DETAIL_TOGGLE_LOCK(vehicleId));
+			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL_LOCK(vehicleId));
 			if (response.error) {
 				return useToast.error({
 					message: response.error,

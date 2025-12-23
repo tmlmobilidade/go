@@ -6,7 +6,7 @@ import { AgencyMultiselect } from '@/components/common/AgencyMultiselect';
 import { DatesSelector } from '@/components/common/DatesSelector';
 import { VehiclesDetailHeader } from '@/components/Vehicles/detail/VehiclesDetailHeader';
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
-import { vehicleSchema } from '@tmlmobilidade/types';
+// import { vehicleSchema } from '@tmlmobilidade/types';
 import { ErrorDisplay, Grid, LoadingOverlay, Pane, Section, Text, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -39,25 +39,25 @@ export function VehiclesDetail() {
 						label="Título"
 						placeholder="Ex: Greve de transportes"
 						readOnly={VehiclesDetailContext.flags.read_only}
-						required={!vehicleSchema.shape..isOptional()}
+						// required={!vehicleSchema.shape..isOptional()}
 						w="100%"
-						{...vehiclesDetailContext.data.form.getInputProps('title')}
+						{...VehiclesDetailContext.data.form.getInputProps('title')}
 					/>
 
 					<Textarea
 						label="Descrição"
 						placeholder="Descrição da ocorrência"
 						readOnly={VehiclesDetailContext.flags.read_only}
-						required={!vehicleSchema.shape..isOptional()}
+						// required={!vehicleSchema.shape..isOptional()}
 						w="100%"
-						{...vehiclesDetailContext.data.form.getInputProps('description')}
+						{...VehiclesDetailContext.data.form.getInputProps('description')}
 					/>
 
 					<AgencyMultiselect
 						label="Operadores afetados"
-						readOnly={vehiclesDetailContext.flags.read_only}
-						selected={vehiclesDetailContext.data.form.values.agency_ids || []}
-						{...vehiclesDetailContext.data.form.getInputProps('agency_ids')}
+						readOnly={VehiclesDetailContext.flags.read_only}
+						selected={VehiclesDetailContext.data.form.values.agency_id || []}
+						{...VehiclesDetailContext.data.form.getInputProps('agency_id')}
 					/>
 
 					<Text>Selecione as datas da ocorrência</Text>

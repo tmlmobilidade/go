@@ -30,7 +30,7 @@ interface VehicleListContextState {
 		raw: Vehicle[]
 	}
 	filters: {
-		agency: string
+		agency: string[]
 		dates: string[]
 		search: string
 	}
@@ -162,9 +162,9 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	// E. Render components
 
 	return (
-		<VehicleListContext.Provider value={contextValue}>
+		<VehiclesListContext.Provider value={contextValue}>
 			{children}
-		</VehicleListContext.Provider>
+		</VehiclesListContext.Provider>
 	);
 
 	//
