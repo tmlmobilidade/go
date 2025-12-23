@@ -13,7 +13,7 @@ import { RideCard } from '../RideCard';
 
 /* * */
 
-export function RealtimeStepTripsSelected() {
+export function RealtimeCreateStepRidesSelected() {
 	//
 	// A. Setup variables
 

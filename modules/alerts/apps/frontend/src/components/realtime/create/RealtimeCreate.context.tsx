@@ -2,10 +2,6 @@
 
 /* * */
 
-import { RealtimeStepCause } from '@/components/realtime/create/RealtimeStepCause';
-import { RealtimeStepEffect } from '@/components/realtime/create/RealtimeStepEffect';
-import { RealtimeStepSummary } from '@/components/realtime/create/RealtimeStepSummary';
-import { RealtimeStepTrips } from '@/components/realtime/create/RealtimeStepTrips';
 import { RidesData } from '@/contexts/Rides.context';
 import { Step, useMultiStepForm, UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
@@ -52,19 +48,19 @@ export function useRealtimeCreateContext() {
 
 const STEPS: Step[] = [
 	{
-		component: RealtimeStepCause,
+		component: null,
 		id: 'cause',
 	},
 	{
-		component: RealtimeStepEffect,
+		component: null,
 		id: 'effect',
 	},
 	{
-		component: RealtimeStepTrips,
+		component: null,
 		id: 'trip',
 	},
 	{
-		component: RealtimeStepSummary,
+		component: null,
 		id: 'summary',
 	},
 ];

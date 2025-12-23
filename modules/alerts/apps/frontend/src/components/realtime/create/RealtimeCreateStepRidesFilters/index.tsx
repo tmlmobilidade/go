@@ -7,7 +7,7 @@ import { Grid, Label, LineSelect, SearchInput, Section, StopSelect } from '@tmlm
 
 /* * */
 
-export function RealtimeStepTripsFilters() {
+export function RealtimeCreateStepRidesFilters() {
 	//
 	// A. Setup variables
 

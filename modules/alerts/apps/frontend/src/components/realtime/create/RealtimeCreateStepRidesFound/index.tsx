@@ -13,7 +13,7 @@ import { RideCard } from '../RideCard';
 
 /* * */
 
-export function RealtimeStepTripsFound() {
+export function RealtimeCreateStepRidesFound() {
 	//
 	// A. Setup variables
 

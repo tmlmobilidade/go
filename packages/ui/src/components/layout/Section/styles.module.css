@@ -3,6 +3,7 @@
 
 .root {
 	display: flex;
+	container-type: inline-size;
 }
 
 /* * */

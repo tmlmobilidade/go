@@ -11,7 +11,7 @@ import { CauseAndEffect } from './CauseAndEffect';
 
 /* * */
 
-export function RealtimeStepSummary() {
+export function RealtimeCreateStepSummary() {
 	//
 	// A. Setup variables
 

@@ -16,7 +16,7 @@ interface EffectItem {
 	value: GtfsEffect
 }
 
-export function RealtimeStepEffect() {
+export function RealtimeCreateStepEffect() {
 	//
 	// A. Setup variables
 

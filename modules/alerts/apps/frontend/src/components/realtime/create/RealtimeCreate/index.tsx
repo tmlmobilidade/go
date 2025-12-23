@@ -4,30 +4,39 @@
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
 import { RealtimeCreateHeader } from '@/components/realtime/create/RealtimeCreateHeader';
+import { RealtimeCreateStepCause } from '@/components/realtime/create/RealtimeCreateStepCause';
+import { RealtimeCreateStepEffect } from '@/components/realtime/create/RealtimeCreateStepEffect';
+import { RealtimeCreateStepRides } from '@/components/realtime/create/RealtimeCreateStepRides';
+import { RealtimeCreateStepSummary } from '@/components/realtime/create/RealtimeCreateStepSummary';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { ErrorDisplay, Pane, useMeContext } from '@tmlmobilidade/ui';
+import { NoDataLabel, Pane, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function RealtimeCreate() {
 	//
-	// A. Setup variables
-
-	const context = useRealtimeCreateContext();
-	const meContext = useMeContext();
-
-	const hasPermissionToCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts_realtime.scope, PermissionCatalog.all.alerts_realtime.actions.create);
 
 	//
-	// C. Render components
+	// A. Setup variables
 
-	if (!hasPermissionToCreate) {
-		return <ErrorDisplay message="Não tem permissão para criar alertas" />;
+	const meContext = useMeContext();
+	const realtimeCreateContext = useRealtimeCreateContext();
+
+	const hasPermissionCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts_realtime.scope, PermissionCatalog.all.alerts_realtime.actions.create);
+
+	//
+	// B. Render components
+
+	if (!hasPermissionCreate) {
+		return <NoDataLabel text="Selecione um alerta" />;
 	}
 
 	return (
 		<Pane header={[<RealtimeCreateHeader />]}>
-			<context.data.currentStep.component />
+			{realtimeCreateContext.data.currentStep.id === 'cause' && <RealtimeCreateStepCause />}
+			{realtimeCreateContext.data.currentStep.id === 'effect' && <RealtimeCreateStepEffect />}
+			{realtimeCreateContext.data.currentStep.id === 'trip' && <RealtimeCreateStepRides />}
+			{realtimeCreateContext.data.currentStep.id === 'summary' && <RealtimeCreateStepSummary />}
 		</Pane>
 	);
 }
