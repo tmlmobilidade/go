@@ -148,8 +148,8 @@
 					"title_description": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
 					"title_label": "Título Curto",
 					"title_placeholder": "..."
-				}
-
+				},
+				"title": "Título e Descrição"
 			},
 			"sectionValidity": {
 				"description": "Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).",
@@ -158,8 +158,8 @@
 					"active_period_start_date_label": "Data de Início"
 				},
 				"title": "Período de Vigência"
-			},
-			"title": "Título e Descrição"
+			}
+
 		},
 		"detail": {
 			"sectionCauseEffect": {

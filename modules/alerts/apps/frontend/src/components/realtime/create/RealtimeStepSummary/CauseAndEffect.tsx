@@ -11,7 +11,7 @@ export function CauseAndEffect() {
 	// A. Setup Variables
 
 	const realtimeContext = useRealtimeCreateContext();
-	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepsCauseAndEffect' });
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepCauseAndEffect' });
 	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'causesAndEffects' });
 
 	//
