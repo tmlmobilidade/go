@@ -12,7 +12,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface ScheduledDetailContextState extends DetailContextStateTemplate {
+interface AlertDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		deleteImage: () => void
 		fileChanged: (file: File) => void
@@ -28,19 +28,19 @@ interface ScheduledDetailContextState extends DetailContextStateTemplate {
 
 /* * */
 
-const ScheduledDetailContext = createContext<ScheduledDetailContextState | undefined>(undefined);
+const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
 
-export function useScheduledDetailContext() {
-	const context = useContext(ScheduledDetailContext);
+export function useAlertDetailContext() {
+	const context = useContext(AlertDetailContext);
 	if (!context) {
-		throw new Error('useScheduledDetailContext must be used within a ScheduledDetailContextProvider');
+		throw new Error('useAlertDetailContext must be used within a AlertDetailContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithChildren<{ alertId: string }>) => {
+export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChildren<{ alertId: string }>) => {
 	//
 
 	//
@@ -169,7 +169,7 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 	//
 	// E. Define context value
 
-	const contextValue: ScheduledDetailContextState = useMemo(() => ({
+	const contextValue: AlertDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			deleteImage: handleDeleteImage,
@@ -217,9 +217,9 @@ export const ScheduledDetailContextProvider = ({ alertId, children }: PropsWithC
 	// F. Render components
 
 	return (
-		<ScheduledDetailContext.Provider value={contextValue}>
+		<AlertDetailContext.Provider value={contextValue}>
 			{children}
-		</ScheduledDetailContext.Provider>
+		</AlertDetailContext.Provider>
 	);
 
 	//

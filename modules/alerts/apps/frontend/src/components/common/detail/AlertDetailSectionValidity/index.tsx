@@ -2,18 +2,18 @@
 
 /* * */
 
-import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
+import { useAlertDetailContext } from '@/components/common/detail/AlertDetail.context';
 import { Collapsible, DateTimeInput, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function ScheduledDetailSectionValidity() {
+export function AlertDetailSectionValidity() {
 	//
 
 	//
 	// A. Setup variables
 
-	const scheduledDetailContext = useScheduledDetailContext();
+	const alertDetailContext = useAlertDetailContext();
 
 	//
 	// B. Render components
@@ -26,15 +26,15 @@ export function ScheduledDetailSectionValidity() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<DateTimeInput
-						key={scheduledDetailContext.data.form.key('active_period_start_date')}
+						key={alertDetailContext.data.form.key('active_period_start_date')}
 						label="Data de Início"
-						{...scheduledDetailContext.data.form.getInputProps('active_period_start_date')}
+						{...alertDetailContext.data.form.getInputProps('active_period_start_date')}
 					/>
 					<DateTimeInput
-						key={scheduledDetailContext.data.form.key('active_period_end_date')}
+						key={alertDetailContext.data.form.key('active_period_end_date')}
 						label="Data de Fim"
 						clearable
-						{...scheduledDetailContext.data.form.getInputProps('active_period_end_date')}
+						{...alertDetailContext.data.form.getInputProps('active_period_end_date')}
 					/>
 				</Grid>
 			</Section>

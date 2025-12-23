@@ -3,7 +3,7 @@
 /* * */
 
 import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
-import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
+import { useAlertDetailContext } from '@/components/common/detail/AlertDetail.context';
 import { Translations } from '@/lib/translations';
 import { PublishStatusSchema } from '@tmlmobilidade/types';
 import { Select } from '@tmlmobilidade/ui';
@@ -11,13 +11,13 @@ import { useState } from 'react';
 
 /* * */
 
-export function ScheduledDetailPublishStatus() {
+export function AlertDetailPublishStatus() {
 	//
 
 	//
 	// A. Setup variables
 
-	const scheduledDetailContext = useScheduledDetailContext();
+	const alertDetailContext = useAlertDetailContext();
 
 	const [isEditing, setIsEditing] = useState(false);
 
@@ -36,19 +36,19 @@ export function ScheduledDetailPublishStatus() {
 		return (
 			<AlertTagPublishStatus
 				onClick={() => setIsEditing(true)}
-				value={scheduledDetailContext.data.form.getValues().publish_status}
+				value={alertDetailContext.data.form.getValues().publish_status}
 			/>
 		);
 	}
 
 	return (
 		<Select
-			key={scheduledDetailContext.data.form.key('publish_status')}
+			key={alertDetailContext.data.form.key('publish_status')}
 			clearable={false}
 			data={publishStatusOptions}
 			onDropdownClose={() => setIsEditing(false)}
 			autoFocus
-			{...scheduledDetailContext.data.form.getInputProps('publish_status')}
+			{...alertDetailContext.data.form.getInputProps('publish_status')}
 		/>
 	);
 

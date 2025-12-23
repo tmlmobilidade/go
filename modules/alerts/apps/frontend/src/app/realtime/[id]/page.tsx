@@ -1,15 +1,15 @@
 /* * */
 
-import { RealtimeDetail } from '@/components/realtime/detail/RealtimeDetail';
-import { RealtimeDetailContextProvider } from '@/contexts/RealtimeDetail.context';
+import { AlertDetail } from '@/components/common/detail/AlertDetail';
+import { AlertDetailContextProvider } from '@/components/common/detail/AlertDetail.context';
 
 /* * */
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	return (
-		<RealtimeDetailContextProvider alertId={id}>
-			<RealtimeDetail />
-		</RealtimeDetailContextProvider>
+		<AlertDetailContextProvider alertId={id}>
+			<AlertDetail />
+		</AlertDetailContextProvider>
 	);
 }

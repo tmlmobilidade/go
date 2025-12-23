@@ -3,13 +3,13 @@
 /* * */
 
 import { ReferencesGroup } from '@/components/common/references/ReferencesGroup';
-import { useScheduledDetailContext } from '@/components/scheduled/detail/ScheduledDetail.context';
+import { useAlertDetailContext } from '@/components/common/detail/AlertDetail.context';
 import { Collapsible, Grid, MultiSelect, Section, useAgenciesContext, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function ScheduledDetailSectionReferences() {
+export function AlertDetailSectionReferences() {
 	//
 
 	//
@@ -17,7 +17,7 @@ export function ScheduledDetailSectionReferences() {
 
 	const agenciesContext = useAgenciesContext();
 	const locationsContext = useLocationsContext();
-	const scheduledDetailContext = useScheduledDetailContext();
+	const alertDetailContext = useAlertDetailContext();
 
 	//
 	// B. Transform data
@@ -39,24 +39,24 @@ export function ScheduledDetailSectionReferences() {
 			<Section>
 				<Grid gap="md">
 					<MultiSelect
-						key={scheduledDetailContext.data.form.key('agency_ids')}
+						key={alertDetailContext.data.form.key('agency_ids')}
 						data={agenciesContext.data.as_options}
 						description="Selecione os municípios que serão afetados pelo alerta"
 						label="Operadores afetados"
-						{...scheduledDetailContext.data.form.getInputProps('agency_ids')}
+						{...alertDetailContext.data.form.getInputProps('agency_ids')}
 					/>
 					<MultiSelect
-						key={scheduledDetailContext.data.form.key('municipality_ids')}
+						key={alertDetailContext.data.form.key('municipality_ids')}
 						data={municipalitiesOptions}
 						description="Selecione os municípios que serão afetados pelo alerta"
 						label="Municípios Afetados"
-						{...scheduledDetailContext.data.form.getInputProps('municipality_ids')}
+						{...alertDetailContext.data.form.getInputProps('municipality_ids')}
 					/>
 					<ReferencesGroup
-						municipalityIds={scheduledDetailContext.data.form.getValues().municipality_ids}
-						onSetFieldValue={scheduledDetailContext.data.form.setFieldValue}
-						references={scheduledDetailContext.data.form.getValues().references}
-						referenceType={scheduledDetailContext.data.form.getValues().reference_type}
+						municipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
+						onSetFieldValue={alertDetailContext.data.form.setFieldValue}
+						references={alertDetailContext.data.form.getValues().references}
+						referenceType={alertDetailContext.data.form.getValues().reference_type}
 					/>
 				</Grid>
 			</Section>
