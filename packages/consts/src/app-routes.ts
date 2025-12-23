@@ -268,10 +268,10 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('fleet', 'api_url')}`,
 
-		// ANNOTATIONS
-		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/annotations/${id}`,
-		ANNOTATIONS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/annotations/${id}/toggle-lock`,
-		ANNOTATIONS_LIST: `${getAppConfig('fleet', 'api_url')}/annotations`,
+		// VEHICLES
+		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}`,
+		VEHICLES_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/toggle-lock`,
+		VEHICLES_LIST: `${getAppConfig('fleet', 'api_url')}/vehicles`,
 	},
 
 	/* * */

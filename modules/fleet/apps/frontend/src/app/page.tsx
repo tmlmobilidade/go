@@ -6,5 +6,5 @@ import { redirect } from 'next/navigation';
 /* * */
 
 export default function Page() {
-	redirect(PAGE_ROUTES.fleet.ANNOTATIONS_LIST);
+	redirect(PAGE_ROUTES.fleet.VEHICLES_LIST);
 }

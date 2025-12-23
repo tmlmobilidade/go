@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAnnotationsDetailContext } from '@/contexts/AnnotationsDetail.context';
+import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { Calendar } from '@mantine/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import dayjs from 'dayjs';
@@ -15,26 +15,26 @@ export function DatesSelector() {
 	//
 	// A. Setup variables
 
-	const annotationsDetailContext = useAnnotationsDetailContext();
+	const vehiclesDetailContext = useVehiclesDetailContext();
 
 	//
 	// B. Handle actions
 
 	const handleSelect = (date: Date) => {
 		const operationalDate = dayjs(date).format('YYYYMMDD') as OperationalDate;
-		const currentDates = annotationsDetailContext.data.form.values.dates || [];
+		const currentDates = vehiclesDetailContext.data.form.values.dates || [];
 		const isSelected = currentDates.includes(operationalDate);
 
 		if (isSelected) {
-			// Remove date from annotation
-			annotationsDetailContext.data.form.setFieldValue(
+			// Remove date from vehicle
+			vehiclesDetailContext.data.form.setFieldValue(
 				'dates',
 				currentDates.filter(d => d !== operationalDate),
 			);
 		}
 		else {
-			// Add date to annotation
-			annotationsDetailContext.data.form.setFieldValue(
+			// Add date to vehicle
+			vehiclesDetailContext.data.form.setFieldValue(
 				'dates',
 				[...currentDates, operationalDate],
 			);
@@ -47,9 +47,9 @@ export function DatesSelector() {
 	return (
 		<Calendar
 			getDayProps={date => ({
-				disabled: annotationsDetailContext.flags.read_only,
+				disabled: vehiclesDetailContext.flags.read_only,
 				onClick: () => handleSelect(new Date(date)),
-				selected: (annotationsDetailContext.data.form.values.dates || []).includes(dayjs(date).format('YYYYMMDD') as OperationalDate),
+				selected: (vehiclesDetailContext.data.form.values.dates || []).includes(dayjs(date).format('YYYYMMDD') as OperationalDate),
 			})}
 		/>
 	);

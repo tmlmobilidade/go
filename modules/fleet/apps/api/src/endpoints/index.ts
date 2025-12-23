@@ -1,1 +1,1 @@
-import '@/endpoints/annotations/annotations.routes.js';
+import '@/endpoints/vehicles/vehicles.routes.js';

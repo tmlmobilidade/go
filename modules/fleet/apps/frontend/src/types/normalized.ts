@@ -1,9 +1,9 @@
 /* * */
 
-import { Annotation } from '@tmlmobilidade/types';
+import { Vehicle } from '@tmlmobilidade/types';
 
 /* * */
 
-export interface AnnotationNormalized extends Annotation {
+export interface VehicleNormalized extends Vehicle {
 	agency_ids_normalized: string
 }

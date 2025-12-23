@@ -15,7 +15,7 @@ const propulsion = [
 	'Electricity',
 	'Hybrid',
 	'Natural Gas',
-] as const
+] as const;
 
 const emission = [
 	'EURO I',
@@ -24,29 +24,29 @@ const emission = [
 	'EURO IV',
 	'EURO V',
 	'EURO VI',
-] as const
+] as const;
 
 const wheelchair = [
 	'no',
 	'yes',
-] as const
+] as const;
 
 export const vehicleSchema = DocumentSchema.extend({
 	agency_id: z.array(z.string()).default([]),
-	vehicle_id: z.string(),
+	bikes_allowed: z.boolean(),
+	capacity_seated: z.number(),
+	capacity_standing: z.number(),
+	contactless: z.boolean(),
+	emission_class: z.enum(emission),
 	license_plate: z.string(),
 	make: z.string(),
 	model: z.string(),
 	owner: z.string(),
-	propulsion: z.enum(propulsion),
-	emission_class: z.enum(emission),
-	registration_date: z.array(operationalDateSchema).default([]),
-	capacity_seated: z.number(),
-	capacity_standing: z.number(),
 	passenger_counting: z.boolean(),
+	propulsion: z.enum(propulsion),
+	registration_date: z.array(operationalDateSchema).default([]),
+	vehicle_id: z.string(),
 	wheelchair_acessible: z.enum(wheelchair),
-	bikes_allowed: z.boolean(),
-	contactless: z.boolean(),
 });
 
 export const CreateVehicleSchema = vehicleSchema.omit({ _id: true, created_at: true, updated_at: true });
