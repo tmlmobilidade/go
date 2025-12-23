@@ -3,61 +3,50 @@
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
 import { EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { GtfsEffect, gtfsEffectSchema } from '@tmlmobilidade/types';
-import { Grid, Section } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { gtfsEffectSchema } from '@tmlmobilidade/types';
+import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface EffectItem {
-	icon: React.ReactNode
-	label: string
-	value: GtfsEffect
-}
-
 export function RealtimeCreateStepEffect() {
 	//
+
+	//
 	// A. Setup variables
 
-	const EffectItems: EffectItem[] = Object.values(gtfsEffectSchema.enum).map(Effect => ({
-		icon: EffectIcons[Effect],
-		label: Translations.EFFECT[Effect],
-		value: Effect,
-	}));
+	const realtimeCreateContext = useRealtimeCreateContext();
+
+	const effectItems = Object
+		.values(gtfsEffectSchema.enum)
+		.map(effect => ({
+			icon: EffectIcons[effect],
+			label: Translations.EFFECT[effect],
+			value: effect,
+		}));
 
 	//
-	// B. Render components
+	// B. Handle actions
 
-	return (
-		<Section>
-			<Grid columns="abcd" gap="xl" hAlign="center" vAlign="center">
-				{EffectItems.map(Effect => (
-					<EffectItem key={Effect.value} Effect={Effect} />
-				))}
-			</Grid>
-		</Section>
-	);
-}
-
-function EffectItem({ Effect }: { Effect: EffectItem }) {
-	//
-	// A. Setup variables
-	const realtimeContext = useRealtimeCreateContext();
-
-	//
-	// B. Handle Actions
-	const handleEffectSelection = () => {
-		realtimeContext.data.form.setFieldValue('effect', Effect.value);
-		realtimeContext.actions.nextStep();
+	const handleSelectEffect = (value: keyof typeof gtfsEffectSchema.enum) => {
+		realtimeCreateContext.data.form.setFieldValue('effect', value);
+		realtimeCreateContext.actions.nextStep();
 	};
 
 	//
 	// C. Render components
+
 	return (
-		<div className={styles.effectItem} onClick={handleEffectSelection}>
-			<div className={styles.effectItemIcon}>{Effect.icon}</div>
-			<div className={styles.effectItemLabel}>{Effect.label}</div>
-		</div>
+		<Section padding="lg">
+			<Grid columns="abcde" gap="md">
+				{effectItems.map(effect => (
+					<LargeButton
+						key={effect.value}
+						icon={effect.icon}
+						onClick={() => handleSelectEffect(effect.value)}
+						title={effect.label}
+					/>
+				))}
+			</Grid>
+		</Section>
 	);
 }

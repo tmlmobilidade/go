@@ -2,22 +2,19 @@
 
 /* * */
 
-import { Section, Separator } from '@tmlmobilidade/ui';
-
-import { RealtimeCreateStepRidesFilters } from '../RealtimeCreateStepRidesFilters';
-import { RealtimeCreateStepRidesFound } from '../RealtimeCreateStepRidesFound';
-import { RealtimeCreateStepRidesSelected } from '../RealtimeCreateStepRidesSelected';
+import { RealtimeCreateStepRidesFilters } from '@/components/realtime/create/RealtimeCreateStepRidesFilters';
+import { RealtimeCreateStepRidesFound } from '@/components/realtime/create/RealtimeCreateStepRidesFound';
+import { RealtimeCreateStepRidesSelected } from '@/components/realtime/create/RealtimeCreateStepRidesSelected';
+import { Divider, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function RealtimeCreateStepRides() {
 	return (
-		<Section flexDirection="column" gap="sm">
+		<Section padding="none">
 			<RealtimeCreateStepRidesFilters />
+			<Divider />
 			<RealtimeCreateStepRidesFound />
-
-			<Separator separatorType="dashed" />
-
 			<RealtimeCreateStepRidesSelected />
 		</Section>
 	);

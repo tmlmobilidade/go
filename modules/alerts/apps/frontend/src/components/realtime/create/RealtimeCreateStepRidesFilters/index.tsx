@@ -3,7 +3,7 @@
 /* * */
 
 import { useRidesContext } from '@/contexts/Rides.context';
-import { Grid, Label, LineSelect, SearchInput, Section, StopSelect } from '@tmlmobilidade/ui';
+import { Button, Grid, Label, LineSelect, SearchInput, Section, StopSelect } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,13 +17,15 @@ export function RealtimeCreateStepRidesFilters() {
 	// B. Render components
 
 	return (
-		<Section flexDirection="column" gap="sm" padding="none">
-			<Label>Filtros</Label>
-			<SearchInput
-				onChange={ridesContext.actions.setFilterSearch}
-				size="xl"
-				value={ridesContext.filters.search}
-			/>
+		<Section gap="lg">
+			<Grid columns="aab">
+				<SearchInput onChange={ridesContext.actions.setFilterSearch} value={ridesContext.filters.search} />
+				<Button
+					label="Limpar Filtros"
+					onClick={ridesContext.actions.clearFilters}
+					variant="danger"
+				/>
+			</Grid>
 			<Grid columns="ab" gap="sm">
 				<LineSelect
 					data={ridesContext.data.filteredLines}

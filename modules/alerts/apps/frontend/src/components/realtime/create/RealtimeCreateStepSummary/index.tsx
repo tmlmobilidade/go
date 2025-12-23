@@ -2,7 +2,7 @@
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
 import { getAlertTitleAndDescription } from '@/lib/translations';
-import { Separator } from '@tmlmobilidade/ui';
+import { Divider } from '@tmlmobilidade/ui';
 import { useEffect } from 'react';
 
 import { AffectedRides } from './AffectedRides';
@@ -29,11 +29,10 @@ export function RealtimeCreateStepSummary() {
 
 	return (
 		<div style={{ overflowX: 'hidden', width: '100%' }}>
-
 			<AlertBasicInfo />
-			<Separator />
+			<Divider />
 			<CauseAndEffect />
-			<Separator />
+			<Divider />
 			<AffectedRides />
 		</div>
 	);

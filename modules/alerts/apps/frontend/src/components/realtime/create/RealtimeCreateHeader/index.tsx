@@ -3,7 +3,8 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
-import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Translations } from '@/lib/translations';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,8 +21,8 @@ export function RealtimeCreateHeader() {
 
 	return (
 		<Toolbar>
-			{!realtimeCreateContext.flags.isFirst && <CloseButton onClick={() => realtimeCreateContext.actions.prevStep()} />}
-			<Tag label="Criar alerta" variant="primary" />
+			{!realtimeCreateContext.flags.isFirst && <CloseButton onClick={realtimeCreateContext.actions.prevStep} />}
+			<Label size="md" variant={realtimeCreateContext.flags.isFirst ? 'muted' : undefined} caps singleLine>Novo Alerta</Label>
 			<Spacer />
 			<TripNextButton />
 			<SaveButton />
