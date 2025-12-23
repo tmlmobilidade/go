@@ -5,7 +5,7 @@
 import { IconAlertTriangle, IconBuildings, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import styles from './styles.module.css';
 
@@ -64,14 +64,14 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		_id: 'alerts',
 		href: PAGE_ROUTES.alerts.SCHEDULED_LIST,
 		icon: <IconAlertTriangle size={26} />,
-		label: 'Alertas',
-		permissions: [{ action: PermissionCatalog.all.alerts_scheduled.actions.read, scope: PermissionCatalog.all.alerts_scheduled.scope }],
+		label: 'Alertas Planeados',
+		permissions: [{ action: PermissionCatalog.all.alerts_scheduled.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts_scheduled.scope }],
 	},
 	{
 		_id: 'alerts_realtime',
 		href: PAGE_ROUTES.alerts.REALTIME_LIST,
 		icon: <IconClockExclamation size={26} />,
-		label: 'Alertas - Tempo Real',
+		label: 'Alertas em Tempo Real',
 		permissions: [{ action: PermissionCatalog.all.alerts_realtime.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts_realtime.scope }],
 	},
 	{
