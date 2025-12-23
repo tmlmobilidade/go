@@ -3,7 +3,7 @@
 /* * */
 
 import { useVehiclesListContext } from '@/components/Vehicles/list/VehiclesList.context';
-import { VehiclesListCellAgencies } from '@/components/Vehicles/list/VehiclesListCellAgencies';
+// import { VehiclesListCellAgencies } from '@/components/Vehicles/list/VehiclesListCellAgencies';
 import { VehiclesListCellDates } from '@/components/Vehicles/list/VehiclesListCellDates';
 import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListFiltersBar';
 import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
@@ -35,14 +35,14 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'agency_id',
-			render: item => <VehiclesListCellAgencies agencyIds={item.agency_id} />,
+			render: item => <Tag label={item.agency_id} />,
 			title: 'Operadores',
 			width: 200,
 		},
 		{
-			accessor: 'registration_date',
-			render: item => <VehiclesListCellDates dates={item.registration_date} />,
-			title: 'Datas',
+			accessor: 'vehicle_id',
+			render: item => <Tag label={item.vehicle_id} />,
+			title: 'Veículo',
 			width: 500,
 		},
 	];

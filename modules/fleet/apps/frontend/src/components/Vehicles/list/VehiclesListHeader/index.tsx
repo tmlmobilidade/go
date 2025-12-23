@@ -21,11 +21,11 @@ export function VehiclesListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>Anotações</Label>
+			<Label size="lg" caps singleLine>veículos</Label>
 			<Spacer />
 			<SearchInput onChange={vehiclesListContext.actions.setFilterSearch} value={vehiclesListContext.filters.search} />
-			<HasPermission action={PermissionCatalog.all.fleet.actions.create} scope={PermissionCatalog.all.fleet.scope}>
-				<Button label="Nova anotação" leftSection={<IconPlus />} onClick={openCreateVehicleModal} />
+			<HasPermission action={PermissionCatalog.all.fleet.actions.create_vehicles} scope={PermissionCatalog.all.fleet.scope}>
+				<Button label="Novo veículo" leftSection={<IconPlus />} onClick={openCreateVehicleModal} />
 			</HasPermission>
 		</Toolbar>
 	);

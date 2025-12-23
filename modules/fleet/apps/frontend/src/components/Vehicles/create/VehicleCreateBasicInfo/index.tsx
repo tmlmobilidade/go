@@ -3,7 +3,7 @@
 /* * */
 
 import { useVehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
-import { vehicleSchema } from '@tmlmobilidade/types';
+// import { vehicleSchema } from '@tmlmobilidade/types';
 import { Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

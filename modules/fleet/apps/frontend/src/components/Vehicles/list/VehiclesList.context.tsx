@@ -21,7 +21,7 @@ interface VehicleNormalized extends Vehicle {
 
 interface VehicleListContextState {
 	actions: {
-		setFilterAgency: (values: string) => void
+		setFilterAgency: (values: string[]) => void
 		setFilterDates: (values: string[]) => void
 		setFilterSearch: (values: string) => void
 	}
@@ -70,6 +70,9 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	// B. Fetch data
 
 	const { data: allVehicleData, error: allVehicleError, isLoading: allVehicleLoading } = useSWR<Vehicle[], Error>(API_ROUTES.fleet.VEHICLES_LIST, { refreshInterval: 5000 });
+	console.log('allVehicleData', allVehicleData);
+	console.log('allVehicleError', allVehicleError);
+	console.log('allVehicleLoading', allVehicleLoading);
 
 	//
 	// C. Transform data
@@ -82,6 +85,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 			return {
 				...item,
 				agency_id_normalized: item.agency_id,
+				dates_normalized: [],
 			};
 		});
 	}, [allVehicleData, agenciesContext.data.raw]);
@@ -96,18 +100,17 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const agencySet = new Set(filterAgency);
 		const datesSet = new Set(filterDates);
 
 		return searchResultsData
 			.filter((item: VehicleNormalized) => {
-				// Filter by agency - check if any of the vehicle's agencies match the filter
+				// Filter by agency - check if any of the vehicle's agency match the filter
 				// If vehicle has no agencies (null or empty), show it in all results
 				if (filterAgency.length > 0) {
 					if (!item.agency_id || item.agency_id.length === 0) {
 						return true; // Show vehicles with no agencies in all filters
 					}
-					const hasMatchingAgency = item.agency_id.some(agencyId => agencySet.has(agencyId));
+					const hasMatchingAgency = item.agency_id;
 					if (!hasMatchingAgency) return false;
 				}
 
