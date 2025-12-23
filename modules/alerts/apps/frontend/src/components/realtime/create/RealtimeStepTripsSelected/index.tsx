@@ -5,6 +5,7 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { IconListCheck } from '@tabler/icons-react';
 import { Button, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';
@@ -18,6 +19,7 @@ export function RealtimeStepTripsSelected() {
 	// A. Setup variables
 
 	const realtimeContext = useRealtimeCreateContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepTripsSelected' });
 
 	//
 	// B. Render components
@@ -30,10 +32,10 @@ export function RealtimeStepTripsSelected() {
 				justifyContent="space-between"
 				padding="none"
 			>
-				<Label>Viagens selecionadas</Label>
+				<Label>{t('title')}</Label>
 				<div className={styles.tripsActionsContainer}>
 					<Button
-						label="Remover todas"
+						label={t('remove_all')}
 						onClick={realtimeContext.actions.removeAllRides}
 						variant="danger"
 					/>
@@ -54,7 +56,7 @@ export function RealtimeStepTripsSelected() {
 				) : (
 					<div className={styles.tripsContainerEmpty}>
 						<IconListCheck size={56} />
-						<Label size="lg" caps>Nenhuma viagem selecionada</Label>
+						<Label size="lg" caps>{t('no_trips_selected')}</Label>
 					</div>
 				)}
 			</div>

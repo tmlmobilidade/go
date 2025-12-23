@@ -6,6 +6,9 @@
 				"create_alert": "Criar Alerta"
 			},
 			"no_permission": "Não tem permissão para criar alertas",
+			"stepCauseAndEffect": {
+				"title": "Causa e Efeito"
+			},
 			"stepSummary": {
 				"affectedRides": {
 					"tableColumns": {
@@ -38,6 +41,11 @@
 				"clear_filters": "Limpar Filtros",
 				"title": "Viagens Encontradas"
 
+			},
+			"stepTripsSelected": {
+				"no_trips_selected": "Nenhuma viagem selecionada",
+				"remove_all": "Remover todas",
+				"title": "Viagens Selecionadas"
 			}
 		},
 		"detail": {
