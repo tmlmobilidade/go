@@ -155,8 +155,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('auth', 'api_url')}`,
 
 		// AGENCIES
-		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}`,
 		AGENCIES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}/lock`,
+		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}`,
 		AGENCIES_LIST: `${getAppConfig('auth', 'api_url')}/agencies`,
 
 		// AUTH
@@ -183,13 +183,13 @@ export const API_ROUTES = Object.freeze({
 		PROPOSED_CHANGES_LIST: `${getAppConfig('auth', 'api_url')}/proposed-changes`,
 
 		// ROLES
-		ROLES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}`,
 		ROLES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}/lock`,
+		ROLES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}`,
 		ROLES_LIST: `${getAppConfig('auth', 'api_url')}/roles`,
 
 		// USERS
-		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}`,
 		USERS_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}/lock`,
+		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}`,
 		USERS_LIST: `${getAppConfig('auth', 'api_url')}/users`,
 		USERS_ME: `${getAppConfig('auth', 'api_url')}/users/me`,
 
@@ -232,8 +232,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('dates', 'api_url')}`,
 
 		// ANNOTATIONS
-		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
 		ANNOTATIONS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/toggle-lock`,
+		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'api_url')}/annotations`,
 	},
 
@@ -294,7 +294,6 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/controller-reprocess`,
 		PLANS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
-		PLANS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/toggle-lock`,
 		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,
 		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
@@ -314,8 +313,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('stops', 'api_url')}`,
 
 		// STOPS
-		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
+		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,
 	},
 } as const);
