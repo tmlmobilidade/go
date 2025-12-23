@@ -20,7 +20,7 @@ export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onR
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 
 	const dataTableContext = useDataTableContext<T>();
 
@@ -34,7 +34,7 @@ export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onR
 	};
 
 	//
-	// B. Render Components
+	// C. Render components
 
 	return (
 		<>

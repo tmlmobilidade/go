@@ -8,7 +8,7 @@ import { RidesData, useDataRides } from '@/hooks/Rides.context';
 import { useMultiStepForm, type UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
-import { keepUrlParams, useFilterStateEnum, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
+import { keepUrlParams, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -18,9 +18,9 @@ import useSWR from 'swr';
 
 type RealtimeCreateContextState = UseMultiStepFormState & {
 	actions: {
-		addAllTrips: (trips: RidesData[]) => void
 		create: () => Promise<void>
 		removeAllRides: () => void
+		selectVisibleRides: () => void
 		setDetour: (detour: string) => void
 		toggleRideSelection: (rideId: string) => void
 	}
@@ -103,14 +103,12 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 		},
 	});
 
-	const addAllTrips = (trips: RidesData[]) => {
-		const newRides = trips.filter(trip => !form.getValues().references.some(reference => reference.parent_id === trip._id));
-		if (newRides.length > 0) {
-			form.setFieldValue('references', [
-				...form.values.references,
-				...newRides.map(trip => ({ child_ids: [], parent_id: trip._id })),
-			]);
-		}
+	const selectVisibleRides = () => {
+		// const existingReferences = form.getValues().references ?? [];
+		// const newReferences = rideIds
+		// 	.filter(rideId => !existingReferences.some(reference => reference.parent_id === rideId))
+		// 	.map(rideId => ({ child_ids: [], parent_id: rideId }));
+		// form.setFieldValue('references', [...existingReferences, ...newReferences]);
 	};
 
 	const toggleRideSelection = (rideId: string) => {
@@ -143,9 +141,9 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 
 		return {
 			actions: {
-				addAllTrips,
 				create: handleCreate,
 				removeAllRides,
+				selectVisibleRides,
 				setDetour,
 				toggleRideSelection,
 				...multiStepForm.actions,
@@ -170,7 +168,6 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 		};
 	}, [
 		detour,
-		handleCreate,
 		filterStops,
 		ridesData,
 		form,

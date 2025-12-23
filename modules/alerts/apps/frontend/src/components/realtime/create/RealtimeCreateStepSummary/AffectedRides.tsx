@@ -5,6 +5,8 @@ import { Dates } from '@tmlmobilidade/dates';
 import { DataTable, DataTableColumn, Label, Section } from '@tmlmobilidade/ui';
 
 export function AffectedRides() {
+	//
+
 	const realtimeContext = useRealtimeCreateContext();
 
 	const columns: DataTableColumn<RidesData>[] = [
@@ -36,8 +38,8 @@ export function AffectedRides() {
 			<Label size="md" caps>Viagens afetadas</Label>
 			<div style={{ overflowX: 'scroll', width: '100%' }}>
 				<DataTable
-					columns={columns as DataTableColumn<unknown>[]}
-					records={realtimeContext.data.selectedRides}
+					columns={columns}
+					records={[]}
 					rowIdAccessor="_id"
 				/>
 			</div>

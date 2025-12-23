@@ -15,16 +15,16 @@ export function RealtimeCreateStepSummary() {
 	//
 	// A. Setup variables
 
-	const { data: { form, selectedRides } } = useRealtimeCreateContext();
+	const realtimeCreateContext = useRealtimeCreateContext();
 
 	//
 	// B. Transform data
 
 	useEffect(() => {
-		const uniqueLineIds = Array.from(new Set(selectedRides.map(ride => ride.line_id)));
-		const { description, title } = getAlertTitleAndDescription(form.values.cause, form.values.effect, uniqueLineIds.join(', '));
-		form.setFieldValue('title', title);
-		form.setFieldValue('description', description);
+		const uniqueLineIds = Array.from(new Set(realtimeCreateContext.data.form.getValues().references?.map(ride => ride.parent_id)));
+		const { description, title } = getAlertTitleAndDescription(realtimeCreateContext.data.form.values.cause, realtimeCreateContext.data.form.values.effect, uniqueLineIds.join(', '));
+		realtimeCreateContext.data.form.setFieldValue('title', title);
+		realtimeCreateContext.data.form.setFieldValue('description', description);
 	}, []);
 
 	return (

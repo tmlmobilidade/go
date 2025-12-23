@@ -31,13 +31,15 @@ export function RealtimeCreateStepRidesSelectionControls() {
 				/>
 				<Grid columns="ab" gap="md">
 					<Button
+						disabled={realtimeCreateContext.data.filtered_rides?.length === 0 || realtimeCreateContext.data.filtered_rides?.length > 10}
 						label="Adicionar Todas"
-						// onClick={() => realtimeCreateContext.actions.addAllTrips(realtimeCreateContext.data.filtered_rides)}
+						onClick={realtimeCreateContext.actions.selectVisibleRides}
 						variant="primary"
 					/>
 					<Button
-						label="Limpar Filtros"
-						// onClick={realtimeCreateContext.filters.search.clear}
+						disabled={realtimeCreateContext.data.form.getValues().references?.length === 0}
+						label="Remover Seleção"
+						onClick={realtimeCreateContext.actions.removeAllRides}
 						variant="danger"
 					/>
 				</Grid>
