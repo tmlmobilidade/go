@@ -8,8 +8,8 @@ import { type PropsWithChildren } from 'react';
 /* * */
 
 export const metadata: Metadata = {
-	description: 'Gestão de datas',
-	title: 'GO | Datas',
+	description: 'Gestão de frota',
+	title: 'GO | Frota',
 };
 
 /* * */
