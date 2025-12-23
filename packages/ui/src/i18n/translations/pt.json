@@ -1232,10 +1232,17 @@
 	"statuses": {
 		"archived": "Arquivado",
 		"complete": "Válido",
+		"concluded": "Concluído",
 		"draft": "Rascunho",
+		"ended": "Ended",
 		"error": "Inválido",
+		"fail": "Fail",
+		"missed": "Missed",
+		"pass": "Pass",
 		"processing": "A processar",
 		"published": "Publicado",
+		"running": "Running",
+		"scheduled": "Scheduled",
 		"skipped": "Ignorado",
 		"unknown": "Desconhecido",
 		"waiting": "Em espera"
