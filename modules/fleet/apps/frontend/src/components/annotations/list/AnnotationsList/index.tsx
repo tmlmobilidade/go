@@ -56,7 +56,7 @@ export function AnnotationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: AnnotationNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.fleet.ANNOTATIONS_DETAIL(item._id)));
 	};
 
 	//

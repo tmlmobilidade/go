@@ -70,7 +70,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// B. Fetch data
 
-	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST, { refreshInterval: 5000 });
+	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.fleet.ANNOTATIONS_LIST, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data
