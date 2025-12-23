@@ -1,6 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
+import { operationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
 /* * */
@@ -39,7 +40,7 @@ export const AnnotationSchema = DocumentSchema.extend({
 	owner: z.string(),
 	propulsion: z.enum(propulsion),
 	emission_class: z.enum(emission),
-	registration_date: z.date(),
+	registration_date: z.array(operationalDateSchema).default([]),
 	capacity_seated: z.number(),
 	capacity_standing: z.number(),
 	passenger_counting: z.boolean(),

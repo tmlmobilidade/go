@@ -5,9 +5,9 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
-	basePath: '/dates',
+	basePath: '/fleet',
 	env: {
-		NEXT_PUBLIC_BASE_PATH: '/dates',
+		NEXT_PUBLIC_BASE_PATH: '/fleet',
 	},
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],
@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				basePath: false,
-				destination: '/dates',
+				destination: '/fleet',
 				permanent: true,
 				source: '/',
 			},
