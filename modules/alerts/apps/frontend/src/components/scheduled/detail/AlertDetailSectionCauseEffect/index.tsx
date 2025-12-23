@@ -27,7 +27,7 @@ export function AlertDetailSectionCauseEffect() {
 	// B. Transform data
 	const causeItems = gtfsCauseSchema.options.map(cause => ({
 		icon: CauseIcons[cause],
-		label: tGlobal(cause),
+		label: tGlobal(`cause.${cause}`),
 		value: cause,
 	}));
 

@@ -11,7 +11,7 @@ export function AlertBasicInfo() {
 
 	const realtimeContext = useRealtimeCreateContext();
 	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepSummary.alertBasicInfo' });
-	const { t: tGlobal } = useTranslation('causesAndEffects');
+	const { t: tGlobal } = useTranslation('global');
 
 	//
 	// B. Render components

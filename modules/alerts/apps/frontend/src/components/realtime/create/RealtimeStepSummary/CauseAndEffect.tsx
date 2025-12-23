@@ -12,8 +12,7 @@ export function CauseAndEffect() {
 
 	const realtimeContext = useRealtimeCreateContext();
 	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepsCauseAndEffect' });
-	const { t: tCause } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepCauseAndEffect.cause' });
-	const { t: tEffect } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepCauseAndEffect.effect' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'causesAndEffects' });
 
 	//
 	// B. Render Components
@@ -23,12 +22,12 @@ export function CauseAndEffect() {
 			<Label size="md" caps>{t('title')}</Label>
 			<Section flexDirection="row" gap="md" padding="none">
 				<Section flexDirection="row" gap="md" padding="none">
-					   {CauseIcons[realtimeContext.data.form.values.cause]}
-					   {tCause(realtimeContext.data.form.values.cause)}
+					{CauseIcons[realtimeContext.data.form.values.cause]}
+					{tGlobal(`cause.${realtimeContext.data.form.values.cause}`)}
 				</Section>
 				<Section flexDirection="row" gap="md" padding="none">
-					   {EffectIcons[realtimeContext.data.form.values.effect]}
-					   {tEffect(realtimeContext.data.form.values.effect)}
+					{EffectIcons[realtimeContext.data.form.values.effect]}
+					{tGlobal(`effect.${realtimeContext.data.form.values.effect}`)}
 				</Section>
 			</Section>
 		</Section>

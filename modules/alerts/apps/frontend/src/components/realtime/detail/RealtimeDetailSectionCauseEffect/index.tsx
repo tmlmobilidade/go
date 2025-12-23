@@ -28,13 +28,13 @@ export function RealtimeDetailSectionCauseEffect() {
 
 	const causeItems = gtfsCauseSchema.options.map(cause => ({
 		icon: CauseIcons[cause],
-		label: tGlobal(cause),
+		label: tGlobal(`cause.${cause}`),
 		value: cause,
 	}));
 
 	const effectItems = gtfsEffectSchema.options.map(effect => ({
 		icon: EffectIcons[effect],
-		label: tGlobal(effect),
+		label: tGlobal(`effect.${effect}`),
 		value: effect,
 	}));
 
