@@ -1,1 +1,1 @@
-export * from '@/fleet/annotation.js';
+export * from '@/fleet/vehicle.js';

@@ -31,7 +31,7 @@ const wheelchair = [
 	'yes',
 ] as const
 
-export const AnnotationSchema = DocumentSchema.extend({
+export const vehicleSchema = DocumentSchema.extend({
 	agency_id: z.array(z.string()).default([]),
 	vehicle_id: z.string(),
 	license_plate: z.string(),
@@ -49,11 +49,11 @@ export const AnnotationSchema = DocumentSchema.extend({
 	contactless: z.boolean(),
 });
 
-export const CreateAnnotationSchema = AnnotationSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateAnnotationSchema = CreateAnnotationSchema.omit({ created_by: true }).partial();
+export const CreatevehicleSchema = vehicleSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const UpdatevehicleSchema = CreatevehicleSchema.omit({ created_by: true }).partial();
 
 /* * */
 
-export type Annotation = z.infer<typeof AnnotationSchema>;
-export type CreateAnnotationDto = z.infer<typeof CreateAnnotationSchema>;
-export type UpdateAnnotationDto = z.infer<typeof UpdateAnnotationSchema>;
+export type vehicle = z.infer<typeof vehicleSchema>;
+export type CreatevehicleDto = z.infer<typeof CreatevehicleSchema>;
+export type UpdatevehicleDto = z.infer<typeof UpdatevehicleSchema>;
