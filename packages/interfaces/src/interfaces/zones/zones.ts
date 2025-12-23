@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { CreateZoneDto, UpdateZoneDto, UpdateZoneSchema, Zone, ZoneSchema } from '@tmlmobilidade/types';
+import { type CreateZoneDto, CreateZoneSchema, type UpdateZoneDto, UpdateZoneSchema, type Zone } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 class ZonesClass extends MongoCollectionClass<Zone, CreateZoneDto, UpdateZoneDto> {
 	private static _instance: ZonesClass;
-	protected override createSchema: z.ZodSchema = ZoneSchema;
+	protected override createSchema: z.ZodSchema = CreateZoneSchema;
 	protected override updateSchema: z.ZodSchema = UpdateZoneSchema;
 
 	private constructor() {

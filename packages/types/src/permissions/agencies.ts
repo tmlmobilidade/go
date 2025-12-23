@@ -9,7 +9,7 @@ export const AgenciesPermissionSchema = z.object({
 		'create',
 		'delete',
 		'read',
-		'toggle_lock',
+		'lock',
 		'update',
 	]),
 	scope: z.literal('agencies'),

@@ -1,7 +1,7 @@
 /* * */
 
 import { openCreateValidationModal } from '@/components/validations/detail/CreateValidationModal';
-import { useValidationsListContext } from '@/contexts/ValidationsList.context';
+import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';

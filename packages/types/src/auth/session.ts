@@ -1,16 +1,18 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { unixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
 
-export const SessionSchema = DocumentSchema.extend({
-	expires_at: unixTimeStampSchema,
-	token: z.string(),
-	user_id: z.string(),
-}).strict();
+export const SessionSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		expires_at: UnixTimeStampSchema,
+		token: z.string(),
+		user_id: z.string(),
+	});
 
 export const CreateSessionSchema = SessionSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateSessionSchema = CreateSessionSchema.omit({ created_by: true }).partial();

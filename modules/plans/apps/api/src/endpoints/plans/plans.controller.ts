@@ -18,20 +18,10 @@ export class PlansController {
 	 * @param reply Fastify reply
 	 */
 	static async changeGtfsPlan(request: FastifyRequest<{ Body: { validation_id: string }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
-		//
-
-		//
 		// Get the Plan from the database
-
 		const planData = await plans.findById(request.params.id);
-
 		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
-
-		//
-
-		//
 		// Check if the user has permission to change the GTFS of the Plan
-
 		const hasPermissionChangeGtfsPlan = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
 			permissions: request.permissions,
@@ -39,85 +29,53 @@ export class PlansController {
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
-
-		//
-
+		// Throw an error if the user is not authorized
 		if (!hasPermissionChangeGtfsPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to change the GTFS of the plan.');
-
-		//
 		// For a given validation ID, get the validation data
-
 		const validationData = await gtfsValidations.findById(request.body.validation_id);
 		if (!validationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
-
-		//
-		// Change the GTFS of the plan
-
+		// Create a new MongoDB transaction to manage the GTFS change
+		// and perform all necessary operations atomically, with rollback on failure
 		const transactionManager = new TransactionManager([plans, files] as const);
-
+		// Execute the transaction and return the updated plan data
 		const result = await transactionManager.withTransaction(async (collections, transactions) => {
-			//
-
-			//
 			// Get the appropriate transaction for each collection
-
 			const [plansCollection, filesCollection] = collections;
-
 			const plansTransaction = transactions.get(plansCollection);
 			const filesTransaction = transactions.get(filesCollection);
-
-			//
 			// Delete the old operation file
-
-			files.deleteById(planData.operation_file_id, { session: filesTransaction.getSession() });
-
-			//
+			await files.deleteById(planData.operation_file_id, { session: filesTransaction.getSession() });
 			// Make a clone of the validation GTFS file in S3
 			// to keep plan data separate from validations
-
 			const updateFileResult = await filesCollection.clone(
 				validationData.file_id,
 				PermissionCatalog.all.plans.scope,
 				planData._id.toString(),
 				{ session: filesTransaction.getSession() },
 			);
-
-			//
 			// Get a hash of all metadata to make it possible
 			// to keep track of changes to the plan
-
 			const hashablePlanMetadata: HashablePlanMetadata = {
 				_id: planData._id,
 				gtfs_agency: planData.gtfs_agency,
 				gtfs_feed_info: planData.gtfs_feed_info,
 				operation_file_id: updateFileResult._id,
 			};
-
+			// Generate the hash value
 			const hashValue = createHash('sha256')
 				.update(JSON.stringify(hashablePlanMetadata))
 				.digest('hex');
-
-			//
 			// Update the plan with the new data
-
-			const updatedPlanData = await plansCollection.updateById(planData._id, {
-				hash: hashValue,
-				operation_file_id: updateFileResult._id,
-			}, { session: plansTransaction.getSession() });
-
+			const updatedPlanData = await plansCollection.updateById(
+				planData._id,
+				{ hash: hashValue, operation_file_id: updateFileResult._id },
+				{ session: plansTransaction.getSession() },
+			);
+			// Return the updated plan data
 			return updatedPlanData;
 		});
-
-		//
 		// Send the updated plan data as the response
-
-		reply.send({
-			data: result,
-			error: null,
-			statusCode: HttpStatus.OK,
-		});
-
-		//
+		reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**
@@ -445,45 +403,28 @@ export class PlansController {
 	}
 
 	/**
-	 * Toggles the lock status of a plan by ID
-	 * @param request Fastify request containing plan ID in params
-	 * @param reply Fastify reply
+	 * Toggles the lock status of a plan by ID.
+	 * @param request Fastify request containing plan ID in params.
+	 * @param reply Fastify reply.
 	 */
-	static async toggleLockById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
-		//
-
-		//
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		// Get the Plan from the database
-
 		const planData = await plans.findById(request.params.id);
-
 		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
-
-		//
 		// Check if the user has permission to toggle lock the Plan
-
 		const hasPermissionToggleLockPlan = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.plans.actions.toggle_lock,
+			action: PermissionCatalog.all.plans.actions.lock,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
-
 		if (!hasPermissionToggleLockPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock plan');
-
-		//
-		// Toggle the lock status of the plan
-
-		const result = await plans.updateById(planData._id, { is_locked: !planData.is_locked });
-
-		return reply.send({
-			data: result,
-			error: null,
-			statusCode: HttpStatus.OK,
-		});
-
-		//
+		// If authorized, toggle the lock status of the plan
+		await plans.toggleLockById(request.params.id);
+		const foundPlan = await plans.findById(request.params.id);
+		if (!foundPlan) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		reply.send({ data: foundPlan, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**

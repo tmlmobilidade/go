@@ -2,10 +2,10 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
-import { hasAnySchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Grid, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { AvailabilityStatusSchema } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,8 +20,8 @@ export function StopDetailsSectionPublicInformation() {
 	//
 	// B. Transform data
 
-	const has_this = hasAnySchema.options.map (value => ({
-		label: Translations.HAS_ANY[value],
+	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
+		label: Translations.AVAILABILITY_STATUS[value],
 		value: value,
 	}));
 
@@ -35,25 +35,25 @@ export function StopDetailsSectionPublicInformation() {
 		>
 			<Section>
 				<Grid columns="a" gap="md">
-					<Combobox
-						data={has_this}
+					<Select
+						key={stopDetailContext.data.form.key('has_stop_sign')}
+						data={availabilityStatusOptions}
 						label="Tem Postalete?"
-						placeholder="..."
-						fullWidth
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_stop_sign')}
 					/>
-					<Combobox
-						data={has_this}
+					<Select
+						key={stopDetailContext.data.form.key('has_schedules')}
+						data={availabilityStatusOptions}
 						label="Tem Horários?"
-						placeholder="Escolha uma opção"
-						fullWidth
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_schedules')}
 					/>
-					<Combobox
-						data={has_this}
+					<Select
+						key={stopDetailContext.data.form.key('has_network_map')}
+						data={availabilityStatusOptions}
 						label="Tem Mapa de Rede?"
-						placeholder="Escolha uma opção"
-						fullWidth
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_network_map')}
 					/>
 				</Grid>
@@ -62,15 +62,17 @@ export function StopDetailsSectionPublicInformation() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<TextInput
+						key={stopDetailContext.data.form.key('last_schedules_maintenance')}
 						label="Última Manutenção dos Horários?"
-						miw="100%"
 						placeholder="2023-02-10"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_schedules_maintenance')}
 					/>
 					<TextInput
+						key={stopDetailContext.data.form.key('last_schedules_check')}
 						label="Última Verificação dos Horários?"
-						miw="100%"
 						placeholder="2023-02-10"
+						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_schedules_check')}
 					/>
 				</Grid>

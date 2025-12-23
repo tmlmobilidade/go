@@ -3,7 +3,7 @@
 /* * */
 
 import { UploadImage } from '@/components/common/UploadImage';
-import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +29,7 @@ export function AlertDetailSectionTitle() {
 		>
 			<Section gap="md">
 				<TextInput
+					key={alertDetailContext.data.form.key('title')}
 					description={t('fields.title_description')}
 					label={t('fields.title_label')}
 					maxLength={255}
@@ -37,6 +38,7 @@ export function AlertDetailSectionTitle() {
 					{...alertDetailContext.data.form.getInputProps('title')}
 				/>
 				<Textarea
+					key={alertDetailContext.data.form.key('description')}
 					description={t('fields.description_description')}
 					label={t('fields.description_label')}
 					maxRows={10}
@@ -53,10 +55,13 @@ export function AlertDetailSectionTitle() {
 					onFileChange={alertDetailContext.actions.fileChanged}
 				/>
 				<CoordinatesInput
+					key={alertDetailContext.data.form.key('coordinates')}
 					description={t('fields.coordinates_description')}
+					value={alertDetailContext.data.form.values.coordinates}
 					{...alertDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput
+					key={alertDetailContext.data.form.key('link')}
 					description={t('fields.link_description')}
 					label={t('fields.link_label')}
 					leftSection={<IconLink size={18} />}

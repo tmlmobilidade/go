@@ -1,7 +1,7 @@
 /* * */
 
 import { ValidationsList } from '@/components/validations/list/ValidationsList';
-import { ValidationsListContextProvider } from '@/contexts/ValidationsList.context';
+import { ValidationsListContextProvider } from '@/components/validations/list/ValidationsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

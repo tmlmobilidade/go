@@ -2,14 +2,14 @@
 
 /* * */
 
+import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
-import { useStopsListContext } from '@/contexts/StopsList.context';
 import { type StopNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 /* * */
 
@@ -20,6 +20,7 @@ export function StopsList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
 
 	const stopsListContext = useStopsListContext();
 
@@ -70,8 +71,7 @@ export function StopsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: StopNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(item._id)));
 	};
 
 	//
@@ -96,6 +96,7 @@ export function StopsList() {
 				onRowClick={handleRowClick}
 				records={stopsListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

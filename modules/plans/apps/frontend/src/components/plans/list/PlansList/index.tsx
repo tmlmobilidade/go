@@ -3,16 +3,16 @@
 /* * */
 
 import { PlanStatusTag } from '@/components/common/PlanStatusTag';
+import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { PlansListCellAgency } from '@/components/plans/list/PlansListCellAgency';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
-import { usePlansListContext } from '@/contexts/PlansList.context';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -24,6 +24,8 @@ export function PlansList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const plansListContext = usePlansListContext();
 	const { t } = useTranslation('plans', { keyPrefix: 'plans.list' });
 
@@ -70,8 +72,7 @@ export function PlansList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: PlanNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.plans.APPROVED_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.plans.APPROVED_DETAIL(item._id)));
 	};
 
 	//
@@ -96,6 +97,7 @@ export function PlansList() {
 				onRowClick={handleRowClick}
 				records={plansListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

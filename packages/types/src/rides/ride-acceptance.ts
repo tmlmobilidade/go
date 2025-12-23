@@ -22,12 +22,14 @@ export type RideJustificationStatusType = z.infer<typeof RideJustificationStatus
 
 /* * */
 
-export const RideJustificationSchema = DocumentSchema.extend({
-	justification_cause: gtfsCauseSchema,
-	justification_source: RideJustificationSourceSchema,
-	manual_trip_id: z.string().optional(),
-	pto_message: z.string().min(2).max(5000).default(''),
-}).omit({ _id: true }).strict();
+export const RideJustificationSchema = DocumentSchema
+	.omit({ _id: true, is_locked: true })
+	.extend({
+		justification_cause: gtfsCauseSchema,
+		justification_source: RideJustificationSourceSchema,
+		manual_trip_id: z.string().optional(),
+		pto_message: z.string().min(2).max(5000).default(''),
+	});
 
 export type RideJustification = z.infer<typeof RideJustificationSchema>;
 
@@ -40,7 +42,7 @@ export const RideAcceptanceSchema = DocumentSchema.extend({
 	is_locked: z.boolean().default(false),
 	justification: RideJustificationSchema.nullable(),
 	ride_id: z.string(),
-}).strict();
+});
 
 export const CreateRideAcceptanceSchema = RideAcceptanceSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });
 export const UpdateRideAcceptanceSchema = RideAcceptanceSchema.omit({ created_at: true, created_by: true }).partial();

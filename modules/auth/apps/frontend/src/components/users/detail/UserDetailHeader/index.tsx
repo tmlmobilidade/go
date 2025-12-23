@@ -2,11 +2,11 @@
 
 /* * */
 
-import { useUserDetailContext } from '@/contexts/UserDetail.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { keepUrlParams, Label } from '@tmlmobilidade/ui';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -28,8 +28,7 @@ export function UserDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.USERS_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_LIST));
 	};
 
 	//
@@ -40,21 +39,47 @@ export function UserDetailHeader() {
 			<BackButton onClick={handleClose} type="close" />
 			<Tag label={userDetailContext.data.id || tAuth('new_user_button_label')} variant="muted" />
 			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
+
 			<Spacer />
-			<Button
-				disabled={!userDetailContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label={tGlobal('save')}
-				loading={userDetailContext.flags.isSaving}
-				onClick={userDetailContext.actions.saveUser}
-				variant="primary"
-			/>
-			<Button
-				icon={<IconTrash size={28} />}
-				label={tGlobal('delete')}
-				onClick={userDetailContext.actions.deleteUser}
-				variant="danger"
-			/>
+
+			<HasPermission
+				action={PermissionCatalog.all.users.actions.update}
+				scope={PermissionCatalog.all.users.scope}
+			>
+				<SaveButton
+					isDisabled={!userDetailContext.flags.canSave}
+					isLoading={userDetailContext.flags.isSaving}
+					onClick={userDetailContext.actions.save}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.users.actions.lock}
+				scope={PermissionCatalog.all.users.scope}
+			>
+				<LockButton
+					isDisabled={!userDetailContext.flags.canLock}
+					isLoading={userDetailContext.flags.isLocking}
+					isLocked={userDetailContext.data.user?.is_locked}
+					onClick={userDetailContext.actions.lock}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.users.actions.delete}
+				scope={PermissionCatalog.all.users.scope}
+			>
+				<DeleteButton
+					confirmMessage="Tem a certeza que pretende eliminar este utilizador? Esta ação é irreversível."
+					confirmTitle="Eliminar Utilizador"
+					isDisabled={!userDetailContext.flags.canDelete}
+					isLoading={userDetailContext.flags.isDeleting}
+					onDelete={userDetailContext.actions.delete}
+					onRestore={userDetailContext.actions.delete}
+					showConfirmation={true}
+				/>
+			</HasPermission>
+
 		</Toolbar>
 	);
 

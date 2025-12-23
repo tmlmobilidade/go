@@ -3,7 +3,7 @@
 
 import { Line } from '@carrismetropolitana/api-types/network';
 import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
-import { CreateProposedChangeDto, Facilities, facilitiesSchema, ProposedChange, Stop } from '@tmlmobilidade/types';
+import { CreateProposedChangeDto, ProposedChange, Stop, StopFacility, StopFacilitySchema } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -139,9 +139,9 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 		const updateBody: Record<string, unknown> = {};
 
 		// Special case: facilities for stops
-		if (scope === 'stop' && Array.isArray(entity['facilities']) && (normalizedField === 'facilities' || facilitiesSchema.options.includes(normalizedField as Facilities))) {
-			const currentArray = entity['facilities'] as Facilities[];
-			const item = normalizedField === 'facilities' ? value as Facilities : normalizedField as Facilities;
+		if (scope === 'stop' && Array.isArray(entity['facilities']) && (normalizedField === 'facilities' || StopFacilitySchema.options.includes(normalizedField as StopFacility))) {
+			const currentArray = entity['facilities'] as StopFacility[];
+			const item = normalizedField === 'facilities' ? value as StopFacility : normalizedField as StopFacility;
 			const exists = currentArray.includes(item);
 			updateBody['facilities'] = exists ? currentArray.filter(f => f !== item) : [...currentArray, item];
 			return updateBody;

@@ -47,6 +47,12 @@ db.createUser({
 });
 
 db.createUser({
+	pwd: USER_DATES_PASSWORD,
+	roles: [{ db: 'admin', role: 'dates' }],
+	user: 'dates',
+});
+
+db.createUser({
 	pwd: USER_CMET_API_PASSWORD,
 	roles: [{ db: 'admin', role: 'cmet-api' }],
 	user: 'cmet-api',
@@ -74,4 +80,10 @@ db.createUser({
 	pwd: USER_EXPORTER_PASSWORD,
 	roles: [{ db: 'admin', role: 'exporter' }],
 	user: 'exporter',
+});
+
+db.createUser({
+	pwd: USER_FLEET_PASSWORD,
+	roles: [{ db: 'admin', role: 'fleet' }],
+	user: 'fleet',
 });

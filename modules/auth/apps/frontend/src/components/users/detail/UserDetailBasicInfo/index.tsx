@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useUserDetailContext } from '@/contexts/UserDetail.context';
+import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, PasswordInput, Section, TextInput } from '@tmlmobilidade/ui';
@@ -33,6 +33,7 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('first_name')}
 						label={t('fields.first_name')}
 						maxLength={255}
+						readOnly={userDetailContext.flags.isReadOnly}
 						placeholder={t('fields.first_name_placeholder')}
 						withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('first_name')}
@@ -42,6 +43,8 @@ export function UserDetailBasicInfo() {
 						label={t('fields.last_name')}
 						maxLength={255}
 						placeholder={t('fields.last_name_placeholder')}
+							readOnly={userDetailContext.flags.isReadOnly}
+						placeholder="..."
 						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('last_name')}
 					/>
@@ -50,6 +53,7 @@ export function UserDetailBasicInfo() {
 						label={t('fields.email')}
 						leftSection={<IconMail size={22} />}
 						placeholder={t('fields.email_placeholder')}
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 						{...userDetailContext.data.form.getInputProps('email')}
 					/>
@@ -58,10 +62,14 @@ export function UserDetailBasicInfo() {
 						label={t('fields.phone')}
 						leftSection={<IconPhone size={22} />}
 						placeholder={t('fields.phone_placeholder')}
+								readOnly={userDetailContext.flags.isReadOnly}
+						
+						placeholder="912345678"
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...userDetailContext.data.form.getInputProps('phone')}
 					/>
 					<PasswordInput
+					readOnly={userDetailContext.flags.isReadOnly}
 						key={userDetailContext.data.form.key('password')}
 						autoComplete="new-password"
 						label={t('fields.change_password')}

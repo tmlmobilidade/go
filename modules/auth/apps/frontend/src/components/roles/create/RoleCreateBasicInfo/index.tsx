@@ -1,8 +1,8 @@
 'use client';
 
-import { useRoleCreateContext } from '@/contexts/RoleCreate.context';
 /* * */
 
+import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -22,10 +22,11 @@ export function RoleCreateBasicInfo() {
 
 	return (
 		<Section gap="md">
-			<Grid columns="ab" gap="xl">
+			<Grid columns="a" gap="xl">
 				<TextInput
 					key={roleCreateContext.data.form.key('name')}
 					label={t('fields.name')}
+					data-autofocus
 					maxLength={255}
 					placeholder={t('fields.placeholder')}
 					withAsterisk

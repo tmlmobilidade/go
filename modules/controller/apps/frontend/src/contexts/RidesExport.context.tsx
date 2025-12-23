@@ -89,6 +89,7 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 				date_start: filterDateStart as UnixTimestamp,
 				delay_statuses: filterDelayStatus as DelayStatus[],
 				operational_statuses: filterOperationalStatus as OperationalStatus[],
+				search: initialFilters.search || undefined,
 			},
 			type: 'ride',
 		};

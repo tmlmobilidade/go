@@ -3,7 +3,7 @@
 /* * */
 
 import { ReferencesGroup } from '@/components/common/references/ReferencesGroup';
-import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Collapsible, MultiSelect, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -46,6 +46,7 @@ export function AlertDetailSectionReferences() {
 		>
 			<Section gap="md">
 				<MultiSelect
+					key={alertDetailContext.data.form.key('municipality_ids')}
 					data={municipalitiesOptions}
 					description={t('municipalities_description')}
 					label={t('municipalities_label')}

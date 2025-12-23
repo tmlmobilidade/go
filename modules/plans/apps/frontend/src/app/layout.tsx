@@ -1,16 +1,15 @@
 /* * */
 
-import { AgenciesContextProvider } from '@/contexts/Agencies.context';
+import { DataProviders } from '@/providers/data-providers';
 import ptTranslation from '@/translations/pt.json';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
-import { Metadata } from 'next';
-import { NuqsAdapter } from 'nuqs/adapters/next';
+import { type Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
 
 /* * */
 
 export const metadata: Metadata = {
-	description: 'Validação e gestão de Planos de Operação.',
+	description: 'Validação e gestão de Planos.',
 	title: 'GO | Planos',
 };
 
@@ -19,15 +18,13 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider>
-			<AgenciesContextProvider>
-				<NuqsAdapter>
-					<AppProvider i18n={[{ namespace: 'plans', pt: ptTranslation }]}>
-						<AppWrapper>
-							{children}
-						</AppWrapper>
-					</AppProvider>s
-				</NuqsAdapter>
-			</AgenciesContextProvider>
+			<AppProvider i18n={[{ namespace: 'plans', pt: ptTranslation }]}>
+				<AppWrapper>
+					<DataProviders>
+						{children}
+					</DataProviders>
+				</AppWrapper>
+			</AppProvider>s
 		</BaseProvider>
 	);
 }

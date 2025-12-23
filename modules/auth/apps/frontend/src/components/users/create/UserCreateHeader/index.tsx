@@ -2,20 +2,15 @@
 
 /* * */
 
-import { useUserCreateContext } from '@/contexts/UserCreate.context';
+import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
+import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
-import { BackButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-interface UserCreateHeaderProps {
-	onClose?: () => void
-}
-
-/* * */
-
-export function UserCreateHeader({ onClose }: UserCreateHeaderProps) {
+export function UserCreateHeader() {
 	//
 
 	//
@@ -29,7 +24,7 @@ export function UserCreateHeader({ onClose }: UserCreateHeaderProps) {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={onClose} type="close" />
+			<CloseButton onClick={closeCreateUserModal} type="close" />
 			<Tag label={t('new_user_button_label')} variant="secondary" />
 			<Spacer />
 			<Button

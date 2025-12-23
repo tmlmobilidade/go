@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
+import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { CreateAgencySchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
@@ -26,6 +26,7 @@ export function AgencyDetailBasicInfo() {
 		<Collapsible
 			description={t('description')}
 			title={t('title')}
+			defaultOpen
 		>
 			<Section gap="lg">
 				<Grid columns="aab" gap="lg">
@@ -34,6 +35,7 @@ export function AgencyDetailBasicInfo() {
 						label={t('fields.name')}
 						maxLength={255}
 						placeholder={t('fields.name_placeholder')}
+						readOnly={agencyDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('name')}
 					/>
@@ -42,6 +44,7 @@ export function AgencyDetailBasicInfo() {
 						label={t('fields.short_name')}
 						maxLength={3}
 						placeholder={t('fields.short_name_placeholder')}
+						readOnly={agencyDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('short_name')}
 					/>
@@ -51,6 +54,7 @@ export function AgencyDetailBasicInfo() {
 						key={agencyDetailContext.data.form.key('public_email')}
 						label={t('fields.email')}
 						placeholder={t('fields.email_placeholder')}
+						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="email"
 						withAsterisk={!CreateAgencySchema.shape.public_email.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('public_email')}
@@ -59,6 +63,7 @@ export function AgencyDetailBasicInfo() {
 						key={agencyDetailContext.data.form.key('phone')}
 						label={t('fields.phone')}
 						placeholder={t('fields.phone_placeholder')}
+						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="tel"
 						withAsterisk={!CreateAgencySchema.shape.phone.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('phone')}
@@ -67,6 +72,7 @@ export function AgencyDetailBasicInfo() {
 						key={agencyDetailContext.data.form.key('website_url')}
 						label={t('fields.website')}
 						placeholder={t('fields.website_placeholder')}
+						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.website_url.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('website_url')}
@@ -75,6 +81,7 @@ export function AgencyDetailBasicInfo() {
 						key={agencyDetailContext.data.form.key('fare_url')}
 						label={t('fields.fare_url')}
 						placeholder={t('fields.fare_url_placeholder')}
+						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.fare_url.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('fare_url')}
@@ -83,6 +90,7 @@ export function AgencyDetailBasicInfo() {
 						key={agencyDetailContext.data.form.key('timezone')}
 						data={Dates.TIMEZONE_LIST}
 						label={t('fields.timezone')}
+						readOnly={agencyDetailContext.flags.isReadOnly}
 						{...agencyDetailContext.data.form.getInputProps('timezone')}
 					/>
 				</Grid>

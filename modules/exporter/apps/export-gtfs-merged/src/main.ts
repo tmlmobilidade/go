@@ -106,6 +106,13 @@ export async function main() {
 	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
 
 	//
+	// Mark as plans as 'waiting' in the database.
+
+	for (const planData of allPlansData) {
+		await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+	}
+
+	//
 	// For each plan, validate it and import its GTFS into
 	// a database and cut it according to the plan's feed_info dates.
 
@@ -127,30 +134,12 @@ export async function main() {
 			const isValidPlan = validatePlan(planData);
 
 			if (!isValidPlan) {
-				await plans.updateById(planData._id, {
-					apps: {
-						...planData.apps,
-						merger: {
-							last_hash: null,
-							status: 'skipped',
-							timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-						},
-					},
-				});
+				await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'skipped', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 				Logger.divider();
 				continue;
 			}
 
-			await plans.updateById(planData._id, {
-				apps: {
-					...planData.apps,
-					merger: {
-						last_hash: null,
-						status: 'processing',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-			});
+			await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'processing', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -237,16 +226,7 @@ export async function main() {
 			//
 			// Mark the plan as complete in the database.
 
-			await plans.updateById(planData._id, {
-				apps: {
-					...planData.apps,
-					merger: {
-						last_hash: null,
-						status: 'complete',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-			});
+			await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'complete', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
@@ -260,16 +240,7 @@ export async function main() {
 			//
 		}
 		catch (error) {
-			await plans.updateById(planData._id, {
-				apps: {
-					...planData.apps,
-					merger: {
-						last_hash: null,
-						status: 'error',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-			});
+			await plans.updateById(planData._id,	{ apps: { ...planData.apps, merger: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 			Logger.error(`Error processing plan ${planData._id}`, error);
 			Logger.divider();
 		}

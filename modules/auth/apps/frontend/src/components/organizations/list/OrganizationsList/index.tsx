@@ -2,12 +2,12 @@
 
 /* * */
 
+import { useOrganizationsListContext } from '@/components/organizations/list/OrganizationsList.context';
 import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
-import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -19,6 +19,8 @@ export function OrganizationsList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const organizationsListContext = useOrganizationsListContext();
 
 	const { t } = useTranslation('auth', { keyPrefix: 'organizations.list.tableColumns' });
@@ -41,8 +43,7 @@ export function OrganizationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: OrganizationNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(item._id)));
 	};
 
 	//
@@ -57,15 +58,13 @@ export function OrganizationsList() {
 	}
 
 	return (
-		<Pane header={[
-			<OrganizationsListHeader />,
-		]}
-		>
+		<Pane header={[<OrganizationsListHeader />]}>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
 				records={organizationsListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

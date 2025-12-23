@@ -2,11 +2,11 @@
 
 /* * */
 
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
-import { useStopDetailContext } from '@/contexts/StopDetails.context';
 import { Translations } from '@/lib/translations';
-import { jurisdictionSchema } from '@tmlmobilidade/types';
-import { Collapsible, Combobox, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { StopJurisdictionSchema } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section, Select, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -23,8 +23,8 @@ export function StopDetailsSectionAdministrative() {
 	//
 	// B. Transform data
 
-	const jurisdictionItems = jurisdictionSchema.options.map(value => ({
-		label: Translations.JURISDICATION[value],
+	const stopJurisdictionOptions = StopJurisdictionSchema.options.map(value => ({
+		label: Translations.JURISDICTION[value],
 		value: value,
 	}));
 
@@ -93,13 +93,15 @@ export function StopDetailsSectionAdministrative() {
 			title="Informação Administrativa"
 		>
 			<Section>
-				<Combobox
-					data={jurisdictionItems}
-					defaultValue={Translations.JURISDICATION.unknown}
-					label="Jurisdição"
-					fullWidth
-					{...stopDetailContext.data.form.getInputProps('jurisdiction')}
-				/>
+				<Grid>
+					<Select
+						key={stopDetailContext.data.form.key('jurisdiction')}
+						data={stopJurisdictionOptions}
+						label="Jurisdição"
+						readOnly={stopDetailContext.flags.isReadOnly}
+						{...stopDetailContext.data.form.getInputProps('jurisdiction')}
+					/>
+				</Grid>
 			</Section>
 			<Section>
 				<Grid columns="ab" gap="md">

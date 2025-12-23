@@ -1,13 +1,13 @@
 /* * */
 
-import { type PublishStatus } from '@tmlmobilidade/types';
+import { AlertSchema } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 interface AlertTagPublishStatusProps {
-	value: PublishStatus
+	value: typeof AlertSchema.shape.publish_status._type
 }
 
 /* * */

@@ -1,6 +1,6 @@
 /* * */
 
-import { useValidationsListContext } from '@/contexts/ValidationsList.context';
+import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { validationProcessingStatus } from '@/types/normalized';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';

@@ -7,19 +7,21 @@ import { z } from 'zod';
 
 export type Notification = z.infer<typeof NotificationSchema>;
 
-export const NotificationSchema = DocumentSchema.extend({
-	is_read: z.boolean(),
-	payload: z.object({
-		body: z.string().min(1),
-		href: z.string().url().optional(),
-		icon: z.string().optional(),
-		title: z.string().min(1),
-	}),
-	priority: z.enum(['high', 'normal', 'low']).default('normal'),
-	scope: z.string().min(1), // e.g., 'agencies', 'alerts', 'auth'
-	topic: z.string().min(1), // e.g., 'new_alert', 'plan_update'
-	user_id: z.string().optional(), // Id of the user this notification belongs to
-}).strict();
+export const NotificationSchema = DocumentSchema
+	.omit({ is_locked: true })
+	.extend({
+		is_read: z.boolean(),
+		payload: z.object({
+			body: z.string().min(1),
+			href: z.string().url().optional(),
+			icon: z.string().optional(),
+			title: z.string().min(1),
+		}),
+		priority: z.enum(['high', 'normal', 'low']).default('normal'),
+		scope: z.string().min(1), // e.g., 'agencies', 'alerts', 'auth'
+		topic: z.string().min(1), // e.g., 'new_alert', 'plan_update'
+		user_id: z.string().optional(), // Id of the user this notification belongs to
+	});
 
 /* * */
 

@@ -6,7 +6,7 @@ import { LineBarChart } from '@/components/charts/LineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
-import { buildMetricUrl, DemandMetricItem, TimeSeriesResult, transformDemandMetric } from '@/utils/metrics';
+import { buildMetricUrl, RawMetricData, TimeSeriesResult, transformDemandMetric } from '@/utils/metrics';
 import { Dates } from '@tmlmobilidade/dates';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -75,7 +75,7 @@ export function DemandVisualization({
 		return buildMetricUrl(baseConfig, metricFilters);
 	}, [groupBy, timeView, endDate, startDate, filters]);
 
-	const { data } = useSWR<DemandMetricItem[]>(metricUrl);
+	const { data } = useSWR<RawMetricData[]>(metricUrl);
 
 	//
 	// C. Transform data

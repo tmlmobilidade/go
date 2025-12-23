@@ -33,7 +33,7 @@ export const openCreateValidationModal = () => {
 
 /* * */
 
-export default function CreateValidationModal() {
+export function CreateValidationModal() {
 	//
 
 	//

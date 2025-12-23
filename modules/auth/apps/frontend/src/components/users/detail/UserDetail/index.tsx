@@ -3,10 +3,10 @@
 /* * */
 
 import { PermissionSection } from '@/components/permissions/PermissionSection';
+import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { UserDetailBasicInfo } from '@/components/users/detail/UserDetailBasicInfo';
 import { UserDetailHeader } from '@/components/users/detail/UserDetailHeader';
 import { UserDetailRolesAndOrganization } from '@/components/users/detail/UserDetailRolesAndOrganization';
-import { useUserDetailContext } from '@/contexts/UserDetail.context';
 import { permissionsConfig } from '@/lib/permissions';
 import { Pane } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

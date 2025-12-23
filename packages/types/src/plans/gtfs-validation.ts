@@ -41,7 +41,7 @@ export const GtfsValidationSchema = DocumentSchema.extend({
 	gtfs_feed_info: GtfsFeedInfoSchema,
 	notification_sent: z.boolean().default(false),
 	summary: GTFSValidatorSummarySchema.nullish(),
-}).strict();
+});
 
 export const CreateGtfsValidationSchema = GtfsValidationSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateGtfsValidationSchema = CreateGtfsValidationSchema.omit({ created_by: true }).partial();

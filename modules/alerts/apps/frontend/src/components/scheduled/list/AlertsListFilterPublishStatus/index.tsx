@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertListContext } from '@/contexts/AlertList.context';
+import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
 import { PublishStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -14,7 +14,7 @@ export function AlertsListFilterPublishStatus() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertListContext();
+	const alertsListContext = useAlertsListContext();
 	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.filterBar' });
 	//
 	// B. Transform data

@@ -56,8 +56,6 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 		return options.every(o => o.checked);
 	}, [options]);
 
-	console.log(label, 'Toggle All Active:', toggleAllActive, options);
-
 	// Create options with "all" option when needed
 	const displayOptions = useMemo(() => {
 		if (!options) return [];

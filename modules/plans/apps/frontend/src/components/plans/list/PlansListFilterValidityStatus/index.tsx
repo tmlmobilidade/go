@@ -1,6 +1,6 @@
 /* * */
 
-import { usePlansListContext } from '@/contexts/PlansList.context';
+import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { planValidityStatus, planValidityStatusValues } from '@/types/normalized';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

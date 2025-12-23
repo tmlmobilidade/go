@@ -126,7 +126,7 @@ export class OCIStorageProvider implements IStorageProvider {
 		try {
 			await uploadManager.upload({
 				content: body instanceof Buffer
-					? { blob: new Blob([body], { type: mimeType }) }
+					? { blob: new Blob([new Uint8Array(body)], { type: mimeType }) }
 					: { stream: body },
 				requestDetails: {
 					bucketName: this.bucketName,

@@ -11,7 +11,7 @@ export type UnixTimestamp = number & {
 	__brand: 'UnixTimestamp'
 };
 
-export const unixTimeStampSchema = z
+export const UnixTimeStampSchema = z
 	.number()
 	.transform(validateUnixTimestamp);
 

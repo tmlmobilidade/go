@@ -68,7 +68,7 @@ export function usePreventNavigation(shouldBlock: boolean) {
 
 	useEffect(() => {
 		// Handle back/forward button press
-		const handleBackButton = (event: PopStateEvent) => {
+		const handleCloseButton = (event: PopStateEvent) => {
 			if (shouldBlock) {
 				// Prevent navigation
 				event.preventDefault();
@@ -82,10 +82,10 @@ export function usePreventNavigation(shouldBlock: boolean) {
 			}
 		};
 		// Setup listener for popstate events (back/forward navigation)
-		window.addEventListener('popstate', handleBackButton);
+		window.addEventListener('popstate', handleCloseButton);
 		// Cleanup listener on unmount or when shouldBlock changes
 		return () => {
-			window.removeEventListener('popstate', handleBackButton);
+			window.removeEventListener('popstate', handleCloseButton);
 		};
 	}, [shouldBlock]);
 

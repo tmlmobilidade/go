@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
+import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +31,7 @@ export function RoleDetailBasicInfo() {
 						key={roleDetailContext.data.form.key('name')}
 						label={t('fields.name')}
 						maxLength={255}
-						placeholder="..."
+						readOnly={roleDetailContext.flags.isReadOnly}
 						withAsterisk
 						{...roleDetailContext.data.form.getInputProps('name')}
 					/>

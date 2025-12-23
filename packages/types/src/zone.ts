@@ -17,7 +17,7 @@ export const ZoneSchema = DocumentSchema.extend({
 	geojson: z.record(z.any()), // TODO: Validate GeoJSON
 	is_locked: z.boolean(),
 	name: z.string(),
-}).strict();
+});
 
 export const CreateZoneSchema = ZoneSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateZoneSchema = CreateZoneSchema.omit({ created_by: true }).partial();
