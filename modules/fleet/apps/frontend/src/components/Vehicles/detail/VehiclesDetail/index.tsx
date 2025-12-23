@@ -2,12 +2,11 @@
 
 /* * */
 
-import { AgencyMultiselect } from '@/components/common/AgencyMultiselect';
 import { DatesSelector } from '@/components/common/DatesSelector';
 import { VehiclesDetailHeader } from '@/components/Vehicles/detail/VehiclesDetailHeader';
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 // import { vehicleSchema } from '@tmlmobilidade/types';
-import { ErrorDisplay, Grid, LoadingOverlay, Pane, Section, Text, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, LoadingOverlay, Pane, Section, Select, Text, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -53,10 +52,10 @@ export function VehiclesDetail() {
 						{...VehiclesDetailContext.data.form.getInputProps('description')}
 					/>
 
-					<AgencyMultiselect
+					<Select
 						label="Operadores afetados"
+						placeholder="Selecione os operadores"
 						readOnly={VehiclesDetailContext.flags.read_only}
-						selected={VehiclesDetailContext.data.form.values.agency_id || []}
 						{...VehiclesDetailContext.data.form.getInputProps('agency_id')}
 					/>
 
