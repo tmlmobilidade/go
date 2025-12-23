@@ -87,9 +87,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('fleet', 'frontend_url')}`,
 
-		// ANNOTATIONS
-		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/annotations/${id}`,
-		ANNOTATIONS_LIST: `${getAppConfig('fleet', 'frontend_url')}/annotations`,
+		// VEHICLES
+		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/Vehicles/${id}`,
+		VEHICLES_LIST: `${getAppConfig('fleet', 'frontend_url')}/Vehicles`,
 	},
 
 	/* * */
@@ -270,7 +270,7 @@ export const API_ROUTES = Object.freeze({
 
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}`,
-		VEHICLES_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/toggle-lock`,
+		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getAppConfig('fleet', 'api_url')}/vehicles`,
 	},
 

@@ -55,24 +55,6 @@ class VehiclesClass extends MongoCollectionClass<Vehicle, CreateVehicleDto, Upda
 		return this.mongoCollection.find({ _id: { $in: ids } } as Filter<Vehicle>).toArray();
 	}
 
-	/**
-	 * Toogle the delete status of a document by its ID.
-	 * vehicle documents are never truly deleted to preserve
-	 * data integrity and prevent ID reuse.
-	 * @param id The ID of the vehicle document to delete.
-	 * @param forceValue Optional boolean to explicitly set the deleted status.
-	 * @returns A promise that resolves to the result of the delete operation.
-	 */
-	async toggleDeleteById(id: string, forceValue?: boolean): Promise<void> {
-		// Get the current document from the database
-		const foundDoc = await this.findById(id);
-		if (!foundDoc) throw new Error('vehicle not found');
-		// Determine the new deleted status
-		const newDeletedStatus = forceValue !== undefined ? forceValue : !((foundDoc).is_deleted ?? false);
-		// If the document is deleted, we allow the operation even if it's locked
-		await this.updateById(id, { is_deleted: newDeletedStatus }, { forceIfLocked: !newDeletedStatus && foundDoc.is_locked });
-	}
-
 	protected getCollectionIndexes(): IndexDescription[] {
 		return [
 			{ background: true, key: { name: 1 } },
