@@ -22,7 +22,7 @@ export function DatesSelector() {
 
 	const handleSelect = (date: Date) => {
 		const operationalDate = dayjs(date).format('YYYYMMDD') as OperationalDate;
-		const currentDates = vehiclesDetailContext.data.form.values.dates || [];
+		const currentDates = vehiclesDetailContext.data.form.values.registration_date || [];
 		const isSelected = currentDates.includes(operationalDate);
 
 		if (isSelected) {
@@ -49,7 +49,7 @@ export function DatesSelector() {
 			getDayProps={date => ({
 				disabled: vehiclesDetailContext.flags.read_only,
 				onClick: () => handleSelect(new Date(date)),
-				selected: (vehiclesDetailContext.data.form.values.dates || []).includes(dayjs(date).format('YYYYMMDD') as OperationalDate),
+				selected: (vehiclesDetailContext.data.form.values.registration_date || []).includes(dayjs(date).format('YYYYMMDD') as OperationalDate),
 			})}
 		/>
 	);
