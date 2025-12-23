@@ -2,9 +2,9 @@
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { CauseIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
 import { GtfsCause, gtfsCauseSchema } from '@tmlmobilidade/types';
 import { Grid, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -20,9 +20,10 @@ export function RealtimeStepCause() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('global', { keyPrefix: 'causesAndEffects' });
 	const causeItems: CauseItem[] = Object.values(gtfsCauseSchema.enum).map(cause => ({
 		icon: CauseIcons[cause],
-		label: Translations.CAUSE[cause],
+		label: t(`cause.${cause}`),
 		value: cause,
 	}));
 

@@ -2,9 +2,9 @@
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { EffectIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
 import { GtfsEffect, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { Grid, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -20,9 +20,10 @@ export function RealtimeStepEffect() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('global', { keyPrefix: 'causesAndEffects' });
 	const EffectItems: EffectItem[] = Object.values(gtfsEffectSchema.enum).map(Effect => ({
 		icon: EffectIcons[Effect],
-		label: Translations.EFFECT[Effect],
+		label: t(`effect.${Effect}`),
 		value: Effect,
 	}));
 

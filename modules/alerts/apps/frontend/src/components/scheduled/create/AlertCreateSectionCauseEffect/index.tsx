@@ -4,7 +4,6 @@
 
 import { useAlertCreateContext } from '@/contexts/AlertCreate.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -21,19 +20,20 @@ export function AlertCreateSectionCauseEffect() {
 
 	const alertCreateContext = useAlertCreateContext();
 	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.create.sectionCauseEffect' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'causesAndEffects' });
 
 	//
 	// B. Transform data
 
 	const causeItems = gtfsCauseSchema.options.map(cause => ({
 		icon: CauseIcons[cause],
-		label: Translations.CAUSE[cause],
+		label: tGlobal(`cause.${cause}`),
 		value: cause,
 	}));
 
 	const effectItems = gtfsEffectSchema.options.map(effect => ({
 		icon: EffectIcons[effect],
-		label: Translations.EFFECT[effect],
+		label: tGlobal(`effect.${effect}`),
 		value: effect,
 	}));
 

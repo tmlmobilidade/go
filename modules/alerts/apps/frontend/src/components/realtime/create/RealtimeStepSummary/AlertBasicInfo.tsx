@@ -11,6 +11,7 @@ export function AlertBasicInfo() {
 
 	const realtimeContext = useRealtimeCreateContext();
 	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepSummary.alertBasicInfo' });
+	const { t: tGlobal } = useTranslation('causesAndEffects');
 
 	//
 	// B. Render components
@@ -35,7 +36,8 @@ export function AlertBasicInfo() {
 							onChange={(event) => {
 								realtimeContext.actions.setDetour(event.target.value);
 								const uniqueLineIds = Array.from(new Set(realtimeContext.data.selectedRides.map(ride => ride.line_id)));
-								const { description } = getAlertTitleAndDescription(realtimeContext.data.form.values.cause, realtimeContext.data.form.values.effect, uniqueLineIds.join(', '), event.target.value);
+								const { descriptionKey, params } = getAlertTitleAndDescription(realtimeContext.data.form.values.cause, realtimeContext.data.form.values.effect, uniqueLineIds.join(', '), event.target.value);
+								const description = tGlobal(descriptionKey, params);
 								realtimeContext.data.form.setFieldValue('description', description);
 							}}
 							withAsterisk

@@ -4,7 +4,7 @@
 
 import { useRealtimeDetailContext } from '@/contexts/RealtimeDetail.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
+// import { Translations } from '@/lib/translations';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
 import { Collapsible, Combobox, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -21,18 +21,20 @@ export function RealtimeDetailSectionCauseEffect() {
 
 	const realtimeDetailContext = useRealtimeDetailContext();
 	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.detail.sectionCauseEffect' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'causesAndEffects' });
+
 	//
 	// B. Transform data
 
 	const causeItems = gtfsCauseSchema.options.map(cause => ({
 		icon: CauseIcons[cause],
-		label: Translations.CAUSE[cause],
+		label: tGlobal(cause),
 		value: cause,
 	}));
 
 	const effectItems = gtfsEffectSchema.options.map(effect => ({
 		icon: EffectIcons[effect],
-		label: Translations.EFFECT[effect],
+		label: tGlobal(effect),
 		value: effect,
 	}));
 
