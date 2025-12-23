@@ -36,14 +36,14 @@ export function VehiclesList() {
 		{
 			accessor: 'agency_id',
 			render: item => <Tag label={item.agency_id} />,
-			title: 'Operadores',
+			title: 'Operador',
 			width: 200,
 		},
 		{
-			accessor: 'vehicle_id',
-			render: item => <Tag label={item.vehicle_id} />,
-			title: 'Veículo',
-			width: 500,
+			accessor: 'license_plate',
+			render: item => <Tag label={item.license_plate} />,
+			title: 'matrícula do veículo',
+			width: 300,
 		},
 	];
 
