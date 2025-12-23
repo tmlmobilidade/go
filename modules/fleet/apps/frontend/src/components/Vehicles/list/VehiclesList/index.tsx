@@ -24,7 +24,7 @@ export function VehiclesList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const VehiclesListContext = useVehiclesListContext();
+	const vehiclesListContext = useVehiclesListContext();
 
 	const columns: DataTableColumn<VehicleNormalized>[] = [
 		{
@@ -57,12 +57,12 @@ export function VehiclesList() {
 	//
 	// C. Render components
 
-	if (VehiclesListContext.flags.loading) {
+	if (vehiclesListContext.flags.loading) {
 		return <LoadingOverlay />;
 	}
 
-	if (VehiclesListContext.flags.error) {
-		return <ErrorDisplay message={VehiclesListContext.flags.error.message} />;
+	if (vehiclesListContext.flags.error) {
+		return <ErrorDisplay message={vehiclesListContext.flags.error.message} />;
 	}
 
 	return (
@@ -74,7 +74,7 @@ export function VehiclesList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={VehiclesListContext.data.filtered}
+				records={vehiclesListContext.data.filtered}
 				rowIdAccessor="_id"
 				selectedId={params.id}
 			/>

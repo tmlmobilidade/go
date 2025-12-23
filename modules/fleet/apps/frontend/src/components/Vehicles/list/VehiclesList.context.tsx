@@ -70,9 +70,6 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	// B. Fetch data
 
 	const { data: allVehicleData, error: allVehicleError, isLoading: allVehicleLoading } = useSWR<Vehicle[], Error>(API_ROUTES.fleet.VEHICLES_LIST, { refreshInterval: 5000 });
-	console.log('allVehicleData', allVehicleData);
-	console.log('allVehicleError', allVehicleError);
-	console.log('allVehicleLoading', allVehicleLoading);
 
 	//
 	// C. Transform data

@@ -16,17 +16,17 @@ export function VehiclesDetail() {
 	//
 	// A. Setup variables
 
-	const VehiclesDetailContext = useVehiclesDetailContext();
+	const vehiclesDetailContext = useVehiclesDetailContext();
 
 	//
 	// B. Render components
 
-	if (VehiclesDetailContext.flags.loading) {
+	if (vehiclesDetailContext.flags.loading) {
 		return <LoadingOverlay />;
 	}
 
-	if (VehiclesDetailContext.flags.error) {
-		return <ErrorDisplay message={VehiclesDetailContext.flags.error.message} />;
+	if (vehiclesDetailContext.flags.error) {
+		return <ErrorDisplay message={vehiclesDetailContext.flags.error.message} />;
 	}
 
 	return (
@@ -37,26 +37,26 @@ export function VehiclesDetail() {
 					<TextInput
 						label="Título"
 						placeholder="Ex: Greve de transportes"
-						readOnly={VehiclesDetailContext.flags.read_only}
+						readOnly={vehiclesDetailContext.flags.read_only}
 						// required={!vehicleSchema.shape..isOptional()}
 						w="100%"
-						{...VehiclesDetailContext.data.form.getInputProps('title')}
+						{...vehiclesDetailContext.data.form.getInputProps('title')}
 					/>
 
 					<Textarea
 						label="Descrição"
 						placeholder="Descrição da ocorrência"
-						readOnly={VehiclesDetailContext.flags.read_only}
+						readOnly={vehiclesDetailContext.flags.read_only}
 						// required={!vehicleSchema.shape..isOptional()}
 						w="100%"
-						{...VehiclesDetailContext.data.form.getInputProps('description')}
+						{...vehiclesDetailContext.data.form.getInputProps('description')}
 					/>
 
 					<Select
 						label="Operadores afetados"
 						placeholder="Selecione os operadores"
-						readOnly={VehiclesDetailContext.flags.read_only}
-						{...VehiclesDetailContext.data.form.getInputProps('agency_id')}
+						readOnly={vehiclesDetailContext.flags.read_only}
+						{...vehiclesDetailContext.data.form.getInputProps('agency_id')}
 					/>
 
 					<Text>Selecione as datas da ocorrência</Text>
