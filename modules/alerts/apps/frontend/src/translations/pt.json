@@ -25,6 +25,19 @@
 					"title": "Resumo do Alerta",
 					"title_label": "Título"
 				}
+			},
+			"stepTripsFilter": {
+				"fields": {
+					"line_select_label": "Linha",
+					"stop_select_label": "Paragem"
+				},
+				"title": "Filtros"
+			},
+			"stepTripsFound": {
+				"add_all": "Adicionar Todas",
+				"clear_filters": "Limpar Filtros",
+				"title": "Viagens Encontradas"
+
 			}
 		},
 		"detail": {

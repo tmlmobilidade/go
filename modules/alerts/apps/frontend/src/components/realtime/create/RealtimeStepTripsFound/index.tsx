@@ -5,6 +5,7 @@
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
 import { useRidesContext } from '@/contexts/Rides.context';
 import { Button, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';
@@ -19,6 +20,7 @@ export function RealtimeStepTripsFound() {
 
 	const ridesContext = useRidesContext();
 	const realtimeContext = useRealtimeCreateContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'realtime.create.stepTripsFound' });
 
 	//
 	// B. Render components
@@ -31,15 +33,15 @@ export function RealtimeStepTripsFound() {
 				justifyContent="space-between"
 				padding="none"
 			>
-				<Label>Viagens encontradas</Label>
+				<Label>{t('title')}</Label>
 				<div className={styles.tripsActionsContainer}>
 					<Button
-						label="Adicionar Todas"
+						label={t('add_all')}
 						onClick={() => realtimeContext.actions.addAllTrips(ridesContext.data.rides)}
 						variant="primary"
 					/>
 					<Button
-						label="Limpar Filtros"
+						label={t('clear_filters')}
 						onClick={ridesContext.actions.clearFilters}
 						variant="danger"
 					/>
