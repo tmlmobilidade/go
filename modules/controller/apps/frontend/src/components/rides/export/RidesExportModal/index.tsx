@@ -9,6 +9,7 @@ import { IconFileDownload } from '@tabler/icons-react';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { Button, closeModal, DateTimePicker, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { translateFilterKey, translateFilterValue } from './translations';
 
@@ -45,8 +46,11 @@ export default function RidesExportModal() {
 
 	//
 	// A. Setup variables
+
 	const context = useRidesExportModalContext();
 	const agenciesContext = useAgenciesContext();
+	const { t } = useTranslation('controller', { keyPrefix: 'exportModal' });
+	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
 	// B. Transform data
@@ -77,8 +81,8 @@ export default function RidesExportModal() {
 	return (
 		<div style={{ minHeight: '200px' }}>
 			<Section>
-				<Label size="lg" caps>Exportar Circulações</Label>
-				<Text>Selecione o intervalo de datas para a exportação das circulações.</Text>
+				<Label size="lg" caps>{t('title')}</Label>
+				<Text>{t('description')}</Text>
 			</Section>
 
 			<Divider />
@@ -86,13 +90,13 @@ export default function RidesExportModal() {
 				<Grid columns="ab" gap="md">
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateStart(value)}
-						placeholder="Data de Início"
+						placeholder={t('fields.start_date')}
 						value={context.filters.date_start as UnixTimestamp}
 						fullWidth
 					/>
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateEnd(value)}
-						placeholder="Data de Fim"
+						placeholder={t('fields.end_date')}
 						value={context.filters.date_end as UnixTimestamp}
 						fullWidth
 					/>
@@ -118,14 +122,14 @@ export default function RidesExportModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={context.flags.loading}
-						label="Cancelar"
+						label={tGlobal('cancel')}
 						onClick={() => closeModal(RIDES_EXPORT_MODAL_ID)}
 						variant="danger"
 					/>
 					<Button
 						disabled={!context.flags.canSave}
 						icon={<IconFileDownload />}
-						label="Exportar Circulações"
+						label={t('export_circulations')}
 						loading={context.flags.loading}
 						onClick={context.actions.exportRides}
 					/>

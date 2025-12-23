@@ -1,5 +1,13 @@
 {
 	"rides": {
+		"exportModal": {
+			"description": "Selecione o intervalo de datas para a exportação das circulações.",
+			"fields": {
+				"end_date": "Data Fim",
+				"start_date": "Data Início"
+			},
+			"title": "Exportar Circulações"
+		},
 		"list": {
 			"filterBar": {
 				"acceptance_status": {
