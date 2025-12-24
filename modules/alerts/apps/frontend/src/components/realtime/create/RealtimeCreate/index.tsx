@@ -39,7 +39,6 @@ export function RealtimeCreate() {
 			<RealtimeCreateHeader />,
 			realtimeCreateContext.data.currentStep.id === 'trip' && <RealtimeCreateStepRidesFilters />,
 			realtimeCreateContext.data.currentStep.id === 'trip' && <RealtimeCreateStepRidesSelectionControls />,
-
 		]}
 		>
 			{realtimeCreateContext.data.currentStep.id === 'cause' && <RealtimeCreateStepCause />}

@@ -1,6 +1,6 @@
 /* * */
 
-import { type RidesData } from '@/hooks/Rides.context';
+import { type RidesData } from '@/hooks/use-data-rides';
 import { Line, Stop } from '@carrismetropolitana/api-types/network';
 
 /* * */

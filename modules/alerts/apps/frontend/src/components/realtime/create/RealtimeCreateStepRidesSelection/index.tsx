@@ -3,9 +3,15 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
-import { RidesData } from '@/hooks/Rides.context';
-import { Checkbox, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
+import { RidesData } from '@/hooks/use-data-rides';
+import { Dates } from '@tmlmobilidade/dates';
+import { UnixTimestamp } from '@tmlmobilidade/types';
+import { Checkbox, DataTable, DataTableColumn, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+
+import { OperationalStatusTag } from '../OperationalStatusTag';
+import { RidesListCellHeadsign } from '../RidesListCellHeadsign';
+import { SeenStatusTag } from '../SeenStatusTag';
 
 /* * */
 
@@ -17,6 +23,10 @@ export function RealtimeCreateStepRidesSelection() {
 
 	const realtimeCreateContext = useRealtimeCreateContext();
 
+	const formatTimestamp = (timestamp: UnixTimestamp) => {
+		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
+	};
+
 	const columns: DataTableColumn<RidesData>[] = [
 		{
 			accessor: '_id',
@@ -25,19 +35,28 @@ export function RealtimeCreateStepRidesSelection() {
 			width: 50,
 		},
 		{
-			accessor: 'pattern_id',
-			title: 'Título',
-			width: 100,
+			accessor: 'seen_last_at',
+			render: item => <SeenStatusTag value={item.seen_status} />,
+			title: '',
+			width: 24,
+		},
+		{
+			accessor: 'operational_status',
+			render: item => <OperationalStatusTag value={item.operational_status} />,
+			title: 'Estado',
+			width: 150,
 		},
 		{
 			accessor: 'headsign',
-			title: 'Título',
-			width: 400,
+			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
+			title: 'Pattern',
+			width: 500,
 		},
 		{
 			accessor: 'start_time_scheduled',
-			title: 'Título',
-			width: 200,
+			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
+			title: 'Partida',
+			width: 80,
 		},
 	];
 

@@ -1,12 +1,13 @@
 /* * */
 
+import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/endpoints/rides/schema.js';
 import { HttpStatus } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AggregationPipeline } from '@tmlmobilidade/interfaces';
+import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { rides } from '@tmlmobilidade/interfaces';
-import { type Permission, PermissionCatalog, type Ride } from '@tmlmobilidade/types';
-import { getPermission } from '@tmlmobilidade/utils';
+import { normalizeRide } from '@tmlmobilidade/normalizers';
+import { PermissionCatalog, type Ride, type RideNormalized } from '@tmlmobilidade/types';
+import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -15,76 +16,75 @@ export class RidesController {
 
 	/**
 	 * Gets a batch of Rides built with an aggregation pipeline.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
-	static async getBatch(request: FastifyRequest<{ Querystring: { lineId?: string, search?: string, stopId?: string } }>, reply: FastifyReply<Ride[]>) {
+	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) {
 		//
 
-		const pipeline: AggregationPipeline<Ride> = [];
+		//
+		// Validate the request query parameters
+
+		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
 
 		//
-		// 1. Match rides between today's start and end date
-		const startDate = Dates.now('Europe/Lisbon').minus({ minutes: 30 }).unix_timestamp;
-		const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
+		// Detect which agency_ids the user has access to,
+		// based on their permissions. If none, return an empty array.
 
-		pipeline.push({ $match: { end_time_scheduled: { $gte: startDate, $lt: todayEndDate } } });
+		const ridesPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
+
+		if (!ridesPermission?.resources?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HttpStatus.OK });
+
+		const allowAllAgencies = ridesPermission.resources.agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 		//
+		// If search is provided, immediately try to find the ride by ID.
+		// If found, return it as the only result. This optimizes
+		// for the common case of searching by ride ID.
 
-		// 2. Filter rides by line ID & stop ID
-		if (request.query.lineId) {
-			pipeline.push({ $match: { line_id: Number(request.query.lineId) } });
+		const searchQuery = parsedQuery.search?.trim() ?? '';
+
+		const foundRideById = await rides.findOne({
+			_id: searchQuery,
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission.resources.agency_ids } }),
+		});
+
+		if (foundRideById) {
+			const normalizedRide = normalizeRide(foundRideById);
+			return reply.send({ data: [normalizedRide], error: null, statusCode: HttpStatus.OK });
 		}
 
 		//
-		// 3. If search is provided, match rides by ID
-		const search = request.query.search?.trim() ?? '';
-		if (search) {
-			const keywords = search.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
-			pipeline.push({
-				$match: { _id: { $options: 'i', $regex: pattern } },
-			});
-		}
+		// Get the rides batch using native MongoDB cursor
+		// with batchSize to prevent memory issues
+
+		const pipeline = ridesBatchAggregationPipeline({
+			agency_ids: parsedQuery.agency_ids.filter(id => allowAllAgencies || ridesPermission.resources.agency_ids.includes(id)),
+			date_end: parsedQuery.date_end,
+			date_start: parsedQuery.date_start,
+			delay_statuses: parsedQuery.delay_statuses,
+			line_ids: parsedQuery.line_ids,
+			operational_statuses: parsedQuery.operational_statuses,
+			search: parsedQuery.search,
+			seen_statuses: parsedQuery.seen_statuses,
+			stop_ids: parsedQuery.stop_ids,
+		});
 
 		//
-		// 4. Filter rides based on permissions for the current user
-		const ridePermission: Permission = getPermission(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
+		// Limit the number of rides to 2000 and sort by start_time_scheduled
 
-		if ('resource' in ridePermission && ridePermission.scope === PermissionCatalog.all.rides.scope) {
-			// 4.1. Filter rides based on agency IDs
-			if (ridePermission.resource['agency_ids'] && !ridePermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				pipeline.push({ $match: { agency_id: { $in: ridePermission.resource['agency_ids'] } } });
-			}
-		}
-
-		//
-		// 5. Add a list of stop IDs to each ride based on the Shape Trip associated to the Ride
-		pipeline.push(
-			{ $lookup: { as: 'shape_details', foreignField: '_id', from: 'hashed_trips', localField: 'hashed_trip_id' } },
-			{ $unwind: '$shape_details' },
-			{ $addFields: { stop_ids: '$shape_details.path.stop_id' } },
-			{ $project: { shape_details: 0 } },
-			{ $sort: { start_time_scheduled: 1 } },
-		);
-
-		//
-		// 6. Filter rides by stop ID
-		if (request.query.stopId) {
-			pipeline.push({ $match: { stop_ids: request.query.stopId } });
-		}
-
-		//
-		// 7. Final pipeline stages
 		pipeline.push({ $limit: 2000 }, { $sort: { start_time_scheduled: 1 } });
 
 		//
-		// 8. Fetch rides from the database
+		// Fetch the rides batch from the database
+
 		const ridesBatch = await rides.aggregate(pipeline);
 
 		//
 		// Send the response
+
 		reply.send({
-			data: ridesBatch ?? [],
+			data: ridesBatch as RideNormalized[] ?? [],
 			error: null,
 			statusCode: HttpStatus.OK,
 		});

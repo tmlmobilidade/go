@@ -61,7 +61,7 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	const asOptions = useMemo(() => {
 		if (!allStopsData) return [];
 		return allStopsData.map(stop => ({
-			label: `${stop.short_name} | ${stop.long_name}`,
+			label: `${stop.id} | ${stop.long_name}`,
 			value: stop.id,
 		}));
 	}, [allStopsData]);

@@ -31,7 +31,7 @@ export function Pane({ children, header }: PaneProps) {
 		<Surface height="full">
 			{header && (
 				<div className={styles.header}>
-					{header.map((headerRow, index) => (
+					{header.filter(Boolean).map((headerRow, index) => (
 						<div key={index} className={styles.headerRow}>
 							{headerRow}
 						</div>

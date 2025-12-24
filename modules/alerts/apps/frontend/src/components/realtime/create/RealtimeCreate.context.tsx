@@ -4,7 +4,7 @@
 
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { RidesData, useDataRides } from '@/hooks/Rides.context';
+import { RidesData, useDataRides } from '@/hooks/use-data-rides';
 import { useMultiStepForm, type UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';

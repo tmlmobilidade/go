@@ -3,7 +3,7 @@
 /* * */
 
 import { useScheduledAlertCreateContext } from '@/components/scheduled/create/ScheduledAlertCreate.context';
-import { DateTimePicker, Section } from '@tmlmobilidade/ui';
+import { DateTimeInput, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,37 +16,23 @@ export function ScheduledAlertCreateSectionValidity() {
 	const scheduledAlertCreateContext = useScheduledAlertCreateContext();
 
 	//
-	// B. Transform data
-
-	const startDateValue = scheduledAlertCreateContext.data.form.getValues().active_period_start_date;
-	const endDateValue = scheduledAlertCreateContext.data.form.getValues().active_period_end_date;
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
-		<Section flexDirection="row" gap="md">
-			<DateTimePicker
-				key={scheduledAlertCreateContext.data.form.key('active_period_start_date')}
-				label="Data de Início"
-				fullWidth
-				{...scheduledAlertCreateContext.data.form.getInputProps('active_period_start_date')}
-				value={startDateValue}
-				onChange={(date) => {
-					scheduledAlertCreateContext.data.form.setFieldValue('active_period_start_date', date);
-				}}
-			/>
-			<DateTimePicker
-				key={scheduledAlertCreateContext.data.form.key('active_period_end_date')}
-				label="Data de Fim"
-				clearable
-				fullWidth
-				{...scheduledAlertCreateContext.data.form.getInputProps('active_period_end_date')}
-				value={endDateValue}
-				onChange={(date) => {
-					scheduledAlertCreateContext.data.form.setFieldValue('active_period_end_date', date);
-				}}
-			/>
+		<Section>
+			<Grid columns="ab" gap="md">
+				<DateTimeInput
+					key={scheduledAlertCreateContext.data.form.key('active_period_start_date')}
+					label="Data de Início"
+					{...scheduledAlertCreateContext.data.form.getInputProps('active_period_start_date')}
+				/>
+				<DateTimeInput
+					key={scheduledAlertCreateContext.data.form.key('active_period_end_date')}
+					label="Data de Fim"
+					clearable
+					{...scheduledAlertCreateContext.data.form.getInputProps('active_period_end_date')}
+				/>
+			</Grid>
 		</Section>
 	);
 

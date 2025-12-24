@@ -6,9 +6,7 @@ import { useScheduledAlertCreateContext } from '@/components/scheduled/create/Sc
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
-import { Combobox, Section } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { Grid, Section, Select } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -39,25 +37,23 @@ export function ScheduledAlertCreateSectionCauseEffect() {
 	// C. Render components
 
 	return (
-		<Section flexDirection="row" gap="md">
-			<div className={styles.container}>
-				<Combobox
+		<Section>
+			<Grid columns="ab" gap="md">
+				<Select
 					key={scheduledAlertCreateContext.data.form.key('cause')}
 					data={causeItems}
 					description="O que aconteceu"
 					label="Causa"
 					{...scheduledAlertCreateContext.data.form.getInputProps('cause')}
 				/>
-			</div>
-			<div className={styles.container}>
-				<Combobox
+				<Select
 					key={scheduledAlertCreateContext.data.form.key('effect')}
 					data={effectItems}
 					description="O que aconteceu como consequência"
 					label="Efeito"
 					{...scheduledAlertCreateContext.data.form.getInputProps('effect')}
 				/>
-			</div>
+			</Grid>
 		</Section>
 	);
 

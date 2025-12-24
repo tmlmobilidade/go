@@ -3,7 +3,7 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
-import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,15 +16,20 @@ export function RealtimeCreateHeader() {
 	const realtimeCreateContext = useRealtimeCreateContext();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-			{!realtimeCreateContext.flags.isFirst && <CloseButton onClick={realtimeCreateContext.actions.prevStep} />}
-			<Label size="md" variant={realtimeCreateContext.flags.isFirst ? 'muted' : undefined} caps singleLine>Novo Alerta</Label>
+
+			<Tag label="Causa" onClick={() => realtimeCreateContext.actions.goToStep(0)} variant={realtimeCreateContext.data.currentStep.id === 'cause' ? 'primary' : 'secondary'} filled />
+			<Tag label="Efeito" onClick={() => realtimeCreateContext.actions.goToStep(1)} variant={realtimeCreateContext.data.currentStep.id === 'effect' ? 'primary' : 'secondary'} filled />
+			<Tag label="Circulações" onClick={() => realtimeCreateContext.actions.goToStep(2)} variant={realtimeCreateContext.data.currentStep.id === 'trip' ? 'primary' : 'secondary'} filled />
+			<Tag label="Resumo" onClick={() => realtimeCreateContext.actions.goToStep(3)} variant={realtimeCreateContext.data.currentStep.id === 'summary' ? 'primary' : 'secondary'} filled />
+
 			<Spacer />
 			<TripNextButton />
 			<SaveButton />
+
 		</Toolbar>
 	);
 

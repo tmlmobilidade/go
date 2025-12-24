@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesData } from '@/hooks/Rides.context';
+import { RidesData } from '@/hooks/use-data-rides';
 import { Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
