@@ -24,7 +24,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, createTheme, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, createTheme, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea } from '@mantine/core';
 import { TimePicker } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
@@ -53,6 +53,7 @@ import SegmentedControlOverrideSm from './mantine/overrides/SegmentedControl-sm.
 import SegmentedControlOverride from './mantine/overrides/SegmentedControl.module.css';
 import SkeletonOverride from './mantine/overrides/Skeleton.module.css';
 import SliderOverride from './mantine/overrides/Slider.module.css';
+import StepperOverride from './mantine/overrides/Stepper.module.css';
 import SwitchOverride from './mantine/overrides/Switch.module.css';
 import TextOverride from './mantine/overrides/Text.module.css';
 import TextareaOverrideComment from './mantine/overrides/Textarea-comment.module.css';
@@ -191,6 +192,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		Slider: Slider.extend({
 			classNames: {
 				...SliderOverride,
+			},
+		}),
+
+		Stepper: Stepper.extend({
+			classNames: {
+				...StepperOverride,
 			},
 		}),
 

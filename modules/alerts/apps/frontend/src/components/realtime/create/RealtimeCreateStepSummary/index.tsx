@@ -1,10 +1,9 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
-import { RidesData } from '@/hooks/use-data-rides';
 import { getAlertTitleAndDescription, Translations } from '@/lib/translations';
 import { Dates } from '@tmlmobilidade/dates';
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, Divider, Grid, Section, Tag, Textarea, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
 
@@ -26,7 +25,7 @@ export function RealtimeCreateStepSummary() {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
 	};
 
-	const columns: DataTableColumn<RidesData>[] = [
+	const columns: DataTableColumn<RideNormalized>[] = [
 		{
 			accessor: 'seen_last_at',
 			render: item => <SeenStatusTag value={item.seen_status} />,
@@ -91,7 +90,7 @@ export function RealtimeCreateStepSummary() {
 					<Grid columns="abc" gap="md">
 						<ValueDisplay label="Causa" value={Translations.CAUSE[realtimeCreateContext.data.form.getValues().cause]} bordered />
 						<ValueDisplay label="Efeito" value={Translations.EFFECT[realtimeCreateContext.data.form.getValues().effect]} bordered />
-						<ValueDisplay label="Circulações Afetadas" value={realtimeCreateContext.data.form.getValues().references.length} bordered />
+						<ValueDisplay label="Circulações Afetadas" value={realtimeCreateContext.data.form.getValues().references?.length} bordered />
 					</Grid>
 				</Grid>
 			</Section>

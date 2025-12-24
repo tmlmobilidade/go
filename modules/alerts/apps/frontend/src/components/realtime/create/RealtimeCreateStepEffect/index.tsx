@@ -21,7 +21,7 @@ export function RealtimeCreateStepEffect() {
 
 	const handleSelectEffect = (value: keyof typeof gtfsEffectSchema.enum) => {
 		realtimeCreateContext.data.form.setFieldValue('effect', value);
-		realtimeCreateContext.actions.nextStep();
+		realtimeCreateContext.data.multi_step.next();
 	};
 
 	//

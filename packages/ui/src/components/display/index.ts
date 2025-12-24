@@ -5,6 +5,7 @@ export * from './ErrorDisplay';
 export * from './Indicator';
 export * from './Label';
 export * from './NoDataLabel';
+export * from './Stepper';
 export * from './Tag';
 export * from './TagGroup';
 export * from './Text';

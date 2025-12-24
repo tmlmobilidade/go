@@ -18,7 +18,7 @@
 }
 
 .container:hover,
-.container[data-active] {
+.container[data-active="true"] {
 	color: var(--color-contrast);
 	background-color: var(--color-primary);
 	border-color: var(--color-secondary);
@@ -27,10 +27,6 @@
 
 .container:active {
 	transform: translateY(2px);
-}
-
-.container[data-active] {
-	pointer-events: none;
 }
 
 /* * */

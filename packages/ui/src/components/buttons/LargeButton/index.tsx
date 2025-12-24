@@ -17,18 +17,9 @@ export interface LargeButtonProps {
 export function LargeButton({ href, icon, isActive, onClick, title }: LargeButtonProps) {
 	//
 
-	if (isActive) {
-		return (
-			<div className={styles.container} data-active>
-				<div className={styles.icon}>{icon}</div>
-				<p className={styles.title}>{title}</p>
-			</div>
-		);
-	}
-
 	if (href) {
 		return (
-			<a className={styles.container} href={href} target="_blank">
+			<a className={styles.container} data-active={isActive} href={href} target="_blank">
 				<div className={styles.icon}>{icon}</div>
 				<p className={styles.title}>{title}</p>
 			</a>
@@ -37,7 +28,7 @@ export function LargeButton({ href, icon, isActive, onClick, title }: LargeButto
 
 	if (onClick) {
 		return (
-			<div className={styles.container} onClick={onClick}>
+			<div className={styles.container} data-active={isActive} onClick={onClick}>
 				<div className={styles.icon}>{icon}</div>
 				<p className={styles.title}>{title}</p>
 			</div>

@@ -11,6 +11,7 @@ export * from './use-flag-can-lock';
 export * from './use-flag-can-save';
 export * from './use-flag-custom';
 export * from './use-flag-read-only';
+export * from './use-multi-step';
 export * from './use-organization-logo';
 export * from './use-prevent-navigation';
 export * from './use-typical-form';

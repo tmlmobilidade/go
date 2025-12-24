@@ -3,7 +3,7 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
-import { Button, Grid, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { Button, Grid, SegmentedControl, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,7 +19,7 @@ export function RealtimeCreateStepRidesSelectionControls() {
 	// B. Render components
 
 	return (
-		<Section flexDirection="column" gap="md">
+		<Toolbar>
 			<Grid columns="aab" gap="md">
 				<SegmentedControl
 					onChange={realtimeCreateContext.filters.view_mode.set}
@@ -44,7 +44,7 @@ export function RealtimeCreateStepRidesSelectionControls() {
 					/>
 				</Grid>
 			</Grid>
-		</Section>
+		</Toolbar>
 	);
 
 	//

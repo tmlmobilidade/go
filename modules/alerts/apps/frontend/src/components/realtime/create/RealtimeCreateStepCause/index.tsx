@@ -21,7 +21,7 @@ export function RealtimeCreateStepCause() {
 
 	const handleSelectCause = (value: keyof typeof gtfsCauseSchema.enum) => {
 		realtimeCreateContext.data.form.setFieldValue('cause', value);
-		realtimeCreateContext.actions.nextStep();
+		realtimeCreateContext.data.multi_step.next();
 	};
 
 	//
