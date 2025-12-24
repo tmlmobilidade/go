@@ -38,30 +38,22 @@ const agencyActions: PermissionConfig = {
 	title: 'Permissões de Operadores',
 };
 
-const alertsScheduledActions: PermissionConfig = {
+const alertsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver alertas planeados', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create', description: 'Permite criar um alerta planeado', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update', description: 'Permite editar um alerta planeado', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete', description: 'Permite eliminar um alerta planeado', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta planeado', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'read_scheduled', description: 'Permite ver alertas planeados', label: 'Ver', resources: ['AGENCIES'] },
+		{ action: 'create_scheduled', description: 'Permite criar um alerta planeado', label: 'Criar', resources: ['AGENCIES'] },
+		{ action: 'update_scheduled', description: 'Permite editar um alerta planeado', label: 'Editar', resources: ['AGENCIES'] },
+		{ action: 'delete_scheduled', description: 'Permite eliminar um alerta planeado', label: 'Eliminar', resources: ['AGENCIES'] },
+		{ action: 'read_realtime', description: 'Permite ver alertas em tempo real', label: 'Ver', resources: ['AGENCIES'] },
+		{ action: 'create_realtime', description: 'Permite criar um alerta em tempo real', label: 'Criar', resources: ['AGENCIES'] },
+		{ action: 'update_realtime', description: 'Permite editar um alerta em tempo real', label: 'Editar', resources: ['AGENCIES'] },
+		{ action: 'delete_realtime', description: 'Permite eliminar um alerta em tempo real', label: 'Eliminar', resources: ['AGENCIES'] },
+		{ action: 'lock_realtime', description: 'Permite bloquear/desbloquear um alerta em tempo real', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'lock_scheduled', description: 'Permite bloquear/desbloquear um alerta planeado', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de alertas planeados.',
+	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
 	scope: PermissionCatalog.all.alerts.scope,
-	title: 'Permissões de Alertas Planeados',
-};
-
-const alertsRealtimeActions: PermissionConfig = {
-	actions: [
-		{ action: 'read', description: 'Permite ver alertas em tempo real', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create', description: 'Permite criar um alerta em tempo real', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update', description: 'Permite editar um alerta em tempo real', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete', description: 'Permite eliminar um alerta em tempo real', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta em tempo real', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de alertas em tempo real.',
-	scope: PermissionCatalog.all.alerts.scope,
-	title: 'Permissões de Alertas em Tempo Real',
+	title: 'Permissões de Alertas',
 };
 
 const homeActions: PermissionConfig = {
@@ -236,8 +228,7 @@ const datesActions: PermissionConfig = {
 
 export const permissionsConfig = [
 	agencyActions,
-	alertsScheduledActions,
-	alertsRealtimeActions,
+	alertsActions,
 	homeActions,
 	planActions,
 	userActions,

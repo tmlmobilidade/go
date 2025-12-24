@@ -1,14 +1,13 @@
 /* * */
 
+import { fetchProtobuf } from '@/protobuf.js';
+import { getAlertTitleAndDescription } from '@/translations.js';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { AlertTypeSchema, CreateAlertDto, ServiceAlertResponse } from '@tmlmobilidade/types';
+import { type CreateAlertDto, type ServiceAlertResponse } from '@tmlmobilidade/types';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-import { fetchProtobuf } from './protobuf.js';
-import { getAlertTitleAndDescription } from './translations.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,6 +52,7 @@ async function main() {
 			const createAlertDto: CreateAlertDto = {
 				active_period_end_date: null,
 				active_period_start_date: undefined,
+				agency_id: '43',
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				coordinates: null,
 				description: description,
@@ -64,14 +64,14 @@ async function main() {
 				municipality_ids: [],
 				publish_end_date: null,
 				publish_start_date: undefined,
-				publish_status: 'PUBLISHED',
-				reference_type: 'TRIP',
+				publish_status: 'published',
+				reference_type: 'rides',
 				references: serviceAlert.alert.informed_entity.map(entity => ({
 					child_ids: [],
 					parent_id: entity.trip?.trip_id ?? '',
 				})),
 				title: title,
-				type: AlertTypeSchema.Values.REALTIME,
+				type: 'realtime',
 			};
 
 			const alertRealtime = await alerts.insertOne(createAlertDto);

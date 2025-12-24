@@ -29,7 +29,7 @@ export class GtfsController {
 						{ publish_end_date: { $exists: false } },
 					],
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
-					publish_status: 'PUBLISHED',
+					publish_status: 'published',
 				},
 			],
 		}, { sort: { created_at: -1 } });

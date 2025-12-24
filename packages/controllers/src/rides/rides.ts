@@ -1,11 +1,10 @@
 /* * */
 
-import { GetRidesBatchQuery, GetRidesBatchQuerySchema } from '@/rides/schema.js';
 import { HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { type GetRidesBatchQuery, GetRidesBatchQuerySchema, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /* * */

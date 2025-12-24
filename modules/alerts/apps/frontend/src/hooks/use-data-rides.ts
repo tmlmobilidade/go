@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Ride } from '@tmlmobilidade/types';
+import { type GetRidesBatchQuery, type Ride, type RideNormalized } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedValue } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -13,18 +13,14 @@ import useSWR from 'swr';
 export type RidesData = Ride & { stop_ids: string[] };
 
 interface UseDataRidesProps {
-	filters?: {
-		line_ids?: string[]
-		search?: string
-		stop_ids?: string[]
-	}
+	filters?: GetRidesBatchQuery
 }
 
 interface UseDataRidesReturnType {
 	error: Error | undefined
 	isLoading: boolean
 	options: SelectDataItem[]
-	raw: RidesData[]
+	raw: RideNormalized[]
 }
 
 /* * */
@@ -40,7 +36,7 @@ export function useDataRides({ filters }: UseDataRidesProps): UseDataRidesReturn
 	//
 	// B. Fetch data
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RidesData[], Error>(`${API_ROUTES.alerts.RIDES_LIST}?search=${debouncedFilterSearch}&lines=${filters?.line_ids?.join(',')}&stops=${filters?.stop_ids?.join(',')}`);
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(`${API_ROUTES.alerts.RIDES_LIST}?search=${debouncedFilterSearch}&lines=${filters?.line_ids?.join(',')}&stops=${filters?.stop_ids?.join(',')}`);
 
 	//
 	// C. Transform data

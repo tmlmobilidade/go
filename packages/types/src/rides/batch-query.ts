@@ -1,9 +1,16 @@
 /* * */
 
-import { DelayStatusSchema, OperationalStatusSchema, RideAcceptanceStatusSchema, RideAnalysisGradeSchema, SeenStatusSchema, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { RideAcceptanceStatusSchema } from '@/rides/ride-acceptance.js';
+import { RideAnalysisGradeSchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
 
+/* * */
+
 const RideAnalysisGradeWithNoneSchema = RideAnalysisGradeSchema.or(z.literal('none'));
+
+/* * */
 
 export const GetRidesBatchQuerySchema = z.object({
 	agency_ids: z.preprocess((val: string) => val ? val.split(',').map(id => id.trim()) : [], z.array(z.string())).optional(),
@@ -18,8 +25,8 @@ export const GetRidesBatchQuerySchema = z.object({
 
 	/* * */
 
-	date_end: z.coerce.number().transform(validateUnixTimestamp).brand('UnixTimestamp'),
-	date_start: z.coerce.number().transform(validateUnixTimestamp).brand('UnixTimestamp'),
+	date_end: UnixTimeStampSchema,
+	date_start: UnixTimeStampSchema,
 
 	/* * */
 
@@ -35,5 +42,7 @@ export const GetRidesBatchQuerySchema = z.object({
 	/* * */
 	acceptance_status: z.preprocess((val: string) => val ? val.split(',').map(status => status.trim()) : [], z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none']))).optional(),
 });
+
+/* * */
 
 export type GetRidesBatchQuery = z.infer<typeof GetRidesBatchQuerySchema>;

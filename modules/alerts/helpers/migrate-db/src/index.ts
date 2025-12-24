@@ -25,8 +25,8 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 			type: parseAlertType(alert.type),
 			updated_by: 'system',
 		};
-		formattedAlert.agency_ids = parseAlertAgencyIds(formattedAlert.reference_type, alert.references);
-		if (alert.reference_type === 'AGENCY') formattedAlert.references = [];
+		formattedAlert.agency_id = parseAlertAgencyId(formattedAlert.reference_type, alert.references);
+		if (alert.reference_type === 'AGENCY' as Alert['reference_type']) formattedAlert.references = [];
 		const result = AlertSchema.parse(formattedAlert);
 		return result;
 	});
@@ -42,7 +42,8 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 		};
 	});
 
-	await alertsCollection.bulkWrite(updateInstructions);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	await alertsCollection.bulkWrite(updateInstructions as any[]);
 
 	console.log('Alerts migration completed.');
 
@@ -72,7 +73,7 @@ function parseAlertType(value: string): Alert['type'] {
 	return value as Alert['type'];
 }
 
-function parseAlertAgencyIds(referenceType: Alert['reference_type'], references: Alert['references']): Alert['agency_ids'] {
+function parseAlertAgencyId(referenceType: Alert['reference_type'], references: Alert['references']): Alert['agency_id'] {
 	const agencyIdsSet = new Set<string>();
 	references.forEach((reference) => {
 		if (referenceType === 'lines') {
@@ -81,11 +82,6 @@ function parseAlertAgencyIds(referenceType: Alert['reference_type'], references:
 			}
 		}
 	});
-	if (agencyIdsSet.size === 0) {
-		agencyIdsSet.add('41');
-		agencyIdsSet.add('42');
-		agencyIdsSet.add('43');
-		agencyIdsSet.add('44');
-	}
-	return Array.from(agencyIdsSet);
+	if (!agencyIdsSet.size) return '99';
+	return Array.from(agencyIdsSet)[0];
 }

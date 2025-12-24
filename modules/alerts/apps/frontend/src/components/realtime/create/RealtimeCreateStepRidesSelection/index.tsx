@@ -3,9 +3,8 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/components/realtime/create/RealtimeCreate.context';
-import { RidesData } from '@/hooks/use-data-rides';
 import { Dates } from '@tmlmobilidade/dates';
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Checkbox, DataTable, DataTableColumn, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -27,7 +26,7 @@ export function RealtimeCreateStepRidesSelection() {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
 	};
 
-	const columns: DataTableColumn<RidesData>[] = [
+	const columns: DataTableColumn<RideNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Checkbox checked={realtimeCreateContext.data.form.getValues().references?.some(reference => reference.parent_id === item._id) ?? false} />,

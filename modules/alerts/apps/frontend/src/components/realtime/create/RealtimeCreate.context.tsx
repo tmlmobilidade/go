@@ -4,10 +4,11 @@
 
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { RidesData, useDataRides } from '@/hooks/use-data-rides';
+import { useDataRides } from '@/hooks/use-data-rides';
 import { useMultiStepForm, type UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type RideNormalized } from '@tmlmobilidade/types';
 import { keepUrlParams, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -26,7 +27,7 @@ type RealtimeCreateContextState = UseMultiStepFormState & {
 	}
 	data: {
 		detour: string
-		filtered_rides: RidesData[]
+		filtered_rides: RideNormalized[]
 		form: UseFormReturnType<CreateAlertDto>
 	}
 	filters: {
@@ -77,10 +78,15 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 	//
 	// B. Fetch data
 
+	const startDate = Dates.now('Europe/Lisbon').minus({ minutes: 30 }).unix_timestamp;
+	const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
+
 	const { mutate: realtimeListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.REALTIME_LIST);
 
 	const { raw: ridesData } = useDataRides({
 		filters: {
+			date_end: todayEndDate,
+			date_start: startDate,
 			line_ids: filterLines.value,
 			search: filterSearch.value,
 			stop_ids: filterStops.value,
