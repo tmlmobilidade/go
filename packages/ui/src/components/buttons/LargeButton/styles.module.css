@@ -8,7 +8,7 @@
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	padding: 30px;
+	padding: 30px 15px;
 	text-align: center;
 	cursor: pointer;
 	background-color: var(--color-system-background-200);
@@ -17,7 +17,8 @@
 	transition: 100ms all ease;
 }
 
-.container:hover {
+.container:hover,
+.container[data-active] {
 	color: var(--color-contrast);
 	background-color: var(--color-primary);
 	border-color: var(--color-secondary);
@@ -26,6 +27,10 @@
 
 .container:active {
 	transform: translateY(2px);
+}
+
+.container[data-active] {
+	pointer-events: none;
 }
 
 /* * */

@@ -8,8 +8,8 @@ import { useDataRides } from '@/hooks/use-data-rides';
 import { useMultiStepForm, type UseMultiStepFormState } from '@/hooks/use-multistep-form';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, type RideNormalized } from '@tmlmobilidade/types';
-import { keepUrlParams, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
+import { keepUrlParams, useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -75,19 +75,40 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 
 	const filterViewMode = useFilterStateString('view_mode', 'all');
 
+	const [startDate, setStartDate] = useState<UnixTimestamp>();
+	const [endDate, setEndDate] = useState<UnixTimestamp>();
+
 	//
 	// B. Fetch data
 
-	const startDate = Dates.now('Europe/Lisbon').minus({ minutes: 30 }).unix_timestamp;
-	const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
+	useEffect(() => {
+		const setDates = () => {
+			// Update start date to 30 minutes ago every minute
+			const newStartDate = Dates.now('Europe/Lisbon').minus({ minutes: 30 }).unix_timestamp;
+			setStartDate(newStartDate);
+			// Update end date to now plus 4 hours every minute
+			const newEndDate = Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp;
+			setEndDate(newEndDate);
+		};
+		setDates();
+		const interval = setInterval(setDates, 60000);
+		return () => clearInterval(interval);
+	}, []);
+
+	// const startDate = Dates.now('Europe/Lisbon').minus({ minutes: 30 }).unix_timestamp;
+	// const todayEndDate = Dates.now('Europe/Lisbon').endOf('day').plus({ hours: 4 }).unix_timestamp;
 
 	const { mutate: realtimeListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.REALTIME_LIST);
 
+	const { filteredIds: filteredAgencyIds } = useDataAgencies(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read_realtime);
+
 	const { raw: ridesData } = useDataRides({
 		filters: {
-			date_end: todayEndDate,
+			agency_ids: filteredAgencyIds,
+			date_end: endDate,
 			date_start: startDate,
 			line_ids: filterLines.value,
+			operational_statuses: ['running', 'missed', 'scheduled'],
 			search: filterSearch.value,
 			stop_ids: filterStops.value,
 		},

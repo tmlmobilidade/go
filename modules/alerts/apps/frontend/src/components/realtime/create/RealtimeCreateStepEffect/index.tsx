@@ -16,14 +16,6 @@ export function RealtimeCreateStepEffect() {
 
 	const realtimeCreateContext = useRealtimeCreateContext();
 
-	const effectItems = Object
-		.values(gtfsEffectSchema.enum)
-		.map(effect => ({
-			icon: EffectIcons[effect],
-			label: Translations.EFFECT[effect],
-			value: effect,
-		}));
-
 	//
 	// B. Handle actions
 
@@ -38,12 +30,13 @@ export function RealtimeCreateStepEffect() {
 	return (
 		<Section padding="lg">
 			<Grid columns="abcde" gap="md">
-				{effectItems.map(effect => (
+				{Object.values(gtfsEffectSchema.enum).map(item => (
 					<LargeButton
-						key={effect.value}
-						icon={effect.icon}
-						onClick={() => handleSelectEffect(effect.value)}
-						title={effect.label}
+						key={item}
+						icon={EffectIcons[item]}
+						isActive={realtimeCreateContext.data.form.getValues().effect === item}
+						onClick={() => handleSelectEffect(item)}
+						title={Translations.EFFECT[item]}
 					/>
 				))}
 			</Grid>

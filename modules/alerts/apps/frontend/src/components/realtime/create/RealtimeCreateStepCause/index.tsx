@@ -16,14 +16,6 @@ export function RealtimeCreateStepCause() {
 
 	const realtimeCreateContext = useRealtimeCreateContext();
 
-	const causeItems = Object
-		.values(gtfsCauseSchema.enum)
-		.map(cause => ({
-			icon: CauseIcons[cause],
-			label: Translations.CAUSE[cause],
-			value: cause,
-		}));
-
 	//
 	// B. Handle actions
 
@@ -38,12 +30,13 @@ export function RealtimeCreateStepCause() {
 	return (
 		<Section padding="lg">
 			<Grid columns="abcde" gap="md">
-				{causeItems.map(cause => (
+				{Object.values(gtfsCauseSchema.enum).map(item => (
 					<LargeButton
-						key={cause.value}
-						icon={cause.icon}
-						onClick={() => handleSelectCause(cause.value)}
-						title={cause.label}
+						key={item}
+						icon={CauseIcons[item]}
+						isActive={realtimeCreateContext.data.form.getValues().cause === item}
+						onClick={() => handleSelectCause(item)}
+						title={Translations.CAUSE[item]}
 					/>
 				))}
 			</Grid>

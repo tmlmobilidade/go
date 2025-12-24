@@ -25,7 +25,7 @@ export function RealtimeCreateStepRidesSelectionControls() {
 					onChange={realtimeCreateContext.filters.view_mode.set}
 					value={realtimeCreateContext.filters.view_mode.value}
 					data={[
-						{ label: 'Ver todas as circulações', value: 'all' },
+						{ label: `Ver todas as circulações (${realtimeCreateContext.data.filtered_rides?.length ?? 0})`, value: 'all' },
 						{ label: `Apenas as Selecionadas (${realtimeCreateContext.data.form.getValues().references?.length ?? 0})`, value: 'selected' },
 					]}
 				/>
