@@ -8,7 +8,7 @@ import { SegmentedControl as MantineSegmentedControl, type SegmentedControlProps
 
 export interface SegmentedControlDataItem {
 	disabled?: boolean
-	label: string
+	label: React.ReactNode | string
 	value: string
 };
 

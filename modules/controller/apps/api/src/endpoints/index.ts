@@ -1,2 +1,2 @@
-import '@/endpoints/rides/rides.routes';
-import '@/endpoints/ride-acceptance/ride-acceptance.routes';
+import '@/endpoints/rides/rides.routes.js';
+import '@/endpoints/ride-acceptance/ride-acceptance.routes.js';

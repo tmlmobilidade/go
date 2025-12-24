@@ -1,6 +1,7 @@
 /* * */
 
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
+import { RidesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -19,7 +20,7 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getBatch,
+			RidesSharedController.getBatch,
 		);
 
 		instance.get(

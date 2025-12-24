@@ -280,6 +280,7 @@ async function main() {
 					_id: samData._id,
 					agency_id: agencyId,
 					analysis: samAnalysisGroups,
+					created_by: 'system',
 					latest_apex_version: latestTransaction.apex_version,
 					remarks: null,
 					seen_first_at: firstTransaction.created_at,

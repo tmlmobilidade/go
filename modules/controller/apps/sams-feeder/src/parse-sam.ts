@@ -10,6 +10,7 @@ export function parseSam(item: AggregationResultItem): CreateSamDto {
 		_id: item.mac_sam_serial_number,
 		agency_id: item.agency_id,
 		analysis: [],
+		created_by: 'system',
 		latest_apex_version: null,
 		remarks: null,
 		seen_first_at: null,
