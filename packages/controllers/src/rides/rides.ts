@@ -5,7 +5,6 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type GetRidesBatchQuery, GetRidesBatchQuerySchema, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
-import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -23,7 +22,7 @@ export class RidesSharedController {
 		//
 		// Validate the request query parameters
 
-		const parsedQuery = validateQueryParams<GetRidesBatchQuery>(request.query, GetRidesBatchQuerySchema);
+		const parsedQuery = GetRidesBatchQuerySchema.parse(request.query);
 
 		//
 		// Detect which agency_ids the user has access to,
@@ -57,7 +56,7 @@ export class RidesSharedController {
 		// with batchSize to prevent memory issues
 
 		const pipeline = ridesBatchAggregationPipeline({
-			agency_ids: parsedQuery.agency_ids.filter(id => allowAllAgencies || ridesPermission.resources.agency_ids.includes(id)),
+			agency_ids: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission.resources.agency_ids.includes(id)) ?? [],
 			date_end: parsedQuery.date_end,
 			date_start: parsedQuery.date_start,
 			delay_statuses: parsedQuery.delay_statuses,

@@ -36,7 +36,7 @@ export function useDataRides({ filters }: UseDataRidesProps): UseDataRidesReturn
 	//
 	// B. Fetch data
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(`${API_ROUTES.alerts.RIDES_LIST}?search=${debouncedFilterSearch}&lines=${filters?.line_ids?.join(',')}&stops=${filters?.stop_ids?.join(',')}`);
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(`${API_ROUTES.alerts.RIDES_LIST}?date_start=${filters?.date_start}&date_end=${filters?.date_end}&search=${debouncedFilterSearch}&lines=${filters?.line_ids?.join(',')}&stops=${filters?.stop_ids?.join(',')}`);
 
 	//
 	// C. Transform data

@@ -52,7 +52,7 @@ class AlertsClass extends MongoCollectionClass<Alert, CreateAlertDto, UpdateAler
 	}
 
 	protected getCollectionName(): string {
-		return 'alerts2';
+		return 'alerts';
 	}
 
 	protected getEnvName(): string {
