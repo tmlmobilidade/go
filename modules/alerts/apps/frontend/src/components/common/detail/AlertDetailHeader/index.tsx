@@ -57,8 +57,8 @@ export function AlertDetailHeader() {
 			/> */}
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts_scheduled.actions.update}
-				scope={PermissionCatalog.all.alerts_scheduled.scope}
+				action={PermissionCatalog.all.alerts.actions.update_scheduled}
+				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<SaveButton
 					isDisabled={!alertDetailContext.flags.canSave}
@@ -68,8 +68,8 @@ export function AlertDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts_scheduled.actions.lock}
-				scope={PermissionCatalog.all.alerts_scheduled.scope}
+				action={PermissionCatalog.all.alerts.actions.lock_scheduled}
+				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<LockButton
 					isDisabled={!alertDetailContext.flags.canLock}
@@ -80,8 +80,8 @@ export function AlertDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts_scheduled.actions.delete}
-				scope={PermissionCatalog.all.alerts_scheduled.scope}
+				action={PermissionCatalog.all.alerts.actions.delete_scheduled}
+				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<DeleteButton
 					confirmMessage="Tem a certeza que pretende eliminar este Alerta? Esta ação é irreversível."

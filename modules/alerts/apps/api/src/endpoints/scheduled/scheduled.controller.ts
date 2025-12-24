@@ -17,7 +17,7 @@ export class ScheduledController {
 	 */
 	static async create(request: FastifyRequest<{ Body: CreateAlertDto }>, reply: FastifyReply<Alert>) {
 		const insertResult = await alerts.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
-		await notifications.sendNotification(PermissionCatalog.all.alerts_scheduled.scope, 'created_alert', request.me, insertResult._id, insertResult.title, insertResult.description);
+		await notifications.sendNotification(PermissionCatalog.all.alerts.scope, 'created_alert', request.me, insertResult._id, insertResult.title, insertResult.description);
 		reply.send({ data: insertResult, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
 	}
 
@@ -57,7 +57,7 @@ export class ScheduledController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
 		// Retrieve permissions for the current user
-		const userReadPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.read);
+		const userReadPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read_scheduled);
 		// Setup a query filter based on permissions
 		const permissionsQuery = userReadPermissions.resources?.agency_ids?.includes(PermissionCatalog.ALLOW_ALL_FLAG)
 			// If user has access to all agencies, no filter is applied

@@ -65,14 +65,14 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		href: PAGE_ROUTES.alerts.SCHEDULED_LIST,
 		icon: <IconAlertTriangle size={26} />,
 		label: 'Alertas Planeados',
-		permissions: [{ action: PermissionCatalog.all.alerts_scheduled.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts_scheduled.scope }],
+		permissions: [{ action: PermissionCatalog.all.alerts.actions.read_scheduled, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts.scope }],
 	},
 	{
 		_id: 'alerts_realtime',
 		href: PAGE_ROUTES.alerts.REALTIME_LIST,
 		icon: <IconClockExclamation size={26} />,
 		label: 'Alertas em Tempo Real',
-		permissions: [{ action: PermissionCatalog.all.alerts_realtime.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts_realtime.scope }],
+		permissions: [{ action: PermissionCatalog.all.alerts.actions.read_realtime, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts.scope }],
 	},
 	{
 		_id: 'rides',

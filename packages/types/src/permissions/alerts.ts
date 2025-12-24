@@ -4,36 +4,23 @@ import { z } from 'zod';
 
 /* * */
 
-export const AlertsScheduledPermissionSchema = z.object({
+export const AlertsPermissionSchema = z.object({
 	action: z.enum([
-		'create',
-		'delete',
-		'read',
-		'lock',
-		'update',
+		'create_realtime',
+		'create_scheduled',
+		'delete_realtime',
+		'delete_scheduled',
+		'read_realtime',
+		'read_scheduled',
+		'lock_realtime',
+		'lock_scheduled',
+		'update_realtime',
+		'update_scheduled',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
 	}).default({}),
-	scope: z.literal('alerts_scheduled'),
+	scope: z.literal('alerts'),
 });
 
-export type AlertsScheduledPermission = z.infer<typeof AlertsScheduledPermissionSchema>;
-
-/* * */
-
-export const AlertsRealtimePermissionSchema = z.object({
-	action: z.enum([
-		'create',
-		'delete',
-		'read',
-		'lock',
-		'update',
-	]),
-	resources: z.object({
-		agency_ids: z.array(z.string()).default([]),
-	}).default({}),
-	scope: z.literal('alerts_realtime'),
-});
-
-export type AlertsRealtimePermission = z.infer<typeof AlertsRealtimePermissionSchema>;
+export type AlertsPermission = z.infer<typeof AlertsPermissionSchema>;

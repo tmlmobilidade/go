@@ -129,7 +129,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// F. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
 		isDeleting: isDeleting,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
@@ -138,7 +138,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canSave } = useFlagCanSave({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,
@@ -148,7 +148,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canLock } = useFlagCanLock({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,
@@ -157,7 +157,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canDelete } = useFlagCanDelete({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts_scheduled.scope, PermissionCatalog.all.alerts_scheduled.actions.update),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,

@@ -47,7 +47,7 @@ const alertsScheduledActions: PermissionConfig = {
 		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta planeado', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas planeados.',
-	scope: PermissionCatalog.all.alerts_scheduled.scope,
+	scope: PermissionCatalog.all.alerts.scope,
 	title: 'Permissões de Alertas Planeados',
 };
 
@@ -60,7 +60,7 @@ const alertsRealtimeActions: PermissionConfig = {
 		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta em tempo real', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas em tempo real.',
-	scope: PermissionCatalog.all.alerts_realtime.scope,
+	scope: PermissionCatalog.all.alerts.scope,
 	title: 'Permissões de Alertas em Tempo Real',
 };
 

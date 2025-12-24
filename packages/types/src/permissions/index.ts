@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-
 /* * */
 
 import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
-import { AlertsRealtimePermissionSchema, AlertsScheduledPermissionSchema } from '@/permissions/alerts.js';
+import { AlertsPermissionSchema } from '@/permissions/alerts.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
 import { DatesPermissionSchema } from '@/permissions/dates.js';
 import { GtfsValidationsPermissionSchema } from '@/permissions/gtfs-validations.js';
@@ -20,8 +18,7 @@ import { z } from 'zod';
 
 export const PermissionSchema = z.discriminatedUnion('scope', [
 	AgenciesPermissionSchema,
-	AlertsScheduledPermissionSchema,
-	AlertsRealtimePermissionSchema,
+	AlertsPermissionSchema,
 	RidesPermissionSchema,
 	SamsPermissionSchema,
 	GtfsValidationsPermissionSchema,

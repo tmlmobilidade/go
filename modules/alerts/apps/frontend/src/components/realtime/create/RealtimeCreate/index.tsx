@@ -25,7 +25,7 @@ export function RealtimeCreate() {
 	const meContext = useMeContext();
 	const realtimeCreateContext = useRealtimeCreateContext();
 
-	const hasPermissionCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts_realtime.scope, PermissionCatalog.all.alerts_realtime.actions.create);
+	const hasPermissionCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create_realtime);
 
 	//
 	// B. Render components
