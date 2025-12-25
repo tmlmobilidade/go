@@ -7,25 +7,20 @@ import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface PlansListContextState {
+interface PlansListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: PlanNormalized[]
 		raw: Plan[]
 	}
-	filters: {
+	filters: ListContextStateTemplate['filters'] & {
 		agency: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
 		validity_status: UseFilterStateListReturnType
-	}
-	flags: {
-		error: Error | undefined
-		loading: boolean
 	}
 }
 
@@ -116,7 +111,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: allPlansError,
-			loading: allPlansLoading,
+			isLoading: allPlansLoading,
 		},
 	}), [
 		allPlansError,

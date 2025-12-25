@@ -30,18 +30,16 @@
 /* STEP */
 
 .step {
-
-	/* padding: 10px 20px; */
 	opacity: 0.5;
+}
+
+.step[data-progress="true"] {
+	pointer-events: none;
 }
 
 .step[data-allow-click="true"] {
 	opacity: 1;
 }
-
-/* .step[data-allow-click="true"]:hover {
-	background-color: var(--color-system-background-200);
-} */
 
 /* * */
 /* STEP ICON */

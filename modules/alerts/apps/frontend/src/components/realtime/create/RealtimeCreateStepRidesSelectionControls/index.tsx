@@ -31,9 +31,9 @@ export function RealtimeCreateStepRidesSelectionControls() {
 				/>
 				<Grid columns="ab" gap="md">
 					<Button
-						disabled={realtimeCreateContext.data.filtered_rides?.length === 0 || realtimeCreateContext.data.filtered_rides?.length > 10}
-						label="Adicionar Todas"
-						onClick={realtimeCreateContext.actions.selectVisibleRides}
+						disabled={!realtimeCreateContext.data.form.getValues().references?.length}
+						label="Confirmar Seleção"
+						onClick={realtimeCreateContext.data.multi_step.next}
 						variant="primary"
 					/>
 					<Button

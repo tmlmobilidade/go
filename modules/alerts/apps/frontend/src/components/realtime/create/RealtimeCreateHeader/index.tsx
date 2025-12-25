@@ -21,11 +21,9 @@ export function RealtimeCreateHeader() {
 	const preparedSteps = createRealtimeSteps.map((step): StepperDataItem => ({
 		id: step,
 		isEnabled: realtimeCreateContext.data.multi_step.isValid(step),
-		isLoading: step === 'trip' ? realtimeCreateContext.flags.ridesLoading : false,
+		isLoading: step === 'trip' ? realtimeCreateContext.flags.isRidesLoading : false,
 		label: step === 'cause' ? 'Causa' : step === 'effect' ? 'Efeito' : step === 'trip' ? 'Circulações' : step === 'summary' ? 'Resumo' : '',
 	}));
-
-	console.log('preparedSteps', preparedSteps);
 
 	//
 	// B. Render components
