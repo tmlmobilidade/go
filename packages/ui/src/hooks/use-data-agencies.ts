@@ -97,7 +97,7 @@ export function useDataAgencies(apiUrl: string, props?: UseDataAgenciesProps): U
 				value: item._id,
 			}));
 		});
-	}, [allAgenciesData, props.actions, props.scope]);
+	}, [allAgenciesData, props?.actions, props?.scope]);
 
 	const filteredIds = useMemo(() => {
 		// Skip if no data is available

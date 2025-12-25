@@ -8,7 +8,6 @@ import { useRolesContext } from '@/contexts/Roles.context';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission } from '@tmlmobilidade/types';
-import { Label } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -70,18 +69,17 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
 			description={configAction.description}
 			disabled={hasPermissionFromRole}
+			footnote={hasPermissionFromRole && 'Permissão Herdada pelo grupo de permissões'}
 			label={configAction.label}
 			onChange={handleToggle}
 		>
 			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 				<AgencyPermissionMultiselect
-					description="Operadores ao qual o utilizador tem acesso para esta acção."
-					label="Operadores"
+					disabled={hasPermissionFromRole}
 					onChange={handleResourceToggle}
-					selected={selectedAgencyIds}
+					value={selectedAgencyIds}
 				/>
 			)}
-			{hasPermissionFromRole && <Label caps>Permissão Herdada pelo grupo de permissões</Label>}
 		</CheckCard>
 	);
 
