@@ -55,12 +55,12 @@ export function RealtimeCreateStepSummary() {
 	//
 	// B. Transform data
 
-	useEffect(() => {
-		const uniqueLineIds = Array.from(new Set(realtimeCreateContext.data.form.getValues().references?.map(ride => ride.parent_id)));
-		const { description, title } = getAlertTitleAndDescription(realtimeCreateContext.data.form.values.cause, realtimeCreateContext.data.form.values.effect, uniqueLineIds.join(', '));
-		realtimeCreateContext.data.form.setFieldValue('title', title);
-		realtimeCreateContext.data.form.setFieldValue('description', description);
-	}, []);
+	// useEffect(() => {
+	// 	const uniqueLineIds = Array.from(new Set(realtimeCreateContext.data.form.getValues().references?.map(ride => ride.parent_id)));
+	// 	const { description, title } = getAlertTitleAndDescription(realtimeCreateContext.data.form.values.cause, realtimeCreateContext.data.form.values.effect, uniqueLineIds.join(', '));
+	// 	realtimeCreateContext.data.form.setFieldValue('title', title);
+	// 	realtimeCreateContext.data.form.setFieldValue('description', description);
+	// }, []);
 
 	const visibleRides = useMemo(() => {
 		const selectedRideIds = realtimeCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? [];

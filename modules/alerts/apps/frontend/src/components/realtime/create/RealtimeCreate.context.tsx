@@ -5,6 +5,7 @@
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useClockUpdates, useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -121,6 +122,23 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 
 	//
 	// D. Handle actions
+
+	useEffect(() => {
+		(async () => {
+			form.setFieldValue('type', 'realtime');
+			const alertTemplating = await describeAlert({
+				alert_type: 'realtime',
+				cause: form.getValues().cause,
+				effect: form.getValues().effect,
+				reference_type: 'rides',
+				references: form.getValues().references ?? [],
+			});
+			console.log({ alertTemplating });
+			if (!alertTemplating) return;
+			form.setFieldValue('description', alertTemplating.description.pt);
+			form.setFieldValue('title', alertTemplating.title.pt);
+		})();
+	}, [form.getValues()]);
 
 	const validateSteps = () => {
 		return true;

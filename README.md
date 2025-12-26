@@ -15,7 +15,7 @@
 mongodump \
 --host=sae-db-rs0-1-production.carrismetropolitana.pt:27017,sae-db-rs0-2-production.carrismetropolitana.pt:27017,sae-db-rs0-3-production.carrismetropolitana.pt:27017 \
 --username=backup \
---password=n2aNYB49wyefjXihyBWrC55LWbVvMQRvpZONchc8sfNI4Sv3LIgF4j1VJ6tl \
+--password=PASSWORD \
 --authenticationDatabase=admin \
 --excludeCollection=rides \
 --excludeCollection=ride_acceptances \
