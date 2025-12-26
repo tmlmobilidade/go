@@ -5,7 +5,8 @@ import { PublishStatusSchema } from '@/_common/status.js';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { AlertTypeSchema } from '@/alerts/alert-type.js';
 import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
-import { gtfsCauseSchema, gtfsEffectSchema } from '@/gtfs/cause-effetcs.js';
+import { GtfsCauseSchema } from '@/gtfs/cause.js';
+import { GtfsEffectSchema } from '@/gtfs/effect.js';
 import { z } from 'zod';
 
 /* * */
@@ -14,10 +15,10 @@ export const AlertSchema = DocumentSchema.extend({
 	active_period_end_date: UnixTimeStampSchema.nullable().default(null),
 	active_period_start_date: UnixTimeStampSchema,
 	agency_id: z.string(),
-	cause: gtfsCauseSchema,
+	cause: GtfsCauseSchema,
 	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
 	description: z.string(),
-	effect: gtfsEffectSchema,
+	effect: GtfsEffectSchema,
 	external_id: z.string().nullable().default(null),
 	file_id: z.string().nullable().default(null),
 	info_url: z.string().url().nullable().default(null),
