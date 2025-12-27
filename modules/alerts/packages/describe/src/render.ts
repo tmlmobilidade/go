@@ -3,8 +3,8 @@
 /* * */
 
 import { alertI18nTemplates } from '@/templates/descriptions.js';
-import { templatesParamBuilder } from '@/templates/references.js';
-import { AlertConfigKey, DescribeAlertProps, type I18nCodes } from '@/types.js';
+import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
+import { type AlertConfigKey, type DescribeAlertProps, type I18nCodes } from '@/types.js';
 
 /* * */
 
@@ -18,10 +18,13 @@ export interface DescribeAlertReturnType {
 export async function describeAlert(props: DescribeAlertProps): Promise<DescribeAlertReturnType | undefined> {
 	//
 
-	if (!props.cause || !props.effect || !props.reference_type || !props.references) return;
+	//
+	// Validate required input properties
+
+	if (!props.cause || !props.effect || !props.reference_type || !props.references || !props.data) return;
 
 	//
-	// Setup initial variables
+	// Setup result object
 
 	const result: DescribeAlertReturnType = {
 		description: { en: '', pt: '' },
@@ -39,27 +42,26 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 	const templateKey: AlertConfigKey = `${props.cause}:${props.effect}:${props.reference_type}`;
 
 	//
-	// Extract 'cause' template strings
+	// Iterate over all strings in the result object and
+	// add the corresponding strings from the templates,
+	// and replace the placeholders with actual values.
 
-	result.title.en = alertI18nTemplates[templateKey].title[isPlural ? 'plural' : 'singular'].en.text;
-	result.title.pt = alertI18nTemplates[templateKey].title[isPlural ? 'plural' : 'singular'].pt.text;
-
-	result.description.en = alertI18nTemplates[templateKey].description[isPlural ? 'plural' : 'singular'].en.text;
-	result.description.pt = alertI18nTemplates[templateKey].description[isPlural ? 'plural' : 'singular'].pt.text;
-
-	//
-	// Make the necessary placeholder replacements in the strings
-	// Ex: `{line_short_name}` => "1234"
-
-	for (const stringPlace of Object.keys(result)) {
-		for (const i18nCode of Object.keys(result[stringPlace as keyof DescribeAlertReturnType]) as I18nCodes[]) {
-			for (const param of alertI18nTemplates[templateKey].description[isPlural ? 'plural' : 'singular'][i18nCode].params) {
-				const replacement = await templatesParamBuilder[param](props.data);
-				const regex = new RegExp(param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-				result[stringPlace][i18nCode] = result[stringPlace][i18nCode].replace(regex, replacement);
+	for (const resultStringKey of Object.keys(result) as (keyof DescribeAlertReturnType)[]) {
+		// Each result string key has several i18n codes to populate
+		for (const i18nCode of Object.keys(result[resultStringKey]) as I18nCodes[]) {
+			// Determine which template string we are populating, and if it is singular or plural.
+			// Even though we might need a plural string, if it does not exist we fallback to the singular one.
+			const templateStringType = alertI18nTemplates[templateKey][resultStringKey];
+			const templateStringCountableVariation = templateStringType[isPlural ? 'plural' : 'singular'] ? templateStringType[isPlural ? 'plural' : 'singular'] : templateStringType.singular;
+			// Set the base string from the templates in the result object
+			result[resultStringKey][i18nCode] = templateStringCountableVariation[i18nCode].text;
+			// Each translated string has several placeholders that need to be replaced with actual values.
+			for (const placeholderKey of templateStringCountableVariation[i18nCode].placeholders) {
+				// Use the templates param builders to get the actual value for each placeholder
+				const replacementValue = await templatePlaceholderReplacements[placeholderKey](props.data);
+				// Replace all occurrences of the placeholder in the string with the actual value
+				result[resultStringKey][i18nCode] = result[resultStringKey][i18nCode].replaceAll(placeholderKey, replacementValue);
 			}
-			const populatedText = result[stringPlace][i18nCode];
-			result[stringPlace][i18nCode] = populatedText;
 		}
 	}
 

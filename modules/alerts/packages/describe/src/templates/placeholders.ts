@@ -2,13 +2,13 @@
 
 /* * */
 
-import { DescribeAlertProps, type TemplateParam } from '@/types.js';
+import { DescribeAlertProps, type TemplatePlaceholder } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized } from '@tmlmobilidade/types';
 
 /* * */
 
-export const templatesParamBuilder: Record<TemplateParam, (data: DescribeAlertProps['data']) => Promise<string>> = {
+export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data: DescribeAlertProps['data']) => Promise<string>> = {
 
 	'{headsign_prose}': async () => '',
 
@@ -54,23 +54,25 @@ export const templatesParamBuilder: Record<TemplateParam, (data: DescribeAlertPr
 			const lineShortNames = Array.from(new Set(group.map(ht => ht.line_id)));
 			const linePart = lineShortNames.length > 1
 				? `das linhas ${lineShortNames.join(', ')}`
-				: `da linha ${lineShortNames[0]}`;
+				: `da linha ${lineShortNames[0]} com destino a ${group[0].headsign}`;
 
 			const ridesPart = rideStartTimes.length > 1
-				? `viagens das ${rideStartTimes.slice(0, -1).join(', ')} e ${rideStartTimes.slice(-1)}`
-				: `viagem das ${rideStartTimes[0]}`;
+				? `nas viagens das ${rideStartTimes.slice(0, -1).join(', ')} e ${rideStartTimes.slice(-1)}`
+				: `na viagem das ${rideStartTimes[0]}`;
 
 			parts.push(`${ridesPart} ${linePart}`);
 		}
 
-		return parts.join('; ');
+		return parts.length > 1
+			? parts.slice(0, -1).join('; ') + ' e ' + parts.slice(-1)
+			: parts[0];
 
 		//
 	},
 
 	'{rides_title}': async (data: DescribeAlertProps['data']) => {
 		const lineShortNames = Array.from(new Set(data.rides?.map(ht => ht.line_id) ?? []));
-		return lineShortNames.join(' | ');
+		return lineShortNames.join(', ');
 	},
 
 	'{start_time[]}': async () => '',

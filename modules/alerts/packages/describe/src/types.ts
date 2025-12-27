@@ -2,7 +2,7 @@
 
 import { type Alert, type RideNormalized, type Stop } from '@tmlmobilidade/types';
 
-export type TemplateParam = '{headsign_prose}'
+export type TemplatePlaceholder = '{headsign_prose}'
   | '{headsign_title}'
   | '{holiday_name}'
   | '{line_short_name[]}'
@@ -17,7 +17,7 @@ export type TemplateParam = '{headsign_prose}'
   | '{stops_title}';
 
 export interface StringType {
-	params: TemplateParam[]
+	placeholders: TemplatePlaceholder[]
 	text: string
 }
 
