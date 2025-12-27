@@ -10,8 +10,6 @@ import { type RideNormalized } from '@tmlmobilidade/types';
 
 export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data: DescribeAlertProps['data']) => Promise<string>> = {
 
-	'{headsign_prose}': async () => '',
-
 	'{headsign_title}': async () => '',
 
 	'{holiday_name}': async () => '',
@@ -22,7 +20,10 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 
 	'{lines_prose}': async () => '',
 
-	'{lines_title}': async () => '',
+	'{lines_title}': async (data: DescribeAlertProps['data']) => {
+		const lineShortNames = Array.from(new Set(data.lines?.map(ht => ht.id) ?? []));
+		return lineShortNames.join(', ');
+	},
 
 	'{rides_description}': async (data: DescribeAlertProps['data']) => {
 		//

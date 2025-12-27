@@ -1,13 +1,13 @@
 /* * */
 
-import { type AlertTemplateRegistry } from '@/types.js';
+import { type AlertConfigKey, type TemplateFragment } from '@/types.js';
 
 /**
  * Alert i18n templates registry
  * Each key is formed by the combination of cause, effect and reference_type of an alert
  * in the format: 'CAUSE:EFFECT:REFERENCE_TYPE'
  */
-export const alertI18nTemplates: AlertTemplateRegistry = {
+export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 
 	'ACCIDENT:ACCESSIBILITY_ISSUE:lines': {
 		description: {
