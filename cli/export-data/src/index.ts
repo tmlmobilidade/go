@@ -1,81 +1,107 @@
 #!/usr/bin/env node
 
-/* * */
+import chalk from 'chalk';
 
-import { generateOfferOutput } from '@/main.js';
-import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
-import { validateOperationalDate } from '@tmlmobilidade/types';
-import { Command } from 'commander';
-import fs from 'fs';
+import { ASCII_TMLMOBILIDADE, PACKAGES_TO_UPGRADE, REPLACE_FILE_PATHS, TEMPLATE_STRING } from './consts.js';
+import { copyApp, copyMonorepo, getAvailableApps, replaceInFile, upgradePackages } from './utils/copy.js';
+import { logger } from './utils/logger.js';
+import { getProjectName, getProjectScope, selectApps, selectProjectType, selectSingleApp } from './utils/prompts.js';
 
 /* * */
 
-(async function init() {
-	//
+export const renderTitle = () => {
+	let text = ASCII_TMLMOBILIDADE;
 
-	//
-	// Setup the program options
+	text = text.replace(/▓/g, chalk.dim(chalk.yellow('▓')));
+	text = text.replace(/ ▄▄▄ /g, chalk.yellow(' ▄▄▄ '));
+	text = text.replace(/ ▀▀▀ /g, chalk.yellow(' ▀▀▀ '));
+	text = text.replace(/▐▒▒▒▌/g, chalk.yellow('▐') + chalk.white('▒▒▒') + chalk.yellow('▌'));
 
-	const program = new Command();
+	console.log(text);
+};
 
-	program
-		.name('Generate Offer Journeys')
-		.description('Output offer_journey.json and offer_stop.json files from a GTFS file.')
-		.requiredOption('--file <path>', 'The input GTFS file path.')
-		.requiredOption('--start-date <operational-date>', 'The start date of the plan in YYYYMMDD format.')
-		.requiredOption('--end-date <operational-date>', 'The end date of the plan in YYYYMMDD format.')
-		.option('--output-dir <path>', 'Output directory for the offer_journey.json files.', './output')
-		.option('--override', 'Override output directory if it exists.', false)
-		.option('--feed-id <value>', 'Optional feedId value to include in output files.', null)
-		.parse();
+async function main() {
+	renderTitle();
 
-	//
-	// Validate the input options
+	const projectType = await selectProjectType();
 
-	const options = program.opts();
+	if (projectType === 'monorepo') {
+		const projectName = await getProjectName();
+		const projectScope = await getProjectScope(projectName);
+		const selectedApps = await selectApps(await getAvailableApps());
 
-	try {
-		options.startDate = validateOperationalDate(options.startDate);
-		options.endDate = validateOperationalDate(options.endDate);
-	}
-	catch (error) {
-		Logger.divider();
-		Logger.error(`--start-date and/or --end-date are not valid:`, error.message);
-		Logger.divider();
+		logger.info('Copying monorepo...');
+		await copyMonorepo(projectName);
+
+		// Copy Selected Applications
+		for (const app of selectedApps) {
+			logger.clearPreviousLine();
+			logger.info(`Copying ${app}...`);
+			await copyApp(app, projectName + '/apps/' + app);
+
+			// Replace template file paths
+			if (REPLACE_FILE_PATHS[app]) {
+				logger.clearPreviousLine();
+				logger.info(`Replacing template file paths in ${app}...`);
+				for (const filePath of REPLACE_FILE_PATHS[app]) {
+					const filePathWithProjectName = projectName + '/apps/' + app + '/' + filePath;
+					await replaceInFile(filePathWithProjectName, TEMPLATE_STRING, projectScope);
+				}
+			}
+
+			// Upgrade Packages
+			logger.clearPreviousLine();
+			logger.info(`Upgrading packages in ${app}...`);
+			await upgradePackages({
+				packageJsonPath: projectName + '/apps/' + app + '/package.json',
+				packages: PACKAGES_TO_UPGRADE,
+			});
+		}
+
+		// Replace env variables
+		logger.clearPreviousLine();
+		logger.info('Replacing env variables...');
+		await replaceInFile(projectName + '/package.json', TEMPLATE_STRING, projectScope);
+
+		// Upgrade Packages in Root
+		logger.clearPreviousLine();
+		logger.info('Upgrading packages in root...');
+		await upgradePackages({
+			packageJsonPath: projectName + '/package.json',
+			packages: PACKAGES_TO_UPGRADE,
+		});
+
 		return;
 	}
 
-	//
-	// Ensure the output directory exists and is empty
+	if (projectType === 'application') {
+		const selectedApp = await selectSingleApp(await getAvailableApps());
+		const projectName = await getProjectName();
+		const projectScope = await getProjectScope(projectName);
 
-	if (fs.existsSync(options.outputDir) && !options.override) {
-		Logger.divider();
-		Logger.error(`Output directory "${options.outputDir}" already exists. Please remove it or change it before running the script.`);
-		Logger.divider();
+		logger.info('Copying application...');
+		await copyApp(selectedApp, projectName);
+
+		// Replace template file paths
+		logger.clearPreviousLine();
+		logger.info('Replacing template file paths...');
+		if (REPLACE_FILE_PATHS[projectName]) {
+			for (const filePath of REPLACE_FILE_PATHS[projectName]) {
+				logger.info(`Replacing template file paths in ${filePath}...`);
+				const filePathWithProjectName = projectName + '/' + filePath;
+				await replaceInFile(filePathWithProjectName, TEMPLATE_STRING, projectScope);
+			}
+		}
+
+		// Upgrade Packages
+		logger.clearPreviousLine();
+		logger.info('Upgrading packsages...');
+		await upgradePackages({
+			packageJsonPath: projectName + '/package.json',
+			packages: PACKAGES_TO_UPGRADE,
+		});
 		return;
 	}
+}
 
-	if (fs.existsSync(options.outputDir) && options.override) {
-		Logger.info(`Output directory "${options.outputDir}" already exists. It will be overridden.`);
-		fs.rmSync(options.outputDir, { recursive: true });
-	}
-
-	fs.mkdirSync(options.outputDir, { recursive: true });
-
-	//
-	// Log the ASCII art
-
-	Logger.spacer(3);
-
-	console.log(ASCII_CM_SHORT);
-
-	Logger.spacer(3);
-
-	//
-	// Start the offer generation process
-
-	await generateOfferOutput(options.file, options.startDate, options.endDate, options.outputDir, options.feedId);
-
-	//
-})();
+main().catch(console.error);
