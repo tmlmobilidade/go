@@ -1756,22 +1756,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:ADDITIONAL_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional rides have been scheduled due to driver absence to maintain service. Please check the timetable for details.' },
+				pt: { placeholders: [], text: 'Viagens adicionais foram programadas devido à ausência de condutores para manter o serviço. Por favor, verifique o horário para detalhes.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'An additional ride has been scheduled due to driver absence to maintain service. Please check the timetable for details.' },
+				pt: { placeholders: [], text: 'Uma viagem adicional foi programada devido à ausência de condutor para manter o serviço. Por favor, verifique o horário para detalhes.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional rides scheduled due to driver absence' },
+				pt: { placeholders: [], text: 'Viagens adicionais programadas devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional ride scheduled due to driver absence' },
+				pt: { placeholders: [], text: 'Viagem adicional programada devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1779,22 +1779,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:ADDITIONAL_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Certain stops will receive additional services due to driver absence. Please consult the timetable for exact times.' },
+				pt: { placeholders: [], text: 'Algumas paragens receberão serviços adicionais devido à ausência de condutores. Por favor, consulte o horário para horários exatos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop will receive an additional service due to driver absence. Please consult the timetable for the exact time.' },
+				pt: { placeholders: [], text: 'Esta paragem receberá um serviço adicional devido à ausência de condutor. Por favor, consulte o horário para o horário exato.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional services at selected stops due to driver absence' },
+				pt: { placeholders: [], text: 'Serviços adicionais em paragens selecionadas devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional service at this stop due to driver absence' },
+				pt: { placeholders: [], text: 'Serviço adicional nesta paragem devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1802,22 +1802,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:DETOUR:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'Due to driver absence, the following lines {line_short_name[]} will follow a temporary detour. Please allow extra travel time.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido à ausência de condutores, as seguintes linhas {line_short_name[]} seguirão um desvio temporário. Por favor, considere tempo adicional de viagem.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'Due to driver absence, the line {line_short_name} will follow a temporary detour. Please allow extra travel time.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'Devido à ausência de condutor, a linha {line_short_name} seguirá um desvio temporário. Por favor, considere tempo adicional de viagem.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Temporary detour due to driver absence' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Desvio temporário devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Temporary detour due to driver absence' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Desvio temporário devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1825,22 +1825,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:DETOUR:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Some rides are being rerouted due to driver absence. Please consult the timetable for updated information.' },
+				pt: { placeholders: [], text: 'Algumas viagens estão sendo desviadas devido à ausência de condutores. Por favor, consulte o horário para informações atualizadas.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is being rerouted due to driver absence. Please consult the timetable for updated information.' },
+				pt: { placeholders: [], text: 'Esta viagem está sendo desviada devido à ausência de condutor. Por favor, consulte o horário para informações atualizadas.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Rides rerouted due to driver absence' },
+				pt: { placeholders: [], text: 'Viagens desviadas devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Ride rerouted due to driver absence' },
+				pt: { placeholders: [], text: 'Viagem desviada devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1848,22 +1848,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:DETOUR:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Certain stops are temporarily bypassed due to driver absence. Please check alternative stops nearby.' },
+				pt: { placeholders: [], text: 'Algumas paragens estão temporariamente contornadas devido à ausência de condutores. Por favor, verifique paragens alternativas próximas.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop is temporarily bypassed due to driver absence. Please check alternative stops nearby.' },
+				pt: { placeholders: [], text: 'Esta paragem está temporariamente contornada devido à ausência de condutor. Por favor, verifique paragens alternativas próximas.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stops temporarily bypassed due to driver absence' },
+				pt: { placeholders: [], text: 'Paragens temporariamente contornadas devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stop temporarily bypassed due to driver absence' },
+				pt: { placeholders: [], text: 'Paragem temporariamente contornada devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1871,22 +1871,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:MODIFIED_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'Service on the following lines {line_short_name[]} has been modified due to driver absence. Please check updated schedules.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'O serviço nas seguintes linhas {line_short_name[]} foi modificado devido à ausência de condutores. Por favor, verifique os horários atualizados.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'Service on the line {line_short_name} has been modified due to driver absence. Please check the updated schedule.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'O serviço na linha {line_short_name} foi modificado devido à ausência de condutor. Por favor, verifique o horário atualizado.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Service modifications due to driver absence' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Modificações de serviço devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Service modification due to driver absence' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Modificação de serviço devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1894,22 +1894,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:MODIFIED_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Some rides have adjusted schedules due to driver absence. Please consult the timetable for details.' },
+				pt: { placeholders: [], text: 'Algumas viagens tiveram horários ajustados devido à ausência de condutores. Por favor, consulte o horário para detalhes.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride has an adjusted schedule due to driver absence. Please consult the timetable for details.' },
+				pt: { placeholders: [], text: 'Esta viagem teve o horário ajustado devido à ausência de condutor. Por favor, consulte o horário para detalhes.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Rides with modified schedules due to driver absence' },
+				pt: { placeholders: [], text: 'Viagens com horários modificados devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Ride with modified schedule due to driver absence' },
+				pt: { placeholders: [], text: 'Viagem com horário modificado devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1917,22 +1917,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:MODIFIED_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Certain stops have modified service schedules due to driver absence. Please check local notices for details.' },
+				pt: { placeholders: [], text: 'Algumas paragens têm horários de serviço modificados devido à ausência de condutores. Por favor, verifique avisos locais para detalhes.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop has a modified service schedule due to driver absence. Please check local notices for details.' },
+				pt: { placeholders: [], text: 'Esta paragem tem horário de serviço modificado devido à ausência de condutor. Por favor, verifique avisos locais para detalhes.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stops with modified service due to driver absence' },
+				pt: { placeholders: [], text: 'Paragens com serviço modificado devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stop with modified service due to driver absence' },
+				pt: { placeholders: [], text: 'Paragem com serviço modificado devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1940,22 +1940,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:NO_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'Due to driver absence, service on the lines {line_short_name[]} has been canceled while this notice is in effect. Please use alternative routes or contact customer service for assistance.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido à ausência de condutores, o serviço nas linhas {line_short_name[]} foi cancelado enquanto este aviso estiver ativo. Por favor, utilize rotas alternativas ou contacte o serviço de atendimento ao cliente para assistência.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'Due to driver absence, service on the line {line_short_name} has been canceled while this notice is in effect. Please use alternative routes or contact customer service for assistance.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'Devido à ausência de condutor, o serviço na linha {line_short_name} foi cancelado enquanto este aviso estiver ativo. Por favor, utilize rotas alternativas ou contacte o serviço de atendimento ao cliente para assistência.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Service canceled due to driver absence' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço cancelado devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Service canceled due to driver absence' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço cancelado devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1963,22 +1963,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:NO_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Some rides have been canceled due to driver absence. Please check alternative options or contact customer service.' },
+				pt: { placeholders: [], text: 'Algumas viagens foram canceladas devido à ausência de condutores. Por favor, verifique opções alternativas ou contacte o serviço de atendimento ao cliente.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride has been canceled due to driver absence. Please check alternative options or contact customer service.' },
+				pt: { placeholders: [], text: 'Esta viagem foi cancelada devido à ausência de condutor. Por favor, verifique opções alternativas ou contacte o serviço de atendimento ao cliente.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Rides canceled due to driver absence' },
+				pt: { placeholders: [], text: 'Viagens canceladas devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Ride canceled due to driver absence' },
+				pt: { placeholders: [], text: 'Viagem cancelada devido à ausência de condutor' },
 			},
 		},
 	},
@@ -1986,22 +1986,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:NO_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Certain stops are temporarily without service due to driver absence. Please use nearby alternative stops or check customer service for guidance.' },
+				pt: { placeholders: [], text: 'Algumas paragens estão temporariamente sem serviço devido à ausência de condutores. Por favor, utilize paragens alternativas próximas ou consulte o serviço de atendimento ao cliente para orientação.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop is temporarily without service due to driver absence. Please use nearby alternative stops or check customer service for guidance.' },
+				pt: { placeholders: [], text: 'Esta paragem está temporariamente sem serviço devido à ausência de condutor. Por favor, utilize paragens alternativas próximas ou consulte o serviço de atendimento ao cliente para orientação.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stops without service due to driver absence' },
+				pt: { placeholders: [], text: 'Paragens sem serviço devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stop without service due to driver absence' },
+				pt: { placeholders: [], text: 'Paragem sem serviço devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2009,22 +2009,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'Service on the following lines {line_short_name[]} is running at reduced frequency due to driver absence. Please plan your journey accordingly.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'O serviço nas seguintes linhas {line_short_name[]} está a operar com frequência reduzida devido à ausência de condutores. Por favor, planeie a sua viagem em conformidade.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'Service on the line {line_short_name} is running at reduced frequency due to driver absence. Please plan your journey accordingly.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'O serviço na linha {line_short_name} está a operar com frequência reduzida devido à ausência de condutor. Por favor, planeie a sua viagem em conformidade.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Reduced service due to driver absence' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço reduzido devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Reduced service due to driver absence' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço reduzido devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2032,22 +2032,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Some rides are operating at reduced frequency due to driver absence. Please check updated schedules.' },
+				pt: { placeholders: [], text: 'Algumas viagens estão a operar com frequência reduzida devido à ausência de condutores. Por favor, verifique os horários atualizados.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is operating at reduced frequency due to driver absence. Please check the updated schedule.' },
+				pt: { placeholders: [], text: 'Esta viagem está a operar com frequência reduzida devido à ausência de condutor. Por favor, verifique o horário atualizado.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Rides operating at reduced frequency due to driver absence' },
+				pt: { placeholders: [], text: 'Viagens a operar com frequência reduzida devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Ride operating at reduced frequency due to driver absence' },
+				pt: { placeholders: [], text: 'Viagem a operar com frequência reduzida devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2055,22 +2055,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:REDUCED_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service at certain stops is reduced due to a temporary driver shortage. We apologize for any inconvenience and recommend checking alternative routes or times.' },
+				pt: { placeholders: [], text: 'O serviço em algumas paragens está reduzido devido à falta temporária de condutores. Pedimos desculpa por qualquer inconveniente e recomendamos verificar rotas ou horários alternativos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service at this stop is reduced due to a temporary driver shortage. We apologize for any inconvenience and recommend checking alternative routes or times.' },
+				pt: { placeholders: [], text: 'O serviço nesta paragem está reduzido devido à falta temporária de condutores. Pedimos desculpa por qualquer inconveniente e recomendamos verificar rotas ou horários alternativos.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Reduced service at multiple stops due to driver absence' },
+				pt: { placeholders: [], text: 'Serviço reduzido em várias paragens devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Reduced service at this stop due to driver absence' },
+				pt: { placeholders: [], text: 'Serviço reduzido nesta paragem devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2078,22 +2078,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Significant delays are affecting multiple lines due to a shortage of drivers. We recommend planning additional travel time and checking for updates.' },
+				pt: { placeholders: [], text: 'Atrasos significativos estão a afetar várias linhas devido à falta de condutores. Recomendamos planear tempo de viagem adicional e verificar atualizações.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Significant delays are affecting this line due to a shortage of drivers. Please allow extra travel time and check for updates.' },
+				pt: { placeholders: [], text: 'Atrasos significativos estão a afetar esta linha devido à falta de condutores. Por favor, considere tempo de viagem adicional e verifique atualizações.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Multiple lines experiencing significant delays due to driver absence' },
+				pt: { placeholders: [], text: 'Várias linhas com atrasos significativos devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This line experiencing significant delays due to driver absence' },
+				pt: { placeholders: [], text: 'Esta linha com atrasos significativos devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2101,22 +2101,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Several rides are currently delayed due to insufficient drivers. Passengers are advised to check schedules and allow extra travel time.' },
+				pt: { placeholders: [], text: 'Várias viagens estão atualmente atrasadas devido à falta de condutores. Os passageiros são aconselhados a verificar horários e prever tempo de viagem adicional.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is currently delayed due to insufficient drivers. Please allow extra travel time and check schedules.' },
+				pt: { placeholders: [], text: 'Esta viagem está atualmente atrasada devido à falta de condutores. Por favor, considere tempo adicional e verifique horários.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Multiple rides delayed due to driver shortage' },
+				pt: { placeholders: [], text: 'Várias viagens atrasadas devido à falta de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride delayed due to driver shortage' },
+				pt: { placeholders: [], text: 'Esta viagem atrasada devido à falta de condutor' },
 			},
 		},
 	},
@@ -2124,22 +2124,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:SIGNIFICANT_DELAYS:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Delays at multiple stops are occurring due to driver shortages. Please consider alternative routes or extra travel time.' },
+				pt: { placeholders: [], text: 'Estão a ocorrer atrasos em várias paragens devido à falta de condutores. Considere rotas alternativas ou tempo de viagem adicional.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Delays at this stop are occurring due to driver shortages. Please allow extra travel time or consider alternative stops.' },
+				pt: { placeholders: [], text: 'Estão a ocorrer atrasos nesta paragem devido à falta de condutores. Por favor, preveja tempo de viagem adicional ou considere paragens alternativas.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Delays at multiple stops due to driver absence' },
+				pt: { placeholders: [], text: 'Atrasos em várias paragens devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Delay at this stop due to driver absence' },
+				pt: { placeholders: [], text: 'Atraso nesta paragem devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2147,22 +2147,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:STOP_MOVED:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stops have been temporarily relocated on multiple lines due to driver shortages. Check updated stop locations before travel.' },
+				pt: { placeholders: [], text: 'As paragens foram temporariamente realocadas em várias linhas devido à falta de condutores. Verifique os locais atualizados antes de viajar.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'A stop has been temporarily relocated on this line due to driver shortages. Check the updated location before travel.' },
+				pt: { placeholders: [], text: 'Uma paragem foi temporariamente realocada nesta linha devido à falta de condutores. Verifique o local atualizado antes de viajar.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Multiple stops temporarily moved due to driver absence' },
+				pt: { placeholders: [], text: 'Várias paragens temporariamente realocadas devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stop temporarily moved due to driver absence' },
+				pt: { placeholders: [], text: 'Paragem temporariamente realocada devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2170,22 +2170,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:STOP_MOVED:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Several rides are affected by temporary stop relocations due to driver shortages. Check updated stop locations before boarding.' },
+				pt: { placeholders: [], text: 'Várias viagens são afetadas por realocações temporárias de paragens devido à falta de condutores. Verifique os locais atualizados antes de embarcar.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is affected by a temporary stop relocation due to driver shortages. Verify the updated stop location before boarding.' },
+				pt: { placeholders: [], text: 'Esta viagem é afetada por uma realocação temporária de paragem devido à falta de condutores. Verifique o local atualizado antes de embarcar.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Multiple rides affected by stop relocations due to driver absence' },
+				pt: { placeholders: [], text: 'Várias viagens afetadas por realocações de paragens devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Ride affected by stop relocation due to driver absence' },
+				pt: { placeholders: [], text: 'Viagem afetada por realocação de paragem devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2193,22 +2193,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:STOP_MOVED:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Multiple stops have been temporarily moved due to a shortage of drivers. Please check new locations before traveling.' },
+				pt: { placeholders: [], text: 'Várias paragens foram temporariamente movidas devido à falta de condutores. Verifique os novos locais antes de viajar.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop has been temporarily moved due to a shortage of drivers. Please check its new location before traveling.' },
+				pt: { placeholders: [], text: 'Esta paragem foi temporariamente movida devido à falta de condutores. Verifique o novo local antes de viajar.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Multiple stops temporarily moved due to driver absence' },
+				pt: { placeholders: [], text: 'Várias paragens temporariamente movidas devido à ausência de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stop temporarily moved due to driver absence' },
+				pt: { placeholders: [], text: 'Paragem temporariamente movida devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2216,22 +2216,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:ACCESSIBILITY_ISSUE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Multiple lines are currently affected by accessibility issues due to driver-related challenges. Passengers requiring assistance should plan accordingly.' },
+				pt: { placeholders: [], text: 'Várias linhas estão atualmente afetadas por problemas de acessibilidade devido a desafios relacionados com os condutores. Passageiros que necessitam de assistência devem planear com antecedência.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This line is currently affected by accessibility issues due to driver-related challenges. Passengers requiring assistance should plan accordingly.' },
+				pt: { placeholders: [], text: 'Esta linha está atualmente afetada por problemas de acessibilidade devido a desafios relacionados com o condutor. Passageiros que necessitam de assistência devem planear com antecedência.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Accessibility issues affecting multiple lines due to driver-related problems' },
+				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam várias linhas devido a questões relacionadas com condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Accessibility issues affecting this line due to driver-related problems' },
+				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam esta linha devido a questões relacionadas com o condutor' },
 			},
 		},
 	},
@@ -2239,22 +2239,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:ACCESSIBILITY_ISSUE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Several rides are experiencing accessibility issues due to driver-related challenges. Passengers should verify accessibility options before boarding.' },
+				pt: { placeholders: [], text: 'Várias viagens estão a ter problemas de acessibilidade devido a desafios relacionados com os condutores. Os passageiros devem verificar as opções de acessibilidade antes de embarcar.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is experiencing accessibility issues due to driver-related challenges. Passengers should verify accessibility options before boarding.' },
+				pt: { placeholders: [], text: 'Esta viagem está a ter problemas de acessibilidade devido a desafios relacionados com o condutor. Os passageiros devem verificar as opções de acessibilidade antes de embarcar.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Accessibility issues affecting multiple rides due to driver-related problems' },
+				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam várias viagens devido a questões relacionadas com condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Accessibility issues affecting this ride due to driver-related problems' },
+				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam esta viagem devido a questões relacionadas com o condutor' },
 			},
 		},
 	},
@@ -2262,22 +2262,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:ACCESSIBILITY_ISSUE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Accessibility challenges are affecting multiple stops due to driver-related issues. Passengers requiring assistance should plan alternative stops if needed.' },
+				pt: { placeholders: [], text: 'Problemas de acessibilidade estão a afetar várias paragens devido a questões relacionadas com os condutores. Passageiros que necessitam de assistência devem planear paragens alternativas se necessário.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop is affected by accessibility challenges due to driver-related issues. Passengers requiring assistance should check alternatives before traveling.' },
+				pt: { placeholders: [], text: 'Esta paragem está afetada por problemas de acessibilidade devido a questões relacionadas com o condutor. Passageiros que necessitam de assistência devem verificar alternativas antes de viajar.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Accessibility issues at multiple stops due to driver-related problems' },
+				pt: { placeholders: [], text: 'Problemas de acessibilidade em várias paragens devido a questões relacionadas com condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Accessibility issue at this stop due to driver-related problems' },
+				pt: { placeholders: [], text: 'Problema de acessibilidade nesta paragem devido a questões relacionadas com o condutor' },
 			},
 		},
 	},
@@ -2285,22 +2285,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:ADDITIONAL_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional services are being provided on these lines due to driver availability issues. We appreciate your patience and recommend checking schedules for updated times.' },
+				pt: { placeholders: [], text: 'Serviços adicionais estão a ser prestados nestas linhas devido a problemas de disponibilidade de condutores. Agradecemos a sua compreensão e sugerimos que consulte os horários atualizados.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'An additional service is being provided on this line due to driver availability issues. Please check schedules for updated times.' },
+				pt: { placeholders: [], text: 'Está a ser prestado um serviço adicional nesta linha devido a problemas de disponibilidade de condutor. Consulte os horários atualizados.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional services on selected lines due to driver availability' },
+				pt: { placeholders: [], text: 'Serviços adicionais em linhas selecionadas devido à disponibilidade de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional service on this line due to driver availability' },
+				pt: { placeholders: [], text: 'Serviço adicional nesta linha devido à disponibilidade de condutor' },
 			},
 		},
 	},
@@ -2308,22 +2308,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:ADDITIONAL_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Extra rides are available due to temporary driver shortages. Please plan your journey accordingly and refer to updated schedules.' },
+				pt: { placeholders: [], text: 'Corridas adicionais estão disponíveis devido a uma escassez temporária de condutores. Planeie a sua viagem e consulte os horários atualizados.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'An extra ride is available due to a temporary driver shortage. Please check the updated schedule.' },
+				pt: { placeholders: [], text: 'Está disponível uma corrida adicional devido a uma escassez temporária de condutor. Consulte o horário atualizado.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Extra rides available due to driver availability issues' },
+				pt: { placeholders: [], text: 'Corridas adicionais disponíveis devido à disponibilidade de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Extra ride available due to driver availability issues' },
+				pt: { placeholders: [], text: 'Corrida adicional disponível devido à disponibilidade de condutor' },
 			},
 		},
 	},
@@ -2331,22 +2331,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:ADDITIONAL_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional stops are being served temporarily due to driver availability. Check your local schedule for details.' },
+				pt: { placeholders: [], text: 'Paragens adicionais estão a ser atendidas temporariamente devido à disponibilidade de condutores. Consulte os horários locais para mais informações.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'An additional stop is being served temporarily due to driver availability. Check local schedules for details.' },
+				pt: { placeholders: [], text: 'Está a ser atendida uma paragem adicional temporariamente devido à disponibilidade de condutor. Consulte os horários locais.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional stops in service due to driver availability' },
+				pt: { placeholders: [], text: 'Paragens adicionais em serviço devido à disponibilidade de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Additional stop in service due to driver availability' },
+				pt: { placeholders: [], text: 'Paragem adicional em serviço devido à disponibilidade de condutor' },
 			},
 		},
 	},
@@ -2354,22 +2354,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:DETOUR:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Services on these lines are operating via a temporary detour due to driver-related issues. We recommend checking for schedule changes.' },
+				pt: { placeholders: [], text: 'Os serviços nestas linhas estão a operar através de um desvio temporário devido a problemas relacionados com condutores. Recomendamos que consulte alterações de horários.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service on this line is operating via a temporary detour due to driver-related issues. Please check schedule updates.' },
+				pt: { placeholders: [], text: 'O serviço nesta linha está a operar através de um desvio temporário devido a problemas relacionados com condutores. Consulte os horários atualizados.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary detour on selected lines due to driver issues' },
+				pt: { placeholders: [], text: 'Desvio temporário em linhas selecionadas devido a problemas de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary detour on this line due to driver issues' },
+				pt: { placeholders: [], text: 'Desvio temporário nesta linha devido a problemas de condutor' },
 			},
 		},
 	},
@@ -2377,22 +2377,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:DETOUR:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Certain rides are being rerouted temporarily due to driver availability problems. Check updated schedules before travel.' },
+				pt: { placeholders: [], text: 'Algumas corridas estão a ser redirecionadas temporariamente devido a problemas de disponibilidade de condutores. Consulte os horários atualizados antes de viajar.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is being rerouted temporarily due to driver availability problems. Check the updated schedule.' },
+				pt: { placeholders: [], text: 'Esta corrida está a ser redirecionada temporariamente devido a problemas de disponibilidade de condutor. Consulte o horário atualizado.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary ride detours due to driver issues' },
+				pt: { placeholders: [], text: 'Desvios temporários de corridas devido a problemas de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary ride detour due to driver issues' },
+				pt: { placeholders: [], text: 'Desvio temporário de corrida devido a problemas de condutor' },
 			},
 		},
 	},
@@ -2400,22 +2400,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:DETOUR:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Some stops are temporarily served via detour due to driver-related issues. Please consult local schedules for updates.' },
+				pt: { placeholders: [], text: 'Algumas paragens estão temporariamente atendidas via desvio devido a problemas relacionados com condutores. Consulte os horários locais para atualizações.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop is temporarily served via detour due to driver-related issues. Check local schedules for updates.' },
+				pt: { placeholders: [], text: 'Esta paragem está temporariamente atendida via desvio devido a problemas relacionados com condutores. Consulte os horários locais.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary stop detours due to driver issues' },
+				pt: { placeholders: [], text: 'Desvios temporários de paragens devido a problemas de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary stop detour due to driver issues' },
+				pt: { placeholders: [], text: 'Desvio temporário de paragem devido a problemas de condutor' },
 			},
 		},
 	},
@@ -2423,22 +2423,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:MODIFIED_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service on these lines is running with modifications due to driver-related issues. Please check schedules for adjustments.' },
+				pt: { placeholders: [], text: 'O serviço nestas linhas está a decorrer com modificações devido a problemas relacionados com condutores. Consulte os horários para alterações.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service on this line is running with modifications due to driver-related issues. Check schedule for adjustments.' },
+				pt: { placeholders: [], text: 'O serviço nesta linha está a decorrer com modificações devido a problemas relacionados com condutor. Consulte o horário para alterações.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Modified service on selected lines due to driver issues' },
+				pt: { placeholders: [], text: 'Serviço modificado em linhas selecionadas devido a problemas de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Modified service on this line due to driver issues' },
+				pt: { placeholders: [], text: 'Serviço modificado nesta linha devido a problemas de condutor' },
 			},
 		},
 	},
@@ -2446,22 +2446,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:MODIFIED_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Certain rides are operating with modified schedules due to driver availability issues. Please check updated times.' },
+				pt: { placeholders: [], text: 'Algumas corridas estão a operar com horários modificados devido a problemas de disponibilidade de condutores. Consulte os horários atualizados.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is operating with a modified schedule due to driver availability issues. Check updated times.' },
+				pt: { placeholders: [], text: 'Esta corrida está a operar com horário modificado devido a problemas de disponibilidade de condutor. Consulte os horários atualizados.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Rides operating with modified schedules due to driver issues' },
+				pt: { placeholders: [], text: 'Corridas com horários modificados devido a problemas de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Ride operating with modified schedule due to driver issues' },
+				pt: { placeholders: [], text: 'Corrida com horário modificado devido a problemas de condutor' },
 			},
 		},
 	},
@@ -2469,22 +2469,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:MODIFIED_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stops are being served with temporary modifications due to driver availability. Check local schedules for details.' },
+				pt: { placeholders: [], text: 'As paragens estão a ser atendidas com modificações temporárias devido à disponibilidade de condutores. Consulte os horários locais para detalhes.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop is served with temporary modifications due to driver availability. Check local schedules for details.' },
+				pt: { placeholders: [], text: 'Esta paragem está a ser atendida com modificações temporárias devido à disponibilidade de condutor. Consulte os horários locais.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stops served with temporary modifications due to driver issues' },
+				pt: { placeholders: [], text: 'Paragens atendidas com modificações temporárias devido a problemas de condutores' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Stop served with temporary modifications due to driver issues' },
+				pt: { placeholders: [], text: 'Paragem atendida com modificações temporárias devido a problemas de condutor' },
 			},
 		},
 	},
@@ -2515,22 +2515,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:NO_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service for several rides has been canceled due to driver availability issues. Please consider alternative options or contact customer service for assistance.' },
+				pt: { placeholders: [], text: 'O serviço de várias viagens foi interrompido devido a problemas de disponibilidade de motoristas. Por favor, utilize alternativas ou entre em contato com o serviço de atendimento ao cliente.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service for this ride has been canceled due to driver availability issues. Please consider alternative options or contact customer service for assistance.' },
+				pt: { placeholders: [], text: 'O serviço desta viagem foi interrompido devido a problemas de disponibilidade de motoristas. Por favor, utilize alternativas ou entre em contato com o serviço de atendimento ao cliente.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes ride cancellations' },
+				pt: { placeholders: [], text: 'Falta de motoristas causa cancelamento de viagens' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes ride cancellation' },
+				pt: { placeholders: [], text: 'Falta de motorista causa cancelamento da viagem' },
 			},
 		},
 	},
@@ -2538,22 +2538,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:NO_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Several stops are not being served due to driver availability issues. Please plan alternative routes or contact customer service.' },
+				pt: { placeholders: [], text: 'Vários pontos não estão sendo atendidos devido a problemas de disponibilidade de motoristas. Por favor, planeje rotas alternativas ou entre em contato com o serviço de atendimento ao cliente.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop is not being served due to driver availability issues. Please plan an alternative route or contact customer service.' },
+				pt: { placeholders: [], text: 'Este ponto não está sendo atendido devido a problemas de disponibilidade de motoristas. Por favor, planeje uma rota alternativa ou entre em contato com o serviço de atendimento ao cliente.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes multiple stops to be skipped' },
+				pt: { placeholders: [], text: 'Falta de motoristas causa interrupção em vários pontos' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes stop to be skipped' },
+				pt: { placeholders: [], text: 'Falta de motorista causa interrupção no ponto' },
 			},
 		},
 	},
@@ -2561,22 +2561,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'Service on the lines {line_short_name[]} is currently reduced due to driver availability issues. Please expect longer waiting times.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'O serviço nas linhas {line_short_name[]} está atualmente reduzido devido a problemas de disponibilidade de motoristas. Aguarde tempos de espera mais longos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'Service on the line {line_short_name} is currently reduced due to driver availability issues. Please expect longer waiting times.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'O serviço na linha {line_short_name} está atualmente reduzido devido a problemas de disponibilidade de motoristas. Aguarde tempos de espera mais longos.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Reduced service due to driver shortage' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço reduzido devido à falta de motoristas' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Reduced service due to driver shortage' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço reduzido devido à falta de motoristas' },
 			},
 		},
 	},
@@ -2584,22 +2584,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Several rides are operating on a reduced schedule due to driver availability issues. Expect delays and limited service.' },
+				pt: { placeholders: [], text: 'Várias viagens estão operando com horários reduzidos devido a problemas de disponibilidade de motoristas. Aguarde atrasos e serviço limitado.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is operating on a reduced schedule due to driver availability issues. Expect delays and limited service.' },
+				pt: { placeholders: [], text: 'Esta viagem está operando com horário reduzido devido a problemas de disponibilidade de motoristas. Aguarde atrasos e serviço limitado.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes reduced ride service' },
+				pt: { placeholders: [], text: 'Falta de motoristas causa redução no serviço de viagens' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes reduced ride service' },
+				pt: { placeholders: [], text: 'Falta de motorista causa redução no serviço da viagem' },
 			},
 		},
 	},
@@ -2607,22 +2607,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:REDUCED_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service at several stops is reduced due to driver availability issues. Please allow extra time for your journey.' },
+				pt: { placeholders: [], text: 'O serviço em vários pontos está reduzido devido a problemas de disponibilidade de motoristas. Por favor, permita mais tempo para sua viagem.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Service at this stop is reduced due to driver availability issues. Please allow extra time for your journey.' },
+				pt: { placeholders: [], text: 'O serviço neste ponto está reduzido devido a problemas de disponibilidade de motoristas. Por favor, permita mais tempo para sua viagem.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage reduces stop service' },
+				pt: { placeholders: [], text: 'Falta de motoristas reduz o serviço nos pontos' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage reduces stop service' },
+				pt: { placeholders: [], text: 'Falta de motorista reduz o serviço no ponto' },
 			},
 		},
 	},
@@ -2630,22 +2630,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'Expect significant delays on the lines {line_short_name[]} due to driver availability issues. Please plan your journey accordingly.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'Espere atrasos significativos nas linhas {line_short_name[]} devido a problemas de disponibilidade de motoristas. Planeje sua viagem de acordo.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'Expect significant delays on the line {line_short_name} due to driver availability issues. Please plan your journey accordingly.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'Espere atrasos significativos na linha {line_short_name} devido a problemas de disponibilidade de motoristas. Planeje sua viagem de acordo.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Significant delays due to driver shortage' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Atrasos significativos devido à falta de motoristas' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Significant delays due to driver shortage' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Atrasos significativos devido à falta de motoristas' },
 			},
 		},
 	},
@@ -2653,22 +2653,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Several rides are experiencing significant delays due to driver availability issues. Expect longer travel times.' },
+				pt: { placeholders: [], text: 'Várias viagens estão enfrentando atrasos significativos devido a problemas de disponibilidade de motoristas. Aguarde tempos de viagem mais longos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is experiencing significant delays due to driver availability issues. Expect a longer travel time.' },
+				pt: { placeholders: [], text: 'Esta viagem está enfrentando atrasos significativos devido a problemas de disponibilidade de motoristas. Aguarde um tempo de viagem maior.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes significant ride delays' },
+				pt: { placeholders: [], text: 'Falta de motoristas causa atrasos significativos nas viagens' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes significant ride delays' },
+				pt: { placeholders: [], text: 'Falta de motorista causa atrasos significativos na viagem' },
 			},
 		},
 	},
@@ -2676,22 +2676,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:SIGNIFICANT_DELAYS:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Expect significant delays at several stops due to driver availability issues. Please allow extra time.' },
+				pt: { placeholders: [], text: 'Espere atrasos significativos em vários pontos devido a problemas de disponibilidade de motoristas. Por favor, permita mais tempo.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Expect significant delays at this stop due to driver availability issues. Please allow extra time.' },
+				pt: { placeholders: [], text: 'Espere atrasos significativos neste ponto devido a problemas de disponibilidade de motoristas. Por favor, permita mais tempo.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes significant stop delays' },
+				pt: { placeholders: [], text: 'Falta de motoristas causa atrasos significativos nos pontos' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Driver shortage causes significant stop delays' },
+				pt: { placeholders: [], text: 'Falta de motorista causa atrasos significativos no ponto' },
 			},
 		},
 	},
@@ -2699,22 +2699,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:STOP_MOVED:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'Stops on the lines {line_short_name[]} have been temporarily relocated. Please follow signage or contact customer service for updated information.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'Os pontos nas linhas {line_short_name[]} foram temporariamente realocados. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'A stop on the line {line_short_name} has been temporarily relocated. Please follow signage or contact customer service for updated information.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'Um ponto na linha {line_short_name} foi temporariamente realocado. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Stop relocation in effect' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Realocação de ponto em vigor' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Stop relocation in effect' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Realocação de ponto em vigor' },
 			},
 		},
 	},
@@ -2722,22 +2722,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:STOP_MOVED:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Rides are affected due to temporarily relocated stops. Please check updated boarding locations or contact customer service.' },
+				pt: { placeholders: [], text: 'Viagens são afetadas devido a pontos temporariamente realocados. Verifique os locais de embarque atualizados ou entre em contato com o serviço de atendimento ao cliente.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This ride is affected due to a temporarily relocated stop. Please check the updated boarding location or contact customer service.' },
+				pt: { placeholders: [], text: 'Esta viagem é afetada devido a um ponto temporariamente realocado. Verifique o local de embarque atualizado ou entre em contato com o serviço de atendimento ao cliente.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary stop relocation affects rides' },
+				pt: { placeholders: [], text: 'Realocação temporária de ponto afeta viagens' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary stop relocation affects ride' },
+				pt: { placeholders: [], text: 'Realocação temporária de ponto afeta viagem' },
 			},
 		},
 	},
@@ -2745,22 +2745,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:STOP_MOVED:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Several stops have been temporarily relocated. Please follow signage or contact customer service for updated information.' },
+				pt: { placeholders: [], text: 'Vários pontos foram temporariamente realocados. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'This stop has been temporarily relocated. Please follow signage or contact customer service for updated information.' },
+				pt: { placeholders: [], text: 'Este ponto foi temporariamente realocado. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary stop relocation in effect' },
+				pt: { placeholders: [], text: 'Realocação temporária de ponto em vigor' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: [], text: 'Temporary stop relocation in effect' },
+				pt: { placeholders: [], text: 'Realocação temporária de ponto em vigor' },
 			},
 		},
 	},
@@ -2768,22 +2768,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'HIGH_PASSENGER_LOAD:ACCESSIBILITY_ISSUE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: 'High passenger load on the lines {line_short_name[]} is causing accessibility issues. Please plan accordingly and allow extra time.' },
+				pt: { placeholders: ['{line_short_name[]}'], text: 'A alta carga de passageiros nas linhas {line_short_name[]} está causando problemas de acessibilidade. Planeje-se adequadamente e permita mais tempo.' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: 'High passenger load on the line {line_short_name} is causing accessibility issues. Please plan accordingly and allow extra time.' },
+				pt: { placeholders: ['{line_short_name}'], text: 'A alta carga de passageiros na linha {line_short_name} está causando problemas de acessibilidade. Planeje-se adequadamente e permita mais tempo.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Accessibility impacted by high passenger load' },
+				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acessibilidade afetada por alta carga de passageiros' },
 			},
 			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
+				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Accessibility impacted by high passenger load' },
+				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acessibilidade afetada por alta carga de passageiros' },
 			},
 		},
 	},
