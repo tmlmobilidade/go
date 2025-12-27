@@ -1,31 +1,54 @@
 #!/usr/bin/env node
 
+import { promptExportTypes } from '@/prompts/export-types.js';
+import { promptFilterByStopIds } from '@/prompts/filter-stop-ids.js';
+import { promptFilterTypes } from '@/prompts/filter-types.js';
+import { exportValidationsRaw } from '@/tasks/apex-validations/validations-raw.js';
 import chalk from 'chalk';
 
 import { ASCII_TMLMOBILIDADE, PACKAGES_TO_UPGRADE, REPLACE_FILE_PATHS, TEMPLATE_STRING } from './consts.js';
+import { promptFilterByLineIds } from './prompts/filter-line-ids.js';
+import { promptFilterByPatternIds } from './prompts/filter-pattern-ids.js';
 import { copyApp, copyMonorepo, getAvailableApps, replaceInFile, upgradePackages } from './utils/copy.js';
 import { logger } from './utils/logger.js';
-import { getProjectName, getProjectScope, selectApps, selectProjectType, selectSingleApp } from './utils/prompts.js';
+import { getProjectName, getProjectScope, selectApps, selectSingleApp } from './utils/prompts.js';
 
 /* * */
 
-export const renderTitle = () => {
-	let text = ASCII_TMLMOBILIDADE;
-
-	text = text.replace(/▓/g, chalk.dim(chalk.yellow('▓')));
-	text = text.replace(/ ▄▄▄ /g, chalk.yellow(' ▄▄▄ '));
-	text = text.replace(/ ▀▀▀ /g, chalk.yellow(' ▀▀▀ '));
-	text = text.replace(/▐▒▒▒▌/g, chalk.yellow('▐') + chalk.white('▒▒▒') + chalk.yellow('▌'));
-
-	console.log(text);
-};
-
 async function main() {
-	renderTitle();
+	//
 
-	const projectType = await selectProjectType();
+	//
+	// Request the export types and which filters to apply
 
-	if (projectType === 'monorepo') {
+	const exportTypes = await promptExportTypes();
+
+	const filterTypes = await promptFilterTypes();
+
+	//
+	// For the selected filters, request the filter values
+
+	let stopIds: string[] = [];
+	if (filterTypes.includes('stop-ids')) stopIds = await promptFilterByStopIds();
+
+	let lineIds: string[] = [];
+	if (filterTypes.includes('line-ids')) lineIds = await promptFilterByLineIds();
+
+	let patternIds: string[] = [];
+	if (filterTypes.includes('pattern-ids')) patternIds = await promptFilterByPatternIds();
+
+	//
+	// Iterate on the selected export types
+	// and execute them sequentially.
+
+	for (const exportType of exportTypes) {
+		if (exportType === 'validations-raw') await exportValidationsRaw();
+		logger.info(`Starting export for: ${chalk.green(exportType)}`);
+	}
+
+	process.exit(0);
+
+	if (projectTypes.includes('monorepo')) {
 		const projectName = await getProjectName();
 		const projectScope = await getProjectScope(projectName);
 		const selectedApps = await selectApps(await getAvailableApps());
