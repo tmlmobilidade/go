@@ -15,7 +15,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/interfaces": "*"
+		"@tmlmobilidade/dates": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

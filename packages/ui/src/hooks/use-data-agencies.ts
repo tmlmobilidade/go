@@ -99,31 +99,36 @@ export function useDataAgencies(apiUrl: string, props?: UseDataAgenciesProps): U
 		});
 	}, [allAgenciesData, props?.actions, props?.scope]);
 
+	const filteredAndSortedData = useMemo(() => {
+		// Sort data by agency ID
+		return filteredData.sort((a, b) => Number(a._id) - Number(b._id));
+	}, [filteredData]);
+
 	const filteredIds = useMemo(() => {
 		// Skip if no data is available
-		if (!filteredData?.length) return [];
+		if (!filteredAndSortedData?.length) return [];
 		// Keep only the IDs of the filtered data
-		return filteredData.map(item => item._id);
-	}, [filteredData]);
+		return filteredAndSortedData.map(item => item._id);
+	}, [filteredAndSortedData]);
 
 	const optionsData = useMemo(() => {
 		// Skip if no data is available
-		if (!filteredData?.length) return [];
+		if (!filteredAndSortedData?.length) return [];
 		// Map data to SelectDataItem format
-		return filteredData.map((item): SelectDataItem => ({
+		return filteredAndSortedData.map((item): SelectDataItem => ({
 			checked: false,
 			disabled: false,
 			label: `${item._id} - ${item.name}`,
 			value: item._id,
 		}));
-	}, [filteredData]);
+	}, [filteredAndSortedData]);
 
 	//
 	// D. Return value
 
 	return {
 		error: allAgenciesError,
-		filtered: filteredData,
+		filtered: filteredAndSortedData,
 		filteredIds: filteredIds,
 		isLoading: allAgenciesLoading,
 		options: optionsData,

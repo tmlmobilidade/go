@@ -27,13 +27,9 @@ export function AgencyPermissionMultiselect({ disabled, onChange, value }: Agenc
 	// B. Transform data
 
 	const agencyOptionsWithAllowAll = useMemo(() => {
-		return [
-			...agencyOptions,
-			{
-				label: 'Todas as agências',
-				value: PermissionCatalog.ALLOW_ALL_FLAG,
-			},
-		];
+		const copyOfOptions = [...agencyOptions];
+		copyOfOptions.unshift({ label: 'Todas as agências', value: PermissionCatalog.ALLOW_ALL_FLAG });
+		return copyOfOptions;
 	}, [agencyOptions]);
 
 	//

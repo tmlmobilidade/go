@@ -5,7 +5,7 @@
 import { useScheduledAlertCreateContext } from '@/components/scheduled/create/ScheduledAlertCreate.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
+import { GtfsCauseSchema, GtfsEffectSchema } from '@tmlmobilidade/types';
 import { Grid, Section, Select } from '@tmlmobilidade/ui';
 
 /* * */
@@ -21,13 +21,13 @@ export function ScheduledAlertCreateSectionCauseEffect() {
 	//
 	// B. Transform data
 
-	const causeItems = gtfsCauseSchema.options.map(cause => ({
+	const causeItems = GtfsCauseSchema.options.map(cause => ({
 		icon: CauseIcons[cause],
 		label: Translations.CAUSE[cause],
 		value: cause,
 	}));
 
-	const effectItems = gtfsEffectSchema.options.map(effect => ({
+	const effectItems = GtfsEffectSchema.options.map(effect => ({
 		icon: EffectIcons[effect],
 		label: Translations.EFFECT[effect],
 		value: effect,

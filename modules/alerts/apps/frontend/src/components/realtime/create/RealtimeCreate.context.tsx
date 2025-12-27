@@ -129,6 +129,9 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 			const alertTemplating = await describeAlert({
 				alert_type: 'realtime',
 				cause: form.getValues().cause,
+				data: {
+					rides: ridesData.filter(ride => form.getValues().references?.some(reference => reference.parent_id === ride._id)),
+				},
 				effect: form.getValues().effect,
 				reference_type: 'rides',
 				references: form.getValues().references ?? [],

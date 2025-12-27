@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Alert, AlertSchema, CreateAlertDto, File as FileType, gtfsCauseSchema, gtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, CreateAlertDto, File as FileType, GtfsCauseSchema, GtfsEffectSchema, ReferenceTypeSchema, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { FormValidateInput, useForm, UseFormReturnType, useToast, zodResolver } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { convertObject } from '@tmlmobilidade/utils';
@@ -52,10 +52,10 @@ export function useRealtimeDetailContext() {
 const emptyAlert: CreateAlertDto = {
 	active_period_end_date: undefined,
 	active_period_start_date: Dates.now('Europe/Lisbon').unix_timestamp,
-	cause: Object.values(gtfsCauseSchema.enum)[0],
+	cause: Object.values(GtfsCauseSchema.enum)[0],
 	coordinates: null,
 	description: '',
-	effect: Object.values(gtfsEffectSchema.enum)[0],
+	effect: Object.values(GtfsEffectSchema.enum)[0],
 	external_id: null,
 	file_id: null,
 	info_url: null,

@@ -1,6 +1,6 @@
 /* * */
 
-import { Alert } from '@tmlmobilidade/types';
+import { type Alert, type RideNormalized, type Stop } from '@tmlmobilidade/types';
 
 export type TemplateParam = '{headsign_prose}'
   | '{headsign_title}'
@@ -9,6 +9,8 @@ export type TemplateParam = '{headsign_prose}'
   | '{line_short_name}'
   | '{lines_prose}'
   | '{lines_title}'
+  | '{rides_description}'
+  | '{rides_title}'
   | '{start_time[]}'
   | '{start_time}'
   | '{stops_prose}'
@@ -34,3 +36,18 @@ export interface TemplateFragment {
 export type AlertConfigKey = `${Alert['cause']}:${Alert['effect']}:${Alert['reference_type']}`;
 
 export type AlertTemplateRegistry = Record<AlertConfigKey, TemplateFragment>;
+
+/* * */
+
+export interface DescribeAlertProps {
+	alert_type: Alert['type']
+	cause: Alert['cause']
+	data: {
+		lines?: { id: string }[]
+		rides?: RideNormalized[]
+		stops?: Stop[]
+	}
+	effect: Alert['effect']
+	reference_type: Alert['reference_type']
+	references: Alert['references']
+}
