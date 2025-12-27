@@ -31,12 +31,14 @@
 	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint ./src/ && tsc --noEmit",
-		"lint:fix": "eslint ./src/ --fix"
+		"dev": "tsx src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
-		"@tmlmobilidade/consts": "*"
+		"@tmlmobilidade/consts": "*",
+		"chalk": "5.6.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
