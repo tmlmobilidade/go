@@ -9,24 +9,23 @@ import fs from 'node:fs';
 
 /* * */
 
-const TASK_ID: ExportType = 'validations-by-stop-by-pattern';
+const TASK_ID: ExportType = 'validations-by-pattern';
 
 /* * */
 
 interface Result {
 	date: string
 	pattern_id: string
-	stop_id: string
 	validations: number
 }
 
 /**
- * Export Validations By Stop By Pattern data applying the given filters.
+ * Export Validations By Pattern data applying the given filters.
  */
-export async function exportValidationsByStopByPattern({ context, message }: TaskProps): Promise<void> {
+export async function exportValidationsByPattern({ context, message }: TaskProps): Promise<void> {
 	//
 
-	message('A iniciar a exportação de Validações APEX por Paragem e por Pattern...');
+	message('A iniciar a exportação de Validações APEX por Pattern...');
 
 	//
 	// Prepare the filter params
@@ -103,7 +102,7 @@ export async function exportValidationsByStopByPattern({ context, message }: Tas
 			.fromUnixTimestamp(document.created_at)
 			.operational_date;
 
-		const resultKey = `${operationalDate}:${document.stop_id}:${document.pattern_id}`;
+		const resultKey = `${operationalDate}:${document.pattern_id}`;
 
 		//
 		// Update the result with the current document
@@ -112,7 +111,6 @@ export async function exportValidationsByStopByPattern({ context, message }: Tas
 			result[resultKey] = {
 				date: operationalDate,
 				pattern_id: document.pattern_id,
-				stop_id: document.stop_id,
 				validations: 0,
 			};
 		}

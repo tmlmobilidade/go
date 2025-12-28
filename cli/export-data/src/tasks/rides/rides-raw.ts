@@ -1,37 +1,30 @@
 /* * */
 
 import { type ExportType, type TaskProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { type Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { type Filter, rides } from '@tmlmobilidade/interfaces';
+import { type Ride } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 
 /* * */
 
-const TASK_ID: ExportType = 'validations-raw';
+const TASK_ID: ExportType = 'rides-raw';
 
 /* * */
 
-export async function exportValidationsRaw({ context, message }: TaskProps): Promise<void> {
+export async function exportRidesRaw({ context, message }: TaskProps): Promise<void> {
 	//
 
-	message('A iniciar a exportação de Validações APEX em bruto...');
+	message('A iniciar a exportação de Rides em bruto...');
 
 	//
 	// Prepare the filter params
 
-	const filterQuery: Filter<SimplifiedApexValidation> = {};
+	const filterQuery: Filter<Ride> = {};
 
-	filterQuery.created_at = {
-		$gte: Dates
-			.fromOperationalDate(context.dates.start, 'Europe/Lisbon')
-			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-			.unix_timestamp,
-		$lt: Dates
-			.fromOperationalDate(context.dates.end, 'Europe/Lisbon')
-			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-			.unix_timestamp,
+	filterQuery.operational_date = {
+		$gte: context.dates.start,
+		$lte: context.dates.end,
 	};
 
 	if (context.filters.agency_ids.length) {
@@ -39,19 +32,15 @@ export async function exportValidationsRaw({ context, message }: TaskProps): Pro
 	}
 
 	if (context.filters.line_ids.length) {
-		filterQuery.line_id = { $in: context.filters.line_ids };
+		filterQuery.line_id = { $in: context.filters.line_ids.map(Number) };
 	}
 
 	if (context.filters.pattern_ids.length) {
 		filterQuery.pattern_id = { $in: context.filters.pattern_ids };
 	}
 
-	if (context.filters.stop_ids.length) {
-		filterQuery.stop_id = { $in: context.filters.stop_ids };
-	}
-
 	if (context.filters.vehicle_ids.length) {
-		filterQuery.vehicle_id = { $in: context.filters.vehicle_ids };
+		filterQuery.vehicle_ids = { $in: context.filters.vehicle_ids };
 	}
 
 	//
@@ -59,9 +48,9 @@ export async function exportValidationsRaw({ context, message }: TaskProps): Pro
 
 	message(`A iniciar ligação à base de dados...`);
 
-	const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
+	const ridesCollection = await rides.getCollection();
 
-	const stream = simplifiedApexValidationsCollection.find(filterQuery).stream();
+	const stream = ridesCollection.find(filterQuery).stream();
 
 	//
 	// Prepare the output directory and CSV writer
@@ -80,7 +69,7 @@ export async function exportValidationsRaw({ context, message }: TaskProps): Pro
 	message(`A aguardar o resultado da pesquisa...`);
 
 	for await (const doc of stream) {
-		const document = doc as SimplifiedApexValidation;
+		const document = doc as Ride;
 		await csvWriter.write(document);
 		if (counter % 1000 === 0) message(`Processados ${counter} documentos até agora...`);
 		counter++;

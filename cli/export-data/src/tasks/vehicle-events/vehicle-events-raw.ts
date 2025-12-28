@@ -2,38 +2,26 @@
 
 import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { type Filter, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 
 /* * */
 
-const TASK_ID: ExportType = 'validations-by-stop-by-pattern';
+const TASK_ID: ExportType = 'vehicle-events-raw';
 
 /* * */
 
-interface Result {
-	date: string
-	pattern_id: string
-	stop_id: string
-	validations: number
-}
-
-/**
- * Export Validations By Stop By Pattern data applying the given filters.
- */
-export async function exportValidationsByStopByPattern({ context, message }: TaskProps): Promise<void> {
+export async function exportVehicleEventsRaw({ context, message }: TaskProps): Promise<void> {
 	//
 
-	message('A iniciar a exportação de Validações APEX por Paragem e por Pattern...');
+	message('A iniciar a exportação de Vehicle Events em bruto...');
 
 	//
 	// Prepare the filter params
 
-	const filterQuery: Filter<SimplifiedApexValidation> = {
-		is_passenger: true,
-	};
+	const filterQuery: Filter<SimplifiedVehicleEvent> = {};
 
 	filterQuery.created_at = {
 		$gte: Dates
@@ -62,18 +50,18 @@ export async function exportValidationsByStopByPattern({ context, message }: Tas
 		filterQuery.stop_id = { $in: context.filters.stop_ids };
 	}
 
-	if (context.filters.vehicle_ids.length) {
-		filterQuery.vehicle_id = { $in: context.filters.vehicle_ids };
-	}
+	// if (context.filters.vehicle_ids.length) {
+	// 	filterQuery.vehicle_id = { $in: context.filters.vehicle_ids };
+	// }
 
 	//
 	// Setup a database stream to export data
 
 	message(`A iniciar ligação à base de dados...`);
 
-	const simplifiedApexValidationsCollection = await simplifiedApexValidations.getCollection();
+	const simplifiedVehicleEventsCollection = await simplifiedVehicleEvents.getCollection();
 
-	const stream = simplifiedApexValidationsCollection.find(filterQuery).stream();
+	const stream = simplifiedVehicleEventsCollection.find(filterQuery).stream();
 
 	//
 	// Prepare the output directory and CSV writer
@@ -91,43 +79,12 @@ export async function exportValidationsByStopByPattern({ context, message }: Tas
 
 	message(`A aguardar o resultado da pesquisa...`);
 
-	const result: Record<string, Result> = {};
-
 	for await (const doc of stream) {
-		const document = doc as SimplifiedApexValidation;
-
-		//
-		// Prepare the result key
-
-		const operationalDate = Dates
-			.fromUnixTimestamp(document.created_at)
-			.operational_date;
-
-		const resultKey = `${operationalDate}:${document.stop_id}:${document.pattern_id}`;
-
-		//
-		// Update the result with the current document
-
-		if (!result[resultKey]) {
-			result[resultKey] = {
-				date: operationalDate,
-				pattern_id: document.pattern_id,
-				stop_id: document.stop_id,
-				validations: 0,
-			};
-		}
-
-		result[resultKey].validations += 1;
-
+		const document = doc as SimplifiedVehicleEvent;
+		await csvWriter.write(document);
 		if (counter % 1000 === 0) message(`Processados ${counter} documentos até agora...`);
 		counter++;
-
-		//
 	}
-
-	message(`A escrever os resultados no ficheiro CSV...`);
-
-	await csvWriter.write(Object.values(result));
 
 	await csvWriter.flush();
 

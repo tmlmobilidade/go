@@ -1,11 +1,15 @@
 /* * */
 
-import { type TaskProps } from '@/types/init.js';
+import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { type Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
+
+/* * */
+
+const TASK_ID: ExportType = 'validations-by-stop-by-trip';
 
 /* * */
 
@@ -78,7 +82,7 @@ export async function exportValidationsByStopByTrip({ context, message }: TaskPr
 
 	if (!fs.existsSync(context.output)) fs.mkdirSync(context.output, { recursive: true });
 
-	const csvWriter = new CsvWriter('output', `${context.output}/validations-by-stop-by-trip-${context.dates.start}-${context.dates.end}.csv`, { batch_size: 100000, logs: false });
+	const csvWriter = new CsvWriter('output', `${context.output}/${TASK_ID}-${context.dates.start}-${context.dates.end}.csv`, { batch_size: 100000, logs: false });
 
 	//
 	// Export the data

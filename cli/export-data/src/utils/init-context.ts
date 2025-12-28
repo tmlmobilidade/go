@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExportContext } from '@/types/init.js';
+import { type ExportContext } from '@/types.js';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import path from 'node:path';
 
