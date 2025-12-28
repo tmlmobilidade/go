@@ -1,6 +1,6 @@
 /* * */
 
-import { groupMultiselect } from '@clack/prompts';
+import { cancel, groupMultiselect, isCancel } from '@clack/prompts';
 
 /* * */
 
@@ -40,6 +40,11 @@ export async function promptExportTypes(): Promise<(keyof typeof availableExport
 		},
 		required: true,
 	});
+
+	if (isCancel(values)) {
+		cancel('Operação cancelada pelo utilizador.');
+		process.exit(0);
+	}
 
 	if (!values) return [];
 

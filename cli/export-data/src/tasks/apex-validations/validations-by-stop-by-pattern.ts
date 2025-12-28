@@ -7,18 +7,29 @@ import { SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 
+/* * */
+
+interface Result {
+	date: string
+	pattern_id: string
+	stop_id: string
+	validations: number
+}
+
 /**
- * Export Validations Raw data applying the given filters.
+ * Export Validations By Stop By Pattern data applying the given filters.
  */
-export async function exportValidationsRaw({ context, message }: TaskProps): Promise<void> {
+export async function exportValidationsByStopByPattern({ context, message }: TaskProps): Promise<void> {
 	//
 
-	message('A iniciar a exportação de Validações APEX em bruto...');
+	message('A iniciar a exportação de Validações APEX por Paragem e por Pattern...');
 
 	//
 	// Prepare the filter params
 
-	const filterQuery: Filter<SimplifiedApexValidation> = {};
+	const filterQuery: Filter<SimplifiedApexValidation> = {
+		is_passenger: true,
+	};
 
 	filterQuery.created_at = {
 		$gte: Dates
@@ -67,7 +78,7 @@ export async function exportValidationsRaw({ context, message }: TaskProps): Pro
 
 	if (!fs.existsSync(context.output)) fs.mkdirSync(context.output, { recursive: true });
 
-	const csvWriter = new CsvWriter('output', `${context.output}/validations-raw-${context.dates.start}-${context.dates.end}.csv`, { batch_size: 100000, logs: false });
+	const csvWriter = new CsvWriter('output', `${context.output}/validations-by-stop-by-trip-${context.dates.start}-${context.dates.end}.csv`, { batch_size: 100000, logs: false });
 
 	//
 	// Export the data
@@ -76,12 +87,43 @@ export async function exportValidationsRaw({ context, message }: TaskProps): Pro
 
 	message(`A aguardar o resultado da pesquisa...`);
 
+	const result: Record<string, Result> = {};
+
 	for await (const doc of stream) {
 		const document = doc as SimplifiedApexValidation;
-		await csvWriter.write(document);
+
+		//
+		// Prepare the result key
+
+		const operationalDate = Dates
+			.fromUnixTimestamp(document.created_at)
+			.operational_date;
+
+		const resultKey = `${operationalDate}:${document.stop_id}:${document.pattern_id}`;
+
+		//
+		// Update the result with the current document
+
+		if (!result[resultKey]) {
+			result[resultKey] = {
+				date: operationalDate,
+				pattern_id: document.pattern_id,
+				stop_id: document.stop_id,
+				validations: 0,
+			};
+		}
+
+		result[resultKey].validations += 1;
+
 		if (counter % 1000 === 0) message(`Processados ${counter} documentos até agora...`);
 		counter++;
+
+		//
 	}
+
+	message(`A escrever os resultados no ficheiro CSV...`);
+
+	await csvWriter.write(Object.values(result));
 
 	await csvWriter.flush();
 
