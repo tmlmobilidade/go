@@ -31,14 +31,18 @@
 	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx src/index.ts",
+		"dev": "dotenv-run -f ./.env -- tsx src/index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/interfaces": "*"
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -13,7 +13,7 @@ export async function promptFilterByStopIds(): Promise<string[]> {
 	log.message('- Não te esqueças do zero à esquerda.');
 	log.message('- Se não introduzires nenhum Stop ID, este filtro não será aplicado.');
 
-	const stopIds = await text({
+	const value = await text({
 		message: 'Stop IDs:',
 		placeholder: '010101,020202,etc...',
 		validate(value) {
@@ -25,7 +25,7 @@ export async function promptFilterByStopIds(): Promise<string[]> {
 		},
 	});
 
-	if (!stopIds) return [];
+	if (!value) return [];
 
-	return (stopIds as string).split(',').map(id => id.trim());
+	return (value as string).split(',').map(id => id.trim());
 }

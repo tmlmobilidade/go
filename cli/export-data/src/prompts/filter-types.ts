@@ -10,9 +10,11 @@ export async function promptFilterTypes(): Promise<string[]> {
 	const values = await multiselect({
 		message: 'Escolhe os filtros que queres aplicar:',
 		options: [
-			{ label: 'Stop IDs', value: 'stop-ids' },
-			{ label: 'Line IDs', value: 'line-ids' },
-			{ label: 'Pattern IDs', value: 'pattern-ids' },
+			{ label: 'Operador (agency_id)', value: 'agency-ids' },
+			{ label: 'Paragem (stop_id)', value: 'stop-ids' },
+			{ label: 'Linha (line_id)', value: 'line-ids' },
+			{ label: 'Pattern (pattern_id)', value: 'pattern-ids' },
+			{ label: 'Veículo (vehicle_id)', value: 'vehicle-ids' },
 		],
 		required: false,
 	});

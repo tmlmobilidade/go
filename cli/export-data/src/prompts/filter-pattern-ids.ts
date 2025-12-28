@@ -12,7 +12,7 @@ export async function promptFilterByPatternIds(): Promise<string[]> {
 	log.message('- Introduz os Pattern IDs separados por vírgulas. Exemplo: 1001_0_1,1001_0_2,etc...');
 	log.message('- Se não introduzires nenhum Pattern ID, este filtro não será aplicado.');
 
-	const patternIds = await text({
+	const value = await text({
 		message: 'Pattern IDs:',
 		placeholder: '1001_0_1,1001_0_2,etc...',
 		validate(value) {
@@ -24,7 +24,7 @@ export async function promptFilterByPatternIds(): Promise<string[]> {
 		},
 	});
 
-	if (!patternIds) return [];
+	if (!value) return [];
 
-	return (patternIds as string).split(',').map(id => id.trim());
+	return (value as string).split(',').map(id => id.trim());
 }

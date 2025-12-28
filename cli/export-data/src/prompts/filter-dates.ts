@@ -10,12 +10,12 @@ export async function promptFilterByDates(): Promise<{ end: OperationalDate, sta
 
 	log.step('FILTRAR POR DATAS:');
 
-	log.message('- Introduz as datas operacionais no formato ano, mês, dia. Exemplo: 20250101 ou 2025-01-01');
-	log.message('- Filtrar por datas é obrigatório devido ao enorme volume de dados possível de exportar.');
-	log.message('- No máximo, por questões de performance, é apenas permitido 1 ano de cada vez. Mas mesmo assim é preciso ter cuidado.');
-	log.message('- A data mais antiga possível é 1 de Janeiro de 2024 (20240101).');
+	log.message('- Introduz as datas operacionais no formato ano-mês-dia. Exemplo: 20250101 ou 2025-01-01');
+	log.message('- Devido ao enorme volume de dados, filtrar por datas é obrigatório.');
+	log.message('- A data de início não pode ser anterior a 1 Jan. 2024 (20240101).');
 
 	const startDate = await text({
+		initialValue: '20250101',
 		message: 'Data de Início:',
 		placeholder: '20240101 ou 2024-01-01',
 		validate(value) {
@@ -38,6 +38,7 @@ export async function promptFilterByDates(): Promise<{ end: OperationalDate, sta
 	}
 
 	const endDate = await text({
+		initialValue: '20250102',
 		message: 'Data de Fim:',
 		placeholder: '20240101 ou 2024-01-01',
 		validate(value) {
@@ -46,7 +47,6 @@ export async function promptFilterByDates(): Promise<{ end: OperationalDate, sta
 				const formattedValue = formatOperationalDateInput(value);
 				validateOperationalDate(formattedValue);
 				if (Number(formattedValue) < Number(startDate)) return 'A data de fim não pode ser anterior à data de início.';
-				if (Number(formattedValue) - Number(startDate) > 365) return 'O intervalo entre a data de início e a data de fim não pode ser superior a 1 ano (365 dias).';
 				if (Number(formattedValue) > 20291231) return 'A data de fim não pode ser posterior a 2029-12-31.';
 			}
 			catch (error) {
