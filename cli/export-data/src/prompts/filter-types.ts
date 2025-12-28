@@ -17,5 +17,7 @@ export async function promptFilterTypes(): Promise<string[]> {
 		required: false,
 	});
 
+	if (!values) return [];
+
 	return values as string[];
 }

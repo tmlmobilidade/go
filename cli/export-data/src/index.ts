@@ -7,12 +7,17 @@ import { promptFilterByStopIds } from '@/prompts/filter-stop-ids.js';
 import { promptFilterTypes } from '@/prompts/filter-types.js';
 import { exportValidationsRaw } from '@/tasks/apex-validations/validations-raw.js';
 import { type FilterValues } from '@/types/init.js';
-import { tasks } from '@clack/prompts';
+import { intro, tasks } from '@clack/prompts';
+import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
+
+import { promptFilterByDates } from './prompts/filter-dates.js';
 
 /* * */
 
 (async function main() {
 	//
+
+	intro(ASCII_CM_SHORT);
 
 	//
 	// Request the export types and which filters to apply
@@ -25,6 +30,7 @@ import { tasks } from '@clack/prompts';
 	// For the selected filters, request the filter values
 
 	const filterValues: FilterValues = {
+		dates: { end: undefined, start: undefined },
 		line_ids: [],
 		pattern_ids: [],
 		stop_ids: [],
@@ -33,6 +39,8 @@ import { tasks } from '@clack/prompts';
 	if (filterTypes.includes('stop-ids')) filterValues.stop_ids = await promptFilterByStopIds();
 	if (filterTypes.includes('line-ids')) filterValues.line_ids = await promptFilterByLineIds();
 	if (filterTypes.includes('pattern-ids')) filterValues.pattern_ids = await promptFilterByPatternIds();
+
+	filterValues.dates = await promptFilterByDates();
 
 	//
 	// Build the tasks array for the selected export types

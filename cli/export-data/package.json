@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
 		"@tmlmobilidade/consts": "*",
-		"chalk": "5.6.2"
+		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

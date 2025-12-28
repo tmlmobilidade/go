@@ -41,5 +41,7 @@ export async function promptExportTypes(): Promise<(keyof typeof availableExport
 		required: true,
 	});
 
+	if (!values) return [];
+
 	return values as (keyof typeof availableExportTypesLabels)[];
 }
