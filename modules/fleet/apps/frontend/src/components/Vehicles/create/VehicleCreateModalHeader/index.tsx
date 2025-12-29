@@ -23,7 +23,6 @@ export function VehicleCreateModalHeader() {
 		<Toolbar>
 			<CloseButton onClick={closeCreateVehicleModal} type="close" />
 			<Tag label="Novo Veículo" variant="muted" />
-			<Label size="lg" singleLine>{vehicleCreateContext.data.form.values.agency_id}</Label>
 			<Spacer />
 			<Label size="md" caps singleLine>Passo {vehicleCreateContext.modal.current_step} de 3</Label>
 		</Toolbar>

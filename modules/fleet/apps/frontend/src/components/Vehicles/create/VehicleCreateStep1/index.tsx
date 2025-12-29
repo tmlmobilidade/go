@@ -1,11 +1,12 @@
 'use client';
 
+import { AgencySelect } from '@/components/common/AgencySelect';
+import { DatesSelector } from '@/components/common/DatesSelector';
 /* * */
 
 import { useVehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
 import { vehicleSchema } from '@tmlmobilidade/types';
-// import { vehicleSchema } from '@tmlmobilidade/types';
-import { Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { Label, Section, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -30,13 +31,14 @@ export function VehicleCreateStep1() {
 				{...vehicleCreateContext.data.form.getInputProps('owner')}
 			/>
 
-			<Textarea
+			<AgencySelect
 				label="Operador do veículo"
-				placeholder="Ex : Empresa X"
-				required={!vehicleSchema.shape.agency_id.isOptional()}
-				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('agency')}
+				onChange={vehicleCreateContext.data.form.getInputProps('agency_id').onChange}
+				selected={vehicleCreateContext.data.form.values.agency_id}
 			/>
+			<Spacer size="md" />
+			<Label>Data da primeira operação</Label>
+			<DatesSelector />
 		</Section>
 	);
 

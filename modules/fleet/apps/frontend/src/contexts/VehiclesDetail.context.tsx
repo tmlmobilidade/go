@@ -87,7 +87,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 
 	useEffect(() => {
 		if (!vehicleError) return;
-		useToast.error({ message: vehicleError.message, title: 'Erro ao abrir ocorrência' });
+		useToast.error({ message: vehicleError.message, title: 'Erro ao abrir veículo' });
 	}, [vehicleLoading]);
 
 	//
@@ -97,7 +97,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 		setIsSaving(true);
 		const toastId = useToast.loading({
 			message: 'Por favor aguarde...',
-			title: 'A guardar ocorrência',
+			title: 'A guardar veículo',
 		});
 		try {
 			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), 'PUT', form.getValues());
@@ -112,7 +112,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			useToast.update(toastId, {
 				loading: false,
 				message: 'As alterações foram guardadas.',
-				title: 'Anotação guardada com sucesso',
+				title: 'Veículo guardado com sucesso',
 				type: 'success',
 			});
 			form.resetDirty();
@@ -143,14 +143,14 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 				return;
 			}
 
-			useToast.success({ message: 'Anotação apagada com sucesso', title: 'Sucesso' });
+			useToast.success({ message: 'veículo apagado com sucesso', title: 'Sucesso' });
 
-			router.replace(PAGE_ROUTES.dates.ANNOTATIONS_LIST);
+			router.replace(PAGE_ROUTES.fleet.VEHICLES_LIST);
 		}
 		catch (error) {
 			useToast.error({
 				message: error.message,
-				title: 'Erro ao apagar ocorrência',
+				title: 'Erro ao apagar veículo',
 			});
 		}
 		finally {
@@ -164,14 +164,14 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			if (response.error) {
 				return useToast.error({
 					message: response.error,
-					title: 'Erro ao bloquear anotação',
+					title: 'Erro ao bloquear veículo',
 				});
 			}
 		}
 		catch (error) {
 			useToast.error({
 				message: error.message,
-				title: 'Erro ao bloquear anotação',
+				title: 'Erro ao bloquear veículo',
 			});
 		}
 		finally {

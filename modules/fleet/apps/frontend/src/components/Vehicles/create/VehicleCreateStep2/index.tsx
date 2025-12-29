@@ -4,8 +4,7 @@
 
 import { useVehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
 import { vehicleSchema } from '@tmlmobilidade/types';
-// import { vehicleSchema } from '@tmlmobilidade/types';
-import { Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,19 +22,25 @@ export function VehicleCreateStep2() {
 	return (
 		<Section gap="md">
 			<TextInput
-				label="Dono do veículo"
+				label="Matrícula do veículo"
 				placeholder="..."
-				required={!vehicleSchema.shape.owner.isOptional()}
+				required={!vehicleSchema.shape.license_plate.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('owner')}
+				{...vehicleCreateContext.data.form.getInputProps('license_plate')}
 			/>
-
-			<Textarea
-				label="Operador do veículo"
-				placeholder="Ex : Empresa X"
-				required={!vehicleSchema.shape.agency_id.isOptional()}
+			<TextInput
+				label="Modelo do veículo"
+				placeholder="..."
+				required={!vehicleSchema.shape.model.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('agency')}
+				{...vehicleCreateContext.data.form.getInputProps('model')}
+			/>
+			<TextInput
+				label="Marca do veículo"
+				placeholder="..."
+				required={!vehicleSchema.shape.make.isOptional()}
+				w="100%"
+				{...vehicleCreateContext.data.form.getInputProps('make')}
 			/>
 		</Section>
 	);
