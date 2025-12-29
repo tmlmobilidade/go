@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type CreateRoleDto, PermissionCatalog, type Role, RoleSchema, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/types';
+import { type CreateRoleDto, CreateRoleSchema, PermissionCatalog, type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, type FindOptions, type IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 class RolesClass extends MongoCollectionClass<Role, CreateRoleDto, UpdateRoleDto> {
 	private static _instance: RolesClass;
-	protected override createSchema: z.ZodSchema = RoleSchema;
+	protected override createSchema: z.ZodSchema = CreateRoleSchema;
 	protected override updateSchema: z.ZodSchema = UpdateRoleSchema;
 
 	private constructor() {

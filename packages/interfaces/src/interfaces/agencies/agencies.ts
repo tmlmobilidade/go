@@ -1,16 +1,16 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type Agency, AgencySchema, type CreateAgencyDto, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
+import { type Agency, type CreateAgencyDto, CreateAgencySchema, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
-import { Filter, IndexDescription } from 'mongodb';
+import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
 class AgenciesClass extends MongoCollectionClass<Agency, CreateAgencyDto, UpdateAgencyDto> {
 	private static _instance: AgenciesClass;
-	protected override createSchema: z.ZodSchema = AgencySchema;
+	protected override createSchema: z.ZodSchema = CreateAgencySchema;
 	protected override updateSchema: z.ZodSchema = UpdateAgencySchema;
 
 	private constructor() {
@@ -46,16 +46,8 @@ class AgenciesClass extends MongoCollectionClass<Agency, CreateAgencyDto, Update
 		return 'agencies';
 	}
 
-	protected getCreateSchema(): z.ZodSchema {
-		return AgencySchema;
-	}
-
 	protected getEnvName(): string {
 		return 'DATABASE_URI';
-	}
-
-	protected getUpdateSchema(): z.ZodSchema {
-		return UpdateAgencySchema;
 	}
 }
 
