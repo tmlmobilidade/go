@@ -20,6 +20,7 @@ export function ScheduledAlertCreateSectionCauseEffect() {
 
 	const scheduledAlertCreateContext = useScheduledAlertCreateContext();
 	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'causesAndEffects' });
+	const { t: tAlerts } = useTranslation('alerts', { keyPrefix: 'scheduled.create.sectionCauseEffect' });
 
 	//
 	// B. Transform data
@@ -45,8 +46,8 @@ export function ScheduledAlertCreateSectionCauseEffect() {
 				<Combobox
 					key={scheduledAlertCreateContext.data.form.key('cause')}
 					data={causeItems}
-					description="O que aconteceu"
-					label="Causa"
+					description={tAlerts('fields.cause_description')}
+					label={tAlerts('fields.cause_label')}
 					{...scheduledAlertCreateContext.data.form.getInputProps('cause')}
 				/>
 			</div>
@@ -54,8 +55,8 @@ export function ScheduledAlertCreateSectionCauseEffect() {
 				<Combobox
 					key={scheduledAlertCreateContext.data.form.key('effect')}
 					data={effectItems}
-					description="O que aconteceu como consequência"
-					label="Efeito"
+					description={tAlerts('fields.effect_description')}
+					label={tAlerts('fields.effect_label')}
 					{...scheduledAlertCreateContext.data.form.getInputProps('effect')}
 				/>
 			</div>

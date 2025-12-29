@@ -9,6 +9,7 @@ import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tml
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -49,6 +50,8 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 
 	const [isSaving, setIsSaving] = useState(false);
 
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.create' });
+
 	//
 	// B. Fetch data
 
@@ -67,13 +70,13 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 		const response = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao criar alerta' });
+				useToast.error({ message: response.error, title: t('error_message_title_create') });
 				setIsSaving(false);
 				return;
 			}
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao criar alerta' });
+				useToast.error({ message: error.message, title: t('error_message_title_create') });
 			}
 			setIsSaving(false);
 			return;
@@ -82,7 +85,7 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 		allAlertsMutate();
 		setIsSaving(false);
 		closeCreateScheduledAlertModal();
-		useToast.success({ message: 'Alerta criado com sucesso', title: 'Sucesso' });
+		useToast.success({ message: t('success_message_create'), title: t('success_message_title_create') });
 		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(response.data._id)));
 	};
 

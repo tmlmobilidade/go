@@ -5,6 +5,7 @@
 import { useScheduledAlertCreateContext } from '@/components/scheduled/create/ScheduledAlertCreate.context';
 import { CreateAlertSchema } from '@tmlmobilidade/types';
 import { Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function ScheduledAlertCreateSectionTitle() {
 	// A. Setup variables
 
 	const scheduledAlertCreateContext = useScheduledAlertCreateContext();
+	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.create.sectionTitle' });
 
 	//
 	// B. Render components
@@ -23,8 +25,8 @@ export function ScheduledAlertCreateSectionTitle() {
 		<Section gap="md">
 			<TextInput
 				key={scheduledAlertCreateContext.data.form.key('title')}
-				description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
-				label="Título Curto"
+				description={t('fields.title_description')}
+				label={t('fields.title_label')}
 				maxLength={255}
 				data-autofocus
 				withAsterisk
@@ -32,8 +34,8 @@ export function ScheduledAlertCreateSectionTitle() {
 			/>
 			<Textarea
 				key={scheduledAlertCreateContext.data.form.key('description')}
-				description="Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação."
-				label="Descrição"
+				description={t('fields.description_description')}
+				label={t('fields.description_label')}
 				maxRows={10}
 				minRows={4}
 				withAsterisk={!CreateAlertSchema.shape.description.isOptional()}

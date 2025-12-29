@@ -3,7 +3,7 @@
 /* * */
 
 import { useRealtimeCreateContext } from '@/contexts/RealtimeCreate.context';
-import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
