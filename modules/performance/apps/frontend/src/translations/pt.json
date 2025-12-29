@@ -2,6 +2,11 @@
 	"RealtimeDemand": {
 		"title": "Passageiros transportados hoje"
 	},
+	"RecordDemand": {
+		"recordPassengers": {
+			"title": "Recorde de passageiros diário: {qty} ({date})"
+		}
+	},
 	"ServiceCompliance": {
 		"metrics": {
 			"advanced": "Circulações adiantadas à partida",

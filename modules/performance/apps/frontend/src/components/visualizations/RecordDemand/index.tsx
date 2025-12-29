@@ -9,8 +9,8 @@ import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/types';
 import { Progress, Tooltip } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -22,7 +22,7 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance', { keyPrefix: 'RecordDemand' });
 	const homeContext = useHomeContext();
 	const selectedAgency = agency || homeContext.data.selected_agency;
 
@@ -97,9 +97,13 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 			border="none"
 			padding="0"
 			title={(
-				<>
-					Recorde de passageiros diário: <strong>{recordPassengers.qty.toLocaleString('pt-PT')}</strong> ({t('dates.formatted', { date: recordPassengers.date })})
-				</>
+				t(
+					'recordPassengers.title',
+					{
+						date: recordPassengers.date.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+						qty: <strong>{recordPassengers.qty.toLocaleString('pt-PT')}</strong>,
+					},
+				)
 			)}
 		>
 			<div className={styles.progressContainer}>
