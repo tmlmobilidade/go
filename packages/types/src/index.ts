@@ -12,7 +12,7 @@ export * from '@/auth/index.js';
 export * from '@/dates/index.js';
 export * from '@/file-exports/index.js';
 export * from '@/file.js';
-export * from '@/fleet/index.js';
+export * from '@/vehicle/index.js';
 export * from '@/gtfs/index.js';
 export * from '@/locations/index.js';
 export * from '@/metrics/index.js';

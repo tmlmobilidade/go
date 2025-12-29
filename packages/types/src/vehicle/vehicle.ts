@@ -4,32 +4,11 @@ import { DocumentSchema } from '@/_common/document.js';
 import { operationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
+import { VehicleEmissionSchema } from './emission.js';
+import { VehiclePropulsionSchema } from './propulsion.js';
+import { VehicleWheelchairSchema } from './wheelchair.js';
+
 /* * */
-
-const propulsion = [
-	'Gasoline',
-	'Diesel',
-	'LPG auto',
-	'Mixture',
-	'Biodiesel',
-	'Electricity',
-	'Hybrid',
-	'Natural Gas',
-] as const;
-
-const emission = [
-	'EURO I',
-	'EURO II',
-	'EURO III',
-	'EURO IV',
-	'EURO V',
-	'EURO VI',
-] as const;
-
-const wheelchair = [
-	'no',
-	'yes',
-] as const;
 
 export const vehicleSchema = DocumentSchema.extend({
 	agency_id: z.string(),
@@ -37,16 +16,15 @@ export const vehicleSchema = DocumentSchema.extend({
 	capacity_seated: z.number(),
 	capacity_standing: z.number(),
 	contactless: z.boolean(),
-	emission_class: z.enum(emission),
+	emission_class: z.array(VehicleEmissionSchema).default([]),
 	license_plate: z.string(),
 	make: z.string(),
 	model: z.string(),
 	owner: z.string(),
 	passenger_counting: z.boolean(),
-	propulsion: z.enum(propulsion),
+	propulsion: z.array(VehiclePropulsionSchema).default([]),
 	registration_date: z.array(operationalDateSchema).default([]),
-	vehicle_id: z.string(),
-	wheelchair_acessible: z.enum(wheelchair),
+	wheelchair_acessible: z.array(VehicleWheelchairSchema).default([]),
 });
 
 export const CreateVehicleSchema = vehicleSchema.omit({ _id: true, created_at: true, updated_at: true });
