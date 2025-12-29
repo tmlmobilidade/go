@@ -49,7 +49,7 @@ jobs:
       - name: Save package-lock.json as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cli/package-lock.json
+          name: package-lock.json
           path: package-lock.json
           retention-days: 1
 
@@ -93,7 +93,7 @@ jobs:
       - name: Download package-lock.json artifact
         uses: actions/download-artifact@v4
         with:
-          name: cli/package-lock.json
+          name: package-lock.json
           path: .
 
       - name: Install workspace dependencies
