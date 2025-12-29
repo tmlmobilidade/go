@@ -49,7 +49,7 @@ export default function RidesExportModal() {
 
 	const context = useRidesExportModalContext();
 	const agenciesContext = useAgenciesContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'exportModal' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.exportModal' });
 	const { t: tGlobal } = useTranslation('global', { keyPrefix: 'operations' });
 
 	//
@@ -129,7 +129,7 @@ export default function RidesExportModal() {
 					<Button
 						disabled={!context.flags.canSave}
 						icon={<IconFileDownload />}
-						label={t('export_circulations')}
+						label={tGlobal('export_circulations')}
 						loading={context.flags.loading}
 						onClick={context.actions.exportRides}
 					/>
