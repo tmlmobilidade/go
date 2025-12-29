@@ -128,6 +128,17 @@ export const PAGE_ROUTES = Object.freeze({
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'frontend_url')}/${id}`,
 		STOPS_LIST: `${getAppConfig('stops', 'frontend_url')}`,
 	},
+
+	/* * */
+	/* TICKETING */
+	ticketing: {
+		// BASE
+		BASE: `${getAppConfig('ticketing', 'frontend_url')}`,
+
+		// FARES
+		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'frontend_url')}/fares/${id}`,
+		FARES_LIST: `${getAppConfig('ticketing', 'frontend_url')}/fares`,
+	},
 } as const);
 
 export const API_ROUTES = Object.freeze({
@@ -316,5 +327,17 @@ export const API_ROUTES = Object.freeze({
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,
+	},
+
+	/* * */
+	/* TICKETING */
+	ticketing: {
+		// BASE
+		BASE: `${getAppConfig('ticketing', 'api_url')}`,
+
+		// FARES
+		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}`,
+		FARES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}/lock`,
+		FARES_LIST: `${getAppConfig('ticketing', 'api_url')}/fares`,
 	},
 } as const);

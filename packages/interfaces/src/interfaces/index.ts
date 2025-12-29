@@ -16,5 +16,6 @@ export * from '@/interfaces/rides/index.js';
 export * from '@/interfaces/sams/index.js';
 export * from '@/interfaces/simplified-apex/index.js';
 export * from '@/interfaces/stops/index.js';
+export * from '@/interfaces/ticketing/index.js';
 export * from '@/interfaces/vehicle-events/index.js';
 export * from '@/interfaces/zones/index.js';

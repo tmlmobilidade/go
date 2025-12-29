@@ -232,6 +232,19 @@ const datesActions: PermissionConfig = {
 	title: 'Permissões de Datas',
 };
 
+const faresActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver tarifas', label: 'Ver tarifas', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma tarifa', label: 'Criar tarifa', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma tarifa', label: 'Editar tarifa', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma tarifa', label: 'Eliminar tarifa', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma tarifa', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de datas.',
+	scope: PermissionCatalog.all.dates.scope,
+	title: 'Permissões de Datas',
+};
+
 /* * */
 
 export const permissionsConfig = [
