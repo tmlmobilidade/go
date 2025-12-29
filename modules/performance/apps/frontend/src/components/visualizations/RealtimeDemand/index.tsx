@@ -10,8 +10,8 @@ import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconUser } from '@tabler/icons-react';
 import { type RealtimeDemand } from '@tmlmobilidade/types';
-import { Spacer } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -25,7 +25,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 
 	const homeContext = useHomeContext();
 	const selectedAgency = agency || homeContext.data.selected_agency;
-
+	const { t } = useTranslation('performance', { keyPrefix: 'RealtimeDemand' });
 	//
 	// B. Fetch data
 
@@ -73,7 +73,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 					icon={<IconUser />}
 					isLoading={isLoading}
 					previousValue={formattedData.lastWeek}
-					title="Passageiros transportados hoje"
+					title={t('title')}
 					updatedAt={new Date(formattedData.lastUpdated)}
 					value={formattedData.now}
 				>

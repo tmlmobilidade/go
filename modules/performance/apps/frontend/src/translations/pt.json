@@ -1,3 +1,15 @@
 {
-
+	"RealtimeDemand": {
+		"title": "Passageiros transportados hoje"
+	},
+	"ServiceCompliance": {
+		"metrics": {
+			"advanced": "Circulações adiantadas à partida",
+			"delayed": "Circulações atrasadas > 5 minutos",
+			"noPassengers": "Circulações sem passageiros",
+			"withSales": "Circulações com bilhética"
+		},
+		"title": "Total de circulações realizadas",
+		"validPctLabel": "Percentagem de circulações válidas (3 momentos)"
+	}
 }
