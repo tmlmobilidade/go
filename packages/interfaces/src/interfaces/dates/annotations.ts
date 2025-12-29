@@ -3,7 +3,7 @@
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
-import { Filter, IndexDescription } from 'mongodb';
+import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
