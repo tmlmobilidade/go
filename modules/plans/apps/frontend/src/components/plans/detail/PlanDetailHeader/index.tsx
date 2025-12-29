@@ -10,6 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 import { CloseButton, DeleteButton, HasPermission, IconButton, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -21,6 +22,7 @@ export function PlanDetailHeader() {
 
 	const router = useRouter();
 	const planDetailContext = usePlanDetailContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'detail.header' });
 
 	//
 	// B. Handle actions
@@ -90,8 +92,8 @@ export function PlanDetailHeader() {
 				value={planDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar este plano? O plano ficará indisponível para utilização futura."
-					confirmTitle="Eliminar Plano"
+					confirmMessage={t('delete_button_confirm_message')}
+					confirmTitle={t('delete_button_confirm_title')}
 					isDisabled={!planDetailContext.flags.canDelete}
 					isLoading={planDetailContext.flags.isDeleting}
 					onDelete={planDetailContext.actions.delete}

@@ -45,7 +45,7 @@ export function ValidationsList() {
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title:  t('tableColumns.agency_name'),,
+			title: t('tableColumns.agency_name'),
 			width: 400,
 		},
 		{

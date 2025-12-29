@@ -15,7 +15,7 @@ export function PlanDetailSectionFiles() {
 	//
 	// A. Setup variables
 
-	const plansDetailContext = usePlansDetailContext();
+	const planDetailContext = usePlanDetailContext();
 	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.section_files' });
 
 	//

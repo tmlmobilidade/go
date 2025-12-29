@@ -5,6 +5,7 @@
 import { PlanStatusTag } from '@/components/common/PlanStatusTag';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Button, Collapsible, Section, Tag } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,14 +16,15 @@ export function PlanDetailSectionController() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'detail.section_controller' });
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description="Configurações relacionadas com a conversão deste plano em Rides."
-			title="Definições SLA"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section gap="sm">
 
@@ -33,7 +35,7 @@ export function PlanDetailSectionController() {
 
 				<Button
 					disabled={planDetailContext.flags.isReadOnly}
-					label="Reprocessar Plano"
+					label={t('reprocess_plan_button')}
 					loading={planDetailContext.flags.isSaving}
 					onClick={planDetailContext.actions.controllerReprocessPlan}
 				/>

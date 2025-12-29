@@ -13,7 +13,7 @@ export function PlanDetailSectionAgency() {
 	//
 	// A. Setup variables
 
-	const plansDetailContext = usePlansDetailContext();
+	const planDetailContext = usePlanDetailContext();
 	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.section_agency' });
 
 	//

@@ -1,7 +1,7 @@
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -5,6 +5,7 @@
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, Section, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	const meContext = useMeContext();
 	const planDetailContext = usePlanDetailContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'detail.section_pcgi_legacy' });
 
 	//
 	// B. Transform data
