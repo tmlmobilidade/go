@@ -2,38 +2,25 @@
 
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { type AnnotationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Annotation } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { type Annotation, PermissionCatalog } from '@tmlmobilidade/types';
+import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface AnnotationNormalized extends Annotation {
-	agency_ids_normalized: string
-	dates_normalized: string[]
-}
-
-/* * */
-
 interface AnnotationsListContextState {
-	actions: {
-		setFilterAgency: (values: string[]) => void
-		setFilterDates: (values: string[]) => void
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: AnnotationNormalized[]
 		raw: Annotation[]
 	}
 	filters: {
-		agency: string[]
-		dates: string[]
-		search: string
+		agency: UseFilterStateListReturnType
+		dates: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -59,18 +46,34 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const agenciesContext = useAgenciesContext();
-
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
-	const [filterDates, setFilterDates] = useQueryState<string[]>('dates', parseAsArrayOfStrings.withDefault([]));
-
-	//
-	// B. Fetch data
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.read);
 
 	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST, { refreshInterval: 5000 });
+
+	//
+	// B. Setup filters
+
+	const filterSearch = useFilterStateString('search');
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+
+	// Get all unique dates from annotations for the dates filter
+	const allDatesOptions = useMemo(() => {
+		if (!allAnnotationsData) return [];
+		const uniqueDates = new Set<string>();
+		allAnnotationsData.forEach((annotation) => {
+			annotation.dates.forEach(date => uniqueDates.add(String(date)));
+		});
+		return Array.from(uniqueDates).sort().map(date => ({
+			checked: false,
+			disabled: false,
+			label: date,
+			value: date,
+		}));
+	}, [allAnnotationsData]);
+
+	const filterDates = useFilterStateList('dates', [], allDatesOptions);
 
 	//
 	// C. Transform data
@@ -80,45 +83,37 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 		if (!allAnnotationsData) return [];
 		// Normalize record fields
 		return allAnnotationsData.map((item) => {
-			// Get agency names for this annotation
+			// Get agency IDs for normalization
 			const agencyIds = item.agency_ids.join(', ');
 
 			return {
 				...item,
 				agency_ids_normalized: normalizeString(agencyIds),
-				dates_normalized: item.dates.map(date => String(date)),
 			};
 		});
-	}, [allAnnotationsData, agenciesContext.data.raw]);
+	}, [allAnnotationsData]);
 
 	const searchResultsData = useSearch<AnnotationNormalized>({
 		accessors: ['_id', 'title', 'description', 'agency_ids_normalized'],
 		data: normalizedAnnotationsData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const agencySet = new Set(filterAgency);
-		const datesSet = new Set(filterDates);
+		const agencySet = new Set(filterAgency.value);
+		const datesSet = new Set(filterDates.value);
 
 		return searchResultsData
 			.filter((item: AnnotationNormalized) => {
 				// Filter by agency - check if any of the annotation's agencies match the filter
-				// If annotation has no agencies (null or empty), show it in all results
-				if (filterAgency.length > 0) {
-					if (!item.agency_ids || item.agency_ids.length === 0) {
-						return true; // Show annotations with no agencies in all filters
-					}
-					const hasMatchingAgency = item.agency_ids.some(agencyId => agencySet.has(agencyId));
-					if (!hasMatchingAgency) return false;
-				}
+				if (!item.agency_ids.some(agencyId => agencySet.has(agencyId))) return false;
 
 				// Filter by dates - check if any of the annotation's dates match the filter
-				if (filterDates.length > 0) {
-					const hasMatchingDate = item.dates_normalized.some(date => datesSet.has(date));
+				if (filterDates.value.length > 0) {
+					const hasMatchingDate = item.dates.some(date => datesSet.has(String(date)));
 					if (!hasMatchingDate) return false;
 				}
 
@@ -135,11 +130,6 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	// D. Define context value
 
 	const contextValue: AnnotationsListContextState = useMemo(() => ({
-		actions: {
-			setFilterAgency,
-			setFilterDates,
-			setFilterSearch,
-		},
 		data: {
 			filtered: filterResultsData,
 			raw: allAnnotationsData ?? [],

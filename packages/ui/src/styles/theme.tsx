@@ -24,9 +24,12 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, Popover, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea, TextInput } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea, TextInput } from '@mantine/core';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
+
+/* * */
+
+import { DateInput } from '@mantine/dates';
 
 /* * */
 
@@ -43,11 +46,13 @@ import ButtonOverride from './mantine/overrides/Button.module.css';
 import CheckboxOverride from './mantine/overrides/Checkbox.module.css';
 import CheckboxGroupOverride from './mantine/overrides/CheckboxGroup.module.css';
 import CloseButtonOverride from './mantine/overrides/CloseButton.module.css';
+import ColorInputOverride from './mantine/overrides/ColorInput.module.css';
 import MenuOverride from './mantine/overrides/Menu.module.css';
 import PasswordInputOverride from './mantine/overrides/PasswordInput.module.css';
 import PillOverride from './mantine/overrides/Pill.module.css';
 import PillGroupOverride from './mantine/overrides/PillGroup.module.css';
 import PopoverOverride from './mantine/overrides/Popover.module.css';
+import RadioOverride from './mantine/overrides/Radio.module.css';
 import SegmentedControlOverrideSm from './mantine/overrides/SegmentedControl-sm.module.css';
 import SegmentedControlOverride from './mantine/overrides/SegmentedControl.module.css';
 import SkeletonOverride from './mantine/overrides/Skeleton.module.css';
@@ -107,6 +112,12 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
+		ColorInput: ColorInput.extend({
+			classNames: {
+				...ColorInputOverride,
+			},
+		}),
+
 		DateInput: DateInput.extend({
 			classNames: {
 				...InputBase,
@@ -162,6 +173,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		Popover: Popover.extend({
 			classNames: {
 				...PopoverOverride,
+			},
+		}),
+
+		Radio: Radio.extend({
+			classNames: {
+				...RadioOverride,
 			},
 		}),
 

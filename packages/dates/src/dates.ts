@@ -367,12 +367,13 @@ export class Dates {
 	/**
 	 * Returns the date as a string in the specified format.
 	 * @param format The format string (see Luxon tokens documentation)
+	 * @param opts Optional formatting options (e.g., { locale: 'pt' })
 	 * @returns The date as a string in the specified format
 	 */
-	toFormat(format: string): string {
+	toFormat(format: string, opts?: { locale?: string }): string {
 		if (!this.iso) throw new Error('ISO date is not set.');
 		const dateTime = DateTime.fromISO(this.iso, { setZone: true });
-		return dateTime.toFormat(format);
+		return dateTime.setLocale(opts?.locale || 'pt').toFormat(format);
 	}
 
 	/**

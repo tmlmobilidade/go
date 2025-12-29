@@ -5,7 +5,7 @@
 import { AnnotationCreate } from '@/components/annotations/create/AnnotationCreate';
 import { AnnotationCreateContextProvider } from '@/components/annotations/create/AnnotationCreate.context';
 import { DataProviders } from '@/providers/data-providers';
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,9 +17,11 @@ export const openCreateAnnotationModal = () => {
 	openModal({
 		children: (
 			<DataProviders>
-				<AnnotationCreateContextProvider>
-					<AnnotationCreate />
-				</AnnotationCreateContextProvider>
+				<MeContextProvider>
+					<AnnotationCreateContextProvider>
+						<AnnotationCreate />
+					</AnnotationCreateContextProvider>
+				</MeContextProvider>
 			</DataProviders>
 		),
 		closeOnClickOutside: false,
