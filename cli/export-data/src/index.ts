@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { promptEnvironmentVariable } from '@/prompts/environment-variable.js';
 import { promptExportTypes } from '@/prompts/export-types.js';
 import { promptFilterByAgencyIds } from '@/prompts/filter-agency-ids.js';
 import { promptFilterByDates } from '@/prompts/filter-dates.js';
@@ -25,6 +26,8 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 
 (async function main() {
 	//
+
+	await promptEnvironmentVariable();
 
 	//
 	// Initialize the export context

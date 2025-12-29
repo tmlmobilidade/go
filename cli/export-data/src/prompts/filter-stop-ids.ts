@@ -1,17 +1,18 @@
 /* * */
 
-import { log, text } from '@clack/prompts';
+import { note, text } from '@clack/prompts';
 
 /* * */
 
 export async function promptFilterByStopIds(): Promise<string[]> {
 	//
 
-	log.step('FILTRAR POR STOP ID:');
-
-	log.message('- Introduz os Stop IDs separados por vírgulas. Exemplo: 010101,020202,etc...');
-	log.message('- Não te esqueças do zero à esquerda.');
-	log.message('- Se não introduzires nenhum Stop ID, este filtro não será aplicado.');
+	note(
+		'FILTRAR POR STOP ID:\n'
+		+ '  • Introduz os Stop IDs separados por vírgulas. Exemplo: 010101,020202,etc...\n'
+		+ '  • Não te esqueças do zero à esquerda.\n'
+		+ '  • Se não introduzires nenhum Stop ID, este filtro não será aplicado.',
+	);
 
 	const value = await text({
 		message: 'Stop IDs:',
