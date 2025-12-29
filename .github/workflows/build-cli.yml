@@ -1,0 +1,107 @@
+# # #
+
+name: 'Build CLI apps'
+
+# # #
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production
+    paths:
+      - 'cli/**'
+      - 'packages/**'
+      - '.github/workflows/build-cli.yml'
+      - '.github/templates/**/*'
+
+# # #
+
+env:
+  CLI_APPS: |
+    backupd
+    export-data
+    generate-offer-files
+    repo-rinse
+    repo-version
+
+# # #
+
+jobs:
+
+  generate-package-lock:
+    name: Generate package-lock.json
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install --package-lock-only
+
+      - name: Save package-lock.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-lock.json
+          path: package-lock.json
+          retention-days: 1
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  prepare-matrix:
+    name: Prepare publish matrix
+    runs-on: ubuntu-latest
+    outputs:
+      cli_apps: ${{ steps.matrix.outputs.cli_apps }}
+    steps:
+      - name: Generate matrix from CLI_APPS
+        id: matrix
+        run: |
+          apps=$(printf '%s\n' "${CLI_APPS}" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sed '/^$/d' | sed 's/.*/"&"/' | paste -sd "," -)
+          echo "cli_apps=[${apps}]" >> "$GITHUB_OUTPUT"
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  publish:
+    name: 'Publish package'
+    runs-on: ubuntu-latest
+    needs: prepare-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        cli_app: ${{ fromJSON(needs.prepare-matrix.outputs.cli_apps) }}
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-node
+        with:
+          node-version: 20
+
+      - name: Install workspace dependencies
+        working-directory: .
+        run: npm ci
+
+      - name: Build CLI app
+        working-directory: .
+        run: npm -w ./cli/${{ matrix.cli_app }} run build
+
+      - name: Bump package version
+        working-directory: cli/${{ matrix.cli_app }}
+        run: npx @helperkits/bumper package.json
+
+      - name: Publish package to NPM
+        working-directory: cli/${{ matrix.cli_app }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
