@@ -6,8 +6,8 @@ import { useUserDetailContext } from '@/components/users/detail/UserDetail.conte
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { Collapsible, Grid, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 

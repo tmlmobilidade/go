@@ -1,5 +1,36 @@
 {
 	"rides": {
+		"acceptance": {
+			"comments": {
+				"acceptance_status": {
+					"accepted": "A aceitação está aceite",
+					"justification_required": "É necessário justificar a circulação",
+					"rejected": "A aceitação está rejeitada",
+					"under_review": "A aceitação está em revisão"
+				},
+				"crud": {
+					"archive": "A aceitação foi arquivada",
+					"create": "A aceitação foi criada por sistema",
+					"delete": "A aceitação foi apagada",
+					"restore": "A aceitação foi restaurada",
+					"update": "A aceitação foi atualizada"
+				},
+				"justification": {
+					"updated": "A justificação foi atualizada"
+				},
+				"lock": {
+					"lock": "A aceitação foi bloqueada",
+					"unlock": "A aceitação foi desbloqueada"
+				},
+				"note": {
+					"created": "A aceitação foi criada por sistema"
+				},
+				"summary": {
+					"performed": "Foi realizada uma nova análise da viagem"
+				}
+			},
+			"title": "Atividade"
+		},
 		"analysis": {
 			"apex_locations": {
 				"description": "Localizações APEX associadas a esta Ride.",

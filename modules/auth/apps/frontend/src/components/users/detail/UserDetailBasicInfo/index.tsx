@@ -33,8 +33,8 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('first_name')}
 						label={t('fields.first_name')}
 						maxLength={255}
-						readOnly={userDetailContext.flags.isReadOnly}
 						placeholder={t('fields.first_name_placeholder')}
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('first_name')}
 					/>
@@ -43,8 +43,8 @@ export function UserDetailBasicInfo() {
 						label={t('fields.last_name')}
 						maxLength={255}
 						placeholder={t('fields.last_name_placeholder')}
-							readOnly={userDetailContext.flags.isReadOnly}
 						placeholder="..."
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('last_name')}
 					/>
@@ -62,19 +62,19 @@ export function UserDetailBasicInfo() {
 						label={t('fields.phone')}
 						leftSection={<IconPhone size={22} />}
 						placeholder={t('fields.phone_placeholder')}
-								readOnly={userDetailContext.flags.isReadOnly}
-						
 						placeholder="912345678"
+
+						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...userDetailContext.data.form.getInputProps('phone')}
 					/>
 					<PasswordInput
-					readOnly={userDetailContext.flags.isReadOnly}
 						key={userDetailContext.data.form.key('password')}
 						autoComplete="new-password"
 						label={t('fields.change_password')}
 						onChange={event => userDetailContext.actions.handleChangePassword(event.target.value)}
 						placeholder={t('fields.password_placeholder')}
+						readOnly={userDetailContext.flags.isReadOnly}
 					/>
 				</Grid>
 			</Section>
