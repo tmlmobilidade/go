@@ -1,6 +1,6 @@
 {
-	"name": "create-tml-app",
-	"description": "CLI tool to create new SAE applications.",
+	"name": "@tmlmobilidade/export-data",
+	"description": "CLI tool to export data from GO.",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -8,9 +8,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"keywords": [
-		"tml",
+		"navegante",
 		"tmlmobilidade",
-		"create-tml-app",
+		"public-transit",
 		"carrismetropolitana"
 	],
 	"type": "module",
@@ -27,25 +27,28 @@
 		".": "./dist/index.js"
 	},
 	"bin": {
-		"create-tml-app": "./dist/index.js"
+		"export-data": "./dist/index.js"
 	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"dev": "dotenv-run -f ./.env -- tsx src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/types": "*",
-		"chalk": "5.6.2",
-		"npm-check-updates": "19.2.0"
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "25.0.3",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.21.0"
+		"typescript": "5.9.3"
 	}
 }

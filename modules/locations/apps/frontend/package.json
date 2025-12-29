@@ -23,8 +23,8 @@
 		"@vis.gl/react-maplibre": "8.1.0",
 		"clsx": "2.1.1",
 		"maplibre-gl": "5.15.0",
-		"next": "16.1.0",
-		"nuqs": "2.8.5",
+		"next": "16.1.1",
+		"nuqs": "2.8.6",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"swr": "2.3.8"

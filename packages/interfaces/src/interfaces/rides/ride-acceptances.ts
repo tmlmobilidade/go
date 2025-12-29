@@ -5,7 +5,7 @@ import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type RideAcceptance, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, compareObjects, flattenObject } from '@tmlmobilidade/utils';
-import { Filter, IndexDescription, InsertOneOptions, UpdateOptions } from 'mongodb';
+import { type Filter, IndexDescription, InsertOneOptions, UpdateOptions } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
