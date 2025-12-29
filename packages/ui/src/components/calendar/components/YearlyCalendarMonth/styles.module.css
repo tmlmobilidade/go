@@ -1,0 +1,214 @@
+/* Container */
+.monthContainer {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	background: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 8px;
+	transition: box-shadow 150ms;
+}
+
+/* Header */
+.monthHeader {
+	padding: var(--size-spacing-md);
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--color-system-text-100);
+	text-align: center;
+	cursor: pointer;
+	background: var(--color-system-background-200);
+	border-bottom: 1px solid var(--color-system-border-100);
+	transition: background-color 150ms;
+}
+
+.monthHeader:hover {
+	background: var(--color-system-background-300);
+}
+
+/* Week header */
+.weekDays {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	background: var(--color-system-background-200);
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.weekDay {
+	padding: 6px 4px;
+	font-size: 10px;
+	font-weight: 600;
+	color: var(--color-system-text-200);
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* Weeks grid */
+.weeksContainer {
+	display: flex;
+	flex-direction: column;
+}
+
+.week {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+}
+
+.week:not(:last-child) {
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+/* Day cells */
+.day,
+.emptyDay {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-width: 0;
+	min-height: 32px;
+	padding: 4px;
+	background: var(--color-system-background-100);
+	border-right: 1px solid var(--color-system-border-100);
+	transition: background-color 150ms;
+}
+
+.day {
+	cursor: pointer;
+}
+
+.day:last-child,
+.emptyDay:last-child {
+	border-right: none;
+}
+
+.day:hover {
+	background: var(--color-background)
+}
+
+/* Period strips */
+.periodStrips {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+
+	/* gap: 1px; */
+	/* padding: 1px; */
+}
+
+.periodStrip {
+	width: 100%;
+	height: 3px;
+	cursor: pointer;
+
+	/* border-radius: 1px; */
+	transition: height 150ms;
+}
+
+.periodStrip:hover {
+	height: 4px;
+}
+
+/* Day number */
+.dayNumber {
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--color-system-text-100);
+}
+
+.dayHoveredEnd .dayNumber {
+	font-weight: 600;
+}
+
+.daySelectedStart .dayNumber,
+.daySelectedEnd .dayNumber {
+	font-weight: 700;
+	color: var(--color-contrast);
+}
+
+.today .dayNumber {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	font-weight: 600;
+	color: var(--color-contrast);
+	background: var(--color-primary);
+	border-radius: 50%;
+}
+
+/* Day states */
+.otherMonth {
+	background: var(--color-system-background-200);
+}
+
+.otherMonth .dayNumber {
+	font-weight: 400;
+	color: var(--color-system-text-300);
+}
+
+.weekend .dayNumber {
+	color: var(--color-status-danger-primary);
+}
+
+.otherMonth.weekend .dayNumber {
+	color: var(--color-system-text-300);
+}
+
+/* Range selection - base layer */
+.dayInRange,
+.dayInHoverRange,
+.dayHoveredEnd {
+	background: var(--color-background);
+}
+
+/* Range selection - top layer (start/end override everything) */
+.daySelectedStart,
+.daySelectedEnd {
+	background: var(--color-primary);
+}
+
+.daySelectedStart {
+	border-radius: 2px 0 0 2px;
+}
+
+.daySelectedEnd {
+	border-radius: 0 2px 2px 0;
+}
+
+.daySelectedStart:hover,
+.daySelectedEnd:hover {
+	background: var(--color-primary);
+}
+
+/* Events */
+.eventIndicators {
+	display: flex;
+	gap: 2px;
+	align-items: center;
+	margin-top: 2px;
+}
+
+.eventDot {
+	width: 4px;
+	height: 4px;
+	cursor: pointer;
+	border-radius: 50%;
+	transition: transform 150ms;
+}
+
+.eventDot:hover {
+	transform: scale(1.5);
+}
+
+.moreIndicator {
+	margin-left: 1px;
+	font-size: 8px;
+	font-weight: 600;
+	color: var(--color-system-text-200);
+}

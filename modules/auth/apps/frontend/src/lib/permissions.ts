@@ -219,17 +219,30 @@ const performanceActions: PermissionConfig = {
 	title: 'Permissões do Performance Explorer',
 };
 
-const datesActions: PermissionConfig = {
+const annotationsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read_annotations', description: 'Permite ver anotações', label: 'Ver anotações', resources: ['AGENCIES'] },
-		{ action: 'create_annotations', description: 'Permite criar uma anotação', label: 'Criar anotação', resources: ['AGENCIES'] },
-		{ action: 'update_annotations', description: 'Permite editar uma anotação', label: 'Editar anotação', resources: ['AGENCIES'] },
-		{ action: 'delete_annotations', description: 'Permite eliminar uma anotação', label: 'Eliminar anotação', resources: ['AGENCIES'] },
-		{ action: 'lock_annotations', description: 'Permite bloquear/desbloquear uma anotação', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'Permite ver anotações', label: 'Ver anotações', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma anotação', label: 'Criar anotação', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma anotação', label: 'Editar anotação', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma anotação', label: 'Eliminar anotação', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma anotação', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de datas.',
-	scope: PermissionCatalog.all.dates.scope,
-	title: 'Permissões de Datas',
+	description: 'As ações que o utilizador pode realizar na gestão de anotações.',
+	scope: PermissionCatalog.all.annotations.scope,
+	title: 'Permissões de Anotações',
+};
+
+const periodsActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver períodos', label: 'Ver períodos', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um período', label: 'Criar período', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um período', label: 'Editar período', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um período', label: 'Eliminar período', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um período', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de períodos.',
+	scope: PermissionCatalog.all.periods.scope,
+	title: 'Permissões de Períodos',
 };
 
 const faresActions: PermissionConfig = {
@@ -260,7 +273,8 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
-	datesActions,
+	annotationsActions,
+	periodsActions,
 	// topicActions,
 	// proposedChangesActions,
 ];
