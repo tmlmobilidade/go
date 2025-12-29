@@ -4,6 +4,7 @@ import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, DateInput, Grid, Section, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function PlanDetailSectionFeedInfo() {
 
 	const meContext = useMeContext();
 	const planDetailContext = usePlanDetailContext();
+	const { t } = useTranslation('plans', { keyPrefix: 'detail.section_feed_info' });
 
 	//
 	// B. Transform data
@@ -31,8 +33,8 @@ export function PlanDetailSectionFeedInfo() {
 
 	return (
 		<Collapsible
-			description="Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt"
-			title="Dados do Arquivo"
+			description={t('description')}
+			title={t('title')}
 		>
 
 			<Section gap="sm">
