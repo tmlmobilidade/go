@@ -43,7 +43,6 @@ export function UserDetailBasicInfo() {
 						label={t('fields.last_name')}
 						maxLength={255}
 						placeholder={t('fields.last_name_placeholder')}
-						placeholder="..."
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('last_name')}
@@ -62,8 +61,6 @@ export function UserDetailBasicInfo() {
 						label={t('fields.phone')}
 						leftSection={<IconPhone size={22} />}
 						placeholder={t('fields.phone_placeholder')}
-						placeholder="912345678"
-
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...userDetailContext.data.form.getInputProps('phone')}

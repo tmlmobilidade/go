@@ -29,6 +29,19 @@
 					"performed": "Foi realizada uma nova análise da viagem"
 				}
 			},
+			"justification": {
+				"cause_label": "Motivo da justificação",
+				"cause_placeholder": "Selecione o motivo da justificação",
+				"manual_trip_id_label": "ID da viagem manual (opcional)",
+				"message_label": "Mensagem de justificação",
+				"readonly": {
+					"cause": "Motivo da justificação",
+					"manual_trip_id": "ID da viagem manual",
+					"message": "Mensagem de justificação"
+				},
+				"submit": "Justificar",
+				"title": "Justificação"
+			},
 			"title": "Atividade"
 		},
 		"analysis": {
