@@ -7,7 +7,18 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect'> {
+export interface SelectDataItem {
+	checked?: boolean
+	disabled?: boolean
+	label: string
+	value: string
+};
+
+/* * */
+
+export interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect' | 'data'> {
+
+	data?: SelectDataItem[]
 
 	/**
 	 * The `key` prop is required to ensure correct re-mounting behavior.

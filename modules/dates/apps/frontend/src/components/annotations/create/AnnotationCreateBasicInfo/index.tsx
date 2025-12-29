@@ -3,8 +3,8 @@
 /* * */
 
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
-import { AnnotationSchema } from '@tmlmobilidade/types';
-import { Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { AnnotationSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,6 +15,7 @@ export function AnnotationCreateBasicInfo() {
 	// A. Setup variables
 
 	const annotationCreateContext = useAnnotationCreateContext();
+	const { options: allAgencyOptions } = useDataAgencies(PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.create);
 
 	//
 	// B. Render Components
@@ -36,6 +37,14 @@ export function AnnotationCreateBasicInfo() {
 				required={!AnnotationSchema.shape.description.isOptional()}
 				w="100%"
 				{...annotationCreateContext.data.form.getInputProps('description')}
+			/>
+
+			<MultiSelect
+				data={allAgencyOptions}
+				label="Operadores afetados"
+				value={annotationCreateContext.data.form.values.agency_ids || []}
+				w="100%"
+				{...annotationCreateContext.data.form.getInputProps('agency_ids')}
 			/>
 		</Section>
 	);

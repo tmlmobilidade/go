@@ -219,7 +219,7 @@ const performanceActions: PermissionConfig = {
 	title: 'performanceActions.title',
 };
 
-const datesActions: PermissionConfig = {
+const annotationsActions: PermissionConfig = {
 	actions: [
 		{ action: 'read_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
 		{ action: 'create_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
@@ -227,9 +227,22 @@ const datesActions: PermissionConfig = {
 		{ action: 'delete_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
 		{ action: 'lock_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de datas.',
-	scope: PermissionCatalog.all.dates.scope,
-	title: 'Permissões de Datas',
+	description: 'As ações que o utilizador pode realizar na gestão de anotações.',
+	scope: PermissionCatalog.all.annotations.scope,
+	title: 'Permissões de Anotações',
+};
+
+const periodsActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver períodos', label: 'Ver períodos', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um período', label: 'Criar período', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um período', label: 'Editar período', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um período', label: 'Eliminar período', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um período', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de períodos.',
+	scope: PermissionCatalog.all.periods.scope,
+	title: 'Permissões de Períodos',
 };
 
 /* * */
@@ -247,7 +260,8 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
-	datesActions,
+	annotationsActions,
+	periodsActions,
 	// topicActions,
 	// proposedChangesActions,
 ];

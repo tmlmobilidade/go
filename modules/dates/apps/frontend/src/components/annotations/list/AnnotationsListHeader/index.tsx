@@ -23,8 +23,8 @@ export function AnnotationsListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Anotações</Label>
 			<Spacer />
-			<SearchInput onChange={annotationsListContext.actions.setFilterSearch} value={annotationsListContext.filters.search} />
-			<HasPermission action={PermissionCatalog.all.dates.actions.create_annotations} scope={PermissionCatalog.all.dates.scope}>
+			<SearchInput onChange={annotationsListContext.filters.search.set} value={annotationsListContext.filters.search.value} />
+			<HasPermission action={PermissionCatalog.all.annotations.actions.create} scope={PermissionCatalog.all.annotations.scope}>
 				<Button label="Nova anotação" leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
 			</HasPermission>
 		</Toolbar>
