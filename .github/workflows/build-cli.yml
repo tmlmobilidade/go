@@ -49,8 +49,8 @@ jobs:
       - name: Save package-lock.json as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: package-lock.json
-          path: package-lock.json
+          name: cli/package-lock.json
+          path: cli/package-lock.json
           retention-days: 1
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -59,6 +59,7 @@ jobs:
   prepare-matrix:
     name: Prepare publish matrix
     runs-on: ubuntu-latest
+    needs: generate-package-lock
     outputs:
       cli_apps: ${{ steps.matrix.outputs.cli_apps }}
     steps:
@@ -88,6 +89,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+
+      - name: Download package-lock.json artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cli/package-lock.json
+          path: cli/package-lock.json
 
       - name: Install workspace dependencies
         working-directory: .
