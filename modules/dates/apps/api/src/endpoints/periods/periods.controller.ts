@@ -3,7 +3,7 @@
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { periods } from '@tmlmobilidade/interfaces';
+import { type Filter, periods } from '@tmlmobilidade/interfaces';
 import { type CreatePeriodDto, OperationalDate, type Period, PermissionCatalog, type UpdatePeriodDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -14,7 +14,7 @@ export class PeriodsController {
 	/**
 	 * Check for date conflicts with existing periods.
 	 * Returns information about which periods would be affected by assigning the given dates.
-	 * @param request Fastify request containing agency_id, dates, and optional period_id
+	 * @param request Fastify request containing dates and optional period_id
 	 * @param reply Fastify reply
 	 */
 	static async checkConflicts(
@@ -30,10 +30,27 @@ export class PeriodsController {
 		//
 
 		//
-		// Check if the user has permission to read periods
+		// Get the resource permissions for periods for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.read_periods)) {
+		const userPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.read);
+
+		//
+		// If no permission found, deny access
+
+		if (!userPeriodPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods');
+		}
+
+		//
+		// Validate that user has permission for the specified agency
+
+		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
+			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
+			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+			if (!hasAllowAll && !userAgencyIds.includes(request.body.agency_id)) {
+				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods for this agency');
+			}
 		}
 
 		//
@@ -92,10 +109,27 @@ export class PeriodsController {
 		//
 
 		//
-		// Check if the user has permission to create periods
+		// Get the resource permissions for periods for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.create_periods)) {
+		const userPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.create);
+
+		//
+		// If no permission found, deny access
+
+		if (!userPeriodPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create periods');
+		}
+
+		//
+		// Validate that user has permission for the specified agency
+
+		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
+			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
+			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+			if (!hasAllowAll && !userAgencyIds.includes(request.body.agency_id)) {
+				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create periods for this agency');
+			}
 		}
 
 		//
@@ -133,10 +167,27 @@ export class PeriodsController {
 		}
 
 		//
-		// Check if the user has permission to delete periods
+		// Get the resource permissions for periods for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.delete_periods)) {
+		const userPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.delete);
+
+		//
+		// If no permission found, deny access
+
+		if (!userPeriodPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete periods');
+		}
+
+		//
+		// Validate that user has permission for this period's agency
+
+		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
+			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
+			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+			if (!hasAllowAll && !userAgencyIds.includes(period.agency_id)) {
+				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this period');
+			}
 		}
 
 		//
@@ -155,16 +206,36 @@ export class PeriodsController {
 		//
 
 		//
-		// Check if the user has permission to read periods
+		// Get the resource permissions for periods for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.read_periods)) {
+		const userPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.read);
+
+		//
+		// If no permission found, deny access
+
+		if (!userPeriodPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods');
 		}
 
 		//
-		// Fetch all periods
+		// Build database query filters based on user permissions
 
-		const allPeriods = await periods.findMany({}, { sort: { start_date: -1 } });
+		const queryFilters: Filter<Period> = {};
+
+		//
+		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
+		// filter periods by those agency IDs.
+
+		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
+			if (!userPeriodPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				queryFilters.agency_id = { $in: userPeriodPermissions.resources['agency_ids'] };
+			}
+		}
+
+		//
+		// Fetch periods based on query filters
+
+		const allPeriods = await periods.findMany(queryFilters, { sort: { start_date: -1 } });
 
 		return reply.send({ data: allPeriods, error: null, statusCode: HttpStatus.OK });
 
@@ -187,10 +258,27 @@ export class PeriodsController {
 		if (!periodData) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
 
 		//
-		// Check if the user has permission to read periods
+		// Get the resource permissions for periods for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.read_periods)) {
+		const userPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.read);
+
+		//
+		// If no permission found, deny access
+
+		if (!userPeriodPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods');
+		}
+
+		//
+		// Validate that user has permission for this period's agency
+
+		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
+			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
+			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
+				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this period');
+			}
 		}
 
 		//
@@ -210,7 +298,7 @@ export class PeriodsController {
 	 * @param request Fastify request containing period ID in params
 	 * @param reply Fastify reply
 	 */
-	static async toggleLockById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Period>) {
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Period>) {
 		//
 
 		//
@@ -221,25 +309,38 @@ export class PeriodsController {
 		if (!periodData) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
 
 		//
-		// Check if the user has permission to toggle lock the Period
+		// Get the resource permissions for periods for the current user.
 
-		const hasPermissionToggleLockPeriod = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.dates.actions.toggle_lock_periods,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.dates.scope,
-			value: periodData.agency_id,
-		});
+		const userPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.lock);
 
-		if (!hasPermissionToggleLockPeriod) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
+		//
+		// If no permission found, deny access
+
+		if (!userPeriodPermissions) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock periods');
+		}
+
+		//
+		// Validate that user has permission for this period's agency
+
+		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
+			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
+			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
+				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
+			}
+		}
 
 		//
 		// Toggle the lock status of the period
 
-		const result = await periods.updateById(periodData._id, { is_locked: !periodData.is_locked });
+		await periods.toggleLockById(request.params.id);
+		const updatedPeriod = await periods.findById(request.params.id);
+		if (!updatedPeriod) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
 
 		return reply.send({
-			data: result,
+			data: updatedPeriod,
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
@@ -264,10 +365,27 @@ export class PeriodsController {
 		if (!periodData) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
 
 		//
-		// Check if the user has permission to update periods
+		// Get the resource permissions for periods for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.update_periods)) {
+		const userPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.update);
+
+		//
+		// If no permission found, deny access
+
+		if (!userPeriodPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update periods');
+		}
+
+		//
+		// Validate that user has permission for this period's agency
+
+		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
+			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
+			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
+				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this period');
+			}
 		}
 
 		//

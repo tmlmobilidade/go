@@ -2,12 +2,11 @@
 
 /* * */
 
-import { AgencySelect } from '@/components/common/AgencySelect';
+import { usePeriodsDetailContext } from '@/components/periods/detail/PeriodsDetail.context';
 import { PeriodsDetailHeader } from '@/components/periods/detail/PeriodsDetailHeader';
-import { usePeriodsDetailContext } from '@/contexts/PeriodsDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PeriodSchema } from '@tmlmobilidade/types';
-import { Button, ColorInput, ErrorDisplay, LoadingOverlay, Pane, Section, TextInput } from '@tmlmobilidade/ui';
+import { PeriodSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { Button, ColorInput, ErrorDisplay, LoadingOverlay, Pane, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -20,6 +19,7 @@ export function PeriodsDetail() {
 
 	const periodsDetailContext = usePeriodsDetailContext();
 	const router = useRouter();
+	const { options: allAgencyOptions } = useDataAgencies(PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.create);
 
 	//
 	// B. Handle actions
@@ -31,7 +31,7 @@ export function PeriodsDetail() {
 	//
 	// C. Render components
 
-	if (periodsDetailContext.flags.loading) {
+	if (periodsDetailContext.flags.isLoading) {
 		return <LoadingOverlay />;
 	}
 
@@ -46,21 +46,25 @@ export function PeriodsDetail() {
 				<TextInput
 					label="Nome"
 					placeholder="Ex: Período Escolar 2024/2025"
-					readOnly={periodsDetailContext.flags.read_only}
+					readOnly={periodsDetailContext.flags.isReadOnly}
 					required={!PeriodSchema.shape.name.isOptional()}
 					w="100%"
 					{...periodsDetailContext.data.form.getInputProps('name')}
 				/>
 
-				<AgencySelect
+				<Select
+					key={periodsDetailContext.data.form.key('agency_id')}
+					data={allAgencyOptions}
+					disabled={periodsDetailContext.flags.isReadOnly}
 					label="Operador"
-					readOnly={periodsDetailContext.flags.read_only}
+					w="100%"
 					{...periodsDetailContext.data.form.getInputProps('agency_id')}
 				/>
 
 				<ColorInput
+					key={periodsDetailContext.data.form.key('color')}
 					label="Cor"
-					readOnly={periodsDetailContext.flags.read_only}
+					readOnly={periodsDetailContext.flags.isReadOnly}
 					required={!PeriodSchema.shape.color.isOptional()}
 					withEyeDropper={false}
 					{...periodsDetailContext.data.form.getInputProps('color')}

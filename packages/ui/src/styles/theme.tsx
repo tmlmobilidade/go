@@ -31,31 +31,36 @@ import { IconCaretLeftFilled } from '@tabler/icons-react';
 
 import { DateInput } from '@mantine/dates';
 
-import AccordionOverride from './mantine/Accordion.module.css';
-import ActionIconOverride from './mantine/ActionIcon.module.css';
-import AvatarOverride from './mantine/Avatar.module.css';
+/* * */
+
 import DropdownBase from './mantine/base/dropdown.module.css';
 import InputBase from './mantine/base/input.module.css';
 import MultiSelectBase from './mantine/base/multi-select-input.module.css';
-import ButtonOverride from './mantine/Button.module.css';
-import CheckboxOverride from './mantine/Checkbox.module.css';
-import CheckboxGroupOverride from './mantine/CheckboxGroup.module.css';
-import CloseButtonOverride from './mantine/CloseButton.module.css';
-import ColorInputOverride from './mantine/ColorInput.module.css';
-import MenuOverride from './mantine/Menu.module.css';
+
+/* * */
+
+import AccordionOverride from './mantine/overrides/Accordion.module.css';
+import ActionIconOverride from './mantine/overrides/ActionIcon.module.css';
+import AvatarOverride from './mantine/overrides/Avatar.module.css';
+import ButtonOverride from './mantine/overrides/Button.module.css';
+import CheckboxOverride from './mantine/overrides/Checkbox.module.css';
+import CheckboxGroupOverride from './mantine/overrides/CheckboxGroup.module.css';
+import CloseButtonOverride from './mantine/overrides/CloseButton.module.css';
+import ColorInputOverride from './mantine/overrides/ColorInput.module.css';
+import MenuOverride from './mantine/overrides/Menu.module.css';
+import PasswordInputOverride from './mantine/overrides/PasswordInput.module.css';
 import PillOverride from './mantine/overrides/Pill.module.css';
 import PillGroupOverride from './mantine/overrides/PillGroup.module.css';
-import PasswordInputOverride from './mantine/PasswordInput.module.css';
-import PopoverOverride from './mantine/Popover.module.css';
-import RadioOverride from './mantine/Radio.module.css';
-import SegmentedControlOverrideSm from './mantine/SegmentedControl-sm.module.css';
-import SegmentedControlOverride from './mantine/SegmentedControl.module.css';
-import SkeletonOverride from './mantine/Skeleton.module.css';
-import SliderOverride from './mantine/Slider.module.css';
-import SwitchOverride from './mantine/Switch.module.css';
-import TextOverride from './mantine/Text.module.css';
-import TextareaOverrideComment from './mantine/Textarea-comment.module.css';
-import TextareaOverride from './mantine/Textarea.module.css';
+import PopoverOverride from './mantine/overrides/Popover.module.css';
+import RadioOverride from './mantine/overrides/Radio.module.css';
+import SegmentedControlOverrideSm from './mantine/overrides/SegmentedControl-sm.module.css';
+import SegmentedControlOverride from './mantine/overrides/SegmentedControl.module.css';
+import SkeletonOverride from './mantine/overrides/Skeleton.module.css';
+import SliderOverride from './mantine/overrides/Slider.module.css';
+import SwitchOverride from './mantine/overrides/Switch.module.css';
+import TextOverride from './mantine/overrides/Text.module.css';
+import TextareaOverrideComment from './mantine/overrides/Textarea-comment.module.css';
+import TextareaOverride from './mantine/overrides/Textarea.module.css';
 
 /* * */
 

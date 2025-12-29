@@ -121,21 +121,24 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 		icon: <IconNote size={26} />,
 		label: 'Anotações',
-		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
+		permissions: [{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope }],
 	},
 	{
 		_id: 'periods',
 		href: PAGE_ROUTES.dates.PERIODS_LIST,
 		icon: <IconClock size={26} />,
 		label: 'Períodos',
-		permissions: [{ action: PermissionCatalog.all.dates.actions.read_periods, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
+		permissions: [{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope }],
 	},
 	{
 		_id: 'dates',
 		href: PAGE_ROUTES.dates.CALENDAR_LIST,
 		icon: <IconCalendarEvent size={26} />,
 		label: 'Calendário',
-		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }], // change this
+		permissions: [
+			{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope },
+			{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope },
+		],
 	},
 ];
 

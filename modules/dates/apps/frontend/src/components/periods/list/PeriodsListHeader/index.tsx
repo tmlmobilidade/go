@@ -1,7 +1,7 @@
 /* * */
 
-import { openCreatePeriodModal } from '@/components/periods/detail/CreatePeriodModal';
-import { usePeriodsListContext } from '@/contexts/PeriodsList.context';
+import { openCreatePeriodModal } from '@/components/periods/create/PeriodCreate.modal';
+import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
@@ -23,8 +23,8 @@ export function PeriodsListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Períodos</Label>
 			<Spacer />
-			<SearchInput onChange={periodsListContext.actions.setFilterSearch} value={periodsListContext.filters.search} />
-			<HasPermission action={PermissionCatalog.all.dates.actions.create_periods} scope={PermissionCatalog.all.dates.scope}>
+			<SearchInput onChange={periodsListContext.filters.search.set} value={periodsListContext.filters.search.value} />
+			<HasPermission action={PermissionCatalog.all.periods.actions.create} scope={PermissionCatalog.all.periods.scope}>
 				<Button label="Novo período" leftSection={<IconPlus />} onClick={openCreatePeriodModal} />
 			</HasPermission>
 		</Toolbar>

@@ -18,43 +18,43 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.read_periods]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.periods.scope, [PermissionCatalog.all.periods.actions.read]) },
 			PeriodsController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.read_periods]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.periods.scope, [PermissionCatalog.all.periods.actions.read]) },
 			PeriodsController.getById,
 		);
 
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.create_periods]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.periods.scope, [PermissionCatalog.all.periods.actions.create]) },
 			PeriodsController.create,
 		);
 
 		instance.post(
 			'/check-conflicts',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.read_periods]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.periods.scope, [PermissionCatalog.all.periods.actions.read]) },
 			PeriodsController.checkConflicts,
 		);
 
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.update_periods]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.periods.scope, [PermissionCatalog.all.periods.actions.update]) },
 			PeriodsController.update,
 		);
 
 		instance.get(
-			'/:id/toggle-lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.toggle_lock_periods]) },
-			PeriodsController.toggleLockById,
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.periods.scope, [PermissionCatalog.all.periods.actions.lock]) },
+			PeriodsController.lock,
 		);
 
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.dates.scope, [PermissionCatalog.all.dates.actions.delete_periods]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.periods.scope, [PermissionCatalog.all.periods.actions.delete]) },
 			PeriodsController.delete,
 		);
 

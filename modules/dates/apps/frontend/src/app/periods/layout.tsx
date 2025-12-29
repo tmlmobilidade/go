@@ -1,7 +1,7 @@
 /* * */
 
 import { PeriodsList } from '@/components/periods/list/PeriodsList';
-import { PeriodsListContextProvider } from '@/contexts/PeriodsList.context';
+import { PeriodsListContextProvider } from '@/components/periods/list/PeriodsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

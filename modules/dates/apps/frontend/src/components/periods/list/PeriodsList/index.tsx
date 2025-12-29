@@ -2,9 +2,9 @@
 
 /* * */
 
+import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.context';
 import { PeriodsListCellAgency } from '@/components/periods/list/PeriodsListCellAgency';
 import { PeriodsListHeader } from '@/components/periods/list/PeriodsListHeader';
-import { usePeriodsListContext } from '@/contexts/PeriodsList.context';
 import { type PeriodNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { ColorSwatch, DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
@@ -54,7 +54,7 @@ export function PeriodsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: PeriodNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.dates.PERIODS_DETAIL(item._id), window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.dates.PERIODS_DETAIL(item._id));
 		router.push(destUrl);
 	};
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { PeriodsDetail } from '@/components/periods/detail/PeriodsDetail';
-import { PeriodsDetailContextProvider } from '@/contexts/PeriodsDetail.context';
+import { PeriodsDetailContextProvider } from '@/components/periods/detail/PeriodsDetail.context';
 
 /* * */
 

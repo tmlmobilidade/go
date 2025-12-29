@@ -2,12 +2,10 @@
 
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Period } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { type Period, PermissionCatalog } from '@tmlmobilidade/types';
+import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -21,17 +19,13 @@ interface PeriodNormalized extends Period {
 /* * */
 
 interface PeriodsListContextState {
-	actions: {
-		setFilterAgency: (values: string[]) => void
-		setFilterSearch: (values: string) => void
-	}
 	data: {
-		all: PeriodNormalized[]
 		filtered: PeriodNormalized[]
+		raw: Period[]
 	}
 	filters: {
-		agency: string[]
-		search: string
+		agency: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -57,17 +51,17 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const agenciesContext = useAgenciesContext();
-
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
-
-	//
-	// B. Fetch data
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.read);
 
 	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR<Period[], Error>(API_ROUTES.dates.PERIODS_LIST, { refreshInterval: 5000 });
+
+	//
+	// B. Setup filters
+
+	const filterSearch = useFilterStateString('search');
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 
 	//
 	// C. Transform data
@@ -83,47 +77,41 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 				id: item._id,
 			};
 		});
-	}, [allPeriodsData, agenciesContext.data.raw]);
+	}, [allPeriodsData]);
 
 	const searchResultsData = useSearch<PeriodNormalized>({
 		accessors: ['_id', 'name', 'agency_id_normalized'],
 		data: normalizedPeriodsData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
-		// 1. Convert filter arrays to sets for O(1) membership checks
-		const agencySet = new Set(filterAgency);
+		// Convert filter array to set for O(1) membership checks
+		const agencySet = new Set(filterAgency.value);
 
 		return searchResultsData
 			.filter((item: PeriodNormalized) => {
 				// Filter by agency - check if the period's agency matches the filter
-				if (filterAgency.length > 0) {
-					if (!item.agency_id) {
-						return true; // Show periods with no agency in all filters
-					}
-					const hasMatchingAgency = agencySet.has(item.agency_id);
-					if (!hasMatchingAgency) return false;
+				if (!item.agency_id) {
+					return true; // Show periods with no agency in all filters
 				}
+				const hasMatchingAgency = agencySet.has(item.agency_id);
+				if (!hasMatchingAgency) return false;
 
 				// Return true if all filters pass
 				return true;
 			});
-	}, [searchResultsData, filterAgency]);
+	}, [searchResultsData, filterAgency.value]);
 
 	//
 	// D. Define context value
 
 	const contextValue: PeriodsListContextState = useMemo(() => ({
-		actions: {
-			setFilterAgency,
-			setFilterSearch,
-		},
 		data: {
-			all: normalizedPeriodsData ?? [],
 			filtered: filterResultsData,
+			raw: allPeriodsData ?? [],
 		},
 		filters: {
 			agency: filterAgency,

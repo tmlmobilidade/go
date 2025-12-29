@@ -65,13 +65,13 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 	const meContext = useMeContext();
 
 	const canReadPeriods = meContext.actions.hasPermission(
-		PermissionCatalog.all.dates.scope,
-		PermissionCatalog.all.dates.actions.read_periods,
+		PermissionCatalog.all.periods.scope,
+		PermissionCatalog.all.periods.actions.read,
 	);
 
 	const canReadAnnotations = meContext.actions.hasPermission(
-		PermissionCatalog.all.dates.scope,
-		PermissionCatalog.all.dates.actions.read_annotations,
+		PermissionCatalog.all.annotations.scope,
+		PermissionCatalog.all.annotations.actions.read,
 	);
 
 	//

@@ -1,10 +1,10 @@
 'use client';
 
-import { Checkbox } from '@mantine/core';
 import React from 'react';
 
 import styles from './styles.module.css';
 
+import { Checkbox } from '../../../inputs';
 import { useCalendarUIContext } from '../../contexts/CalendarUI.context';
 import { MiniCalendar } from '../MiniCalendar';
 

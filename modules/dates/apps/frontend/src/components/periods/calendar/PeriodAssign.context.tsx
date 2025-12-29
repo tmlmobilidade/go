@@ -2,11 +2,11 @@
 
 /* * */
 
-import { ASSIGN_PERIOD_MODAL_ID } from '@/components/periods/calendar/PeriodsModal';
+import { closeAsignPeriodModal } from '@/components/periods/calendar/PeriodAssign.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { convertRangeToDatesArray, Dates } from '@tmlmobilidade/dates';
 import { type CreatePeriodDto, type OperationalDate, type Period } from '@tmlmobilidade/types';
-import { closeModal, useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { mutate } from 'swr';
@@ -37,7 +37,7 @@ interface AssignPeriodData {
 
 /* * */
 
-interface PeriodsAssignContextState {
+interface PeriodAssignContextState {
 	actions: {
 		acknowledgeConflicts: () => void
 		assignExistingPeriod: (data: AssignPeriodData) => Promise<void>
@@ -46,40 +46,40 @@ interface PeriodsAssignContextState {
 		handleAssign: () => Promise<void>
 	}
 	data: {
-		canSubmit: boolean
 		conflicts: { dates: OperationalDate[], period: Period }[]
 		conflictWarning: null | string
 		dateRangeInfo: { dayCount: number, endDate: string, startDate: string }
 		form: UseFormReturnType<PeriodAssignmentForm>
 	}
 	flags: {
+		canSubmit: boolean
 		checkingConflicts: boolean
 		conflictAcknowledged: boolean
-		loading: boolean
+		isSaving: boolean
 	}
 }
 
 /* * */
 
-const PeriodsAssignContext = createContext<PeriodsAssignContextState | undefined>(undefined);
+const PeriodAssignContext = createContext<PeriodAssignContextState | undefined>(undefined);
 
-export function usePeriodsAssignContext() {
-	const context = useContext(PeriodsAssignContext);
+export function usePeriodAssignContext() {
+	const context = useContext(PeriodAssignContext);
 	if (!context) {
-		throw new Error('usePeriodsAssignContext must be used within a PeriodsAssignContextProvider');
+		throw new Error('usePeriodsAssignContext must be used within a PeriodAssignContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithChildren<{ dateRange: { end: Dates, start: Dates } }>) => {
+export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithChildren<{ dateRange: { end: Dates, start: Dates } }>) => {
 	//
 
 	//
 	// A. Setup variables
 
-	const [isLoading, setIsLoading] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
 	const [conflicts, setConflicts] = useState<{ dates: OperationalDate[], period: Period }[]>([]);
 	const [conflictAcknowledged, setConflictAcknowledged] = useState(false);
 	const [checkingConflicts, setCheckingConflicts] = useState(false);
@@ -163,7 +163,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 	// E. Create new period and assign to date range
 
 	const createAndAssignPeriod = async (data: AssignPeriodData) => {
-		setIsLoading(true);
+		setIsSaving(true);
 
 		const toastId = useToast.loading({
 			message: 'Por favor aguarde...',
@@ -195,7 +195,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 					title: 'Erro',
 					type: 'error',
 				});
-				setIsLoading(false);
+				setIsSaving(false);
 				return;
 			}
 
@@ -209,10 +209,10 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 			// Refresh periods list
 			mutate(API_ROUTES.dates.PERIODS_LIST);
 
-			setIsLoading(false);
+			setIsSaving(false);
 
 			// Close modal
-			closeModal(ASSIGN_PERIOD_MODAL_ID);
+			closeAsignPeriodModal();
 		}
 		catch (error) {
 			console.error('Error creating and assigning period:', error);
@@ -222,7 +222,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 				title: 'Erro',
 				type: 'error',
 			});
-			setIsLoading(false);
+			setIsSaving(false);
 		}
 	};
 
@@ -230,7 +230,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 	// F. Assign existing period to date range
 
 	const assignExistingPeriod = async (data: AssignPeriodData) => {
-		setIsLoading(true);
+		setIsSaving(true);
 
 		const toastId = useToast.loading({
 			message: 'Por favor aguarde...',
@@ -245,7 +245,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 					title: 'Erro',
 					type: 'error',
 				});
-				setIsLoading(false);
+				setIsSaving(false);
 				return;
 			}
 
@@ -265,7 +265,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 					title: 'Erro',
 					type: 'error',
 				});
-				setIsLoading(false);
+				setIsSaving(false);
 				return;
 			}
 
@@ -279,10 +279,10 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 			// Refresh periods list
 			mutate(API_ROUTES.dates.PERIODS_LIST);
 
-			setIsLoading(false);
+			setIsSaving(false);
 
 			// Close modal
-			closeModal(ASSIGN_PERIOD_MODAL_ID);
+			closeAsignPeriodModal();
 		}
 		catch (error) {
 			console.error('Error assigning period:', error);
@@ -292,7 +292,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 				title: 'Erro',
 				type: 'error',
 			});
-			setIsLoading(false);
+			setIsSaving(false);
 		}
 	};
 
@@ -360,7 +360,7 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 	//
 	// K. Define context value
 
-	const contextValue: PeriodsAssignContextState = useMemo(() => ({
+	const contextValue: PeriodAssignContextState = useMemo(() => ({
 		actions: {
 			acknowledgeConflicts,
 			assignExistingPeriod,
@@ -369,26 +369,26 @@ export const PeriodsAssignContextProvider = ({ children, dateRange }: PropsWithC
 			handleAssign,
 		},
 		data: {
-			canSubmit,
 			conflicts,
 			conflictWarning,
 			dateRangeInfo,
 			form,
 		},
 		flags: {
+			canSubmit,
 			checkingConflicts,
 			conflictAcknowledged,
-			loading: isLoading,
+			isSaving,
 		},
-	}), [isLoading, conflicts, conflictWarning, checkingConflicts, conflictAcknowledged, acknowledgeConflicts, assignExistingPeriod, checkConflicts, createAndAssignPeriod, handleAssign, dateRangeInfo, canSubmit, form]);
+	}), [isSaving, conflicts, conflictWarning, checkingConflicts, conflictAcknowledged, acknowledgeConflicts, assignExistingPeriod, checkConflicts, createAndAssignPeriod, handleAssign, dateRangeInfo, canSubmit, form]);
 
 	//
 	// K. Render components
 
 	return (
-		<PeriodsAssignContext.Provider value={contextValue}>
+		<PeriodAssignContext.Provider value={contextValue}>
 			{children}
-		</PeriodsAssignContext.Provider>
+		</PeriodAssignContext.Provider>
 	);
 
 	//

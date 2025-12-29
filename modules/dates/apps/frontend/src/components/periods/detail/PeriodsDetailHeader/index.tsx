@@ -2,11 +2,10 @@
 
 /* * */
 
-import { usePeriodsDetailContext } from '@/contexts/PeriodsDetail.context';
+import { usePeriodsDetailContext } from '@/components/periods/detail/PeriodsDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { BackButton, Button, DeleteButton, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -25,7 +24,7 @@ export function PeriodsDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.dates.PERIODS_LIST, window.location.search);
+		const destUrl = keepUrlParams(PAGE_ROUTES.dates.PERIODS_LIST);
 		router.push(destUrl);
 	};
 
@@ -35,53 +34,36 @@ export function PeriodsDetailHeader() {
 	return (
 		<Toolbar>
 
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={periodsDetailContext.data.period._id} variant="secondary" />
 
 			<Spacer />
 
-			<HasPermission
-				action={PermissionCatalog.all.dates.actions.toggle_lock_periods}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.dates.scope}
-				value={periodsDetailContext.data.period.agency_id}
-			>
-				<LockButton
-					isLocked={periodsDetailContext.data.period.is_locked}
-					onClick={periodsDetailContext.actions.toggleLock}
-				/>
-			</HasPermission>
+			<LockButton
+				isDisabled={!periodsDetailContext.flags.canLock}
+				isLoading={periodsDetailContext.flags.isLocking}
+				isLocked={periodsDetailContext.data.period.is_locked}
+				onClick={periodsDetailContext.actions.lock}
+			/>
 
-			<HasPermission
-				action={PermissionCatalog.all.dates.actions.update_periods}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.dates.scope}
-				value={periodsDetailContext.data.period.agency_id}
-			>
-				<Button
-					disabled={periodsDetailContext.flags.read_only || periodsDetailContext.flags.saving || !periodsDetailContext.data.form.isDirty()}
-					icon={<IconUpload size={28} />}
-					label="Guardar"
-					loading={periodsDetailContext.flags.saving}
-					onClick={periodsDetailContext.actions.savePeriod}
-					variant="primary"
-				/>
-			</HasPermission>
+			<Button
+				disabled={!periodsDetailContext.flags.canSave}
+				icon={<IconUpload size={28} />}
+				label="Guardar"
+				loading={periodsDetailContext.flags.isSaving}
+				onClick={periodsDetailContext.actions.save}
+				variant="primary"
+			/>
 
-			<HasPermission
-				action={PermissionCatalog.all.dates.actions.delete_periods}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.dates.scope}
-				value={periodsDetailContext.data.period.agency_id}
-			>
-				<DeleteButton
-					confirmMessage="Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Período"
-					onDelete={periodsDetailContext.actions.deletePeriod}
-					showConfirmation
-				/>
-			</HasPermission>
+			<DeleteButton
+				confirmMessage="Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida."
+				confirmTitle="Apagar Período"
+				isDisabled={!periodsDetailContext.flags.canDelete}
+				isLoading={periodsDetailContext.flags.isDeleting}
+				onDelete={periodsDetailContext.actions.delete}
+				showConfirmation
+			/>
 
 		</Toolbar>
 	);

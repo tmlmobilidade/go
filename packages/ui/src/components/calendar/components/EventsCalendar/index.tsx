@@ -109,7 +109,7 @@ function EventsCalendarContent({
 					label: 'Períodos',
 				},
 				{
-					checked: uiContext.state.eventTypeFilters.get('event') !== false,
+					checked: uiContext.state.eventTypeFilters.get('annotation') !== false,
 					color: '#f59e0b',
 					count: eventsContext.data.eventTypeCounts.annotations,
 					id: 'annotation',

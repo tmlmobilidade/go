@@ -2,25 +2,25 @@
 
 /* * */
 
-import { AnnotationCreate } from '@/components/annotations/create/AnnotationCreate';
-import { AnnotationCreateContextProvider } from '@/components/annotations/create/AnnotationCreate.context';
+import { PeriodCreate } from '@/components/periods/create/PeriodCreate';
+import { PeriodCreateContextProvider } from '@/components/periods/create/PeriodsCreate.context';
 import { DataProviders } from '@/providers/data-providers';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
-const MODAL_ID = 'create-annotation-modal';
+const MODAL_ID = 'create-period-modal';
 
 /* * */
 
-export const openCreateAnnotationModal = () => {
+export const openCreatePeriodModal = () => {
 	openModal({
 		children: (
 			<DataProviders>
 				<MeContextProvider>
-					<AnnotationCreateContextProvider>
-						<AnnotationCreate />
-					</AnnotationCreateContextProvider>
+					<PeriodCreateContextProvider>
+						<PeriodCreate />
+					</PeriodCreateContextProvider>
 				</MeContextProvider>
 			</DataProviders>
 		),
@@ -35,6 +35,6 @@ export const openCreateAnnotationModal = () => {
 
 /* * */
 
-export const closeCreateAnnotationModal = () => {
+export const closeCreatePeriodModal = () => {
 	closeModal(MODAL_ID);
 };

@@ -240,13 +240,13 @@ export const API_ROUTES = Object.freeze({
 
 		// ANNOTATIONS
 		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
-		ANNOTATIONS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/toggle-lock`,
+		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/lock`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'api_url')}/annotations`,
 
 		// PERIODS
 		PERIODS_CHECK_CONFLICTS: `${getAppConfig('dates', 'api_url')}/periods/check-conflicts`,
 		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}`,
-		PERIODS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}/toggle-lock`,
+		PERIODS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}/lock`,
 		PERIODS_LIST: `${getAppConfig('dates', 'api_url')}/periods`,
 	},
 
