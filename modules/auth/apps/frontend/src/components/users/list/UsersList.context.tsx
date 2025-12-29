@@ -89,7 +89,7 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 	}, [allUsersData]);
 
 	const searchResultsData = useSearch<UserNormalized>({
-		accessors: ['first_name_normalized', 'last_name_normalized', 'email'],
+		accessors: ['first_name_normalized', 'last_name_normalized', 'email', 'full_name_normalized'],
 		data: normalizedUsersData,
 		query: filterSearch,
 	});
@@ -102,9 +102,9 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 		const roleIdsSet = new Set(filterRoleIds);
 		return searchResultsData.filter((item: UserNormalized) => {
 			// Filter by organization_ids
-			if (!organizationIdsSet.has(item.organization_id)) return false;
+			// if (!organizationIdsSet.has(item.organization_id)) return false;
 			// Filter by role_ids
-			if (!item.role_ids.some(roleId => roleIdsSet.has(roleId))) return false;
+			// if (!item.role_ids.some(roleId => roleIdsSet.has(roleId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
