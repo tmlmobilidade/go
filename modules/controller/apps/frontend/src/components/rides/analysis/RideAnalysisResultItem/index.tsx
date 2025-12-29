@@ -23,7 +23,8 @@ export function RideAnalysisAnalysisResultItem({ grade, id }: RideAnalysisAnalys
 	//
 	// A. Setup Variables
 
-	const { t } = useTranslation('global', { keyPrefix: 'statuses' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.result.labels' });
+	const { t: tStatuses } = useTranslation('global', { keyPrefix: 'statuses' });
 
 	//
 	// B. Render components
@@ -33,13 +34,13 @@ export function RideAnalysisAnalysisResultItem({ grade, id }: RideAnalysisAnalys
 				<div>
 					{id && <Label size="sm">{id}</Label>}
 					<div>
-						{rideAnalysisLabels[id]?.title && <Label>{rideAnalysisLabels[id].title}</Label>}
-						{rideAnalysisLabels[id]?.description && <Text size="sm">{rideAnalysisLabels[id].description}</Text>}
+						{rideAnalysisLabels[id]?.title && <Label>{t(rideAnalysisLabels[id].title)}</Label>}
+						{rideAnalysisLabels[id]?.description && <Text size="sm">{t(rideAnalysisLabels[id].description)}</Text>}
 					</div>
 				</div>
-				{grade === 'error' && <Tag label={t('failed')} variant="danger" filled />}
-				{grade === 'fail' && <Tag label={t('fail')} variant="danger" />}
-				{grade === 'pass' && <Tag label={t('pass')} variant="success" />}
+				{grade === 'error' && <Tag label={tStatuses('failed')} variant="danger" filled />}
+				{grade === 'fail' && <Tag label={tStatuses('fail')} variant="danger" />}
+				{grade === 'pass' && <Tag label={tStatuses('pass')} variant="success" />}
 			</Section>
 		</Surface>
 	);

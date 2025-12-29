@@ -13,63 +13,63 @@ type RideAnalysisLabels = Record<keyof Ride['analysis'], {
 
 export const rideAnalysisLabels: RideAnalysisLabels = {
 	AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: {
-		description: 'Uma circulação deve ter pelo menos um evento na primeira paragem.',
-		title: 'Pelo menos um evento na primeira paragem',
+		description: 'AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP.description',
+		title: 'AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP.title',
 	},
 	ENDED_AT_LAST_STOP: {
-		description: 'Uma circulação deve terminar na última paragem.',
-		title: 'Terminou na última paragem',
+		description: 'ENDED_AT_LAST_STOP.description',
+		title: 'ENDED_AT_LAST_STOP.title',
 	},
 	EXPECTED_APEX_VALIDATION_INTERVAL: {
-		description: 'O intervalo entre validações é orgânico e representa a variação natural dos tempos de validação dos passageiros.',
-		title: 'Intervalo de validações APEX',
+		description: 'EXPECTED_APEX_VALIDATION_INTERVAL.description',
+		title: 'EXPECTED_APEX_VALIDATION_INTERVAL.title',
 	},
 	EXPECTED_DRIVER_ID_QTY: {
-		description: 'Uma circulação pode ter no máximo dois IDs de motorista diferentes.',
-		title: 'No máximo dois motoristas',
+		description: 'EXPECTED_DRIVER_ID_QTY.description',
+		title: 'EXPECTED_DRIVER_ID_QTY.title',
 	},
 	EXPECTED_START_TIME: {
-		description: 'Uma circulação deve começar depois da hora planeada e com um atraso inferior a 5 minutos.',
-		title: 'Início a horas',
+		description: 'EXPECTED_START_TIME.description',
+		title: 'EXPECTED_START_TIME.title',
 	},
 	EXPECTED_VEHICLE_EVENT_DELAY: {
-		description: 'Os eventos não devem ser entregues com mais de 10 segundos após a sua geração.',
-		title: 'Atraso excessivo na entrega dos eventos',
+		description: 'EXPECTED_VEHICLE_EVENT_DELAY.description',
+		title: 'EXPECTED_VEHICLE_EVENT_DELAY.title',
 	},
 	EXPECTED_VEHICLE_EVENT_INTERVAL: {
-		description: 'O intervalo médio entre eventos não deve exceder os 20 segundos.',
-		title: 'Intervalo médio entre eventos',
+		description: 'EXPECTED_VEHICLE_EVENT_INTERVAL.description',
+		title: 'EXPECTED_VEHICLE_EVENT_INTERVAL.title',
 	},
 	EXPECTED_VEHICLE_EVENT_QTY: {
-		description: 'Uma circulação deve ter pelo menos 10 eventos de veículo.',
-		title: 'Menos de 10 eventos de veículo',
+		description: 'EXPECTED_VEHICLE_EVENT_QTY.description',
+		title: 'EXPECTED_VEHICLE_EVENT_QTY.title',
 	},
 	EXPECTED_VEHICLE_ID_QTY: {
-		description: 'Uma circulação pode ter no máximo dois IDs de veículo diferentes.',
-		title: 'No máximo dois veículos',
+		description: 'EXPECTED_VEHICLE_ID_QTY.description',
+		title: 'EXPECTED_VEHICLE_ID_QTY.title',
 	},
 	MATCHING_APEX_LOCATIONS: {
-		description: 'As transações de localização devem corresponder aos eventos de veículo.',
-		title: 'Transações de localização correspondentes',
+		description: 'MATCHING_APEX_LOCATIONS.description',
+		title: 'MATCHING_APEX_LOCATIONS.title',
 	},
 	MATCHING_VEHICLE_IDS: {
-		description: 'Os IDs do veículos recebidos nos Eventos devem corresponder ao ID das transações APEX.',
-		title: 'Vehicle IDs correspondentes',
+		description: 'MATCHING_VEHICLE_IDS.description',
+		title: 'MATCHING_VEHICLE_IDS.title',
 	},
 	SIMPLE_ONE_APEX_VALIDATION: {
-		description: 'Uma circulação deve ter pelo menos uma transação de validação.',
-		title: 'Pelo menos uma transação de validação',
+		description: 'SIMPLE_ONE_APEX_VALIDATION.description',
+		title: 'SIMPLE_ONE_APEX_VALIDATION.title',
 	},
 	SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: {
-		description: 'Uma circulação deve ter pelo menos um evento ou uma transação de validação.',
-		title: 'Pelo menos um evento ou uma transação de validação',
+		description: 'SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION.description',
+		title: 'SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION.title',
 	},
 	SIMPLE_THREE_VEHICLE_EVENTS: {
-		description: 'Uma circulação deve ter pelo menos três eventos no início, meio e fim da viagem.',
-		title: 'Pelo menos três eventos',
+		description: 'SIMPLE_THREE_VEHICLE_EVENTS.description',
+		title: 'SIMPLE_THREE_VEHICLE_EVENTS.title',
 	},
 	TRANSACTION_SEQUENTIALITY: {
-		description: 'Todas as transações geradas pelo validador foram entregues.',
-		title: 'Sequencialidade das Transações APEX',
+		description: 'TRANSACTION_SEQUENTIALITY.description',
+		title: 'TRANSACTION_SEQUENTIALITY.title',
 	},
 };
