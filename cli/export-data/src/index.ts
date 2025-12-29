@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { promptEnvironmentVariable } from '@/prompts/environment-variable.js';
+import { promptAccessKey } from '@/prompts/access-key.js';
 import { promptExportTypes } from '@/prompts/export-types.js';
 import { promptFilterByAgencyIds } from '@/prompts/filter-agency-ids.js';
 import { promptFilterByDates } from '@/prompts/filter-dates.js';
@@ -27,8 +27,6 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 (async function main() {
 	//
 
-	await promptEnvironmentVariable();
-
 	//
 	// Initialize the export context
 
@@ -41,6 +39,11 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 	intro('Bem-vindo ao exportador de dados da CM!');
 	log.info(`O ID desta exportação é: ${context._id}`);
 	log.info(`Todos os resultados serão guardados aqui: ${context.output}`);
+
+	//
+	// Prompt for the access key
+
+	await promptAccessKey();
 
 	//
 	// Request the export types and which filters to apply

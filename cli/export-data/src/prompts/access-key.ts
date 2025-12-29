@@ -9,13 +9,8 @@ const CREDENTIAL_KEY = 'access-key';
 
 /* * */
 
-export async function promptEnvironmentVariable(): Promise<void> {
+export async function promptAccessKey(): Promise<void> {
 	//
-
-	//
-	// Delete credentials on init
-
-	await deleteCredential(CREDENTIAL_KEY);
 
 	//
 	// Check if there is an access key already saved in the computer
@@ -26,13 +21,23 @@ export async function promptEnvironmentVariable(): Promise<void> {
 
 	const existingKey = await getCredential(CREDENTIAL_KEY);
 
-	if (existingKey) {
+	//
+	// If --delete-credentials flag was passed, delete existing credentials
+
+	if (process.argv.includes('--delete-credentials') && existingKey) {
+		s.stop('Flag --delete-credentials detectada.');
+		s.start('A remover credenciais guardadas...');
+		await deleteCredential(CREDENTIAL_KEY);
+		s.stop('Credenciais removidas. A começar de novo...');
+	}
+	else if (existingKey) {
 		s.stop('Chave de acesso encontrada no armazenamento seguro do sistema.');
 		process.env.DATABASE_URI = existingKey;
 		return;
 	}
-
-	s.stop('Nenhuma chave de acesso encontrada.');
+	else {
+		s.stop('Nenhuma chave de acesso encontrada.');
+	}
 
 	//
 	// If no key exists, ask the user to enter the access key
