@@ -8,7 +8,7 @@ const VehicleWheelchairValues = [
 	'no',
 	'manual_ramp',
 	'electric_ramp',
-	'not applicable',
+	'not_applicable',
 ] as const;
 
 export const VehicleWheelchairSchema = z.enum(VehicleWheelchairValues);

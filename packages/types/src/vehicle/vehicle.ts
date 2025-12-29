@@ -12,22 +12,22 @@ import { VehicleWheelchairSchema } from './wheelchair.js';
 
 export const vehicleSchema = DocumentSchema.extend({
 	agency_id: z.string(),
-	bikes_allowed: z.boolean(),
+	bikes_allowed: z.boolean().default(false),
 	capacity_seated: z.number(),
 	capacity_standing: z.number(),
-	contactless: z.boolean(),
-	emission_class: z.array(VehicleEmissionSchema).default([]),
+	contactless: z.boolean().default(false),
+	emission_class: z.string(VehicleEmissionSchema).default(''),
 	license_plate: z.string(),
 	make: z.string(),
 	model: z.string(),
 	owner: z.string(),
-	passenger_counting: z.boolean(),
-	propulsion: z.array(VehiclePropulsionSchema).default([]),
-	registration_date: z.array(operationalDateSchema).default([]),
-	wheelchair_acessible: z.array(VehicleWheelchairSchema).default([]),
+	passenger_counting: z.boolean().default(false),
+	propulsion: z.string(VehiclePropulsionSchema).default(''),
+	registration_date: z.string(operationalDateSchema).default(''),
+	wheelchair_acessible: z.string(VehicleWheelchairSchema).default(''),
 });
 
-export const CreateVehicleSchema = vehicleSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const CreateVehicleSchema = vehicleSchema.omit({ created_at: true, updated_at: true });
 export const UpdateVehicleSchema = CreateVehicleSchema.omit({ created_by: true }).partial();
 
 /* * */
