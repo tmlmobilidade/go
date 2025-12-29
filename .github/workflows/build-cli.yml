@@ -104,6 +104,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          registry-url: 'https://registry.npmjs.org/'
+          always-auth: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
       - name: Setup Turbo
         run: npm install -g turbo@^2
@@ -129,5 +133,3 @@ jobs:
       - name: Publish package to NPM
         working-directory: cli/${{ matrix.cli_app }}
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
