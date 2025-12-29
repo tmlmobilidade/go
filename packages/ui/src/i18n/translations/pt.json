@@ -1269,6 +1269,7 @@
 		"ended": "Ended",
 		"error": "Inválido",
 		"fail": "Fail",
+		"failed": "Erro",
 		"missed": "Missed",
 		"pass": "Pass",
 		"processing": "A processar",

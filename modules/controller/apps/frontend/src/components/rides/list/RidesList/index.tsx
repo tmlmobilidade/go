@@ -15,7 +15,7 @@ import { useRidesListContext } from '@/contexts/RidesList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, keepUrlParams, Pane, Tag } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 

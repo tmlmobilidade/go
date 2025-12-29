@@ -10,6 +10,7 @@ import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -21,64 +22,66 @@ export function RideAnalysisApexOnBoardSales() {
 
 	const RideAnalysisContext = useRideAnalysisContext();
 
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.onboard_sales' });
+
 	const columns: DataTableColumn<SimplifiedApexOnBoardSale>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: 'Timestamp',
+			title: t('table_columns.created_at'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: 'Stop ID',
+			title: t('table_columns.stop_id'),
 			width: 100,
 		},
 		{
 			accessor: 'card_serial_number',
-			title: 'Card SN',
+			title: t('table_columns.card_serial_number'),
 			width: 220,
 		},
 		{
 			accessor: 'product_long_id',
-			title: 'Product ID',
+			title: t('table_columns.product_id'),
 			width: 250,
 		},
 		{
 			accessor: 'product_quantity',
-			title: 'Qtd',
+			title: t('table_columns.product_quantity'),
 			width: 80,
 		},
 		{
 			accessor: 'price',
 			render: item => <CurrencyTag value={item.price} />,
-			title: 'Price',
+			title: t('table_columns.price'),
 			width: 120,
 		},
 		{
 			accessor: 'payment_method',
 			render: item => <ApexPaymentMethodTag value={item.payment_method} />,
-			title: 'Payment Method',
+			title: t('table_columns.payment_method'),
 			width: 180,
 		},
 		{
 			accessor: 'card_physical_type',
 			render: item => <ApexCardTypeTag value={item.card_physical_type} />,
-			title: 'Card Type',
+			title: t('table_columns.card_type'),
 			width: 220,
 		},
 		{
 			accessor: 'validation_id',
-			title: 'ID Validation',
+			title: t('table_columns.id_validation'),
 			width: 400,
 		},
 		{
 			accessor: '_id',
-			title: 'ID On Board Sale',
+			title: t('table_columns.id_on_board_sale'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_refund_id',
-			title: 'ID On Board Refund',
+			title: t('table_columns.id_on_board_refund'),
 			width: 400,
 		},
 	];
@@ -94,7 +97,7 @@ export function RideAnalysisApexOnBoardSales() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Vendas APEX associadas a esta Ride." title="APEX On Board Sales">
+		<Collapsible description={t('description')} title={t('title')}>
 			{sortedSimplifiedApexOnBoardSales?.length > 0 ? (
 				<DataTable
 					columns={columns}
@@ -103,7 +106,7 @@ export function RideAnalysisApexOnBoardSales() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text="Nenhuma Venda Registada" />
+					<NoDataLabel text={t('no_data')} />
 				</Section>
 			)}
 		</Collapsible>

@@ -8,6 +8,7 @@ import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,31 +20,33 @@ export function RideAnalysisApexLocations() {
 
 	const rideAnalysisContext = useRideAnalysisContext();
 
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.apex_locations' });
+
 	const columns: DataTableColumn<SimplifiedApexLocation>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: 'Timestamp',
+			title: t('table_columns.created_at'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: 'Stop ID',
+			title: t('table_columns.stop_id'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: 'Vehicle ID',
+			title: t('table_columns.vehicle_id'),
 			width: 120,
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			title: 'SAM SN',
+			title: t('table_columns.mac_sam_serial_number'),
 			width: 160,
 		},
 		{
 			accessor: '_id',
-			title: 'ID Apex Location',
+			title: t('table_columns.id_apex_location'),
 			width: 400,
 		},
 	];
@@ -59,7 +62,7 @@ export function RideAnalysisApexLocations() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Localizações APEX associadas a esta Ride." title="APEX Locations">
+		<Collapsible description={t('description')} title={t('title')}>
 			{sortedSimplifiedApexLocations.length > 0 ? (
 				<DataTable
 					columns={columns}
@@ -68,7 +71,7 @@ export function RideAnalysisApexLocations() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text="Nenhuma Localização APEX Registada" />
+					<NoDataLabel text={t('no_data')} />
 				</Section>
 			)}
 		</Collapsible>

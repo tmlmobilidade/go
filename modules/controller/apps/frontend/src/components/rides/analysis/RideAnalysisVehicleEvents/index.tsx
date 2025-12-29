@@ -7,6 +7,7 @@ import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,51 +19,53 @@ export function RideAnalysisVehicleEvents() {
 
 	const RideAnalysisContext = useRideAnalysisContext();
 
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.vehicle_events' });
+
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: 'Timestamp',
+			title: t('table_columns.created_at'),
 			width: 280,
 		},
 		{
 			accessor: 'trigger_activity',
-			title: 'Activity',
+			title: t('table_columns.activity'),
 			width: 150,
 		},
 		{
 			accessor: 'stop_id',
-			title: 'Stop ID',
+			title: t('table_columns.stop_id'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: 'Vehicle ID',
+			title: t('table_columns.vehicle_id'),
 			width: 100,
 		},
 		{
 			accessor: 'driver_id',
-			title: 'Driver ID',
+			title: t('table_columns.driver_id'),
 			width: 100,
 		},
 		{
 			accessor: 'odometer',
-			title: 'Odometer',
+			title: t('table_columns.odometer'),
 			width: 150,
 		},
 		{
 			accessor: 'trigger_door',
-			title: 'Door',
+			title: t('table_columns.door'),
 			width: 150,
 		},
 		{
 			accessor: 'latitude',
-			title: 'Latitude',
+			title: t('table_columns.latitude'),
 			width: 220,
 		},
 		{
 			accessor: 'longitude',
-			title: 'Longitude',
+			title: t('table_columns.longitude'),
 			width: 220,
 		},
 	];
@@ -78,7 +81,7 @@ export function RideAnalysisVehicleEvents() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Eventos GTFS-RT gerados pelo veículo." title="Vehicle Events">
+		<Collapsible description={t('description')} title={t('title')}>
 			<DataTable
 				columns={columns}
 				records={sortedVehicleEvents}

@@ -9,6 +9,7 @@ import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,68 +21,70 @@ export function RideAnalysisApexValidations() {
 
 	const RideAnalysisContext = useRideAnalysisContext();
 
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.validations' });
+
 	const columns: DataTableColumn<SimplifiedApexValidation>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: 'Timestamp',
+			title: t('table_columns.created_at'),
 			width: 280,
 		},
 		{
 			accessor: 'event_type',
-			title: 'Event Type',
+			title: t('table_columns.event_type'),
 			width: 100,
 		},
 		{
 			accessor: 'stop_id',
-			title: 'Stop ID',
+			title: t('table_columns.stop_id'),
 			width: 100,
 		},
 		{
 			accessor: 'card_serial_number',
-			title: 'Card SN',
+			title: t('table_columns.card_serial_number'),
 			width: 220,
 		},
 		{
 			accessor: 'product_id',
-			title: 'Product ID',
+			title: t('table_columns.product_id'),
 			width: 450,
 		},
 		{
 			accessor: 'validation_status',
 			render: item => <ApexValidationStatusTag value={item.validation_status} />,
-			title: 'Status',
+			title: t('table_columns.status'),
 			width: 250,
 		},
 		{
 			accessor: 'is_passenger',
 			render: item => <ApexValidationIsPassengerTag value={item.is_passenger} />,
-			title: 'Tx Valid',
+			title: t('table_columns.tx_valid'),
 			width: 150,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: 'Vehicle ID',
+			title: t('table_columns.vehicle_id'),
 			width: 120,
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			title: 'SAM SN',
+			title: t('table_columns.mac_sam_serial_number'),
 			width: 160,
 		},
 		{
 			accessor: '_id',
-			title: 'ID Validation',
+			title: t('table_columns.id_validation'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_sale_id',
-			title: 'ID On Board Sale',
+			title: t('table_columns.id_on_board_sale'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_refund_id',
-			title: 'ID On Board Refund',
+			title: t('table_columns.id_on_board_refund'),
 			width: 400,
 		},
 	];
@@ -97,7 +100,7 @@ export function RideAnalysisApexValidations() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Validações APEX associadas a esta Ride." title="APEX Validations">
+		<Collapsible description={t('description')} title={t('title')}>
 			{sortedSimplifiedApexValidations.length > 0 ? (
 				<DataTable
 					columns={columns}
@@ -106,7 +109,7 @@ export function RideAnalysisApexValidations() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text="Nenhuma Validação Registada" />
+					<NoDataLabel text={t('no_data')} />
 				</Section>
 			)}
 		</Collapsible>

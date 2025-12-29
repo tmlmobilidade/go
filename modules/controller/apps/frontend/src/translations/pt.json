@@ -1,5 +1,128 @@
 {
 	"rides": {
+		"analysis": {
+			"apex_locations": {
+				"description": "Localizações APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Localização APEX Registada",
+				"table_columns": {
+					"created_at": "Timestamp",
+					"id_apex_location": "ID Apex Location",
+					"mac_sam_serial_number": "SAM SN",
+					"stop_id": "Stop ID",
+					"vehicle_id": "Vehicle ID"
+				},
+				"title": "APEX Locations"
+			},
+			"audits": {
+				"description": "Observações em terreno",
+				"no_data": "Sem Dados",
+				"title": "Auditoria"
+			},
+			"map": {
+				"description": "Eventos dos veículos mapeados",
+				"switch_geofences": "Geofences",
+				"switch_observed_path": "Percurso Observado",
+				"switch_scheduled_path": "Percurso Planeado",
+				"title": "Visão Geográfica"
+			},
+			"metadata": {
+				"apex_validations_qty": "Validações (APEX TXs)",
+				"driver_ids": "IDs dos Motoristas",
+				"end_delay": "Atraso à Chegada",
+				"observed_end_time": "Hora de Fim Observada",
+				"observed_start_time": "Hora de Início Observada",
+				"on_board_sales": "Vendas a Bordo",
+				"operational_date": "Dia Operacional",
+				"passengers": "Passageiros",
+				"pattern_id": "ID do Padrão",
+				"prepaid_validations": "Validações Pré-Pago",
+				"scheduled_end_time": "Hora de Fim Planeada",
+				"scheduled_start_time": "Hora de Início Planeada",
+				"start_delay": "Atraso à Partida",
+				"subscription_validations_qty": "Validações Passes",
+				"trip_id": "ID da Viagem",
+				"vehicle_ids": "IDs dos Veículos"
+			},
+			"onboard_refunds": {
+				"description": "Reembolsos APEX associados a esta Ride.",
+				"no_data": "Nenhum Reembolso Registado",
+				"table_columns": {
+					"card_serial_number": "Card SN",
+					"card_type": "Card Type",
+					"created_at": "Timestamp",
+					"id_on_board_refund": "ID On Board Refund",
+					"id_on_board_sale": "ID On Board Sale",
+					"id_validation": "ID Validation",
+					"payment_method": "Payment Method",
+					"price": "Price",
+					"product_id": "Product ID",
+					"product_quantity": "Qtd",
+					"stop_id": "Stop ID"
+				},
+				"title": "APEX On Board Refunds"
+			},
+			"onboard_sales": {
+				"description": "Vendas APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Venda Registada",
+				"table_columns": {
+					"card_serial_number": "Card SN",
+					"card_type": "Card Type",
+					"created_at": "Timestamp",
+					"id_on_board_refund": "ID On Board Refund",
+					"id_on_board_sale": "ID On Board Sale",
+					"id_validation": "ID Validation",
+					"payment_method": "Payment Method",
+					"price": "Price",
+					"product_id": "Product ID",
+					"product_quantity": "Qtd",
+					"stop_id": "Stop ID"
+				},
+				"title": "APEX On Board Sales"
+			},
+			"performance": {
+				"description": "Dados de desempenho da circulação",
+				"no_data": "Sem Dados",
+				"title": "Performance"
+			},
+			"result": {
+				"description": "Eventos dos veículos mapeados",
+				"title": "Resultados das Análises"
+			},
+			"validations": {
+				"description": "Validações APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Validação Registada",
+				"table_columns": {
+					"card_serial_number": "Card SN",
+					"created_at": "Timestamp",
+					"event_type": "Event Type",
+					"id_on_board_refund": "ID On Board Refund",
+					"id_on_board_sale": "ID On Board Sale",
+					"id_validation": "ID Validation",
+					"mac_sam_serial_number": "SAM SN",
+					"product_id": "Product ID",
+					"status": "Status",
+					"stop_id": "Stop ID",
+					"tx_valid": "Tx Valid",
+					"vehicle_id": "Vehicle ID"
+				},
+				"title": "Validações APEX"
+			},
+			"vehicle_events": {
+				"description": "Eventos GTFS-RT gerados pelo veículo.",
+				"table_columns": {
+					"activity": "Atividade",
+					"created_at": "Timestamp",
+					"door": "Porta",
+					"driver_id": "ID do Motorista",
+					"latitude": "Latitude",
+					"longitude": "Longitude",
+					"odometer": "Odómetro",
+					"stop_id": "ID da Paragem",
+					"vehicle_id": "ID do Veículo"
+				},
+				"title": "Eventos do Veículo"
+			}
+		},
 		"exportModal": {
 			"description": "Selecione o intervalo de datas para a exportação das circulações.",
 			"fields": {
