@@ -56,10 +56,27 @@ export function VehicleCreateInfos() {
 
 			<TextInput
 				label="Matrícula do veículo"
-				placeholder="Introduza a matrícula do veículo"
+				maxLength={8}
+				placeholder="AA-00-AA"
 				required={!vehicleSchema.shape.license_plate.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('license_plate')}
+				onChange={(event) => {
+					// Remove formatting and invalid chars
+					const clean = event.currentTarget.value
+						.toUpperCase()
+						.replace(/[^A-Z0-9]/g, '')
+						.slice(0, 6); // 🔒 only 6 chars saved
+
+					vehicleCreateContext.data.form.setFieldValue('license_plate', clean);
+				}}
+				value={(() => {
+					const raw = vehicleCreateContext.data.form.values.license_plate ?? '';
+
+					if (raw.length <= 2) return raw;
+					if (raw.length <= 4) return `${raw.slice(0, 2)}-${raw.slice(2)}`;
+
+					return `${raw.slice(0, 2)}-${raw.slice(2, 4)}-${raw.slice(4, 6)}`;
+				})()}
 			/>
 
 			<TextInput
