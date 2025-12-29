@@ -4,12 +4,11 @@
 
 import { useVehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
 import { closeCreateVehicleModal } from '@/components/Vehicles/create/VehicleCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function VehicleCreateHeader() {
+export function VehicleCreateModalHeader() {
 	//
 
 	//
@@ -26,14 +25,7 @@ export function VehicleCreateHeader() {
 			<Tag label="Novo Veículo" variant="muted" />
 			<Label size="lg" singleLine>{vehicleCreateContext.data.form.values.agency_id}</Label>
 			<Spacer />
-			<Button
-				disabled={!vehicleCreateContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Publicar"
-				loading={vehicleCreateContext.flags.isSaving}
-				onClick={vehicleCreateContext.actions.createVehicle}
-				variant="primary"
-			/>
+			<Label size="md" caps singleLine>Passo {vehicleCreateContext.modal.current_step} de 3</Label>
 		</Toolbar>
 	);
 

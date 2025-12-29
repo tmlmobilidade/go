@@ -6,7 +6,7 @@ import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmo
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -19,7 +19,14 @@ interface VehicleCreateContextState {
 		form: UseFormReturnType<CreateVehicleDto>
 	}
 	flags: {
+		error: Error | null
 		isSaving: boolean
+	}
+	modal: {
+		current_step: number
+		current_step_valid: boolean
+		nextStep: () => void
+		previousStep: () => void
 	}
 }
 
@@ -45,12 +52,16 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 
 	const router = useRouter();
 
+	const [isError, setIsError] = useState<Error | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
+
+	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
+	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
 
 	//
 	// B. Fetch data
 
-	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.dates.ANNOTATIONS_LIST);
+	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
 
 	//
 	// C. Setup form
@@ -61,11 +72,13 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	// D. Handle actions
 
 	const handleCreateVehicle = async () => {
+		setIsError(null);
 		setIsSaving(true);
-		const response = await fetchData<Vehicle>(API_ROUTES.dates.ANNOTATIONS_LIST, 'POST', form.getValues());
+		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar veículo' });
+				setIsError(new Error(response.error));
 				setIsSaving(false);
 				return;
 			}
@@ -80,9 +93,44 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 		allVehiclesMutate();
 		setIsSaving(false);
 		closeCreateVehicleModal();
-		useToast.success({ message: 'Anotação criada com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(response.data._id)));
+		useToast.success({ message: 'Veículo criado com sucesso', title: 'Sucesso' });
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.fleet.VEHICLES_DETAIL(response.data._id)));
 	};
+
+	const previousStep = () => {
+		setModalCurrentStepState((prev) => {
+			if (prev > 1) return prev - 1;
+			return 1;
+		});
+	};
+
+	const nextStep = () => {
+		setModalCurrentStepState((prev) => {
+			if (prev < 3) return prev + 1;
+			return 3;
+		});
+	};
+
+	const validateCurrentStep = () => {
+		// Get latest form values
+		const currentValues = form.getValues();
+		// By default, set the current step as invalid
+		setModalCurrentStepValidState(false);
+		// Validate Step 1
+		if (modalCurrentStepState === 1) {
+			setModalCurrentStepValidState(true);
+		}
+		// Validate Step 2
+		if (modalCurrentStepState === 2) {
+			setModalCurrentStepValidState(true);
+		}
+		// Validate Step 3
+		if (modalCurrentStepState === 3) {
+			setModalCurrentStepValidState(true);
+		}
+	};
+
+	useEffect(validateCurrentStep, [modalCurrentStepState]);
 
 	//
 	// E. Define context value
@@ -96,12 +144,22 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 				form,
 			},
 			flags: {
+				error: isError,
 				isSaving,
+			},
+			modal: {
+				current_step: modalCurrentStepState,
+				current_step_valid: modalCurrentStepValidState,
+				nextStep,
+				previousStep,
 			},
 		};
 	}, [
 		form,
+		isError,
 		isSaving,
+		modalCurrentStepState,
+		modalCurrentStepValidState,
 	]);
 
 	//
