@@ -2,10 +2,10 @@
 
 /* * */
 
-import { useRoleDetailContext } from '@/contexts/RoleDetail.context';
-import { IconTrash, IconUpload } from '@tabler/icons-react';
+import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { BackButton, Button, keepUrlParams, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { CloseButton, DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -26,8 +26,7 @@ export function RoleDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.ROLES_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_LIST));
 	};
 
 	//
@@ -35,24 +34,50 @@ export function RoleDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={roleDetailContext.data.id || t('new_role_button_label')} variant="secondary" />
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
+
 			<Spacer />
-			<Button
-				disabled={!roleDetailContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label={t('save_button_label')}
-				loading={roleDetailContext.flags.isSaving}
-				onClick={roleDetailContext.actions.updateRole}
-				variant="primary"
-			/>
-			<Button
-				icon={<IconTrash size={28} />}
-				label={t('delete_button_label')}
-				onClick={roleDetailContext.actions.deleteRole}
-				variant="danger"
-			/>
+
+			<HasPermission
+				action={PermissionCatalog.all.roles.actions.update}
+				scope={PermissionCatalog.all.roles.scope}
+			>
+				<SaveButton
+					isDisabled={!roleDetailContext.flags.canSave}
+					isLoading={roleDetailContext.flags.isSaving}
+					onClick={roleDetailContext.actions.save}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.roles.actions.lock}
+				scope={PermissionCatalog.all.roles.scope}
+			>
+				<LockButton
+					isLoading={roleDetailContext.flags.isLocking}
+					isLocked={roleDetailContext.data.role?.is_locked}
+					onClick={roleDetailContext.actions.lock}
+				/>
+			</HasPermission>
+
+			<HasPermission
+				action={PermissionCatalog.all.roles.actions.delete}
+				scope={PermissionCatalog.all.roles.scope}
+			>
+				<DeleteButton
+					confirmMessage={t('delete_button_confirm_message')}
+					confirmTitle={t('delete_button_confirm_title')}
+					isDisabled={!roleDetailContext.flags.canDelete}
+					isLoading={roleDetailContext.flags.isDeleting}
+					onDelete={roleDetailContext.actions.delete}
+					onRestore={roleDetailContext.actions.delete}
+					showConfirmation={true}
+				/>
+			</HasPermission>
+
 		</Toolbar>
 	);
 

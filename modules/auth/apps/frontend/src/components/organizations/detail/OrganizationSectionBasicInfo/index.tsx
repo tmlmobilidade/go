@@ -3,7 +3,7 @@
 /* * */
 
 import { UploadImage } from '@/components/common/UploadImage';
-import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
+import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { CreateOrganizationSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,7 @@ export function OrganizationDetailBasicInfo() {
 	const { t } = useTranslation('auth', { keyPrefix: 'organizations.detail.BasicInfo' });
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Collapsible
@@ -35,6 +35,7 @@ export function OrganizationDetailBasicInfo() {
 						label={t('fields.long_name')}
 						maxLength={255}
 						placeholder={t('fields.long_name_placeholder')}
+						readOnly={organizationDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateOrganizationSchema.shape.long_name}
 						{...organizationDetailContext.data.form.getInputProps('long_name')}
 					/>
@@ -43,6 +44,7 @@ export function OrganizationDetailBasicInfo() {
 						label={t('fields.short_name')}
 						maxLength={10}
 						placeholder={t('fields.short_name_placeholder')}
+						readOnly={organizationDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateOrganizationSchema.shape.short_name}
 						{...organizationDetailContext.data.form.getInputProps('short_name')}
 					/>

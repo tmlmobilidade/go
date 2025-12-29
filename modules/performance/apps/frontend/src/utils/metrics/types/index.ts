@@ -16,6 +16,6 @@ export type {
 // Core data types
 export type {
 	DemandDataPoint,
-	DemandMetricItem,
 	MetricTransformOptions,
+	RawMetricData,
 } from './metricData';

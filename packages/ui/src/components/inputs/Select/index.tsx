@@ -7,12 +7,14 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect'> {
+export interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect'> {
+
 	/**
 	 * The `key` prop is required to ensure correct re-mounting behavior.
 	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
 	 */
 	key?: string
+
 };
 
 /**
@@ -33,7 +35,7 @@ export function Select({ ...props }: SelectProps) {
 		<MantineSelect
 			allowDeselect={props.clearable ?? true}
 			clearable={props.clearable ?? true}
-			nothingFoundMessage={props.nothingFoundMessage || t('nothing_found_message')}
+			placeholder={props.nothingFoundMessage || t('nothing_found_message')}
 			searchable
 			withAlignedLabels
 			{...props}

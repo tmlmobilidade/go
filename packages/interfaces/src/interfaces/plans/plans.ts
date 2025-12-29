@@ -1,16 +1,16 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type CreatePlanDto, type Plan, PlanSchema, type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/types';
+import { type CreatePlanDto, CreatePlanSchema, type Plan, type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
-import { Filter, IndexDescription } from 'mongodb';
+import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
 class PlansClass extends MongoCollectionClass<Plan, CreatePlanDto, UpdatePlanDto> {
 	private static _instance: PlansClass;
-	protected override createSchema: z.ZodSchema = PlanSchema;
+	protected override createSchema: z.ZodSchema = CreatePlanSchema;
 	protected override updateSchema: z.ZodSchema = UpdatePlanSchema;
 
 	private constructor() {

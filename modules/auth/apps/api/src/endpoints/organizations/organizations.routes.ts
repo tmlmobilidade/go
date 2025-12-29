@@ -62,6 +62,12 @@ server.register(
 			OrganizationsController.getLogo,
 		);
 
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.lock]) },
+			OrganizationsController.lock,
+		);
+
 		next();
 	},
 	{ prefix: NAMESPACE },

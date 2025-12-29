@@ -2,11 +2,11 @@
 
 /* * */
 
+import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { AgencyDetailHeader } from '@/components/agencies/detail/AgencyDetailHeader';
 import { AgencyDetailBasicInfo } from '@/components/agencies/detail/AgencySectionBasicInfo';
 import { AgencySectionContacts } from '@/components/agencies/detail/AgencySectionContacts';
 import { AgencySectionFinacial } from '@/components/agencies/detail/AgencySectionFinacial';
-import { useAgencyDetailContext } from '@/contexts/AgencyDetail.context';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -22,7 +22,7 @@ export function AgencyDetail() {
 	//
 	// B. Render components
 
-	if (agencyDetailContext.flags.loading) {
+	if (agencyDetailContext.flags.isLoading) {
 		return <LoadingOverlay />;
 	}
 

@@ -42,7 +42,7 @@ export interface DemandDataPoint {
 	qty: number
 }
 
-export interface DemandMetricItem {
+export interface RawMetricData {
 	data: Record<string, DemandDataPoint>
 	generated_at: string
 	properties?: Record<string, string>
@@ -86,7 +86,7 @@ export interface PieResult {
  * Can handle all demand metrics and transform them to different chart types
  */
 export function transformDemandMetric(
-	data: DemandMetricItem[],
+	data: RawMetricData[],
 	options: {
 		chartType: 'pie' | 'stacked' | 'timeseries'
 		endDate?: Dates
@@ -142,12 +142,12 @@ export function transformDemandMetric(
  * Filter data by date range and property values
  */
 function filterData(
-	data: DemandMetricItem[],
+	data: RawMetricData[],
 	startDate?: Dates,
 	endDate?: Dates,
 	propertyFilter?: { key: string, values?: string[] },
 	timeView?: 'annual' | 'daily' | 'monthly',
-): DemandMetricItem[] {
+): RawMetricData[] {
 	let filtered = data;
 
 	// Filter by property values if specified
@@ -195,7 +195,7 @@ function filterData(
 /**
  * Transform to simple time series (line/bar chart)
  */
-function transformToTimeSeries(data: DemandMetricItem[], timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): TimeSeriesResult {
+function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): TimeSeriesResult {
 	const dateMap: Record<string, DailyDataPoint | MonthlyDataPoint | YearlyDataPoint> = {};
 	let totalSum = 0;
 
@@ -248,7 +248,7 @@ function transformToTimeSeries(data: DemandMetricItem[], timeView: 'annual' | 'd
 /**
  * Transform to stacked time series (product breakdown)
  */
-function transformToStacked(data: DemandMetricItem[], topN: number, timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): StackedResult {
+function transformToStacked(data: RawMetricData[], topN: number, timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): StackedResult {
 	// First pass: calculate product totals for ranking
 	const productTotals = calculateProductTotals(data);
 	const { otherProducts, topProducts } = getTopNWithOthers(productTotals, topN);
@@ -328,7 +328,7 @@ function transformToStacked(data: DemandMetricItem[], topN: number, timeView: 'a
 /**
  * Transform to pie chart (product totals)
  */
-function transformToPie(data: DemandMetricItem[], topN: number): PieResult {
+function transformToPie(data: RawMetricData[], topN: number): PieResult {
 	const productTotals = calculateProductTotals(data);
 	const { otherProducts, topProducts } = getTopNWithOthers(productTotals, topN);
 
@@ -386,7 +386,7 @@ function extractTotalQuantity(dayData: DemandDataPoint): number {
 /**
  * Extract products from data point and item (handles different data structures)
  */
-function extractProducts(dayData: DemandDataPoint, item: DemandMetricItem): Record<string, number> {
+function extractProducts(dayData: DemandDataPoint, item: RawMetricData): Record<string, number> {
 	if (dayData.products) {
 		// DemandByAgencyByDayByProduct structure
 		return dayData.products;
@@ -404,7 +404,7 @@ function extractProducts(dayData: DemandDataPoint, item: DemandMetricItem): Reco
 /**
  * Calculate product totals across all data
  */
-function calculateProductTotals(data: DemandMetricItem[]): Record<string, number> {
+function calculateProductTotals(data: RawMetricData[]): Record<string, number> {
 	const totals: Record<string, number> = {};
 
 	for (const item of data) {

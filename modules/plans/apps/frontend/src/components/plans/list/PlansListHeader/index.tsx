@@ -1,6 +1,6 @@
 /* * */
 
-import { usePlansListContext } from '@/contexts/PlansList.context';
+import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

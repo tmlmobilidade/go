@@ -39,6 +39,8 @@
 				}
 			},
 			"header": {
+				"delete_button_confirm_message": "Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível.",
+				"delete_button_confirm_title": "Eliminar Grupo de Permissões",
 				"title": "Circulações"
 			},
 			"tableColumns": {

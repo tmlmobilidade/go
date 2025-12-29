@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
 import { CauseIcons, EffectIcons } from '@/lib/icons';
 // import { Translations } from '@/lib/translations';
 import { gtfsCauseSchema, gtfsEffectSchema } from '@tmlmobilidade/types';
@@ -49,6 +49,7 @@ export function AlertDetailSectionCauseEffect() {
 			<Section flexDirection="row" gap="md">
 				<div className={styles.container}>
 					<Combobox
+						key={alertDetailContext.data.form.key('cause')}
 						data={causeItems}
 						description={t('cause_description')}
 						label={t('cause_label')}
@@ -58,6 +59,7 @@ export function AlertDetailSectionCauseEffect() {
 				</div>
 				<div className={styles.container}>
 					<Combobox
+						key={alertDetailContext.data.form.key('effect')}
 						data={effectItems}
 						description={t('effect_description')}
 						label={t('effect_label')}

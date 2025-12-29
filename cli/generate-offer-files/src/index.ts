@@ -3,8 +3,8 @@
 /* * */
 
 import { generateOfferOutput } from '@/main.js';
-import { Logger } from '@tmlmobilidade/logger';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
+import { Logger } from '@tmlmobilidade/logger';
 import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Command } from 'commander';
 import fs from 'fs';

@@ -118,10 +118,22 @@ export class OrganizationsController {
 	}
 
 	/**
-	* Updates an Organization in the database.
-	* @param request The request object.
-	* @param reply The reply object.
-	*/
+	 * Toggles the lock status of an organization by ID.
+	 * @param request Fastify request containing organization ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
+		await organizations.toggleLockById(request.params.id);
+		const foundOrganization = await organizations.findById(request.params.id);
+		if (!foundOrganization) throw new HttpException(HttpStatus.NOT_FOUND, 'Organization not found');
+		reply.send({ data: foundOrganization, error: null, statusCode: HttpStatus.OK });
+	}
+
+	/**
+	 * Updates an Organization in the database.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
 	static async update(request: FastifyRequest<{ Body: UpdateOrganizationDto, Params: { id: string } }>, reply: FastifyReply<Organization>) {
 		// Validate the request body
 		const validatedOrganization = UpdateOrganizationSchema.safeParse(request.body);

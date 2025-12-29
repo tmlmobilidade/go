@@ -46,6 +46,12 @@ server.register(
 			GtfsValidationsController.requestApproval,
 		);
 
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.lock]) },
+			GtfsValidationsController.lock,
+		);
+
 		next();
 	},
 	{ prefix: NAMESPACE },

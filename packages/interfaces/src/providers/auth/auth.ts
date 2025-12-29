@@ -120,7 +120,7 @@ class AuthProvider {
 	 */
 	public async login(loginDto: LoginDto): Promise<Session> {
 		// Find the user by email
-		const userData = await users.findByEmail(loginDto.email, true);
+		const userData = await users.findByEmail(loginDto.email, { includeUnsafeProperties: true });
 		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
 		// Check if the password matches the stored hash
 		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData.password_hash ?? '');
@@ -158,15 +158,13 @@ class AuthProvider {
 	 */
 	public async register(createUserDto: CreateUserDto): Promise<void> {
 		// Insert the new user into the database with the provided data
-		const insertNewUserResult = await users.insertOne({ ...createUserDto });
+		const insertNewUserResult = await users.insertOne(createUserDto);
 		// Generate a random token that will be used to verify the user
 		const verificationToken = generateRandomToken();
 		// Insert the verification token into the database
 		await verificationTokens.insertOne({
-			created_by: 'system',
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_timestamp,
 			token: verificationToken,
-			updated_by: 'system',
 			user_id: insertNewUserResult._id,
 		});
 		// Send a welcome email to the user with the verification token

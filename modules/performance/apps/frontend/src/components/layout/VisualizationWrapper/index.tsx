@@ -17,10 +17,14 @@ export function VisualizationWrapper({ border, children, height, lastUpdated, pa
 
 	return (
 		<ContainerWrapper border={border} className={styles.visualizationContainer} height={height} padding={padding} style={style} width={width}>
-			<div style={{ display: 'flex', gap: 'var(--size-spacing-xs)' }}>
-				<p className={styles.title}>{title}</p>
-				{lastUpdated && <LiveIcon updatedAt={lastUpdated} />}
-			</div>
+
+			{title && (
+				<div style={{ display: 'flex', gap: 'var(--size-spacing-xs)' }}>
+					<p className={styles.title}>{title}</p>
+					{lastUpdated && <LiveIcon updatedAt={lastUpdated} />}
+				</div>
+			)}
+
 			{children}
 		</ContainerWrapper>
 	);

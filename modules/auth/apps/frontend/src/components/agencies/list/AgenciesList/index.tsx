@@ -2,13 +2,13 @@
 
 /* * */
 
+import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
 import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeader';
-import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
 import { type AgencyNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -20,6 +20,8 @@ export function AgenciesList() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
 	const agenciesListContext = useAgenciesListContext();
 	const { t } = useTranslation('auth', { keyPrefix: 'agencies.list' });
 
@@ -41,8 +43,7 @@ export function AgenciesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: AgencyNormalized) => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id), window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id)));
 	};
 
 	//
@@ -57,15 +58,13 @@ export function AgenciesList() {
 	}
 
 	return (
-		<Pane header={[
-			<AgenciesListHeader />,
-		]}
-		>
+		<Pane header={[<AgenciesListHeader />]}>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
 				records={agenciesListContext.data.filtered}
 				rowIdAccessor="_id"
+				selectedId={params.id}
 			/>
 		</Pane>
 	);

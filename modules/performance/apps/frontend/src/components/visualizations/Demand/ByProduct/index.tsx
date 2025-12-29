@@ -5,7 +5,7 @@
 import { StackedLineBarChart } from '@/components/charts/StackedLineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
-import { buildMetricUrl, DemandMetricItem, PieResult, StackedResult, transformDemandMetric } from '@/utils/metrics';
+import { buildMetricUrl, PieResult, RawMetricData, StackedResult, transformDemandMetric } from '@/utils/metrics';
 import { Dates } from '@tmlmobilidade/dates';
 import { PieChart } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
@@ -67,7 +67,7 @@ export function DemandByProductVisualization({ filters, groupBy, height, isInsid
 		return buildMetricUrl(baseConfig, metricFilters);
 	}, [groupBy, timeView, selectedAgencies, filters]);
 
-	const { data } = useSWR<DemandMetricItem[]>(metricUrl);
+	const { data } = useSWR<RawMetricData[]>(metricUrl);
 
 	//
 	// C. Transform data

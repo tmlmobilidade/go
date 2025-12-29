@@ -7,9 +7,8 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';
 import { PasswordInput, TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import i18next from 'i18next';
 import { useQueryState } from 'nuqs';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -47,11 +46,11 @@ export function LoginForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (response.error) {
-			useToast.error({ message: response.error ?? 'An error occurred', title: 'Login failed' });
+			useToast.error({ message: response.error ?? t('error_message_description'), title: t('error_message_title') });
 			return;
 		}
 		// Handle successful login
-		useToast.success({ message: undefined, title: 'Login successful' });
+		useToast.success({ message: t('success_message_description'), title: t('success_message_title') });
 		// Redirect to the specified page or home
 		window.location.href = redirectToValue;
 	};

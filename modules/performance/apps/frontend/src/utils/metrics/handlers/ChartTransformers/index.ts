@@ -1,8 +1,9 @@
 /* * */
 
-import type { DemandMetricItem, MetricTransformOptions, TransformResult } from '../../types';
+import type { MetricTransformOptions, RawMetricData, TransformResult } from '../../types';
 
 import { getLatestTimestamp } from '../../utils';
+import { transformToProgressBar } from './barProgressTransformer';
 import { transformToPie } from './pieTransformer';
 import { transformToStacked } from './stackedTransformer';
 import { transformToTimeSeries } from './timeSeriesTransformer';
@@ -12,7 +13,7 @@ import { transformToTimeSeries } from './timeSeriesTransformer';
 /**
  * Filter metric data by agency IDs
  */
-function filterDataByAgencies(data: DemandMetricItem[], agencyIds?: string[]): DemandMetricItem[] {
+export function filterDataByAgencies(data: RawMetricData[], agencyIds?: string[]): RawMetricData[] {
 	if (!agencyIds?.length) {
 		return data;
 	}
@@ -31,10 +32,10 @@ function filterDataByAgencies(data: DemandMetricItem[], agencyIds?: string[]): D
 	});
 }
 
-export function transformDemandMetric(data: DemandMetricItem[], options: MetricTransformOptions): TransformResult {
+export function transformDemandMetric(data: RawMetricData[], options: MetricTransformOptions): TransformResult {
 	//
 
-	const { agencyIds, chartType, t, timeView, topN = 4 } = options;
+	const { agencyIds, chartType, quantityKey = 'qty', t, timeView, topN = 4 } = options;
 
 	// Validate breakdown key requirements for different chart types
 	if ((chartType === 'pie' || chartType === 'stacked') && !options.breakdownKey) {
@@ -54,12 +55,14 @@ export function transformDemandMetric(data: DemandMetricItem[], options: MetricT
 	const lastUpdated = getLatestTimestamp(filteredData);
 
 	switch (chartType) {
+		case 'bar-progress':
+			return { all: transformToProgressBar(filteredData, options.totalKey, options.achievedKey, timeView, t), lastUpdated };
 		case 'pie':
-			return { all: transformToPie(filteredData, options.breakdownKey, topN), lastUpdated };
+			return { all: transformToPie(filteredData, options.breakdownKey, topN, quantityKey), lastUpdated };
 		case 'stacked':
-			return { all: transformToStacked(filteredData, options.breakdownKey, topN, timeView, t), lastUpdated };
+			return { all: transformToStacked(filteredData, options.breakdownKey, topN, timeView, t, quantityKey), lastUpdated };
 		case 'timeseries':
-			return { all: transformToTimeSeries(filteredData, timeView, t), lastUpdated };
+			return { all: transformToTimeSeries(filteredData, timeView, t, quantityKey), lastUpdated };
 		default:
 			throw new Error(`Unsupported chart type: ${chartType}`);
 	}

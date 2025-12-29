@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type CreateSamDto, type Sam, SamSchema, type UpdateSamDto, UpdateSamSchema } from '@tmlmobilidade/types';
+import { type CreateSamDto, CreateSamSchema, type Sam, type UpdateSamDto, UpdateSamSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 class SamsClass extends MongoCollectionClass<Sam, CreateSamDto, UpdateSamDto> {
 	private static _instance: SamsClass;
-	protected override createSchema: z.ZodSchema = SamSchema;
+	protected override createSchema: z.ZodSchema = CreateSamSchema;
 	protected override updateSchema: z.ZodSchema = UpdateSamSchema;
 
 	private constructor() {

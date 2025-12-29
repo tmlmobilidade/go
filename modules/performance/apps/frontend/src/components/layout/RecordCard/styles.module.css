@@ -42,7 +42,7 @@
 .valueContainer {
 	display: flex;
 	gap: var(--size-spacing-sm);
-	align-items: baseline;
+	align-items: center;
 }
 
 .value {

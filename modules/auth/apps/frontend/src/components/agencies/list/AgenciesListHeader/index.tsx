@@ -1,6 +1,6 @@
 /* * */
 
-import { useAgenciesListContext } from '@/contexts/AgenciesList.context';
+import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
 import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

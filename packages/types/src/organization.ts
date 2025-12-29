@@ -19,12 +19,12 @@ export type HomeLink = z.infer<typeof HomeLinkSchema>;
 export const OrganizationSchema = DocumentSchema.extend({
 	home_links: z.array(HomeLinkSchema).default([]),
 	home_wikis: z.array(z.string()).default([]),
-	logo_dark: z.string().nullish(),
-	logo_light: z.string().nullish(),
+	logo_dark: z.string().nullable().default(null),
+	logo_light: z.string().nullable().default(null),
 	long_name: z.string(),
 	short_name: z.string(),
-	theme: z.string().nullish(),
-}).strict();
+	theme: z.string().nullable().default(null),
+});
 
 export const CreateOrganizationSchema = OrganizationSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateOrganizationSchema = CreateOrganizationSchema.omit({ created_by: true }).partial();

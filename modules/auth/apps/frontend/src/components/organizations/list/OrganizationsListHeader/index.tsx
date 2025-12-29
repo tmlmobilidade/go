@@ -2,8 +2,8 @@
 
 /* * */
 
-import { useOrganizationCreateContext } from '@/contexts/OrganizationCreate.context';
-import { useOrganizationsListContext } from '@/contexts/OrganizationsList.context';
+import { openCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
+import { useOrganizationsListContext } from '@/components/organizations/list/OrganizationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,6 @@ export function OrganizationsListHeader() {
 	// A. Setup variables
 
 	const organizationsListContext = useOrganizationsListContext();
-	const organizationCreateContext = useOrganizationCreateContext();
 
 	const { t } = useTranslation('auth', { keyPrefix: 'organizations.list.header' });
 
@@ -29,7 +28,7 @@ export function OrganizationsListHeader() {
 			<Label size="lg" caps singleLine>{t('title')}</Label>
 			<Spacer />
 			<SearchInput onChange={organizationsListContext.actions.setFilterSearch} value={organizationsListContext.filters.search} />
-			<Button icon={<IconPlus size={20} />} label={t('new_organization_button_label')} onClick={organizationCreateContext.modal.open} />
+			<Button icon={<IconPlus size={20} />} label={t('new_organization_button_label')} onClick={openCreateOrganizationModal} />
 		</Toolbar>
 	);
 

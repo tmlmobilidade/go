@@ -5,6 +5,7 @@
 import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
 import { AlertsRealtimePermissionSchema, AlertsScheduledPermissionSchema } from '@/permissions/alerts.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
+import { DatesPermissionSchema } from '@/permissions/dates.js';
 import { GtfsValidationsPermissionSchema } from '@/permissions/gtfs-validations.js';
 import { HomePermissionSchema } from '@/permissions/home.js';
 import { OrganizationsPermissionSchema } from '@/permissions/organizations.js';
@@ -31,6 +32,7 @@ export const PermissionSchema = z.discriminatedUnion('scope', [
 	RolesPermissionSchema,
 	StopsPermissionSchema,
 	UsersPermissionSchema,
+	DatesPermissionSchema,
 ]);
 
 export type Permission = z.infer<typeof PermissionSchema>;

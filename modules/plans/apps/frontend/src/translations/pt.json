@@ -13,16 +13,18 @@
 	"plans": {
 		"detail": {
 			"header": {
-				"change_plan": "Alterar plano"
+				"change_plan": "Alterar plano",
+				"delete_button_confirm_message": "Tem a certeza que pretende eliminar este plano? O plano ficará indisponível para utilização futura.",
+				"delete_button_confirm_title": "Eliminar Plano"
 			},
 			"section_agency": {
 				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
 				"title": "Dados do Operador"
 			},
 			"section_controller": {
-				"description": "Configuração dos SLAs associados a este plano.",
+				"description": "Configurações relacionadas com a conversão deste plano em Rides.",
 				"reprocess_plan_button": "Reprocessar Plano",
-				"title": "Configuração dos SLAs"
+				"title": "Definições SLA"
 			},
 			"section_feed_info": {
 				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
@@ -34,10 +36,10 @@
 				"title": "Ficheiros GTFS"
 			},
 			"section_pcgi_legacy": {
-				"description": "Dados da PCGI Legacy associados a este plano.",
+				"description": "Dados necessários para manter a PCGI em funcionamento.",
 				"operation_plan_id_label": "Operation Plan ID da PCGI",
 				"operation_plan_id_placeholder": "operationPlanId",
-				"title": "Dados da PCGI Legacy"
+				"title": "PCGI Legacy"
 			}
 
 		},

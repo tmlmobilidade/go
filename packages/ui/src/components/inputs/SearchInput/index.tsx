@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 export interface SearchInputProps {
 	onChange: (value: string) => void
 	placeholder?: string
-	size?: 'md' | 'sm' | 'xl'
+	size?: 'sm' | 'xl'
 	value?: null | string
 }
 

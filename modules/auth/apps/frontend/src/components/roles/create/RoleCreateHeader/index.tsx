@@ -2,18 +2,15 @@
 
 /* * */
 
-import { useRoleCreateContext } from '@/contexts/RoleCreate.context';
+import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
+import { closeCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-interface RoleCreateHeaderProps {
-	onClose?: () => void
-}
-
-export function RoleCreateHeader({ onClose }: RoleCreateHeaderProps) {
+export function RoleCreateHeader() {
 	//
 
 	//
@@ -24,11 +21,11 @@ export function RoleCreateHeader({ onClose }: RoleCreateHeaderProps) {
 	const { t } = useTranslation('auth', { keyPrefix: 'roles.create.header' });
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-			<BackButton onClick={onClose} type="close" />
+			<CloseButton onClick={closeCreateRoleModal} type="close" />
 			<Tag label={t('new_role_button_label')} variant="secondary" />
 			<Label size="lg" singleLine>{roleCreateContext.data.form.values.name}</Label>
 			<Spacer />

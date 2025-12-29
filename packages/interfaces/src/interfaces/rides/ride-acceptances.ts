@@ -3,16 +3,16 @@
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { CreateRideAcceptanceDto, RideAcceptance, RideAcceptanceSchema, UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/types';
+import { type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type RideAcceptance, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, compareObjects, flattenObject } from '@tmlmobilidade/utils';
-import { Filter, IndexDescription, InsertOneOptions, UpdateOptions } from 'mongodb';
+import { type Filter, IndexDescription, InsertOneOptions, UpdateOptions } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
 class RideAcceptanceClass extends MongoCollectionClass<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto> {
 	private static _instance: RideAcceptanceClass;
-	protected override createSchema: z.ZodSchema = RideAcceptanceSchema;
+	protected override createSchema: z.ZodSchema = CreateRideAcceptanceSchema;
 	protected override updateSchema: z.ZodSchema = UpdateRideAcceptanceSchema;
 
 	private constructor() {

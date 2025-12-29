@@ -1,7 +1,7 @@
 /* * */
 
+import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { usePlansListContext } from '@/contexts/PlansList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useOrganizationsDetailContext } from '@/contexts/OrganizationDetail.context';
+import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { iconMap } from '@/lib/icons';
 import { HomeLink } from '@tmlmobilidade/types';
 import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
@@ -68,14 +68,14 @@ export function OrganizationDetailQuickLinks() {
 			organizationDetailContext.data.form.values.home_links = updatedLinks;
 		}
 
-		organizationDetailContext.actions.updateOrganization();
+		organizationDetailContext.actions.save();
 	};
 
 	const handleDelete = (link: HomeLink) => {
 		if (!organizationDetailContext.data.form) return;
 		const updatedLinks = organizationDetailContext.data.form.values.home_links.filter(l => l.title !== link.title);
 		organizationDetailContext.data.form.values.home_links = updatedLinks;
-		organizationDetailContext.actions.updateOrganization();
+		organizationDetailContext.actions.save();
 	};
 
 	const handleEdit = (link: HomeLink) => {

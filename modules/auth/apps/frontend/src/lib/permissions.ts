@@ -130,6 +130,7 @@ const userActions: PermissionConfig = {
 		{ action: 'read', description: 'userActions.descriptions.read', label: 'userActions.labels.read' },
 		{ action: 'create', description: 'userActions.descriptions.create', label: 'userActions.labels.create' },
 		{ action: 'update', description: 'userActions.descriptions.update', label: 'userActions.labels.update' },
+		{ action: 'lock', description: 'Permite bloquear um utilizador', label: 'Bloquear' },
 		{ action: 'delete', description: 'userActions.descriptions.delete', label: 'userActions.labels.delete' },
 	],
 	description: 'userActions.description',
@@ -153,6 +154,7 @@ const roleActions: PermissionConfig = {
 		{ action: 'read', description: 'roleActions.descriptions.read', label: 'roleActions.labels.read' },
 		{ action: 'create', description: 'roleActions.descriptions.create', label: 'roleActions.labels.create' },
 		{ action: 'update', description: 'roleActions.descriptions.update', label: 'roleActions.labels.update' },
+		{ action: 'lock', description: 'Permite bloquear um grupo de permissões', label: 'Bloquear' },
 		{ action: 'delete', description: 'roleActions.descriptions.delete', label: 'roleActions.labels.delete' },
 	],
 	description: 'roleActions.description',
@@ -165,6 +167,7 @@ const organizationActions: PermissionConfig = {
 		{ action: 'read', description: 'organizationActions.descriptions.read', label: 'organizationActions.labels.read' },
 		{ action: 'create', description: 'organizationActions.descriptions.create', label: 'organizationActions.labels.create' },
 		{ action: 'update', description: 'organizationActions.descriptions.update', label: 'organizationActions.labels.update' },
+		{ action: 'lock', description: 'Permite bloquear uma organização', label: 'Bloquear' },
 		{ action: 'delete', description: 'organizationActions.descriptions.delete', label: 'organizationActions.labels.delete' },
 	],
 	description: 'organizationActions.description',
@@ -216,6 +219,19 @@ const performanceActions: PermissionConfig = {
 	title: 'performanceActions.title',
 };
 
+const datesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
+		{ action: 'create_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
+		{ action: 'update_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
+		{ action: 'delete_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
+		{ action: 'lock_annotations', description: 'datesActions.descriptions.read', label: 'datesActions.labels.read', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de datas.',
+	scope: PermissionCatalog.all.dates.scope,
+	title: 'Permissões de Datas',
+};
+
 /* * */
 
 export const permissionsConfig = [
@@ -231,6 +247,7 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
+	datesActions,
 	// topicActions,
 	// proposedChangesActions,
 ];

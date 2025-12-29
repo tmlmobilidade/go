@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertListContext } from '@/contexts/AlertList.context';
+import { useAlertsListContext } from '@/components/scheduled/list/AlertsList.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -14,7 +14,7 @@ export function AlertsListFilterMunicipality() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertListContext();
+	const alertsListContext = useAlertsListContext();
 	const locationsContext = useLocationsContext();
 	const { t } = useTranslation('alerts', { keyPrefix: 'scheduled.list.filterBar' });
 	//

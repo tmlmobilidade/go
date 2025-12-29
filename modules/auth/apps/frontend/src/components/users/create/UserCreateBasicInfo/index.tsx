@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useUserCreateContext } from '@/contexts/UserCreate.context';
+import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
 import { IconMail } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
@@ -31,6 +31,7 @@ export function UserCreateBasicInfo() {
 					maxLength={255}
 					placeholder={t('fields.first_name_placeholder')}
 					withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
+					data-autofocus
 					{...userCreateContext.data.form.getInputProps('first_name')}
 				/>
 				<TextInput

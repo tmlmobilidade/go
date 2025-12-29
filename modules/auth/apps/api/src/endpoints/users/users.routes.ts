@@ -47,6 +47,12 @@ server.register(
 		);
 
 		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.lock]) },
+			UsersController.lock,
+		);
+
+		instance.get(
 			'/me',
 			{ preHandler: authorizationMiddleware() },
 			UsersController.getMe,

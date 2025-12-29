@@ -10,6 +10,7 @@ import Papa from 'papaparse';
 interface CsvWriterOptions {
 	batch_size?: number
 	include_bom?: boolean
+	logs?: boolean
 	new_line_character?: string
 }
 
@@ -26,6 +27,8 @@ export class CsvWriter<T> {
 
 	private INSTANCE_NAME = 'Unnamed Instance';
 
+	private LOGS = true;
+
 	private MAX_BATCH_SIZE = 5000;
 
 	private NEW_LINE_CHARACTER = '\n';
@@ -37,6 +40,7 @@ export class CsvWriter<T> {
 	constructor(instanceName: string, filePath: string, options?: CsvWriterOptions) {
 		this.INSTANCE_NAME = instanceName;
 		this.FILE_PATH = filePath;
+		this.LOGS = options?.logs ?? true;
 		if (options?.batch_size) this.MAX_BATCH_SIZE = options.batch_size;
 		if (options?.new_line_character) this.NEW_LINE_CHARACTER = options.new_line_character;
 		if (options?.include_bom) this.INCLUDE_BOM = options.include_bom;
@@ -93,7 +97,7 @@ export class CsvWriter<T> {
 
 			fs.appendFileSync(this.FILE_PATH, csvData, { encoding: 'utf-8', flush: true });
 
-			Logger.info(`CSVWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+			if (this.LOGS) Logger.info(`CSVWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
 
 			this.CURRENT_BATCH_DATA = [];
 

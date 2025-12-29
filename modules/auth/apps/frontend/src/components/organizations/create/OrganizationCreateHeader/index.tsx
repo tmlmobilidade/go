@@ -2,18 +2,15 @@
 
 /* * */
 
-import { useOrganizationCreateContext } from '@/contexts/OrganizationCreate.context';
+import { useOrganizationCreateContext } from '@/components/organizations/create/OrganizationCreate.context';
+import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-interface OrganizationCreateHeaderProps {
-	onClose?: () => void
-}
-
-export function OrganizationCreateHeader({ onClose }: OrganizationCreateHeaderProps) {
+export function OrganizationCreateHeader() {
 	//
 
 	//
@@ -24,11 +21,11 @@ export function OrganizationCreateHeader({ onClose }: OrganizationCreateHeaderPr
 	const organizationCreateContext = useOrganizationCreateContext();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-			<BackButton onClick={onClose} type="close" />
+			<CloseButton onClick={closeCreateOrganizationModal} type="close" />
 			<Tag label={t('title')} variant="muted" />
 			<Label size="lg" singleLine>{organizationCreateContext.data.form.values.long_name}</Label>
 			<Spacer />

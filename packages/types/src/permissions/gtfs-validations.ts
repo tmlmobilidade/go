@@ -8,6 +8,7 @@ export const GtfsValidationsPermissionSchema = z.object({
 	action: z.enum([
 		'create',
 		'read',
+		'lock',
 		'request_approval',
 	]),
 	resources: z.object({

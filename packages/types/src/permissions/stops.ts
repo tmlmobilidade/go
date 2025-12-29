@@ -9,7 +9,7 @@ export const StopsPermissionSchema = z.object({
 		'create',
 		'delete',
 		'read',
-		'toggle_lock',
+		'lock',
 		'update',
 	]),
 	resources: z.object({

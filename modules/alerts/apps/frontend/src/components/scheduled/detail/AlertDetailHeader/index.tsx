@@ -2,11 +2,11 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
+import { useAlertDetailContext } from '@/components/scheduled/detail/AlertDetail.context';
 import { IconCopy, IconTrash, IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { BackButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -26,8 +26,7 @@ export function AlertDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST, window.location.search);
-		router.push(destUrl);
+		router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST));
 	};
 
 	const handleDuplicate = () => {
@@ -41,7 +40,7 @@ export function AlertDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={alertDetailContext.data.form.getValues().publish_status} variant={alertDetailContext.data.form.getValues().publish_status === 'PUBLISHED' ? 'primary' : 'muted'} />
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 			<Spacer />
@@ -57,7 +56,7 @@ export function AlertDetailHeader() {
 				variant="secondary"
 			/>
 			<Button
-				disabled={!alertDetailContext.flags.canSave || alertDetailContext.flags.isSaving}
+				disabled={alertDetailContext.flags.isSaving}
 				icon={<IconUpload size={28} />}
 				loading={alertDetailContext.flags.isSaving}
 				onClick={() => alertDetailContext.actions.saveAlert('publish')}

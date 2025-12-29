@@ -9,8 +9,7 @@ import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission } from '@tmlmobilidade/types';
 import { Label } from '@tmlmobilidade/ui';
-import i18next from 'i18next';
-import { use, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */

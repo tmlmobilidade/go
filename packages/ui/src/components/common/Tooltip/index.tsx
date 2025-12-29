@@ -9,7 +9,7 @@ import { Tooltip as MantineTooltip, TooltipProps as MantineTooltipProps } from '
 export type TooltipProps = MantineTooltipProps;
 
 /**
- * Renders a Tooltip component with customized default props.
+ * Renders a Tooltip component.
  */
 export function Tooltip(props: TooltipProps) {
 	return <MantineTooltip {...props} />;
