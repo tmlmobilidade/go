@@ -1,6 +1,8 @@
+export * from './Alert';
 export * from './AppLogos';
 export { default as Badge } from './Badge';
 export * from './Breadcrumbs';
+export * from './ColorSwatch';
 export { default as Combobox } from './Combobox';
 export type { DataItem } from './Combobox';
 export * from './ComponentWrapper';
@@ -12,6 +14,7 @@ export * from './LineSelect';
 export * from './MetricsSkeleton';
 export * from './Popover';
 export * from './Progress';
+export * from './Radio';
 export * from './SegmentedControl';
 export * from './SemiCircleProgress';
 export * from './Skeleton';

@@ -1,0 +1,66 @@
+/* * */
+/* DEFAULT EVENTS */
+
+.event {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	min-width: 0;
+	max-width: 100%;
+	min-height: 24px;
+	padding: 2px 6px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 12px;
+	font-weight: 500;
+	white-space: nowrap;
+	cursor: pointer;
+	border-radius: 3px;
+	transition: opacity 150ms;
+}
+
+.event:hover {
+	opacity: 0.85;
+}
+
+.eventIcon {
+	flex-shrink: 0;
+}
+
+.eventTitle {
+	display: block;
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* * */
+/* PERIOD EVENTS */
+
+.period {
+	height: 5px;
+}
+
+/* * */
+/* MULTI-DAY EVENT POSITIONS */
+
+.eventStart {
+	padding-right: 0;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.eventMiddle {
+	padding-right: 0;
+	padding-left: 0;
+	border-radius: 0;
+}
+
+.eventEnd {
+	padding-left: 0;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+

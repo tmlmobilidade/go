@@ -2,12 +2,11 @@
 
 /* * */
 
+import { DatesSelector } from '@/components/annotations/detail/AnnotationsDatesSelector';
+import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { AnnotationsDetailHeader } from '@/components/annotations/detail/AnnotationsDetailHeader';
-import { AgencyMultiselect } from '@/components/common/AgencyMultiselect';
-import { DatesSelector } from '@/components/common/DatesSelector';
-import { useAnnotationsDetailContext } from '@/contexts/AnnotationsDetail.context';
-import { AnnotationSchema } from '@tmlmobilidade/types';
-import { ErrorDisplay, Grid, LoadingOverlay, Pane, Section, Text, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { AnnotationSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,10 +18,17 @@ export function AnnotationsDetail() {
 
 	const annotationsDetailContext = useAnnotationsDetailContext();
 
+	// Bypass permissions to show all agency labels in read-only mode
+	// When editable, filter agencies based on user permissions
+	const { options: agencyOptions } = useDataAgencies(
+		annotationsDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.annotations.scope,
+		annotationsDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.annotations.actions.update,
+	);
+
 	//
 	// B. Render components
 
-	if (annotationsDetailContext.flags.loading) {
+	if (annotationsDetailContext.flags.isLoading) {
 		return <LoadingOverlay />;
 	}
 
@@ -38,7 +44,7 @@ export function AnnotationsDetail() {
 					<TextInput
 						label="Título"
 						placeholder="Ex: Greve de transportes"
-						readOnly={annotationsDetailContext.flags.read_only}
+						readOnly={annotationsDetailContext.flags.isReadOnly}
 						required={!AnnotationSchema.shape.title.isOptional()}
 						w="100%"
 						{...annotationsDetailContext.data.form.getInputProps('title')}
@@ -47,20 +53,20 @@ export function AnnotationsDetail() {
 					<Textarea
 						label="Descrição"
 						placeholder="Descrição da ocorrência"
-						readOnly={annotationsDetailContext.flags.read_only}
+						readOnly={annotationsDetailContext.flags.isReadOnly}
 						required={!AnnotationSchema.shape.description.isOptional()}
 						w="100%"
 						{...annotationsDetailContext.data.form.getInputProps('description')}
 					/>
 
-					<AgencyMultiselect
+					<MultiSelect
+						data={agencyOptions}
+						disabled={annotationsDetailContext.flags.isReadOnly}
 						label="Operadores afetados"
-						readOnly={annotationsDetailContext.flags.read_only}
-						selected={annotationsDetailContext.data.form.values.agency_ids || []}
+						value={annotationsDetailContext.data.form.values.agency_ids || []}
 						{...annotationsDetailContext.data.form.getInputProps('agency_ids')}
 					/>
 
-					<Text>Selecione as datas da ocorrência</Text>
 					<DatesSelector />
 
 				</Grid>

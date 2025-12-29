@@ -2,11 +2,10 @@
 
 /* * */
 
-import { useAnnotationsDetailContext } from '@/contexts/AnnotationsDetail.context';
+import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, DeleteButton, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -40,47 +39,28 @@ export function AnnotationsDetailHeader() {
 
 			<Spacer />
 
-			<HasPermission
-				action={PermissionCatalog.all.plans.actions.lock}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.plans.scope}
-				value={annotationsDetailContext.data.annotation.agency_ids}
-			>
-				<LockButton
-					isLocked={annotationsDetailContext.data.annotation.is_locked}
-					onClick={annotationsDetailContext.actions.toggleLock}
-				/>
-			</HasPermission>
+			<LockButton
+				isDisabled={!annotationsDetailContext.flags.canLock}
+				isLocked={annotationsDetailContext.data.annotation.is_locked}
+				onClick={annotationsDetailContext.actions.lock}
+			/>
 
-			<HasPermission
-				action={PermissionCatalog.all.dates.actions.update_annotations}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.dates.scope}
-				value={annotationsDetailContext.data.annotation.agency_ids}
-			>
-				<Button
-					disabled={annotationsDetailContext.flags.read_only || annotationsDetailContext.flags.saving || !annotationsDetailContext.data.form.isDirty()}
-					icon={<IconUpload size={28} />}
-					label="Guardar"
-					loading={annotationsDetailContext.flags.saving}
-					onClick={annotationsDetailContext.actions.saveAnnotation}
-					variant="primary"
-				/>
-			</HasPermission>
+			<Button
+				disabled={!annotationsDetailContext.flags.canSave}
+				icon={<IconUpload size={28} />}
+				label="Guardar"
+				loading={annotationsDetailContext.flags.isSaving}
+				onClick={annotationsDetailContext.actions.save}
+				variant="primary"
+			/>
 
-			<HasPermission
-				action={PermissionCatalog.all.dates.actions.delete_annotations}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.dates.scope}
-				value={annotationsDetailContext.data.annotation.agency_ids}
-			>
-				<DeleteButton
-					confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Anotação"
-					onDelete={annotationsDetailContext.actions.deleteAnnotation}
-					showConfirmation
-				/>
-			</HasPermission>
+			<DeleteButton
+				confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
+				confirmTitle="Apagar Anotação"
+				isDisabled={!annotationsDetailContext.flags.canDelete}
+				onDelete={annotationsDetailContext.actions.delete}
+				showConfirmation
+			/>
 
 		</Toolbar>
 	);

@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type ActionsOf, type FileExport, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
+import { type ActionsOf, type FileExport, GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -16,6 +16,7 @@ import { LoadingOverlay } from '../components/loaders/LoadingOverlay';
 interface MeContextState {
 	actions: {
 		getPreference: <T extends UserPreferenceValue>(scope: string, key: string) => T | undefined
+		getScopePermissions: <S extends Permission['scope']>(args: Omit<GetScopePermissionsArgs<S>, 'permissions'>) => ScopePermissions<S>
 		hasPermission: (scope: string, action: string) => boolean
 		hasPermissionResource: (args: Omit<HasPermissionResourceArgs, 'permissions'>) => boolean
 		logout: () => Promise<void>
@@ -77,6 +78,13 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
 	}
 
+	function getScopePermissions<S extends Permission['scope']>(args: Omit<GetScopePermissionsArgs<S>, 'permissions'>): ScopePermissions<S> {
+		return PermissionCatalog.getScopePermissions({
+			...args,
+			permissions: meData?.permissions || [],
+		});
+	}
+
 	async function logout() {
 		// Call the logout endpoint
 		await fetch(API_ROUTES.auth.AUTH_LOGOUT, { credentials: 'include' });
@@ -111,6 +119,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: MeContextState = useMemo(() => ({
 		actions: {
 			getPreference,
+			getScopePermissions,
 			hasPermission,
 			hasPermissionResource,
 			logout,
