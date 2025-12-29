@@ -5,7 +5,7 @@
 import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
 import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
-import { CloseButton, Button, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */

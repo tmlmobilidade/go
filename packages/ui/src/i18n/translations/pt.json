@@ -2,8 +2,12 @@
 	"SendPasswordResetEmailForm": {
 		"description": "Introduza seu email para recuperar a sua palavra-passe",
 		"email_placeholder": "Email de Recuperação",
+		"error_message_description": "Ocorreu um erro",
+		"error_message_title": "Erro ao tentar enviar email",
 		"footer_label": "Voltar ao login",
 		"submit_label": "Enviar email",
+		"success_message_description": "Email de recuperação enviado com sucesso",
+		"success_message_title": "Sucesso",
 		"title": "Recuperar Password"
 	},
 	"causesAndEffects": {
@@ -919,9 +923,13 @@
 	"changePasswordForm": {
 		"confirm_password_placeholder": "Confirmar Password",
 		"description": "Introduza a sua nova password",
+		"error_message_description": "Ocorreu um erro ao tentar alterar a password",
+		"error_message_title": "Erro ao tentar alterar password",
 		"footer_label": "Voltar ao login",
 		"password_placeholder": "Password",
 		"submit_label": "Confirmar",
+		"success_message_description": "Password alterada com sucesso.",
+		"success_message_title": "Sucesso",
 		"title": "Alterar password"
 	},
 	"components": {
@@ -961,6 +969,10 @@
 				"combobox_label": "Paragem Afetada"
 			}
 		},
+		"save_button": {
+			"label": "Guardar",
+			"tooltip": "Guardar Alterações"
+		},
 		"search_input": {
 			"placeholder": "Pesquisar..."
 		},
@@ -978,9 +990,13 @@
 	"loginForm": {
 		"description": "Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.",
 		"email_placeholder": "Email",
+		"error_message_description": "Ocorreu um erro",
+		"error_message_title": "Nao foi possível efetuar o login",
 		"footer_label": "Recuperar Password",
 		"password_placeholder": "Password",
 		"submit_label": "Login",
+		"success_message_description": "",
+		"success_message_title": "Login efetuado com sucesso",
 		"title": "Login no GO+"
 	},
 	"operations": {
@@ -1036,6 +1052,22 @@
 				"update": "Editar"
 			},
 			"title": "Permissões de Alertas"
+		},
+		"datesActions": {
+			"descriptions": {
+				"create": "Permite criar uma anotação",
+				"delete": "Permite eliminar uma anotação",
+				"lock": "Permite bloquear/desbloquear uma anotação",
+				"read": "Permite ver anotações",
+				"update": "Permite editar uma anotação"
+			},
+			"labels": {
+				"create": "Criar anotação",
+				"delete": "Eliminar anotação",
+				"lock": "Bloquear/desbloquear",
+				"read": "Ver anotações",
+				"update": "Editar anotação"
+			}
 		},
 		"gtfsValidationActions": {
 			"description": "As ações que o utilizador pode realizar na gestão de validações GTFS.",

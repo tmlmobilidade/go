@@ -87,11 +87,11 @@ export function ChangePasswordForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? 'Ocorreu um erro ao tentar alterar a password', title: 'Erro ao tentar alterar password' });
+			useToast.error({ message: response.error ?? t('error_message_description'), title: t('error_message_title') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: 'Password foi alterada com sucesso', title: 'Sucesso' });
+		useToast.success({ message: t('success_message_description'), title: t('success_message_title') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 

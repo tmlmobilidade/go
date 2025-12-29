@@ -68,8 +68,8 @@ export function RoleDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível."
-					confirmTitle="Eliminar Grupo de Permissões"
+					confirmMessage={t('delete_button_confirm_message')}
+					confirmTitle={t('delete_button_confirm_title')}
 					isDisabled={!roleDetailContext.flags.canDelete}
 					isLoading={roleDetailContext.flags.isDeleting}
 					onDelete={roleDetailContext.actions.delete}

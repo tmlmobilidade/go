@@ -68,8 +68,8 @@ export function OrganizationDetailHeader() {
 				scope={PermissionCatalog.all.organizations.scope}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível."
-					confirmTitle="Eliminar Grupo de Permissões"
+					confirmMessage={t('delete_button_confirm_message')}
+					confirmTitle={t('delete_button_confirm_title')}
 					isDisabled={!organizationDetailContext.flags.canDelete}
 					isLoading={organizationDetailContext.flags.isDeleting}
 					onDelete={organizationDetailContext.actions.delete}

@@ -125,9 +125,7 @@
 				}
 			},
 			"header": {
-				"delete_button_label": "Apagar",
-				"new_organization_button_label": "Nova organização",
-				"save_button_label": "Guardar"
+				"new_organization_button_label": "Nova organização"
 			},
 			"quick_links": {
 				"add_quick_link_button_label": "Adicionar Link Rápido",
@@ -176,9 +174,9 @@
 				"title": "Informação Básica"
 			},
 			"header": {
-				"delete_button_label": "Apagar",
-				"new_role_button_label": "Novo Grupo de Permissões",
-				"save_button_label": "Guardar"
+				"delete_button_confirm_message": "Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível.",
+				"delete_button_confirm_title": "Eliminar Grupo de Permissões",
+				"new_role_button_label": "Novo Grupo de Permissões"
 			}
 		},
 		"list": {

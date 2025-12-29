@@ -26,9 +26,9 @@ export function RoleCreateBasicInfo() {
 				<TextInput
 					key={roleCreateContext.data.form.key('name')}
 					label={t('fields.name')}
-					data-autofocus
 					maxLength={255}
 					placeholder={t('fields.placeholder')}
+					data-autofocus
 					withAsterisk
 					{...roleCreateContext.data.form.getInputProps('name')}
 				/>
