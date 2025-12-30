@@ -3,8 +3,6 @@
 /* * */
 
 import { useVehiclesListContext } from '@/components/Vehicles/list/VehiclesList.context';
-// import { VehiclesListCellAgencies } from '@/components/Vehicles/list/VehiclesListCellAgencies';
-// import { VehiclesListCellDates } from '@/components/Vehicles/list/VehiclesListCellDates';
 import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListFiltersBar';
 import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
