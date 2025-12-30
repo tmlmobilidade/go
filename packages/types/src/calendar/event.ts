@@ -1,6 +1,5 @@
 /* * */
 
-import { TablerIcon } from '@tabler/icons-react';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +8,7 @@ export const CalendarEventSchema = z.object({
 	color: z.string().optional(),
 	description: z.string().optional(),
 	endDate: z.string().optional(),
-	icon: z.custom<TablerIcon>().optional(),
+	icon: z.any().optional(),
 	id: z.string(),
 	metadata: z.record(z.unknown()).optional(),
 	startDate: z.string(),
