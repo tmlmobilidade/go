@@ -51,8 +51,8 @@ export function AlertDetailSectionCauseEffect() {
 					<Combobox
 						key={alertDetailContext.data.form.key('cause')}
 						data={causeItems}
-						description={t('cause_description')}
-						label={t('cause_label')}
+						description={t('causeDescription')}
+						label={t('causeLabel')}
 						value={alertDetailContext.data.form.values.cause}
 						{...alertDetailContext.data.form.getInputProps('cause')}
 					/>
@@ -61,8 +61,8 @@ export function AlertDetailSectionCauseEffect() {
 					<Combobox
 						key={alertDetailContext.data.form.key('effect')}
 						data={effectItems}
-						description={t('effect_description')}
-						label={t('effect_label')}
+						description={t('effectDescription')}
+						label={t('effectLabel')}
 						value={alertDetailContext.data.form.values.effect}
 						{...alertDetailContext.data.form.getInputProps('effect')}
 					/>

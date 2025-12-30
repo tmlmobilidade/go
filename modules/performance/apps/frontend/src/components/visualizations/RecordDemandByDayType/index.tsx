@@ -136,11 +136,13 @@ export default function RecordDemandByDayType() {
 					if (!points || points.length === 0) return null;
 
 					const topDay = points[0];
+					// Map snake_case keys to camelCase for translations
+					const dayTypeTranslationKey = dayTypeKey.replace('day_type_', 'dayType');
 					return (
 						<Section key={dayTypeKey} flexDirection="column" gap="lg" padding="none">
 							<RecordCard
 								description={utils.getDayLabel(topDay.date, false)}
-								title={tDates(`day_types.${dayTypeKey}`)}
+								title={tDates(`dayTypes.${dayTypeTranslationKey}`)}
 								value={topDay.qty}
 							/>
 

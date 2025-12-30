@@ -16,7 +16,7 @@ export function PlanDetailSectionFiles() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.section_files' });
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.sectionFiles' });
 
 	//
 	// B. Render components
@@ -31,7 +31,7 @@ export function PlanDetailSectionFiles() {
 				{planDetailContext.data.operation_file ? (
 					<FileComponent file={planDetailContext.data.operation_file} />
 				) : (
-					<Label>{t('no_file_selected')}</Label>
+					<Label>{t('noFileSelected')}</Label>
 				)}
 			</Section>
 

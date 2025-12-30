@@ -15,7 +15,7 @@ export function RidesListFilterAnalysisTransactionSequentiality() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysis_transaction_sequentiality' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysisTransactionSequentiality' });
 
 	//
 	// B. Transform data

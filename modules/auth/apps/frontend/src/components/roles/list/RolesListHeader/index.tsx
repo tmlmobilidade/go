@@ -27,7 +27,7 @@ export function RolesListHeader() {
 			<Label size="lg" caps singleLine>{t('title')}</Label>
 			<Spacer />
 			<SearchInput onChange={roleListContext.actions.setFilterSearch} value={roleListContext.filters.search} />
-			<Button icon={<IconPlus size={20} />} label={t('new_role_button_label')} onClick={openCreateRoleModal} />
+			<Button icon={<IconPlus size={20} />} label={t('newRoleButtonLabel')} onClick={openCreateRoleModal} />
 		</Toolbar>
 	);
 

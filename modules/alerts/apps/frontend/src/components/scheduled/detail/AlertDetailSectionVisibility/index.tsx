@@ -34,7 +34,7 @@ export function AlertDetailSectionVisibility() {
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
 					key={alertDetailContext.data.form.key('publish_start_date')}
-					label={t('publish_start_date_label')}
+					label={t('publishStartDateLabel')}
 					fullWidth
 					{...alertDetailContext.data.form.getInputProps('publish_start_date')}
 					value={startDateValue}
@@ -44,7 +44,7 @@ export function AlertDetailSectionVisibility() {
 				/>
 				<DateTimePicker
 					key={alertDetailContext.data.form.key('publish_end_date')}
-					label={t('publish_end_date_label')}
+					label={t('publishEndDateLabel')}
 					clearable
 					fullWidth
 					{...alertDetailContext.data.form.getInputProps('publish_end_date')}

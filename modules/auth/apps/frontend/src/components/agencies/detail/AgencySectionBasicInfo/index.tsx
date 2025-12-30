@@ -34,7 +34,7 @@ export function AgencyDetailBasicInfo() {
 						key={agencyDetailContext.data.form.key('name')}
 						label={t('fields.name')}
 						maxLength={255}
-						placeholder={t('fields.name_placeholder')}
+						placeholder={t('fields.namePlaceholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('name')}
@@ -53,7 +53,7 @@ export function AgencyDetailBasicInfo() {
 					<TextInput
 						key={agencyDetailContext.data.form.key('public_email')}
 						label={t('fields.email')}
-						placeholder={t('fields.email_placeholder')}
+						placeholder={t('fields.emailPlaceholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="email"
 						withAsterisk={!CreateAgencySchema.shape.public_email.isOptional()}
@@ -62,7 +62,7 @@ export function AgencyDetailBasicInfo() {
 					<TextInput
 						key={agencyDetailContext.data.form.key('phone')}
 						label={t('fields.phone')}
-						placeholder={t('fields.phone_placeholder')}
+						placeholder={t('fields.phonePlaceholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="tel"
 						withAsterisk={!CreateAgencySchema.shape.phone.isOptional()}
@@ -71,7 +71,7 @@ export function AgencyDetailBasicInfo() {
 					<TextInput
 						key={agencyDetailContext.data.form.key('website_url')}
 						label={t('fields.website')}
-						placeholder={t('fields.website_placeholder')}
+						placeholder={t('fields.websitePlaceholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.website_url.isOptional()}

@@ -27,64 +27,64 @@ export function RideAnalysisApexValidations() {
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('table_columns.created_at'),
+			title: t('tableColumns.createdAt'),
 			width: 280,
 		},
 		{
 			accessor: 'event_type',
-			title: t('table_columns.event_type'),
+			title: t('tableColumns.eventType'),
 			width: 100,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('table_columns.stop_id'),
+			title: t('tableColumns.stopId'),
 			width: 100,
 		},
 		{
 			accessor: 'card_serial_number',
-			title: t('table_columns.card_serial_number'),
+			title: t('tableColumns.cardSerialNumber'),
 			width: 220,
 		},
 		{
 			accessor: 'product_id',
-			title: t('table_columns.product_id'),
+			title: t('tableColumns.productId'),
 			width: 450,
 		},
 		{
 			accessor: 'validation_status',
 			render: item => <ApexValidationStatusTag value={item.validation_status} />,
-			title: t('table_columns.status'),
+			title: t('tableColumns.status'),
 			width: 250,
 		},
 		{
 			accessor: 'is_passenger',
 			render: item => <ApexValidationIsPassengerTag value={item.is_passenger} />,
-			title: t('table_columns.tx_valid'),
+			title: t('tableColumns.txValid'),
 			width: 150,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('table_columns.vehicle_id'),
+			title: t('tableColumns.vehicleId'),
 			width: 120,
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			title: t('table_columns.mac_sam_serial_number'),
+			title: t('tableColumns.macSamSerialNumber'),
 			width: 160,
 		},
 		{
 			accessor: '_id',
-			title: t('table_columns.id_validation'),
+			title: t('tableColumns.idValidation'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_sale_id',
-			title: t('table_columns.id_on_board_sale'),
+			title: t('tableColumns.idOnBoardSale'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_refund_id',
-			title: t('table_columns.id_on_board_refund'),
+			title: t('tableColumns.idOnBoardRefund'),
 			width: 400,
 		},
 	];
@@ -109,7 +109,7 @@ export function RideAnalysisApexValidations() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text={t('no_data')} />
+					<NoDataLabel text={t('noData')} />
 				</Section>
 			)}
 		</Collapsible>

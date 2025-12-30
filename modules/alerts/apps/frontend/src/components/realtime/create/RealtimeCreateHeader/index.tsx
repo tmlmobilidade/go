@@ -23,7 +23,7 @@ export function RealtimeCreateHeader() {
 	return (
 		<Toolbar>
 			{!realtimeCreateContext.flags.isFirst && <CloseButton onClick={() => realtimeCreateContext.actions.prevStep()} />}
-			<Tag label={t('create_alert')} variant="primary" />
+			<Tag label={t('createAlert')} variant="primary" />
 			<Spacer />
 			<TripNextButton />
 			<SaveButton />

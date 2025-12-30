@@ -22,7 +22,7 @@ export function PlanDetailHeader() {
 
 	const router = useRouter();
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'detail.header' });
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.header' });
 
 	//
 	// B. Handle actions
@@ -92,8 +92,8 @@ export function PlanDetailHeader() {
 				value={planDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<DeleteButton
-					confirmMessage={t('delete_button_confirm_message')}
-					confirmTitle={t('delete_button_confirm_title')}
+					confirmMessage={t('deleteButtonConfirmMessage')}
+					confirmTitle={t('deleteButtonConfirmTitle')}
 					isDisabled={!planDetailContext.flags.canDelete}
 					isLoading={planDetailContext.flags.isDeleting}
 					onDelete={planDetailContext.actions.delete}

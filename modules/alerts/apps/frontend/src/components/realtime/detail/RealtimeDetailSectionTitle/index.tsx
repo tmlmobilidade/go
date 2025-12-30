@@ -28,32 +28,32 @@ export function RealtimeDetailSectionTitle() {
 		>
 			<Section gap="md">
 				<TextInput
-					description={t('fields.title_description')}
-					label={t('fields.title_label')}
+					description={t('fields.titleDescription')}
+					label={t('fields.titleLabel')}
 					maxLength={255}
-					placeholder={t('fields.title_placeholder')}
+					placeholder={t('fields.titlePlaceholder')}
 					withAsterisk
 					{...realtimeDetailContext.data.form.getInputProps('title')}
 				/>
 				<Textarea
-					description={t('fields.description_description')}
-					label={t('fields.description_label')}
+					description={t('fields.descriptionDescription')}
+					label={t('fields.descriptionLabel')}
 					maxRows={10}
 					minRows={4}
-					placeholder={t('fields.description_placeholder')}
+					placeholder={t('fields.descriptionPlaceholder')}
 					autosize
 					withAsterisk
 					{...realtimeDetailContext.data.form.getInputProps('description')}
 				/>
 				<CoordinatesInput
-					description={t('fields.coordinates_description')}
+					description={t('fields.coordinatesDescription')}
 					{...realtimeDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput
-					description={t('fields.link_description')}
-					label={t('fields.link_label')}
+					description={t('fields.linkDescription')}
+					label={t('fields.linkLabel')}
 					leftSection={<IconLink size={18} />}
-					placeholder={t('fields.link_placeholder')}
+					placeholder={t('fields.linkPlaceholder')}
 					{...realtimeDetailContext.data.form.getInputProps('link')}
 				/>
 			</Section>

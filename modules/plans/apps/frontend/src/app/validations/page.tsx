@@ -28,16 +28,16 @@ export default function Page() {
 			<ol>
 				<li>
 					<h3>{t('step1')}</h3>
-					<span dangerouslySetInnerHTML={{ __html: t('step1_description') }} />
+					<span dangerouslySetInnerHTML={{ __html: t('step1Description') }} />
 				</li>
 				<li>
 					<h3>{t('step2')}</h3>
-					<span dangerouslySetInnerHTML={{ __html: t('step2_description') }} />
+					<span dangerouslySetInnerHTML={{ __html: t('step2Description') }} />
 				</li>
 				<li>
 					<h3>{t('step3')}</h3>
 					<span
-						dangerouslySetInnerHTML={{ __html: t('step3_description', { link: PAGE_ROUTES.plans.APPROVED_LIST }) }}
+						dangerouslySetInnerHTML={{ __html: t('step3Description', { link: PAGE_ROUTES.plans.APPROVED_LIST }) }}
 					/>
 				</li>
 			</ol>

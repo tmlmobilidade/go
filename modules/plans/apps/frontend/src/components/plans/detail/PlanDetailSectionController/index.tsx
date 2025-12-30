@@ -16,7 +16,7 @@ export function PlanDetailSectionController() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'detail.section_controller' });
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.sectionController' });
 
 	//
 	// B. Render components
@@ -35,7 +35,7 @@ export function PlanDetailSectionController() {
 
 				<Button
 					disabled={planDetailContext.flags.isReadOnly}
-					label={t('reprocess_plan_button')}
+					label={t('reprocessPlanButton')}
 					loading={planDetailContext.flags.isSaving}
 					onClick={planDetailContext.actions.controllerReprocessPlan}
 				/>

@@ -26,7 +26,7 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 
 	// A. Setup variables
 
-	const { t } = useTranslation('performance', { keyPrefix: 'updated_at' });
+	const { t } = useTranslation('performance', { keyPrefix: 'updatedAt' });
 
 	//
 	// B. Transform data
@@ -43,7 +43,7 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 
 		let relativeText = '';
 
-		if (diffInMinutes < 1) relativeText = t('just_now'); // “Just now”
+		if (diffInMinutes < 1) relativeText = t('justNow'); // "Just now"
 		else if (diffInMinutes < 60) relativeText = t('minutes', { count: diffInMinutes }); // “X minutes ago”
 		else if (diffInMinutes < 1440) relativeText = t('hours', { count: Math.floor(diffInMinutes / 60) }); // “X hours ago”
 		else relativeText = t('days', { count: Math.floor(diffInMinutes / 1440) }); // “X days ago”

@@ -86,7 +86,7 @@ export function CreateValidationModal() {
 			<Section>
 				<FileUpload
 					accept="application/zip"
-					label={t('select_file')}
+					label={t('selectFile')}
 					maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
 					onFileChange={validationsCreateContext.actions.setValidationFile}
 				/>

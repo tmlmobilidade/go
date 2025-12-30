@@ -46,8 +46,8 @@ export function ScheduledAlertCreateSectionCauseEffect() {
 				<Combobox
 					key={scheduledAlertCreateContext.data.form.key('cause')}
 					data={causeItems}
-					description={tAlerts('fields.cause_description')}
-					label={tAlerts('fields.cause_label')}
+					description={tAlerts('fields.causeDescription')}
+					label={tAlerts('fields.causeLabel')}
 					{...scheduledAlertCreateContext.data.form.getInputProps('cause')}
 				/>
 			</div>
@@ -55,8 +55,8 @@ export function ScheduledAlertCreateSectionCauseEffect() {
 				<Combobox
 					key={scheduledAlertCreateContext.data.form.key('effect')}
 					data={effectItems}
-					description={tAlerts('fields.effect_description')}
-					label={tAlerts('fields.effect_label')}
+					description={tAlerts('fields.effectDescription')}
+					label={tAlerts('fields.effectLabel')}
 					{...scheduledAlertCreateContext.data.form.getInputProps('effect')}
 				/>
 			</div>

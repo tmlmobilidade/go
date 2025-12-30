@@ -52,13 +52,13 @@ export function AlertList() {
 		{
 			accessor: 'publish_start_date',
 			render: item => <AlertsListCellDate value={item.publish_start_date} />,
-			title: t('tableColumns.publish_start_date'),
+			title: t('tableColumns.publishStartDate'),
 			width: 300,
 		},
 		{
 			accessor: 'publish_end_date',
 			render: item => <AlertsListCellDate value={item.publish_end_date} />,
-			title: t('tableColumns.publish_end_date'),
+			title: t('tableColumns.publishEndDate'),
 			width: 300,
 		},
 		{

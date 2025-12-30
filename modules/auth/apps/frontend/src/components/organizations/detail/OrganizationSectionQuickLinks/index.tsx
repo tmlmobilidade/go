@@ -100,12 +100,12 @@ export function OrganizationDetailQuickLinks() {
 			<Section gap="lg">
 				<Button
 					disabled={!organizationDetailContext.data.id}
-					label={t('add_quick_link_button_label')}
+					label={t('addQuickLinkButtonLabel')}
 					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
 				{!organizationDetailContext.data.id && (
-					<p>{t('no_organization_label')}</p>
+					<p>{t('noOrganizationLabel')}</p>
 				)}
 				{organizationDetailContext.data.id && (
 					<DataTable

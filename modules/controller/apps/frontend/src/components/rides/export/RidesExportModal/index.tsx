@@ -90,13 +90,13 @@ export default function RidesExportModal() {
 				<Grid columns="ab" gap="md">
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateStart(value)}
-						placeholder={t('fields.start_date')}
+						placeholder={t('fields.startDate')}
 						value={context.filters.date_start as UnixTimestamp}
 						fullWidth
 					/>
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateEnd(value)}
-						placeholder={t('fields.end_date')}
+						placeholder={t('fields.endDate')}
 						value={context.filters.date_end as UnixTimestamp}
 						fullWidth
 					/>

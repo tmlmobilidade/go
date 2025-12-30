@@ -15,7 +15,7 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysis_ended_at_last_stop' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysisEndedAtLastStop' });
 
 	//
 	// B. Transform data

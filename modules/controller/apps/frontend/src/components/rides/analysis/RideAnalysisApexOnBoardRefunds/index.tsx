@@ -22,66 +22,66 @@ export function RideAnalysisApexOnBoardRefunds() {
 
 	const RideAnalysisContext = useRideAnalysisContext();
 
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.onboard_refunds' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.onboardRefunds' });
 
 	const columns: DataTableColumn<SimplifiedApexOnBoardRefund>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('table_columns.created_at'),
+			title: t('tableColumns.createdAt'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('table_columns.stop_id'),
+			title: t('tableColumns.stopId'),
 			width: 100,
 		},
 		{
 			accessor: 'card_serial_number',
-			title: t('table_columns.card_serial_number'),
+			title: t('tableColumns.cardSerialNumber'),
 			width: 220,
 		},
 		{
 			accessor: 'product_long_id',
-			title: t('table_columns.product_id'),
+			title: t('tableColumns.productId'),
 			width: 250,
 		},
 		{
 			accessor: 'product_quantity',
-			title: t('table_columns.product_quantity'),
+			title: t('tableColumns.productQuantity'),
 			width: 80,
 		},
 		{
 			accessor: 'price',
 			render: item => <CurrencyTag value={item.price} />,
-			title: t('table_columns.price'),
+			title: t('tableColumns.price'),
 			width: 120,
 		},
 		{
 			accessor: 'payment_method',
 			render: item => <ApexPaymentMethodTag value={item.payment_method} />,
-			title: t('table_columns.payment_method'),
+			title: t('tableColumns.paymentMethod'),
 			width: 180,
 		},
 		{
 			accessor: 'card_physical_type',
 			render: item => <ApexCardTypeTag value={item.card_physical_type} />,
-			title: t('table_columns.card_type'),
+			title: t('tableColumns.cardType'),
 			width: 220,
 		},
 		{
 			accessor: 'validation_id',
-			title: t('table_columns.id_validation'),
+			title: t('tableColumns.idValidation'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_sale_id',
-			title: t('table_columns.id_on_board_sale'),
+			title: t('tableColumns.idOnBoardSale'),
 			width: 400,
 		},
 		{
 			accessor: '_id',
-			title: t('table_columns.id_on_board_refund'),
+			title: t('tableColumns.idOnBoardRefund'),
 			width: 400,
 		},
 	];
@@ -106,7 +106,7 @@ export function RideAnalysisApexOnBoardRefunds() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text={t('no_data')} />
+					<NoDataLabel text={t('noData')} />
 				</Section>
 			)}
 

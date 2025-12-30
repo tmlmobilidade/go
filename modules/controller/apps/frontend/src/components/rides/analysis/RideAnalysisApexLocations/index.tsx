@@ -20,33 +20,33 @@ export function RideAnalysisApexLocations() {
 
 	const rideAnalysisContext = useRideAnalysisContext();
 
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.apex_locations' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.apexLocations' });
 
 	const columns: DataTableColumn<SimplifiedApexLocation>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('table_columns.created_at'),
+			title: t('tableColumns.createdAt'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('table_columns.stop_id'),
+			title: t('tableColumns.stopId'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('table_columns.vehicle_id'),
+			title: t('tableColumns.vehicleId'),
 			width: 120,
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			title: t('table_columns.mac_sam_serial_number'),
+			title: t('tableColumns.macSamSerialNumber'),
 			width: 160,
 		},
 		{
 			accessor: '_id',
-			title: t('table_columns.id_apex_location'),
+			title: t('tableColumns.idApexLocation'),
 			width: 400,
 		},
 	];
@@ -71,7 +71,7 @@ export function RideAnalysisApexLocations() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text={t('no_data')} />
+					<NoDataLabel text={t('noData')} />
 				</Section>
 			)}
 		</Collapsible>

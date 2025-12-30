@@ -16,7 +16,7 @@ export function ValidationsListFilterProcessingStatus() {
 	// A. Setup variables
 
 	const validationsListContext = useValidationsListContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'validations.list.filterBar.filter_processing_status' });
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.list.filterBar.filterProcessingStatus' });
 
 	//
 	// B. Transform data

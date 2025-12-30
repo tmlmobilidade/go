@@ -26,13 +26,13 @@ export function RoleCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateRoleModal} type="close" />
-			<Tag label={t('new_role_button_label')} variant="secondary" />
+			<Tag label={t('newRoleButtonLabel')} variant="secondary" />
 			<Label size="lg" singleLine>{roleCreateContext.data.form.values.name}</Label>
 			<Spacer />
 			<Button
 				disabled={!roleCreateContext.data.form.values.name}
 				icon={<IconUpload size={28} />}
-				label={t('save_button_label')}
+				label={t('saveButtonLabel')}
 				loading={roleCreateContext.flags.isSaving}
 				onClick={roleCreateContext.actions.saveRole}
 				variant="primary"

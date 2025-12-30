@@ -36,7 +36,7 @@ export function OrganizationDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={organizationDetailContext.data.id || t('new_organization_button_label')} variant="muted" />
+			<Tag label={organizationDetailContext.data.id || t('newOrganizationButtonLabel')} variant="muted" />
 			<Label size="lg" singleLine>{organizationDetailContext.data.form.values.long_name}</Label>
 
 			<Spacer />
@@ -68,8 +68,8 @@ export function OrganizationDetailHeader() {
 				scope={PermissionCatalog.all.organizations.scope}
 			>
 				<DeleteButton
-					confirmMessage={t('delete_button_confirm_message')}
-					confirmTitle={t('delete_button_confirm_title')}
+					confirmMessage={t('deleteButtonConfirmMessage')}
+					confirmTitle={t('deleteButtonConfirmTitle')}
 					isDisabled={!organizationDetailContext.flags.canDelete}
 					isLoading={organizationDetailContext.flags.isDeleting}
 					onDelete={organizationDetailContext.actions.delete}

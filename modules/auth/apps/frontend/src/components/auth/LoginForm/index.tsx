@@ -73,7 +73,7 @@ export function LoginForm() {
 				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
-				placeholder={t('email_placeholder')}
+				placeholder={t('emailPlaceholder')}
 				value={emailValue}
 			/>
 			<PasswordInput

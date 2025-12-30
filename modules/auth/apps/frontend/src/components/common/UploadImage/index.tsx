@@ -74,8 +74,8 @@ export function UploadImage({
 					{onDelete && (
 						<div className={styles.deleteContainer}>
 							<DeleteButton
-								confirmMessage={t('delete_button_confirm_message')}
-								confirmTitle={t('delete_button_confirm_title')}
+								confirmMessage={t('deleteButtonConfirmMessage')}
+								confirmTitle={t('deleteButtonConfirmTitle')}
 								onDelete={handleDelete}
 								showConfirmation
 							/>

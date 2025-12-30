@@ -51,13 +51,13 @@ export function UsersList() {
 		{
 			accessor: 'organization_id',
 			render: item => <Tag label={organizationsContext.data.raw.find(organizationData => organizationData._id === item.organization_id)?.long_name} variant="secondary" />,
-			title: t('tableColumns.organization_id'),
+			title: t('tableColumns.organizationId'),
 			width: 300,
 		},
 		{
 			accessor: 'role_ids',
 			render: item => <TagGroup tags={item.role_ids.map(roleId => ({ label: rolesContext.data.raw.find(roleData => roleData._id === roleId)?.name, variant: 'secondary' }))} />,
-			title: t('tableColumns.role_ids'),
+			title: t('tableColumns.roleIds'),
 			width: 500,
 		},
 		{

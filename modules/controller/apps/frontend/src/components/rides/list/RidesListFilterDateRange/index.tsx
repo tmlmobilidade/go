@@ -14,7 +14,7 @@ export function RidesListFilterDateRange() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.date_range' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.dateRange' });
 
 	//
 	// B. Handle actions

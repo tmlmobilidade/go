@@ -15,7 +15,7 @@ export function RidesListFilterAcceptanceStatus() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.acceptance_status' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.acceptanceStatus' });
 
 	//
 	// B. Transform data

@@ -2,9 +2,9 @@
 	"realtime": {
 		"create": {
 			"header": {
-				"create_alert": "Criar Alerta"
+				"createAlert": "Criar Alerta"
 			},
-			"no_permission": "Não tem permissão para criar alertas",
+			"noPermission": "Não tem permissão para criar alertas",
 			"stepCauseAndEffect": {
 				"title": "Causa e Efeito"
 			},
@@ -13,37 +13,37 @@
 					"tableColumns": {
 						"headsign": "Destino",
 						"id": "ID",
-						"start_time_scheduled": "Partida"
+						"startTimeScheduled": "Partida"
 					},
 					"title": "Viagens afetadas"
 				},
 				"alertBasicInfo": {
-					"description_label": "Descrição",
+					"descriptionLabel": "Descrição",
 					"fields": {
-						"coordinates_description": "Ponto de referência do alerta, para que seja possível localizar o alerta no mapa.",
+						"coordinatesDescription": "Ponto de referência do alerta, para que seja possível localizar o alerta no mapa.",
 						"detour": "Percurso Alternativo",
-						"detour_placeholder": "..."
+						"detourPlaceholder": "..."
 					},
 					"title": "Resumo do Alerta",
-					"title_label": "Título"
+					"titleLabel": "Título"
 				}
 			},
 			"stepTripsFilter": {
 				"fields": {
-					"line_select_label": "Linha",
-					"stop_select_label": "Paragem"
+					"lineSelectLabel": "Linha",
+					"stopSelectLabel": "Paragem"
 				},
 				"title": "Filtros"
 			},
 			"stepTripsFound": {
-				"add_all": "Adicionar Todas",
-				"clear_filters": "Limpar Filtros",
+				"addAll": "Adicionar Todas",
+				"clearFilters": "Limpar Filtros",
 				"title": "Viagens Encontradas"
 
 			},
 			"stepTripsSelected": {
-				"no_trips_selected": "Nenhuma viagem selecionada",
-				"remove_all": "Remover todas",
+				"noTripsSelected": "Nenhuma viagem selecionada",
+				"removeAll": "Remover todas",
 				"title": "Viagens Selecionadas"
 			}
 		},
@@ -51,51 +51,51 @@
 			"sectionCauseEffect": {
 				"description": "A causa é o que aconteceu, o efeito é o que aconteceu como consequência.",
 				"fields": {
-					"cause_description": "O que aconteceu",
-					"cause_label": "Causa",
-					"effect_description": "O que aconteceu como consequência",
-					"effect_label": "Efeito"
+					"causeDescription": "O que aconteceu",
+					"causeLabel": "Causa",
+					"effectDescription": "O que aconteceu como consequência",
+					"effectLabel": "Efeito"
 				},
 				"title": "Causa e Efeito"
 			},
 			"sectionReferences": {
 				"description": "As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste realtime.",
 				"fields": {
-					"affected_rides": "Viagens afetadas",
+					"affectedRides": "Viagens afetadas",
 					"headsign": "Destino",
 					"id": "ID",
-					"start_time": "Partida"
+					"startTime": "Partida"
 				}
 			},
 			"sectionTitle": {
 				"description": "Breve descrição do que motivou a criação do realtimea",
 				"fields": {
-					"coordinates_description": "Ponto de referência do realtimea, para que seja possível localizar o realtimea no mapa.",
-					"description_description": "Um bom realtime explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
-					"description_label": "Descrição",
-					"description_placeholder": "...",
-					"link_description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
-					"link_label": "Link Adicional",
-					"link_placeholder": "https://www.cm-setubal.com/...",
-					"title_description": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
-					"title_label": "Título Curto",
-					"title_placeholder": "..."
+					"coordinatesDescription": "Ponto de referência do realtimea, para que seja possível localizar o realtimea no mapa.",
+					"descriptionDescription": "Um bom realtime explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
+					"descriptionLabel": "Descrição",
+					"descriptionPlaceholder": "...",
+					"linkDescription": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
+					"linkLabel": "Link Adicional",
+					"linkPlaceholder": "https://www.cm-setubal.com/...",
+					"titleDescription": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
+					"titleLabel": "Título Curto",
+					"titlePlaceholder": "..."
 				},
 				"title": "Título e Descrição"
 			},
 			"sectionValidity": {
 				"description": "Período em que o realtime é válido. Distinto da visibilidade. O realtime pode estar visível mas não ser ainda válido (ex: um realtime para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).",
 				"fields": {
-					"active_period_end_date_label": "Data de Fim",
-					"active_period_start_date_label": "Data de Início"
+					"activePeriodEndDateLabel": "Data de Fim",
+					"activePeriodStartDateLabel": "Data de Início"
 				},
 				"title": "Período de Vigência"
 			},
 			"sectionVisibility": {
 				"description": "É possível agendar a permanência do realtime nos canais digitais. A visibilidade do realtime é diferente do seu período de vigência.",
 				"fields": {
-					"publish_end_date_label": "Data de Fim",
-					"publish_start_date_label": "Data de Início"
+					"publishEndDateLabel": "Data de Fim",
+					"publishStartDateLabel": "Data de Início"
 				},
 				"title": "Visibilidade e Agendamento"
 			}
@@ -105,18 +105,18 @@
 				"cause": "Causa",
 				"effect": " Efeito",
 				"municipality": "Município",
-				"publish_status": "Estado"
+				"publishStatus": "Estado"
 			},
 			"header": {
-				"new_alert": "Novo Alerta",
+				"newAlert": "Novo Alerta",
 				"title": "Alertas - Tempo Real"
 			},
 			"tableColumns": {
 				"lines": "Linhas",
 				"municipality": "Municípios",
-				"publish_end_date": "Data de Fim",
-				"publish_start_date": "Data de Início",
-				"publish_status": "Estado",
+				"publishEndDate": "Data de Fim",
+				"publishStartDate": "Data de Início",
+				"publishStatus": "Estado",
 				"stops": "Paragens",
 				"title": "Título"
 			}
@@ -124,88 +124,88 @@
 	},
 	"scheduled": {
 		"create": {
-			"error_message_title_create": "Erro ao criar alerta",
+			"errorMessageTitleCreate": "Erro ao criar alerta",
 			"header": {
-				"new_alert_draft_button_label": "Criar como rascunho",
+				"newAlertDraftButtonLabel": "Criar como rascunho",
 				"title": "Novo Alerta"
 			},
 			"sectionCauseEffect": {
 				"fields": {
-					"cause_description": "O que aconteceu",
-					"cause_label": "Causa",
-					"effect_description": "O que aconteceu como consequência",
-					"effect_label": "Efeito"
+					"causeDescription": "O que aconteceu",
+					"causeLabel": "Causa",
+					"effectDescription": "O que aconteceu como consequência",
+					"effectLabel": "Efeito"
 				}
 			},
 			"sectionTitle": {
 				"fields": {
-					"description_description": "Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
-					"description_label": "Descrição",
-					"title_description": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
-					"title_label": "Título Curto"
+					"descriptionDescription": "Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
+					"descriptionLabel": "Descrição",
+					"titleDescription": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
+					"titleLabel": "Título Curto"
 				}
 			},
 			"sectionValidity": {
 				"description": "Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).",
 				"fields": {
-					"active_period_end_date_label": "Data de Fim",
-					"active_period_start_date_label": "Data de Início"
+					"activePeriodEndDateLabel": "Data de Fim",
+					"activePeriodStartDateLabel": "Data de Início"
 				},
 				"title": "Período de Vigência"
 			},
-			"success_message_create": "Alerta criado com sucesso",
-			"success_message_title_create": "Sucesso"
+			"successMessageCreate": "Alerta criado com sucesso",
+			"successMessageTitleCreate": "Sucesso"
 
 		},
 		"detail": {
 			"sectionCauseEffect": {
-				"cause_description": "O que aconteceu",
-				"cause_label": "Causa",
+				"causeDescription": "O que aconteceu",
+				"causeLabel": "Causa",
 				"description": "A causa é o que aconteceu, o efeito é o que aconteceu como consequência.",
-				"effect_description": "O que aconteceu como consequência",
-				"effect_label": "Efeito",
+				"effectDescription": "O que aconteceu como consequência",
+				"effectLabel": "Efeito",
 				"title": "Causa e Efeito"
 			},
 			"sectionReferences": {
 				"description": "As referências (Linhas, Paragens, Municípios, Etc...) afetadas deste alerta.",
 				"fields": {
-					"affected_rides": "Viagens afetadas",
+					"affectedRides": "Viagens afetadas",
 					"headsign": "Destino",
 					"id": "ID",
-					"start_time": "Partida"
+					"startTime": "Partida"
 				},
-				"municipalities_description": "Selecione os municípios que serão afetados pelo alerta",
-				"municipalities_label": "Municípios Afetados",
-				"stops_label": "Paragens Afetadas",
+				"municipalitiesDescription": "Selecione os municípios que serão afetados pelo alerta",
+				"municipalitiesLabel": "Municípios Afetados",
+				"stopsLabel": "Paragens Afetadas",
 				"title": "Referências"
 			},
 			"sectionTitle": {
 				"description": "Breve descrição do que motivou a criação do alerta",
 				"fields": {
-					"coordinates_description": "Ponto de referência do alerta, para que seja possível localizar o alerta no mapa.",
-					"description_description": "Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
-					"description_label": "Descrição",
-					"description_placeholder": "...",
-					"image_label": "Imagem",
-					"link_description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
-					"link_label": "Link Adicional",
-					"link_placeholder": "https://www.cm-setubal.com/...",
-					"title_description": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
-					"title_label": "Título Curto",
-					"title_placeholder": "..."
+					"coordinatesDescription": "Ponto de referência do alerta, para que seja possível localizar o alerta no mapa.",
+					"descriptionDescription": "Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação.",
+					"descriptionLabel": "Descrição",
+					"descriptionPlaceholder": "...",
+					"imageLabel": "Imagem",
+					"linkDescription": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
+					"linkLabel": "Link Adicional",
+					"linkPlaceholder": "https://www.cm-setubal.com/...",
+					"titleDescription": "É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc.",
+					"titleLabel": "Título Curto",
+					"titlePlaceholder": "..."
 				},
 				"title": "Título e Descrição"
 			},
 			"sectionValidity": {
-				"active_period_end_date_label": "Data de Fim",
-				"active_period_start_date_label": "Data de Início",
+				"activePeriodEndDateLabel": "Data de Fim",
+				"activePeriodStartDateLabel": "Data de Início",
 				"description": "Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).",
 				"title": "Período de Vigência"
 			},
 			"sectionVisibility": {
 				"description": "É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.",
-				"publish_end_date_label": "Data de Fim",
-				"publish_start_date_label": "Data de Início",
+				"publishEndDateLabel": "Data de Fim",
+				"publishStartDateLabel": "Data de Início",
 				"title": "Visibilidade e Agendamento"
 			}
 		},
@@ -214,17 +214,17 @@
 				"cause": "Causa",
 				"effect": " Efeito",
 				"municipality": "Município",
-				"publish_status": "Estado"
+				"publishStatus": "Estado"
 			},
 			"header": {
-				"new_alert": "Novo Alerta",
+				"newAlert": "Novo Alerta",
 				"title": "Alertas"
 			},
 			"tableColumns": {
 				"lines": "Linhas",
 				"municipality": "Municípios",
-				"publish_end_date": "Data de Fim",
-				"publish_start_date": "Data de Início",
+				"publishEndDate": "Data de Fim",
+				"publishStartDate": "Data de Início",
 				"status": "Estado",
 				"stops": "Paragens",
 				"title": "Título"

@@ -31,22 +31,22 @@ export function RideAcceptanceCommentList() {
 		accepted: {
 			color: 'var(--color-status-success-primary)',
 			icon: IconCircleCheck,
-			label: t('acceptance_status.accepted'),
+			label: t('acceptanceStatus.accepted'),
 		},
 		justification_required: {
 			color: 'var(--color-status-warning-primary)',
 			icon: IconAlertCircle,
-			label: t('acceptance_status.justification_required'),
+			label: t('acceptanceStatus.justificationRequired'),
 		},
 		rejected: {
 			color: 'var(--color-status-danger-primary)',
 			icon: IconCircleX,
-			label: t('acceptance_status.rejected'),
+			label: t('acceptanceStatus.rejected'),
 		},
 		under_review: {
 			color: 'var(--color-status-warning-primary)',
 			icon: IconClock,
-			label: t('acceptance_status.under_review'),
+			label: t('acceptanceStatus.underReview'),
 		},
 	});
 

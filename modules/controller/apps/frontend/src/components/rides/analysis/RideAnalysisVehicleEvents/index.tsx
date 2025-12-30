@@ -19,53 +19,53 @@ export function RideAnalysisVehicleEvents() {
 
 	const RideAnalysisContext = useRideAnalysisContext();
 
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.vehicle_events' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.analysis.vehicleEvents' });
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('table_columns.created_at'),
+			title: t('tableColumns.createdAt'),
 			width: 280,
 		},
 		{
 			accessor: 'trigger_activity',
-			title: t('table_columns.activity'),
+			title: t('tableColumns.activity'),
 			width: 150,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('table_columns.stop_id'),
+			title: t('tableColumns.stopId'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('table_columns.vehicle_id'),
+			title: t('tableColumns.vehicleId'),
 			width: 100,
 		},
 		{
 			accessor: 'driver_id',
-			title: t('table_columns.driver_id'),
+			title: t('tableColumns.driverId'),
 			width: 100,
 		},
 		{
 			accessor: 'odometer',
-			title: t('table_columns.odometer'),
+			title: t('tableColumns.odometer'),
 			width: 150,
 		},
 		{
 			accessor: 'trigger_door',
-			title: t('table_columns.door'),
+			title: t('tableColumns.door'),
 			width: 150,
 		},
 		{
 			accessor: 'latitude',
-			title: t('table_columns.latitude'),
+			title: t('tableColumns.latitude'),
 			width: 220,
 		},
 		{
 			accessor: 'longitude',
-			title: t('table_columns.longitude'),
+			title: t('tableColumns.longitude'),
 			width: 220,
 		},
 	];

@@ -28,7 +28,7 @@ function JustificationReadOnly({ cause, manualTripId, message }: { cause?: strin
 				<Text>{message || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
-				<Label>{t('readonly.manual_trip_id')}</Label>
+				<Label>{t('readonly.manualTripId')}</Label>
 				<Text>{manualTripId || '—'}</Text>
 			</Section>
 		</>
@@ -41,9 +41,9 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 	return (
 		<>
 			<Combobox
-				label={t('cause_label')}
+				label={t('causeLabel')}
 				onChange={setCause}
-				placeholder={t('cause_placeholder')}
+				placeholder={t('causePlaceholder')}
 				value={cause}
 				data={gtfsCauseSchema.options.map(cause => ({
 					icon: CauseIcons[cause],
@@ -53,7 +53,7 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				fullWidth
 			/>
 			<Textarea
-				label={t('message_label')}
+				label={t('messageLabel')}
 				minRows={2}
 				onChange={e => setMessage(e.target.value)}
 				value={message}
@@ -61,7 +61,7 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				autosize
 			/>
 			<TextInput
-				label={t('manual_trip_id_label')}
+				label={t('manualTripIdLabel')}
 				onChange={e => setManualTripId(e.target.value)}
 				value={manualTripId ?? ''}
 				w="100%"

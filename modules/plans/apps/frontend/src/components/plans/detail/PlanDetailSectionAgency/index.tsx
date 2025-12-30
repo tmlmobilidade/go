@@ -14,7 +14,7 @@ export function PlanDetailSectionAgency() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.section_agency' });
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.sectionAgency' });
 
 	//
 	// B. Render components

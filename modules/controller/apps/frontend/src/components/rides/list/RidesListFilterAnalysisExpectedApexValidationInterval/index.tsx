@@ -15,7 +15,7 @@ export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysis_expected_apex_validation_interval' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysisExpectedApexValidationInterval' });
 
 	//
 	// B. Transform data

@@ -35,7 +35,7 @@ export function RealtimeStepTripsSelected() {
 				<Label>{t('title')}</Label>
 				<div className={styles.tripsActionsContainer}>
 					<Button
-						label={t('remove_all')}
+						label={t('removeAll')}
 						onClick={realtimeContext.actions.removeAllRides}
 						variant="danger"
 					/>
@@ -56,7 +56,7 @@ export function RealtimeStepTripsSelected() {
 				) : (
 					<div className={styles.tripsContainerEmpty}>
 						<IconListCheck size={56} />
-						<Label size="lg" caps>{t('no_trips_selected')}</Label>
+						<Label size="lg" caps>{t('noTripsSelected')}</Label>
 					</div>
 				)}
 			</div>

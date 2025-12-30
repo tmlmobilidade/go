@@ -64,7 +64,7 @@ export function ValidationsDetailHeader() {
 					<Button
 						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
 						icon={<IconMailFast />}
-						label={t('submit_for_tml_approval_button')}
+						label={t('submitForTmlApprovalButton')}
 						onClick={handleRequestApproval}
 						variant="secondary"
 					/>

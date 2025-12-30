@@ -36,7 +36,7 @@ export function RoleDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={roleDetailContext.data.id || t('new_role_button_label')} variant="secondary" />
+			<Tag label={roleDetailContext.data.id || t('newRoleButtonLabel')} variant="secondary" />
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
 
 			<Spacer />
@@ -68,8 +68,8 @@ export function RoleDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<DeleteButton
-					confirmMessage={t('delete_button_confirm_message')}
-					confirmTitle={t('delete_button_confirm_title')}
+					confirmMessage={t('deleteButtonConfirmMessage')}
+					confirmTitle={t('deleteButtonConfirmTitle')}
 					isDisabled={!roleDetailContext.flags.canDelete}
 					isLoading={roleDetailContext.flags.isDeleting}
 					onDelete={roleDetailContext.actions.delete}

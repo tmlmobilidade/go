@@ -25,7 +25,7 @@ export function AlertsListHeader() {
 			<Label size="lg" caps singleLine>{t('title')}</Label>
 			<Spacer />
 			<SearchInput onChange={alertsListContext.actions.setFilterSearch} value={alertsListContext.filters.search} />
-			<Button icon={<IconPlus size={20} />} label={t('new_alert')} onClick={openCreateScheduledAlertModal} />
+			<Button icon={<IconPlus size={20} />} label={t('newAlert')} onClick={openCreateScheduledAlertModal} />
 		</Toolbar>
 	);
 

@@ -32,7 +32,7 @@ export function AffectedRides() {
 					status={getDelayStatus(item.start_time_scheduled, item.start_time_observed)}
 				/>
 			),
-			title: t('tableColumns.start_time_scheduled'),
+			title: t('tableColumns.startTimeScheduled'),
 			width: 300,
 		},
 	];

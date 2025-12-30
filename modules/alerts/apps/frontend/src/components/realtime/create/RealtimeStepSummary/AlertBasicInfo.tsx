@@ -19,11 +19,11 @@ export function AlertBasicInfo() {
 		<Section gap="md">
 			<Label size="lg">{t('title')}</Label>
 			<div>
-				<Label size="md">{t('title_label')}</Label>
+				<Label size="md">{t('titleLabel')}</Label>
 				<Description>{realtimeContext.data.form.values.title}</Description>
 			</div>
 			<div>
-				<Label size="md">{t('description_label')}</Label>
+				<Label size="md">{t('descriptionLabel')}</Label>
 				<Description>{realtimeContext.data.form.values.description}</Description>
 			</div>
 			{
@@ -31,7 +31,7 @@ export function AlertBasicInfo() {
 					<>
 						<TextInput
 							label={t('fields.detour')}
-							placeholder={t('fields.detour_placeholder')}
+							placeholder={t('fields.detourPlaceholder')}
 							value={realtimeContext.data.detour}
 							onChange={(event) => {
 								realtimeContext.actions.setDetour(event.target.value);
@@ -46,7 +46,7 @@ export function AlertBasicInfo() {
 				)
 			}
 			<CoordinatesInput
-				description={t('fields.coordinates_description')}
+				description={t('fields.coordinatesDescription')}
 				{...realtimeContext.data.form.getInputProps('coordinates')}
 			/>
 		</Section>

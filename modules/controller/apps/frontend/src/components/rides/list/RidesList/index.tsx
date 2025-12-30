@@ -41,19 +41,19 @@ export function RidesList() {
 		{
 			accessor: 'seen_last_at',
 			render: item => <SeenStatusTag value={item.seen_status} />,
-			title: t('tableColumns.seen_last_at'),
+			title: t('tableColumns.seenLastAt'),
 			width: 24,
 		},
 		{
 			accessor: 'operational_status',
 			render: item => <OperationalStatusTag value={item.operational_status} />,
-			title: t('tableColumns.operational_status'),
+			title: t('tableColumns.operationalStatus'),
 			width: 150,
 		},
 		{
 			accessor: 'operational_date',
 			render: item => <OperationalDateTag value={item.operational_date} />,
-			title: t('tableColumns.operational_date'),
+			title: t('tableColumns.operationalDate'),
 			width: 150,
 		},
 		{
@@ -65,43 +65,43 @@ export function RidesList() {
 		{
 			accessor: 'start_time_scheduled',
 			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
-			title: t('tableColumns.start_time_scheduled'),
+			title: t('tableColumns.startTimeScheduled'),
 			width: 80,
 		},
 		{
 			accessor: 'start_time_observed',
 			render: item => <StartTimeStatusTag startTimeObserved={formatTimestamp(item.start_time_observed)} status={item.start_delay_status} />,
-			title: t('tableColumns.start_time_observed'),
+			title: t('tableColumns.startTimeObserved'),
 			width: 200,
 		},
 		{
 			accessor: 'passengers_observed',
 			render: item => <RidesListCellPassengers value={item.passengers_observed} />,
-			title: t('tableColumns.passengers_observed'),
+			title: t('tableColumns.passengersObserved'),
 			width: 120,
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',
 			render: item => <AnalysisStatusTag grade={item.analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade} />,
-			title: t('tableColumns.analysis_simple_three_vehicle_events_grade'),
+			title: t('tableColumns.analysisSimpleThreeVehicleEventsGrade'),
 			width: 120,
 		},
 		{
 			accessor: 'analysis_ended_at_last_stop_grade',
 			render: item => <AnalysisStatusTag grade={item.analysis.ENDED_AT_LAST_STOP.grade} />,
-			title: t('tableColumns.analysis_ended_at_last_stop_grade'),
+			title: t('tableColumns.analysisEndedAtLastStopGrade'),
 			width: 120,
 		},
 		{
 			accessor: 'analysis_expected_apex_validation_interval',
 			render: item => <AnalysisStatusTag grade={item.analysis.EXPECTED_APEX_VALIDATION_INTERVAL.grade} />,
-			title: t('tableColumns.analysis_expected_apex_validation_interval_grade'),
+			title: t('tableColumns.analysisExpectedApexValidationIntervalGrade'),
 			width: 120,
 		},
 		{
 			accessor: 'analysis_transaction_sequentiality',
 			render: item => <AnalysisStatusTag grade={item.analysis.TRANSACTION_SEQUENTIALITY.grade} />,
-			title: t('tableColumns.analysis_transaction_sequentiality'),
+			title: t('tableColumns.analysisTransactionSequentiality'),
 			width: 120,
 		},
 	];

@@ -49,7 +49,7 @@ export function PlansListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('filter_agency.label')}
+			label={t('filterAgency.label')}
 			onChange={plansListContext.actions.setFilterAgency}
 			options={parsedOptions}
 			withToggleAll

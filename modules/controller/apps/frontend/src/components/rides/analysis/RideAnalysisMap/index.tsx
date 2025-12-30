@@ -53,9 +53,9 @@ export function RideAnalysisMap() {
 			</div>
 			<Divider />
 			<Section alignItems="center" flexDirection="row" gap="md">
-				<Switch checked={showScheduledPath} label={t('switch_scheduled_path')} onChange={() => setShowScheduledPath(prev => !prev)} />
-				<Switch checked={showObservedPath} label={t('switch_observed_path')} onChange={() => setShowObservedPath(prev => !prev)} />
-				<Switch checked={showGeofences} label={t('switch_geofences')} onChange={() => setShowGeofences(prev => !prev)} />
+				<Switch checked={showScheduledPath} label={t('switchScheduledPath')} onChange={() => setShowScheduledPath(prev => !prev)} />
+				<Switch checked={showObservedPath} label={t('switchObservedPath')} onChange={() => setShowObservedPath(prev => !prev)} />
+				<Switch checked={showGeofences} label={t('switchGeofences')} onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
 			{/* <Divider /> */}
 			{/* <Section alignItems="center" flexDirection="row" gap="md">

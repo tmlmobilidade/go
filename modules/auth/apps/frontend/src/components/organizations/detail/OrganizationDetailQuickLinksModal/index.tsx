@@ -54,8 +54,8 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 	// B. Handle actions
 
 	const handleSave = () => {
-		if (!newLink.title || !newLink.href || !newLink.icon) alert(t('error.missing_fields'));
-		if (!newLink.href) return alert(t('error.wrong_url'));
+		if (!newLink.title || !newLink.href || !newLink.icon) alert(t('error.missingFields'));
+		if (!newLink.href) return alert(t('error.wrongUrl'));
 		closeModal(QUICK_LINKS_MODAL_ID);
 		handleSubmit(newLink);
 	};
@@ -79,7 +79,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 			/>
 			<TextInput
 				key="link-href"
-				error={isUrl(newLink.href) ? null : t('error.wrong_url')}
+				error={isUrl(newLink.href) ? null : t('error.wrongUrl')}
 				label={t('fields.link')}
 				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
 				value={newLink.href}

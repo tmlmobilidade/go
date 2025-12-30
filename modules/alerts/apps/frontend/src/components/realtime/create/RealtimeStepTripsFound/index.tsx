@@ -36,12 +36,12 @@ export function RealtimeStepTripsFound() {
 				<Label>{t('title')}</Label>
 				<div className={styles.tripsActionsContainer}>
 					<Button
-						label={t('add_all')}
+						label={t('addAll')}
 						onClick={() => realtimeContext.actions.addAllTrips(ridesContext.data.rides)}
 						variant="primary"
 					/>
 					<Button
-						label={t('clear_filters')}
+						label={t('clearFilters')}
 						onClick={ridesContext.actions.clearFilters}
 						variant="danger"
 					/>

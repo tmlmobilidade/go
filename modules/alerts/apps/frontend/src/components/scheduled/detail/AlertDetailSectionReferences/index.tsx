@@ -48,8 +48,8 @@ export function AlertDetailSectionReferences() {
 				<MultiSelect
 					key={alertDetailContext.data.form.key('municipality_ids')}
 					data={municipalitiesOptions}
-					description={t('municipalities_description')}
-					label={t('municipalities_label')}
+					description={t('municipalitiesDescription')}
+					label={t('municipalitiesLabel')}
 					onChange={ids => alertDetailContext.data.form.setFieldValue('municipality_ids', ids)}
 					value={alertDetailContext.data.form.values.municipality_ids}
 				/>

@@ -29,7 +29,7 @@ export function RealtimeStepTripsFilters() {
 			<Grid columns="ab" gap="sm">
 				<LineSelect
 					data={ridesContext.data.filteredLines}
-					label={t('fields.line_select_label')}
+					label={t('fields.lineSelectLabel')}
 					loading={ridesContext.flags.isFiltering}
 					onSelectLineId={ridesContext.actions.setFilterLineId}
 					selectedLineId={ridesContext.filters.lineId}
@@ -37,7 +37,7 @@ export function RealtimeStepTripsFilters() {
 				/>
 				<StopSelect
 					data={ridesContext.data.filteredStops}
-					label={t('fields.stop_select_label')}
+					label={t('fields.stopSelectLabel')}
 					loading={ridesContext.flags.isFiltering}
 					onSelectStopId={ridesContext.actions.setFilterStopId}
 					selectedStopId={ridesContext.filters.stopId}

@@ -27,18 +27,18 @@ export function UserCreateBasicInfo() {
 			<Grid columns="ab" gap="xl">
 				<TextInput
 					key={userCreateContext.data.form.key('first_name')}
-					label={t('fields.first_name')}
+					label={t('fields.firstName')}
 					maxLength={255}
-					placeholder={t('fields.first_name_placeholder')}
+					placeholder={t('fields.firstNamePlaceholder')}
 					withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 					data-autofocus
 					{...userCreateContext.data.form.getInputProps('first_name')}
 				/>
 				<TextInput
 					key={userCreateContext.data.form.key('last_name')}
-					label={t('fields.last_name')}
+					label={t('fields.lastName')}
 					maxLength={255}
-					placeholder={t('fields.last_name_placeholder')}
+					placeholder={t('fields.lastNamePlaceholder')}
 					withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 					{...userCreateContext.data.form.getInputProps('last_name')}
 				/>
@@ -48,7 +48,7 @@ export function UserCreateBasicInfo() {
 					key={userCreateContext.data.form.key('email')}
 					label={t('fields.email')}
 					leftSection={<IconMail size={22} />}
-					placeholder={t('fields.email_placeholder')}
+					placeholder={t('fields.emailPlaceholder')}
 					withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 					{...userCreateContext.data.form.getInputProps('email')}
 				/>

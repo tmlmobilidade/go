@@ -226,13 +226,13 @@
 		}
 	},
 	"dates": {
-		"day_types": {
-			"day_type_1": "Dias úteis",
-			"day_type_2": "Sábados",
-			"day_type_3": "Domingos e feriados"
+		"dayTypes": {
+			"dayType1": "Dias úteis",
+			"dayType2": "Sábados",
+			"dayType3": "Domingos e feriados"
 		},
 		"formatted": "{date, date, ::EEEE, dd MMMM yyyy}",
-		"formatted_short": "{date, date, ::dd MMMM yyyy}",
+		"formattedShort": "{date, date, ::dd MMMM yyyy}",
 		"holiday": "Feriado"
 	},
 	"systemStatus": {
@@ -241,10 +241,10 @@
 		"tooltip": "Índice global de desempenho operacional. Calculado a partir das principais métricas ponderadas do sistema (pontualidade, viagens válidas, atrasos, etc.).",
 		"warning": "Hoje a operação está a *value* da performance ideal."
 	},
-	"updated_at": {
+	"updatedAt": {
 		"days": "{count, plural, one {# dia} other {# dias}}",
 		"hours": "{count, plural, one {# hora} other {# horas}}",
-		"just_now": "instantes",
+		"justNow": "instantes",
 		"minutes": "{count, plural, one {# minuto} other {# minutos}}",
 		"relative": "Atualizado há {value}"
 	}

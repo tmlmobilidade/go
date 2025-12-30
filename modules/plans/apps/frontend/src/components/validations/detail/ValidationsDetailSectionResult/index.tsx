@@ -20,12 +20,12 @@ export function ValidationsDetailSectionResult() {
 
 	const validationsDetailContext = useValidationsDetailContext();
 
-	const { t } = useTranslation('plans', { keyPrefix: 'validations.detail.section_result' });
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.detail.sectionResult' });
 
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
 			accessor: 'file_name',
-			title: t('tableColumns.file_name'),
+			title: t('tableColumns.fileName'),
 			width: 180,
 		},
 		{

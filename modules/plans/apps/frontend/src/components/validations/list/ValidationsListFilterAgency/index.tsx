@@ -16,7 +16,7 @@ export function ValidationsListFilterAgency() {
 
 	const agenciesContext = useAgenciesContext();
 	const validationsListContext = useValidationsListContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'validations.list.filterBar.filter_agency' });
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.list.filterBar.filterAgency' });
 
 	//
 	// B. Transform data

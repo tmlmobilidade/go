@@ -39,7 +39,7 @@ export function PlansList() {
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PlansListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: t('tableColumns.agency_id_normalized'),
+			title: t('tableColumns.agencyIdNormalized'),
 			width: 300,
 		},
 		{
@@ -51,19 +51,19 @@ export function PlansList() {
 					validityStatus={item.validity_status}
 				/>
 			),
-			title: t('tableColumns.gtfs_feed_info'),
+			title: t('tableColumns.gtfsFeedInfo'),
 			width: 310,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.controller?.status} timestamp={item.apps?.controller?.timestamp} />,
-			title: t('tableColumns.apps_controller'),
+			title: t('tableColumns.appsController'),
 			width: 220,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.merger?.status} timestamp={item.apps?.merger?.timestamp} />,
-			title: t('tableColumns.apps_merger'),
+			title: t('tableColumns.appsMerger'),
 			width: 220,
 		},
 	];

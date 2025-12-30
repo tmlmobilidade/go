@@ -47,7 +47,7 @@ export function AlertsListFilterPublishStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('publish_status')}
+			label={t('publishStatus')}
 			onChange={alertsListContext.actions.setFilterPublishStatus}
 			options={parsedOptions}
 			withToggleAll

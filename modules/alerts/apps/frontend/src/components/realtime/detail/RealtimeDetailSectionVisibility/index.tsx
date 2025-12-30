@@ -32,7 +32,7 @@ export function RealtimeDetailSectionVisibility() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					label={t('fields.publish_start_date_label')}
+					label={t('fields.publishStartDateLabel')}
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('publish_start_date')}
 					value={startDateValue}
@@ -41,7 +41,7 @@ export function RealtimeDetailSectionVisibility() {
 					}}
 				/>
 				<DateTimePicker
-					label={t('fields.publish_end_date_label')}
+					label={t('fields.publishEndDateLabel')}
 					clearable
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('publish_end_date')}

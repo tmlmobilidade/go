@@ -36,7 +36,7 @@ export function AgencyPermissionMultiselect({ description, disabled, label, onCh
 	}));
 
 	agencyOptions.unshift({
-		label: t('all_label'),
+		label: t('allLabel'),
 		value: PermissionCatalog.ALLOW_ALL_FLAG,
 	});
 

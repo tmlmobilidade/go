@@ -54,7 +54,7 @@ export function UserCreateOrganizationAndRoles() {
 					clearable={false}
 					data={organizationItems}
 					label={t('fields.organization')}
-					placeholder={t('fields.organization_placeholder')}
+					placeholder={t('fields.organizationPlaceholder')}
 					required
 					{...userCreateContext.data.form.getInputProps('organization_id')}
 				/>
@@ -62,7 +62,7 @@ export function UserCreateOrganizationAndRoles() {
 					key={userCreateContext.data.form.key('role_ids')}
 					data={availableRoles}
 					label={t('fields.roles')}
-					placeholder={t('fields.roles_placeholder')}
+					placeholder={t('fields.rolesPlaceholder')}
 					{...userCreateContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>

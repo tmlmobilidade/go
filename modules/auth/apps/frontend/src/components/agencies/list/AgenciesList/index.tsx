@@ -29,7 +29,7 @@ export function AgenciesList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('tableHeaderID'),
+			title: t('tableHeaderId'),
 			width: 50,
 		},
 		{

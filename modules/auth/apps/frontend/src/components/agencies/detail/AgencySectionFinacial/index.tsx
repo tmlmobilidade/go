@@ -39,16 +39,16 @@ export function AgencySectionFinacial() {
 				<Grid columns="ab" gap="lg">
 					<NumberInput
 						key={agencyDetailContext.data.form.key('financials.price_per_km')}
-						label={t('fields.price_per_km')}
-						placeholder={t('fields.price_per_km_placeholder')}
+						label={t('fields.pricePerKm')}
+						placeholder={t('fields.pricePerKmPlaceholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						step={0.01}
 						{...agencyDetailContext.data.form.getInputProps('financials.price_per_km')}
 					/>
 					<TextInput
 						defaultValue={totalVkmsPerYear.toLocaleString('pt-PT', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-						label={t('fields.total_vkm_per_year')}
-						placeholder={t('fields.total_vkm_per_year_placeholder')}
+						label={t('fields.totalVkmPerYear')}
+						placeholder={t('fields.totalVkmPerYearPlaceholder')}
 						readOnly
 					/>
 				</Grid>

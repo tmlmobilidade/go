@@ -33,7 +33,7 @@ export function RealtimeList() {
 		{
 			accessor: 'publish_status',
 			render: item => <AlertTagPublishStatus value={item.publish_status} />,
-			title: t('tableColumns.publish_status'),
+			title: t('tableColumns.publishStatus'),
 			width: 150,
 		},
 		{
@@ -50,13 +50,13 @@ export function RealtimeList() {
 		{
 			accessor: 'publish_start_date',
 			render: item => <AlertsListCellDate value={item.publish_start_date} />,
-			title: t('tableColumns.publish_start_date'),
+			title: t('tableColumns.publishStartDate'),
 			width: 300,
 		},
 		{
 			accessor: 'publish_end_date',
 			render: item => <AlertsListCellDate value={item.publish_end_date} />,
-			title: t('tableColumns.publish_end_date'),
+			title: t('tableColumns.publishEndDate'),
 			width: 300,
 		},
 		{

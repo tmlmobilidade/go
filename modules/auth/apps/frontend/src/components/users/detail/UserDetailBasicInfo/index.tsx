@@ -31,18 +31,18 @@ export function UserDetailBasicInfo() {
 				<Grid columns="ab" gap="xl">
 					<TextInput
 						key={userDetailContext.data.form.key('first_name')}
-						label={t('fields.first_name')}
+						label={t('fields.firstName')}
 						maxLength={255}
-						placeholder={t('fields.first_name_placeholder')}
+						placeholder={t('fields.firstNamePlaceholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('first_name')}
 					/>
 					<TextInput
 						key={userDetailContext.data.form.key('last_name')}
-						label={t('fields.last_name')}
+						label={t('fields.lastName')}
 						maxLength={255}
-						placeholder={t('fields.last_name_placeholder')}
+						placeholder={t('fields.lastNamePlaceholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('last_name')}
@@ -51,7 +51,7 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('email')}
 						label={t('fields.email')}
 						leftSection={<IconMail size={22} />}
-						placeholder={t('fields.email_placeholder')}
+						placeholder={t('fields.emailPlaceholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 						{...userDetailContext.data.form.getInputProps('email')}
@@ -60,7 +60,7 @@ export function UserDetailBasicInfo() {
 						key={userDetailContext.data.form.key('phone')}
 						label={t('fields.phone')}
 						leftSection={<IconPhone size={22} />}
-						placeholder={t('fields.phone_placeholder')}
+						placeholder={t('fields.phonePlaceholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...userDetailContext.data.form.getInputProps('phone')}
@@ -68,9 +68,9 @@ export function UserDetailBasicInfo() {
 					<PasswordInput
 						key={userDetailContext.data.form.key('password')}
 						autoComplete="new-password"
-						label={t('fields.change_password')}
+						label={t('fields.changePassword')}
 						onChange={event => userDetailContext.actions.handleChangePassword(event.target.value)}
-						placeholder={t('fields.password_placeholder')}
+						placeholder={t('fields.passwordPlaceholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 					/>
 				</Grid>

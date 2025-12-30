@@ -32,9 +32,9 @@ export function OrganizationDetailBasicInfo() {
 				<Grid columns="aab" gap="lg">
 					<TextInput
 						key={organizationDetailContext.data.form.key('long_name')}
-						label={t('fields.long_name')}
+						label={t('fields.longName')}
 						maxLength={255}
-						placeholder={t('fields.long_name_placeholder')}
+						placeholder={t('fields.longNamePlaceholder')}
 						readOnly={organizationDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateOrganizationSchema.shape.long_name}
 						{...organizationDetailContext.data.form.getInputProps('long_name')}
@@ -53,13 +53,13 @@ export function OrganizationDetailBasicInfo() {
 					<Grid columns="ab" gap="lg">
 						<UploadImage
 							imageUrl={organizationDetailContext.data.logoDarkUrl}
-							label={t('fields.logo_dark')}
+							label={t('fields.logoDark')}
 							onDelete={() => organizationDetailContext.actions.deleteImage('dark')}
 							onFileChange={organizationDetailContext.actions.fileChangedDark}
 						/>
 						<UploadImage
 							imageUrl={organizationDetailContext.data.logoLightUrl}
-							label={t('fields.logo_light')}
+							label={t('fields.logoLight')}
 							onDelete={() => organizationDetailContext.actions.deleteImage('light')}
 							onFileChange={organizationDetailContext.actions.fileChangedLight}
 						/>

@@ -15,7 +15,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysis_simple_three_events' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.analysisSimpleThreeEvents' });
 
 	//
 	// B. Transform data

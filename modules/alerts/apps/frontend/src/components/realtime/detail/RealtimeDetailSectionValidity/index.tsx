@@ -32,7 +32,7 @@ export function RealtimeDetailSectionValidity() {
 		>
 			<Section flexDirection="row" gap="md">
 				<DateTimePicker
-					label={t('fields.active_period_start_date_label')}
+					label={t('fields.activePeriodStartDateLabel')}
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('active_period_start_date')}
 					value={startDateValue}
@@ -41,7 +41,7 @@ export function RealtimeDetailSectionValidity() {
 					}}
 				/>
 				<DateTimePicker
-					label={t('fields.active_period_end_date_label')}
+					label={t('fields.activePeriodEndDateLabel')}
 					clearable
 					fullWidth
 					{...realtimeDetailContext.data.form.getInputProps('active_period_end_date')}

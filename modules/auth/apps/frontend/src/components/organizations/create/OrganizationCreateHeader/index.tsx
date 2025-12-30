@@ -32,7 +32,7 @@ export function OrganizationCreateHeader() {
 			<Button
 				disabled={!organizationCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label={t('publish_button_label')}
+				label={t('publishButtonLabel')}
 				loading={organizationCreateContext.flags.isSaving}
 				onClick={organizationCreateContext.actions.saveOrganization}
 				variant="primary"

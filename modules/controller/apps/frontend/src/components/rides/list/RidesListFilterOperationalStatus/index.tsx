@@ -15,7 +15,7 @@ export function RidesListFilterOperationalStatus() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.operational_status' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.operationalStatus' });
 
 	//
 	// B. Transform data

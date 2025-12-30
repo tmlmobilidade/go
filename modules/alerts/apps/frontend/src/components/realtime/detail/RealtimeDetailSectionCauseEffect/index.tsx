@@ -49,16 +49,16 @@ export function RealtimeDetailSectionCauseEffect() {
 				<div className={styles.container}>
 					<Combobox
 						data={causeItems}
-						description={t('fields.cause_description')}
-						label={t('fields.cause_label')}
+						description={t('fields.causeDescription')}
+						label={t('fields.causeLabel')}
 						{...realtimeDetailContext.data.form.getInputProps('cause')}
 					/>
 				</div>
 				<div className={styles.container}>
 					<Combobox
 						data={effectItems}
-						description={t('fields.effect_description')}
-						label={t('fields.effect_label')}
+						description={t('fields.effectDescription')}
+						label={t('fields.effectLabel')}
 						{...realtimeDetailContext.data.form.getInputProps('effect')}
 					/>
 				</div>

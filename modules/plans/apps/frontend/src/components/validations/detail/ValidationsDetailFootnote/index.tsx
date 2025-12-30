@@ -15,7 +15,7 @@ export function ValidationsDetailFootnote() {
 	// A. Setup variables
 
 	const validationsDetailContext = useValidationsDetailContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'validations.detail.foot_note' });
+	const { t } = useTranslation('plans', { keyPrefix: 'validations.detail.footNote' });
 
 	//
 	// B. Transform data
@@ -34,7 +34,7 @@ export function ValidationsDetailFootnote() {
 
 	return (
 		<Section>
-			<Label size="sm"><span dangerouslySetInnerHTML={{ __html: t('created_by_label', { createdBy: validationsDetailContext.data.file.created_by, formattedDateString: formattedDateString }) }} /></Label>
+			<Label size="sm"><span dangerouslySetInnerHTML={{ __html: t('createdByLabel', { createdBy: validationsDetailContext.data.file.created_by, formattedDateString: formattedDateString }) }} /></Label>
 			<Label size="sm">{t('label')}</Label>
 		</Section>
 	);

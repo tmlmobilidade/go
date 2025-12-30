@@ -21,7 +21,7 @@ export function RideAnalysisAudits() {
 	return (
 		<Collapsible description={t('description')} title={t('title')}>
 			<Section>
-				<Label size="lg" caps>{t('no_data')}</Label>
+				<Label size="lg" caps>{t('noData')}</Label>
 			</Section>
 		</Collapsible>
 	);

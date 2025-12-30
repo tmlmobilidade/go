@@ -25,8 +25,8 @@ export function ScheduledAlertCreateSectionTitle() {
 		<Section gap="md">
 			<TextInput
 				key={scheduledAlertCreateContext.data.form.key('title')}
-				description={t('fields.title_description')}
-				label={t('fields.title_label')}
+				description={t('fields.titleDescription')}
+				label={t('fields.titleLabel')}
 				maxLength={255}
 				data-autofocus
 				withAsterisk
@@ -34,8 +34,8 @@ export function ScheduledAlertCreateSectionTitle() {
 			/>
 			<Textarea
 				key={scheduledAlertCreateContext.data.form.key('description')}
-				description={t('fields.description_description')}
-				label={t('fields.description_label')}
+				description={t('fields.descriptionDescription')}
+				label={t('fields.descriptionLabel')}
 				maxRows={10}
 				minRows={4}
 				withAsterisk={!CreateAlertSchema.shape.description.isOptional()}

@@ -30,42 +30,42 @@ export function AlertDetailSectionTitle() {
 			<Section gap="md">
 				<TextInput
 					key={alertDetailContext.data.form.key('title')}
-					description={t('fields.title_description')}
-					label={t('fields.title_label')}
+					description={t('fields.titleDescription')}
+					label={t('fields.titleLabel')}
 					maxLength={255}
-					placeholder={t('fields.title_placeholder')}
+					placeholder={t('fields.titlePlaceholder')}
 					withAsterisk
 					{...alertDetailContext.data.form.getInputProps('title')}
 				/>
 				<Textarea
 					key={alertDetailContext.data.form.key('description')}
-					description={t('fields.description_description')}
-					label={t('fields.description_label')}
+					description={t('fields.descriptionDescription')}
+					label={t('fields.descriptionLabel')}
 					maxRows={10}
 					minRows={4}
-					placeholder={t('fields.description_placeholder')}
+					placeholder={t('fields.descriptionPlaceholder')}
 					autosize
 					withAsterisk
 					{...alertDetailContext.data.form.getInputProps('description')}
 				/>
 				<UploadImage
 					imageUrl={alertDetailContext.data.imageUrl?.url}
-					label={t('fields.image_label')}
+					label={t('fields.imageLabel')}
 					onDelete={alertDetailContext.actions.deleteImage}
 					onFileChange={alertDetailContext.actions.fileChanged}
 				/>
 				<CoordinatesInput
 					key={alertDetailContext.data.form.key('coordinates')}
-					description={t('fields.coordinates_description')}
+					description={t('fields.coordinatesDescription')}
 					value={alertDetailContext.data.form.values.coordinates}
 					{...alertDetailContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput
 					key={alertDetailContext.data.form.key('link')}
-					description={t('fields.link_description')}
-					label={t('fields.link_label')}
+					description={t('fields.linkDescription')}
+					label={t('fields.linkLabel')}
 					leftSection={<IconLink size={18} />}
-					placeholder={t('fields.link_placeholder')}
+					placeholder={t('fields.linkPlaceholder')}
 					{...alertDetailContext.data.form.getInputProps('link')}
 				/>
 			</Section>

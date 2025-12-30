@@ -25,12 +25,12 @@ export function UserCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateUserModal} type="close" />
-			<Tag label={t('new_user_button_label')} variant="secondary" />
+			<Tag label={t('newUserButtonLabel')} variant="secondary" />
 			<Spacer />
 			<Button
 				disabled={!userCreateContext.data.form.isValid()}
 				icon={<IconPlus size={28} />}
-				label={t('save_button_label')}
+				label={t('saveButtonLabel')}
 				loading={userCreateContext.flags.isSaving}
 				onClick={userCreateContext.actions.saveUser}
 				variant="primary"

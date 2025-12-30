@@ -15,7 +15,7 @@ export function RidesListFilterDelayStatus() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.delay_status' });
+	const { t } = useTranslation('controller', { keyPrefix: 'rides.list.filterBar.delayStatus' });
 
 	//
 	// B. Transform data

@@ -17,7 +17,7 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	const meContext = useMeContext();
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'detail.section_pcgi_legacy' });
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.sectionPcgiLegacy' });
 
 	//
 	// B. Transform data
@@ -34,15 +34,15 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	return (
 		<Collapsible
-			description="Dados necessários para manter a PCGI em funcionamento."
-			title="PCGI Legacy"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section gap="sm">
 				<TextInput
 					key={planDetailContext.data.form.key('pcgi_legacy.operation_plan_id')}
-					label="Operation Plan ID da PCGI"
+					label={t('operationPlanIdLabel')}
 					miw="50%"
-					placeholder="operationPlanId"
+					placeholder={t('operationPlanIdPlaceholder')}
 					{...planDetailContext.data.form.getInputProps('pcgi_legacy.operation_plan_id')}
 					readOnly={planDetailContext.flags.isReadOnly || !canEdit}
 				/>

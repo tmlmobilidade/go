@@ -29,7 +29,7 @@ export function ScheduledAlertCreateHeader() {
 			<Button
 				disabled={!scheduledAlertCreateContext.data.form.isValid()}
 				icon={<IconPlus size={28} />}
-				label={t('new_alert_draft_button_label')}
+				label={t('newAlertDraftButtonLabel')}
 				loading={scheduledAlertCreateContext.flags.isSaving}
 				onClick={scheduledAlertCreateContext.actions.saveAlert}
 				variant="secondary"

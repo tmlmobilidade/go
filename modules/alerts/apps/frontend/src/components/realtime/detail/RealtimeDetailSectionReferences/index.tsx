@@ -41,14 +41,14 @@ export function RealtimeDetailSectionAffectedRides() {
 					status={getDelayStatus(item.start_time_scheduled, item.start_time_observed)}
 				/>
 			),
-			title: t('fields.start_time'),
+			title: t('fields.startTime'),
 			width: 300,
 		},
 	];
 
 	return (
 		<Section gap="md">
-			<Label size="md" caps>{t('fields.affected_rides')}</Label>
+			<Label size="md" caps>{t('fields.affectedRides')}</Label>
 			<div style={{ overflowX: 'scroll', width: '100%' }}>
 				<DataTable
 					columns={columns as DataTableColumn<unknown>[]}

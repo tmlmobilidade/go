@@ -16,7 +16,7 @@ export function PlanDetailSectionFeedInfo() {
 
 	const meContext = useMeContext();
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans', { keyPrefix: 'detail.section_feed_info' });
+	const { t } = useTranslation('plans', { keyPrefix: 'plans.detail.sectionFeedInfo' });
 
 	//
 	// B. Transform data

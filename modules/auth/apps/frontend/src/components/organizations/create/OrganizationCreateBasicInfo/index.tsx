@@ -27,9 +27,9 @@ export function OrganizationCreateBasicInfo() {
 			<Grid columns="aab" gap="lg">
 				<TextInput
 					key={organizationCreateContext.data.form.key('long_name')}
-					label={t('longname_label')}
+					label={t('longnameLabel')}
 					maxLength={255}
-					placeholder={t('longname_placeholder')}
+					placeholder={t('longnamePlaceholder')}
 					withAsterisk={!CreateOrganizationSchema.shape.long_name}
 					data-autofocus
 					{...organizationCreateContext.data.form.getInputProps('long_name')}

@@ -24,7 +24,7 @@ export function RealtimeCreate() {
 	// C. Render components
 
 	if (!hasPermissionToCreate) {
-		return <ErrorDisplay message={t('no_permission')} />;
+		return <ErrorDisplay message={t('noPermission')} />;
 	}
 
 	return (
