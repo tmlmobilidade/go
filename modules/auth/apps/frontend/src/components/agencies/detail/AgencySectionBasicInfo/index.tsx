@@ -41,9 +41,9 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('short_name')}
-						label={t('fields.short_name')}
+						label={t('fields.shortName')}
 						maxLength={3}
-						placeholder={t('fields.short_name_placeholder')}
+						placeholder={t('fields.shortNamePlaceholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('short_name')}
@@ -78,9 +78,9 @@ export function AgencyDetailBasicInfo() {
 						{...agencyDetailContext.data.form.getInputProps('website_url')}
 					/>
 					<TextInput
-						key={agencyDetailContext.data.form.key('fare_url')}
-						label={t('fields.fare_url')}
-						placeholder={t('fields.fare_url_placeholder')}
+						key={agencyDetailContext.data.form.key('fareUrl')}
+						label={t('fields.fareUrl')}
+						placeholder={t('fields.fareUrlPlaceholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.fare_url.isOptional()}
@@ -88,9 +88,12 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<Select
 						key={agencyDetailContext.data.form.key('timezone')}
-						data={Dates.TIMEZONE_LIST}
 						label={t('fields.timezone')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
+						data={Dates.TIMEZONE_LIST.map(tz => ({
+							label: tz,
+							value: tz,
+						}))}
 						{...agencyDetailContext.data.form.getInputProps('timezone')}
 					/>
 				</Grid>

@@ -41,9 +41,9 @@ export function OrganizationDetailBasicInfo() {
 					/>
 					<TextInput
 						key={organizationDetailContext.data.form.key('short_name')}
-						label={t('fields.short_name')}
+						label={t('fields.shortName')}
 						maxLength={10}
-						placeholder={t('fields.short_name_placeholder')}
+						placeholder={t('fields.shortNamePlaceholder')}
 						readOnly={organizationDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateOrganizationSchema.shape.short_name}
 						{...organizationDetailContext.data.form.getInputProps('short_name')}

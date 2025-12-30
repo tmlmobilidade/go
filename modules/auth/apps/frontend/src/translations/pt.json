@@ -8,16 +8,12 @@
 					"emailPlaceholder": "",
 					"fareUrl": "URL de Tarifário da Agência",
 					"fareUrlPlaceholder": "https://www.carrismetropolitana.pt/tar",
-					"fare_url": "URL de Tarifário da Agência",
-					"fare_url_placeholder": "https://www.carrismetropolitana.pt/tar",
 					"name": "Nome do Operador",
 					"namePlaceholder": "912345678",
 					"phone": "Telemóvel da Agência",
 					"phonePlaceholder": "",
 					"shortName": "Nome Curto",
 					"shortNamePlaceholder": "CM",
-					"short_name": "Nome Curto",
-					"short_name_placeholder": "CM",
 					"timezone": "Timezone da Agência",
 					"website": "URL da Agência",
 					"websitePlaceholder": "https://www.carrismetropolitana.pt"
@@ -98,12 +94,6 @@
 				"shortnameLabel": "Sigla",
 				"shortnamePlaceholder": "CM"
 			},
-			"basic_info": {
-				"longnameLabel": "Nome da organização",
-				"longnamePlaceholder": "Carris Metropolitana",
-				"shortname_label": "Sigla",
-				"shortname_placeholder": "CM"
-			},
 			"header": {
 				"publishButtonLabel": "Publicar",
 				"title": "Criar Organização"
@@ -118,9 +108,7 @@
 					"longName": "Nome da Organização",
 					"longNamePlaceholder": "Carris Metropolitana",
 					"shortName": "Sigla",
-					"shortNamePlaceholder": "CM",
-					"short_name": "Sigla",
-					"short_name_placeholder": "CM"
+					"shortNamePlaceholder": "CM"
 				},
 				"title": "Informações gerais"
 			},
@@ -142,18 +130,6 @@
 				"newOrganizationButtonLabel": "Nova organização"
 			},
 			"quickLinks": {
-				"addQuickLinkButtonLabel": "Adicionar Link Rápido",
-				"description": "Links rápidos que aparecem na página inicial.",
-				"noOrganizationLabel": "Crie primeiro a organização para adicionar links rápidos.",
-				"tableColumns": {
-					"actions": "Ações",
-					"icon": "Ícone",
-					"link": "Link",
-					"name": "Nome"
-				},
-				"title": "Links Rápidos"
-			},
-			"quick_links": {
 				"addQuickLinkButtonLabel": "Adicionar Link Rápido",
 				"description": "Links rápidos que aparecem na página inicial.",
 				"noOrganizationLabel": "Crie primeiro a organização para adicionar links rápidos.",

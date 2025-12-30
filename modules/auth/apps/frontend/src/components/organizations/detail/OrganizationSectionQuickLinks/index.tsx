@@ -23,7 +23,7 @@ export function OrganizationDetailQuickLinks() {
 
 	const organizationDetailContext = useOrganizationsDetailContext();
 
-	const { t } = useTranslation('auth', { keyPrefix: 'organizations.detail.quick_links' });
+	const { t } = useTranslation('auth', { keyPrefix: 'organizations.detail.quickLinks' });
 
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{

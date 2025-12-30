@@ -20,13 +20,13 @@ export interface TopicDefinition {
 }
 
 export const TOPICS = {
-	COVERAGE_AVAILABILITY: 'coverage-availability',
-	CUSTOMER_SATISFACTION: 'customer-satisfaction',
+	COVERAGE_AVAILABILITY: 'coverageAvailability',
+	CUSTOMER_SATISFACTION: 'customerSatisfaction',
 	DEMAND: 'demand',
 	INSPECTIONS: 'inspections',
-	OPERATIONAL_COSTS: 'operational_costs',
+	OPERATIONAL_COSTS: 'operationalCosts',
 	REVENUE: 'revenue',
-	SERVICE_COMPLIANCE: 'service_compliance',
+	SERVICE_COMPLIANCE: 'serviceCompliance',
 	SUPPLY: 'supply',
 	SUSTAINABILITY: 'sustainability',
 } as const;
@@ -35,32 +35,32 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	{
 		dashboards: [
 			{
-				key: 'demand-by',
+				key: 'demandBy',
 				label: 'Procura por...',
 				visible: true,
 			},
 			{
-				key: 'occupancy-rate',
+				key: 'occupancyRate',
 				label: 'Taxa de ocupação', // shows load factor or seat utilization per line/time
 			},
 			{
-				key: 'oversupply-zones', // Linhas pouca procura
+				key: 'oversupplyZones', // Linhas pouca procura
 				label: 'Excesso de oferta', // identifies lines or time periods with too much capacity vs. low usage
 			},
 			{
-				key: 'undersupply-zones', // Linhas com muita procura
+				key: 'undersupplyZones', // Linhas com muita procura
 				label: 'Falta de oferta', // shows where demand exceeds supply (crowded services)
 			},
 			{
-				key: 'temporal-alignment',
+				key: 'temporalAlignment',
 				label: 'Alinhamento temporal', // compares supply and demand patterns by hour/day
 			},
 			{
-				key: 'supply-demand-ratio',
+				key: 'supplyDemandRatio',
 				label: 'Rácio oferta/procura', // aggregate indicator showing proportionality
 			},
 			{
-				key: 'efficiency-index',
+				key: 'efficiencyIndex',
 				label: 'Índice de eficiência', // synthetic KPI summarizing alignment quality
 			},
 		],
@@ -73,7 +73,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	{
 		dashboards: [
 			{
-				key: 'supply-by',
+				key: 'supplyBy',
 				label: 'Oferta por...',
 			},
 		],
@@ -103,32 +103,32 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 			},
 		],
 		icon: IconCheckupList,
-		key: 'service_compliance',
+		key: 'serviceCompliance',
 		label: 'Cumprimento de serviço',
 	},
 	{
 		dashboards: [
 			{
-				key: 'offer_evolution',
+				key: 'offerEvolution',
 				label: 'Evolução da oferta',
 			},
 			{
-				key: 'contract_compliance',
+				key: 'contractCompliance',
 				label: 'Cumprimento do contrato',
 			},
 			{
-				key: 'spatial_coverage',
+				key: 'spatialCoverage',
 				label: 'Cobertura espacial',
 			},
 		],
 		icon: IconMapPin,
-		key: 'coverage_availability',
+		key: 'coverageAvailability',
 		label: 'Cobertura e disponibilidade',
 	},
 	{
 		dashboards: [
 			{
-				key: 'fare_evasion',
+				key: 'fareEvasion',
 				label: 'Fuga ao pagamento',
 			},
 			{
@@ -143,7 +143,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	{
 		dashboards: [],
 		icon: IconBuildingFactory,
-		key: 'operational_costs',
+		key: 'operationalCosts',
 		label: 'Custos operacionais',
 	},
 	{
@@ -155,7 +155,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	{
 		dashboards: [],
 		icon: IconMoodSmile,
-		key: 'customer_satisfaction',
+		key: 'customerSatisfaction',
 		label: 'Satisfação do cliente',
 	},
 	{

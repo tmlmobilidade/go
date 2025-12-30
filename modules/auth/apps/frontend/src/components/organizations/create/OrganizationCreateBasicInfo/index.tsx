@@ -17,7 +17,7 @@ export function OrganizationCreateBasicInfo() {
 
 	const organizationCreateContext = useOrganizationCreateContext();
 
-	const { t } = useTranslation('auth', { keyPrefix: 'organizations.create.basic_info' });
+	const { t } = useTranslation('auth', { keyPrefix: 'organizations.create.basicInfo' });
 
 	//
 	// B. Render components
@@ -36,9 +36,9 @@ export function OrganizationCreateBasicInfo() {
 				/>
 				<TextInput
 					key={organizationCreateContext.data.form.key('short_name')}
-					label={t('shortname_label')}
+					label={t('shortnameLabel')}
 					maxLength={10}
-					placeholder={t('shortname_placeholder')}
+					placeholder={t('shortnamePlaceholder')}
 					withAsterisk={!CreateOrganizationSchema.shape.short_name}
 					{...organizationCreateContext.data.form.getInputProps('short_name')}
 				/>
