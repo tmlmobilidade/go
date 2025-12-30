@@ -6,7 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
-	'EMAIL_NOTIFICATIONS',
+	'ALERT_REFERENCE_TYPES',
 ] as const;
 
 export interface PermissionConfigAction {
@@ -40,16 +40,10 @@ const agencyActions: PermissionConfig = {
 
 const alertsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read_scheduled', description: 'Permite ver alertas planeados', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create_scheduled', description: 'Permite criar um alerta planeado', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update_scheduled', description: 'Permite editar um alerta planeado', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete_scheduled', description: 'Permite eliminar um alerta planeado', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'read_realtime', description: 'Permite ver alertas em tempo real', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create_realtime', description: 'Permite criar um alerta em tempo real', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update_realtime', description: 'Permite editar um alerta em tempo real', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete_realtime', description: 'Permite eliminar um alerta em tempo real', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'lock_realtime', description: 'Permite bloquear/desbloquear um alerta em tempo real', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
-		{ action: 'lock_scheduled', description: 'Permite bloquear/desbloquear um alerta planeado', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'Permite ver alertas', label: 'Ver', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'create', description: 'Permite criar um alerta', label: 'Criar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update', description: 'Permite editar um alerta', label: 'Editar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
 	scope: PermissionCatalog.all.alerts.scope,

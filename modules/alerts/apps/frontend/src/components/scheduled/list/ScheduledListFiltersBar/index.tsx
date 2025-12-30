@@ -5,6 +5,7 @@ import { ScheduledListFilterCause } from '@/components/scheduled/list/ScheduledL
 import { ScheduledListFilterEffect } from '@/components/scheduled/list/ScheduledListFilterEffect';
 import { ScheduledListFilterMunicipality } from '@/components/scheduled/list/ScheduledListFilterMunicipality';
 import { ScheduledListFilterPublishStatus } from '@/components/scheduled/list/ScheduledListFilterPublishStatus';
+import { ScheduledListFilterReferenceType } from '@/components/scheduled/list/ScheduledListFilterReferenceType';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -13,6 +14,7 @@ export function ScheduledListFiltersBar() {
 	return (
 		<FiltersBar>
 			<ScheduledListFilterAgency />
+			<ScheduledListFilterReferenceType />
 			<ScheduledListFilterPublishStatus />
 			<ScheduledListFilterCause />
 			<ScheduledListFilterEffect />

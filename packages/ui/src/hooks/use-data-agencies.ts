@@ -58,7 +58,7 @@ interface UseDataAgenciesReturnType {
  * @param props The properties to determine read-only status.
  * @returns An object containing the isCanSave flag.
  */
-export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, props: UseDataAgenciesProps<S>): UseDataAgenciesReturnType {
+export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, props?: UseDataAgenciesProps<S>): UseDataAgenciesReturnType {
 	//
 
 	//

@@ -4,10 +4,12 @@
 
 import { CheckCard } from '@/components/common/CheckCard';
 import { AgencyPermissionMultiselect } from '@/components/permissions/AgencyPermissionMultiselect';
+import { AlertReferenceTypePermissionMultiselect } from '@/components/permissions/AlertReferenceTypePermissionMultiselect';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission } from '@tmlmobilidade/types';
+import { Grid } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -44,7 +46,13 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	const selectedAgencyIds = (() => {
 		if (!currentPermissionEntry) return [];
 		if (!('resources' in currentPermissionEntry)) return [];
-		return currentPermissionEntry.resources.agency_ids || [];
+		return currentPermissionEntry.resources['agency_ids'] || [];
+	})();
+
+	const selectedAlertReferenceTypeIds = (() => {
+		if (!currentPermissionEntry) return [];
+		if (!('resources' in currentPermissionEntry)) return [];
+		return currentPermissionEntry.resources['reference_types'] || [];
 	})();
 
 	//
@@ -53,12 +61,6 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	const handleToggle = () => {
 		if (hasPermissionFromRole) return;
 		onToggle(scope, configAction.action);
-	};
-
-	const handleResourceToggle = (inputValue: string[]) => {
-		if (hasPermissionFromRole) return;
-		if (!currentPermissionEntry) return;
-		onResourceToggle(scope, configAction.action, { agency_ids: inputValue });
 	};
 
 	//
@@ -73,13 +75,25 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 			label={configAction.label}
 			onChange={handleToggle}
 		>
-			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
-				<AgencyPermissionMultiselect
-					disabled={hasPermissionFromRole}
-					onChange={handleResourceToggle}
-					value={selectedAgencyIds}
-				/>
-			)}
+			<Grid gap="md">
+
+				{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
+					<AgencyPermissionMultiselect
+						disabled={hasPermissionFromRole}
+						onChange={(inputValue: string[]) => onResourceToggle(scope, configAction.action, { agency_ids: inputValue })}
+						value={selectedAgencyIds}
+					/>
+				)}
+
+				{onResourceToggle && configAction.resources?.includes('ALERT_REFERENCE_TYPES') && (
+					<AlertReferenceTypePermissionMultiselect
+						disabled={hasPermissionFromRole}
+						onChange={(inputValue: string[]) => onResourceToggle(scope, configAction.action, { reference_types: inputValue })}
+						value={selectedAlertReferenceTypeIds}
+					/>
+				)}
+
+			</Grid>
 		</CheckCard>
 	);
 

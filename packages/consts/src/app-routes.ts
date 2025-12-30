@@ -155,7 +155,6 @@ export const API_ROUTES = Object.freeze({
 
 		// RIDES
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
-		RIDES_SELECTED: `${getAppConfig('alerts', 'api_url')}/rides/selected`,
 
 		// SCHEDULED
 		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/scheduled/${id}`,

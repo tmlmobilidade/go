@@ -5,7 +5,7 @@
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Alert, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
+import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
 import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -23,6 +23,7 @@ interface ScheduledListContextState {
 		effect: UseFilterStateListReturnType
 		municipality: UseFilterStateListReturnType
 		publish_status: UseFilterStateListReturnType
+		reference_type: UseFilterStateListReturnType
 		search: UseFilterStateStringReturnType
 	}
 	flags: {
@@ -68,6 +69,7 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterAlertReferenceType = useFilterStateList('reference_type', AlertReferenceTypeSchema.options, AlertReferenceTypeSchema.options.map(item => ({ label: item, value: item })));
 	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: item, value: item })));
 	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: item, value: item })));
@@ -98,23 +100,20 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 		if (!searchResultsData) return [];
 		// Skip if no query filters are set
 		if (filterPublishStatus.value.length === 0 && filterCause.value.length === 0 && filterEffect.value.length === 0 && filterMunicipality.value.length === 0) return searchResultsData;
-		// 1. Convert filter arrays to sets for O(1) membership checks
-		const filterPublishStatusSet = new Set(filterPublishStatus.value);
-		const filterCauseSet = new Set(filterCause.value);
-		const filterEffectSet = new Set(filterEffect.value);
-		const filterMunicipalitySet = new Set(filterMunicipality.value);
-		// 2. Filter by query filters
+		// Filter by query filters
 		return searchResultsData.filter((alert: AlertNormalized) => {
 			// Filter by agency IDs
 			if (!filterAgency.value.includes(alert.agency_id)) return false;
+			// Filter by reference type
+			if (!filterAlertReferenceType.value.includes(alert.reference_type)) return false;
 			// Filter by publish_status
-			if (!filterPublishStatusSet.has(alert.publish_status)) return false;
+			if (!filterPublishStatus.value.includes(alert.publish_status)) return false;
 			// Filter by cause
-			if (!filterCauseSet.has(alert.cause)) return false;
+			if (!filterCause.value.includes(alert.cause)) return false;
 			// Filter by effect
-			if (!filterEffectSet.has(alert.effect)) return false;
+			if (!filterEffect.value.includes(alert.effect)) return false;
 			// Filter by municipality IDs
-			if (!alert.municipality_ids.some((mId: string) => filterMunicipalitySet.has(mId))) return false;
+			if (!alert.municipality_ids.some((mId: string) => filterMunicipality.value.includes(mId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
@@ -145,6 +144,7 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 			effect: filterEffect,
 			municipality: filterMunicipality,
 			publish_status: filterPublishStatus,
+			reference_type: filterAlertReferenceType,
 			search: filterSearch,
 		},
 		flags: {
@@ -155,6 +155,7 @@ export const ScheduledListContextProvider = ({ children }: PropsWithChildren) =>
 		allScheduledData,
 		filterResultsData,
 		allScheduledLoading,
+		filterAlertReferenceType,
 		filterAgency,
 		allScheduledError,
 		filterPublishStatus,

@@ -3,7 +3,6 @@
 import { DocumentSchema } from '@/_common/document.js';
 import { PublishStatusSchema } from '@/_common/status.js';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
-import { AlertTypeSchema } from '@/alerts/alert-type.js';
 import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
 import { GtfsCauseExtendedSchema } from '@/gtfs/cause.js';
 import { GtfsEffectSchema } from '@/gtfs/effect.js';
@@ -32,7 +31,6 @@ export const AlertSchema = DocumentSchema.extend({
 		parent_id: z.string(),
 	})).default([]),
 	title: z.string(),
-	type: AlertTypeSchema,
 });
 
 export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });

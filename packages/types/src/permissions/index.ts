@@ -354,7 +354,7 @@ export class PermissionCatalog {
 		const permissionIndex = updatedPermissions.findIndex(p => p.scope === scope && p.action === action);
 		if (permissionIndex === -1) return updatedPermissions;
 		// Update the permission at the found index
-		updatedPermissions[permissionIndex]['resources'] = resources;
+		updatedPermissions[permissionIndex]['resources'] = { ...updatedPermissions[permissionIndex]['resources'], ...resources };
 		// Return the updated permissions array
 		return updatedPermissions;
 	}
