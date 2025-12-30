@@ -7,6 +7,7 @@ import { useVehiclesListContext } from '@/components/Vehicles/list/VehiclesList.
 // import { VehiclesListCellDates } from '@/components/Vehicles/list/VehiclesListCellDates';
 import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListFiltersBar';
 import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { VehicleNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
@@ -25,6 +26,17 @@ export function VehiclesList() {
 	const params = useParams<{ id?: string }>();
 
 	const vehiclesListContext = useVehiclesListContext();
+	const agenciesContext = useAgenciesContext();
+
+	// Create an object that maps each agency ID to a display string
+	// Format: { "agencyId": "agencyId - agencyName" }
+	const agency = agenciesContext.data.raw.reduce((acc, agency) => {
+	// Use the agency ID as the key
+		acc[agency._id] = agency._id + ' - ' + agency.name;
+
+		// Return the accumulator for the next iteration
+		return acc;
+	}, {} as Record<string, string>); // Initial value: empty object with string keys and values
 
 	const columns: DataTableColumn<VehicleNormalized>[] = [
 		{
@@ -35,9 +47,9 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'agency_id',
-			render: item => <Tag label={item.agency_id} />,
+			render: item => <Tag label={agency[item.agency_id]} />,
 			title: 'Operador',
-			width: 200,
+			width: 350,
 		},
 		{
 			accessor: 'license_plate',
