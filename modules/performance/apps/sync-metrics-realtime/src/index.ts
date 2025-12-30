@@ -1,44 +1,44 @@
-// /* * */
+/* * */
 
-// import { syncRealtimeDemand } from '@/tasks/sync-realtime-demand.js';
-// import { syncRealtimeServiceCompliance } from '@/tasks/sync-service-compliance.js';
-// import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
-// import { Logger } from '@tmlmobilidade/logger';
-// import { Timer } from '@tmlmobilidade/timer';
+import { syncRealtimeDemand } from '@/tasks/sync-realtime-demand.js';
+import { syncRealtimeServiceCompliance } from '@/tasks/sync-service-compliance.js';
+import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
-// /* * */
+/* * */
 
-// (async function init() {
-// 	//
+(async function init() {
+	//
 
-// 	const runOnInterval = async () => {
-// 		//
+	const runOnInterval = async () => {
+		//
 
-// 		const globalTimer = new Timer();
+		const globalTimer = new Timer();
 
-// 		Logger.title(`Starting Realtime Metrics Sync`);
-// 		Logger.divider();
+		Logger.title(`Starting Realtime Metrics Sync`);
+		Logger.divider();
 
-// 		//
+		//
 
-// 		await syncRealtimeDemand();
+		await syncRealtimeDemand();
 
-// 		await syncRealtimeServiceCompliance();
+		await syncRealtimeServiceCompliance();
 
-// 		//
+		//
 
-// 		generatePerformanceSummary();
+		generatePerformanceSummary();
 
-// 		//
+		//
 
-// 		Logger.divider();
-// 		Logger.terminate(`Finished Realtime Metrics Sync (${globalTimer.get()})`);
-// 		Logger.divider();
+		Logger.divider();
+		Logger.terminate(`Finished Realtime Metrics Sync (${globalTimer.get()})`);
+		Logger.divider();
 
-// 		setTimeout(runOnInterval, 120_000); // 2 minutes
-// 	};
+		setTimeout(runOnInterval, 120_000); // 2 minutes
+	};
 
-// 	runOnInterval();
+	runOnInterval();
 
-// 	//
-// })();
+	//
+})();
