@@ -91,6 +91,7 @@ export function VehicleDetailsInfos() {
 				/>
 
 				<NumberInput
+					key={vehiclesDetailContext.data.form.key('capacity_standing')}
 					label="Capacidade de pé"
 					readOnly={vehiclesDetailContext.flags.read_only}
 					{...vehiclesDetailContext.data.form.getInputProps('capacity_standing')}

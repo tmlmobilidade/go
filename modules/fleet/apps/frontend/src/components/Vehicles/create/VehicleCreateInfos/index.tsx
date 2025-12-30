@@ -24,15 +24,20 @@ export function VehicleCreateInfos() {
 
 	return (
 		<Section gap="md">
-			<TextInput
-				key={vehicleCreateContext.data.form.key('_id')}
+
+			<NumberInput
+				key={vehicleCreateContext.data.form.key(String('_id'))}
 				label="ID do veículo"
 				maxLength={5}
 				placeholder="Introduza o ID do veículo"
 				required={!vehicleSchema.shape._id.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('_id')}
+				onChange={(event) => {
+					const value = event.toString(); // only numbers
+					vehicleCreateContext.data.form.getInputProps('_id').onChange(value);
+				}}
 			/>
+
 			<TextInput
 				key={vehicleCreateContext.data.form.key('owner')}
 				label="Dono do veículo"
@@ -58,29 +63,17 @@ export function VehicleCreateInfos() {
 			/>
 
 			<TextInput
-				// key={vehicleCreateContext.data.form.key('license_plate')}
+				key={vehicleCreateContext.data.form.key('license_plate')}
 				label="Matrícula do veículo"
-				maxLength={8}
-				placeholder="AA-00-AA"
+				maxLength={6}
+				placeholder="AA00AA"
 				required={!vehicleSchema.shape.license_plate.isOptional()}
 				w="100%"
+				{...vehicleCreateContext.data.form.getInputProps('license_plate')}
 				onChange={(event) => {
-					// Remove formatting and invalid chars
-					const clean = event.currentTarget.value
-						.toUpperCase()
-						.replace(/[^A-Z0-9]/g, '')
-						.slice(0, 6); // 🔒 only 6 chars saved
-
-					vehicleCreateContext.data.form.setFieldValue('license_plate', clean);
+					const value = event.currentTarget.value.toUpperCase();
+					vehicleCreateContext.data.form.getInputProps('license_plate').onChange(value);
 				}}
-				value={(() => {
-					const raw = vehicleCreateContext.data.form.values.license_plate ?? '';
-
-					if (raw.length <= 2) return raw;
-					if (raw.length <= 4) return `${raw.slice(0, 2)}-${raw.slice(2)}`;
-
-					return `${raw.slice(0, 2)}-${raw.slice(2, 4)}-${raw.slice(4, 6)}`;
-				})()}
 			/>
 
 			<TextInput

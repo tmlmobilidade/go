@@ -7,14 +7,7 @@ import { VehiclePropulsionSchema } from './propulsion.js';
 import { VehicleWheelchairSchema } from './wheelchair.js';
 
 /* Example regex for license plates (adjust to your region) */
-const licensePlateRegex = /^[A-Z0-9]{1,7}$/; // simple pattern: 1-7 alphanumeric uppercase
-
-// // Async function to check uniqueness (replace with real DB check)
-// async function isLicensePlateUnique(plate: string): Promise<boolean> {
-// 	// Replace with your actual database check
-// 	const existingPlates = ['ABC123', 'XYZ789'];
-// 	return !existingPlates.includes(plate);
-// }
+const licensePlateRegex = /^([A-Z]{2}[0-9]{2}[A-Z]{2}|[0-9]{2}[A-Z]{2}[0-9]{2})$/;
 
 /* * */
 
@@ -24,15 +17,15 @@ export const vehicleSchema = DocumentSchema.extend({
 	capacity_seated: z.number(),
 	capacity_standing: z.number(),
 	contactless: z.boolean().default(false),
-	emission_class: z.string(VehicleEmissionSchema).default(''),
-	license_plate: z.string().regex(licensePlateRegex, 'Invalid license plate format'),
+	emission_class: z.string(VehicleEmissionSchema),
+	license_plate: z.string().regex(licensePlateRegex, 'Formato de matrícula inválido'),
 	make: z.string(),
 	model: z.string(),
 	owner: z.string(),
 	passenger_counting: z.boolean().default(false),
-	propulsion: z.string(VehiclePropulsionSchema).default(''),
-	registration_date: z.string(operationalDateSchema).default(''),
-	wheelchair_acessible: z.string(VehicleWheelchairSchema).default(''),
+	propulsion: z.string(VehiclePropulsionSchema),
+	registration_date: z.string(operationalDateSchema),
+	wheelchair_acessible: z.string(VehicleWheelchairSchema),
 });
 
 export const CreateVehicleSchema = vehicleSchema.omit({ created_at: true, updated_at: true });
