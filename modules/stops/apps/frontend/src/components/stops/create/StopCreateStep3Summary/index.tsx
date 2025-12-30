@@ -6,6 +6,7 @@ import { useStopCreateContext } from '@/components/stops/create/StopCreate.conte
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Divider, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -19,6 +20,7 @@ export function StopCreateStep3Summary() {
 
 	const locationsContext = useLocationsContext();
 	const stopCreateContext = useStopCreateContext();
+	const { t } = useTranslation('stops', { keyPrefix: 'create.step3.summary' });
 
 	//
 	// B. Transform data
@@ -57,8 +59,8 @@ export function StopCreateStep3Summary() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome curto" value={stopCreateContext.data.form.values.short_name} bordered />
-					<ValueDisplay label="Nome tts" value={stopCreateContext.data.form.values.tts_name} bordered />
+					<ValueDisplay label={t('shortName')} value={stopCreateContext.data.form.values.short_name} bordered />
+					<ValueDisplay label={t('ttsName')} value={stopCreateContext.data.form.values.tts_name} bordered />
 				</Grid>
 			</Section>
 

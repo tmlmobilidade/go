@@ -1,0 +1,60 @@
+{
+	"create": {
+		"alerts": {
+			"invalidCoordinates": "Coordenadas inválidas. Por favor verifique os valores introduzidos.",
+			"unknownError": "Erro desconhecido."
+		},
+		"controls": {
+			"back": "Voltar",
+			"create": "Criar Paragem",
+			"next": "Próximo Passo"
+		},
+		"header": {
+			"stepLabel": "Passo {current} de {total}",
+			"title": "Nova Paragem"
+		},
+		"step1": {
+			"locations": {
+				"district": "Distrito",
+				"locality": "Localidade",
+				"municipality": "Município",
+				"parish": "Freguesia"
+			}
+		},
+		"step2": {
+			"fields": {
+				"fullName": {
+					"description": "Este é o nome principal e será apresentado nos canais digitais.",
+					"label": "Designação Completa da Paragem"
+				},
+				"shortName": {
+					"description": "Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos.",
+					"label": "Nome Curto (automático)"
+				},
+				"ttsName": {
+					"description": "O nome a ser utilizado pelo sistema de TTS (Text-to-Speech).",
+					"label": "Nome TTS (automático)"
+				}
+			},
+			"instructions": {
+				"text": "Instruções para o passo 2 aqui"
+			}
+		},
+		"step3": {
+			"summary": {
+				"shortName": "Nome curto",
+				"ttsName": "Nome tts"
+			}
+		},
+		"toast": {
+			"createError": {
+				"message": "Erro ao criar paragem",
+				"title": "Erro ao criar paragem"
+			},
+			"createSuccess": {
+				"message": "Paragem criada com sucesso",
+				"title": "Sucesso"
+			}
+		}
+	}
+}

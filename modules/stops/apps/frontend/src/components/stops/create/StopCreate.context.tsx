@@ -12,6 +12,7 @@ import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tml
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -57,6 +58,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const router = useRouter();
+	const { t } = useTranslation('stops', { keyPrefix: 'create' });
 
 	const locationsContext = useLocationsContext();
 
@@ -101,7 +103,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		const validatedLongitude = isValidLongitude(longitude);
 		// If they are invalid set field errors
 		if (!validatedLatitude || !validatedLongitude) {
-			setIsError(new Error('Coordenadas inválidas. Por favor verifique os valores introduzidos.'));
+			setIsError(new Error(t('alerts.invalidCoordinates')));
 			return;
 		}
 		// Update the form with the validated values
@@ -170,13 +172,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao criar organização' });
+				useToast.error({ message: response.error, title: t('toast.createError.title') });
 				setIsSaving(false);
 				return;
 			}
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao criar organização' });
+				useToast.error({ message: error.message, title: t('toast.createError.title') });
 			}
 			setIsSaving(false);
 			return;
@@ -185,7 +187,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		allStopsMutate();
 		setIsSaving(false);
 		closeCreateStopModal();
-		useToast.success({ message: 'Paragem criada com sucesso', title: 'Sucesso' });
+		useToast.success({ message: t('toast.createSuccess.message'), title: t('toast.createSuccess.title') });
 		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(response.data._id)));
 	};
 

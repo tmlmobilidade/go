@@ -6,6 +6,7 @@ import { useStopCreateContext } from '@/components/stops/create/StopCreate.conte
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function StopCreateStep1Locations() {
 
 	const stopCreateContext = useStopCreateContext();
 	const locationsContext = useLocationsContext();
+	const { t } = useTranslation('stops', { keyPrefix: 'create.step1.locations' });
 
 	//
 	// B. Transform data
@@ -83,10 +85,10 @@ export function StopCreateStep1Locations() {
 	return (
 		<Section>
 			<Grid columns="ab" gap="md">
-				<ValueDisplay label="Distrito" value={associatedDistrict?.name ?? 'N/A'} bordered />
-				<ValueDisplay label="Município" value={associatedMunicipality?.name ?? 'N/A'} bordered />
-				<ValueDisplay label="Freguesia" value={associatedParish?.name ?? 'N/A'} bordered />
-				<ValueDisplay label="Localidade" value={associatedLocality?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('district')} value={associatedDistrict?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('municipality')} value={associatedMunicipality?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('parish')} value={associatedParish?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('locality')} value={associatedLocality?.name ?? 'N/A'} bordered />
 			</Grid>
 		</Section>
 	);
