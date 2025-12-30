@@ -78,7 +78,7 @@ export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, p
 		// Skip if no data is available
 		if (!allAgenciesData?.length) return [];
 		// Check if permissions are set
-		if (!props.actions || !props.scope) return allAgenciesData;
+		if (!props?.actions || !props?.scope) return allAgenciesData;
 		// Map data to SelectDataItem format
 		return allAgenciesData.filter(item => props.actions.some(action => meContext.actions.hasPermissionResource({
 			action,
@@ -86,7 +86,7 @@ export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, p
 			scope: props.scope,
 			value: item._id,
 		})));
-	}, [allAgenciesData, props.actions, props.scope]);
+	}, [allAgenciesData, props?.actions, props?.scope]);
 
 	const filteredIds = useMemo(() => {
 		// Skip if no data is available
