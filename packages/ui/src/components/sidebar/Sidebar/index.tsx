@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBuildings, IconBus, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { JSX } from 'react';
@@ -122,6 +122,13 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		icon: <IconNote size={26} />,
 		label: 'Anotações',
 		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
+	},
+	{
+		_id: 'vehicles',
+		href: PAGE_ROUTES.fleet.VEHICLES_LIST,
+		icon: <IconBus size={26} />,
+		label: 'Veículos',
+		permissions: [{ action: PermissionCatalog.all.vehicles.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.vehicles.scope }],
 	},
 ];
 
