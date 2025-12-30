@@ -65,6 +65,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	const handleCreateVehicle = async () => {
 		setIsError(null);
 		setIsSaving(true);
+		console.log('Creating vehicle with data:', form.getValues());
 		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {

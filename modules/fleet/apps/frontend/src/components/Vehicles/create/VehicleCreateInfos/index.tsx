@@ -24,7 +24,8 @@ export function VehicleCreateInfos() {
 
 	return (
 		<Section gap="md">
-			<NumberInput
+			<TextInput
+				key={vehicleCreateContext.data.form.key('_id')}
 				label="ID do veículo"
 				maxLength={5}
 				placeholder="Introduza o ID do veículo"
@@ -33,6 +34,7 @@ export function VehicleCreateInfos() {
 				{...vehicleCreateContext.data.form.getInputProps('_id')}
 			/>
 			<TextInput
+				key={vehicleCreateContext.data.form.key('owner')}
 				label="Dono do veículo"
 				placeholder="Introduza o dono do veículo"
 				required={!vehicleSchema.shape.owner.isOptional()}
@@ -41,6 +43,7 @@ export function VehicleCreateInfos() {
 			/>
 
 			<AgencySelect
+				key={vehicleCreateContext.data.form.key('agency_id')}
 				label="Operador do veículo"
 				onChange={vehicleCreateContext.data.form.getInputProps('agency_id').onChange}
 				selected={vehicleCreateContext.data.form.values.agency_id}
@@ -55,6 +58,7 @@ export function VehicleCreateInfos() {
 			/>
 
 			<TextInput
+				// key={vehicleCreateContext.data.form.key('license_plate')}
 				label="Matrícula do veículo"
 				maxLength={8}
 				placeholder="AA-00-AA"
@@ -80,6 +84,7 @@ export function VehicleCreateInfos() {
 			/>
 
 			<TextInput
+				key={vehicleCreateContext.data.form.key('model')}
 				label="Modelo do veículo"
 				placeholder="Introduza o modelo do veículo"
 				required={!vehicleSchema.shape.model.isOptional()}
@@ -88,6 +93,7 @@ export function VehicleCreateInfos() {
 			/>
 
 			<TextInput
+				key={vehicleCreateContext.data.form.key('make')}
 				label="Marca do veículo"
 				placeholder="Introduza a marca do veículo"
 				required={!vehicleSchema.shape.make.isOptional()}
@@ -96,6 +102,7 @@ export function VehicleCreateInfos() {
 			/>
 
 			<NumberInput
+				key={vehicleCreateContext.data.form.key('capacity_seated')}
 				label="Capacidade de assentos"
 				placeholder="Introduza a capacidade de assentos"
 				required={!vehicleSchema.shape.capacity_seated.isOptional()}
@@ -104,6 +111,7 @@ export function VehicleCreateInfos() {
 			/>
 
 			<NumberInput
+				key={vehicleCreateContext.data.form.key('capacity_standing')}
 				label="Capacidade de pé"
 				placeholder="Introduza a capacidade de pé"
 				required={!vehicleSchema.shape.capacity_standing.isOptional()}
@@ -114,16 +122,19 @@ export function VehicleCreateInfos() {
 			<Spacer size="sm" />
 
 			<Checkbox
+				key={vehicleCreateContext.data.form.key('bikes_allowed')}
 				label="Aceita bicicletas"
 				{...vehicleCreateContext.data.form.getInputProps('bikes_allowed', { type: 'checkbox' })}
 			/>
 
 			<Checkbox
+				key={vehicleCreateContext.data.form.key('contactless')}
 				label="Aceita pagamento por aproximação"
 				{...vehicleCreateContext.data.form.getInputProps('contactless', { type: 'checkbox' })}
 			/>
 
 			<Checkbox
+				key={vehicleCreateContext.data.form.key('passenger_counting')}
 				label="Contem contagem de passageiros"
 				{...vehicleCreateContext.data.form.getInputProps('passenger_counting', { type: 'checkbox' })}
 			/>
@@ -131,36 +142,39 @@ export function VehicleCreateInfos() {
 			<Spacer size="sm" />
 
 			<Select
+				key={vehicleCreateContext.data.form.key('propulsion')}
 				label="Propulsão"
 				placeholder="Selecione a propulsão do veículo"
 				w="100%"
 				data={VehiclePropulsionSchema.options.map(value => ({
-					key: vehicleCreateContext.data.form.key(value),
 					label: Translations.PROPUNSIONAL[value],
 					value: value,
 				}))}
+				{...vehicleCreateContext.data.form.getInputProps('propulsion')}
 			/>
 
 			<Select
+				key={vehicleCreateContext.data.form.key('emission_class')}
 				label="Classe de emissão"
 				placeholder="Selecione a classe de emissão do veículo"
 				w="100%"
 				data={VehicleEmissionSchema.options.map(value => ({
-					key: vehicleCreateContext.data.form.key(value),
 					label: Translations.EMISSION[value],
 					value: value,
 				}))}
+				{...vehicleCreateContext.data.form.getInputProps('emission_class')}
 			/>
 
 			<Select
+				key={vehicleCreateContext.data.form.key('wheelchair_acessible')}
 				label="Acessibilidade para cadeirantes"
 				placeholder="Selecione a acessibilidade para cadeirantes do veículo"
 				w="100%"
 				data={VehicleWheelchairSchema.options.map(value => ({
-					key: vehicleCreateContext.data.form.key(value),
 					label: Translations.WHEELCHAIR[value],
 					value: value,
 				}))}
+				{...vehicleCreateContext.data.form.getInputProps('wheelchair_acessible')}
 			/>
 
 		</Section>
