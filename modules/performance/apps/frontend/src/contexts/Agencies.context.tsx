@@ -7,8 +7,8 @@ import { MetricsRoutes } from '@/routes';
 import { calculateSystemHealthIndex, getSystemStatusInfo, type StatusInfo } from '@/utils/systemStatus';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency as APIAgency, type RealtimeDemand, type RealtimeServiceCompliance } from '@tmlmobilidade/types';
-import { useTranslations } from 'next-intl';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -51,7 +51,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup state and translations
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance');
 	const [systemStatuses, setSystemStatuses] = useState<Record<string, StatusInfo>>({});
 	const targetAgencies = [AGENCIES.AREA_1, AGENCIES.AREA_2, AGENCIES.AREA_3, AGENCIES.AREA_4, 'all'] as const;
 

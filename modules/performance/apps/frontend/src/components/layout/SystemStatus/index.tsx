@@ -4,7 +4,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useHomeContext } from '@/contexts/Home.context';
 import { StatusInfo } from '@/utils/systemStatus';
 import { Skeleton, Tooltip } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -16,7 +16,7 @@ export default function SystemStatus({ agency }: { agency?: string }) {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('systemStatus');
+	const { t } = useTranslation('performance', { keyPrefix: 'systemStatus' });
 	const homeContext = useHomeContext();
 	const agenciesContext = useAgenciesContext();
 

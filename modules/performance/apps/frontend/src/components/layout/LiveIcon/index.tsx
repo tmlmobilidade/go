@@ -4,8 +4,8 @@
 
 import { Tooltip } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './style.module.css';
 
@@ -26,7 +26,7 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 
 	// A. Setup variables
 
-	const t = useTranslations('updated_at');
+	const { t } = useTranslation('performance', { keyPrefix: 'updated_at' });
 
 	//
 	// B. Transform data

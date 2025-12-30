@@ -118,13 +118,13 @@
 			"title": "Recorde de passageiros diário: {qty} ({date})"
 		},
 		"recordProgress": {
-			"0_10": "Ainda a começar o dia",
-			"100_plus": "Novo recorde diário de passageiros!",
-			"10_25": "Primeiros passageiros do dia",
-			"25_50": "Metade do recorde aproximando-se",
-			"50_75": "Mais de metade do recorde atingido",
-			"75_90": "Muito perto de um novo recorde",
-			"90_99": "Quase a bater o recorde diário"
+			"0_10": "Acabámos de sair da garagem 🚍💨",
+			"100_plus": "Novo recorde batido! 🏆🎉",
+			"10_25": "Ainda há muito caminho pela frente 🛣️",
+			"25_50": "Aquecemos os motores! 🔥",
+			"50_75": "Meio caminho andado — bora lá! 💪",
+			"75_90": "Quase no recorde! 🚀",
+			"90_99": "Atenção! O recorde está a tremer 😏"
 		}
 	},
 	"RecordDemandByDayType": {
@@ -207,5 +207,45 @@
 		"defaultTitle": "Vkms planeados vs executados",
 		"referenceVariable": "Referência",
 		"yAxisLabel": "Vkms planeados"
+	},
+	"agencies": {
+		"41": "Área 1",
+		"42": "Área 2",
+		"43": "Área 3",
+		"44": "Área 4",
+		"all": "Toda a CM"
+	},
+	"chart": {
+		"series": {
+			"average": {
+				"label": "Média = {value, number}"
+			},
+			"qty": {
+				"label": "Passageiros transportados / dia"
+			}
+		}
+	},
+	"dates": {
+		"day_types": {
+			"day_type_1": "Dias úteis",
+			"day_type_2": "Sábados",
+			"day_type_3": "Domingos e feriados"
+		},
+		"formatted": "{date, date, ::EEEE, dd MMMM yyyy}",
+		"formatted_short": "{date, date, ::dd MMMM yyyy}",
+		"holiday": "Feriado"
+	},
+	"systemStatus": {
+		"negative": "Atenção! A operação está a *value* da performance ideal.",
+		"positive": "Hoje a operação está a correr muito bem, com *value* de eficiência!",
+		"tooltip": "Índice global de desempenho operacional. Calculado a partir das principais métricas ponderadas do sistema (pontualidade, viagens válidas, atrasos, etc.).",
+		"warning": "Hoje a operação está a *value* da performance ideal."
+	},
+	"updated_at": {
+		"days": "{count, plural, one {# dia} other {# dias}}",
+		"hours": "{count, plural, one {# hora} other {# horas}}",
+		"just_now": "instantes",
+		"minutes": "{count, plural, one {# minuto} other {# minutos}}",
+		"relative": "Atualizado há {value}"
 	}
 }

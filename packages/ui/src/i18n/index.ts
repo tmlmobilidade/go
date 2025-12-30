@@ -12,6 +12,10 @@ import ptKeys from './translations/pt.json' with { type: 'json' };
 
 /* * */
 
+export * from './config';
+
+/* * */
+
 export const resourceKeys = {
 	pt: {
 		global: ptKeys,
