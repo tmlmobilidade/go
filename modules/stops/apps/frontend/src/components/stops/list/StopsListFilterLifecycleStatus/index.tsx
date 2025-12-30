@@ -7,6 +7,7 @@ import { Translations } from '@/lib/translations';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,8 @@ export function StopsListFilterLifecycleStatus() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
+	const { t } = useTranslation('stops', { keyPrefix: 'list.filters' });
+	const { t: tTypes } = useTranslation('stops', { keyPrefix: Translations.LIFECYCLE_STATUS });
 
 	//
 	// B. Transform data
@@ -32,10 +35,10 @@ export function StopsListFilterLifecycleStatus() {
 		if (!LifecycleStatusSchema.options?.length) return [];
 		return LifecycleStatusSchema.options.map(item => ({
 			checked: stopsListContext.filters.lifecycle_status.includes(item),
-			label: Translations.LIFECYCLE_STATUS[item],
+			label: tTypes(item),
 			value: item,
 		}));
-	}, [stopsListContext.filters.lifecycle_status]);
+	}, [stopsListContext.filters.lifecycle_status, tTypes]);
 
 	//
 	// C. Render components
@@ -43,7 +46,7 @@ export function StopsListFilterLifecycleStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Estado"
+			label={t('lifecycleStatus')}
 			onChange={stopsListContext.actions.setFilterLifecycleStatus}
 			options={parsedOptions}
 			withToggleAll

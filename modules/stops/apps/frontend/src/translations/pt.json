@@ -1,4 +1,14 @@
 {
+	"common": {
+		"uploadImage": {
+			"deleteConfirmMessage": "Tem certeza que deseja apagar a imagem?",
+			"deleteConfirmTitle": "Apagar imagem",
+			"errorMessage": "O tamanho do ficheiro excede o limite permitido.",
+			"errorTitle": "Erro ao carregar imagem",
+			"fileButtonLabel": "Carregar imagem",
+			"imageLabel": "Imagem"
+		}
+	},
 	"create": {
 		"alerts": {
 			"invalidCoordinates": "Coordenadas inválidas. Por favor verifique os valores introduzidos.",
@@ -55,6 +65,197 @@
 				"message": "Paragem criada com sucesso",
 				"title": "Sucesso"
 			}
+		}
+	},
+	"detail": {
+		"header": {
+			"deleteConfirmMessage": "Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura.",
+			"deleteConfirmTitle": "Eliminar Paragem",
+			"deletedTag": "Paragem Eliminada"
+		},
+		"sections": {
+			"administrative": {
+				"description": "Informações sobre a localização administrativa e responsabilidade de gestão desta paragem.",
+				"fields": {
+					"district": "Distrito",
+					"jurisdiction": "Jurisdição",
+					"locality": "Localidade",
+					"municipality": "Municipio",
+					"parish": "Freguesia"
+				},
+				"title": "Informação Administrativa"
+			},
+			"connections": {
+				"description": "Quais são os outros modos de transporte, para além do autocarro, que esta paragem serve.",
+				"fields": {
+					"airport": "Aeroporto",
+					"bikeParking": "Estacionamento de Bicicletas",
+					"bikeSharing": "Partilha de Bicicletas",
+					"boat": "Barco",
+					"carParking": "Estacionamento de Automóveis",
+					"lightRail": "Metro de Superfície",
+					"subway": "Metro",
+					"train": "Comboio"
+				},
+				"title": "Ligações Intermodais"
+			},
+			"equipment": {
+				"description": "Quais são os equipamentos que esta paragem serve.",
+				"title": "Equipamentos Servidos"
+			},
+			"general": {
+				"description": "Informações gerais sobre esta paragem.",
+				"fields": {
+					"latitude": "Latitude",
+					"legacyId": "Código do Operador (legacy)",
+					"longitude": "Longitude",
+					"name": "Antigo Nome da Paragem (p/ alterar)",
+					"newName": "Nome da Paragem (depois da correção)",
+					"shortName": "Nome Curto",
+					"stopId": "Código Único da Paragem",
+					"ttsName": "Nome TTS"
+				},
+				"title": "Detalhes desta Paragem"
+			},
+			"images": {
+				"description": "Suportes visuais.",
+				"fields": {
+					"imageLabel": "Imagem"
+				},
+				"title": "Imagens"
+			},
+			"infrastructure": {
+				"description": "Informações relacionadas com os equipamentos da paragem e envolvente.",
+				"fields": {
+					"bench": "Existe Banco?",
+					"electricity": "Existe Ligação Elétrica?",
+					"lastCheck": "Última Verificação da Infraestrutura",
+					"lastMaintenance": "Última Manutenção da Infraestrutura",
+					"mupi": "Existe Mupi?",
+					"roadType": "Tipo de Relação com a Via"
+				},
+				"title": "Infraestrutura"
+			},
+			"notes": {
+				"description": "Texto livre para informações adicionais.",
+				"fields": {
+					"comments": {
+						"placeholder": "Construção planeada a..."
+					}
+				},
+				"title": "Notas e Comentários"
+			},
+			"publicInformation": {
+				"description": "Informação relacionadas com os suportes de informação ao público.",
+				"fields": {
+					"hasNetworkMap": "Tem Mapa de Rede?",
+					"hasSchedules": "Tem Horários?",
+					"hasStopSign": "Tem Postalete?",
+					"lastSchedulesCheck": "Última Verificação dos Horários?",
+					"lastSchedulesMaintenance": "Última Manutenção dos Horários?"
+				},
+				"title": "Informação ao público"
+			},
+			"shelter": {
+				"description": "Informações relacionadas com o abrigo.",
+				"fields": {
+					"hasShelter": "Existe Abrigo?",
+					"shelterCode": "Código do Abrigo",
+					"shelterMaintainer": "Entidade Gestora do Abrigo",
+					"shelterMaterial": "Data de Instalação do abrigo"
+				},
+				"title": "Abrigo"
+			}
+		}
+	},
+	"list": {
+		"filters": {
+			"connections": "Conexões",
+			"district": "Distrito",
+			"equipment": "Equipamentos",
+			"facilities": "Serviços",
+			"lifecycleStatus": "Estado",
+			"municipality": "Municipio",
+			"parish": "Freguesia"
+		},
+		"header": {
+			"newStop": "Nova Paragem",
+			"title": "Paragens"
+		},
+		"tableColumns": {
+			"code": "codigo",
+			"district": "Distrito",
+			"latitude": "latitude",
+			"locality": "Localidade",
+			"longitude": "longitude",
+			"municipality": "Município",
+			"name": "Nome da Paragem",
+			"parish": "Freguesia"
+		}
+	},
+	"types": {
+		"availabilityStatus": {
+			"available": "Disponível",
+			"unavailable": "Indisponível",
+			"unknown": "Desconhecido"
+		},
+		"conditionStatus": {
+			"damaged": "Danificado",
+			"missing": "Ausente",
+			"not_applicable": "Não instalado",
+			"ok": "Ok",
+			"unknown": "Desconhecido"
+		},
+		"connections": {
+			"airport": "Aeroporto",
+			"bike_parking": "Estacionamento de bicicletas",
+			"bike_sharing": "Sistema de bicicletas públicas",
+			"boat": "Barco",
+			"car_parking": "Parque de estacionamento",
+			"ferry": "Balsa",
+			"light_rail": "Metro terrestre",
+			"subway": "Metro",
+			"train": "Comboio"
+		},
+		"equipment": {
+			"mini_pip": "Mini PIP",
+			"mupi": "MUPI",
+			"pip": "PIP"
+		},
+		"facilities": {
+			"beach": "Praia",
+			"fire_station": "Bombeiros",
+			"health_clinic": "Clínica",
+			"historic_building": "Edifício Histórico",
+			"hospital": "Hospital",
+			"police_station": "Esquadra",
+			"school": "Escola",
+			"shopping": "Zona Comercial",
+			"transit_office": "Espaço navegante®",
+			"university": "Universidade"
+		},
+		"jurisdiction": {
+			"ip": "IP",
+			"municipality": "Município",
+			"other": "Outro",
+			"unknown": "Desconhecido"
+		},
+		"lifecycleStatus": {
+			"active": "Paragem ativa",
+			"draft": "Rascunho",
+			"inactive": "Paragem inativa",
+			"provisional": "Provisória",
+			"seasonal": "Sazonal",
+			"voided": "Anulada"
+		},
+		"roadType": {
+			"complementary_itinerary": "Itinerário Complementar",
+			"highway": "Autoestrada",
+			"main_itinerary": "Itinerário Principal",
+			"national_road": "Estrada Nacional",
+			"regional_road": "Estrada Regional",
+			"secondary_road": "Estrada Secundária",
+			"unknown": "Desconhecido"
 		}
 	}
 }

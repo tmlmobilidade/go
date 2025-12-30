@@ -6,6 +6,7 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { Translations } from '@/lib/translations';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,12 +17,14 @@ export function StopDetailsSectionGeneral() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const { t } = useTranslation('stops', { keyPrefix: 'detail.sections.general' });
+	const { t: tTypes } = useTranslation('stops', { keyPrefix: Translations.LIFECYCLE_STATUS });
 
 	//
 	// B. Transform data
 
 	const lifecycleStatusItems = LifecycleStatusSchema.options.map(value => ({
-		label: Translations.LIFECYCLE_STATUS[value],
+		label: tTypes(value),
 		value: value,
 	}));
 
@@ -42,17 +45,17 @@ export function StopDetailsSectionGeneral() {
 
 	return (
 		<Collapsible
-			description="Informações gerais sobre esta paragem."
-			title="Detalhes desta Paragem"
+			description={t('description')}
+			title={t('title')}
 			defaultOpen
 		>
 
 			<Section>
 				<Grid columns="abcd" gap="md">
-					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
-					<ValueDisplay label="Código do Operador (legacy)" value={stopDetailContext.data.stop?.legacy_id ?? 'N/A'} bordered />
-					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
-					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
+					<ValueDisplay label={t('fields.stopId')} value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
+					<ValueDisplay label={t('fields.legacyId')} value={stopDetailContext.data.stop?.legacy_id ?? 'N/A'} bordered />
+					<ValueDisplay label={t('fields.latitude')} value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
+					<ValueDisplay label={t('fields.longitude')} value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 
@@ -73,7 +76,7 @@ export function StopDetailsSectionGeneral() {
 
 					<ProposedChangesWrapper
 						inputName="name"
-						label="Antigo Nome da Paragem (p/ alterar)"
+						label={t('fields.name')}
 						relatedId={stopDetailContext.data.stop?._id}
 						scope="stop"
 					>
@@ -85,7 +88,7 @@ export function StopDetailsSectionGeneral() {
 
 					<ProposedChangesWrapper
 						inputName="new_name"
-						label="Nome da Paragem (depois da correção)"
+						label={t('fields.newName')}
 						relatedId={stopDetailContext.data.stop?._id}
 						scope="stop"
 					>
@@ -100,8 +103,8 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} bordered />
-					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('fields.shortName')} value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('fields.ttsName')} value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 

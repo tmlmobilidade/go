@@ -4,6 +4,7 @@
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,47 +15,48 @@ export function StopDetailsSectionConnections() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const { t } = useTranslation('stops', { keyPrefix: 'detail.sections.connections' });
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description="Quais são os outros modos de transporte, para além do autocarro, que esta paragem serve."
-			title="Ligações Intermodais"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">
 					<Checkbox
-						label="Metro"
+						label={t('fields.subway')}
 						{...stopDetailContext.data.form.getInputProps('near_subway')}
 					/>
 					<Checkbox
-						label="Metro de Superfície"
+						label={t('fields.lightRail')}
 						{...stopDetailContext.data.form.getInputProps('near_light_rail')}
 					/>
 					<Checkbox
-						label="Comboio"
+						label={t('fields.train')}
 						{...stopDetailContext.data.form.getInputProps('near_train')}
 					/>
 					<Checkbox
-						label="Barco"
+						label={t('fields.boat')}
 						{...stopDetailContext.data.form.getInputProps('near_boat')}
 					/>
 					<Checkbox
-						label="Aeroporto"
+						label={t('fields.airport')}
 						{...stopDetailContext.data.form.getInputProps('near_airport')}
 					/>
 					<Checkbox
-						label="Partilha de Bicicletas"
+						label={t('fields.bikeSharing')}
 						{...stopDetailContext.data.form.getInputProps('near_bike_sharing')}
 					/>
 					<Checkbox
-						label="Estacionamento de Bicicletas"
+						label={t('fields.bikeParking')}
 						{...stopDetailContext.data.form.getInputProps('neawr_bike_parking')}
 					/>
 					<Checkbox
-						label="Estacionamento de Automóveis"
+						label={t('fields.carParking')}
 						{...stopDetailContext.data.form.getInputProps('near_car_parking')}
 					/>
 				</Grid>

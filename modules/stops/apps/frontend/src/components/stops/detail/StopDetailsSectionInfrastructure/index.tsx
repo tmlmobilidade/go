@@ -6,6 +6,7 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { Translations } from '@/lib/translations';
 import { AvailabilityStatusSchema, StopRoadTypeSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,17 +17,20 @@ export function StopDetailsSectionInfrastructure() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const { t } = useTranslation('stops', { keyPrefix: 'detail.sections.infrastructure' });
+	const { t: tAvailabilityStatus } = useTranslation('stops', { keyPrefix: Translations.AVAILABILITY_STATUS });
+	const { t: tRoadType } = useTranslation('stops', { keyPrefix: Translations.ROAD_TYPE });
 
 	//
 	// B. Transform data
 
 	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
-		label: Translations.AVAILABILITY_STATUS[value],
+		label: tAvailabilityStatus(value),
 		value: value,
 	}));
 
 	const roadTypeOptions = StopRoadTypeSchema.options.map(value => ({
-		label: Translations.ROAD_TYPE[value],
+		label: tRoadType(value),
 		value: value,
 	}));
 
@@ -35,29 +39,29 @@ export function StopDetailsSectionInfrastructure() {
 
 	return (
 		<Collapsible
-			description="Informações relacionadas com os equipamentos da paragem e envolvente."
-			title="Infraestrutura"
+			description={t('description')}
+			title={t('title')}
 		>
 			<Section>
 				<Grid columns="ab" gap="md">
 					<Select
 						key={stopDetailContext.data.form.key('has_mupi')}
 						data={availabilityStatusOptions}
-						label="Existe Mupi?"
+						label={t('fields.mupi')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_mupi')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_bench')}
 						data={availabilityStatusOptions}
-						label="Existe Banco?"
+						label={t('fields.bench')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_bench')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('electricity_status')}
 						data={availabilityStatusOptions}
-						label="Existe Ligação Elétrica?"
+						label={t('fields.electricity')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('electricity_status')}
 					/>
@@ -70,7 +74,7 @@ export function StopDetailsSectionInfrastructure() {
 					<Select
 						key={stopDetailContext.data.form.key('road_type')}
 						data={roadTypeOptions}
-						label="Tipo de Relação com a Via"
+						label={t('fields.roadType')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('road_type')}
 					/>
@@ -81,14 +85,14 @@ export function StopDetailsSectionInfrastructure() {
 				<Grid columns="ab" gap="md">
 					<TextInput
 						key={stopDetailContext.data.form.key('last_infrastructure_maintenance')}
-						label="Última Manutenção da Infraestrutura"
+						label={t('fields.lastMaintenance')}
 						placeholder="2023-02-10"
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_infrastructure_maintenance')}
 					/>
 					<TextInput
 						key={stopDetailContext.data.form.key('last_infrastructure_check')}
-						label="Última Verificação da Infraestrutura"
+						label={t('fields.lastCheck')}
 						placeholder="2023-02-10"
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_infrastructure_check')}

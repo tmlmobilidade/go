@@ -7,6 +7,7 @@ import { Translations } from '@/lib/translations';
 import { StopConnectionSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,8 @@ export function StopsListFilterConnections() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
+	const { t } = useTranslation('stops', { keyPrefix: 'list.filters' });
+	const { t: tTypes } = useTranslation('stops', { keyPrefix: Translations.CONNECTIONS });
 
 	//
 	// B. Transform data
@@ -32,10 +35,10 @@ export function StopsListFilterConnections() {
 		if (!StopConnectionSchema.options?.length) return [];
 		return StopConnectionSchema.options.map(item => ({
 			checked: stopsListContext.filters.connections.includes(item),
-			label: Translations.CONNECTIONS[item],
+			label: tTypes(item),
 			value: item,
 		}));
-	}, [stopsListContext.filters.connections]);
+	}, [stopsListContext.filters.connections, tTypes]);
 
 	//
 	// C. Render components
@@ -43,7 +46,7 @@ export function StopsListFilterConnections() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Conexões"
+			label={t('connections')}
 			onChange={stopsListContext.actions.setFilterConnections}
 			options={parsedOptions}
 			withToggleAll
