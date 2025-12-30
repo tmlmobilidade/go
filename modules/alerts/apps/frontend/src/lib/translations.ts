@@ -1,6 +1,6 @@
-import { AlertType, GtfsCause, GtfsEffect, PublishStatus } from '@tmlmobilidade/types';
+import { AlertType, GtfsCauseExtended, GtfsEffect, PublishStatus } from '@tmlmobilidade/types';
 
-export const Translations: { ALERT_TYPE: Record<AlertType, string>, CAUSE: Record<GtfsCause, string>, EFFECT: Record<GtfsEffect, string>, PUBLISH_STATUS: Record<PublishStatus, string> } = {
+export const Translations: { ALERT_TYPE: Record<AlertType, string>, CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffect, string>, PUBLISH_STATUS: Record<PublishStatus, string> } = {
 	ALERT_TYPE: {
 		realtime: 'Alerta Tempo Real',
 		scheduled: 'Alerta Planeado',
@@ -15,14 +15,12 @@ export const Translations: { ALERT_TYPE: Record<AlertType, string>, CAUSE: Recor
 		HOLIDAY: 'Feriado',
 		MAINTENANCE: 'Manutenção',
 		MEDICAL_EMERGENCY: 'Emergência Médica',
-		OTHER_CAUSE: 'Outras Causas',
 		POLICE_ACTIVITY: 'Atividade Policial',
 		ROAD_INCIDENT: 'Incidente na Estrada',
 		STRIKE: 'Greve',
 		SYSTEM_FAILURE: 'Falha do Sistema',
 		TECHNICAL_PROBLEM: 'Problema Técnico',
 		TRAFFIC_JAM: 'Congestão de Trânsito',
-		UNKNOWN_CAUSE: 'Causa Desconhecida',
 		VEHICLE_ISSUE: 'Veículo com Problema',
 		WEATHER: 'Mau Tempo',
 	},
@@ -31,13 +29,10 @@ export const Translations: { ALERT_TYPE: Record<AlertType, string>, CAUSE: Recor
 		ADDITIONAL_SERVICE: 'Aumento de Serviço',
 		DETOUR: 'Desvio',
 		MODIFIED_SERVICE: 'Alteração de Horários',
-		NO_EFFECT: 'Sem Efeito',
 		NO_SERVICE: 'Serviço Cancelado',
-		OTHER_EFFECT: 'Outro',
 		REDUCED_SERVICE: 'Serviço Reduzido',
 		SIGNIFICANT_DELAYS: 'Atrasos Significativos',
 		STOP_MOVED: 'Paragem Deslocada',
-		UNKNOWN_EFFECT: 'Desconhecido',
 	},
 	PUBLISH_STATUS: {
 		archived: 'Arquivado',
@@ -923,7 +918,7 @@ export const CauseEffectPairingDefaultAlert = {
 	},
 };
 
-export function getAlertTitleAndDescription(cause: GtfsCause, effect: GtfsEffect, lines: string, detour?: string) {
+export function getAlertTitleAndDescription(cause: GtfsCauseExtended, effect: GtfsEffect, lines: string, detour?: string) {
 	return {
 		description: CauseEffectPairingDefaultAlert[cause][effect].message.replace('{lines}', lines).replace('{detour}', detour ?? ''),
 		title: CauseEffectPairingDefaultAlert[cause][effect].title.replace('{lines}', lines),
