@@ -18,7 +18,7 @@ export interface SearchInputProps {
 
 /* * */
 
-export function SearchInput({ onChange, placeholder = 'placeholder', size = 'md', value }: SearchInputProps) {
+export function SearchInput({ onChange, placeholder = 'placeholder', size = 'sm', value }: SearchInputProps) {
 	//
 
 	//

@@ -5,7 +5,7 @@ import '@tmlmobilidade/ui';
 import i18next from 'i18next';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
-import { registerModuleTranslations } from '../i18n';
+import { registerModuleTranslations } from '../i18n/';
 
 /* * */
 
