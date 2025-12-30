@@ -65,9 +65,6 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 
 	const { form } = useTypicalForm<UpdateVehicleDto>(UpdateVehicleSchema, vehicleData);
 
-	console.log('vehicleData', vehicleData);
-	console.log('form', form.values);
-
 	//
 	// D. Transform data
 

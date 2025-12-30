@@ -42,7 +42,7 @@ export function VehiclesDetailsHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.lock}
-				resourceKey="agency_id"
+				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
 				value={vehiclesDetailContext.data.vehicle?.agency_id}
 			>
@@ -54,7 +54,7 @@ export function VehiclesDetailsHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.vehicles.actions.update}
-				resourceKey="agency_id"
+				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.vehicles.scope}
 				value={vehiclesDetailContext.data.vehicle?.agency_id}
 			>
@@ -70,7 +70,7 @@ export function VehiclesDetailsHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.vehicles.actions.delete}
-				resourceKey="agency_id"
+				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.vehicles.scope}
 				value={vehiclesDetailContext.data.vehicle?.agency_id}
 			>

@@ -30,8 +30,6 @@ export function VehicleDetailsInfos() {
 		return <ErrorDisplay message={vehiclesDetailContext.flags.error.message} />;
 	}
 
-	console.log(vehiclesDetailContext.flags.read_only);
-
 	return (
 		<Section>
 			<Grid columns="a" gap="lg">
