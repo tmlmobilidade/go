@@ -2,10 +2,14 @@
 
 import { FiltersBar } from '@tmlmobilidade/ui';
 
+import { FaresListFilterAgencies } from '../FaresListFilterAgencies';
+
 /* * */
 
 export function FaresListFiltersBar() {
 	return (
-		<FiltersBar />
+		<FiltersBar>
+			<FaresListFilterAgencies />
+		</FiltersBar>
 	);
 }

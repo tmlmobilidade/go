@@ -3,6 +3,7 @@
 /* * */
 
 import { useFaresListContext } from '@/components/fares/list/FaresList.context';
+import { FaresListCellAgencies } from '@/components/fares/list/FaresListCellAgencies';
 import { FaresListFiltersBar } from '@/components/fares/list/FaresListFiltersBar';
 import { FaresListHeader } from '@/components/fares/list/FaresListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
@@ -42,6 +43,12 @@ export function FaresList() {
 			render: item => <Text>{item.name}</Text>,
 			title: 'Nome',
 			width: 300,
+		},
+		{
+			accessor: 'agency_ids',
+			render: item => <FaresListCellAgencies agencyIds={item.agency_ids} />,
+			title: 'Operadores',
+			width: 200,
 		},
 	];
 

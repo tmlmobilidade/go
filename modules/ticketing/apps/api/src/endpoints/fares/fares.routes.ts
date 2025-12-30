@@ -18,6 +18,7 @@ server.register(
 
 		instance.get(
 			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.read]) },
 			FaresController.getAll,
 		);
 
@@ -25,6 +26,12 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.read]) },
 			FaresController.getById,
+		);
+
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.create]) },
+			FaresController.create,
 		);
 
 		instance.put(
@@ -37,6 +44,12 @@ server.register(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.lock]) },
 			FaresController.lock,
+		);
+
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.delete]) },
+			FaresController.delete,
 		);
 
 		next();

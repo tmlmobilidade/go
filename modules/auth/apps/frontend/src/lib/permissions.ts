@@ -253,9 +253,9 @@ const faresActions: PermissionConfig = {
 		{ action: 'delete', description: 'Permite eliminar uma tarifa', label: 'Eliminar tarifa', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma tarifa', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de datas.',
-	scope: PermissionCatalog.all.dates.scope,
-	title: 'Permissões de Datas',
+	description: 'As ações que o utilizador pode realizar na gestão de tarifas.',
+	scope: PermissionCatalog.all.fares.scope,
+	title: 'Permissões de Tarifas',
 };
 
 /* * */
@@ -275,6 +275,7 @@ export const permissionsConfig = [
 	performanceActions,
 	annotationsActions,
 	periodsActions,
+	faresActions,
 	// topicActions,
 	// proposedChangesActions,
 ];
