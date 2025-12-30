@@ -46,11 +46,11 @@ export function LoginForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (response.error) {
-			useToast.error({ message: response.error ?? t('error_message_description'), title: t('error_message_title') });
+			useToast.error({ message: response.error ?? t('errorMessageDescription'), title: t('errorMessageTitle') });
 			return;
 		}
 		// Handle successful login
-		useToast.success({ message: t('success_message_description'), title: t('success_message_title') });
+		useToast.success({ message: t('successMessageDescription'), title: t('successMessageTitle') });
 		// Redirect to the specified page or home
 		window.location.href = redirectToValue;
 	};
@@ -61,12 +61,12 @@ export function LoginForm() {
 	return (
 		<AuthenticationForm
 			description={t('description')}
-			footerLabel={t('footer_label')}
+			footerLabel={t('footerLabel')}
 			footerUrl={PAGE_ROUTES.auth.RESET_PASSWORD_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={passwordValue.length < 8 || emailValue.length === 0}
-			submitLabel={t('submit_label')}
+			submitLabel={t('submitLabel')}
 			title={t('title')}
 		>
 			<TextInput
@@ -80,7 +80,7 @@ export function LoginForm() {
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder={t('password_placeholder')}
+				placeholder={t('passwordPlaceholder')}
 				value={passwordValue}
 			/>
 		</AuthenticationForm>

@@ -87,11 +87,11 @@ export function ChangePasswordForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? t('error_message_description'), title: t('error_message_title') });
+			useToast.error({ message: response.error ?? t('errorMessageDescription'), title: t('errorMessageTitle') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: t('success_message_description'), title: t('success_message_title') });
+		useToast.success({ message: t('successMessageDescription'), title: t('successMessageTitle') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -106,7 +106,7 @@ export function ChangePasswordForm() {
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={isDisabled}
-			submitLabel={t('submit_label')}
+			submitLabel={t('submitLabel')}
 			title={t('title')}
 		>
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
@@ -114,14 +114,14 @@ export function ChangePasswordForm() {
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder={t('password_placeholder')}
+				placeholder={t('passwordPlaceholder')}
 				value={passwordValue}
 			/>
 			<PasswordInput
 				key="password-confirm"
 				disabled={isLoading}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
-				placeholder={t('confirm_password_placeholder')}
+				placeholder={t('confirmPasswordPlaceholder')}
 				value={confirmPasswordValue}
 			/>
 			<div className={styles.passwordRequirements}>

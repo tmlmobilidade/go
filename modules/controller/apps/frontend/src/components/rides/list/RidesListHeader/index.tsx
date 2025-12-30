@@ -32,7 +32,7 @@ export function RidesListHeader() {
 			<RidesListUpdatedAt />
 			<Tag label={`Total ${ridesListContext.data.filtered.length}`} variant="muted" />
 			<SearchInput onChange={ridesListContext.actions.setFilterSearch} value={ridesListContext.filters.search} />
-			<IconButton icon={<IconFileDownload />} onClick={() => openRideExportModal(ridesListContext.filters)} tooltip={tGlobal('export_circulations')} variant="secondary" />
+			<IconButton icon={<IconFileDownload />} onClick={() => openRideExportModal(ridesListContext.filters)} tooltip={tGlobal('exportCirculations')} variant="secondary" />
 		</Toolbar>
 	);
 

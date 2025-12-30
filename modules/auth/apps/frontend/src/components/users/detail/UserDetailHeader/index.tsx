@@ -36,7 +36,7 @@ export function UserDetailHeader() {
 
 	return (
 		<Toolbar>
-			<BackButton onClick={handleClose} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={userDetailContext.data.id || tAuth('newUserButtonLabel')} variant="muted" />
 			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
 

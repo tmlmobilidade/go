@@ -84,7 +84,7 @@ export default function ApprovePlanModal() {
 					/>
 					<Button
 						icon={<IconRosetteDiscountCheckFilled />}
-						label={t('approve_plan')}
+						label={t('approvePlan')}
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.createPlan}
 					/>

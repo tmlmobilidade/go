@@ -82,7 +82,7 @@ export default function RequestApprovalModal() {
 						variant="secondary"
 					/>
 					<Button
-						label={t('submit_for_approval')}
+						label={t('submitForApproval')}
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.requestApproval}
 					/>

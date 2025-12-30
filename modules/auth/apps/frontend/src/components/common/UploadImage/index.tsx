@@ -45,8 +45,8 @@ export function UploadImage({
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
-				message: t('error.message'),
-				title: t('error.title'),
+				message: t('errorMessage'),
+				title: t('errorTitle'),
 			});
 			return;
 		}
@@ -74,8 +74,8 @@ export function UploadImage({
 					{onDelete && (
 						<div className={styles.deleteContainer}>
 							<DeleteButton
-								confirmMessage={t('deleteButtonConfirmMessage')}
-								confirmTitle={t('deleteButtonConfirmTitle')}
+								confirmMessage={t('deleteImageConfirmationMessage')}
+								confirmTitle={t('deleteImageTitle')}
 								onDelete={handleDelete}
 								showConfirmation
 							/>
@@ -85,7 +85,7 @@ export function UploadImage({
 			) : (
 				<FileButton
 					accept="image/png,image/jpeg,image/jpg"
-					label={t('file_button_label')}
+					label={t('fileButtonLabel')}
 					onFileChange={handleFileChange}
 				/>
 			)}

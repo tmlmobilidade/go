@@ -37,7 +37,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 	// A. Setup variables
 
 	const [coordinates, setCoordinates] = useState<[number, number]>(value ?? [0, 0]);
-	const { t } = useTranslation('global', { keyPrefix: 'components.coordinates_input' });
+	const { t } = useTranslation('global', { keyPrefix: 'components.coordinatesInput' });
 
 	//
 	// B. Setup functions
@@ -108,7 +108,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 					disabled={disabled}
 					onBlur={() => handleBlur(0)}
 					onPaste={handlePaste}
-					placeholder={t('latitude_placeholder')}
+					placeholder={t('latitudePlaceholder')}
 					step={0.000001}
 					style={{ flex: 1 }}
 					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[0]}
@@ -125,7 +125,7 @@ export function CoordinatesInput({ description, disabled = false, label = 'Coord
 					disabled={disabled}
 					onBlur={() => handleBlur(1)}
 					onPaste={handlePaste}
-					placeholder={t('longitude_placeholder')}
+					placeholder={t('longitudePlaceholder')}
 					step={0.000001}
 					style={{ flex: 1 }}
 					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[1]}

@@ -129,7 +129,7 @@ export default function RidesExportModal() {
 					<Button
 						disabled={!context.flags.canSave}
 						icon={<IconFileDownload />}
-						label={tGlobal('export_circulations')}
+						label={tGlobal('exportCirculations')}
 						loading={context.flags.loading}
 						onClick={context.actions.exportRides}
 					/>

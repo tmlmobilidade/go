@@ -1,13 +1,13 @@
 {
 	"SendPasswordResetEmailForm": {
 		"description": "Introduza seu email para recuperar a sua palavra-passe",
-		"email_placeholder": "Email de Recuperação",
-		"error_message_description": "Ocorreu um erro",
-		"error_message_title": "Erro ao tentar enviar email",
-		"footer_label": "Voltar ao login",
-		"submit_label": "Enviar email",
-		"success_message_description": "Email de recuperação enviado com sucesso",
-		"success_message_title": "Sucesso",
+		"emailPlaceholder": "Email de Recuperação",
+		"errorMessageDescription": "Ocorreu um erro",
+		"errorMessageTitle": "Erro ao tentar enviar email",
+		"footerLabel": "Voltar ao login",
+		"submitLabel": "Enviar email",
+		"successMessageDescription": "Email de recuperação enviado com sucesso",
+		"successMessageTitle": "Sucesso",
 		"title": "Recuperar Password"
 	},
 	"causesAndEffects": {
@@ -921,100 +921,104 @@
 		}
 	},
 	"changePasswordForm": {
-		"confirm_password_placeholder": "Confirmar Password",
+		"confirmPasswordPlaceholder": "Confirmar Password",
 		"description": "Introduza a sua nova password",
-		"error_message_description": "Ocorreu um erro ao tentar alterar a password",
-		"error_message_title": "Erro ao tentar alterar password",
-		"footer_label": "Voltar ao login",
-		"password_placeholder": "Password",
-		"submit_label": "Confirmar",
-		"success_message_description": "Password alterada com sucesso.",
-		"success_message_title": "Sucesso",
+		"errorMessageDescription": "Ocorreu um erro ao tentar alterar a password",
+		"errorMessageTitle": "Erro ao tentar alterar password",
+		"footerLabel": "Voltar ao login",
+		"passwordPlaceholder": "Password",
+		"submitLabel": "Confirmar",
+		"successMessageDescription": "Password alterada com sucesso.",
+		"successMessageTitle": "Sucesso",
 		"title": "Alterar password"
 	},
 	"components": {
-		"coordinates_input": {
-			"latitude_placeholder": "Latitude (-90 to 90)",
-			"longitude_placeholder": "Longitude (-180 to 180)"
+		"coordinatesInput": {
+			"latitudePlaceholder": "Latitude (-90 to 90)",
+			"longitudePlaceholder": "Longitude (-180 to 180)"
 		},
-		"filter_type_list": {
-			"toggle_all_label": "Selecionar tudo"
+		"filterTypeList": {
+			"toggleAllLabel": "Selecionar tudo"
 		},
-		"reference_group": {
-			"confirm_change_reference": "Tem certeza que deseja mudar a referência?",
-			"lose_all_changes": "Você está prestes a perder as referências que já foram adicionadas.",
-			"no_reference_available": "Não há referencias disponíveis.",
-			"reference_agencies": {
-				"add_button_label": "Adicionar Rota",
-				"combobox_aria_label": "Agência Afetada",
-				"combobox_label": "Agências Afetada"
+		"referenceGroup": {
+			"confirmChangeReference": "Tem certeza que deseja mudar a referência?",
+			"loseAllChanges": "Você está prestes a perder as referências que já foram adicionadas.",
+			"noReferenceAvailable": "Não há referencias disponíveis.",
+			"referenceAgencies": {
+				"addButtonLabel": "Adicionar Rota",
+				"comboboxAriaLabel": "Agência Afetada",
+				"comboboxLabel": "Agências Afetada"
 			},
-			"reference_routes": {
-				"add_button_label": "Adicionar Rota",
-				"affected_stops_aria_label": "Paragens Afetadas",
-				"affected_stops_description": "Selecione as paragens que serão afetadas pelo alerta",
-				"affected_stops_label": "Paragens Afetadas",
-				"combobox_aria_label": "Linha Afetada",
-				"combobox_label": "Linhas Afetada"
+			"referenceRoutes": {
+				"addButtonLabel": "Adicionar Rota",
+				"affectedStopsAriaLabel": "Paragens Afetadas",
+				"affectedStopsDescription": "Selecione as paragens que serão afetadas pelo alerta",
+				"affectedStopsLabel": "Paragens Afetadas",
+				"comboboxAriaLabel": "Linha Afetada",
+				"comboboxLabel": "Linhas Afetada"
 			},
-			"reference_stops": {
-				"add_button_label": "Adicionar Paragem",
-				"affected_lines_aria_label": "Linhas Afetadas",
-				"affected_lines_description": "Selecione as linhas que serão afetadas pelo alerta",
-				"affected_lines_label": "Linhas Afetadas",
-				"affected_stops_aria_label": "Paragem Afetada",
-				"affected_stops_description": "Selecione as paragens que serão afetadas pelo alerta",
-				"affected_stops_label": "Paragens Afetadas",
-				"combobox_aria_label": "Paragem Afetada",
-				"combobox_label": "Paragem Afetada"
+			"referenceStops": {
+				"addButtonLabel": "Adicionar Paragem",
+				"affectedLinesAriaLabel": "Linhas Afetadas",
+				"affectedLinesDescription": "Selecione as linhas que serão afetadas pelo alerta",
+				"affectedLinesLabel": "Linhas Afetadas",
+				"affectedStopsAriaLabel": "Paragem Afetada",
+				"affectedStopsDescription": "Selecione as paragens que serão afetadas pelo alerta",
+				"affectedStopsLabel": "Paragens Afetadas",
+				"comboboxAriaLabel": "Paragem Afetada",
+				"comboboxLabel": "Paragem Afetada"
 			}
 		},
-		"save_button": {
+		"saveButton": {
 			"label": "Guardar",
 			"tooltip": "Guardar Alterações"
 		},
-		"search_input": {
+		"searchInput": {
 			"placeholder": "Pesquisar..."
 		},
 		"select": {
-			"nothing_found_message": "Nenhum resultado encontrado"
+			"nothingFoundMessage": "Nenhum resultado encontrado"
 		},
 		"uploadImage": {
-			"delete_image_confirmation_message": "Tem certeza que deseja apagar a imagem?",
-			"delete_image_title": "Apagar imagem",
-			"error_message": "O tamanho do ficheiro excede o limite permitido.",
-			"error_title": "Erro ao carregar imagem",
-			"file_button_label": "Carregar Imagem"
+			"deleteImageConfirmationMessage": "Tem certeza que deseja apagar a imagem?",
+			"deleteImageTitle": "Apagar imagem",
+			"errorMessage": "O tamanho do ficheiro excede o limite permitido.",
+			"errorTitle": "Erro ao carregar imagem",
+			"fileButtonLabel": "Carregar Imagem"
 		}
 	},
 	"loginForm": {
 		"description": "Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.",
-		"email_placeholder": "Email",
-		"error_message_description": "Ocorreu um erro",
-		"error_message_title": "Nao foi possível efetuar o login",
-		"footer_label": "Recuperar Password",
-		"password_placeholder": "Password",
-		"submit_label": "Login",
-		"success_message_description": "",
-		"success_message_title": "Login efetuado com sucesso",
+		"emailPlaceholder": "Email",
+		"errorMessageDescription": "Ocorreu um erro",
+		"errorMessageTitle": "Nao foi possível efetuar o login",
+		"footerLabel": "Recuperar Password",
+		"passwordPlaceholder": "Password",
+		"submitLabel": "Login",
+		"successMessageDescription": "",
+		"successMessageTitle": "Login efetuado com sucesso",
 		"title": "Login no GO+"
 	},
 	"operations": {
-		"approve_plan": "Aprovar plano",
+		"approvePlan": "Aprovar plano",
+		"archive": "Arquivar",
 		"cancel": "Cancelar",
 		"continue": "Continuar",
-		"create_validation": "Criar validação",
+		"create": "Criar",
+		"createValidation": "Criar validação",
 		"delete": "Apagar",
 		"duplicate": "Duplicar",
 		"edit": "Editar",
 		"eliminate": "Eliminar",
 		"exclude": "Excluir",
-		"export_circulations": "Exportar circulações",
+		"exportCirculations": "Exportar circulações",
 		"next": "Seguinte",
 		"publish": "Publicar",
+		"restore": "Restaurar",
 		"save": "Salvar",
-		"save_as_draft": "Salvar como rascunho",
-		"submit_for_approval": "Submeter para aprovação"
+		"saveAsDraft": "Salvar como rascunho",
+		"submitForApproval": "Submeter para aprovação",
+		"update": "Atualizar"
 	},
 	"permissions": {
 		"agencyActions": {
@@ -1023,14 +1027,14 @@
 				"create": "Permite criar um operador",
 				"delete": "Permite eliminar um operador",
 				"read": "Permite ver operadores",
-				"toggle_lock": "Permite bloquear/desbloquear um operador",
+				"toggleLock": "Permite bloquear/desbloquear um operador",
 				"update": "Permite editar um operador"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
-				"toggle_lock": "Bloquear/desbloquear",
+				"toggleLock": "Bloquear/desbloquear",
 				"update": "Editar"
 			},
 			"title": "Permissões de Operadores"
@@ -1041,32 +1045,36 @@
 				"create": "Permite criar um alerta",
 				"delete": "Permite eliminar um alerta",
 				"read": "Permite ver alertas",
-				"toggle_lock": "Permite bloquear/desbloquear um alerta",
+				"toggleLock": "Permite bloquear/desbloquear um alerta",
 				"update": "Permite editar um alerta"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
-				"toggle_lock": "Bloquear/desbloquear",
+				"toggleLock": "Bloquear/desbloquear",
 				"update": "Editar"
 			},
 			"title": "Permissões de Alertas"
 		},
+		"annotationsActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de anotações.",
+			"title": "Permissões de Anotações"
+		},
 		"datesActions": {
 			"descriptions": {
-				"create": "Permite criar uma anotação",
-				"delete": "Permite eliminar uma anotação",
-				"lock": "Permite bloquear/desbloquear uma anotação",
-				"read": "Permite ver anotações",
-				"update": "Permite editar uma anotação"
+				"createAnnotations": "Permite criar uma anotação",
+				"deleteAnnotations": "Permite eliminar uma anotação",
+				"readAnnotations": "Permite ver anotações",
+				"toggleLockAnnotations": "Permite bloquear/desbloquear uma anotação",
+				"updateAnnotations": "Permite editar uma anotação"
 			},
 			"labels": {
-				"create": "Criar anotação",
-				"delete": "Eliminar anotação",
-				"lock": "Bloquear/desbloquear",
-				"read": "Ver anotações",
-				"update": "Editar anotação"
+				"createAnnotations": "Criar anotação",
+				"deleteAnnotations": "Eliminar anotação",
+				"readAnnotations": "Ver anotações",
+				"toggleLockAnnotations": "Bloquear/desbloquear",
+				"updateAnnotations": "Editar anotação"
 			}
 		},
 		"gtfsValidationActions": {
@@ -1074,24 +1082,24 @@
 			"descriptions": {
 				"create": "Permite criar uma validação",
 				"read": "Permite ver validações",
-				"request_approval": "Permite solicitar aprovação de uma validação"
+				"requestApproval": "Permite solicitar aprovação de uma validação"
 			},
 			"labels": {
 				"create": "Criar",
 				"read": "Ver",
-				"request_approval": "Solicitar aprovação"
+				"requestApproval": "Solicitar aprovação"
 			},
 			"title": "Permissões de Validações (GTFS)"
 		},
 		"homeActions": {
 			"description": "As ações que o utilizador pode realizar na home.",
 			"descriptions": {
-				"see_quick_links": "Permite ver links rápidos",
-				"see_wiki_links": "Permite ver wiki"
+				"seeQuickLinks": "Permite ver links rápidos",
+				"seeWikiLinks": "Permite ver wiki"
 			},
 			"labels": {
-				"see_quick_links": "Ver links rápidos",
-				"see_wiki_links": "Ver wiki"
+				"seeQuickLinks": "Ver links rápidos",
+				"seeWikiLinks": "Ver wiki"
 			},
 			"title": "Permissões da Home"
 		},
@@ -1101,12 +1109,14 @@
 				"create": "Permite criar uma organização",
 				"delete": "Permite eliminar uma organização",
 				"read": "Permite ver organizações",
+				"toggleLock": "Permite bloquear/desbloquear uma organização",
 				"update": "Permite editar uma organização"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
 				"update": "Editar"
 			},
 			"title": "Permissões de Organizações"
@@ -1121,33 +1131,51 @@
 			},
 			"title": "Permissões de Métricas"
 		},
+		"periodsActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de períodos.",
+			"descriptions": {
+				"create": "Permite criar um período",
+				"delete": "Permite eliminar um período",
+				"read": "Permite ver períodos",
+				"toggleLock": "Permite bloquear/desbloquear um período",
+				"update": "Permite editar um período"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Períodos"
+		},
 		"planActions": {
 			"description": "As ações que o utilizador pode realizar na gestão de planos.",
 			"descriptions": {
 				"create": "Permite criar um plano",
 				"delete": "Permite eliminar um plano",
 				"read": "Permite ver um plano específico",
-				"read_controller": "Permite ver a configuração dos SLAs de um plano",
-				"read_pcgi_legacy": "Permite ver os dados da PCGI Legacy",
-				"toggle_lock": "Permite bloquear/desbloquear um plano",
+				"readController": "Permite ver a configuração dos SLAs de um plano",
+				"readPcgiLegacy": "Permite ver os dados da PCGI Legacy",
+				"toggleLock": "Permite bloquear/desbloquear um plano",
 				"update": "Permite editar um plano",
-				"update_controller": "Permite configurar os SLAs de um plano",
-				"update_feed_info_dates": "Permite editar as datas de informação do feed",
-				"update_gtfs_plan": "Permite alterar o GTFS de um plano",
-				"update_pcgi_legacy": "Permite editar os dados da PCGI Legacy"
+				"updateController": "Permite configurar os SLAs de um plano",
+				"updateFeedInfoDates": "Permite editar as datas de informação do feed",
+				"updateGtfsPlan": "Permite alterar o GTFS de um plano",
+				"updatePcgiLegacy": "Permite editar os dados da PCGI Legacy"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
-				"read_controller": "Ver SLA Controller",
-				"read_pcgi_legacy": "Ver PCGI Legacy",
-				"toggle_lock": "Bloquear/Desbloquear",
+				"readController": "Ver SLA Controller",
+				"readPcgiLegacy": "Ver PCGI Legacy",
+				"toggleLock": "Bloquear/Desbloquear",
 				"update": "Editar",
-				"update_controller": "Editar SLA Controller",
-				"update_feed_info_dates": "Editar Datas de Validade",
-				"update_gtfs_plan": "Alterar GTFS",
-				"update_pcgi_legacy": "Editar PCGI Legacy"
+				"updateController": "Editar SLA Controller",
+				"updateFeedInfoDates": "Editar Datas de Validade",
+				"updateGtfsPlan": "Alterar GTFS",
+				"updatePcgiLegacy": "Editar PCGI Legacy"
 			},
 			"title": "Permissões de Planos"
 		},
@@ -1157,14 +1185,14 @@
 				"create": "Permite criar um alerta de tempo real ",
 				"delete": "Permite eliminar um alerta de tempo real",
 				"read": "Permite ver alertas em tempo real",
-				"toggle_lock": "Permite bloquear/desbloquear um alerta de tempo real",
+				"toggleLock": "Permite bloquear/desbloquear um alerta de tempo real",
 				"update": "Permite editar um alerta de tempo real"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
-				"toggle_lock": "Bloquear/desbloquear",
+				"toggleLock": "Bloquear/desbloquear",
 				"update": "Editar"
 			},
 			"title": "Permissões de Alertas de Tempo Real"
@@ -1172,30 +1200,30 @@
 		"rideActions": {
 			"description": "As ações que o utilizador pode realizar na gestão de viagens.",
 			"descriptions": {
-				"acceptance_change_status": "Permite alterar o estado de uma justificação de uma viagem",
-				"acceptance_justify": "Permite justificar uma viagem",
-				"acceptance_lock": "Permite bloquear/desbloquear uma justificação de uma viagem",
-				"acceptance_read": "Permite ver uma justificação de uma viagem",
-				"analsys_lock": "Permite bloquear/desbloquear uma análise de uma viagem",
-				"analysis_read": "Permite ver uma análise de uma viagem",
-				"analysis_reprocess": "Permite reprocessar uma análise de uma viagem",
-				"analysis_update": "Permite editar uma análise de uma viagem",
-				"audit_lock": "Permite bloquear/desbloquear uma auditoria de uma viagem",
-				"audit_read": "Permite ver uma auditoria de uma viagem",
-				"audit_update": "Permite editar uma auditoria de uma viagem"
+				"acceptanceChangeStatus": "Permite alterar o estado de uma justificação de uma viagem",
+				"acceptanceJustify": "Permite justificar uma viagem",
+				"acceptanceLock": "Permite bloquear/desbloquear uma justificação de uma viagem",
+				"acceptanceRead": "Permite ver uma justificação de uma viagem",
+				"analsysLock": "Permite bloquear/desbloquear uma análise de uma viagem",
+				"analysisRead": "Permite ver uma análise de uma viagem",
+				"analysisReprocess": "Permite reprocessar uma análise de uma viagem",
+				"analysisUpdate": "Permite editar uma análise de uma viagem",
+				"auditLock": "Permite bloquear/desbloquear uma auditoria de uma viagem",
+				"auditRead": "Permite ver uma auditoria de uma viagem",
+				"auditUpdate": "Permite editar uma auditoria de uma viagem"
 			},
 			"labels": {
-				"acceptance_change_status": "Aceitação - Alterar estado",
-				"acceptance_justify": "Aceitação - Justificar",
-				"acceptance_lock": "Aceitação - Bloquear/Desbloquear",
-				"acceptance_read": "Aceitação - Ver",
-				"analsys_lock": "Análise - Bloquear/Desbloquear",
-				"analysis_read": "Análise - Ver",
-				"analysis_reprocess": "Análise - Reprocessar",
-				"analysis_update": "Análise - Editar",
-				"audit_lock": "Auditoria - Bloquear/Desbloquear",
-				"audit_read": "Auditoria - Ver",
-				"audit_update": "Auditoria - Editar"
+				"acceptanceChangeStatus": "Aceitação - Alterar estado",
+				"acceptanceJustify": "Aceitação - Justificar",
+				"acceptanceLock": "Aceitação - Bloquear/Desbloquear",
+				"acceptanceRead": "Aceitação - Ver",
+				"analsysLock": "Análise - Bloquear/Desbloquear",
+				"analysisRead": "Análise - Ver",
+				"analysisReprocess": "Análise - Reprocessar",
+				"analysisUpdate": "Análise - Editar",
+				"auditLock": "Auditoria - Bloquear/Desbloquear",
+				"auditRead": "Auditoria - Ver",
+				"auditUpdate": "Auditoria - Editar"
 			},
 			"title": "Permissões de Viagens"
 		},
@@ -1205,12 +1233,14 @@
 				"create": "Permite criar um grupo de permissões",
 				"delete": "Permite eliminar um grupo de permissões",
 				"read": "Permite ver grupos de permissões",
+				"toggleLock": "Permite bloquear/desbloquear um grupo de permissões",
 				"update": "Permite editar um grupo de permissões"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
 				"update": "Editar"
 			},
 			"title": "Permissões de Grupos de Permissões"
@@ -1221,14 +1251,14 @@
 				"create": "Permite criar uma paragem",
 				"delete": "Permite eliminar uma paragem",
 				"read": "Permite ver paragens",
-				"toggle_lock": "Permite bloquear/desbloquear uma paragem",
+				"toggleLock": "Permite bloquear/desbloquear uma paragem",
 				"update": "Permite editar uma paragem"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
-				"toggle_lock": "Bloquear/Desbloquear",
+				"toggleLock": "Bloquear/Desbloquear",
 				"update": "Editar"
 			},
 			"title": "Permissões de Paragens"
@@ -1239,12 +1269,14 @@
 				"create": "Permite criar um utilizador",
 				"delete": "Permite eliminar um utilizador",
 				"read": "Permite ver utilizadores",
+				"toggleLock": "Permite bloquear/desbloquear um utilizador",
 				"update": "Permite editar um utilizador"
 			},
 			"labels": {
 				"create": "Criar",
 				"delete": "Eliminar",
 				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
 				"update": "Editar"
 			},
 			"title": "Permissões de Utilizadores"

@@ -37,7 +37,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 	// A. Setup variables
 
 	const filterWrapperRef = useRef<FilterWrapperRef>(null);
-	const { t } = useTranslation('global', { keyPrefix: 'components.filter_type_list' });
+	const { t } = useTranslation('global', { keyPrefix: 'components.filterTypeList' });
 
 	//
 	// B. Transform data
@@ -114,7 +114,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 					<Checkbox
 						key="toggle-all"
 						checked={toggleAllActive}
-						label={t('toggle_all_label')}
+						label={t('toggleAllLabel')}
 						onChange={handleMultiToggleAll}
 						value="all"
 					/>

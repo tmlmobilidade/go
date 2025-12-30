@@ -51,7 +51,7 @@ export function AlertDetailHeader() {
 				variant="secondary"
 			/>
 			<Button
-				label={t('save_as_draft')}
+				label={t('saveAsDraft')}
 				onClick={() => alertDetailContext.actions.saveAlert('draft')}
 				variant="secondary"
 			/>

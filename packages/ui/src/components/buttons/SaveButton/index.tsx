@@ -23,7 +23,7 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 
 	// A. Setup variables
 
-	const { t } = useTranslation('global', { keyPrefix: 'components.save_button' });
+	const { t } = useTranslation('global', { keyPrefix: 'components.saveButton' });
 
 	//
 	// B. Handle actions

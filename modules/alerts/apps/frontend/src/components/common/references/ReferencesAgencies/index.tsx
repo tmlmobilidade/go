@@ -33,7 +33,7 @@ export function ReferencesAgencies({
 	// A. Setup variables
 
 	const availableAgencies = [{ label: 'Carris Metropolitana', value: 'CM' }];
-	const { t } = useTranslation('global', { keyPrefix: 'components.reference_group' });
+	const { t } = useTranslation('global', { keyPrefix: 'components.referenceGroup' });
 
 	//
 	// B. Render components
@@ -43,7 +43,7 @@ export function ReferencesAgencies({
 			{references.length === 0 ? (
 				<Surface>
 					<Section>
-						<Label size="md" caps>{t('no_reference_available')}</Label>
+						<Label size="md" caps>{t('noReferenceAvailable')}</Label>
 					</Section>
 				</Surface>
 			) : (
@@ -61,7 +61,7 @@ export function ReferencesAgencies({
 			<Button
 				className={styles.button}
 				icon={<IconPlus size={18} />}
-				label={t('reference_agencies.add_button_label')}
+				label={t('referenceAgencies.addButtonLabel')}
 				onClick={onAddReference}
 				variant="primary"
 			/>
@@ -101,9 +101,9 @@ function ReferencesAgenciesItem({
 		<Surface>
 			<Section gap="md">
 				<Combobox
-					aria-label={t('components.reference_group.reference_agencies.combobox_aria_label')}
+					aria-label={t('components.referenceGroup.referenceAgencies.comboboxAriaLabel')}
 					data={availableAgencies}
-					label={t('components.reference_group.reference_agencies.combobox_label')}
+					label={t('components.referenceGroup.referenceAgencies.comboboxLabel')}
 					onChange={value => onUpdateReference(index, value || '')}
 					value={reference.parent_id}
 					clearable

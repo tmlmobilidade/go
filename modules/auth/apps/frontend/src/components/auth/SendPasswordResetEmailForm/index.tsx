@@ -43,11 +43,11 @@ export function SendPasswordResetEmailForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? t('error_message_description'), title: t('error_message_title') });
+			useToast.error({ message: response.error ?? t('errorMessageDescription'), title: t('errorMessageTitle') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: t('success_message_description'), title: t('success_message_title') });
+		useToast.success({ message: t('successMessageDescription'), title: t('successMessageTitle') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -57,12 +57,12 @@ export function SendPasswordResetEmailForm() {
 	return (
 		<AuthenticationForm
 			description={t('description')}
-			footerLabel={t('footer_label')}
+			footerLabel={t('footerLabel')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={emailValue.length === 0}
-			submitLabel={t('submit_label')}
+			submitLabel={t('submitLabel')}
 			title={t('title')}
 		>
 			<TextInput

@@ -25,7 +25,7 @@ export function SearchInput({ onChange, placeholder = 'placeholder', size = 'md'
 	// A. Setup variables
 
 	const [isInUse, setIsInUse] = useState(false);
-	const { t } = useTranslation('global', { keyPrefix: 'components.search_input' });
+	const { t } = useTranslation('global', { keyPrefix: 'components.searchInput' });
 
 	//
 	// B. Handle actions

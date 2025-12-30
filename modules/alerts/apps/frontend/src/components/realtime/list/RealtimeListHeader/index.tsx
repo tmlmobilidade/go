@@ -25,7 +25,7 @@ export function RealtimeListHeader() {
 			<Label size="lg" caps singleLine>{t('title')}</Label>
 			<Spacer />
 			<SearchInput onChange={realtimeListContext.actions.setFilterSearch} value={realtimeListContext.filters.search} />
-			<Button href={PAGE_ROUTES.alerts.REALTIME_DETAIL('new')} label={t('new_alert')} leftSection={<IconPlus size={20} />} />
+			<Button href={PAGE_ROUTES.alerts.REALTIME_DETAIL('new')} label={t('newAlert')} leftSection={<IconPlus size={20} />} />
 		</Toolbar>
 	);
 

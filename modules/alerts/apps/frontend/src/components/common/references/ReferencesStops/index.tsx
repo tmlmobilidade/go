@@ -34,14 +34,14 @@ export function ReferencesStops({ municipality_ids, onAddReference, onRemoveRefe
 
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
-	const { t } = useTranslation('global', { keyPrefix: 'components.reference_group' });
+	const { t } = useTranslation('global', { keyPrefix: 'components.referenceGroup' });
 
 	return (
 		<div className={styles.container}>
 			{references.length === 0 ? (
 				<Surface>
 					<Section>
-						<Label size="md" caps>{t('no_reference_available')}</Label>
+						<Label size="md" caps>{t('noReferenceAvailable')}</Label>
 					</Section>
 				</Surface>
 			) : (
@@ -61,7 +61,7 @@ export function ReferencesStops({ municipality_ids, onAddReference, onRemoveRefe
 			<Button
 				className={styles.button}
 				icon={<IconPlus size={18} />}
-				label={t('reference_stops.add_button_label')}
+				label={t('referenceStops.addButtonLabel')}
 				onClick={onAddReference}
 				variant="primary"
 			/>
@@ -145,9 +145,9 @@ function ReferencesStopsItem({
 		<Surface>
 			<Section gap="md">
 				<Combobox
-					aria-label={t('components.reference_group.reference_stops.combobox_aria_label')}
+					aria-label={t('components.referenceGroup.referenceStops.comboboxAriaLabel')}
 					data={availableStops}
-					label={t('components.reference_group.reference_stops.affected_stops_label')}
+					label={t('components.referenceGroup.referenceStops.affectedStopsLabel')}
 					onChange={value => onUpdateReference(index, 'parent_id', value || '')}
 					placeholder={municipality_ids.length === 0 ? 'Selecione os Municípios' : 'Selecione a Paragem'}
 					value={reference.parent_id}
@@ -158,10 +158,10 @@ function ReferencesStopsItem({
 				<div className={styles.childrenWrapper}>
 					<IconCornerDownRight className={styles.icon} size={28} />
 					<MultiSelect
-						aria-label={t('components.reference_group.reference_stops.affected_lines_aria_label')}
+						aria-label={t('components.referenceGroup.referenceStops.affectedLinesAriaLabel')}
 						data={availableRoutes}
-						description={t('components.reference_group.reference_stops.affected_lines_description')}
-						label={t('components.reference_group.reference_stops.affected_lines_label')}
+						description={t('components.referenceGroup.referenceStops.affectedLinesDescription')}
+						label={t('components.referenceGroup.referenceStops.affectedLinesLabel')}
 						onChange={value => onUpdateReference(index, 'child_ids', value)}
 						value={reference.child_ids}
 					/>

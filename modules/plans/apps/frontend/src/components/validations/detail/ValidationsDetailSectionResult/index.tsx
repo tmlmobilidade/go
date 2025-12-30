@@ -81,7 +81,7 @@ export function ValidationsDetailSectionResult() {
 		<Collapsible
 			defaultOpen={true}
 			description={t('description')}
-			title={t('title ')}
+			title={t('title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<SeverityTag label={errorCountLabel} severity="error" />

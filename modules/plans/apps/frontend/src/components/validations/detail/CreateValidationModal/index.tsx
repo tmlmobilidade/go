@@ -104,7 +104,7 @@ export function CreateValidationModal() {
 					/>
 					<Button
 						disabled={!validationsCreateContext.flags.can_create}
-						label={tGlobal('create_validation')}
+						label={tGlobal('createValidation')}
 						loading={validationsCreateContext.flags.loading}
 						onClick={validationsCreateContext.actions.createValidation}
 					/>
