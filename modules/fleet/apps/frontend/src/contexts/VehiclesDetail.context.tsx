@@ -3,8 +3,8 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
+import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -63,27 +63,13 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	//
 	// C. Setup form
 
-	const form = useForm<UpdateVehicleDto>({
-		initialValues: {
-			agency_id: '',
-			registration_date: [],
-			updated_by: '',
-		},
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
-	});
+	const { form } = useTypicalForm<UpdateVehicleDto>(UpdateVehicleSchema, vehicleData);
+
+	console.log('vehicleData', vehicleData);
+	console.log('form', form.values);
 
 	//
 	// D. Transform data
-
-	useEffect(() => {
-		if (!vehicleData) return;
-		form.initialize({
-			agency_id: vehicleData.agency_id,
-			registration_date: vehicleData.registration_date,
-			updated_by: vehicleData.updated_by,
-		});
-	}, [vehicleData]);
 
 	useEffect(() => {
 		if (!vehicleError) return;
