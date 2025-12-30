@@ -21,7 +21,7 @@ export class VehiclesController {
 		//
 		// Check if the user has permission to create vehicles
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.fleet.scope, PermissionCatalog.all.fleet.actions.create_vehicles)) {
+		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.create)) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create vehicles');
 		}
 
@@ -54,7 +54,7 @@ export class VehiclesController {
 		//
 		// Check if the user has permission to delete vehicles
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.fleet.scope, PermissionCatalog.all.fleet.actions.delete_vehicles)) {
+		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.delete)) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete vehicles');
 		}
 
@@ -76,7 +76,7 @@ export class VehiclesController {
 		//
 		// Check if the user has permission to read vehicles
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.fleet.scope, PermissionCatalog.all.fleet.actions.read_vehicles)) {
+		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read vehicles');
 		}
 
@@ -108,7 +108,7 @@ export class VehiclesController {
 		//
 		// Check if the user has permission to read vehicles
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.fleet.scope, PermissionCatalog.all.fleet.actions.read_vehicles)) {
+		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read vehicles');
 		}
 
@@ -154,7 +154,7 @@ export class VehiclesController {
 		//
 		// Check if the user has permission to update vehicles
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.fleet.scope, PermissionCatalog.all.fleet.actions.update_vehicles)) {
+		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update vehicles');
 		}
 

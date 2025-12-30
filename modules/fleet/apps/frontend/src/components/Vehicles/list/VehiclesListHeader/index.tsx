@@ -24,7 +24,7 @@ export function VehiclesListHeader() {
 			<Label size="lg" caps singleLine>veículos</Label>
 			<Spacer />
 			<SearchInput onChange={vehiclesListContext.actions.setFilterSearch} value={vehiclesListContext.filters.search} />
-			<HasPermission action={PermissionCatalog.all.fleet.actions.create_vehicles} scope={PermissionCatalog.all.fleet.scope}>
+			<HasPermission action={PermissionCatalog.all.vehicles.actions.create} scope={PermissionCatalog.all.vehicles.scope}>
 				<Button label="Novo veículo" leftSection={<IconPlus />} onClick={openCreateVehicleModal} />
 			</HasPermission>
 		</Toolbar>

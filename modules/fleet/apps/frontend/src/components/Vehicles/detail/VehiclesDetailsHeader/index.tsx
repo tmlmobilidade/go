@@ -53,9 +53,9 @@ export function VehiclesDetailsHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.fleet.actions.update_vehicles}
+				action={PermissionCatalog.all.vehicles.actions.update}
 				resourceKey="agency_id"
-				scope={PermissionCatalog.all.fleet.scope}
+				scope={PermissionCatalog.all.vehicles.scope}
 				value={vehiclesDetailContext.data.vehicle?.agency_id}
 			>
 				<Button
@@ -69,9 +69,9 @@ export function VehiclesDetailsHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.fleet.actions.delete_vehicles}
+				action={PermissionCatalog.all.vehicles.actions.delete}
 				resourceKey="agency_id"
-				scope={PermissionCatalog.all.fleet.scope}
+				scope={PermissionCatalog.all.vehicles.scope}
 				value={vehiclesDetailContext.data.vehicle?.agency_id}
 			>
 				<DeleteButton

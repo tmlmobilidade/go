@@ -6,16 +6,16 @@ import { z } from 'zod';
 
 export const VehiclesPermissionSchema = z.object({
 	action: z.enum([
-		'create_vehicles',
-		'delete_vehicles',
-		'read_vehicles',
-		'lock_vehicles',
-		'update_vehicles',
+		'create',
+		'delete',
+		'read',
+		'lock',
+		'update',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
 	}).default({}),
-	scope: z.literal('fleet'),
+	scope: z.literal('vehicles'),
 });
 
 export type VehiclesPermission = z.infer<typeof VehiclesPermissionSchema>;

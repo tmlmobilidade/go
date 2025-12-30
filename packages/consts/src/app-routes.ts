@@ -88,8 +88,8 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('fleet', 'frontend_url')}`,
 
 		// VEHICLES
-		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/Vehicles/${id}`,
-		VEHICLES_LIST: `${getAppConfig('fleet', 'frontend_url')}/Vehicles`,
+		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/vehicles/${id}`,
+		VEHICLES_LIST: `${getAppConfig('fleet', 'frontend_url')}/vehicles`,
 	},
 
 	/* * */

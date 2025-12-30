@@ -18,37 +18,37 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fleet.scope, [PermissionCatalog.all.fleet.actions.read_vehicles]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
 			VehiclesController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fleet.scope, [PermissionCatalog.all.fleet.actions.read_vehicles]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
 			VehiclesController.getById,
 		);
 
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fleet.scope, [PermissionCatalog.all.fleet.actions.create_vehicles]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.create]) },
 			VehiclesController.create,
 		);
 
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fleet.scope, [PermissionCatalog.all.fleet.actions.update_vehicles]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.update]) },
 			VehiclesController.update,
 		);
 
 		instance.get(
 			'/:id/lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fleet.scope, [PermissionCatalog.all.fleet.actions.lock_vehicles]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.lock]) },
 			VehiclesController.lock,
 		);
 
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fleet.scope, [PermissionCatalog.all.fleet.actions.delete_vehicles]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.delete]) },
 			VehiclesController.delete,
 		);
 

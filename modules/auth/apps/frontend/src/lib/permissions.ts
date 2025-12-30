@@ -234,14 +234,14 @@ const datesActions: PermissionConfig = {
 
 const fleetActions: PermissionConfig = {
 	actions: [
-		{ action: 'read_vehicles', description: 'Permite ver veículos', label: 'Ver veículos', resources: ['AGENCIES'] },
-		{ action: 'create_vehicles', description: 'Permite criar um veículo', label: 'Criar veículo', resources: ['AGENCIES'] },
-		{ action: 'update_vehicles', description: 'Permite editar um veículo', label: 'Editar veículo', resources: ['AGENCIES'] },
-		{ action: 'delete_vehicles', description: 'Permite eliminar um veículo', label: 'Eliminar veículo', resources: ['AGENCIES'] },
-		{ action: 'lock_vehicles', description: 'Permite bloquear/desbloquear um veículo', label: 'Bloquear/Desbloquear veículo', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'Permite ver veículos', label: 'Ver veículos', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um veículo', label: 'Criar veículo', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um veículo', label: 'Editar veículo', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um veículo', label: 'Eliminar veículo', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um veículo', label: 'Bloquear/Desbloquear veículo', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de veículos.',
-	scope: PermissionCatalog.all.fleet.scope,
+	scope: PermissionCatalog.all.vehicles.scope,
 	title: 'Permissões de Veículos',
 };
 

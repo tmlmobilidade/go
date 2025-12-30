@@ -6,7 +6,6 @@ import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
 import { AlertsRealtimePermissionSchema, AlertsScheduledPermissionSchema } from '@/permissions/alerts.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
 import { DatesPermissionSchema } from '@/permissions/dates.js';
-import { VehiclesPermissionSchema } from '@/permissions/fleet.js';
 import { GtfsValidationsPermissionSchema } from '@/permissions/gtfs-validations.js';
 import { HomePermissionSchema } from '@/permissions/home.js';
 import { OrganizationsPermissionSchema } from '@/permissions/organizations.js';
@@ -15,6 +14,7 @@ import { PlansPermissionSchema } from '@/permissions/plans.js';
 import { RolesPermissionSchema } from '@/permissions/roles.js';
 import { StopsPermissionSchema } from '@/permissions/stops.js';
 import { UsersPermissionSchema } from '@/permissions/users.js';
+import { VehiclesPermissionSchema } from '@/permissions/vehicles.js';
 import { z } from 'zod';
 
 /* * */
