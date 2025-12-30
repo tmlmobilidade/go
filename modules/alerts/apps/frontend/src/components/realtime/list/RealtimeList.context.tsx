@@ -58,7 +58,10 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 
 	const { data: allAlertsRealtimeData, error: allAlertsRealtimeError, isLoading: allAlertsRealtimeLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.REALTIME_LIST);
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read_realtime);
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.alerts.actions.read_realtime],
+		scope: PermissionCatalog.all.alerts.scope,
+	});
 
 	//
 	// C. Setup filters

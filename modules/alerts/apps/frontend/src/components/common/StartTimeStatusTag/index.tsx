@@ -2,7 +2,7 @@
 
 /* * */
 
-import { RidesData } from '@/hooks/use-data-rides';
+import { type RideNormalized } from '@tmlmobilidade/types';
 import { Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -12,7 +12,7 @@ import { Section, Tag } from '@tmlmobilidade/ui';
  * @param timestamp The date string to extract the hour and minute components from.
  * @returns The hour and minute components of the date string.
  */
-export function getDelayStatus(startTimeScheduled: RidesData['start_time_scheduled'], startTimeObserved: RidesData['start_time_observed']): string {
+export function getDelayStatus(startTimeScheduled: RideNormalized['start_time_scheduled'], startTimeObserved: RideNormalized['start_time_observed']): string {
 	//
 
 	if (!startTimeScheduled || !startTimeObserved) {
