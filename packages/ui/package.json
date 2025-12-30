@@ -50,7 +50,7 @@
 		"maplibre-gl": "5.15.0",
 		"next": "16.1.1",
 		"nuqs": "2.8.6",
-    "react-i18next": "16.5.0",
+		"react-i18next": "16.5.0",
 		"react-viewport-list": "7.1.2",
 		"ukkonen": "2.2.0"
 	},
