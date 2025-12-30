@@ -98,28 +98,25 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
 		const datesSet = new Set(filterDates);
+		// 2. Filter data based on active filters
+		const agencySet = new Set(filterAgency);
 
-		return searchResultsData
-			.filter((item: VehicleNormalized) => {
-				// Filter by agency - check if any of the vehicle's agency match the filter
-				// If vehicle has no agencies (null or empty), show it in all results
-				if (filterAgency.length > 0) {
-					if (!item.agency_id || item.agency_id.length === 0) {
-						return true; // Show vehicles with no agencies in all filters
-					}
-					const hasMatchingAgency = item.agency_id;
-					if (!hasMatchingAgency) return false;
-				}
+		return searchResultsData.filter((item: VehicleNormalized) => {
+			// Filter by agency - check if any of the vehicle's agency match the filter
+			// If vehicle has no agencies (null or empty), show it in all results
+			if (agencySet.has(item.agency_id_normalized) === false) {
+				return false;
+			}
 
-				// Filter by dates - check if any of the vehicle's dates match the filter
-				if (filterDates.length > 0) {
-					const hasMatchingDate = item.dates_normalized.some(date => datesSet.has(date));
-					if (!hasMatchingDate) return false;
-				}
+			// Filter by dates - check if any of the vehicle's dates match the filter
+			if (filterDates.length > 0) {
+				const hasMatchingDate = item.dates_normalized.some(date => datesSet.has(date));
+				if (!hasMatchingDate) return false;
+			}
 
-				// Return true if all filters pass
-				return true;
-			})
+			// Return true if all filters pass
+			return true;
+		})
 			.sort((a, b) => {
 				// Sort by created_at descending (newest first)
 				return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
