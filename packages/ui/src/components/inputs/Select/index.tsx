@@ -46,7 +46,7 @@ export function Select({ ...props }: SelectProps) {
 		<MantineSelect
 			allowDeselect={props.clearable ?? true}
 			clearable={props.clearable ?? true}
-			placeholder={props.nothingFoundMessage || t('nothing_found_message')}
+			placeholder={t('nothingFoundMessage')}
 			searchable
 			withAlignedLabels
 			{...props}

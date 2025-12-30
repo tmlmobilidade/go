@@ -1,11 +1,11 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Alert, AlertSchema, CreateAlertDto, File as FileType, ReferenceTypeSchema, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Alert, AlertSchema, File as FileType, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { convertObject, fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 interface AlertDetailContextState {

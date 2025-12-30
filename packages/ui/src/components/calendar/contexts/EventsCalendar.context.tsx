@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconNote } from '@tabler/icons-react';
+import { IconNote, TablerIcon } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Agency, type Annotation, type CalendarEvent, type Period, PermissionCatalog } from '@tmlmobilidade/types';
@@ -176,15 +176,10 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 							color: '#f59e0b',
 							description: annotation.description,
 							endDate: endDate?.iso,
-							icon: IconNote,
-							id: `${annotation._id}`,
-							metadata: {
-								annotation_id: annotation._id,
-								type: 'annotation',
-							},
+							icon: IconNote as unknown as TablerIcon,
+							id: annotation._id,
 							startDate: startDate.iso,
 							title: annotation.title,
-							type: 'annotation',
 						});
 					});
 				}
