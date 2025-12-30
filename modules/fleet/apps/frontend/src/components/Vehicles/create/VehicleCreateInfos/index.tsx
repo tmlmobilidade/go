@@ -84,21 +84,21 @@ export function VehicleCreateInfos() {
 			/>
 
 			<TextInput
-				key={vehicleCreateContext.data.form.key('model')}
-				label="Modelo do veículo"
-				placeholder="Introduza o modelo do veículo"
-				required={!vehicleSchema.shape.model.isOptional()}
-				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('model')}
-			/>
-
-			<TextInput
 				key={vehicleCreateContext.data.form.key('make')}
 				label="Marca do veículo"
 				placeholder="Introduza a marca do veículo"
 				required={!vehicleSchema.shape.make.isOptional()}
 				w="100%"
 				{...vehicleCreateContext.data.form.getInputProps('make')}
+			/>
+
+			<TextInput
+				key={vehicleCreateContext.data.form.key('model')}
+				label="Modelo do veículo"
+				placeholder="Introduza o modelo do veículo"
+				required={!vehicleSchema.shape.model.isOptional()}
+				w="100%"
+				{...vehicleCreateContext.data.form.getInputProps('model')}
 			/>
 
 			<NumberInput

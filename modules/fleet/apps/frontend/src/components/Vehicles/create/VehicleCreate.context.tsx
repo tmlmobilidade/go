@@ -26,7 +26,7 @@ interface VehicleCreateContextState {
 
 /* * */
 
-const VehicleCreateContext = createContext<undefined | VehicleCreateContextState>(undefined);
+export const VehicleCreateContext = createContext<undefined | VehicleCreateContextState>(undefined);
 
 export function useVehicleCreateContext() {
 	const context = useContext(VehicleCreateContext);

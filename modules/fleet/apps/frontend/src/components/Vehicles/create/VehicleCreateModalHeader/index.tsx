@@ -2,10 +2,11 @@
 
 /* * */
 
-import { useVehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
+import { VehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
 import { closeCreateVehicleModal } from '@/components/Vehicles/create/VehicleCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
 import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useContext } from 'react';
 
 /* * */
 
@@ -15,7 +16,8 @@ export function VehicleCreateModalHeader() {
 	//
 	// A. Setup variables
 
-	const vehicleCreateContext = useVehicleCreateContext();
+	const vehicleCreateContext = useContext(VehicleCreateContext);
+	const hasCreateContext = !!vehicleCreateContext;
 
 	//
 	// B. Render components
@@ -26,11 +28,11 @@ export function VehicleCreateModalHeader() {
 			<Tag label="Novo Veículo" variant="muted" />
 			<Spacer />
 			<Button
-				disabled={!vehicleCreateContext.data.form.isValid()}
+				disabled={!hasCreateContext || !vehicleCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
 				label="Publicar"
-				loading={vehicleCreateContext.flags.isSaving}
-				onClick={vehicleCreateContext.actions.createVehicle}
+				loading={hasCreateContext ? vehicleCreateContext.flags.isSaving : false}
+				onClick={hasCreateContext ? vehicleCreateContext.actions.createVehicle : undefined}
 				variant="primary"
 			/>
 		</Toolbar>
