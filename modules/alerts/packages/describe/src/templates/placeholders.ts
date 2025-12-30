@@ -25,6 +25,12 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 		return lineShortNames.join(', ');
 	},
 
+	'{ride_description}': async () => '',
+
+	'{ride_short_name[]}': async () => '',
+
+	'{ride_short_name}': async () => '',
+
 	'{rides_description}': async (data: DescribeAlertProps['data']) => {
 		//
 
@@ -79,6 +85,10 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 	'{start_time[]}': async () => '',
 
 	'{start_time}': async () => '',
+
+	'{stop_name[]}': async () => '',
+
+	'{stop_name}': async () => '',
 
 	'{stops_prose}': async () => '',
 
