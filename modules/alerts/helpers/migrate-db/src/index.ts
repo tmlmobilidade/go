@@ -25,8 +25,13 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 			type: parseAlertType(alert.type),
 			updated_by: 'system',
 		};
-		formattedAlert.agency_id = parseAlertAgencyId(formattedAlert.reference_type, alert.references);
+		formattedAlert.agency_id = parseAlertAgencyId(alert.title, alert.references);
 		if (alert.reference_type === 'AGENCY' as Alert['reference_type']) formattedAlert.references = [];
+		if (formattedAlert.cause === 'UNKNOWN_CAUSE' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_PROBLEM';
+		if (formattedAlert.cause === 'OTHER_CAUSE' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_PROBLEM';
+		if (formattedAlert.effect === 'UNKNOWN_EFFECT' as Alert['effect']) formattedAlert.effect = 'MODIFIED_SERVICE';
+		if (formattedAlert.effect === 'OTHER_EFFECT' as Alert['effect']) formattedAlert.effect = 'MODIFIED_SERVICE';
+		if (formattedAlert.effect === 'NO_EFFECT' as Alert['effect']) formattedAlert.effect = 'MODIFIED_SERVICE';
 		const result = AlertSchema.parse(formattedAlert);
 		return result;
 	});
@@ -73,15 +78,21 @@ function parseAlertType(value: string): Alert['type'] {
 	return value as Alert['type'];
 }
 
-function parseAlertAgencyId(referenceType: Alert['reference_type'], references: Alert['references']): Alert['agency_id'] {
-	const agencyIdsSet = new Set<string>();
+function parseAlertAgencyId(title: Alert['title'], references: Alert['references']): Alert['agency_id'] {
+	// Detect 4 digit number anywhere in title
+	const digitMatch = title.match(/\b\d{4}\b/);
+	if (digitMatch) {
+		const agencyId = `4${digitMatch[0].substring(0, 1)}`;
+		// console.log('Parsed agency ID:', agencyId, 'from title:', title);
+		return agencyId;
+	}
+	const detectedAgencies = new Set<string>();
 	references.forEach((reference) => {
-		if (referenceType === 'lines') {
-			if (reference.parent_id.length === 4) {
-				agencyIdsSet.add(`4${reference.parent_id.substring(0, 1)}`);
-			}
-		}
+		const number = reference.parent_id.substring(0, 4);
+		const agencyId = Number(`4${number.substring(0, 1)}`);
+		if (!isNaN(agencyId)) detectedAgencies.add(String(agencyId));
 	});
-	if (!agencyIdsSet.size) return '99';
-	return Array.from(agencyIdsSet)[0];
+	if (detectedAgencies.size >= 1) return Array.from(detectedAgencies)[0];
+	console.log('Could not parse agency ID from title:', title, references);
+	return '1';
 }

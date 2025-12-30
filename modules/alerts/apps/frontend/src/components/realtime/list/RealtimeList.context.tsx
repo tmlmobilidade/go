@@ -58,6 +58,8 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 
 	const { data: allAlertsRealtimeData, error: allAlertsRealtimeError, isLoading: allAlertsRealtimeLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.REALTIME_LIST);
 
+	console.log('allAlertsRealtimeData', allAlertsRealtimeData);
+
 	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.read_realtime],
 		scope: PermissionCatalog.all.alerts.scope,
@@ -99,22 +101,22 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 		// Skip if no query filters are set
 		if (filterPublishStatus.value.length === 0 && filterCause.value.length === 0 && filterEffect.value.length === 0 && filterMunicipality.value.length === 0) return searchResultsData;
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const filterPublishStatusSet = new Set(filterPublishStatus.value);
-		const filterCauseSet = new Set(filterCause.value);
-		const filterEffectSet = new Set(filterEffect.value);
 		const filterMunicipalitySet = new Set(filterMunicipality.value);
 		// 2. Filter by query filters
 		return searchResultsData.filter((alert: AlertNormalized) => {
 			// Filter by agency IDs
-			if (!filterAgency.value.includes(alert.agency_id)) return false;
+			if (!filterAgency.value.includes(alert.agency_id)) {
+				console.log('Filtering out by agency ID', alert.agency_id, 'not in', filterAgency.value);
+				return false;
+			}
 			// Filter by publish_status
-			if (!filterPublishStatusSet.has(alert.publish_status)) return false;
+			if (!filterPublishStatus.value.includes(alert.publish_status)) return false;
 			// Filter by cause
-			if (!filterCauseSet.has(alert.cause)) return false;
+			if (!filterCause.value.includes(alert.cause)) return false;
 			// Filter by effect
-			if (!filterEffectSet.has(alert.effect)) return false;
+			if (!filterEffect.value.includes(alert.effect)) return false;
 			// Filter by municipality IDs
-			if (!alert.municipality_ids.some((mId: string) => filterMunicipalitySet.has(mId))) return false;
+			// if (!alert.municipality_ids.some((mId: string) => filterMunicipalitySet.has(mId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
@@ -130,6 +132,8 @@ export const RealtimeListContextProvider = ({ children }: PropsWithChildren) => 
 		filterEffect,
 		filterMunicipality,
 	]);
+
+	console.log('filterResultsData', filterResultsData);
 
 	//
 	// E. Define context value

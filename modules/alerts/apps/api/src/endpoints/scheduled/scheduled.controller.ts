@@ -63,7 +63,7 @@ export class ScheduledController {
 			// If user has access to all agencies, no filter is applied
 			? {}
 			// Otherwise, filter by the allowed agency IDs
-			: { agency_ids: { $in: userReadPermissions.resources?.agency_ids ?? [] } };
+			: { agency_id: { $in: userReadPermissions.resources?.agency_ids ?? [] } };
 		// Retrieve and send all alerts
 		const allAlerts = await alerts.findMany({ ...permissionsQuery, type: 'scheduled' }, { sort: { active_period_start_date: -1 } });
 		// Send the alerts to the client
