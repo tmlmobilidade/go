@@ -1,6 +1,5 @@
 import type { RawMetricData } from '@/utils/metrics/types';
-
-import { useTranslations } from 'next-intl';
+import type { TranslationFn } from '@/utils/metrics/types/metricData';
 
 import { ProgressBarResult } from '../../types/chartResults';
 import {
@@ -16,7 +15,7 @@ export function transformToProgressBar(
 	totalKey: string, // e.g. "scheduled_rides"
 	achievedKey: string, // e.g. "accomplished_rides"
 	timeView: 'annual' | 'daily' | 'monthly',
-	t?: ReturnType<typeof useTranslations>,
+	t?: TranslationFn,
 ): ProgressBarResult {
 	const dateMap: Record<string, Record<string, number | string>> = {};
 	let achievedSum = 0;

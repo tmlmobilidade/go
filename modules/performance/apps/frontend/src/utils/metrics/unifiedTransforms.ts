@@ -1,5 +1,6 @@
+import type { TranslationFn } from './types/metricData';
+
 import { Dates } from '@tmlmobilidade/dates';
-import { useTranslations } from 'next-intl';
 
 import { formatDayDetailed, formatDayShort } from './formatDates';
 
@@ -92,7 +93,7 @@ export function transformDemandMetric(
 		endDate?: Dates
 		propertyFilter?: { key: string, values?: string[] } // currently this is being done by the api layer
 		startDate?: Dates
-		t?: ReturnType<typeof useTranslations>
+		t?: TranslationFn
 		timeView: 'annual' | 'daily' | 'monthly'
 		topN?: number
 	},
@@ -195,7 +196,7 @@ function filterData(
 /**
  * Transform to simple time series (line/bar chart)
  */
-function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): TimeSeriesResult {
+function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'daily' | 'monthly', t?: TranslationFn): TimeSeriesResult {
 	const dateMap: Record<string, DailyDataPoint | MonthlyDataPoint | YearlyDataPoint> = {};
 	let totalSum = 0;
 
@@ -248,7 +249,7 @@ function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'dail
 /**
  * Transform to stacked time series (product breakdown)
  */
-function transformToStacked(data: RawMetricData[], topN: number, timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): StackedResult {
+function transformToStacked(data: RawMetricData[], topN: number, timeView: 'annual' | 'daily' | 'monthly', t?: TranslationFn): StackedResult {
 	// First pass: calculate product totals for ranking
 	const productTotals = calculateProductTotals(data);
 	const { otherProducts, topProducts } = getTopNWithOthers(productTotals, topN);

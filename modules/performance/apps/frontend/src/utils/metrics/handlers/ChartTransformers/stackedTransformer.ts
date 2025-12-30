@@ -4,8 +4,7 @@
  */
 
 import type { RawMetricData, StackedResult } from '@/utils/metrics/types';
-
-import { useTranslations } from 'next-intl';
+import type { TranslationFn } from '@/utils/metrics/types/metricData';
 
 import {
 	calculateBreakdownTotals,
@@ -23,7 +22,7 @@ export function transformToStacked(
 	breakdownKey: string,
 	topN: number,
 	timeView: 'annual' | 'daily' | 'monthly',
-	t?: ReturnType<typeof useTranslations>,
+	t?: TranslationFn,
 	quantityKey = 'qty',
 ): StackedResult {
 	// Get top breakdowns and aggregate them

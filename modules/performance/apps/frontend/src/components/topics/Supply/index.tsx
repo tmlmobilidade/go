@@ -8,6 +8,7 @@ import { AgencyType } from '@/constants';
 import { Dates } from '@tmlmobilidade/dates';
 import { DateInput, MonthPicker, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -22,6 +23,8 @@ export default function SupplyTopic() {
 
 	const [startDate, setStartDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').set({ day: 1, month: 1 }));
 	const [endDate, setEndDate] = useState<Dates | null>(Dates.now('Europe/Lisbon').set({ day: 31, month: 12 }));
+
+	const { t } = useTranslation('performance', { keyPrefix: 'SupplyTopic' });
 
 	//
 	// B. Transform data
@@ -55,28 +58,72 @@ export default function SupplyTopic() {
 				<Section alignItems="center" flexDirection="row" gap="lg" height={70} padding="none">
 
 					<Section gap="xs" padding="none" width="fit-content">
-						<h3>Vista</h3>
-						<SegmentedControl data={[{ label: 'Anual', value: 'annual' }, { label: 'Mensal', value: 'monthly' }, { label: 'Diária', value: 'daily' }]} onChange={handleChangeTimeView} value={timeView} />
+						<h3>{t('filters.view.label')}</h3>
+						<SegmentedControl
+							onChange={handleChangeTimeView}
+							value={timeView}
+							data={[
+								{ label: t('filters.view.options.annual'), value: 'annual' },
+								{ label: t('filters.view.options.monthly'), value: 'monthly' },
+								{ label: t('filters.view.options.daily'), value: 'daily' },
+							]}
+						/>
 					</Section>
 
 					{timeView === 'daily' && (
 						<>
-							<DateInput label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<DateInput label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<DateInput
+								label={t('filters.date.startLabel')}
+								locale="pt"
+								onChange={handleChangeStartDate}
+								placeholder={t('filters.date.placeholder')}
+								value={startDate.js_date}
+							/>
+							<DateInput
+								label={t('filters.date.endLabel')}
+								locale="pt"
+								onChange={handleChangeEndDate}
+								placeholder={t('filters.date.placeholder')}
+								value={endDate.js_date}
+							/>
 						</>
 					)}
 
 					{timeView === 'monthly' && (
 						<>
-							<MonthPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<MonthPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<MonthPicker
+								label={t('filters.date.startLabel')}
+								locale="pt"
+								onChange={handleChangeStartDate}
+								placeholder={t('filters.date.placeholder')}
+								value={startDate.js_date}
+							/>
+							<MonthPicker
+								label={t('filters.date.endLabel')}
+								locale="pt"
+								onChange={handleChangeEndDate}
+								placeholder={t('filters.date.placeholder')}
+								value={endDate.js_date}
+							/>
 						</>
 					)}
 
 					{timeView === 'annual' && (
 						<>
-							<YearPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<YearPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<YearPicker
+								label={t('filters.date.startLabel')}
+								locale="pt"
+								onChange={handleChangeStartDate}
+								placeholder={t('filters.date.placeholder')}
+								value={startDate.js_date}
+							/>
+							<YearPicker
+								label={t('filters.date.endLabel')}
+								locale="pt"
+								onChange={handleChangeEndDate}
+								placeholder={t('filters.date.placeholder')}
+								value={endDate.js_date}
+							/>
 						</>
 					)}
 

@@ -9,8 +9,8 @@ import { useHomeContext } from '@/contexts/Home.context';
 import { buildMetricUrl, RawMetricData, transformDemandMetric } from '@/utils/metrics';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/dates';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -42,13 +42,15 @@ export function Circulations({
 	height,
 	isInsideFrame = true,
 	timeView,
-	title = 'Circulações planeadas vs executadas',
+	title,
 }: DemandVisualizationProps) {
 	//
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance', { keyPrefix: 'Circulations' });
+	const { t: tDates } = useTranslation('performance', { keyPrefix: 'dates' });
+	const defaultTitle = title || t('defaultTitle');
 
 	const startDate = filters?.dateRange?.startDate || Dates.now('Europe/Lisbon').minus({ days: 7 });
 	const endDate = filters?.dateRange?.endDate || Dates.now('Europe/Lisbon');
@@ -89,11 +91,11 @@ export function Circulations({
 			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
 			chartType: 'bar-progress' as const,
 			quantityKey: 'accomplished_rides',
-			t,
+			t: tDates,
 			timeView,
 			totalKey: 'scheduled_rides',
 		});
-	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t]);
+	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, tDates]);
 
 	const chartData = formattedData.all as ProgressBarResult;
 
@@ -101,8 +103,8 @@ export function Circulations({
 	// D. Render components
 
 	return (
-		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={title}>
-			<ProgressBarChart data={chartData} endDate={endDate} height={height} startDate={startDate} timeView={timeView} yAxisLabel="Nº circulações" />
+		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={defaultTitle}>
+			<ProgressBarChart data={chartData} endDate={endDate} height={height} startDate={startDate} timeView={timeView} yAxisLabel={t('yAxisLabel')} />
 		</VisualizationWrapper>
 	);
 }

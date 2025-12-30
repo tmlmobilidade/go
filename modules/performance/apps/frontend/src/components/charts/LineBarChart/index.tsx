@@ -6,8 +6,8 @@ import { generateEventReferenceLines, TimeSeriesResult } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { Dates } from '@tmlmobilidade/dates';
 import { BarChart, LineChart, MetricsSkeleton } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -24,12 +24,14 @@ interface LineBarChartProps {
 
 /* * */
 
-export function LineBarChart({ data, endDate, height, startDate, timeView, yAxisLabel = 'Nº de passageiros' }: LineBarChartProps) {
+export function LineBarChart({ data, endDate, height, startDate, timeView, yAxisLabel }: LineBarChartProps) {
 	//
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance', { keyPrefix: 'LineBarChart' });
+	const { t: tChart } = useTranslation('performance', { keyPrefix: 'chart' });
+	const defaultYAxisLabel = yAxisLabel || t('defaultYAxisLabel');
 
 	//
 	// B. Transform data
@@ -71,10 +73,10 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 	const series = useMemo(() => [
 		{
 			color: 'var(--color-primary)',
-			label: yAxisLabel,
+			label: defaultYAxisLabel,
 			name: 'qty',
 		},
-	], []);
+	], [defaultYAxisLabel]);
 
 	//
 	// D. Render components
@@ -100,7 +102,7 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 							referenceLines={[
 								{
 									color: 'var(--color-system-text-300)',
-									label: t('chart.series.average.label', { value: averageValue }),
+									label: tChart('series.average.label', { value: averageValue }),
 									labelPosition: 'insideBottomRight',
 									y: averageValue,
 								},

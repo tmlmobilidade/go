@@ -7,6 +7,7 @@ import { Widget } from '@/components/layout/Widget';
 import { RealtimeDemand } from '@/components/visualizations/RealtimeDemand';
 import { ServiceCompliance } from '@/components/visualizations/ServiceCompliance';
 import { Divider, Grid, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -17,6 +18,7 @@ export default function Home() {
 
 	const me = useMeContext();
 	const userName = me.data.user.first_name;
+	const { t } = useTranslation('performance', { keyPrefix: 'Home' });
 
 	//
 	// B. Transform data
@@ -28,7 +30,7 @@ export default function Home() {
 
 			<div className={styles.topContainer}>
 				<div className={styles.headerContainer}>
-					<h1 className={styles.headerTitle}>🚀 Olá {userName},</h1>
+					<h1 className={styles.headerTitle}>{t('greeting', { name: userName })}</h1>
 					<SystemStatus />
 					<AgenciesStatus />
 				</div>

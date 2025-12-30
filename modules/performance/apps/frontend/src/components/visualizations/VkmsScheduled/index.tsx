@@ -10,8 +10,8 @@ import { useHomeContext } from '@/contexts/Home.context';
 import { buildMetricUrl, RawMetricData, transformDemandMetric } from '@/utils/metrics';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/dates';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -43,14 +43,16 @@ export function VmksScheduled({
 	height,
 	isInsideFrame = true,
 	timeView,
-	title = 'Vkms planeados vs executados',
+	title,
 }: DemandVisualizationProps) {
 	//
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance', { keyPrefix: 'VkmsScheduled' });
+	const { t: tDates } = useTranslation('performance', { keyPrefix: 'dates' });
 	const agenciesContext = useAgenciesContext();
+	const defaultTitle = title || t('defaultTitle');
 
 	const startDate = filters?.dateRange?.startDate || Dates.now('Europe/Lisbon').minus({ days: 7 });
 	const endDate = filters?.dateRange?.endDate || Dates.now('Europe/Lisbon');
@@ -103,7 +105,7 @@ export function VmksScheduled({
 			achievedKey: 'vkms_observed',
 			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
 			chartType: 'bar-progress',
-			t,
+			t: tDates,
 			timeView,
 			totalKey: 'vkms_scheduled',
 		});
@@ -123,7 +125,7 @@ export function VmksScheduled({
 		});
 
 		return transformedData;
-	}, [data, groupBy, selectedAgencies, t, timeView, filteredAgencies]);
+	}, [data, groupBy, selectedAgencies, tDates, timeView, filteredAgencies]);
 
 	const chartData = formattedData.all;
 
@@ -131,8 +133,8 @@ export function VmksScheduled({
 	// D. Render components
 
 	return (
-		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={title}>
-			<ProgressBarChart data={chartData as ProgressBarResult} endDate={endDate} height={height} referenceVariable="Referência" startDate={startDate} timeView={timeView} yAxisLabel="Vkms planeados" />
+		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={defaultTitle}>
+			<ProgressBarChart data={chartData as ProgressBarResult} endDate={endDate} height={height} referenceVariable={t('referenceVariable')} startDate={startDate} timeView={timeView} yAxisLabel={t('yAxisLabel')} />
 		</VisualizationWrapper>
 	);
 }

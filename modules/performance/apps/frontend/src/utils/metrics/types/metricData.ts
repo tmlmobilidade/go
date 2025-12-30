@@ -2,7 +2,8 @@
  * Core data interfaces for metrics system
  */
 
-import { useTranslations } from 'next-intl';
+// Lightweight translation function signature compatible with react-i18next's `t`
+export type TranslationFn = (key: string, options?: Record<string, unknown>) => string;
 
 /** Individual data point within a metric item */
 export interface DemandDataPoint {
@@ -33,7 +34,7 @@ interface BaseMetricTransformOptions {
 	/** Key for quantity field in data points */
 	quantityKey?: string
 	/** Translation function for internationalization */
-	t?: ReturnType<typeof useTranslations>
+	t?: TranslationFn
 	/** Time granularity for data aggregation */
 	timeView: 'annual' | 'daily' | 'monthly'
 	/** Number of top items to show (rest grouped as "Others") */

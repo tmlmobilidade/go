@@ -8,6 +8,7 @@ import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/dates';
 import { CompositeChart, CompositeChartSeries, MetricsSkeleton } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -31,6 +32,8 @@ export function ProgressBarChart({ data, height, referenceVariable, style, timeV
 
 	// A. Setup variables
 
+	const { t } = useTranslation('performance', { keyPrefix: 'ProgressBarChart' });
+
 	//
 	// B. Transform data
 
@@ -48,7 +51,7 @@ export function ProgressBarChart({ data, height, referenceVariable, style, timeV
 
 	const series = data?.series?.map(valueType => ({
 		color: valueType === 'achieved' ? colors[valueType] : 'url(#achievedStripes)',
-		label: valueType === 'achieved' ? 'Executado' : 'Planeado',
+		label: valueType === 'achieved' ? t('series.achieved') : t('series.planned'),
 		name: valueType,
 		type: 'bar',
 	}));
