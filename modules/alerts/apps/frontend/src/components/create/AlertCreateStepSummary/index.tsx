@@ -1,6 +1,6 @@
 /* * */
 
-import { useRealtimeCreateContext } from '@/components/create/RealtimeCreate.context';
+import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { getAlertTitleAndDescription, Translations } from '@/lib/translations';
 import { Dates } from '@tmlmobilidade/dates';
 import { RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
@@ -13,13 +13,13 @@ import { SeenStatusTag } from '../SeenStatusTag';
 
 /* * */
 
-export function RealtimeCreateStepSummary() {
+export function AlertCreateStepSummary() {
 	//
 
 	//
 	// A. Setup variables
 
-	const realtimeCreateContext = useRealtimeCreateContext();
+	const alertCreateContext = useAlertCreateContext();
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
@@ -56,16 +56,16 @@ export function RealtimeCreateStepSummary() {
 	// B. Transform data
 
 	// useEffect(() => {
-	// 	const uniqueLineIds = Array.from(new Set(realtimeCreateContext.data.form.getValues().references?.map(ride => ride.parent_id)));
-	// 	const { description, title } = getAlertTitleAndDescription(realtimeCreateContext.data.form.values.cause, realtimeCreateContext.data.form.values.effect, uniqueLineIds.join(', '));
-	// 	realtimeCreateContext.data.form.setFieldValue('title', title);
-	// 	realtimeCreateContext.data.form.setFieldValue('description', description);
+	// 	const uniqueLineIds = Array.from(new Set(alertCreateContext.data.form.getValues().references?.map(ride => ride.parent_id)));
+	// 	const { description, title } = getAlertTitleAndDescription(alertCreateContext.data.form.values.cause, alertCreateContext.data.form.values.effect, uniqueLineIds.join(', '));
+	// 	alertCreateContext.data.form.setFieldValue('title', title);
+	// 	alertCreateContext.data.form.setFieldValue('description', description);
 	// }, []);
 
 	const visibleRides = useMemo(() => {
-		const selectedRideIds = realtimeCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? [];
-		return realtimeCreateContext.data.filtered_rides.filter(ride => selectedRideIds.some(selectedRideId => selectedRideId === ride._id) ?? false);
-	}, [realtimeCreateContext.data.filtered_rides, realtimeCreateContext.data.form]);
+		const selectedRideIds = alertCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? [];
+		return alertCreateContext.data.filtered_rides.filter(ride => selectedRideIds.some(selectedRideId => selectedRideId === ride._id) ?? false);
+	}, [alertCreateContext.data.filtered_rides, alertCreateContext.data.form]);
 
 	//
 	// C. Render components
@@ -76,21 +76,21 @@ export function RealtimeCreateStepSummary() {
 			<Section>
 				<Grid gap="md">
 					<TextInput
-						defaultValue={realtimeCreateContext.data.form.getValues().title}
+						defaultValue={alertCreateContext.data.form.getValues().title}
 						label="Título"
 						readOnly
 					/>
 					<Textarea
-						defaultValue={realtimeCreateContext.data.form.getValues().description}
+						defaultValue={alertCreateContext.data.form.getValues().description}
 						label="Descrição"
 						minRows={4}
 						autosize
 						readOnly
 					/>
 					<Grid columns="abc" gap="md">
-						<ValueDisplay label="Causa" value={Translations.CAUSE[realtimeCreateContext.data.form.getValues().cause]} bordered />
-						<ValueDisplay label="Efeito" value={Translations.EFFECT[realtimeCreateContext.data.form.getValues().effect]} bordered />
-						<ValueDisplay label="Circulações Afetadas" value={realtimeCreateContext.data.form.getValues().references?.length} bordered />
+						<ValueDisplay label="Causa" value={Translations.CAUSE[alertCreateContext.data.form.getValues().cause]} bordered />
+						<ValueDisplay label="Efeito" value={Translations.EFFECT[alertCreateContext.data.form.getValues().effect]} bordered />
+						<ValueDisplay label="Circulações Afetadas" value={alertCreateContext.data.form.getValues().references?.length} bordered />
 					</Grid>
 				</Grid>
 			</Section>

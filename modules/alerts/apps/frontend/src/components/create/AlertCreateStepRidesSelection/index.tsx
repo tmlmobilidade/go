@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useRealtimeCreateContext } from '@/components/create/RealtimeCreate.context';
+import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Checkbox, DataTable, DataTableColumn, Tag } from '@tmlmobilidade/ui';
@@ -14,13 +14,13 @@ import { SeenStatusTag } from '../SeenStatusTag';
 
 /* * */
 
-export function RealtimeCreateStepRidesSelection() {
+export function AlertCreateStepRidesSelection() {
 	//
 
 	//
 	// A. Setup variables
 
-	const realtimeCreateContext = useRealtimeCreateContext();
+	const alertCreateContext = useAlertCreateContext();
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
@@ -29,7 +29,7 @@ export function RealtimeCreateStepRidesSelection() {
 	const columns: DataTableColumn<RideNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Checkbox checked={realtimeCreateContext.data.form.getValues().references?.some(reference => reference.parent_id === item._id) ?? false} />,
+			render: item => <Checkbox checked={alertCreateContext.data.form.getValues().references?.some(reference => reference.parent_id === item._id) ?? false} />,
 			title: '',
 			width: 50,
 		},
@@ -63,12 +63,12 @@ export function RealtimeCreateStepRidesSelection() {
 	// B. Transform data
 
 	const visibleRides = useMemo(() => {
-		if (realtimeCreateContext.filters.view_mode.value === 'selected') {
-			const selectedRideIds = realtimeCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? [];
-			return realtimeCreateContext.data.filtered_rides.filter(ride => selectedRideIds.some(selectedRideId => selectedRideId === ride._id) ?? false);
+		if (alertCreateContext.filters.view_mode.value === 'selected') {
+			const selectedRideIds = alertCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? [];
+			return alertCreateContext.data.filtered_rides.filter(ride => selectedRideIds.some(selectedRideId => selectedRideId === ride._id) ?? false);
 		}
-		return realtimeCreateContext.data.filtered_rides;
-	}, [realtimeCreateContext.data.filtered_rides, realtimeCreateContext.data.form, realtimeCreateContext.filters.view_mode.value]);
+		return alertCreateContext.data.filtered_rides;
+	}, [alertCreateContext.data.filtered_rides, alertCreateContext.data.form, alertCreateContext.filters.view_mode.value]);
 
 	//
 	// B. Render components
@@ -76,10 +76,10 @@ export function RealtimeCreateStepRidesSelection() {
 	return (
 		<DataTable
 			columns={columns}
-			onRowClick={item => realtimeCreateContext.actions.toggleRideSelection(item._id)}
+			onRowClick={item => alertCreateContext.actions.toggleRideSelection(item._id)}
 			records={visibleRides}
 			rowIdAccessor="_id"
-			selectedIds={realtimeCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? []}
+			selectedIds={alertCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? []}
 		/>
 	);
 

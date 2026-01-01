@@ -1,6 +1,6 @@
 /* * */
 
-import { useRealtimeCreateContext } from '@/components/create/RealtimeCreate.context';
+import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { GtfsEffectSchema } from '@tmlmobilidade/types';
@@ -8,20 +8,20 @@ import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function RealtimeCreateStepEffect() {
+export function AlertCreateStepEffect() {
 	//
 
 	//
 	// A. Setup variables
 
-	const realtimeCreateContext = useRealtimeCreateContext();
+	const alertCreateContext = useAlertCreateContext();
 
 	//
 	// B. Handle actions
 
 	const handleSelectEffect = (value: keyof typeof GtfsEffectSchema.enum) => {
-		realtimeCreateContext.data.form.setFieldValue('effect', value);
-		realtimeCreateContext.data.multi_step.next();
+		alertCreateContext.data.form.setFieldValue('effect', value);
+		alertCreateContext.data.multi_step.next();
 	};
 
 	//
@@ -34,7 +34,7 @@ export function RealtimeCreateStepEffect() {
 					<LargeButton
 						key={item}
 						icon={EffectIcons[item]}
-						isActive={realtimeCreateContext.data.form.getValues().effect === item}
+						isActive={alertCreateContext.data.form.getValues().effect === item}
 						onClick={() => handleSelectEffect(item)}
 						title={Translations.EFFECT[item]}
 					/>

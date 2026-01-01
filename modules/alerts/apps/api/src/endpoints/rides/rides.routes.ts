@@ -19,7 +19,7 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read_scheduled, PermissionCatalog.all.alerts.actions.read_realtime]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			RidesSharedController.getBatch,
 		);
 

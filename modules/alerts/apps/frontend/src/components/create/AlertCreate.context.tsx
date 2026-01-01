@@ -19,7 +19,7 @@ export const createRealtimeSteps = ['cause', 'effect', 'references', 'summary'] 
 
 /* * */
 
-interface RealtimeCreateContextState extends CreateContextStateTemplate {
+interface AlertCreateContextState extends CreateContextStateTemplate {
 	actions: CreateContextStateTemplate['actions'] & {
 		removeAllRides: () => void
 		toggleRideSelection: (rideId: string) => void
@@ -42,19 +42,19 @@ interface RealtimeCreateContextState extends CreateContextStateTemplate {
 
 /* * */
 
-const RealtimeCreateContext = createContext<RealtimeCreateContextState | undefined>(undefined);
+const AlertCreateContext = createContext<AlertCreateContextState | undefined>(undefined);
 
-export function useRealtimeCreateContext() {
-	const context = useContext(RealtimeCreateContext);
+export function useAlertCreateContext() {
+	const context = useContext(AlertCreateContext);
 	if (!context) {
-		throw new Error('useRealtimeCreateContext must be used within a RealtimeCreateContextProvider');
+		throw new Error('useAlertCreateContext must be used within a AlertCreateContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) => {
+export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -185,7 +185,7 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 	//
 	// E. Define State
 
-	const contextValue: RealtimeCreateContextState = useMemo(() => ({
+	const contextValue: AlertCreateContextState = useMemo(() => ({
 		actions: {
 			create: handleCreate,
 			removeAllRides,
@@ -225,9 +225,9 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 	// F. Return state
 
 	return (
-		<RealtimeCreateContext.Provider value={contextValue}>
+		<AlertCreateContext.Provider value={contextValue}>
 			{children}
-		</RealtimeCreateContext.Provider>
+		</AlertCreateContext.Provider>
 	);
 
 	//

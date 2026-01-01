@@ -1,14 +1,14 @@
 /* * */
 
-import { RealtimeCreate } from '@/components/create/RealtimeCreate';
-import { RealtimeCreateContextProvider } from '@/components/create/RealtimeCreate.context';
+import { AlertCreate } from '@/components/create/AlertCreate';
+import { AlertCreateContextProvider } from '@/components/create/AlertCreate.context';
 
 /* * */
 
 export default async function Page() {
 	return (
-		<RealtimeCreateContextProvider>
-			<RealtimeCreate />
-		</RealtimeCreateContextProvider>
+		<AlertCreateContextProvider>
+			<AlertCreate />
+		</AlertCreateContextProvider>
 	);
 }

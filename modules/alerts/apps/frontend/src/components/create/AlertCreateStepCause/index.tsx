@@ -1,6 +1,6 @@
 /* * */
 
-import { useRealtimeCreateContext } from '@/components/create/RealtimeCreate.context';
+import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { CauseIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
 import { GtfsCauseExtendedSchema } from '@tmlmobilidade/types';
@@ -8,20 +8,20 @@ import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function RealtimeCreateStepCause() {
+export function AlertCreateStepCause() {
 	//
 
 	//
 	// A. Setup variables
 
-	const realtimeCreateContext = useRealtimeCreateContext();
+	const alertCreateContext = useAlertCreateContext();
 
 	//
 	// B. Handle actions
 
 	const handleSelectCause = (value: keyof typeof GtfsCauseExtendedSchema.enum) => {
-		realtimeCreateContext.data.form.setFieldValue('cause', value);
-		realtimeCreateContext.data.multi_step.next();
+		alertCreateContext.data.form.setFieldValue('cause', value);
+		alertCreateContext.data.multi_step.next();
 	};
 
 	//
@@ -34,7 +34,7 @@ export function RealtimeCreateStepCause() {
 					<LargeButton
 						key={item}
 						icon={CauseIcons[item]}
-						isActive={realtimeCreateContext.data.form.getValues().cause === item}
+						isActive={alertCreateContext.data.form.getValues().cause === item}
 						onClick={() => handleSelectCause(item)}
 						title={Translations.CAUSE[item]}
 					/>

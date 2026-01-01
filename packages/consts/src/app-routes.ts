@@ -149,12 +149,6 @@ export const API_ROUTES = Object.freeze({
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
 
-		// REALTIME
-		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/realtime/${id}`,
-		REALTIME_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/realtime/${id}/image`,
-		REALTIME_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/realtime/${id}/lock`,
-		REALTIME_LIST: `${getAppConfig('alerts', 'api_url')}/realtime`,
-
 		// RIDES
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
 	},
