@@ -1,0 +1,56 @@
+'use client';
+
+/* * */
+
+import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
+import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { Translations } from '@/lib/translations';
+import { PublishStatusSchema } from '@tmlmobilidade/types';
+import { Select } from '@tmlmobilidade/ui';
+import { useState } from 'react';
+
+/* * */
+
+export function AlertDetailPublishStatus() {
+	//
+
+	//
+	// A. Setup variables
+
+	const alertDetailContext = useAlertDetailContext();
+
+	const [isEditing, setIsEditing] = useState(false);
+
+	//
+	// B. Transform data
+
+	const publishStatusOptions = PublishStatusSchema.options.map(item => ({
+		label: Translations.PUBLISH_STATUS[item],
+		value: item,
+	}));
+
+	//
+	// C. Render components
+
+	if (!isEditing) {
+		return (
+			<AlertTagPublishStatus
+				onClick={() => setIsEditing(true)}
+				value={alertDetailContext.data.form.getValues().publish_status}
+			/>
+		);
+	}
+
+	return (
+		<Select
+			key={alertDetailContext.data.form.key('publish_status')}
+			clearable={false}
+			data={publishStatusOptions}
+			onDropdownClose={() => setIsEditing(false)}
+			autoFocus
+			{...alertDetailContext.data.form.getInputProps('publish_status')}
+		/>
+	);
+
+	//
+}

@@ -1,7 +1,7 @@
 /* * */
 
-import { RealtimeCreate } from '@/components/realtime/create/RealtimeCreate';
-import { RealtimeCreateContextProvider } from '@/components/realtime/create/RealtimeCreate.context';
+import { RealtimeCreate } from '@/components/create/RealtimeCreate';
+import { RealtimeCreateContextProvider } from '@/components/create/RealtimeCreate.context';
 
 /* * */
 
