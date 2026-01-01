@@ -5,6 +5,7 @@
 	box-sizing: border-box;
 }
 
+
 /* * */
 /* HTML & BODY */
 
@@ -27,29 +28,11 @@ body {
 /* * */
 /* TEXT ELEMENTS */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-a,
-input,
-button,
-textarea {
-	padding: 0;
-	margin: 0;
-	line-height: 1.3;
-	user-select: text;
-	border: none;
-	-webkit-touch-callout: default;
-}
-
 a {
 	color: inherit;
 	text-decoration: none;
 }
+
 
 /* * */
 /* IMAGES & FIGURES */

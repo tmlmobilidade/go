@@ -7,7 +7,7 @@ import { ReferencesEditorLines } from '@/components/common/references/References
 import { ReferencesEditorRides } from '@/components/common/references/ReferencesEditorRides';
 import { ReferencesEditorStops } from '@/components/common/references/ReferencesEditorStops';
 import { AlertReferenceTypeSchema } from '@tmlmobilidade/types';
-import { Grid, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { Grid, Section, Surface, Tabs } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -37,29 +37,56 @@ export function ReferencesEditorMain() {
 	// C. Render components
 
 	return (
-		<Section padding="none">
-			<Grid gap="md">
+		<Surface>
+			<Section padding="none">
+				<Grid gap="md">
+					<Tabs
+						onChange={referencesEditorContext.actions.changeReferenceType}
+						value={referencesEditorContext.data.selected_reference_type}
+						// variant="outline"
+					>
+						<Tabs.List>
+							{referenceTypeOptions.map(option => (
+								<Tabs.Tab key={option.value} value={option.value}>
+									{option.label}
+								</Tabs.Tab>
+							))}
+						</Tabs.List>
 
-				<SegmentedControl
+						<Tabs.Panel value="lines">
+							<ReferencesEditorLines />
+						</Tabs.Panel>
+
+						<Tabs.Panel value="stops">
+							<ReferencesEditorStops />
+						</Tabs.Panel>
+
+						<Tabs.Panel value="rides">
+							<ReferencesEditorRides />
+						</Tabs.Panel>
+					</Tabs>
+
+					{/* <SegmentedControl
 					data={referenceTypeOptions}
 					onChange={referencesEditorContext.actions.changeReferenceType}
 					value={referencesEditorContext.data.selected_reference_type}
 					fullWidth
-				/>
+				/> */}
 
-				{referencesEditorContext.data.selected_reference_type === 'lines' && (
+					{/* {referencesEditorContext.data.selected_reference_type === 'lines' && (
 					<ReferencesEditorLines />
-				)}
+				)} */}
 
-				{referencesEditorContext.data.selected_reference_type === 'stops' && (
+					{/* {referencesEditorContext.data.selected_reference_type === 'stops' && (
 					<ReferencesEditorStops />
-				)}
+				)} */}
 
-				{referencesEditorContext.data.selected_reference_type === 'rides' && (
+					{/* {referencesEditorContext.data.selected_reference_type === 'rides' && (
 					<ReferencesEditorRides />
-				)}
+				)} */}
 
-			</Grid>
-		</Section>
+				</Grid>
+			</Section>
+		</Surface>
 	);
 }

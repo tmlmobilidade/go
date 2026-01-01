@@ -11,6 +11,8 @@ import { Checkbox, DataTable, DataTableColumn, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { useReferencesEditorContext } from '../ReferencesEditor.context';
+import { ReferencesEditorRidesFilters } from '../ReferencesEditorRidesFilters';
+import { ReferencesEditorRidesSelectionControls } from '../ReferencesEditorRidesSelectionControls';
 
 /* * */
 
@@ -74,13 +76,17 @@ export function ReferencesEditorRides() {
 	// B. Render components
 
 	return (
-		<DataTable
-			columns={columns}
-			onRowClick={item => referencesEditorContext.actions.toggleRideSelection(item._id)}
-			records={visibleRides}
-			rowIdAccessor="_id"
-			selectedIds={referencesEditorContext.data.selected_references?.map(reference => reference.parent_id) ?? []}
-		/>
+		<>
+			<ReferencesEditorRidesFilters />
+			<ReferencesEditorRidesSelectionControls />
+			<DataTable
+				columns={columns}
+				onRowClick={item => referencesEditorContext.actions.toggleRideSelection(item._id)}
+				records={visibleRides}
+				rowIdAccessor="_id"
+				selectedIds={referencesEditorContext.data.selected_references?.map(reference => reference.parent_id) ?? []}
+			/>
+		</>
 	);
 
 	//

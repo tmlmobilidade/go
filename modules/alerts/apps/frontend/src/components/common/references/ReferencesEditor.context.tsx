@@ -196,7 +196,7 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 		data: {
 			filtered_rides: ridesData,
 			selected_reference_type: selectedReferenceType,
-			selected_references: selectedReferences,
+			selected_references: selectedReferences ?? [],
 		},
 		filters: {
 			lines: filterLines,

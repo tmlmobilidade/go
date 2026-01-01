@@ -50,19 +50,19 @@ export function AlertDetailSectionReferences() {
 		>
 			<Section>
 				<Grid gap="md">
+					{/* <MultiSelect
+						key={alertDetailContext.data.form.key('municipality_ids')}
+						data={municipalitiesOptions}
+						description="Selecione os municípios que serão afetados pelo alerta"
+						label="Municípios Afetados"
+						{...alertDetailContext.data.form.getInputProps('municipality_ids')}
+						/> */}
 					<Select
 						key={alertDetailContext.data.form.key('agency_id')}
 						data={agenciesContext.data.as_options}
 						description="Selecione o operador que será afetado pelo alerta"
 						label="Operador afetado"
 						{...alertDetailContext.data.form.getInputProps('agency_id')}
-					/>
-					<MultiSelect
-						key={alertDetailContext.data.form.key('municipality_ids')}
-						data={municipalitiesOptions}
-						description="Selecione os municípios que serão afetados pelo alerta"
-						label="Municípios Afetados"
-						{...alertDetailContext.data.form.getInputProps('municipality_ids')}
 					/>
 					<ReferencesEditor
 						onChangeReferences={handleChangeReferences}
