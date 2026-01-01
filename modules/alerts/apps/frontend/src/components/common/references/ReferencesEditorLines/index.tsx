@@ -2,26 +2,16 @@
 
 /* * */
 
+import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorLinesItem } from '@/components/common/references/ReferencesEditorLinesItem';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconPlus } from '@tabler/icons-react';
-import { type Alert } from '@tmlmobilidade/types';
 import { Button, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface ReferencesEditorLinesProps {
-	municipalityIds?: string[]
-	onAddReference: () => void
-	onRemoveReference: (index: number) => void
-	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
-	references: Alert['references']
-}
-
-/* * */
-
-export function ReferencesEditorLines({ municipalityIds, onAddReference, onRemoveReference, onUpdateReference, references }: ReferencesEditorLinesProps) {
+export function ReferencesEditorLines() {
 	//
 
 	//
@@ -29,6 +19,7 @@ export function ReferencesEditorLines({ municipalityIds, onAddReference, onRemov
 
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
+	const referencesEditorContext = useReferencesEditorContext();
 
 	//
 	// B. Render components
@@ -36,7 +27,7 @@ export function ReferencesEditorLines({ municipalityIds, onAddReference, onRemov
 	return (
 		<Section gap="md" padding="none">
 
-			{!references?.length && (
+			{!referencesEditorContext.data.selected_references?.length && (
 				<Surface>
 					<Section alignItems="center">
 						<NoDataLabel text="Nenhuma linha adicionada" />
@@ -44,14 +35,14 @@ export function ReferencesEditorLines({ municipalityIds, onAddReference, onRemov
 				</Surface>
 			)}
 
-			{references.map((reference, index) => (
+			{referencesEditorContext.data.selected_references.map((reference, index) => (
 				<ReferencesEditorLinesItem
 					key={index}
 					index={index}
 					lines={linesContext.data.lines}
-					municipalityIds={municipalityIds}
-					onRemoveReference={onRemoveReference}
-					onUpdateReference={onUpdateReference}
+					municipalityIds={[]}
+					onRemoveReference={referencesEditorContext.actions.removeReference}
+					onUpdateReference={referencesEditorContext.actions.updateReference}
 					reference={reference}
 					stops={stopsContext.data.stops}
 				/>
@@ -60,7 +51,7 @@ export function ReferencesEditorLines({ municipalityIds, onAddReference, onRemov
 			<Button
 				icon={<IconPlus />}
 				label="Adicionar Linha"
-				onClick={onAddReference}
+				onClick={referencesEditorContext.actions.addReference}
 				variant="secondary"
 			/>
 

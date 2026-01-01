@@ -47,6 +47,7 @@ export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRem
 	return (
 		<Surface>
 			<Section gap="md">
+
 				<Grid gap="md">
 					<Select
 						data={availableLines}
@@ -69,6 +70,7 @@ export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRem
 						/>
 					</Section>
 				</Grid>
+
 				<Section alignItems="flex-end" padding="none">
 					<Button
 						icon={<IconMinus />}
@@ -77,6 +79,7 @@ export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRem
 						variant="danger"
 					/>
 				</Section>
+
 			</Section>
 		</Surface>
 	);

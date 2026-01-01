@@ -4,6 +4,7 @@
 
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { Alert } from '@tmlmobilidade/types';
 import { Collapsible, Grid, MultiSelect, Section, Select, useAgenciesContext, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -28,7 +29,18 @@ export function AlertDetailSectionReferences() {
 	}, [locationsContext.data.municipalities]);
 
 	//
-	// C. Render components
+	// C. Handle actions
+
+	const handleChangeReferenceType = (value: Alert['reference_type']) => {
+		alertDetailContext.data.form.setFieldValue('reference_type', value);
+	};
+
+	const handleChangeReferences = (references: Alert['references']) => {
+		alertDetailContext.data.form.setFieldValue('references', references);
+	};
+
+	//
+	// D. Render components
 
 	return (
 		<Collapsible
@@ -53,10 +65,12 @@ export function AlertDetailSectionReferences() {
 						{...alertDetailContext.data.form.getInputProps('municipality_ids')}
 					/>
 					<ReferencesEditor
-						municipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
-						onSetFieldValue={alertDetailContext.data.form.setFieldValue}
-						references={alertDetailContext.data.form.getValues().references}
-						referenceType={alertDetailContext.data.form.getValues().reference_type}
+						onChangeReferences={handleChangeReferences}
+						onChangeReferenceType={handleChangeReferenceType}
+						selectedAgencyId={alertDetailContext.data.form.getValues().agency_id}
+						selectedMunicipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
+						selectedReferences={alertDetailContext.data.form.getValues().references}
+						selectedReferenceType={alertDetailContext.data.form.getValues().reference_type}
 					/>
 				</Grid>
 			</Section>

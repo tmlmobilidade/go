@@ -38,6 +38,11 @@ export function AlertsList() {
 			width: 125,
 		},
 		{
+			accessor: 'reference_type',
+			title: 'Tipo de referência',
+			width: 75,
+		},
+		{
 			accessor: 'title',
 			title: 'Título',
 			width: 500,
