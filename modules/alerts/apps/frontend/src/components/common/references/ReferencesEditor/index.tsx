@@ -9,7 +9,7 @@ import { Grid, Label, NoDataLabel, openConfirmModal, Section, SegmentedControl }
 
 /* * */
 
-interface ReferencesGroupProps {
+interface ReferencesEditorProps {
 	municipalityIds?: string[]
 	onSetFieldValue: <T>(path: string, value: T) => void
 	references: Alert['references']
@@ -18,7 +18,7 @@ interface ReferencesGroupProps {
 
 /* * */
 
-export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, referenceType }: ReferencesGroupProps) {
+export function ReferencesEditor({ municipalityIds, onSetFieldValue, references, referenceType }: ReferencesEditorProps) {
 	//
 
 	//
@@ -58,6 +58,7 @@ export function ReferencesGroup({ municipalityIds, onSetFieldValue, references, 
 	const handleSegmentedControlChange = (value: Alert['reference_type']) => {
 		if (references.length > 0) {
 			openConfirmModal({
+				cancelProps: { variant: 'danger' },
 				centered: true,
 				children: <Label>Ao alterar o tipo, irá perder as referências que já foram adicionadas.</Label>,
 				closeOnClickOutside: true,

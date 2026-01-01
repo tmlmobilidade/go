@@ -78,7 +78,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { mutate: realtimeListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.REALTIME_LIST);
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 
 	const { filteredIds: filteredAgencyIds } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.read],
@@ -159,9 +159,9 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [minuteUpdates]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.REALTIME_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
-			realtimeListMutate();
+			alertsListMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(updatedItem._id)));
 		},
 	});

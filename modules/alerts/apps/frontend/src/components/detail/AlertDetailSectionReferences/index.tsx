@@ -2,8 +2,8 @@
 
 /* * */
 
+import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { ReferencesGroup } from '@/components/common/references/ReferencesGroup';
 import { Collapsible, Grid, MultiSelect, Section, Select, useAgenciesContext, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -52,7 +52,7 @@ export function AlertDetailSectionReferences() {
 						label="Municípios Afetados"
 						{...alertDetailContext.data.form.getInputProps('municipality_ids')}
 					/>
-					<ReferencesGroup
+					<ReferencesEditor
 						municipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
 						onSetFieldValue={alertDetailContext.data.form.setFieldValue}
 						references={alertDetailContext.data.form.getValues().references}
