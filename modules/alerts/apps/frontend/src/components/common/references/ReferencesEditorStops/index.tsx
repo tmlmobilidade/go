@@ -2,7 +2,7 @@
 
 /* * */
 
-import { ReferencesLinesItem } from '@/components/common/references/ReferencesLinesItem';
+import { ReferencesEditorStopsItem } from '@/components/common/references/ReferencesEditorStopsItem';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconPlus } from '@tabler/icons-react';
@@ -11,7 +11,7 @@ import { Button, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface ReferencesLinesProps {
+interface ReferencesEditorStopsProps {
 	municipalityIds?: string[]
 	onAddReference: () => void
 	onRemoveReference: (index: number) => void
@@ -21,7 +21,7 @@ interface ReferencesLinesProps {
 
 /* * */
 
-export function ReferencesLines({ municipalityIds, onAddReference, onRemoveReference, onUpdateReference, references }: ReferencesLinesProps) {
+export function ReferencesEditorStops({ municipalityIds, onAddReference, onRemoveReference, onUpdateReference, references }: ReferencesEditorStopsProps) {
 	//
 
 	//
@@ -39,13 +39,13 @@ export function ReferencesLines({ municipalityIds, onAddReference, onRemoveRefer
 			{!references?.length && (
 				<Surface>
 					<Section alignItems="center">
-						<NoDataLabel text="Nenhuma linha adicionada" />
+						<NoDataLabel text="Nenhuma paragem adicionada" />
 					</Section>
 				</Surface>
 			)}
 
 			{references.map((reference, index) => (
-				<ReferencesLinesItem
+				<ReferencesEditorStopsItem
 					key={index}
 					index={index}
 					lines={linesContext.data.lines}
@@ -59,7 +59,7 @@ export function ReferencesLines({ municipalityIds, onAddReference, onRemoveRefer
 
 			<Button
 				icon={<IconPlus />}
-				label="Adicionar Linha"
+				label="Adicionar Paragem"
 				onClick={onAddReference}
 				variant="secondary"
 			/>

@@ -2,11 +2,11 @@
 
 /* * */
 
-import { AlertsListCellDate } from '@/components/common/AlertsListCellDate';
-import { AlertsListCellLines } from '@/components/common/AlertsListCellLines';
-import { AlertsListCellMunicipalities } from '@/components/common/AlertsListCellMunicipalities';
-import { AlertsListCellStops } from '@/components/common/AlertsListCellStops';
-import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
+import { AlertsListCellDate } from '@/components/common/other/AlertsListCellDate';
+import { AlertsListCellLines } from '@/components/common/other/AlertsListCellLines';
+import { AlertsListCellMunicipalities } from '@/components/common/other/AlertsListCellMunicipalities';
+import { AlertsListCellStops } from '@/components/common/other/AlertsListCellStops';
+import { AlertTagPublishStatus } from '@/components/common/other/AlertTagPublishStatus';
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
 import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';

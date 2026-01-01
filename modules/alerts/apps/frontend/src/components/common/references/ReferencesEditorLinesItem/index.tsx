@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-interface ReferencesLinesItemProps {
+interface ReferencesEditorLinesItemProps {
 	index: number
 	lines: Line[]
 	municipalityIds: string[]
@@ -22,7 +22,7 @@ interface ReferencesLinesItemProps {
 
 /* * */
 
-export function ReferencesLinesItem({ index, lines, municipalityIds, onRemoveReference, onUpdateReference, reference, stops }: ReferencesLinesItemProps) {
+export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRemoveReference, onUpdateReference, reference, stops }: ReferencesEditorLinesItemProps) {
 	//
 
 	//

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { UploadImage } from '@/components/common/UploadImage';
+import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';

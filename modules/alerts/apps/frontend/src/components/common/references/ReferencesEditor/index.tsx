@@ -2,8 +2,8 @@
 
 /* * */
 
-import { ReferencesLines } from '@/components/common/references/ReferencesLines';
-import { ReferencesStops } from '@/components/common/references/ReferencesStops';
+import { ReferencesEditorLines } from '@/components/common/references/ReferencesEditorLines';
+import { ReferencesEditorStops } from '@/components/common/references/ReferencesEditorStops';
 import { type Alert, AlertReferenceTypeSchema } from '@tmlmobilidade/types';
 import { Grid, Label, NoDataLabel, openConfirmModal, Section, SegmentedControl } from '@tmlmobilidade/ui';
 
@@ -90,7 +90,7 @@ export function ReferencesEditor({ municipalityIds, onSetFieldValue, references,
 				/>
 
 				{referenceType === 'lines' && (
-					<ReferencesLines
+					<ReferencesEditorLines
 						municipalityIds={municipalityIds}
 						onAddReference={handleAddReference}
 						onRemoveReference={handleRemoveReference}
@@ -100,7 +100,7 @@ export function ReferencesEditor({ municipalityIds, onSetFieldValue, references,
 				)}
 
 				{referenceType === 'stops' && (
-					<ReferencesStops
+					<ReferencesEditorStops
 						municipalityIds={municipalityIds}
 						onAddReference={handleAddReference}
 						onRemoveReference={handleRemoveReference}

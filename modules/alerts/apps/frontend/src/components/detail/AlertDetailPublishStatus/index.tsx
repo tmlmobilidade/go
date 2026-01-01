@@ -2,7 +2,7 @@
 
 /* * */
 
-import { AlertTagPublishStatus } from '@/components/common/AlertTagPublishStatus';
+import { AlertTagPublishStatus } from '@/components/common/other/AlertTagPublishStatus';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { Translations } from '@/lib/translations';
 import { PublishStatusSchema } from '@tmlmobilidade/types';
