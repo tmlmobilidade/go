@@ -54,9 +54,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// B. Fetch Data
 
-	const { mutate: scheduledListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.SCHEDULED_LIST);
-	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId));
-	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId));
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
+	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Define form
@@ -67,61 +67,61 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
-			scheduledListMutate();
+			alertsListMutate();
 		},
 	});
 
 	const { action: handlePublish, isLoading: isPublishing } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
-			scheduledListMutate();
+			alertsListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL(alertId), 'DELETE'),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE'),
 		onSuccess: () => {
 			form.resetDirty();
-			scheduledListMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST));
+			alertsListMutate();
+			router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
 		},
 	});
 
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId), 'DELETE'),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
 		onSuccess: () => {
 			form.resetDirty();
 			alertMutate();
 			alertImageMutate();
-			scheduledListMutate();
+			alertsListMutate();
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_DETAIL_LOCK(alertId)),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_LOCK(alertId)),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
-			scheduledListMutate();
+			alertsListMutate();
 		},
 	});
 
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
-		fetchFn: async () => await uploadFile(API_ROUTES.alerts.SCHEDULED_DETAIL_IMAGE(alertId), image),
+		fetchFn: async () => await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), image),
 		onSuccess: () => {
 			form.resetDirty();
 			alertMutate();
 			alertImageMutate();
-			scheduledListMutate();
+			alertsListMutate();
 		},
 	});
 
@@ -129,7 +129,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// F. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
 		isDeleting: isDeleting,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
@@ -138,7 +138,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canSave } = useFlagCanSave({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,
@@ -148,7 +148,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canLock } = useFlagCanLock({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,
@@ -157,7 +157,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canDelete } = useFlagCanDelete({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_scheduled),
+		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,

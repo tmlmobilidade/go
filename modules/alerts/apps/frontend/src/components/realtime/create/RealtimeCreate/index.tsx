@@ -24,7 +24,12 @@ export function RealtimeCreate() {
 	const meContext = useMeContext();
 	const realtimeCreateContext = useRealtimeCreateContext();
 
-	const hasPermissionCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create_realtime);
+	const hasPermissionCreate = meContext.actions.hasPermissionResource({
+		action: PermissionCatalog.all.alerts.actions.create,
+		resource_key: 'reference_types',
+		scope: PermissionCatalog.all.alerts.scope,
+		value: 'rides',
+	});
 
 	//
 	// B. Render components

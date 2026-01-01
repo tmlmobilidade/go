@@ -50,7 +50,7 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 	//
 	// B. Fetch data
 
-	const { mutate: scheduledListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.SCHEDULED_LIST);
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 
 	//
 	// C. Setup form
@@ -61,11 +61,11 @@ export const ScheduledAlertCreateContextProvider = ({ children }: PropsWithChild
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.SCHEDULED_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
-			scheduledListMutate();
+			alertsListMutate();
 			closeCreateScheduledAlertModal();
-			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_DETAIL(updatedItem._id)));
+			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(updatedItem._id)));
 		},
 	});
 

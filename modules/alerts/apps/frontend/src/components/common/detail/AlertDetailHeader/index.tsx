@@ -10,8 +10,6 @@ import { DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton } fr
 import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
-import { AlertDetailAlertType } from '../AlertDetailAlertType';
-
 /* * */
 
 export function AlertDetailHeader() {
@@ -27,12 +25,12 @@ export function AlertDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.alerts.SCHEDULED_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
 	};
 
 	// const handleDuplicate = () => {
 	// 	const id = alertDetailContext.data.id;
-	// 	router.replace(`${PAGE_ROUTES.alerts.SCHEDULED_DETAIL('new')}?copy=${id}`);
+	// 	router.replace(`${PAGE_ROUTES.alerts.ALERTS_DETAIL('new')}?copy=${id}`);
 	// };
 
 	//
@@ -43,7 +41,6 @@ export function AlertDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<AlertDetailPublishStatus />
-			<AlertDetailAlertType />
 			{/* <AlertTagPublishStatus value={alertDetailContext.data.alert?.publish_status} /> */}
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 
@@ -57,7 +54,7 @@ export function AlertDetailHeader() {
 			/> */}
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.update_scheduled}
+				action={PermissionCatalog.all.alerts.actions.update}
 				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<SaveButton
@@ -68,7 +65,7 @@ export function AlertDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.lock_scheduled}
+				action={PermissionCatalog.all.alerts.actions.lock}
 				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<LockButton
@@ -80,7 +77,7 @@ export function AlertDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.delete_scheduled}
+				action={PermissionCatalog.all.alerts.actions.delete}
 				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<DeleteButton

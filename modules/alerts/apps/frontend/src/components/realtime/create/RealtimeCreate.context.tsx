@@ -81,7 +81,7 @@ export const RealtimeCreateContextProvider = ({ children }: PropsWithChildren) =
 	const { mutate: realtimeListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.REALTIME_LIST);
 
 	const { filteredIds: filteredAgencyIds } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.read_realtime],
+		actions: [PermissionCatalog.all.alerts.actions.read],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
