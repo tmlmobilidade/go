@@ -71,7 +71,7 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 	const filterLines = useFilterStateList('lines', [], linesContext.data.options);
 	const filterStops = useFilterStateList('stops', [], stopsContext.data.options);
 	const filterSearch = useFilterStateString('search');
-	const filterViewMode = useFilterStateString('view_mode', 'all');
+	const filterViewMode = useFilterStateString('view_mode', 'selected');
 
 	const minuteUpdates = useClockUpdates('minute');
 
