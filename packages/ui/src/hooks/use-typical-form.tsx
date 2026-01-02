@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type FormErrors, useForm, UseFormReturnType } from '@mantine/form';
+import { type FormErrors, useForm, type UseFormReturnType } from '@mantine/form';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { Logger } from '@tmlmobilidade/logger';
 import { zodResolver } from 'mantine-form-zod-resolver';

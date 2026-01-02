@@ -2,15 +2,13 @@
 
 /* * */
 
-import { useLinesContext } from '@/contexts/Lines.context';
-import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useClockUpdates, useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, type UseFormReturnType, useHandleUpdate, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
+import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
+import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -20,23 +18,9 @@ export const createRealtimeSteps = ['cause', 'effect', 'references', 'summary'] 
 /* * */
 
 interface AlertCreateContextState extends CreateContextStateTemplate {
-	actions: CreateContextStateTemplate['actions'] & {
-		removeAllRides: () => void
-		toggleRideSelection: (rideId: string) => void
-	}
 	data: {
-		filtered_rides: RideNormalized[]
 		form: UseFormReturnType<CreateAlertDto>
 		multi_step: UseMultiStepReturnType<typeof createRealtimeSteps>
-	}
-	filters: {
-		lines: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
-		stops: UseFilterStateListReturnType
-		view_mode?: UseFilterStateStringReturnType
-	}
-	flags: CreateContextStateTemplate['flags'] & {
-		isRidesLoading: boolean
 	}
 };
 
@@ -62,45 +46,17 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const router = useRouter();
 
-	const linesContext = useLinesContext();
-	const stopsContext = useStopsContext();
-
-	const filterLines = useFilterStateList('lines', [], linesContext.data.options);
-	const filterStops = useFilterStateList('stops', [], stopsContext.data.options);
-	const filterSearch = useFilterStateString('search');
-	const filterViewMode = useFilterStateString('view_mode', 'all');
-
-	const minuteUpdates = useClockUpdates('minute');
-
-	const [startDate, setStartDate] = useState<UnixTimestamp>();
-	const [endDate, setEndDate] = useState<UnixTimestamp>();
-
 	//
 	// B. Fetch data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 
-	const { filteredIds: filteredAgencyIds } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.read],
-		scope: PermissionCatalog.all.alerts.scope,
-	});
-
-	const { isLoading: ridesLoading, raw: ridesData } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
-		filters: {
-			agency_ids: filteredAgencyIds,
-			date_end: endDate,
-			date_start: startDate,
-			line_ids: filterLines.value,
-			operational_statuses: ['running', 'missed', 'scheduled'],
-			search: filterSearch.value,
-			stop_ids: filterStops.value,
-		},
-	});
-
 	//
 	// C. Setup form
 
 	const { form } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
+
+	console.log(form.getValues());
 
 	const multiStep = useMultiStep({
 		steps: createRealtimeSteps,
@@ -125,12 +81,10 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		(async () => {
-			form.setFieldValue('type', 'realtime');
 			const alertTemplating = await describeAlert({
-				alert_type: 'realtime',
 				cause: form.getValues().cause,
 				data: {
-					rides: ridesData.filter(ride => form.getValues().references?.some(reference => reference.parent_id === ride._id)),
+					rides: [],
 				},
 				effect: form.getValues().effect,
 				reference_type: 'rides',
@@ -143,20 +97,11 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		})();
 	}, [form.getValues()]);
 
-	const validateSteps = () => {
-		return true;
-	};
-
 	useEffect(() => {
-		// Skip if clock is not ready
-		if (!minuteUpdates) return;
-		// Prevent changing dates if rides are selected
-		if (form.getValues().references?.length > 0) return;
-		// Update dates to refresh rides. This sets a window
-		// of availability that is reset every minute.
-		setStartDate(minuteUpdates.minus({ minutes: 30 }).unix_timestamp);
-		setEndDate(minuteUpdates.plus({ hours: 4 }).unix_timestamp);
-	}, [minuteUpdates]);
+		if (!form.getValues().reference_type) {
+			form.setFieldValue('reference_type', 'lines');
+		}
+	}, [form.getValues().reference_type]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
@@ -166,58 +111,26 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		},
 	});
 
-	const toggleRideSelection = (rideId: string) => {
-		// Get existing references
-		const existingReferences = form.getValues().references ?? [];
-		// If ride is already selected, remove it and return
-		if (existingReferences?.some(reference => reference.parent_id === rideId)) {
-			form.setFieldValue('references', existingReferences.filter(reference => reference.parent_id !== rideId));
-			return;
-		}
-		// Otherwise, add it to the references array
-		form.setFieldValue('references', [...existingReferences, { child_ids: [], parent_id: rideId }]);
-	};
-
-	const removeAllRides = () => {
-		form.setFieldValue('references', []);
-	};
-
 	//
 	// E. Define State
 
 	const contextValue: AlertCreateContextState = useMemo(() => ({
 		actions: {
 			create: handleCreate,
-			removeAllRides,
-			toggleRideSelection,
 		},
 		data: {
-			filtered_rides: ridesData,
 			form,
 			multi_step: multiStep,
-		},
-		filters: {
-			lines: filterLines,
-			search: filterSearch,
-			stops: filterStops,
-			view_mode: filterViewMode,
 		},
 		flags: {
 			canCreate: true,
 			error: undefined,
 			isCreating,
 			isLoading: false,
-			isRidesLoading: ridesLoading,
 		},
 	}), [
-		filterStops,
-		ridesData,
 		form,
 		isCreating,
-		filterLines,
-		filterSearch,
-		filterViewMode,
-		ridesLoading,
 		multiStep,
 	]);
 

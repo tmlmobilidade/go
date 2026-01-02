@@ -67,7 +67,6 @@ export type AlertConfigKey = `${Alert['cause']}:${Alert['effect']}:${Alert['refe
 /* * */
 
 export interface DescribeAlertProps {
-	alert_type: Alert['type']
 	cause: Alert['cause']
 	data: {
 		lines?: { id: string }[]

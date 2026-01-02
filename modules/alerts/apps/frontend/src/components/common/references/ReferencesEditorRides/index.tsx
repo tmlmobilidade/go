@@ -81,7 +81,7 @@ export function ReferencesEditorRides() {
 				<Section>
 					<Surface>
 						<Section alignItems="center">
-							<NoDataLabel text="Nenhuma linha adicionada" />
+							<NoDataLabel text="Nenhuma circulação selecionada" />
 						</Section>
 					</Surface>
 				</Section>

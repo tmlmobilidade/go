@@ -102,7 +102,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	// C. Handle actions
 
 	const changeReferenceType = (value: Alert['reference_type']) => {
-		if (selectedReferences.length > 0) {
+		if (selectedReferences?.length > 0) {
 			openConfirmModal({
 				cancelProps: { variant: 'danger' },
 				centered: true,
@@ -182,21 +182,16 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	useEffect(() => {
 		// Add a margin to the start date
 		if (!activePeriodStartDate) return;
-		const startDateWithMargin = Dates
-			.fromUnixTimestamp(activePeriodStartDate)
-			.minus({ minutes: 30 })
-			.unix_timestamp;
-		setStartDate(startDateWithMargin);
+		setStartDate(Dates.fromUnixTimestamp(activePeriodStartDate).minus({ minutes: 30 }).unix_timestamp);
 	}, [activePeriodStartDate]);
 
 	useEffect(() => {
 		// Add a margin to the end date
-		if (!activePeriodEndDate) return;
-		const endDateWithMargin = Dates
-			.fromUnixTimestamp(activePeriodEndDate)
-			.plus({ hours: 4 })
-			.unix_timestamp;
-		setEndDate(endDateWithMargin);
+		if (!activePeriodEndDate) {
+			if (!activePeriodStartDate) return;
+			setEndDate(Dates.fromUnixTimestamp(activePeriodStartDate).plus({ hours: 4 }).unix_timestamp);
+		}
+		setEndDate(Dates.fromUnixTimestamp(activePeriodEndDate).plus({ hours: 4 }).unix_timestamp);
 	}, [activePeriodEndDate]);
 
 	//
