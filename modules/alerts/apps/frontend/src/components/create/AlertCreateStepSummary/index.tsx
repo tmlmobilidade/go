@@ -62,10 +62,10 @@ export function AlertCreateStepSummary() {
 	// 	alertCreateContext.data.form.setFieldValue('description', description);
 	// }, []);
 
-	const visibleRides = useMemo(() => {
-		const selectedRideIds = alertCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? [];
-		return alertCreateContext.data.filtered_rides.filter(ride => selectedRideIds.some(selectedRideId => selectedRideId === ride._id) ?? false);
-	}, [alertCreateContext.data.filtered_rides, alertCreateContext.data.form]);
+	// const visibleRides = useMemo(() => {
+	// 	const selectedRideIds = alertCreateContext.data.form.getValues().references?.map(reference => reference.parent_id) ?? [];
+	// 	return alertCreateContext.data.filtered_rides.filter(ride => selectedRideIds.some(selectedRideId => selectedRideId === ride._id) ?? false);
+	// }, [alertCreateContext.data.filtered_rides, alertCreateContext.data.form]);
 
 	//
 	// C. Render components
@@ -97,11 +97,11 @@ export function AlertCreateStepSummary() {
 
 			<Divider />
 
-			<DataTable
+			{/* <DataTable
 				columns={columns}
 				records={visibleRides}
 				rowIdAccessor="_id"
-			/>
+			/> */}
 
 		</>
 	);

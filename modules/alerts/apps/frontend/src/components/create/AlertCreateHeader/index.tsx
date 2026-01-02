@@ -21,7 +21,6 @@ export function AlertCreateHeader() {
 	const preparedSteps = createRealtimeSteps.map((step): StepperDataItem => ({
 		id: step,
 		isEnabled: alertCreateContext.data.multi_step.isValid(step),
-		isLoading: step === 'references' ? alertCreateContext.flags.isRidesLoading : false,
 		label: step === 'cause' ? 'Causa' : step === 'effect' ? 'Efeito' : step === 'references' ? 'Referências' : step === 'summary' ? 'Resumo' : '',
 	}));
 

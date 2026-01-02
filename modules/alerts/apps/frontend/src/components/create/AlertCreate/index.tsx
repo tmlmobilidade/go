@@ -3,6 +3,7 @@
 /* * */
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
+import { AlertCreateFooter } from '@/components/create/AlertCreateFooter';
 import { AlertCreateHeader } from '@/components/create/AlertCreateHeader';
 import { AlertCreateStepCause } from '@/components/create/AlertCreateStepCause';
 import { AlertCreateStepEffect } from '@/components/create/AlertCreateStepEffect';
@@ -37,7 +38,7 @@ export function AlertCreate() {
 	}
 
 	return (
-		<Pane footer={[<AlertCreateHeader />]} header={[<AlertCreateHeader />]}>
+		<Pane footer={[<AlertCreateFooter />]} header={[<AlertCreateHeader />]}>
 			{alertCreateContext.data.multi_step.current === 'cause' && <AlertCreateStepCause />}
 			{alertCreateContext.data.multi_step.current === 'effect' && <AlertCreateStepEffect />}
 			{alertCreateContext.data.multi_step.current === 'references' && <AlertCreateStepReferences />}
