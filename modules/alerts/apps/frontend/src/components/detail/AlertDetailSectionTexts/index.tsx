@@ -22,15 +22,12 @@ export function AlertDetailSectionTexts() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = [
-		PermissionCatalog.all.alerts.actions.update,
-		PermissionCatalog.all.alerts.actions.update_texts,
-	].every(action => meContext.actions.hasPermissionResource({
-		action,
+	const hasPermissionToEdit = meContext.actions.hasPermissionResource({
+		action: PermissionCatalog.all.alerts.actions.update_texts,
 		resource_key: 'agency_ids',
-		scope: 'alerts',
+		scope: PermissionCatalog.all.alerts.scope,
 		value: alertDetailContext.data.alert.agency_id,
-	})) && !alertDetailContext.data.form.getValues().auto_texts;
+	}) && !alertDetailContext.data.form.getValues().auto_texts;
 
 	//
 	// C. Render components

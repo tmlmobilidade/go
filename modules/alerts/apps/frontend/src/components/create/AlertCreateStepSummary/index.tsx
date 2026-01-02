@@ -21,15 +21,12 @@ export function AlertCreateStepSummary() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = [
-		PermissionCatalog.all.alerts.actions.update,
-		PermissionCatalog.all.alerts.actions.update_texts,
-	].every(action => meContext.actions.hasPermissionResource({
-		action,
+	const hasPermissionToEdit = meContext.actions.hasPermissionResource({
+		action: PermissionCatalog.all.alerts.actions.update_texts,
 		resource_key: 'agency_ids',
-		scope: 'alerts',
+		scope: PermissionCatalog.all.alerts.scope,
 		value: alertCreateContext.data.form.getValues().agency_id,
-	})) && !alertCreateContext.data.form.getValues().auto_texts;
+	}) && !alertCreateContext.data.form.getValues().auto_texts;
 
 	//
 	// C. Render components
