@@ -1,10 +1,6 @@
-import { AlertType, GtfsCauseExtended, GtfsEffect, PublishStatus } from '@tmlmobilidade/types';
+import { GtfsCauseExtended, GtfsEffect, PublishStatus } from '@tmlmobilidade/types';
 
-export const Translations: { ALERT_TYPE: Record<AlertType, string>, CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffect, string>, PUBLISH_STATUS: Record<PublishStatus, string> } = {
-	ALERT_TYPE: {
-		realtime: 'Alerta Tempo Real',
-		scheduled: 'Alerta Planeado',
-	},
+export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffect, string>, PUBLISH_STATUS: Record<PublishStatus, string> } = {
 	CAUSE: {
 		ACCIDENT: 'Acidente',
 		CONSTRUCTION: 'Obras',
