@@ -32,8 +32,6 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 
 	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
 
-	console.log('useDataRides - queryStringParams:', queryStringParams);
-
 	//
 	// B. Fetch data
 

@@ -24,12 +24,7 @@ export function AlertCreate() {
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
 
-	const hasPermissionCreate = meContext.actions.hasPermissionResource({
-		action: PermissionCatalog.all.alerts.actions.create,
-		resource_key: 'reference_types',
-		scope: PermissionCatalog.all.alerts.scope,
-		value: 'rides',
-	});
+	const hasPermissionCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
 
 	//
 	// B. Render components

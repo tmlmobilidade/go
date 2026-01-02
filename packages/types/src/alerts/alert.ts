@@ -26,7 +26,7 @@ export const AlertSchema = DocumentSchema.extend({
 	publish_end_date: UnixTimeStampSchema.nullable().default(null),
 	publish_start_date: UnixTimeStampSchema.nullable().default(null),
 	publish_status: PublishStatusSchema.default('draft'),
-	reference_type: AlertReferenceTypeSchema.default(AlertReferenceTypeSchema.options[0]),
+	reference_type: AlertReferenceTypeSchema,
 	references: z.array(z.object({
 		child_ids: z.array(z.string()),
 		parent_id: z.string(),

@@ -5,8 +5,8 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -53,6 +53,8 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const router = useRouter();
 
+	const meContext = useMeContext();
+
 	//
 	// B. Fetch data
 
@@ -62,8 +64,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Setup form
 
 	const { form } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
-
-	console.log(form.getValues());
 
 	const multiStep = useMultiStep({
 		steps: createRealtimeSteps,
@@ -99,7 +99,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				reference_type: 'rides',
 				references: form.getValues().references ?? [],
 			});
-			console.log({ alertTemplating });
 			if (!alertTemplating) return;
 			form.setFieldValue('description', alertTemplating.description.pt);
 			form.setFieldValue('title', alertTemplating.title.pt);
@@ -120,7 +119,10 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		if (!form.getValues().reference_type) {
-			form.setFieldValue('reference_type', 'lines');
+			const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+			if (createPermission.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
+			if (createPermission.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
+			if (createPermission.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
 		}
 	}, [form.getValues().reference_type]);
 
