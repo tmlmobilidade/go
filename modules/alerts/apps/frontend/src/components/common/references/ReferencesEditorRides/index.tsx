@@ -4,13 +4,12 @@
 
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorRidesFilters } from '@/components/common/references/ReferencesEditorRidesFilters';
-import { ReferencesEditorRidesSelectionControls } from '@/components/common/references/ReferencesEditorRidesSelectionControls';
 import { OperationalStatusTag } from '@/components/create/OperationalStatusTag';
 import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign';
 import { SeenStatusTag } from '@/components/create/SeenStatusTag';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Checkbox, DataTable, DataTableColumn, Section, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, NoDataLabel, Section, Surface, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -71,21 +70,34 @@ export function ReferencesEditorRides() {
 	}, [referencesEditorContext.data.filtered_rides, referencesEditorContext.data.selected_references, referencesEditorContext.filters.view_mode.value]);
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<>
-			<Section>
-				<ReferencesEditorRidesFilters />
-				<ReferencesEditorRidesSelectionControls />
-			</Section>
-			<DataTable
-				columns={columns}
-				onRowClick={item => referencesEditorContext.actions.toggleRideSelection(item._id)}
-				records={visibleRides}
-				rowIdAccessor="_id"
-				selectedIds={referencesEditorContext.data.selected_references?.map(reference => reference.parent_id) ?? []}
-			/>
+
+			<ReferencesEditorRidesFilters />
+
+			{!visibleRides.length && (
+				<Section>
+					<Surface>
+						<Section alignItems="center">
+							<NoDataLabel text="Nenhuma linha adicionada" />
+						</Section>
+					</Surface>
+				</Section>
+			)}
+
+			{visibleRides.length > 0 && (
+				<DataTable
+					columns={columns}
+					onRowClick={item => referencesEditorContext.actions.toggleRideSelection(item._id)}
+					records={visibleRides}
+					rowIdAccessor="_id"
+					selectedIds={referencesEditorContext.data.selected_references?.map(reference => reference.parent_id) ?? []}
+					withTopBorder
+				/>
+			)}
+
 		</>
 	);
 

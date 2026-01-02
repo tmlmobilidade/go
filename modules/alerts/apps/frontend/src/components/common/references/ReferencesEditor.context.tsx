@@ -5,13 +5,17 @@
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, PermissionCatalog, type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { Label, openConfirmModal, useClockUpdates, useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/dates';
+import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Label, openConfirmModal, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
 export interface ReferencesEditorContextProps {
+	activePeriodEndDate: undefined | UnixTimestamp
+	activePeriodStartDate: undefined | UnixTimestamp
 	onChangeReferences: (references: Alert['references']) => void
 	onChangeReferenceType: (type: Alert['reference_type']) => void
 	selectedAgencyId?: Alert['agency_id']
@@ -60,7 +64,7 @@ export function useReferencesEditorContext() {
 
 /* * */
 
-export const ReferencesEditorContextProvider = ({ children, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedMunicipalityIds, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) => {
+export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePeriodStartDate, children, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) => {
 	//
 
 	//
@@ -74,8 +78,6 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 	const filterSearch = useFilterStateString('search');
 	const filterViewMode = useFilterStateString('view_mode', 'selected');
 
-	const minuteUpdates = useClockUpdates('minute');
-
 	const [startDate, setStartDate] = useState<UnixTimestamp>();
 	const [endDate, setEndDate] = useState<UnixTimestamp>();
 
@@ -84,14 +86,9 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 	//
 	// B. Fetch data
 
-	const { filteredIds: filteredAgencyIds } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.read],
-		scope: PermissionCatalog.all.alerts.scope,
-	});
-
 	const { isLoading: ridesLoading, raw: ridesData } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
 		filters: {
-			agency_ids: filteredAgencyIds,
+			agency_ids: [selectedAgencyId],
 			date_end: endDate,
 			date_start: startDate,
 			line_ids: filterLines.value,
@@ -102,7 +99,7 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 	});
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const changeReferenceType = (value: Alert['reference_type']) => {
 		if (selectedReferences.length > 0) {
@@ -150,24 +147,6 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 		}
 	};
 
-	//
-	//
-	//
-	//
-	//
-	//
-
-	useEffect(() => {
-		// Skip if clock is not ready
-		if (!minuteUpdates) return;
-		// Prevent changing dates if rides are selected
-		if (selectedReferences?.length > 0) return;
-		// Update dates to refresh rides. This sets a window
-		// of availability that is reset every minute.
-		setStartDate(minuteUpdates.minus({ minutes: 30 }).unix_timestamp);
-		setEndDate(minuteUpdates.plus({ hours: 4 }).unix_timestamp);
-	}, [minuteUpdates]);
-
 	const toggleRideSelection = (rideId: string) => {
 		// Get existing references
 		const existingReferences = selectedReferences ?? [];
@@ -186,22 +165,42 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 
 	useEffect(() => {
 		(async () => {
-			if (!selectedReferences.length) return;
-			if (selectedReferenceType !== 'rides') return;
-			const selectedRideIds = selectedReferences.map(reference => reference.parent_id);
-			const ridesData: RideNormalized[] = [];
-			for (const rideId of selectedRideIds) {
-				const response = await fetch(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
-				if (!response.ok) continue;
-				const rideData = await response.json() as RideNormalized;
-				ridesData.push(rideData);
+			// Reset state if no selected references
+			if (!selectedReferences?.length) return setSelectedRidesData([]);
+			if (selectedReferenceType !== 'rides') return setSelectedRidesData([]);
+			// Fetch data for each selected ride
+			const result: RideNormalized[] = [];
+			for (const rideId of selectedReferences.map(reference => reference.parent_id)) {
+				const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
+				if (!response.data) continue;
+				result.push(response.data);
 			}
-			setSelectedRidesData(ridesData);
+			setSelectedRidesData(result);
 		})();
-	}, [ridesData, selectedReferences, selectedReferenceType]);
+	}, [selectedReferences, selectedReferenceType]);
+
+	useEffect(() => {
+		// Add a margin to the start date
+		if (!activePeriodStartDate) return;
+		const startDateWithMargin = Dates
+			.fromUnixTimestamp(activePeriodStartDate)
+			.minus({ minutes: 30 })
+			.unix_timestamp;
+		setStartDate(startDateWithMargin);
+	}, [activePeriodStartDate]);
+
+	useEffect(() => {
+		// Add a margin to the end date
+		if (!activePeriodEndDate) return;
+		const endDateWithMargin = Dates
+			.fromUnixTimestamp(activePeriodEndDate)
+			.plus({ hours: 4 })
+			.unix_timestamp;
+		setEndDate(endDateWithMargin);
+	}, [activePeriodEndDate]);
 
 	//
-	// E. Define State
+	// D. Define State
 
 	const contextValue: ReferencesEditorContextState = useMemo(() => ({
 		actions: {
@@ -243,7 +242,7 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 	]);
 
 	//
-	// F. Return state
+	// E. Return state
 
 	return (
 		<ReferencesEditorContext.Provider value={contextValue}>

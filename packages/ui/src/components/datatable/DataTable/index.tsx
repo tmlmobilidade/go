@@ -58,6 +58,12 @@ export interface DataTableProps<T> {
 	 */
 	selectedIds?: string[]
 
+	/**
+	 * Whether to render the table with a top border.
+	 * @default false
+	 */
+	withTopBorder?: boolean
+
 }
 
 export interface DataTableColumn<T> {
