@@ -107,10 +107,16 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [form.getValues()]);
 
 	useEffect(() => {
+		if (!form.getValues().publish_status) {
+			form.setFieldValue('publish_status', 'published');
+		}
+	}, [form.getValues().publish_status]);
+
+	useEffect(() => {
 		if (!form.getValues().active_period_start_date) {
 			form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
 		}
-	}, [form.getValues().reference_type]);
+	}, [form.getValues().active_period_start_date]);
 
 	useEffect(() => {
 		if (!form.getValues().reference_type) {
