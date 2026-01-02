@@ -3,13 +3,10 @@
 
 .container {
 	display: flex;
-	flex-direction: column;
 	gap: 15px;
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	padding: 30px 15px;
-	text-align: center;
 	cursor: pointer;
 	background-color: var(--color-system-background-200);
 	border: 2px solid var(--color-system-border-100);
@@ -49,8 +46,30 @@
 /* TITLE */
 
 .title {
+	width: 100%;
 	font-size: 16px;
 	font-weight: var(--font-weight-bold);
 	text-transform: uppercase;
 	user-select: none;
+}
+
+/* * */
+/* PROPS / ORIENTATION */
+
+.container[data-orientation="horizontal"] {
+	flex-direction: row;
+	padding: 15px;
+}
+
+.container[data-orientation="horizontal"] .title {
+	text-align: left;
+}
+
+.container[data-orientation="vertical"] {
+	flex-direction: column;
+	padding: 30px 15px;
+}
+
+.container[data-orientation="vertical"] .title {
+	text-align: center;
 }

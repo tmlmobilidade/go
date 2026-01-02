@@ -17,7 +17,14 @@ export function AlertCreateStepEffect() {
 	const alertCreateContext = useAlertCreateContext();
 
 	//
-	// B. Handle actions
+	// B. Transform data
+
+	const preparedOptions = Object.values(GtfsEffectSchema.enum)
+		.map(item => ({ icon: EffectIcons[item], label: Translations.EFFECT[item], value: item }))
+		.sort((a, b) => a.label.localeCompare(b.label));
+
+	//
+	// C. Handle actions
 
 	const handleSelectEffect = (value: keyof typeof GtfsEffectSchema.enum) => {
 		alertCreateContext.data.form.setFieldValue('effect', value);
@@ -25,18 +32,19 @@ export function AlertCreateStepEffect() {
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Section padding="lg">
 			<Grid columns="abcde" gap="md">
-				{Object.values(GtfsEffectSchema.enum).map(item => (
+				{preparedOptions.map(item => (
 					<LargeButton
-						key={item}
-						icon={EffectIcons[item]}
-						isActive={alertCreateContext.data.form.getValues().effect === item}
-						onClick={() => handleSelectEffect(item)}
-						title={Translations.EFFECT[item]}
+						key={item.value}
+						icon={item.icon}
+						isActive={alertCreateContext.data.form.getValues().effect === item.value}
+						onClick={() => handleSelectEffect(item.value)}
+						orientation="horizontal"
+						title={item.label}
 					/>
 				))}
 			</Grid>

@@ -17,7 +17,14 @@ export function AlertCreateStepCause() {
 	const alertCreateContext = useAlertCreateContext();
 
 	//
-	// B. Handle actions
+	// B. Transform data
+
+	const preparedOptions = Object.values(GtfsCauseExtendedSchema.enum)
+		.map(item => ({ icon: CauseIcons[item], label: Translations.CAUSE[item], value: item }))
+		.sort((a, b) => a.label.localeCompare(b.label));
+
+	//
+	// C. Handle actions
 
 	const handleSelectCause = (value: keyof typeof GtfsCauseExtendedSchema.enum) => {
 		alertCreateContext.data.form.setFieldValue('cause', value);
@@ -25,18 +32,19 @@ export function AlertCreateStepCause() {
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Section padding="lg">
 			<Grid columns="abcde" gap="md">
-				{Object.values(GtfsCauseExtendedSchema.enum).map(item => (
+				{preparedOptions.map(item => (
 					<LargeButton
-						key={item}
-						icon={CauseIcons[item]}
-						isActive={alertCreateContext.data.form.getValues().cause === item}
-						onClick={() => handleSelectCause(item)}
-						title={Translations.CAUSE[item]}
+						key={item.value}
+						icon={item.icon}
+						isActive={alertCreateContext.data.form.getValues().cause === item.value}
+						onClick={() => handleSelectCause(item.value)}
+						orientation="horizontal"
+						title={item.label}
 					/>
 				))}
 			</Grid>
