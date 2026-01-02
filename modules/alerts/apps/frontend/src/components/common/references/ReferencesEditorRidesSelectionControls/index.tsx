@@ -3,7 +3,7 @@
 /* * */
 
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
-import { Button, Grid, Section, SegmentedControl, Toolbar } from '@tmlmobilidade/ui';
+import { Button, Grid, Section, SegmentedControl } from '@tmlmobilidade/ui';
 
 /* * */
 

@@ -2,17 +2,16 @@
 
 /* * */
 
+import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
+import { ReferencesEditorRidesFilters } from '@/components/common/references/ReferencesEditorRidesFilters';
+import { ReferencesEditorRidesSelectionControls } from '@/components/common/references/ReferencesEditorRidesSelectionControls';
 import { OperationalStatusTag } from '@/components/create/OperationalStatusTag';
 import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign';
 import { SeenStatusTag } from '@/components/create/SeenStatusTag';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Checkbox, DataTable, DataTableColumn, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, Section, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-
-import { useReferencesEditorContext } from '../ReferencesEditor.context';
-import { ReferencesEditorRidesFilters } from '../ReferencesEditorRidesFilters';
-import { ReferencesEditorRidesSelectionControls } from '../ReferencesEditorRidesSelectionControls';
 
 /* * */
 
@@ -66,8 +65,7 @@ export function ReferencesEditorRides() {
 
 	const visibleRides = useMemo(() => {
 		if (referencesEditorContext.filters.view_mode.value === 'selected') {
-			const selectedRideIds = referencesEditorContext.data.selected_references?.map(reference => reference.parent_id) ?? [];
-			return referencesEditorContext.data.filtered_rides.filter(ride => selectedRideIds.some(selectedRideId => selectedRideId === ride._id) ?? false);
+			return referencesEditorContext.data.selected_rides_data;
 		}
 		return referencesEditorContext.data.filtered_rides;
 	}, [referencesEditorContext.data.filtered_rides, referencesEditorContext.data.selected_references, referencesEditorContext.filters.view_mode.value]);
@@ -77,8 +75,10 @@ export function ReferencesEditorRides() {
 
 	return (
 		<>
-			<ReferencesEditorRidesFilters />
-			<ReferencesEditorRidesSelectionControls />
+			<Section>
+				<ReferencesEditorRidesFilters />
+				<ReferencesEditorRidesSelectionControls />
+			</Section>
 			<DataTable
 				columns={columns}
 				onRowClick={item => referencesEditorContext.actions.toggleRideSelection(item._id)}

@@ -25,7 +25,7 @@ export function ReferencesEditorStops() {
 	// B. Render components
 
 	return (
-		<Section gap="md" padding="none">
+		<Section gap="md">
 
 			{!referencesEditorContext.data.selected_references?.length && (
 				<Surface>

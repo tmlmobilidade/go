@@ -33,6 +33,7 @@ interface ReferencesEditorContextState {
 		filtered_rides: RideNormalized[]
 		selected_reference_type: Alert['reference_type']
 		selected_references: Alert['references']
+		selected_rides_data?: RideNormalized[]
 	}
 	filters: {
 		lines: UseFilterStateListReturnType
@@ -77,6 +78,8 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 
 	const [startDate, setStartDate] = useState<UnixTimestamp>();
 	const [endDate, setEndDate] = useState<UnixTimestamp>();
+
+	const [selectedRidesData, setSelectedRidesData] = useState<RideNormalized[]>([]);
 
 	//
 	// B. Fetch data
@@ -181,6 +184,22 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 		onChangeReferences([]);
 	};
 
+	useEffect(() => {
+		(async () => {
+			if (!selectedReferences.length) return;
+			if (selectedReferenceType !== 'rides') return;
+			const selectedRideIds = selectedReferences.map(reference => reference.parent_id);
+			const ridesData: RideNormalized[] = [];
+			for (const rideId of selectedRideIds) {
+				const response = await fetch(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
+				if (!response.ok) continue;
+				const rideData = await response.json() as RideNormalized;
+				ridesData.push(rideData);
+			}
+			setSelectedRidesData(ridesData);
+		})();
+	}, [ridesData, selectedReferences, selectedReferenceType]);
+
 	//
 	// E. Define State
 
@@ -197,6 +216,7 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 			filtered_rides: ridesData,
 			selected_reference_type: selectedReferenceType,
 			selected_references: selectedReferences ?? [],
+			selected_rides_data: selectedRidesData,
 		},
 		filters: {
 			lines: filterLines,
@@ -213,6 +233,7 @@ export const ReferencesEditorContextProvider = ({ children, onChangeReferences, 
 	}), [
 		selectedReferenceType,
 		selectedReferences,
+		selectedRidesData,
 		filterStops,
 		ridesData,
 		filterLines,

@@ -4,7 +4,7 @@ import { HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type GetRidesBatchQuery, GetRidesBatchQuerySchema, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,7 +16,7 @@ export class RidesSharedController {
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getBatch(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) {
+	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>, scope: S, action: ActionsOf<S>) {
 		//
 
 		//
@@ -30,11 +30,11 @@ export class RidesSharedController {
 		// Detect which agency_ids the user has access to,
 		// based on their permissions. If none, return an empty array.
 
-		const ridesPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read);
+		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission?.resources?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HttpStatus.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HttpStatus.OK });
 
-		const allowAllAgencies = ridesPermission.resources.agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 		//
 		// If search is provided, immediately try to find the ride by ID.
@@ -45,7 +45,7 @@ export class RidesSharedController {
 
 		const foundRideById = await rides.findOne({
 			_id: searchQuery,
-			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission.resources.agency_ids } }),
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});
 
 		if (foundRideById) {
@@ -58,7 +58,7 @@ export class RidesSharedController {
 		// with batchSize to prevent memory issues
 
 		const pipeline = ridesBatchAggregationPipeline({
-			agency_ids: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission.resources.agency_ids.includes(id)) ?? [],
+			agency_ids: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission['resources'].agency_ids.includes(id)) ?? [],
 			date_end: parsedQuery.date_end,
 			date_start: parsedQuery.date_start,
 			delay_statuses: parsedQuery.delay_statuses,
@@ -89,6 +89,42 @@ export class RidesSharedController {
 			error: null,
 			statusCode: HttpStatus.OK,
 		});
+
+		//
+	}
+
+	/**
+	 * Get a Ride by ID.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
+	 */
+	static async getRideById<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<RideNormalized>, scope: S, action: ActionsOf<S>) {
+		//
+
+		//
+		// Detect which agency_ids the user has access to,
+		// based on their permissions. If none, return an empty array.
+
+		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
+
+		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
+
+		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+		//
+		// If search is provided, immediately try to find the ride by ID.
+		// If found, return it as the only result. This optimizes
+		// for the common case of searching by ride ID.
+
+		const foundRideById = await rides.findOne({
+			_id: request.params['id'],
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
+		});
+
+		if (foundRideById) {
+			const normalizedRide = normalizeRide(foundRideById);
+			return reply.send({ data: normalizedRide, error: null, statusCode: HttpStatus.OK });
+		}
 
 		//
 	}

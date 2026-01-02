@@ -1,0 +1,18 @@
+/* * */
+/* ROOT */
+
+.root[data-with-border="true"] {
+	border: 1px solid var(--color-system-border-100);
+}
+
+
+/* * */
+/* TABS */
+
+.tabs {
+	position: sticky;
+	top: 0;
+	z-index: 200;
+	width: 100%;
+	background-color: var(--color-system-background-100);
+}

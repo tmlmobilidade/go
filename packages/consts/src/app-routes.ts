@@ -150,6 +150,7 @@ export const API_ROUTES = Object.freeze({
 		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
 
 		// RIDES
+		RIDES_DETAIL_RIDE: (id: string) => `${getAppConfig('alerts', 'api_url')}/rides/${id}/ride`,
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
 	},
 

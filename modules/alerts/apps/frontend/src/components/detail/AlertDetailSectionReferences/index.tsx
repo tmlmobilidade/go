@@ -4,9 +4,8 @@
 
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { Alert } from '@tmlmobilidade/types';
-import { Collapsible, Grid, MultiSelect, Section, Select, useAgenciesContext, useLocationsContext } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { type Alert } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section, Select, useAgenciesContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,19 +16,10 @@ export function AlertDetailSectionReferences() {
 	// A. Setup variables
 
 	const agenciesContext = useAgenciesContext();
-	const locationsContext = useLocationsContext();
 	const alertDetailContext = useAlertDetailContext();
 
 	//
-	// B. Transform data
-
-	const municipalitiesOptions = useMemo(() => {
-		if (!locationsContext.data.municipalities) return [];
-		return locationsContext.data.municipalities.map(item => ({ label: item.name, value: item.id }));
-	}, [locationsContext.data.municipalities]);
-
-	//
-	// C. Handle actions
+	// B. Handle actions
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
 		alertDetailContext.data.form.setFieldValue('reference_type', value);
@@ -40,7 +30,7 @@ export function AlertDetailSectionReferences() {
 	};
 
 	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -50,13 +40,6 @@ export function AlertDetailSectionReferences() {
 		>
 			<Section>
 				<Grid gap="md">
-					{/* <MultiSelect
-						key={alertDetailContext.data.form.key('municipality_ids')}
-						data={municipalitiesOptions}
-						description="Selecione os municípios que serão afetados pelo alerta"
-						label="Municípios Afetados"
-						{...alertDetailContext.data.form.getInputProps('municipality_ids')}
-						/> */}
 					<Select
 						key={alertDetailContext.data.form.key('agency_id')}
 						data={agenciesContext.data.as_options}
@@ -64,16 +47,17 @@ export function AlertDetailSectionReferences() {
 						label="Operador afetado"
 						{...alertDetailContext.data.form.getInputProps('agency_id')}
 					/>
-					<ReferencesEditor
-						onChangeReferences={handleChangeReferences}
-						onChangeReferenceType={handleChangeReferenceType}
-						selectedAgencyId={alertDetailContext.data.form.getValues().agency_id}
-						selectedMunicipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
-						selectedReferences={alertDetailContext.data.form.getValues().references}
-						selectedReferenceType={alertDetailContext.data.form.getValues().reference_type}
-					/>
 				</Grid>
 			</Section>
+			<ReferencesEditor
+				onChangeReferences={handleChangeReferences}
+				onChangeReferenceType={handleChangeReferenceType}
+				selectedAgencyId={alertDetailContext.data.form.getValues().agency_id}
+				selectedMunicipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
+				selectedReferences={alertDetailContext.data.form.getValues().references}
+				selectedReferenceType={alertDetailContext.data.form.getValues().reference_type}
+				withBorder
+			/>
 		</Collapsible>
 	);
 }

@@ -7,7 +7,9 @@ import { ReferencesEditorLines } from '@/components/common/references/References
 import { ReferencesEditorRides } from '@/components/common/references/ReferencesEditorRides';
 import { ReferencesEditorStops } from '@/components/common/references/ReferencesEditorStops';
 import { AlertReferenceTypeSchema } from '@tmlmobilidade/types';
-import { Grid, Section, Surface, Tabs } from '@tmlmobilidade/ui';
+import { Tabs } from '@tmlmobilidade/ui';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -37,56 +39,29 @@ export function ReferencesEditorMain() {
 	// C. Render components
 
 	return (
-		<Surface>
-			<Section padding="none">
-				<Grid gap="md">
-					<Tabs
-						onChange={referencesEditorContext.actions.changeReferenceType}
-						value={referencesEditorContext.data.selected_reference_type}
-						// variant="outline"
-					>
-						<Tabs.List>
-							{referenceTypeOptions.map(option => (
-								<Tabs.Tab key={option.value} value={option.value}>
-									{option.label}
-								</Tabs.Tab>
-							))}
-						</Tabs.List>
+		<Tabs
+			onChange={referencesEditorContext.actions.changeReferenceType}
+			value={referencesEditorContext.data.selected_reference_type}
+		>
 
-						<Tabs.Panel value="lines">
-							<ReferencesEditorLines />
-						</Tabs.Panel>
+			<div className={styles.tabs}>
+				<Tabs.List grow>
+					{referenceTypeOptions.map(option => (
+						<Tabs.Tab key={option.value} value={option.value}>
+							{option.label}
+						</Tabs.Tab>
+					))}
+				</Tabs.List>
+			</div>
 
-						<Tabs.Panel value="stops">
-							<ReferencesEditorStops />
-						</Tabs.Panel>
+			{referenceTypeOptions.map(option => (
+				<Tabs.Panel key={option.value} value={option.value}>
+					{option.value === 'lines' && <ReferencesEditorLines />}
+					{option.value === 'stops' && <ReferencesEditorStops />}
+					{option.value === 'rides' && <ReferencesEditorRides />}
+				</Tabs.Panel>
+			))}
 
-						<Tabs.Panel value="rides">
-							<ReferencesEditorRides />
-						</Tabs.Panel>
-					</Tabs>
-
-					{/* <SegmentedControl
-					data={referenceTypeOptions}
-					onChange={referencesEditorContext.actions.changeReferenceType}
-					value={referencesEditorContext.data.selected_reference_type}
-					fullWidth
-				/> */}
-
-					{/* {referencesEditorContext.data.selected_reference_type === 'lines' && (
-					<ReferencesEditorLines />
-				)} */}
-
-					{/* {referencesEditorContext.data.selected_reference_type === 'stops' && (
-					<ReferencesEditorStops />
-				)} */}
-
-					{/* {referencesEditorContext.data.selected_reference_type === 'rides' && (
-					<ReferencesEditorRides />
-				)} */}
-
-				</Grid>
-			</Section>
-		</Surface>
+		</Tabs>
 	);
 }
