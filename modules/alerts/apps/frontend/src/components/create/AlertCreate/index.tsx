@@ -39,11 +39,11 @@ export function AlertCreate() {
 
 	return (
 		<Pane footer={[<AlertCreateFooter />]} header={[<AlertCreateHeader />]}>
-			{alertCreateContext.data.multi_step.current === 'cause' && <AlertCreateStepCause />}
-			{alertCreateContext.data.multi_step.current === 'effect' && <AlertCreateStepEffect />}
-			{alertCreateContext.data.multi_step.current === 'dates' && <AlertCreateStepDates />}
-			{alertCreateContext.data.multi_step.current === 'references' && <AlertCreateStepReferences />}
-			{alertCreateContext.data.multi_step.current === 'summary' && <AlertCreateStepSummary />}
+			{alertCreateContext.data.multi_step.progress.current?.id === 'cause' && <AlertCreateStepCause />}
+			{alertCreateContext.data.multi_step.progress.current?.id === 'effect' && <AlertCreateStepEffect />}
+			{alertCreateContext.data.multi_step.progress.current?.id === 'dates' && <AlertCreateStepDates />}
+			{alertCreateContext.data.multi_step.progress.current?.id === 'references' && <AlertCreateStepReferences />}
+			{alertCreateContext.data.multi_step.progress.current?.id === 'summary' && <AlertCreateStepSummary />}
 		</Pane>
 	);
 

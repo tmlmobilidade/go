@@ -2,111 +2,215 @@
 
 /* * */
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 /* * */
 
-interface UseMultiStepProps<TSteps extends readonly string[]> {
+interface MultiStepItem {
 
 	/**
-	 * An array of step IDs representing the sequential steps in the process.
+	 * The unique identifier for the step.
 	 */
-	steps: TSteps
+	id: string
 
 	/**
-	 * Function to determine if a step is complete.
-	 * @param id The ID of the step to check.
-	 * @returns A boolean indicating if the step is complete.
+	 * THe index position of the step.
 	 */
-	validate?: (id: TSteps[number]) => boolean
+	index?: number
+
+	/**
+	 * Indicates whether the step is enabled.
+	 * Usually determined by the completion
+	 * of previous steps.
+	 */
+	isEnabled?: boolean
+
+	/**
+	 * Indicates whether the step is valid.
+	 * Usually determined by the correctness
+	 * of the current step's data.
+	 */
+	isValid?: boolean
+
+	/**
+	 * Indicates whether the step is visible.
+	 * Usually determined by user permissions
+	 * or other custom conditions.
+	 */
+	isVisible?: boolean
+
+	/**
+	 * An optional label for the step.
+	 */
+	label?: string
+
+	/**
+	 * The order position of the step
+	 * in the multi-step process.
+	 */
+	order: number
 
 }
 
-export interface UseMultiStepReturnType<TSteps extends readonly string[]> {
-	current: TSteps[number] | undefined
-	current_index: number | undefined
-	goTo: (id: TSteps[number]) => void
-	goToIndex: (idx: number) => void
-	isValid: (id: TSteps[number]) => boolean
-	next: () => void
-	prev: () => void
+interface UseMultiStepProps {
+
+	/**
+	 * An array defining the steps in the multi-step process.
+	 */
+	steps: MultiStepItem[]
+
+}
+
+export interface UseMultiStepReturnType {
+	actions: {
+		goTo: (id: string) => void
+		goToIndex: (idx: number) => void
+		next: () => void
+		prev: () => void
+	}
+	progress: {
+		current: MultiStepItem | undefined
+		next: MultiStepItem | undefined
+		prev: MultiStepItem | undefined
+		steps: MultiStepItem[]
+	}
 }
 
 /**
  * Hook to manage multi-step processes.
- * @param steps An array of step IDs representing the sequential steps in the process.
- * @param validate Optional function to determine if a step is complete.
+ * @param steps An array defining the steps in the multi-step process.
  * @returns An object containing the current step and functions to navigate between steps.
  */
-export function useMultiStep<const TSteps extends readonly string[]>({ steps, validate }: UseMultiStepProps<TSteps>): UseMultiStepReturnType<TSteps> {
+export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnType {
 	//
 
 	//
 	// A. Setup variables
 
-	const [currentStepId, setCurrentStepId] = useState<TSteps[number] | undefined>(steps[0]);
+	const [currentStepId, setCurrentStepId] = useState<string | undefined>();
 
 	//
-	// B. Handle actions
+	// B. Transform data
 
-	const isValid = (id: TSteps[number]) => {
-		// Get the requested step object
-		const foundStep = steps.find(step => step === currentStepId);
-		// If no step found, return false
-		if (!foundStep) return false;
-		// Use the validate function if provided
-		if (validate) return validate(id);
-		// Default to true if no function provided
-		return true;
-	};
+	const availableSteps = useMemo(() => {
+		return steps
+			// Only include steps that are marked as visible.
+			// Default is visible if not specified.
+			.filter(step => step.isVisible !== false)
+			// Sort steps by their order
+			.sort((a, b) => a.order - b.order)
+			// Ensure index is sequential based on visible steps
+			.map((step, idx) => ({ ...step, index: idx }));
+	}, [steps]);
+
+	const currentStep = useMemo(() => {
+		// Skip if no current step ID is set
+		if (!currentStepId) return;
+		// Find and return the current step object
+		return availableSteps.find(step => step.id === currentStepId);
+	}, [currentStepId, availableSteps]);
+
+	const nextStep = useMemo(() => {
+		// Exit if no current step
+		if (!currentStep) return;
+		// Get the index position of the current step
+		const currentIndex = availableSteps.findIndex(step => step.id === currentStep.id);
+		// If already at the last step, do nothing
+		if (currentIndex >= availableSteps.length - 1) return;
+		// Get the next step object and set it as current
+		const nextStep = availableSteps[currentIndex + 1];
+		// Exit if next step is not found
+		if (!nextStep) return;
+		// Set the next step object
+		return nextStep;
+	}, [currentStep, availableSteps]);
+
+	const prevStep = useMemo(() => {
+		// Exit if no current step
+		if (!currentStep) return;
+		// Get the index position of the current step
+		const currentIndex = availableSteps.findIndex(step => step.id === currentStep.id);
+		// If already at the first step, do nothing
+		if (currentIndex <= 0) return;
+		// Get the prev step object and set it as current
+		const prevStep = availableSteps[currentIndex - 1];
+		// Exit if prev step is not found
+		if (!prevStep) return;
+		// Set the prev step object
+		return prevStep;
+	}, [currentStep, availableSteps]);
+
+	useEffect(() => {
+		// Skip if no available steps
+		if (!availableSteps.length) return;
+		// If no current step is set,
+		// default to the first available step
+		if (!currentStepId) setCurrentStepId(availableSteps[0].id);
+	}, [availableSteps, currentStepId]);
+
+	//
+	// C. Handle actions
 
 	const next = () => {
-		// Only proceed if the current step is valid
-		if (!isValid(currentStepId)) return;
-		// Get the index position of the current step
-		const currentIndex = steps.findIndex(step => step === currentStepId);
-		// If already at the last step, do nothing
-		if (currentIndex >= steps.length - 1) return;
-		// Get the next step object and set it as current
-		const nextStep = steps[currentIndex + 1];
-		if (nextStep) setCurrentStepId(nextStep);
+		// Exit if no current step
+		if (!currentStep) return;
+		// Exit if current step is not valid
+		if (currentStep.isValid === false) return;
+		// Exit if no next step
+		if (!nextStep) return;
+		// Exit if next step is not enabled
+		if (nextStep.isEnabled === false) return;
+		// Proceed to the next step
+		setCurrentStepId(nextStep.id);
 	};
 
 	const prev = () => {
-		// Get the index position of the current step
-		const currentIndex = steps.findIndex(step => step === currentStepId);
-		// If already at the first step, do nothing
-		if (currentIndex <= 0) return;
-		// Get the previous step object and set it as current
-		const prevStep = steps[currentIndex - 1];
-		if (prevStep) setCurrentStepId(prevStep);
+		// Exit if no current step
+		if (!currentStep) return;
+		// Exit if current step is not valid
+		if (currentStep.isValid === false) return;
+		// Exit if no previous step
+		if (!prevStep) return;
+		// Exit if previous step is not enabled
+		if (prevStep.isEnabled === false) return;
+		// Proceed to the previous step
+		setCurrentStepId(prevStep.id);
 	};
 
-	const goTo = (id: TSteps[number]) => {
-		// Only proceed if the desired step is valid
-		if (!isValid(id)) return;
-		// Check if the step exists
-		const stepExists = steps.some(step => step === id);
-		// If it exists, set it as the current step
-		if (stepExists) setCurrentStepId(id);
+	const goTo = (id: string) => {
+		// Get the desired step object
+		const destStep = availableSteps.find(step => step.id === id);
+		// Exit if the step is not found
+		if (!destStep) return;
+		// Exit if the desired step is not enabled
+		if (destStep.isEnabled === false) return;
+		// Proceed to set the current step
+		setCurrentStepId(id);
 	};
 
 	const goToIndex = (idx: number) => {
+		// Exit if the index is out of bounds
+		if (idx < 0 || idx >= availableSteps.length) return;
 		// Navigate to the step at the specified index
-		goTo(steps[idx]);
+		goTo(availableSteps[idx].id);
 	};
 
 	//
 	// C. Return values
 
 	return {
-		current: steps.find(step => step === currentStepId),
-		current_index: steps.findIndex(step => step === currentStepId),
-		goTo,
-		goToIndex,
-		isValid,
-		next,
-		prev,
+		actions: {
+			goTo,
+			goToIndex,
+			next,
+			prev,
+		},
+		progress: {
+			current: currentStep,
+			next: nextStep,
+			prev: prevStep,
+			steps: availableSteps,
+		},
 	};
 
 	//

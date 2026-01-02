@@ -14,20 +14,10 @@ import useSWR from 'swr';
 
 /* * */
 
-export const createRealtimeSteps = [
-	'cause',
-	'effect',
-	'dates',
-	'references',
-	'summary',
-] as const;
-
-/* * */
-
 interface AlertCreateContextState extends CreateContextStateTemplate {
 	data: {
 		form: UseFormReturnType<CreateAlertDto>
-		multi_step: UseMultiStepReturnType<typeof createRealtimeSteps>
+		multi_step: UseMultiStepReturnType
 	}
 };
 
@@ -66,23 +56,13 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const { form } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
 
 	const multiStep = useMultiStep({
-		steps: createRealtimeSteps,
-		validate: (step) => {
-			switch (step) {
-				case 'cause':
-					return true;
-				case 'dates':
-					return form.getValues().cause !== undefined && form.getValues().effect !== undefined;
-				case 'effect':
-					return form.getValues().cause !== undefined;
-				case 'references':
-					return form.getValues().active_period_start_date !== undefined && form.getValues().cause !== undefined && form.getValues().effect !== undefined;
-				case 'summary':
-					return form.getValues().cause !== undefined && form.getValues().effect !== undefined && form.getValues().references !== undefined && form.getValues().references.length > 0;
-				default:
-					return false;
-			}
-		},
+		steps: [
+			{ id: 'cause', label: 'Causa', order: 0 },
+			{ id: 'effect', label: 'Efeito', order: 1 },
+			{ id: 'dates', label: 'Datas', order: 2 },
+			{ id: 'references', label: 'Referências', order: 3 },
+			{ id: 'summary', label: 'Resumo', order: 4 },
+		],
 	});
 
 	//

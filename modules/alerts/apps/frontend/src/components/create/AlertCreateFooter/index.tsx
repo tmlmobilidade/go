@@ -29,23 +29,23 @@ export function AlertCreateFooter() {
 			<Spacer />
 
 			<Button
-				disabled={alertCreateContext.data.multi_step.current === 'cause'}
+				disabled={alertCreateContext.data.multi_step.progress.current?.id === 'cause'}
 				label="Voltar"
-				onClick={alertCreateContext.data.multi_step.prev}
+				onClick={alertCreateContext.data.multi_step.actions.prev}
 				variant="secondary"
 			/>
 
-			{alertCreateContext.data.multi_step.current !== 'summary' && (
+			{alertCreateContext.data.multi_step.progress.current?.id !== 'summary' && (
 				<Button
-					disabled={!alertCreateContext.data.multi_step.isValid(alertCreateContext.data.multi_step.current)}
+					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid}
 					label="Avançar"
-					onClick={alertCreateContext.data.multi_step.next}
+					onClick={alertCreateContext.data.multi_step.actions.next}
 				/>
 			)}
 
-			{alertCreateContext.data.multi_step.current === 'summary' && (
+			{alertCreateContext.data.multi_step.progress.current?.id === 'summary' && (
 				<Button
-					disabled={!alertCreateContext.data.multi_step.isValid(alertCreateContext.data.multi_step.current)}
+					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid}
 					label="Publicar"
 					onClick={alertCreateContext.actions.create}
 				/>

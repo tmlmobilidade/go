@@ -2,7 +2,7 @@
 
 /* * */
 
-import { createRealtimeSteps, useAlertCreateContext } from '@/components/create/AlertCreate.context';
+import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { Stepper, type StepperDataItem, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -18,10 +18,10 @@ export function AlertCreateHeader() {
 	//
 	// B. Transform data
 
-	const preparedSteps = createRealtimeSteps.map((step): StepperDataItem => ({
-		id: step,
-		isEnabled: alertCreateContext.data.multi_step.isValid(step),
-		label: step === 'cause' ? 'Causa' : step === 'effect' ? 'Efeito' : step === 'dates' ? 'Datas' : step === 'references' ? 'Referências' : step === 'summary' ? 'Resumo' : '',
+	const preparedSteps = alertCreateContext.data.multi_step.progress.steps.map((step): StepperDataItem => ({
+		id: step.id,
+		isEnabled: step.isEnabled,
+		label: step.label,
 	}));
 
 	//
@@ -30,9 +30,9 @@ export function AlertCreateHeader() {
 	return (
 		<Toolbar>
 			<Stepper
-				active={alertCreateContext.data.multi_step.current_index}
+				active={alertCreateContext.data.multi_step.progress.current?.index}
 				data={preparedSteps}
-				onStepClick={alertCreateContext.data.multi_step.goToIndex}
+				onStepClick={alertCreateContext.data.multi_step.actions.goToIndex}
 			/>
 		</Toolbar>
 	);

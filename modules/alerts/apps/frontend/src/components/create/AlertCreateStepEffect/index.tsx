@@ -28,7 +28,7 @@ export function AlertCreateStepEffect() {
 
 	const handleSelectEffect = (value: keyof typeof GtfsEffectSchema.enum) => {
 		alertCreateContext.data.form.setFieldValue('effect', value);
-		alertCreateContext.data.multi_step.next();
+		alertCreateContext.data.multi_step.actions.next();
 	};
 
 	//

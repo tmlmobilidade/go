@@ -28,7 +28,7 @@ export function AlertCreateStepCause() {
 
 	const handleSelectCause = (value: keyof typeof GtfsCauseExtendedSchema.enum) => {
 		alertCreateContext.data.form.setFieldValue('cause', value);
-		alertCreateContext.data.multi_step.next();
+		alertCreateContext.data.multi_step.actions.next();
 	};
 
 	//
