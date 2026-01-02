@@ -43,6 +43,7 @@ const alertsActions: PermissionConfig = {
 		{ action: 'read', description: 'Permite ver alertas', label: 'Ver', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 		{ action: 'create', description: 'Permite criar um alerta', label: 'Criar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 		{ action: 'update', description: 'Permite editar um alerta', label: 'Editar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_texts', description: 'Permite editar os textos de um alerta', label: 'Editar Textos', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas.',

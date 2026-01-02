@@ -11,6 +11,7 @@ export const AlertsPermissionSchema = z.object({
 		'read',
 		'lock',
 		'update',
+		'update_texts',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

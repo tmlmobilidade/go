@@ -42,7 +42,7 @@ export function AlertCreateFooter() {
 				<Button
 					disabled={!alertCreateContext.data.multi_step.isValid(alertCreateContext.data.multi_step.current)}
 					label="Publicar"
-					onClick={alertCreateContext.data.multi_step.next}
+					onClick={alertCreateContext.actions.create}
 				/>
 			)}
 
