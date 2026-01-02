@@ -5,20 +5,35 @@
 import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
-import { Collapsible, CoordinatesInput, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { Collapsible, CoordinatesInput, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AlertDetailSectionTitle() {
+export function AlertDetailSectionTexts() {
 	//
 
 	//
 	// A. Setup variables
 
+	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
 	//
-	// B. Render components
+	// B. Transform data
+
+	const hasPermissionToEdit = [
+		PermissionCatalog.all.alerts.actions.update,
+		PermissionCatalog.all.alerts.actions.update_texts,
+	].every(action => meContext.actions.hasPermissionResource({
+		action,
+		resource_key: 'agency_ids',
+		scope: 'alerts',
+		value: alertDetailContext.data.alert.agency_id,
+	}));
+
+	//
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -31,6 +46,7 @@ export function AlertDetailSectionTitle() {
 					description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
 					label="Título Curto"
 					maxLength={255}
+					readOnly={!hasPermissionToEdit}
 					withAsterisk
 					{...alertDetailContext.data.form.getInputProps('title')}
 				/>
@@ -40,6 +56,7 @@ export function AlertDetailSectionTitle() {
 					label="Descrição"
 					maxRows={10}
 					minRows={4}
+					readOnly={!hasPermissionToEdit}
 					autosize
 					withAsterisk
 					{...alertDetailContext.data.form.getInputProps('description')}
