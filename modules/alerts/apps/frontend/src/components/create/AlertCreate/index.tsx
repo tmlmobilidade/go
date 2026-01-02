@@ -37,7 +37,7 @@ export function AlertCreate() {
 	}
 
 	return (
-		<Pane header={[<AlertCreateHeader />]}>
+		<Pane footer={[<AlertCreateHeader />]} header={[<AlertCreateHeader />]}>
 			{alertCreateContext.data.multi_step.current === 'cause' && <AlertCreateStepCause />}
 			{alertCreateContext.data.multi_step.current === 'effect' && <AlertCreateStepEffect />}
 			{alertCreateContext.data.multi_step.current === 'references' && <AlertCreateStepReferences />}

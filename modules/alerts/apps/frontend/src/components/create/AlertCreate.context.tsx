@@ -3,6 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
@@ -96,6 +97,12 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			form.setFieldValue('title', alertTemplating.title.pt);
 		})();
 	}, [form.getValues()]);
+
+	useEffect(() => {
+		if (!form.getValues().active_period_start_date) {
+			form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp);
+		}
+	}, [form.getValues().reference_type]);
 
 	useEffect(() => {
 		if (!form.getValues().reference_type) {

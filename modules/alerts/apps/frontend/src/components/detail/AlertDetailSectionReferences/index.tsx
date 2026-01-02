@@ -4,8 +4,9 @@
 
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { type Alert } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, Select, useAgenciesContext } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
+import { Collapsible, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,11 +16,19 @@ export function AlertDetailSectionReferences() {
 	//
 	// A. Setup variables
 
-	const agenciesContext = useAgenciesContext();
 	const alertDetailContext = useAlertDetailContext();
+
+	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.update],
+		scope: PermissionCatalog.all.alerts.scope,
+	});
 
 	//
 	// B. Handle actions
+
+	const handleChangeAgencyId = (value: Alert['agency_id']) => {
+		alertDetailContext.data.form.setFieldValue('agency_id', value);
+	};
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
 		alertDetailContext.data.form.setFieldValue('reference_type', value);
@@ -38,25 +47,17 @@ export function AlertDetailSectionReferences() {
 			title="Referências"
 			defaultOpen
 		>
-			<Section>
-				<Grid gap="md">
-					<Select
-						key={alertDetailContext.data.form.key('agency_id')}
-						data={agenciesContext.data.as_options}
-						description="Selecione o operador que será afetado pelo alerta"
-						label="Operador afetado"
-						{...alertDetailContext.data.form.getInputProps('agency_id')}
-					/>
-				</Grid>
-			</Section>
 			<ReferencesEditor
+				activePeriodEndDate={alertDetailContext.data.form.getValues().active_period_end_date}
+				activePeriodStartDate={alertDetailContext.data.form.getValues().active_period_start_date}
+				availableAgenciesOptions={agenciesOptions}
+				onChangeAgencyId={handleChangeAgencyId}
 				onChangeReferences={handleChangeReferences}
 				onChangeReferenceType={handleChangeReferenceType}
 				selectedAgencyId={alertDetailContext.data.form.getValues().agency_id}
 				selectedMunicipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
 				selectedReferences={alertDetailContext.data.form.getValues().references}
 				selectedReferenceType={alertDetailContext.data.form.getValues().reference_type}
-				withBorder
 			/>
 		</Collapsible>
 	);

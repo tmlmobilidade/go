@@ -13,8 +13,7 @@ import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
 /* * */
@@ -98,10 +97,11 @@ export function AlertsList() {
 	}
 
 	return (
-		<Pane header={[
-			<AlertsListHeader />,
-			<AlertsListFiltersBar />,
-		]}
+		<Pane
+			header={[
+				<AlertsListHeader />,
+				<AlertsListFiltersBar />,
+			]}
 		>
 			<DataTable
 				columns={columns}

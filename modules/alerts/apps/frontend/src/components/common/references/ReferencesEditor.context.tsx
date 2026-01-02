@@ -7,7 +7,7 @@ import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Label, openConfirmModal, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { Label, openConfirmModal, SelectDataItem, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -16,9 +16,11 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, 
 export interface ReferencesEditorContextProps {
 	activePeriodEndDate: undefined | UnixTimestamp
 	activePeriodStartDate: undefined | UnixTimestamp
+	availableAgenciesOptions: SelectDataItem[]
+	onChangeAgencyId: (type: Alert['agency_id']) => void
 	onChangeReferences: (references: Alert['references']) => void
 	onChangeReferenceType: (type: Alert['reference_type']) => void
-	selectedAgencyId?: Alert['agency_id']
+	selectedAgencyId: Alert['agency_id']
 	selectedMunicipalityIds?: Alert['municipality_ids']
 	selectedReferences: Alert['references']
 	selectedReferenceType: Alert['reference_type']
@@ -27,6 +29,7 @@ export interface ReferencesEditorContextProps {
 interface ReferencesEditorContextState {
 	actions: {
 		addReference: () => void
+		changeAgencyId: (value: Alert['agency_id']) => void
 		changeReferenceType: (value: Alert['reference_type']) => void
 		removeAllRides: () => void
 		removeReference: (index: number) => void
@@ -34,10 +37,12 @@ interface ReferencesEditorContextState {
 		updateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
 	}
 	data: {
+		available_agencies_options: SelectDataItem[]
 		filtered_rides: RideNormalized[]
+		selected_agency_id: Alert['agency_id']
 		selected_reference_type: Alert['reference_type']
 		selected_references: Alert['references']
-		selected_rides_data?: RideNormalized[]
+		selected_rides_data: RideNormalized[]
 	}
 	filters: {
 		lines: UseFilterStateListReturnType
@@ -64,7 +69,7 @@ export function useReferencesEditorContext() {
 
 /* * */
 
-export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePeriodStartDate, children, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) => {
+export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, onChangeAgencyId, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) => {
 	//
 
 	//
@@ -100,6 +105,27 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 
 	//
 	// C. Handle actions
+
+	const changeAgencyId = (value: Alert['agency_id']) => {
+		if (selectedReferences?.length > 0) {
+			openConfirmModal({
+				cancelProps: { variant: 'danger' },
+				centered: true,
+				children: <Label>Ao alterar o operador, irá perder as referências que já foram adicionadas.</Label>,
+				closeOnClickOutside: true,
+				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
+				onConfirm: () => {
+					onChangeAgencyId(value);
+					onChangeReferences([]);
+				},
+				title: 'Tem a certeza que pretende mudar de operador?',
+			});
+		}
+		else {
+			onChangeAgencyId(value);
+			onChangeReferences([]);
+		}
+	};
 
 	const changeReferenceType = (value: Alert['reference_type']) => {
 		if (selectedReferences?.length > 0) {
@@ -164,6 +190,13 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	};
 
 	useEffect(() => {
+		// Pre-select agency if only one option is available
+		if (!selectedAgencyId && availableAgenciesOptions?.length === 1) {
+			onChangeAgencyId(availableAgenciesOptions[0].value);
+		}
+	}, [availableAgenciesOptions, selectedAgencyId]);
+
+	useEffect(() => {
 		(async () => {
 			// Reset state if no selected references
 			if (!selectedReferences?.length) return setSelectedRidesData([]);
@@ -188,11 +221,12 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	useEffect(() => {
 		// Add a margin to the end date
 		if (!activePeriodEndDate) {
+			console.warn(activePeriodEndDate, 'ReferencesEditorContextProvider: activePeriodEndDate is undefined');
 			if (!activePeriodStartDate) return;
 			setEndDate(Dates.fromUnixTimestamp(activePeriodStartDate).plus({ hours: 4 }).unix_timestamp);
 		}
-		setEndDate(Dates.fromUnixTimestamp(activePeriodEndDate).plus({ hours: 4 }).unix_timestamp);
-	}, [activePeriodEndDate]);
+		// setEndDate(Dates.fromUnixTimestamp(activePeriodEndDate).plus({ hours: 4 }).unix_timestamp);
+	}, [activePeriodStartDate, activePeriodEndDate]);
 
 	//
 	// D. Define State
@@ -200,6 +234,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	const contextValue: ReferencesEditorContextState = useMemo(() => ({
 		actions: {
 			addReference,
+			changeAgencyId,
 			changeReferenceType,
 			removeAllRides,
 			removeReference,
@@ -207,7 +242,9 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			updateReference,
 		},
 		data: {
+			available_agencies_options: availableAgenciesOptions,
 			filtered_rides: ridesData,
+			selected_agency_id: selectedAgencyId,
 			selected_reference_type: selectedReferenceType,
 			selected_references: selectedReferences ?? [],
 			selected_rides_data: selectedRidesData,
@@ -225,6 +262,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			isRidesLoading: ridesLoading,
 		},
 	}), [
+		availableAgenciesOptions,
 		selectedReferenceType,
 		selectedReferences,
 		selectedRidesData,

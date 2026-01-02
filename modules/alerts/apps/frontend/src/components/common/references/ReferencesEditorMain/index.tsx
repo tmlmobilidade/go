@@ -7,9 +7,7 @@ import { ReferencesEditorLines } from '@/components/common/references/References
 import { ReferencesEditorRides } from '@/components/common/references/ReferencesEditorRides';
 import { ReferencesEditorStops } from '@/components/common/references/ReferencesEditorStops';
 import { AlertReferenceTypeSchema } from '@tmlmobilidade/types';
-import { Tabs } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { Divider, Grid, Section, SegmentedControl, Select } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -39,29 +37,34 @@ export function ReferencesEditorMain() {
 	// C. Render components
 
 	return (
-		<Tabs
-			onChange={referencesEditorContext.actions.changeReferenceType}
-			value={referencesEditorContext.data.selected_reference_type}
-		>
+		<>
 
-			<div className={styles.tabs}>
-				<Tabs.List grow>
-					{referenceTypeOptions.map(option => (
-						<Tabs.Tab key={option.value} value={option.value}>
-							{option.label}
-						</Tabs.Tab>
-					))}
-				</Tabs.List>
-			</div>
+			<Section>
+				<Grid gap="md">
+					{referencesEditorContext.data.available_agencies_options.length > 1 && (
+						<Select
+							data={referencesEditorContext.data.available_agencies_options}
+							description="Selecione o operador que será afetado pelo alerta"
+							label="Operador afetado"
+							onChange={referencesEditorContext.actions.changeAgencyId}
+							value={referencesEditorContext.data.selected_agency_id}
+						/>
+					)}
+					<SegmentedControl
+						data={referenceTypeOptions}
+						onChange={referencesEditorContext.actions.changeReferenceType}
+						value={referencesEditorContext.data.selected_reference_type}
+						fullWidth
+					/>
+				</Grid>
+			</Section>
 
-			{referenceTypeOptions.map(option => (
-				<Tabs.Panel key={option.value} value={option.value}>
-					{option.value === 'lines' && <ReferencesEditorLines />}
-					{option.value === 'stops' && <ReferencesEditorStops />}
-					{option.value === 'rides' && <ReferencesEditorRides />}
-				</Tabs.Panel>
-			))}
+			<Divider lineStyle="dashed" />
 
-		</Tabs>
+			{referencesEditorContext.data.selected_reference_type === 'lines' && <ReferencesEditorLines />}
+			{referencesEditorContext.data.selected_reference_type === 'stops' && <ReferencesEditorStops />}
+			{referencesEditorContext.data.selected_reference_type === 'rides' && <ReferencesEditorRides />}
+
+		</>
 	);
 }

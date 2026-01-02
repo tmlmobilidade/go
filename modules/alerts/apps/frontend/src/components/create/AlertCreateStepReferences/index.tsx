@@ -4,8 +4,9 @@
 
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
-import { Alert } from '@tmlmobilidade/types';
-import { Section } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
+import { useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,8 +18,17 @@ export function AlertCreateStepReferences() {
 
 	const alertCreateContext = useAlertCreateContext();
 
+	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.alerts.actions.create],
+		scope: PermissionCatalog.all.alerts.scope,
+	});
+
 	//
 	// B. Handle actions
+
+	const handleChangeAgencyId = (value: Alert['agency_id']) => {
+		alertCreateContext.data.form.setFieldValue('agency_id', value);
+	};
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
 		alertCreateContext.data.form.setFieldValue('reference_type', value);
@@ -33,6 +43,10 @@ export function AlertCreateStepReferences() {
 
 	return (
 		<ReferencesEditor
+			activePeriodEndDate={alertCreateContext.data.form.getValues().active_period_end_date}
+			activePeriodStartDate={alertCreateContext.data.form.getValues().active_period_start_date}
+			availableAgenciesOptions={agenciesOptions}
+			onChangeAgencyId={handleChangeAgencyId}
 			onChangeReferences={handleChangeReferences}
 			onChangeReferenceType={handleChangeReferenceType}
 			selectedAgencyId={alertCreateContext.data.form.getValues().agency_id}
