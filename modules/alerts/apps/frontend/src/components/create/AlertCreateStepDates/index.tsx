@@ -3,7 +3,9 @@
 /* * */
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
-import { DateTimeInput, Divider, Grid, Label, Section, Text } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -13,10 +15,36 @@ export function AlertCreateStepDates() {
 	//
 	// A. Setup variables
 
+	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
 
 	//
-	// B. Render components
+	// B. Transform data
+
+	const hasPermissionToEdit = useMemo(() => {
+		const canEditThisAgency = meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.alerts.actions.update_dates,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertCreateContext.data.form.getValues().agency_id,
+		});
+		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.alerts.actions.update_dates,
+			resource_key: 'reference_types',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertCreateContext.data.form.getValues().reference_type,
+		});
+		// User can edit dates if they have permission
+		// for the agency and reference type.
+		return canEditThisAgency && canEditThisReferenceType;
+	}, [
+		meContext.data.user?.permissions,
+		alertCreateContext.data.form.getValues().agency_id,
+		alertCreateContext.data.form.getValues().reference_type,
+	]);
+
+	//
+	// C. Render components
 
 	return (
 		<>
@@ -28,11 +56,13 @@ export function AlertCreateStepDates() {
 					<DateTimeInput
 						key={alertCreateContext.data.form.key('active_period_start_date')}
 						label="Data de Início"
+						readOnly={!hasPermissionToEdit}
 						{...alertCreateContext.data.form.getInputProps('active_period_start_date')}
 					/>
 					<DateTimeInput
 						key={alertCreateContext.data.form.key('active_period_end_date')}
 						label="Data de Fim"
+						readOnly={!hasPermissionToEdit}
 						clearable
 						{...alertCreateContext.data.form.getInputProps('active_period_end_date')}
 					/>
@@ -48,11 +78,14 @@ export function AlertCreateStepDates() {
 					<DateTimeInput
 						key={alertCreateContext.data.form.key('publish_start_date')}
 						label="Data de Início"
+						readOnly={!hasPermissionToEdit}
+						clearable
 						{...alertCreateContext.data.form.getInputProps('publish_start_date')}
 					/>
 					<DateTimeInput
 						key={alertCreateContext.data.form.key('publish_end_date')}
 						label="Data de Fim"
+						readOnly={!hasPermissionToEdit}
 						clearable
 						{...alertCreateContext.data.form.getInputProps('publish_end_date')}
 					/>

@@ -62,6 +62,12 @@ export interface DateTimeInputProps {
 	placeholder?: string
 
 	/**
+	 * Whether the input is read-only.
+	 * @default false
+	 */
+	readOnly?: boolean
+
+	/**
 	 * The value of the input.
 	 * Use this field for controlled components.
 	 * @default null
@@ -159,6 +165,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				leftSection={<IconCalendar size={20} />}
 				onChange={setDateInputValue}
 				placeholder={props.placeholder ?? 'Selecione uma data...'}
+				readOnly={props.readOnly}
 				type="default"
 				value={dateInputValue}
 			/>
@@ -170,6 +177,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				label={props.label ? ' ' : undefined}
 				leftSection={<IconClock size={20} />}
 				onChange={setTimePickerValue}
+				readOnly={props.readOnly}
 				value={timePickerValue}
 				withSeconds={props.withSeconds}
 				presets={[

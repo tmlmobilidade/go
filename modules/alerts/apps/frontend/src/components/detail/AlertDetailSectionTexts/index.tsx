@@ -7,6 +7,7 @@ import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, CoordinatesInput, Grid, HasPermission, Section, Switch, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -22,12 +23,29 @@ export function AlertDetailSectionTexts() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = meContext.actions.hasPermissionResource({
-		action: PermissionCatalog.all.alerts.actions.update_texts,
-		resource_key: 'agency_ids',
-		scope: PermissionCatalog.all.alerts.scope,
-		value: alertDetailContext.data.alert.agency_id,
-	}) && !alertDetailContext.data.form.getValues().auto_texts;
+	const hasPermissionToEdit = useMemo(() => {
+		const canEditThisAgency = meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.alerts.actions.update_texts,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.agency_id,
+		});
+		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.alerts.actions.update_texts,
+			resource_key: 'reference_types',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.reference_type,
+		});
+		const autoTextsEnabled = alertDetailContext.data.form.getValues().auto_texts;
+		// User can edit texts if they have permission for the agency
+		// and reference type, and auto texts is disabled.
+		return canEditThisAgency && canEditThisReferenceType && !autoTextsEnabled;
+	}, [
+		meContext.data.user?.permissions,
+		alertDetailContext.data.alert.agency_id,
+		alertDetailContext.data.alert.reference_type,
+		alertDetailContext.data.form.getValues().auto_texts,
+	]);
 
 	//
 	// C. Render components
