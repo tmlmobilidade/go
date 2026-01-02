@@ -3,10 +3,9 @@
 /* * */
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { AlertDetailPublishStatus } from '@/components/detail/AlertDetailPublishStatus';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { DeleteButton, HasPermission, keepUrlParams, LockButton, PublishStatusTag, SaveButton } from '@tmlmobilidade/ui';
 import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -40,8 +39,12 @@ export function AlertDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<AlertDetailPublishStatus />
-			{/* <AlertTagPublishStatus value={alertDetailContext.data.alert?.publish_status} /> */}
+
+			<PublishStatusTag
+				onChange={value => alertDetailContext.data.form.setFieldValue('publish_status', value)}
+				value={alertDetailContext.data.form.values.publish_status}
+			/>
+
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 
 			<Spacer />

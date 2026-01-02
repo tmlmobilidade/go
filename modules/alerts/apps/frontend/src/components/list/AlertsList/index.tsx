@@ -6,14 +6,13 @@ import { AlertsListCellDate } from '@/components/common/other/AlertsListCellDate
 import { AlertsListCellLines } from '@/components/common/other/AlertsListCellLines';
 import { AlertsListCellMunicipalities } from '@/components/common/other/AlertsListCellMunicipalities';
 import { AlertsListCellStops } from '@/components/common/other/AlertsListCellStops';
-import { AlertTagPublishStatus } from '@/components/common/other/AlertTagPublishStatus';
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
 import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, PublishStatusTag } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
 /* * */
@@ -32,7 +31,7 @@ export function AlertsList() {
 	const columns: DataTableColumn<Alert>[] = [
 		{
 			accessor: 'publish_status',
-			render: item => <AlertTagPublishStatus value={item.publish_status} />,
+			render: item => <PublishStatusTag value={item.publish_status} />,
 			title: 'Estado',
 			width: 125,
 		},

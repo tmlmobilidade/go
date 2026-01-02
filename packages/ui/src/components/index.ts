@@ -14,5 +14,6 @@ export * from './map';
 export * from './modals';
 export * from './panes';
 export * from './proposedChanges';
+export * from './tags';
 export * from './upload';
 export * from './wrapper';

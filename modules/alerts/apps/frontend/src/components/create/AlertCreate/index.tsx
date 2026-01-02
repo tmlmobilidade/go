@@ -11,7 +11,7 @@ import { AlertCreateStepEffect } from '@/components/create/AlertCreateStepEffect
 import { AlertCreateStepReferences } from '@/components/create/AlertCreateStepReferences';
 import { AlertCreateStepSummary } from '@/components/create/AlertCreateStepSummary';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { NoDataLabel, Pane, useMeContext } from '@tmlmobilidade/ui';
+import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -35,7 +35,11 @@ export function AlertCreate() {
 	// B. Render components
 
 	if (!hasPermissionCreate) {
-		return <NoDataLabel text="Selecione um alerta" />;
+		return (
+			<Surface align="center" justify="center" variant="transparent">
+				<NoDataLabel text="Selecione um alerta" />
+			</Surface>
+		);
 	}
 
 	return (

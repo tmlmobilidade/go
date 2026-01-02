@@ -2,7 +2,7 @@
 
 import styles from './styles.module.css';
 
-import { Label } from '../Label';
+import { Label } from '../../display/Label';
 import { Tag, TagProps } from '../Tag';
 
 /* * */

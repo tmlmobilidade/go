@@ -6,7 +6,7 @@ import { Tag } from '../Tag';
 
 /* * */
 
-export function EnvironmentFlag() {
+export function EnvironmentTag() {
 	//
 
 	//

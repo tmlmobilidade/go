@@ -3,7 +3,7 @@
 /* * */
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
-import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, PublishStatusTag, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,6 +20,11 @@ export function AlertCreateFooter() {
 
 	return (
 		<Toolbar>
+
+			<PublishStatusTag
+				onChange={value => alertCreateContext.data.form.setFieldValue('publish_status', value)}
+				value={alertCreateContext.data.form.values.publish_status}
+			/>
 
 			<Spacer />
 
