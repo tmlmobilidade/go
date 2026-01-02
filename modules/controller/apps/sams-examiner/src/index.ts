@@ -84,8 +84,8 @@ async function main() {
 
 				const searchTimestampEnd = Dates
 					.now('Europe/Lisbon')
-					.startOf('day')
-					.set({ day: 1, hour: 4, minute: 0, month: 12, year: 2025 });
+					.minus({ days: 1 })
+					.set({ hour: 4, millisecond: 0, minute: 0, second: 0 });
 
 				Logger.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
 
@@ -280,6 +280,7 @@ async function main() {
 					_id: samData._id,
 					agency_id: agencyId,
 					analysis: samAnalysisGroups,
+					created_by: 'system',
 					latest_apex_version: latestTransaction.apex_version,
 					remarks: null,
 					seen_first_at: firstTransaction.created_at,
@@ -288,6 +289,7 @@ async function main() {
 					transactions_expected: transactionsExpected,
 					transactions_found: transactionsFound,
 					transactions_missing: transactionsMissing,
+					updated_by: 'system',
 				};
 
 				await sams.updateById(samData._id, updatedSamData);
