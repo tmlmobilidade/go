@@ -14,7 +14,13 @@ import useSWR from 'swr';
 
 /* * */
 
-export const createRealtimeSteps = ['cause', 'effect', 'references', 'summary'] as const;
+export const createRealtimeSteps = [
+	'cause',
+	'effect',
+	'dates',
+	'references',
+	'summary',
+] as const;
 
 /* * */
 
@@ -65,10 +71,12 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			switch (step) {
 				case 'cause':
 					return true;
+				case 'dates':
+					return form.getValues().cause !== undefined && form.getValues().effect !== undefined;
 				case 'effect':
 					return form.getValues().cause !== undefined;
 				case 'references':
-					return form.getValues().cause !== undefined && form.getValues().effect !== undefined;
+					return form.getValues().active_period_start_date !== undefined && form.getValues().cause !== undefined && form.getValues().effect !== undefined;
 				case 'summary':
 					return form.getValues().cause !== undefined && form.getValues().effect !== undefined && form.getValues().references !== undefined && form.getValues().references.length > 0;
 				default:

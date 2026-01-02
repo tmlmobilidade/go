@@ -6,6 +6,7 @@ import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { AlertCreateFooter } from '@/components/create/AlertCreateFooter';
 import { AlertCreateHeader } from '@/components/create/AlertCreateHeader';
 import { AlertCreateStepCause } from '@/components/create/AlertCreateStepCause';
+import { AlertCreateStepDates } from '@/components/create/AlertCreateStepDates';
 import { AlertCreateStepEffect } from '@/components/create/AlertCreateStepEffect';
 import { AlertCreateStepReferences } from '@/components/create/AlertCreateStepReferences';
 import { AlertCreateStepSummary } from '@/components/create/AlertCreateStepSummary';
@@ -41,6 +42,7 @@ export function AlertCreate() {
 		<Pane footer={[<AlertCreateFooter />]} header={[<AlertCreateHeader />]}>
 			{alertCreateContext.data.multi_step.current === 'cause' && <AlertCreateStepCause />}
 			{alertCreateContext.data.multi_step.current === 'effect' && <AlertCreateStepEffect />}
+			{alertCreateContext.data.multi_step.current === 'dates' && <AlertCreateStepDates />}
 			{alertCreateContext.data.multi_step.current === 'references' && <AlertCreateStepReferences />}
 			{alertCreateContext.data.multi_step.current === 'summary' && <AlertCreateStepSummary />}
 		</Pane>

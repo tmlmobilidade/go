@@ -5,10 +5,9 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertDetailHeader } from '@/components/detail/AlertDetailHeader';
 import { AlertDetailSectionCauseEffect } from '@/components/detail/AlertDetailSectionCauseEffect';
+import { AlertDetailSectionDates } from '@/components/detail/AlertDetailSectionDates';
 import { AlertDetailSectionReferences } from '@/components/detail/AlertDetailSectionReferences';
 import { AlertDetailSectionTexts } from '@/components/detail/AlertDetailSectionTexts';
-import { AlertDetailSectionValidity } from '@/components/detail/AlertDetailSectionValidity';
-import { AlertDetailSectionVisibility } from '@/components/detail/AlertDetailSectionVisibility';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -35,8 +34,7 @@ export function AlertDetail() {
 	return (
 		<Pane header={[<AlertDetailHeader />]}>
 			<AlertDetailSectionTexts />
-			<AlertDetailSectionVisibility />
-			<AlertDetailSectionValidity />
+			<AlertDetailSectionDates />
 			<AlertDetailSectionCauseEffect />
 			<AlertDetailSectionReferences />
 		</Pane>

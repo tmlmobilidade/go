@@ -3,6 +3,7 @@
 /* * */
 
 import { Fieldset, NumberInput as MantineNumberInput } from '@mantine/core';
+import { IconWorldLatitude, IconWorldLongitude } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -166,6 +167,7 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 				description={props.description}
 				disabled={props.disabled}
 				label={props.label}
+				leftSection={<IconWorldLatitude />}
 				onChange={setLatitudeValue}
 				placeholder="Latitude (-90 to 90)"
 				step={0.000001}
@@ -173,9 +175,10 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 			/>
 			<MantineNumberInput
 				classNames={{ root: styles.lonInput_root, wrapper: styles.lonInput_wrapper }}
-				description={props.description ? ' ' : undefined}
+				description={props.description ? '.' : undefined}
 				disabled={props.disabled}
 				label={props.label ? ' ' : undefined}
+				leftSection={<IconWorldLongitude />}
 				onChange={setLongitudeValue}
 				placeholder="Longitude (-180 to 180)"
 				step={0.000001}
