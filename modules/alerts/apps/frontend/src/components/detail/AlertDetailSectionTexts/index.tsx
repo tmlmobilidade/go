@@ -6,7 +6,7 @@ import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { Collapsible, CoordinatesInput, Grid, HasPermission, Section, Switch, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -30,7 +30,7 @@ export function AlertDetailSectionTexts() {
 		resource_key: 'agency_ids',
 		scope: 'alerts',
 		value: alertDetailContext.data.alert.agency_id,
-	}));
+	})) && !alertDetailContext.data.form.getValues().auto_texts;
 
 	//
 	// C. Render components
@@ -41,6 +41,18 @@ export function AlertDetailSectionTexts() {
 			title="Título e Descrição"
 		>
 			<Section gap="md">
+				<HasPermission
+					action={PermissionCatalog.all.alerts.actions.update_texts}
+					resourceKey="agency_ids"
+					scope={PermissionCatalog.all.alerts.scope}
+					value={alertDetailContext.data.alert.agency_id}
+				>
+					<Switch
+						key={alertDetailContext.data.form.key('auto_texts')}
+						label="Textos Automáticos"
+						{...alertDetailContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
+					/>
+				</HasPermission>
 				<Grid gap="md">
 					<TextInput
 						key={alertDetailContext.data.form.key('title')}
