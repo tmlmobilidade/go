@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /* * */
 
@@ -30,7 +30,7 @@ interface MultiStepItem {
 	 * Usually determined by the correctness
 	 * of the current step's data.
 	 */
-	isValid?: boolean
+	isValid?: () => boolean
 
 	/**
 	 * Indicates whether the step is visible.
@@ -92,7 +92,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	//
 	// B. Transform data
 
-	const availableSteps = useMemo(() => {
+	const availableSteps = (() => {
 		return steps
 			// Only include steps that are marked as visible.
 			// Default is visible if not specified.
@@ -101,16 +101,16 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			.sort((a, b) => a.order - b.order)
 			// Ensure index is sequential based on visible steps
 			.map((step, idx) => ({ ...step, index: idx }));
-	}, [steps]);
+	})();
 
-	const currentStep = useMemo(() => {
+	const currentStep = (() => {
 		// Skip if no current step ID is set
 		if (!currentStepId) return;
 		// Find and return the current step object
 		return availableSteps.find(step => step.id === currentStepId);
-	}, [currentStepId, availableSteps]);
+	})();
 
-	const nextStep = useMemo(() => {
+	const nextStep = (() => {
 		// Exit if no current step
 		if (!currentStep) return;
 		// Get the index position of the current step
@@ -123,9 +123,9 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (!nextStep) return;
 		// Set the next step object
 		return nextStep;
-	}, [currentStep, availableSteps]);
+	})();
 
-	const prevStep = useMemo(() => {
+	const prevStep = (() => {
 		// Exit if no current step
 		if (!currentStep) return;
 		// Get the index position of the current step
@@ -138,7 +138,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (!prevStep) return;
 		// Set the prev step object
 		return prevStep;
-	}, [currentStep, availableSteps]);
+	})();
 
 	useEffect(() => {
 		// Skip if no available steps
@@ -155,7 +155,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if no current step
 		if (!currentStep) return;
 		// Exit if current step is not valid
-		if (currentStep.isValid === false) return;
+		if (currentStep.isValid && currentStep.isValid() === false) return;
 		// Exit if no next step
 		if (!nextStep) return;
 		// Exit if next step is not enabled
@@ -168,7 +168,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if no current step
 		if (!currentStep) return;
 		// Exit if current step is not valid
-		if (currentStep.isValid === false) return;
+		if (currentStep.isValid && currentStep.isValid() === false) return;
 		// Exit if no previous step
 		if (!prevStep) return;
 		// Exit if previous step is not enabled

@@ -57,11 +57,40 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const multiStep = useMultiStep({
 		steps: [
-			{ id: 'cause', label: 'Causa', order: 0 },
-			{ id: 'effect', label: 'Efeito', order: 1 },
-			{ id: 'dates', label: 'Datas', order: 2 },
-			{ id: 'references', label: 'Referências', order: 3 },
-			{ id: 'summary', label: 'Resumo', order: 4 },
+			{
+				id: 'cause',
+				isValid: () => !!form.getValues().cause,
+				isVisible: true,
+				label: 'Causa',
+				order: 0,
+			},
+			{
+				id: 'effect',
+				isValid: () => !!form.getValues().effect,
+				isVisible: true,
+				label: 'Efeito',
+				order: 1,
+			},
+			{
+				id: 'dates',
+				isValid: () => !!form.getValues().active_period_start_date,
+				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
+				label: 'Datas',
+				order: 2,
+			},
+			{
+				id: 'references',
+				isValid: () => !!form.getValues().reference_type,
+				isVisible: true,
+				label: 'Referências',
+				order: 3,
+			},
+			{
+				id: 'summary',
+				isVisible: true,
+				label: 'Resumo',
+				order: 4,
+			},
 		],
 	});
 
@@ -83,7 +112,12 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			form.setFieldValue('description', alertTemplating.description.pt);
 			form.setFieldValue('title', alertTemplating.title.pt);
 		})();
-	}, [form.getValues()]);
+	}, [
+		form.getValues().cause,
+		form.getValues().effect,
+		form.getValues().references,
+		form.getValues().reference_type,
+	]);
 
 	useEffect(() => {
 		if (!form.getValues().publish_status) {
@@ -100,6 +134,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		if (!form.getValues().reference_type) {
 			const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+			if (createPermission.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) return form.setFieldValue('reference_type', 'lines');
 			if (createPermission.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
 			if (createPermission.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
 			if (createPermission.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
