@@ -20,7 +20,7 @@ export function AlertCreateHeader() {
 
 	const preparedSteps = alertCreateContext.data.multi_step.progress.steps.map((step): StepperDataItem => ({
 		id: step.id,
-		isEnabled: step.isEnabled,
+		isEnabled: step.isEnabled(),
 		label: step.label,
 	}));
 
