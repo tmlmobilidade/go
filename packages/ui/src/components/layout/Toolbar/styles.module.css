@@ -5,7 +5,6 @@
 	display: grid;
 	grid-template-columns: 1fr;
 	width: 100%;
-	min-height: 72px;
 	padding: var(--size-spacing-md);
 	overflow-x: auto;
 }
