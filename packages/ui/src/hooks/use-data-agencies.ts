@@ -80,12 +80,14 @@ export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, p
 		// Check if permissions are set
 		if (!props?.actions || !props?.scope) return allAgenciesData;
 		// Map data to SelectDataItem format
-		return allAgenciesData.filter(item => props.actions.some(action => meContext.actions.hasPermissionResource({
-			action,
-			resource_key: 'agency_ids',
-			scope: props.scope,
-			value: item._id,
-		})));
+		return allAgenciesData
+			.filter(item => props.actions.some(action => meContext.actions.hasPermissionResource({
+				action,
+				resource_key: 'agency_ids',
+				scope: props.scope,
+				value: item._id,
+			})))
+			.sort((a, b) => Number(a._id) - Number(b._id));
 	}, [allAgenciesData, props?.actions, props?.scope]);
 
 	const filteredIds = useMemo(() => {
