@@ -2,11 +2,11 @@
 
 /* * */
 
-import { CREATE_VALIDATION_MODAL_ID } from '@/components/validations/detail/CreateValidationModal';
+import { closeCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
 import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateGtfsValidationDto, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
-import { closeModal, useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -165,7 +165,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		// Reset the form and state
 
 		setIsLoading(false);
-		closeModal(CREATE_VALIDATION_MODAL_ID);
+		closeCreateValidationModal();
 		mutate(API_ROUTES.plans.VALIDATIONS_LIST);
 
 		//
