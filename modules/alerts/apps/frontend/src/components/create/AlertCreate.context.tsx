@@ -69,6 +69,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			},
 			{
 				id: 'effect',
+				isEnabled: () => !!form.getValues().cause,
 				isValid: () => !!form.getValues().effect,
 				isVisible: true,
 				label: 'Efeito',
@@ -76,6 +77,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			},
 			{
 				id: 'dates',
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect,
 				isValid: () => !!form.getValues().active_period_start_date,
 				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
 				label: 'Datas',
@@ -83,6 +85,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			},
 			{
 				id: 'references',
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
 				isValid: () => !!form.getValues().reference_type,
 				isVisible: true,
 				label: 'Referências',
@@ -90,6 +93,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			},
 			{
 				id: 'summary',
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
 				isVisible: true,
 				label: 'Resumo',
 				order: 4,
@@ -103,13 +107,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		(async () => {
 			if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references?.length) return;
-			console.log('Describing alert with:', {
-				cause: form.getValues().cause,
-				effect: form.getValues().effect,
-				reference_type: form.getValues().reference_type,
-				references: form.getValues().references,
-				selectedReferencesData,
-			});
 			const alertTemplating = await describeAlert({
 				cause: form.getValues().cause,
 				data: {
@@ -121,7 +118,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				reference_type: form.getValues().reference_type,
 				references: form.getValues().references ?? [],
 			});
-			console.log('Generated alert templating:', alertTemplating);
 			if (!alertTemplating) return;
 			form.setFieldValue('description', alertTemplating.description.pt);
 			form.setFieldValue('title', alertTemplating.title.pt);

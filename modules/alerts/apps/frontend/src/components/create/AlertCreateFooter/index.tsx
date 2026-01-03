@@ -55,6 +55,7 @@ export function AlertCreateFooter() {
 				<Button
 					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid()}
 					label="Publicar"
+					loading={alertCreateContext.flags.isCreating}
 					onClick={alertCreateContext.actions.create}
 				/>
 			)}

@@ -23,7 +23,7 @@ interface MultiStepItem {
 	 * Usually determined by the completion
 	 * of previous steps.
 	 */
-	isEnabled?: boolean
+	isEnabled?: () => boolean
 
 	/**
 	 * Indicates whether the step is valid.
@@ -159,7 +159,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if no next step
 		if (!nextStep) return;
 		// Exit if next step is not enabled
-		if (nextStep.isEnabled === false) return;
+		if (nextStep.isEnabled() === false) return;
 		// Proceed to the next step
 		setCurrentStepId(nextStep.id);
 	};
@@ -172,7 +172,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if no previous step
 		if (!prevStep) return;
 		// Exit if previous step is not enabled
-		if (prevStep.isEnabled === false) return;
+		if (prevStep.isEnabled() === false) return;
 		// Proceed to the previous step
 		setCurrentStepId(prevStep.id);
 	};
@@ -183,7 +183,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if the step is not found
 		if (!destStep) return;
 		// Exit if the desired step is not enabled
-		if (destStep.isEnabled === false) return;
+		if (destStep.isEnabled() === false) return;
 		// Proceed to set the current step
 		setCurrentStepId(id);
 	};
