@@ -1,6 +1,6 @@
 /* * */
 
-import { type Alert, type RideNormalized, type Stop } from '@tmlmobilidade/types';
+import { type Alert, type RideNormalized } from '@tmlmobilidade/types';
 
 /**
  * List of all possible placeholders that can be used in alert description and title templates.
@@ -69,9 +69,9 @@ export type AlertConfigKey = `${Alert['cause']}:${Alert['effect']}:${Alert['refe
 export interface DescribeAlertProps {
 	cause: Alert['cause']
 	data: {
-		lines?: { id: string }[]
+		lines?: { id: string, long_name: string, short_name: string }[]
 		rides?: RideNormalized[]
-		stops?: Stop[]
+		stops?: { id: string, name: string }[]
 	}
 	effect: Alert['effect']
 	reference_type: Alert['reference_type']

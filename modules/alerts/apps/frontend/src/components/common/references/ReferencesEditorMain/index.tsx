@@ -21,8 +21,6 @@ export function ReferencesEditorMain() {
 	//
 	// B. Render components
 
-	console.log('referencesEditorContext.data.selected_reference_type', referencesEditorContext.data.selected_reference_type);
-
 	return (
 		<>
 

@@ -100,7 +100,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			// Sort steps by their order
 			.sort((a, b) => a.order - b.order)
 			// Ensure index is sequential based on visible steps
-			.map((step, idx) => ({ ...step, index: idx }));
+			.map((step, idx) => ({ ...step, index: idx, isValid: step.isValid || (() => true) }));
 	})();
 
 	const currentStep = (() => {

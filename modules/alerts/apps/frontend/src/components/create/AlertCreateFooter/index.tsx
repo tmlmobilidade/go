@@ -3,7 +3,8 @@
 /* * */
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
-import { Button, PublishStatusTag, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { Button, HasPermission, PublishStatusTag, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,10 +22,17 @@ export function AlertCreateFooter() {
 	return (
 		<Toolbar>
 
-			<PublishStatusTag
-				onChange={value => alertCreateContext.data.form.setFieldValue('publish_status', value)}
-				value={alertCreateContext.data.form.values.publish_status}
-			/>
+			<HasPermission
+				action={PermissionCatalog.all.alerts.actions.update_publish_status}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.alerts.scope}
+				value={alertCreateContext.data.form.getValues().agency_id}
+			>
+				<PublishStatusTag
+					onChange={value => alertCreateContext.data.form.setFieldValue('publish_status', value)}
+					value={alertCreateContext.data.form.values.publish_status}
+				/>
+			</HasPermission>
 
 			<Spacer />
 
@@ -37,7 +45,7 @@ export function AlertCreateFooter() {
 
 			{alertCreateContext.data.multi_step.progress.current?.id !== 'summary' && (
 				<Button
-					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid}
+					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid()}
 					label="Avançar"
 					onClick={alertCreateContext.data.multi_step.actions.next}
 				/>
@@ -45,7 +53,7 @@ export function AlertCreateFooter() {
 
 			{alertCreateContext.data.multi_step.progress.current?.id === 'summary' && (
 				<Button
-					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid}
+					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid()}
 					label="Publicar"
 					onClick={alertCreateContext.actions.create}
 				/>

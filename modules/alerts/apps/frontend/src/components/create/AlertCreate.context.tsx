@@ -2,14 +2,15 @@
 
 /* * */
 
+import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -44,6 +45,8 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const router = useRouter();
 
 	const meContext = useMeContext();
+
+	const [selectedReferencesData, setSelectedReferencesData] = useState<RideNormalized[] | { id: string, long_name: string, short_name: string }[] | { id: string, name: string }[]>([]);
 
 	//
 	// B. Fetch data
@@ -99,20 +102,32 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		(async () => {
+			if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references?.length) return;
+			console.log('Describing alert with:', {
+				cause: form.getValues().cause,
+				effect: form.getValues().effect,
+				reference_type: form.getValues().reference_type,
+				references: form.getValues().references,
+				selectedReferencesData,
+			});
 			const alertTemplating = await describeAlert({
 				cause: form.getValues().cause,
 				data: {
-					rides: [],
+					lines: (selectedReferencesData as { id: string, long_name: string, short_name: string }[]),
+					rides: (selectedReferencesData as RideNormalized[]),
+					stops: (selectedReferencesData as { id: string, name: string }[]),
 				},
 				effect: form.getValues().effect,
-				reference_type: 'rides',
+				reference_type: form.getValues().reference_type,
 				references: form.getValues().references ?? [],
 			});
+			console.log('Generated alert templating:', alertTemplating);
 			if (!alertTemplating) return;
 			form.setFieldValue('description', alertTemplating.description.pt);
 			form.setFieldValue('title', alertTemplating.title.pt);
 		})();
 	}, [
+		selectedReferencesData,
 		form.getValues().cause,
 		form.getValues().effect,
 		form.getValues().references,
@@ -140,6 +155,41 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			if (createPermission.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
 		}
 	}, [form.getValues().reference_type]);
+
+	useEffect(() => {
+		(async () => {
+			// Reset if no selected reference_type
+			if (!form.getValues().reference_type) return setSelectedReferencesData([]);
+			// Reset state if no selected references
+			if (!form.getValues().references?.length) return setSelectedReferencesData([]);
+			// Get a list of unique parent_ids
+			const parentIds = form.getValues().references.map(reference => reference.parent_id);
+			// Fetch data for lines
+			if (form.getValues().reference_type === 'lines') {
+				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
+				const linesData = await response.json() as Line[];
+				const result: Line[] = linesData.filter(line => parentIds.includes(line.id));
+				setSelectedReferencesData(result);
+			}
+			// Fetch data for stops
+			if (form.getValues().reference_type === 'stops') {
+				const response = await fetch('https://api.carrismetropolitana.pt/v2/stops');
+				const stopsData = await response.json() as Stop[];
+				const result: Stop[] = stopsData.filter(stop => parentIds.includes(stop.id));
+				setSelectedReferencesData(result);
+			}
+			// Fetch data for rides
+			if (form.getValues().reference_type === 'rides') {
+				const result: RideNormalized[] = [];
+				for (const rideId of parentIds) {
+					const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
+					if (!response.data) continue;
+					result.push(response.data);
+				}
+				setSelectedReferencesData(result);
+			}
+		})();
+	}, [form.getValues().reference_type, form.getValues().references]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),

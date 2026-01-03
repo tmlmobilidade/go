@@ -9,7 +9,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label, openConfirmModal, SelectDataItem, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 /* * */
 
@@ -231,7 +231,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	//
 	// D. Define State
 
-	const contextValue: ReferencesEditorContextState = useMemo(() => ({
+	const contextValue: ReferencesEditorContextState = {
 		actions: {
 			addReference,
 			changeAgencyId,
@@ -256,23 +256,9 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			view_mode: filterViewMode,
 		},
 		flags: {
-			canCreate: true,
-			error: undefined,
-			isLoading: false,
 			isRidesLoading: ridesLoading,
 		},
-	}), [
-		availableAgenciesOptions,
-		selectedReferenceType,
-		selectedReferences,
-		selectedRidesData,
-		filterStops,
-		ridesData,
-		filterLines,
-		filterSearch,
-		filterViewMode,
-		ridesLoading,
-	]);
+	};
 
 	//
 	// E. Return state
