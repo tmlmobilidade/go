@@ -10,7 +10,7 @@ import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, 
 import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -198,7 +198,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define State
 
-	const contextValue: AlertCreateContextState = useMemo(() => ({
+	const contextValue: AlertCreateContextState = {
 		actions: {
 			create: handleCreate,
 		},
@@ -212,11 +212,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			isCreating,
 			isLoading: false,
 		},
-	}), [
-		form,
-		isCreating,
-		multiStep,
-	]);
+	};
 
 	//
 	// F. Return state

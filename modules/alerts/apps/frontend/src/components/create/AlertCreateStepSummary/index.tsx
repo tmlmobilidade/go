@@ -64,16 +64,18 @@ export function AlertCreateStepSummary() {
 			</HasPermission>
 			<Grid gap="md">
 				<TextInput
-					defaultValue={alertCreateContext.data.form.getValues().title}
+					key={alertCreateContext.data.form.key('title')}
 					label="Título"
 					readOnly={!hasPermissionToEdit}
+					{...alertCreateContext.data.form.getInputProps('title')}
 				/>
 				<Textarea
-					defaultValue={alertCreateContext.data.form.getValues().description}
+					key={alertCreateContext.data.form.key('description')}
 					label="Descrição"
 					minRows={4}
 					readOnly={!hasPermissionToEdit}
 					autosize
+					{...alertCreateContext.data.form.getInputProps('description')}
 				/>
 				<CoordinatesInput
 					key={alertCreateContext.data.form.key('coordinates')}
