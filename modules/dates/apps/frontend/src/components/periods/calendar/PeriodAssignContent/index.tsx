@@ -5,6 +5,7 @@
 import { usePeriodAssignContext } from '@/components/periods/calendar/PeriodAssign.context';
 import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.context';
 import { IconAlertTriangle, IconCalendar } from '@tabler/icons-react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Alert, Button, ColorInput, ColorSwatch, Label, Radio, Section, Select, Text, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -23,7 +24,11 @@ export function PeriodAssignContent() {
 
 	const periodsListContext = usePeriodsListContext();
 	const periodAssignContext = usePeriodAssignContext();
-	const { options: agencyOptions } = useDataAgencies(PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.update);
+
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.periods.actions.update],
+		scope: PermissionCatalog.all.periods.scope,
+	});
 
 	const agencyPeriods = useMemo(() => {
 		if (!periodAssignContext.data.form.values.agency_id) return [];

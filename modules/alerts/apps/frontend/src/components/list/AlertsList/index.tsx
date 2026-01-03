@@ -1,0 +1,116 @@
+'use client';
+
+/* * */
+
+import { AlertsListCellDate } from '@/components/common/other/AlertsListCellDate';
+import { AlertsListCellLines } from '@/components/common/other/AlertsListCellLines';
+import { AlertsListCellMunicipalities } from '@/components/common/other/AlertsListCellMunicipalities';
+import { AlertsListCellStops } from '@/components/common/other/AlertsListCellStops';
+import { useAlertsListContext } from '@/components/list/AlertsList.context';
+import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
+import { AlertsListHeader } from '@/components/list/AlertsListHeader';
+import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type Alert } from '@tmlmobilidade/types';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, PublishStatusTag } from '@tmlmobilidade/ui';
+import { useParams, useRouter } from 'next/navigation';
+
+/* * */
+
+export function AlertsList() {
+	//
+
+	//
+	// A. Setup variables
+
+	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
+	const alertsListContext = useAlertsListContext();
+
+	const columns: DataTableColumn<Alert>[] = [
+		{
+			accessor: 'publish_status',
+			render: item => <PublishStatusTag value={item.publish_status} />,
+			title: 'Estado',
+			width: 125,
+		},
+		{
+			accessor: 'reference_type',
+			title: 'Tipo de referência',
+			width: 75,
+		},
+		{
+			accessor: 'title',
+			title: 'Título',
+			width: 500,
+		},
+		{
+			accessor: 'publish_start_date',
+			render: item => <AlertsListCellDate value={item.publish_start_date} />,
+			title: 'Data de início',
+			width: 225,
+		},
+		{
+			accessor: 'publish_end_date',
+			render: item => <AlertsListCellDate value={item.publish_end_date} />,
+			title: 'Data de fim',
+			width: 225,
+		},
+		{
+			accessor: 'municipality_ids',
+			render: item => <AlertsListCellMunicipalities values={item.municipality_ids} />,
+			title: 'Municípios',
+			width: 300,
+		},
+		{
+			accessor: '_id',
+			render: item => <AlertsListCellLines values={getAvailableLines(item)} />,
+			title: 'Linhas',
+			width: 175,
+		},
+		{
+			accessor: '_id',
+			render: item => <AlertsListCellStops values={getAvailableStops(item)} />,
+			title: 'Paragens',
+			width: 800,
+		},
+	];
+
+	//
+	// B. Handle actions
+
+	const handleRowClick = (item: Alert) => {
+		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(item._id)));
+	};
+
+	//
+	// C. Render components
+
+	if (alertsListContext.flags.loading) {
+		return <LoadingOverlay />;
+	}
+
+	if (alertsListContext.flags.error) {
+		return <ErrorDisplay message={alertsListContext.flags.error.message} />;
+	}
+
+	return (
+		<Pane
+			header={[
+				<AlertsListHeader />,
+				<AlertsListFiltersBar />,
+			]}
+		>
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={alertsListContext.data.filtered}
+				rowIdAccessor="_id"
+				selectedId={params.id}
+			/>
+		</Pane>
+	);
+
+	//
+}

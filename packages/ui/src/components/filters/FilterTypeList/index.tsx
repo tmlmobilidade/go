@@ -5,16 +5,10 @@
 import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo, useRef } from 'react';
 
+import { SelectDataItem } from '../../inputs/Select';
 import { FilterWrapper, FilterWrapperRef } from '../FilterWrapper';
 
 /* * */
-
-interface FilterTypeListOption {
-	checked?: boolean
-	disabled?: boolean
-	label: string
-	value: string
-}
 
 interface FilterTypeListProps {
 	active?: boolean
@@ -23,7 +17,7 @@ interface FilterTypeListProps {
 	label: string
 	onChange?: (values: string[]) => void
 	onClose?: () => void
-	options?: FilterTypeListOption[]
+	options?: SelectDataItem[]
 	withToggleAll?: boolean
 }
 
@@ -96,7 +90,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 		if (onClose) onClose();
 	};
 
-	const handleOptionSelect = (option: FilterTypeListOption) => {
+	const handleOptionSelect = (option: SelectDataItem) => {
 		if (option.value === 'all') handleSingleAllSelect();
 		else handleSingleOptionSelect(option.value);
 	};

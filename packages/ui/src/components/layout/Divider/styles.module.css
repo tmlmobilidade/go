@@ -3,22 +3,38 @@
 
 .container {
 	display: flex;
-	background-color: var(--color-system-border-100);
+	width: 0;
+	height: 0;
+	border-color: var(--color-system-border-100);
+	border-width: 0;
 }
+
+
+/* * */
+/* PROPS / LINE STYLE */
+
+.container[data-line-style="solid"] {
+	border-style: solid;
+}
+
+.container[data-line-style="dashed"] {
+	border-style: dashed;
+}
+
+.container[data-line-style="dotted"] {
+	border-style: dotted;
+}
+
 
 /* * */
 /* PROPS / ORIENTATION */
 
-.container[data-orientation="vertical"] {
-	width: 1px;
-	min-width: 1px;
-	max-width: 1px;
-	height: 100%;
-}
-
 .container[data-orientation="horizontal"] {
 	width: 100%;
-	height: 1px;
-	min-height: 1px;
-	max-height: 1px;
+	border-bottom-width: 1px;
+}
+
+.container[data-orientation="vertical"] {
+	height: 100%;
+	border-right-width: 1px;
 }

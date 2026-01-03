@@ -867,6 +867,7 @@ export async function parsePlan(planData: Plan) {
 					apex_on_board_sales_qty: null,
 					apex_validations_qty: null,
 					created_at: Dates.now('utc').unix_timestamp,
+					created_by: 'system',
 					driver_ids: [],
 					end_time_observed: null,
 					end_time_scheduled: endTimeScheduledDate,
