@@ -14,6 +14,7 @@ export function parseSam(item: AggregationResultItem): CreateSamDto {
 		remarks: null,
 		seen_first_at: null,
 		seen_last_at: null,
+		system_status: 'waiting',
 		transactions_expected: null,
 		transactions_found: null,
 		transactions_missing: null,

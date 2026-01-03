@@ -53,6 +53,7 @@ async function main() {
 				active_period_end_date: null,
 				active_period_start_date: undefined,
 				agency_id: '43',
+				auto_texts: true,
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				coordinates: null,
 				description: description,
@@ -71,7 +72,6 @@ async function main() {
 					parent_id: entity.trip?.trip_id ?? '',
 				})),
 				title: title,
-				type: 'realtime',
 			};
 
 			const alertRealtime = await alerts.insertOne(createAlertDto);

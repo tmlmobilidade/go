@@ -22,7 +22,6 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 			created_by: 'system',
 			publish_status: parsePublishStatus(alert.publish_status),
 			reference_type: parseReferenceType(alert.reference_type),
-			type: parseAlertType(alert.type),
 			updated_by: 'system',
 		};
 		formattedAlert.agency_id = parseAlertAgencyId(alert.title, alert.references);
@@ -70,12 +69,6 @@ function parseReferenceType(value: string): Alert['reference_type'] {
 	if (value === 'TRIP') return 'rides';
 	if (value === 'AGENCY') return 'lines';
 	return value as Alert['reference_type'];
-}
-
-function parseAlertType(value: string): Alert['type'] {
-	if (value === 'PLANNED') return 'scheduled';
-	if (value === 'REALTIME') return 'realtime';
-	return value as Alert['type'];
 }
 
 function parseAlertAgencyId(title: Alert['title'], references: Alert['references']): Alert['agency_id'] {
