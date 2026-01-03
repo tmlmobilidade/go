@@ -14,7 +14,7 @@ import { mutate } from 'swr';
 
 /* * */
 
-interface ValidationsCreateContextState {
+interface ValidationCreateContextState {
 	actions: {
 		createValidation: () => void
 		setValidationFile: (file: File | null) => void
@@ -31,19 +31,19 @@ interface ValidationsCreateContextState {
 
 /* * */
 
-const ValidationsCreateContext = createContext<undefined | ValidationsCreateContextState>(undefined);
+const ValidationCreateContext = createContext<undefined | ValidationCreateContextState>(undefined);
 
-export function useValidationsCreateContext() {
-	const context = useContext(ValidationsCreateContext);
+export function useValidationCreateContext() {
+	const context = useContext(ValidationCreateContext);
 	if (!context) {
-		throw new Error('useValidationsCreateContext must be used within a ValidationsCreateContextProvider');
+		throw new Error('useValidationCreateContext must be used within a ValidationCreateContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren) => {
+export const ValidationCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -204,7 +204,7 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	//
 	// E. Define context value
 
-	const contextValue: ValidationsCreateContextState = useMemo(() => {
+	const contextValue: ValidationCreateContextState = useMemo(() => {
 		return {
 			actions: {
 				createValidation,
@@ -230,9 +230,9 @@ export const ValidationsCreateContextProvider = ({ children }: PropsWithChildren
 	// F. Render components
 
 	return (
-		<ValidationsCreateContext.Provider value={contextValue}>
+		<ValidationCreateContext.Provider value={contextValue}>
 			{children}
-		</ValidationsCreateContext.Provider>
+		</ValidationCreateContext.Provider>
 	);
 
 	//

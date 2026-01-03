@@ -1,6 +1,6 @@
 /* * */
 
-import { openCreateValidationModal } from '@/components/validations/detail/CreateValidationModal';
+import { openCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
