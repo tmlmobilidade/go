@@ -24,12 +24,9 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, MantineThemeOverride, Menu, MultiSelect, NumberInput, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Switch, TagsInput, Text, Textarea, TextInput } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea } from '@mantine/core';
+import { TimePicker } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
-
-/* * */
-
-import { DateInput } from '@mantine/dates';
 
 /* * */
 
@@ -47,6 +44,7 @@ import CheckboxOverride from './mantine/overrides/Checkbox.module.css';
 import CheckboxGroupOverride from './mantine/overrides/CheckboxGroup.module.css';
 import CloseButtonOverride from './mantine/overrides/CloseButton.module.css';
 import ColorInputOverride from './mantine/overrides/ColorInput.module.css';
+import InputClearButtonOverride from './mantine/overrides/InputClearButton.module.css';
 import MenuOverride from './mantine/overrides/Menu.module.css';
 import PasswordInputOverride from './mantine/overrides/PasswordInput.module.css';
 import PillOverride from './mantine/overrides/Pill.module.css';
@@ -57,10 +55,12 @@ import SegmentedControlOverrideSm from './mantine/overrides/SegmentedControl-sm.
 import SegmentedControlOverride from './mantine/overrides/SegmentedControl.module.css';
 import SkeletonOverride from './mantine/overrides/Skeleton.module.css';
 import SliderOverride from './mantine/overrides/Slider.module.css';
+import StepperOverride from './mantine/overrides/Stepper.module.css';
 import SwitchOverride from './mantine/overrides/Switch.module.css';
 import TextOverride from './mantine/overrides/Text.module.css';
 import TextareaOverrideComment from './mantine/overrides/Textarea-comment.module.css';
 import TextareaOverride from './mantine/overrides/Textarea.module.css';
+import TimePickerOverride from './mantine/overrides/TimePicker.module.css';
 
 /* * */
 
@@ -118,9 +118,18 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
-		DateInput: DateInput.extend({
+		Input: Input.extend({
 			classNames: {
 				...InputBase,
+			},
+		}),
+
+		InputClearButton: InputClearButton.extend({
+			classNames: {
+				...InputClearButtonOverride,
+			},
+			defaultProps: {
+				variant: 'subtle',
 			},
 		}),
 
@@ -132,16 +141,8 @@ export const themeData: MantineThemeOverride = createTheme({
 
 		MultiSelect: MultiSelect.extend({
 			classNames: {
-				...InputBase,
 				...DropdownBase,
-				input: `${InputBase.input} ${MultiSelectBase.input}`,
-				wrapper: `${InputBase.wrapper} ${MultiSelectBase.wrapper}`,
-			},
-		}),
-
-		NumberInput: NumberInput.extend({
-			classNames: {
-				...InputBase,
+				...MultiSelectBase,
 			},
 		}),
 
@@ -152,7 +153,6 @@ export const themeData: MantineThemeOverride = createTheme({
 				// The actual 'input' field is named '.innerInput'. It is necessary to
 				// map the 'input' field styles to the '.innerInput' class and apply reset styles
 				// to the '.input' class, otherwise the input will appear to be rendered twice.
-				...InputBase,
 				innerInput: InputBase.input,
 				input: PasswordInputOverride.input,
 			},
@@ -193,7 +193,6 @@ export const themeData: MantineThemeOverride = createTheme({
 
 		Select: Select.extend({
 			classNames: {
-				...InputBase,
 				...DropdownBase,
 			},
 		}),
@@ -210,6 +209,12 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
+		Stepper: Stepper.extend({
+			classNames: {
+				...StepperOverride,
+			},
+		}),
+
 		Switch: Switch.extend({
 			classNames: {
 				...SwitchOverride,
@@ -218,10 +223,8 @@ export const themeData: MantineThemeOverride = createTheme({
 
 		TagsInput: TagsInput.extend({
 			classNames: {
-				...InputBase,
 				...DropdownBase,
-				input: `${InputBase.input} ${MultiSelectBase.input}`,
-				wrapper: `${InputBase.wrapper} ${MultiSelectBase.wrapper}`,
+				...MultiSelectBase,
 			},
 		}),
 
@@ -240,9 +243,11 @@ export const themeData: MantineThemeOverride = createTheme({
 			},
 		}),
 
-		TextInput: TextInput.extend({
+		TimePicker: TimePicker.extend({
 			classNames: {
-				...InputBase,
+				...DropdownBase,
+				...TimePickerOverride,
+				wrapper: TimePickerOverride.wrapper,
 			},
 		}),
 

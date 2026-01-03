@@ -118,7 +118,7 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 100mb
+          memory: 1gb
     logging:
       options:
         max-size: '1m'

@@ -3,7 +3,7 @@
 /* * */
 
 import { IconArrowRight } from '@tabler/icons-react';
-import { Button, EnvironmentFlag, keepUrlParams, Label, Section, Surface, TMLogoDark, TMLogoLight, WhenMode } from '@tmlmobilidade/ui';
+import { Button, EnvironmentTag, keepUrlParams, Label, Section, Surface, TMLogoDark, TMLogoLight, WhenMode } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
@@ -45,7 +45,7 @@ export function AuthenticationForm({ children, description, footerLabel, footerU
 						<div className={styles.headerContent}>
 							<Label size="lg">{title}</Label>
 							<Label>{description}</Label>
-							<EnvironmentFlag />
+							<EnvironmentTag />
 						</div>
 						<div className={styles.headerLogo}>
 							<WhenMode dark={<TMLogoDark />} light={<TMLogoLight />} />

@@ -14,13 +14,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('alerts', 'frontend_url')}`,
 
-		// REALTIME
-		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/realtime/${id}`,
-		REALTIME_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime`,
-
-		// SCHEDULED
-		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/scheduled/${id}`,
-		SCHEDULED_LIST: `${getAppConfig('alerts', 'frontend_url')}/scheduled`,
+		// ALERTS
+		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/${id}`,
+		ALERTS_LIST: `${getAppConfig('alerts', 'frontend_url')}`,
 	},
 
 	/* * */
@@ -158,12 +154,15 @@ export const API_ROUTES = Object.freeze({
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
-		ALERTS_GTFS: `${getAppConfig('alerts', 'api_url')}/alerts/gtfs`,
+		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
 
+		// GTFS
+		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
+
 		// RIDES
+		RIDES_DETAIL_RIDE: (id: string) => `${getAppConfig('alerts', 'api_url')}/rides/${id}/ride`,
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
-		RIDES_SELECTED: `${getAppConfig('alerts', 'api_url')}/rides/selected`,
 	},
 
 	/* * */

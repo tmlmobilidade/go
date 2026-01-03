@@ -3,6 +3,7 @@
 /* * */
 
 import { usePeriodCreateContext } from '@/components/periods/create/PeriodsCreate.context';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PeriodSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { ColorInput, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
@@ -15,7 +16,11 @@ export function PeriodCreateBasicInfo() {
 	// A. Setup variables
 
 	const periodCreateContext = usePeriodCreateContext();
-	const { options: allAgencyOptions } = useDataAgencies(PermissionCatalog.all.periods.scope, PermissionCatalog.all.periods.actions.create);
+
+	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.periods.actions.create],
+		scope: PermissionCatalog.all.periods.scope,
+	});
 
 	//
 	// B. Render Components

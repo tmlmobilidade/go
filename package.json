@@ -9,6 +9,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"build:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
+		"build:alerts:packages": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-pckg-*",
 		"build:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-auth-*",
 		"build:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-controller-*",
 		"build:dates": "ENVIRONMENT=development dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-dates-*",
@@ -24,6 +25,7 @@
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
 		"dev:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
+		"dev:auth:prod": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",
 		"dev:controller:prod": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",
 		"dev:controller:ui": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
@@ -39,6 +41,7 @@
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 		"dev:ticketing": "ENVIRONMENT=development dotenv-run -f ./modules/ticketing/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-ticketing-*",
 		"generate-routes": "bash ./scripts/generate-routes.sh",
+		"helper:alerts:migrate-db": "dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
 		"helper:controller:export-sams:production": "dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-controller-helpers-export-sams",
 		"helper:locations:seed-locations:production": "dotenv-run -f ./modules/locations/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:locations:seed-locations:staging": "dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",

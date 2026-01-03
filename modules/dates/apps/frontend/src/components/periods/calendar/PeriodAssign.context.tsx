@@ -6,7 +6,7 @@ import { closeAsignPeriodModal } from '@/components/periods/calendar/PeriodAssig
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { convertRangeToDatesArray, Dates } from '@tmlmobilidade/dates';
 import { type CreatePeriodDto, type OperationalDate, type Period } from '@tmlmobilidade/types';
-import { useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { useForm, type UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { mutate } from 'swr';
@@ -78,6 +78,8 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 
 	//
 	// A. Setup variables
+
+	const meContext = useMeContext();
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [conflicts, setConflicts] = useState<{ dates: OperationalDate[], period: Period }[]>([]);
@@ -177,6 +179,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 			const createPeriodPayload: CreatePeriodDto = {
 				agency_id: data.agency_id,
 				color: data.color,
+				created_by: meContext.data.user._id,
 				dates: datesArray,
 				is_locked: false,
 				name: data.newPeriodName || '',

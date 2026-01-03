@@ -1,16 +1,17 @@
 /* * */
 
-import { log, text } from '@clack/prompts';
+import { note, text } from '@clack/prompts';
 
 /* * */
 
 export async function promptFilterByVehicleIds(): Promise<number[]> {
 	//
 
-	log.step('FILTRAR POR VEHICLE ID:');
-
-	log.message('- Introduz os Vehicle IDs separados por vírgulas. Exemplo: 1234,9876,etc...');
-	log.message('- Se não introduzires nenhum Vehicle ID, este filtro não será aplicado.');
+	note(
+		'FILTRAR POR VEHICLE ID:\n'
+		+ '  • Introduz os Vehicle IDs separados por vírgulas. Exemplo: 1234,9876,etc...\n'
+		+ '  • Se não introduzires nenhum Vehicle ID, este filtro não será aplicado.',
+	);
 
 	const value = await text({
 		message: 'Vehicle IDs:',

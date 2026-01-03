@@ -2,7 +2,8 @@
 /* ROOT */
 
 .root {
-    display: flex;
+	display: flex;
+	container-type: inline-size;
 }
 
 /* * */

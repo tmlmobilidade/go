@@ -15,7 +15,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.36.0",
+		"@tabler/icons-react": "3.36.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",

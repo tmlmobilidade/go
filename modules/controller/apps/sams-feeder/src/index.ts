@@ -32,7 +32,7 @@ async function main() {
 		const searchTimestampStart = Dates
 			.now('Europe/Lisbon')
 			.startOf('day')
-			.set({ day: 1, hour: 4, month: 7, year: 2025 })
+			.set({ day: 1, hour: 4, minute: 0, month: 1, year: 2025 })
 			.unix_timestamp;
 
 		const agregationPipeline = [

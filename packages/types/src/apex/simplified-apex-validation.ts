@@ -99,7 +99,7 @@ export const ApexValidationStatusSchema = z.nativeEnum(ApexValidationStatus);
 /* * */
 
 export const SimplifiedApexValidationSchema = DocumentSchema
-	.omit({ is_locked: true })
+	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
 		agency_id: z.string(),
 		apex_version: z.string(),

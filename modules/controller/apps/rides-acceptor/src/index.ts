@@ -35,6 +35,7 @@ async function createRideAcceptances(ride: Ride) {
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
 			comments: [],
+			created_by: 'system',
 			is_locked: false,
 			justification: null,
 			ride_id: ride._id,
@@ -74,7 +75,7 @@ async function alertJustification(ride: Ride) {
 		//
 		const foundAlert = await alerts.findOne({
 			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 2 }).unix_timestamp },
-			reference_type: { $in: ['TRIP', 'LINE'] },
+			reference_type: { $in: ['rides', 'lines'] },
 			references: { $elemMatch: { parent_id: { $in: [ride._id, ride.line_id] } } },
 		});
 

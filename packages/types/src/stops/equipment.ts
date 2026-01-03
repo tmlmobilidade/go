@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-const StopEquipmentValues = [
+export const StopEquipmentValues = [
 	'pip',
 	'mupi',
 	'mini_pip',

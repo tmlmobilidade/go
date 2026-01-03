@@ -11,5 +11,9 @@
 
 .input {
 	height: auto;
-	min-height: 40px;
+	min-height: 36px;
+}
+
+.inputField::placeholder {
+	color: var(--color-system-text-300);
 }

@@ -2,13 +2,19 @@
 
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency } from '@tmlmobilidade/types';
+import { ActionsOf, type Agency, Permission } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { type SelectDataItem } from '../components/inputs/Select';
 import { useMeContext } from '../contexts/Me.context';
+
+/* * */
+
+interface UseDataAgenciesProps<S extends Permission['scope']> {
+	actions?: ActionsOf<S>[]
+	scope?: S
+}
 
 /* * */
 
@@ -52,7 +58,7 @@ interface UseDataAgenciesReturnType {
  * @param props The properties to determine read-only status.
  * @returns An object containing the isCanSave flag.
  */
-export function useDataAgencies(scope?: string, action?: string): UseDataAgenciesReturnType {
+export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, props?: UseDataAgenciesProps<S>): UseDataAgenciesReturnType {
 	//
 
 	//
@@ -63,7 +69,7 @@ export function useDataAgencies(scope?: string, action?: string): UseDataAgencie
 	//
 	// B. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(apiUrl && apiUrl);
 
 	//
 	// C. Transform data
@@ -72,15 +78,17 @@ export function useDataAgencies(scope?: string, action?: string): UseDataAgencie
 		// Skip if no data is available
 		if (!allAgenciesData?.length) return [];
 		// Check if permissions are set
-		if (!action || !scope) return allAgenciesData;
+		if (!props?.actions || !props?.scope) return allAgenciesData;
 		// Map data to SelectDataItem format
-		return allAgenciesData.filter(item => meContext.actions.hasPermissionResource({
-			action: action,
-			resource_key: 'agency_ids',
-			scope: scope,
-			value: item._id,
-		}));
-	}, [allAgenciesData, action, scope]);
+		return allAgenciesData
+			.filter(item => props.actions.some(action => meContext.actions.hasPermissionResource({
+				action,
+				resource_key: 'agency_ids',
+				scope: props.scope,
+				value: item._id,
+			})))
+			.sort((a, b) => Number(a._id) - Number(b._id));
+	}, [allAgenciesData, props?.actions, props?.scope]);
 
 	const filteredIds = useMemo(() => {
 		// Skip if no data is available

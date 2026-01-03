@@ -54,7 +54,7 @@ docker_service_watchtower() {
         delay: 30s
       resources:
         limits:
-          memory: 100mb
+          memory: 1gb
     logging:
       options:
         max-size: '1m'
@@ -378,7 +378,7 @@ for var in \$(compgen -v | tail -r); do
       # copy the docker compose file
       scp -i "\$SSH_KEY" -r 0-router-config/* "\$SSH_USER@\$ip:/opt/app"
 
-      # start the services 
+      # start the services
       ssh -i "\$SSH_KEY" "\$SSH_USER@\$ip" "cd /opt/app && docker compose up -d"
     fi
 

@@ -7,7 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const SimplifiedVehicleEventSchema = DocumentSchema
-	.omit({ is_locked: true })
+	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
 		agency_id: z.string(),
 		driver_id: z.string(),

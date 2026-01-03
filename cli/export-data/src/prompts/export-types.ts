@@ -5,7 +5,7 @@ import { cancel, groupMultiselect, isCancel } from '@clack/prompts';
 
 /* * */
 
-export async function promptExportTypes(): Promise<(ExportType)[]> {
+export async function promptExportTypes(): Promise<ExportType[]> {
 	//
 
 	const values = await groupMultiselect({
