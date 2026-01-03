@@ -25,7 +25,7 @@ export function ValidationCreateBasicInfo() {
 
 			{validationCreateContext.flags.error && validationCreateContext.flags.error.name === 'ValidationError' && (
 				<>
-					<AlertMessage title={validationCreateContext.flags.error?.message ?? 'odjisodj'} variant="danger" />
+					<AlertMessage title={validationCreateContext.flags.error?.message ?? ''} variant="danger" />
 					<Divider />
 				</>
 			)}
