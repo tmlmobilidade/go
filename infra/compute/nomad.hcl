@@ -13,3 +13,18 @@ consul {
   address = "127.0.0.1:8500"
   token   = "CONSUL_NOMAD_TOKEN"
 }
+
+
+### FOR CLIENT
+
+client {
+  enabled = true
+}
+
+plugin "docker" {
+  config {
+    volumes {
+      enabled = true
+    }
+  }
+}

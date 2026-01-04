@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-# Load version numbers
-source ./versions.env
 
 
 ###
@@ -14,6 +10,9 @@ apt-get install -y curl unzip jq
 
 ###
 # INSTALL CONSUL
+
+CONSUL_VERSION="1.22.2"
+
 echo "Installing Consul version $CONSUL_VERSION"
 
 # Create user and directories
@@ -29,6 +28,9 @@ chmod +x /usr/local/bin/consul
 
 ###
 # INSTALL NOMAD
+
+NOMAD_VERSION="1.11.1"
+
 echo "Installing Nomad version $NOMAD_VERSION"
 
 # Create user and directories
@@ -44,6 +46,9 @@ chmod +x /usr/local/bin/nomad
 
 ###
 # INSTALL VAULT
+
+VAULT_VERSION="1.21.1"
+
 echo "Installing Vault version $VAULT_VERSION"
 
 # Create user and directories
