@@ -3,7 +3,7 @@
 /* * */
 
 import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
-import { Button, closeModal, FileUpload, Grid, Section, Spacer, Text } from '@tmlmobilidade/ui';
+import { FileUpload, Section, Spacer, Text } from '@tmlmobilidade/ui';
 
 /* * */
 

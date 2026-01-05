@@ -90,6 +90,22 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 	//
 
+	const handleImportFileValues = async (file: File | null) => {
+		setIsError(null);
+		setIsSaving(true);
+		setIsloading(true);
+		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
+		if (typeof response.error === 'string') {
+			useToast.error({ message: response.error, title: 'Erro ao criar veículo' });
+			setIsError(new Error(response.error));
+			setIsSaving(false);
+			setIsloading(false);
+			return;
+		}
+		form.setValue('import_file', file);
+		setModalCurrentStepValidState(false);
+	};
+
 	const handleCreateVehicle = async () => {
 		setIsError(null);
 		setIsSaving(true);
@@ -127,7 +143,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		return {
 			actions: {
 				createVehicle: handleCreateVehicle,
-				setImportFile: handleCreateVehicle,
+				setImportFile: handleImportFileValues,
 			},
 			data: {
 				form,
