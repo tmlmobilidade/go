@@ -4,12 +4,12 @@
 
 import { VehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
 import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImport.modal';
-import { CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useContext } from 'react';
 
 /* * */
 
-export function VehicleImportModalHeader() {
+export function VehicleImportHeader() {
 	//
 
 	//
@@ -25,7 +25,12 @@ export function VehicleImportModalHeader() {
 			<CloseButton onClick={closeImportVehicleModal} type="close" />
 			<Tag label="Importar Veículo" variant="muted" />
 			<Spacer />
-			<Label size="md" caps singleLine>Passo {vehicleImportContext?.modal.current_step} de 3</Label>
+			<Button
+				disabled={vehicleImportContext?.flags.isSaving || vehicleImportContext?.flags.isloading}
+				label="Publicar"
+				loading={vehicleImportContext?.flags.isSaving}
+				onClick={vehicleImportContext?.actions.createVehicle}
+			/>
 		</Toolbar>
 	);
 

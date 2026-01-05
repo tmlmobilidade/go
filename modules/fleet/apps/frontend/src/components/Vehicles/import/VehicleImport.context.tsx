@@ -24,12 +24,6 @@ interface VehicleImportContextState {
 		isloading: boolean
 		isSaving: boolean
 	}
-	modal: {
-		current_step: number
-		current_step_valid: boolean
-		nextStep: () => void
-		previousStep: () => void
-	}
 }
 
 /* * */
@@ -58,9 +52,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const [isSaving, setIsSaving] = useState(false);
 	const [isloading, setIsloading] = useState(false);
 
-	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
-	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
-
 	//
 	// B. Fetch data
 
@@ -73,20 +64,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 	//
 	// D. Handle actions
-
-	const previousStep = () => {
-		setModalCurrentStepState((prev) => {
-			if (prev > 1) return prev - 1;
-			return 1;
-		});
-	};
-
-	const nextStep = () => {
-		setModalCurrentStepState((prev) => {
-			if (prev < 3) return prev + 1;
-			return 3;
-		});
-	};
 
 	//
 
@@ -102,8 +79,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			setIsloading(false);
 			return;
 		}
-
-		setModalCurrentStepValidState(true);
 	};
 
 	const handleCreateVehicle = async () => {
@@ -153,20 +128,13 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				isloading,
 				isSaving,
 			},
-			modal: {
-				current_step: modalCurrentStepState,
-				current_step_valid: modalCurrentStepValidState,
-				nextStep,
-				previousStep,
-			},
 		};
 	}, [
 		form,
 		isError,
 		isSaving,
 		isloading,
-		modalCurrentStepState,
-		modalCurrentStepValidState,
+
 	]);
 
 	//
