@@ -20,7 +20,7 @@ export default function Page() {
 
 	return (
 		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text={t('agencies.noDataLabel.text')} />
+			<NoDataLabel text={t('agencies.NoDataLabel.text')} />
 		</Surface>
 	);
 
