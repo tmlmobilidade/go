@@ -8,8 +8,9 @@ import { initReactI18next } from 'react-i18next';
 
 /* * */
 
-import ptKeys from './translations/pt.json' with { type: 'json' };
-
+import ptGlobal from './namespaces/global/pt.json' with { type: 'json' };
+import ptOperations from './namespaces/operations/pt.json' with { type: 'json' };
+import ptStatuses from './namespaces/statuses/pt.json' with { type: 'json' };
 /* * */
 
 export * from './config';
@@ -18,7 +19,9 @@ export * from './config';
 
 export const resourceKeys = {
 	pt: {
-		global: ptKeys,
+		global: ptGlobal,
+		operations: ptOperations,
+		statuses: ptStatuses,
 	},
 } as const;
 

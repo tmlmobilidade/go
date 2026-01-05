@@ -30,8 +30,9 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('global');
+
 	const filterWrapperRef = useRef<FilterWrapperRef>(null);
-	const { t } = useTranslation('global', { keyPrefix: 'components.filters.FilterTypeList' });
 
 	//
 	// B. Transform data
@@ -59,7 +60,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 			const allOption = {
 				checked: toggleAllActive,
 				disabled: false,
-				label: t('toggle_all_label'),
+				label: t('components.filters.FilterTypeList.toggle_all'),
 				value: 'all',
 			};
 			return [allOption, ...options];
