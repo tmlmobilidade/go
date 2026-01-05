@@ -102,6 +102,10 @@ env:
     ticketing:api
     ticketing:frontend
 
+    offer:nginx
+    offer:api
+    offer:frontend
+
 # # #
 
 jobs:

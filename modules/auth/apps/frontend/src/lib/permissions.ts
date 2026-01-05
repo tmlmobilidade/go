@@ -260,6 +260,19 @@ const zonesActions: PermissionConfig = {
 	title: 'Permissões de Zonas',
 };
 
+const typologiesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver tipologias', label: 'Ver tipologias', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma tipologia', label: 'Criar tipologia', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma tipologia', label: 'Editar tipologia', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma tipologia', label: 'Eliminar tipologia', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma tipologia', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de tipologias.',
+	scope: PermissionCatalog.all.typologies.scope,
+	title: 'Permissões de Tipologias',
+};
+
 /* * */
 
 export const permissionsConfig = [
@@ -278,6 +291,7 @@ export const permissionsConfig = [
 	periodsActions,
 	faresActions,
 	zonesActions,
+	typologiesActions,
 	// topicActions,
 	// proposedChangesActions,
 ];

@@ -8,6 +8,7 @@ export * from '@/interfaces/gtfs-validations/index.js';
 export * from '@/interfaces/locations/index.js';
 export * from '@/interfaces/metrics/index.js';
 export * from '@/interfaces/notifications/index.js';
+export * from '@/interfaces/offer/index.js';
 export * from '@/interfaces/organizations/index.js';
 export * from '@/interfaces/pcgidb/index.js';
 export * from '@/interfaces/plans/index.js';

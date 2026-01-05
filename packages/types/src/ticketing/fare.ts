@@ -5,15 +5,33 @@ import { z } from 'zod';
 
 /* * */
 
+export const FARE_PAYMENT_METHOD = {
+	ONBOARD: '0',
+	PREPAID: '1',
+} as const;
+
+export const FARE_TRANSFERS = {
+	NONE: '0',
+	ONE: '1',
+	TWO: '2',
+	UNLIMITED: 'unlimited',
+} as const;
+
+export const FARE_CURRENCY = {
+	EUR: 'EUR',
+} as const;
+
+/* * */
+
 export const FareSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).min(1, 'At least one agency ID is required'),
 	code: z.string().trim().min(1).max(10),
-	currency_type: z.enum(['EUR']).default('EUR'),
+	currency_type: z.enum([FARE_CURRENCY.EUR]).default(FARE_CURRENCY.EUR),
 	is_locked: z.boolean().default(false),
 	name: z.string().trim().min(1).max(50),
-	payment_method: z.enum(['0', '1']).default('0'), /* 0 = Onboard, 1 = Prepaid */
+	payment_method: z.enum([FARE_PAYMENT_METHOD.ONBOARD, FARE_PAYMENT_METHOD.PREPAID]).default(FARE_PAYMENT_METHOD.ONBOARD),
 	price: z.coerce.number().min(0).default(0),
-	transfers: z.enum(['0', '1', '2', 'unlimited']).default('0'), /* TRANSFERS (GTFS) */
+	transfers: z.enum([FARE_TRANSFERS.NONE, FARE_TRANSFERS.ONE, FARE_TRANSFERS.TWO, FARE_TRANSFERS.UNLIMITED]).default(FARE_TRANSFERS.NONE),
 });
 
 /* * */
