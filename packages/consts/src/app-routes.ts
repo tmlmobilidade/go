@@ -85,6 +85,17 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
+	/* OFFER */
+	offer: {
+		// BASE
+		BASE: `${getAppConfig('offer', 'frontend_url')}`,
+
+		// TYPOLOGIES
+		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/typologies/${id}`,
+		TYPOLOGIES_LIST: `${getAppConfig('offer', 'frontend_url')}/typologies`,
+	},
+
+	/* * */
 	/* PERFORMANCE */
 	performance: {
 		// BASE
@@ -290,6 +301,18 @@ export const API_ROUTES = Object.freeze({
 		LOCATIONS_LOCALITIES: `${getAppConfig('locations', 'api_url')}/locations/localities`,
 		LOCATIONS_MUNICIPALITIES: `${getAppConfig('locations', 'api_url')}/locations/municipalities`,
 		LOCATIONS_PARISHES: `${getAppConfig('locations', 'api_url')}/locations/parishes`,
+	},
+
+	/* * */
+	/* OFFER */
+	offer: {
+		// BASE
+		BASE: `${getAppConfig('offer', 'api_url')}`,
+
+		// TYPOLOGIES
+		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}`,
+		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}/lock`,
+		TYPOLOGIES_LIST: `${getAppConfig('offer', 'api_url')}/typologies`,
 	},
 
 	/* * */

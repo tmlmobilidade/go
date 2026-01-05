@@ -17,6 +17,7 @@ export * from '@/gtfs/index.js';
 export * from '@/locations/index.js';
 export * from '@/metrics/index.js';
 export * from '@/notification.js';
+export * from '@/offer/index.js';
 export * from '@/organization.js';
 export * from '@/pcgi/index.js';
 export * from '@/permissions/index.js';

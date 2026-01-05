@@ -148,6 +148,26 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		},
 	},
 
+	offer: {
+		development: {
+			api_port: 52010,
+			api_url: 'http://localhost:52010',
+			cors_origin: true,
+			frontend_port: 51010,
+			frontend_url: 'http://localhost:51010/offer',
+		},
+		production: {
+			api_url: 'https://go.tmlmobilidade.pt/offer/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/offer',
+			...DEFAULT_PRODUCTION_CONFIG,
+		},
+		staging: {
+			api_url: 'https://staging.go.tmlmobilidade.pt/offer/api',
+			frontend_url: 'https://staging.go.tmlmobilidade.pt/offer',
+			...DEFAULT_STAGING_CONFIG,
+		},
+	},
+
 	performance: {
 		development: {
 			api_port: 52006,

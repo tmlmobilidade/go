@@ -59,6 +59,12 @@ db.createUser({
 });
 
 db.createUser({
+	pwd: USER_OFFER_PASSWORD,
+	roles: [{ db: 'admin', role: 'offer' }],
+	user: 'offer',
+});
+
+db.createUser({
 	pwd: USER_CMET_API_PASSWORD,
 	roles: [{ db: 'admin', role: 'cmet-api' }],
 	user: 'cmet-api',
