@@ -3,6 +3,7 @@
 /* * */
 
 import { useZoneCreateContext } from '@/components/zones/create/ZoneCreate.context';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';
 import { MultiSelect, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
@@ -15,7 +16,10 @@ export function ZoneCreateBasicInfo() {
 	// A. Setup variables
 
 	const zoneCreateContext = useZoneCreateContext();
-	const { options: allAgencyOptions } = useDataAgencies(PermissionCatalog.all.zones.scope, PermissionCatalog.all.zones.actions.create);
+	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.zones.actions.create],
+		scope: PermissionCatalog.all.zones.scope,
+	});
 
 	//
 	// B. Render Components

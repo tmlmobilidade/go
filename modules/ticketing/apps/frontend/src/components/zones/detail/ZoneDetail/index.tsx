@@ -4,6 +4,7 @@
 
 import { useZoneDetailContext } from '@/components/zones/detail/ZoneDetail.context';
 import { ZoneDetailHeader } from '@/components/zones/detail/ZoneDetailHeader';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';
 import { Divider, ErrorDisplay, GeoJsonInput, Grid, LoadingOverlay, MapOverlayPolygon, MapOverlayPolygonDataProps, MapView, MultiSelect, Pane, Section, TextInput, useCssVariable, useDataAgencies } from '@tmlmobilidade/ui';
@@ -25,10 +26,10 @@ export function ZoneDetail() {
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(
-		zoneDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.zones.scope,
-		zoneDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.zones.actions.update,
-	);
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: zoneDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.zones.actions.update],
+		scope: zoneDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.zones.scope,
+	});
 
 	//
 	// B. Handle actions

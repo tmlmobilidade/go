@@ -47,7 +47,10 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.zones.scope, PermissionCatalog.all.zones.actions.read);
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.zones.actions.read],
+		scope: PermissionCatalog.all.zones.scope,
+	});
 
 	//
 	// B. Setup filters

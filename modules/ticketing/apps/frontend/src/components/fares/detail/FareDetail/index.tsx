@@ -5,6 +5,7 @@
 import { useFareDetailContext } from '@/components/fares/detail/FareDetail.context';
 import { FareDetailHeader } from '@/components/fares/detail/FareDetailHeader';
 import { currencyOptions, paymentMethodsOptions, transfersOptions } from '@/types/fares';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { FareSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, NumberInput, Pane, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
@@ -20,10 +21,10 @@ export function FareDetail() {
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(
-		fareDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.fares.scope,
-		fareDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.fares.actions.update,
-	);
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: fareDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.fares.actions.update],
+		scope: fareDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.fares.scope,
+	});
 
 	//
 	// B. Render components
