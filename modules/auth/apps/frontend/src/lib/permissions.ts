@@ -6,7 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
-	'EMAIL_NOTIFICATIONS',
+	'ALERT_REFERENCE_TYPES',
 ] as const;
 
 export interface PermissionConfigAction {
@@ -38,30 +38,19 @@ const agencyActions: PermissionConfig = {
 	title: 'Permissões de Operadores',
 };
 
-const alertActions: PermissionConfig = {
+const alertsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver alertas', label: 'Ver' },
-		{ action: 'create', description: 'Permite criar um alerta', label: 'Criar' },
-		{ action: 'update', description: 'Permite editar um alerta', label: 'Editar' },
-		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar' },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta', label: 'Bloquear/Desbloquear' },
+		{ action: 'read', description: 'Permite ver alertas', label: 'Ver', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'create', description: 'Permite criar um alerta', label: 'Criar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update', description: 'Permite editar um alerta', label: 'Editar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_texts', description: 'Permite editar os textos de um alerta', label: 'Editar Textos', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_dates', description: 'Permite alterar as datas de um alerta', label: 'Alterar Datas', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_publish_status', description: 'Permite alterar o estado de publicação de um alerta', label: 'Alterar Estado de Publicação', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
-	scope: PermissionCatalog.all.alerts_scheduled.scope,
+	scope: PermissionCatalog.all.alerts.scope,
 	title: 'Permissões de Alertas',
-};
-
-const realtimeActions: PermissionConfig = {
-	actions: [
-		{ action: 'read', description: 'Permite ver alertas de tempo real', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create', description: 'Permite criar um alerta de tempo real', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update', description: 'Permite editar um alerta de tempo real', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete', description: 'Permite eliminar um alerta de tempo real', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta de tempo real', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de alertas de tempo real.',
-	scope: PermissionCatalog.all.alerts_realtime.scope,
-	title: 'Permissões de Alertas de Tempo Real',
 };
 
 const homeActions: PermissionConfig = {
@@ -275,8 +264,7 @@ const zonesActions: PermissionConfig = {
 
 export const permissionsConfig = [
 	agencyActions,
-	alertActions,
-	realtimeActions,
+	alertsActions,
 	homeActions,
 	planActions,
 	userActions,

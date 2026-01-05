@@ -1,6 +1,6 @@
 /* * */
 
-import { cancel, isCancel, log, text } from '@clack/prompts';
+import { cancel, isCancel, note, text } from '@clack/prompts';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 
 /* * */
@@ -8,11 +8,12 @@ import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/ty
 export async function promptFilterByDates(): Promise<{ end: OperationalDate, start: OperationalDate }> {
 	//
 
-	log.step('FILTRAR POR DATAS:');
-
-	log.message('- Introduz as datas operacionais no formato ano-mês-dia. Exemplo: 20250101 ou 2025-01-01');
-	log.message('- Devido ao enorme volume de dados, filtrar por datas é obrigatório.');
-	log.message('- A data de início não pode ser anterior a 1 Jan. 2024 (20240101).');
+	note(
+		'FILTRAR POR DATAS:\n'
+		+ '  • Introduz as datas operacionais no formato ano-mês-dia. Exemplo: 20250101 ou 2025-01-01\n'
+		+ '  • Devido ao enorme volume de dados, filtrar por datas é obrigatório.\n'
+		+ '  • A data de início não pode ser anterior a 1 Jan. 2024 (20240101).',
+	);
 
 	const startDate = await text({
 		initialValue: '20250101',

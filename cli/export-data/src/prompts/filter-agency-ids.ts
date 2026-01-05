@@ -1,16 +1,17 @@
 /* * */
 
-import { log, text } from '@clack/prompts';
+import { note, text } from '@clack/prompts';
 
 /* * */
 
 export async function promptFilterByAgencyIds(): Promise<string[]> {
 	//
 
-	log.step('FILTRAR POR AGENCY ID:');
-
-	log.message('- Introduz os Agency IDs separados por vírgulas. Exemplo: 41,42,etc...');
-	log.message('- Se não introduzires nenhum Agency ID, este filtro não será aplicado.');
+	note(
+		'FILTRAR POR AGENCY ID:\n'
+		+ '  • Introduz os Agency IDs separados por vírgulas. Exemplo: 41,42,etc...\n'
+		+ '  • Se não introduzires nenhum Agency ID, este filtro não será aplicado.',
+	);
 
 	const value = await text({
 		message: 'Agency IDs:',

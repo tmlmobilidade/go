@@ -1,6 +1,6 @@
-import { GtfsCause, GtfsEffect } from '@tmlmobilidade/types';
+import { GtfsCauseExtended, GtfsEffect } from '@tmlmobilidade/types';
 
-export const Translations: { CAUSE: Record<GtfsCause, string>, EFFECT: Record<GtfsEffect, string> } = {
+export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffect, string> } = {
 	CAUSE: {
 		ACCIDENT: 'Acidente',
 		CONSTRUCTION: 'Obras',
@@ -11,14 +11,12 @@ export const Translations: { CAUSE: Record<GtfsCause, string>, EFFECT: Record<Gt
 		HOLIDAY: 'Feriado',
 		MAINTENANCE: 'Manutenção',
 		MEDICAL_EMERGENCY: 'Emergência Médica',
-		OTHER_CAUSE: 'Outras Causas',
 		POLICE_ACTIVITY: 'Atividade Policial',
 		ROAD_INCIDENT: 'Incidente na Estrada',
 		STRIKE: 'Greve',
 		SYSTEM_FAILURE: 'Falha do Sistema',
 		TECHNICAL_PROBLEM: 'Problema Técnico',
 		TRAFFIC_JAM: 'Congestão de Trânsito',
-		UNKNOWN_CAUSE: 'Causa Desconhecida',
 		VEHICLE_ISSUE: 'Veículo com Problema',
 		WEATHER: 'Mau Tempo',
 	},
@@ -27,13 +25,10 @@ export const Translations: { CAUSE: Record<GtfsCause, string>, EFFECT: Record<Gt
 		ADDITIONAL_SERVICE: 'Aumento de Serviço',
 		DETOUR: 'Desvio',
 		MODIFIED_SERVICE: 'Alteração de Horários',
-		NO_EFFECT: 'Sem Efeito',
 		NO_SERVICE: 'Serviço Cancelado',
-		OTHER_EFFECT: 'Outro',
 		REDUCED_SERVICE: 'Serviço Reduzido',
 		SIGNIFICANT_DELAYS: 'Atrasos Significativos',
 		STOP_MOVED: 'Paragem Deslocada',
-		UNKNOWN_EFFECT: 'Desconhecido',
 	},
 };
 

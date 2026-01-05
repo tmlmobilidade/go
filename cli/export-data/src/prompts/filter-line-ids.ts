@@ -1,16 +1,17 @@
 /* * */
 
-import { log, text } from '@clack/prompts';
+import { note, text } from '@clack/prompts';
 
 /* * */
 
 export async function promptFilterByLineIds(): Promise<string[]> {
 	//
 
-	log.step('FILTRAR POR LINE ID:');
-
-	log.message('- Introduz os Line IDs separados por vírgulas. Exemplo: 1001,1002,etc...');
-	log.message('- Se não introduzires nenhum Line ID, este filtro não será aplicado.');
+	note(
+		'FILTRAR POR LINE ID:\n'
+		+ '  • Introduz os Line IDs separados por vírgulas. Exemplo: 1001,1002,etc...\n'
+		+ '  • Se não introduzires nenhum Line ID, este filtro não será aplicado.',
+	);
 
 	const value = await text({
 		message: 'Line IDs:',

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type FormErrors, useForm, UseFormReturnType } from '@mantine/form';
+import { type FormErrors, useForm, type UseFormReturnType } from '@mantine/form';
 import { Logger } from '@tmlmobilidade/logger';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';

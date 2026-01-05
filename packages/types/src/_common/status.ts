@@ -33,7 +33,7 @@ export type OperationalStatus = z.infer<typeof OperationalStatusSchema>;
 /* * */
 /* PUBLISH STATUS */
 
-export const PublishStatusValues = ['PUBLISHED', 'ARCHIVED', 'DRAFT'] as const;
+export const PublishStatusValues = ['published', 'archived', 'draft'] as const;
 export const PublishStatusSchema = z.enum(PublishStatusValues);
 export type PublishStatus = z.infer<typeof PublishStatusSchema>;
 

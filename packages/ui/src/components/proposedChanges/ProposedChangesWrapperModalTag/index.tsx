@@ -1,6 +1,6 @@
 /* * */
 
-import { Tag } from '../../display/Tag';
+import { Tag } from '../../tags/Tag';
 
 /* * */
 

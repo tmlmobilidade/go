@@ -48,7 +48,10 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Fetch data
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.read);
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.annotations.actions.read],
+		scope: PermissionCatalog.all.annotations.scope,
+	});
 
 	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST, { refreshInterval: 5000 });
 

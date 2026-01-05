@@ -2,9 +2,8 @@
 
 /* * */
 
-import { ActionIcon as MantineActionIcon, TextInput as MantineTextInput } from '@mantine/core';
-import { IconSearch, IconX } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Input, TextInput as MantineTextInput } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
 
 /* * */
 
@@ -21,12 +20,7 @@ export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'sm
 	//
 
 	//
-	// A. Setup variables
-
-	const [isInUse, setIsInUse] = useState(false);
-
-	//
-	// B. Handle actions
+	// A. Handle actions
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!onChange) return;
@@ -36,38 +30,19 @@ export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'sm
 	const handleClear = () => {
 		if (!onChange) return;
 		onChange('');
-		setIsInUse(false);
-	};
-
-	const handleFocus = () => {
-		setIsInUse(true);
-	};
-
-	const handleBlur = () => {
-		if (value?.length) return;
-		setIsInUse(false);
 	};
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<MantineTextInput
 			leftSection={<IconSearch size={size === 'xl' ? 28 : 20} />}
-			onBlur={handleBlur}
 			onChange={handleChange}
-			onFocus={handleFocus}
 			placeholder={placeholder}
+			rightSection={value?.length && <Input.ClearButton onClick={handleClear} />}
 			size={size}
-			styles={{ root: { width: isInUse || size === 'xl' ? '100%' : 200 } }}
 			value={value ?? ''}
-			rightSection={
-				(typeof value === 'string' && value.length > 0) && (
-					<MantineActionIcon color="var(--color-system-text-300)" onClick={handleClear} variant="transparent">
-						<IconX size={20} />
-					</MantineActionIcon>
-				)
-			}
 		/>
 	);
 

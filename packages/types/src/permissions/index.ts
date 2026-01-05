@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-
 /* * */
 
 import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
-import { AlertsRealtimePermissionSchema, AlertsScheduledPermissionSchema } from '@/permissions/alerts.js';
+import { AlertsPermissionSchema } from '@/permissions/alerts.js';
 import { AnnotationsPermissionSchema } from '@/permissions/annotations.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
 import { FaresPermissionSchema } from '@/permissions/fares.js';
@@ -23,8 +21,7 @@ import { z } from 'zod';
 
 export const PermissionSchema = z.discriminatedUnion('scope', [
 	AgenciesPermissionSchema,
-	AlertsScheduledPermissionSchema,
-	AlertsRealtimePermissionSchema,
+	AlertsPermissionSchema,
 	RidesPermissionSchema,
 	SamsPermissionSchema,
 	GtfsValidationsPermissionSchema,
@@ -345,6 +342,25 @@ export class PermissionCatalog {
 		}
 		// Return the cleaned permissions array
 		return Object.values(cleanedPermissions);
+	}
+
+	/**
+	 * Sanitizes a list of permissions by removing any entries
+	 * that do not correspond to valid scopes and actions
+	 * defined in the PermissionCatalog.
+	 * @param existingEntries Array of Permission objects to sanitize.
+	 * @return A cleaned array containing only valid permissions.
+	 */
+	static updatePermissionResource<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>, resources: Record<string, unknown>): Permission[] {
+		// Create a copy of the existing permissions
+		const updatedPermissions = JSON.parse(JSON.stringify(permissionEntries)) as Permission[];
+		// Find the index of the permission to update
+		const permissionIndex = updatedPermissions.findIndex(p => p.scope === scope && p.action === action);
+		if (permissionIndex === -1) return updatedPermissions;
+		// Update the permission at the found index
+		updatedPermissions[permissionIndex]['resources'] = { ...updatedPermissions[permissionIndex]['resources'], ...resources };
+		// Return the updated permissions array
+		return updatedPermissions;
 	}
 
 	//

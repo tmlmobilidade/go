@@ -6,10 +6,9 @@ import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { IconMailFast, IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, HasPermission, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, HasPermission, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -46,9 +45,11 @@ export function ValidationsDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
+
+			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
 			<ValidationStatusTag status={validationsDetailContext.data.validation?.feeder_status} />
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
-			<Label size="md" caps>{validationsDetailContext.data.validation?._id}</Label>
+
 			<Spacer />
 
 			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
@@ -60,8 +61,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
-						icon={<IconMailFast />}
-						label="Solicitar aprovação à TML"
+						label="Pedir aprovação"
 						onClick={handleRequestApproval}
 						variant="secondary"
 					/>
@@ -77,7 +77,6 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading}
-						icon={<IconRosetteDiscountCheckFilled />}
 						label="Aprovar Plano"
 						loading={validationsDetailContext.flags.loading}
 						onClick={handleApprovePlan}
