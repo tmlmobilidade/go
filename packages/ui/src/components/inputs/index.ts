@@ -1,6 +1,7 @@
 export * from './Checkbox';
 export * from './ColorInput';
 export * from './CoordinatesInput';
+export * from './GeoJsonInput';
 export * from './MultiSelect';
 export * from './NumberInput';
 export * from './PasswordInput';

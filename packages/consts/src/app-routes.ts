@@ -145,6 +145,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// FARES
 		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'frontend_url')}/fares/${id}`,
 		FARES_LIST: `${getAppConfig('ticketing', 'frontend_url')}/fares`,
+
+		// ZONES
+		ZONES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'frontend_url')}/zones/${id}`,
+		ZONES_LIST: `${getAppConfig('ticketing', 'frontend_url')}/zones`,
 	},
 } as const);
 
@@ -352,5 +356,10 @@ export const API_ROUTES = Object.freeze({
 		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}`,
 		FARES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}/lock`,
 		FARES_LIST: `${getAppConfig('ticketing', 'api_url')}/fares`,
+
+		// ZONES
+		ZONES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}`,
+		ZONES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}/lock`,
+		ZONES_LIST: `${getAppConfig('ticketing', 'api_url')}/zones`,
 	},
 } as const);

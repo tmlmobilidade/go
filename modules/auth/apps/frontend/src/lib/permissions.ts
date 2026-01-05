@@ -258,6 +258,19 @@ const faresActions: PermissionConfig = {
 	title: 'Permissões de Tarifas',
 };
 
+const zonesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver zonas', label: 'Ver zonas', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma zona', label: 'Criar zona', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma zona', label: 'Editar zona', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma zona', label: 'Eliminar zona', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma zona', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de zonas.',
+	scope: PermissionCatalog.all.zones.scope,
+	title: 'Permissões de Zonas',
+};
+
 /* * */
 
 export const permissionsConfig = [
@@ -276,6 +289,7 @@ export const permissionsConfig = [
 	annotationsActions,
 	periodsActions,
 	faresActions,
+	zonesActions,
 	// topicActions,
 	// proposedChangesActions,
 ];
