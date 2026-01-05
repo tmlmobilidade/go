@@ -2,8 +2,8 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { latLngToCell } from 'h3-js';
-import { encode } from 'ngeohash';
+import h3 from 'h3-js';
+import geohash from 'ngeohash';
 
 /* * */
 
@@ -23,8 +23,8 @@ export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 			odometer: pcgiDoc.content.entity[0].vehicle.position.odometer,
 			pattern_id: pcgiDoc.content.entity[0].vehicle.trip?.patternId,
 			position: {
-				geohash: encode(pcgiDoc.content.entity[0].vehicle.position.latitude, pcgiDoc.content.entity[0].vehicle.position.longitude),
-				h3: latLngToCell(pcgiDoc.content.entity[0].vehicle.position.latitude, pcgiDoc.content.entity[0].vehicle.position.longitude, 15),
+				geohash: geohash.encode(pcgiDoc.content.entity[0].vehicle.position.latitude, pcgiDoc.content.entity[0].vehicle.position.longitude),
+				h3: h3.latLngToCell(pcgiDoc.content.entity[0].vehicle.position.latitude, pcgiDoc.content.entity[0].vehicle.position.longitude, 15),
 				latitude: pcgiDoc.content.entity[0].vehicle.position.latitude,
 				longitude: pcgiDoc.content.entity[0].vehicle.position.longitude,
 			},
