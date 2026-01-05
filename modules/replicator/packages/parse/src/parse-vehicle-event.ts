@@ -2,6 +2,8 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { latLngToCell } from 'h3-js';
+import { encode } from 'ngeohash';
 
 /* * */
 
@@ -12,6 +14,7 @@ export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 			_id: pcgiDoc._id,
 			agency_id: pcgiDoc.content.entity[0].vehicle.agencyId,
 			created_at: Dates.fromSeconds(pcgiDoc.content.entity[0].vehicle.timestamp).unix_timestamp,
+			current_status: pcgiDoc.content.entity[0].vehicle.currentStatus,
 			driver_id: pcgiDoc.content.entity[0].vehicle.vehicle.driverId,
 			event_id: pcgiDoc.content.entity[0]._id,
 			extra_trip_id: pcgiDoc.content.entity[0].vehicle.trip?.extraTripId,
@@ -19,6 +22,12 @@ export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 			longitude: pcgiDoc.content.entity[0].vehicle.position.longitude,
 			odometer: pcgiDoc.content.entity[0].vehicle.position.odometer,
 			pattern_id: pcgiDoc.content.entity[0].vehicle.trip?.patternId,
+			position: {
+				geohash: encode(pcgiDoc.content.entity[0].vehicle.position.latitude, pcgiDoc.content.entity[0].vehicle.position.longitude),
+				h3: latLngToCell(pcgiDoc.content.entity[0].vehicle.position.latitude, pcgiDoc.content.entity[0].vehicle.position.longitude, 15),
+				latitude: pcgiDoc.content.entity[0].vehicle.position.latitude,
+				longitude: pcgiDoc.content.entity[0].vehicle.position.longitude,
+			},
 			received_at: Dates.fromUnixTimestamp(pcgiDoc.millis).unix_timestamp,
 			stop_id: pcgiDoc.content.entity[0].vehicle.stopId,
 			trigger_activity: pcgiDoc.content.entity[0].vehicle.trigger.activity,

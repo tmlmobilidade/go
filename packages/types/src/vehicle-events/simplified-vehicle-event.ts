@@ -1,6 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
+import { PositionSchema } from '@/_common/position.js';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
@@ -10,6 +11,7 @@ export const SimplifiedVehicleEventSchema = DocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		agency_id: z.string(),
+		current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),
 		driver_id: z.string(),
 		event_id: z.string(),
 		extra_trip_id: z.string().nullish(),
@@ -17,6 +19,7 @@ export const SimplifiedVehicleEventSchema = DocumentSchema
 		longitude: z.number(),
 		odometer: z.number(),
 		pattern_id: z.string(),
+		position: PositionSchema,
 		received_at: UnixTimeStampSchema,
 		stop_id: z.string(),
 		trigger_activity: z.string(),
