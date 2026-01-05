@@ -53,6 +53,12 @@ db.createUser({
 });
 
 db.createUser({
+	pwd: USER_TICKETING_PASSWORD,
+	roles: [{ db: 'admin', role: 'ticketing' }],
+	user: 'ticketing',
+});
+
+db.createUser({
 	pwd: USER_CMET_API_PASSWORD,
 	roles: [{ db: 'admin', role: 'cmet-api' }],
 	user: 'cmet-api',

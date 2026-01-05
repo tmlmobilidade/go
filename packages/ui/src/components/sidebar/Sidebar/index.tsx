@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconTicket, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
@@ -132,6 +132,13 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 			{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope },
 			{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope },
 		],
+	},
+	{
+		_id: 'fares',
+		href: PAGE_ROUTES.ticketing.FARES_LIST,
+		icon: <IconTicket size={26} />,
+		label: 'Tarifas',
+		permissions: [{ action: PermissionCatalog.all.fares.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.fares.scope }],
 	},
 ];
 
