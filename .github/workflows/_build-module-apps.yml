@@ -47,7 +47,7 @@ jobs:
     if: needs.get-apps.outputs.apps != '[]'
     runs-on: ubuntu-latest
     concurrency:
-      group: build-${{ inputs.module }}-${{ matrix.app }}
+      group: build-${{ inputs.module }}-${{ matrix.app }}-${{ github.ref }}
       cancel-in-progress: false
     permissions:
       contents: read
