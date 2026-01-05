@@ -22,7 +22,7 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('global', { keyPrefix: 'components.buttons.SaveButton' });
+	const { t } = useTranslation('global');
 
 	//
 	// B. Handle actions
@@ -41,13 +41,13 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 	return (
 		<Tooltip
 			disabled={isDisabled}
-			label={t('tooltip_label')}
+			label={t('components.buttons.SaveButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
 				disabled={isDisabled}
-				label={t('label')}
+				label={t('components.buttons.SaveButton.label')}
 				loading={isLoading}
 				onClick={handleClick}
 				variant="primary"

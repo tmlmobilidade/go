@@ -109,7 +109,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 					<Checkbox
 						key="toggle-all"
 						checked={toggleAllActive}
-						label={t('toggle_all_label')}
+						label={t('components.filters.FilterTypeList.toggle_all')}
 						onChange={handleMultiToggleAll}
 						value="all"
 					/>
