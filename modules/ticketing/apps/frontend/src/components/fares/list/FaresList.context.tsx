@@ -47,7 +47,10 @@ export const FaresListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(PermissionCatalog.all.fares.scope, PermissionCatalog.all.fares.actions.read);
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.fares.actions.read],
+		scope: PermissionCatalog.all.fares.scope,
+	});
 
 	//
 	// B. Setup filters
