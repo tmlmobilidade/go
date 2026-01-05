@@ -55,24 +55,19 @@
 		}
 	},
 	"operations": {
-		"approvePlan": "Aprovar plano",
 		"archive": "Arquivar",
 		"cancel": "Cancelar",
 		"continue": "Continuar",
 		"create": "Criar",
-		"createValidation": "Criar validação",
 		"delete": "Apagar",
 		"duplicate": "Duplicar",
 		"edit": "Editar",
 		"eliminate": "Eliminar",
 		"exclude": "Excluir",
-		"exportCirculations": "Exportar circulações",
 		"next": "Seguinte",
 		"publish": "Publicar",
 		"restore": "Restaurar",
 		"save": "Salvar",
-		"saveAsDraft": "Salvar como rascunho",
-		"submitForApproval": "Submeter para aprovação",
 		"update": "Atualizar"
 	},
 	"severitys": {
