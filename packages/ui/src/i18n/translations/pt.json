@@ -1,97 +1,66 @@
 {
 	"components": {
-		"coordinatesInput": {
-			"latitudePlaceholder": "Latitude (-90 to 90)",
-			"longitudePlaceholder": "Longitude (-180 to 180)"
-		},
-		"filterTypeList": {
-			"toggleAllLabel": "Selecionar tudo"
-		},
-		"referenceGroup": {
-			"confirmChangeReference": "Tem certeza que deseja mudar a referência?",
-			"loseAllChanges": "Você está prestes a perder as referências que já foram adicionadas.",
-			"noReferenceAvailable": "Não há referencias disponíveis.",
-			"referenceAgencies": {
-				"addButtonLabel": "Adicionar Rota",
-				"comboboxAriaLabel": "Agência Afetada",
-				"comboboxLabel": "Agências Afetada"
-			},
-			"referenceRoutes": {
-				"addButtonLabel": "Adicionar Rota",
-				"affectedStopsAriaLabel": "Paragens Afetadas",
-				"affectedStopsDescription": "Selecione as paragens que serão afetadas pelo alerta",
-				"affectedStopsLabel": "Paragens Afetadas",
-				"comboboxAriaLabel": "Linha Afetada",
-				"comboboxLabel": "Linhas Afetada"
-			},
-			"referenceStops": {
-				"addButtonLabel": "Adicionar Paragem",
-				"affectedLinesAriaLabel": "Linhas Afetadas",
-				"affectedLinesDescription": "Selecione as linhas que serão afetadas pelo alerta",
-				"affectedLinesLabel": "Linhas Afetadas",
-				"affectedStopsAriaLabel": "Paragem Afetada",
-				"affectedStopsDescription": "Selecione as paragens que serão afetadas pelo alerta",
-				"affectedStopsLabel": "Paragens Afetadas",
-				"comboboxAriaLabel": "Paragem Afetada",
-				"comboboxLabel": "Paragem Afetada"
+		"buttons": {
+			"SaveButton": {
+				"label": "Guardar",
+				"tooltip_label": "Guardar Alterações"
 			}
 		},
-		"saveButton": {
-			"label": "Guardar",
-			"tooltip": "Guardar Alterações"
+		"filters": {
+			"FilterTypeList": {
+				"toggle_all_label": "Selecionar tudo"
+			}
 		},
-		"searchInput": {
-			"placeholder": "Pesquisar..."
-		},
-		"select": {
-			"nothingFoundMessage": "Nenhum resultado encontrado"
-		},
-		"uploadImage": {
-			"deleteImageConfirmationMessage": "Tem certeza que deseja apagar a imagem?",
-			"deleteImageTitle": "Apagar imagem",
-			"errorMessage": "O tamanho do ficheiro excede o limite permitido.",
-			"errorTitle": "Erro ao carregar imagem",
-			"fileButtonLabel": "Carregar Imagem"
+		"inputs": {
+			"CoordinatesInput": {
+				"latitude": {
+					"placeholder": "Latitude (-90 to 90)"
+				},
+				"longitude": {
+					"placeholder": "Longitude (-180 to 180)"
+				}
+			},
+			"SearchInput": {
+				"placeholder": "Pesquisar..."
+			},
+			"Select": {
+				"nothing_found_message": "Nenhum resultado encontrado"
+			}
 		}
 	},
 	"operations": {
-		"archive": "Arquivar",
-		"cancel": "Cancelar",
-		"continue": "Continuar",
-		"create": "Criar",
-		"delete": "Apagar",
-		"duplicate": "Duplicar",
-		"edit": "Editar",
-		"eliminate": "Eliminar",
-		"exclude": "Excluir",
-		"next": "Seguinte",
-		"publish": "Publicar",
-		"restore": "Restaurar",
-		"save": "Salvar",
-		"update": "Atualizar"
-	},
-	"severitys": {
-		"error": "Erro",
-		"forbidden": "Proibido",
-		"warning": "Aviso"
+		"Archive": "Arquivar",
+		"Cancel": "Cancelar",
+		"Continue": "Continuar",
+		"Create": "Criar",
+		"Delete": "Apagar",
+		"Duplicate": "Duplicar",
+		"Edit": "Editar",
+		"Eliminate": "Eliminar",
+		"Exclude": "Excluir",
+		"Next": "Seguinte",
+		"Publish": "Publicar",
+		"Restore": "Restaurar",
+		"Save": "Salvar",
+		"Update": "Atualizar"
 	},
 	"statuses": {
-		"archived": "Arquivado",
-		"complete": "Válido",
-		"concluded": "Concluído",
-		"draft": "Rascunho",
-		"ended": "Ended",
-		"error": "Inválido",
-		"fail": "Fail",
-		"failed": "Erro",
-		"missed": "Missed",
-		"pass": "Pass",
-		"processing": "A processar",
-		"published": "Publicado",
-		"running": "Running",
-		"scheduled": "Scheduled",
-		"skipped": "Ignorado",
-		"unknown": "Desconhecido",
-		"waiting": "Em espera"
+		"Archived": "Arquivado",
+		"Complete": "Válido",
+		"Concluded": "Concluído",
+		"Draft": "Rascunho",
+		"Ended": "Ended",
+		"Error": "Inválido",
+		"Fail": "Fail",
+		"Failed": "Erro",
+		"Missed": "Missed",
+		"Pass": "Pass",
+		"Processing": "A processar",
+		"Published": "Publicado",
+		"Running": "Running",
+		"Scheduled": "Scheduled",
+		"Skipped": "Ignorado",
+		"Unknown": "Desconhecido",
+		"Waiting": "Em espera"
 	}
 }
