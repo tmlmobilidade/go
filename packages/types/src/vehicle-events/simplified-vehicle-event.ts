@@ -15,6 +15,8 @@ export const SimplifiedVehicleEventSchema = DocumentSchema
 		driver_id: z.string(),
 		event_id: z.string(),
 		extra_trip_id: z.string().nullish(),
+		latitude: z.number(),
+		longitude: z.number(),
 		odometer: z.number(),
 		pattern_id: z.string(),
 		position: PositionSchema,
