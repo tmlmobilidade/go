@@ -10,13 +10,18 @@ export const SimplifiedVehicleEventSchema = DocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		agency_id: z.string(),
+		current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),
 		driver_id: z.string(),
 		event_id: z.string(),
 		extra_trip_id: z.string().nullish(),
-		latitude: z.number(),
-		longitude: z.number(),
 		odometer: z.number(),
 		pattern_id: z.string(),
+		position: z.object({
+			geohash: z.string(),
+			h3: z.string(),
+			latitude: z.number(),
+			longitude: z.number(),
+		}),
 		received_at: UnixTimeStampSchema,
 		stop_id: z.string(),
 		trigger_activity: z.string(),
