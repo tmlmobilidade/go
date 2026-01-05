@@ -20,7 +20,7 @@ export function VehicleImportFile() {
 
 	return (
 		<Section gap="md">
-			<Text>Selecione o arquivo txt para importar os dados dos veículos.</Text>
+			<Text>Selecione o arquivo para importar os dados dos veículos.</Text>
 			<Spacer size="md" />
 
 			<FileUpload
@@ -39,9 +39,9 @@ export function VehicleImportFile() {
 				/>
 				<Button
 					disabled={!vehicleImportContext.flags.isSaving}
-					label="Criar validação"
-					loading={vehicleImportContext.flags.isSaving}
-					onClick={vehicleImportContext.actions.createVehicle}
+					label="pré-Visualizar"
+					loading={vehicleImportContext.flags.isloading}
+					// onClick={vehicleImportContext.actions.createVehicle}
 				/>
 			</Grid>
 

@@ -21,7 +21,14 @@ interface VehicleImportContextState {
 	}
 	flags: {
 		error: Error | null
+		isloading: boolean
 		isSaving: boolean
+	}
+	modal: {
+		current_step: number
+		current_step_valid: boolean
+		nextStep: () => void
+		previousStep: () => void
 	}
 }
 
@@ -49,6 +56,10 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 	const [isError, setIsError] = useState<Error | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
+	const [isloading, setIsloading] = useState(false);
+
+	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
+	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
 
 	//
 	// B. Fetch data
@@ -63,16 +74,33 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// D. Handle actions
 
+	const previousStep = () => {
+		setModalCurrentStepState((prev) => {
+			if (prev > 1) return prev - 1;
+			return 1;
+		});
+	};
+
+	const nextStep = () => {
+		setModalCurrentStepState((prev) => {
+			if (prev < 3) return prev + 1;
+			return 3;
+		});
+	};
+
+	//
+
 	const handleCreateVehicle = async () => {
 		setIsError(null);
 		setIsSaving(true);
-		console.log('Creating vehicle with data:', form.getValues());
+		setIsloading(true);
 		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar veículo' });
 				setIsError(new Error(response.error));
 				setIsSaving(false);
+				setIsloading(false);
 				return;
 			}
 			const errors = JSON.parse(response.error);
@@ -80,11 +108,13 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				useToast.error({ message: error.message, title: 'Erro ao criar veículo' });
 			}
 			setIsSaving(false);
+			setIsloading(false);
 			return;
 		}
 		form.reset();
 		allVehiclesMutate();
 		setIsSaving(false);
+		setIsloading(false);
 		closeCreateVehicleModal();
 		useToast.success({ message: 'Veículo criado com sucesso', title: 'Sucesso' });
 		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.fleet.VEHICLES_DETAIL(response.data._id)));
@@ -104,13 +134,23 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			},
 			flags: {
 				error: isError,
+				isloading,
 				isSaving,
+			},
+			modal: {
+				current_step: modalCurrentStepState,
+				current_step_valid: modalCurrentStepValidState,
+				nextStep,
+				previousStep,
 			},
 		};
 	}, [
 		form,
 		isError,
 		isSaving,
+		isloading,
+		modalCurrentStepState,
+		modalCurrentStepValidState,
 	]);
 
 	//

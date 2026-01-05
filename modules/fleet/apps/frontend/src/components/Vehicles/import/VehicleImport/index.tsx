@@ -3,9 +3,11 @@
 /* * */
 
 import { VehicleImportModalHeader } from '@/components/Vehicles/import/VehicleImportModalHeader';
-import { Pane } from '@tmlmobilidade/ui';
+import { Divider, Pane } from '@tmlmobilidade/ui';
 
-import { VehicleImportFile } from '../VehicleImportFile';
+import { VehicleImportModalAlerts } from '../VehicleImportAlerts';
+import { VehicleImportModalControls } from '../VehicleImportControls';
+import { VehicleImportModalSwitch } from '../VehicleImportSwitch';
 // import { VehicleImportTable } from '../VehicleImportTable';
 
 /* * */
@@ -13,7 +15,10 @@ import { VehicleImportFile } from '../VehicleImportFile';
 export function VehicleImport() {
 	return (
 		<Pane header={[<VehicleImportModalHeader />]}>
-			<VehicleImportFile />
+			<VehicleImportModalAlerts />
+			<VehicleImportModalSwitch />
+			<Divider />
+			<VehicleImportModalControls />
 		</Pane>
 	);
 }
