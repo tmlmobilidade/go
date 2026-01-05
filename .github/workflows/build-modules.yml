@@ -98,6 +98,10 @@ env:
     stops:frontend
     stops:organizer
 
+    ticketing:nginx
+    ticketing:api
+    ticketing:frontend
+
 # # #
 
 jobs:
