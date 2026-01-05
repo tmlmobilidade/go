@@ -18,6 +18,8 @@ export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 			driver_id: pcgiDoc.content.entity[0].vehicle.vehicle.driverId,
 			event_id: pcgiDoc.content.entity[0]._id,
 			extra_trip_id: pcgiDoc.content.entity[0].vehicle.trip?.extraTripId,
+			latitude: pcgiDoc.content.entity[0].vehicle.position.latitude,
+			longitude: pcgiDoc.content.entity[0].vehicle.position.longitude,
 			odometer: pcgiDoc.content.entity[0].vehicle.position.odometer,
 			pattern_id: pcgiDoc.content.entity[0].vehicle.trip?.patternId,
 			position: {
