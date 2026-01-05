@@ -30,21 +30,6 @@ export function VehicleImportFile() {
 				onFileChange={vehicleImportContext.actions.setImportFile}
 			/>
 
-			<Grid columns="ab" gap="md">
-				<Button
-					disabled={vehicleImportContext.flags.isSaving}
-					label="Cancelar"
-					onClick={() => closeModal('import-vehicle-modal')}
-					variant="secondary"
-				/>
-				<Button
-					disabled={!vehicleImportContext.flags.isSaving}
-					label="pré-Visualizar"
-					loading={vehicleImportContext.flags.isloading}
-					// onClick={vehicleImportContext.actions.createVehicle}
-				/>
-			</Grid>
-
 		</Section>
 
 	);
