@@ -104,15 +104,13 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 		return searchResultsData.filter((item: VehicleNormalized) => {
 			// Filter by agency - check if any of the vehicle's agency match the filter
 			// If vehicle has no agencies (null or empty), show it in all results
-			if (agencySet.has(item.agency_id_normalized) === false) {
-				return false;
-			}
+			// if (!agencySet.has(item.agency_id_normalized)) return false;
 
 			// Filter by dates - check if any of the vehicle's dates match the filter
-			if (filterDates.length > 0) {
-				const hasMatchingDate = item.dates_normalized.some(date => datesSet.has(date));
-				if (!hasMatchingDate) return false;
-			}
+			// if (filterDates.length > 0) {
+			// 	const hasMatchingDate = item.dates_normalized.some(date => datesSet.has(date));
+			// 	if (!hasMatchingDate) return false;
+			// }
 
 			// Return true if all filters pass
 			return true;
