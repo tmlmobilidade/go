@@ -98,6 +98,9 @@ env:
     stops:frontend
     stops:organizer
 
+    offer:nginx
+    offer:api
+    offer:frontend
 # # #
 
 jobs:
