@@ -2,7 +2,7 @@
 
 /* * */
 
-import { VehicleImportHeader } from '@/components/Vehicles/import/VehicleImportModalHeader';
+import { VehicleImportHeader } from '@/components/Vehicles/import/VehicleImportHeader';
 import { Pane } from '@tmlmobilidade/ui';
 
 import { VehicleImportFile } from '../VehicleImportFile';

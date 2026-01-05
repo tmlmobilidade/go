@@ -14,7 +14,7 @@ import useSWR from 'swr';
 interface VehicleImportContextState {
 	actions: {
 		createVehicle: () => Promise<void>
-		setImportFile: (file: File | null) => void
+		setImportFile: (file: File | null) => Promise<void>
 	}
 	data: {
 		form: UseFormReturnType<CreateVehicleDto>
@@ -73,12 +73,14 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		setIsloading(true);
 		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
 		if (typeof response.error === 'string') {
-			useToast.error({ message: response.error, title: 'Erro ao criar veículo' });
+			useToast.error({ message: response.error, title: 'Erro ao extrair veículo' });
 			setIsError(new Error(response.error));
 			setIsSaving(false);
 			setIsloading(false);
 			return;
 		}
+		setIsSaving(false);
+		setIsloading(false);
 	};
 
 	const handleCreateVehicle = async () => {

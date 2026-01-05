@@ -3,7 +3,7 @@
 /* * */
 
 import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
-import { FileUpload, Section, Spacer, Text } from '@tmlmobilidade/ui';
+import { Button, closeModal, FileUpload, Grid, Section, Spacer, Text } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,15 +20,33 @@ export function VehicleImportFile() {
 
 	return (
 		<Section gap="md">
+
 			<Text>Selecione o arquivo para importar os dados dos veículos.</Text>
 			<Spacer size="md" />
 
 			<FileUpload
-				accept=".txt,.csv"
+				accept=".txt"
 				label="Arquivo de importação de veículos"
 				maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
 				onFileChange={vehicleImportContext.actions.setImportFile}
 			/>
+
+			<Section>
+				<Grid columns="ab" gap="md">
+					<Button
+						disabled={vehicleImportContext?.flags.isloading}
+						label="Cancelar"
+						onClick={() => closeModal('import-vehicle-modal')}
+						variant="secondary"
+					/>
+					<Button
+						disabled={!vehicleImportContext?.flags.isSaving || vehicleImportContext?.flags.isloading}
+						label="Criar validação"
+						loading={vehicleImportContext?.flags.isloading}
+						onClick={vehicleImportContext?.actions.createVehicle}
+					/>
+				</Grid>
+			</Section>
 
 		</Section>
 
