@@ -147,6 +147,7 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'fares', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'zones', db: 'production' } },
 	],
 	role: 'ticketing',
 	roles: [{ db: 'admin', role: 'common' }],

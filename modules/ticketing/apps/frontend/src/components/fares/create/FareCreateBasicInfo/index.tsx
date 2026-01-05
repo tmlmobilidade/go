@@ -43,10 +43,10 @@ export function FareCreateBasicInfo() {
 			/>
 
 			<MultiSelect
+				key={fareCreateContext.data.form.key('agency_ids')}
 				data={allAgencyOptions}
 				label="Operadores"
 				required={!FareSchema.shape.agency_ids.isOptional()}
-				value={fareCreateContext.data.form.values.agency_ids || []}
 				w="100%"
 				{...fareCreateContext.data.form.getInputProps('agency_ids')}
 			/>

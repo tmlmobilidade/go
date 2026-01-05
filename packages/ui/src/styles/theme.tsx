@@ -24,7 +24,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, FileInput, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea } from '@mantine/core';
 import { TimePicker } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
@@ -44,6 +44,7 @@ import CheckboxOverride from './mantine/overrides/Checkbox.module.css';
 import CheckboxGroupOverride from './mantine/overrides/CheckboxGroup.module.css';
 import CloseButtonOverride from './mantine/overrides/CloseButton.module.css';
 import ColorInputOverride from './mantine/overrides/ColorInput.module.css';
+import FileInputOverride from './mantine/overrides/FileInput.module.css';
 import InputClearButtonOverride from './mantine/overrides/InputClearButton.module.css';
 import MenuOverride from './mantine/overrides/Menu.module.css';
 import PasswordInputOverride from './mantine/overrides/PasswordInput.module.css';
@@ -115,6 +116,13 @@ export const themeData: MantineThemeOverride = createTheme({
 		ColorInput: ColorInput.extend({
 			classNames: {
 				...ColorInputOverride,
+			},
+		}),
+
+		FileInput: FileInput.extend({
+			classNames: {
+				...InputBase,
+				...FileInputOverride,
 			},
 		}),
 

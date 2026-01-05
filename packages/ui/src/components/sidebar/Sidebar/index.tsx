@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconTicket, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconSitemap, IconTicket, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
@@ -139,6 +139,13 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		icon: <IconTicket size={26} />,
 		label: 'Tarifas',
 		permissions: [{ action: PermissionCatalog.all.fares.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.fares.scope }],
+	},
+	{
+		_id: 'zones',
+		href: PAGE_ROUTES.ticketing.ZONES_LIST,
+		icon: <IconLayoutCollage size={26} />,
+		label: 'Zonas',
+		permissions: [{ action: PermissionCatalog.all.zones.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.zones.scope }],
 	},
 ];
 

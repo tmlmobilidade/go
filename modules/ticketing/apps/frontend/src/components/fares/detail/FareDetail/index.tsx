@@ -111,7 +111,6 @@ export function FareDetail() {
 						data={agencyOptions}
 						disabled={fareDetailContext.flags.isReadOnly}
 						label="Operadores"
-						value={fareDetailContext.data.form.values.agency_ids || []}
 						{...fareDetailContext.data.form.getInputProps('agency_ids')}
 					/>
 
