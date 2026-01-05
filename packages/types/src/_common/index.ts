@@ -4,6 +4,7 @@ export * from '@/_common/environment.js';
 export * from '@/_common/fastify.js';
 export * from '@/_common/mongo.js';
 export * from '@/_common/operational-date.js';
+export * from '@/_common/position.js';
 export * from '@/_common/status.js';
 export * from '@/_common/status.js';
 export * from '@/_common/unix-timestamp.js';

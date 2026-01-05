@@ -1,6 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
+import { PositionSchema } from '@/_common/position.js';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
@@ -16,12 +17,7 @@ export const SimplifiedVehicleEventSchema = DocumentSchema
 		extra_trip_id: z.string().nullish(),
 		odometer: z.number(),
 		pattern_id: z.string(),
-		position: z.object({
-			geohash: z.string(),
-			h3: z.string(),
-			latitude: z.number(),
-			longitude: z.number(),
-		}),
+		position: PositionSchema,
 		received_at: UnixTimeStampSchema,
 		stop_id: z.string(),
 		trigger_activity: z.string(),
