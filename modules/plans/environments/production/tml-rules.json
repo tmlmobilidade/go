@@ -619,7 +619,7 @@
 		}
 	},
 	"vehicles": {
-		"_file": "ignore",
+		"_file": "error",
 		"agency_id": {
 			"severity": "error"
 		},
