@@ -97,7 +97,8 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const datesSet = new Set(filterDates);
+		// const datesSet = new Set(filterDates);
+		//
 		// 2. Filter data based on active filters
 		const agencySet = new Set(filterAgency);
 
