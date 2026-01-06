@@ -66,7 +66,7 @@ export const VehicleImportContextProvider = ({
 	children,
 }: PropsWithChildren) => {
 	/* ------------------------------------------------------------
-	 * A. State management
+	 * A. Setup Variables
 	 * ------------------------------------------------------------ */
 
 	const [isError, setIsError] = useState<Error | null>(null);
