@@ -1,0 +1,41 @@
+#cloud-config
+package_update: true
+packages:
+  - docker.io
+  - nomad
+  - consul
+  - vault
+
+runcmd:
+  - systemctl enable docker
+  - systemctl start docker
+
+  - mkdir -p /etc/nomad.d
+  - mkdir -p /etc/consul.d
+  - mkdir -p /etc/vault.d
+
+  # Configure Nomad
+  - if [ "${role}" = "server" ]; then
+      echo "server { enabled = true; bootstrap_expect = 3; retry_join = [\"${cluster_cidr}\"] }" > /etc/nomad.d/nomad.hcl;
+      systemctl enable nomad;
+      systemctl start nomad;
+    else
+      echo "client { enabled = true; retry_join = [\"${cluster_cidr}\"] }" > /etc/nomad.d/nomad.hcl;
+      systemctl enable nomad;
+      systemctl start nomad;
+    fi
+
+  # Configure Consul
+  - if [ "${role}" = "server" ]; then
+      echo "server = true; bootstrap_expect = 3" > /etc/consul.d/consul.hcl;
+      systemctl enable consul;
+      systemctl start consul;
+    else
+      echo "server = false" > /etc/consul.d/consul.hcl;
+      systemctl enable consul;
+      systemctl start consul;
+    fi
+
+  # Vault (example, unsealed manually or via auto-unseal)
+  - systemctl enable vault
+  - systemctl start vault
