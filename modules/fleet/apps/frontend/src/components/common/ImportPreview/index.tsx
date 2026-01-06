@@ -69,7 +69,7 @@ export function ImportPreview() {
 		<Section gap="lg">
 			{/* Initial summary information */}
 			<Label>
-				{createdCount} vehicle(s) will be created
+				{createdCount} veículo(s) serão criados
 			</Label>
 
 			{updatesPreview.map((item, index) => {
@@ -84,12 +84,12 @@ export function ImportPreview() {
 					<Section key={index}>
 						<Grid columns="abc" gap="lg">
 							<ValueDisplay
-								label="Mode"
-								value="Update"
+								label="Modo"
+								value="Atualizar"
 							/>
 
 							<ValueDisplay
-								label="Vehicle"
+								label="Veículo"
 								value={`#ID ${vehicleId} (${licensePlate})`}
 							/>
 
@@ -98,22 +98,22 @@ export function ImportPreview() {
 									<ValueDisplay
 										key={key}
 										label={key}
-										value={`Current: ${translateValue(
+										value={`Atual: ${translateValue(
 											key,
 											value.oldValue,
-										)} → New: ${translateValue(
+										)} → Novo: ${translateValue(
 											key,
 											value.newValue,
 										)}`}
 									/>
 								))
 							) : (
-								<ValueDisplay label="Changes" value="No changes" />
+								<ValueDisplay label="Alterações" value="Sem alterações" />
 							)}
 
 							{item.changes && Object.keys(item.changes).length > maxChanges && (
 								<ValueDisplay
-									label="Other changes"
+									label="Outras alterações"
 									value={`+${Object.keys(item.changes).length - maxChanges} more`}
 								/>
 							)}
