@@ -6,6 +6,9 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+// Helper to convert kebab-case to snake_case for translation keys
+const toSnakeCase = (str: string) => str.replace(/-/g, '_');
+
 export default function DashboardWrapper({ children, dashboard, topic }: { children?: React.ReactNode, dashboard: DashboardDefinition, topic: TopicDefinition }) {
 	//
 
@@ -13,10 +16,14 @@ export default function DashboardWrapper({ children, dashboard, topic }: { child
 
 	const { t } = useTranslation('performance');
 
+	// Convert keys from kebab-case to snake_case for translation lookup
+	const topicKey = toSnakeCase(topic.key);
+	const dashboardKey = toSnakeCase(dashboard.key);
+
 	const breadcrumbsData = [
 		{ href: '/performance', title: t('DashboardWrapper.breadcrumbs.performance') },
-		{ href: `/performance/${topic.key}`, title: t(`DashboardWrapper.breadcrumbs.topics.${topic.key}`) },
-		{ href: `/performance/${topic.key}/${dashboard.key}`, title: t(`DashboardWrapper.breadcrumbs.dashboards.${dashboard.key}`) },
+		{ href: `/performance/${topic.key}`, title: t(`DashboardWrapper.breadcrumbs.topics.${topicKey}`) },
+		{ href: `/performance/${topic.key}/${dashboard.key}`, title: t(`DashboardWrapper.breadcrumbs.dashboards.${dashboardKey}`) },
 	];
 
 	// B. Render components
@@ -29,7 +36,7 @@ export default function DashboardWrapper({ children, dashboard, topic }: { child
 					<Breadcrumb items={breadcrumbsData} />
 
 					<div className={styles.headerTitleContainer}>
-						<h1 className={styles.headerTitle}>{t(`DashboardWrapper.dashboards.${dashboard.key}`)}</h1>
+						<h1 className={styles.headerTitle}>{t(`DashboardWrapper.dashboards.${dashboardKey}`)}</h1>
 					</div>
 
 				</div>

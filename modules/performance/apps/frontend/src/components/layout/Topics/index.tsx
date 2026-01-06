@@ -8,6 +8,9 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+// Helper to convert kebab-case to snake_case for translation keys
+const toSnakeCase = (str: string) => str.replace(/-/g, '_');
+
 export default function Topics() {
 	//
 
@@ -32,7 +35,7 @@ export default function Topics() {
 					<ContainerWrapper key={topic.key} onClick={() => handleTopicClick(topic)}>
 						<div className={styles.topicCard}>
 							{topic.icon && <topic.icon />}
-							<p className={styles.topicCardTitle}>{t(`Topics.topics.${topic.key}`)}</p>
+							<p className={styles.topicCardTitle}>{t(`Topics.topics.${toSnakeCase(topic.key)}`)}</p>
 						</div>
 					</ContainerWrapper>
 				))}
