@@ -5,7 +5,7 @@ import { ImportPreview } from '@/components/common/ImportPreview';
 /* * */
 
 import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
-import { Button, closeModal, Divider, FileUpload, Grid, Section, Spacer } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, FileUpload, Grid, Label, Section, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -34,6 +34,7 @@ export function VehicleImportFile() {
 				</>
 			)}
 
+			<Label>Selecione um arquivo valido para criar ou atualizar um veículo</Label>
 			<FileUpload
 				accept=".txt"
 				label="Arquivo de importação de veículos"

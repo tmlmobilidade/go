@@ -116,13 +116,7 @@ export function ImportPreview() {
 									<ValueDisplay
 										key={key}
 										label={key}
-										value={`Atual: ${translateValue(
-											key,
-											value.oldValue,
-										)} → Novo: ${translateValue(
-											key,
-											value.newValue,
-										)}`}
+										value={`Atual: ${translateValue(key, value.oldValue)} → Novo: ${translateValue(key, value.newValue)}`}
 									/>
 								))
 							) : (
