@@ -221,6 +221,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			setUpdatedCount(updateCounter);
 
 			if (vehiclesFromFile.length > 0) form.setValues(vehiclesFromFile[0]);
+			if (createCounter === 0 && updateCounter === 0) throw new Error('No vehicles to create or update');
 
 			useToast.success({
 				message: `${createCounter} to create · ${updateCounter} to update`,

@@ -2,7 +2,7 @@
 
 import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
 import { Translations } from '@/lib/translations';
-import { Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -55,11 +55,24 @@ export function ImportPreview() {
 		return null;
 	}
 
+	/** 👉 Número de veículos a criar (vem do backend) */
+	const createdCount = data.counters.created;
+
+	/** 👉 Mostrar apenas UPDATES */
+	const updatesPreview = data.importPreview.filter(
+		item => item.mode === 'UPDATE',
+	);
+
 	const maxChanges = data.counters.updated;
 
 	return (
 		<Section gap="lg">
-			{data.importPreview.map((item, index) => {
+			{/* 👉 Informação inicial */}
+			<Label>
+				{createdCount} veículo(s) serão criados
+			</Label>
+
+			{updatesPreview.map((item, index) => {
 				const vehicleId = item.vehicle._id ?? 'Unknown ID';
 				const licensePlate = item.vehicle.license_plate ?? 'Unknown Plate';
 
@@ -68,12 +81,9 @@ export function ImportPreview() {
 					: [];
 
 				return (
-					<Section>
-						<Grid key={index} columns="abc" gap="lg">
-							<ValueDisplay
-								label="Modo"
-								value={item.mode === 'CREATE' ? 'Criar' : 'Atualizar'}
-							/>
+					<Section key={index}>
+						<Grid columns="abc" gap="lg">
+							<ValueDisplay label="Modo" value="Atualizar" />
 
 							<ValueDisplay
 								label="Veículo"
@@ -85,7 +95,13 @@ export function ImportPreview() {
 									<ValueDisplay
 										key={key}
 										label={key}
-										value={`Atual: ${translateValue(key, value.oldValue)} → Novo: ${translateValue(key, value.newValue)}`}
+										value={`Atual: ${translateValue(
+											key,
+											value.oldValue,
+										)} → Novo: ${translateValue(
+											key,
+											value.newValue,
+										)}`}
 									/>
 								))
 							) : (
