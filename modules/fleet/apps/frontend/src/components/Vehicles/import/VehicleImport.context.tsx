@@ -65,9 +65,10 @@ export function useVehicleImportContext() {
 export const VehicleImportContextProvider = ({
 	children,
 }: PropsWithChildren) => {
-	/* ------------------------------------------------------------
-	 * A. Setup Variables
-	 * ------------------------------------------------------------ */
+	//
+	//
+
+	// A. Setup Variables
 
 	const [isError, setIsError] = useState<Error | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
@@ -80,9 +81,9 @@ export const VehicleImportContextProvider = ({
 	// Vehicles already existing in database
 	const [existingVehicles, setExistingVehicles] = useState<Vehicle[]>([]);
 
-	/* ------------------------------------------------------------
-	 * B. External hooks
-	 * ------------------------------------------------------------ */
+	//
+
+	// B. External hooks
 
 	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(
 		API_ROUTES.fleet.VEHICLES_LIST,
@@ -90,9 +91,9 @@ export const VehicleImportContextProvider = ({
 
 	const { form } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
 
-	/* ============================================================
-	 * C. Helper parsing functions
-	 * ============================================================ */
+	//
+
+	// C. Helper parsing functions
 
 	/** Converts "1" → true, anything else → false */
 	const parseBoolean = (value?: string): boolean => value === '1';
@@ -158,9 +159,7 @@ export const VehicleImportContextProvider = ({
 		}
 	};
 
-	/* ============================================================
-	 * D. TXT parsing
-	 * ============================================================ */
+	// D. TXT parsing
 
 	const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
 		const text = await file.text();
@@ -219,9 +218,7 @@ export const VehicleImportContextProvider = ({
 		});
 	};
 
-	/* ============================================================
-	 * E. Create or Update logic
-	 * ============================================================ */
+	// E. Create or Update logic
 
 	const createOrUpdateVehicle = async (
 		vehicle: CreateVehicleDto,
@@ -242,9 +239,7 @@ export const VehicleImportContextProvider = ({
 		);
 	};
 
-	/* ============================================================
-	 * F. File import (NO DB interaction)
-	 * ============================================================ */
+	// F. File import (NO DB interaction)
 
 	const handleSetImportFile = async (file: File | null) => {
 		if (!file) return;
@@ -285,9 +280,7 @@ export const VehicleImportContextProvider = ({
 		}
 	};
 
-	/* ============================================================
-	 * G. Persist data (CREATE / UPDATE)
-	 * ============================================================ */
+	// G. Persist data (CREATE / UPDATE)
 
 	const handleCreateOrUpdateAll = async () => {
 		setIsSaving(true);
@@ -323,9 +316,7 @@ export const VehicleImportContextProvider = ({
 		}
 	};
 
-	/* ============================================================
-	 * H. Context value
-	 * ============================================================ */
+	// H. Context value
 
 	const contextValue: VehicleImportContextState = useMemo(
 		() => ({
@@ -346,9 +337,7 @@ export const VehicleImportContextProvider = ({
 		[form, isError, isSaving, isloading, canCreateorUpdate],
 	);
 
-	/* ============================================================
-	 * I. Render components
-	 * ============================================================ */
+	// I. Render components
 
 	return (
 		<VehicleImportContext.Provider value={contextValue}>
