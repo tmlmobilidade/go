@@ -10,6 +10,7 @@ import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,65 +21,66 @@ export function RideAnalysisApexOnBoardSales() {
 	// A. Setup variables
 
 	const RideAnalysisContext = useRideAnalysisContext();
+	const { t } = useTranslation('controller');
 
 	const columns: DataTableColumn<SimplifiedApexOnBoardSale>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: 'Timestamp',
+			title: t('rides.analysis.OnBoardSales.Table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: 'Stop ID',
+			title: t('rides.analysis.OnBoardSales.Table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'card_serial_number',
-			title: 'Card SN',
+			title: t('rides.analysis.OnBoardSales.Table.columns.card_serial_number.label'),
 			width: 220,
 		},
 		{
 			accessor: 'product_long_id',
-			title: 'Product ID',
+			title: t('rides.analysis.OnBoardSales.Table.columns.product_id.label'),
 			width: 250,
 		},
 		{
 			accessor: 'product_quantity',
-			title: 'Qtd',
+			title: t('rides.analysis.OnBoardSales.Table.columns.product_quantity.label'),
 			width: 80,
 		},
 		{
 			accessor: 'price',
 			render: item => <CurrencyTag value={item.price} />,
-			title: 'Price',
+			title: t('rides.analysis.OnBoardSales.Table.columns.price.label'),
 			width: 120,
 		},
 		{
 			accessor: 'payment_method',
 			render: item => <ApexPaymentMethodTag value={item.payment_method} />,
-			title: 'Payment Method',
+			title: t('rides.analysis.OnBoardSales.Table.columns.payment_method.label'),
 			width: 180,
 		},
 		{
 			accessor: 'card_physical_type',
 			render: item => <ApexCardTypeTag value={item.card_physical_type} />,
-			title: 'Card Type',
+			title: t('rides.analysis.OnBoardSales.Table.columns.card_type.label'),
 			width: 220,
 		},
 		{
 			accessor: 'validation_id',
-			title: 'ID Validation',
+			title: t('rides.analysis.OnBoardSales.Table.columns.id_validation.label'),
 			width: 400,
 		},
 		{
 			accessor: '_id',
-			title: 'ID On Board Sale',
+			title: t('rides.analysis.OnBoardSales.Table.columns.id_on_board_sale.label'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_refund_id',
-			title: 'ID On Board Refund',
+			title: t('rides.analysis.OnBoardSales.Table.columns.id_on_board_refund.label'),
 			width: 400,
 		},
 	];
@@ -94,7 +96,7 @@ export function RideAnalysisApexOnBoardSales() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Vendas APEX associadas a esta Ride." title="APEX On Board Sales">
+		<Collapsible description={t('rides.analysis.OnBoardSales.description')} title={t('rides.analysis.OnBoardSales.title')}>
 			{sortedSimplifiedApexOnBoardSales?.length > 0 ? (
 				<DataTable
 					columns={columns}
@@ -103,7 +105,7 @@ export function RideAnalysisApexOnBoardSales() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text="Nenhuma Venda Registada" />
+					<NoDataLabel text={t('rides.analysis.OnBoardSales.no_data')} />
 				</Section>
 			)}
 		</Collapsible>

@@ -5,28 +5,29 @@
 import { AcceptanceStatusProps, AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { CauseIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
 import { GtfsCause, GtfsCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
 import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
 function JustificationReadOnly({ cause, manualTripId, message }: { cause?: string, manualTripId?: string, message?: string }) {
+	const { t } = useTranslation('controller');
 	return (
 		<>
-			<Label size="lg" caps>Justificação</Label>
+			<Label size="lg" caps>{t('rides.acceptance.Justification.title')}</Label>
 			<Section gap="xs" padding="none">
-				<Label>Motivo da justificação</Label>
-				<Text>{cause ? Translations.CAUSE[cause as GtfsCause] : '—'}</Text>
+				<Label>{t('rides.acceptance.Justification.readonly.cause.label')}</Label>
+				<Text>{cause ? t(`rides.acceptance.cause.${cause}`) : '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
-				<Label>Mensagem de justificação</Label>
+				<Label>{t('rides.acceptance.Justification.readonly.message.label')}</Label>
 				<Text>{message || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
-				<Label>ID da viagem manual</Label>
+				<Label>{t('rides.acceptance.Justification.readonly.manual_trip_id.label')}</Label>
 				<Text>{manualTripId || '—'}</Text>
 			</Section>
 		</>
@@ -34,22 +35,23 @@ function JustificationReadOnly({ cause, manualTripId, message }: { cause?: strin
 }
 
 function JustificationEditable({ cause, manualTripId, message, onSubmit, setCause, setManualTripId, setMessage }: { cause?: GtfsCause, manualTripId: string, message: string, onSubmit: () => void, setCause: (v: GtfsCause) => void, setManualTripId: (v: string) => void, setMessage: (v: string) => void }) {
+	const { t } = useTranslation('controller');
 	return (
 		<>
 			<Combobox
-				label="Motivo da justificação"
+				label={t('rides.acceptance.Justification.fields.cause.label')}
 				onChange={setCause}
-				placeholder="Selecione o motivo da justificação"
+				placeholder={t('rides.acceptance.Justification.fields.cause.placeholder')}
 				value={cause}
 				data={GtfsCauseSchema.options.map(cause => ({
 					icon: CauseIcons[cause],
-					label: Translations.CAUSE[cause],
+					label: t(`rides.acceptance.cause.${cause}`),
 					value: cause,
 				}))}
 				fullWidth
 			/>
 			<Textarea
-				label="Mensagem de justificação"
+				label={t('rides.acceptance.Justification.fields.message.label')}
 				minRows={2}
 				onChange={e => setMessage(e.target.value)}
 				value={message}
@@ -57,12 +59,12 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				autosize
 			/>
 			<TextInput
-				label="ID da viagem manual (opcional)"
+				label={t('rides.acceptance.Justification.fields.manual_trip_id.label')}
 				onChange={e => setManualTripId(e.target.value)}
 				value={manualTripId ?? ''}
 				w="100%"
 			/>
-			<Button label="Justificar" onClick={onSubmit} fullWidth />
+			<Button label={t('rides.acceptance.Justification.SubmitButton.label')} onClick={onSubmit} fullWidth />
 		</>
 	);
 }
@@ -136,6 +138,7 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 
 export function RideAcceptanceJustification() {
 	const { actions, data } = useRideAcceptanceContext();
+	const { t } = useTranslation('controller');
 	const { acceptance } = data;
 
 	if (!acceptance) return null;
@@ -152,7 +155,7 @@ export function RideAcceptanceJustification() {
 
 	return (
 		<Section gap="md" width="100%">
-			<Label size="lg" caps>Justificação</Label>
+			<Label size="lg" caps>{t('rides.acceptance.Justification.title')}</Label>
 			<AcceptanceStatus grade={acceptance_status} />
 			<HasPermission
 				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : PermissionCatalog.all.rides.actions.acceptance_justify}

@@ -4,6 +4,7 @@ import { useRidesListContext } from '@/contexts/RidesList.context';
 import { RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function RidesListFilterAcceptanceStatus() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
+	const { t } = useTranslation('controller');
 
 	//
 	// B. Transform data
@@ -44,7 +46,7 @@ export function RidesListFilterAcceptanceStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Aceitação"
+			label={t('rides.list.FilterBar.acceptance_status.label')}
 			onChange={ridesListContext.actions.setFilterAcceptanceStatus}
 			options={parsedOptions}
 			withToggleAll

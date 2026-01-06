@@ -7,6 +7,7 @@ import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,52 +18,53 @@ export function RideAnalysisVehicleEvents() {
 	// A. Setup variables
 
 	const RideAnalysisContext = useRideAnalysisContext();
+	const { t } = useTranslation('controller');
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: 'Timestamp',
+			title: t('rides.analysis.VehicleEvents.Table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'trigger_activity',
-			title: 'Activity',
+			title: t('rides.analysis.VehicleEvents.Table.columns.activity.label'),
 			width: 150,
 		},
 		{
 			accessor: 'stop_id',
-			title: 'Stop ID',
+			title: t('rides.analysis.VehicleEvents.Table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: 'Vehicle ID',
+			title: t('rides.analysis.VehicleEvents.Table.columns.vehicle_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'driver_id',
-			title: 'Driver ID',
+			title: t('rides.analysis.VehicleEvents.Table.columns.driver_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'odometer',
-			title: 'Odometer',
+			title: t('rides.analysis.VehicleEvents.Table.columns.odometer.label'),
 			width: 150,
 		},
 		{
 			accessor: 'trigger_door',
-			title: 'Door',
+			title: t('rides.analysis.VehicleEvents.Table.columns.door.label'),
 			width: 150,
 		},
 		{
 			accessor: 'latitude',
-			title: 'Latitude',
+			title: t('rides.analysis.VehicleEvents.Table.columns.latitude.label'),
 			width: 220,
 		},
 		{
 			accessor: 'longitude',
-			title: 'Longitude',
+			title: t('rides.analysis.VehicleEvents.Table.columns.longitude.label'),
 			width: 220,
 		},
 	];
@@ -78,7 +80,7 @@ export function RideAnalysisVehicleEvents() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Eventos GTFS-RT gerados pelo veículo." title="Vehicle Events">
+		<Collapsible description={t('rides.analysis.VehicleEvents.description')} title={t('rides.analysis.VehicleEvents.title')}>
 			<DataTable
 				columns={columns}
 				records={sortedVehicleEvents}

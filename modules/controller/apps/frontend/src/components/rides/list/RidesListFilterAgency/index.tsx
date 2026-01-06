@@ -4,6 +4,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useRidesListContext } from '@/contexts/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function RidesListFilterAgency() {
 
 	const agenciesContext = useAgenciesContext();
 	const ridesListContext = useRidesListContext();
+	const { t } = useTranslation('controller');
 
 	//
 	// B. Transform data
@@ -47,7 +49,7 @@ export function RidesListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Operador"
+			label={t('rides.list.FilterBar.agency.label')}
 			onChange={ridesListContext.actions.setFilterAgency}
 			options={parsedOptions}
 			withToggleAll

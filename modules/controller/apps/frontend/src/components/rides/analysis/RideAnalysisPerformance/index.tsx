@@ -3,15 +3,28 @@
 /* * */
 
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export function RideAnalysisPerformance() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation('controller');
+
+	//
+	// B. Render components
+
 	return (
-		<Collapsible description="Dados de desempenho da circulação" title="Performance">
+		<Collapsible description={t('rides.analysis.Performance.description')} title={t('rides.analysis.Performance.title')}>
 			<Section>
-				<Label size="lg" caps>Sem Dados</Label>
+				<Label size="lg" caps>{t('rides.analysis.Performance.no_data')}</Label>
 			</Section>
 		</Collapsible>
 	);
+
+	//
 }

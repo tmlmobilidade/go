@@ -9,96 +9,11 @@ import { Dates } from '@tmlmobilidade/dates';
 import { RideAcceptance, UserDisplay } from '@tmlmobilidade/types';
 import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import React, { createElement, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
-
-const CommentAcceptanceStatusProps = Object.freeze({
-	accepted: {
-		color: 'var(--color-status-success-primary)',
-		icon: IconCircleCheck,
-		label: 'A aceitação está aceite',
-	},
-	justification_required: {
-		color: 'var(--color-status-warning-primary)',
-		icon: IconAlertCircle,
-		label: 'É necessário justificar a circulação',
-	},
-	rejected: {
-		color: 'var(--color-status-danger-primary)',
-		icon: IconCircleX,
-		label: 'A aceitação está rejeitada',
-	},
-	under_review: {
-		color: 'var(--color-status-warning-primary)',
-		icon: IconClock,
-		label: 'A aceitação está em revisão',
-	},
-
-});
-
-const CommentCrudProps = Object.freeze({
-	archive: {
-		color: 'var(--color-status-warning-primary)',
-		icon: IconCircleDashedMinus,
-		label: 'A aceitação foi arquivada',
-	},
-	create: {
-		color: 'var(--color-status-success-primary)',
-		icon: IconCircleDashedPlus,
-		label: 'A aceitação foi criada por sistema',
-	},
-	delete: {
-		color: 'var(--color-status-danger-primary)',
-		icon: IconCircleDashedX,
-		label: 'A aceitação foi apagada',
-	},
-	restore: {
-		color: 'var(--color-status-success-primary)',
-		icon: IconCircleDashedLetterR,
-		label: 'A aceitação foi restaurada',
-	},
-	update: {
-		color: 'var(--color-status-warning-primary)',
-		icon: IconCircleDashedLetterU,
-		label: 'A aceitação foi atualizada',
-	},
-
-});
-
-const CommentLockProps = Object.freeze({
-	lock: {
-		color: 'var(--color-status-danger-primary)',
-		icon: IconLock,
-		label: 'A aceitação foi bloqueada',
-	},
-	unlock: {
-		color: 'var(--color-status-success-primary)',
-		icon: IconLockOpen,
-		label: 'A aceitação foi desbloqueada',
-	},
-
-});
-
-const CommentNoteProps = Object.freeze({
-	color: 'var(--color-system-text-200)',
-	icon: IconCircleDashedLetterC,
-	label: 'A aceitação foi criada por sistema',
-
-});
-
-const CommentJustificationProps = Object.freeze({
-	color: 'var(--color-primary)',
-	icon: IconMessageCircle,
-	label: 'A justificação foi atualizada',
-});
-
-const CommentAnalysisSummaryProps = Object.freeze({
-	color: 'var(--color-primary)',
-	icon: IconMathMaxMin,
-	label: 'Foi realizada uma nova análise da viagem',
-});
 
 export function RideAcceptanceCommentList() {
 	//
@@ -107,6 +22,89 @@ export function RideAcceptanceCommentList() {
 	// A. Setup variables
 
 	const acceptanceContext = useRideAcceptanceContext();
+	const { t } = useTranslation('controller');
+
+	const CommentAcceptanceStatusProps = Object.freeze({
+		accepted: {
+			color: 'var(--color-status-success-primary)',
+			icon: IconCircleCheck,
+			label: t('rides.acceptance.CommentList.acceptance_status.accepted'),
+		},
+		justification_required: {
+			color: 'var(--color-status-warning-primary)',
+			icon: IconAlertCircle,
+			label: t('rides.acceptance.CommentList.acceptance_status.justification_required'),
+		},
+		rejected: {
+			color: 'var(--color-status-danger-primary)',
+			icon: IconCircleX,
+			label: t('rides.acceptance.CommentList.acceptance_status.rejected'),
+		},
+		under_review: {
+			color: 'var(--color-status-warning-primary)',
+			icon: IconClock,
+			label: t('rides.acceptance.CommentList.acceptance_status.under_review'),
+		},
+	});
+
+	const CommentCrudProps = Object.freeze({
+		archive: {
+			color: 'var(--color-status-warning-primary)',
+			icon: IconCircleDashedMinus,
+			label: t('rides.acceptance.CommentList.crud.archive'),
+		},
+		create: {
+			color: 'var(--color-status-success-primary)',
+			icon: IconCircleDashedPlus,
+			label: t('rides.acceptance.CommentList.crud.create'),
+		},
+		delete: {
+			color: 'var(--color-status-danger-primary)',
+			icon: IconCircleDashedX,
+			label: t('rides.acceptance.CommentList.crud.delete'),
+		},
+		restore: {
+			color: 'var(--color-status-success-primary)',
+			icon: IconCircleDashedLetterR,
+			label: t('rides.acceptance.CommentList.crud.restore'),
+		},
+		update: {
+			color: 'var(--color-status-warning-primary)',
+			icon: IconCircleDashedLetterU,
+			label: t('rides.acceptance.CommentList.crud.update'),
+		},
+	});
+
+	const CommentLockProps = Object.freeze({
+		lock: {
+			color: 'var(--color-status-danger-primary)',
+			icon: IconLock,
+			label: t('rides.acceptance.CommentList.lock.lock'),
+		},
+		unlock: {
+			color: 'var(--color-status-success-primary)',
+			icon: IconLockOpen,
+			label: t('rides.acceptance.CommentList.lock.unlock'),
+		},
+	});
+
+	const CommentNoteProps = Object.freeze({
+		color: 'var(--color-system-text-200)',
+		icon: IconCircleDashedLetterC,
+		label: t('rides.acceptance.CommentList.note.created'),
+	});
+
+	const CommentJustificationProps = Object.freeze({
+		color: 'var(--color-primary)',
+		icon: IconMessageCircle,
+		label: t('rides.acceptance.CommentList.justification.updated'),
+	});
+
+	const CommentAnalysisSummaryProps = Object.freeze({
+		color: 'var(--color-primary)',
+		icon: IconMathMaxMin,
+		label: t('rides.acceptance.CommentList.summary.performed'),
+	});
 
 	const commentItems = useMemo(() => {
 		return acceptanceContext.data.acceptance.comments.map((comment) => {
@@ -200,7 +198,7 @@ export function RideAcceptanceCommentList() {
 
 	return (
 		<Section gap="md" width="100%">
-			<Label size="lg" caps>Atividade</Label>
+			<Label size="lg" caps>{t('rides.acceptance.title')}</Label>
 			<CommentList data={commentItems} maxHeight={500} reverse />
 			<CommentInput
 				disabled={acceptanceContext.data.acceptance.is_locked}

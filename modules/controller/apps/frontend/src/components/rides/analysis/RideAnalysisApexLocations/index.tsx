@@ -8,6 +8,7 @@ import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,32 +19,33 @@ export function RideAnalysisApexLocations() {
 	// A. Setup variables
 
 	const rideAnalysisContext = useRideAnalysisContext();
+	const { t } = useTranslation('controller');
 
 	const columns: DataTableColumn<SimplifiedApexLocation>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: 'Timestamp',
+			title: t('rides.analysis.ApexLocations.Table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: 'Stop ID',
+			title: t('rides.analysis.ApexLocations.Table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: 'Vehicle ID',
+			title: t('rides.analysis.ApexLocations.Table.columns.vehicle_id.label'),
 			width: 120,
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			title: 'SAM SN',
+			title: t('rides.analysis.ApexLocations.Table.columns.mac_sam_serial_number.label'),
 			width: 160,
 		},
 		{
 			accessor: '_id',
-			title: 'ID Apex Location',
+			title: t('rides.analysis.ApexLocations.Table.columns.id_apex_location.label'),
 			width: 400,
 		},
 	];
@@ -59,7 +61,7 @@ export function RideAnalysisApexLocations() {
 	// C. Render components
 
 	return (
-		<Collapsible description="Localizações APEX associadas a esta Ride." title="APEX Locations">
+		<Collapsible description={t('rides.analysis.ApexLocations.description')} title={t('rides.analysis.ApexLocations.title')}>
 			{sortedSimplifiedApexLocations.length > 0 ? (
 				<DataTable
 					columns={columns}
@@ -68,7 +70,7 @@ export function RideAnalysisApexLocations() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text="Nenhuma Localização APEX Registada" />
+					<NoDataLabel text={t('rides.analysis.ApexLocations.no_data')} />
 				</Section>
 			)}
 		</Collapsible>
