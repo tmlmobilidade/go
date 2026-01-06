@@ -7,6 +7,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +19,7 @@ export function StopDetailHeader() {
 
 	const router = useRouter();
 	const stopDetailContext = useStopDetailContext();
+	const { t } = useTranslation('stops');
 
 	//
 	// B. Handle actions
@@ -34,7 +36,7 @@ export function StopDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
-			{stopDetailContext.data.stop?.is_deleted && <Tag label="Paragem Eliminada" variant="danger" />}
+			{stopDetailContext.data.stop?.is_deleted && <Tag label={t('stops.detail.Header.deleted_tag')} variant="danger" />}
 
 			<Spacer />
 
@@ -66,8 +68,8 @@ export function StopDetailHeader() {
 				scope={PermissionCatalog.all.stops.scope}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura."
-					confirmTitle="Eliminar Paragem"
+					confirmMessage={t('stops.detail.Header.DeleteButton.confirm_message')}
+					confirmTitle={t('stops.detail.Header.DeleteButton.confirm_title')}
 					isDeleted={stopDetailContext.data.stop?.is_deleted}
 					isDisabled={!stopDetailContext.flags.canDelete}
 					isLoading={stopDetailContext.flags.isDeleting}

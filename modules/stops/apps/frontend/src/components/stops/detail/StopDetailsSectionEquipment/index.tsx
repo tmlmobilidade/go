@@ -6,21 +6,24 @@ import { StopDetailFacilityCheckbox } from '@/components/stops/detail/StopDetail
 import { Translations } from '@/lib/translations';
 import { StopFacilitySchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export function StopDetailsSectionEquipment() {
+	const { t } = useTranslation('stops');
+
 	return (
 		<Collapsible
-			description="Quais são os equipamentos que esta paragem serve."
-			title="Equipamentos Servidos"
+			description={t('stops.detail.SectionEquipment.description')}
+			title={t('stops.detail.SectionEquipment.title')}
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">
 					{StopFacilitySchema.options.map(value => (
 						<StopDetailFacilityCheckbox
 							key={value}
-							label={Translations.FACILITIES[value]}
+							label={t(Translations.FACILITIES[value])}
 							value={value}
 							proposeable
 						/>

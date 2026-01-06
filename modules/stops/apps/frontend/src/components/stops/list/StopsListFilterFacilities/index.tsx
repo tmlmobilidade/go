@@ -7,6 +7,7 @@ import { Translations } from '@/lib/translations';
 import { StopFacilitySchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function StopsListFilterFacilities() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
+	const { t } = useTranslation('stops');
 
 	//
 	// B. Transform data
@@ -32,10 +34,10 @@ export function StopsListFilterFacilities() {
 		if (!StopFacilitySchema.options?.length) return [];
 		return StopFacilitySchema.options.map(item => ({
 			checked: stopsListContext.filters.facilities.includes(item),
-			label: Translations.FACILITIES[item],
+			label: t(`${Translations.FACILITIES}.${item}`),
 			value: item,
 		}));
-	}, [stopsListContext.filters.facilities]);
+	}, [stopsListContext.filters.facilities, t]);
 
 	//
 	// C. Render components
@@ -43,7 +45,7 @@ export function StopsListFilterFacilities() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Serviços"
+			label={t('stops.list.FilterBar.FilterFacilities.label')}
 			onChange={stopsListContext.actions.setFilterFacilities}
 			options={parsedOptions}
 			withToggleAll

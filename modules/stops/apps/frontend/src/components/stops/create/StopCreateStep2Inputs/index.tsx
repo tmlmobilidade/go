@@ -4,6 +4,7 @@
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { Divider, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,6 +14,7 @@ export function StopCreateStep2Inputs() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('stops');
 	const stopCreateContext = useStopCreateContext();
 
 	//
@@ -25,8 +27,8 @@ export function StopCreateStep2Inputs() {
 				<Grid columns="a" gap="md">
 					<TextInput
 						key={stopCreateContext.data.form.key('name')}
-						description="Este é o nome principal e será apresentado nos canais digitais."
-						label="Designação Completa da Paragem"
+						description={t('stops.create.Step2.Inputs.full_name.description')}
+						label={t('stops.create.Step2.Inputs.full_name.label')}
 						data-autofocus
 						required
 						{...stopCreateContext.data.form.getInputProps('name')}
@@ -40,14 +42,14 @@ export function StopCreateStep2Inputs() {
 				<Grid columns="a" gap="md">
 					<TextInput
 						defaultValue={stopCreateContext.data.form.values.short_name}
-						description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
-						label="Nome Curto (automático)"
+						description={t('stops.create.Step2.Inputs.short_name.description')}
+						label={t('stops.create.Step2.Inputs.short_name.label')}
 						readOnly
 					/>
 					<TextInput
 						defaultValue={stopCreateContext.data.form.values.tts_name}
-						description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
-						label="Nome TTS (automático)"
+						description={t('stops.create.Step2.Inputs.tts_name.description')}
+						label={t('stops.create.Step2.Inputs.tts_name.label')}
 						readOnly
 					/>
 				</Grid>

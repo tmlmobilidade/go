@@ -10,6 +10,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -23,46 +24,47 @@ export function StopsList() {
 	const params = useParams<{ id?: string }>();
 
 	const stopsListContext = useStopsListContext();
+	const { t } = useTranslation('stops');
 
 	const columns: DataTableColumn<StopNormalized>[] = [
 		{
 			accessor: '_id',
-			title: 'codigo',
+			title: t('stops.list.Table.columns.code'),
 			width: 150,
 		},
 		{
 			accessor: 'name',
-			title: 'nome da paragem',
+			title: t('stops.list.Table.columns.name'),
 			width: 500,
 		},
 		{
 			accessor: 'latitude',
-			title: 'latitude',
+			title: t('stops.list.Table.columns.latitude'),
 			width: 150,
 		},
 		{
 			accessor: 'longitude',
-			title: 'longitude',
+			title: t('stops.list.Table.columns.longitude'),
 			width: 150,
 		},
 		{
 			accessor: 'district_name',
-			title: 'Distrito',
+			title: t('stops.list.Table.columns.district'),
 			width: 250,
 		},
 		{
 			accessor: 'municipality_name',
-			title: 'Município',
+			title: t('stops.list.Table.columns.municipality'),
 			width: 250,
 		},
 		{
 			accessor: 'parish_name',
-			title: 'Freguesia',
+			title: t('stops.list.Table.columns.parish'),
 			width: 250,
 		},
 		{
 			accessor: 'locality_name',
-			title: 'Localidade',
+			title: t('stops.list.Table.columns.locality'),
 			width: 250,
 		},
 	];

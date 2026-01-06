@@ -7,6 +7,7 @@ import { Translations } from '@/lib/translations';
 import { ScopeOption } from '@/types/proposed-changes';
 import { AvailabilityStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, ProposedChangesWrapper, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function StopDetailsSectionShelter() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('stops');
 	const stopDetailContext = useStopDetailContext();
 	const scopeOption: ScopeOption = 'stop';
 
@@ -32,14 +34,14 @@ export function StopDetailsSectionShelter() {
 
 	return (
 		<Collapsible
-			description="Informações relacionadas com o abrigo."
-			title="Abrigo"
+			description={t('stops.detail.SectionShelter.description')}
+			title={t('stops.detail.SectionShelter.title')}
 		>
 			<Section>
 				<Grid columns="abc" gap="md">
 					<ProposedChangesWrapper
 						inputName="has_shelter"
-						label="Existe Abrigo?"
+						label={t('stops.detail.SectionShelter.fields.has_shelter')}
 						relatedId={stopDetailContext.data.stop?._id}
 						scope={scopeOption}
 					>
@@ -52,13 +54,13 @@ export function StopDetailsSectionShelter() {
 					</ProposedChangesWrapper>
 					<TextInput
 						key={stopDetailContext.data.form.key('shelter_code')}
-						label="Código do Abrigo"
+						label={t('stops.detail.SectionShelter.fields.shelter_code')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('shelter_code')}
 					/>
 					<TextInput
 						key={stopDetailContext.data.form.key('shelter_maintainer')}
-						label="Entidade Gestora do Abrigo"
+						label={t('stops.detail.SectionShelter.fields.shelter_maintainer')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('shelter_maintainer')}
 					/>
@@ -68,7 +70,7 @@ export function StopDetailsSectionShelter() {
 			<Section>
 				<TextInput
 					key={stopDetailContext.data.form.key('shelter_material')}
-					label="Data de Instalação do abrigo"
+					label={t('stops.detail.SectionShelter.fields.shelter_installation_date')}
 					placeholder="2023-02-10"
 					readOnly={stopDetailContext.flags.isReadOnly}
 					{...stopDetailContext.data.form.getInputProps('last_shelter_installation')}

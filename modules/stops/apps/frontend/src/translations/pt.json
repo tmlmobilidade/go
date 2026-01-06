@@ -1,0 +1,281 @@
+{
+	"common": {
+		"UploadImage": {
+			"DeleteConfirm": {
+				"message": "Tem certeza que deseja apagar a imagem?",
+				"title": "Apagar imagem"
+			},
+			"Error": {
+				"message": "O tamanho do ficheiro excede o limite permitido.",
+				"title": "Erro ao carregar imagem"
+			},
+			"file_button_label": "Carregar imagem",
+			"image_label": "Imagem"
+		}
+	},
+	"stops": {
+		"create": {
+			"Alerts": {
+				"invalid_coordinates": "Coordenadas inválidas. Por favor verifique os valores introduzidos.",
+				"unknown_error": "Erro desconhecido."
+			},
+			"Controls": {
+				"back_button": "Voltar",
+				"create_button": "Criar Paragem",
+				"next_button": "Próximo Passo"
+			},
+			"Header": {
+				"step_label": "Passo {{current}} de {{total}}",
+				"title": "Nova Paragem"
+			},
+			"Step1": {
+				"Locations": {
+					"district": "Distrito",
+					"locality": "Localidade",
+					"municipality": "Município",
+					"parish": "Freguesia"
+				}
+			},
+			"Step2": {
+				"Inputs": {
+					"full_name": {
+						"description": "Este é o nome principal e será apresentado nos canais digitais.",
+						"label": "Designação Completa da Paragem"
+					},
+					"short_name": {
+						"description": "Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos.",
+						"label": "Nome Curto (automático)"
+					},
+					"tts_name": {
+						"description": "O nome a ser utilizado pelo sistema de TTS (Text-to-Speech).",
+						"label": "Nome TTS (automático)"
+					}
+				},
+				"Instructions": {
+					"text": "Instruções para o passo 2 aqui"
+				}
+			},
+			"Step3": {
+				"Summary": {
+					"short_name": "Nome curto",
+					"tts_name": "Nome TTS"
+				}
+			},
+			"Toast": {
+				"create_error": {
+					"message": "Erro ao criar paragem",
+					"title": "Erro ao criar paragem"
+				},
+				"create_success": {
+					"message": "Paragem criada com sucesso",
+					"title": "Sucesso"
+				}
+			}
+		},
+		"detail": {
+			"Header": {
+				"DeleteButton": {
+					"confirm_message": "Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura.",
+					"confirm_title": "Eliminar Paragem"
+				},
+				"deleted_tag": "Paragem Eliminada"
+			},
+			"SectionAdministrative": {
+				"description": "Informações sobre a localização administrativa e responsabilidade de gestão desta paragem.",
+				"fields": {
+					"district": "Distrito",
+					"jurisdiction": "Jurisdição",
+					"locality": "Localidade",
+					"municipality": "Município",
+					"parish": "Freguesia"
+				},
+				"title": "Informação Administrativa"
+			},
+			"SectionConnections": {
+				"description": "Quais são os outros modos de transporte, para além do autocarro, que esta paragem serve.",
+				"fields": {
+					"airport": "Aeroporto",
+					"bike_parking": "Estacionamento de Bicicletas",
+					"bike_sharing": "Partilha de Bicicletas",
+					"boat": "Barco",
+					"car_parking": "Estacionamento de Automóveis",
+					"light_rail": "Metro de Superfície",
+					"subway": "Metro",
+					"train": "Comboio"
+				},
+				"title": "Ligações Intermodais"
+			},
+			"SectionEquipment": {
+				"description": "Quais são os equipamentos que esta paragem serve.",
+				"title": "Equipamentos Servidos"
+			},
+			"SectionGeneral": {
+				"description": "Informações gerais sobre esta paragem.",
+				"fields": {
+					"latitude": "Latitude",
+					"legacy_id": "Código do Operador (legacy)",
+					"longitude": "Longitude",
+					"name": "Antigo Nome da Paragem (p/ alterar)",
+					"new_name": "Nome da Paragem (depois da correção)",
+					"short_name": "Nome Curto",
+					"stop_id": "Código Único da Paragem",
+					"tts_name": "Nome TTS"
+				},
+				"title": "Detalhes desta Paragem"
+			},
+			"SectionImages": {
+				"description": "Suportes visuais.",
+				"fields": {
+					"image_label": "Imagem"
+				},
+				"title": "Imagens"
+			},
+			"SectionInfrastructure": {
+				"description": "Informações relacionadas com os equipamentos da paragem e envolvente.",
+				"fields": {
+					"has_bench": "Existe Banco?",
+					"has_electricity": "Existe Ligação Elétrica?",
+					"has_mupi": "Existe Mupi?",
+					"last_check": "Última Verificação da Infraestrutura",
+					"last_maintenance": "Última Manutenção da Infraestrutura",
+					"road_type": "Tipo de Relação com a Via"
+				},
+				"title": "Infraestrutura"
+			},
+			"SectionNotes": {
+				"description": "Texto livre para informações adicionais.",
+				"fields": {
+					"comments_placeholder": "Construção planeada a..."
+				},
+				"title": "Notas e Comentários"
+			},
+			"SectionPublicInformation": {
+				"description": "Informação relacionadas com os suportes de informação ao público.",
+				"fields": {
+					"has_network_map": "Tem Mapa de Rede?",
+					"has_schedules": "Tem Horários?",
+					"has_stop_sign": "Tem Postalete?",
+					"last_schedules_check": "Última Verificação dos Horários?",
+					"last_schedules_maintenance": "Última Manutenção dos Horários?"
+				},
+				"title": "Informação ao público"
+			},
+			"SectionShelter": {
+				"description": "Informações relacionadas com o abrigo.",
+				"fields": {
+					"has_shelter": "Existe Abrigo?",
+					"shelter_code": "Código do Abrigo",
+					"shelter_installation_date": "Data de Instalação do abrigo",
+					"shelter_maintainer": "Entidade Gestora do Abrigo"
+				},
+				"title": "Abrigo"
+			}
+		},
+		"list": {
+			"FilterBar": {
+				"FilterConnections": {
+					"label": "Conexões"
+				},
+				"FilterDistrict": {
+					"label": "Distrito"
+				},
+				"FilterEquipment": {
+					"label": "Equipamentos"
+				},
+				"FilterFacilities": {
+					"label": "Serviços"
+				},
+				"FilterLifecycleStatus": {
+					"label": "Estado"
+				},
+				"FilterMunicipality": {
+					"label": "Município"
+				},
+				"FilterParish": {
+					"label": "Freguesia"
+				}
+			},
+			"Header": {
+				"new_stop_button": "Nova Paragem",
+				"title": "Paragens"
+			},
+			"Table": {
+				"columns": {
+					"code": "Código",
+					"district": "Distrito",
+					"latitude": "Latitude",
+					"locality": "Localidade",
+					"longitude": "Longitude",
+					"municipality": "Município",
+					"name": "Nome da Paragem",
+					"parish": "Freguesia"
+				}
+			}
+		}
+	},
+	"types": {
+		"AvailabilityStatus": {
+			"available": "Disponível",
+			"unavailable": "Indisponível",
+			"unknown": "Desconhecido"
+		},
+		"ConditionStatus": {
+			"damaged": "Danificado",
+			"missing": "Ausente",
+			"not_applicable": "Não instalado",
+			"ok": "Ok",
+			"unknown": "Desconhecido"
+		},
+		"Connections": {
+			"airport": "Aeroporto",
+			"bike_parking": "Estacionamento de bicicletas",
+			"bike_sharing": "Sistema de bicicletas públicas",
+			"boat": "Barco",
+			"car_parking": "Parque de estacionamento",
+			"ferry": "Balsa",
+			"light_rail": "Metro terrestre",
+			"subway": "Metro",
+			"train": "Comboio"
+		},
+		"Equipment": {
+			"mini_pip": "Mini PIP",
+			"mupi": "MUPI",
+			"pip": "PIP"
+		},
+		"Facilities": {
+			"beach": "Praia",
+			"fire_station": "Bombeiros",
+			"health_clinic": "Clínica",
+			"historic_building": "Edifício Histórico",
+			"hospital": "Hospital",
+			"police_station": "Esquadra",
+			"school": "Escola",
+			"shopping": "Zona Comercial",
+			"transit_office": "Espaço navegante®",
+			"university": "Universidade"
+		},
+		"Jurisdiction": {
+			"ip": "IP",
+			"municipality": "Município",
+			"other": "Outro",
+			"unknown": "Desconhecido"
+		},
+		"LifecycleStatus": {
+			"active": "Paragem ativa",
+			"draft": "Rascunho",
+			"inactive": "Paragem inativa",
+			"provisional": "Provisória",
+			"seasonal": "Sazonal",
+			"voided": "Anulada"
+		},
+		"RoadType": {
+			"complementary_itinerary": "Itinerário Complementar",
+			"highway": "Autoestrada",
+			"main_itinerary": "Itinerário Principal",
+			"national_road": "Estrada Nacional",
+			"regional_road": "Estrada Regional",
+			"secondary_road": "Estrada Secundária",
+			"unknown": "Desconhecido"
+		}
+	}
+}

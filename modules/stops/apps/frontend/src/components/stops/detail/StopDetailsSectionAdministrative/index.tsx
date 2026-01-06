@@ -8,6 +8,7 @@ import { Translations } from '@/lib/translations';
 import { StopJurisdictionSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, Select, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function StopDetailsSectionAdministrative() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('stops');
 	const locationsContext = useLocationsContext();
 	const stopDetailContext = useStopDetailContext();
 
@@ -89,15 +91,15 @@ export function StopDetailsSectionAdministrative() {
 
 	return (
 		<Collapsible
-			description="Informações sobre a localização administrativa e responsabilidade de gestão desta paragem."
-			title="Informação Administrativa"
+			description={t('stops.detail.SectionAdministrative.description')}
+			title={t('stops.detail.SectionAdministrative.title')}
 		>
 			<Section>
 				<Grid>
 					<Select
 						key={stopDetailContext.data.form.key('jurisdiction')}
 						data={stopJurisdictionOptions}
-						label="Jurisdição"
+						label={t('stops.detail.SectionAdministrative.fields.jurisdiction')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('jurisdiction')}
 					/>
@@ -105,10 +107,10 @@ export function StopDetailsSectionAdministrative() {
 			</Section>
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Distrito" value={associatedDistrict?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Municipio" value={associatedMunicipality?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Freguesia" value={associatedParish?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Localidade" value={associatedLocality?.name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops.detail.SectionAdministrative.fields.district')} value={associatedDistrict?.name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops.detail.SectionAdministrative.fields.municipality')} value={associatedMunicipality?.name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops.detail.SectionAdministrative.fields.parish')} value={associatedParish?.name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops.detail.SectionAdministrative.fields.locality')} value={associatedLocality?.name ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 		</Collapsible>
