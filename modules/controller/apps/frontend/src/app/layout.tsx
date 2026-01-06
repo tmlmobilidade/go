@@ -6,6 +6,8 @@ import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
 
+import ptTranslations from '../translations/pt.json';
+
 /* * */
 
 export const metadata: Metadata = {
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider>
-			<AppProvider>
+			<AppProvider i18n={[{ namespace: 'controller', pt: ptTranslations }]}>
 				<NuqsAdapter>
 					<DataProviders>
 						<AppWrapper>
