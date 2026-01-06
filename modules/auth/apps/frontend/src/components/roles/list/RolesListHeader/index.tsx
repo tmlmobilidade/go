@@ -6,6 +6,7 @@ import { openCreateRoleModal } from '@/components/roles/create/RoleCreate.modal'
 import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,16 +17,17 @@ export function RolesListHeader() {
 	// A. Setup variables
 
 	const roleListContext = useRolesListContext();
+	const { t } = useTranslation('auth');
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>Grupos de Permissões</Label>
+			<Label size="lg" caps singleLine>{t('roles.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={roleListContext.actions.setFilterSearch} value={roleListContext.filters.search} />
-			<Button icon={<IconPlus size={20} />} label="Novo Grupo" onClick={openCreateRoleModal} />
+			<Button icon={<IconPlus size={20} />} label={t('roles.list.Header.NewRoleButton.label')} onClick={openCreateRoleModal} />
 		</Toolbar>
 	);
 

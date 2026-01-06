@@ -239,9 +239,20 @@
 	},
 	"permissions": {
 		"AgencyPermissionMultiselect": {
-			"allLabel": "Todas as agências",
+			"all": "Todas as agências",
 			"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
 			"label": "Operadores"
+
+		},
+		"AlertReferenceTypePermissionMultiselect": {
+			"alertReferenceTypeOptionsWithAllowAll": {
+				"all": "Tipos de referência",
+				"lines": "Linhas",
+				"rides": "Circulações",
+				"stops": "Paragens"
+			},
+			"all": "Todo o tipo de referências",
+			"description": "Selecione os tipos de referência que este utilizador poderá utilizar."
 
 		},
 		"SectionItems": {
@@ -525,26 +536,38 @@
 			"BasicInfo": {
 				"description": "Informação básica do utilizador",
 				"fields": {
-					"name": "Nome do grupo",
-					"placeholder": "..."
+					"name": {
+						"label": "Nome do grupo",
+						"placeholder": "..."
+					}
 				},
 				"title": "Informação Básica"
 			},
 			"header": {
-				"deleteButtonConfirmMessage": "Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível.",
-				"deleteButtonConfirmTitle": "Eliminar Grupo de Permissões",
-				"newRoleButtonLabel": "Novo Grupo de Permissões"
+				"DeleteButton": {
+					"confirm": {
+						"message": "Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível.",
+						"title": "Eliminar Grupo de Permissões"
+					}
+				},
+				"NewRoleButton": {
+					"label": "Novo Grupo de Permissões"
+				}
 			}
 		},
 		"list": {
-			"header": {
-				"newRoleButtonLabel": "Novo Grupo de Permissões",
+			"Header": {
+				"NewRoleButton": {
+					"label": "Novo Grupo de Permissões"
+				},
+				"Table": {
+					"columns": {
+						"id": "#ID",
+						"name": "Nome",
+						"permissions": "Permissões"
+					}
+				},
 				"title": "Grupos de Permissões"
-			},
-			"tableColumns": {
-				"id": "#ID",
-				"name": "Nome",
-				"permissions": "Permissões"
 			}
 		}
 	},
