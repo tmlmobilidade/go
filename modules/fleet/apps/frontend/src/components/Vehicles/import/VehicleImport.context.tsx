@@ -96,12 +96,18 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		if (Number.isNaN(num)) throw new Error(`Invalid number for ${fieldName}: ${value}`);
 		return num;
 	};
+
+	//
+
 	const parseMappedEnum = (value: string | undefined, map: Record<string, string>, fieldName: string): string => {
 		if (!value) throw new Error(`Missing enum value for ${fieldName}`);
 		const mapped = map[value];
 		if (!mapped) throw new Error(`Invalid enum value for ${fieldName}: ${value}`);
 		return mapped;
 	};
+
+	//
+
 	const parseWheelchairAccessibility = (wheelchair?: string, ramp?: string): string => {
 		if (wheelchair === '0') return 'no';
 		switch (ramp) {
@@ -112,6 +118,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			default: return 'no';
 		}
 	};
+
+	//
 
 	const diffVehicle = (existing: Vehicle, incoming: CreateVehicleDto) => {
 		const changes: VehicleImportPreview['changes'] = {};
@@ -148,7 +156,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 					contactless: parseBoolean(raw.new_seminew),
 					emission_class: parseMappedEnum(raw.emission, EMISSION_MAP, 'emission_class'),
 					is_locked: false,
-					license_plate: raw.license_plate.replace(/-/g, ''),
+					license_plate: raw.license_plate.replace(/-/g, '').toUpperCase(),
 					make: raw.make,
 					model: raw.model,
 					owner: raw.owner,
