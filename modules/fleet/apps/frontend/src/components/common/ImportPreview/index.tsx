@@ -104,7 +104,7 @@ function translateValue(
 
 /**
  * Display the changes detected for imported vehicles
- * Translates specific enum/boolean values for user-friendly display
+ * Always shows ALL changed fields (no limits, no "+X more")
  */
 export function ImportPreview() {
 	const { data } = useVehicleImportContext();
@@ -124,8 +124,6 @@ export function ImportPreview() {
 		item => item.mode === 'UPDATE',
 	);
 
-	const maxChanges = data.counters.updated;
-
 	return (
 		<Section gap="lg">
 			{/* Initial summary information */}
@@ -138,7 +136,7 @@ export function ImportPreview() {
 				const licensePlate = item.vehicle.license_plate ?? 'Unknown Plate';
 
 				const changesEntries = item.changes
-					? Object.entries(item.changes).slice(0, maxChanges)
+					? Object.entries(item.changes)
 					: [];
 
 				return (
@@ -174,16 +172,6 @@ export function ImportPreview() {
 								<ValueDisplay
 									label="Alterações"
 									value="Sem alterações"
-								/>
-							)}
-
-							{item.changes && Object.keys(item.changes).length > maxChanges && (
-								<ValueDisplay
-									label="Outras alterações"
-									value={`+${
-										Object.keys(item.changes).length
-										- maxChanges
-									} more`}
 								/>
 							)}
 						</Grid>
