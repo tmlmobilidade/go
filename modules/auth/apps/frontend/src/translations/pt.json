@@ -1,15 +1,4 @@
 {
-	"SendPasswordResetEmailForm": {
-		"description": "Introduza seu email para recuperar a sua palavra-passe",
-		"emailPlaceholder": "Email de Recuperação",
-		"errorMessageDescription": "Ocorreu um erro",
-		"errorMessageTitle": "Erro ao tentar enviar email",
-		"footerLabel": "Voltar ao login",
-		"submitLabel": "Enviar email",
-		"successMessageDescription": "Email de recuperação enviado com sucesso",
-		"successMessageTitle": "Sucesso",
-		"title": "Recuperar Password"
-	},
 	"agencies": {
 		"NoDataLabel": {
 			"text": "Selecione uma Agência"
@@ -37,18 +26,6 @@
 					"label": "Permissão Herdada pelo grupo de permissões"
 				}
 			}
-		},
-		"changePasswordForm": {
-			"confirmPasswordPlaceholder": "Confirmar Password",
-			"description": "Introduza a sua nova password",
-			"errorMessageDescription": "Ocorreu um erro ao tentar alterar a password",
-			"errorMessageTitle": "Erro ao tentar alterar password",
-			"footerLabel": "Voltar ao login",
-			"passwordPlaceholder": "Password",
-			"submitLabel": "Confirmar",
-			"successMessageDescription": "Password alterada com sucesso.",
-			"successMessageTitle": "Sucesso",
-			"title": "Alterar password"
 		},
 		"detail": {
 			"SectionBasicInfo": {
@@ -133,18 +110,7 @@
 				}
 			}
 		},
-		"loginForm": {
-			"description": "Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.",
-			"emailPlaceholder": "Email",
-			"errorMessageDescription": "Ocorreu um erro",
-			"errorMessageTitle": "Nao foi possível efetuar o login",
-			"footerLabel": "Recuperar Password",
-			"passwordPlaceholder": "Password",
-			"submitLabel": "Login",
-			"successMessageDescription": "",
-			"successMessageTitle": "Login efetuado com sucesso",
-			"title": "Login no GO+"
-		},
+
 		"organizations": {
 			"NoDataLabel": {
 				"text": "Selecione uma Organização"

@@ -13,6 +13,7 @@ import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useQueryState } from 'nuqs';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -39,6 +40,7 @@ export function ChangePasswordForm() {
 	const [passwordValue, setPasswordValue] = useState('');
 	const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
 
+	const { i18n, t } = useTranslation('auth');
 	//
 	// B. Transform data
 
@@ -64,6 +66,8 @@ export function ChangePasswordForm() {
 		return validationErrors.some(error => !error.valid);
 	}, [validationErrors]);
 
+	console.log(i18n.options.resources);
+
 	//
 	// B. Handle actions
 
@@ -84,11 +88,11 @@ export function ChangePasswordForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? 'Ocorreu um erro ao tentar alterar a password', title: 'Erro ao tentar alterar password' });
+			useToast.error({ message: response.error ?? t('authentication.ChangePasswordForm.error_message.description'), title: t('authentication.ChangePasswordForm.error_message.title') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: 'Password foi alterada com sucesso', title: 'Sucesso' });
+		useToast.success({ message: t('authentication.ChangePasswordForm.success.description'), title: t('authentication.ChangePasswordForm.success.title') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -97,28 +101,28 @@ export function ChangePasswordForm() {
 
 	return (
 		<AuthenticationForm
-			description="Introduza a sua nova password"
-			footerLabel="Voltar ao login"
+			description={t('authentication.ChangePasswordForm.description')}
+			footerLabel={t('authentication.ChangePasswordForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={isDisabled}
-			submitLabel="Confirmar"
-			title="Alterar password"
+			submitLabel={t('authentication.ChangePasswordForm.submit.label')}
+			title={t('authentication.ChangePasswordForm.title')}
 		>
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder="Password"
+				placeholder={t('authentication.ChangePasswordForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
 			<PasswordInput
 				key="password-confirm"
 				disabled={isLoading}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
-				placeholder="Confirm password"
+				placeholder={t('authentication.ChangePasswordForm.fields.confirmPassword.placeholder')}
 				value={confirmPasswordValue}
 			/>
 			<div className={styles.passwordRequirements}>
