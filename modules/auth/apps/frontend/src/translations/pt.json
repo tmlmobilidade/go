@@ -3,30 +3,6 @@
 		"NoDataLabel": {
 			"text": "Selecione uma Agência"
 		},
-		"auth": {
-			"common": {
-				"iconChooser": "Ícones",
-				"uploadImage": {
-					"deleteButtonConfirmMessage": "Tem certeza que deseja apagar a imagem?",
-					"deleteButtonConfirmTitle": "Apagar imagem",
-					"error": {
-						"message": "O tamanho do ficheiro execede o limite permitido",
-						"title": "Erro ao carregar imagem"
-					}
-				}
-			},
-			"permissions": {
-				"AgencyPermissionMultiselect": {
-					"allLabel": "Todas as agências",
-					"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
-					"label": "Operadores"
-
-				},
-				"SectionItems": {
-					"label": "Permissão Herdada pelo grupo de permissões"
-				}
-			}
-		},
 		"detail": {
 			"SectionBasicInfo": {
 				"description": "Detalhes como nome, email, telefone, URL e timezone da agência.",
@@ -565,6 +541,35 @@
 					"roleIds": "Grupos"
 				}
 			}
+		}
+	},
+	"common": {
+		"UploadImage": {
+			"DeleteButton": {
+				"confirm": {
+					"message": "Tem certeza que deseja apagar a imagem?",
+					"title": "Apagar imagem"
+				}
+			},
+			"Error": {
+				"message": "O tamanho do ficheiro execede o limite permitido",
+				"title": "Erro ao carregar imagem"
+			},
+			"FileButton": {
+				"label": "Carregar imagem"
+			}
+		},
+		"iconChooser": "Ícones"
+	},
+	"permissions": {
+		"AgencyPermissionMultiselect": {
+			"allLabel": "Todas as agências",
+			"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
+			"label": "Operadores"
+
+		},
+		"SectionItems": {
+			"label": "Permissão Herdada pelo grupo de permissões"
 		}
 	}
 }
