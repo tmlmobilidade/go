@@ -8,7 +8,7 @@ import fs from 'node:fs';
 
 /* * */
 
-const TASK_ID: ExportType = 'hashed_shapes-geojson';
+const TASK_ID: ExportType = 'hashed-shapes-geojson';
 
 /* * */
 
@@ -18,14 +18,9 @@ export async function exportHashedShapesGeoJSON({ context, hashedShapeIds, messa
 	message('A iniciar a exportação de HashedShapes para GeoJSON...');
 
 	//
-	// Setup database connection
-
-	message(`A iniciar ligação à base de dados...`);
-
-	//
 	// Fetch all hashed_shapes by their IDs
 
-	message(`A buscar ${hashedShapeIds.length} HashedShape(s) da base de dados...`);
+	message(`A procurar ${hashedShapeIds.length} HashedShape(s) na base de dados...`);
 
 	const foundHashedShapes: HashedShape[] = [];
 	const notFoundIds: string[] = [];

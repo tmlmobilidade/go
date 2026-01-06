@@ -16,7 +16,7 @@ import { exportValidationsByStopByPattern } from '@/tasks/apex-validations/valid
 import { exportValidationsByStopByTrip } from '@/tasks/apex-validations/validations-by-stop-by-trip.js';
 import { exportValidationsByStop } from '@/tasks/apex-validations/validations-by-stop.js';
 import { exportValidationsRaw } from '@/tasks/apex-validations/validations-raw.js';
-import { exportHashedShapesGeoJSON } from '@/tasks/hashed_shapes/hashed_shapes-geojson.js';
+import { exportHashedShapesGeoJSON } from '@/tasks/hashed-shapes/hashed-shapes-geojson.js';
 import { exportRidesRaw } from '@/tasks/rides/rides-raw.js';
 import { exportVehicleEventsRaw } from '@/tasks/vehicle-events/vehicle-events-raw.js';
 import { exportTypeLabels, exportTypesWithoutFilters } from '@/types.js';
@@ -62,7 +62,7 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 	// For hashed_shapes export, prompt for hashedshape IDs
 
 	let hashedShapeIds: string[] = [];
-	if (exportTypes.includes('hashed_shapes-geojson')) {
+	if (exportTypes.includes('hashed-shapes-geojson')) {
 		hashedShapeIds = await promptHashedShapeIds();
 	}
 
@@ -138,9 +138,9 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 		},
 
 		{
-			enabled: exportTypes.includes('hashed_shapes-geojson'),
+			enabled: exportTypes.includes('hashed-shapes-geojson'),
 			task: async message => await exportHashedShapesGeoJSON({ context, hashedShapeIds, message }),
-			title: exportTypeLabels['hashed_shapes-geojson'],
+			title: exportTypeLabels['hashed-shapes-geojson'],
 		},
 
 	]);

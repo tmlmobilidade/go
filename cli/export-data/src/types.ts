@@ -14,19 +14,17 @@ export const exportTypeLabels = {
 	'validations-by-stop-by-trip': '1.1. Validações por Stop ID, por Trip ID',
 	'validations-raw': '1.0. Validações em bruto',
 	'vehicle-events-raw': '3.0. Vehicle Events em bruto',
-	'hashed_shapes-geojson': '4.0. HashedShapes para GeoJSON',
+	'hashed-shapes-geojson': '4.0. HashedShapes para GeoJSON',
 } as const;
 
 export type ExportType = keyof typeof exportTypeLabels;
-
-/* * */
 
 /**
  * Export types that don't require filters or dates.
  * These exports use their own specific input methods (e.g., IDs).
  */
 export const exportTypesWithoutFilters: ExportType[] = [
-	'hashed_shapes-geojson',
+	'hashed-shapes-geojson',
 ];
 
 /* * */
