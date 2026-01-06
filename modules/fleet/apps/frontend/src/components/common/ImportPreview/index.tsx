@@ -55,10 +55,10 @@ export function ImportPreview() {
 		return null;
 	}
 
-	/** 👉 Número de veículos a criar (vem do backend) */
+	// Number of vehicles to be created (provided by backend counters)
 	const createdCount = data.counters.created;
 
-	/** 👉 Mostrar apenas UPDATES */
+	// Show only UPDATE entries in the preview
 	const updatesPreview = data.importPreview.filter(
 		item => item.mode === 'UPDATE',
 	);
@@ -67,9 +67,9 @@ export function ImportPreview() {
 
 	return (
 		<Section gap="lg">
-			{/* 👉 Informação inicial */}
+			{/* Initial summary information */}
 			<Label>
-				{createdCount} veículo(s) serão criados
+				{createdCount} vehicle(s) will be created
 			</Label>
 
 			{updatesPreview.map((item, index) => {
@@ -83,10 +83,13 @@ export function ImportPreview() {
 				return (
 					<Section key={index}>
 						<Grid columns="abc" gap="lg">
-							<ValueDisplay label="Modo" value="Atualizar" />
+							<ValueDisplay
+								label="Mode"
+								value="Update"
+							/>
 
 							<ValueDisplay
-								label="Veículo"
+								label="Vehicle"
 								value={`#ID ${vehicleId} (${licensePlate})`}
 							/>
 
@@ -95,23 +98,23 @@ export function ImportPreview() {
 									<ValueDisplay
 										key={key}
 										label={key}
-										value={`Atual: ${translateValue(
+										value={`Current: ${translateValue(
 											key,
 											value.oldValue,
-										)} → Novo: ${translateValue(
+										)} → New: ${translateValue(
 											key,
 											value.newValue,
 										)}`}
 									/>
 								))
 							) : (
-								<ValueDisplay label="Alterações" value="Sem alterações" />
+								<ValueDisplay label="Changes" value="No changes" />
 							)}
 
 							{item.changes && Object.keys(item.changes).length > maxChanges && (
 								<ValueDisplay
-									label="Outras alterações"
-									value={`+${Object.keys(item.changes).length - maxChanges} mais`}
+									label="Other changes"
+									value={`+${Object.keys(item.changes).length - maxChanges} more`}
 								/>
 							)}
 						</Grid>
