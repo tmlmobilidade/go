@@ -1,14 +1,29 @@
-import { closeCreateVehicleModal } from '@/components/Vehicles/create/VehicleCreate.modal';
+import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImport.modal';
 import { EMISSION_MAP, PROPULSION_MAP } from '@/lib/vehicleEnum';
-import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
-import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import {
+	type CreateVehicleDto,
+	CreateVehicleSchema,
+	type Vehicle,
+} from '@tmlmobilidade/types';
+import {
+	type UseFormReturnType,
+	useToast,
+	useTypicalForm,
+} from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import {
+	createContext,
+	PropsWithChildren,
+	useContext,
+	useMemo,
+	useState,
+} from 'react';
 import useSWR from 'swr';
 
-//
+/* ============================================================
+ * Context Types
+ * ============================================================ */
 
 interface VehicleImportContextState {
 	actions: {
@@ -19,75 +34,90 @@ interface VehicleImportContextState {
 		form: UseFormReturnType<CreateVehicleDto>
 	}
 	flags: {
+		canCreateorUpdate: boolean
 		error: Error | null
 		isloading: boolean
 		isSaving: boolean
 	}
 }
 
-//
+/* ============================================================
+ * Context Setup
+ * ============================================================ */
 
-export const VehicleImportContext = createContext<undefined | VehicleImportContextState>(undefined);
+export const VehicleImportContext
+	= createContext<undefined | VehicleImportContextState>(undefined);
 
 export function useVehicleImportContext() {
 	const context = useContext(VehicleImportContext);
 	if (!context) {
-		throw new Error('useVehicleImportContext must be used within a VehicleImportContextProvider');
+		throw new Error(
+			'useVehicleImportContext must be used within a VehicleImportContextProvider',
+		);
 	}
 	return context;
 }
 
-//
+/* ============================================================
+ * Provider
+ * ============================================================ */
 
-export const VehicleImportContextProvider = ({ children }: PropsWithChildren) => {
-	//
+export const VehicleImportContextProvider = ({
+	children,
+}: PropsWithChildren) => {
+	/* ------------------------------------------------------------
+	 * A. State management
+	 * ------------------------------------------------------------ */
 
-	//
-	// A. Setup variables
-
-	const router = useRouter();
 	const [isError, setIsError] = useState<Error | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isloading, setIsloading] = useState(false);
+	const [canCreateorUpdate, setCanCreateorUpdate] = useState(false);
 
-	//
+	// Vehicles loaded from TXT (not persisted yet)
+	const [importedVehicles, setImportedVehicles] = useState<CreateVehicleDto[]>([]);
 
-	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
+	// Vehicles already existing in database
+	const [existingVehicles, setExistingVehicles] = useState<Vehicle[]>([]);
 
-	//
+	/* ------------------------------------------------------------
+	 * B. External hooks
+	 * ------------------------------------------------------------ */
+
+	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(
+		API_ROUTES.fleet.VEHICLES_LIST,
+	);
 
 	const { form } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
 
-	//
+	/* ============================================================
+	 * C. Helper parsing functions
+	 * ============================================================ */
 
-	// -----------------------------
-	// Funções auxiliares
-	// -----------------------------
-
-	//
-
+	/** Converts "1" → true, anything else → false */
 	const parseBoolean = (value?: string): boolean => value === '1';
 
-	//
-
+	/** Parses numeric fields safely */
 	const parseNumber = (value?: string, fieldName?: string): number => {
 		if (!value) return 0;
 		const num = Number(value);
-		if (Number.isNaN(num)) throw new Error(`Invalid number for ${fieldName}: ${value}`);
+		if (Number.isNaN(num)) {
+			throw new Error(`Invalid number for ${fieldName}: ${value}`);
+		}
 		return num;
 	};
 
-	//
-
+	/** Maps numeric GTFS enums to backend string enums */
 	const parseMappedEnum = (
 		value: string | undefined,
 		map: Record<string, string>,
 		fieldName: string,
 	): string => {
-		if (!value) throw new Error(`Missing enum value for ${fieldName}`);
+		if (!value) {
+			throw new Error(`Missing enum value for ${fieldName}`);
+		}
 
 		const mapped = map[value];
-
 		if (!mapped) {
 			throw new Error(`Invalid enum value for ${fieldName}: ${value}`);
 		}
@@ -95,33 +125,42 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		return mapped;
 	};
 
-	//
-
+	/**
+	 * Wheelchair accessibility logic
+	 *
+	 * wheelchair = 0 → no accessibility
+	 * wheelchair = 1 → depends on ramp value
+	 *
+	 * ramp:
+	 * 0 = no
+	 * 1 = manual ramp
+	 * 2 = electric ramp
+	 * 3 = not applicable
+	 */
 	const parseWheelchairAccessibility = (
 		wheelchair?: string,
 		ramp?: string,
 	): string => {
-	// Sem preparação wheelchair
+		// No wheelchair preparation
 		if (wheelchair === '0') {
 			return 'no';
 		}
 
-		// Com preparação wheelchair → depende da rampa
 		switch (ramp) {
-			case '0':
-				return 'no';
 			case '1':
 				return 'manual_ramp';
 			case '2':
 				return 'electric_ramp';
+			case '0':
 			case '3':
-				return 'not application';
 			default:
 				return 'no';
 		}
 	};
 
-	//
+	/* ============================================================
+	 * D. TXT parsing
+	 * ============================================================ */
 
 	const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
 		const text = await file.text();
@@ -132,6 +171,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		return lines.slice(1).map((line, lineIndex) => {
 			const values = line.split(';');
 
+			// Build raw object from header/value pairs
 			const raw = headers.reduce((obj, header, index) => {
 				obj[header] = values[index]?.trim() ?? '';
 				return obj;
@@ -139,54 +179,73 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 			try {
 				return {
-					_id: raw.vehicle_id ?? undefined,
+					_id: raw.vehicle_id || undefined,
 					agency_id: raw.agency_id,
 					bikes_allowed: parseBoolean(raw.bicycles),
 					capacity_seated: parseNumber(raw.available_seats, 'capacity_seated'),
-					capacity_standing: parseNumber(raw.available_standing, 'capacity_standing'),
+					capacity_standing: parseNumber(
+						raw.available_standing,
+						'capacity_standing',
+					),
 					contactless: parseBoolean(raw.new_seminew),
-					emission_class: parseMappedEnum(raw.emission, EMISSION_MAP,	'emission_class'),
+					emission_class: parseMappedEnum(
+						raw.emission,
+						EMISSION_MAP,
+						'emission_class',
+					),
 					is_locked: false,
 					license_plate: raw.license_plate.replace(/-/g, ''),
 					make: raw.make,
 					model: raw.model,
 					owner: raw.owner,
 					passenger_counting: parseBoolean(raw.passenger_counting),
-					propulsion: parseMappedEnum(raw.propulsion, PROPULSION_MAP,	'propulsion'),
+					propulsion: parseMappedEnum(
+						raw.propulsion,
+						PROPULSION_MAP,
+						'propulsion',
+					),
 					registration_date: raw.registration_date,
-					wheelchair_acessible: parseWheelchairAccessibility(raw.wheelchair, 'wheelchair_acessible'),
+					wheelchair_acessible: parseWheelchairAccessibility(
+						raw.wheelchair,
+						raw.ramp,
+					),
 				};
 			}
 			catch (error) {
-				throw new Error(`Error parsing line ${lineIndex + 2}: ${(error as Error).message}`);
+				throw new Error(
+					`Error parsing line ${lineIndex + 2}: ${(error as Error).message}`,
+				);
 			}
 		});
 	};
 
-	// -----------------------------
-	// Criação ou atualização de veículo
-	// -----------------------------
-	const createOrUpdateVehicle = async (vehicle: CreateVehicleDto, existingVehicles: Vehicle[]) => {
-		const existing = existingVehicles.find(v => v._id === vehicle._id);
+	/* ============================================================
+	 * E. Create or Update logic
+	 * ============================================================ */
 
-		if (!existing) {
-			// CREATE
-			return fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', vehicle);
+	const createOrUpdateVehicle = async (
+		vehicle: CreateVehicleDto,
+		existing: Vehicle[],
+	) => {
+		const exists = existing.find(v => v._id === vehicle._id);
+
+		// CREATE
+		if (!exists) {
+			return fetchData(API_ROUTES.fleet.VEHICLES_LIST, 'POST', vehicle);
 		}
 
-		// UPDATE se houver alterações
-		const hasChanges = Object.keys(vehicle).some(
-			key => vehicle[key as keyof CreateVehicleDto] !== existing[key as keyof Vehicle],
+		// UPDATE
+		return fetchData(
+			API_ROUTES.fleet.VEHICLES_DETAIL(vehicle._id),
+			'PUT',
+			vehicle,
 		);
-
-		if (!hasChanges) return null;
-
-		return fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicle._id), 'PUT', vehicle);
 	};
 
-	// -----------------------------
-	// Handle import file
-	// -----------------------------
+	/* ============================================================
+	 * F. File import (NO DB interaction)
+	 * ============================================================ */
+
 	const handleSetImportFile = async (file: File | null) => {
 		if (!file) return;
 
@@ -195,24 +254,30 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 		try {
 			const vehiclesFromFile = await parseTxtFile(file);
-			console.log('Parsed vehicles:', vehiclesFromFile);
 
-			const existingVehiclesResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
-
-			if (existingVehiclesResponse.error || !existingVehiclesResponse.data) {
-				throw new Error('Error fetching existing vehicles');
-			}
-
+			// Validate all vehicles before allowing persistence
 			for (const vehicle of vehiclesFromFile) {
-				await createOrUpdateVehicle(vehicle, existingVehiclesResponse.data);
+				const result = CreateVehicleSchema.safeParse(vehicle);
+				if (!result.success) {
+					throw new Error(`Validation error for vehicle ${vehicle._id}`);
+				}
 			}
 
-			allVehiclesMutate();
+			setImportedVehicles(vehiclesFromFile);
+			form.setValues(vehiclesFromFile[0]);
 
-			useToast.success({ message: 'Import completed successfully', title: 'Success' });
+			useToast.success({
+				message: `${vehiclesFromFile.length} vehicles loaded`,
+				title: 'File imported',
+			});
+
+			setCanCreateorUpdate(true);
 		}
 		catch (error) {
-			useToast.error({ message: (error as Error).message, title: 'Import error' });
+			useToast.error({
+				message: (error as Error).message,
+				title: 'Import error',
+			});
 			setIsError(error as Error);
 		}
 		finally {
@@ -220,48 +285,66 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}
 	};
 
-	// -----------------------------
-	// Create vehicle manually
-	// -----------------------------
-	const handleCreateVehicle = async () => {
-		setIsError(null);
+	/* ============================================================
+	 * G. Persist data (CREATE / UPDATE)
+	 * ============================================================ */
+
+	const handleCreateOrUpdateAll = async () => {
 		setIsSaving(true);
-		setIsloading(true);
+		setIsError(null);
 
-		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
+		try {
+			for (const vehicle of importedVehicles) {
+				await createOrUpdateVehicle(vehicle, existingVehicles);
+			}
 
-		if (response.error) {
-			useToast.error({ message: typeof response.error === 'string' ? response.error : 'Validation error', title: 'Error creating vehicle' });
-			setIsError(new Error(String(response.error)));
-			setIsSaving(false);
-			setIsloading(false);
-			return;
+			allVehiclesMutate();
+
+			useToast.success({
+				message: 'Vehicles created / updated successfully',
+				title: 'Success',
+			});
+
+			setImportedVehicles([]);
+			setExistingVehicles([]);
+			setCanCreateorUpdate(false);
+
+			closeImportVehicleModal();
 		}
-
-		form.reset();
-		allVehiclesMutate();
-		setIsSaving(false);
-		setIsloading(false);
-		closeCreateVehicleModal();
-
-		useToast.success({ message: 'Vehicle created successfully', title: 'Success' });
-
-		if (response.data?._id) {
-			router.push(keepUrlParams(PAGE_ROUTES.fleet.VEHICLES_DETAIL(response.data._id)));
+		catch (error) {
+			useToast.error({
+				message: (error as Error).message,
+				title: 'Save error',
+			});
+			setIsError(error as Error);
+		}
+		finally {
+			setIsSaving(false);
 		}
 	};
 
-	// -----------------------------
-	// Context value
-	// -----------------------------
-	const contextValue: VehicleImportContextState = useMemo(() => ({
-		actions: {
-			createVehicle: handleCreateVehicle,
-			setImportFile: handleSetImportFile,
-		},
-		data: { form },
-		flags: { error: isError, isloading, isSaving },
-	}), [form, isError, isSaving, isloading]);
+	/* ============================================================
+	 * H. Context value
+	 * ============================================================ */
+
+	const contextValue: VehicleImportContextState = useMemo(
+		() => ({
+			actions: {
+				createVehicle: handleCreateOrUpdateAll,
+				setImportFile: handleSetImportFile,
+			},
+			data: {
+				form,
+			},
+			flags: {
+				canCreateorUpdate,
+				error: isError,
+				isloading,
+				isSaving,
+			},
+		}),
+		[form, isError, isSaving, isloading, canCreateorUpdate],
+	);
 
 	return (
 		<VehicleImportContext.Provider value={contextValue}>
