@@ -521,15 +521,21 @@
 	},
 	"roles": {
 		"create": {
-			"basicInfo": {
+			"BasicInfo": {
 				"fields": {
-					"name": "Nome do Grupo",
-					"placeholder": "..."
+					"name": {
+						"label": "Nome do Grupo",
+						"placeholder": "..."
+					}
 				}
 			},
-			"header": {
-				"newRoleButtonLabel": "Novo Grupo de Permissões",
-				"saveButtonLabel": "Criar"
+			"Header": {
+				"NewRoleButton": {
+					"label": "Novo Grupo de Permissões"
+				},
+				"SaveButton": {
+					"label": "Criar"
+				}
 			}
 		},
 		"detail": {
