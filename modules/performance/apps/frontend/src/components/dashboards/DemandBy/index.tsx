@@ -9,6 +9,7 @@ import { useNetworkContext } from '@/contexts/Network.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { DateInput, MonthPicker, MultiSelect, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,6 +21,7 @@ export default function DemandByTopic() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('performance');
 	const { data: networkData } = useNetworkContext();
 
 	const [timeView, setTimeView] = useState<'annual' | 'daily' | 'monthly'>('daily');
@@ -105,13 +107,29 @@ export default function DemandByTopic() {
 
 				<Section flexDirection="row" gap="lg" padding="none">
 					<Section gap="xs" padding="none" width="fit-content">
-						<h3>Vista</h3>
-						<SegmentedControl data={[{ label: 'Anual', value: 'annual' }, { label: 'Mensal', value: 'monthly' }, { label: 'Diária', value: 'daily' }]} onChange={handleChangeTimeView} value={timeView} />
+						<h3>{t('DemandByTopic.filters.view.label')}</h3>
+						<SegmentedControl
+							onChange={handleChangeTimeView}
+							value={timeView}
+							data={[
+								{ label: t('DemandByTopic.filters.view.options.annual'), value: 'annual' },
+								{ label: t('DemandByTopic.filters.view.options.monthly'), value: 'monthly' },
+								{ label: t('DemandByTopic.filters.view.options.daily'), value: 'daily' },
+							]}
+						/>
 					</Section>
 
 					<Section gap="xs" padding="none" width="fit-content">
-						<h3>Agrupar por</h3>
-						<SegmentedControl data={[{ label: 'Operador', value: 'agency' }, { label: 'Linha', value: 'line' }, { label: 'Pattern', value: 'pattern' }]} onChange={handleChangeGroupBy} value={groupBy} />
+						<h3>{t('DemandByTopic.filters.group_by.label')}</h3>
+						<SegmentedControl
+							onChange={handleChangeGroupBy}
+							value={groupBy}
+							data={[
+								{ label: t('DemandByTopic.filters.group_by.options.agency'), value: 'agency' },
+								{ label: t('DemandByTopic.filters.group_by.options.line'), value: 'line' },
+								{ label: t('DemandByTopic.filters.group_by.options.pattern'), value: 'pattern' },
+							]}
+						/>
 					</Section>
 				</Section>
 
@@ -120,7 +138,7 @@ export default function DemandByTopic() {
 					{groupBy === 'line' && lineData.length > 0 && (
 						<MultiSelect
 							data={lineData}
-							label="Linha"
+							label={t('DemandByTopic.filters.line.label')}
 							limit={20}
 							onChange={setLineIdsInput}
 							value={lineIdsInput}
@@ -136,7 +154,7 @@ export default function DemandByTopic() {
 					{groupBy === 'pattern' && patternsData.length > 0 && (
 						<MultiSelect
 							data={patternsData}
-							label="Pattern"
+							label={t('DemandByTopic.filters.pattern.label')}
 							limit={20}
 							onChange={setPatternIdsInput}
 							value={patternIdsInput}
@@ -146,22 +164,58 @@ export default function DemandByTopic() {
 
 					{timeView === 'daily' && (
 						<>
-							<DateInput label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<DateInput label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<DateInput
+								label={t('DemandByTopic.filters.date.start_label')}
+								locale="pt"
+								onChange={handleChangeStartDate}
+								placeholder={t('DemandByTopic.filters.date.placeholder')}
+								value={startDate.js_date}
+							/>
+							<DateInput
+								label={t('DemandByTopic.filters.date.end_label')}
+								locale="pt"
+								onChange={handleChangeEndDate}
+								placeholder={t('DemandByTopic.filters.date.placeholder')}
+								value={endDate.js_date}
+							/>
 						</>
 					)}
 
 					{timeView === 'monthly' && (
 						<>
-							<MonthPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<MonthPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<MonthPicker
+								label={t('DemandByTopic.filters.date.start_label')}
+								locale="pt"
+								onChange={handleChangeStartDate}
+								placeholder={t('DemandByTopic.filters.date.placeholder')}
+								value={startDate.js_date}
+							/>
+							<MonthPicker
+								label={t('DemandByTopic.filters.date.end_label')}
+								locale="pt"
+								onChange={handleChangeEndDate}
+								placeholder={t('DemandByTopic.filters.date.placeholder')}
+								value={endDate.js_date}
+							/>
 						</>
 					)}
 
 					{timeView === 'annual' && (
 						<>
-							<YearPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<YearPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<YearPicker
+								label={t('DemandByTopic.filters.date.start_label')}
+								locale="pt"
+								onChange={handleChangeStartDate}
+								placeholder={t('DemandByTopic.filters.date.placeholder')}
+								value={startDate.js_date}
+							/>
+							<YearPicker
+								label={t('DemandByTopic.filters.date.end_label')}
+								locale="pt"
+								onChange={handleChangeEndDate}
+								placeholder={t('DemandByTopic.filters.date.placeholder')}
+								value={endDate.js_date}
+							/>
 						</>
 					)}
 
@@ -175,11 +229,23 @@ export default function DemandByTopic() {
 
 			<Spacer />
 
-			<DemandByProductVisualization filters={filters} groupBy={groupBy} height={300} timeView={timeView} title="Passageiros transportados por tipo de passe" />
+			<DemandByProductVisualization
+				filters={filters}
+				groupBy={groupBy}
+				height={300}
+				timeView={timeView}
+				title={t('DemandByTopic.charts.by_product_title')}
+			/>
 
 			<Spacer />
 
-			<DemandByCategoryVisualization filters={filters} groupBy={groupBy} height={300} timeView={timeView} title="Passageiros transportados por categoria de bilhética" />
+			<DemandByCategoryVisualization
+				filters={filters}
+				groupBy={groupBy}
+				height={300}
+				timeView={timeView}
+				title={t('DemandByTopic.charts.by_category_title')}
+			/>
 
 		</Section>
 	);

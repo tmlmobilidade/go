@@ -9,6 +9,7 @@ import { RawMetricData } from '@/utils/metrics/types/metricData';
 import { Dates } from '@tmlmobilidade/dates';
 import { Grid, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 interface Filters {
@@ -27,6 +28,7 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('performance');
 	const agenciesContext = useAgenciesContext();
 
 	//
@@ -96,7 +98,7 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 			<Surface overflow="visible">
 				<Section gap="lg">
 					<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
-						<h3>Operação</h3>
+						<h3>{t('RecordVkms.title')}</h3>
 					</Section>
 					<Grid columns="abc" gap="lg">
 						{[1, 2, 3].map(index => (
@@ -118,23 +120,23 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 		<Surface overflow="visible">
 			<Section gap="lg">
 				<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
-					<h3>Operação</h3>
+					<h3>{t('RecordVkms.title')}</h3>
 				</Section>
 				<Grid columns="abc" gap="lg">
 					<RecordCard
-						description="no período selecionado"
-						title="Vkms referência"
+						description={t('RecordVkms.Cards.reference.description')}
+						title={t('RecordVkms.Cards.reference.title')}
 						value={vkmsContracted}
 					/>
 					<RecordCard
-						description={`de ${transformedRecordData.scheduledRides.toLocaleString('pt-PT')} viagens`}
-						title="Vkms planeados"
+						description={t('RecordVkms.Cards.scheduled.description', { count: transformedRecordData.scheduledRides })}
+						title={t('RecordVkms.Cards.scheduled.title')}
 						totalValue={vkmsContracted}
 						value={transformedRecordData.vmksScheduled}
 					/>
 					<RecordCard
-						description={`de ${transformedRecordData.accomplishedRides.toLocaleString('pt-PT')} viagens`}
-						title="Vkms executados"
+						description={t('RecordVkms.Cards.executed.description', { count: transformedRecordData.accomplishedRides })}
+						title={t('RecordVkms.Cards.executed.title')}
 						totalValue={vkmsContracted}
 						value={transformedRecordData.vkmsObserved}
 					/>

@@ -5,8 +5,8 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { useTranslations } from 'next-intl';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -63,7 +63,7 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Setup state
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance');
 	const [calendar, setCalendar] = useState<CalendarEntry[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isError, setIsError] = useState<boolean>(false);
@@ -125,7 +125,12 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 
 	const parseAndFormatDate = (iso: string) => {
 		const dt = Dates.fromISO(iso);
-		const formatted = t('dates.formatted', { date: dt.js_date });
+		const formatted = dt.js_date.toLocaleDateString('pt-PT', {
+			day: '2-digit',
+			month: 'long',
+			weekday: 'long',
+			year: 'numeric',
+		});
 		return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 	};
 

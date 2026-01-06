@@ -10,8 +10,8 @@ import { useDatesContext } from '@/contexts/Dates.context';
 import { Routes } from '@/routes';
 import { TopDemandByAgencyByDayType } from '@tmlmobilidade/types';
 import { BarChart, Grid, MetricsSkeleton, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 export default function RecordDemandByDayType() {
@@ -19,7 +19,7 @@ export default function RecordDemandByDayType() {
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance');
 	const { utils } = useDatesContext();
 	const { data: { agencies } } = useAgenciesContext();
 	const [selectedAgencies, setSelectedAgencies] = useState<AgencyType[]>([]);

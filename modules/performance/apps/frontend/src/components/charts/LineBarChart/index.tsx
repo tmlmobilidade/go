@@ -6,8 +6,8 @@ import { generateEventReferenceLines, TimeSeriesResult } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { Dates } from '@tmlmobilidade/dates';
 import { BarChart, LineChart, MetricsSkeleton } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -29,7 +29,7 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance');
 
 	//
 	// B. Transform data

@@ -2,7 +2,7 @@
  * Core data interfaces for metrics system
  */
 
-import { useTranslations } from 'next-intl';
+import { TFunction } from 'i18next';
 
 /** Individual data point within a metric item */
 export interface DemandDataPoint {
@@ -33,7 +33,7 @@ interface BaseMetricTransformOptions {
 	/** Key for quantity field in data points */
 	quantityKey?: string
 	/** Translation function for internationalization */
-	t?: ReturnType<typeof useTranslations>
+	t?: TFunction
 	/** Time granularity for data aggregation */
 	timeView: 'annual' | 'daily' | 'monthly'
 	/** Number of top items to show (rest grouped as "Others") */

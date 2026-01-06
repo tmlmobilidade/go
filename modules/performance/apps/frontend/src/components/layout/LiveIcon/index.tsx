@@ -4,8 +4,8 @@
 
 import { Tooltip } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './style.module.css';
 
@@ -26,7 +26,7 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 
 	// A. Setup variables
 
-	const t = useTranslations('updated_at');
+	const { t } = useTranslation('performance');
 
 	//
 	// B. Transform data
@@ -43,12 +43,12 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 
 		let relativeText = '';
 
-		if (diffInMinutes < 1) relativeText = t('just_now'); // “Just now”
-		else if (diffInMinutes < 60) relativeText = t('minutes', { count: diffInMinutes }); // “X minutes ago”
-		else if (diffInMinutes < 1440) relativeText = t('hours', { count: Math.floor(diffInMinutes / 60) }); // “X hours ago”
-		else relativeText = t('days', { count: Math.floor(diffInMinutes / 1440) }); // “X days ago”
+		if (diffInMinutes < 1) relativeText = t('updated_at.just_now'); // "Just now"
+		else if (diffInMinutes < 60) relativeText = t('updated_at.minutes', { count: diffInMinutes }); // "X minutes ago"
+		else if (diffInMinutes < 1440) relativeText = t('updated_at.hours', { count: Math.floor(diffInMinutes / 60) }); // "X hours ago"
+		else relativeText = t('updated_at.days', { count: Math.floor(diffInMinutes / 1440) }); // "X days ago"
 
-		return t('relative', { value: relativeText });
+		return t('updated_at.relative', { value: relativeText });
 	}, [updatedAt, t]);
 
 	// C. Render components

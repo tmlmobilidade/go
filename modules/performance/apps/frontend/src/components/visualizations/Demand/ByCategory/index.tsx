@@ -8,8 +8,8 @@ import { AgencyType } from '@/constants';
 import { buildMetricUrl, PieResult, RawMetricData, StackedResult, transformDemandMetric } from '@/utils/metrics';
 import { Dates } from '@tmlmobilidade/dates';
 import { PieChart } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -42,7 +42,7 @@ export function DemandByCategoryVisualization({ filters, groupBy, height, isInsi
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance');
 
 	const startDate = filters?.dateRange?.startDate || Dates.now('Europe/Lisbon').minus({ days: 7 });
 	const endDate = filters?.dateRange?.endDate || Dates.now('Europe/Lisbon');

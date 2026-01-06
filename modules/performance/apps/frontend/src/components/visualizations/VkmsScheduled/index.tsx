@@ -10,8 +10,8 @@ import { useHomeContext } from '@/contexts/Home.context';
 import { buildMetricUrl, RawMetricData, transformDemandMetric } from '@/utils/metrics';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/dates';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -49,7 +49,7 @@ export function VmksScheduled({
 
 	// A. Setup variables
 
-	const t = useTranslations();
+	const { t } = useTranslation('performance');
 	const agenciesContext = useAgenciesContext();
 
 	const startDate = filters?.dateRange?.startDate || Dates.now('Europe/Lisbon').minus({ days: 7 });

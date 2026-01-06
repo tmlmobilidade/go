@@ -4,6 +4,7 @@ import { AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -21,6 +22,7 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 	// A. Setup variables
 
 	const agenciesContext = useAgenciesContext();
+	const { t } = useTranslation('performance');
 
 	// Initialize with all agencies if selectedAgencies is empty and defaultToAll is true
 	useEffect(() => {
@@ -66,7 +68,7 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 		<FilterTypeList
 			active={isActive}
 			isMultiple={isMultiple}
-			label="Operador"
+			label={t('AgenciesSelector.label')}
 			onChange={onChange}
 			options={parsedOptions}
 			withToggleAll

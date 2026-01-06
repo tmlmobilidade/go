@@ -1,5 +1,5 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { useTranslations } from 'next-intl';
+import { TFunction } from 'i18next';
 
 export interface DayInfo {
 	day_group: string
@@ -11,21 +11,26 @@ export interface DayInfo {
 /**
  * Base function to parse and format a date string.
  */
-function parseAndFormatDate(day_group: string, t: ReturnType<typeof useTranslations>) {
+function parseAndFormatDate(day_group: string) {
 	const dt = Dates.fromISO(day_group);
-	const formatted = t('dates.formatted', { date: dt.js_date });
+	const formatted = dt.js_date.toLocaleDateString('pt-PT', {
+		day: '2-digit',
+		month: 'long',
+		weekday: 'long',
+		year: 'numeric',
+	});
 	return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
 /**
  * Detailed version for tooltips / labels with holidays.
  */
-export function formatDayDetailed(date: DayInfo, t: ReturnType<typeof useTranslations>) {
+export function formatDayDetailed(date: DayInfo, t?: TFunction) {
 	if (!date.day_group) return '';
-	const base = parseAndFormatDate(date.day_group, t);
+	const base = parseAndFormatDate(date.day_group);
 
 	if (date.holiday === '1') {
-		const holidayText = date.notes?.length ? date.notes : t('dates.holiday');
+		const holidayText = date.notes?.length ? date.notes : (t ? t('dates.holiday') : 'Feriado');
 		return `${base} (${holidayText})`;
 	}
 
@@ -36,8 +41,8 @@ export function formatDayDetailed(date: DayInfo, t: ReturnType<typeof useTransla
  * Simple version for chart X-axis, short and clean.
  * e.g., "Seg 28/10"
  */
-export function formatDayShort(date: DayInfo, t: ReturnType<typeof useTranslations>) {
-	return parseAndFormatDate(date.day_group, t);
+export function formatDayShort(date: DayInfo) {
+	return parseAndFormatDate(date.day_group);
 }
 
 /**
