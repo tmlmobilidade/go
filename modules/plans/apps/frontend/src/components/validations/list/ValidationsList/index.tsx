@@ -13,6 +13,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -26,30 +27,31 @@ export function ValidationsList() {
 	const params = useParams<{ id?: string }>();
 
 	const validationsListContext = useValidationsListContext();
+	const { t } = useTranslation('plans');
 
 	const columns: DataTableColumn<ValidationNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('validations.list.Table.columns.id'),
 			width: 100,
 		},
 		{
 			accessor: 'feeder_status',
 			render: item => <ValidationStatusTag status={item.feeder_status} />,
-			title: 'Estado',
+			title: t('validations.list.Table.columns.feeder_status'),
 			width: 125,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: 'Operador',
+			title: t('validations.list.Table.columns.agency_name'),
 			width: 400,
 		},
 		{
 			accessor: 'created_at',
 			render: item => <ValidationsListCellDate value={item.created_at} />,
-			title: 'Data de Submissão',
+			title: t('validations.list.Table.columns.created_at'),
 			width: 300,
 		},
 	];

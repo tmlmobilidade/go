@@ -4,6 +4,7 @@ import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { FileComponent } from '@/components/common/FileComponent';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,14 +15,15 @@ export function ValidationsDetailSectionFeedInfo() {
 	// A. Setup variables
 
 	const validationsDetailContext = useValidationsDetailContext();
+	const { t } = useTranslation('plans');
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description="Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt"
-			title="Dados do Arquivo"
+			description={t('validations.detail.SectionFeedInfo.description')}
+			title={t('validations.detail.SectionFeedInfo.title')}
 		>
 
 			<Section gap="sm">
@@ -32,7 +34,7 @@ export function ValidationsDetailSectionFeedInfo() {
 				{validationsDetailContext.data.file ? (
 					<FileComponent file={validationsDetailContext.data.file} />
 				) : (
-					<Label>Nenhum ficheiro selecionado</Label>
+					<Label>{t('validations.detail.SectionFeedInfo.no_file_selected')}</Label>
 				)}
 			</Section>
 

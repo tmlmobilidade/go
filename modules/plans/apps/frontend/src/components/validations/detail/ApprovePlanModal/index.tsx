@@ -6,6 +6,7 @@ import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
 import { IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { Button, closeModal, Divider, Grid, Label, openModal, Section, Tag } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -37,6 +38,7 @@ export default function ApprovePlanModal() {
 	// A. Setup variables
 
 	const plansCreateContext = usePlansCreateContext();
+	const { t } = useTranslation('plans');
 
 	//
 	// B. Render components
@@ -76,13 +78,13 @@ export default function ApprovePlanModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={plansCreateContext.flags.loading}
-						label="Cancelar"
+						label={t('validations.detail.ApprovePlanModal.cancel_button')}
 						onClick={() => closeModal(CREATE_PLAN_MODAL_ID)}
 						variant="secondary"
 					/>
 					<Button
 						icon={<IconRosetteDiscountCheckFilled />}
-						label="Aprovar Plano"
+						label={t('validations.detail.ApprovePlanModal.approve_plan_button')}
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.createPlan}
 					/>

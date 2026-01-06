@@ -3,6 +3,7 @@
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,6 +14,7 @@ export function PlanDetailSectionAgency() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
+	const { t } = useTranslation('plans');
 
 	//
 	// B. Render components
@@ -23,8 +25,8 @@ export function PlanDetailSectionAgency() {
 
 	return (
 		<Collapsible
-			description="Resumo dos dados do operador extraídos do ficheiro agency.txt"
-			title="Dados do Operador"
+			description={t('plans.detail.SectionAgency.description')}
+			title={t('plans.detail.SectionAgency.title')}
 		>
 			<Section gap="sm">
 				<AgencyDisplay data={planDetailContext.data.plan.gtfs_agency} />

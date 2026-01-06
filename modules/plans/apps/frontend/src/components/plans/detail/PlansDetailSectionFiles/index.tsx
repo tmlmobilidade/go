@@ -5,6 +5,7 @@
 import { FileComponent } from '@/components/common/FileComponent';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,21 +16,22 @@ export function PlanDetailSectionFiles() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
+	const { t } = useTranslation('plans');
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description="Ficheiros GTFS referentes a este plano."
-			title="Ficheiros GTFS"
+			description={t('plans.detail.SectionFiles.description')}
+			title={t('plans.detail.SectionFiles.title')}
 		>
 
 			<Section gap="sm">
 				{planDetailContext.data.operation_file ? (
 					<FileComponent file={planDetailContext.data.operation_file} />
 				) : (
-					<Label>Nenhum ficheiro selecionado</Label>
+					<Label>{t('plans.detail.SectionFiles.no_file_selected')}</Label>
 				)}
 			</Section>
 

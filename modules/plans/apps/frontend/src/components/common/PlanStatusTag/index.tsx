@@ -4,6 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type ProcessingStatus, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,40 +19,45 @@ export function PlanStatusTag({ status, timestamp }: PlanStatusTagProps) {
 	//
 
 	//
-	// A. Transform data
+	// A. Setup variables
+
+	const { t } = useTranslation('plans');
+
+	//
+	// B. Transform data
 
 	const parsedTimestamp = useMemo(() => {
 		if (!timestamp) return;
 		return Dates
 			.fromUnixTimestamp(timestamp)
 			.setZone('Europe/Lisbon', 'offset_only')
-			.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm');
-	}, [timestamp]);
+			.toFormat(`'${t('common.PlanStatusTag.updated_at')}' yyyy-LL-dd 'às' HH:mm`);
+	}, [timestamp, t]);
 
 	//
-	// B. Render components
+	// C. Render components
 
 	if (status === 'waiting') {
-		return <Tag label="Em Espera" tooltip={parsedTimestamp} variant="primary" />;
+		return <Tag label={t('common.PlanStatusTag.waiting')} tooltip={parsedTimestamp} variant="primary" />;
 	}
 
 	if (status === 'processing') {
-		return <Tag label="Em Processamento" tooltip={parsedTimestamp} variant="primary" filled />;
+		return <Tag label={t('common.PlanStatusTag.processing')} tooltip={parsedTimestamp} variant="primary" filled />;
 	}
 
 	if (status === 'complete') {
-		return <Tag label="Finalizado" tooltip={parsedTimestamp} variant="success" />;
+		return <Tag label={t('common.PlanStatusTag.complete')} tooltip={parsedTimestamp} variant="success" />;
 	}
 
 	if (status === 'error') {
-		return <Tag label="Erro" tooltip={parsedTimestamp} variant="danger" filled />;
+		return <Tag label={t('common.PlanStatusTag.error')} tooltip={parsedTimestamp} variant="danger" filled />;
 	}
 
 	if (status === 'skipped') {
-		return <Tag label="Omitido" tooltip={parsedTimestamp} variant="muted" />;
+		return <Tag label={t('common.PlanStatusTag.skipped')} tooltip={parsedTimestamp} variant="muted" />;
 	}
 
-	return <Tag label="Unknown" tooltip={parsedTimestamp} variant="muted" />;
+	return <Tag label={t('common.PlanStatusTag.unknown')} tooltip={parsedTimestamp} variant="muted" />;
 
 	//
 }
