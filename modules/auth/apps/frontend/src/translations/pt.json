@@ -51,43 +51,64 @@
 			"title": "Alterar password"
 		},
 		"detail": {
-			"BasicInfo": {
+			"SectionBasicInfo": {
 				"description": "Detalhes como nome, email, telefone, URL e timezone da agência.",
 				"fields": {
-					"email": "Email da Agência",
-					"emailPlaceholder": "",
-					"fareUrl": "URL de Tarifário da Agência",
-					"fareUrlPlaceholder": "https://www.carrismetropolitana.pt/tar",
-					"name": "Nome do Operador",
-					"namePlaceholder": "912345678",
-					"phone": "Telemóvel da Agência",
-					"phonePlaceholder": "",
-					"shortName": "Nome Curto",
-					"shortNamePlaceholder": "CM",
-					"timezone": "Timezone da Agência",
-					"website": "URL da Agência",
-					"websitePlaceholder": "https://www.carrismetropolitana.pt"
+					"email": {
+						"label": "Email da Agência",
+						"placeholder": "email@example.com"
+					},
+					"fare_url": {
+						"label": "URL de Tarifário da Agência",
+						"placeholder": "https://www.carrismetropolitana.pt/tar"
+					},
+					"name": {
+						"label": "Nome do Operador",
+						"placeholder": "Carris Metropolitana"
+					},
+					"phone": {
+						"label": "Telemóvel da Agência",
+						"placeholder": "912345678"
+					},
+					"short_name": {
+						"label": "Nome Curto",
+						"placeholder": "CM"
+					},
+					"timezone": {
+						"label": "Fuso Horário"
+					},
+					"website": {
+						"label": "URL da Agência",
+						"placeholder": "https://www.carrismetropolitana.pt"
+					}
 				},
-				"title": "Informações gerais"
-
+				"title": "Informação financeira da agência"
 			},
-			"Contacts": {
+			"SectionContacts": {
 				"description": "Informação de contatos da agência",
 				"fields": {
-					"contactEmailPta": "Emails de contacto da Autoridade",
-					"contactEmailPtaLabel": "Notificações serão enviadas para os emails de contacto da TML.",
-					"contactEmailsPto": "Notificações serão enviadas para os emails de contacto da agência.",
-					"contactEmailsPtoLabel": "Emails de contacto do Operador"
+					"contact_emails_pta": {
+						"label": "Notificações serão enviadas para os emails de contacto da TML.",
+						"title": "Emails de contacto da Autoridade"
+					},
+					"contact_emails_pto": {
+						"label": "Notificações serão enviadas para os emails de contacto da agência.",
+						"title": "Emails de contacto do Operador"
+					}
 				},
 				"title": "Informação de contatos"
 			},
-			"Financial": {
+			"SectionFinancial": {
 				"description": "Informação Financeira",
 				"fields": {
-					"pricePerKm": "Preço por km",
-					"pricePerKmPlaceholder": "1.50",
-					"totalVkmPerYear": "Total de km por ano",
-					"totalVkmPerYearPlaceholder": "1000000"
+					"price_per_km": {
+						"label": "Preço por km",
+						"placeholder": "1.50"
+					},
+					"total_vkm_per_year": {
+						"label": "Total de km por ano",
+						"placeholder": "1000000"
+					}
 				},
 				"title": "Informação financeira da agência"
 			},
