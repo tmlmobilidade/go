@@ -6,6 +6,7 @@ import { useAnnotationCreateContext } from '@/components/annotations/create/Anno
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AnnotationSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function AnnotationCreateBasicInfo() {
 	// A. Setup variables
 
 	const annotationCreateContext = useAnnotationCreateContext();
+	const { t } = useTranslation('dates');
 
 	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.annotations.actions.create],
@@ -28,17 +30,17 @@ export function AnnotationCreateBasicInfo() {
 	return (
 		<Section gap="md">
 			<TextInput
-				label="Título"
-				placeholder="Ex: Greve de transportes"
+				label={t('annotations.create.BasicInfo.fields.title.label')}
+				placeholder={t('annotations.create.BasicInfo.fields.title.placeholder')}
 				required={!AnnotationSchema.shape.title.isOptional()}
 				w="100%"
 				{...annotationCreateContext.data.form.getInputProps('title')}
 			/>
 
 			<Textarea
-				label="Descrição"
+				label={t('annotations.create.BasicInfo.fields.description.label')}
 				minRows={2}
-				placeholder="Descreva o evento ou observação..."
+				placeholder={t('annotations.create.BasicInfo.fields.description.placeholder')}
 				required={!AnnotationSchema.shape.description.isOptional()}
 				w="100%"
 				{...annotationCreateContext.data.form.getInputProps('description')}
@@ -46,7 +48,7 @@ export function AnnotationCreateBasicInfo() {
 
 			<MultiSelect
 				data={allAgencyOptions}
-				label="Operadores afetados"
+				label={t('annotations.create.BasicInfo.fields.agency_ids.label')}
 				value={annotationCreateContext.data.form.values.agency_ids || []}
 				w="100%"
 				{...annotationCreateContext.data.form.getInputProps('agency_ids')}

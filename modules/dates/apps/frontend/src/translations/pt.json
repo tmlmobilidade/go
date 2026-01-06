@@ -1,0 +1,219 @@
+{
+	"annotations": {
+		"create": {
+			"BasicInfo": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores afetados"
+					},
+					"description": {
+						"label": "Descrição",
+						"placeholder": "Descreva o evento ou observação..."
+					},
+					"title": {
+						"label": "Título",
+						"placeholder": "Ex: Greve de transportes"
+					}
+				}
+			},
+			"Header": {
+				"PublishButton": {
+					"label": "Publicar"
+				},
+				"tag": "Nova Anotação"
+			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores afetados"
+					},
+					"description": {
+						"label": "Descrição",
+						"placeholder": "Descrição da ocorrência"
+					},
+					"title": {
+						"label": "Título",
+						"placeholder": "Ex: Greve de transportes"
+					}
+				}
+			},
+			"DatesSelector": {
+				"title": "Selecione as datas da ocorrência"
+			},
+			"Header": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida.",
+						"title": "Apagar Anotação"
+					}
+				},
+				"SaveButton": {
+					"label": "Guardar"
+				}
+			}
+		},
+		"list": {
+			"FilterBar": {
+				"agency": {
+					"label": "Operadores"
+				}
+			},
+			"Header": {
+				"NewButton": {
+					"label": "Nova anotação"
+				},
+				"title": "Anotações"
+			},
+			"Table": {
+				"columns": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"dates": {
+						"label": "Datas"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"title": {
+						"label": "Título"
+					}
+				}
+			}
+		}
+	},
+	"periods": {
+		"calendar": {
+			"AssignContent": {
+				"AssignmentMode": {
+					"create": {
+						"label": "Criar Novo Período"
+					},
+					"existing": {
+						"label": "Atribuir a Período Existente"
+					},
+					"title": "Atribuir"
+				},
+				"ConflictWarning": {
+					"acknowledge_button": "Compreendo e quero continuar",
+					"title": "Aviso de Conflito"
+				},
+				"CreatePeriod": {
+					"fields": {
+						"color": {
+							"label": "Cor"
+						},
+						"name": {
+							"label": "Nome",
+							"placeholder": "Ex: Período Escolar 2025"
+						}
+					}
+				},
+				"DateRange": {
+					"day": "dia",
+					"days": "dias",
+					"title": "Intervalo de Datas Selecionado"
+				},
+				"SelectAgency": {
+					"fields": {
+						"agency_id": {
+							"label": "Operador",
+							"placeholder": "Selecione o operador"
+						}
+					}
+				},
+				"SelectPeriod": {
+					"no_periods_warning": "Não há períodos disponíveis para este operador. Por favor, crie um novo período.",
+					"placeholder": "Procurar...",
+					"title": "Selecionar Período"
+				}
+			},
+			"AssignHeader": {
+				"AssignButton": {
+					"label": "Atribuir Período"
+				},
+				"tag": "Atribuir datas"
+			}
+		},
+		"create": {
+			"BasicInfo": {
+				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"color": {
+						"label": "Cor"
+					},
+					"name": {
+						"label": "Nome",
+						"placeholder": "Ex: Período Escolar 2024/2025"
+					}
+				}
+			},
+			"Header": {
+				"PublishButton": {
+					"label": "Publicar"
+				},
+				"tag": "Novo Período"
+			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"AssignDatesButton": {
+					"label": "Atribuir Datas"
+				},
+				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"color": {
+						"label": "Cor"
+					},
+					"name": {
+						"label": "Nome",
+						"placeholder": "Ex: Período Escolar 2024/2025"
+					}
+				}
+			},
+			"Header": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida.",
+						"title": "Apagar Período"
+					}
+				},
+				"SaveButton": {
+					"label": "Guardar"
+				}
+			}
+		},
+		"list": {
+			"FilterBar": {
+				"agency": {
+					"label": "Operador"
+				}
+			},
+			"Header": {
+				"NewButton": {
+					"label": "Novo período"
+				},
+				"title": "Períodos"
+			},
+			"Table": {
+				"columns": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"name": {
+						"label": "Nome"
+					}
+				}
+			}
+		}
+	}
+}

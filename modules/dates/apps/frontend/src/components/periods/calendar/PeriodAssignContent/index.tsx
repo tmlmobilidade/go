@@ -9,6 +9,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Alert, Button, ColorInput, ColorSwatch, Label, Radio, Section, Select, Text, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -24,6 +25,7 @@ export function PeriodAssignContent() {
 
 	const periodsListContext = usePeriodsListContext();
 	const periodAssignContext = usePeriodAssignContext();
+	const { t } = useTranslation('dates');
 
 	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.periods.actions.update],
@@ -52,7 +54,7 @@ export function PeriodAssignContent() {
 			<Section gap="md">
 				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
 					<IconCalendar />
-					<Label size="md">Intervalo de Datas Selecionado</Label>
+					<Label size="md">{t('periods.calendar.AssignContent.DateRange.title')}</Label>
 				</Section>
 
 				<Text size="sm">
@@ -60,13 +62,13 @@ export function PeriodAssignContent() {
 					{' → '}
 					{periodAssignContext.data.dateRangeInfo.endDate}
 					{' '}
-					({periodAssignContext.data.dateRangeInfo.dayCount} {periodAssignContext.data.dateRangeInfo.dayCount === 1 ? 'dia' : 'dias'})
+					({periodAssignContext.data.dateRangeInfo.dayCount} {periodAssignContext.data.dateRangeInfo.dayCount === 1 ? t('periods.calendar.AssignContent.DateRange.day') : t('periods.calendar.AssignContent.DateRange.days')})
 				</Text>
 			</Section>
 
 			{/* Agency Selection */}
 			<Section gap="md">
-				<Select data={agencyOptions} label="Operador" placeholder="Selecione o operador" w="100%" {...periodAssignContext.data.form.getInputProps('agency_id')} />
+				<Select data={agencyOptions} label={t('periods.calendar.AssignContent.SelectAgency.fields.agency_id.label')} placeholder={t('periods.calendar.AssignContent.SelectAgency.fields.agency_id.placeholder')} w="100%" {...periodAssignContext.data.form.getInputProps('agency_id')} />
 			</Section>
 
 			{periodAssignContext.data.form.values.agency_id && (
@@ -74,16 +76,16 @@ export function PeriodAssignContent() {
 
 					{/* Assignment Mode */}
 					<Section gap="md">
-						<Label size="md">Atribuir</Label>
+						<Label size="md">{t('periods.calendar.AssignContent.AssignmentMode.title')}</Label>
 						<Radio.Group
 							{...periodAssignContext.data.form.getInputProps('assignmentMode')}
 						>
 							<Radio
-								label="Atribuir a Período Existente"
+								label={t('periods.calendar.AssignContent.AssignmentMode.existing.label')}
 								value="existing"
 							/>
 							<Radio
-								label="Criar Novo Período"
+								label={t('periods.calendar.AssignContent.AssignmentMode.create.label')}
 								value="create"
 							/>
 						</Radio.Group>
@@ -93,11 +95,11 @@ export function PeriodAssignContent() {
 					<Section gap="md">
 						{periodAssignContext.data.form.values.assignmentMode === 'existing' ? (
 							<>
-								<Label size="md">Selecionar Período</Label>
+								<Label size="md">{t('periods.calendar.AssignContent.SelectPeriod.title')}</Label>
 								{agencyPeriods.length > 0 && (
 									<Select
 										data={agencyPeriods}
-										placeholder="Procurar..."
+										placeholder={t('periods.calendar.AssignContent.SelectPeriod.placeholder')}
 										w="100%"
 										{...periodAssignContext.data.form.getInputProps('periodId')}
 									/>
@@ -105,22 +107,22 @@ export function PeriodAssignContent() {
 								{agencyPeriods.length === 0 && (
 									<Alert variant="warning">
 										<Text size="sm">
-											Não há períodos disponíveis para este operador. Por favor, crie um novo período.
+											{t('periods.calendar.AssignContent.SelectPeriod.no_periods_warning')}
 										</Text>
 									</Alert>
 								)}
 							</>
 						) : (
 							<>
-								<Label size="md">Nome</Label>
+								<Label size="md">{t('periods.calendar.AssignContent.CreatePeriod.fields.name.label')}</Label>
 								<TextInput
-									placeholder="Ex: Período Escolar 2025"
+									placeholder={t('periods.calendar.AssignContent.CreatePeriod.fields.name.placeholder')}
 									w="100%"
 									{...periodAssignContext.data.form.getInputProps('newPeriodName')}
 								/>
 
 								<ColorInput
-									label="Cor"
+									label={t('periods.calendar.AssignContent.CreatePeriod.fields.color.label')}
 									withEyeDropper={false}
 									{...periodAssignContext.data.form.getInputProps('color')}
 								/>
@@ -131,11 +133,11 @@ export function PeriodAssignContent() {
 					{/* Conflict Warning */}
 					{periodAssignContext.data.conflictWarning && !periodAssignContext.flags.conflictAcknowledged && (
 						<Section gap="md">
-							<Alert color="var(--color-primary)" icon={<IconAlertTriangle />} title="Aviso de Conflito" variant="light" w="100%">
+							<Alert color="var(--color-primary)" icon={<IconAlertTriangle />} title={t('periods.calendar.AssignContent.ConflictWarning.title')} variant="light" w="100%">
 								<Section gap="md" padding="none">
 									<Text size="sm">{periodAssignContext.data.conflictWarning}</Text>
 									<Button
-										label="Compreendo e quero continuar"
+										label={t('periods.calendar.AssignContent.ConflictWarning.acknowledge_button')}
 										onClick={periodAssignContext.actions.acknowledgeConflicts}
 										fullWidth
 									/>

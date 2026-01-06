@@ -8,6 +8,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PeriodSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, ColorInput, ErrorDisplay, LoadingOverlay, Pane, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,6 +20,7 @@ export function PeriodsDetail() {
 
 	const periodsDetailContext = usePeriodsDetailContext();
 	const router = useRouter();
+	const { t } = useTranslation('dates');
 
 	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.periods.actions.create],
@@ -48,8 +50,8 @@ export function PeriodsDetail() {
 			<Section gap="lg">
 
 				<TextInput
-					label="Nome"
-					placeholder="Ex: Período Escolar 2024/2025"
+					label={t('periods.detail.BasicInfo.fields.name.label')}
+					placeholder={t('periods.detail.BasicInfo.fields.name.placeholder')}
 					readOnly={periodsDetailContext.flags.isReadOnly}
 					required={!PeriodSchema.shape.name.isOptional()}
 					w="100%"
@@ -60,21 +62,21 @@ export function PeriodsDetail() {
 					key={periodsDetailContext.data.form.key('agency_id')}
 					data={allAgencyOptions}
 					disabled={periodsDetailContext.flags.isReadOnly}
-					label="Operador"
+					label={t('periods.detail.BasicInfo.fields.agency_id.label')}
 					w="100%"
 					{...periodsDetailContext.data.form.getInputProps('agency_id')}
 				/>
 
 				<ColorInput
 					key={periodsDetailContext.data.form.key('color')}
-					label="Cor"
+					label={t('periods.detail.BasicInfo.fields.color.label')}
 					readOnly={periodsDetailContext.flags.isReadOnly}
 					required={!PeriodSchema.shape.color.isOptional()}
 					withEyeDropper={false}
 					{...periodsDetailContext.data.form.getInputProps('color')}
 				/>
 
-				<Button label="Atribuir Datas" onClick={openCalendar} />
+				<Button label={t('periods.detail.BasicInfo.AssignDatesButton.label')} onClick={openCalendar} />
 
 			</Section>
 		</Pane>

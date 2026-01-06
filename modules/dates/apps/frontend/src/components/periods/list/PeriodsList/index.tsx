@@ -10,6 +10,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { ColorSwatch, DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 import { PeriodsListFiltersBar } from '../PeriodsListFiltersBar';
 
@@ -23,12 +24,13 @@ export function PeriodsList() {
 
 	const router = useRouter();
 	const periodsListContext = usePeriodsListContext();
+	const { t } = useTranslation('dates');
 
 	const columns: DataTableColumn<PeriodNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('periods.list.Table.columns.id.label'),
 			width: 100,
 		},
 		{
@@ -39,13 +41,13 @@ export function PeriodsList() {
 					<Text>{item.name}</Text>
 				</div>
 			),
-			title: 'Nome',
+			title: t('periods.list.Table.columns.name.label'),
 			width: 400,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PeriodsListCellAgency agencyId={item.agency_id} />,
-			title: 'Operador',
+			title: t('periods.list.Table.columns.agency_id.label'),
 			width: 300,
 		},
 	];

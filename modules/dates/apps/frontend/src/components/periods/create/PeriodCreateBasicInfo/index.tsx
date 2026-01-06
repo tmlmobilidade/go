@@ -6,6 +6,7 @@ import { usePeriodCreateContext } from '@/components/periods/create/PeriodsCreat
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PeriodSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { ColorInput, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function PeriodCreateBasicInfo() {
 	// A. Setup variables
 
 	const periodCreateContext = usePeriodCreateContext();
+	const { t } = useTranslation('dates');
 
 	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.periods.actions.create],
@@ -28,8 +30,8 @@ export function PeriodCreateBasicInfo() {
 	return (
 		<Section gap="md">
 			<TextInput
-				label="Nome"
-				placeholder="Ex: Período Escolar 2024/2025"
+				label={t('periods.create.BasicInfo.fields.name.label')}
+				placeholder={t('periods.create.BasicInfo.fields.name.placeholder')}
 				required={!PeriodSchema.shape.name.isOptional()}
 				w="100%"
 				{...periodCreateContext.data.form.getInputProps('name')}
@@ -37,13 +39,13 @@ export function PeriodCreateBasicInfo() {
 
 			<Select
 				data={allAgencyOptions}
-				label="Operador"
+				label={t('periods.create.BasicInfo.fields.agency_id.label')}
 				w="100%"
 				{...periodCreateContext.data.form.getInputProps('agency_id')}
 			/>
 
 			<ColorInput
-				label="Cor"
+				label={t('periods.create.BasicInfo.fields.color.label')}
 				required={!PeriodSchema.shape.color.isOptional()}
 				withEyeDropper={false}
 				{...periodCreateContext.data.form.getInputProps('color')}
