@@ -5,7 +5,8 @@
 import { useOrganizationCreateContext } from '@/components/organizations/create/OrganizationCreate.context';
 import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { CloseButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,8 @@ export function OrganizationCreateHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation('auth');
+
 	const organizationCreateContext = useOrganizationCreateContext();
 
 	//
@@ -23,13 +26,13 @@ export function OrganizationCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateOrganizationModal} type="close" />
-			<Tag label="Nova Organização" variant="muted" />
+			<Tag label={t('organizations.create.Header.title')} variant="muted" />
 			<Label size="lg" singleLine>{organizationCreateContext.data.form.values.long_name}</Label>
 			<Spacer />
 			<Button
 				disabled={!organizationCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label="Publicar"
+				label={t('organizations.create.Header.PublishButton.label')}
 				loading={organizationCreateContext.flags.isSaving}
 				onClick={organizationCreateContext.actions.saveOrganization}
 				variant="primary"
