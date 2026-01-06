@@ -37,7 +37,7 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 	//
 	// Greet the user
 
-	console.log(ASCII_CM_SHORT);
+	console.log(ASCII_CM_SHORT.replace(/▒/g, '\x1b[33m▒\x1b[0m'));
 	intro('Bem-vindo ao exportador de dados da CM!');
 	log.info(`O ID desta exportação é: ${context._id}`);
 	log.info(`Todos os resultados serão guardados aqui: ${context.output}`);
