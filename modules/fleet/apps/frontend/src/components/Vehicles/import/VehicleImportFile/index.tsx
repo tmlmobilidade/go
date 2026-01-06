@@ -1,9 +1,11 @@
 'use client';
 
+import { ImportPreview } from '@/components/common/ImportPreview';
+
 /* * */
 
 import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
-import { Button, closeModal, FileUpload, Grid, Label, Section, Spacer, Text } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, FileUpload, Grid, Section, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,19 +22,17 @@ export function VehicleImportFile() {
 
 	return (
 		<Section gap="md">
-
-			<Text>Selecione o arquivo para importar os dados dos veículos.</Text>
 			<Spacer size="md" />
-			{/*
-			{vehicleImportContext.data.form.values._id && (
+
+			{vehicleImportContext.data.form.values.agency_id && (
 				<>
 					<Section gap="sm">
-						<Label size="lg">feed_info.txt</Label>
-						<FeedInfoDisplay data={validationsCreateContext.data.form.values.gtfs_feed_info} />
+
+						<ImportPreview />
 					</Section>
 					<Divider />
 				</>
-			)} */}
+			)}
 
 			<FileUpload
 				accept=".txt"

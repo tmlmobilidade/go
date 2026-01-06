@@ -1,4 +1,8 @@
 export const Translations = {
+	BOOLEANS: {
+		no: 'não',
+		yes: 'sim',
+	},
 	EMISSION: {
 		EURO_I: 'Euro 1',
 		EURO_II: 'Euro 2',

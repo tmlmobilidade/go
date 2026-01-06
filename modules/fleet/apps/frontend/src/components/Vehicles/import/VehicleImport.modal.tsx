@@ -27,7 +27,7 @@ export const openImportVehicleModal = () => {
 		closeOnEscape: false,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: 'xl',
+		size: 'auto',
 		withCloseButton: false,
 	});
 };
