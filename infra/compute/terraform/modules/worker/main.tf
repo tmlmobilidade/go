@@ -4,18 +4,17 @@
 
 locals {
 
-	nomad_config = templatefile("${path.module}/templates/nomad.template.hcl", {
-		instance_count = var.instance_count
-	})
-
-	nomad_service = templatefile("${path.module}/templates/nomad.service.template", {})
-
-	consul_config = templatefile("${path.module}/templates/consul.template.hcl", {
-		instance_count = var.instance_count,
+	consul_config = templatefile("${path.module}/templates/consul.hcl", {
 		module_name = var.module_name
 	})
 
-	consul_service = templatefile("${path.module}/templates/consul.service.template", {})
+	consul_service = templatefile("${path.module}/templates/consul.service", {})
+
+	nomad_config = templatefile("${path.module}/templates/nomad.hcl", {
+		instance_count = var.instance_count
+	})
+
+	nomad_service = templatefile("${path.module}/templates/nomad.service", {})
 
 }
 

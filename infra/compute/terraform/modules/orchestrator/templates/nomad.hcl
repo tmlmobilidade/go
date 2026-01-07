@@ -28,5 +28,5 @@ vault {
 }
 
 telemetry {
-	prometheus_metrics = true
+	prometheus_metrics = false
 }
