@@ -4,27 +4,27 @@ data_dir = "/opt/nomad/data"
 bind_addr = "0.0.0.0"
 
 advertise {
-  http = "{{ GetPrivateIP }}:4646"
-  rpc = "{{ GetPrivateIP }}:4647"
-  serf = "{{ GetPrivateIP }}:4648"
+	http = "{{ GetPrivateIP }}:4646"
+	rpc = "{{ GetPrivateIP }}:4647"
+	serf = "{{ GetPrivateIP }}:4648"
 }
 
 consul {
-  address = "127.0.0.1:8500"
-  token = "CONSUL_NOMAD_TOKEN"
+	address = "127.0.0.1:8500"
+	token = "CONSUL_NOMAD_TOKEN"
 }
 
 
 ### FOR CLIENT
 
 client {
-  enabled = true
+	enabled = true
 }
 
 plugin "docker" {
-  config {
-    volumes {
-      enabled = true
-    }
-  }
+	config {
+		volumes {
+			enabled = true
+		}
+	}
 }
