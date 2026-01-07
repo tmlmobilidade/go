@@ -53,22 +53,15 @@ locals {
 
 module "nginx_gateway" {
 	source              = "./modules/nginx-gateway"
-	count               = var.deploy_gateway ? 1 : 0
 	compartment_ocid    = var.compartment_ocid
 	availability_domain = var.availability_domain
-	subnet_ocid         = var.subnet_ocid
-	image_ocid          = var.gateway_image_ocid
 	ssh_authorized_keys = local.ssh_keys
-	instance_count      = var.gateway_count
 }
 
 module "nomad_server" {
 	source              = "./modules/nomad-server"
 	compartment_ocid    = var.compartment_ocid
 	availability_domain = var.availability_domain
-	subnet_ocid         = var.subnet_ocid
-	image_ocid          = var.server_image_ocid
-	instance_count      = var.server_count
 	ssh_authorized_keys = local.ssh_keys
 }
 
@@ -77,8 +70,5 @@ module "nomad_worker" {
 	depends_on          = [module.nomad_server]
 	compartment_ocid    = var.compartment_ocid
 	availability_domain = var.availability_domain
-	subnet_ocid         = var.subnet_ocid
-	image_ocid          = var.worker_image_ocid
-	instance_count      = var.worker_count
 	ssh_authorized_keys = local.ssh_keys
 }

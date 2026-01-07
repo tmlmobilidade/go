@@ -62,10 +62,13 @@ variable "boot_volume_size_in_gbs" {
 	default = 2
 }
 
+variable "instance_count" {
+	type = number
+	default = 1
+}
 
 
 # Required from root
 variable "compartment_ocid" { type = string }
 variable "availability_domain" { type = string }
 variable "ssh_authorized_keys" { type = string }
-variable "instance_count" { type = number }

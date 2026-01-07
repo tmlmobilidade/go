@@ -68,9 +68,12 @@ variable "autoscaling_cooldown_seconds" {
   default     = 300
 }
 
+variable "instance_count" {
+	type = number
+	default = 1
+}
+
 # Required from root
 variable "compartment_ocid" { type = string }
 variable "availability_domain" { type = string }
 variable "ssh_authorized_keys" { type = string }
-variable "instance_count" { type = number }
-

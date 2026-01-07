@@ -13,7 +13,7 @@ resource "oci_core_instance_configuration" "this" {
 
 		launch_details {
 
-			display_name = "nomad-server"
+			display_name = "nomad-worker"
 			compartment_id = var.compartment_ocid
 			availability_domain = var.availability_domain
 			shape = var.vm_shape
@@ -56,7 +56,7 @@ resource "oci_core_instance_configuration" "this" {
 
 resource "oci_core_instance_pool" "this" {
 
-	display_name = "nomad-server-pool"
+	display_name = "nomad-worker-pool"
 	compartment_id = var.compartment_ocid
 	instance_configuration_id = oci_core_instance_configuration.this.id
 	size = var.instance_count
