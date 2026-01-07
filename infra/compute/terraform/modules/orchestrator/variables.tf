@@ -2,6 +2,12 @@
 # TERRAFORM VARIABLES
 # Define variables for Terraform templates.
 
+variable "module_name" {
+	type = string
+	description = "The component name for this module. Used for tagging and identification."
+	default = "orchestrator"
+}
+
 variable "subnet_ocid" {
 	type = string
 	description = <<-EOT
@@ -56,17 +62,15 @@ variable "vm_memory_in_gbs" {
 
 variable "boot_volume_size_in_gbs" {
 	type = number
-	description = <<-EOT
-	The size of the boot volume in GBs to allocate to the VM used for building the image.
-	EOT
-	default = 2
+	description = "The size of the boot volume in GBs to allocate to the VM used for building the image."
+	default = 50
 }
 
 variable "instance_count" {
 	type = number
-	default = 1
+	description = "The number of equal instances to create."
+	default = 3
 }
-
 
 # Required from root
 variable "compartment_ocid" { type = string }

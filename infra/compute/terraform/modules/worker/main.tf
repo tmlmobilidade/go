@@ -1,10 +1,31 @@
 # -----------------------------------------------------------------------
-# NOMAD SERVER / INSTANCE CONFIGURATION
+# WORKER / TEMPLATE FILES
+# -----------------------------------------------------------------------
+
+locals {
+
+	nomad_config = templatefile("${path.module}/templates/nomad.template.hcl", {
+		instance_count = var.instance_count
+	})
+
+	nomad_service = templatefile("${path.module}/templates/nomad.service.template", {})
+
+	consul_config = templatefile("${path.module}/templates/consul.template.hcl", {
+		instance_count = var.instance_count,
+		module_name = var.module_name
+	})
+
+	consul_service = templatefile("${path.module}/templates/consul.service.template", {})
+
+}
+
+# -----------------------------------------------------------------------
+# WORKER / INSTANCE CONFIGURATION
 # -----------------------------------------------------------------------
 
 resource "oci_core_instance_configuration" "this" {
 
-	display_name = "nomad-worker-config"
+	display_name = "${var.module_name}-instance-config"
 	compartment_id = var.compartment_ocid
 
 	instance_details {
@@ -13,7 +34,7 @@ resource "oci_core_instance_configuration" "this" {
 
 		launch_details {
 
-			display_name = "nomad-worker"
+			display_name = var.module_name
 			compartment_id = var.compartment_ocid
 			availability_domain = var.availability_domain
 			shape = var.vm_shape
@@ -39,6 +60,10 @@ resource "oci_core_instance_configuration" "this" {
 				is_management_disabled = false
 			}
 
+			freeform_tags = {
+				"TerraformModule" = var.module_name
+			}
+
 			metadata = {
 				ssh_authorized_keys = var.ssh_authorized_keys
 				user_data = base64encode(file("${path.module}/cloud-init.yaml"))
@@ -51,23 +76,21 @@ resource "oci_core_instance_configuration" "this" {
 }
 
 # -----------------------------------------------------------------------
-# NOMAD SERVER / INSTANCE POOL
+# WORKER / INSTANCE POOL
 # -----------------------------------------------------------------------
 
 resource "oci_core_instance_pool" "this" {
 
-	display_name = "nomad-worker-pool"
+	display_name = "${var.module_name}-instance-pool"
 	compartment_id = var.compartment_ocid
 	instance_configuration_id = oci_core_instance_configuration.this.id
 	size = var.instance_count
 
+	instance_display_name_formatter = "${var.module_name}-{{count}}"
+
 	placement_configurations {
 		availability_domain = var.availability_domain
 		primary_subnet_id = var.subnet_ocid
-	}
-
-	lifecycle {
-		create_before_destroy = true
 	}
 
 }
@@ -78,7 +101,7 @@ resource "oci_core_instance_pool" "this" {
 
 resource "oci_autoscaling_configuration" "this" {
 
-	display_name = "nomad-worker-autoscaling-config"
+	display_name = "${var.module_name}-autoscaling-config"
 	compartment_id = var.compartment_ocid
 
 	resource {

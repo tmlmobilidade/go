@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------------
-# NOMAD SERVER / INSTANCE CONFIGURATION
+# NGINX GATEWAY / INSTANCE CONFIGURATION
 # -----------------------------------------------------------------------
 
 resource "oci_core_instance_configuration" "this" {
 
-	display_name = "nomad-server-config"
+	display_name = "${var.module_name}-config"
 
 	compartment_id = var.compartment_ocid
 
@@ -15,7 +15,7 @@ resource "oci_core_instance_configuration" "this" {
 
 		launch_details {
 
-			display_name = "nomad-server"
+			display_name = var.module_name
 			compartment_id = var.compartment_ocid
 			availability_domain = var.availability_domain
 			shape = var.vm_shape
@@ -41,6 +41,10 @@ resource "oci_core_instance_configuration" "this" {
 				is_management_disabled = false
 			}
 
+			freeform_tags = {
+				"TerraformModule" = var.module_name
+			}
+
 			metadata = {
 				ssh_authorized_keys = var.ssh_authorized_keys
 				user_data = base64encode(file("${path.module}/cloud-init.yaml"))
@@ -53,23 +57,21 @@ resource "oci_core_instance_configuration" "this" {
 }
 
 # -----------------------------------------------------------------------
-# NOMAD SERVER / INSTANCE POOL
+# NGINX GATEWAY / INSTANCE POOL
 # -----------------------------------------------------------------------
 
 resource "oci_core_instance_pool" "this" {
 
-	display_name = "nomad-server-pool"
+	display_name = "${var.module_name}-pool"
 	compartment_id = var.compartment_ocid
 	instance_configuration_id = oci_core_instance_configuration.this.id
 	size = var.instance_count
 
+	instance_display_name_formatter = "${var.module_name}-{{count}}"
+
 	placement_configurations {
 		availability_domain = var.availability_domain
 		primary_subnet_id = var.subnet_ocid
-	}
-
-	lifecycle {
-		create_before_destroy = true
 	}
 
 }

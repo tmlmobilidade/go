@@ -51,23 +51,23 @@ locals {
 # if you do not wish to deploy them.
 # -----------------------------------------------------------------------
 
-module "nginx_gateway" {
-	source              = "./modules/nginx-gateway"
+module "gateway" {
+	source              = "./modules/gateway"
 	compartment_ocid    = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
 }
 
-module "nomad_server" {
-	source              = "./modules/nomad-server"
+module "server" {
+	source              = "./modules/server"
 	compartment_ocid    = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
 }
 
-module "nomad_worker" {
-	source              = "./modules/nomad-worker"
-	depends_on          = [module.nomad_server]
+module "worker" {
+	source              = "./modules/worker"
+	depends_on          = [module.server]
 	compartment_ocid    = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
