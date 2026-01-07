@@ -1,6 +1,6 @@
 [Unit]
-Description=Nomad Server
-Requires=network-online.target consul.service
+Description=NOMAD SERVER
+Requires=network-online.target consul.service vault.service
 After=network-online.target consul.service
 ConditionFileNotEmpty=/etc/nomad.d/nomad.hcl
 

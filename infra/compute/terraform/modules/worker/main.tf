@@ -10,9 +10,7 @@ locals {
 
 	consul_service = templatefile("${path.module}/templates/consul.service", {})
 
-	nomad_config = templatefile("${path.module}/templates/nomad.hcl", {
-		instance_count = var.instance_count
-	})
+	nomad_config = templatefile("${path.module}/templates/nomad.hcl", {})
 
 	nomad_service = templatefile("${path.module}/templates/nomad.service", {})
 
