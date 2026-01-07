@@ -8,7 +8,7 @@ terraform {
 
 	required_providers {
 		oci = {
-			source  = "oracle/oci"
+			source = "oracle/oci"
 			version = ">= 5.0.0"
 		}
 	}
@@ -45,22 +45,30 @@ variable "region" {
 	description = "The Oracle Cloud Infrastructure region."
 }
 
+variable "ssh_public_key_path" {
+	type = string
+	description = "The file path to the SSH public key for instance access."
+	default = "~/.ssh/id_rsa.pub"
+}
+
 variable "compartment_ocid" {
 	type = string
-	description = "The OCID of the Oracle Cloud Infrastructure compartment."
-	default = ""
+	description = <<-EOT
+	The OCID of the compartment where resources will be created in.
+	Current compartment is set to: cmetropolitana
+	EOT
+	default = "ocid1.compartment.oc1..aaaaaaaaqwnoahpbcxhsogpszdixlv4jnrnujst7qxyar6536oeptpwjtkna"
 }
 
 variable "availability_domain" {
 	type = string
-	description = "The availability domain to deploy resources into."
-	default = ""
-}
-
-variable "ssh_public_key_path" {
-	type    = string
-	description = "The file path to the SSH public key for instance access."
-	default = "~/.ssh/id_rsa.pub"
+	description = <<-EOT
+	The availability domain where resources will be created.
+	This should be the full ID string, e.g., 'LUDo:EU-FRANKFURT-1-AD-1'.
+	This can only be found via the OCI CLI or by inspecting the API response
+	for VM instance details on the web console.
+	EOT
+	default = "LUDo:EU-FRANKFURT-1-AD-1"
 }
 
 
@@ -69,11 +77,11 @@ variable "ssh_public_key_path" {
 # -----------------------------------------------------------------------
 
 provider "oci" {
-	tenancy_ocid     = var.tenancy_ocid
-	user_ocid        = var.user_ocid
-	fingerprint      = var.fingerprint
+	tenancy_ocid = var.tenancy_ocid
+	user_ocid = var.user_ocid
+	fingerprint = var.fingerprint
 	private_key_path = var.private_key_path
-	region           = var.region
+	region = var.region
 }
 
 
@@ -100,23 +108,23 @@ locals {
 # -----------------------------------------------------------------------
 
 module "gateway" {
-	source              = "./modules/gateway"
-	compartment_ocid    = var.compartment_ocid
+	source = "./modules/gateway"
+	compartment_ocid = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
 }
 
 module "server" {
-	source              = "./modules/server"
-	compartment_ocid    = var.compartment_ocid
+	source = "./modules/server"
+	compartment_ocid = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
 }
 
 module "worker" {
-	source              = "./modules/worker"
-	depends_on          = [module.server]
-	compartment_ocid    = var.compartment_ocid
+	source = "./modules/worker"
+	depends_on = [module.server]
+	compartment_ocid = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
 }
