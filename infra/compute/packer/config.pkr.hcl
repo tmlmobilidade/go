@@ -84,5 +84,5 @@ variable "vm_memory_in_gbs" {
 	The building process can be memory intensive and is very short lived (the machine is destroyed afterwards),
 	so having more resources is beneficial and not expensive.
 	EOT
-	default = 2
+	default = 4
 }
