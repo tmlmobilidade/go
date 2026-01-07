@@ -5,23 +5,9 @@ variable "subnet_ocid" { type = string }
 variable "image_ocid" { type = string }
 variable "ssh_authorized_keys" { type = string }
 variable "instance_count" { type = number }
-variable "freeform_tags" {
-  type    = map(string)
-  default = {}
-}
 
 variable "autoscaling_cooldown_seconds" {
   description = "Cooldown period between autoscaling actions (in seconds)"
   type        = number
   default     = 300
-}
-
-# -----------------------------------------------------
-# Tags
-# -----------------------------------------------------
-
-variable "freeform_tags" {
-  description = "Freeform tags to apply to resources"
-  type        = map(string)
-  default     = {}
 }

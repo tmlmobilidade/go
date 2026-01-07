@@ -3,7 +3,6 @@
 resource "oci_core_instance_configuration" "this" {
   compartment_id = var.compartment_ocid
   display_name   = "nomad-server-config"
-  freeform_tags  = var.freeform_tags
 
   instance_details {
     instance_type = "compute"
@@ -41,7 +40,6 @@ resource "oci_core_instance_configuration" "this" {
         is_management_disabled = false
       }
 
-      freeform_tags = var.freeform_tags
     }
   }
 }
@@ -51,7 +49,6 @@ resource "oci_core_instance_pool" "this" {
   display_name              = "nomad-server-pool"
   instance_configuration_id = oci_core_instance_configuration.this.id
   size                      = var.instance_count
-  freeform_tags             = var.freeform_tags
 
   placement_configurations {
     availability_domain = var.availability_domain
