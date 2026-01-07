@@ -1,25 +1,15 @@
 import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImport.modal';
 import { EMISSION_MAP, PROPULSION_MAP } from '@/lib/vehicleEnum';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import {
-	type CreateVehicleDto,
-	CreateVehicleSchema,
-	type Vehicle,
-} from '@tmlmobilidade/types';
-import {
-	type UseFormReturnType,
-	useToast,
-	useTypicalForm,
-} from '@tmlmobilidade/ui';
+import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
+import { type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import {
-	createContext,
-	PropsWithChildren,
-	useContext,
-	useMemo,
-	useState,
-} from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
+
+//
+
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 
 //
 //
@@ -85,6 +75,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
 	const { form } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
+
+	const agencies = useAgenciesContext();
 
 	// -----------------------------
 	// Helper functions
@@ -189,19 +181,26 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		setIsError(null);
 		setIsloading(true);
 
+		const vehiclesFromFile = await parseTxtFile(file);
+
+		// Fetch existing vehicles
+		const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
+		if (!existingResponse.data) throw new Error('Failed to fetch existing vehicles');
+		setExistingVehicles(existingResponse.data);
+
+		const preview: VehicleImportPreview[] = [];
+
 		try {
-			const vehiclesFromFile = await parseTxtFile(file);
-
-			// Fetch existing vehicles
-			const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
-			if (!existingResponse.data) throw new Error('Failed to fetch existing vehicles');
-			setExistingVehicles(existingResponse.data);
-
-			const preview: VehicleImportPreview[] = [];
 			let createCounter = 0;
 			let updateCounter = 0;
 
+			setCanCreateorUpdate(true);
+
 			for (const vehicle of vehiclesFromFile) {
+				if (!agencies.data.raw.some(v => v._id === vehicle.agency_id)) {
+					setCanCreateorUpdate(false);
+				};
+
 				const result = CreateVehicleSchema.safeParse(vehicle);
 				if (!result.success) throw new Error(`Validation error for vehicle ${vehicle._id}`);
 
@@ -235,8 +234,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				message: `${createCounter} to create · ${updateCounter} to update`,
 				title: 'File imported',
 			});
-
-			setCanCreateorUpdate(preview.length > 0);
 		}
 		catch (error) {
 			useToast.error({ message: (error as Error).message, title: 'Import error' });
@@ -289,7 +286,10 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}
 	};
 
-	console.log('import', importPreview);
+	//
+
+	//
+	// Flags
 
 	// -----------------------------
 	// Context value
@@ -306,6 +306,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}),
 		[form, importPreview, createdCount, updatedCount, isError, isSaving, isloading, canCreateorUpdate],
 	);
+
+	console.log('can create - ', canCreateorUpdate);
 
 	// -----------------------------
 	// Render
