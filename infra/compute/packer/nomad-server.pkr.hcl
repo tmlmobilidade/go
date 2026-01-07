@@ -1,23 +1,9 @@
 # # #
-# PACKER TEMPLATE FOR OCI
-# This template creates a custom image with Docker,
-# Nomad, Consul, and Vault installed.
-
-packer {
-	required_plugins {
-		oracle = {
-			source  = "github.com/hashicorp/oracle"
-			version = "~> 1"
-		}
-	}
-}
-
-# # #
 # SOURCE
 # Configure the VM that will be used
 # to create the final output image.
 
-source "oracle-oci" "builder-vm" {
+source "oracle-oci" "source-nomad-server" {
 
 	image_name = "tml-iso-go-nomad-server"
 
@@ -46,7 +32,7 @@ source "oracle-oci" "builder-vm" {
 
 build {
 
-	sources = ["source.oracle-oci.builder-vm"]
+	sources = ["source.oracle-oci.source-nomad-server"]
 
 	provisioner "shell" {
 
