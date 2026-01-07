@@ -15,7 +15,7 @@ variable "subnet_ocid" {
 	For Packer builds, this subnet must have public access to the internet,
 	so it should be a public subnet. Current subnet is set to: cmet-pub
 	EOT
-	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaa4vbr4wpapm3wpa4o73yqytsyqedinrxouelf7ntkefdfuogof6rq"
+	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaao7mnezqom22eujji6o3pbbbgtjvkazofcjs2qkvdv6uvpdpbr7fa"
 }
 
 variable "image_ocid" {

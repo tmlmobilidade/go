@@ -40,6 +40,10 @@ build {
 
 			"set -eux",
 
+			# Wait for 30 seconds to ensure
+			# the machine is fully up and running
+			"sleep 30",
+
 			# Basic OS prep
 			"sudo apt-get update",
 			"sudo apt-get install -y ca-certificates curl gnupg lsb-release unattended-upgrades",
