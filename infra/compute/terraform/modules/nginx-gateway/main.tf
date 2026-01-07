@@ -36,14 +36,14 @@ resource "oci_core_instance_configuration" "this" {
 				assign_public_ip = true
 			}
 
-			metadata = {
-				ssh_authorized_keys = var.ssh_authorized_keys
-				user_data = base64encode(file("${path.module}/cloud-init.yaml"))
-			}
-
 			agent_config {
 				is_monitoring_disabled = false
 				is_management_disabled = false
+			}
+
+			metadata = {
+				ssh_authorized_keys = var.ssh_authorized_keys
+				user_data = base64encode(file("${path.module}/cloud-init.yaml"))
 			}
 
 		}

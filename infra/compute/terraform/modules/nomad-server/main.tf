@@ -1,61 +1,75 @@
-# Nomad Server - Instance Configuration + Pool
+# -----------------------------------------------------------------------
+# NOMAD SERVER / INSTANCE CONFIGURATION
+# -----------------------------------------------------------------------
 
 resource "oci_core_instance_configuration" "this" {
-  compartment_id = var.compartment_ocid
-  display_name   = "nomad-server-config"
 
-  instance_details {
-    instance_type = "compute"
+	display_name = "nomad-server-config"
 
-    launch_details {
-      compartment_id      = var.compartment_ocid
-      display_name        = "nomad-server"
-      availability_domain = var.availability_domain
-      shape               = "VM.Standard.E4.Flex"
+	compartment_id = var.compartment_ocid
 
-      shape_config {
-        ocpus         = 2
-        memory_in_gbs = 8
-      }
 
-      source_details {
-        source_type             = "image"
-        image_id                = var.image_ocid
-        boot_volume_size_in_gbs = 50
-      }
+	instance_details {
 
-      create_vnic_details {
-        subnet_id        = var.subnet_ocid
-        assign_public_ip = true
-        display_name     = "nomad-server-vnic"
-      }
+		instance_type = "compute"
 
-      metadata = {
-        ssh_authorized_keys = var.ssh_authorized_keys
-        user_data           = base64encode(file("${path.module}/cloud-init.yaml"))
-      }
+		launch_details {
 
-      agent_config {
-        is_monitoring_disabled = false
-        is_management_disabled = false
-      }
+			display_name = "nomad-server"
+			compartment_id = var.compartment_ocid
+			availability_domain = var.availability_domain
+			shape = var.vm_shape
 
-    }
-  }
+			shape_config {
+				ocpus = var.vm_ocpus
+				memory_in_gbs = var.vm_memory_in_gbs
+			}
+
+			source_details {
+				source_type = "image"
+				image_id = var.image_ocid
+				boot_volume_size_in_gbs = var.boot_volume_size_in_gbs
+			}
+
+			create_vnic_details {
+				subnet_id = var.subnet_ocid
+				assign_public_ip = true
+			}
+
+			agent_config {
+				is_monitoring_disabled = false
+				is_management_disabled = false
+			}
+
+			metadata = {
+				ssh_authorized_keys = var.ssh_authorized_keys
+				user_data = base64encode(file("${path.module}/cloud-init.yaml"))
+			}
+
+		}
+
+	}
+
 }
 
+# -----------------------------------------------------------------------
+# NOMAD SERVER / INSTANCE POOL
+# -----------------------------------------------------------------------
+
 resource "oci_core_instance_pool" "this" {
-  compartment_id            = var.compartment_ocid
-  display_name              = "nomad-server-pool"
-  instance_configuration_id = oci_core_instance_configuration.this.id
-  size                      = var.instance_count
 
-  placement_configurations {
-    availability_domain = var.availability_domain
-    primary_subnet_id   = var.subnet_ocid
-  }
+	display_name = "nomad-server-pool"
+	compartment_id = var.compartment_ocid
+	instance_configuration_id = oci_core_instance_configuration.this.id
+	size = var.instance_count
 
-  lifecycle {
-    create_before_destroy = true
-  }
+	placement_configurations {
+		availability_domain = var.availability_domain
+		primary_subnet_id = var.subnet_ocid
+	}
+
+	lifecycle {
+		create_before_destroy = true
+	}
+
 }
