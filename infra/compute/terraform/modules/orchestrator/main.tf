@@ -71,7 +71,7 @@ resource "oci_core_instance_configuration" "this" {
 			metadata = {
 				ssh_authorized_keys = var.ssh_authorized_keys
 				user_data = base64encode(
-					templatefile("${path.module}/cloud-init.yaml", {
+					templatefile("${path.module}/templates/cloud-init.yaml", {
 						nomad_config = local.nomad_config
 						nomad_service = local.nomad_service
 						consul_config = local.consul_config
