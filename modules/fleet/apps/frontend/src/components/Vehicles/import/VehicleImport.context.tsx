@@ -97,16 +97,25 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const parseNumber = (value?: string, fieldName?: string): number => {
 		if (!value) return 0;
 		const num = Number(value);
-		if (Number.isNaN(num)) throw new Error(`Invalid number for ${fieldName}: ${value}`);
+		if (Number.isNaN(num)) {
+			useToast.error({ message: `Invalid number for ${fieldName}: ${value}`, title: 'Import error' });
+			return;
+		}
 		return num;
 	};
 
 	//
 
 	const parseMappedEnum = (value: string | undefined, map: Record<string, string>, fieldName: string): string => {
-		if (!value) throw new Error(`Missing enum value for ${fieldName}`);
+		if (!value) {
+			useToast.error({ message: `Missing enum value for ${fieldName}`, title: 'Import error' });
+			return;
+		}
 		const mapped = map[value];
-		if (!mapped) throw new Error(`Invalid enum value for ${fieldName}: ${value}`);
+		if (!mapped) {
+			useToast.error({ message: `Invalid enum value for ${fieldName}: ${value}`, title: 'Import error' });
+			return '';
+		}
 		return mapped;
 	};
 
