@@ -93,28 +93,52 @@ resource "oci_core_instance_pool" "this" {
 }
 
 # -----------------------------------------------------------------------
-# NGINX GATEWAY / AUTOSCALING CONFIGURATION
+# WORKER / AUTOSCALING CONFIGURATION
 # -----------------------------------------------------------------------
 
-resource "oci_autoscaling_configuration" "this" {
+resource "oci_autoscaling_auto_scaling_configuration" "this" {
 
 	display_name = "${var.module_name}-autoscaling-config"
 	compartment_id = var.compartment_ocid
+	cool_down_in_seconds = 300
 
-	resource {
-		type = "instancePool"
+	auto_scaling_resources {
 		id = oci_core_instance_pool.this.id
+		type = "instancePool"
 	}
 
 	policies {
 
+		display_name = "cpu-threshold-policy"
 		policy_type = "threshold"
+
+		capacity {
+			initial = var.instance_count
+			min = 1
+			max = 10
+		}
+
+		resource_action {
+			action_type = "AUTOSCALE"
+			action = "SCALE_OUT"
+		}
 
 		rules {
 
-			metric_name = "CpuUtilization"
-			threshold = 70
-			operator = "GT"
+			display_name = "cpu-scale-out"
+
+			metric {
+
+				metric_type = "CPU_UTILIZATION"
+				namespace = "oci_computeagent"
+				resource_group = "instancePool"
+
+				threshold {
+					operator = "GT"
+					value = 70
+				}
+
+			}
 
 			action {
 				type = "CHANGE_COUNT_BY"
