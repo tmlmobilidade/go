@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowLoopRight, IconBuildings, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
@@ -153,6 +153,13 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		icon: <IconTopologyStar3 size={26} />,
 		label: 'Tipologias',
 		permissions: [{ action: PermissionCatalog.all.typologies.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.typologies.scope }],
+	},
+	{
+		_id: 'lines',
+		href: PAGE_ROUTES.offer.LINES_LIST,
+		icon: <IconArrowLoopRight size={26} />,
+		label: 'Linhas',
+		permissions: [{ action: PermissionCatalog.all.lines.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.lines.scope }],
 	},
 ];
 

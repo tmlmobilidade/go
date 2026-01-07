@@ -90,6 +90,13 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('offer', 'frontend_url')}`,
 
+		// LINES
+		LINES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/lines/${id}`,
+		LINES_LIST: `${getAppConfig('offer', 'frontend_url')}/lines`,
+
+		// ROUTE
+		ROUTE_DETAIL: (id: string, routeId: string) => `${getAppConfig('offer', 'frontend_url')}/lines/${id}/${routeId}`,
+
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/typologies/${id}`,
 		TYPOLOGIES_LIST: `${getAppConfig('offer', 'frontend_url')}/typologies`,
@@ -308,6 +315,16 @@ export const API_ROUTES = Object.freeze({
 	offer: {
 		// BASE
 		BASE: `${getAppConfig('offer', 'api_url')}`,
+
+		// LINES
+		LINES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/lines/${id}`,
+		LINES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/lines/${id}/lock`,
+		LINES_LIST: `${getAppConfig('offer', 'api_url')}/lines`,
+
+		// ROUTES
+		ROUTES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/routes/${id}`,
+		ROUTES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/routes/${id}/lock`,
+		ROUTES_LIST: `${getAppConfig('offer', 'api_url')}/routes`,
 
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}`,
