@@ -1,0 +1,282 @@
+#cloud-config
+# Nomad Server Node - Cloud Init Configuration
+# This template configures a node to run as a Nomad server with Consul and Vault
+
+# -----------------------------------------------------
+# Package Installation
+# -----------------------------------------------------
+package_update: true
+package_upgrade: true
+
+packages:
+  - curl
+  - wget
+  - unzip
+  - jq
+  - net-tools
+  - ca-certificates
+  - gnupg
+  - lsb-release
+
+# -----------------------------------------------------
+# File Creation
+# Configuration files for Nomad, Consul, and Vault
+# -----------------------------------------------------
+write_files:
+  # Nomad server configuration
+  - path: /etc/nomad.d/nomad.hcl
+    permissions: '0640'
+    content: |
+      # Nomad Server Configuration
+      datacenter = "${datacenter}"
+      data_dir   = "/opt/nomad/data"
+      log_level  = "INFO"
+
+      # Bind to all interfaces
+      bind_addr = "0.0.0.0"
+
+      # Advertise the private IP
+      advertise {
+        http = "{{ GetPrivateIP }}:4646"
+        rpc  = "{{ GetPrivateIP }}:4647"
+        serf = "{{ GetPrivateIP }}:4648"
+      }
+
+      # Server configuration
+      server {
+        enabled          = true
+        bootstrap_expect = ${expected_servers}
+
+        # Enable scheduler preemption
+        default_scheduler_config {
+          scheduler_algorithm = "binpack"
+          preemption_config {
+            batch_scheduler_enabled   = true
+            system_scheduler_enabled  = true
+            service_scheduler_enabled = true
+          }
+        }
+      }
+
+      # Consul integration for cluster discovery
+      consul {
+        address = "127.0.0.1:8500"
+        server_service_name = "nomad-server"
+        client_service_name = "nomad-client"
+        auto_advertise      = true
+        server_auto_join    = true
+        client_auto_join    = true
+      }
+
+      # Vault integration
+      vault {
+        enabled = true
+        address = "http://127.0.0.1:8200"
+      }
+
+      # ACL configuration (enable in production)
+      acl {
+        enabled = false
+      }
+
+      # Telemetry
+      telemetry {
+        publish_allocation_metrics = true
+        publish_node_metrics       = true
+        prometheus_metrics         = true
+      }
+
+  # Consul server configuration
+  - path: /etc/consul.d/consul.hcl
+    permissions: '0640'
+    content: |
+      # Consul Server Configuration
+      datacenter = "${datacenter}"
+      data_dir   = "/opt/consul/data"
+      log_level  = "INFO"
+
+      # Bind configuration
+      bind_addr   = "{{ GetPrivateIP }}"
+      client_addr = "0.0.0.0"
+
+      # Server configuration
+      server           = true
+      bootstrap_expect = ${expected_servers}
+
+      # Cluster join using cloud auto-join
+      retry_join = ["provider=oci tag_key=Component tag_value=nomad-server region=${cluster_cidr}"]
+
+      # UI and API
+      ui_config {
+        enabled = true
+      }
+
+      # Gossip encryption
+      encrypt = "${consul_encrypt}"
+
+      # Performance tuning
+      performance {
+        raft_multiplier = 1
+      }
+
+      # Connect (service mesh) configuration
+      connect {
+        enabled = true
+      }
+
+      # ACL configuration (enable in production)
+      acl {
+        enabled = false
+        default_policy = "allow"
+      }
+
+  # Vault configuration
+  - path: /etc/vault.d/vault.hcl
+    permissions: '0640'
+    content: |
+      # Vault Server Configuration
+      ui = true
+
+      storage "consul" {
+        address = "127.0.0.1:8500"
+        path    = "vault/"
+      }
+
+      listener "tcp" {
+        address     = "0.0.0.0:8200"
+        tls_disable = true  # Enable TLS in production!
+      }
+
+      api_addr     = "http://{{ GetPrivateIP }}:8200"
+      cluster_addr = "https://{{ GetPrivateIP }}:8201"
+
+  # Systemd service for Nomad
+  - path: /etc/systemd/system/nomad.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Nomad
+      Documentation=https://www.nomadproject.io/docs/
+      Wants=network-online.target
+      After=network-online.target consul.service
+
+      [Service]
+      User=nomad
+      Group=nomad
+      ExecReload=/bin/kill -HUP $MAINPID
+      ExecStart=/usr/local/bin/nomad agent -config=/etc/nomad.d
+      KillMode=process
+      KillSignal=SIGINT
+      LimitNOFILE=65536
+      LimitNPROC=infinity
+      Restart=on-failure
+      RestartSec=2
+      TasksMax=infinity
+      OOMScoreAdjust=-1000
+
+      [Install]
+      WantedBy=multi-user.target
+
+  # Systemd service for Consul
+  - path: /etc/systemd/system/consul.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Consul
+      Documentation=https://www.consul.io/docs/
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      User=consul
+      Group=consul
+      ExecReload=/bin/kill -HUP $MAINPID
+      ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d
+      KillMode=process
+      KillSignal=SIGINT
+      LimitNOFILE=65536
+      Restart=on-failure
+      RestartSec=2
+
+      [Install]
+      WantedBy=multi-user.target
+
+  # Systemd service for Vault
+  - path: /etc/systemd/system/vault.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Vault
+      Documentation=https://www.vaultproject.io/docs/
+      Wants=network-online.target
+      After=network-online.target consul.service
+
+      [Service]
+      User=vault
+      Group=vault
+      ExecReload=/bin/kill -HUP $MAINPID
+      ExecStart=/usr/local/bin/vault server -config=/etc/vault.d/vault.hcl
+      KillMode=process
+      KillSignal=SIGINT
+      LimitNOFILE=65536
+      LimitMEMLOCK=infinity
+      Restart=on-failure
+      RestartSec=2
+
+      [Install]
+      WantedBy=multi-user.target
+
+# -----------------------------------------------------
+# Commands to run on first boot
+# -----------------------------------------------------
+runcmd:
+  # Create users and groups
+  - groupadd --system nomad || true
+  - useradd --system --gid nomad --home /opt/nomad --shell /bin/false nomad || true
+  - groupadd --system consul || true
+  - useradd --system --gid consul --home /opt/consul --shell /bin/false consul || true
+  - groupadd --system vault || true
+  - useradd --system --gid vault --home /opt/vault --shell /bin/false vault || true
+
+  # Create directories
+  - mkdir -p /opt/nomad/data /opt/consul/data /opt/vault/data
+  - chown -R nomad:nomad /opt/nomad /etc/nomad.d
+  - chown -R consul:consul /opt/consul /etc/consul.d
+  - chown -R vault:vault /opt/vault /etc/vault.d
+
+  # Download and install HashiCorp tools (if not pre-installed via Packer)
+  - |
+    if ! command -v nomad &> /dev/null; then
+      NOMAD_VERSION="1.7.3"
+      curl -fsSL https://releases.hashicorp.com/nomad/$${NOMAD_VERSION}/nomad_$${NOMAD_VERSION}_linux_amd64.zip -o /tmp/nomad.zip
+      unzip /tmp/nomad.zip -d /usr/local/bin/
+      chmod +x /usr/local/bin/nomad
+    fi
+
+  - |
+    if ! command -v consul &> /dev/null; then
+      CONSUL_VERSION="1.17.2"
+      curl -fsSL https://releases.hashicorp.com/consul/$${CONSUL_VERSION}/consul_$${CONSUL_VERSION}_linux_amd64.zip -o /tmp/consul.zip
+      unzip /tmp/consul.zip -d /usr/local/bin/
+      chmod +x /usr/local/bin/consul
+    fi
+
+  - |
+    if ! command -v vault &> /dev/null; then
+      VAULT_VERSION="1.15.4"
+      curl -fsSL https://releases.hashicorp.com/vault/$${VAULT_VERSION}/vault_$${VAULT_VERSION}_linux_amd64.zip -o /tmp/vault.zip
+      unzip /tmp/vault.zip -d /usr/local/bin/
+      chmod +x /usr/local/bin/vault
+    fi
+
+  # Enable and start services
+  - systemctl daemon-reload
+  - systemctl enable consul nomad vault
+  - systemctl start consul
+  - sleep 10  # Wait for Consul to be ready
+  - systemctl start vault
+  - sleep 5   # Wait for Vault to be ready
+  - systemctl start nomad
+
+# Final message
+final_message: "Nomad server node is ready after $UPTIME seconds"

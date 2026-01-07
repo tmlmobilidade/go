@@ -1,0 +1,274 @@
+#cloud-config
+# Nomad Worker Node - Cloud Init Configuration
+# This template configures a node to run as a Nomad client with Docker and Consul
+
+# -----------------------------------------------------
+# Package Installation
+# -----------------------------------------------------
+package_update: true
+package_upgrade: true
+
+packages:
+  - curl
+  - wget
+  - unzip
+  - jq
+  - net-tools
+  - ca-certificates
+  - gnupg
+  - lsb-release
+
+# -----------------------------------------------------
+# File Creation
+# Configuration files for Nomad, Consul, and Docker
+# -----------------------------------------------------
+write_files:
+  # Nomad client configuration
+  - path: /etc/nomad.d/nomad.hcl
+    permissions: '0640'
+    content: |
+      # Nomad Client (Worker) Configuration
+      datacenter = "${datacenter}"
+      data_dir   = "/opt/nomad/data"
+      log_level  = "INFO"
+
+      # Bind to all interfaces
+      bind_addr = "0.0.0.0"
+
+      # Advertise the private IP
+      advertise {
+        http = "{{ GetPrivateIP }}:4646"
+        rpc  = "{{ GetPrivateIP }}:4647"
+        serf = "{{ GetPrivateIP }}:4648"
+      }
+
+      # Client configuration
+      client {
+        enabled = true
+
+        # Node class for job constraints
+        node_class = "${node_class}"
+
+        # Server addresses to join (if Consul not available)
+        servers = [${server_addresses}]
+
+        # Resource fingerprinting
+        options {
+          "driver.raw_exec.enable"    = "1"
+          "docker.privileged.enabled" = "true"
+        }
+
+        # Host volumes for persistent data
+        host_volume "docker-sock" {
+          path      = "/var/run/docker.sock"
+          read_only = true
+        }
+
+        # CNI plugin directory
+        cni_path = "/opt/cni/bin"
+        cni_config_dir = "/opt/cni/config"
+      }
+
+      # Consul integration for service discovery
+      consul {
+        address = "127.0.0.1:8500"
+        client_service_name = "nomad-client"
+        auto_advertise      = true
+        client_auto_join    = true
+      }
+
+      # Vault integration for secrets
+      vault {
+        enabled = true
+        address = "http://active.vault.service.consul:8200"
+      }
+
+      # Enable Docker driver
+      plugin "docker" {
+        config {
+          allow_privileged = true
+          volumes {
+            enabled = true
+          }
+          gc {
+            image       = true
+            image_delay = "3m"
+            container   = true
+          }
+          # Docker registry authentication
+          auth {
+            config = "/etc/docker/config.json"
+          }
+        }
+      }
+
+      # Telemetry
+      telemetry {
+        publish_allocation_metrics = true
+        publish_node_metrics       = true
+        prometheus_metrics         = true
+      }
+
+  # Consul client configuration
+  - path: /etc/consul.d/consul.hcl
+    permissions: '0640'
+    content: |
+      # Consul Client Configuration
+      datacenter = "${datacenter}"
+      data_dir   = "/opt/consul/data"
+      log_level  = "INFO"
+
+      # Bind configuration
+      bind_addr   = "{{ GetPrivateIP }}"
+      client_addr = "0.0.0.0"
+
+      # Client mode (not a server)
+      server = false
+
+      # Join the cluster using cloud auto-join
+      retry_join = ["provider=oci tag_key=Component tag_value=nomad-server region=${cluster_cidr}"]
+
+      # Gossip encryption
+      encrypt = "${consul_encrypt}"
+
+      # Enable Connect sidecar proxy
+      connect {
+        enabled = true
+      }
+
+      # DNS configuration for service discovery
+      ports {
+        dns = 8600
+      }
+
+      recursors = ["169.254.169.254"]
+
+  # Docker daemon configuration
+  - path: /etc/docker/daemon.json
+    permissions: '0644'
+    content: |
+      {
+        "storage-driver": "overlay2",
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "100m",
+          "max-file": "3"
+        },
+        "default-ulimits": {
+          "nofile": {
+            "Name": "nofile",
+            "Hard": 65536,
+            "Soft": 65536
+          }
+        },
+        "live-restore": true
+      }
+
+  # Docker registry authentication (placeholder)
+  - path: /etc/docker/config.json
+    permissions: '0600'
+    content: |
+      ${docker_auth_config}
+
+  # Systemd service for Nomad
+  - path: /etc/systemd/system/nomad.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Nomad
+      Documentation=https://www.nomadproject.io/docs/
+      Wants=network-online.target docker.service
+      After=network-online.target docker.service consul.service
+
+      [Service]
+      User=root
+      Group=root
+      ExecReload=/bin/kill -HUP $MAINPID
+      ExecStart=/usr/local/bin/nomad agent -config=/etc/nomad.d
+      KillMode=process
+      KillSignal=SIGINT
+      LimitNOFILE=65536
+      LimitNPROC=infinity
+      Restart=on-failure
+      RestartSec=2
+      TasksMax=infinity
+      OOMScoreAdjust=-1000
+
+      [Install]
+      WantedBy=multi-user.target
+
+  # Systemd service for Consul
+  - path: /etc/systemd/system/consul.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Consul
+      Documentation=https://www.consul.io/docs/
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      User=consul
+      Group=consul
+      ExecReload=/bin/kill -HUP $MAINPID
+      ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d
+      KillMode=process
+      KillSignal=SIGINT
+      LimitNOFILE=65536
+      Restart=on-failure
+      RestartSec=2
+
+      [Install]
+      WantedBy=multi-user.target
+
+# -----------------------------------------------------
+# Commands to run on first boot
+# -----------------------------------------------------
+runcmd:
+  # Install Docker
+  - |
+    if ! command -v docker &> /dev/null; then
+      curl -fsSL https://get.docker.com | sh
+      usermod -aG docker opc || true
+    fi
+
+  # Create users and groups
+  - groupadd --system consul || true
+  - useradd --system --gid consul --home /opt/consul --shell /bin/false consul || true
+
+  # Create directories
+  - mkdir -p /opt/nomad/data /opt/consul/data /opt/cni/bin /opt/cni/config
+  - chown -R consul:consul /opt/consul /etc/consul.d
+
+  # Install CNI plugins for Nomad networking
+  - |
+    CNI_VERSION="1.4.0"
+    curl -fsSL https://github.com/containernetworking/plugins/releases/download/v$${CNI_VERSION}/cni-plugins-linux-amd64-v$${CNI_VERSION}.tgz | tar -xz -C /opt/cni/bin
+
+  # Download and install HashiCorp tools (if not pre-installed via Packer)
+  - |
+    if ! command -v nomad &> /dev/null; then
+      NOMAD_VERSION="1.7.3"
+      curl -fsSL https://releases.hashicorp.com/nomad/$${NOMAD_VERSION}/nomad_$${NOMAD_VERSION}_linux_amd64.zip -o /tmp/nomad.zip
+      unzip /tmp/nomad.zip -d /usr/local/bin/
+      chmod +x /usr/local/bin/nomad
+    fi
+
+  - |
+    if ! command -v consul &> /dev/null; then
+      CONSUL_VERSION="1.17.2"
+      curl -fsSL https://releases.hashicorp.com/consul/$${CONSUL_VERSION}/consul_$${CONSUL_VERSION}_linux_amd64.zip -o /tmp/consul.zip
+      unzip /tmp/consul.zip -d /usr/local/bin/
+      chmod +x /usr/local/bin/consul
+    fi
+
+  # Enable and start services
+  - systemctl daemon-reload
+  - systemctl enable docker consul nomad
+  - systemctl start docker
+  - systemctl start consul
+  - sleep 10  # Wait for Consul to discover servers
+  - systemctl start nomad
+
+# Final message
+final_message: "Nomad worker node is ready after $UPTIME seconds"
