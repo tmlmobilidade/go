@@ -23,7 +23,7 @@ export function LineDetailSectionRoutes() {
 	//
 	// B. Render components
 
-	if (!lineDetailContext.data.form.values.routes) {
+	if (!lineDetailContext.data.line?.routes || lineDetailContext.data.line.routes.length === 0) {
 		return null;
 	}
 
@@ -31,11 +31,9 @@ export function LineDetailSectionRoutes() {
 		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas">
 			<Section gap="sm">
 				<Section padding="none">
-					{lineDetailContext.data.form.values.routes.map((route, index) => {
-						const lineRoutes = lineDetailContext.data.form.values.routes;
-						const routeData = lineRoutes.find(r => r._id === route._id);
-						return (<LineDetailRoute key={index} lineId={lineDetailContext.data.line._id} routeData={routeData} />);
-					})}
+					{lineDetailContext.data.line.routes.map((route, index) => (
+						<LineDetailRoute key={route._id ?? index} lineId={lineDetailContext.data.line?._id} routeData={route} />
+					))}
 				</Section>
 
 				<HasPermission
