@@ -39,7 +39,7 @@ export async function exportVehicleEventsRaw({ context, message }: TaskProps): P
 	}
 
 	if (context.filters.line_ids.length) {
-		filterQuery.line_id = { $in: context.filters.line_ids };
+		filterQuery.pattern_id = { $regex: context.filters.line_ids.map(id => `^${id}`).join('|') };
 	}
 
 	if (context.filters.pattern_ids.length) {
