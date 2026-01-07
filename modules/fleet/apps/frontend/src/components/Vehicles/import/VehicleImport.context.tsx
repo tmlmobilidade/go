@@ -12,7 +12,6 @@ import useSWR from 'swr';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 
 //
-//
 
 // Types
 
@@ -81,6 +80,19 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	// -----------------------------
 	// Helper functions
 	// -----------------------------
+
+	const formatDate = (value: string): string => {
+		if (!/^\d{8}$/.test(value)) return;
+
+		if (value.length != 8) return;
+
+		if (parseInt(value.slice(0, 4), 10) < 1990 || parseInt(value.slice(0, 4), 10) > 2026) return;
+		if (parseInt(value.slice(4, 6), 10) < 1 || parseInt(value.slice(4, 6), 10) > 12) return;
+		if (parseInt(value.slice(6, 8), 10) < 1 || parseInt(value.slice(6, 8), 10) > 31) return;
+
+		return value;
+	};
+
 	const parseBoolean = (value?: string): boolean => value === '1';
 	const parseNumber = (value?: string, fieldName?: string): number => {
 		if (!value) return 0;
@@ -154,7 +166,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 					owner: raw.owner,
 					passenger_counting: parseBoolean(raw.passenger_counting),
 					propulsion: parseMappedEnum(raw.propulsion, PROPULSION_MAP, 'propulsion'),
-					registration_date: raw.registration_date,
+					registration_date: formatDate(raw.registration_date),
 					wheelchair_acessible: parseWheelchairAccessibility(raw.wheelchair, raw.ramp),
 				};
 			}
@@ -306,8 +318,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}),
 		[form, importPreview, createdCount, updatedCount, isError, isSaving, isloading, canCreateorUpdate],
 	);
-
-	console.log('can create - ', canCreateorUpdate);
 
 	// -----------------------------
 	// Render
