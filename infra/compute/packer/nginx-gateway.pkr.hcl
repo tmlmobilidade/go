@@ -5,7 +5,7 @@
 
 source "oracle-oci" "source-nginx-gateway" {
 
-	image_name = "tml-iso-go-nginx-gateway"
+	image_name = "tml-iso-go-nginx-gateway-{{timestamp}}"
 
 	shape = var.vm_shape
 	subnet_ocid = var.subnet_ocid

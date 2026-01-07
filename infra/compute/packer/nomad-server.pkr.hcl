@@ -5,7 +5,7 @@
 
 source "oracle-oci" "source-nomad-server" {
 
-	image_name = "tml-iso-go-nomad-server"
+	image_name = "tml-iso-go-nomad-server-{{timestamp}}"
 
 	shape = var.vm_shape
 	subnet_ocid = var.subnet_ocid
