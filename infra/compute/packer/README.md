@@ -1,17 +1,25 @@
 # Building custom images with Packer
 
-Follow this guide to build custom Nomad server and worker VM images using Packer. You will need access to an OCI compartment and the OCI-CLI tool configured in your machine.
+Follow this guide to build custom VM images using Packer on OCI. You will need access to an OCI compartment and the OCI-CLI tool configured in your machine.
 
 ## What is Packer
 Packer is a HashiCorp tool used for building automated machine images for multiple platforms from a single source configuration. Think Docker-style container images but for actual machines, where a full OS in required.
 
 ## Purpose
-This directory contains Packer configurations for the infrastructure requirements of this project. This includes two custom images, one for orchestration controllers (`servers`) and another for orchestration workers (`clients`). These images install `docker` and `consul`, `nomad` and `vault`, which are HashiCorp's tools for managing and orchestrating cloud infrastructure.
+This directory contains Packer configurations for the infrastructure requirements of this project. This includes several custom images, each for its given purpose:
+
+- `nomad-server` is used for orchestration controller instances of the nomad cluster;
+
+- `nomad-worker` is used for orchestration worker instances, also refered to as `clients`;
+
+- `nginx-gateway` is used as the entrypoint and reverse-proxy for the whole cluster.
+
+These images install `nginx`, `docker` as well as `consul`, `nomad` and `vault`, which are HashiCorp's tools for managing and orchestrating cloud infrastructure.
 
 ## Requirements
 In order to use Packer you will need to have the OCI-CLI tool configured in your local machine. To do this follow these steps:
 ```
-cd ./infra/compute/packer
+TBD
 ```
 
 
