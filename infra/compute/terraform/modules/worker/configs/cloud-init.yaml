@@ -126,7 +126,7 @@ write_files:
       server = false
 
       # Join the cluster using cloud auto-join
-      retry_join = ["provider=oci tag_key=Component tag_value=nomad-server region=${cluster_cidr}"]
+      retry_join = ["provider=oci tag_key=Component tag_value=orchestrator region=${cluster_cidr}"]
 
       # Gossip encryption
       encrypt = "${consul_encrypt}"

@@ -1,6 +1,6 @@
-########################
-# Nomad Cluster on OCI
-########################
+# -----------------------------------------------------------------------
+# TERRAFORM SETTINGS
+# -----------------------------------------------------------------------
 
 terraform {
 
@@ -13,6 +13,54 @@ terraform {
 		}
 	}
 
+}
+
+
+# -----------------------------------------------------------------------
+# OCI AUTHENTICATION VARIABLES
+# -----------------------------------------------------------------------
+
+variable "tenancy_ocid" {
+	type = string
+	description = "The OCID of the Oracle Cloud Infrastructure tenancy."
+}
+
+variable "user_ocid" {
+	type = string
+	description = "The OCID of the Oracle Cloud Infrastructure user."
+}
+
+variable "fingerprint" {
+	type = string
+	description = "The fingerprint of the API key."
+}
+
+variable "private_key_path" {
+	type = string
+	description = "The file path to the private key for OCI API authentication."
+}
+
+variable "region" {
+	type = string
+	description = "The Oracle Cloud Infrastructure region."
+}
+
+variable "compartment_ocid" {
+	type = string
+	description = "The OCID of the Oracle Cloud Infrastructure compartment."
+	default = ""
+}
+
+variable "availability_domain" {
+	type = string
+	description = "The availability domain to deploy resources into."
+	default = ""
+}
+
+variable "ssh_public_key_path" {
+	type    = string
+	description = "The file path to the SSH public key for instance access."
+	default = "~/.ssh/id_rsa.pub"
 }
 
 

@@ -8,11 +8,11 @@ Packer is a HashiCorp tool used for building automated machine images for multip
 ## Purpose
 This directory contains Packer configurations for the infrastructure requirements of this project. This includes several custom images, each for its given purpose:
 
-- `nomad-server` is used for orchestration controller instances of the nomad cluster;
+- `orchestrator` is used for orchestration controller instances of the nomad cluster;
 
-- `nomad-worker` is used for orchestration worker instances, also refered to as `clients`;
+- `worker` is used for orchestration worker instances, also refered to as `clients`;
 
-- `nginx-gateway` is used as the entrypoint and reverse-proxy for the whole cluster.
+- `gateway` is used as the entrypoint and reverse-proxy for the whole cluster.
 
 These images install `nginx`, `docker` as well as `consul`, `nomad` and `vault`, which are HashiCorp's tools for managing and orchestrating cloud infrastructure.
 
@@ -31,7 +31,7 @@ cd ./infra/compute/packer
 
 Initialize the packer module and validate the configuration files:
 ```
-packer init
+packer init .
 packer validate .
 ```
 

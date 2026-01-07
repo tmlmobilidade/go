@@ -3,9 +3,9 @@
 # Configure the VM that will be used
 # to create the final output image.
 
-source "oracle-oci" "source-nomad-server" {
+source "oracle-oci" "source-orchestrator" {
 
-	image_name = "tml-iso-go-nomad-server-{{timestamp}}"
+	image_name = "tml-iso-go-orchestrator-{{timestamp}}"
 
 	shape = var.vm_shape
 	subnet_ocid = var.subnet_ocid
@@ -32,7 +32,7 @@ source "oracle-oci" "source-nomad-server" {
 
 build {
 
-	sources = ["source.oracle-oci.source-nomad-server"]
+	sources = ["source.oracle-oci.source-orchestrator"]
 
 	provisioner "shell" {
 

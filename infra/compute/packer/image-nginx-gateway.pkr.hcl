@@ -3,9 +3,9 @@
 # Configure the VM that will be used
 # to create the final output image.
 
-source "oracle-oci" "source-nginx-gateway" {
+source "oracle-oci" "source-gateway" {
 
-	image_name = "tml-iso-go-nginx-gateway-{{timestamp}}"
+	image_name = "tml-iso-go-gateway-{{timestamp}}"
 
 	shape = var.vm_shape
 	subnet_ocid = var.subnet_ocid
@@ -32,7 +32,7 @@ source "oracle-oci" "source-nginx-gateway" {
 
 build {
 
-	sources = ["source.oracle-oci.source-nginx-gateway"]
+	sources = ["source.oracle-oci.source-gateway"]
 
 	provisioner "shell" {
 
