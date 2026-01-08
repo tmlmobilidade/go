@@ -8,6 +8,17 @@ variable "module_name" {
 	default = "gateway"
 }
 
+variable "image_ocid" {
+	type = string
+	description = <<-EOT
+	The OCID of the base image to use for the VM.
+	It is recommended to use a *minimal* Ubuntu image to reduce the final image size.
+	This should be regularly updated to the latest available minimal Ubuntu image.
+	Current image is set to: iso-go-gateway-1767878542"
+	EOT
+	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaa4zybj2dpcgjoq64negiojdbkg4bawnloi6kmyatv5ywhn4rhqsq"
+}
+
 variable "subnet_ocid" {
 	type = string
 	description = <<-EOT
@@ -16,17 +27,6 @@ variable "subnet_ocid" {
 	so it should be a public subnet. Current subnet is set to: cmet-pub
 	EOT
 	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaa4vbr4wpapm3wpa4o73yqytsyqedinrxouelf7ntkefdfuogof6rq"
-}
-
-variable "image_ocid" {
-	type = string
-	description = <<-EOT
-	The OCID of the base image to use for the VM.
-	It is recommended to use a *minimal* Ubuntu image to reduce the final image size.
-	This should be regularly updated to the latest available minimal Ubuntu image.
-	Current image is set to: tml-iso-go-gateway-1767816024"
-	EOT
-	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaayosuzyl5wuixkegwq4gwsslvysnh75xeieprcyyo424clpv6bmwa"
 }
 
 variable "vm_shape" {

@@ -8,6 +8,17 @@ variable "module_name" {
 	default = "worker"
 }
 
+variable "image_ocid" {
+	type = string
+	description = <<-EOT
+	The OCID of the base image to use for the VM.
+	It is recommended to use a *minimal* Ubuntu image to reduce the final image size.
+	This should be regularly updated to the latest available minimal Ubuntu image.
+	Current image is set to: iso-go-worker-1767878542"
+	EOT
+	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaa6dhmv3m2iumbecwz3h7cmfty75lx7crceembpodt6ku2mui3itia"
+}
+
 variable "subnet_ocid" {
 	type = string
 	description = <<-EOT
@@ -16,17 +27,6 @@ variable "subnet_ocid" {
 	so it should be a public subnet. Current subnet is set to: cmet-pub
 	EOT
 	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaao7mnezqom22eujji6o3pbbbgtjvkazofcjs2qkvdv6uvpdpbr7fa"
-}
-
-variable "image_ocid" {
-	type = string
-	description = <<-EOT
-	The OCID of the base image to use for the VM.
-	It is recommended to use a *minimal* Ubuntu image to reduce the final image size.
-	This should be regularly updated to the latest available minimal Ubuntu image.
-	Current image is set to: tml-iso-go-worker-1767816025"
-	EOT
-	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaabowwvlkhjv3ykvpkxlxovxfxe2pypcbwhpydnpcz42trohajvtka"
 }
 
 variable "vm_shape" {
