@@ -237,6 +237,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 					// CREATE permission
 					if (!hasUpdatePermission(vehicle.agency_id)) {
 						setIsError(new Error(`No permission to create vehicle for agency ${vehicle.agency_id}`));
+						setCanCreateorUpdate(false);
 					}
 
 					createCounter++;
@@ -272,7 +273,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			setCreatedCount(createCounter);
 			setUpdatedCount(updateCounter);
 			setExistingVehicles(existingResponse.data);
-			setCanCreateorUpdate(preview.length > 0);
+			setCanCreateorUpdate(preview.length > 0 && isError != null);
 
 			useToast.success({
 				message: `${createCounter} to create · ${updateCounter} to update`,
