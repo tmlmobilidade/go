@@ -101,13 +101,13 @@ locals {
 # if you do not wish to deploy them.
 # -----------------------------------------------------------------------
 
-# module "gateway" {
-# 	source = "./modules/gateway"
-# 	project_name = var.project_name
-# 	compartment_ocid = var.compartment_ocid
-# 	availability_domain = var.availability_domain
-# 	ssh_authorized_keys = local.ssh_keys
-# }
+module "gateway" {
+	source = "./modules/gateway"
+	project_name = var.project_name
+	compartment_ocid = var.compartment_ocid
+	availability_domain = var.availability_domain
+	ssh_authorized_keys = local.ssh_keys
+}
 
 module "orchestrator" {
 	source = "./modules/orchestrator"
@@ -117,11 +117,11 @@ module "orchestrator" {
 	ssh_authorized_keys = local.ssh_keys
 }
 
-# module "worker" {
-# 	source = "./modules/worker"
-# 	depends_on = [module.orchestrator]
-# 	project_name = var.project_name
-# 	compartment_ocid = var.compartment_ocid
-# 	availability_domain = var.availability_domain
-# 	ssh_authorized_keys = local.ssh_keys
-# }
+module "worker" {
+	source = "./modules/worker"
+	depends_on = [module.orchestrator]
+	project_name = var.project_name
+	compartment_ocid = var.compartment_ocid
+	availability_domain = var.availability_domain
+	ssh_authorized_keys = local.ssh_keys
+}
