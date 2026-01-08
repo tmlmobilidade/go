@@ -118,6 +118,7 @@ export function ImportPreview() {
 
 	// Number of vehicles to be created (provided by backend counters)
 	const createdCount = data.counters.created;
+	const updatedCount = data.counters.updated;
 
 	// Show only UPDATE entries in the preview
 	const updatesPreview = data.importPreview.filter(
@@ -125,11 +126,11 @@ export function ImportPreview() {
 	);
 
 	return (
-		<Section gap="lg">
+		<Section gap="sm">
 			{/* Initial summary information */}
-			<Label>
-				{createdCount} veículo(s) serão criados
-			</Label>
+
+			<Label>Será criado {createdCount} veículo(s)</Label>
+			<Label>Será atualizado {updatedCount} veículo(s)</Label>
 
 			{updatesPreview.map((item, index) => {
 				const vehicleId = item.vehicle._id ?? 'Unknown ID';

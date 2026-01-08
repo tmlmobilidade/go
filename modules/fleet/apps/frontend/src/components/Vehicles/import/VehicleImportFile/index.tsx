@@ -32,10 +32,9 @@ export function VehicleImportFile() {
 
 			<Spacer size="md" />
 
-			{vehicleImportContext.data.form.values._id && (
+			{vehicleImportContext.data.importPreview && (
 				<>
-					<Section gap="sm">
-
+					<Section>
 						<ImportPreview />
 					</Section>
 					<Divider />
@@ -62,7 +61,7 @@ export function VehicleImportFile() {
 						disabled={vehicleImportContext?.flags.canCreateorUpdate === false}
 						label="Criar veículos"
 						loading={vehicleImportContext?.flags.isloading}
-						onClick={vehicleImportContext.actions.createVehicle}
+						onClick={vehicleImportContext?.actions.createVehicle}
 					/>
 				</Grid>
 			</Section>
