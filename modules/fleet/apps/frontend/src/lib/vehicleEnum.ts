@@ -1,4 +1,5 @@
 const EMISSION_MAP: Record<string, string> = {
+	0: 'N/A',
 	1: 'EURO_I',
 	2: 'EURO_II',
 	3: 'EURO_III',

@@ -2,8 +2,8 @@ import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImp
 import { Translations } from '@/lib/translations';
 import { EMISSION_MAP, PROPULSION_MAP } from '@/lib/vehicleEnum';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
-import { type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { type CreateVehicleDto, CreateVehicleSchema, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
+import { type UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -77,6 +77,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const { form } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
 
 	const agencies = useAgenciesContext();
+	const meContext = useMeContext();
 
 	// -----------------------------
 	// Helper functions
@@ -256,10 +257,28 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 		if (vehiclesFromFile.length > 0) form.setValues(vehiclesFromFile[0]);
 		else setIsError(new Error('Invalid or Empty file'));
+
 		if (createCounter === 0 && updateCounter === 0) {
 			setCanCreateorUpdate(false);
 			setIsError(new Error('No vehicles to create or update'));
 		};
+
+		if (updateCounter > 0) {
+			const hasPermission = meContext.actions.hasPermissionResource({
+				action: PermissionCatalog.all.vehicles.actions.update,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.vehicles.scope,
+				value: meContext.data.user.organization_id,
+			});
+
+			if (!hasPermission) {
+				setCanCreateorUpdate(false);
+				setIsError(new Error(`You don't have permission to update vehicles`));
+
+				console.log(meContext.data.user.organization_id);
+				console.log(agencies);
+			}
+		}
 
 		useToast.success({
 			message: `${createCounter} to create · ${updateCounter} to update`,
@@ -328,8 +347,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}),
 		[form, importPreview, createdCount, updatedCount, isError, isSaving, isloading, canCreateorUpdate],
 	);
-
-	console.log(isError);
 
 	// -----------------------------
 	// Render
