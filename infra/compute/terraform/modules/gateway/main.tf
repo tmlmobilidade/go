@@ -46,6 +46,7 @@ resource "oci_core_instance_configuration" "this" {
 
 			create_vnic_details {
 				subnet_id = var.subnet_ocid
+				assign_ipv6ip = true
 				assign_public_ip = true
 			}
 
