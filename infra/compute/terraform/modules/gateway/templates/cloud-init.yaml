@@ -256,7 +256,7 @@ write_files:
       After=network-online.target
 
       [Service]
-      ExecStart=/usr/local/bin/consul-template -config=/etc/consul-template.d/config.hcl
+      ExecStart=/usr/bin/consul-template -config=/etc/consul-template.d/config.hcl
       KillSignal=SIGINT
       Restart=on-failure
       RestartSec=5
@@ -283,8 +283,8 @@ runcmd:
     if [ "${enable_consul_template}" = "true" ]; then
       CONSUL_TEMPLATE_VERSION="0.37.2"
       curl -fsSL https://releases.hashicorp.com/consul-template/$${CONSUL_TEMPLATE_VERSION}/consul-template_$${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip -o /tmp/consul-template.zip
-      unzip /tmp/consul-template.zip -d /usr/local/bin/
-      chmod +x /usr/local/bin/consul-template
+      unzip /tmp/consul-template.zip -d /usr/bin/
+      chmod +x /usr/bin/consul-template
       systemctl enable consul-template
       systemctl start consul-template
     fi

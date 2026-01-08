@@ -1,13 +1,11 @@
 [Unit]
 Description=NOMAD CLIENT
-Requires=network-online.target consul.service
-After=network-online.target consul.service
+After=network-online.target consul.service docker.service
+Requires=network-online.target consul.service docker.service
 ConditionFileNotEmpty=/etc/nomad.d/nomad.hcl
 
 [Service]
-User=root
-Group=nomad
-ExecStart=/usr/local/bin/nomad agent -config=/etc/nomad.d
+ExecStart=/usr/bin/nomad agent -config=/etc/nomad.d
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 LimitNOFILE=65536
