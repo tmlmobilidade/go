@@ -163,7 +163,7 @@ export function ImportPreview() {
 											<span style={{ color: 'red' }}>
 												Atual: {translateValue(key, value.oldValue, agencies)}
 											</span>
-											{' '}→{' '}
+											{' '} → {' '}
 											<span style={{ color: 'green' }}>
 												Novo: {translateValue(key, value.newValue, agencies)}
 											</span>

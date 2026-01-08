@@ -4,8 +4,8 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Vehicle } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
+import { PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
+import { parseAsArrayOfStrings, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -61,6 +61,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	// A. Setup variables
 
 	const agenciesContext = useAgenciesContext();
+	const meContext = useMeContext();
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
@@ -93,6 +94,14 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 		query: filterSearch,
 	});
 
+	const hasReadPermission = (agencyId: string) =>
+		meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.vehicles.actions.read,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.vehicles.scope,
+			value: agencyId,
+		});
+
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
@@ -112,6 +121,10 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 			// 	const hasMatchingDate = item.dates_normalized.some(date => datesSet.has(date));
 			// 	if (!hasMatchingDate) return false;
 			// }
+
+			if (!hasReadPermission(item.agency_id)) {
+				return allVehicleData.find(v => v.agency_id === hasReadPermission.toString());
+			}
 
 			// Return true if all filters pass
 			return true;
