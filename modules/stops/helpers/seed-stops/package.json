@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"papaparse": "5.5.3"
 	},
