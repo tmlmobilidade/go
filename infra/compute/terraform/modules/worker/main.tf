@@ -35,7 +35,7 @@ locals {
 
 resource "oci_core_instance_configuration" "this" {
 
-	display_name = "${var.module_name}-instance-config"
+	display_name = "${var.project_name}-${var.module_name}-instance-config"
 	compartment_id = var.compartment_ocid
 
 	instance_details {
@@ -86,12 +86,12 @@ resource "oci_core_instance_configuration" "this" {
 
 resource "oci_core_instance_pool" "this" {
 
-	display_name = "${var.module_name}-instance-pool"
+	display_name = "${var.project_name}-${var.module_name}-instance-pool"
 	compartment_id = var.compartment_ocid
 	instance_configuration_id = oci_core_instance_configuration.this.id
 	size = var.instance_count
 
-	instance_display_name_formatter = "${var.module_name}-{instanceIndex}-{launchCount}-{{launchCount}}"
+	instance_display_name_formatter = "${var.project_name}-${var.module_name}-$${launchCount}"
 
 	placement_configurations {
 		availability_domain = var.availability_domain
@@ -106,7 +106,7 @@ resource "oci_core_instance_pool" "this" {
 
 resource "oci_autoscaling_auto_scaling_configuration" "this" {
 
-	display_name = "${var.module_name}-autoscaling-config"
+	display_name = "${var.project_name}-${var.module_name}-autoscaling-config"
 	compartment_id = var.compartment_ocid
 	cool_down_in_seconds = 300
 

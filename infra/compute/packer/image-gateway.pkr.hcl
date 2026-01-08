@@ -5,7 +5,9 @@
 
 source "oracle-oci" "source-gateway" {
 
-	image_name = "tml-iso-go-gateway-{{timestamp}}"
+	image_name = "${var.project_name}-gateway-{{timestamp}}"
+
+	display_name = "${var.project_name}-gateway-packer-image-builder"
 
 	shape = var.vm_shape
 	subnet_ocid = var.subnet_ocid

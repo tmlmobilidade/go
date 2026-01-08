@@ -79,6 +79,7 @@ variable "autoscaling_cooldown_seconds" {
 }
 
 # Required from root
+variable "project_name" { type = string }
 variable "compartment_ocid" { type = string }
 variable "availability_domain" { type = string }
 variable "ssh_authorized_keys" { type = string }

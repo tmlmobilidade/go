@@ -15,6 +15,12 @@ packer {
 # PACKER VARIABLES
 # Define variables for Packer templates.
 
+variable "project_name" {
+	type = string
+	description = "The name of the project. This will be used as a prefix for resource names and tags."
+	default = "iso-go"
+}
+
 variable "compartment_ocid" {
 	type = string
 	description = <<-EOT

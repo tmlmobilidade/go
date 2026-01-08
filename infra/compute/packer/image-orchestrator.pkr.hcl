@@ -5,7 +5,9 @@
 
 source "oracle-oci" "source-orchestrator" {
 
-	image_name = "tml-iso-go-orchestrator-{{timestamp}}"
+	image_name = "${var.project_name}-orchestrator-{{timestamp}}"
+
+	display_name = "${var.project_name}-orchestrator-packer-image-builder"
 
 	shape = var.vm_shape
 	subnet_ocid = var.subnet_ocid
