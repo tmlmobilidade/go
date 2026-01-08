@@ -7,7 +7,7 @@ source "oracle-oci" "source-worker" {
 
 	image_name = "${var.project_name}-worker-{{timestamp}}"
 
-	# display_name = "${var.project_name}-worker-packer-image-builder"
+	instance_name = "${var.project_name}-worker-packer-image-builder"
 
 	shape = var.vm_shape
 	subnet_ocid = var.subnet_ocid
