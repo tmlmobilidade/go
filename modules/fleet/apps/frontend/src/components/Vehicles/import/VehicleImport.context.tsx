@@ -273,7 +273,9 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			setCreatedCount(createCounter);
 			setUpdatedCount(updateCounter);
 			setExistingVehicles(existingResponse.data);
-			setCanCreateorUpdate(preview.length > 0 && isError != null);
+
+			if (createCounter === 0 && updateCounter === 0) setIsError(new Error(`Don't have vehicles to create or update in your file`));
+			setCanCreateorUpdate(isError != null);
 
 			useToast.success({
 				message: `${createCounter} to create · ${updateCounter} to update`,
