@@ -1,4 +1,5 @@
 import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImport.modal';
+import { Translations } from '@/lib/translations';
 import { EMISSION_MAP, PROPULSION_MAP } from '@/lib/vehicleEnum';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
@@ -104,9 +105,9 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	//
 
 	const parseMappedEnum = (value: string | undefined, map: Record<string, string>, fieldName: string): string => {
-		if (!value) setIsError(new Error(`Missing enum value for ${fieldName}`));
+		if (!value) setIsError(new Error(`Missing enum value for ${Translations[fieldName]}`));
 		const mapped = map[value];
-		if (!mapped) setIsError(new Error(`Invalid enum value for ${fieldName}: ${value}`));
+		if (!mapped) setIsError(new Error(`Invalid enum value for ${Translations[fieldName]}: ${value}`));
 		return mapped;
 	};
 
@@ -171,7 +172,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				};
 			}
 			catch (error) {
-				// setImportedVehicles();
 				setIsError(new Error(`Error parsing line ${lineIndex + 2}: ${(error as Error).message}`));
 				setCanCreateorUpdate(false);
 			}
@@ -182,7 +182,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	// API: Create or Update
 	// -----------------------------
 	const createOrUpdateVehicle = async (vehicle: CreateVehicleDto, existing: Vehicle[]) => {
-		const exists = existing.find(v => v._id === vehicle._id);
+		const exists = existing.find(v => v._id === vehicle._id || v.license_plate === vehicle.license_plate);
 		if (!exists) return fetchData(API_ROUTES.fleet.VEHICLES_LIST, 'POST', vehicle);
 		return fetchData(API_ROUTES.fleet.VEHICLES_DETAIL(vehicle._id), 'PUT', vehicle);
 	};
@@ -191,10 +191,17 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	// Handle file import (PREVIEW, ignore unchanged)
 	// -----------------------------
 	const handleSetImportFile = async (file: File | null) => {
-		if (!file) return;
+		if (!file) setIsError(new Error('Invalid or Empty file'));
 		setIsloading(true);
 
 		const vehiclesFromFile = await parseTxtFile(file);
+
+		if (vehiclesFromFile.length === 0) {
+			setIsError(new Error('Invalid or Empty file'));
+			setCanCreateorUpdate(false);
+			setIsloading(false);
+			return;
+		}
 
 		// Fetch existing vehicles
 		const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
@@ -205,58 +212,59 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 		setCanCreateorUpdate(true);
 
-		try {
-			let createCounter = 0;
-			let updateCounter = 0;
+		let createCounter = 0;
+		let updateCounter = 0;
 
-			setCanCreateorUpdate(true);
+		for (const vehicle of vehiclesFromFile) {
+			if (!agencies.data.raw.some(v => v._id === vehicle.agency_id)) {
+				setCanCreateorUpdate(false);
+				setIsError(new Error(`vehicle ID ${vehicle._id} have not a valid agency`));
+			};
 
-			for (const vehicle of vehiclesFromFile) {
-				if (!agencies.data.raw.some(v => v._id === vehicle.agency_id)) {
-					setCanCreateorUpdate(false);
-				};
+			const result = CreateVehicleSchema.safeParse(vehicle);
+			if (!result.success) setIsError(new Error(`Validation error for vehicle ID ${vehicle._id}`));
 
-				const result = CreateVehicleSchema.safeParse(vehicle);
-				if (!result.success) setIsError(new Error(`Validation error for vehicle ${vehicle._id}`));
+			const existing = existingResponse.data.find(v => v._id === vehicle._id);
 
-				const existing = existingResponse.data.find(v => v._id === vehicle._id);
-
-				if (!existing) {
+			if (!existing) {
 				// Vehicle does not exist → CREATE
-					createCounter++;
-					preview.push({ mode: 'CREATE', vehicle });
-				}
-				else {
+				createCounter++;
+				preview.push({ mode: 'CREATE', vehicle });
+			}
+			else {
 				// Vehicle exists → check for actual changes
-					const changes = diffVehicle(existing, vehicle);
-					if (changes) {
+				const changes = diffVehicle(existing, vehicle);
+				if (changes) {
+					if (!vehicle.is_locked) {
 						updateCounter++;
 						preview.push({ changes, mode: 'UPDATE', vehicle });
 					}
-				// Else: vehicle exists AND no changes → ignore completely
+					else {
+						setIsError(new Error(`Vehicle ID ${vehicle._id} is locked to changes`));
+						setCanCreateorUpdate(false);
+					}
 				}
+				// Else: vehicle exists AND no changes → ignore completely
 			}
-
-			setImportedVehicles(vehiclesFromFile);
-			setImportPreview(preview);
-			setCreatedCount(createCounter);
-			setUpdatedCount(updateCounter);
-
-			if (vehiclesFromFile.length > 0) form.setValues(vehiclesFromFile[0]);
-			if (createCounter === 0 && updateCounter === 0) setIsError(new Error('No vehicles to create or update'));
-
-			useToast.success({
-				message: `${createCounter} to create · ${updateCounter} to update`,
-				title: 'File imported',
-			});
 		}
-		catch (error) {
-			setIsError(error as Error);
+
+		setImportedVehicles(vehiclesFromFile);
+		setImportPreview(preview);
+		setCreatedCount(createCounter);
+		setUpdatedCount(updateCounter);
+		setIsloading(false);
+
+		if (vehiclesFromFile.length > 0) form.setValues(vehiclesFromFile[0]);
+		else setIsError(new Error('Invalid or Empty file'));
+		if (createCounter === 0 && updateCounter === 0) {
 			setCanCreateorUpdate(false);
-		}
-		finally {
-			setIsloading(false);
-		}
+			setIsError(new Error('No vehicles to create or update'));
+		};
+
+		useToast.success({
+			message: `${createCounter} to create · ${updateCounter} to update`,
+			title: 'File imported',
+		});
 	};
 
 	// -----------------------------

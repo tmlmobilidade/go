@@ -41,9 +41,9 @@ export function VehiclesDetailsHeader() {
 			<Spacer />
 
 			<HasPermission
-				action={PermissionCatalog.all.plans.actions.lock}
+				action={PermissionCatalog.all.vehicles.actions.lock}
 				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.plans.scope}
+				scope={PermissionCatalog.all.vehicles.scope}
 				value={vehiclesDetailContext.data.vehicle?.agency_id}
 			>
 				<LockButton

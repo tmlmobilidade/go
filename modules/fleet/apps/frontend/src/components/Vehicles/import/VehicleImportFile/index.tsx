@@ -62,7 +62,7 @@ export function VehicleImportFile() {
 						disabled={vehicleImportContext?.flags.canCreateorUpdate === false}
 						label="Criar veículos"
 						loading={vehicleImportContext?.flags.isloading}
-						onClick={vehicleImportContext?.actions.createVehicle}
+						onClick={vehicleImportContext.actions.createVehicle}
 					/>
 				</Grid>
 			</Section>
