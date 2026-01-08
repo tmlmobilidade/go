@@ -1,7 +1,7 @@
 datacenter = "dc1"
-data_dir   = "/opt/consul/data"
+data_dir = "/opt/consul/data"
 
-bind_addr  = "{{ GetPrivateIP }}"
+bind_addr = "{{ GetPrivateIP }}"
 
 ui = true
 server = true
@@ -15,4 +15,4 @@ retry_join = [
 ]
 
 enable_script_checks = false
-disable_remote_exec  = true
+disable_remote_exec = true

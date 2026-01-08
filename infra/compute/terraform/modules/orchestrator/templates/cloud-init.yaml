@@ -5,10 +5,6 @@ write_files:
   # # #
   # CONSUL
 
-  - path: /etc/consul.d
-    owner: consul:consul
-    permissions: "0750"
-
   - path: /etc/consul.d/consul.hcl
     owner: consul:consul
     permissions: "0640"
@@ -24,10 +20,6 @@ write_files:
   # # #
   # VAULT
 
-  - path: /etc/vault.d
-    owner: vault:vault
-    permissions: "0750"
-
   - path: /etc/vault.d/vault.hcl
     owner: vault:vault
     permissions: "0640"
@@ -42,10 +34,6 @@ write_files:
 
   # # #
   # NOMAD
-
-  - path: /etc/nomad.d
-    owner: nomad:nomad
-    permissions: "0750"
 
   - path: /etc/nomad.d/nomad.hcl
     owner: nomad:nomad

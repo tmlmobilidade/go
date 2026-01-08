@@ -5,10 +5,6 @@ write_files:
   # # #
   # CONSUL
 
-  - path: /etc/consul.d
-    owner: consul:consul
-    permissions: "0750"
-
   - path: /etc/consul.d/consul.hcl
     owner: consul:consul
     permissions: "0640"
