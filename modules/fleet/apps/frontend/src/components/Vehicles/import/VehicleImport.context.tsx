@@ -203,9 +203,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 		const preview: VehicleImportPreview[] = [];
 
-		const createCounter = 0;
-		const updateCounter = 0;
-
 		setCanCreateorUpdate(true);
 
 		try {
