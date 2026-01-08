@@ -63,6 +63,7 @@ db.createRole({
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'alerts', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 	],
 	role: 'alerts',
@@ -137,8 +138,26 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'annotations', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'periods', db: 'production' } },
 	],
 	role: 'dates',
+	roles: [{ db: 'admin', role: 'common' }],
+});
+
+db.createRole({
+	privileges: [
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'fares', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'zones', db: 'production' } },
+	],
+	role: 'ticketing',
+	roles: [{ db: 'admin', role: 'common' }],
+});
+
+db.createRole({
+	privileges: [
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'typologies', db: 'production' } },
+	],
+	role: 'offer',
 	roles: [{ db: 'admin', role: 'common' }],
 });
 

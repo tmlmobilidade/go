@@ -280,7 +280,6 @@ async function main() {
 					_id: samData._id,
 					agency_id: agencyId,
 					analysis: samAnalysisGroups,
-					created_by: 'system',
 					latest_apex_version: latestTransaction.apex_version,
 					remarks: null,
 					seen_first_at: firstTransaction.created_at,
@@ -289,7 +288,6 @@ async function main() {
 					transactions_expected: transactionsExpected,
 					transactions_found: transactionsFound,
 					transactions_missing: transactionsMissing,
-					updated_by: 'system',
 				};
 
 				await sams.updateById(samData._id, updatedSamData);

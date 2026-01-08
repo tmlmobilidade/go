@@ -2,11 +2,16 @@
 /* ROOT */
 
 .root {
-	--cb-icon-size: 26px;
-	--cb-size: 40px;
+	--cb-icon-size: 17px;
+	--cb-size: 28px;
 	color: var(--color-system-text-200);
 }
 
 .root:hover {
 	background-color: var(--color-system-background-200);
+}
+
+.root[data-size='lg'] {
+	--cb-icon-size: 26px;
+	--cb-size: 40px;
 }

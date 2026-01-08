@@ -13,15 +13,23 @@ import { useDataTableContext } from '../DataTableContext';
 /* * */
 
 interface DataTableHeaderProps<T = Record<string, unknown>> {
+
 	/**
 	 * The columns to be displayed in the table header.
 	 */
 	columns: DataTableColumn<T>[]
+
+	/**
+	 * Whether to render the table header with a top border.
+	 * @default false
+	 */
+	withTopBorder?: boolean
+
 }
 
 /* * */
 
-export function DataTableHeader<T = Record<string, unknown>>({ columns }: DataTableHeaderProps<T>) {
+export function DataTableHeader<T = Record<string, unknown>>({ columns, withTopBorder }: DataTableHeaderProps<T>) {
 	//
 
 	//
@@ -52,7 +60,7 @@ export function DataTableHeader<T = Record<string, unknown>>({ columns }: DataTa
 	};
 
 	return (
-		<div className={styles.header}>
+		<div className={styles.header} data-with-top-border={withTopBorder}>
 			{columns.map((column, idx) => (
 				<div
 					key={idx}

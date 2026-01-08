@@ -28,10 +28,10 @@ export function CloseButton({ onClick, type = 'back' }: CloseButtonProps) {
 	// B. Render components
 
 	if (type === 'back') {
-		return <MantineCloseButton icon={<IconChevronLeft />} onClick={handleClick} />;
+		return <MantineCloseButton icon={<IconChevronLeft />} onClick={handleClick} size="lg" />;
 	}
 
-	return <MantineCloseButton onClick={handleClick} />;
+	return <MantineCloseButton onClick={handleClick} size="lg" />;
 
 	//
 }

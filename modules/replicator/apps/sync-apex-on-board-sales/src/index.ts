@@ -1,6 +1,5 @@
 /* * */
 
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
@@ -8,6 +7,7 @@ import { pcgidbTicketing, rides, simplifiedApexOnBoardSales } from '@tmlmobilida
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
 
 /* * */

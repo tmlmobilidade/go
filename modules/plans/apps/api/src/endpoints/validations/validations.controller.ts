@@ -48,6 +48,7 @@ export class GtfsValidationsController {
 		// Convert form fields to Validation data
 
 		const validationData: CreateGtfsValidationDto = {
+			created_by: request.me._id,
 			feeder_status: 'waiting',
 			file_id: '',
 			gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
