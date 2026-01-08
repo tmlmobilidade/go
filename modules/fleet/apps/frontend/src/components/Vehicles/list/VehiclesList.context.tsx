@@ -109,6 +109,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 		// const datesSet = new Set(filterDates);
 		//
 		// 2. Filter data based on active filters
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const agencySet = new Set(filterAgency);
 
 		return searchResultsData.filter((item: VehicleNormalized) => {

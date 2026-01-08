@@ -3,7 +3,6 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { Translations } from '@/lib/translations';
 import { type Agency } from '@tmlmobilidade/types';
 import { Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
-import { styleText } from 'util';
 
 /* * */
 
