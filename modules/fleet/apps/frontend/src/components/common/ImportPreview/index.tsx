@@ -3,6 +3,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { Translations } from '@/lib/translations';
 import { type Agency } from '@tmlmobilidade/types';
 import { Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { styleText } from 'util';
 
 /* * */
 
@@ -126,7 +127,7 @@ export function ImportPreview() {
 	);
 
 	return (
-		<Section gap="sm">
+		<Section gap="md">
 			{/* Initial summary information */}
 
 			<Label>Será criado {createdCount} veículo(s)</Label>
@@ -153,22 +154,24 @@ export function ImportPreview() {
 								value={`#ID ${vehicleId} (${licensePlate})`}
 							/>
 
-							{changesEntries.length > 0 ? (
-								changesEntries.map(([key, value]) => (
-									<ValueDisplay
-										key={key}
-										label={key}
-										value={`Atual: ${translateValue(
-											key,
-											value.oldValue,
-											agencies,
-										)} → Novo: ${translateValue(
-											key,
-											value.newValue,
-											agencies,
-										)}`}
-									/>
-								))
+							{changesEntries.length > 0 ? (changesEntries.map(([key, value]) => (
+								<ValueDisplay
+									key={key}
+									label={key}
+									value={(
+										<>
+											<span style={{ color: 'red' }}>
+												Atual: {translateValue(key, value.oldValue, agencies)}
+											</span>
+											{' '}→{' '}
+											<span style={{ color: 'green' }}>
+												Novo: {translateValue(key, value.newValue, agencies)}
+											</span>
+										</>
+									)}
+								/>
+
+							))
 							) : (
 								<ValueDisplay
 									label="Alterações"

@@ -5,7 +5,7 @@ import { ImportPreview } from '@/components/common/ImportPreview';
 /* * */
 
 import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
-import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, Section, Spacer } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,7 +21,7 @@ export function VehicleImportFile() {
 	// B. Render Components
 
 	return (
-		<Section gap="md">
+		<Section gap="lg">
 
 			{vehicleImportContext.flags.error != null && (
 				<>
@@ -30,11 +30,9 @@ export function VehicleImportFile() {
 				</>
 			)}
 
-			<Spacer size="md" />
-
-			{vehicleImportContext.data.importPreview && (
+			{vehicleImportContext.data.importPreview && vehicleImportContext.actions.setImportFile && (
 				<>
-					<Section>
+					<Section gap="md">
 						<ImportPreview />
 					</Section>
 					<Divider />

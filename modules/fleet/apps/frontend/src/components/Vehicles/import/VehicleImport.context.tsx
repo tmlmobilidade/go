@@ -217,6 +217,10 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			const vehiclesFromFile = await parseTxtFile(file);
 			const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
 
+			if (vehiclesFromFile.length === 0) {
+				setIsError(new Error('Invalid or empty file'));
+			}
+
 			const preview: VehicleImportPreview[] = [];
 			let createCounter = 0;
 			let updateCounter = 0;
@@ -250,7 +254,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				}
 
 				if (existing.is_locked) {
-					setIsError(new Error(`No permission to update vehicle ${vehicle._id}`));
+					setIsError(new Error(`vehicle ${vehicle._id} is locked to change`));
 				}
 
 				const changes = diffVehicle(existing, vehicle);
