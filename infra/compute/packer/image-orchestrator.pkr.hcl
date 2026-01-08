@@ -63,17 +63,17 @@ build {
 			"sudo apt-get install -y nomad consul vault",
 
 			# Setup required directories and permissions
-			"mkdir -p /etc/consul.d",
-			"chown -R consul:consul /etc/consul.d",
-			"chmod 0750 /etc/consul.d",
+			"sudo mkdir -p /etc/consul.d",
+			"sudo chown -R consul:consul /etc/consul.d",
+			"sudo chmod 0750 /etc/consul.d",
 
-			"mkdir -p /etc/nomad.d",
-			"chown -R nomad:nomad /etc/nomad.d",
-			"chmod 0750 /etc/nomad.d",
+			"sudo mkdir -p /etc/nomad.d",
+			"sudo chown -R nomad:nomad /etc/nomad.d",
+			"sudo chmod 0750 /etc/nomad.d",
 
-			"mkdir -p /etc/vault.d",
-			"chown -R vault:vault /etc/vault.d",
-			"chmod 0750 /etc/vault.d",
+			"sudo mkdir -p /etc/vault.d",
+			"sudo chown -R vault:vault /etc/vault.d",
+			"sudo chmod 0750 /etc/vault.d",
 
 			# Disable services (start via cloud-init later)
 			"sudo systemctl disable nomad",

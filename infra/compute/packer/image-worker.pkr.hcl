@@ -66,13 +66,13 @@ build {
 			"sudo apt-get install -y nomad consul",
 
 			# Setup required directories and permissions
-			"mkdir -p /etc/consul.d",
-			"chown -R consul:consul /etc/consul.d",
-			"chmod 0750 /etc/consul.d",
+			"sudo mkdir -p /etc/consul.d",
+			"sudo chown -R consul:consul /etc/consul.d",
+			"sudo chmod 0750 /etc/consul.d",
 
-			"mkdir -p /etc/nomad.d",
-			"chown -R nomad:nomad /etc/nomad.d",
-			"chmod 0750 /etc/nomad.d",
+			"sudo mkdir -p /etc/nomad.d",
+			"sudo chown -R nomad:nomad /etc/nomad.d",
+			"sudo chmod 0750 /etc/nomad.d",
 
 			# Disable services (start via cloud-init later)
 			"sudo systemctl disable nomad",
