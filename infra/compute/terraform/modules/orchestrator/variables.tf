@@ -67,5 +67,5 @@ variable "project_name" { type = string }
 variable "compartment_ocid" { type = string }
 variable "availability_domain" { type = string }
 variable "ssh_authorized_keys" { type = string }
-variable "private_subnet_ocid" { type = string }
-variable "private_subnet_dns_suffix" { type = string }
+variable "subnet_ocid" { type = string }
+variable "subnet_dns_suffix" { type = string }

@@ -45,7 +45,7 @@ resource "oci_core_instance_configuration" "this" {
 			}
 
 			create_vnic_details {
-				subnet_id = var.public_subnet_ocid
+				subnet_id = var.subnet_ocid
 				assign_public_ip = true
 			}
 
@@ -84,7 +84,7 @@ resource "oci_core_instance_pool" "this" {
 
 	placement_configurations {
 		availability_domain = var.availability_domain
-		primary_subnet_id = var.public_subnet_ocid
+		primary_subnet_id = var.subnet_ocid
 	}
 
 }

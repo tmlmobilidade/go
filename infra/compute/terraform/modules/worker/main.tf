@@ -19,7 +19,7 @@ locals {
 
 	consul_config = templatefile("${path.module}/templates/consul.hcl", {
 		project_name = var.project_name,
-		private_subnet_dns_suffix = var.private_subnet_dns_suffix,
+		subnet_dns_suffix = var.subnet_dns_suffix,
 	})
 
 	consul_service = templatefile("${path.module}/templates/consul.service", {})
@@ -62,7 +62,7 @@ resource "oci_core_instance_configuration" "this" {
 			}
 
 			create_vnic_details {
-				subnet_id = var.private_subnet_ocid
+				subnet_id = var.subnet_ocid
 				assign_public_ip = false
 			}
 
@@ -96,7 +96,7 @@ resource "oci_core_instance_pool" "this" {
 
 	placement_configurations {
 		availability_domain = var.availability_domain
-		primary_subnet_id = var.private_subnet_ocid
+		primary_subnet_id = var.subnet_ocid
 	}
 
 }

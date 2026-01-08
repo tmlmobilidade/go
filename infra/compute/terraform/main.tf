@@ -66,25 +66,16 @@ variable "availability_domain" {
 	default = "LUDo:EU-FRANKFURT-1-AD-1"
 }
 
-variable "public_subnet_ocid" {
+variable "subnet_ocid" {
 	type = string
 	description = <<-EOT
-	The OCID of the private subnet for this project.
-	Current subnet is set to: cmet-prv
+	The OCID of the subnet for this project.
+	Current subnet is set to: pub-cmet
 	EOT
 	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaa4vbr4wpapm3wpa4o73yqytsyqedinrxouelf7ntkefdfuogof6rq"
 }
 
-variable "private_subnet_ocid" {
-	type = string
-	description = <<-EOT
-	The OCID of the private subnet for this project.
-	Current subnet is set to: cmet-prv
-	EOT
-	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaao7mnezqom22eujji6o3pbbbgtjvkazofcjs2qkvdv6uvpdpbr7fa"
-}
-
-variable "private_subnet_dns_suffix" {
+variable "subnet_dns_suffix" {
 	type = string
 	description = <<-EOT
 	The OCI DNS suffix for the region where resources will be created.
@@ -92,7 +83,7 @@ variable "private_subnet_dns_suffix" {
 	the Frankfurt region, it can be either 'oraclevcn.com' or
 	'oraclevcn.eu-frankfurt-1.oraclecloud.com' depending on the setup
 	EOT
-	default = "prvcmetro.vcncmetropolita.oraclevcn.com"
+	default = "pubcmetro.vcncmetropolita.oraclevcn.com"
 }
 
 
@@ -136,9 +127,8 @@ module "gateway" {
 	compartment_ocid = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
-	public_subnet_ocid = var.public_subnet_ocid
-	private_subnet_ocid = var.private_subnet_ocid
-	private_subnet_dns_suffix = var.private_subnet_dns_suffix
+	subnet_ocid = var.subnet_ocid
+	subnet_dns_suffix = var.subnet_dns_suffix
 }
 
 module "orchestrator" {
@@ -147,8 +137,8 @@ module "orchestrator" {
 	compartment_ocid = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
-	private_subnet_ocid = var.private_subnet_ocid
-	private_subnet_dns_suffix = var.private_subnet_dns_suffix
+	subnet_ocid = var.subnet_ocid
+	subnet_dns_suffix = var.subnet_dns_suffix
 }
 
 module "worker" {
@@ -158,6 +148,6 @@ module "worker" {
 	compartment_ocid = var.compartment_ocid
 	availability_domain = var.availability_domain
 	ssh_authorized_keys = local.ssh_keys
-	private_subnet_ocid = var.private_subnet_ocid
-	private_subnet_dns_suffix = var.private_subnet_dns_suffix
+	subnet_ocid = var.subnet_ocid
+	subnet_dns_suffix = var.subnet_dns_suffix
 }
