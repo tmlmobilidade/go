@@ -3,15 +3,11 @@
 # -----------------------------------------------------------------------
 
 terraform {
-
-	required_version = ">= 1.5.0"
-
 	required_providers {
 		oci = {
 			source = "oracle/oci"
 		}
 	}
-
 }
 
 
@@ -42,7 +38,6 @@ variable "private_key_path" {
 variable "ssh_public_key_path" {
 	type = string
 	description = "The file path to the SSH public key for instance access."
-	default = "~/.ssh/id_rsa.pub"
 }
 
 variable "compartment_ocid" {

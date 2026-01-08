@@ -1,4 +1,17 @@
 # -----------------------------------------------------------------------
+# TERRAFORM SETTINGS
+# -----------------------------------------------------------------------
+
+terraform {
+	required_providers {
+		oci = {
+			source = "oracle/oci"
+		}
+	}
+}
+
+
+# -----------------------------------------------------------------------
 # ORCHESTRATOR / TEMPLATE FILES
 # -----------------------------------------------------------------------
 
@@ -56,12 +69,7 @@ resource "oci_core_instance_configuration" "this" {
 
 			create_vnic_details {
 				subnet_id = var.subnet_ocid
-				assign_public_ip = true
-			}
-
-			agent_config {
-				is_monitoring_disabled = false
-				is_management_disabled = false
+				assign_public_ip = false
 			}
 
 			freeform_tags = {
@@ -94,12 +102,12 @@ resource "oci_core_instance_configuration" "this" {
 
 resource "oci_core_instance_pool" "this" {
 
-	display_name = "${var.module_name}-pool"
+	display_name = "${var.module_name}-instance-pool"
 	compartment_id = var.compartment_ocid
 	instance_configuration_id = oci_core_instance_configuration.this.id
 	size = var.instance_count
 
-	instance_display_name_formatter = "${var.module_name}-{{count}}"
+	instance_display_name_formatter = "${var.module_name}-{instanceIndex}-{launchCount}-{{launchCount}}"
 
 	placement_configurations {
 		availability_domain = var.availability_domain
