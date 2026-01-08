@@ -8,10 +8,9 @@ server = true
 bootstrap_expect = ${instance_count}
 
 retry_join = [
-	# Consul automatically discovers other servers via OCI tags
-	# using instance principals authentication. The "ListInstances"
-	# policy must be attached to the instance principal dynamic group.
-	"provider=oci tag_key=TerraformModule tag_value=${module_name}"
+	%{ for i in range(instance_count) ~}
+		"${project_name}-${module_name}-${i+1}.${private_subnet_dns_suffix}",
+	%{ endfor ~}
 ]
 
 enable_script_checks = false

@@ -19,16 +19,6 @@ variable "image_ocid" {
 	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaa4zybj2dpcgjoq64negiojdbkg4bawnloi6kmyatv5ywhn4rhqsq"
 }
 
-variable "subnet_ocid" {
-	type = string
-	description = <<-EOT
-	The OCID of the subnet where the VM will be created.
-	For Packer builds, this subnet must have public access to the internet,
-	so it should be a public subnet. Current subnet is set to: cmet-pub
-	EOT
-	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaa4vbr4wpapm3wpa4o73yqytsyqedinrxouelf7ntkefdfuogof6rq"
-}
-
 variable "vm_shape" {
 	type = string
 	description = <<-EOT
@@ -77,3 +67,6 @@ variable "project_name" { type = string }
 variable "compartment_ocid" { type = string }
 variable "availability_domain" { type = string }
 variable "ssh_authorized_keys" { type = string }
+variable "public_subnet_ocid" { type = string }
+variable "private_subnet_ocid" { type = string }
+variable "private_subnet_dns_suffix" { type = string }

@@ -6,10 +6,9 @@ bind_addr  = "{{ GetPrivateIP }}"
 server = false
 
 retry_join = [
-	# Consul automatically discovers other servers via OCI tags
-	# using instance principals authentication. The "ListInstances"
-	# policy must be attached to the instance principal dynamic group.
-	"provider=oci tag_key=TerraformModule tag_value=${module_name}"
+	"${project_name}-orchestrator-1.${private_subnet_dns_suffix}",
+	"${project_name}-orchestrator-2.${private_subnet_dns_suffix}",
+	"${project_name}-orchestrator-3.${private_subnet_dns_suffix}",
 ]
 
 enable_script_checks = false
