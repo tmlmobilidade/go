@@ -5,7 +5,7 @@ import { ImportPreview } from '@/components/common/ImportPreview';
 /* * */
 
 import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
-import { Button, closeModal, Divider, FileUpload, Grid, Label, Section, Spacer } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, Section, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,9 +22,17 @@ export function VehicleImportFile() {
 
 	return (
 		<Section gap="md">
+
+			{vehicleImportContext.flags.error != null && (
+				<>
+					<AlertMessage title={vehicleImportContext.flags.error?.message ?? 'Erro desconhecido.'} variant="danger" />
+					<Divider />
+				</>
+			)}
+
 			<Spacer size="md" />
 
-			{vehicleImportContext.data.form.values.agency_id && (
+			{vehicleImportContext.data.form.values._id && (
 				<>
 					<Section gap="sm">
 

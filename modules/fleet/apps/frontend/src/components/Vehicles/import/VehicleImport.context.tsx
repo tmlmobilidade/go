@@ -97,25 +97,16 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const parseNumber = (value?: string, fieldName?: string): number => {
 		if (!value) return 0;
 		const num = Number(value);
-		if (Number.isNaN(num)) {
-			useToast.error({ message: `Invalid number for ${fieldName}: ${value}`, title: 'Import error' });
-			return;
-		}
+		if (Number.isNaN(num)) setIsError(new Error(`Invalid number for ${fieldName}: ${value}`));
 		return num;
 	};
 
 	//
 
 	const parseMappedEnum = (value: string | undefined, map: Record<string, string>, fieldName: string): string => {
-		if (!value) {
-			useToast.error({ message: `Missing enum value for ${fieldName}`, title: 'Import error' });
-			return;
-		}
+		if (!value) setIsError(new Error(`Missing enum value for ${fieldName}`));
 		const mapped = map[value];
-		if (!mapped) {
-			useToast.error({ message: `Invalid enum value for ${fieldName}: ${value}`, title: 'Import error' });
-			return '';
-		}
+		if (!mapped) setIsError(new Error(`Invalid enum value for ${fieldName}: ${value}`));
 		return mapped;
 	};
 
@@ -128,7 +119,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			case '2': return 'electric_ramp';
 			case '0':
 			case '3':
-			default: return 'no';
+			default: setIsError(new Error('Invalid wheelchair accessibility'));
+				return;
 		}
 	};
 
@@ -151,7 +143,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		const text = await file.text();
 		const lines = text.split('\n').filter(Boolean);
 		const headers = lines[0].split(';').map(h => h.trim());
-
 		return lines.slice(1).map((line, lineIndex) => {
 			const values = line.split(';');
 			const raw = headers.reduce((obj, header, index) => {
@@ -161,7 +152,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 			try {
 				return {
-					_id: raw.vehicle_id || undefined,
+					_id: raw.vehicle_id,
 					agency_id: raw.agency_id,
 					bikes_allowed: parseBoolean(raw.bicycles),
 					capacity_seated: parseNumber(raw.available_seats, 'capacity_seated'),
@@ -180,7 +171,9 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				};
 			}
 			catch (error) {
-				throw new Error(`Error parsing line ${lineIndex + 2}: ${(error as Error).message}`);
+				// setImportedVehicles();
+				setIsError(new Error(`Error parsing line ${lineIndex + 2}: ${(error as Error).message}`));
+				setCanCreateorUpdate(false);
 			}
 		});
 	};
@@ -199,17 +192,21 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	// -----------------------------
 	const handleSetImportFile = async (file: File | null) => {
 		if (!file) return;
-		setIsError(null);
 		setIsloading(true);
 
 		const vehiclesFromFile = await parseTxtFile(file);
 
 		// Fetch existing vehicles
 		const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
-		if (!existingResponse.data) throw new Error('Failed to fetch existing vehicles');
+		if (!existingResponse.data) setIsError(new Error('Failed to fetch existing vehicles'));
 		setExistingVehicles(existingResponse.data);
 
 		const preview: VehicleImportPreview[] = [];
+
+		const createCounter = 0;
+		const updateCounter = 0;
+
+		setCanCreateorUpdate(true);
 
 		try {
 			let createCounter = 0;
@@ -223,7 +220,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				};
 
 				const result = CreateVehicleSchema.safeParse(vehicle);
-				if (!result.success) throw new Error(`Validation error for vehicle ${vehicle._id}`);
+				if (!result.success) setIsError(new Error(`Validation error for vehicle ${vehicle._id}`));
 
 				const existing = existingResponse.data.find(v => v._id === vehicle._id);
 
@@ -249,7 +246,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			setUpdatedCount(updateCounter);
 
 			if (vehiclesFromFile.length > 0) form.setValues(vehiclesFromFile[0]);
-			if (createCounter === 0 && updateCounter === 0) throw new Error('No vehicles to create or update');
+			if (createCounter === 0 && updateCounter === 0) setIsError(new Error('No vehicles to create or update'));
 
 			useToast.success({
 				message: `${createCounter} to create · ${updateCounter} to update`,
@@ -257,8 +254,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			});
 		}
 		catch (error) {
-			useToast.error({ message: (error as Error).message, title: 'Import error' });
 			setIsError(error as Error);
+			setCanCreateorUpdate(false);
 		}
 		finally {
 			setIsloading(false);
@@ -270,7 +267,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	// -----------------------------
 	const handleCreateOrUpdateAll = async () => {
 		setIsSaving(true);
-		setIsError(null);
 
 		let created = 0;
 		let updated = 0;
@@ -299,8 +295,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			closeImportVehicleModal();
 		}
 		catch (error) {
-			useToast.error({ message: (error as Error).message, title: 'Save error' });
 			setIsError(error as Error);
+			setCanCreateorUpdate(false);
 		}
 		finally {
 			setIsSaving(false);
@@ -327,6 +323,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}),
 		[form, importPreview, createdCount, updatedCount, isError, isSaving, isloading, canCreateorUpdate],
 	);
+
+	console.log(isError);
 
 	// -----------------------------
 	// Render
