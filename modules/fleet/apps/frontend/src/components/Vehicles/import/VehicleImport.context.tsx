@@ -1,7 +1,7 @@
 import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImport.modal';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { Translations } from '@/lib/translations';
-import { EMISSION_MAP, PROPULSION_MAP } from '@/lib/vehicleEnum';
+import { VehicleImportPreview } from '@/types/preview';
+import { parseTxtFile } from '@/utils/parseTxtFile';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateVehicleDto, CreateVehicleSchema, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 import { type UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
@@ -9,15 +9,7 @@ import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-// ============================================================
-// Types
-// ============================================================
-
-interface VehicleImportPreview {
-	changes?: Partial<Record<keyof CreateVehicleDto, { newValue: unknown, oldValue: unknown }>>
-	mode: 'CREATE' | 'UPDATE'
-	vehicle: CreateVehicleDto
-}
+/* * */
 
 interface VehicleImportContextState {
 	actions: {
@@ -39,9 +31,7 @@ interface VehicleImportContextState {
 	}
 }
 
-// ============================================================
-// Context
-// ============================================================
+/* * */
 
 export const VehicleImportContext = createContext<undefined | VehicleImportContextState>(undefined);
 
@@ -52,11 +42,14 @@ export function useVehicleImportContext() {
 	return context;
 }
 
-// ============================================================
-// Provider
-// ============================================================
+/* * */
 
 export const VehicleImportContextProvider = ({ children }: PropsWithChildren) => {
+	//
+
+	//
+	// A. Setup variables
+
 	const [isError, setIsError] = useState<Error | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isloading, setIsloading] = useState(false);
@@ -73,23 +66,18 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const agencies = useAgenciesContext();
 	const meContext = useMeContext();
 
-	// -----------------------------
-	// Helper functions
-	// -----------------------------
+	//
+	// B. Fetch data
 
-	const formatDate = (value: string): string => {
-		if (!/^\d{8}$/.test(value)) return;
-
-		if (value.length != 8) return;
-
-		if (parseInt(value.slice(0, 4), 10) < 1990 || parseInt(value.slice(0, 4), 10) > 2026) return;
-		if (parseInt(value.slice(4, 6), 10) < 1 || parseInt(value.slice(4, 6), 10) > 12) return;
-		if (parseInt(value.slice(6, 8), 10) < 1 || parseInt(value.slice(6, 8), 10) > 31) return;
-
-		return value;
-	};
+	const hasUpdatePermission = (agencyId: string) => meContext.actions.hasPermissionResource({
+		action: PermissionCatalog.all.vehicles.actions.update,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.vehicles.scope,
+		value: agencyId,
+	});
 
 	//
+	// c. Handle actions
 
 	const diffVehicle = (existing: Vehicle, incoming: CreateVehicleDto) => {
 		const changes: VehicleImportPreview['changes'] = {};
@@ -105,101 +93,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	};
 
 	//
-
-	const hasUpdatePermission = (agencyId: string) =>
-		meContext.actions.hasPermissionResource({
-			action: PermissionCatalog.all.vehicles.actions.update,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.vehicles.scope,
-			value: agencyId,
-		});
-
-	//
-
-	const parseBoolean = (value?: string): boolean => value === '1';
-
-	//
-
-	const parseNumber = (value?: string, fieldName?: string): number => {
-		const num = Number(value);
-		if (Number.isNaN(num)) {
-			setIsError(new Error(`Invalid number for ${fieldName}: ${value}`));
-		}
-		return num;
-	};
-
-	//
-
-	const parseMappedEnum = (value: string | undefined, map: Record<string, string>, fieldName: string): string => {
-		if (!value) {
-			setIsError(new Error(`Missing enum value for ${Translations[fieldName]}`));
-		}
-		const mapped = map[value];
-		if (!mapped) {
-			setIsError(new Error(`Invalid enum value for ${Translations[fieldName]}: ${value}`));
-		}
-		return mapped;
-	};
-
-	//
-
-	const parseWheelchairAccessibility = (wheelchair?: string, ramp?: string): string => {
-		if (wheelchair === '0') return 'no';
-		switch (ramp) {
-			case '1': return 'manual_ramp';
-			case '2': return 'electric_ramp';
-			case '0':
-			case '3':
-			default: setIsError(new Error('Invalid wheelchair accessibility'));
-				return;
-		}
-	};
-
-	// ============================================================
-	// Parse TXT
-	// ============================================================
-
-	const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
-		const text = await file.text();
-		const lines = text.split('\n').filter(Boolean);
-		const headers = lines[0].split(';').map(h => h.trim());
-
-		return lines.slice(1).map((line, index) => {
-			try {
-				const values = line.split(';');
-				const raw = headers.reduce((obj, header, i) => {
-					obj[header] = values[i]?.trim() ?? '';
-					return obj;
-				}, {} as Record<string, string>);
-
-				return {
-					_id: raw.vehicle_id,
-					agency_id: raw.agency_id,
-					bikes_allowed: parseBoolean(raw.bicycles),
-					capacity_seated: parseNumber(raw.available_seats, 'capacity_seated'),
-					capacity_standing: parseNumber(raw.available_standing, 'capacity_standing'),
-					contactless: parseBoolean(raw.new_seminew),
-					emission_class: parseMappedEnum(raw.emission, EMISSION_MAP, 'emission_class'),
-					is_locked: false,
-					license_plate: raw.license_plate.replace(/-/g, '').toUpperCase(),
-					make: raw.make,
-					model: raw.model,
-					owner: raw.owner,
-					passenger_counting: parseBoolean(raw.passenger_counting),
-					propulsion: parseMappedEnum(raw.propulsion, PROPULSION_MAP, 'propulsion'),
-					registration_date: formatDate(raw.registration_date),
-					wheelchair_acessible: parseWheelchairAccessibility(raw.wheelchair, raw.ramp),
-				};
-			}
-			catch (error) {
-				setIsError(new Error(`Error parsing line ${index + 2}: ${(error as Error).message}`));
-			}
-		});
-	};
-
-	// ============================================================
-	// Import handler (PREVIEW)
-	// ============================================================
 
 	const handleSetImportFile = async (file: File | null) => {
 		if (!file) {
@@ -285,14 +178,10 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}
 	};
 
-	// ============================================================
-	// Persist
-	// ============================================================
+	//
 
 	const handleCreateOrUpdateAll = async () => {
 		setIsSaving(true);
-
-		console.log(importPreview);
 
 		try {
 			for (const item of importPreview) {
@@ -329,9 +218,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}
 	};
 
-	// ============================================================
-	// Context
-	// ============================================================
+	//
+	// D. Define context value
 
 	const contextValue = useMemo(
 		() => ({
@@ -364,7 +252,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		],
 	);
 
-	console.log(isError);
+	//
+	// E. Render components
 
 	return (
 		<VehicleImportContext.Provider value={contextValue}>

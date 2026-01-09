@@ -3,19 +3,13 @@
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { VehicleNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 import { parseAsArrayOfStrings, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
-
-/* * */
-
-interface VehicleNormalized extends Vehicle {
-	agency_id_normalized: string
-	dates_normalized: string[]
-}
 
 /* * */
 
@@ -83,16 +77,19 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 			return {
 				...item,
 				agency_id_normalized: item.agency_id,
-				dates_normalized: [],
 			};
 		});
 	}, [allVehicleData, agenciesContext.data.raw]);
+
+	//
 
 	const searchResultsData = useSearch<VehicleNormalized>({
 		accessors: ['_id', 'agency_id', 'license_plate'],
 		data: normalizedVehicleData,
 		query: filterSearch,
 	});
+
+	//
 
 	const hasReadPermission = (agencyId: string) =>
 		meContext.actions.hasPermissionResource({
@@ -101,6 +98,8 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 			scope: PermissionCatalog.all.vehicles.scope,
 			value: agencyId,
 		});
+
+	//
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
@@ -127,11 +126,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 
 			// Return true if all filters pass
 			return true;
-		})
-			.sort((a, b) => {
-				// Sort by created_at descending (newest first)
-				return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-			});
+		});
 	}, [searchResultsData, filterAgency, filterDates]);
 
 	//

@@ -30,6 +30,8 @@ export function VehiclesListFilterAgencies() {
 		return !defaultValues.every(item => enabledValues.includes(item));
 	}, [vehiclesListContext.filters.agency, agenciesContext.data.raw]);
 
+	//
+
 	const parsedOptions = useMemo(() => {
 		// Skip if options are not provided or are empty.
 		if (!agenciesContext.data.raw?.length) return [];

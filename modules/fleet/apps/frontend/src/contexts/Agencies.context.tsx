@@ -10,6 +10,9 @@ import useSWR from 'swr';
 /* * */
 
 interface AgenciesContextState {
+	action: {
+		labelAgency: (value: string) => string
+	}
 	data: {
 		raw: Agency[]
 	}
@@ -42,9 +45,25 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
 
 	//
+	// B. Fetch data
+
+	const labelAgency = (agencyId: string | undefined) => {
+		if (!agencyId || !allAgenciesData || allAgenciesData.length === 0) return '-';
+
+		const agency = allAgenciesData.find(a => a._id === agencyId);
+
+		if (!agency) return agencyId;
+
+		return `${agency._id} - ${agency.name}`;
+	};
+
+	//
 	// B. Define context value
 
 	const contextValue: AgenciesContextState = useMemo(() => ({
+		action: {
+			labelAgency,
+		},
 		data: {
 			raw: allAgenciesData ?? [],
 		},
@@ -56,6 +75,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		allAgenciesData,
 		allAgenciesError,
 		allAgenciesLoading,
+		labelAgency,
 	]);
 
 	//

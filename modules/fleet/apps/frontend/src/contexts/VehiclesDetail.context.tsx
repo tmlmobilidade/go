@@ -78,10 +78,12 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 
 	const handleSaveVehicle = async () => {
 		setIsSaving(true);
+
 		const toastId = useToast.loading({
 			message: 'Por favor aguarde...',
 			title: 'A guardar veículo',
 		});
+
 		try {
 			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), 'PUT', form.getValues());
 			if (response.error) {
@@ -115,6 +117,8 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 		}
 	};
 
+	//
+
 	const handleDeleteVehicle = async () => {
 		try {
 			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), 'DELETE', vehicleData);
@@ -140,6 +144,8 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			vehiclesListMutate();
 		}
 	};
+
+	//
 
 	const handleToggleLock = async () => {
 		try {
