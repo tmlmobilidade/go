@@ -5,9 +5,6 @@ import { formatDate } from './formatDate';
 
 /* * */
 
-/**
- * Translate values based on field key
- */
 export function translateFormValue(field: string, value: unknown): string {
 	if (value === undefined || value === null) return '-';
 
