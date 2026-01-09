@@ -137,7 +137,9 @@ export function ImportPreview() {
 				const licensePlate = item.vehicle.license_plate ?? 'Unknown Plate';
 
 				const changesEntries = item.changes
-					? Object.entries(item.changes)
+					? Object.entries(item.changes).filter(
+						([key]) => key !== 'is_locked',
+					)
 					: [];
 
 				return (
