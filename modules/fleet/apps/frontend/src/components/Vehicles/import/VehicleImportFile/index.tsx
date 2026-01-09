@@ -32,10 +32,7 @@ export function VehicleImportFile() {
 
 			{vehicleImportContext.data.importPreview && vehicleImportContext.actions.setImportFile && (
 				<>
-					<Section gap="md">
-						<ImportPreview />
-					</Section>
-					<Divider />
+					<ImportPreview />
 				</>
 			)}
 

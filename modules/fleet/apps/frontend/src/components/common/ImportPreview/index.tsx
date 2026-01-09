@@ -2,7 +2,7 @@ import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImp
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { Translations } from '@/lib/translations';
 import { type Agency } from '@tmlmobilidade/types';
-import { Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Divider, Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -181,8 +181,11 @@ export function ImportPreview() {
 							)}
 						</Grid>
 					</Section>
+
 				);
 			})}
+			<Divider />
 		</Section>
+
 	);
 }
