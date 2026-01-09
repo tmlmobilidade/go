@@ -33,7 +33,6 @@ interface VehicleImportContextState {
 		importPreview: VehicleImportPreview[]
 	}
 	flags: {
-		canCreateorUpdate: boolean
 		error: Error | null
 		isloading: boolean
 		isSaving: boolean
@@ -61,7 +60,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const [isError, setIsError] = useState<Error | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isloading, setIsloading] = useState(false);
-	const [canCreateorUpdate, setCanCreateorUpdate] = useState(false);
 
 	const [importPreview, setImportPreview] = useState<VehicleImportPreview[]>([]);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -195,7 +193,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			}
 			catch (error) {
 				setIsError(new Error(`Error parsing line ${index + 2}: ${(error as Error).message}`));
-				setCanCreateorUpdate(false);
 			}
 		});
 	};
@@ -213,8 +210,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		setIsloading(true);
 		setIsError(null);
 
-		setCanCreateorUpdate(true);
-
 		try {
 			const vehiclesFromFile = await parseTxtFile(file);
 			const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
@@ -231,7 +226,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				// Agency exists
 				if (!agencies.data.raw.some(v => v._id === vehicle.agency_id)) {
 					setIsError(new Error(`Invalid agency for vehicle ${vehicle._id}`));
-					setCanCreateorUpdate(false);
 				}
 
 				const existing = existingResponse.data.find(v => v._id === vehicle._id);
@@ -240,7 +234,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 					// CREATE permission
 					if (!hasUpdatePermission(vehicle.agency_id)) {
 						setIsError(new Error(`No permission to create vehicle for agency ${vehicle.agency_id}`));
-						setCanCreateorUpdate(false);
 					}
 
 					createCounter++;
@@ -251,17 +244,14 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				// UPDATE validations
 				if (existing.agency_id !== vehicle.agency_id) {
 					setIsError(new Error(`Vehicle ${vehicle._id} belongs to another agency`));
-					setCanCreateorUpdate(false);
 				}
 
 				if (!hasUpdatePermission(vehicle.agency_id)) {
 					setIsError(new Error(`No permission to update vehicle ${vehicle._id}`));
-					setCanCreateorUpdate(false);
 				}
 
 				if (existing.is_locked) {
 					setIsError(new Error(`vehicle ${vehicle._id} is locked to change`));
-					setCanCreateorUpdate(false);
 				}
 
 				const changes = diffVehicle(existing, vehicle);
@@ -282,8 +272,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 			if (createCounter === 0 && updateCounter === 0) setIsError(new Error(`Don't have vehicles to create or update in your file`));
 
-			setCanCreateorUpdate(isError === null ? true : false);
-
 			useToast.success({
 				message: `${createCounter} to create · ${updateCounter} to update`,
 				title: 'File imported',
@@ -291,7 +279,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}
 		catch (err) {
 			setIsError(err as Error);
-			setCanCreateorUpdate(false);
 		}
 		finally {
 			setIsloading(false);
@@ -336,7 +323,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}
 		catch (err) {
 			setIsError(err as Error);
-			setCanCreateorUpdate(false);
 		}
 		finally {
 			setIsSaving(false);
@@ -362,7 +348,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				importPreview,
 			},
 			flags: {
-				canCreateorUpdate,
 				error: isError,
 				isloading,
 				isSaving,
@@ -372,7 +357,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			importPreview,
 			createdCount,
 			updatedCount,
-			canCreateorUpdate,
 			isError,
 			isloading,
 			isSaving,
