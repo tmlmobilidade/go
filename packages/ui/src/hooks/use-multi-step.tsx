@@ -159,7 +159,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if no next step
 		if (!nextStep) return;
 		// Exit if next step is not enabled
-		if (nextStep.isEnabled() === false) return;
+		if (nextStep.isEnabled && nextStep.isEnabled() === false) return;
 		// Proceed to the next step
 		setCurrentStepId(nextStep.id);
 	};
@@ -167,12 +167,10 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	const prev = () => {
 		// Exit if no current step
 		if (!currentStep) return;
-		// Exit if current step is not valid
-		if (currentStep.isValid && currentStep.isValid() === false) return;
 		// Exit if no previous step
 		if (!prevStep) return;
 		// Exit if previous step is not enabled
-		if (prevStep.isEnabled() === false) return;
+		if (prevStep.isEnabled && prevStep.isEnabled() === false) return;
 		// Proceed to the previous step
 		setCurrentStepId(prevStep.id);
 	};
