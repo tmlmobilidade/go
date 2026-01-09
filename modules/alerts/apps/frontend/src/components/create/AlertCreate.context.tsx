@@ -86,14 +86,14 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			{
 				id: 'references',
 				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
-				isValid: () => !!form.getValues().reference_type,
+				isValid: () => !!form.getValues().reference_type && !!form.getValues().agency_id,
 				isVisible: true,
 				label: 'Referências',
 				order: 3,
 			},
 			{
 				id: 'summary',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date && !!form.getValues().reference_type && !!form.getValues().agency_id,
 				isVisible: true,
 				label: 'Resumo',
 				order: 4,
