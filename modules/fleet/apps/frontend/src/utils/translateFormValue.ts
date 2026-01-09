@@ -11,14 +11,14 @@ import { formatDate } from './formatDate';
 export function translateFormValue(field: string, value: unknown): string {
 	if (value === undefined || value === null) return '-';
 
-	const AgenciesContex = useAgenciesContext();
+	const AgenciesContext = useAgenciesContext();
 
 	const stringValue = String(value);
 
 	switch (field) {
 		// Agency
 		case 'agency_id':
-			return AgenciesContex.action.labelAgency(stringValue);
+			return AgenciesContext.action.labelAgency(stringValue);
 
 		// Boolean fields
 		case 'bikes_allowed':
