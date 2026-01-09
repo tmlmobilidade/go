@@ -126,8 +126,8 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		selectedReferencesData,
 		form.getValues().cause,
 		form.getValues().effect,
-		form.getValues().references,
 		form.getValues().reference_type,
+		form.getValues().references?.length,
 	]);
 
 	useEffect(() => {
