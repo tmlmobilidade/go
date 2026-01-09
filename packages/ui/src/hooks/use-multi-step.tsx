@@ -181,7 +181,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if the step is not found
 		if (!destStep) return;
 		// Exit if the desired step is not enabled
-		if (destStep.isEnabled() === false) return;
+		if (destStep.isEnabled && destStep.isEnabled() === false) return;
 		// Proceed to set the current step
 		setCurrentStepId(id);
 	};
