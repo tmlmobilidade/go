@@ -56,7 +56,7 @@ export function VehicleImportFile() {
 						variant="secondary"
 					/>
 					<Button
-						disabled={vehicleImportContext?.flags.canCreateorUpdate === false}
+						disabled={vehicleImportContext?.flags.error != null}
 						label="Criar veículos"
 						loading={vehicleImportContext?.flags.isloading}
 						onClick={vehicleImportContext?.actions.createVehicle}
