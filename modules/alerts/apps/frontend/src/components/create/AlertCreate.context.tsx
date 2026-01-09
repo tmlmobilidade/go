@@ -86,14 +86,14 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			{
 				id: 'references',
 				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
-				isValid: () => !!form.getValues().reference_type && !!form.getValues().agency_id,
+				isValid: () => !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
 				isVisible: true,
 				label: 'Referências',
 				order: 3,
 			},
 			{
 				id: 'summary',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date && !!form.getValues().reference_type && !!form.getValues().agency_id,
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date && !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
 				isVisible: true,
 				label: 'Resumo',
 				order: 4,
@@ -149,8 +149,21 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			if (createPermission.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
 			if (createPermission.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
 			if (createPermission.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
+			if (createPermission.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
 		}
 	}, [form.getValues().reference_type]);
+
+	useEffect(() => {
+		// Skip if reference type is not agency
+		if (form.getValues().reference_type !== 'agency') return;
+		// Skip if no agency_id selected
+		if (!form.getValues().agency_id) return;
+		// Set selected references to the selected agency
+		form.setFieldValue('references', [{ child_ids: [], parent_id: form.getValues().agency_id }]);
+	}, [
+		form.getValues().reference_type,
+		form.getValues().agency_id,
+	]);
 
 	useEffect(() => {
 		(async () => {
@@ -185,7 +198,10 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				setSelectedReferencesData(result);
 			}
 		})();
-	}, [form.getValues().reference_type, form.getValues().references]);
+	}, [
+		form.getValues().reference_type,
+		form.getValues().references?.length,
+	]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
