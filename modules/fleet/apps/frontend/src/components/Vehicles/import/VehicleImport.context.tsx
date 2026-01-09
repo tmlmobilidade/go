@@ -213,6 +213,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		setIsloading(true);
 		setIsError(null);
 
+		setCanCreateorUpdate(true);
+
 		try {
 			const vehiclesFromFile = await parseTxtFile(file);
 			const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
@@ -229,6 +231,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				// Agency exists
 				if (!agencies.data.raw.some(v => v._id === vehicle.agency_id)) {
 					setIsError(new Error(`Invalid agency for vehicle ${vehicle._id}`));
+					setCanCreateorUpdate(false);
 				}
 
 				const existing = existingResponse.data.find(v => v._id === vehicle._id);
@@ -248,14 +251,17 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				// UPDATE validations
 				if (existing.agency_id !== vehicle.agency_id) {
 					setIsError(new Error(`Vehicle ${vehicle._id} belongs to another agency`));
+					setCanCreateorUpdate(false);
 				}
 
 				if (!hasUpdatePermission(vehicle.agency_id)) {
 					setIsError(new Error(`No permission to update vehicle ${vehicle._id}`));
+					setCanCreateorUpdate(false);
 				}
 
 				if (existing.is_locked) {
 					setIsError(new Error(`vehicle ${vehicle._id} is locked to change`));
+					setCanCreateorUpdate(false);
 				}
 
 				const changes = diffVehicle(existing, vehicle);
@@ -275,7 +281,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			setExistingVehicles(existingResponse.data);
 
 			if (createCounter === 0 && updateCounter === 0) setIsError(new Error(`Don't have vehicles to create or update in your file`));
-			setCanCreateorUpdate(isError != null);
+
+			setCanCreateorUpdate(isError === null ? true : false);
 
 			useToast.success({
 				message: `${createCounter} to create · ${updateCounter} to update`,
@@ -298,6 +305,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const handleCreateOrUpdateAll = async () => {
 		setIsSaving(true);
 
+		console.log(importPreview);
+
 		try {
 			for (const item of importPreview) {
 				if (item.mode === 'CREATE') {
@@ -309,11 +318,9 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				}
 				else {
 					await fetchData(
-						API_ROUTES.fleet.VEHICLES_DETAIL(
-							item.vehicle._id,
-						),
+						API_ROUTES.fleet.VEHICLES_DETAIL(item.vehicle._id),
 						'PUT',
-						item.vehicle,
+						item,
 					);
 				}
 			}
@@ -329,6 +336,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 		}
 		catch (err) {
 			setIsError(err as Error);
+			setCanCreateorUpdate(false);
 		}
 		finally {
 			setIsSaving(false);
@@ -371,6 +379,8 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			form,
 		],
 	);
+
+	console.log(isError);
 
 	return (
 		<VehicleImportContext.Provider value={contextValue}>
