@@ -31,6 +31,7 @@ export const exportTypesWithoutFilters: ExportType[] = [
 
 export interface ExportContext {
 	_id: string
+	app_version: string
 	dates: {
 		end: OperationalDate
 		start: OperationalDate
