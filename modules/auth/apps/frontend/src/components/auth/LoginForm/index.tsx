@@ -19,14 +19,14 @@ export function LoginForm() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: '/' });
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 	const [passwordValue, setPasswordValue] = useState('');
-
-	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
