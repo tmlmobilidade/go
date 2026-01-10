@@ -20,7 +20,7 @@ export function RoleDetailHeader() {
 	const router = useRouter();
 	const roleDetailContext = useRoleDetailContext();
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -36,7 +36,7 @@ export function RoleDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={roleDetailContext.data.id || t('roles.detail.header.NewRoleButton.label')} variant="secondary" />
+			<Tag label={roleDetailContext.data.id || t('auth:roles.detail.header.NewRoleButton.label')} variant="secondary" />
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
 
 			<Spacer />
@@ -68,8 +68,8 @@ export function RoleDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<DeleteButton
-					confirmMessage={t('roles.detail.header.DeleteButton.confirm.message')}
-					confirmTitle={t('roles.detail.header.DeleteButton.confirm.title')}
+					confirmMessage={t('auth:roles.detail.header.DeleteButton.confirm.message')}
+					confirmTitle={t('auth:roles.detail.header.DeleteButton.confirm.title')}
 					isDisabled={!roleDetailContext.flags.canDelete}
 					isLoading={roleDetailContext.flags.isDeleting}
 					onDelete={roleDetailContext.actions.delete}

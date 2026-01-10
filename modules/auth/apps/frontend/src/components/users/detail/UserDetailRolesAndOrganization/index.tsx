@@ -17,7 +17,7 @@ export function UserDetailRolesAndOrganization() {
 	//
 	// A. Setup Variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 	const rolesContext = useRolesContext();
 	const userDetailContext = useUserDetailContext();
 	const organizationsContext = useOrganizationsContext();
@@ -45,14 +45,14 @@ export function UserDetailRolesAndOrganization() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('users.detail.RolesAndOrganization.description')} title={t('users.detail.RolesAndOrganization.title')}>
+		<Collapsible description={t('auth:users.detail.RolesAndOrganization.description')} title={t('auth:users.detail.RolesAndOrganization.title')}>
 			<Section>
 				<Grid columns="a" gap="md">
 					<Select
 						key={userDetailContext.data.form.key('organization_id')}
 						clearable={false}
 						data={organizationItems}
-						label={t('users.detail.RolesAndOrganization.fields.organization.label')}
+						label={t('auth:users.detail.RolesAndOrganization.fields.organization.label')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						required
 						{...userDetailContext.data.form.getInputProps('organization_id')}
@@ -60,8 +60,8 @@ export function UserDetailRolesAndOrganization() {
 					<MultiSelect
 						key={userDetailContext.data.form.key('role_ids')}
 						data={availableRoles}
-						label={t('users.detail.RolesAndOrganization.fields.roles.label')}
-						placeholder={t('users.detail.RolesAndOrganization.fields.roles.placeholder')}
+						label={t('auth:users.detail.RolesAndOrganization.fields.roles.label')}
+						placeholder={t('auth:users.detail.RolesAndOrganization.fields.roles.placeholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						{...userDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
 					/>

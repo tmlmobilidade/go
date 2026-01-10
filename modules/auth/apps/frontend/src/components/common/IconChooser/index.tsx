@@ -22,7 +22,7 @@ export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps)
 	//
 	// A. Setup Variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -37,7 +37,7 @@ export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps)
 	return (
 		<Combobox
 			data={iconData}
-			label={t('common.IconChooser.label')}
+			label={t('auth:common.IconChooser.label')}
 			onChange={handleIconChange}
 			value={iconData.find(item => item.value === selectedIcon)?.value}
 			clearable

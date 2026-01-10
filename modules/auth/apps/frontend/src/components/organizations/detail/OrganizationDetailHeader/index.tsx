@@ -17,7 +17,7 @@ export function OrganizationDetailHeader() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	const router = useRouter();
 	const organizationDetailContext = useOrganizationsDetailContext();
@@ -36,7 +36,7 @@ export function OrganizationDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={organizationDetailContext.data.id || t('organizations.detail.Header.NewOrganizationButton.label')} variant="muted" />
+			<Tag label={organizationDetailContext.data.id || t('auth:organizations.detail.Header.NewOrganizationButton.label')} variant="muted" />
 			<Label size="lg" singleLine>{organizationDetailContext.data.form.values.long_name}</Label>
 
 			<Spacer />
@@ -68,8 +68,8 @@ export function OrganizationDetailHeader() {
 				scope={PermissionCatalog.all.organizations.scope}
 			>
 				<DeleteButton
-					confirmMessage={t('organizations.detail.Header.DeleteButton.confirm.message')}
-					confirmTitle={t('organizations.detail.Header.DeleteButton.confirm.title')}
+					confirmMessage={t('auth:organizations.detail.Header.DeleteButton.confirm.message')}
+					confirmTitle={t('auth:organizations.detail.Header.DeleteButton.confirm.title')}
 					isDisabled={!organizationDetailContext.flags.canDelete}
 					isLoading={organizationDetailContext.flags.isDeleting}
 					onDelete={organizationDetailContext.actions.delete}

@@ -17,7 +17,7 @@ export function UserCreateBasicInfo() {
 	// A. Setup variables
 
 	const userCreateContext = useUserCreateContext();
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -27,18 +27,18 @@ export function UserCreateBasicInfo() {
 			<Grid columns="ab" gap="xl">
 				<TextInput
 					key={userCreateContext.data.form.key('first_name')}
-					label={t('users.create.BasicInfo.fields.first_name.label')}
+					label={t('auth:users.create.BasicInfo.fields.first_name.label')}
 					maxLength={255}
-					placeholder={t('users.create.BasicInfo.fields.first_name.placeholder')}
+					placeholder={t('auth:users.create.BasicInfo.fields.first_name.placeholder')}
 					withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 					data-autofocus
 					{...userCreateContext.data.form.getInputProps('first_name')}
 				/>
 				<TextInput
 					key={userCreateContext.data.form.key('last_name')}
-					label={t('users.create.BasicInfo.fields.last_name.label')}
+					label={t('auth:users.create.BasicInfo.fields.last_name.label')}
 					maxLength={255}
-					placeholder={t('users.create.BasicInfo.fields.last_name.placeholder')}
+					placeholder={t('auth:users.create.BasicInfo.fields.last_name.placeholder')}
 					withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 					{...userCreateContext.data.form.getInputProps('last_name')}
 				/>
@@ -46,9 +46,9 @@ export function UserCreateBasicInfo() {
 			<Grid columns="a" gap="xl">
 				<TextInput
 					key={userCreateContext.data.form.key('email')}
-					label={t('users.create.BasicInfo.fields.email.label')}
+					label={t('auth:users.create.BasicInfo.fields.email.label')}
 					leftSection={<IconMail size={22} />}
-					placeholder={t('users.create.BasicInfo.fields.email.placeholder')}
+					placeholder={t('auth:users.create.BasicInfo.fields.email.placeholder')}
 					withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 					{...userCreateContext.data.form.getInputProps('email')}
 				/>

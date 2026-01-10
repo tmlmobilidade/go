@@ -33,7 +33,7 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 
 	const rolesContext = useRolesContext();
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -72,20 +72,20 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	return (
 		<CheckCard
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
-			description={t('permissions.' + configAction.description)}
+			description={t('auth:permissions.' + configAction.description)}
 			disabled={hasPermissionFromRole}
-			label={t('permissions.' + configAction.label)}
+			label={t('auth:permissions.' + configAction.label)}
 			onChange={handleToggle}
 		>
 			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 				<AgencyPermissionMultiselect
-					description={t('permissions.AgencyPermissionMultiselect.description')}
-					label={t('permissions.AgencyPermissionMultiselect.label')}
+					description={t('auth:permissions.AgencyPermissionMultiselect.description')}
+					label={t('auth:permissions.AgencyPermissionMultiselect.label')}
 					onChange={handleResourceToggle}
 					selected={selectedAgencyIds}
 				/>
 			)}
-			{hasPermissionFromRole && <Label caps>{t('permissions.SectionItems.label')}</Label>}
+			{hasPermissionFromRole && <Label caps>{t('auth:permissions.SectionItems.label')}</Label>}
 		</CheckCard>
 	);
 

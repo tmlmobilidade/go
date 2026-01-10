@@ -48,14 +48,14 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 	const [newLink, setNewLink] = useState<Omit<HomeLink, 'order'>>(link || { href: '', icon: '', title: '' });
 	const [selectedIcon, setSelectedIcon] = useState<'' | string>(link?.icon || '');
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
 
 	const handleSave = () => {
-		if (!newLink.title || !newLink.href || !newLink.icon) alert(t('organizations.detail.QuickLinksModal.Error.message'));
-		if (!newLink.href) return alert(t('organizations.detail.QuickLinksModal.Error.title'));
+		if (!newLink.title || !newLink.href || !newLink.icon) alert(t('auth:organizations.detail.QuickLinksModal.Error.message'));
+		if (!newLink.href) return alert(t('auth:organizations.detail.QuickLinksModal.Error.title'));
 		closeModal(QUICK_LINKS_MODAL_ID);
 		handleSubmit(newLink);
 	};
@@ -72,15 +72,15 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 		<Section flexDirection="column" gap="sm" padding="lg">
 			<TextInput
 				key="link-title"
-				label={t('organizations.detail.QuickLinksModal.Fields.title.label')}
+				label={t('auth:organizations.detail.QuickLinksModal.Fields.title.label')}
 				onChange={e => setNewLink(prev => ({ ...prev, title: e.target.value }))}
 				value={newLink.title}
 				required
 			/>
 			<TextInput
 				key="link-href"
-				error={isUrl(newLink.href) ? null : t('organizations.detail.QuickLinksModal.Error.title')}
-				label={t('organizations.detail.QuickLinksModal.Fields.link.label')}
+				error={isUrl(newLink.href) ? null : t('auth:organizations.detail.QuickLinksModal.Error.title')}
+				label={t('auth:organizations.detail.QuickLinksModal.Fields.link.label')}
 				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
 				value={newLink.href}
 				required
@@ -89,14 +89,14 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 			<Divider />
 			<Grid columns="ab" gap="sm">
 				<Button
-					label={t('organizations.detail.QuickLinksModal.Fields.cancel.label')}
+					label={t('auth:organizations.detail.QuickLinksModal.Fields.cancel.label')}
 					onClick={() => closeModal(QUICK_LINKS_MODAL_ID)}
 					variant="secondary"
 					fullWidth
 				/>
 				<Button
 					disabled={!newLink.title || !newLink.href || !newLink.icon || isUrl(newLink.href) === false}
-					label={t('organizations.detail.QuickLinksModal.Fields.save.label')}
+					label={t('auth:organizations.detail.QuickLinksModal.Fields.save.label')}
 					onClick={handleSave}
 					variant="primary"
 					fullWidth

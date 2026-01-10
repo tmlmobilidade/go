@@ -23,7 +23,7 @@ export function AgencyPermissionMultiselect({ description, disabled, label, onCh
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	const agencyListContext = useAgenciesContext();
 
@@ -36,7 +36,7 @@ export function AgencyPermissionMultiselect({ description, disabled, label, onCh
 	}));
 
 	agencyOptions.unshift({
-		label: t('permissions.AgencyPermissionMultiselect.all'),
+		label: t('auth:permissions.AgencyPermissionMultiselect.all'),
 		value: PermissionCatalog.ALLOW_ALL_FLAG,
 	});
 

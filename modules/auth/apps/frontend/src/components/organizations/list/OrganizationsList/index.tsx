@@ -23,18 +23,18 @@ export function OrganizationsList() {
 
 	const organizationsListContext = useOrganizationsListContext();
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<OrganizationNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('organizations.list.table.columns.id.label'),
+			title: t('auth:organizations.list.table.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'long_name',
-			title: t('organizations.list.table.columns.name.label'),
+			title: t('auth:organizations.list.table.columns.name.label'),
 			width: 600,
 		},
 	];

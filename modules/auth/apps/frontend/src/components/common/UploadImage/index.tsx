@@ -31,7 +31,7 @@ export function UploadImage({
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
 
@@ -45,8 +45,8 @@ export function UploadImage({
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
-				message: t('common.UploadImage.Error.message'),
-				title: t('common.UploadImage.Error.title'),
+				message: t('auth:common.UploadImage.Error.message'),
+				title: t('auth:common.UploadImage.Error.title'),
 			});
 			return;
 		}
@@ -74,8 +74,8 @@ export function UploadImage({
 					{onDelete && (
 						<div className={styles.deleteContainer}>
 							<DeleteButton
-								confirmMessage={t('common.UploadImage.DeleteButton.confirm.message')}
-								confirmTitle={t('common.UploadImage.DeleteButton.confirm.title')}
+								confirmMessage={t('auth:common.UploadImage.DeleteButton.confirm.message')}
+								confirmTitle={t('auth:common.UploadImage.DeleteButton.confirm.title')}
 								onDelete={handleDelete}
 								showConfirmation
 							/>
@@ -85,7 +85,7 @@ export function UploadImage({
 			) : (
 				<FileButton
 					accept="image/png,image/jpeg,image/jpg"
-					label={t('common.UploadImage.FileButton.label')}
+					label={t('auth:common.UploadImage.FileButton.label')}
 					onFileChange={handleFileChange}
 				/>
 			)}

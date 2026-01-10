@@ -22,16 +22,16 @@ export function AlertReferenceTypePermissionMultiselect({ disabled, onChange, va
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
 
 	const alertReferenceTypeOptionsWithAllowAll = [
-		{ label: t('permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.all'), value: PermissionCatalog.ALLOW_ALL_FLAG },
-		{ label: t('permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.lines'), value: AlertReferenceTypeSchema.enum.lines },
-		{ label: t('permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.stops'), value: AlertReferenceTypeSchema.enum.stops },
-		{ label: t('permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.rides'), value: AlertReferenceTypeSchema.enum.rides },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.all'), value: PermissionCatalog.ALLOW_ALL_FLAG },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.lines'), value: AlertReferenceTypeSchema.enum.lines },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.stops'), value: AlertReferenceTypeSchema.enum.stops },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.rides'), value: AlertReferenceTypeSchema.enum.rides },
 	];
 
 	//
@@ -61,9 +61,9 @@ export function AlertReferenceTypePermissionMultiselect({ disabled, onChange, va
 	return (
 		<MultiSelect
 			data={alertReferenceTypeOptionsWithAllowAll}
-			description={t('permissions.AlertReferenceTypePermissionMultiselect.description')}
+			description={t('auth:permissions.AlertReferenceTypePermissionMultiselect.description')}
 			disabled={disabled}
-			label={t('permissions.AlertReferenceTypePermissionMultiselect.label')}
+			label={t('auth:permissions.AlertReferenceTypePermissionMultiselect.label')}
 			onChange={handleChange}
 			value={value}
 		/>

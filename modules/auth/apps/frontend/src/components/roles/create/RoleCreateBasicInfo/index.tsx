@@ -15,7 +15,7 @@ export function RoleCreateBasicInfo() {
 	// A. Setup variables
 
 	const roleCreateContext = useRoleCreateContext();
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,9 +25,9 @@ export function RoleCreateBasicInfo() {
 			<Grid columns="a" gap="xl">
 				<TextInput
 					key={roleCreateContext.data.form.key('name')}
-					label={t('roles.create.BasicInfo.fields.name.label')}
+					label={t('auth:roles.create.BasicInfo.fields.name.label')}
 					maxLength={255}
-					placeholder={t('roles.create.BasicInfo.fields.name.placeholder')}
+					placeholder={t('auth:roles.create.BasicInfo.fields.name.placeholder')}
 					data-autofocus
 					withAsterisk
 					{...roleCreateContext.data.form.getInputProps('name')}

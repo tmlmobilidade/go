@@ -21,7 +21,7 @@ export function UserDetailHeader() {
 	const router = useRouter();
 	const userDetailContext = useUserDetailContext();
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -36,7 +36,7 @@ export function UserDetailHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={userDetailContext.data.id || t('users.detail.Header.NewUserButton.label')} variant="muted" />
+			<Tag label={userDetailContext.data.id || t('auth:users.detail.Header.NewUserButton.label')} variant="muted" />
 			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
 
 			<Spacer />
@@ -69,8 +69,8 @@ export function UserDetailHeader() {
 				scope={PermissionCatalog.all.users.scope}
 			>
 				<DeleteButton
-					confirmMessage={t('users.detail.Header.DeleteButton.confirm.message')}
-					confirmTitle={t('users.detail.Header.DeleteButton.confirm.title')}
+					confirmMessage={t('auth:users.detail.Header.DeleteButton.confirm.message')}
+					confirmTitle={t('auth:users.detail.Header.DeleteButton.confirm.title')}
 					isDisabled={!userDetailContext.flags.canDelete}
 					isLoading={userDetailContext.flags.isDeleting}
 					onDelete={userDetailContext.actions.delete}

@@ -17,7 +17,7 @@ export function UsersListFilterOrganization() {
 	const organizationsContext = useOrganizationsContext();
 	const usersListContext = useUsersListContext();
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -50,7 +50,7 @@ export function UsersListFilterOrganization() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('users.list.FilterBar.organization.label')}
+			label={t('auth:users.list.FilterBar.organization.label')}
 			onChange={usersListContext.actions.setFilterOrganizationIds}
 			options={parsedOptions}
 			withToggleAll

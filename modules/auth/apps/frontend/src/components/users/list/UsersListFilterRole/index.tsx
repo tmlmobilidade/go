@@ -17,7 +17,7 @@ export function UsersListFilterRole() {
 	const rolesContext = useRolesContext();
 	const usersListContext = useUsersListContext();
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -50,7 +50,7 @@ export function UsersListFilterRole() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('users.list.FilterBar.role.label')}
+			label={t('auth:users.list.FilterBar.role.label')}
 			onChange={usersListContext.actions.setFilterRoleIds}
 			options={parsedOptions}
 			withToggleAll

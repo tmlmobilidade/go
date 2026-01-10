@@ -15,7 +15,7 @@ export function AgencySectionFinacial() {
 	// A. Setup variables
 
 	const agencyDetailContext = useAgencyDetailContext();
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	const months = [
 		'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -32,23 +32,23 @@ export function AgencySectionFinacial() {
 
 	return (
 		<Collapsible
-			description={t('agencies.detail.SectionFinancial.description')}
-			title={t('agencies.detail.SectionFinancial.title')}
+			description={t('auth:agencies.detail.SectionFinancial.description')}
+			title={t('auth:agencies.detail.SectionFinancial.title')}
 		>
 			<Section gap="lg">
 				<Grid columns="ab" gap="lg">
 					<NumberInput
 						key={agencyDetailContext.data.form.key('financials.price_per_km')}
-						label={t('agencies.detail.SectionFinancial.fields.price_per_km.label')}
-						placeholder={t('agencies.detail.SectionFinancial.fields.price_per_km.placeholder')}
+						label={t('auth:agencies.detail.SectionFinancial.fields.price_per_km.label')}
+						placeholder={t('auth:agencies.detail.SectionFinancial.fields.price_per_km.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						step={0.01}
 						{...agencyDetailContext.data.form.getInputProps('financials.price_per_km')}
 					/>
 					<TextInput
 						defaultValue={totalVkmsPerYear.toLocaleString('pt-PT', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-						label={t('agencies.detail.SectionFinancial.fields.total_vkm_per_year.label')}
-						placeholder={t('agencies.detail.SectionFinancial.fields.total_vkm_per_year.placeholder')}
+						label={t('auth:agencies.detail.SectionFinancial.fields.total_vkm_per_year.label')}
+						placeholder={t('auth:agencies.detail.SectionFinancial.fields.total_vkm_per_year.placeholder')}
 						readOnly
 					/>
 				</Grid>

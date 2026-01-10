@@ -23,18 +23,18 @@ export function AgenciesList() {
 	const params = useParams<{ id?: string }>();
 
 	const agenciesListContext = useAgenciesListContext();
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<AgencyNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('agencies.list.Table.columns.id'),
+			title: t('auth:agencies.list.Table.columns.id'),
 			width: 50,
 		},
 		{
 			accessor: 'name',
-			title: t('agencies.list.Table.columns.name'),
+			title: t('auth:agencies.list.Table.columns.name'),
 			width: 600,
 		},
 	];

@@ -17,7 +17,7 @@ export function UserCreateHeader() {
 	// A. Setup variables
 
 	const userCreateContext = useUserCreateContext();
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,12 +25,12 @@ export function UserCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateUserModal} type="close" />
-			<Tag label={t('users.create.Header.NewUserButton.label')} variant="secondary" />
+			<Tag label={t('auth:users.create.Header.NewUserButton.label')} variant="secondary" />
 			<Spacer />
 			<Button
 				disabled={!userCreateContext.data.form.isValid()}
 				icon={<IconPlus size={28} />}
-				label={t('users.create.Header.SaveButton.label')}
+				label={t('auth:users.create.Header.SaveButton.label')}
 				loading={userCreateContext.flags.isSaving}
 				onClick={userCreateContext.actions.saveUser}
 				variant="primary"

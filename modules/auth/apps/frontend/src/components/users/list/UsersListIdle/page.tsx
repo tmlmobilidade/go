@@ -13,13 +13,13 @@ export function UsersListIdle() {
 	//
 	// A. Setup Variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Render Components
 	return (
 		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text={t('users.list.Idle.text')} />
+			<NoDataLabel text={t('auth:users.list.Idle.text')} />
 		</Surface>
 	);
 }

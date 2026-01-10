@@ -20,7 +20,7 @@ export function UserDetail() {
 	// A. Setup variables
 
 	const userDetailContext = useUserDetailContext();
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -33,13 +33,13 @@ export function UserDetail() {
 				<PermissionSection
 					key={item.scope}
 					configActions={item.actions}
-					description={t('permissions.' + item.description)}
+					description={t('auth:permissions.' + item.description)}
 					enabledPermissions={userDetailContext.data.form.values.permissions}
 					enabledRoleIds={userDetailContext.data.form.values.role_ids}
 					onResourceToggle={userDetailContext.actions.handlePermissionResourceToggle}
 					onToggle={userDetailContext.actions.handlePermissionToggle}
 					scope={item.scope}
-					title={t('permissions.' + item.title)}
+					title={t('auth:permissions.' + item.title)}
 				/>
 			))}
 		</Pane>

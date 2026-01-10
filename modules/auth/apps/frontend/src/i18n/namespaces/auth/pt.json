@@ -252,8 +252,8 @@
 				"stops": "Paragens"
 			},
 			"all": "Todo o tipo de referências",
-			"description": "Selecione os tipos de referência que este utilizador poderá utilizar."
-
+			"description": "Selecione os tipos de referência que este utilizador poderá utilizar.",
+			"label": "Tipos de referência"
 		},
 		"SectionItems": {
 			"label": "Permissão Herdada pelo grupo de permissões"

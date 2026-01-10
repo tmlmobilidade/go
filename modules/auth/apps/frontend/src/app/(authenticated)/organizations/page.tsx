@@ -8,11 +8,19 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export default function Page() {
-	const { t } = useTranslation('auth');
+	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Render components
 
 	return (
 		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text={t('organizations.NoDataLabel.text')} />
+			<NoDataLabel text={t('auth:organizations.NoDataLabel.text')} />
 		</Surface>
 	);
 }
