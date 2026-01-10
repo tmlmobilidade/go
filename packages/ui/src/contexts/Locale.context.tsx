@@ -9,7 +9,7 @@ import { registerModuleTranslations } from '../i18n/';
 
 /* * */
 
-export interface LocaleContextProps extends PropsWithChildren {
+export interface LocaleContextProps {
 	i18n?: {
 		namespace: string
 		pt: object
@@ -39,7 +39,7 @@ export function useLocaleContext() {
 
 /* * */
 
-export const LocaleContextProvider = ({ children, i18n }: LocaleContextProps) => {
+export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<LocaleContextProps>) => {
 	//
 	//
 
