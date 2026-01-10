@@ -19,14 +19,14 @@ export function LoginForm() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: '/' });
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 	const [passwordValue, setPasswordValue] = useState('');
-
-	const { t } = useTranslation('authenticationForm');
 
 	//
 	// B. Handle actions
@@ -46,11 +46,11 @@ export function LoginForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (response.error) {
-			useToast.error({ message: response.error ?? t('LoginForm.error.description'), title: t('LoginForm.error.title') });
+			useToast.error({ message: response.error ?? t('auth:LoginForm.error.description'), title: t('auth:LoginForm.error.title') });
 			return;
 		}
 		// Handle successful login
-		useToast.success({ message: t('LoginForm.success.description'), title: t('LoginForm.success.title') });
+		useToast.success({ message: t('auth:LoginForm.success.description'), title: t('auth:LoginForm.success.title') });
 		// Redirect to the specified page or home
 		window.location.href = redirectToValue;
 	};
@@ -60,27 +60,27 @@ export function LoginForm() {
 
 	return (
 		<AuthenticationForm
-			description={t('LoginForm.description')}
-			footerLabel={t('LoginForm.footer.label')}
+			description={t('auth:LoginForm.description')}
+			footerLabel={t('auth:LoginForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.RESET_PASSWORD_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={passwordValue.length < 8 || emailValue.length === 0}
-			submitLabel={t('LoginForm.submit.label')}
-			title={t('LoginForm.title')}
+			submitLabel={t('auth:LoginForm.submit.label')}
+			title={t('auth:LoginForm.title')}
 		>
 			<TextInput
 				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
-				placeholder={t('LoginForm.fields.email.placeholder')}
+				placeholder={t('auth:LoginForm.fields.email.placeholder')}
 				value={emailValue}
 			/>
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder={t('LoginForm.fields.password.placeholder')}
+				placeholder={t('auth:LoginForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
 		</AuthenticationForm>

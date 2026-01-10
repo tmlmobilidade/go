@@ -7,6 +7,7 @@ import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { Collapsible, Grid, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,8 +15,9 @@ export function UserDetailRolesAndOrganization() {
 	//
 
 	//
-	// A. Setup variables
+	// A. Setup Variables
 
+	const { t } = useTranslation('auth');
 	const rolesContext = useRolesContext();
 	const userDetailContext = useUserDetailContext();
 	const organizationsContext = useOrganizationsContext();
@@ -43,17 +45,14 @@ export function UserDetailRolesAndOrganization() {
 	// C. Render components
 
 	return (
-		<Collapsible
-			description="O conjunto de permissões que o utilizador tem atribuído no sistema e as organizações a que pertence."
-			title="Roles & Organizações"
-		>
+		<Collapsible description={t('users.detail.RolesAndOrganization.description')} title={t('users.detail.RolesAndOrganization.title')}>
 			<Section>
 				<Grid columns="a" gap="md">
 					<Select
 						key={userDetailContext.data.form.key('organization_id')}
 						clearable={false}
 						data={organizationItems}
-						label="Organização"
+						label={t('users.detail.RolesAndOrganization.fields.organization.label')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						required
 						{...userDetailContext.data.form.getInputProps('organization_id')}
@@ -61,8 +60,8 @@ export function UserDetailRolesAndOrganization() {
 					<MultiSelect
 						key={userDetailContext.data.form.key('role_ids')}
 						data={availableRoles}
-						label="Roles"
-						placeholder="Selecione uma opção..."
+						label={t('users.detail.RolesAndOrganization.fields.roles.label')}
+						placeholder={t('users.detail.RolesAndOrganization.fields.roles.placeholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						{...userDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
 					/>

@@ -9,6 +9,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -22,17 +23,18 @@ export function AgenciesList() {
 	const params = useParams<{ id?: string }>();
 
 	const agenciesListContext = useAgenciesListContext();
+	const { t } = useTranslation('auth');
 
 	const columns: DataTableColumn<AgencyNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('agencies.list.Table.columns.id'),
 			width: 50,
 		},
 		{
 			accessor: 'name',
-			title: 'Nome',
+			title: t('agencies.list.Table.columns.name'),
 			width: 600,
 		},
 	];
