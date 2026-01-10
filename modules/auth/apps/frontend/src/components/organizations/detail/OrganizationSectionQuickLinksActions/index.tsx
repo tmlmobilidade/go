@@ -14,7 +14,7 @@ export function OrganizationDetailQuickLinksActions({ handleDelete, handleEdit, 
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('operations');
+	const { t } = useTranslation();
 
 	//
 	// B. Render Components
