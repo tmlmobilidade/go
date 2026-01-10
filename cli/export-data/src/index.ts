@@ -18,6 +18,7 @@ import { exportValidationsByStop } from '@/tasks/apex-validations/validations-by
 import { exportValidationsRaw } from '@/tasks/apex-validations/validations-raw.js';
 import { exportHashedShapesGeoJSON } from '@/tasks/hashed-shapes/hashed-shapes-geojson.js';
 import { exportRidesRaw } from '@/tasks/rides/rides-raw.js';
+import { exportSamsRaw } from '@/tasks/sams/sams-raw.js';
 import { exportVehicleEventsRaw } from '@/tasks/vehicle-events/vehicle-events-raw.js';
 import { exportTypeLabels, exportTypesWithoutFilters } from '@/types.js';
 import { initExportContext } from '@/utils/init-context.js';
@@ -141,6 +142,12 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 			enabled: exportTypes.includes('hashed-shapes-geojson'),
 			task: async message => await exportHashedShapesGeoJSON({ context, hashedShapeIds, message }),
 			title: exportTypeLabels['hashed-shapes-geojson'],
+		},
+
+		{
+			enabled: exportTypes.includes('sams-raw'),
+			task: async message => await exportSamsRaw({ context, message }),
+			title: exportTypeLabels['sams-raw'],
 		},
 
 	]);

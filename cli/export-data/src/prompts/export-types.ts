@@ -28,6 +28,9 @@ export async function promptExportTypes(): Promise<ExportType[]> {
 			'4. HashedShapes': [
 				{ label: exportTypeLabels['hashed-shapes-geojson'], value: 'hashed-shapes-geojson' },
 			],
+			'5. SAMs': [
+				{ label: exportTypeLabels['sams-raw'], value: 'sams-raw' },
+			],
 		},
 		required: true,
 	});
