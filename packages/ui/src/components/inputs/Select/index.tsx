@@ -6,24 +6,34 @@ import { Select as MantineSelect, type SelectProps as MantineSelectProps } from 
 
 /* * */
 
-export interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect'> {
+export interface SelectDataItem {
+	checked?: boolean
+	disabled?: boolean
+	label: string
+	value: string
+};
+
+/* * */
+
+export interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect' | 'data'> {
 
 	/**
-	 * The `key` prop is required to ensure correct re-mounting behavior.
-	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
+	 * The data items to be displayed in the Select component.
+	 * Use the `SelectDataItem` interface to define properties for each item.
 	 */
-	key?: string
+	data?: SelectDataItem[]
 
 };
 
 /**
  * Renders a Select component with customized default props.
  */
-export function Select({ ...props }: SelectProps) {
+export function Select(props: SelectProps) {
 	return (
 		<MantineSelect
 			allowDeselect={props.clearable ?? true}
 			clearable={props.clearable ?? true}
+			limit={25}
 			nothingFoundMessage={props.nothingFoundMessage || 'Nenhum resultado encontrado'}
 			placeholder="Selecione uma opção..."
 			searchable

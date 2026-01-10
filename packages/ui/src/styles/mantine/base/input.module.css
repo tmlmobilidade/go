@@ -3,13 +3,12 @@
 
 .root,
 .wrapper {
-	--input-size: 40px;
-	--input-height: 40px;
+	--input-size: 36px;
+	--input-height: 36px;
+	--input-bg: var(--color-system-background-100);
 	min-width: 200px;
 	overflow: visible;
-	transition: width 300ms ease-in-out
 }
-
 
 /* * */
 /* INPUT */
@@ -19,15 +18,14 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
+	padding: 0 15px;
 	overflow: scroll;
 	font-size: 16px;
 	font-weight: var(--font-weight-regular);
 	line-height: 1;
 	color: var(--color-system-text-100);
 	outline: none;
-	background-color: var(--color-system-background-100);
 	border: none;
-	transition: all 200ms ease-in-out;
 }
 
 .input::placeholder {
@@ -43,25 +41,27 @@
 /* WRAPPER */
 
 .wrapper {
-	padding: 0 15px;
-	background-color: var(--color-system-background-100);
+	background-color: var(--input-bg);
 	border: 2px solid var(--color-system-border-100);
 	border-radius: 6px;
-	transition: all 200ms ease-in-out;
+	transition: border-color 200ms ease-in-out;
 }
 
 .wrapper:focus-within {
-	background-color: var(--color-system-background-100);
 	border-color: var(--color-primary);
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
 }
 
-.wrapper[data-with-left-section="true"] {
+.wrapper[data-with-left-section="true"] .input {
 	padding-left: calc(var(--size-spacing-sm) + 30px);
 }
 
-.wrapper[data-with-right-section="true"] {
+.wrapper[data-with-right-section="true"] .input {
 	padding-right: calc(var(--size-spacing-sm) + 30px);
+}
+
+.wrapper[data-disabled="true"] {
+	opacity: 0.5;
 }
 
 

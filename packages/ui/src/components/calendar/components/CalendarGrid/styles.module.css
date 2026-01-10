@@ -1,0 +1,204 @@
+/* Grid Container */
+.grid {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	overflow: auto;
+	background: var(--color-system-background-100);
+}
+
+/* Week Header */
+.weekHeader {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	background: var(--color-system-background-200);
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.weekDay {
+	padding: 12px 8px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--color-system-text-200);
+	text-align: center;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Weeks Container */
+.weeksContainer {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+}
+
+.week {
+	display: grid;
+	flex: 1;
+	grid-template-columns: repeat(7, 1fr);
+	min-height: 120px;
+}
+
+.week:not(:last-child) {
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+/* Day Cell */
+.day {
+	position: relative;
+	min-width: 0;
+	min-height: 120px;
+	overflow: hidden;
+
+	/* cursor: pointer; */
+	background-color: var(--color-system-background-100);
+	border-right: 1px solid var(--color-system-border-100);
+	transition: background-color 150ms ease;
+}
+
+.day:last-child {
+	border-right: none;
+}
+
+.day:hover {
+	background-color: var(--color-system-background-200);
+}
+
+.day:active {
+	background-color: var(--color-system-background-300);
+}
+
+/* Day Header */
+.dayHeader {
+	display: flex;
+	justify-content: flex-end;
+    padding: 0 var(--size-spacing-sm);
+	margin: 4px 0;
+}
+
+.dayNumber {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--color-system-text-100);
+	border-radius: 50%;
+	transition: all 200ms ease;
+}
+
+/* Day States */
+.day.otherMonth {
+	background-color: var(--color-system-background-200);
+}
+
+.day.otherMonth .dayNumber {
+	color: var(--color-system-text-300);
+}
+
+.day.today .dayNumber {
+	font-weight: 600;
+	color: var(--color-contrast);
+	background: var(--color-primary);
+	box-shadow: 0 1px 3px var(--color-shadow);
+}
+
+.day.weekend .dayNumber {
+	color: var(--color-status-danger-primary);
+}
+
+.day.otherMonth.weekend .dayNumber {
+	color: var(--color-system-text-300);
+}
+
+/* Events Container */
+.eventsContainer,
+.periodsContainer {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	overflow: hidden;
+    color: var(--color-system-background-100);
+}
+
+.periodsContainer.hasEventStart {
+	padding-right: 0;
+}
+
+.periodsContainer.hasEventMiddle {
+	padding-right: 0;
+	padding-left: 0;
+}
+
+.periodsContainer.hasEventEnd {
+	padding-left: 0;
+}
+
+.eventsContainer {
+    padding: var(--size-spacing-sm);
+    margin-top: 4px;
+}
+
+/* Remove padding for multi-day event connections */
+.eventsContainer.hasEventStart {
+	padding-right: 0;
+}
+
+.eventsContainer.hasEventMiddle {
+	padding-right: 0;
+	padding-left: 0;
+}
+
+.eventsContainer.hasEventEnd {
+	padding-left: 0;
+}
+
+/* Responsive Design */
+@media (width <= 768px) {
+	.day {
+		min-height: 80px;
+		padding: 4px;
+	}
+
+	.dayNumber {
+		width: 24px;
+		height: 24px;
+		font-size: 12px;
+	}
+
+	.weekDay {
+		padding: 8px 4px;
+		font-size: 10px;
+	}
+
+	.week {
+		min-height: 80px;
+	}
+}
+
+@media (width <= 480px) {
+	.day {
+		min-height: 60px;
+		padding: 2px;
+	}
+
+	.dayNumber {
+		width: 20px;
+		height: 20px;
+		font-size: 11px;
+	}
+
+	.weekDay {
+		padding: 6px 2px;
+		font-size: 9px;
+	}
+
+	.week {
+		min-height: 60px;
+	}
+}

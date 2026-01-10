@@ -1,0 +1,12 @@
+/* * */
+/* ROOT */
+
+.root {
+	--cb-icon-size: 17px;
+	--cb-size: 28px;
+	color: var(--color-system-text-200);
+}
+
+.root:hover {
+	color: var(--color-system-text-100);
+}

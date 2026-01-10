@@ -3,7 +3,7 @@
 import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { FileExportBaseSchema } from '@/file-exports/base.js';
-import { gtfsCauseSchema } from '@/gtfs/cause-effetcs.js';
+import { GtfsCauseSchema } from '@/gtfs/cause.js';
 import { RideAcceptanceStatusSchema, RideJustificationSourceSchema } from '@/rides/ride-acceptance.js';
 import { RideAnalysisGradeWithNoneSchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
@@ -104,7 +104,7 @@ export const FlatRideSchema = z.object({
 	/* * */
 
 	acceptance_status: z.enum(RideAcceptanceStatusSchema.options).nullish().nullable(),
-	justification_cause: gtfsCauseSchema.nullish().nullable(),
+	justification_cause: GtfsCauseSchema.nullish().nullable(),
 	justification_source: z.enum(RideJustificationSourceSchema.options).nullish().nullable(),
 	manual_trip_id: z.string().nullish().nullable(),
 	pto_message: z.string().min(2).max(5000).default('').nullish().nullable(),

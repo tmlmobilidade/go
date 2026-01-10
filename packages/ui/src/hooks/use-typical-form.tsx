@@ -2,11 +2,10 @@
 
 /* * */
 
-import { type FormErrors, useForm, UseFormReturnType } from '@mantine/form';
-import { useDebouncedCallback } from '@mantine/hooks';
+import { type FormErrors, useForm, type UseFormReturnType } from '@mantine/form';
 import { Logger } from '@tmlmobilidade/logger';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { type Schema } from 'zod';
 
 // import { usePreventNavigation } from './use-prevent-navigation';
@@ -34,26 +33,14 @@ export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema
 	//
 
 	//
-	// Setup variables
-
-	const [formErrors, setFormErrors] = useState<FormErrors>({});
-
-	//
 	// Setup form and its related logic
-
-	const validateForm = useDebouncedCallback(() => {
-		const validationResult = form.validate();
-		setFormErrors(validationResult.errors);
-		console.log('Form validation result:', validationResult);
-	}, 750);
 
 	const form = useForm<T>({
 		cascadeUpdates: true,
 		mode: 'uncontrolled',
-		onValuesChange: validateForm,
 		validate: zodResolver(schema as Schema<T>),
-		validateInputOnBlur: false,
-		validateInputOnChange: false,
+		validateInputOnBlur: true,
+		validateInputOnChange: true,
 	});
 
 	//
@@ -80,7 +67,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(schema: Schema
 	// Return hook values and functions
 
 	return {
-		errors: formErrors,
+		errors: form.errors,
 		flags: {
 			isDirty: form.isDirty(),
 			isValid: form.isValid(),

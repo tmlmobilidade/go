@@ -7,7 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const SimplifiedApexOnBoardRefundSchema = DocumentSchema
-	.omit({ is_locked: true })
+	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
 		agency_id: z.string(),
 		apex_version: z.string(),

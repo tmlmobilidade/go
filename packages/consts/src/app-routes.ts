@@ -14,13 +14,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('alerts', 'frontend_url')}`,
 
-		// REALTIME
-		REALTIME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/realtime/${id}`,
-		REALTIME_LIST: `${getAppConfig('alerts', 'frontend_url')}/realtime`,
-
-		// SCHEDULED
-		SCHEDULED_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/scheduled/${id}`,
-		SCHEDULED_LIST: `${getAppConfig('alerts', 'frontend_url')}/scheduled`,
+		// ALERTS
+		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/${id}`,
+		ALERTS_LIST: `${getAppConfig('alerts', 'frontend_url')}`,
 	},
 
 	/* * */
@@ -79,6 +75,24 @@ export const PAGE_ROUTES = Object.freeze({
 		// ANNOTATIONS
 		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/annotations/${id}`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'frontend_url')}/annotations`,
+
+		// CALENDAR
+		CALENDAR_LIST: `${getAppConfig('dates', 'frontend_url')}/calendar`,
+
+		// PERIODS
+		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/periods/${id}`,
+		PERIODS_LIST: `${getAppConfig('dates', 'frontend_url')}/periods`,
+	},
+
+	/* * */
+	/* OFFER */
+	offer: {
+		// BASE
+		BASE: `${getAppConfig('offer', 'frontend_url')}`,
+
+		// TYPOLOGIES
+		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/typologies/${id}`,
+		TYPOLOGIES_LIST: `${getAppConfig('offer', 'frontend_url')}/typologies`,
 	},
 
 	/* * */
@@ -139,6 +153,21 @@ export const PAGE_ROUTES = Object.freeze({
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'frontend_url')}/${id}`,
 		STOPS_LIST: `${getAppConfig('stops', 'frontend_url')}`,
 	},
+
+	/* * */
+	/* TICKETING */
+	ticketing: {
+		// BASE
+		BASE: `${getAppConfig('ticketing', 'frontend_url')}`,
+
+		// FARES
+		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'frontend_url')}/fares/${id}`,
+		FARES_LIST: `${getAppConfig('ticketing', 'frontend_url')}/fares`,
+
+		// ZONES
+		ZONES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'frontend_url')}/zones/${id}`,
+		ZONES_LIST: `${getAppConfig('ticketing', 'frontend_url')}/zones`,
+	},
 } as const);
 
 export const API_ROUTES = Object.freeze({
@@ -151,12 +180,15 @@ export const API_ROUTES = Object.freeze({
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
-		ALERTS_GTFS: `${getAppConfig('alerts', 'api_url')}/alerts/gtfs`,
+		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
 
+		// GTFS
+		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
+
 		// RIDES
+		RIDES_DETAIL_RIDE: (id: string) => `${getAppConfig('alerts', 'api_url')}/rides/${id}/ride`,
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
-		RIDES_SELECTED: `${getAppConfig('alerts', 'api_url')}/rides/selected`,
 	},
 
 	/* * */
@@ -244,8 +276,14 @@ export const API_ROUTES = Object.freeze({
 
 		// ANNOTATIONS
 		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
-		ANNOTATIONS_DETAIL_TOGGLE_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/toggle-lock`,
+		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/lock`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'api_url')}/annotations`,
+
+		// PERIODS
+		PERIODS_CHECK_CONFLICTS: `${getAppConfig('dates', 'api_url')}/periods/check-conflicts`,
+		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}`,
+		PERIODS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}/lock`,
+		PERIODS_LIST: `${getAppConfig('dates', 'api_url')}/periods`,
 	},
 
 	/* * */
@@ -286,6 +324,18 @@ export const API_ROUTES = Object.freeze({
 		LOCATIONS_LOCALITIES: `${getAppConfig('locations', 'api_url')}/locations/localities`,
 		LOCATIONS_MUNICIPALITIES: `${getAppConfig('locations', 'api_url')}/locations/municipalities`,
 		LOCATIONS_PARISHES: `${getAppConfig('locations', 'api_url')}/locations/parishes`,
+	},
+
+	/* * */
+	/* OFFER */
+	offer: {
+		// BASE
+		BASE: `${getAppConfig('offer', 'api_url')}`,
+
+		// TYPOLOGIES
+		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}`,
+		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}/lock`,
+		TYPOLOGIES_LIST: `${getAppConfig('offer', 'api_url')}/typologies`,
 	},
 
 	/* * */
@@ -339,5 +389,22 @@ export const API_ROUTES = Object.freeze({
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,
+	},
+
+	/* * */
+	/* TICKETING */
+	ticketing: {
+		// BASE
+		BASE: `${getAppConfig('ticketing', 'api_url')}`,
+
+		// FARES
+		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}`,
+		FARES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}/lock`,
+		FARES_LIST: `${getAppConfig('ticketing', 'api_url')}/fares`,
+
+		// ZONES
+		ZONES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}`,
+		ZONES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}/lock`,
+		ZONES_LIST: `${getAppConfig('ticketing', 'api_url')}/zones`,
 	},
 } as const);

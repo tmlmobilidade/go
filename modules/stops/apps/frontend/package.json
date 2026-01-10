@@ -15,15 +15,15 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.36.0",
+		"@tabler/icons-react": "3.36.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.1.0",
-		"nuqs": "2.8.5",
+		"next": "16.1.1",
+		"nuqs": "2.8.6",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"swr": "2.3.8"

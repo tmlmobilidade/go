@@ -136,4 +136,6 @@ class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, Update
 	}
 }
 
+/* * */
+
 export const users = AsyncSingletonProxy(UsersClass);

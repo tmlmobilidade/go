@@ -1,16 +1,16 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { CreateGtfsValidationDto, GtfsValidation, GtfsValidationSchema, UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/types';
+import { type CreateGtfsValidationDto, CreateGtfsValidationSchema, type GtfsValidation, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
-import { Filter, IndexDescription } from 'mongodb';
+import { type IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
 class GtfValidationsClass extends MongoCollectionClass<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto> {
 	private static _instance: GtfValidationsClass;
-	protected override createSchema: z.ZodSchema = GtfsValidationSchema;
+	protected override createSchema: z.ZodSchema = CreateGtfsValidationSchema;
 	protected override updateSchema: z.ZodSchema = UpdateGtfsValidationSchema;
 
 	private constructor() {
@@ -28,12 +28,11 @@ class GtfValidationsClass extends MongoCollectionClass<GtfsValidation, CreateGtf
 
 	/**
 	 * Finds Validation documents by agency ID.
-	 *
-	 * @param id - The agency ID to search for
+	 * @param agencyId The agency ID to search for.
 	 * @returns A promise that resolves to an array of matching documents
 	 */
-	async findByAgencyId(id: string) {
-		return this.mongoCollection.find({ agency_id: id } as Filter<GtfsValidation>).toArray();
+	async findByAgencyId(agencyId: string) {
+		return this.mongoCollection.find({ agency_id: agencyId }).toArray();
 	}
 
 	protected getCollectionIndexes(): IndexDescription[] {

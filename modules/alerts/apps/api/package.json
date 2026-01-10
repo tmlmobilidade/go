@@ -18,9 +18,11 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

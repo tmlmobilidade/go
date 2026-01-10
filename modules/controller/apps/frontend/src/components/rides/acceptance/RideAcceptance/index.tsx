@@ -6,7 +6,7 @@ import { RideAcceptanceCommentList } from '@/components/rides/acceptance/RideAcc
 import { RideAcceptanceJustification } from '@/components/rides/acceptance/RideAcceptanceJustification';
 import { RideAnalysisAnalysisResult } from '@/components/rides/analysis/RideAnalysisResult';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
-import { ErrorDisplay, Grid, LoadingOverlay, Section, Separator } from '@tmlmobilidade/ui';
+import { Divider, ErrorDisplay, Grid, LoadingOverlay, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -47,7 +47,7 @@ export function RideAcceptance() {
 				<RideAcceptanceJustification />
 			</Grid>
 			<div style={{ width: '100%' }}>
-				<Separator />
+				<Divider />
 				<RideAnalysisAnalysisResult defaultOpen={true} items={analysisItems} />
 			</div>
 		</Section>

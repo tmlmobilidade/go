@@ -1,28 +1,29 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-
 /* * */
 
 import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
-import { AlertsRealtimePermissionSchema, AlertsScheduledPermissionSchema } from '@/permissions/alerts.js';
+import { AlertsPermissionSchema } from '@/permissions/alerts.js';
+import { AnnotationsPermissionSchema } from '@/permissions/annotations.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
-import { DatesPermissionSchema } from '@/permissions/dates.js';
+import { FaresPermissionSchema } from '@/permissions/fares.js';
 import { GtfsValidationsPermissionSchema } from '@/permissions/gtfs-validations.js';
 import { HomePermissionSchema } from '@/permissions/home.js';
 import { OrganizationsPermissionSchema } from '@/permissions/organizations.js';
 import { PerformancePermissionSchema } from '@/permissions/performance.js';
+import { PeriodsPermissionSchema } from '@/permissions/periods.js';
 import { PlansPermissionSchema } from '@/permissions/plans.js';
 import { RolesPermissionSchema } from '@/permissions/roles.js';
 import { StopsPermissionSchema } from '@/permissions/stops.js';
+import { TypologiesPermissionSchema } from '@/permissions/typologies.js';
 import { UsersPermissionSchema } from '@/permissions/users.js';
 import { VehiclesPermissionSchema } from '@/permissions/vehicles.js';
+import { ZonesPermissionSchema } from '@/permissions/zones.js';
 import { z } from 'zod';
 
 /* * */
 
 export const PermissionSchema = z.discriminatedUnion('scope', [
 	AgenciesPermissionSchema,
-	AlertsScheduledPermissionSchema,
-	AlertsRealtimePermissionSchema,
+	AlertsPermissionSchema,
 	RidesPermissionSchema,
 	SamsPermissionSchema,
 	GtfsValidationsPermissionSchema,
@@ -35,6 +36,11 @@ export const PermissionSchema = z.discriminatedUnion('scope', [
 	UsersPermissionSchema,
 	DatesPermissionSchema,
 	VehiclesPermissionSchema,
+	FaresPermissionSchema,
+	AnnotationsPermissionSchema,
+	PeriodsPermissionSchema,
+	ZonesPermissionSchema,
+	TypologiesPermissionSchema,
 ]);
 
 export type Permission = z.infer<typeof PermissionSchema>;
@@ -63,6 +69,22 @@ export interface HasPermissionResourceArgs {
 	scope: string
 	value: unknown
 }
+
+/**
+ * Arguments for getScopePermissions function.
+ */
+export interface GetScopePermissionsArgs<S extends Permission['scope']> {
+	actions: PermissionCatalogType[S]['actions']
+	permissions: Permission[]
+	resource?: { key: string, requireAll?: boolean, value: unknown }
+	scope: S
+}
+
+/**
+ * Result object containing permission checks for a scope.
+ * Maps each action of the scope to a boolean indicating if the user has that permission.
+ */
+export type ScopePermissions<S extends Permission['scope']> = Record<ActionsOf<S>, boolean>;
 
 /**
  * PermissionCatalog provides a structured catalog of all available permissions
@@ -106,6 +128,55 @@ export class PermissionCatalog {
 	 */
 	static get<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>): Extract<Permission, { action: ActionsOf<S>, scope: S }> | undefined {
 		return permissionEntries.find((p): p is Extract<Permission, { action: ActionsOf<S>, scope: S }> => p.scope === scope && p.action === action);
+	}
+
+	/**
+	 * Get all permissions for a given scope and set of actions in one call.
+	 * More efficient than calling hasPermission or hasPermissionResource multiple times.
+	 * @param args Arguments object containing permissions, scope, actions, and optional resource.
+	 * @param args.resource.requireAll If true, uses hasPermissionResourceAll (user must have permission for ALL values in array). If false/undefined, uses hasPermissionResource (user needs permission for ANY value).
+	 * @returns Object with boolean values for each action in the scope.
+	 */
+	static getScopePermissions<S extends Permission['scope']>({ actions, permissions, resource, scope }: GetScopePermissionsArgs<S>): ScopePermissions<S> {
+		if (!permissions) {
+			return Object.keys(actions).reduce((acc, key) => ({ ...acc, [key]: false }), {}) as ScopePermissions<S>;
+		}
+
+		const result = {} as Record<string, boolean>;
+
+		for (const [key, action] of Object.entries(actions)) {
+			if (!action || typeof action !== 'string') {
+				result[key] = false;
+				continue;
+			}
+
+			if (resource) {
+				// Use hasPermissionResourceAll if requireAll is true, otherwise use hasPermissionResource
+				if (resource.requireAll) {
+					result[key] = this.hasPermissionResourceAll({
+						action,
+						permissions,
+						resource_key: resource.key,
+						scope,
+						value: resource.value,
+					});
+				}
+				else {
+					result[key] = this.hasPermissionResource({
+						action,
+						permissions,
+						resource_key: resource.key,
+						scope,
+						value: resource.value,
+					});
+				}
+			}
+			else {
+				result[key] = this.hasPermission(permissions, scope, action as ActionsOf<S>);
+			}
+		}
+
+		return result as ScopePermissions<S>;
 	}
 
 	/**
@@ -160,6 +231,87 @@ export class PermissionCatalog {
 		// or if it contains the ALLOW_ALL_FLAG.
 
 		if (Array.isArray(resourceValues) && resourceValues.includes(this.ALLOW_ALL_FLAG)) return true;
+
+		//
+		// If value is an array, check if there's any overlap between value and resourceValues
+
+		if (Array.isArray(value)) {
+			if (Array.isArray(resourceValues)) {
+				return value.some(v => resourceValues.includes(v));
+			}
+			return value.includes(resourceValues);
+		}
+
+		//
+		// If value is not an array, check if it's in resourceValues
+
+		if (Array.isArray(resourceValues) && resourceValues.includes(value)) return true;
+
+		//
+		// If resourceValues is not an Array, check if it is equal to the requested value
+
+		if (resourceValues === value) return true;
+
+		//
+		// Otherwise, return false
+
+		return false;
+
+		//
+	}
+
+	/**
+	 * Checks whether the user has permission to perform a specific action
+	 * within a specific scope for ALL values in an array.
+	 * This is stricter than `hasPermissionResource` which only requires permission for ANY value.
+	 * Use this for operations like update/delete where the user must have permission for all agencies involved.
+	 * @param permissions The list of permissions (from a user or request).
+	 * @param value The permission value(s) to check against - if array, ALL values must be permitted.
+	 * @param resource_key The key of the resource.
+	 * @param scope The scope of the permission.
+	 * @param action The action of the permission.
+	 * @returns True if user has permission for ALL values, false otherwise.
+	 */
+	static hasPermissionResourceAll({ action, permissions, resource_key, scope, value }: HasPermissionResourceArgs): boolean {
+		//
+
+		//
+		// Return false if no permissions
+
+		if (!permissions) return false;
+
+		//
+		// Find the permission with the given action and scope
+
+		const foundPermission = permissions.find(p => p.action === action && p.scope === scope);
+
+		if (!foundPermission) return false;
+
+		//
+		// Check if value exists in the permission.resources[resource_key]
+
+		const resourceValues = foundPermission['resources']?.[resource_key];
+
+		if (!resourceValues) return false;
+
+		//
+		// If resourceValues contains the ALLOW_ALL_FLAG, user has permission for everything
+
+		if (Array.isArray(resourceValues) && resourceValues.includes(this.ALLOW_ALL_FLAG)) return true;
+
+		//
+		// If value is an array, check if ALL elements are in resourceValues
+
+		if (Array.isArray(value)) {
+			if (Array.isArray(resourceValues)) {
+				return value.every(v => resourceValues.includes(v));
+			}
+			return value.every(v => v === resourceValues);
+		}
+
+		//
+		// If value is not an array, check if it's in resourceValues
+
 		if (Array.isArray(resourceValues) && resourceValues.includes(value)) return true;
 
 		//
@@ -195,6 +347,25 @@ export class PermissionCatalog {
 		}
 		// Return the cleaned permissions array
 		return Object.values(cleanedPermissions);
+	}
+
+	/**
+	 * Sanitizes a list of permissions by removing any entries
+	 * that do not correspond to valid scopes and actions
+	 * defined in the PermissionCatalog.
+	 * @param existingEntries Array of Permission objects to sanitize.
+	 * @return A cleaned array containing only valid permissions.
+	 */
+	static updatePermissionResource<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>, resources: Record<string, unknown>): Permission[] {
+		// Create a copy of the existing permissions
+		const updatedPermissions = JSON.parse(JSON.stringify(permissionEntries)) as Permission[];
+		// Find the index of the permission to update
+		const permissionIndex = updatedPermissions.findIndex(p => p.scope === scope && p.action === action);
+		if (permissionIndex === -1) return updatedPermissions;
+		// Update the permission at the found index
+		updatedPermissions[permissionIndex]['resources'] = { ...updatedPermissions[permissionIndex]['resources'], ...resources };
+		// Return the updated permissions array
+		return updatedPermissions;
 	}
 
 	//

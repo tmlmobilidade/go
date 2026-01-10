@@ -3,11 +3,11 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, PermissionSchema, type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/types';
+import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema, type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -105,16 +105,16 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
 	};
 
-	function handlePermissionResourceToggle(scope: string, action: string, resource: Record<string, unknown>) {
-		// Get latest form values
-		const latestValues = form.getValues();
-		// Check if a permission entry with the same scope and action exists
-		const foundPermission = latestValues.permissions?.find(p => p.scope === scope && p.action === action);
-		if (!foundPermission) return alert('Permissão não encontrada para atualizar recursos');
-		// Assign the new resources to the found permission
-		foundPermission['resources'] = resource;
-		// Update the resources of the found permission
-		form.setFieldValue('permissions', [...latestValues.permissions ?? []]);
+	function handlePermissionResourceToggle<S extends Permission['scope']>(scope: S, action: ActionsOf<S>, resource: Record<string, unknown>) {
+		// Use the PermissionCatalog method to update permission resources
+		const updatedPermissions = PermissionCatalog.updatePermissionResource(
+			form.getValues().permissions ?? [],
+			scope,
+			action,
+			resource,
+		);
+			// Update the form with the new permissions array
+		form.setFieldValue('permissions', updatedPermissions);
 	};
 
 	//
