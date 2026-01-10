@@ -40,7 +40,7 @@ export function ChangePasswordForm() {
 	const [passwordValue, setPasswordValue] = useState('');
 	const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
 
-	const { i18n, t } = useTranslation('auth');
+	const { i18n, t } = useTranslation('authenticationForm');
 	//
 	// B. Transform data
 
@@ -88,11 +88,11 @@ export function ChangePasswordForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? t('authentication.ChangePasswordForm.error_message.description'), title: t('authentication.ChangePasswordForm.error_message.title') });
+			useToast.error({ message: response.error ?? t('ChangePasswordForm.error_message.description'), title: t('authentication.ChangePasswordForm.error_message.title') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: t('authentication.ChangePasswordForm.success.description'), title: t('authentication.ChangePasswordForm.success.title') });
+		useToast.success({ message: t('ChangePasswordForm.success.description'), title: t('ChangePasswordForm.success.title') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -101,28 +101,28 @@ export function ChangePasswordForm() {
 
 	return (
 		<AuthenticationForm
-			description={t('authentication.ChangePasswordForm.description')}
-			footerLabel={t('authentication.ChangePasswordForm.footer.label')}
+			description={t('ChangePasswordForm.description')}
+			footerLabel={t('ChangePasswordForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={isDisabled}
-			submitLabel={t('authentication.ChangePasswordForm.submit.label')}
-			title={t('authentication.ChangePasswordForm.title')}
+			submitLabel={t('ChangePasswordForm.submit.label')}
+			title={t('ChangePasswordForm.title')}
 		>
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder={t('authentication.ChangePasswordForm.fields.password.placeholder')}
+				placeholder={t('ChangePasswordForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
 			<PasswordInput
 				key="password-confirm"
 				disabled={isLoading}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
-				placeholder={t('authentication.ChangePasswordForm.fields.confirmPassword.placeholder')}
+				placeholder={t('ChangePasswordForm.fields.confirm_password.placeholder')}
 				value={confirmPasswordValue}
 			/>
 			<div className={styles.passwordRequirements}>

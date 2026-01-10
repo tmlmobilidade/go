@@ -8,6 +8,7 @@ import { initReactI18next } from 'react-i18next';
 
 /* * */
 
+import ptAuthenticationForm from './namespaces/authentication-form/pt.json' with { type: 'json' };
 import ptGlobal from './namespaces/global/pt.json' with { type: 'json' };
 import ptOperations from './namespaces/operations/pt.json' with { type: 'json' };
 import ptStatuses from './namespaces/statuses/pt.json' with { type: 'json' };
@@ -19,6 +20,7 @@ export * from './config';
 
 export const resourceKeys = {
 	pt: {
+		authenticationForm: ptAuthenticationForm,
 		global: ptGlobal,
 		operations: ptOperations,
 		statuses: ptStatuses,

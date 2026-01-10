@@ -9,6 +9,7 @@ import { TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -21,6 +22,8 @@ export function SendPasswordResetEmailForm() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
+
+	const { t } = useTranslation('authenticationForm');
 
 	//
 	// B. Handle actions
@@ -40,11 +43,11 @@ export function SendPasswordResetEmailForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? 'An error occurred', title: 'failed to sent email' });
+			useToast.error({ message: response.error ?? t('SendPasswordResetEmailForm.error.description'), title: t('SendPasswordResetEmailForm.error.title') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: 'Email de recuperação enviado com sucesso', title: 'Sucesso' });
+		useToast.success({ message: t('SendPasswordResetEmailForm.success.description'), title: t('SendPasswordResetEmailForm.success.title') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -53,20 +56,20 @@ export function SendPasswordResetEmailForm() {
 
 	return (
 		<AuthenticationForm
-			description="Introduza seu email para recuperar a sua palavra-passe"
-			footerLabel="Voltar ao login"
+			description={t('SendPasswordResetEmailForm.description')}
+			footerLabel={t('SendPasswordResetEmailForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={emailValue.length === 0}
-			submitLabel="Enviar email"
-			title="Recuperar password"
+			submitLabel={t('SendPasswordResetEmailForm.submit.label')}
+			title={t('SendPasswordResetEmailForm.title')}
 		>
 			<TextInput
 				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
-				placeholder="Email de recuperação"
+				placeholder={t('SendPasswordResetEmailForm.fields.email.placeholder')}
 				value={emailValue}
 			/>
 		</AuthenticationForm>
