@@ -13,7 +13,7 @@ export default function Page() {
 	//
 	// A . Setup Variables
 
-	const { t } = useTranslation('auth');
+	const { t } = useTranslation();
 
 	//
 	// B . Render Component
