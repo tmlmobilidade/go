@@ -37,7 +37,7 @@ export function AlertsList() {
 		},
 		{
 			accessor: 'reference_type',
-			title: 'Tipo de referência',
+			title: 'Tipo',
 			width: 75,
 		},
 		{

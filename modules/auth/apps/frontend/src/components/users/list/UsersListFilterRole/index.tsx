@@ -1,9 +1,10 @@
 /* * */
 
-import { useRolesContext } from '@/contexts/Roles.context';
 import { useUsersListContext } from '@/components/users/list/UsersList.context';
+import { useRolesContext } from '@/contexts/Roles.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,8 @@ export function UsersListFilterRole() {
 
 	const rolesContext = useRolesContext();
 	const usersListContext = useUsersListContext();
+
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -47,7 +50,7 @@ export function UsersListFilterRole() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Grupos"
+			label={t('auth:users.list.FilterBar.role.label')}
 			onChange={usersListContext.actions.setFilterRoleIds}
 			options={parsedOptions}
 			withToggleAll

@@ -1,11 +1,11 @@
 /* * */
 
-import { resourceKeys } from './i18n';
+import { i18nResourceKeys } from './resources';
 
 /* * */
 
 declare module 'i18next' {
 	interface CustomTypeOptions {
-		resources: typeof resourceKeys['pt']
+		resources: typeof i18nResourceKeys.pt
 	}
 }

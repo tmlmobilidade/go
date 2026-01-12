@@ -1,37 +1,19 @@
-/* * */
-
-export const DEFAULT_LOCALE_CODE = 'pt';
-
-export const LOCALE_STORAGE_KEY = 'locale';
+'use client';
 
 /* * */
 
-export interface LocaleConfig {
-	_id: string
-	alias: string[]
-	enabled: boolean
-}
+import i18next from 'i18next';
+import ICU from 'i18next-icu';
+import { initReactI18next } from 'react-i18next';
 
-export const availableLocales: LocaleConfig[] = [
-	{
-		_id: 'pt',
-		alias: ['pt-PT', 'pt_PT', 'pt-BR', 'pt_BR', 'pt-GW', 'pt_GW', 'pt-MZ', 'pt_MZ'],
-		enabled: true,
-	},
-];
+import { i18nResourceKeys } from './resources';
 
 /* * */
 
-export const enabledLocales = availableLocales.filter(item => item.enabled);
-export const enabledLocaleCodes = enabledLocales.map(item => item._id);
-export const allEnabledLocaleCodesAndAliases = enabledLocales.reduce((acc, item) => [...acc, item._id, ...item.alias], []);
-
-export const defaultLocale = availableLocales.find(item => item._id === DEFAULT_LOCALE_CODE);
-
-/* * */
-
-export function getMatchingLocale(localeCode: string) {
-	const matchingLocale = enabledLocales.find(item => item._id === localeCode || item.alias.includes(localeCode));
-	if (matchingLocale) return matchingLocale;
-	else return null;
-}
+i18next
+	.use(ICU)
+	.use(initReactI18next)
+	.init({
+		fallbackLng: 'pt',
+		resources: i18nResourceKeys,
+	});
