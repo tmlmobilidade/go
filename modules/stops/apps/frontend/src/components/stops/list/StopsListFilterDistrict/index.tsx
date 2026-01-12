@@ -37,7 +37,7 @@ export function StopsListFilterDistrict() {
 	return (
 		<MultiSelect
 			data={parsedOptions}
-			label={t('stops:stops.list.FilterBar.FilterDistrict.label')}
+			label={t('stops:stops.list.StopsListFilterDistrict.label')}
 			onChange={stopsListContext.actions.setFilterDistricts}
 			value={stopsListContext.filters.districts}
 			clearable

@@ -44,17 +44,17 @@ export function StopDetailsSectionGeneral() {
 
 	return (
 		<Collapsible
-			description={t('stops:stops.detail.SectionGeneral.description')}
-			title={t('stops:stops.detail.SectionGeneral.title')}
+			description={t('stops:stops.detail.StopDetailsSectionGeneral.description')}
+			title={t('stops:stops.detail.StopDetailsSectionGeneral.title')}
 			defaultOpen
 		>
 
 			<Section>
 				<Grid columns="abcd" gap="md">
-					<ValueDisplay label={t('stops:stops.detail.SectionGeneral.fields.stop_id')} value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
-					<ValueDisplay label={t('stops:stops.detail.SectionGeneral.fields.legacy_id')} value={stopDetailContext.data.stop?.legacy_id ?? 'N/A'} bordered />
-					<ValueDisplay label={t('stops:stops.detail.SectionGeneral.fields.latitude')} value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
-					<ValueDisplay label={t('stops:stops.detail.SectionGeneral.fields.longitude')} value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.stop_id.label')} value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.legacy_id.label')} value={stopDetailContext.data.stop?.legacy_id ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.latitude.label')} value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.longitude.label')} value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 
@@ -75,7 +75,7 @@ export function StopDetailsSectionGeneral() {
 
 					<ProposedChangesWrapper
 						inputName="name"
-						label={t('stops:stops.detail.SectionGeneral.fields.name')}
+						label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.name.label')}
 						relatedId={stopDetailContext.data.stop?._id}
 						scope="stop"
 					>
@@ -87,7 +87,7 @@ export function StopDetailsSectionGeneral() {
 
 					<ProposedChangesWrapper
 						inputName="new_name"
-						label={t('stops:stops.detail.SectionGeneral.fields.new_name')}
+						label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.new_name.label')}
 						relatedId={stopDetailContext.data.stop?._id}
 						scope="stop"
 					>
@@ -102,8 +102,8 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label={t('stops:stops.detail.SectionGeneral.fields.short_name')} value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} bordered />
-					<ValueDisplay label={t('stops:stops.detail.SectionGeneral.fields.tts_name')} value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.short_name.label')} value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} bordered />
+					<ValueDisplay label={t('stops:stops.detail.StopDetailsSectionGeneral.fields.tts_name.label')} value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} bordered />
 				</Grid>
 			</Section>
 

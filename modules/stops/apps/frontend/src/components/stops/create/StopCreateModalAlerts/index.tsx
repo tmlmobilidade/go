@@ -26,7 +26,7 @@ export function StopCreateModalAlerts() {
 
 	return (
 		<AlertMessage
-			title={stopCreateContext.flags.error?.message ?? t('stops:stops.create.Alerts.unknown_error')}
+			title={stopCreateContext.flags.error?.message ?? t('stops:stops.create.StopCreateModalAlerts.unknown_error')}
 			variant="danger"
 		/>
 	);

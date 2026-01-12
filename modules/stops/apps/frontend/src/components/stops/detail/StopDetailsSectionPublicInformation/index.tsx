@@ -32,29 +32,29 @@ export function StopDetailsSectionPublicInformation() {
 
 	return (
 		<Collapsible
-			description={t('stops:stops.detail.SectionPublicInformation.description')}
-			title={t('stops:stops.detail.SectionPublicInformation.title')}
+			description={t('stops:stops.detail.StopDetailsSectionPublicInformation.description')}
+			title={t('stops:stops.detail.StopDetailsSectionPublicInformation.title')}
 		>
 			<Section>
 				<Grid columns="a" gap="md">
 					<Select
 						key={stopDetailContext.data.form.key('has_stop_sign')}
 						data={availabilityStatusOptions}
-						label={t('stops:stops.detail.SectionPublicInformation.fields.has_stop_sign')}
+						label={t('stops:stops.detail.StopDetailsSectionPublicInformation.fields.has_stop_sign.label')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_stop_sign')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_schedules')}
 						data={availabilityStatusOptions}
-						label={t('stops:stops.detail.SectionPublicInformation.fields.has_schedules')}
+						label={t('stops:stops.detail.StopDetailsSectionPublicInformation.fields.has_schedules.label')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_schedules')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_network_map')}
 						data={availabilityStatusOptions}
-						label={t('stops:stops.detail.SectionPublicInformation.fields.has_network_map')}
+						label={t('stops:stops.detail.StopDetailsSectionPublicInformation.fields.has_network_map.label')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_network_map')}
 					/>
@@ -65,14 +65,14 @@ export function StopDetailsSectionPublicInformation() {
 				<Grid columns="ab" gap="md">
 					<TextInput
 						key={stopDetailContext.data.form.key('last_schedules_maintenance')}
-						label={t('stops:stops.detail.SectionPublicInformation.fields.last_schedules_maintenance')}
+						label={t('stops:stops.detail.StopDetailsSectionPublicInformation.fields.last_schedules_maintenance.label')}
 						placeholder="2023-02-10"
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_schedules_maintenance')}
 					/>
 					<TextInput
 						key={stopDetailContext.data.form.key('last_schedules_check')}
-						label={t('stops:stops.detail.SectionPublicInformation.fields.last_schedules_check')}
+						label={t('stops:stops.detail.StopDetailsSectionPublicInformation.fields.last_schedules_check.label')}
 						placeholder="2023-02-10"
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_schedules_check')}

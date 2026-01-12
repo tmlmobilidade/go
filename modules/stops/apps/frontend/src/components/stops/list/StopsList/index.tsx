@@ -29,42 +29,42 @@ export function StopsList() {
 	const columns: DataTableColumn<StopNormalized>[] = [
 		{
 			accessor: '_id',
-			title: t('stops:stops.list.Table.columns.code'),
+			title: t('stops:stops.list.StopsList.table.columns.code.label'),
 			width: 150,
 		},
 		{
 			accessor: 'name',
-			title: t('stops:stops.list.Table.columns.name'),
+			title: t('stops:stops.list.StopsList.table.columns.name.label'),
 			width: 500,
 		},
 		{
 			accessor: 'latitude',
-			title: t('stops:stops.list.Table.columns.latitude'),
+			title: t('stops:stops.list.StopsList.table.columns.latitude.label'),
 			width: 150,
 		},
 		{
 			accessor: 'longitude',
-			title: t('stops:stops.list.Table.columns.longitude'),
+			title: t('stops:stops.list.StopsList.table.columns.longitude.label'),
 			width: 150,
 		},
 		{
 			accessor: 'district_name',
-			title: t('stops:stops.list.Table.columns.district'),
+			title: t('stops:stops.list.StopsList.table.columns.district.label'),
 			width: 250,
 		},
 		{
 			accessor: 'municipality_name',
-			title: t('stops:stops.list.Table.columns.municipality'),
+			title: t('stops:stops.list.StopsList.table.columns.municipality.label'),
 			width: 250,
 		},
 		{
 			accessor: 'parish_name',
-			title: t('stops:stops.list.Table.columns.parish'),
+			title: t('stops:stops.list.StopsList.table.columns.parish.label'),
 			width: 250,
 		},
 		{
 			accessor: 'locality_name',
-			title: t('stops:stops.list.Table.columns.locality'),
+			title: t('stops:stops.list.StopsList.table.columns.locality.label'),
 			width: 250,
 		},
 	];

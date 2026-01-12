@@ -45,7 +45,7 @@ export function StopsListFilterLifecycleStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('stops:stops.list.FilterBar.FilterLifecycleStatus.label')}
+			label={t('stops:stops.list.StopsListFilterLifecycleStatus.label')}
 			onChange={stopsListContext.actions.setFilterLifecycleStatus}
 			options={parsedOptions}
 			withToggleAll

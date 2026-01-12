@@ -45,7 +45,7 @@ export function StopsListFilterConnections() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('stops:stops.list.FilterBar.FilterConnections.label')}
+			label={t('stops:stops.list.StopsListFilterConnections.label')}
 			onChange={stopsListContext.actions.setFilterConnections}
 			options={parsedOptions}
 			withToggleAll

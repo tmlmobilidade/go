@@ -59,8 +59,8 @@ export function StopCreateStep3Summary() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label={t('stops:stops.create.Step3.Summary.short_name')} value={stopCreateContext.data.form.values.short_name} bordered />
-					<ValueDisplay label={t('stops:stops.create.Step3.Summary.tts_name')} value={stopCreateContext.data.form.values.tts_name} bordered />
+					<ValueDisplay label={t('stops:stops.create.StopCreateStep3Summary.fields.short_name.label')} value={stopCreateContext.data.form.values.short_name} bordered />
+					<ValueDisplay label={t('stops:stops.create.StopCreateStep3Summary.fields.tts_name.label')} value={stopCreateContext.data.form.values.tts_name} bordered />
 				</Grid>
 			</Section>
 

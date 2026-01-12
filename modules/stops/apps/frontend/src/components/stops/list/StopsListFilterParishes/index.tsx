@@ -35,7 +35,7 @@ export function StopsListFilterParish() {
 	return (
 		<MultiSelect
 			data={parsedOptions}
-			label={t('stops:stops.list.FilterBar.FilterParish.label')}
+			label={t('stops:stops.list.StopsListFilterParishes.label')}
 			onChange={stopsListContext.actions.setFilterParishes}
 			value={stopsListContext.filters.parishes}
 			clearable

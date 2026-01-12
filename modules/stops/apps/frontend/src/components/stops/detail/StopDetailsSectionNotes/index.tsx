@@ -22,15 +22,15 @@ export function StopDetailsSectionNotes() {
 
 	return (
 		<Collapsible
-			description={t('stops:stops.detail.SectionNotes.description')}
-			title={t('stops:stops.detail.SectionNotes.title')}
+			description={t('stops:stops.detail.StopDetailsSectionNotes.description')}
+			title={t('stops:stops.detail.StopDetailsSectionNotes.title')}
 		>
 			<Section>
 				<Grid>
 					<Textarea
 						key={stopDetailContext.data.form.key('comments')}
 						minRows={10}
-						placeholder={t('stops:stops.detail.SectionNotes.fields.comments_placeholder')}
+						placeholder={t('stops:stops.detail.StopDetailsSectionNotes.fields.comments.placeholder')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						autosize
 						{...stopDetailContext.data.form.getInputProps('comments')}

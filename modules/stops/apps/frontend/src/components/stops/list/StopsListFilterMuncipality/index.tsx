@@ -37,7 +37,7 @@ export function StopsListFilterMunicipality() {
 	return (
 		<MultiSelect
 			data={parsedOptions}
-			label={t('stops:stops.list.FilterBar.FilterMunicipality.label')}
+			label={t('stops:stops.list.StopsListFilterMunicipality.label')}
 			onChange={stopsListContext.actions.setFilterMunicipalities}
 			value={stopsListContext.filters.municipalities}
 			clearable

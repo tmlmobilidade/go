@@ -12,7 +12,7 @@ export function StopCreateStep2Instructions() {
 
 	return (
 		<Section gap="sm">
-			<Text>{t('stops:stops.create.Step2.Instructions.text')}</Text>
+			<Text>{t('stops:stops.create.StopCreateStep2Instructions.text')}</Text>
 		</Section>
 	);
 }

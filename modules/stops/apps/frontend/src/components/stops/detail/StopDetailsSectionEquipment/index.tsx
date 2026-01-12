@@ -15,8 +15,8 @@ export function StopDetailsSectionEquipment() {
 
 	return (
 		<Collapsible
-			description={t('stops:stops.detail.SectionEquipment.description')}
-			title={t('stops:stops.detail.SectionEquipment.title')}
+			description={t('stops:stops.detail.StopDetailsSectionEquipment.description')}
+			title={t('stops:stops.detail.StopDetailsSectionEquipment.title')}
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">

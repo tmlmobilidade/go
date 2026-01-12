@@ -23,11 +23,11 @@ export function StopsListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps>{t('stops:stops.list.Header.title')}</Label>
+			<Label size="lg" caps>{t('stops:stops.list.StopsListHeader.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={stopsListContext.actions.setFilterSearch} value={stopsListContext.filters.search} />
 			<HasPermission action={PermissionCatalog.all.stops.actions.create} scope={PermissionCatalog.all.stops.scope}>
-				<Button label={t('stops:stops.list.Header.new_stop_button')} leftSection={<IconPlus size={20} />} onClick={openCreateStopModal} />
+				<Button label={t('stops:stops.list.StopsListHeader.actions.new.label')} leftSection={<IconPlus size={20} />} onClick={openCreateStopModal} />
 			</HasPermission>
 		</Toolbar>
 	);

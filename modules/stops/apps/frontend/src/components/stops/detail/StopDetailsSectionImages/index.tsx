@@ -20,8 +20,8 @@ export function StopDetailsSectionImages() {
 
 	return (
 		<Collapsible
-			description={t('stops:stops.detail.SectionImages.description')}
-			title={t('stops:stops.detail.SectionImages.title')}
+			description={t('stops:stops.detail.StopDetailsSectionImages.description')}
+			title={t('stops:stops.detail.StopDetailsSectionImages.title')}
 		>
 			{/* <Section>
 				<UploadImage

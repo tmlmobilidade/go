@@ -45,7 +45,7 @@ export function StopsListFilterEquipment() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('stops:stops.list.FilterBar.FilterEquipment.label')}
+			label={t('stops:stops.list.StopsListFilterEquipment.label')}
 			onChange={stopsListContext.actions.setFilterEquipment}
 			options={parsedOptions}
 			withToggleAll
