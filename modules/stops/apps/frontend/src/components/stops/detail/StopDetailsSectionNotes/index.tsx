@@ -14,7 +14,7 @@ export function StopDetailsSectionNotes() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 	const stopDetailContext = useStopDetailContext();
 
 	//
@@ -22,15 +22,15 @@ export function StopDetailsSectionNotes() {
 
 	return (
 		<Collapsible
-			description={t('stops.detail.SectionNotes.description')}
-			title={t('stops.detail.SectionNotes.title')}
+			description={t('stops:stops.detail.SectionNotes.description')}
+			title={t('stops:stops.detail.SectionNotes.title')}
 		>
 			<Section>
 				<Grid>
 					<Textarea
 						key={stopDetailContext.data.form.key('comments')}
 						minRows={10}
-						placeholder={t('stops.detail.SectionNotes.fields.comments_placeholder')}
+						placeholder={t('stops:stops.detail.SectionNotes.fields.comments_placeholder')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						autosize
 						{...stopDetailContext.data.form.getInputProps('comments')}

@@ -1,7 +1,7 @@
 /* * */
 
+import { i18nNamespaces } from '@/i18n/resources';
 import { DataProviders } from '@/providers/data-providers';
-import ptTranslations from '@/translations/pt.json';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider>
-			<AppProvider i18n={[{ namespace: 'stops', pt: ptTranslations }]}>
+		<BaseProvider i18n={i18nNamespaces}>
+			<AppProvider>
 				<NuqsAdapter>
 					<DataProviders>
 						<AppWrapper>

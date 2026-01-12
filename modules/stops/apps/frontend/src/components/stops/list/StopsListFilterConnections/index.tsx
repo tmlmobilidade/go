@@ -18,7 +18,7 @@ export function StopsListFilterConnections() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -34,7 +34,7 @@ export function StopsListFilterConnections() {
 		if (!StopConnectionSchema.options?.length) return [];
 		return StopConnectionSchema.options.map(item => ({
 			checked: stopsListContext.filters.connections.includes(item),
-			label: t(`${Translations.CONNECTIONS}.${item}`),
+			label: t(Translations.CONNECTIONS[item]),
 			value: item,
 		}));
 	}, [stopsListContext.filters.connections, t]);
@@ -45,7 +45,7 @@ export function StopsListFilterConnections() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('stops.list.FilterBar.FilterConnections.label')}
+			label={t('stops:stops.list.FilterBar.FilterConnections.label')}
 			onChange={stopsListContext.actions.setFilterConnections}
 			options={parsedOptions}
 			withToggleAll

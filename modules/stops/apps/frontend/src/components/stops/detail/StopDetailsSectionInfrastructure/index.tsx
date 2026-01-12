@@ -16,7 +16,7 @@ export function StopDetailsSectionInfrastructure() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 	const stopDetailContext = useStopDetailContext();
 
 	//
@@ -37,29 +37,29 @@ export function StopDetailsSectionInfrastructure() {
 
 	return (
 		<Collapsible
-			description={t('stops.detail.SectionInfrastructure.description')}
-			title={t('stops.detail.SectionInfrastructure.title')}
+			description={t('stops:stops.detail.SectionInfrastructure.description')}
+			title={t('stops:stops.detail.SectionInfrastructure.title')}
 		>
 			<Section>
 				<Grid columns="ab" gap="md">
 					<Select
 						key={stopDetailContext.data.form.key('has_mupi')}
 						data={availabilityStatusOptions}
-						label={t('stops.detail.SectionInfrastructure.fields.has_mupi')}
+						label={t('stops:stops.detail.SectionInfrastructure.fields.has_mupi')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_mupi')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('has_bench')}
 						data={availabilityStatusOptions}
-						label={t('stops.detail.SectionInfrastructure.fields.has_bench')}
+						label={t('stops:stops.detail.SectionInfrastructure.fields.has_bench')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('has_bench')}
 					/>
 					<Select
 						key={stopDetailContext.data.form.key('electricity_status')}
 						data={availabilityStatusOptions}
-						label={t('stops.detail.SectionInfrastructure.fields.has_electricity')}
+						label={t('stops:stops.detail.SectionInfrastructure.fields.has_electricity')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('electricity_status')}
 					/>
@@ -72,7 +72,7 @@ export function StopDetailsSectionInfrastructure() {
 					<Select
 						key={stopDetailContext.data.form.key('road_type')}
 						data={roadTypeOptions}
-						label={t('stops.detail.SectionInfrastructure.fields.road_type')}
+						label={t('stops:stops.detail.SectionInfrastructure.fields.road_type')}
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('road_type')}
 					/>
@@ -83,14 +83,14 @@ export function StopDetailsSectionInfrastructure() {
 				<Grid columns="ab" gap="md">
 					<TextInput
 						key={stopDetailContext.data.form.key('last_infrastructure_maintenance')}
-						label={t('stops.detail.SectionInfrastructure.fields.last_maintenance')}
+						label={t('stops:stops.detail.SectionInfrastructure.fields.last_maintenance')}
 						placeholder="2023-02-10"
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_infrastructure_maintenance')}
 					/>
 					<TextInput
 						key={stopDetailContext.data.form.key('last_infrastructure_check')}
-						label={t('stops.detail.SectionInfrastructure.fields.last_check')}
+						label={t('stops:stops.detail.SectionInfrastructure.fields.last_check')}
 						placeholder="2023-02-10"
 						readOnly={stopDetailContext.flags.isReadOnly}
 						{...stopDetailContext.data.form.getInputProps('last_infrastructure_check')}

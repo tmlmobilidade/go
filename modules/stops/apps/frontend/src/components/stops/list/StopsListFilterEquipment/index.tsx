@@ -18,7 +18,7 @@ export function StopsListFilterEquipment() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -34,7 +34,7 @@ export function StopsListFilterEquipment() {
 		if (!StopEquipmentSchema.options?.length) return [];
 		return StopEquipmentSchema.options.map(item => ({
 			checked: stopsListContext.filters.equipment.includes(item),
-			label: t(`${Translations.EQUIPMENT}.${item}`),
+			label: t(Translations.EQUIPMENT[item]),
 			value: item,
 		}));
 	}, [stopsListContext.filters.equipment, t]);
@@ -45,7 +45,7 @@ export function StopsListFilterEquipment() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('stops.list.FilterBar.FilterEquipment.label')}
+			label={t('stops:stops.list.FilterBar.FilterEquipment.label')}
 			onChange={stopsListContext.actions.setFilterEquipment}
 			options={parsedOptions}
 			withToggleAll

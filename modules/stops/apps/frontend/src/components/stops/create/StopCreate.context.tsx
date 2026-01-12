@@ -57,7 +57,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 	const router = useRouter();
 
 	const locationsContext = useLocationsContext();
@@ -103,7 +103,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		const validatedLongitude = isValidLongitude(longitude);
 		// If they are invalid set field errors
 		if (!validatedLatitude || !validatedLongitude) {
-			setIsError(new Error(t('stops.create.Alerts.invalid_coordinates')));
+			setIsError(new Error(t('stops:stops.create.Alerts.invalid_coordinates')));
 			return;
 		}
 		// Update the form with the validated values
@@ -172,13 +172,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: t('stops.create.Toast.create_error.title') });
+				useToast.error({ message: response.error, title: t('stops:stops.create.Toast.create_error.title') });
 				setIsSaving(false);
 				return;
 			}
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {
-				useToast.error({ message: error.message, title: t('stops.create.Toast.create_error.title') });
+				useToast.error({ message: error.message, title: t('stops:stops.create.Toast.create_error.title') });
 			}
 			setIsSaving(false);
 			return;
@@ -187,7 +187,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		allStopsMutate();
 		setIsSaving(false);
 		closeCreateStopModal();
-		useToast.success({ message: t('stops.create.Toast.create_success.message'), title: t('stops.create.Toast.create_success.title') });
+		useToast.success({ message: t('stops:stops.create.Toast.create_success.message'), title: t('stops:stops.create.Toast.create_success.title') });
 		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(response.data._id)));
 	};
 

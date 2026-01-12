@@ -18,7 +18,7 @@ export function StopsListFilterLifecycleStatus() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -34,7 +34,7 @@ export function StopsListFilterLifecycleStatus() {
 		if (!LifecycleStatusSchema.options?.length) return [];
 		return LifecycleStatusSchema.options.map(item => ({
 			checked: stopsListContext.filters.lifecycle_status.includes(item),
-			label: t(`${Translations.LIFECYCLE_STATUS}.${item}`),
+			label: t(Translations.LIFECYCLE_STATUS[item]),
 			value: item,
 		}));
 	}, [stopsListContext.filters.lifecycle_status, t]);
@@ -45,7 +45,7 @@ export function StopsListFilterLifecycleStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('stops.list.FilterBar.FilterLifecycleStatus.label')}
+			label={t('stops:stops.list.FilterBar.FilterLifecycleStatus.label')}
 			onChange={stopsListContext.actions.setFilterLifecycleStatus}
 			options={parsedOptions}
 			withToggleAll

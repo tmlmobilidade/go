@@ -24,47 +24,47 @@ export function StopsList() {
 	const params = useParams<{ id?: string }>();
 
 	const stopsListContext = useStopsListContext();
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<StopNormalized>[] = [
 		{
 			accessor: '_id',
-			title: t('stops.list.Table.columns.code'),
+			title: t('stops:stops.list.Table.columns.code'),
 			width: 150,
 		},
 		{
 			accessor: 'name',
-			title: t('stops.list.Table.columns.name'),
+			title: t('stops:stops.list.Table.columns.name'),
 			width: 500,
 		},
 		{
 			accessor: 'latitude',
-			title: t('stops.list.Table.columns.latitude'),
+			title: t('stops:stops.list.Table.columns.latitude'),
 			width: 150,
 		},
 		{
 			accessor: 'longitude',
-			title: t('stops.list.Table.columns.longitude'),
+			title: t('stops:stops.list.Table.columns.longitude'),
 			width: 150,
 		},
 		{
 			accessor: 'district_name',
-			title: t('stops.list.Table.columns.district'),
+			title: t('stops:stops.list.Table.columns.district'),
 			width: 250,
 		},
 		{
 			accessor: 'municipality_name',
-			title: t('stops.list.Table.columns.municipality'),
+			title: t('stops:stops.list.Table.columns.municipality'),
 			width: 250,
 		},
 		{
 			accessor: 'parish_name',
-			title: t('stops.list.Table.columns.parish'),
+			title: t('stops:stops.list.Table.columns.parish'),
 			width: 250,
 		},
 		{
 			accessor: 'locality_name',
-			title: t('stops.list.Table.columns.locality'),
+			title: t('stops:stops.list.Table.columns.locality'),
 			width: 250,
 		},
 	];

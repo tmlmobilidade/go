@@ -16,18 +16,18 @@ export function StopsListHeader() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps>{t('stops.list.Header.title')}</Label>
+			<Label size="lg" caps>{t('stops:stops.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={stopsListContext.actions.setFilterSearch} value={stopsListContext.filters.search} />
 			<HasPermission action={PermissionCatalog.all.stops.actions.create} scope={PermissionCatalog.all.stops.scope}>
-				<Button label={t('stops.list.Header.new_stop_button')} leftSection={<IconPlus size={20} />} onClick={openCreateStopModal} />
+				<Button label={t('stops:stops.list.Header.new_stop_button')} leftSection={<IconPlus size={20} />} onClick={openCreateStopModal} />
 			</HasPermission>
 		</Toolbar>
 	);

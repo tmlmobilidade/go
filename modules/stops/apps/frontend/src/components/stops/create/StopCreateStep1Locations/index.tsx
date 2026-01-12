@@ -16,7 +16,7 @@ export function StopCreateStep1Locations() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 	const stopCreateContext = useStopCreateContext();
 	const locationsContext = useLocationsContext();
 
@@ -85,10 +85,10 @@ export function StopCreateStep1Locations() {
 	return (
 		<Section>
 			<Grid columns="ab" gap="md">
-				<ValueDisplay label={t('stops.create.Step1.Locations.district')} value={associatedDistrict?.name ?? 'N/A'} bordered />
-				<ValueDisplay label={t('stops.create.Step1.Locations.municipality')} value={associatedMunicipality?.name ?? 'N/A'} bordered />
-				<ValueDisplay label={t('stops.create.Step1.Locations.parish')} value={associatedParish?.name ?? 'N/A'} bordered />
-				<ValueDisplay label={t('stops.create.Step1.Locations.locality')} value={associatedLocality?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('stops:stops.create.Step1.Locations.district')} value={associatedDistrict?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('stops:stops.create.Step1.Locations.municipality')} value={associatedMunicipality?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('stops:stops.create.Step1.Locations.parish')} value={associatedParish?.name ?? 'N/A'} bordered />
+				<ValueDisplay label={t('stops:stops.create.Step1.Locations.locality')} value={associatedLocality?.name ?? 'N/A'} bordered />
 			</Grid>
 		</Section>
 	);

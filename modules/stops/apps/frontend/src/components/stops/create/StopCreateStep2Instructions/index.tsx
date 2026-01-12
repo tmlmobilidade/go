@@ -8,11 +8,11 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export function StopCreateStep2Instructions() {
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	return (
 		<Section gap="sm">
-			<Text>{t('stops.create.Step2.Instructions.text')}</Text>
+			<Text>{t('stops:stops.create.Step2.Instructions.text')}</Text>
 		</Section>
 	);
 }

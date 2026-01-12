@@ -14,7 +14,7 @@ export function StopCreateStep2Inputs() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 	const stopCreateContext = useStopCreateContext();
 
 	//
@@ -27,8 +27,8 @@ export function StopCreateStep2Inputs() {
 				<Grid columns="a" gap="md">
 					<TextInput
 						key={stopCreateContext.data.form.key('name')}
-						description={t('stops.create.Step2.Inputs.full_name.description')}
-						label={t('stops.create.Step2.Inputs.full_name.label')}
+						description={t('stops:stops.create.Step2.Inputs.full_name.description')}
+						label={t('stops:stops.create.Step2.Inputs.full_name.label')}
 						data-autofocus
 						required
 						{...stopCreateContext.data.form.getInputProps('name')}
@@ -42,14 +42,14 @@ export function StopCreateStep2Inputs() {
 				<Grid columns="a" gap="md">
 					<TextInput
 						defaultValue={stopCreateContext.data.form.values.short_name}
-						description={t('stops.create.Step2.Inputs.short_name.description')}
-						label={t('stops.create.Step2.Inputs.short_name.label')}
+						description={t('stops:stops.create.Step2.Inputs.short_name.description')}
+						label={t('stops:stops.create.Step2.Inputs.short_name.label')}
 						readOnly
 					/>
 					<TextInput
 						defaultValue={stopCreateContext.data.form.values.tts_name}
-						description={t('stops.create.Step2.Inputs.tts_name.description')}
-						label={t('stops.create.Step2.Inputs.tts_name.label')}
+						description={t('stops:stops.create.Step2.Inputs.tts_name.description')}
+						label={t('stops:stops.create.Step2.Inputs.tts_name.label')}
 						readOnly
 					/>
 				</Grid>

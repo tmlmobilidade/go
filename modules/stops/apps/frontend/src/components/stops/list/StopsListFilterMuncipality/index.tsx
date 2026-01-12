@@ -18,7 +18,7 @@ export function StopsListFilterMunicipality() {
 
 	const locationsContext = useLocationsContext();
 	const stopsListContext = useStopsListContext();
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -37,7 +37,7 @@ export function StopsListFilterMunicipality() {
 	return (
 		<MultiSelect
 			data={parsedOptions}
-			label={t('stops.list.FilterBar.FilterMunicipality.label')}
+			label={t('stops:stops.list.FilterBar.FilterMunicipality.label')}
 			onChange={stopsListContext.actions.setFilterMunicipalities}
 			value={stopsListContext.filters.municipalities}
 			clearable

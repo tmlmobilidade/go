@@ -2,9 +2,7 @@
 
 /* * */
 
-import { UploadImage } from '@/components/common/UploadImage';
-import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { Collapsible, Section } from '@tmlmobilidade/ui';
+import { Collapsible } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -15,16 +13,15 @@ export function StopDetailsSectionImages() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
-	const stopDetailContext = useStopDetailContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description={t('stops.detail.SectionImages.description')}
-			title={t('stops.detail.SectionImages.title')}
+			description={t('stops:stops.detail.SectionImages.description')}
+			title={t('stops:stops.detail.SectionImages.title')}
 		>
 			{/* <Section>
 				<UploadImage

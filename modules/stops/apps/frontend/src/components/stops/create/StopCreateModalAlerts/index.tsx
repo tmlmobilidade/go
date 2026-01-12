@@ -14,7 +14,7 @@ export function StopCreateModalAlerts() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 	const stopCreateContext = useStopCreateContext();
 
 	//
@@ -26,7 +26,7 @@ export function StopCreateModalAlerts() {
 
 	return (
 		<AlertMessage
-			title={stopCreateContext.flags.error?.message ?? t('stops.create.Alerts.unknown_error')}
+			title={stopCreateContext.flags.error?.message ?? t('stops:stops.create.Alerts.unknown_error')}
 			variant="danger"
 		/>
 	);

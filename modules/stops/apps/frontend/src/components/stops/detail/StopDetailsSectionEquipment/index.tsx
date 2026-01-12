@@ -11,12 +11,12 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export function StopDetailsSectionEquipment() {
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	return (
 		<Collapsible
-			description={t('stops.detail.SectionEquipment.description')}
-			title={t('stops.detail.SectionEquipment.title')}
+			description={t('stops:stops.detail.SectionEquipment.description')}
+			title={t('stops:stops.detail.SectionEquipment.title')}
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">

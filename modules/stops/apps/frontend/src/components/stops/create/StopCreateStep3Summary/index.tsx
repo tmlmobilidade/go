@@ -18,7 +18,7 @@ export function StopCreateStep3Summary() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 	const locationsContext = useLocationsContext();
 	const stopCreateContext = useStopCreateContext();
 
@@ -59,8 +59,8 @@ export function StopCreateStep3Summary() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label={t('stops.create.Step3.Summary.short_name')} value={stopCreateContext.data.form.values.short_name} bordered />
-					<ValueDisplay label={t('stops.create.Step3.Summary.tts_name')} value={stopCreateContext.data.form.values.tts_name} bordered />
+					<ValueDisplay label={t('stops:stops.create.Step3.Summary.short_name')} value={stopCreateContext.data.form.values.short_name} bordered />
+					<ValueDisplay label={t('stops:stops.create.Step3.Summary.tts_name')} value={stopCreateContext.data.form.values.tts_name} bordered />
 				</Grid>
 			</Section>
 

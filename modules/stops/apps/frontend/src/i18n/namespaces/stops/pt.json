@@ -166,7 +166,8 @@
 					"has_shelter": "Existe Abrigo?",
 					"shelter_code": "Código do Abrigo",
 					"shelter_installation_date": "Data de Instalação do abrigo",
-					"shelter_maintainer": "Entidade Gestora do Abrigo"
+					"shelter_maintainer": "Entidade Gestora do Abrigo",
+					"shelter_material": "Material do Abrigo"
 				},
 				"title": "Abrigo"
 			}

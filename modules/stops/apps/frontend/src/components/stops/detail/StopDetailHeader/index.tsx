@@ -19,7 +19,7 @@ export function StopDetailHeader() {
 
 	const router = useRouter();
 	const stopDetailContext = useStopDetailContext();
-	const { t } = useTranslation('stops');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -36,7 +36,7 @@ export function StopDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
-			{stopDetailContext.data.stop?.is_deleted && <Tag label={t('stops.detail.Header.deleted_tag')} variant="danger" />}
+			{stopDetailContext.data.stop?.is_deleted && <Tag label={t('stops:stops.detail.Header.deleted_tag')} variant="danger" />}
 
 			<Spacer />
 
@@ -68,8 +68,8 @@ export function StopDetailHeader() {
 				scope={PermissionCatalog.all.stops.scope}
 			>
 				<DeleteButton
-					confirmMessage={t('stops.detail.Header.DeleteButton.confirm_message')}
-					confirmTitle={t('stops.detail.Header.DeleteButton.confirm_title')}
+					confirmMessage={t('stops:stops.detail.Header.DeleteButton.confirm_message')}
+					confirmTitle={t('stops:stops.detail.Header.DeleteButton.confirm_title')}
 					isDeleted={stopDetailContext.data.stop?.is_deleted}
 					isDisabled={!stopDetailContext.flags.canDelete}
 					isLoading={stopDetailContext.flags.isDeleting}

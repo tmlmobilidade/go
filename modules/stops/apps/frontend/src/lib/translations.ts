@@ -1,10 +1,10 @@
 export const Translations = {
-	AVAILABILITY_STATUS: 'types.AvailabilityStatus',
-	CONDITION_STATUS: 'types.ConditionStatus',
-	CONNECTIONS: 'types.Connections',
-	EQUIPMENT: 'types.Equipment',
-	FACILITIES: 'types.Facilities',
-	JURISDICTION: 'types.Jurisdiction',
-	LIFECYCLE_STATUS: 'types.LifecycleStatus',
-	ROAD_TYPE: 'types.RoadType',
+	AVAILABILITY_STATUS: 'stops:types.AvailabilityStatus',
+	CONDITION_STATUS: 'stops:types.ConditionStatus',
+	CONNECTIONS: 'stops:types.Connections',
+	EQUIPMENT: 'stops:types.Equipment',
+	FACILITIES: 'stops:types.Facilities',
+	JURISDICTION: 'stops:types.Jurisdiction',
+	LIFECYCLE_STATUS: 'stops:types.LifecycleStatus',
+	ROAD_TYPE: 'stops:types.RoadType',
 };
