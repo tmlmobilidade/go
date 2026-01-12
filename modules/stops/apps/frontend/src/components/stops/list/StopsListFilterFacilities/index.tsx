@@ -34,7 +34,7 @@ export function StopsListFilterFacilities() {
 		if (!StopFacilitySchema.options?.length) return [];
 		return StopFacilitySchema.options.map(item => ({
 			checked: stopsListContext.filters.facilities.includes(item),
-			label: t(Translations.FACILITIES[item]),
+			label: t(`${Translations.FACILITIES}.${item}`),
 			value: item,
 		}));
 	}, [stopsListContext.filters.facilities, t]);

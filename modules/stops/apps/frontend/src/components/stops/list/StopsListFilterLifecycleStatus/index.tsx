@@ -34,7 +34,7 @@ export function StopsListFilterLifecycleStatus() {
 		if (!LifecycleStatusSchema.options?.length) return [];
 		return LifecycleStatusSchema.options.map(item => ({
 			checked: stopsListContext.filters.lifecycle_status.includes(item),
-			label: t(Translations.LIFECYCLE_STATUS[item]),
+			label: t(`${Translations.LIFECYCLE_STATUS}.${item}`),
 			value: item,
 		}));
 	}, [stopsListContext.filters.lifecycle_status, t]);

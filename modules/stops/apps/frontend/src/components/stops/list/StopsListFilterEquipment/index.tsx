@@ -34,7 +34,7 @@ export function StopsListFilterEquipment() {
 		if (!StopEquipmentSchema.options?.length) return [];
 		return StopEquipmentSchema.options.map(item => ({
 			checked: stopsListContext.filters.equipment.includes(item),
-			label: t(Translations.EQUIPMENT[item]),
+			label: t(`${Translations.EQUIPMENT}.${item}`),
 			value: item,
 		}));
 	}, [stopsListContext.filters.equipment, t]);

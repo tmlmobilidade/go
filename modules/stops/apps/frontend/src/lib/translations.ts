@@ -7,4 +7,4 @@ export const Translations = {
 	JURISDICTION: 'stops:types.Jurisdiction',
 	LIFECYCLE_STATUS: 'stops:types.LifecycleStatus',
 	ROAD_TYPE: 'stops:types.RoadType',
-};
+} as const;

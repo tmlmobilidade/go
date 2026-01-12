@@ -34,7 +34,7 @@ export function StopsListFilterConnections() {
 		if (!StopConnectionSchema.options?.length) return [];
 		return StopConnectionSchema.options.map(item => ({
 			checked: stopsListContext.filters.connections.includes(item),
-			label: t(Translations.CONNECTIONS[item]),
+			label: t(`${Translations.CONNECTIONS}.${item}`),
 			value: item,
 		}));
 	}, [stopsListContext.filters.connections, t]);
