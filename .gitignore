@@ -51,3 +51,11 @@ public
 
 # TypeScript
 next-env.d.ts
+
+
+# HashiCorp files
+*.tfvars
+*.tfstate
+*.tfstate*
+.terraform
+*.pkrvars.hcl

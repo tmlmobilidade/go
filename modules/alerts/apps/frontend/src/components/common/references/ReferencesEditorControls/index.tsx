@@ -20,7 +20,7 @@ export function ReferencesEditorControls() {
 	//
 	// B. Transform data
 
-	const referenceTypeOptions = AlertReferenceTypeSchema.options
+	const availableReferenceTypeOptions = AlertReferenceTypeSchema.options
 		.filter(value => meContext.actions.hasPermissionResource({
 			action: PermissionCatalog.all.alerts.actions.create,
 			resource_key: 'reference_types',
@@ -29,6 +29,8 @@ export function ReferencesEditorControls() {
 		}))
 		.map((value) => {
 			switch (value) {
+				case 'agency':
+					return { label: 'Operador', value };
 				case 'lines':
 					return { label: 'Linhas', value };
 				case 'rides':
@@ -41,7 +43,7 @@ export function ReferencesEditorControls() {
 	//
 	// C. Render components
 
-	if (referencesEditorContext.data.available_agencies_options.length <= 1 && referenceTypeOptions.length <= 1) {
+	if (referencesEditorContext.data.available_agencies_options.length <= 1 && availableReferenceTypeOptions.length <= 1) {
 		return;
 	}
 
@@ -58,15 +60,14 @@ export function ReferencesEditorControls() {
 							value={referencesEditorContext.data.selected_agency_id}
 						/>
 					)}
-					{referenceTypeOptions.length > 1 && (
+					{availableReferenceTypeOptions.length > 1 && (
 						<SegmentedControl
-							data={referenceTypeOptions}
+							data={availableReferenceTypeOptions}
 							onChange={referencesEditorContext.actions.changeReferenceType}
 							value={referencesEditorContext.data.selected_reference_type}
 							fullWidth
 						/>
 					)}
-
 				</Grid>
 			</Section>
 
